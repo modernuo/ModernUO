@@ -647,10 +647,9 @@ public partial class HouseRaffleStone : Item
     {
         public override int Header => 1150470; // CONFIRM TICKET PURCHASE
         public override int HeaderColor => 0x7F00;
-        public override int ContentColor => 0xFFFFFF;
+        public override string ContentColor => "#FFFFFF";
         public override int Width => 420;
         public override int Height => 280;
-
         public override string Content { get; }
 
         public ConfirmTicketPurchaseGump(Rectangle2D bounds, Point3D center, Map map, int price, Action<bool> callback) : base(callback)

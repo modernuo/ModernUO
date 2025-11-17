@@ -32,7 +32,7 @@ public static class TextDefinitionExtensions
         int stringColor = -1
     )
     {
-        if (def == null)
+        if (def?.IsEmpty != false)
         {
             return;
         }
@@ -48,16 +48,28 @@ public static class TextDefinitionExtensions
                 builder.AddHtmlLocalized(x, y, width, height, def.Number, back, scroll);
             }
         }
-        else if (def.String != null)
+        else if (stringColor != -1)
         {
             builder.AddHtml(
                 x,
                 y,
                 width,
                 height,
-                stringColor >= 0 ? def.String.Color(stringColor) : def.String, // 8 bits per RGB component (24 bit RGB)
-                back,
-                scroll
+                $"<BASEFONT COLOR=#{stringColor:X6}>{def.String}</BASEFONT>",
+                background: back,
+                scrollbar: scroll
+            );
+        }
+        else
+        {
+            builder.AddHtml(
+                x,
+                y,
+                width,
+                height,
+                def.String,
+                background: back,
+                scrollbar: scroll
             );
         }
     }
@@ -75,7 +87,7 @@ public static class TextDefinitionExtensions
         int stringColor = -1
     )
     {
-        if (def == null)
+        if (def?.IsEmpty != false)
         {
             return;
         }
@@ -91,16 +103,28 @@ public static class TextDefinitionExtensions
                 builder.AddHtmlLocalized(x, y, width, height, def.Number, back, scroll);
             }
         }
-        else if (def.String != null)
+        else if (stringColor != -1)
         {
             builder.AddHtml(
                 x,
                 y,
                 width,
                 height,
-                stringColor >= 0 ? def.String.Color(stringColor) : def.String, // 8 bits per RGB component (24 bit RGB)
-                back,
-                scroll
+                $"<BASEFONT COLOR=#{stringColor:X6}>{def.String}</BASEFONT>",
+                background: back,
+                scrollbar: scroll
+            );
+        }
+        else
+        {
+            builder.AddHtml(
+                x,
+                y,
+                width,
+                height,
+                def.String,
+                background: back,
+                scrollbar: scroll
             );
         }
     }
@@ -118,23 +142,12 @@ public static class TextDefinitionExtensions
         int stringColor = -1
     )
     {
-        if (def == null)
+        if (def?.IsEmpty != false)
         {
             return;
         }
 
-        if (def.Number > 0)
-        {
-            if (numberColor >= 0) // 5 bits per RGB component (15 bit RGB)
-            {
-                g.AddHtmlLocalized(x, y, width, height, def.Number, numberColor, back, scroll);
-            }
-            else
-            {
-                g.AddHtmlLocalized(x, y, width, height, def.Number, back, scroll);
-            }
-        }
-        else if (def.String != null)
+        if (def.Number <= 0)
         {
             g.AddHtml(
                 x,
@@ -145,6 +158,14 @@ public static class TextDefinitionExtensions
                 back,
                 scroll
             );
+        }
+        else if (numberColor >= 0) // 5 bits per RGB component (15 bit RGB)
+        {
+            g.AddHtmlLocalized(x, y, width, height, def.Number, numberColor, back, scroll);
+        }
+        else
+        {
+            g.AddHtmlLocalized(x, y, width, height, def.Number, back, scroll);
         }
     }
 
@@ -162,7 +183,7 @@ public static class TextDefinitionExtensions
         int stringColor = -1
     )
     {
-        if (def == null)
+        if (def?.IsEmpty != false)
         {
             return;
         }
@@ -172,7 +193,7 @@ public static class TextDefinitionExtensions
             // 5 bits per RGB component (15 bit RGB)
             g.AddHtmlLocalized(x, y, width, height, def.Number, args, numberColor >= 0 ? numberColor : 0x7FFF, back, scroll);
         }
-        else if (def.String != null)
+        else
         {
             g.AddHtml(
                 x,

@@ -42,7 +42,7 @@ public partial class StatCapScroll : SpecialScroll
     }
 
     public override string DefaultTitle =>
-        $"Power Scroll ({((int)Value - 225 >= 0 ? "+" : "")}{(int)Value - 225} Maximum Stats):".Color(0xFFFFFF);
+        Html.Color($"Power Scroll ({((int)Value - 225 >= 0 ? "+" : "")}{(int)Value - 225} Maximum Stats):", 0xFFFFFF);
 
     public override void AddNameProperty(IPropertyList list)
     {

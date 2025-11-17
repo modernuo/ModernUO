@@ -125,7 +125,7 @@ namespace Server.Engines.ConPVP
                 height - 12 - 2 - 18,
                 400,
                 20,
-                $"Top {lc} of {m_List.Count:N0} duelists, page {page + 1} of {(lc + 14) / 15}".Color(0xFFC000)
+                Html.Color($"Top {lc} of {m_List.Count:N0} duelists, page {page + 1} of {(lc + 14) / 15}", 0xFFC000)
             );
 
             AddColumnHeader(75, "Rank");
@@ -174,7 +174,7 @@ namespace Server.Engines.ConPVP
 
                 // AddImageTiled( 21, y + 6, width, 8, 0x2617 );
                 AddImageTiled(x + 3, y + 4, width, 11, 0x806);
-                AddBorderedText(x, y, 115, level.ToString().Center(), 0xFFFFFF, 0);
+                AddBorderedText(x, y, 115, Html.Center($"{level}"), 0xFFFFFF, 0);
                 x += 115;
 
                 var mob = entry.Mobile;
@@ -189,10 +189,10 @@ namespace Server.Engines.ConPVP
                 AddBorderedText(x + 5, y, 115 - 5, mob.Name, 0xFFFFFF, 0);
                 x += 115;
 
-                AddBorderedText(x, y, 60, entry.Wins.ToString().Center(), 0xFFFFFF, 0);
+                AddBorderedText(x, y, 60, Html.Center($"{entry.Wins}"), 0xFFFFFF, 0);
                 x += 60;
 
-                AddBorderedText(x, y, 60, entry.Losses.ToString().Center(), 0xFFFFFF, 0);
+                AddBorderedText(x, y, 60, Html.Center($"{entry.Losses}"), 0xFFFFFF, 0);
                 x += 60;
 
                 // AddBorderedText( 292 + 15, y, 115 - 30, String.Format( "{0} <DIV ALIGN=CENTER>/</DIV> <DIV ALIGN=RIGHT>{1}</DIV>", entry.Wins, entry.Losses ), 0xFFC000, 0 );

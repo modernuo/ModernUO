@@ -189,7 +189,7 @@ namespace Server.Engines.ConPVP
                 AddBorderedText(x + 5, y + 5, 325 - 5, sb.ToString(), color, 0);
                 x += 325;
 
-                AddBorderedText(x, y + 5, 40, ar.Spectators.ToString().Center(), color, 0);
+                AddBorderedText(x, y + 5, 40, Html.Center($"{ar.Spectators}"), color, 0);
             }
         }
 

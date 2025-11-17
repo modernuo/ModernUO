@@ -68,7 +68,7 @@ public class HouseRaffleManagementGump : Gump
         AddHtml(145, 55, 250, 20, HouseRaffleStone.FormatPrice(stone.TicketPrice).Color(LabelColor));
 
         AddHtml(45, 75, 100, 20, "Total Entries:".Color(LabelColor));
-        AddHtml(145, 75, 250, 20, _stone.Entries.Count.ToString().Color(LabelColor));
+        AddHtml(145, 75, 250, 20, Html.Color($"{_stone.Entries.Count}", LabelColor));
 
         AddButton(440, 33, 0xFA5, 0xFA7, 3);
         AddHtml(474, 35, 120, 20, "Sort by name".Color(LabelColor));
@@ -130,7 +130,7 @@ public class HouseRaffleManagementGump : Gump
             {
                 if (entry.From.Account is Account acc)
                 {
-                    AddHtml(x + 2, 140 + idx * 20, 250, 20, $"{entry.From.RawName} ({acc})".Color(color));
+                    AddHtml(x + 2, 140 + idx * 20, 250, 20, Html.Color($"{entry.From.RawName} ({acc})", color));
                 }
                 else
                 {
