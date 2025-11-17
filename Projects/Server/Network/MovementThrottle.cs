@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2025 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: MovementThrottle.cs                                             *
  *                                                                       *
@@ -14,18 +14,39 @@
  *************************************************************************/
 
 using System;
+using Server.Logging;
 
 namespace Server.Network;
 
+/// <summary>
+/// A high-performance, token-bucket-based movement throttle
+/// combined with a lightweight, consecutive-throttle-based
+/// speed hack detection system.
+/// </summary>
 public static class MovementThrottle
 {
-    private static long _movementThrottleReset; // 1 second
-    private static long _throttleThreshold; // 400 milliseconds
+    private static long _maxCreditThreshold = 2000; // 2 seconds
+    private static int _consecutiveThrottleThreshold = 5;
+    private static long _suspiciousLogCooldown = 60000; // 1 minute
+
+    private static readonly ILogger logger = LogFactory.GetLogger(typeof(MovementThrottle));
 
     public static void Configure()
     {
-        _movementThrottleReset = ServerConfiguration.GetOrUpdateSetting("movement.throttleReset", 1000);
-        _throttleThreshold = ServerConfiguration.GetOrUpdateSetting("movement.throttleThreshold", 400);
+        _maxCreditThreshold = ServerConfiguration.GetOrUpdateSetting(
+            "movementThrottle.maxCreditThreshold",
+            _maxCreditThreshold
+        );
+
+        _consecutiveThrottleThreshold = ServerConfiguration.GetOrUpdateSetting(
+            "movementThrottle.consecutiveThrottleThreshold",
+            _consecutiveThrottleThreshold
+        );
+
+        _suspiciousLogCooldown = ServerConfiguration.GetOrUpdateSetting(
+            "movementThrottle.suspiciousLogCooldown",
+            _suspiciousLogCooldown
+        );
     }
 
     public static unsafe void Initialize()
@@ -42,28 +63,69 @@ public static class MovementThrottle
             return false;
         }
 
-        long now = Core.TickCount;
-        long credit = ns._movementCredit;
-        long nextMove = ns._nextMovementTime;
+        var now = Core.TickCount;
+        var credit = ns._movementCredit;
+        var nextMove = ns._nextMovementTime;
+        var delta = now - nextMove;
+        long cost;
 
-        // Reset system if idle for more than 1 second
-        if (now - nextMove + _movementThrottleReset > 0)
+        if (delta > 0)
         {
-            ns._movementCredit = 0;
+            cost = 0;
+            credit = Math.Min(_maxCreditThreshold, credit + delta);
             ns._nextMovementTime = now;
-            return false;
+            ns._consecutiveMovementThrottles = 0;
         }
-
-        long cost = nextMove - now;
+        else
+        {
+            cost = -delta;
+        }
 
         if (credit < cost)
         {
-            // Not enough credit, therefore throttled
+            ns._consecutiveMovementThrottles++;
+
+            if (ns._consecutiveMovementThrottles >= _consecutiveThrottleThreshold)
+            {
+                LogSuspiciousActivity(ns, cost, credit);
+            }
+
             return true;
         }
 
-        // On the next event loop, the player receives up to 400ms in grace latency
-        ns._movementCredit = Math.Min(_throttleThreshold, credit - cost);
+        ns._movementCredit = credit - cost;
+
+        if (cost <= 0)
+        {
+            ns._consecutiveMovementThrottles--;
+            if (ns._consecutiveMovementThrottles < 0)
+            {
+                ns._consecutiveMovementThrottles = 0;
+            }
+        }
+
         return false;
+    }
+
+    private static void LogSuspiciousActivity(NetState ns, long cost, long credit)
+    {
+        var now = Core.TickCount;
+        if (now - ns._lastSuspiciousActivityLog < _suspiciousLogCooldown)
+        {
+            return;
+        }
+
+        ns._lastSuspiciousActivityLog = now;
+
+        var from = ns.Mobile;
+        logger.Warning(
+            "Potential speed hack detected: {Character} | " +
+            "Cost: {Cost}ms | Credit: {Credit}ms | " +
+            "Consecutive Throttles: {Count}",
+            from?.Name ?? "Unknown",
+            cost,
+            credit,
+            ns._consecutiveMovementThrottles
+        );
     }
 }
