@@ -824,25 +824,28 @@ public partial class Corpse : Container, ICarvable
             }
 
             var pack = from.Backpack;
+            using var items = PooledRefList<Item>.Create(128);
 
             if (RestoreEquip != null && pack != null)
             {
-                var packItems = new List<Item>(pack.Items); // Only items in the top-level pack are re-equipped
+                items.AddRange(pack.Items);
 
-                for (var i = 0; i < packItems.Count; i++)
+                // Only items in the top-level pack are re-equipped
+                for (var i = 0; i < items.Count; i++)
                 {
-                    var packItem = packItems[i];
+                    var packItem = items[i];
 
                     if (RestoreEquip.Contains(packItem) && packItem.Movable)
                     {
                         from.EquipItem(packItem);
                     }
                 }
+
+                items.Clear();
             }
 
-            var items = new List<Item>(Items);
-
             var didntFit = false;
+            items.AddRange(Items);
 
             for (var i = 0; !didntFit && i < items.Count; ++i)
             {
