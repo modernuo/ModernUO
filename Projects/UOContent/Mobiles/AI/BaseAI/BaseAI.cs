@@ -710,8 +710,13 @@ public abstract partial class BaseAI
         Mobile newFocusMob = null, enemySummonMob = null;
         double val = double.MinValue, enemySummonVal = double.MinValue;
 
-        foreach (var m in map.GetMobilesInRange(Mobile.Location, iRange))
+        Mobile[] nearbyMobiles = new Mobile[32];
+        Mobile.GetMobilesInRange(iRange, nearbyMobiles, out int count);
+
+        for (int i = 0; i < count; i++)
         {
+            var m = nearbyMobiles[i];
+            
             if (IsInvalidTarget(m, bPlayerOnly))
             {
                 continue;
@@ -720,8 +725,8 @@ public abstract partial class BaseAI
             var bc = m as BaseCreature;
             var pm = m as PlayerMobile;
 
-            if (IsInvalidSummonTarget(m, bc, pm) || IsInvalidFactionTarget(m, bFacFriend, bFacFoe)
-                                                 || IsInvalidFightModeTarget(m, acqType, bc))
+            if (IsInvalidSummonTarget(m, bc, pm) || IsInvalidFactionTarget(m, bFacFriend, bFacFoe) 
+                || IsInvalidFightModeTarget(m, acqType, bc))
             {
                 continue;
             }
@@ -733,8 +738,7 @@ public abstract partial class BaseAI
                 newFocusMob = m;
                 val = theirVal;
             }
-            else if (Core.AOS && theirVal > enemySummonVal
-                              && Mobile.InLOS(m) && bc?.Summoned == true && bc.Controlled != true)
+            else if (Core.AOS && theirVal > enemySummonVal && Mobile.InLOS(m) && bc?.Summoned == true && bc.Controlled != true)
             {
                 enemySummonMob = m;
                 enemySummonVal = theirVal;

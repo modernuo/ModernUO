@@ -340,8 +340,13 @@ public abstract partial class BaseAI
 
     private void FindCombatant()
     {
-        foreach (var aggr in Mobile.GetMobilesInRange(Mobile.RangePerception))
+        Mobile[] nearbyMobiles = new Mobile[8];
+        Mobile.GetMobilesInRange(Mobile.RangePerception, nearbyMobiles, out int count);
+
+        for (int i = 0; i < count; i++)
         {
+            var aggr = nearbyMobiles[i];
+            
             if (!Mobile.CanSee(aggr) || aggr.Combatant != Mobile || aggr.IsDeadBondedPet || !aggr.Alive)
             {
                 continue;

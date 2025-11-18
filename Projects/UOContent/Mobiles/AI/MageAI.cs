@@ -965,8 +965,12 @@ public class MageAI : BaseAI
                 actPrio = inactPrio = Mobile.GetDistanceToSqrt(comb);
             }
 
-            foreach (var m in Mobile.GetMobilesInRange(Mobile.RangePerception))
+            Mobile[] nearbyMobiles = new Mobile[8];
+            Mobile.GetMobilesInRange(Mobile.RangePerception, nearbyMobiles, out int count);
+
+            for (int i = 0; i < count; i++)
             {
+                var m = nearbyMobiles[i];
                 if (m != Mobile && CanDispel(m))
                 {
                     var prio = Mobile.GetDistanceToSqrt(m);

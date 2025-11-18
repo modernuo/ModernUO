@@ -2430,8 +2430,12 @@ namespace Server.Mobiles
         {
             var iCount = 0;
 
-            foreach (var m in GetMobilesInRange(iRange))
+            Mobile[] nearbyMobiles = new Mobile[8];
+            GetMobilesInRange(iRange, nearbyMobiles, out int count);
+
+            for (int i = 0; i < count; i++)
             {
+                var m = nearbyMobiles[i];
                 if (m != this && m is BaseCreature creature && !creature.Deleted && creature.Team == Team &&
                     CanSee(creature))
                 {
