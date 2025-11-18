@@ -133,16 +133,20 @@ public class HealerAI : BaseAI
         var prio = 0.0;
         Mobile found = null;
 
-        foreach (var m in Mobile.GetMobilesInRange(Mobile.RangePerception))
+        Mobile[] nearbyMobiles = new Mobile[8];
+        Mobile.GetMobilesInRange(Mobile.RangePerception, nearbyMobiles, out int count);
+
+        for (int i = 0; i < count; i++)
         {
+            var m = nearbyMobiles[i];
             if (!Mobile.CanSee(m) || m is not BaseCreature bc || bc.Team != Mobile.Team)
             {
                 continue;
             }
 
-            for (var i = 0; i < funcs.Length; ++i)
+            for (var j = 0; j < funcs.Length; ++j)
             {
-                if (funcs[i](bc))
+                if (funcs[j](bc))
                 {
                     var val = -Mobile.GetDistanceToSqrt(bc);
 

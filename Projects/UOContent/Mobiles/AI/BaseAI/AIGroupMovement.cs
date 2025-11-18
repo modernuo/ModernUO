@@ -86,8 +86,13 @@ public abstract partial class BaseAI
     private int CountNearbyAllies(Mobile target)
     {
         var allies = 0;
-        foreach (var m in Mobile.GetMobilesInRange(8))
+        
+        Mobile[] nearbyMobiles = new Mobile[16];
+        Mobile.GetMobilesInRange(8, nearbyMobiles, out int count);
+        
+        for (int i = 0; i < count; i++)
         {
+            var m = nearbyMobiles[i];
             if (m != Mobile && m.Combatant == target && m is BaseCreature { Controlled: false } bc
                 && bc.Team == Mobile.Team)
             {
