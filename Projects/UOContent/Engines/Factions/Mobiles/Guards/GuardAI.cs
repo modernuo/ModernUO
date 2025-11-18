@@ -323,8 +323,12 @@ namespace Server.Factions
                     actPrio = inactPrio = Mobile.GetDistanceToSqrt(comb);
                 }
 
-                foreach (var m in Mobile.GetMobilesInRange(12))
+                Mobile[] nearbyMobiles = new Mobile[24];
+                Mobile.GetMobilesInRange(12, nearbyMobiles, out int count);
+
+                for (int i = 0; i < count; i++)
                 {
+                    var m = nearbyMobiles[i];
                     if (m != Mobile && CanDispel(m))
                     {
                         var prio = Mobile.GetDistanceToSqrt(m);
