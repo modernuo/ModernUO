@@ -181,6 +181,14 @@ public class ResurrectGump : DynamicGump
             return;
         }
 
+        if (_price > 0 && info.ButtonID == 2)
+        {
+            if (info.Switches.Length == 0 || info.Switches[0] == 0)
+            {
+                return;
+            }
+        }
+
         var from = state.Mobile;
 
         if (from.Map?.CanFit(from.Location, 16, false, false) != true)
