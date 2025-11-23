@@ -176,17 +176,16 @@ public class ResurrectGump : DynamicGump
 
     public override void OnResponse(NetState state, in RelayInfo info)
     {
-        if (info.ButtonID is not 1 and not 2)
+        if (_price > 0)
         {
-            return;
-        }
-
-        if (_price > 0 && info.ButtonID == 2)
-        {
-            if (info.Switches.Length == 0 || info.Switches[0] == 0)
+            if (info.ButtonID != 2 || info.Switches[0] != 1)
             {
                 return;
             }
+        }
+        else if (info.ButtonID != 1)
+        {
+            return;
         }
 
         var from = state.Mobile;
