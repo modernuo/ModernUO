@@ -54,6 +54,9 @@ jobs:
           - container: ubuntu:jammy
             name: Ubuntu 22
             packageManager: apt
+          - container: debian:trixie
+            name: Debian 13
+            packageManager: apt
           - container: debian:bookworm
             name: Debian 12
             packageManager: apt
