@@ -245,22 +245,29 @@ public static class Html
             builder.Append("<CENTER>");
         }
 
-        builder.Append("<BASEFONT");
-        if (color.Length > 0)
+        if (color.Length > 0 || size > -1 || fontStyle > 0)
         {
-            builder.Append($" COLOR={color}");
-        }
+            builder.Append("<BASEFONT");
+            if (color.Length > 0)
+            {
+                builder.Append($" COLOR={color}");
+            }
 
-        if (size > -1)
-        {
-            builder.Append($" SIZE={size}");
-        }
+            if (size > -1)
+            {
+                builder.Append($" SIZE={size}");
+            }
 
-        if (fontStyle > 0)
-        {
-            builder.Append($" STYLE={fontStyle}");
+            if (fontStyle > 0)
+            {
+                builder.Append($" STYLE={fontStyle}");
+            }
+            builder.Append($">{text}</BASEFONT>");
         }
-        builder.Append($">{text}</BASEFONT>");
+        else
+        {
+            builder.Append(text);
+        }
 
         if (align == TextAlignment.Right)
         {
