@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Server.Collections;
 using Xunit;
 
 namespace Server.Tests.Tests.Maps;
@@ -22,10 +21,9 @@ public class MobileEnumeratorTests
             mobiles[2] = CreateMobile(map, new Point3D(90, 90, 0));
 
             var found = new List<Mobile>();
-            using var enumerator = map.GetMobilesInBounds<Mobile>(rect).GetEnumerator();
-            while (enumerator.MoveNext())
+            foreach (var m in map.GetMobilesInBounds<Mobile>(rect))
             {
-                found.Add(enumerator.Current);
+                found.Add(m);
             }
 
             Assert.Equal(2, found.Count);
@@ -54,10 +52,9 @@ public class MobileEnumeratorTests
             mobiles[1].Delete();
 
             var found = new List<Mobile>();
-            using var enumerator = map.GetMobilesInBounds<Mobile>(rect).GetEnumerator();
-            while (enumerator.MoveNext())
+            foreach (var m in map.GetMobilesInBounds<Mobile>(rect))
             {
-                found.Add(enumerator.Current);
+                found.Add(m);
             }
 
             Assert.Equal(new[] { mobiles[0], mobiles[2] }, found);
@@ -116,7 +113,17 @@ public class MobileEnumeratorTests
 
             mobiles[1].Delete();
 
-            Assert.Throws<InvalidOperationException>(() => enumerator.MoveNext());
+            var exceptionThrown = false;
+            try
+            {
+                enumerator.MoveNext();
+            }
+            catch (InvalidOperationException)
+            {
+                exceptionThrown = true;
+            }
+
+            Assert.True(exceptionThrown, "Expected InvalidOperationException when collection version changes");
         }
         finally
         {
@@ -140,10 +147,9 @@ public class MobileEnumeratorTests
         try
         {
             var result = new List<Mobile>();
-            using var enumerator = map.GetMobilesInBounds<Mobile>(rect).GetEnumerator();
-            while (enumerator.MoveNext())
+            foreach (var m in map.GetMobilesInBounds<Mobile>(rect))
             {
-                result.Add(enumerator.Current);
+                result.Add(m);
             }
 
             Assert.Equal(mobiles, result);
@@ -184,15 +190,15 @@ public class MobileEnumeratorTests
 
     private static Mobile CreateMobile(Map map, Point3D location)
     {
-        var mobile = new Mobile((Serial)Utility.RandomMinMax(0x100, 0xFFF));
+        var mobile = new Mobile((Serial)Utility.RandomMinMax(0x100u, 0xFFFu));
         mobile.DefaultMobileInit();
         mobile.MoveToWorld(location, map);
         return mobile;
     }
 
-    private static void DeleteAll(IReadOnlyList<Mobile> mobiles)
+    private static void DeleteAll(Mobile[] mobiles)
     {
-        for (var i = 0; i < mobiles.Count; i++)
+        for (var i = 0; i < mobiles.Length; i++)
         {
             mobiles[i]?.Delete();
         }
