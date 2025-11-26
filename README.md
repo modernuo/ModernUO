@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/3953314/92417551-a00d7600-f117-11ea-9c28-bb03bbdb1954.png" width=128px />
+  <img src="https://cdn.muo.gg/gh/muo-logo.svg" width=128px />
 </p>
 
 ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=discord&style=social)](https://muo.gg/discord) [![Subreddit subscribers](https://img.shields.io/reddit/subreddit-subscribers/modernuo?style=social&label=/r/modernuo)](https://muo.gg/reddit/) [![Twitter Follow](https://img.shields.io/twitter/follow/modernuo?label=@modernuo&style=social)](https://muo.gg/twitter)
@@ -42,11 +42,11 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 
 #### Supported IDEs
 <p align="left">
-  <a href="https://www.jetbrains.com/rider/download"><img height="64" title="Jetbrains Rider 2025.3+" alt="Jetbrains Rider 2025.3+" src="https://github.com/user-attachments/assets/456dc87e-a7e7-467b-81b6-ba9c8e227f86"></a>
+  <a href="https://www.jetbrains.com/rider/download"><img height="64" title="Jetbrains Rider 2025.3+" alt="Jetbrains Rider 2025.3+" src="https://cdn.muo.gg/gh/jetbrains-rider.svg"></a>
   <img alt="space" width="32" src="https://user-images.githubusercontent.com/3953314/200151935-3c1521ec-16cb-487b-85a2-7454d347c585.png">
-  <a href="https://code.visualstudio.com/download"><img height="64" title="VSCode" alt="VSCode" src="https://user-images.githubusercontent.com/3953314/200161017-7697171f-8f13-4829-95d0-8a25b59ee4c9.png"></a>
+  <a href="https://code.visualstudio.com/download"><img height="64" title="VSCode" alt="VSCode" src="https://cdn.muo.gg/gh/vscode.svg"></a>
   <img alt="space" width="32" src="https://user-images.githubusercontent.com/3953314/200151935-3c1521ec-16cb-487b-85a2-7454d347c585.png">
-  <a href="https://visualstudio.microsoft.com/vs/community/"><img height="64" title="Visual Studio 2026" alt="Visual Studio 2026" src="https://github.com/user-attachments/assets/4cb26751-56bb-4ea1-97e6-afe31d2dc9d7"></a>
+  <a href="https://visualstudio.microsoft.com/vs/community/"><img height="64" title="Visual Studio 2026" alt="Visual Studio 2026" src="https://cdn.muo.gg/gh/vs2026.svg"></a>
 </p>
 
 ## Getting Started
@@ -105,6 +105,6 @@ Thank you for supporting us! You can find out how by visiting the [sponsors](./S
 - [Karasho](https://github.com/andreakarasho), [Jaedan](https://github.com/jaedan) and the ClassicUO Community
 
 <br/><br/>
-<p align=center>Development Tools & Plugins provided with &hearts; by<br/><br/><a href="https://www.jetbrains.com/?from=ModernUO"><img align=middle src="https://github.com/user-attachments/assets/13752e36-87a4-4faf-8359-122c5f39d6e7" height="64px" alt="JetBrains" title="JetBrains" /></a><br/>
-<a href="https://material-theme.com/"><img align=center src="https://material-theme.com/img/logo/material-oceanic.svg" width="64px" alt="Material Theme" title="Material Theme"></a>
+<p align=center>Development Tools & Plugins provided with &hearts; by<br/><br/><a href="https://www.jetbrains.com/?from=ModernUO"><img align=middle src="https://cdn.muo.gg/gh/jetbrains.svg" height="64px" alt="JetBrains" title="JetBrains" /></a><br/>
+<a href="https://material-theme.com/"><img align=center src="https://github.com/AtomMaterialUI/material-theme-issues/raw/master/logo.svg" width="64px" alt="Material Theme" title="Material Theme"></a>
 </p>
