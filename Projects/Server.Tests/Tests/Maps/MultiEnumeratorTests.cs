@@ -266,7 +266,7 @@ public class MultiEnumeratorTests
             multis[1].Delete();
 
             var found = new List<BaseMulti>();
-            foreach (var multi in map.GetMultisInSector<BaseMulti>(location))
+            foreach (var multi in map.GetMultisInRange<BaseMulti>(location, 10))
             {
                 found.Add(multi);
             }
