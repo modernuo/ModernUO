@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using Server.Collections;
 using Server.Items;
 
 namespace Server;
@@ -127,7 +128,7 @@ public partial class Map
         {
             if (_sector != null && _version != _sector.MultisVersion)
             {
-                throw new InvalidOperationException("Collection was modified; enumeration operation may not execute.");
+                throw new InvalidOperationException(CollectionThrowStrings.InvalidOperation_EnumFailedVersion);
             }
 
             while (++_index < _list.Length)
@@ -244,7 +245,7 @@ public partial class Map
                 {
                     if (_currentVersion != _currentSector.MultisVersion)
                     {
-                        throw new InvalidOperationException("Collection was modified; enumeration operation may not execute.");
+                        throw new InvalidOperationException(CollectionThrowStrings.InvalidOperation_EnumFailedVersion);
                     }
 
                     while (++_currentIndex < _currentList.Length)
