@@ -246,11 +246,31 @@ public partial class Map
             }
 
             _list = CollectionsMarshal.AsSpan(_map.GetRealSector(currentSectorX, currentSectorY).Multis);
-            return GetMulti();
+            _index = 0;
+            return true;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool MoveNext() => _map != null && (GetMulti() || GetSector());
+        public bool MoveNext()
+        {
+            if (_map == null)
+            {
+                return false;
+            }
+
+            while (true)
+            {
+                if (GetMulti())
+                {
+                    return true;
+                }
+
+                if (!GetSector())
+                {
+                    return false;
+                }
+            }
+        }
 
         public T Current
         {
