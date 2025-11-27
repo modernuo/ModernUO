@@ -1359,7 +1359,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
         private ValueLinkList<NetState> _clients;
         private ValueLinkList<Item> _items;
         private ValueLinkList<Mobile> _mobiles;
-        private List<BaseMulti> _multis = new();
+        private SectorMultiValueLinkList _multis;
         private List<Region> _regions;
 
         public Sector(int x, int y, Map owner)
@@ -1372,9 +1372,9 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
 
         public List<Region> Regions => _regions ?? m_DefaultRectList;
 
-        internal List<BaseMulti> Multis => _multis;
+        internal ref SectorMultiValueLinkList Multis => ref _multis;
 
-        internal ref ValueLinkList<Mobile> Mobiles => ref _mobiles;
+        internal ref readonly ValueLinkList<Mobile> Mobiles => ref _mobiles;
 
         internal ref readonly ValueLinkList<Item> Items => ref _items;
 
@@ -1503,7 +1503,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
 
         public void OnMultiEnter(BaseMulti multi)
         {
-            _multis.Add(multi);
+            _multis.AddLast(multi);
         }
 
         public void OnMultiLeave(BaseMulti multi)
