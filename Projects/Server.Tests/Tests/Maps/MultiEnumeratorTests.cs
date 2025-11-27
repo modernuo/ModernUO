@@ -120,8 +120,9 @@ public class MultiEnumeratorTests
             {
                 enumerator.MoveNext();
             }
-            catch (InvalidOperationException)
+            catch (Exception e)
             {
+                Assert.IsType<InvalidOperationException>(e);
                 exceptionThrown = true;
             }
 
