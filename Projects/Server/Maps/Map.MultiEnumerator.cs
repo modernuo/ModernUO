@@ -80,6 +80,8 @@ public partial class Map
     public MultiBoundsEnumerable<T> GetMultisInBounds<T>(Rectangle2D bounds, bool makeBoundsInclusive = false) where T : BaseMulti =>
         new(this, bounds, makeBoundsInclusive);
 
+    private static readonly HashSet<Serial> _sharedDupes = [];
+
     public ref struct MultiSectorEnumerable<T>(Map map, Point2D loc) where T : BaseMulti
     {
         public static MultiSectorEnumerable<T> Empty
@@ -95,15 +97,27 @@ public partial class Map
     public ref struct MultiSectorEnumerator<T> where T : BaseMulti
     {
         private readonly Span<BaseMulti> _list;
+        private readonly int _version;
+        private readonly Sector _sector;
         private int _index;
         private T _current;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public MultiSectorEnumerator(Map map, Point2D loc)
         {
-            _list = map == null
-                ? Span<BaseMulti>.Empty
-                : CollectionsMarshal.AsSpan(map.GetSector(loc.m_X, loc.m_Y).Multis);
+            if (map == null)
+            {
+                _list = Span<BaseMulti>.Empty;
+                _sector = null;
+                _version = 0;
+            }
+            else
+            {
+                _sector = map.GetSector(loc.m_X, loc.m_Y);
+                _list = CollectionsMarshal.AsSpan(_sector.Multis);
+                _version = _sector.MultisVersion;
+            }
+
             _index = -1;
             _current = null;
         }
@@ -111,6 +125,11 @@ public partial class Map
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool MoveNext()
         {
+            if (_sector != null && _version != _sector.MultisVersion)
+            {
+                throw new InvalidOperationException("Collection was modified; enumeration operation may not execute.");
+            }
+
             while (++_index < _list.Length)
             {
                 if (_list[_index] is T { Deleted: false } o)
@@ -153,8 +172,6 @@ public partial class Map
         public MultiBoundsEnumerator<T> GetEnumerator() => new(_map, _bounds, _makeBoundsInclusive);
     }
 
-    private static readonly HashSet<Serial> _sharedDupes = [];
-
     public ref struct MultiBoundsEnumerator<T> where T : BaseMulti
     {
         private Map _map;
@@ -168,6 +185,8 @@ public partial class Map
 
         private Span<BaseMulti> _currentList;
         private int _currentIndex;
+        private int _currentVersion;
+        private Sector _currentSector;
         private T _current;
 
 
@@ -198,6 +217,8 @@ public partial class Map
 
             _currentList = default;
             _currentIndex = -1;
+            _currentVersion = 0;
+            _currentSector = null;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -221,6 +242,11 @@ public partial class Map
                 // Try to advance in the current list
                 if (_currentList.Length > 0)
                 {
+                    if (_currentVersion != _currentSector.MultisVersion)
+                    {
+                        throw new InvalidOperationException("Collection was modified; enumeration operation may not execute.");
+                    }
+
                     while (++_currentIndex < _currentList.Length)
                     {
                         var item = _currentList[_currentIndex];
@@ -252,7 +278,9 @@ public partial class Map
                     return false;
                 }
 
-                _currentList = CollectionsMarshal.AsSpan(map.GetRealSector(currentSectorX, currentSectorY).Multis);
+                _currentSector = map.GetRealSector(currentSectorX, currentSectorY);
+                _currentList = CollectionsMarshal.AsSpan(_currentSector.Multis);
+                _currentVersion = _currentSector.MultisVersion;
                 _currentIndex = -1;
             }
         }
