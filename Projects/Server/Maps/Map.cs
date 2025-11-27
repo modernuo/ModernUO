@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2025 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: Map.cs                                                          *
  *                                                                       *
@@ -1355,11 +1355,13 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
     {
         // TODO: Can we avoid this?
         private static readonly List<Region> m_DefaultRectList = new();
+        private static readonly List<BaseMulti> m_DefaultMultiList = new();
         private bool m_Active;
         private ValueLinkList<NetState> _clients;
         private ValueLinkList<Item> _items;
         private ValueLinkList<Mobile> _mobiles;
-        private SectorMultiValueLinkList _multis;
+        private List<BaseMulti> _multis;
+        private int _multisVersion;
         private List<Region> _regions;
 
         public Sector(int x, int y, Map owner)
@@ -1372,7 +1374,9 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
 
         public List<Region> Regions => _regions ?? m_DefaultRectList;
 
-        internal ref SectorMultiValueLinkList Multis => ref _multis;
+        internal List<BaseMulti> Multis => _multis ?? m_DefaultMultiList;
+
+        internal int MultisVersion => _multisVersion;
 
         internal ref readonly ValueLinkList<Mobile> Mobiles => ref _mobiles;
 
@@ -1503,12 +1507,17 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
 
         public void OnMultiEnter(BaseMulti multi)
         {
-            _multis.AddLast(multi);
+            _multis ??= new List<BaseMulti>();
+            _multis.Add(multi);
+            _multisVersion++;
         }
 
         public void OnMultiLeave(BaseMulti multi)
         {
-            _multis.Remove(multi);
+            if (_multis?.Remove(multi) == true)
+            {
+                _multisVersion++;
+            }
         }
 
         public void Activate()
