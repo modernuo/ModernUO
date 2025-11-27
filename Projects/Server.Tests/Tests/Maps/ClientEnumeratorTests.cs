@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
+using Server.Accounting;
 using Server.Network;
 using Xunit;
 
@@ -199,13 +200,14 @@ public class ClientEnumeratorTests
     {
         var map = Map.Felucca;
         var location = new Point3D(600, 600, 0);
+        var differentLocation = new Point3D(601, 600, 0);
 
         var clients = new (NetState, Mobile)[3];
         try
         {
             clients[0] = CreateClientWithMobile(map, location);
             clients[1] = CreateClientWithMobile(map, location);
-            clients[2] = CreateClientWithMobile(map, new Point3D(601, 600, 0)); // Different location
+            clients[2] = CreateClientWithMobile(map, differentLocation);
 
             var found = new List<NetState>();
             foreach (var ns in map.GetClientsAt(location))
@@ -214,9 +216,14 @@ public class ClientEnumeratorTests
             }
 
             Assert.Equal(2, found.Count);
+            Assert.All(found, ns =>
+            {
+                Assert.NotNull(ns.Mobile);
+                Assert.Equal(location.X, ns.Mobile.X);
+                Assert.Equal(location.Y, ns.Mobile.Y);
+            });
             Assert.Contains(clients[0].Item1, found);
             Assert.Contains(clients[1].Item1, found);
-            Assert.DoesNotContain(clients[2].Item1, found);
         }
         finally
         {
@@ -356,7 +363,7 @@ public class ClientEnumeratorTests
         {
             clients[0] = CreateClientWithMobile(map, new Point3D(902, 902, 0)); // Within range
             clients[1] = CreateClientWithMobile(map, new Point3D(898, 898, 0)); // Within range
-            clients[2] = CreateClientWithMobile(map, new Point3D(910, 910, 0)); // Outside range
+            clients[2] = CreateClientWithMobile(map, new Point3D(910, 910, 0)); // Outside range (906+ is outside)
 
             var found = new List<NetState>();
             foreach (var ns in map.GetClientsInRange(center, range))
@@ -364,10 +371,11 @@ public class ClientEnumeratorTests
                 found.Add(ns);
             }
 
+            // GetClientsInRange uses a bounding rectangle, not circular distance
+            // Range of 5 means rectangle from (895, 895) to (905, 905)
             Assert.Equal(2, found.Count);
             Assert.Contains(clients[0].Item1, found);
             Assert.Contains(clients[1].Item1, found);
-            Assert.DoesNotContain(clients[2].Item1, found);
         }
         finally
         {
@@ -408,17 +416,63 @@ public class ClientEnumeratorTests
         }
     }
 
+    private class MockAccount : IAccount
+    {
+        public int TotalGold { get; }
+        public int TotalPlat { get; }
+        public bool DepositGold(int amount) => throw new NotImplementedException();
+        public bool DepositPlat(int amount) => throw new NotImplementedException();
+        public bool WithdrawGold(int amount) => throw new NotImplementedException();
+        public bool WithdrawPlat(int amount) => throw new NotImplementedException();
+        public long GetTotalGold() => throw new NotImplementedException();
+        public int CompareTo(IAccount other) => throw new NotImplementedException();
+        public string Username { get; }
+        public string Email { get; set; }
+        public AccessLevel AccessLevel { get; set; }
+        public int Length { get; }
+        public int Limit { get; set; } = 6; // Default to 6 character slots
+        public int Count { get; }
+
+        private readonly Dictionary<int, Mobile> _mobiles = new();
+        public Mobile this[int index]
+        {
+            get => _mobiles.GetValueOrDefault(index);
+            set => _mobiles[index] = value;
+        }
+
+        public DateTime Created { get; set; }
+        public Serial Serial { get; }
+        public void Deserialize(IGenericReader reader) => throw new NotImplementedException();
+        public byte SerializedThread { get; set; }
+        public int SerializedPosition { get; set; }
+        public int SerializedLength { get; set; }
+        public void Serialize(IGenericWriter writer) => throw new NotImplementedException();
+        public bool Deleted { get; }
+        public void Delete() => throw new NotImplementedException();
+        public bool TrySetUsername(string username) => throw new NotImplementedException();
+        public void SetPassword(string password) => throw new NotImplementedException();
+        public bool CheckPassword(string password) => throw new NotImplementedException();
+    }
+
     private static (NetState, Mobile) CreateClientWithMobile(Map map, Point3D location)
     {
         var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         var ns = new NetState(socket);
 
-        var mobile = new Mobile((Serial)Utility.RandomMinMax(0x100u, 0xFFFu));
+        // Assign a mock account to avoid null reference issues
+        ns.Account = new MockAccount();
+
+        // Use a unique serial for each mobile
+        var serial = World.NewMobile;
+        var mobile = new Mobile(serial);
         mobile.DefaultMobileInit();
-        mobile.MoveToWorld(location, map);
 
+        // Set the NetState on the mobile BEFORE moving it to the world
+        // so the sector's client list gets updated properly
         ns.Mobile = mobile;
+        mobile.NetState = ns;
 
+        mobile.MoveToWorld(location, map);
         return (ns, mobile);
     }
 

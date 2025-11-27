@@ -76,6 +76,7 @@ public partial class Map
 
     public ref struct ClientAtEnumerator
     {
+        private readonly Map _map;
         private bool _started;
         private Point2D _location;
         private ref readonly ValueLinkList<NetState> _linkList;
@@ -85,9 +86,15 @@ public partial class Map
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ClientAtEnumerator(Map map, Point2D loc)
         {
+            _map = map;
             _started = false;
             _location = loc;
-            _linkList = ref map.GetSector(loc.m_X, loc.m_Y).Clients;
+
+            if (map != null)
+            {
+                _linkList = ref map.GetSector(loc.m_X, loc.m_Y).Clients;
+            }
+
             _version = 0;
             _current = null;
         }
@@ -95,6 +102,11 @@ public partial class Map
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool MoveNext()
         {
+            if (_map == null)
+            {
+                return false;
+            }
+
             ref var loc = ref _location;
             NetState current;
             Mobile m;
@@ -105,7 +117,7 @@ public partial class Map
                 _started = true;
                 _version = _linkList.Version;
 
-                m = current.Mobile;
+                m = current?.Mobile;
                 if (m?.Deleted == false && m.X == loc.m_X && m.Y == loc.m_Y)
                 {
                     _current = current;
@@ -125,7 +137,7 @@ public partial class Map
             {
                 current = current.Next;
 
-                m = current.Mobile;
+                m = current?.Mobile;
                 if (m?.Deleted == false && m.X == loc.m_X && m.Y == loc.m_Y)
                 {
                     _current = current;
@@ -163,10 +175,10 @@ public partial class Map
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public MobileEnumerator GetEnumerator() => new(_map, _bounds, _makeBoundsInclusive);
+        public ClientBoundsEnumerator GetEnumerator() => new(_map, _bounds, _makeBoundsInclusive);
     }
 
-    public ref struct MobileEnumerator
+    public ref struct ClientBoundsEnumerator
     {
         private readonly Map _map;
         private readonly int _sectorStartX;
@@ -182,7 +194,7 @@ public partial class Map
         private NetState _current;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public MobileEnumerator(Map map, Rectangle2D bounds, bool makeBoundsInclusive)
+        public ClientBoundsEnumerator(Map map, Rectangle2D bounds, bool makeBoundsInclusive)
         {
             _map = map;
             _bounds = bounds;
