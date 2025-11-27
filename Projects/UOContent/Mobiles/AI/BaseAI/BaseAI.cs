@@ -710,8 +710,13 @@ public abstract partial class BaseAI
         Mobile newFocusMob = null, enemySummonMob = null;
         double val = double.MinValue, enemySummonVal = double.MinValue;
 
-        foreach (var m in map.GetMobilesInRange(Mobile.Location, iRange))
+        Mobile[] nearbyMobiles = new Mobile[32];
+        Mobile.GetMobilesInRange(iRange, nearbyMobiles, out int count);
+
+        for (int i = 0; i < count; i++)
         {
+            var m = nearbyMobiles[i];
+            
             if (IsInvalidTarget(m, bPlayerOnly))
             {
                 continue;
