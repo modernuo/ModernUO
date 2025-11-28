@@ -69,8 +69,8 @@ public partial class Map
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public MobileDistanceEnumerable<Mobile> GetMobilesInBoundsByDistance(Rectangle2D bounds) =>
-        GetMobilesInBoundsByDistance<Mobile>(bounds);
+    public MobileDistanceEnumerable<Mobile> GetMobilesInBoundsByDistance(Rectangle2D bounds, bool makeBoundsInclusive = false) =>
+        GetMobilesInBoundsByDistance<Mobile>(bounds, makeBoundsInclusive);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public MobileDistanceEnumerable<T> GetMobilesInBoundsByDistance<T>(Rectangle2D bounds, bool makeBoundsInclusive = false) where T : Mobile =>

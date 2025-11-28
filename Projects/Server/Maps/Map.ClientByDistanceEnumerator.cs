@@ -50,11 +50,7 @@ public partial class Map
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ClientDistanceEnumerable GetClientsInBoundsByDistance(Rectangle2D bounds) =>
-        GetClientsInBoundsByDistance(bounds, new Point2D(bounds.X + bounds.Width / 2, bounds.Y + bounds.Height / 2));
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ClientDistanceEnumerable GetClientsInBoundsByDistance(Rectangle2D bounds, bool makeBoundsInclusive) =>
+    public ClientDistanceEnumerable GetClientsInBoundsByDistance(Rectangle2D bounds, bool makeBoundsInclusive = false) =>
         GetClientsInBoundsByDistance(bounds, new Point2D(bounds.X + bounds.Width / 2, bounds.Y + bounds.Height / 2), makeBoundsInclusive);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
