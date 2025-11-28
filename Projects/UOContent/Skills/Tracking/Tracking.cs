@@ -234,14 +234,12 @@ public class TrackWhoGump : DynamicGump
         Span<double> distances = stackalloc double[MaxClosest];
         var count = 0;
         var maxDistance = double.MaxValue; // Track the farthest actual distance in our top-12
-        var maxDistanceSq = double.MaxValue; // Track the squared version for comparison with minDistance
 
         foreach (var (m, minDistance) in from.GetMobilesInRangeByDistance(range))
         {
-            // Early exit: If we have 12 mobs and the minimum sector distance (squared) is greater than
-            // our current maximum actual distance (squared), we can stop (all future mobs will be farther)
-            // Note: minDistance from GetMobilesInRangeByDistance is squared distance to sector
-            if (count == MaxClosest && minDistance > maxDistanceSq)
+            // Early exit: If we have 12 mobs and the minimum sector distance is greater than
+            // our current maximum actual distance, we can stop (all future mobs will be farther)
+            if (count == MaxClosest && minDistance > maxDistance)
             {
                 break;
             }
@@ -262,8 +260,6 @@ public class TrackWhoGump : DynamicGump
                 continue;
             }
 
-            // Find insertion point using linear search (simple and fast for 12 elements)
-            // Search up to the current end of the list (count or MaxClosest - 1 when full)
             var searchLimit = count < MaxClosest ? count : MaxClosest - 1;
             var insertIndex = searchLimit;
 
@@ -298,7 +294,6 @@ public class TrackWhoGump : DynamicGump
             if (count == MaxClosest)
             {
                 maxDistance = distances[MaxClosest - 1];
-                maxDistanceSq = maxDistance * maxDistance;
             }
         }
 
