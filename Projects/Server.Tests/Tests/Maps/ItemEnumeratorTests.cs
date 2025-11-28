@@ -408,6 +408,63 @@ public class ItemEnumeratorTests
         }
     }
 
+    [Fact]
+    public void ItemEnumerator_ZeroRangeReturnsOnlyCenter()
+    {
+        var map = Map.Felucca;
+        var center = new Point3D(850, 850, 0);
+        const int range = 0;
+
+        var items = new Item[2];
+        try
+        {
+            items[0] = CreateItem(map, center);              // Exact center
+            items[1] = CreateItem(map, new Point3D(851, 850, 0)); // 1 tile away
+
+            var found = new List<Item>();
+            foreach (var item in map.GetItemsInRange<Item>(center, range))
+            {
+                found.Add(item);
+            }
+
+            Assert.Single(found);
+            Assert.Equal(items[0], found[0]);
+        }
+        finally
+        {
+            DeleteAll(items);
+        }
+    }
+
+    [Fact]
+    public void ItemEnumerator_NegativeRangeCreates1x1Bounds()
+    {
+        var map = Map.Felucca;
+        var center = new Point3D(900, 900, 0);
+        const int range = -5;
+
+        var items = new Item[2];
+        try
+        {
+            items[0] = CreateItem(map, center);
+            items[1] = CreateItem(map, new Point3D(901, 900, 0)); // 1 tile away
+
+            var found = new List<Item>();
+            foreach (var item in map.GetItemsInRange<Item>(center, range))
+            {
+                found.Add(item);
+            }
+
+            // With negative range creating a 1x1 bounds, only exact center matches
+            Assert.Single(found);
+            Assert.Equal(items[0], found[0]);
+        }
+        finally
+        {
+            DeleteAll(items);
+        }
+    }
+
     private static Item CreateItem(Map map, Point3D location)
     {
         var item = new Item(0x1);

@@ -120,9 +120,8 @@ public class MultiEnumeratorTests
             {
                 enumerator.MoveNext();
             }
-            catch (Exception e)
+            catch (InvalidOperationException)
             {
-                Assert.IsType<InvalidOperationException>(e);
                 exceptionThrown = true;
             }
 
@@ -323,6 +322,63 @@ public class MultiEnumeratorTests
             Assert.Equal(multis[0], found1[0]);
             Assert.Equal(found1, found2);
             Assert.Equal(found1, found3);
+        }
+        finally
+        {
+            DeleteAll(multis);
+        }
+    }
+
+    [Fact]
+    public void MultiEnumerator_ZeroRangeReturnsOnlyCenter()
+    {
+        var map = Map.Felucca;
+        var center = new Point3D(800, 800, 0);
+        const int range = 0;
+
+        var multis = new TestMulti[2];
+        try
+        {
+            multis[0] = CreateMulti(map, center);              // Exact center
+            multis[1] = CreateMulti(map, new Point3D(801, 800, 0)); // 1 tile away
+
+            var found = new List<BaseMulti>();
+            foreach (var multi in map.GetMultisInRange<BaseMulti>(center, range))
+            {
+                found.Add(multi);
+            }
+
+            Assert.Single(found);
+            Assert.Equal(multis[0], found[0]);
+        }
+        finally
+        {
+            DeleteAll(multis);
+        }
+    }
+
+    [Fact]
+    public void MultiEnumerator_NegativeRangeCreates1x1Bounds()
+    {
+        var map = Map.Felucca;
+        var center = new Point3D(850, 850, 0);
+        const int range = -5;
+
+        var multis = new TestMulti[2];
+        try
+        {
+            multis[0] = CreateMulti(map, center);
+            multis[1] = CreateMulti(map, new Point3D(851, 850, 0)); // 1 tile away
+
+            var found = new List<BaseMulti>();
+            foreach (var multi in map.GetMultisInRange<BaseMulti>(center, range))
+            {
+                found.Add(multi);
+            }
+
+            // With negative range creating a 1x1 bounds, only exact center matches
+            Assert.Single(found);
+            Assert.Equal(multis[0], found[0]);
         }
         finally
         {

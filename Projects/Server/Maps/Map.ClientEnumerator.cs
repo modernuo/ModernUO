@@ -46,8 +46,12 @@ public partial class Map
         GetClientsInRange(p.m_X, p.m_Y, range);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ClientBoundsEnumerable GetClientsInRange(int x, int y, int range) =>
-        GetClientsInBounds(new Rectangle2D(x - range, y - range, range * 2 + 1, range * 2 + 1));
+    public ClientBoundsEnumerable GetClientsInRange(int x, int y, int range)
+    {
+        var clampedRange = Math.Max(0, range);
+        var edge = clampedRange * 2 + 1;
+        return GetClientsInBounds(new Rectangle2D(x - clampedRange, y - clampedRange, edge, edge));
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ClientBoundsEnumerable GetClientsInBounds(Rectangle2D bounds, bool makeBoundsInclusive = false) =>
@@ -232,7 +236,6 @@ public partial class Map
                 throw new InvalidOperationException(CollectionThrowStrings.InvalidOperation_EnumFailedVersion);
             }
 
-            Mobile m;
             NetState current = _current;
             ref Rectangle2D bounds = ref _bounds;
             var currentSectorX = _currentSectorX;
@@ -267,7 +270,7 @@ public partial class Map
                     current = _linkList._first;
                 }
 
-                m = current.Mobile;
+                var m = current.Mobile;
                 if (m?.Deleted == false && bounds.Contains(m.Location))
                 {
                     _current = current;
