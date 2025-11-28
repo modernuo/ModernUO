@@ -69,8 +69,11 @@ public partial class Map
         GetItemsInRange<T>(p.m_X, p.m_Y, range);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ItemBoundsEnumerable<T> GetItemsInRange<T>(int x, int y, int range) where T : Item =>
-        GetItemsInBounds<T>(new Rectangle2D(x - range, y - range, range * 2 + 1, range * 2 + 1));
+    public ItemBoundsEnumerable<T> GetItemsInRange<T>(int x, int y, int range) where T : Item
+    {
+        var edge = Math.Max(0, range * 2 + 1);
+        return GetItemsInBounds<T>(new Rectangle2D(x - range, y - range, edge, edge));
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ItemBoundsEnumerable<Item> GetItemsInBounds(Rectangle2D bounds) => GetItemsInBounds<Item>(bounds);

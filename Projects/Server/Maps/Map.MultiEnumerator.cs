@@ -70,8 +70,11 @@ public partial class Map
         GetMultisInRange<T>(p.m_X, p.m_Y, range);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public MultiBoundsEnumerable<T> GetMultisInRange<T>(int x, int y, int range) where T : BaseMulti =>
-        GetMultisInBounds<T>(new Rectangle2D(x - range, y - range, range * 2 + 1, range * 2 + 1));
+    public MultiBoundsEnumerable<T> GetMultisInRange<T>(int x, int y, int range) where T : BaseMulti
+    {
+        var edge = Math.Max(0, range * 2 + 1);
+        return GetMultisInBounds<T>(new Rectangle2D(x - range, y - range, edge, edge));
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public MultiBoundsEnumerable<BaseMulti> GetMultisInBounds(Rectangle2D bounds, bool makeBoundsInclusive = false) =>

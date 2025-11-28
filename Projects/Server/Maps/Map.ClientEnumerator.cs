@@ -46,8 +46,11 @@ public partial class Map
         GetClientsInRange(p.m_X, p.m_Y, range);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ClientBoundsEnumerable GetClientsInRange(int x, int y, int range) =>
-        GetClientsInBounds(new Rectangle2D(x - range, y - range, range * 2 + 1, range * 2 + 1));
+    public ClientBoundsEnumerable GetClientsInRange(int x, int y, int range)
+    {
+        var edge = Math.Max(0, range * 2 + 1);
+        return GetClientsInBounds(new Rectangle2D(x - range, y - range, edge, edge));
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ClientBoundsEnumerable GetClientsInBounds(Rectangle2D bounds, bool makeBoundsInclusive = false) =>

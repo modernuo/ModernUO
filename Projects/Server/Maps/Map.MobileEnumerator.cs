@@ -69,8 +69,11 @@ public partial class Map
         GetMobilesInRange<T>(p.m_X, p.m_Y, range);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public MobileBoundsEnumerable<T> GetMobilesInRange<T>(int x, int y, int range) where T : Mobile =>
-        GetMobilesInBounds<T>(new Rectangle2D(x - range, y - range, range * 2 + 1, range * 2 + 1));
+    public MobileBoundsEnumerable<T> GetMobilesInRange<T>(int x, int y, int range) where T : Mobile
+    {
+        var edge = Math.Max(0, range * 2 + 1);
+        return GetMobilesInBounds<T>(new Rectangle2D(x - range, y - range, edge, edge));
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public MobileBoundsEnumerable<Mobile> GetMobilesInBounds(Rectangle2D bounds) => GetMobilesInBounds<Mobile>(bounds);
