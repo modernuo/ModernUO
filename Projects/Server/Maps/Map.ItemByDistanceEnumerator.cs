@@ -69,8 +69,8 @@ public partial class Map
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ItemDistanceEnumerable<Item> GetItemsInBoundsByDistance(Rectangle2D bounds) =>
-        GetItemsInBoundsByDistance<Item>(bounds);
+    public ItemDistanceEnumerable<Item> GetItemsInBoundsByDistance(Rectangle2D bounds, bool makeBoundsInclusive = false) =>
+        GetItemsInBoundsByDistance<Item>(bounds, makeBoundsInclusive);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ItemDistanceEnumerable<T> GetItemsInBoundsByDistance<T>(Rectangle2D bounds, bool makeBoundsInclusive = false)
