@@ -236,7 +236,6 @@ public partial class Map
                 throw new InvalidOperationException(CollectionThrowStrings.InvalidOperation_EnumFailedVersion);
             }
 
-            Mobile m;
             NetState current = _current;
             ref Rectangle2D bounds = ref _bounds;
             var currentSectorX = _currentSectorX;
@@ -271,7 +270,7 @@ public partial class Map
                     current = _linkList._first;
                 }
 
-                m = current.Mobile;
+                var m = current.Mobile;
                 if (m?.Deleted == false && bounds.Contains(m.Location))
                 {
                     _current = current;

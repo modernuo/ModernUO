@@ -23,67 +23,47 @@ namespace Server;
 public partial class Map
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ClientDistanceEnumerable<Mobile> GetClientsInRangeByDistance(Point3D p) =>
-        GetClientsInRangeByDistance<Mobile>(p, Core.GlobalMaxUpdateRange);
+    public ClientDistanceEnumerable GetClientsInRangeByDistance(Point3D p) =>
+        GetClientsInRangeByDistance(p, Core.GlobalMaxUpdateRange);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ClientDistanceEnumerable<Mobile> GetClientsInRangeByDistance(Point3D p, int range) =>
-        GetClientsInRangeByDistance<Mobile>(p, range);
+    public ClientDistanceEnumerable GetClientsInRangeByDistance(Point3D p, int range) =>
+        GetClientsInRangeByDistance(p.m_X, p.m_Y, range);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ClientDistanceEnumerable<T> GetClientsInRangeByDistance<T>(Point3D p) where T : Mobile =>
-        GetClientsInRangeByDistance<T>(p, Core.GlobalMaxUpdateRange);
+    public ClientDistanceEnumerable GetClientsInRangeByDistance(Point2D p) =>
+        GetClientsInRangeByDistance(p, Core.GlobalMaxUpdateRange);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ClientDistanceEnumerable<T> GetClientsInRangeByDistance<T>(Point3D p, int range) where T : Mobile =>
-        GetClientsInRangeByDistance<T>(p.m_X, p.m_Y, range);
+    public ClientDistanceEnumerable GetClientsInRangeByDistance(Point2D p, int range) =>
+        GetClientsInRangeByDistance(p.m_X, p.m_Y, range);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ClientDistanceEnumerable<Mobile> GetClientsInRangeByDistance(Point2D p) =>
-        GetClientsInRangeByDistance<Mobile>(p, Core.GlobalMaxUpdateRange);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ClientDistanceEnumerable<Mobile> GetClientsInRangeByDistance(Point2D p, int range) =>
-        GetClientsInRangeByDistance<Mobile>(p, range);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ClientDistanceEnumerable<T> GetClientsInRangeByDistance<T>(Point2D p) where T : Mobile =>
-        GetClientsInRangeByDistance<T>(p, Core.GlobalMaxUpdateRange);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ClientDistanceEnumerable<T> GetClientsInRangeByDistance<T>(Point2D p, int range) where T : Mobile =>
-        GetClientsInRangeByDistance<T>(p.m_X, p.m_Y, range);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ClientDistanceEnumerable<Mobile> GetClientsInRangeByDistance(int x, int y, int range) =>
-        GetClientsInRangeByDistance<Mobile>(x, y, range);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ClientDistanceEnumerable<T> GetClientsInRangeByDistance<T>(int x, int y, int range) where T : Mobile
+    public ClientDistanceEnumerable GetClientsInRangeByDistance(int x, int y, int range)
     {
         var clampedRange = Math.Max(0, range);
         var edge = clampedRange * 2 + 1;
-        return GetClientsInBoundsByDistance<T>(
+        return GetClientsInBoundsByDistance(
             new Rectangle2D(x - clampedRange, y - clampedRange, edge, edge),
             new Point2D(x, y)
         );
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ClientDistanceEnumerable<Mobile> GetClientsInBoundsByDistance(Rectangle2D bounds) =>
-        GetClientsInBoundsByDistance<Mobile>(bounds);
+    public ClientDistanceEnumerable GetClientsInBoundsByDistance(Rectangle2D bounds) =>
+        GetClientsInBoundsByDistance(bounds, new Point2D(bounds.X + bounds.Width / 2, bounds.Y + bounds.Height / 2));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ClientDistanceEnumerable<T> GetClientsInBoundsByDistance<T>(Rectangle2D bounds, bool makeBoundsInclusive = false) where T : Mobile =>
-        GetClientsInBoundsByDistance<T>(bounds, new Point2D(bounds.X + bounds.Width / 2, bounds.Y + bounds.Height / 2), makeBoundsInclusive);
+    public ClientDistanceEnumerable GetClientsInBoundsByDistance(Rectangle2D bounds, bool makeBoundsInclusive) =>
+        GetClientsInBoundsByDistance(bounds, new Point2D(bounds.X + bounds.Width / 2, bounds.Y + bounds.Height / 2), makeBoundsInclusive);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private ClientDistanceEnumerable<T> GetClientsInBoundsByDistance<T>(
+    private ClientDistanceEnumerable GetClientsInBoundsByDistance(
         Rectangle2D bounds, Point2D center, bool makeBoundsInclusive = false
-    ) where T : Mobile =>
+    ) =>
         new(this, bounds, center, makeBoundsInclusive);
 
-    public ref struct ClientDistanceEnumerable<T> where T : Mobile
+    public ref struct ClientDistanceEnumerable
     {
         private readonly Map _map;
         private readonly Rectangle2D _bounds;
@@ -100,10 +80,10 @@ public partial class Map
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ClientDistanceEnumerator<T> GetEnumerator() => new(_map, _bounds, _center, _makeBoundsInclusive);
+        public ClientDistanceEnumerator GetEnumerator() => new(_map, _bounds, _center, _makeBoundsInclusive);
     }
 
-    public ref struct ClientDistanceEnumerator<T> where T : Mobile
+    public ref struct ClientDistanceEnumerator
     {
         private Map _map;
         private Point2D _center;
@@ -120,7 +100,7 @@ public partial class Map
 
         private ref readonly ValueLinkList<NetState> _linkList;
         private int _currentVersion;
-        private T _current;
+        private NetState _current;
 
         private int _minDistance;
 
@@ -172,7 +152,7 @@ public partial class Map
                 throw new InvalidOperationException(CollectionThrowStrings.InvalidOperation_EnumFailedVersion);
             }
 
-            Mobile current = _current;
+            NetState current = _current;
 
             while (true)
             {
@@ -194,7 +174,7 @@ public partial class Map
 
                     _linkList = ref map.GetRealSector(_currentSectorX, _currentSectorY).Clients;
                     _currentVersion = _linkList.Version;
-                    current = _linkList._first?.Mobile;
+                    current = _linkList._first;
 
                     if (current != null)
                     {
@@ -202,19 +182,21 @@ public partial class Map
                     }
                 }
 
-                if (current is T { Deleted: false } o && _bounds.Contains(o.Location))
+                var m = current.Mobile;
+                if (m?.Deleted == false && _bounds.Contains(m.Location))
                 {
-                    _current = o;
+                    _current = current;
                     return true;
                 }
             }
         }
 
-        public (T Value, int MinDistance) Current
+        public (NetState Value, int MinDistance) Current
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => (_current, _minDistance);
         }
+
         private bool TryNextSectorInRing(out int sx, out int sy)
         {
             if (_ring == 0)
