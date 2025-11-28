@@ -376,7 +376,7 @@ public class MobileByDistanceEnumeratorTests
                 found.Add(mobile);
             }
 
-            // With negative range treated as 0, only exact center matches
+            // With negative range creating a 1x1 bounds, only exact center matches
             Assert.Single(found);
             Assert.Equal(mobiles[0], found[0]);
         }

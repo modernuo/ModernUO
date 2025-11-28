@@ -476,6 +476,63 @@ public class ClientEnumeratorTests
         return (ns, mobile);
     }
 
+    [Fact]
+    public void ClientEnumerator_ZeroRangeReturnsOnlyCenter()
+    {
+        var map = Map.Felucca;
+        var center = new Point3D(950, 950, 0);
+        const int range = 0;
+
+        var clients = new (NetState, Mobile)[2];
+        try
+        {
+            clients[0] = CreateClientWithMobile(map, center);              // Exact center
+            clients[1] = CreateClientWithMobile(map, new Point3D(951, 950, 0)); // 1 tile away
+
+            var found = new List<NetState>();
+            foreach (var ns in map.GetClientsInRange(center, range))
+            {
+                found.Add(ns);
+            }
+
+            Assert.Single(found);
+            Assert.Equal(clients[0].Item1, found[0]);
+        }
+        finally
+        {
+            DeleteAll(clients);
+        }
+    }
+
+    [Fact]
+    public void ClientEnumerator_NegativeRangeCreates1x1Bounds()
+    {
+        var map = Map.Felucca;
+        var center = new Point3D(1050, 1050, 0);
+        const int range = -5;
+
+        var clients = new (NetState, Mobile)[2];
+        try
+        {
+            clients[0] = CreateClientWithMobile(map, center);
+            clients[1] = CreateClientWithMobile(map, new Point3D(1051, 1050, 0)); // 1 tile away
+
+            var found = new List<NetState>();
+            foreach (var ns in map.GetClientsInRange(center, range))
+            {
+                found.Add(ns);
+            }
+
+            // With negative range creating a 1x1 bounds, only exact center matches
+            Assert.Single(found);
+            Assert.Equal(clients[0].Item1, found[0]);
+        }
+        finally
+        {
+            DeleteAll(clients);
+        }
+    }
+
     private static void DeleteAll((NetState, Mobile)[] clients)
     {
         for (var i = 0; i < clients.Length; i++)

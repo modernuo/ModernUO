@@ -188,6 +188,63 @@ public class MobileEnumeratorTests
         }
     }
 
+    [Fact]
+    public void MobileEnumerator_ZeroRangeReturnsOnlyCenter()
+    {
+        var map = Map.Felucca;
+        var center = new Point3D(700, 700, 0);
+        const int range = 0;
+
+        var mobiles = new Mobile[2];
+        try
+        {
+            mobiles[0] = CreateMobile(map, center);              // Exact center
+            mobiles[1] = CreateMobile(map, new Point3D(701, 700, 0)); // 1 tile away
+
+            var found = new List<Mobile>();
+            foreach (var mobile in map.GetMobilesInRange<Mobile>(center, range))
+            {
+                found.Add(mobile);
+            }
+
+            Assert.Single(found);
+            Assert.Equal(mobiles[0], found[0]);
+        }
+        finally
+        {
+            DeleteAll(mobiles);
+        }
+    }
+
+    [Fact]
+    public void MobileEnumerator_NegativeRangeCreates1x1Bounds()
+    {
+        var map = Map.Felucca;
+        var center = new Point3D(750, 750, 0);
+        const int range = -5;
+
+        var mobiles = new Mobile[2];
+        try
+        {
+            mobiles[0] = CreateMobile(map, center);
+            mobiles[1] = CreateMobile(map, new Point3D(751, 750, 0)); // 1 tile away
+
+            var found = new List<Mobile>();
+            foreach (var mobile in map.GetMobilesInRange<Mobile>(center, range))
+            {
+                found.Add(mobile);
+            }
+
+            // With negative range creating a 1x1 bounds, only exact center matches
+            Assert.Single(found);
+            Assert.Equal(mobiles[0], found[0]);
+        }
+        finally
+        {
+            DeleteAll(mobiles);
+        }
+    }
+
     private static Mobile CreateMobile(Map map, Point3D location)
     {
         var mobile = new Mobile((Serial)Utility.RandomMinMax(0x100u, 0xFFFu));

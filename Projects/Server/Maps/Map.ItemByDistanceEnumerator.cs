@@ -60,9 +60,10 @@ public partial class Map
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ItemDistanceEnumerable<T> GetItemsInRangeByDistance<T>(int x, int y, int range) where T : Item
     {
-        var edge = Math.Max(0, range * 2 + 1);
+        var clampedRange = Math.Max(0, range);
+        var edge = clampedRange * 2 + 1;
         return GetItemsInBoundsByDistance<T>(
-            new Rectangle2D(x - range, y - range, edge, edge),
+            new Rectangle2D(x - clampedRange, y - clampedRange, edge, edge),
             new Point2D(x, y)
         );
     }
@@ -205,17 +206,10 @@ public partial class Map
                     }
                 }
 
-                if (current is T { Deleted: false } o)
+                if (current is T { Deleted: false } o && _bounds.Contains(o.Location))
                 {
-                    var dx = o.X - _center.m_X;
-                    var dy = o.Y - _center.m_Y;
-                    var dsq = dx * dx + dy * dy;
-
-                    if (_bounds.Contains(o.Location))
-                    {
-                        _current = o;
-                        return true;
-                    }
+                    _current = o;
+                    return true;
                 }
             }
         }

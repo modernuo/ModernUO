@@ -366,7 +366,7 @@ public class ItemByDistanceEnumeratorTests
         try
         {
             Items[0] = CreateItem(map, center);
-            Items[1] = CreateItem(map, new Point3D(1000, 1000, 0));
+            Items[1] = CreateItem(map, new Point3D(1001, 1000, 0)); // 1 tile away
 
             var found = new List<Item>();
             foreach (var (Item, _) in map.GetItemsInRangeByDistance(center, range))
@@ -374,7 +374,7 @@ public class ItemByDistanceEnumeratorTests
                 found.Add(Item);
             }
 
-            // With negative range treated as 0, only exact center matches
+            // With negative range creating a 1x1 bounds, only exact center matches
             Assert.Single(found);
             Assert.Equal(Items[0], found[0]);
         }
