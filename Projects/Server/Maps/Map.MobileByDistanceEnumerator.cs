@@ -70,11 +70,8 @@ public partial class Map
         private int _range;
 
         private int _sectorStartX;
-
-        private int _centerSectorX;
-        private int _centerSectorY;
-
         private int _maxRing;
+
         private int _ring;   // -1 = uninitialized, then 0.._maxRing
         private int _ringIndex; // Current index within the ring
 
@@ -98,15 +95,15 @@ public partial class Map
 
             if (map != null)
             {
-                _centerSectorX = center.m_X / SectorSize;
-                _centerSectorY = center.m_Y / SectorSize;
+                var centerSectorX = center.m_X / SectorSize;
+                var centerSectorY = center.m_Y / SectorSize;
 
                 var bounds = new Rectangle2D(center.m_X - range, center.m_Y - range, range * 2 + 1, range * 2 + 1);
                 map.CalculateSectors(bounds, out _sectorStartX, out var sectorStartY, out var sectorEndX, out var sectorEndY);
 
                 var ringByRange = range <= 0 ? 0 : (range + SectorSize - 1) / SectorSize;
-                var dx = Math.Max(_centerSectorX - _sectorStartX, sectorEndX - _centerSectorX);
-                var dy = Math.Max(_centerSectorY - sectorStartY, sectorEndY - _centerSectorY);
+                var dx = Math.Max(centerSectorX - _sectorStartX, sectorEndX - centerSectorX);
+                var dy = Math.Max(centerSectorY - sectorStartY, sectorEndY - centerSectorY);
                 _maxRing = Math.Min(ringByRange, Math.Max(dx, dy));
             }
 
@@ -142,17 +139,26 @@ public partial class Map
 
                 while (current == null)
                 {
-                    // Move to next sector
-                    if (!AdvanceToNextSector())
+                    while (!TryNextSectorInRing(out _currentSectorX, out _currentSectorY))
                     {
-                        return false;
+                        // Current ring exhausted, try next ring
+                        if (_ring >= _maxRing)
+                        {
+                            return false; // No more rings to search
+                        }
+
+                        _ring++;
+                        _ringIndex = -1;
                     }
 
                     _linkList = ref map.GetRealSector(_currentSectorX, _currentSectorY).Mobiles;
                     _currentVersion = _linkList.Version;
                     current = _linkList._first;
 
-                    _minDistance = MinDistSqToSectorRect(_center.m_X, _center.m_Y, _currentSectorX, _currentSectorY);
+                    if (current != null)
+                    {
+                        _minDistance = MinDistSqToSectorRect(_center.m_X, _center.m_Y, _currentSectorX, _currentSectorY);
+                    }
                 }
 
                 if (current is T { Deleted: false } o)
@@ -175,26 +181,6 @@ public partial class Map
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => (_current, _minDistance);
         }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private bool AdvanceToNextSector()
-        {
-            while (true)
-            {
-                if (TryNextSectorInRing(out _currentSectorX, out _currentSectorY))
-                {
-                    return true;
-                }
-
-                if (_ring >= _maxRing)
-                {
-                    return false;
-                }
-
-                _ring++;
-                _ringIndex = -1;
-            }
-        }
         private bool TryNextSectorInRing(out int sx, out int sy)
         {
             if (_ring == 0)
@@ -203,8 +189,8 @@ public partial class Map
                 if (_ringIndex < 0)
                 {
                     _ringIndex = 0;
-                    sx = _centerSectorX;
-                    sy = _centerSectorY;
+                    sx = _center.m_X / SectorSize;
+                    sy = _center.m_Y / SectorSize;
                     return sx >= _sectorStartX;
                 }
 
@@ -239,9 +225,12 @@ public partial class Map
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void CalculatePositionFromIndex(int index, out int x, out int y)
         {
+            var centerSectorX = _center.m_X / SectorSize;
+            var centerSectorY = _center.m_Y / SectorSize;
+
             var ringSize = _ring * 2;
-            var startX = _centerSectorX - _ring;
-            var startY = _centerSectorY - _ring;
+            var startX = centerSectorX - _ring;
+            var startY = centerSectorY - _ring;
 
             if (index <= ringSize) // Top edge
             {
