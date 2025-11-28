@@ -79,8 +79,7 @@ public partial class Map
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private MobileDistanceEnumerable<T> GetMobilesInBoundsByDistance<T>(
         Rectangle2D bounds, Point2D center, bool makeBoundsInclusive = false
-    ) where T : Mobile =>
-        new(this, bounds, center, makeBoundsInclusive);
+    ) where T : Mobile => new(this, bounds, center, makeBoundsInclusive);
 
     public ref struct MobileDistanceEnumerable<T> where T : Mobile
     {

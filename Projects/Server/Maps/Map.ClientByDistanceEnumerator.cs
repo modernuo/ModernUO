@@ -60,8 +60,7 @@ public partial class Map
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private ClientDistanceEnumerable GetClientsInBoundsByDistance(
         Rectangle2D bounds, Point2D center, bool makeBoundsInclusive = false
-    ) =>
-        new(this, bounds, center, makeBoundsInclusive);
+    ) => new(this, bounds, center, makeBoundsInclusive);
 
     public ref struct ClientDistanceEnumerable
     {

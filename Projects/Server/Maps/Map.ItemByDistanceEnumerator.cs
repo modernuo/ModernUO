@@ -84,8 +84,7 @@ public partial class Map
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private ItemDistanceEnumerable<T> GetItemsInBoundsByDistance<T>(
         Rectangle2D bounds, Point2D center, bool makeBoundsInclusive = false
-    ) where T : Item =>
-        new(this, bounds, center, makeBoundsInclusive);
+    ) where T : Item => new(this, bounds, center, makeBoundsInclusive);
 
     public ref struct ItemDistanceEnumerable<T> where T : Item
     {
