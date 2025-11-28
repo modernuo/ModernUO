@@ -232,13 +232,11 @@ public class TrackWhoGump : DynamicGump
         // Using a simple array with count is sufficient since we're single-threaded
         var mobs = new Mobile[MaxClosest];
         Span<double> distances = stackalloc double[MaxClosest];
+        var maxDistance = double.MaxValue;
         var count = 0;
-        var maxDistance = double.MaxValue; // Track the farthest actual distance in our top-12
 
         foreach (var (m, minDistance) in from.GetMobilesInRangeByDistance(range))
         {
-            // Early exit: If we have 12 mobs and the minimum sector distance is greater than
-            // our current maximum actual distance, we can stop (all future mobs will be farther)
             if (count == MaxClosest && minDistance > maxDistance)
             {
                 break;
@@ -253,14 +251,12 @@ public class TrackWhoGump : DynamicGump
 
             var distance = m.GetDistanceToSqrt(loc);
 
-            // Decide if we should add this mobile
-            var shouldAdd = count < MaxClosest || distance < maxDistance;
-            if (!shouldAdd)
+            if (count >= MaxClosest && distance >= maxDistance)
             {
                 continue;
             }
 
-            var searchLimit = count < MaxClosest ? count : MaxClosest - 1;
+            var searchLimit = Math.Min(count, MaxClosest - 1);
             var insertIndex = searchLimit;
 
             for (var i = 0; i < searchLimit; i++)
