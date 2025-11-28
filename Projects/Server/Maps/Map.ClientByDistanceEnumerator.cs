@@ -173,7 +173,7 @@ public partial class Map
 
                     if (current != null)
                     {
-                        _minDistance = MinDistSqToSectorRect(_center.m_X, _center.m_Y, _currentSectorX, _currentSectorY);
+                        _minDistance = MinDistToSectorSqrt(_center.m_X, _center.m_Y, _currentSectorX, _currentSectorY);
                     }
                 }
 
@@ -266,7 +266,7 @@ public partial class Map
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static int MinDistSqToSectorRect(int cx, int cy, int sectorX, int sectorY)
+        private static int MinDistToSectorSqrt(int cx, int cy, int sectorX, int sectorY)
         {
             var x0 = sectorX * SectorSize;
             var y0 = sectorY * SectorSize;
@@ -293,7 +293,7 @@ public partial class Map
                 dy = cy - y1;
             }
 
-            return dx * dx + dy * dy;
+            return (int)Math.Sqrt(dx * dx + dy * dy);
         }
     }
 }
