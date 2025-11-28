@@ -135,7 +135,9 @@ public class MobileByDistanceEnumeratorTests
     [Fact]
     public void MobileByDistanceEnumerator_MapNullYieldsEmpty()
     {
-        var enumerator = new Map.MobileDistanceEnumerable<Mobile>(null, new Point2D(0, 0), 10).GetEnumerator();
+        var center = new Point2D(0, 0);
+        var bounds = new Rectangle2D(center.m_X - 10, center.m_Y - 10, 21, 21);
+        var enumerator = new Map.MobileDistanceEnumerable<Mobile>(null, bounds, center, false).GetEnumerator();
         Assert.False(enumerator.MoveNext());
     }
 
@@ -260,7 +262,7 @@ public class MobileByDistanceEnumeratorTests
 
             // Test (int, int) overload
             var found2 = new List<Mobile>();
-            foreach (var (mobile, _) in map.GetMobilesInRangeByDistance(center.X, center.Y, range))
+            foreach (var (mobile, _) in map.GetMobilesInRangeByDistance<Mobile>(center.X, center.Y, range))
             {
                 found2.Add(mobile);
             }
@@ -449,6 +451,142 @@ public class MobileByDistanceEnumeratorTests
         for (var i = 0; i < mobiles.Length; i++)
         {
             mobiles[i]?.Delete();
+        }
+    }
+
+    [Fact]
+    public void MobileByDistanceEnumerator_Bounds_FindsMobilesInBounds()
+    {
+        var map = Map.Felucca;
+        var bounds = new Rectangle2D(100, 100, 50, 50);
+
+        var mobiles = new TestMobile[3];
+        try
+        {
+            // Mobile inside bounds
+            mobiles[0] = CreateMobile(map, new Point3D(120, 120, 0));
+            // Mobile at edge of bounds
+            mobiles[1] = CreateMobile(map, new Point3D(149, 149, 0));
+            // Mobile outside bounds
+            mobiles[2] = CreateMobile(map, new Point3D(200, 200, 0));
+
+            var found = new List<Mobile>();
+            foreach (var (mobile, _) in map.GetMobilesInBoundsByDistance<Mobile>(bounds))
+            {
+                found.Add(mobile);
+            }
+
+            Assert.Equal(2, found.Count);
+            Assert.Contains(mobiles[0], found);
+            Assert.Contains(mobiles[1], found);
+            Assert.DoesNotContain(mobiles[2], found);
+        }
+        finally
+        {
+            DeleteAll(mobiles);
+        }
+    }
+
+    [Fact]
+    public void MobileByDistanceEnumerator_Bounds_MakeBoundsInclusive()
+    {
+        var map = Map.Felucca;
+        var bounds = new Rectangle2D(100, 100, 50, 50);
+
+        var mobiles = new TestMobile[2];
+        try
+        {
+            // Mobile at edge (inclusive)
+            mobiles[0] = CreateMobile(map, new Point3D(149, 149, 0));
+            // Mobile just outside edge (will be included with makeBoundsInclusive)
+            mobiles[1] = CreateMobile(map, new Point3D(150, 150, 0));
+
+            var foundWithoutInclusive = new List<Mobile>();
+            foreach (var (mobile, _) in map.GetMobilesInBoundsByDistance<Mobile>(bounds))
+            {
+                foundWithoutInclusive.Add(mobile);
+            }
+
+            var foundWithInclusive = new List<Mobile>();
+            foreach (var (mobile, _) in map.GetMobilesInBoundsByDistance<Mobile>(bounds, true))
+            {
+                foundWithInclusive.Add(mobile);
+            }
+
+            Assert.Single(foundWithoutInclusive);
+            Assert.Contains(mobiles[0], foundWithoutInclusive);
+
+            Assert.Equal(2, foundWithInclusive.Count);
+            Assert.Contains(mobiles[0], foundWithInclusive);
+            Assert.Contains(mobiles[1], foundWithInclusive);
+        }
+        finally
+        {
+            DeleteAll(mobiles);
+        }
+    }
+
+    [Fact]
+    public void MobileByDistanceEnumerator_Bounds_ReturnsMinDistance()
+    {
+        var map = Map.Felucca;
+        var bounds = new Rectangle2D(300, 300, 20, 20);
+
+        var mobiles = new TestMobile[2];
+        try
+        {
+            mobiles[0] = CreateMobile(map, new Point3D(305, 305, 0));
+            mobiles[1] = CreateMobile(map, new Point3D(315, 315, 0));
+
+            var foundWithDistance = new List<(Mobile, int)>();
+            foreach (var result in map.GetMobilesInBoundsByDistance<Mobile>(bounds))
+            {
+                foundWithDistance.Add(result);
+            }
+
+            Assert.Equal(2, foundWithDistance.Count);
+            Assert.All(foundWithDistance, item => Assert.True(item.Item2 >= 0));
+        }
+        finally
+        {
+            DeleteAll(mobiles);
+        }
+    }
+
+    [Fact]
+    public void MobileByDistanceEnumerator_Bounds_OrdersByProximityToCenter()
+    {
+        var map = Map.Felucca;
+        var bounds = new Rectangle2D(500, 500, 64, 64);
+
+        var mobiles = new TestMobile[3];
+        try
+        {
+            // Place mobiles at different distances from center
+            mobiles[0] = CreateMobile(map, new Point3D(532, 532, 0)); // At center
+            mobiles[1] = CreateMobile(map, new Point3D(548, 532, 0)); // 16 tiles away
+            mobiles[2] = CreateMobile(map, new Point3D(563, 563, 0)); // Far corner
+
+            var found = new List<(Mobile, int)>();
+            foreach (var result in map.GetMobilesInBoundsByDistance<Mobile>(bounds))
+            {
+                found.Add(result);
+            }
+
+            Assert.Equal(3, found.Count);
+
+            // Verify ordering by distance - closer mobiles should be found earlier (lower minDistance)
+            var mobile0Index = found.FindIndex(x => x.Item1 == mobiles[0]);
+            var mobile1Index = found.FindIndex(x => x.Item1 == mobiles[1]);
+            var mobile2Index = found.FindIndex(x => x.Item1 == mobiles[2]);
+
+            // The minDistance should increase (or stay the same) as we go through the list
+            Assert.True(found[mobile0Index].Item2 <= found[mobile1Index].Item2);
+            Assert.True(found[mobile1Index].Item2 <= found[mobile2Index].Item2);
+        }
+        finally
+        {
+            DeleteAll(mobiles);
         }
     }
 

@@ -22,52 +22,85 @@ namespace Server;
 public partial class Map
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public MobileDistanceEnumerable<Mobile> GetMobilesInRangeByDistance(Point3D p) =>
+        GetMobilesInRangeByDistance<Mobile>(p, Core.GlobalMaxUpdateRange);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public MobileDistanceEnumerable<Mobile> GetMobilesInRangeByDistance(Point3D p, int range) =>
-        GetMobilesInRangeByDistance<Mobile>(new Point2D(p.X, p.Y), range);
+        GetMobilesInRangeByDistance<Mobile>(p, range);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public MobileDistanceEnumerable<T> GetMobilesInRangeByDistance<T>(Point3D p) where T : Mobile =>
+        GetMobilesInRangeByDistance<T>(p, Core.GlobalMaxUpdateRange);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public MobileDistanceEnumerable<T> GetMobilesInRangeByDistance<T>(Point3D p, int range) where T : Mobile =>
-        GetMobilesInRangeByDistance<T>(new Point2D(p.X, p.Y), range);
+        GetMobilesInRangeByDistance<T>(p.m_X, p.m_Y, range);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public MobileDistanceEnumerable<Mobile> GetMobilesInRangeByDistance(Point2D p) =>
+        GetMobilesInRangeByDistance<Mobile>(p, Core.GlobalMaxUpdateRange);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public MobileDistanceEnumerable<Mobile> GetMobilesInRangeByDistance(Point2D p, int range) =>
         GetMobilesInRangeByDistance<Mobile>(p, range);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public MobileDistanceEnumerable<T> GetMobilesInRangeByDistance<T>(Point2D p) where T : Mobile =>
+        GetMobilesInRangeByDistance<T>(p, Core.GlobalMaxUpdateRange);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public MobileDistanceEnumerable<T> GetMobilesInRangeByDistance<T>(Point2D p, int range) where T : Mobile =>
-        new(this, p, range);
+        GetMobilesInRangeByDistance<T>(p.m_X, p.m_Y, range);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public MobileDistanceEnumerable<Mobile> GetMobilesInRangeByDistance(int x, int y, int range) =>
-        GetMobilesInRangeByDistance<Mobile>(new Point2D(x, y), range);
+        GetMobilesInRangeByDistance<Mobile>(x, y, range);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public MobileDistanceEnumerable<T> GetMobilesInRangeByDistance<T>(int x, int y, int range) where T : Mobile =>
-        GetMobilesInRangeByDistance<T>(new Point2D(x, y), range);
+        GetMobilesInBoundsByDistance<T>(
+            new Rectangle2D(x - range, y - range, range * 2 + 1, range * 2 + 1),
+            new Point2D(x, y)
+        );
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public MobileDistanceEnumerable<Mobile> GetMobilesInBoundsByDistance(Rectangle2D bounds) =>
+        GetMobilesInBoundsByDistance<Mobile>(bounds);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public MobileDistanceEnumerable<T> GetMobilesInBoundsByDistance<T>(Rectangle2D bounds, bool makeBoundsInclusive = false) where T : Mobile =>
+        GetMobilesInBoundsByDistance<T>(bounds, new Point2D(bounds.X + bounds.Width / 2, bounds.Y + bounds.Height / 2), makeBoundsInclusive);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private MobileDistanceEnumerable<T> GetMobilesInBoundsByDistance<T>(Rectangle2D bounds, Point2D center, bool makeBoundsInclusive = false) where T : Mobile =>
+        new(this, bounds, center, makeBoundsInclusive);
 
     public ref struct MobileDistanceEnumerable<T> where T : Mobile
     {
         private readonly Map _map;
+        private readonly Rectangle2D _bounds;
         private readonly Point2D _center;
-        private readonly int _range;
+        private readonly bool _makeBoundsInclusive;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public MobileDistanceEnumerable(Map map, Point2D center, int range)
+        public MobileDistanceEnumerable(Map map, Rectangle2D bounds, Point2D center, bool makeBoundsInclusive)
         {
             _map = map;
+            _bounds = bounds;
             _center = center;
-            _range = range;
+            _makeBoundsInclusive = makeBoundsInclusive;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public MobileDistanceEnumerator<T> GetEnumerator() => new(_map, _center, _range);
+        public MobileDistanceEnumerator<T> GetEnumerator() => new(_map, _bounds, _center, _makeBoundsInclusive);
     }
 
     public ref struct MobileDistanceEnumerator<T> where T : Mobile
     {
         private Map _map;
         private Point2D _center;
-        private int _range;
+        private Rectangle2D _bounds;
 
         private int _sectorStartX;
         private int _maxRing;
@@ -85,11 +118,13 @@ public partial class Map
         private int _minDistance;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public MobileDistanceEnumerator(Map map, Point2D center, int range)
+        public MobileDistanceEnumerator(Map map, Rectangle2D bounds, Point2D center, bool makeBoundsInclusive)
         {
             _map = map;
             _center = center;
-            _range = range <= 0 ? 0 : range * range;
+            _bounds = makeBoundsInclusive
+                ? new Rectangle2D(bounds.X, bounds.Y, bounds.Width + 1, bounds.Height + 1)
+                : bounds;
 
             _current = null;
 
@@ -98,13 +133,12 @@ public partial class Map
                 var centerSectorX = center.m_X / SectorSize;
                 var centerSectorY = center.m_Y / SectorSize;
 
-                var bounds = new Rectangle2D(center.m_X - range, center.m_Y - range, range * 2 + 1, range * 2 + 1);
-                map.CalculateSectors(bounds, out _sectorStartX, out var sectorStartY, out var sectorEndX, out var sectorEndY);
+                map.CalculateSectors(_bounds, out _sectorStartX, out var sectorStartY, out var sectorEndX, out var sectorEndY);
 
-                var ringByRange = range <= 0 ? 0 : (range + SectorSize - 1) / SectorSize;
+                // Calculate max ring based on bounds
                 var dx = Math.Max(centerSectorX - _sectorStartX, sectorEndX - centerSectorX);
                 var dy = Math.Max(centerSectorY - sectorStartY, sectorEndY - centerSectorY);
-                _maxRing = Math.Min(ringByRange, Math.Max(dx, dy));
+                _maxRing = Math.Max(dx, dy);
             }
 
             _ring = -1;
@@ -167,7 +201,7 @@ public partial class Map
                     var dy = o.Y - _center.m_Y;
                     var dsq = dx * dx + dy * dy;
 
-                    if (dsq <= _range)
+                    if (_bounds.Contains(o.Location))
                     {
                         _current = o;
                         return true;
