@@ -162,7 +162,8 @@ public class TrackWhoGump : DynamicGump
 
         from.CheckSkill(SkillName.Tracking, 21.1, 100.0); // Passive gain
 
-        var range = Math.Clamp(10 + (int)from.Skills.Tracking.Value, 0, 100);
+        // 10 tiles base + 10 tiles per 10 skill
+        var range = 10 + (int)from.Skills.Tracking.Value / 10 * 10;
 
         var mobs = GetClosestMobs(from, range, type);
 
