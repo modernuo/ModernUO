@@ -51,7 +51,7 @@ public static class Tracking
 
     public static void AddInfo(Mobile tracker, Mobile target)
     {
-        var info = new TrackingInfo(tracker, target);
+        var info = new TrackingInfo(target);
         _table[tracker] = info;
     }
 
@@ -80,11 +80,9 @@ public static class Tracking
         public Point2D _location;
         public readonly Map _map;
         public readonly Mobile _target;
-        public Mobile _tracker;
 
-        public TrackingInfo(Mobile tracker, Mobile target)
+        public TrackingInfo(Mobile target)
         {
-            _tracker = tracker;
             _target = target;
             _location = new Point2D(target);
             _map = target.Map;
@@ -164,7 +162,7 @@ public class TrackWhoGump : DynamicGump
 
         from.CheckSkill(SkillName.Tracking, 21.1, 100.0); // Passive gain
 
-        var range = 10 + (int)(from.Skills.Tracking.Value / 10);
+        var range = Math.Clamp(10 + (int)from.Skills.Tracking.Value, 0, 100);
 
         var mobs = GetClosestMobs(from, range, type);
 
@@ -231,13 +229,23 @@ public class TrackWhoGump : DynamicGump
         var loc = from.Location;
 
         // We only track the closest 12
+        // Using a simple array with count is sufficient since we're single-threaded
         var mobs = new Mobile[MaxClosest];
         Span<double> distances = stackalloc double[MaxClosest];
-        distances.Fill(double.MaxValue); // Fill with max values
-        var total = 0;
+        var count = 0;
+        var maxDistance = double.MaxValue; // Track the farthest actual distance in our top-12
+        var maxDistanceSq = double.MaxValue; // Track the squared version for comparison with minDistance
 
-        foreach (var m in from.GetMobilesInRange(range))
+        foreach (var (m, minDistance) in from.GetMobilesInRangeByDistance(range))
         {
+            // Early exit: If we have 12 mobs and the minimum sector distance (squared) is greater than
+            // our current maximum actual distance (squared), we can stop (all future mobs will be farther)
+            // Note: minDistance from GetMobilesInRangeByDistance is squared distance to sector
+            if (count == MaxClosest && minDistance > maxDistanceSq)
+            {
+                break;
+            }
+
             if (m == from || Core.AOS && !m.Alive ||
                 m.Hidden && m.AccessLevel != AccessLevel.Player && from.AccessLevel <= m.AccessLevel ||
                 !IsValidMobileType(m, type) || !CheckDifficulty(from, m))
@@ -245,30 +253,59 @@ public class TrackWhoGump : DynamicGump
                 continue;
             }
 
-            total++;
-
             var distance = m.GetDistanceToSqrt(loc);
-            for (var i = 0; i < MaxClosest; i++)
+
+            // Decide if we should add this mobile
+            var shouldAdd = count < MaxClosest || distance < maxDistance;
+            if (!shouldAdd)
+            {
+                continue;
+            }
+
+            // Find insertion point using linear search (simple and fast for 12 elements)
+            // Search up to the current end of the list (count or MaxClosest - 1 when full)
+            var searchLimit = count < MaxClosest ? count : MaxClosest - 1;
+            var insertIndex = searchLimit;
+
+            for (var i = 0; i < searchLimit; i++)
             {
                 if (distance < distances[i])
                 {
-                    // Shift down the rest
-                    for (int j = MaxClosest - 1; j > i; j--)
-                    {
-                        mobs[j] = mobs[j - 1];
-                        distances[j] = distances[j - 1];
-                    }
-
-                    mobs[i] = m;
-                    distances[i] = distance;
+                    insertIndex = i;
                     break;
                 }
             }
+
+            // Shift elements to make room for insertion
+            if (insertIndex < searchLimit)
+            {
+                var shiftCount = searchLimit - insertIndex;
+                Array.Copy(mobs, insertIndex, mobs, insertIndex + 1, shiftCount);
+                distances.Slice(insertIndex, shiftCount).CopyTo(distances[(insertIndex + 1)..]);
+            }
+
+            // Insert the mobile and distance
+            mobs[insertIndex] = m;
+            distances[insertIndex] = distance;
+
+            // Update count if we're still building up to MaxClosest
+            if (count < MaxClosest)
+            {
+                count++;
+            }
+
+            // Update max distance tracking (needed when full or just became full)
+            if (count == MaxClosest)
+            {
+                maxDistance = distances[MaxClosest - 1];
+                maxDistanceSq = maxDistance * maxDistance;
+            }
         }
 
-        if (total < MaxClosest)
+        // Only resize if we found fewer than MaxClosest
+        if (count < MaxClosest)
         {
-            Array.Resize(ref mobs, total);
+            Array.Resize(ref mobs, count);
         }
 
         return mobs;
