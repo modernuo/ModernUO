@@ -276,17 +276,14 @@ public class TrackWhoGump : DynamicGump
                 distances.Slice(insertIndex, shiftCount).CopyTo(distances[(insertIndex + 1)..]);
             }
 
-            // Insert the mobile and distance
             mobs[insertIndex] = m;
             distances[insertIndex] = distance;
 
-            // Update count if we're still building up to MaxClosest
             if (count < MaxClosest)
             {
                 count++;
             }
 
-            // Update max distance tracking (needed when full or just became full)
             if (count == MaxClosest)
             {
                 maxDistance = distances[MaxClosest - 1];
