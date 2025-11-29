@@ -474,25 +474,29 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
         }
         set
         {
-            if (Weight != value)
+            var defaultWeight = DefaultWeight;
+            var info = LookupCompactInfo();
+            var oldWeight = info is { m_Weight: >= 0 } ? info.m_Weight : defaultWeight;
+
+            if (oldWeight == value)
             {
-                var info = AcquireCompactInfo();
-
-                var oldPileWeight = PileWeight;
-
-                info.m_Weight = value;
-
-                if (info.m_Weight < 0)
-                {
-                    VerifyCompactInfo();
-                }
-
-                var newPileWeight = PileWeight;
-
-                UpdateTotal(this, TotalType.Weight, newPileWeight - oldPileWeight);
-
-                InvalidateProperties();
+                return;
             }
+
+            if (value < 0 || defaultWeight == value)
+            {
+                info?.m_Weight = -1;
+                VerifyCompactInfo();
+            }
+            else
+            {
+                info ??= AcquireCompactInfo();
+                info.m_Weight = value;
+            }
+
+            var newPileWeight = PileWeight;
+            UpdateTotal(this, TotalType.Weight, newPileWeight - (int)Math.Ceiling(oldWeight * Amount));
+            InvalidateProperties();
         }
     }
 
