@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class RingmailChest : BaseArmor
     {
         [Constructible]
-        public RingmailChest() : base(0x13EC) => Weight = 15.0;
+        public RingmailChest() : base(0x13EC)
+        {
+        }
+
+        public override double DefaultWeight => 15.0;
 
         public override int BasePhysicalResistance => 3;
         public override int BaseFireResistance => 3;

@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class Mace : BaseBashing
     {
         [Constructible]
-        public Mace() : base(0xF5C) => Weight = 14.0;
+        public Mace() : base(0xF5C)
+        {
+        }
+
+        public override double DefaultWeight => 14.0;
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.ConcussionBlow;
         public override WeaponAbility SecondaryAbility => WeaponAbility.Disarm;

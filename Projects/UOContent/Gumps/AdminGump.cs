@@ -92,12 +92,12 @@ namespace Server.Gumps
 
             AddPage(0);
 
-            AddBackground(0, 0, 420, 440, 5054);
+            AddBackground(0, 0, 420, 480, 5054);
 
             AddBlackAlpha(10, 10, 170, 100);
             AddBlackAlpha(190, 10, 220, 100);
-            AddBlackAlpha(10, 120, 400, 260);
-            AddBlackAlpha(10, 390, 400, 40);
+            AddBlackAlpha(10, 120, 400, 300);
+            AddBlackAlpha(10, 430, 400, 40);
 
             AddPageButton(
                 10,
@@ -141,7 +141,7 @@ namespace Server.Gumps
 
             if (notice != null)
             {
-                AddHtml(12, 392, 396, 36, notice.Color(LabelColor32));
+                AddHtml(20, 440, 396, 36, notice.Color(LabelColor32));
             }
 
             switch (pageType)
@@ -619,6 +619,14 @@ namespace Server.Gumps
 
                         AddButtonLabeled(20, y, GetButtonID(7, 12), "Kill");
                         AddButtonLabeled(200, y, GetButtonID(7, 13), "Resurrect");
+                        y += 20;
+
+                        AddButtonLabeled(20, y, GetButtonID(7, 15), "Jail");
+                        AddButtonLabeled(200, y, GetButtonID(7, 16), "Unjail");
+                        y += 25;
+
+                        AddLabel(20, y, LabelHue, "Jail Reason:");
+                        AddTextField(100, y, 300, 20, 1);
 
                         break;
                     }
@@ -1027,7 +1035,7 @@ namespace Server.Gumps
 
                         for (int i = 0, index = listPage * 6; i < 6 && index >= 0 && index < m_List.Count; ++i, ++index)
                         {
-                            AddHtml(18, 243 + i * 22, 114, 20, m_List[index].ToString().Color(LabelColor32));
+                            AddHtml(18, 243 + i * 22, 114, 20, Html.Color($"{m_List[index]}", LabelColor32));
                             AddButton(130, 242 + i * 22, 0xFA2, 0xFA4, GetButtonID(8, index));
                             AddButton(160, 242 + i * 22, 0xFA8, 0xFAA, GetButtonID(9, index));
                             AddButton(190, 242 + i * 22, 0xFB1, 0xFB3, GetButtonID(10, index));
@@ -1229,7 +1237,7 @@ namespace Server.Gumps
                             break;
                         }
 
-                        AddHtml(10, 125, 400, 20, firewallEntry.ToString().Center(LabelColor32));
+                        AddHtml(10, 125, 400, 20, Html.Center($"{firewallEntry}", LabelColor32));
 
                         AddButtonLabeled(20, 150, GetButtonID(6, 3), "Remove");
 
@@ -3801,6 +3809,33 @@ namespace Server.Gumps
                                     sendGump = false;
                                     break;
                                 }
+                            case 15:
+                                {
+                                    var reason = info.GetTextEntry(1)?.Trim();
+
+                                    if (string.IsNullOrWhiteSpace(reason))
+                                    {
+                                        reason = "";
+                                    }
+
+                                    CommandLogging.WriteLine(
+                                        from,
+                                        $"{from.AccessLevel} {CommandLogging.Format(from)} jailing {CommandLogging.Format(m)} - Reason: {reason}"
+                                    );
+                                    InvokeCommand($"Jail {m.Name} \"{reason}\"");
+                                    notice = $"Player has been sent to jail. Reason: {reason}";
+                                    break;
+                                }
+                            case 16:
+                                {
+                                    CommandLogging.WriteLine(
+                                        from,
+                                        $"{from.AccessLevel} {CommandLogging.Format(from)} unjailing {CommandLogging.Format(m)}"
+                                    );
+                                    InvokeCommand($"Unjail {m.Name}");
+                                    notice = "Player has been unjailed.";
+                                    break;
+                                }
                         }
 
                         if (sendGump)
@@ -4060,15 +4095,15 @@ namespace Server.Gumps
             {
                 if (x is not KeyValuePair<IPAddress, List<Account>> a)
                 {
-                    return -1;
+                    return 1;
                 }
 
                 if (y is not KeyValuePair<IPAddress, List<Account>> b)
                 {
-                    return 1;
+                    return -1;
                 }
 
-                return a.Value.Count - b.Value.Count;
+                return b.Value.Count - a.Value.Count;
             }
         }
 

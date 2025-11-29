@@ -7,11 +7,9 @@ namespace Server.Items
     public partial class BonePile : Item, IScissorable
     {
         [Constructible]
-        public BonePile() : base(0x1B09 + Utility.Random(8))
-        {
-            Stackable = false;
-            Weight = 10.0;
-        }
+        public BonePile() : base(0x1B09 + Utility.Random(8)) => Stackable = false;
+
+        public override double DefaultWeight => 10.0;
 
         public bool Scissor(Mobile from, Scissors scissors)
         {

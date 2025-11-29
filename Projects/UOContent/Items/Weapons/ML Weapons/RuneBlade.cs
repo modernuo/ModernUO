@@ -7,12 +7,9 @@ namespace Server.Items
     public partial class RuneBlade : BaseSword
     {
         [Constructible]
-        public RuneBlade() : base(0x2D32)
-        {
-            Weight = 7.0;
-            Layer = Layer.TwoHanded;
-        }
+        public RuneBlade() : base(0x2D32) => Layer = Layer.TwoHanded;
 
+        public override double DefaultWeight => 7.0;
         public override WeaponAbility PrimaryAbility => WeaponAbility.Disarm;
         public override WeaponAbility SecondaryAbility => WeaponAbility.Bladeweave;
 

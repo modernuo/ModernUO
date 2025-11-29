@@ -13,9 +13,10 @@ public partial class HolidayTreeDeed : Item
     public HolidayTreeDeed() : base(0x14F0)
     {
         Hue = 0x488;
-        Weight = 1.0;
         LootType = LootType.Blessed;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1041116; // a deed for a holiday tree
 

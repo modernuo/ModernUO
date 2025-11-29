@@ -6,7 +6,11 @@ namespace Server.Engines.Quests.Hag;
 public partial class MoonfireBrew : Item
 {
     [Constructible]
-    public MoonfireBrew() : base(0xF04) => Weight = 1.0;
+    public MoonfireBrew() : base(0xF04)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1055065; // a bottle of magical moonfire brew
 }

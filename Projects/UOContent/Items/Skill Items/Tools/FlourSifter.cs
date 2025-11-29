@@ -7,10 +7,16 @@ namespace Server.Items;
 public partial class FlourSifter : BaseTool
 {
     [Constructible]
-    public FlourSifter() : base(0x103E) => Weight = 1.0;
+    public FlourSifter() : base(0x103E)
+    {
+    }
 
     [Constructible]
-    public FlourSifter(int uses) : base(uses, 0x103E) => Weight = 1.0;
+    public FlourSifter(int uses) : base(uses, 0x103E)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override CraftSystem CraftSystem => DefCooking.CraftSystem;
 }

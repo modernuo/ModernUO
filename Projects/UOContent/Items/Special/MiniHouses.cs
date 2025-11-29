@@ -74,10 +74,10 @@ public partial class MiniHouseDeed : BaseAddonDeed
     public MiniHouseDeed(MiniHouseType type = MiniHouseType.StoneAndPlaster)
     {
         _type = type;
-
-        Weight = 1.0;
         LootType = LootType.Blessed;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override BaseAddon Addon => new MiniHouseAddon(_type);
     public override int LabelNumber => 1062096; // a mini house deed

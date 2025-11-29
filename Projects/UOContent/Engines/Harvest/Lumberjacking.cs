@@ -175,6 +175,8 @@ namespace Server.Engines.Harvest
             }
         }
 
+        public override object GetLock(Mobile from, Item tool, HarvestDefinition def, object toHarvest) => this;
+
         public override void OnHarvestStarted(Mobile from, Item tool, HarvestDefinition def, object toHarvest)
         {
             base.OnHarvestStarted(from, tool, def, toHarvest);

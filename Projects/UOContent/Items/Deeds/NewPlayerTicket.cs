@@ -15,9 +15,10 @@ public partial class NewPlayerTicket : Item
     [Constructible]
     public NewPlayerTicket() : base(0x14EF)
     {
-        Weight = 1.0;
         LootType = LootType.Blessed;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1062094; // a young player ticket
 

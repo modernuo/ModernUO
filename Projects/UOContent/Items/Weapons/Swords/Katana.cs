@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class Katana : BaseSword
     {
         [Constructible]
-        public Katana() : base(0x13FF) => Weight = 6.0;
+        public Katana() : base(0x13FF)
+        {
+        }
+
+        public override double DefaultWeight => 6.0;
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.DoubleStrike;
         public override WeaponAbility SecondaryAbility => WeaponAbility.ArmorIgnore;

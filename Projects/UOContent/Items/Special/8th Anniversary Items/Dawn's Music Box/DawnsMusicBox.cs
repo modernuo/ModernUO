@@ -118,8 +118,6 @@ public partial class DawnsMusicBox : Item, ISecurable
     [Constructible]
     public DawnsMusicBox() : base(0x2AF9)
     {
-        Weight = 1.0;
-
         var shuffledTracks = GetTracks(DawnsMusicRarity.Common);
         shuffledTracks.Shuffle();
 
@@ -131,6 +129,8 @@ public partial class DawnsMusicBox : Item, ISecurable
             shuffledTracks[3]
         ];
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1075198; // Dawn's Music Box
 

@@ -14,9 +14,9 @@ public partial class Candle : BaseEquipableLight
 
         Stackable = true;
         Light = LightType.Circle150;
-        Weight = 1.0;
     }
 
+    public override double DefaultWeight => 1.0;
     public override int LitItemID => 0xA0F;
     public override int UnlitItemID => 0xA28;
 }

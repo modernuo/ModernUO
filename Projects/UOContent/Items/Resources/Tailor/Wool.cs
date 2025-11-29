@@ -10,9 +10,10 @@ public partial class Wool : Item, IDyable
     public Wool(int amount = 1) : base(0xDF8)
     {
         Stackable = true;
-        Weight = 4.0;
         Amount = amount;
     }
+
+    public override double DefaultWeight => 4.0;
 
     public bool Dye(Mobile from, DyeTub sender)
     {
@@ -99,9 +100,10 @@ public partial class TaintedWool : Wool
     public TaintedWool(int amount = 1) : base(0x101F)
     {
         Stackable = true;
-        Weight = 4.0;
         Amount = amount;
     }
+
+    public override double DefaultWeight => 4.0;
 
     public override void OnSpun(ISpinningWheel wheel, Mobile from, int hue)
     {

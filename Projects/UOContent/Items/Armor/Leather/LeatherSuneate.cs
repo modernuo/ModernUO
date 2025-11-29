@@ -6,7 +6,11 @@ namespace Server.Items
     public partial class LeatherSuneate : BaseArmor
     {
         [Constructible]
-        public LeatherSuneate() : base(0x2786) => Weight = 4.0;
+        public LeatherSuneate() : base(0x2786)
+        {
+        }
+
+        public override double DefaultWeight => 4.0;
 
         public override int BasePhysicalResistance => 2;
         public override int BaseFireResistance => 4;

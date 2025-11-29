@@ -6,7 +6,11 @@ namespace Server.Items
     public partial class HeavyPlateJingasa : BaseArmor
     {
         [Constructible]
-        public HeavyPlateJingasa() : base(0x2777) => Weight = 5.0;
+        public HeavyPlateJingasa() : base(0x2777)
+        {
+        }
+
+        public override double DefaultWeight => 5.0;
 
         public override int BasePhysicalResistance => 7;
         public override int BaseFireResistance => 2;

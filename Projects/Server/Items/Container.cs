@@ -1,3 +1,18 @@
+/*************************************************************************
+ * ModernUO                                                              *
+ * Copyright 2019-2025 - ModernUO Development Team                       *
+ * Email: hi@modernuo.com                                                *
+ * File: Container.cs                                                    *
+ *                                                                       *
+ * This program is free software: you can redistribute it and/or modify  *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ *                                                                       *
+ * You should have received a copy of the GNU General Public License     *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
+ *************************************************************************/
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -25,7 +40,7 @@ public partial class Container : Item
 
     private int m_TotalItems;
     private int m_TotalWeight;
-    private int _version;
+    internal int _version;
 
     [SerializableField(3)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
@@ -281,16 +296,6 @@ public partial class Container : Item
         return true;
     }
 
-    private static void SetSaveFlag(ref SaveFlag flags, SaveFlag toSet, bool setIf)
-    {
-        if (setIf)
-        {
-            flags |= toSet;
-        }
-    }
-
-    private static bool GetSaveFlag(SaveFlag flags, SaveFlag toGet) => (flags & toGet) != 0;
-
     [AfterDeserialization]
     private void AfterDeserialization()
     {
@@ -425,8 +430,8 @@ public partial class Container : Item
 
     public virtual bool TryDropItems(Mobile from, bool sendFullMessage, params ReadOnlySpan<Item> droppedItems)
     {
-        var dropItems = new List<Item>();
-        var stackItems = new List<ItemStackEntry>();
+        using var dropItems = PooledRefQueue<Item>.Create();
+        using var stackItems = PooledRefQueue<ItemStackEntry>.Create();
 
         var extraItems = 0;
         var extraWeight = 0;
@@ -446,7 +451,7 @@ public partial class Container : Item
                 if (item is not Container && CheckHold(from, dropped, false, false, 0, extraWeight) &&
                     item.CanStackWith(dropped))
                 {
-                    stackItems.Add(new ItemStackEntry(item, dropped));
+                    stackItems.Enqueue(new ItemStackEntry(item, dropped));
                     extraWeight += (int)Math.Ceiling(item.Weight * (item.Amount + dropped.Amount)) -
                                    item.PileWeight; // extra weight delta, do not need TotalWeight as we do not have hybrid stackable container types
                     stacked = true;
@@ -456,7 +461,7 @@ public partial class Container : Item
 
             if (!stacked && CheckHold(from, dropped, false, true, extraItems, extraWeight))
             {
-                dropItems.Add(dropped);
+                dropItems.Enqueue(dropped);
                 extraItems++;
                 extraWeight += dropped.TotalWeight + dropped.PileWeight;
             }
@@ -464,14 +469,15 @@ public partial class Container : Item
 
         if (dropItems.Count + stackItems.Count == droppedItems.Length) // All good
         {
-            for (var i = 0; i < dropItems.Count; i++)
+            while (dropItems.Count > 0)
             {
-                DropItem(dropItems[i]);
+                DropItem(dropItems.Dequeue());
             }
 
-            for (var i = 0; i < stackItems.Count; i++)
+            while (stackItems.Count > 0)
             {
-                stackItems[i].m_StackItem.StackWith(from, stackItems[i].m_DropItem, false);
+                var stackItem = stackItems.Dequeue();
+                stackItem.m_StackItem.StackWith(from, stackItem.m_DropItem, false);
             }
 
             return true;

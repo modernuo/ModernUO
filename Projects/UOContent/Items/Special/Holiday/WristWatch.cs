@@ -8,7 +8,6 @@ public partial class WristWatch : Clock
     [Constructible]
     public WristWatch() : base(0x1086)
     {
-        Weight = DefaultWeight;
         LootType = LootType.Blessed;
         Layer = Layer.Bracelet;
     }

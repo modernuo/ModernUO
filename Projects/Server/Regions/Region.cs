@@ -547,10 +547,29 @@ public class Region : IComparable<Region>, IValueLinkListNode<Region>
     public virtual bool AcceptsSpawnsFrom(Region region) =>
         AllowSpawn() && (region == this || Parent?.AcceptsSpawnsFrom(region) == true);
 
+    public PooledRefList<Mobile> GetPlayersPooled()
+    {
+        var list = PooledRefList<Mobile>.Create();
+        for (var i = 0; i < Sectors?.Length; i++)
+        {
+            var sector = Sectors[i];
+
+            foreach (var ns in sector.Clients)
+            {
+                var player = ns.Mobile;
+                if (player?.Deleted == false && player.Region.IsPartOf(this))
+                {
+                    list.Add(ns.Mobile);
+                }
+            }
+        }
+
+        return list;
+    }
+
     public List<Mobile> GetPlayers()
     {
-        var list = new List<Mobile>();
-
+        List<Mobile> list = [];
         for (var i = 0; i < Sectors?.Length; i++)
         {
             var sector = Sectors[i];
@@ -609,6 +628,25 @@ public class Region : IComparable<Region>, IValueLinkListNode<Region>
         return list;
     }
 
+    public PooledRefList<Mobile> GetMobilesPooled()
+    {
+        var list = PooledRefList<Mobile>.Create();
+        for (var i = 0; i < Sectors?.Length; i++)
+        {
+            var sector = Sectors[i];
+
+            foreach (var mobile in sector.Mobiles)
+            {
+                if (mobile.Region.IsPartOf(this))
+                {
+                    list.Add(mobile);
+                }
+            }
+        }
+
+        return list;
+    }
+
     public int GetMobileCount()
     {
         var count = 0;
@@ -632,6 +670,26 @@ public class Region : IComparable<Region>, IValueLinkListNode<Region>
     public List<Item> GetItems()
     {
         var list = new List<Item>();
+
+        for (var i = 0; i < Sectors?.Length; i++)
+        {
+            var sector = Sectors[i];
+
+            foreach (var item in sector.Items)
+            {
+                if (Find(item.Location, item.Map).IsPartOf(this))
+                {
+                    list.Add(item);
+                }
+            }
+        }
+
+        return list;
+    }
+
+    public PooledRefList<Item> GetItemsPooled()
+    {
+        var list = PooledRefList<Item>.Create();
 
         for (var i = 0; i < Sectors?.Length; i++)
         {

@@ -6,14 +6,22 @@ namespace Server.Items;
 public partial class EmptyWoodenBowl : Item
 {
     [Constructible]
-    public EmptyWoodenBowl() : base(0x15F8) => Weight = 1.0;
+    public EmptyWoodenBowl() : base(0x15F8)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [SerializationGenerator(0, false)]
 public partial class EmptyPewterBowl : Item
 {
     [Constructible]
-    public EmptyPewterBowl() : base(0x15FD) => Weight = 1.0;
+    public EmptyPewterBowl() : base(0x15FD)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [SerializationGenerator(0, false)]
@@ -23,9 +31,10 @@ public partial class WoodenBowlOfCarrots : Food
     public WoodenBowlOfCarrots() : base(0x15F9)
     {
         Stackable = false;
-        Weight = 1.0;
         FillFactor = 2;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override bool Eat(Mobile from)
     {
@@ -46,9 +55,10 @@ public partial class WoodenBowlOfCorn : Food
     public WoodenBowlOfCorn() : base(0x15FA)
     {
         Stackable = false;
-        Weight = 1.0;
         FillFactor = 2;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override bool Eat(Mobile from)
     {
@@ -69,9 +79,10 @@ public partial class WoodenBowlOfLettuce : Food
     public WoodenBowlOfLettuce() : base(0x15FB)
     {
         Stackable = false;
-        Weight = 1.0;
         FillFactor = 2;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override bool Eat(Mobile from)
     {
@@ -92,9 +103,10 @@ public partial class WoodenBowlOfPeas : Food
     public WoodenBowlOfPeas() : base(0x15FC)
     {
         Stackable = false;
-        Weight = 1.0;
         FillFactor = 2;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override bool Eat(Mobile from)
     {
@@ -115,9 +127,10 @@ public partial class PewterBowlOfCarrots : Food
     public PewterBowlOfCarrots() : base(0x15FE)
     {
         Stackable = false;
-        Weight = 1.0;
         FillFactor = 2;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override bool Eat(Mobile from)
     {
@@ -138,9 +151,10 @@ public partial class PewterBowlOfCorn : Food
     public PewterBowlOfCorn() : base(0x15FF)
     {
         Stackable = false;
-        Weight = 1.0;
         FillFactor = 2;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override bool Eat(Mobile from)
     {
@@ -161,9 +175,10 @@ public partial class PewterBowlOfLettuce : Food
     public PewterBowlOfLettuce() : base(0x1600)
     {
         Stackable = false;
-        Weight = 1.0;
         FillFactor = 2;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override bool Eat(Mobile from)
     {
@@ -184,9 +199,10 @@ public partial class PewterBowlOfPeas : Food
     public PewterBowlOfPeas() : base(0x1601)
     {
         Stackable = false;
-        Weight = 1.0;
         FillFactor = 2;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override bool Eat(Mobile from)
     {
@@ -207,9 +223,10 @@ public partial class PewterBowlOfPotatos : Food
     public PewterBowlOfPotatos() : base(0x1602)
     {
         Stackable = false;
-        Weight = 1.0;
         FillFactor = 2;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override bool Eat(Mobile from)
     {
@@ -228,7 +245,11 @@ public partial class PewterBowlOfPotatos : Food
 public partial class EmptyWoodenTub : Item
 {
     [Constructible]
-    public EmptyWoodenTub() : base(0x1605) => Weight = 2.0;
+    public EmptyWoodenTub() : base(0x1605)
+    {
+    }
+
+    public override double DefaultWeight => 2.0;
 }
 
 [TypeAlias("Server.Items.EmptyLargePewterBowl")]
@@ -236,7 +257,11 @@ public partial class EmptyWoodenTub : Item
 public partial class EmptyPewterTub : Item
 {
     [Constructible]
-    public EmptyPewterTub() : base(0x1603) => Weight = 2.0;
+    public EmptyPewterTub() : base(0x1603)
+    {
+    }
+
+    public override double DefaultWeight => 2.0;
 }
 
 [SerializationGenerator(0, false)]
@@ -246,9 +271,10 @@ public partial class WoodenBowlOfStew : Food
     public WoodenBowlOfStew() : base(0x1604)
     {
         Stackable = false;
-        Weight = 2.0;
         FillFactor = 2;
     }
+
+    public override double DefaultWeight => 2.0;
 
     public override bool Eat(Mobile from)
     {
@@ -269,9 +295,10 @@ public partial class WoodenBowlOfTomatoSoup : Food
     public WoodenBowlOfTomatoSoup() : base(0x1606)
     {
         Stackable = false;
-        Weight = 2.0;
         FillFactor = 2;
     }
+
+    public override double DefaultWeight => 2.0;
 
     public override bool Eat(Mobile from)
     {

@@ -36,7 +36,7 @@ namespace Server.Gumps
             var line = 0;
 
             AddHtml(14, 36 + line * 20, 200, 20, "Address:".Color(LabelColor32));
-            AddHtml(70, 36 + line++ * 20, 200, 20, state.ToString().Color(LabelColor32));
+            AddHtml(70, 36 + line++ * 20, 200, 20, Html.Color($"{state}", LabelColor32));
 
             AddHtml(14, 36 + line * 20, 200, 20, "Client:".Color(LabelColor32));
             AddHtml(
@@ -75,10 +75,10 @@ namespace Server.Gumps
             if (m != null)
             {
                 AddHtml(14, 36 + line * 20, 200, 20, "Mobile:".Color(LabelColor32));
-                AddHtml(72, 36 + line++ * 20, 200, 20, $"{m.Name} ({m.Serial})".Color(LabelColor32));
+                AddHtml(72, 36 + line++ * 20, 200, 20, Html.Color($"{m.Name} ({m.Serial})", LabelColor32));
 
                 AddHtml(14, 36 + line * 20, 200, 20, "Location:".Color(LabelColor32));
-                AddHtml(72, 36 + line++ * 20, 200, 20, $"{m.Location} [{m.Map}]".Color(LabelColor32));
+                AddHtml(72, 36 + line++ * 20, 200, 20, Html.Color($"{m.Location} [{m.Map}]", LabelColor32));
 
                 AddButton(13, 197, 0xFAB, 0xFAD, 1);
                 AddHtml(48, 198, 200, 20, "Send Message".Color(LabelColor32));

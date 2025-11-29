@@ -10,11 +10,11 @@ namespace Server.Items
         [Constructible]
         public HeavyCrossbow() : base(0x13FD)
         {
-            Weight = 9.0;
             Layer = Layer.TwoHanded;
             Resource = CraftResource.RegularWood;
         }
 
+        public override double DefaultWeight => 9.0;
         public override int EffectID => 0x1BFE;
         public override Type AmmoType => typeof(Bolt);
         public override Item Ammo => new Bolt();

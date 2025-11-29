@@ -26,11 +26,9 @@ public partial class LeatherNinjaBelt : BaseWaist, INinjaWeapon
     private int _poisonCharges;
 
     [Constructible]
-    public LeatherNinjaBelt() : base(0x2790)
-    {
-        Weight = 1.0;
-        Layer = Layer.Waist;
-    }
+    public LeatherNinjaBelt() : base(0x2790) => Layer = Layer.Waist;
+
+    public override double DefaultWeight => 1.0;
 
     public override CraftResource DefaultResource => CraftResource.RegularLeather;
 

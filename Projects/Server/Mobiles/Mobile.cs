@@ -2737,8 +2737,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
         const int cacheLength = OutgoingMobilePackets.MobileMovingPacketCacheByteLength;
 
-        Span<byte> mobileMovingCache = stackalloc byte[cacheLength];
-        mobileMovingCache.Clear();
+        Span<byte> mobileMovingCache = stackalloc byte[cacheLength].InitializePacket();
 
         var ourState = m_NetState;
 
@@ -2887,6 +2886,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         Span<byte> deadBuffer = stackalloc byte[OutgoingMobilePackets.BondedStatusPacketLength].InitializePacket();
         Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength].InitializePacket();
         Span<byte> hitsPacket = stackalloc byte[OutgoingMobilePackets.MobileAttributePacketLength].InitializePacket();
+        mobileMovingCache.InitializePacket();
 
         foreach (var state in Map.GetClientsInRange(m_Location))
         {
@@ -3723,38 +3723,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     {
     }
 
-    public double GetDistanceToSqrt(Point3D p)
-    {
-        var xDelta = m_Location.m_X - p.m_X;
-        var yDelta = m_Location.m_Y - p.m_Y;
-
-        return Math.Sqrt(xDelta * xDelta + yDelta * yDelta);
-    }
-
-    public double GetDistanceToSqrt(Mobile m)
-    {
-        var xDelta = m_Location.m_X - m.m_Location.m_X;
-        var yDelta = m_Location.m_Y - m.m_Location.m_Y;
-
-        return Math.Sqrt(xDelta * xDelta + yDelta * yDelta);
-    }
-
-    public double GetDistanceToSqrt(Point2D p)
-    {
-        var xDelta = m_Location.m_X - p.X;
-        var yDelta = m_Location.m_Y - p.Y;
-
-        return Math.Sqrt(xDelta * xDelta + yDelta * yDelta);
-    }
-
-    public double GetDistanceToSqrt(IPoint2D p)
-    {
-        var xDelta = m_Location.m_X - p.X;
-        var yDelta = m_Location.m_Y - p.Y;
-
-        return Math.Sqrt(xDelta * xDelta + yDelta * yDelta);
-    }
-
     public virtual void AggressiveAction(Mobile aggressor) => AggressiveAction(aggressor, false);
 
     public virtual void AggressiveAction(Mobile aggressor, bool criminal)
@@ -4360,7 +4328,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                 const int cacheLength = OutgoingMobilePackets.MobileMovingPacketCacheByteLength;
 
                 Span<byte> mobileMovingCache = stackalloc byte[cacheLength];
-                mobileMovingCache.Clear();
+                mobileMovingCache.InitializePacket();
 
                 while (moveClientQueue.Count > 0)
                 {
@@ -6995,12 +6963,9 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                 flags |= 0x04;
             }
         }
-        else
+        else if (m_Poison != null)
         {
-            if (m_Poison != null)
-            {
-                flags |= 0x04;
-            }
+            flags |= 0x04;
         }
 
         if (m_Blessed || m_YellowHealthbar)
@@ -8067,43 +8032,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         return -1;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Map.ItemAtEnumerable<Item> GetItemsAt() =>
-        m_Map == null ? Map.ItemAtEnumerable<Item>.Empty : m_Map.GetItemsAt(m_Location);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Map.ItemAtEnumerable<T> GetItemsAt<T>() where T : Item =>
-        m_Map == null ? Map.ItemAtEnumerable<T>.Empty : m_Map.GetItemsAt<T>(m_Location);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Map.ItemBoundsEnumerable<Item> GetItemsInRange(int range) => GetItemsInRange<Item>(range);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Map.ItemBoundsEnumerable<T> GetItemsInRange<T>(int range) where T : Item =>
-        m_Map == null ? Map.ItemBoundsEnumerable<T>.Empty : m_Map.GetItemsInRange<T>(m_Location, range);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Map.MobileAtEnumerable<Mobile> GetMobilesInRange() => GetMobilesInRange<Mobile>();
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Map.MobileAtEnumerable<T> GetMobilesInRange<T>() where T : Mobile =>
-        m_Map == null ? Map.MobileAtEnumerable<T>.Empty : m_Map.GetMobilesAt<T>(m_Location);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Map.MobileBoundsEnumerable<Mobile> GetMobilesInRange(int range) => GetMobilesInRange<Mobile>(range);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Map.MobileBoundsEnumerable<T> GetMobilesInRange<T>(int range) where T : Mobile =>
-        m_Map == null ? Map.MobileBoundsEnumerable<T>.Empty : m_Map.GetMobilesInRange<T>(m_Location, range);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Map.ClientAtEnumerable GetClientsAt() =>
-        m_Map == null ? Map.ClientAtEnumerable.Empty : Map.GetClientsAt(m_Location);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Map.ClientBoundsEnumerable GetClientsInRange(int range) =>
-        m_Map == null ? Map.ClientBoundsEnumerable.Empty : Map.GetClientsInRange(m_Location, range);
-
     public void SayTo(Mobile to, bool ascii, string text) =>
         PrivateOverheadMessage(MessageType.Regular, SpeechHue, ascii, text, to.NetState);
 
@@ -8318,7 +8246,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         Region.OnDidHarmful(this, target);
         target.Region.OnGotHarmful(this, target);
 
-        if (!indirect)
+        if (!indirect && !ChangingCombatant)
         {
             Combatant = target;
         }

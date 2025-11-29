@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class Stool : Item
     {
         [Constructible]
-        public Stool() : base(0xA2A) => Weight = 10.0;
+        public Stool() : base(0xA2A)
+        {
+        }
+
+        public override double DefaultWeight => 10.0;
     }
 
     [Furniture]
@@ -15,6 +19,10 @@ namespace Server.Items
     public partial class FootStool : Item
     {
         [Constructible]
-        public FootStool() : base(0xB5E) => Weight = 6.0;
+        public FootStool() : base(0xB5E)
+        {
+        }
+
+        public override double DefaultWeight => 6.0;
     }
 }

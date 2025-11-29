@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class Longsword : BaseSword
     {
         [Constructible]
-        public Longsword() : base(0xF61) => Weight = 7.0;
+        public Longsword() : base(0xF61)
+        {
+        }
+
+        public override double DefaultWeight => 7.0;
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.ArmorIgnore;
         public override WeaponAbility SecondaryAbility => WeaponAbility.ConcussionBlow;

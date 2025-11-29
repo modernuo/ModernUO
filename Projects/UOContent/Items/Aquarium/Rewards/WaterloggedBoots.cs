@@ -8,19 +8,14 @@ namespace Server.Items
         [Constructible]
         public WaterloggedBoots() : base(0x1711)
         {
-            if (Utility.RandomBool())
-            {
+            ItemID = Utility.RandomBool()
                 // thigh boots
-                ItemID = 0x1711;
-                Weight = 4.0;
-            }
-            else
-            {
+                ? 0x1711
                 // boots
-                ItemID = 0x170B;
-                Weight = 3.0;
-            }
+                : 0x170B;
         }
+
+        public override double DefaultWeight => ItemID == 0x1711 ? 4.0 : 3.0;
 
         public override int LabelNumber => 1074364; // Waterlogged boots
 

@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class RadiantScimitar : BaseSword
     {
         [Constructible]
-        public RadiantScimitar() : base(0x2D33) => Weight = 9.0;
+        public RadiantScimitar() : base(0x2D33)
+        {
+        }
+
+        public override double DefaultWeight => 9.0;
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.WhirlwindAttack;
         public override WeaponAbility SecondaryAbility => WeaponAbility.Bladeweave;

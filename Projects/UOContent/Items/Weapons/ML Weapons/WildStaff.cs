@@ -7,12 +7,9 @@ namespace Server.Items
     public partial class WildStaff : BaseStaff
     {
         [Constructible]
-        public WildStaff() : base(0x2D25)
-        {
-            Weight = 8.0;
-            Resource = CraftResource.RegularWood;
-        }
+        public WildStaff() : base(0x2D25) => Resource = CraftResource.RegularWood;
 
+        public override double DefaultWeight => 8.0;
         public override WeaponAbility PrimaryAbility => WeaponAbility.Block;
         public override WeaponAbility SecondaryAbility => WeaponAbility.ForceOfNature;
 

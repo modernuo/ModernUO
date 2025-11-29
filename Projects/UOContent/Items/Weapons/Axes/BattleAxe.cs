@@ -7,12 +7,9 @@ namespace Server.Items
     public partial class BattleAxe : BaseAxe
     {
         [Constructible]
-        public BattleAxe() : base(0xF47)
-        {
-            Weight = 4.0;
-            Layer = Layer.TwoHanded;
-        }
+        public BattleAxe() : base(0xF47) => Layer = Layer.TwoHanded;
 
+        public override double DefaultWeight => 4.0;
         public override WeaponAbility PrimaryAbility => WeaponAbility.BleedAttack;
         public override WeaponAbility SecondaryAbility => WeaponAbility.ConcussionBlow;
 

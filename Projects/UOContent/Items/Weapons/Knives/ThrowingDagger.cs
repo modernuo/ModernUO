@@ -10,11 +10,9 @@ namespace Server.Items;
 public partial class ThrowingDagger : Item
 {
     [Constructible]
-    public ThrowingDagger() : base(0xF52)
-    {
-        Weight = 1.0;
-        Layer = Layer.OneHanded;
-    }
+    public ThrowingDagger() : base(0xF52) => Layer = Layer.OneHanded;
+
+    public override double DefaultWeight => 1.0;
 
     public override string DefaultName => "a throwing dagger";
 

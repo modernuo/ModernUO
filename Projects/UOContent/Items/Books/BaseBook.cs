@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using ModernUO.Serialization;
 using Server.Collections;
 using Server.ContextMenus;
@@ -141,11 +140,14 @@ namespace Server.Items
         {
             get
             {
-                var lines = new List<string>();
-
-                foreach (var bpi in Pages)
+                using var lines = PooledRefQueue<string>.Create(256);
+                for (var i = 0; i < Pages.Length; i++)
                 {
-                    lines.AddRange(bpi.Lines);
+                    var bpi = Pages[i];
+                    for (var j = 0; j < bpi.Lines.Length; j++)
+                    {
+                        lines.Enqueue(bpi.Lines[j]);
+                    }
                 }
 
                 return lines.ToArray();

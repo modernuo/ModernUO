@@ -7,10 +7,16 @@ namespace Server.Items;
 public partial class MortarPestle : BaseTool
 {
     [Constructible]
-    public MortarPestle() : base(0xE9B) => Weight = 1.0;
+    public MortarPestle() : base(0xE9B)
+    {
+    }
 
     [Constructible]
-    public MortarPestle(int uses) : base(uses, 0xE9B) => Weight = 1.0;
+    public MortarPestle(int uses) : base(uses, 0xE9B)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override CraftSystem CraftSystem => DefAlchemy.CraftSystem;
 }

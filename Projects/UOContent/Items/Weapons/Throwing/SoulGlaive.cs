@@ -6,12 +6,9 @@ namespace Server.Items;
 public partial class SoulGlaive : BaseThrown
 {
     [Constructible]
-    public SoulGlaive() : base(0x090A)
-    {
-        Weight = 8.0;
-        Layer = Layer.OneHanded;
-    }
+    public SoulGlaive() : base(0x090A) => Layer = Layer.OneHanded;
 
+    public override double DefaultWeight => 8.0;
     public override int MinThrowRange => 8;
 
     public override WeaponAbility PrimaryAbility => WeaponAbility.ArmorIgnore;

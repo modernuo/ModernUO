@@ -58,7 +58,7 @@ namespace Server.Mobiles
         public override bool FollowsAcquireRules => Core.AOS || !Summoned || SummonMaster?.Player != true || Map != Map.Felucca;
 
         public override double GetFightModeRanking(Mobile m, FightMode acqType, bool bPlayerOnly) =>
-            (m.Str + m.Skills.Tactics.Value) / Math.Max(GetDistanceToSqrt(m), 1.0);
+            (m.Str + m.Skills.Tactics.Value) / Math.Max(this.GetDistanceToSqrt(m), 1.0);
 
         public override int GetAngerSound() => 0x23A;
 

@@ -20,12 +20,13 @@ public partial class Log : Item, ICommodity, IAxe
     public Log(CraftResource resource, int amount) : base(0x1BDD)
     {
         Stackable = true;
-        Weight = 2.0;
         Amount = amount;
 
         _resource = resource;
         Hue = CraftResources.GetHue(resource);
     }
+
+    public override double DefaultWeight => 2.0;
 
     [SerializableProperty(0)]
     [CommandProperty(AccessLevel.GameMaster)]

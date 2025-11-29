@@ -84,12 +84,9 @@ public partial class DecorativeShieldDeed : Item, IRewardItem
     private bool _isRewardItem;
 
     [Constructible]
-    public DecorativeShieldDeed() : base(0x14F0)
-    {
-        LootType = LootType.Blessed;
-        Weight = 1.0;
-    }
+    public DecorativeShieldDeed() : base(0x14F0) => LootType = LootType.Blessed;
 
+    public override double DefaultWeight => 1.0;
     public override int LabelNumber => 1049771; // deed for a decorative shield wall hanging
 
     public override void GetProperties(IPropertyList list)

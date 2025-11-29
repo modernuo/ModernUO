@@ -11,8 +11,9 @@ public partial class EggBomb : Item
     {
         // Item ID should be 0x2809 - Temporary solution for clients 7.0.0.0 and up
         Stackable = Core.ML;
-        Weight = 1.0;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1030249;
 

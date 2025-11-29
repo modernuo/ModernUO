@@ -33,8 +33,10 @@ namespace Server.Commands.Generic
 
                 if (mobiles)
                 {
-                    foreach (var mob in reg.GetMobiles())
+                    using var mobileList = reg.GetMobilesPooled();
+                    for (var i = 0; i < mobileList.Count; i++)
                     {
+                        var mob = mobileList[i];
                         if (BaseCommand.IsAccessible(from, mob) && ext.IsValid(mob))
                         {
                             list.Add(mob);
@@ -44,7 +46,8 @@ namespace Server.Commands.Generic
 
                 if (items)
                 {
-                    foreach (var item in reg.GetItems())
+                    using var itemList = reg.GetItemsPooled();
+                    foreach (var item in itemList)
                     {
                         if (BaseCommand.IsAccessible(from, item) && ext.IsValid(item))
                         {

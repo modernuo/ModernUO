@@ -9,7 +9,11 @@ namespace Server.Items;
 public partial class HairDye : Item
 {
     [Constructible]
-    public HairDye() : base(0xEFF) => Weight = 1.0;
+    public HairDye() : base(0xEFF)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1041060; // Hair Dye
 

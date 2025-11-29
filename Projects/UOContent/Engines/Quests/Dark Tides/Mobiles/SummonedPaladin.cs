@@ -86,7 +86,7 @@ public partial class SummonedPaladin : BaseCreature
 
                 Timer.StartTimer(TimeSpan.FromSeconds(5.0), Delete);
             }
-            else if (_necromancer.Map != Map || GetDistanceToSqrt(_necromancer) > RangePerception + 1)
+            else if (_necromancer.Map != Map || this.GetDistanceToSqrt(_necromancer) > RangePerception + 1)
             {
                 Effects.SendLocationParticles(
                     EffectItem.Create(Location, Map, EffectItem.DefaultDuration),

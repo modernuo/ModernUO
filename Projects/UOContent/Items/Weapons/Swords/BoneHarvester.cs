@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class BoneHarvester : BaseSword
     {
         [Constructible]
-        public BoneHarvester() : base(0x26BB) => Weight = 3.0;
+        public BoneHarvester() : base(0x26BB)
+        {
+        }
+
+        public override double DefaultWeight => 3.0;
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.ParalyzingBlow;
         public override WeaponAbility SecondaryAbility => WeaponAbility.MortalStrike;

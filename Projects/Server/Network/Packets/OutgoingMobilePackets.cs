@@ -25,8 +25,10 @@ public static class OutgoingMobilePackets
     public const int BondedStatusPacketLength = 11;
     public const int DeathAnimationPacketLength = 13;
     public const int MobileMovingPacketLength = 17;
-    public const int MobileMovingPacketCacheHeight = 7 * 2; // 7 notoriety, 2 client versions
-    public const int MobileMovingPacketCacheByteLength = MobileMovingPacketLength * MobileMovingPacketCacheHeight;
+
+    // Mobile Moving Packet plus 2 bytes for regular/stygian flags
+    public const int MobileMovingPacketCacheByteLength = MobileMovingPacketLength + 2;
+
     public const int AttributeMaximum = 100;
     public const int MobileAttributePacketLength = 9;
     public const int MobileAttributesPacketLength = 17;
@@ -99,27 +101,26 @@ public static class OutgoingMobilePackets
         ns.Send(span);
     }
 
-    public static void CreateMobileMoving(Span<byte> buffer, Mobile m, int noto, bool stygianAbyss)
+    public static void CreateMobileMoving(Span<byte> buffer, Mobile m, int noto, byte packetFlags)
     {
-        if (buffer[0] != 0)
+        if (buffer[0] == 0)
         {
-            return;
+            var loc = m.Location;
+            var hue = m.SolidHueOverride >= 0 ? m.SolidHueOverride : m.Hue;
+
+            var writer = new SpanWriter(buffer);
+            writer.Write((byte)0x77); // Packet ID
+            writer.Write(m.Serial);
+            writer.Write((short)m.Body);
+            writer.Write((short)loc.m_X);
+            writer.Write((short)loc.m_Y);
+            writer.Write((sbyte)loc.m_Z);
+            writer.Write((byte)m.Direction);
+            writer.Write((short)hue);
         }
 
-        var loc = m.Location;
-        var hue = m.SolidHueOverride >= 0 ? m.SolidHueOverride : m.Hue;
-
-        var writer = new SpanWriter(buffer);
-        writer.Write((byte)0x77); // Packet ID
-        writer.Write(m.Serial);
-        writer.Write((short)m.Body);
-        writer.Write((short)loc.m_X);
-        writer.Write((short)loc.m_Y);
-        writer.Write((sbyte)loc.m_Z);
-        writer.Write((byte)m.Direction);
-        writer.Write((short)hue);
-        writer.Write((byte)m.GetPacketFlags(stygianAbyss));
-        writer.Write((byte)noto);
+        buffer[15] = packetFlags;
+        buffer[16] = (byte)noto;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -134,7 +135,8 @@ public static class OutgoingMobilePackets
         }
 
         Span<byte> buffer = stackalloc byte[MobileMovingPacketLength].InitializePacket();
-        CreateMobileMoving(buffer, target, noto, ns.StygianAbyss);
+        var packetFlags = (byte)target.GetPacketFlags(ns.StygianAbyss);
+        CreateMobileMoving(buffer, target, noto, packetFlags);
         ns.Send(buffer);
     }
 
@@ -142,8 +144,6 @@ public static class OutgoingMobilePackets
     public static void SendMobileMovingUsingCache(this NetState ns, Span<byte> cache, Mobile source, Mobile target) =>
         ns.SendMobileMovingUsingCache(cache, target, Notoriety.Compute(source, target));
 
-    // Requires a buffer of 14 packets, 17 bytes per packet (238 bytes).
-    // Requires cache to have the first byte of each packet initially zeroed.
     public static void SendMobileMovingUsingCache(this NetState ns, Span<byte> cache, Mobile target, int noto)
     {
         if (ns.CannotSendPackets())
@@ -151,13 +151,15 @@ public static class OutgoingMobilePackets
             return;
         }
 
-        var stygianAbyss = ns.StygianAbyss;
-        // Indexes 0-6 for pre-SA, and 7-13 for SA
-        var row = noto + (stygianAbyss ? 6 : -1);
-        var buffer = cache.Slice(row * MobileMovingPacketLength, MobileMovingPacketLength);
-        CreateMobileMoving(buffer, target, noto, stygianAbyss);
+        // Cache the packet flags for regular/stygian if the packet hasn't been built yet
+        if (cache[0] == 0)
+        {
+            cache[17] = (byte)target.GetPacketFlags(false);
+            cache[18] = (byte)target.GetPacketFlags(true);
+        }
 
-        ns.Send(buffer);
+        CreateMobileMoving(cache, target, noto, ns.StygianAbyss ? cache[18] : cache[17]);
+        ns.Send(cache[..17]);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

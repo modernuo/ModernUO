@@ -168,8 +168,9 @@ public partial class CreatureBackpack : Backpack // Used on BaseCreature
         Name = name;
         Layer = Layer.Backpack;
         Hue = 5;
-        Weight = 3.0;
     }
+
+    public override double DefaultWeight => 3.0;
 
     public override void AddNameProperty(IPropertyList list)
     {
@@ -213,11 +214,9 @@ public partial class CreatureBackpack : Backpack // Used on BaseCreature
 public partial class StrongBackpack : Backpack // Used on Pack animals
 {
     [Constructible]
-    public StrongBackpack()
-    {
-        Layer = Layer.Backpack;
-        Weight = 13.0;
-    }
+    public StrongBackpack() => Layer = Layer.Backpack;
+
+    public override double DefaultWeight => 13.0;
 
     public override int DefaultMaxWeight => 1600;
 
@@ -233,11 +232,9 @@ public partial class StrongBackpack : Backpack // Used on Pack animals
 public partial class Backpack : BaseContainer, IDyable
 {
     [Constructible]
-    public Backpack() : base(0xE75)
-    {
-        Layer = Layer.Backpack;
-        Weight = 3.0;
-    }
+    public Backpack() : base(0xE75) => Layer = Layer.Backpack;
+
+    public override double DefaultWeight => 3.0;
 
     public override int DefaultMaxWeight
     {
@@ -269,13 +266,21 @@ public partial class Backpack : BaseContainer, IDyable
 public partial class Pouch : TrappableContainer
 {
     [Constructible]
-    public Pouch() : base(0xE79) => Weight = 1.0;
+    public Pouch() : base(0xE79)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [SerializationGenerator(0, false)]
 public abstract partial class BaseBagBall : BaseContainer, IDyable
 {
-    public BaseBagBall(int itemID) : base(itemID) => Weight = 1.0;
+    public BaseBagBall(int itemID) : base(itemID)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public bool Dye(Mobile from, DyeTub sender)
     {
@@ -312,7 +317,11 @@ public partial class LargeBagBall : BaseBagBall
 public partial class Bag : BaseContainer, IDyable
 {
     [Constructible]
-    public Bag() : base(0xE76) => Weight = 2.0;
+    public Bag() : base(0xE76)
+    {
+    }
+
+    public override double DefaultWeight => 2.0;
 
     public bool Dye(Mobile from, DyeTub sender)
     {
@@ -331,28 +340,44 @@ public partial class Bag : BaseContainer, IDyable
 public partial class Barrel : BaseContainer
 {
     [Constructible]
-    public Barrel() : base(0xE77) => Weight = 25.0;
+    public Barrel() : base(0xE77)
+    {
+    }
+
+    public override double DefaultWeight => 25.0;
 }
 
 [SerializationGenerator(0, false)]
 public partial class Keg : BaseContainer
 {
     [Constructible]
-    public Keg() : base(0xE7F) => Weight = 15.0;
+    public Keg() : base(0xE7F)
+    {
+    }
+
+    public override double DefaultWeight => 15.0;
 }
 
 [SerializationGenerator(0, false)]
 public partial class PicnicBasket : BaseContainer
 {
     [Constructible]
-    public PicnicBasket() : base(0xE7A) => Weight = 2.0;
+    public PicnicBasket() : base(0xE7A)
+    {
+    }
+
+    public override double DefaultWeight => 2.0;
 }
 
 [SerializationGenerator(0, false)]
 public partial class Basket : BaseContainer
 {
     [Constructible]
-    public Basket() : base(0x990) => Weight = 1.0;
+    public Basket() : base(0x990)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [Furniture]
@@ -361,7 +386,11 @@ public partial class Basket : BaseContainer
 public partial class WoodenBox : LockableContainer
 {
     [Constructible]
-    public WoodenBox() : base(0x9AA) => Weight = 4.0;
+    public WoodenBox() : base(0x9AA)
+    {
+    }
+
+    public override double DefaultWeight => 4.0;
 }
 
 [Furniture]
@@ -370,7 +399,11 @@ public partial class WoodenBox : LockableContainer
 public partial class SmallCrate : LockableContainer
 {
     [Constructible]
-    public SmallCrate() : base(0x9A9) => Weight = 2.0;
+    public SmallCrate() : base(0x9A9)
+    {
+    }
+
+    public override double DefaultWeight => 2.0;
 }
 
 [Furniture]
@@ -379,7 +412,11 @@ public partial class SmallCrate : LockableContainer
 public partial class MediumCrate : LockableContainer
 {
     [Constructible]
-    public MediumCrate() : base(0xE3F) => Weight = 2.0;
+    public MediumCrate() : base(0xE3F)
+    {
+    }
+
+    public override double DefaultWeight => 2.0;
 }
 
 [Furniture]
@@ -388,7 +425,11 @@ public partial class MediumCrate : LockableContainer
 public partial class LargeCrate : LockableContainer
 {
     [Constructible]
-    public LargeCrate() : base(0xE3D) => Weight = 1.0;
+    public LargeCrate() : base(0xE3D)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 }
 
 [DynamicFlipping]
@@ -429,7 +470,11 @@ public partial class MetalGoldenChest : LockableContainer
 public partial class WoodenChest : LockableContainer
 {
     [Constructible]
-    public WoodenChest() : base(0xe43) => Weight = 2.0;
+    public WoodenChest() : base(0xe43)
+    {
+    }
+
+    public override double DefaultWeight => 2.0;
 }
 
 [Furniture]

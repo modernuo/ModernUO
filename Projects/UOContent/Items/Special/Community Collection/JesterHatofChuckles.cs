@@ -11,11 +11,9 @@ public partial class JesterHatofChuckles : BaseHat
     }
 
     [Constructible]
-    public JesterHatofChuckles(int hue) : base(0x171C, hue)
-    {
-        Attributes.Luck = 150;
-        Weight = 1.0;
-    }
+    public JesterHatofChuckles(int hue) : base(0x171C, hue) => Attributes.Luck = 150;
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1073256; // Jester Hat of Chuckles - Museum of Vesper Replica	1073256
 

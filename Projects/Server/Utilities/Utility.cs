@@ -1479,4 +1479,98 @@ public static partial class Utility
 
         return DateTime.SpecifyKind(local - tz.GetUtcOffset(local), DateTimeKind.Utc);
     }
+
+    public static string FormatTimeCompact(this TimeSpan ts, bool showSeconds = false)
+    {
+        using var sb = ValueStringBuilder.Create();
+        if (ts.Days >= 1)
+        {
+            sb.Append($"{ts.Days}d");
+        }
+
+        if (sb.Length > 0)
+        {
+            sb.Append($" {ts.Hours}h");
+        }
+        else if (ts.Hours >= 1)
+        {
+            sb.Append($"{ts.Hours}h");
+        }
+
+        if (sb.Length > 0)
+        {
+            sb.Append($" {ts.Minutes}m");
+        }
+        else if (ts.Minutes >= 1)
+        {
+            sb.Append($"{ts.Minutes}m");
+        }
+
+        if (showSeconds)
+        {
+            if (sb.Length > 0)
+            {
+                sb.Append($" {ts.Seconds}s");
+            }
+            else if (ts.Seconds >= 1)
+            {
+                sb.Append($"{ts.Seconds}s");
+            }
+        }
+        else if (sb.Length == 0)
+        {
+            sb.Append("0m");
+        }
+
+        return sb.ToString();
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static double GetDistanceToSqrt(this IEntity entity, Point2D p) => GetDistanceToSqrt(entity.Location, p);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static double GetDistanceToSqrt(this IEntity entity, Point3D p) => GetDistanceToSqrt(entity.Location, p);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static double GetDistanceToSqrt(this IEntity from, IEntity to) => GetDistanceToSqrt(from.Location, to.Location);
+
+    public static double GetDistanceToSqrt(this IEntity entity, IPoint2D p)
+    {
+        var xDelta = entity.X - p.X;
+        var yDelta = entity.Y - p.Y;
+
+        return Math.Sqrt(xDelta * xDelta + yDelta * yDelta);
+    }
+
+    public static double GetDistanceToSqrt(this Point2D from, Point2D to)
+    {
+        var xDelta = from.m_X - to.m_X;
+        var yDelta = from.m_Y - to.m_Y;
+
+        return Math.Sqrt(xDelta * xDelta + yDelta * yDelta);
+    }
+
+    public static double GetDistanceToSqrt(this Point2D from, Point3D to)
+    {
+        var xDelta = from.m_X - to.m_X;
+        var yDelta = from.m_Y - to.m_Y;
+
+        return Math.Sqrt(xDelta * xDelta + yDelta * yDelta);
+    }
+
+    public static double GetDistanceToSqrt(this Point3D from, Point2D to)
+    {
+        var xDelta = from.m_X - to.m_X;
+        var yDelta = from.m_Y - to.m_Y;
+
+        return Math.Sqrt(xDelta * xDelta + yDelta * yDelta);
+    }
+
+    public static double GetDistanceToSqrt(this Point3D from, Point3D to)
+    {
+        var xDelta = from.m_X - to.m_X;
+        var yDelta = from.m_Y - to.m_Y;
+
+        return Math.Sqrt(xDelta * xDelta + yDelta * yDelta);
+    }
 }

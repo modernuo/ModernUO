@@ -8,18 +8,12 @@ namespace Server.Items;
 public partial class SmithHammer : BaseTool
 {
     [Constructible]
-    public SmithHammer() : base(0x13E3)
-    {
-        Weight = 8.0;
-        Layer = Layer.OneHanded;
-    }
+    public SmithHammer() : base(0x13E3) => Layer = Layer.OneHanded;
 
     [Constructible]
-    public SmithHammer(int uses) : base(uses, 0x13E3)
-    {
-        Weight = 8.0;
-        Layer = Layer.OneHanded;
-    }
+    public SmithHammer(int uses) : base(uses, 0x13E3) => Layer = Layer.OneHanded;
+
+    public override double DefaultWeight => 8.0;
 
     public override CraftSystem CraftSystem => DefBlacksmithy.CraftSystem;
 }

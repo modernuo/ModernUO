@@ -11,6 +11,7 @@ public partial class Gears : Item
     {
         Stackable = true;
         Amount = amount;
-        Weight = 1.0;
     }
+
+    public override double DefaultWeight => 1.0;
 }

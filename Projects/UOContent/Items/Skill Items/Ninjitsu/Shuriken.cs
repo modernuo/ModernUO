@@ -24,11 +24,9 @@ public partial class Shuriken : Item, ICraftable, INinjaAmmo
     private int _poisonCharges;
 
     [Constructible]
-    public Shuriken(int amount = 1) : base(0x27AC)
-    {
-        Weight = 1.0;
-        _usesRemaining = amount;
-    }
+    public Shuriken(int amount = 1) : base(0x27AC) => _usesRemaining = amount;
+
+    public override double DefaultWeight => 1.0;
 
     public int OnCraft(
         int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool,

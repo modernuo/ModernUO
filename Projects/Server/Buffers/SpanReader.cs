@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2025 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: SpanReader.cs                                                   *
  *                                                                       *
@@ -14,7 +14,6 @@
  *************************************************************************/
 
 using System.Buffers.Binary;
-using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -45,7 +44,7 @@ public ref struct SpanReader
     {
         if (Position >= Length)
         {
-            throw new OutOfMemoryException();
+            throw new EndOfStreamException("Cannot read past the end of the buffer.");
         }
 
         return _buffer[Position++];
@@ -62,7 +61,7 @@ public ref struct SpanReader
     {
         if (!BinaryPrimitives.TryReadInt16BigEndian(_buffer[Position..], out var value))
         {
-            throw new OutOfMemoryException();
+            throw new EndOfStreamException("Cannot read past the end of the buffer.");
         }
 
         Position += 2;
@@ -74,7 +73,7 @@ public ref struct SpanReader
     {
         if (!BinaryPrimitives.TryReadInt16LittleEndian(_buffer[Position..], out var value))
         {
-            throw new OutOfMemoryException();
+            throw new EndOfStreamException("Cannot read past the end of the buffer.");
         }
 
         Position += 2;
@@ -86,7 +85,7 @@ public ref struct SpanReader
     {
         if (!BinaryPrimitives.TryReadUInt16BigEndian(_buffer[Position..], out var value))
         {
-            throw new OutOfMemoryException();
+            throw new EndOfStreamException("Cannot read past the end of the buffer.");
         }
 
         Position += 2;
@@ -98,7 +97,7 @@ public ref struct SpanReader
     {
         if (!BinaryPrimitives.TryReadUInt16LittleEndian(_buffer[Position..], out var value))
         {
-            throw new OutOfMemoryException();
+            throw new EndOfStreamException("Cannot read past the end of the buffer.");
         }
 
         Position += 2;
@@ -110,7 +109,7 @@ public ref struct SpanReader
     {
         if (!BinaryPrimitives.TryReadInt32BigEndian(_buffer[Position..], out var value))
         {
-            throw new OutOfMemoryException();
+            throw new EndOfStreamException("Cannot read past the end of the buffer.");
         }
 
         Position += 4;
@@ -122,7 +121,7 @@ public ref struct SpanReader
     {
         if (!BinaryPrimitives.TryReadUInt32BigEndian(_buffer[Position..], out var value))
         {
-            throw new OutOfMemoryException();
+            throw new EndOfStreamException("Cannot read past the end of the buffer.");
         }
 
         Position += 4;
@@ -134,7 +133,7 @@ public ref struct SpanReader
     {
         if (!BinaryPrimitives.TryReadUInt32LittleEndian(_buffer[Position..], out var value))
         {
-            throw new OutOfMemoryException();
+            throw new EndOfStreamException("Cannot read past the end of the buffer.");
         }
 
         Position += 4;
@@ -146,7 +145,7 @@ public ref struct SpanReader
     {
         if (!BinaryPrimitives.TryReadInt64BigEndian(_buffer[Position..], out var value))
         {
-            throw new OutOfMemoryException();
+            throw new EndOfStreamException("Cannot read past the end of the buffer.");
         }
 
         Position += 8;
@@ -158,7 +157,7 @@ public ref struct SpanReader
     {
         if (!BinaryPrimitives.TryReadUInt64BigEndian(_buffer[Position..], out var value))
         {
-            throw new OutOfMemoryException();
+            throw new EndOfStreamException("Cannot read past the end of the buffer.");
         }
 
         Position += 8;
@@ -173,9 +172,9 @@ public ref struct SpanReader
             return "";
         }
 
-        int byteLength = encoding.GetByteLengthForEncoding();
+        var byteLength = encoding.GetByteLengthForEncoding();
 
-        bool isFixedLength = fixedLength > -1;
+        var isFixedLength = fixedLength > -1;
 
         var remaining = Remaining;
         int size;
@@ -184,7 +183,7 @@ public ref struct SpanReader
             size = fixedLength * byteLength;
             if (size > Remaining)
             {
-                throw new OutOfMemoryException();
+                throw new EndOfStreamException("Cannot read past the end of the buffer.");
             }
         }
         else
@@ -255,46 +254,28 @@ public ref struct SpanReader
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int Seek(int offset, SeekOrigin origin)
     {
-        Debug.Assert(
-            origin != SeekOrigin.End || offset <= 0,
-            "Attempting to seek to a position beyond capacity using SeekOrigin.End"
-        );
-
-        Debug.Assert(
-            origin != SeekOrigin.End || offset >= -_buffer.Length,
-            "Attempting to seek to a negative position using SeekOrigin.End"
-        );
-
-        Debug.Assert(
-            origin != SeekOrigin.Begin || offset >= 0,
-            "Attempting to seek to a negative position using SeekOrigin.Begin"
-        );
-
-        Debug.Assert(
-            origin != SeekOrigin.Begin || offset <= _buffer.Length,
-            "Attempting to seek to a position beyond the capacity using SeekOrigin.Begin"
-        );
-
-        Debug.Assert(
-            origin != SeekOrigin.Current || Position + offset >= 0,
-            "Attempting to seek to a negative position using SeekOrigin.Current"
-        );
-
-        Debug.Assert(
-            origin != SeekOrigin.Current || Position + offset <= _buffer.Length,
-            "Attempting to seek to a position beyond the capacity using SeekOrigin.Current"
-        );
-
-        return Position = Math.Max(0, origin switch
+        var newPosition = origin switch
         {
             SeekOrigin.Current => Position + offset,
             SeekOrigin.End     => _buffer.Length + offset,
             _                  => offset // Begin
-        });
+        };
+
+        if (newPosition < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(offset), "Seek operation would result in a negative position.");
+        }
+
+        if (newPosition > _buffer.Length)
+        {
+            throw new ArgumentOutOfRangeException(nameof(offset), $"Cannot seek to position {newPosition} beyond buffer length {_buffer.Length}.");
+        }
+
+        return Position = newPosition;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public int Read(Span<byte> bytes)
+    public int Read(scoped Span<byte> bytes)
     {
         if (bytes.Length == 0)
         {

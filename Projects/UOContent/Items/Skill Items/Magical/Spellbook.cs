@@ -116,13 +116,14 @@ public partial class Spellbook : Item, ICraftable, ISlayer, IAosItem
         _attributes = new AosAttributes(this);
         _skillBonuses = new AosSkillBonuses(this);
 
-        Weight = 3.0;
         Layer = Layer.OneHanded;
         LootType = LootType.Blessed;
 
         // The setter is calculating the spell count
         Content = content;
     }
+
+    public override double DefaultWeight => 3.0;
 
     public override bool DisplayWeight => false;
 
@@ -496,7 +497,7 @@ public partial class Spellbook : Item, ICraftable, ISlayer, IAosItem
 
     public override bool OnDragDrop(Mobile from, Item dropped)
     {
-        if (dropped is not SpellScroll { Amount: 1 } scroll)
+        if (dropped is not SpellScroll scroll)
         {
             return false;
         }
@@ -523,10 +524,10 @@ public partial class Spellbook : Item, ICraftable, ISlayer, IAosItem
 
             InvalidateProperties();
 
-            scroll.Delete();
+            scroll.Consume();
 
             from.SendSound(0x249, GetWorldLocation());
-            return true;
+            return scroll.Deleted;
         }
 
         return false;

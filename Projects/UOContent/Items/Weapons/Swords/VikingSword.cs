@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class VikingSword : BaseSword
     {
         [Constructible]
-        public VikingSword() : base(0x13B9) => Weight = 6.0;
+        public VikingSword() : base(0x13B9)
+        {
+        }
+
+        public override double DefaultWeight => 6.0;
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.CrushingBlow;
         public override WeaponAbility SecondaryAbility => WeaponAbility.ParalyzingBlow;

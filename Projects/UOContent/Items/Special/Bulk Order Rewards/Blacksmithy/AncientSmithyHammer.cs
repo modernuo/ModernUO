@@ -13,10 +13,11 @@ public partial class AncientSmithyHammer : BaseTool
     public AncientSmithyHammer(int bonus, int uses = 600) : base(uses, 0x13E4)
     {
         _bonus = bonus;
-        Weight = 8.0;
         Layer = Layer.OneHanded;
         Hue = 0x482;
     }
+
+    public override double DefaultWeight => 8.0;
 
     [SerializableProperty(0)]
     [CommandProperty(AccessLevel.GameMaster)]

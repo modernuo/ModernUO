@@ -5,7 +5,7 @@ namespace Server.Mobiles;
 
 public class ThiefAI : BaseAI
 {
-    private Item m_toDisarm;
+    private Item _toDisarm;
 
     public ThiefAI(BaseCreature m) : base(m)
     {
@@ -13,19 +13,13 @@ public class ThiefAI : BaseAI
 
     public override bool DoActionWander()
     {
-        if (m_Mobile.Debug)
-        {
-            m_Mobile.DebugSay("I have no combatant");
-        }
+        DebugSay("I have no combatant");
 
-        if (AcquireFocusMob(m_Mobile.RangePerception, m_Mobile.FightMode, false, false, true))
+        if (AcquireFocusMob(Mobile.RangePerception, Mobile.FightMode, false, false, true))
         {
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay($"I have detected {m_Mobile.FocusMob.Name}, attacking");
-            }
+            this.DebugSayFormatted($"I have detected {Mobile.FocusMob.Name}, attacking");
 
-            m_Mobile.Combatant = m_Mobile.FocusMob;
+            Mobile.Combatant = Mobile.FocusMob;
             Action = ActionType.Combat;
         }
         else
@@ -38,58 +32,46 @@ public class ThiefAI : BaseAI
 
     public override bool DoActionCombat()
     {
-        var combatant = m_Mobile.Combatant;
+        var combatant = Mobile.Combatant;
 
-        if (combatant == null || combatant.Deleted || combatant.Map != m_Mobile.Map || !combatant.Alive ||
+        if (combatant == null || combatant.Deleted || combatant.Map != Mobile.Map || !combatant.Alive ||
             combatant.IsDeadBondedPet)
         {
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay("My combatant is gone, so my guard is up");
-            }
+            DebugSay("My combatant is gone, so my guard is up");
 
             Action = ActionType.Guard;
             return true;
         }
 
-        if (!WalkMobileRange(combatant, 1, true, m_Mobile.RangeFight, m_Mobile.RangeFight))
+        if (!WalkMobileRange(combatant, 1, false, Mobile.RangeFight, Mobile.RangeFight))
         {
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay($"I should be closer to {combatant.Name}");
-            }
+            this.DebugSayFormatted($"I should be closer to {combatant.Name}");
         }
         else
         {
-            if (m_toDisarm?.IsChildOf(m_Mobile.Backpack) != false)
+            if (_toDisarm?.IsChildOf(Mobile.Backpack) != false)
             {
-                m_toDisarm = combatant.FindItemOnLayer(Layer.OneHanded) ?? combatant.FindItemOnLayer(Layer.TwoHanded);
+                _toDisarm = combatant.FindItemOnLayer(Layer.OneHanded) ?? combatant.FindItemOnLayer(Layer.TwoHanded);
             }
 
-            if (!Core.AOS && !m_Mobile.DisarmReady && m_Mobile.Skills.Wrestling.Value >= 80.0 &&
-                m_Mobile.Skills.ArmsLore.Value >= 80.0 && m_toDisarm != null)
+            if (!Core.AOS && !Mobile.DisarmReady && Mobile.Skills.Wrestling.Value >= 80.0 &&
+                Mobile.Skills.ArmsLore.Value >= 80.0 && _toDisarm != null)
             {
-                Fists.DisarmRequest(m_Mobile);
+                Fists.DisarmRequest(Mobile);
             }
 
-            if (m_toDisarm?.IsChildOf(combatant.Backpack) == true &&
-                Core.TickCount - m_Mobile.NextSkillTime >= 0 && m_toDisarm.LootType != LootType.Blessed &&
-                m_toDisarm.LootType != LootType.Newbied)
+            if (_toDisarm?.IsChildOf(combatant.Backpack) == true &&
+                Core.TickCount - Mobile.NextSkillTime >= 0 && _toDisarm.LootType != LootType.Blessed &&
+                _toDisarm.LootType != LootType.Newbied)
             {
-                if (m_Mobile.Debug)
-                {
-                    m_Mobile.DebugSay("Trying to steal from combatant.");
-                }
+                DebugSay("Trying to steal from combatant.");
 
-                m_Mobile.UseSkill(SkillName.Stealing);
-                m_Mobile.Target?.Invoke(m_Mobile, m_toDisarm);
+                Mobile.UseSkill(SkillName.Stealing);
+                Mobile.Target?.Invoke(Mobile, _toDisarm);
             }
-            else if (m_toDisarm == null && Core.TickCount - m_Mobile.NextSkillTime >= 0)
+            else if (_toDisarm == null && Core.TickCount - Mobile.NextSkillTime >= 0)
             {
-                if (m_Mobile.Debug)
-                {
-                    m_Mobile.DebugSay($"Trying to steal from {combatant.Name}.");
-                }
+                this.DebugSayFormatted($"Trying to steal from {combatant.Name}.");
 
                 bool didSteal = TryStealFrom<Bandage>(combatant);
                 didSteal = TryStealFrom<Nightshade>(combatant) || didSteal;
@@ -98,10 +80,7 @@ public class ThiefAI : BaseAI
 
                 if (!didSteal)
                 {
-                    if (m_Mobile.Debug)
-                    {
-                        m_Mobile.DebugSay($"I am going to flee from {combatant.Name}");
-                    }
+                    this.DebugSayFormatted($"I am going to flee from {combatant.Name}");
 
                     Action = ActionType.Flee;
                     return true;
@@ -111,16 +90,13 @@ public class ThiefAI : BaseAI
 
         // We are low on health, should we flee?
         // (10 + diff)% chance to flee
-        if (m_Mobile.Hits < m_Mobile.HitsMax * 20 / 100 && m_Mobile.CanFlee)
+        if (Mobile.Hits < Mobile.HitsMax * 20 / 100 && Mobile.CanFlee)
         {
-            var fleeChance = 10 + Math.Max(0, combatant.Hits - m_Mobile.Hits);
+            var fleeChance = 10 + Math.Max(0, combatant.Hits - Mobile.Hits);
 
             if (Utility.Random(0, 100) > fleeChance)
             {
-                if (m_Mobile.Debug)
-                {
-                    m_Mobile.DebugSay($"I am going to flee from {combatant.Name}");
-                }
+                this.DebugSayFormatted($"I am going to flee from {combatant.Name}");
 
                 Action = ActionType.Flee;
             }
@@ -128,12 +104,9 @@ public class ThiefAI : BaseAI
             return true;
         }
 
-        if (m_Mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, m_Mobile.Combatant))
+        if (Mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, Mobile.Combatant))
         {
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay($"I used my abilities on {m_Mobile.Combatant.Name}!");
-            }
+            this.DebugSayFormatted($"I used my abilities on {Mobile.Combatant.Name}!");
         }
         return true;
     }
@@ -143,8 +116,8 @@ public class ThiefAI : BaseAI
         Item steal = combatant.Backpack?.FindItemByType<T>();
         if (steal != null)
         {
-            m_Mobile.UseSkill(SkillName.Stealing);
-            m_Mobile.Target?.Invoke(m_Mobile, steal);
+            Mobile.UseSkill(SkillName.Stealing);
+            Mobile.Target?.Invoke(Mobile, steal);
             return true;
         }
 
@@ -153,14 +126,11 @@ public class ThiefAI : BaseAI
 
     public override bool DoActionGuard()
     {
-        if (AcquireFocusMob(m_Mobile.RangePerception, m_Mobile.FightMode, false, false, true))
+        if (AcquireFocusMob(Mobile.RangePerception, Mobile.FightMode, false, false, true))
         {
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay($"I have detected {m_Mobile.FocusMob.Name}, attacking");
-            }
+            this.DebugSayFormatted($"I have detected {Mobile.FocusMob.Name}, attacking");
 
-            m_Mobile.Combatant = m_Mobile.FocusMob;
+            Mobile.Combatant = Mobile.FocusMob;
             Action = ActionType.Combat;
         }
         else
@@ -173,18 +143,15 @@ public class ThiefAI : BaseAI
 
     public override bool DoActionFlee()
     {
-        if (m_Mobile.Hits > m_Mobile.HitsMax / 2)
+        if (Mobile.Hits > Mobile.HitsMax / 2)
         {
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay("I am stronger now, so I will continue fighting");
-            }
+            DebugSay("I am stronger now, so I will continue fighting");
 
             Action = ActionType.Combat;
         }
         else
         {
-            m_Mobile.FocusMob = m_Mobile.Combatant;
+            Mobile.FocusMob = Mobile.Combatant;
             base.DoActionFlee();
         }
 

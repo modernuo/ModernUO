@@ -6,7 +6,11 @@ namespace Server.Items;
 public partial class Buckler : BaseShield
 {
     [Constructible]
-    public Buckler() : base(0x1B73) => Weight = 5.0;
+    public Buckler() : base(0x1B73)
+    {
+    }
+
+    public override double DefaultWeight => 5.0;
 
     public override int BasePhysicalResistance => 0;
     public override int BaseFireResistance => 0;

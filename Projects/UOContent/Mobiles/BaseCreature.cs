@@ -56,11 +56,12 @@ namespace Server.Mobiles
         Attack, // "(All/Name) kill",
 
         // "(All/Name) attack"  All or the specified pet(s) currently under your control attack the target.
-        Patrol,  // "(Name) patrol"  Roves between two or more guarded targets.
-        Release, // "(Name) release"  Releases pet back into the wild (removes "tame" status).
-        Stay,    // "(All/Name) stay" All or the specified pet(s) will stop and stay in current spot.
-        Stop,    // "(All/Name) stop Cancels any current orders to attack, guard or follow.
-        Transfer // "(Name) transfer" Transfers complete ownership to targeted player.
+        Patrol,   // "(Name) patrol"  Roves between two or more guarded targets.
+        Release,  // "(Name) release"  Releases pet back into the wild (removes "tame" status).
+        Stay,     // "(All/Name) stay" All or the specified pet(s) will stop and stay in current spot.
+        Stop,     // "(All/Name) stop Cancels any current orders to attack, guard or follow.
+        Transfer, // "(Name) transfer" Transfers complete ownership to targeted player.
+        Rename    // "(Name) rename"  Changes the name of the pet.
     }
 
     [Flags]
@@ -130,30 +131,6 @@ namespace Server.Mobiles
         }
 
         public int CompareTo(DamageStore ds) => (ds?.m_Damage ?? 0).CompareTo(m_Damage);
-    }
-
-    [AttributeUsage(AttributeTargets.Class)]
-    public class FriendlyNameAttribute : Attribute
-    {
-        public FriendlyNameAttribute(TextDefinition friendlyName) => FriendlyName = friendlyName;
-        // future use: Talisman 'Protection/Bonus vs. Specific Creature
-
-        public TextDefinition FriendlyName { get; }
-
-        public static TextDefinition GetFriendlyNameFor(Type t)
-        {
-            if (t.IsDefined(typeof(FriendlyNameAttribute), false))
-            {
-                var objs = t.GetCustomAttributes(typeof(FriendlyNameAttribute), false);
-
-                if (objs.Length > 0)
-                {
-                    return (objs[0] as FriendlyNameAttribute)?.FriendlyName ?? "";
-                }
-            }
-
-            return t.Name;
-        }
     }
 
     public abstract partial class BaseCreature : Mobile, IHonorTarget, IQuestGiver
@@ -364,7 +341,11 @@ namespace Server.Mobiles
 
             FightMode = mode;
 
-            ResetSpeeds();
+            GetSpeeds(out var activeSpeed, out var passiveSpeed);
+
+            ActiveSpeed = activeSpeed;
+            PassiveSpeed = passiveSpeed;
+            CurrentSpeed = passiveSpeed;
 
             m_Team = 0;
 
@@ -925,8 +906,6 @@ namespace Server.Mobiles
 
         public virtual bool ReturnsToHome =>
             SeeksHome && Home != Point3D.Zero && !m_ReturnQueued && !Controlled && !Summoned;
-
-        public virtual bool ScaleSpeedByDex => NPCSpeeds.ScaleSpeedByDex && !IsMonster;
 
         // used for deleting untamed creatures [in houses]
         [CommandProperty(AccessLevel.GameMaster)]
@@ -1514,15 +1493,6 @@ namespace Server.Mobiles
             if (isTeleport)
             {
                 AIObject?.OnTeleported();
-            }
-        }
-
-        public override void OnRawDexChange(int oldValue)
-        {
-            // This only really happens for pets or when a GM modifies a mob.
-            if (oldValue != RawDex && ScaleSpeedByDex)
-            {
-                ResetSpeeds();
             }
         }
 
@@ -2258,7 +2228,7 @@ namespace Server.Mobiles
 
         public void ChangeAIType(AIType newAI)
         {
-            AIObject?.m_Timer.Stop();
+            AIObject?._timer.Stop();
 
             if (ForcedAI != null)
             {
@@ -2381,7 +2351,7 @@ namespace Server.Mobiles
         {
             if (AIObject != null)
             {
-                AIObject.m_Timer?.Stop();
+                AIObject._timer?.Stop();
                 AIObject = null;
             }
 
@@ -2414,13 +2384,6 @@ namespace Server.Mobiles
             base.OnAfterDelete();
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void DebugSay(string text)
-        {
-            // Moved the debug check to implementation layer so we can avoid string formatting when we do not need it
-            PublicOverheadMessage(MessageType.Regular, 41, false, text);
-        }
-
         /*
          * This function can be overridden.. so a "Strongest" mobile, can have a different definition depending
          * on who check for value
@@ -2439,7 +2402,7 @@ namespace Server.Mobiles
             {
                 FightMode.Strongest => m.Skills.Tactics.Value + m.Str, // returns strongest mobile
                 FightMode.Weakest   => -m.Hits,                        // returns weakest mobile
-                _                   => -GetDistanceToSqrt(m)
+                _                   => -this.GetDistanceToSqrt(m)
             };
         }
 
@@ -2461,7 +2424,7 @@ namespace Server.Mobiles
 
         public bool IsHurt() => Hits != HitsMax;
 
-        public double GetHomeDistance() => GetDistanceToSqrt(m_Home);
+        public double GetHomeDistance() => this.GetDistanceToSqrt(m_Home);
 
         public virtual int GetTeamSize(int iRange)
         {
@@ -2498,7 +2461,7 @@ namespace Server.Mobiles
                 }
                 else
                 {
-                    DebugSay("I'm being attacked but my master told me not to fight.");
+                    AIObject.DebugSay("I'm being attacked but my master told me not to fight.");
                     Warmode = false;
                     return;
                 }
@@ -2663,13 +2626,10 @@ namespace Server.Mobiles
 
                 if (ai.Defender == target)
                 {
-                    if (m_ControlMaster?.Player == true && m_ControlMaster.CanBeHarmful(target, false))
+                    var master = GetMaster();
+                    if (master?.Player == true && master.CanBeHarmful(target, false))
                     {
-                        m_ControlMaster.DoHarmful(target, true);
-                    }
-                    else if (m_SummonMaster?.Player == true && m_SummonMaster.CanBeHarmful(target, false))
-                    {
-                        m_SummonMaster.DoHarmful(target, true);
+                        master.DoHarmful(target, true);
                     }
 
                     return;
@@ -2716,19 +2676,7 @@ namespace Server.Mobiles
 
             if (Body.IsHuman)
             {
-                switch (Utility.Random(2))
-                {
-                    case 0:
-                        {
-                            CheckedAnimate(5, 5, 1, true, true, 1);
-                            break;
-                        }
-                    case 1:
-                        {
-                            CheckedAnimate(6, 5, 1, true, false, 1);
-                            break;
-                        }
-                }
+                CheckedAnimate(Utility.RandomBool() ? 5 : 6, 5, 1, true, false, 1);
             }
             else if (Body.IsAnimal)
             {
@@ -2753,19 +2701,7 @@ namespace Server.Mobiles
             }
             else if (Body.IsMonster)
             {
-                switch (Utility.Random(2))
-                {
-                    case 0:
-                        {
-                            CheckedAnimate(17, 5, 1, true, false, 1);
-                            break;
-                        }
-                    case 1:
-                        {
-                            CheckedAnimate(18, 5, 1, true, false, 1);
-                            break;
-                        }
-                }
+                CheckedAnimate(Utility.RandomBool() ? 17 : 18, 5, 1, true, false, 1);
             }
 
             PlaySound(GetIdleSound());
@@ -3543,7 +3479,6 @@ namespace Server.Mobiles
             }
 
             Guild = null;
-            ResetSpeeds();
 
             Delta(MobileDelta.Noto);
 
@@ -4931,15 +4866,6 @@ namespace Server.Mobiles
         public virtual void GetSpeeds(out double activeSpeed, out double passiveSpeed)
         {
             NPCSpeeds.GetSpeeds(this, out activeSpeed, out passiveSpeed);
-        }
-
-        public void ResetSpeeds(bool currentUseActive = false)
-        {
-            GetSpeeds(out var activeSpeed, out var passiveSpeed);
-
-            ActiveSpeed = activeSpeed;
-            PassiveSpeed = passiveSpeed;
-            CurrentSpeed = currentUseActive ? activeSpeed : passiveSpeed;
         }
 
         public virtual void DropBackpack()
