@@ -494,8 +494,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
                 info.m_Weight = value;
             }
 
-            var newPileWeight = PileWeight;
-            UpdateTotal(this, TotalType.Weight, newPileWeight - (int)Math.Ceiling(oldWeight * Amount));
+            UpdateTotal(this, TotalType.Weight, PileWeight - (int)Math.Ceiling(oldWeight * Amount));
             InvalidateProperties();
         }
     }
