@@ -215,8 +215,8 @@ public class MobileByDistanceEnumeratorTests
         var center = new Point3D(700, 700, 0);
         const int range = 5;
 
-        var player = new TestPlayerMobile((Serial)Utility.RandomMinMax(0x100u, 0xFFFu));
-        var npc = new TestMobile((Serial)Utility.RandomMinMax(0x100u, 0xFFFu));
+        var player = new TestPlayerMobile(World.NewMobile);
+        var npc = new TestMobile(World.NewMobile);
 
         try
         {
@@ -440,7 +440,7 @@ public class MobileByDistanceEnumeratorTests
 
     private static TestMobile CreateMobile(Map map, Point3D location)
     {
-        var mobile = new TestMobile((Serial)Utility.RandomMinMax(0x100u, 0xFFFu));
+        var mobile = new TestMobile(World.NewMobile);
         mobile.DefaultMobileInit();
         mobile.MoveToWorld(location, map);
         return mobile;
