@@ -274,7 +274,7 @@ public class TrackingTests
 
     private static PlayerMobile CreatePlayerMobile(Map map, Point3D location)
     {
-        var mobile = new PlayerMobile((Serial)Utility.RandomMinMax(0x1000u, 0xFFFFu));
+        var mobile = new PlayerMobile(World.NewMobile);
         mobile.DefaultMobileInit();
         mobile.MoveToWorld(location, map);
         return mobile;
@@ -282,7 +282,7 @@ public class TrackingTests
 
     private static TestAnimal CreateAnimal(Map map, Point3D location)
     {
-        var animal = new TestAnimal((Serial)Utility.RandomMinMax(0x1000u, 0xFFFFu));
+        var animal = new TestAnimal(World.NewMobile);
         animal.DefaultMobileInit();
         animal.MoveToWorld(location, map);
         return animal;

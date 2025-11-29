@@ -247,7 +247,7 @@ public class MobileEnumeratorTests
 
     private static Mobile CreateMobile(Map map, Point3D location)
     {
-        var mobile = new Mobile((Serial)Utility.RandomMinMax(0x100u, 0xFFFu));
+        var mobile = new Mobile(World.NewMobile);
         mobile.DefaultMobileInit();
         mobile.MoveToWorld(location, map);
         return mobile;

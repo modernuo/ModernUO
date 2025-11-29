@@ -215,8 +215,8 @@ public class ItemByDistanceEnumeratorTests
         var center = new Point3D(700, 700, 0);
         const int range = 5;
 
-        var testItem2 = new TestItem2((Serial)Utility.RandomMinMax(0x100u, 0xFFFu));
-        var testItem = new TestItem((Serial)Utility.RandomMinMax(0x100u, 0xFFFu));
+        var testItem2 = new TestItem2(World.NewItem);
+        var testItem = new TestItem(World.NewItem);
 
         try
         {
@@ -438,7 +438,7 @@ public class ItemByDistanceEnumeratorTests
 
     private static TestItem CreateItem(Map map, Point3D location)
     {
-        var Item = new TestItem((Serial)Utility.RandomMinMax(0x100u, 0xFFFu));
+        var Item = new TestItem(World.NewItem);
         Item.MoveToWorld(location, map);
         return Item;
     }
