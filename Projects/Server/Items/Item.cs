@@ -490,8 +490,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
             }
             else
             {
-                info ??= AcquireCompactInfo();
-                info.m_Weight = value;
+                (info ?? AcquireCompactInfo()).m_Weight = value;
             }
 
             UpdateTotal(this, TotalType.Weight, PileWeight - (int)Math.Ceiling(oldWeight * Amount));
