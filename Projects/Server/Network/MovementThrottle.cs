@@ -14,18 +14,33 @@
  *************************************************************************/
 
 using System;
+using System.Runtime.CompilerServices;
 
 namespace Server.Network;
 
 public static class MovementThrottle
 {
-    private static long _movementThrottleReset; // 1 second
-    private static long _throttleThreshold; // 400 milliseconds
+    private class DebtState
+    {
+        public long TimeDebt;
+        public long LastDecayTime;
+        public long LastMovementTime;
+    }
+
+    private static readonly ConditionalWeakTable<NetState, DebtState> _debtStates = new();
+    private static long _maxJitter;
+    private static long _maxTimeDebt;
+    private static long _debtDecayTime;
+    private static long _debtDecayAmount;
+    private static long _idleResetThreshold;
 
     public static void Configure()
     {
-        _movementThrottleReset = ServerConfiguration.GetOrUpdateSetting("movement.throttleReset", 1000);
-        _throttleThreshold = ServerConfiguration.GetOrUpdateSetting("movement.throttleThreshold", 400);
+        _maxJitter = ServerConfiguration.GetOrUpdateSetting("movement.maxJitter", 75);
+        _maxTimeDebt = ServerConfiguration.GetOrUpdateSetting("movement.maxTimeDebt", 100);
+        _debtDecayTime = ServerConfiguration.GetOrUpdateSetting("movement.debtDecayTime", 500);
+        _debtDecayAmount = ServerConfiguration.GetOrUpdateSetting("movement.debtDecayAmount", 100);
+        _idleResetThreshold = ServerConfiguration.GetOrUpdateSetting("movement.idleResetThreshold", 1000);
     }
 
     public static unsafe void Initialize()
@@ -36,34 +51,62 @@ public static class MovementThrottle
     public static bool Throttle(int packetId, NetState ns)
     {
         var from = ns.Mobile;
-
         if (from?.Deleted != false || from.AccessLevel > AccessLevel.Player)
         {
             return false;
         }
 
         long now = Core.TickCount;
-        long credit = ns._movementCredit;
         long nextMove = ns._nextMovementTime;
 
-        // Reset system if idle for more than 1 second
-        if (now - nextMove + _movementThrottleReset > 0)
+        var debt = _debtStates.GetOrCreateValue(ns);
+        
+        // Initialize first use
+        if (debt.LastMovementTime == 0)
         {
-            ns._movementCredit = 0;
+            debt.LastDecayTime = now;
+            debt.LastMovementTime = now;
+        }
+
+        // Reset debt if idle
+        if (now - debt.LastMovementTime > _idleResetThreshold)
+        {
+            debt.TimeDebt = 0;
+            debt.LastDecayTime = now;
             ns._nextMovementTime = now;
+        }
+
+        // Decay debt over time
+        long timeSinceDecay = now - debt.LastDecayTime;
+        if (timeSinceDecay >= _debtDecayTime)
+        {
+            long periods = timeSinceDecay / _debtDecayTime;
+            debt.TimeDebt = Math.Max(0, debt.TimeDebt - (periods * _debtDecayAmount));
+            debt.LastDecayTime += periods * _debtDecayTime;
+        }
+
+        // First move or past allowed time
+        if (nextMove == 0 || now >= nextMove)
+        {
+            debt.TimeDebt = Math.Max(0, debt.TimeDebt - Math.Max(0, now - nextMove));
+            debt.LastMovementTime = now;
             return false;
         }
 
-        long cost = nextMove - now;
-
-        if (credit < cost)
+        // Add debt for early movement beyond jitter tolerance
+        long early = nextMove - now;
+        if (early > _maxJitter)
         {
-            // Not enough credit, therefore throttled
+            debt.TimeDebt = Math.Min(_maxTimeDebt * 10, debt.TimeDebt + (early - _maxJitter));
+        }
+
+        // Block if debt exceeds threshold
+        if (debt.TimeDebt > _maxTimeDebt)
+        {
             return true;
         }
 
-        // On the next event loop, the player receives up to 400ms in grace latency
-        ns._movementCredit = Math.Min(_throttleThreshold, credit - cost);
+        debt.LastMovementTime = now;
         return false;
     }
 }
