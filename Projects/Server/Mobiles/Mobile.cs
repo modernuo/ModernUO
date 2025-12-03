@@ -8065,25 +8065,21 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     public void GetMobilesInRange<T>(int range, Span<T> buffer, out int count) where T : Mobile
     {
         count = 0;
-
+    
         if (m_Map == null)
         {
             return;
         }
-
-        var tempList = new List<(T mobile, double distance)>();
+    
         foreach (var mobile in m_Map.GetMobilesInRange<T>(m_Location, range))
         {
-            var distance = GetDistanceToSqrt(mobile);
-            tempList.Add((mobile, distance));
-        }
-
-        tempList.Sort((a, b) => a.distance.CompareTo(b.distance));
-
-        count = Math.Min(tempList.Count, buffer.Length);
-        for (int i = 0; i < count; i++)
-        {
-            buffer[i] = tempList[i].mobile;
+            if (count >= buffer.Length)
+            {
+                break;
+            }
+    
+            buffer[count] = mobile;
+            count++;
         }
     }
 
