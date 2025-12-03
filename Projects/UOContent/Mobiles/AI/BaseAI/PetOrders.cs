@@ -266,6 +266,8 @@ public abstract partial class BaseAI
             return true;
         }
 
+        Action = ActionType.Guard;
+
         FindCombatant();
 
         if (IsValidCombatant(Mobile.Combatant))
