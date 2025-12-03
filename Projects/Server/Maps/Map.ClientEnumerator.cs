@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2025 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: Map.ClientEnumerator.cs                                         *
  *                                                                       *
@@ -46,8 +46,12 @@ public partial class Map
         GetClientsInRange(p.m_X, p.m_Y, range);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public ClientBoundsEnumerable GetClientsInRange(int x, int y, int range) =>
-        GetClientsInBounds(new Rectangle2D(x - range, y - range, range * 2 + 1, range * 2 + 1));
+    public ClientBoundsEnumerable GetClientsInRange(int x, int y, int range)
+    {
+        var clampedRange = Math.Max(0, range);
+        var edge = clampedRange * 2 + 1;
+        return GetClientsInBounds(new Rectangle2D(x - clampedRange, y - clampedRange, edge, edge));
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ClientBoundsEnumerable GetClientsInBounds(Rectangle2D bounds, bool makeBoundsInclusive = false) =>
@@ -76,6 +80,7 @@ public partial class Map
 
     public ref struct ClientAtEnumerator
     {
+        private readonly Map _map;
         private bool _started;
         private Point2D _location;
         private ref readonly ValueLinkList<NetState> _linkList;
@@ -85,9 +90,15 @@ public partial class Map
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ClientAtEnumerator(Map map, Point2D loc)
         {
+            _map = map;
             _started = false;
             _location = loc;
-            _linkList = ref map.GetSector(loc.m_X, loc.m_Y).Clients;
+
+            if (map != null)
+            {
+                _linkList = ref map.GetSector(loc.m_X, loc.m_Y).Clients;
+            }
+
             _version = 0;
             _current = null;
         }
@@ -95,6 +106,11 @@ public partial class Map
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool MoveNext()
         {
+            if (_map == null)
+            {
+                return false;
+            }
+
             ref var loc = ref _location;
             NetState current;
             Mobile m;
@@ -105,7 +121,7 @@ public partial class Map
                 _started = true;
                 _version = _linkList.Version;
 
-                m = current.Mobile;
+                m = current?.Mobile;
                 if (m?.Deleted == false && m.X == loc.m_X && m.Y == loc.m_Y)
                 {
                     _current = current;
@@ -125,7 +141,7 @@ public partial class Map
             {
                 current = current.Next;
 
-                m = current.Mobile;
+                m = current?.Mobile;
                 if (m?.Deleted == false && m.X == loc.m_X && m.Y == loc.m_Y)
                 {
                     _current = current;
@@ -163,10 +179,10 @@ public partial class Map
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public MobileEnumerator GetEnumerator() => new(_map, _bounds, _makeBoundsInclusive);
+        public ClientBoundsEnumerator GetEnumerator() => new(_map, _bounds, _makeBoundsInclusive);
     }
 
-    public ref struct MobileEnumerator
+    public ref struct ClientBoundsEnumerator
     {
         private readonly Map _map;
         private readonly int _sectorStartX;
@@ -182,7 +198,7 @@ public partial class Map
         private NetState _current;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public MobileEnumerator(Map map, Rectangle2D bounds, bool makeBoundsInclusive)
+        public ClientBoundsEnumerator(Map map, Rectangle2D bounds, bool makeBoundsInclusive)
         {
             _map = map;
             _bounds = bounds;
@@ -220,7 +236,6 @@ public partial class Map
                 throw new InvalidOperationException(CollectionThrowStrings.InvalidOperation_EnumFailedVersion);
             }
 
-            Mobile m;
             NetState current = _current;
             ref Rectangle2D bounds = ref _bounds;
             var currentSectorX = _currentSectorX;
@@ -255,7 +270,7 @@ public partial class Map
                     current = _linkList._first;
                 }
 
-                m = current.Mobile;
+                var m = current.Mobile;
                 if (m?.Deleted == false && bounds.Contains(m.Location))
                 {
                     _current = current;

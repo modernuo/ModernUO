@@ -271,6 +271,12 @@ public static class ServerConfiguration
             _settings.Listeners.AddRange(ServerConfigurationPrompts.GetListeners());
         }
 
+        if (!_settings.Settings.ContainsKey("serverListing.serverName"))
+        {
+            updated = true;
+            _settings.Settings["serverListing.serverName"] = ServerConfigurationPrompts.GetServerName();
+        }
+
         // We have a known, current expansion, so we can deserialize it from Configuration
         if (!ExpansionInfo.LoadConfiguration(out var currentExpansion))
         {
