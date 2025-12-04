@@ -266,6 +266,8 @@ public abstract partial class BaseAI
             return true;
         }
 
+        Action = ActionType.Guard;
+
         FindCombatant();
 
         if (IsValidCombatant(Mobile.Combatant))
@@ -340,23 +342,57 @@ public abstract partial class BaseAI
 
     private void FindCombatant()
     {
+        var controlMaster = Mobile.ControlMaster;
+        
         foreach (var aggr in Mobile.GetMobilesInRange(Mobile.RangePerception))
         {
-            if (!Mobile.CanSee(aggr) || aggr.Combatant != Mobile || aggr.IsDeadBondedPet || !aggr.Alive)
+            if (!Mobile.CanSee(aggr) || aggr.IsDeadBondedPet || !aggr.Alive)
             {
                 continue;
             }
 
-            if (Mobile.InLOS(aggr))
+            bool isAttackingPet = aggr.Combatant == Mobile;
+            bool isAttackingMaster = controlMaster != null && aggr.Combatant == controlMaster;
+            
+            if (isAttackingPet || isAttackingMaster)
             {
-                Mobile.ControlTarget = aggr;
-                Mobile.ControlOrder = OrderType.Attack;
-                Mobile.Combatant = aggr;
+                if (Mobile.InLOS(aggr))
+                {
+                    Mobile.ControlTarget = aggr;
+                    Mobile.ControlOrder = OrderType.Attack;
+                    Mobile.Combatant = aggr;
 
-                this.DebugSayFormatted($"{aggr.Name} is still alive. Resuming attacks...");
+                    var target = isAttackingMaster ? "master" : "me";
+                    this.DebugSayFormatted($"{aggr.Name} is attacking my {target}! Engaging...");
 
-                Think();
-                break;
+                    Think();
+                    break;
+                }
+            }
+        }
+
+        if (controlMaster?.Aggressors != null)
+        {
+            for (var i = 0; i < controlMaster.Aggressors.Count; i++)
+            {
+                var aggressor = controlMaster.Aggressors[i].Attacker;
+                
+                if (aggressor?.Deleted != false || !aggressor.Alive || aggressor.IsDeadBondedPet)
+                {
+                    continue;
+                }
+                
+                if (Mobile.InRange(aggressor, Mobile.RangePerception) && Mobile.CanSee(aggressor) && Mobile.InLOS(aggressor))
+                {
+                    Mobile.ControlTarget = aggressor;
+                    Mobile.ControlOrder = OrderType.Attack;
+                    Mobile.Combatant = aggressor;
+
+                    this.DebugSayFormatted($"{aggressor.Name} recently attacked my master! Retaliating...");
+
+                    Think();
+                    break;
+                }
             }
         }
     }
