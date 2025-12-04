@@ -25,7 +25,7 @@ public sealed class PageResponseGump : StaticGump<PageResponseGump>
         // <CENTER><U>Ultima Online Help Response</U></CENTER>
         builder.AddHtmlLocalized(150, 40, 360, 40, 1062610);
 
-        builder.AddHtml(80, 90, 480, 290, $"{_name} tells {_from.Name}: {_text}", true, true);
+        builder.AddHtml(80, 90, 480, 290, $"{_name} tells {_from.Name}: {_text}", background: true, scrollbar: true);
 
         // Clicking the OKAY button will remove the response you have received.
         builder.AddHtmlLocalized(80, 390, 480, 40, 1062611);

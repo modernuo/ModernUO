@@ -131,7 +131,7 @@ public sealed class VirtualCheckGump : Gump, IVirtualCheckGump
         AddImage(10, 8, 113);
         AddImage(360, 8, 113);
 
-        AddHtml(40, 15, 320, 20, $"BANK OF {User.RawName.ToUpper()}".Center(0x2F4F4F));
+        AddHtml(40, 15, 320, 20, Html.Center($"BANK OF {User.RawName.ToUpper()}", 0x2F4F4F));
 
         // Platinum Row
         AddBackground(15, 60, 175, 20, 9300);

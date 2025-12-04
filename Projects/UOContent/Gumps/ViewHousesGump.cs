@@ -64,7 +64,7 @@ namespace Server.Gumps
 
                     var name = FindHouseName(list[i]);
 
-                    AddHtml(15, 40 + i % 15 * 20, 20, 20, $"{i + 1}.".Color(White));
+                    AddHtml(15, 40 + i % 15 * 20, 20, 20, Html.Color($"{i + 1}.", White));
 
                     if (name.Number > 0)
                     {

@@ -1035,7 +1035,7 @@ namespace Server.Gumps
 
                         for (int i = 0, index = listPage * 6; i < 6 && index >= 0 && index < m_List.Count; ++i, ++index)
                         {
-                            AddHtml(18, 243 + i * 22, 114, 20, m_List[index].ToString().Color(LabelColor32));
+                            AddHtml(18, 243 + i * 22, 114, 20, Html.Color($"{m_List[index]}", LabelColor32));
                             AddButton(130, 242 + i * 22, 0xFA2, 0xFA4, GetButtonID(8, index));
                             AddButton(160, 242 + i * 22, 0xFA8, 0xFAA, GetButtonID(9, index));
                             AddButton(190, 242 + i * 22, 0xFB1, 0xFB3, GetButtonID(10, index));
@@ -1237,7 +1237,7 @@ namespace Server.Gumps
                             break;
                         }
 
-                        AddHtml(10, 125, 400, 20, firewallEntry.ToString().Center(LabelColor32));
+                        AddHtml(10, 125, 400, 20, Html.Center($"{firewallEntry}", LabelColor32));
 
                         AddButtonLabeled(20, 150, GetButtonID(6, 3), "Remove");
 
