@@ -384,15 +384,23 @@ public abstract partial class BaseAI
 
         if (controlMaster?.Aggressors != null)
         {
-            for (var i = 0; i < controlMaster.Aggressors.Count; i++)
+            var aggressors = controlMaster.Aggressors;
+
+            for (var i = aggressors.Count - 1; i >= 0; i--)
             {
-                var aggressor = controlMaster.Aggressors[i].Attacker;
-                
+                if (i >= aggressors.Count || i < 0)
+                {
+                    continue;
+                }
+
+                var aggressorInfo = aggressors[i];
+                var aggressor = aggressorInfo?.Attacker;
+
                 if (aggressor?.Deleted != false || !aggressor.Alive || aggressor.IsDeadBondedPet)
                 {
                     continue;
                 }
-                
+
                 if (Mobile.InRange(aggressor, Mobile.RangePerception) && Mobile.CanSee(aggressor) && Mobile.InLOS(aggressor))
                 {
                     Mobile.ControlTarget = aggressor;
@@ -402,7 +410,7 @@ public abstract partial class BaseAI
                     this.DebugSayFormatted($"{aggressor.Name} recently attacked my master! Retaliating...");
 
                     Think();
-                    break;
+                    return;
                 }
             }
         }
