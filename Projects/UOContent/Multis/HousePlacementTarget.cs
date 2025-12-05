@@ -5,9 +5,9 @@ namespace Server.Multis.Deeds;
 
 public class HousePlacementTarget : MultiTarget
 {
-    private readonly HouseDeed m_Deed;
+    private readonly HouseDeed _deed;
 
-    public HousePlacementTarget(HouseDeed deed) : base(deed.MultiID, deed.Offset) => m_Deed = deed;
+    public HousePlacementTarget(HouseDeed deed) : base(deed.MultiID, deed.Offset) => _deed = deed;
 
     protected override void OnTarget(Mobile from, object o)
     {
@@ -27,7 +27,7 @@ public class HousePlacementTarget : MultiTarget
 
         if (from.AccessLevel >= AccessLevel.GameMaster || reg.AllowHousing(from, p))
         {
-            m_Deed.OnPlacement(from, p);
+            _deed.OnPlacement(from, p);
         }
         else if (reg.IsPartOf<TempNoHousingRegion>())
         {
