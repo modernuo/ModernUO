@@ -13,6 +13,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.  *
  ************************************************************************/
 
+using Server.Collections;
+
 namespace Server.Mobiles;
 
 public abstract partial class BaseAI
@@ -20,19 +22,19 @@ public abstract partial class BaseAI
     public virtual bool Obey() =>
         !Mobile.Deleted && Mobile.ControlOrder switch
         {
-            OrderType.None     => DoOrderNone(),
-            OrderType.Come     => DoOrderCome(),
-            OrderType.Drop     => DoOrderDrop(),
-            OrderType.Friend   => DoOrderFriend(),
+            OrderType.None => DoOrderNone(),
+            OrderType.Come => DoOrderCome(),
+            OrderType.Drop => DoOrderDrop(),
+            OrderType.Friend => DoOrderFriend(),
             OrderType.Unfriend => DoOrderUnfriend(),
-            OrderType.Guard    => DoOrderGuard(),
-            OrderType.Attack   => DoOrderAttack(),
-            OrderType.Release  => DoOrderRelease(),
-            OrderType.Stay     => DoOrderStay(),
-            OrderType.Stop     => DoOrderStop(),
-            OrderType.Follow   => DoOrderFollow(),
+            OrderType.Guard => DoOrderGuard(),
+            OrderType.Attack => DoOrderAttack(),
+            OrderType.Release => DoOrderRelease(),
+            OrderType.Stay => DoOrderStay(),
+            OrderType.Stop => DoOrderStop(),
+            OrderType.Follow => DoOrderFollow(),
             OrderType.Transfer => DoOrderTransfer(),
-            _                  => false
+            _ => false
         };
 
     public virtual bool DoOrderNone()
@@ -326,7 +328,8 @@ public abstract partial class BaseAI
         return true;
     }
 
-    private bool IsInvalidControlTarget(Mobile target) => target?.Deleted != false || target.Map != Mobile.Map || !target.Alive || target.IsDeadBondedPet;
+    private bool IsInvalidControlTarget(Mobile target) => target?.Deleted != false || target.Map != Mobile.Map 
+        || !target.Alive || target.IsDeadBondedPet;
 
     private void HandleInvalidControlTarget()
     {
@@ -343,17 +346,25 @@ public abstract partial class BaseAI
     private void FindCombatant()
     {
         var controlMaster = Mobile.ControlMaster;
-        
-        foreach (var aggr in Mobile.GetMobilesInRange(Mobile.RangePerception))
+        using var queue = PooledRefQueue<Mobile>.Create();
+
+        foreach (var mobile in Mobile.GetMobilesInRange(Mobile.RangePerception))
         {
-            if (!Mobile.CanSee(aggr) || aggr.IsDeadBondedPet || !aggr.Alive)
+            queue.Enqueue(mobile);
+        }
+
+        while (queue.Count > 0)
+        {
+            var aggr = queue.Dequeue();
+
+            if (aggr?.Deleted != false || !Mobile.CanSee(aggr) || aggr.IsDeadBondedPet || !aggr.Alive)
             {
                 continue;
             }
 
             bool isAttackingPet = aggr.Combatant == Mobile;
             bool isAttackingMaster = controlMaster != null && aggr.Combatant == controlMaster;
-            
+
             if (isAttackingPet || isAttackingMaster)
             {
                 if (Mobile.InLOS(aggr))
@@ -366,7 +377,7 @@ public abstract partial class BaseAI
                     this.DebugSayFormatted($"{aggr.Name} is attacking my {target}! Engaging...");
 
                     Think();
-                    break;
+                    return;
                 }
             }
         }
