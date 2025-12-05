@@ -1,147 +1,117 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.Serialization;
 using Server.Items;
 
-namespace Server.Multis
+namespace Server.Multis;
+
+[SerializationGenerator(0, false)]
+public partial class PreviewHouse : BaseMulti
 {
-    public class PreviewHouse : BaseMulti
+    [SerializableField(0)]
+    private List<Item> _previewComponents;
+
+    private Timer _timer;
+
+    public PreviewHouse(int multiID) : base(multiID)
     {
-        private List<Item> m_Components;
-        private Timer m_Timer;
+        var mcl = Components;
 
-        public PreviewHouse(int multiID) : base(multiID)
+        for (var i = 1; i < mcl.List.Length; ++i)
         {
-            m_Components = new List<Item>();
+            var entry = mcl.List[i];
 
-            var mcl = Components;
-
-            for (var i = 1; i < mcl.List.Length; ++i)
+            if (entry.Flags == 0)
             {
-                var entry = mcl.List[i];
+                Item item = new Static(entry.ItemId);
+                item.MoveToWorld(new Point3D(X + entry.OffsetX, Y + entry.OffsetY, Z + entry.OffsetZ), Map);
 
-                if (entry.Flags == 0)
-                {
-                    Item item = new Static(entry.ItemId);
-
-                    item.MoveToWorld(new Point3D(X + entry.OffsetX, Y + entry.OffsetY, Z + entry.OffsetZ), Map);
-
-                    m_Components.Add(item);
-                }
-            }
-
-            m_Timer = new DecayTimer(this);
-            m_Timer.Start();
-        }
-
-        public PreviewHouse(Serial serial) : base(serial)
-        {
-        }
-
-        public override void OnLocationChange(Point3D oldLocation)
-        {
-            base.OnLocationChange(oldLocation);
-
-            if (m_Components == null)
-            {
-                return;
-            }
-
-            var xOffset = X - oldLocation.X;
-            var yOffset = Y - oldLocation.Y;
-            var zOffset = Z - oldLocation.Z;
-
-            for (var i = 0; i < m_Components.Count; ++i)
-            {
-                var item = m_Components[i];
-
-                item.MoveToWorld(new Point3D(item.X + xOffset, item.Y + yOffset, item.Z + zOffset), Map);
+                _previewComponents ??= [];
+                _previewComponents.Add(item);
             }
         }
 
-        public override void OnMapChange()
+        _timer = new DecayTimer(this);
+        _timer.Start();
+    }
+
+    public override void OnLocationChange(Point3D oldLocation)
+    {
+        base.OnLocationChange(oldLocation);
+
+        if (_previewComponents == null)
         {
-            base.OnMapChange();
-
-            if (m_Components == null)
-            {
-                return;
-            }
-
-            for (var i = 0; i < m_Components.Count; ++i)
-            {
-                var item = m_Components[i];
-
-                item.Map = Map;
-            }
+            return;
         }
 
-        public override void OnDelete()
+        var xOffset = X - oldLocation.X;
+        var yOffset = Y - oldLocation.Y;
+        var zOffset = Z - oldLocation.Z;
+
+        for (var i = 0; i < _previewComponents.Count; ++i)
         {
-            base.OnDelete();
+            var item = _previewComponents[i];
 
-            if (m_Components == null)
-            {
-                return;
-            }
+            item.MoveToWorld(new Point3D(item.X + xOffset, item.Y + yOffset, item.Z + zOffset), Map);
+        }
+    }
 
-            for (var i = 0; i < m_Components.Count; ++i)
-            {
-                var item = m_Components[i];
+    public override void OnMapChange()
+    {
+        base.OnMapChange();
 
-                item.Delete();
-            }
+        if (_previewComponents == null)
+        {
+            return;
         }
 
-        public override void OnAfterDelete()
+        for (var i = 0; i < _previewComponents.Count; ++i)
         {
-            m_Timer?.Stop();
+            _previewComponents[i].Map = Map;
+        }
+    }
 
-            m_Timer = null;
+    public override void OnDelete()
+    {
+        base.OnDelete();
 
-            base.OnAfterDelete();
+        if (_previewComponents == null)
+        {
+            return;
         }
 
-        public override void Serialize(IGenericWriter writer)
+        for (var i = 0; i < _previewComponents.Count; ++i)
         {
-            base.Serialize(writer);
+            _previewComponents[i]?.Delete();
+        }
+    }
 
-            writer.Write(0); // version
+    public override void OnAfterDelete()
+    {
+        _timer?.Stop();
+        _timer = null;
 
-            writer.Write(m_Components);
+        base.OnAfterDelete();
+    }
+
+    [AfterDeserialization(false)]
+    private void AfterDeserialization()
+    {
+        Delete();
+    }
+
+    private class DecayTimer : Timer
+    {
+        private readonly Item _item;
+
+        public DecayTimer(Item item) : base(TimeSpan.FromSeconds(20.0))
+        {
+            _item = item;
         }
 
-        public override void Deserialize(IGenericReader reader)
+        protected override void OnTick()
         {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 0:
-                    {
-                        m_Components = reader.ReadEntityList<Item>();
-
-                        break;
-                    }
-            }
-
-            Timer.StartTimer(Delete);
-        }
-
-        private class DecayTimer : Timer
-        {
-            private readonly Item m_Item;
-
-            public DecayTimer(Item item) : base(TimeSpan.FromSeconds(20.0))
-            {
-                m_Item = item;
-            }
-
-            protected override void OnTick()
-            {
-                m_Item.Delete();
-            }
+            _item.Delete();
         }
     }
 }
