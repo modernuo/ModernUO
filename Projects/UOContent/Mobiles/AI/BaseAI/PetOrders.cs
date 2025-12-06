@@ -13,8 +13,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.  *
  ************************************************************************/
 
-using Server.Collections;
-
 namespace Server.Mobiles;
 
 public abstract partial class BaseAI
@@ -22,19 +20,19 @@ public abstract partial class BaseAI
     public virtual bool Obey() =>
         !Mobile.Deleted && Mobile.ControlOrder switch
         {
-            OrderType.None => DoOrderNone(),
-            OrderType.Come => DoOrderCome(),
-            OrderType.Drop => DoOrderDrop(),
-            OrderType.Friend => DoOrderFriend(),
+            OrderType.None     => DoOrderNone(),
+            OrderType.Come     => DoOrderCome(),
+            OrderType.Drop     => DoOrderDrop(),
+            OrderType.Friend   => DoOrderFriend(),
             OrderType.Unfriend => DoOrderUnfriend(),
-            OrderType.Guard => DoOrderGuard(),
-            OrderType.Attack => DoOrderAttack(),
-            OrderType.Release => DoOrderRelease(),
-            OrderType.Stay => DoOrderStay(),
-            OrderType.Stop => DoOrderStop(),
-            OrderType.Follow => DoOrderFollow(),
+            OrderType.Guard    => DoOrderGuard(),
+            OrderType.Attack   => DoOrderAttack(),
+            OrderType.Release  => DoOrderRelease(),
+            OrderType.Stay     => DoOrderStay(),
+            OrderType.Stop     => DoOrderStop(),
+            OrderType.Follow   => DoOrderFollow(),
             OrderType.Transfer => DoOrderTransfer(),
-            _ => false
+            _                  => false
         };
 
     public virtual bool DoOrderNone()
@@ -346,25 +344,17 @@ public abstract partial class BaseAI
     private void FindCombatant()
     {
         var controlMaster = Mobile.ControlMaster;
-        using var queue = PooledRefQueue<Mobile>.Create();
-
-        foreach (var mobile in Mobile.GetMobilesInRange(Mobile.RangePerception))
+        
+        foreach (var aggr in Mobile.GetMobilesInRange(Mobile.RangePerception))
         {
-            queue.Enqueue(mobile);
-        }
-
-        while (queue.Count > 0)
-        {
-            var aggr = queue.Dequeue();
-
-            if (aggr?.Deleted != false || !Mobile.CanSee(aggr) || aggr.IsDeadBondedPet || !aggr.Alive)
+            if (!Mobile.CanSee(aggr) || aggr.IsDeadBondedPet || !aggr.Alive)
             {
                 continue;
             }
 
             bool isAttackingPet = aggr.Combatant == Mobile;
             bool isAttackingMaster = controlMaster != null && aggr.Combatant == controlMaster;
-
+            
             if (isAttackingPet || isAttackingMaster)
             {
                 if (Mobile.InLOS(aggr))
@@ -384,23 +374,15 @@ public abstract partial class BaseAI
 
         if (controlMaster?.Aggressors != null)
         {
-            var aggressors = controlMaster.Aggressors;
-
-            for (var i = aggressors.Count - 1; i >= 0; i--)
+            for (var i = 0; i < controlMaster.Aggressors.Count; i++)
             {
-                if (i >= aggressors.Count || i < 0)
-                {
-                    continue;
-                }
-
-                var aggressorInfo = aggressors[i];
-                var aggressor = aggressorInfo?.Attacker;
-
+                var aggressor = controlMaster.Aggressors[i].Attacker;
+                
                 if (aggressor?.Deleted != false || !aggressor.Alive || aggressor.IsDeadBondedPet)
                 {
                     continue;
                 }
-
+                
                 if (Mobile.InRange(aggressor, Mobile.RangePerception) && Mobile.CanSee(aggressor) && Mobile.InLOS(aggressor))
                 {
                     Mobile.ControlTarget = aggressor;
