@@ -77,7 +77,11 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
     // Speed Hack Prevention
     internal long _movementCredit;
-    internal long _nextMovementTime;
+    internal long _nextMovementTime = Core.TickCount;
+    internal long _lastSuspiciousActivityLog = Core.TickCount - 60000;
+    internal long _lastSuspiciousActivityBroadcast = Core.TickCount - 2000;
+    internal int _consecutiveMovementThrottles;
+    internal bool _isThrottled;
     private IAccount _account;
 
     internal enum ParserState
@@ -983,6 +987,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         while (_throttled.Count > 0)
         {
             var ns = _throttled.Dequeue();
+            ns._isThrottled = false;
             if (ns.Running)
             {
                 ns.HandleReceive(true);
@@ -992,7 +997,9 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         // This is enqueued by HandleReceive if already throttled and still throttled
         while (_throttledPending.Count > 0)
         {
-            _throttled.Enqueue(_throttledPending.Dequeue());
+            var throttled = _throttledPending.Dequeue();
+            throttled._isThrottled = true;
+            _throttled.Enqueue(throttled);
         }
 
         var count = _pollGroup.Poll(_polledStates);
@@ -1001,7 +1008,10 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         {
             for (int i = 0; i < count; i++)
             {
-                (_polledStates[i].Target as NetState)?.HandleReceive();
+                if (_polledStates[i].Target is NetState { _isThrottled: false } ns)
+                {
+                    ns.HandleReceive();
+                }
                 _polledStates[i] = default;
             }
         }
