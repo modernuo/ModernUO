@@ -910,24 +910,6 @@ public abstract partial class BaseSpawner : Item, ISpawner
         _guid = reader.ReadGuid();
         _returnOnDeactivate = reader.ReadBool();
 
-        // Version 10 and earlier: entries were serialized in BaseSpawner
-        // Version 11+: entries are serialized by derived classes
-        if (version <= 10)
-        {
-            var count = reader.ReadInt();
-            var legacyEntries = new List<SpawnerEntry>(count);
-
-            for (var i = 0; i < count; ++i)
-            {
-                var entry = new SpawnerEntry(this);
-                entry.Deserialize(reader);
-                legacyEntries.Add(entry);
-            }
-
-            // Let derived class handle these entries
-            OnLegacyEntriesLoaded(legacyEntries);
-        }
-
         _walkingRange = reader.ReadInt();
         _wayPoint = reader.ReadEntity<WayPoint>();
         _group = reader.ReadBool();
@@ -970,8 +952,19 @@ public abstract partial class BaseSpawner : Item, ISpawner
 
     private void MigrateFrom(V10Content content)
     {
-        // Version 10 -> 11: Entries moved from BaseSpawner to derived classes
-        // Migration is handled in Deserialize via OnLegacyEntriesLoaded
+        Guid = content.Guid;
+        ReturnOnDeactivate = content.ReturnOnDeactivate;
+        OnLegacyEntriesLoaded(content.Entries);
+        WalkingRange = content.WalkingRange;
+        WayPoint = content.WayPoint;
+        Group = content.Group;
+        MinDelay = content.MinDelay;
+        MaxDelay = content.MaxDelay;
+        Count = content.Count;
+        Team = content.Team;
+        HomeRange = content.HomeRange;
+        Running = content.Running;
+        End = content.End;
     }
 
     private class InternalTimer : Timer
