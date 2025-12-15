@@ -370,7 +370,7 @@ public class SpawnerControllerGump : GumpGrid
     {
         if (spawner.Entries?.Count > 0)
         {
-            target.Entries?.Clear();
+            target.ClearAllEntries();
 
             for (int i = 0; i < spawner.Entries.Count; i++)
             {

@@ -1,3 +1,4 @@
+using System.Linq;
 using Server.Collections;
 using Server.Gumps;
 using Server.Network;
@@ -38,7 +39,7 @@ public class SpawnerGump : Gump
 
             if (entryIndex < spawner.Entries.Count)
             {
-                entry = _spawner.Entries[entryIndex];
+                entry = _spawner.Entries[entryIndex] as SpawnerEntry;
             }
 
             if (entry == null || _entry != entry)
@@ -262,7 +263,7 @@ public class SpawnerGump : Gump
 
                 if (entryindex < ocount)
                 {
-                    entry = spawner.Entries[entryindex];
+                    entry = spawner.Entries[entryindex] as SpawnerEntry;
                     entry.SpawnedName = str;
 
                     if (mte != null)
@@ -290,7 +291,7 @@ public class SpawnerGump : Gump
                         probcount = Utility.ToInt32(poste.Trim());
                     }
 
-                    entry = spawner.AddEntry(str, probcount, maxcount);
+                    entry = spawner.AddEntry(str, probcount, maxcount) as SpawnerEntry;
                 }
 
                 if (parmte != null)
@@ -305,7 +306,7 @@ public class SpawnerGump : Gump
             }
             else if (entryindex < ocount && spawner.Entries[entryindex] != null)
             {
-                queue.Enqueue(spawner.Entries[entryindex]);
+                queue.Enqueue(spawner.Entries[entryindex] as SpawnerEntry);
             }
         }
 
@@ -419,7 +420,7 @@ public class SpawnerGump : Gump
 
                     if (entryIndex >= 0 && entryIndex < _spawner.Entries.Count)
                     {
-                        var entry = _spawner.Entries[entryIndex];
+                        var entry = _spawner.Entries[entryIndex] as SpawnerEntry;
                         if (buttonType == 0) // Spawn creature
                         {
                             _entry = _entry != entry ? entry : null;
@@ -435,7 +436,7 @@ public class SpawnerGump : Gump
                 }
         }
 
-        if (_entry != null && _spawner.Entries?.Contains(_entry) == true)
+        if (_entry != null && _spawner.Entries?.Contains((ISpawnerEntry)_entry) == true)
         {
             state.Mobile.SendGump(new SpawnerGump(_spawner, _entry, _page));
         }

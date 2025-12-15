@@ -12,7 +12,7 @@ using static Server.Attributes;
 
 namespace Server.Engines.Spawners;
 
-[SerializationGenerator(10, false)]
+[SerializationGenerator(11, false)]
 public abstract partial class BaseSpawner : Item, ISpawner
 {
     [SerializedIgnoreDupe]
@@ -24,49 +24,63 @@ public abstract partial class BaseSpawner : Item, ISpawner
     [SerializedCommandProperty(AccessLevel.Developer)]
     private bool _returnOnDeactivate;
 
-    [SerializedIgnoreDupe]
-    [SerializableField(2, setter: "private")]
-    private List<SpawnerEntry> _entries;
+    // Note: _entries field removed - now owned by derived classes (Spawner, etc.)
+    // See Entries abstract property below
 
     [InvalidateProperties]
-    [SerializableField(3)]
+    [SerializableField(2)]
     [SerializedCommandProperty(AccessLevel.Developer)]
     private int _walkingRange = -1;
 
-    [SerializableField(4)]
+    [SerializableField(3)]
     [SerializedCommandProperty(AccessLevel.Developer)]
     private WayPoint _wayPoint;
 
     [InvalidateProperties]
-    [SerializableField(5)]
+    [SerializableField(4)]
     [SerializedCommandProperty(AccessLevel.Developer)]
     private bool _group;
 
     [InvalidateProperties]
-    [SerializableField(6)]
+    [SerializableField(5)]
     [SerializedCommandProperty(AccessLevel.Developer)]
     private TimeSpan _minDelay;
 
     [InvalidateProperties]
-    [SerializableField(7)]
+    [SerializableField(6)]
     [SerializedCommandProperty(AccessLevel.Developer)]
     private TimeSpan _maxDelay;
 
     [InvalidateProperties]
-    [SerializableField(9)]
+    [SerializableField(8)]
     [SerializedCommandProperty(AccessLevel.Developer)]
     private int _team;
 
     [InvalidateProperties]
-    [SerializableField(10)]
+    [SerializableField(9)]
     [SerializedCommandProperty(AccessLevel.Developer)]
     private int _homeRange;
 
-    [SerializableField(12)]
+    [SerializableField(11)]
     [SerializedCommandProperty(AccessLevel.Developer)]
     private DateTime _end;
 
     private InternalTimer _timer;
+
+    /// <summary>
+    /// Gets the spawner entries. Each derived class owns its specific entry type.
+    /// </summary>
+    public abstract IReadOnlyList<ISpawnerEntry> Entries { get; }
+
+    /// <summary>
+    /// Gets the number of entries.
+    /// </summary>
+    public int EntryCount => Entries?.Count ?? 0;
+
+    /// <summary>
+    /// Gets whether the spawner timer is running.
+    /// </summary>
+    protected bool IsTimerRunning => _timer?.Running == true;
 
     public BaseSpawner() : this(1, TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(10), 0, 4)
     {
@@ -145,9 +159,9 @@ public abstract partial class BaseSpawner : Item, ISpawner
     public bool IsEmpty => Spawned?.Count == 0;
 
     [IgnoreDupe]
-    public Dictionary<ISpawnable, SpawnerEntry> Spawned { get; private set; }
+    public Dictionary<ISpawnable, ISpawnerEntry> Spawned { get; protected set; }
 
-    [SerializableProperty(8)]
+    [SerializableProperty(7)]
     [CommandProperty(AccessLevel.Developer)]
     public int Count
     {
@@ -170,7 +184,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
         }
     }
 
-    [SerializableProperty(11)]
+    [SerializableProperty(10)]
     [CommandProperty(AccessLevel.Developer)]
     public bool Running
     {
@@ -209,11 +223,6 @@ public abstract partial class BaseSpawner : Item, ISpawner
     public bool UnlinkOnTaming => true;
 
     Region ISpawner.Region => Region.Find(Location, Map);
-
-    public void UpdateEntries(List<SpawnerEntry> entries)
-    {
-        Entries = entries;
-    }
 
     public void Remove(ISpawnable spawn)
     {
@@ -272,8 +281,8 @@ public abstract partial class BaseSpawner : Item, ISpawner
         if (newItem is BaseSpawner newSpawner)
         {
             newSpawner._guid = Guid.NewGuid();
-            newSpawner.Spawned = new Dictionary<ISpawnable, SpawnerEntry>();
-            newSpawner.Entries = [];
+            newSpawner.Spawned = new Dictionary<ISpawnable, ISpawnerEntry>();
+            newSpawner.InitializeEntries();
 
             for (var i = 0; i < Entries.Count; i++)
             {
@@ -290,24 +299,22 @@ public abstract partial class BaseSpawner : Item, ISpawner
         }
     }
 
-    public SpawnerEntry AddEntry(
+    /// <summary>
+    /// Initializes the entry list for this spawner. Called during construction and duplication.
+    /// </summary>
+    protected abstract void InitializeEntries();
+
+    /// <summary>
+    /// Adds an entry to this spawner.
+    /// </summary>
+    public abstract ISpawnerEntry AddEntry(
         string creaturename,
         int probability = 100,
         int amount = 1,
         bool dotimer = true,
         string properties = null,
         string parameters = null
-    )
-    {
-        var entry = new SpawnerEntry(this, creaturename, probability, amount, properties, parameters);
-        AddToEntries(entry);
-        if (dotimer)
-        {
-            DoTimer(TimeSpan.FromSeconds(1));
-        }
-
-        return entry;
-    }
+    );
 
     public void InitSpawn(int amount, TimeSpan minDelay, TimeSpan maxDelay, int team, int homeRange)
     {
@@ -320,8 +327,8 @@ public abstract partial class BaseSpawner : Item, ISpawner
         _count = amount;
         _team = team;
         _homeRange = homeRange;
-        Entries = [];
-        Spawned = new Dictionary<ISpawnable, SpawnerEntry>();
+        InitializeEntries();
+        Spawned = new Dictionary<ISpawnable, ISpawnerEntry>();
 
         DoTimer(TimeSpan.FromSeconds(1));
     }
@@ -399,7 +406,10 @@ public abstract partial class BaseSpawner : Item, ISpawner
 
     public void Defrag()
     {
-        Entries ??= [];
+        if (Entries == null)
+        {
+            return;
+        }
 
         for (var i = 0; i < Entries.Count; ++i)
         {
@@ -569,7 +579,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
         return false;
     }
 
-    public bool Spawn(SpawnerEntry entry, out EntryFlags flags)
+    public bool Spawn(ISpawnerEntry entry, out EntryFlags flags)
     {
         var map = GetSpawnMap();
         flags = EntryFlags.None;
@@ -786,27 +796,38 @@ public abstract partial class BaseSpawner : Item, ISpawner
         }
     }
 
-    public int CountSpawns(SpawnerEntry entry)
+    public int CountSpawns(ISpawnerEntry entry)
     {
         Defrag();
 
         return entry.Spawned.Count;
     }
 
-    public void RemoveEntry(SpawnerEntry entry)
+    /// <summary>
+    /// Removes an entry and all its spawned entities from this spawner.
+    /// </summary>
+    public abstract void RemoveEntry(ISpawnerEntry entry);
+
+    /// <summary>
+    /// Clears all entries from this spawner.
+    /// </summary>
+    public abstract void ClearAllEntries();
+
+    /// <summary>
+    /// Helper method for derived classes to clean up spawned entities when removing an entry.
+    /// </summary>
+    protected void CleanupEntrySpawns(ISpawnerEntry entry)
     {
         Defrag();
 
         for (var i = entry.Spawned.Count - 1; i >= 0; i--)
         {
             var e = entry.Spawned[i];
-            entry.Spawned.RemoveAt(i);
+            entry.RemoveFromSpawned(e);
             e?.Delete();
         }
 
-        Entries.Remove(entry);
-
-        if (_running && !IsFull && _timer?.Running != true)
+        if (_running && !IsFull && !IsTimerRunning)
         {
             DoTimer();
         }
@@ -822,7 +843,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
         }
     }
 
-    public void RemoveSpawn(SpawnerEntry entry)
+    public void RemoveSpawn(ISpawnerEntry entry)
     {
         for (var i = entry.Spawned.Count - 1; i >= 0; i--)
         {
@@ -830,7 +851,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
 
             if (e != null)
             {
-                entry.Spawned.RemoveAt(i);
+                entry.RemoveFromSpawned(e);
                 Spawned.Remove(e);
                 e.Delete();
             }
@@ -852,13 +873,13 @@ public abstract partial class BaseSpawner : Item, ISpawner
                 if (e != null)
                 {
                     Spawned.Remove(e);
-                    entry.Spawned.RemoveAt(j);
+                    entry.RemoveFromSpawned(e);
                     e.Delete();
                 }
             }
         }
 
-        if (_running && !IsFull && _timer?.Running != true)
+        if (_running && !IsFull && !IsTimerRunning)
         {
             DoTimer();
         }
@@ -889,14 +910,22 @@ public abstract partial class BaseSpawner : Item, ISpawner
         _guid = reader.ReadGuid();
         _returnOnDeactivate = reader.ReadBool();
 
-        var count = reader.ReadInt();
-        _entries = new List<SpawnerEntry>(count);
-
-        for (var i = 0; i < count; ++i)
+        // Version 10 and earlier: entries were serialized in BaseSpawner
+        // Version 11+: entries are serialized by derived classes
+        if (version <= 10)
         {
-            var entry = new SpawnerEntry(this);
-            entry.Deserialize(reader);
-            _entries.Add(entry);
+            var count = reader.ReadInt();
+            var legacyEntries = new List<SpawnerEntry>(count);
+
+            for (var i = 0; i < count; ++i)
+            {
+                var entry = new SpawnerEntry(this);
+                entry.Deserialize(reader);
+                legacyEntries.Add(entry);
+            }
+
+            // Let derived class handle these entries
+            OnLegacyEntriesLoaded(legacyEntries);
         }
 
         _walkingRange = reader.ReadInt();
@@ -912,20 +941,37 @@ public abstract partial class BaseSpawner : Item, ISpawner
         _end = _running ? reader.ReadDeltaTime() : Core.Now;
     }
 
+    /// <summary>
+    /// Called during deserialization of legacy saves (version 10 and earlier) to pass entries to derived classes.
+    /// </summary>
+    protected virtual void OnLegacyEntriesLoaded(List<SpawnerEntry> legacyEntries)
+    {
+        // Derived classes should override this to handle legacy entries
+    }
+
     [AfterDeserialization]
     private void AfterDeserialization()
     {
-        Spawned = new Dictionary<ISpawnable, SpawnerEntry>();
+        Spawned = new Dictionary<ISpawnable, ISpawnerEntry>();
 
-        foreach (var entry in Entries)
+        if (Entries != null)
         {
-            foreach (var spawned in entry.Spawned)
+            foreach (var entry in Entries)
             {
-                Spawned.Add(spawned, entry);
+                foreach (var spawned in entry.Spawned)
+                {
+                    Spawned.Add(spawned, entry);
+                }
             }
         }
 
         DoTimer(_end - Core.Now);
+    }
+
+    private void MigrateFrom(V10Content content)
+    {
+        // Version 10 -> 11: Entries moved from BaseSpawner to derived classes
+        // Migration is handled in Deserialize via OnLegacyEntriesLoaded
     }
 
     private class InternalTimer : Timer
