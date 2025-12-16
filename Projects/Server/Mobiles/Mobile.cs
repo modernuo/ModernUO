@@ -4346,6 +4346,23 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             {
                 moveQueue.Dequeue().OnMovement(this, oldLocation);
             }
+
+            // Notify area movement subscribers (for extended-range triggers)
+            var sector = m_Map.GetSector(m_Location);
+            var areaSubscribers = sector.AreaMovementSubscribers;
+
+            if (areaSubscribers != null)
+            {
+                for (var i = 0; i < areaSubscribers.Count; i++)
+                {
+                    var subscriber = areaSubscribers[i];
+
+                    if (subscriber.ContainsTriggerPoint(m_Location))
+                    {
+                        subscriber.OnAreaMovement(this, oldLocation);
+                    }
+                }
+            }
         }
 
         OnAfterMove(oldLocation);

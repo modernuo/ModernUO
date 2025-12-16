@@ -732,6 +732,85 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
         }
     }
 
+    /// <summary>
+    /// Subscribes to movement notifications for a specific tile coordinate.
+    /// The subscriber will be notified when any mobile moves into the sector containing this tile.
+    /// </summary>
+    public void SubscribeToAreaMovement(int x, int y, IAreaMovementSubscriber subscriber)
+    {
+        if (this == Internal)
+        {
+            return;
+        }
+
+        var sector = GetSector(x, y);
+        sector.SubscribeToAreaMovement(subscriber);
+    }
+
+    /// <summary>
+    /// Unsubscribes from movement notifications for a specific tile coordinate.
+    /// </summary>
+    public void UnsubscribeFromAreaMovement(int x, int y, IAreaMovementSubscriber subscriber)
+    {
+        if (this == Internal)
+        {
+            return;
+        }
+
+        var sector = GetSector(x, y);
+        sector.UnsubscribeFromAreaMovement(subscriber);
+    }
+
+    /// <summary>
+    /// Subscribes to movement notifications for all sectors that overlap the given bounds.
+    /// </summary>
+    public void SubscribeToAreaMovement(Rectangle2D bounds, IAreaMovementSubscriber subscriber)
+    {
+        if (this == Internal)
+        {
+            return;
+        }
+
+        var startX = bounds.Start.X >> SectorShift;
+        var startY = bounds.Start.Y >> SectorShift;
+        var endX = bounds.End.X >> SectorShift;
+        var endY = bounds.End.Y >> SectorShift;
+
+        for (var x = startX; x <= endX; x++)
+        {
+            for (var y = startY; y <= endY; y++)
+            {
+                var sector = GetRealSector(x, y);
+                sector.SubscribeToAreaMovement(subscriber);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Unsubscribes from movement notifications for all sectors that overlap the given bounds.
+    /// </summary>
+    public void UnsubscribeFromAreaMovement(Rectangle2D bounds, IAreaMovementSubscriber subscriber)
+    {
+        if (this == Internal)
+        {
+            return;
+        }
+
+        var startX = bounds.Start.X >> SectorShift;
+        var startY = bounds.Start.Y >> SectorShift;
+        var endX = bounds.End.X >> SectorShift;
+        var endY = bounds.End.Y >> SectorShift;
+
+        for (var x = startX; x <= endX; x++)
+        {
+            for (var y = startY; y <= endY; y++)
+            {
+                var sector = GetRealSector(x, y);
+                sector.UnsubscribeFromAreaMovement(subscriber);
+            }
+        }
+    }
+
     public void RegisterRegion(Region reg)
     {
         var regName = reg.Name;
@@ -1363,6 +1442,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
         private List<BaseMulti> _multis;
         private int _multisVersion;
         private List<Region> _regions;
+        private List<IAreaMovementSubscriber> _areaMovementSubscribers;
 
         public Sector(int x, int y, Map owner)
         {
@@ -1383,6 +1463,8 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
         internal ref readonly ValueLinkList<Item> Items => ref _items;
 
         internal ref readonly ValueLinkList<NetState> Clients => ref _clients;
+
+        internal List<IAreaMovementSubscriber> AreaMovementSubscribers => _areaMovementSubscribers;
 
         public bool Active => m_Active && Owner != Internal;
 
@@ -1447,6 +1529,31 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
                 _clients.Remove(mob.NetState);
 
                 Owner.DeactivateSectors(X, Y);
+            }
+        }
+
+        internal void SubscribeToAreaMovement(IAreaMovementSubscriber subscriber)
+        {
+            _areaMovementSubscribers ??= new List<IAreaMovementSubscriber>();
+
+            if (!_areaMovementSubscribers.Contains(subscriber))
+            {
+                _areaMovementSubscribers.Add(subscriber);
+            }
+        }
+
+        internal void UnsubscribeFromAreaMovement(IAreaMovementSubscriber subscriber)
+        {
+            if (_areaMovementSubscribers == null)
+            {
+                return;
+            }
+
+            _areaMovementSubscribers.Remove(subscriber);
+
+            if (_areaMovementSubscribers.Count == 0)
+            {
+                _areaMovementSubscribers = null;
             }
         }
 
