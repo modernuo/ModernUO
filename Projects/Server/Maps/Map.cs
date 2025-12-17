@@ -84,7 +84,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
     public static Map TerMur => Maps[5];
     public static Map Internal => Maps[0x7F];
 
-    public static List<Map> AllMaps { get; } = new();
+    public static List<Map> AllMaps { get; } = [];
 
     public int Season { get; set; }
 
@@ -142,7 +142,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
         }
     }
 
-    public static int[] InvalidLandTiles { get; set; } = { 0x244 };
+    public static int[] InvalidLandTiles { get; set; } = [0x244];
 
     public static int MaxLOSDistance { get; set; } = 25;
 
@@ -1429,8 +1429,8 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
     public class Sector
     {
         // TODO: Can we avoid this?
-        private static readonly List<Region> m_DefaultRectList = new();
-        private static readonly List<BaseMulti> m_DefaultMultiList = new();
+        private static readonly List<Region> m_DefaultRectList = [];
+        private static readonly List<BaseMulti> m_DefaultMultiList = [];
         private bool m_Active;
         private ValueLinkList<NetState> _clients;
         private ValueLinkList<Item> _items;
@@ -1530,7 +1530,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
 
         internal void SubscribeToAreaMovement(IAreaMovementSubscriber subscriber)
         {
-            _areaMovementSubscribers ??= new List<IAreaMovementSubscriber>();
+            _areaMovementSubscribers ??= [];
 
             if (!_areaMovementSubscribers.Contains(subscriber))
             {
@@ -1540,14 +1540,8 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
 
         internal void UnsubscribeFromAreaMovement(IAreaMovementSubscriber subscriber)
         {
-            if (_areaMovementSubscribers == null)
-            {
-                return;
-            }
-
-            _areaMovementSubscribers.Remove(subscriber);
-
-            if (_areaMovementSubscribers.Count == 0)
+            if (_areaMovementSubscribers != null &&
+                _areaMovementSubscribers.Remove(subscriber) && _areaMovementSubscribers.Count == 0)
             {
                 _areaMovementSubscribers = null;
             }
@@ -1610,7 +1604,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
 
         public void OnMultiEnter(BaseMulti multi)
         {
-            _multis ??= new List<BaseMulti>();
+            _multis ??= [];
             _multis.Add(multi);
             _multisVersion++;
         }

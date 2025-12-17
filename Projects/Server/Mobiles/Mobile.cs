@@ -4348,18 +4348,43 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             }
 
             // Notify area movement subscribers (for extended-range triggers)
-            var sector = m_Map.GetSector(m_Location);
-            var areaSubscribers = sector.AreaMovementSubscribers;
+            // Check all sectors within GlobalMaxUpdateRange to find relevant subscribers
+            var range = Core.GlobalMaxUpdateRange;
+            var startSectorX = (m_Location.X - range) >> Map.SectorShift;
+            var startSectorY = (m_Location.Y - range) >> Map.SectorShift;
+            var endSectorX = (m_Location.X + range) >> Map.SectorShift;
+            var endSectorY = (m_Location.Y + range) >> Map.SectorShift;
 
-            if (areaSubscribers != null)
+            // Track notified subscribers to avoid duplicates (subscriber may be in multiple sectors)
+            using var notifiedSubscribers = PooledRefList<IAreaMovementSubscriber>.Create();
+
+            for (var sectorX = startSectorX; sectorX <= endSectorX; sectorX++)
             {
-                for (var i = 0; i < areaSubscribers.Count; i++)
+                for (var sectorY = startSectorY; sectorY <= endSectorY; sectorY++)
                 {
-                    var subscriber = areaSubscribers[i];
+                    var sector = m_Map.GetRealSector(sectorX, sectorY);
+                    var areaSubscribers = sector.AreaMovementSubscribers;
 
-                    if (subscriber.ContainsTriggerPoint(m_Location))
+                    if (areaSubscribers == null)
                     {
-                        subscriber.OnAreaMovement(this, oldLocation);
+                        continue;
+                    }
+
+                    for (var i = 0; i < areaSubscribers.Count; i++)
+                    {
+                        var subscriber = areaSubscribers[i];
+
+                        // Skip if already notified
+                        if (notifiedSubscribers.Contains(subscriber))
+                        {
+                            continue;
+                        }
+
+                        if (subscriber.ContainsTriggerPoint(m_Location))
+                        {
+                            notifiedSubscribers.Add(subscriber);
+                            subscriber.OnAreaMovement(this, oldLocation);
+                        }
                     }
                 }
             }
