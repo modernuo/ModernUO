@@ -4343,7 +4343,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
                     // Check area movement subscribers
                     var areaSubscribers = sector.AreaMovementSubscribers;
-                    if (areaSubscribers != null && areaSubscribers.Count > 0)
+                    if (areaSubscribers is { Count: > 0 })
                     {
                         if (notifiedSubscribers.Capacity == 0)
                         {
@@ -4355,23 +4355,15 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                             var subscriber = areaSubscribers[i];
 
                             // Skip if already notified
-                            if (notifiedSubscribers.Contains(subscriber))
-                            {
-                                continue;
-                            }
-
                             // Check if mobile is within subscriber's trigger area
-                            if (subscriber.ContainsTriggerPoint(m_Location))
+                            if (!notifiedSubscribers.Contains(subscriber) && subscriber.ContainsTriggerPoint(m_Location))
                             {
                                 notifiedSubscribers.Add(subscriber);
-                                subscriber.OnAreaMovement(this, oldLocation);
                             }
                         }
                     }
                 }
             }
-
-            notifiedSubscribers.Dispose();
 
             if (moveClientQueue.Count > 0)
             {
@@ -4392,10 +4384,26 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                 }
             }
 
+            // Process OnMovement first, tracking items that are also area subscribers
             while (moveQueue.Count > 0)
             {
-                moveQueue.Dequeue().OnMovement(this, oldLocation);
+                var entity = moveQueue.Dequeue();
+                entity.OnMovement(this, oldLocation);
+
+                // If this entity is also an area subscriber, remove it from the list to avoid double notification
+                if (entity is IAreaMovementSubscriber subscriber)
+                {
+                    notifiedSubscribers.Remove(subscriber);
+                }
             }
+
+            // Process remaining area subscribers that weren't already notified via OnMovement
+            for (var i = 0; i < notifiedSubscribers.Count; i++)
+            {
+                notifiedSubscribers[i].OnAreaMovement(this, oldLocation);
+            }
+
+            notifiedSubscribers.Dispose();
         }
 
         OnAfterMove(oldLocation);
