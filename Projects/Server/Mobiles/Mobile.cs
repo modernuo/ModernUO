@@ -4300,28 +4300,78 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             using var moveQueue = PooledRefQueue<IEntity>.Create(2048);
             using var moveClientQueue = PooledRefQueue<Mobile>.Create(2048);
 
-            foreach (var mob in m_Map.GetMobilesInRange(m_Location, Core.GlobalMaxUpdateRange))
+            // Track notified area subscribers to avoid duplicates (subscriber may be in multiple sectors)
+            PooledRefList<IAreaMovementSubscriber> notifiedSubscribers = default;
+
+            // Single pass through all sectors within range
+            var range = Core.GlobalMaxUpdateRange;
+            var startSectorX = (m_Location.X - range) >> Map.SectorShift;
+            var startSectorY = (m_Location.Y - range) >> Map.SectorShift;
+            var endSectorX = (m_Location.X + range) >> Map.SectorShift;
+            var endSectorY = (m_Location.Y + range) >> Map.SectorShift;
+
+            for (var sectorX = startSectorX; sectorX <= endSectorX; sectorX++)
             {
-                if (mob == this)
+                for (var sectorY = startSectorY; sectorY <= endSectorY; sectorY++)
                 {
-                    continue;
-                }
+                    var sector = m_Map.GetRealSector(sectorX, sectorY);
 
-                if (mob.NetState != null)
-                {
-                    moveClientQueue.Enqueue(mob);
-                }
+                    // Collect mobiles
+                    foreach (var mob in sector.Mobiles)
+                    {
+                        if (mob == this || !Utility.InRange(m_Location, mob.m_Location, range))
+                        {
+                            continue;
+                        }
 
-                moveQueue.Enqueue(mob);
+                        if (mob.NetState != null)
+                        {
+                            moveClientQueue.Enqueue(mob);
+                        }
+
+                        moveQueue.Enqueue(mob);
+                    }
+
+                    // Collect items that handle movement
+                    foreach (var item in sector.Items)
+                    {
+                        if (item.HandlesOnMovement && Utility.InRange(m_Location, item.Location, range))
+                        {
+                            moveQueue.Enqueue(item);
+                        }
+                    }
+
+                    // Check area movement subscribers
+                    var areaSubscribers = sector.AreaMovementSubscribers;
+                    if (areaSubscribers != null && areaSubscribers.Count > 0)
+                    {
+                        if (notifiedSubscribers.Capacity == 0)
+                        {
+                            notifiedSubscribers = PooledRefList<IAreaMovementSubscriber>.Create();
+                        }
+
+                        for (var i = 0; i < areaSubscribers.Count; i++)
+                        {
+                            var subscriber = areaSubscribers[i];
+
+                            // Skip if already notified
+                            if (notifiedSubscribers.Contains(subscriber))
+                            {
+                                continue;
+                            }
+
+                            // Check if mobile is within subscriber's trigger area
+                            if (subscriber.ContainsTriggerPoint(m_Location))
+                            {
+                                notifiedSubscribers.Add(subscriber);
+                                subscriber.OnAreaMovement(this, oldLocation);
+                            }
+                        }
+                    }
+                }
             }
 
-            foreach (var item in m_Map.GetItemsInRange(m_Location, Core.GlobalMaxUpdateRange))
-            {
-                if (item.HandlesOnMovement)
-                {
-                    moveQueue.Enqueue(item);
-                }
-            }
+            notifiedSubscribers.Dispose();
 
             if (moveClientQueue.Count > 0)
             {
@@ -4345,48 +4395,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             while (moveQueue.Count > 0)
             {
                 moveQueue.Dequeue().OnMovement(this, oldLocation);
-            }
-
-            // Notify area movement subscribers (for extended-range triggers)
-            // Check all sectors within GlobalMaxUpdateRange to find relevant subscribers
-            var range = Core.GlobalMaxUpdateRange;
-            var startSectorX = (m_Location.X - range) >> Map.SectorShift;
-            var startSectorY = (m_Location.Y - range) >> Map.SectorShift;
-            var endSectorX = (m_Location.X + range) >> Map.SectorShift;
-            var endSectorY = (m_Location.Y + range) >> Map.SectorShift;
-
-            // Track notified subscribers to avoid duplicates (subscriber may be in multiple sectors)
-            using var notifiedSubscribers = PooledRefList<IAreaMovementSubscriber>.Create();
-
-            for (var sectorX = startSectorX; sectorX <= endSectorX; sectorX++)
-            {
-                for (var sectorY = startSectorY; sectorY <= endSectorY; sectorY++)
-                {
-                    var sector = m_Map.GetRealSector(sectorX, sectorY);
-                    var areaSubscribers = sector.AreaMovementSubscribers;
-
-                    if (areaSubscribers == null)
-                    {
-                        continue;
-                    }
-
-                    for (var i = 0; i < areaSubscribers.Count; i++)
-                    {
-                        var subscriber = areaSubscribers[i];
-
-                        // Skip if already notified
-                        if (notifiedSubscribers.Contains(subscriber))
-                        {
-                            continue;
-                        }
-
-                        if (subscriber.ContainsTriggerPoint(m_Location))
-                        {
-                            notifiedSubscribers.Add(subscriber);
-                            subscriber.OnAreaMovement(this, oldLocation);
-                        }
-                    }
-                }
             }
         }
 
