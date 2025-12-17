@@ -168,8 +168,6 @@ public class SpawnerGump : Gump
         AddHtml(232, 308 + offset, 35, 20, Html.Center($"{totalSpawns}", 0xF4F4F4));
         AddHtml(270, 308 + offset, 35, 20, Html.Center($"{totalWeight}", 0xF4F4F4));
 
-        AddButton(324, 308 + offset, 0x15E1, 0x15E5, GetButtonID(1, 10)); // expand/shrink window
-
         AddHtml(5, 1, 161, 20, $"<BASEFONT COLOR=#FFEA00>{spawner.Name}</BASEFONT><BASEFONT COLOR={GetCountColor(totalSpawned, spawner.Count)}> ({totalSpawned}/{spawner.Count})</BASEFONT>");
 
         AddButton(5, 347 + offset, 0xFAB, 0xFAD, GetButtonID(1, 2));
@@ -406,16 +404,6 @@ public class SpawnerGump : Gump
                         case 9: // Reset
                             {
                                 _spawner.Reset();
-                                break;
-                            }
-                        case 10: // Expand window
-                            {
-                                state.Mobile.SendGump(new SpawnerGump(_spawner, _entry, _page));
-                                break;
-                            }
-                        case 11: // Shrink window
-                            {
-                                state.Mobile.SendGump(new SpawnerGump(_spawner, _entry, _page));
                                 break;
                             }
                     }
