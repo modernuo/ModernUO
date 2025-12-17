@@ -10,7 +10,7 @@ public class SpawnerGump : Gump
     private SpawnerEntry _entry;
     private int _page;
 
-    public SpawnerGump(BaseSpawner spawner, SpawnerEntry focusentry = null, int page = 0, bool expanded = false) : base(50, 50)
+    public SpawnerGump(BaseSpawner spawner, SpawnerEntry focusentry = null, int page = 0) : base(50, 50)
     {
         _spawner = spawner;
         _entry = focusentry;
@@ -18,10 +18,8 @@ public class SpawnerGump : Gump
 
         AddPage(0);
 
-        int expandedWidth = expanded ? 350 : 0;
-
-        AddBackground(0, 0, 346 + expandedWidth, 400 + (_entry != null ? 44 : 0), 5054);
-        AddAlphaRegion(0, 0, 346 + expandedWidth, 400 + (_entry != null ? 44 : 0));
+        AddBackground(0, 0, 346, 400 + (_entry != null ? 44 : 0), 5054);
+        AddAlphaRegion(0, 0, 346, 400 + (_entry != null ? 44 : 0));
 
         AddHtml(240, 1, 250, 20, "<BASEFONT COLOR=#F4F4F4>#</BASEFONT>");
         AddHtml(271, 1, 250, 20, "<BASEFONT COLOR=#F4F4F4>Max</BASEFONT>");
@@ -412,12 +410,12 @@ public class SpawnerGump : Gump
                             }
                         case 10: // Expand window
                             {
-                                state.Mobile.SendGump(new SpawnerGump(_spawner, _entry, _page, true));
+                                state.Mobile.SendGump(new SpawnerGump(_spawner, _entry, _page));
                                 break;
                             }
                         case 11: // Shrink window
                             {
-                                state.Mobile.SendGump(new SpawnerGump(_spawner, _entry, _page, false));
+                                state.Mobile.SendGump(new SpawnerGump(_spawner, _entry, _page));
                                 break;
                             }
                     }
