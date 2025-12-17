@@ -733,10 +733,10 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
     }
 
     /// <summary>
-    /// Subscribes to movement notifications for a specific tile coordinate.
-    /// The subscriber will be notified when any mobile moves into the sector containing this tile.
+    /// Subscribes an item to movement notifications for a specific tile coordinate.
+    /// The item will receive OnMovement when any mobile moves into the sector containing this tile.
     /// </summary>
-    public void SubscribeToAreaMovement(int x, int y, IAreaMovementSubscriber subscriber)
+    public void SubscribeToAreaMovement(int x, int y, Item item)
     {
         if (this == Internal)
         {
@@ -744,13 +744,13 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
         }
 
         var sector = GetSector(x, y);
-        sector.SubscribeToAreaMovement(subscriber);
+        sector.SubscribeToAreaMovement(item);
     }
 
     /// <summary>
-    /// Unsubscribes from movement notifications for a specific tile coordinate.
+    /// Unsubscribes an item from movement notifications for a specific tile coordinate.
     /// </summary>
-    public void UnsubscribeFromAreaMovement(int x, int y, IAreaMovementSubscriber subscriber)
+    public void UnsubscribeFromAreaMovement(int x, int y, Item item)
     {
         if (this == Internal)
         {
@@ -758,13 +758,13 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
         }
 
         var sector = GetSector(x, y);
-        sector.UnsubscribeFromAreaMovement(subscriber);
+        sector.UnsubscribeFromAreaMovement(item);
     }
 
     /// <summary>
-    /// Subscribes to movement notifications for all sectors that overlap the given bounds.
+    /// Subscribes an item to movement notifications for all sectors that overlap the given bounds.
     /// </summary>
-    public void SubscribeToAreaMovement(Rectangle2D bounds, IAreaMovementSubscriber subscriber)
+    public void SubscribeToAreaMovement(Rectangle2D bounds, Item item)
     {
         if (this == Internal)
         {
@@ -781,15 +781,15 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
             for (var y = startY; y <= endY; y++)
             {
                 var sector = GetRealSector(x, y);
-                sector.SubscribeToAreaMovement(subscriber);
+                sector.SubscribeToAreaMovement(item);
             }
         }
     }
 
     /// <summary>
-    /// Unsubscribes from movement notifications for all sectors that overlap the given bounds.
+    /// Unsubscribes an item from movement notifications for all sectors that overlap the given bounds.
     /// </summary>
-    public void UnsubscribeFromAreaMovement(Rectangle2D bounds, IAreaMovementSubscriber subscriber)
+    public void UnsubscribeFromAreaMovement(Rectangle2D bounds, Item item)
     {
         if (this == Internal)
         {
@@ -806,7 +806,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
             for (var y = startY; y <= endY; y++)
             {
                 var sector = GetRealSector(x, y);
-                sector.UnsubscribeFromAreaMovement(subscriber);
+                sector.UnsubscribeFromAreaMovement(item);
             }
         }
     }
@@ -1438,7 +1438,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
         private List<BaseMulti> _multis;
         private int _multisVersion;
         private List<Region> _regions;
-        private List<IAreaMovementSubscriber> _areaMovementSubscribers;
+        private List<Item> _areaMovementSubscribers;
 
         public Sector(int x, int y, Map owner)
         {
@@ -1460,7 +1460,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
 
         internal ref readonly ValueLinkList<NetState> Clients => ref _clients;
 
-        internal List<IAreaMovementSubscriber> AreaMovementSubscribers => _areaMovementSubscribers;
+        internal List<Item> AreaMovementSubscribers => _areaMovementSubscribers;
 
         public bool Active => m_Active && Owner != Internal;
 
@@ -1528,20 +1528,20 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
             }
         }
 
-        internal void SubscribeToAreaMovement(IAreaMovementSubscriber subscriber)
+        internal void SubscribeToAreaMovement(Item item)
         {
             _areaMovementSubscribers ??= [];
 
-            if (!_areaMovementSubscribers.Contains(subscriber))
+            if (!_areaMovementSubscribers.Contains(item))
             {
-                _areaMovementSubscribers.Add(subscriber);
+                _areaMovementSubscribers.Add(item);
             }
         }
 
-        internal void UnsubscribeFromAreaMovement(IAreaMovementSubscriber subscriber)
+        internal void UnsubscribeFromAreaMovement(Item item)
         {
             if (_areaMovementSubscribers != null &&
-                _areaMovementSubscribers.Remove(subscriber) && _areaMovementSubscribers.Count == 0)
+                _areaMovementSubscribers.Remove(item) && _areaMovementSubscribers.Count == 0)
             {
                 _areaMovementSubscribers = null;
             }

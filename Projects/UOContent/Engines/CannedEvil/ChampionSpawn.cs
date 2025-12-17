@@ -1044,7 +1044,7 @@ public partial class ChampionSpawn : Item
         UpdateRegion();
     }
 
-    public override void OnMapChange()
+    public override void OnMapChange(Map oldMap)
     {
         if (Deleted)
         {

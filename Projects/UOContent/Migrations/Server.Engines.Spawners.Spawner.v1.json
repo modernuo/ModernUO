@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "type": "Server.Engines.Spawners.Spawner",
+  "properties": [
+    {
+      "name": "SpawnEntries",
+      "type": "System.Collections.Generic.List\u003CServer.Engines.Spawners.SpawnerEntry\u003E",
+      "rule": "ListMigrationRule",
+      "ruleArguments": [
+        "Server.Engines.Spawners.SpawnerEntry",
+        "RawSerializableMigrationRule",
+        "DeserializationRequiresParent"
+      ]
+    }
+  ]
+}

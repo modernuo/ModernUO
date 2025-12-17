@@ -65,9 +65,9 @@ public abstract partial class FillableContainer : LockableContainer
         }
     }
 
-    public override void OnMapChange()
+    public override void OnMapChange(Map oldMap)
     {
-        base.OnMapChange();
+        base.OnMapChange(oldMap);
         AcquireContent();
     }
 

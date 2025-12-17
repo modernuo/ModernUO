@@ -4300,8 +4300,8 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             using var moveQueue = PooledRefQueue<IEntity>.Create(2048);
             using var moveClientQueue = PooledRefQueue<Mobile>.Create(2048);
 
-            // Track notified area subscribers to avoid duplicates (subscriber may be in multiple sectors)
-            PooledRefList<IAreaMovementSubscriber> notifiedSubscribers = default;
+            // Track notified area subscribers to avoid duplicates (item may be in multiple sectors)
+            PooledRefList<Item> notifiedSubscribers = default;
 
             // Single pass through all sectors within range
             var range = Core.GlobalMaxUpdateRange;
@@ -4341,24 +4341,23 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                         }
                     }
 
-                    // Check area movement subscribers
+                    // Collect area movement subscribers (items with extended range triggers)
                     var areaSubscribers = sector.AreaMovementSubscribers;
                     if (areaSubscribers is { Count: > 0 })
                     {
                         if (notifiedSubscribers.Capacity == 0)
                         {
-                            notifiedSubscribers = PooledRefList<IAreaMovementSubscriber>.Create();
+                            notifiedSubscribers = PooledRefList<Item>.Create(2048);
                         }
 
                         for (var i = 0; i < areaSubscribers.Count; i++)
                         {
-                            var subscriber = areaSubscribers[i];
+                            var item = areaSubscribers[i];
 
-                            // Skip if already notified
-                            // Check if mobile is within subscriber's trigger area
-                            if (!notifiedSubscribers.Contains(subscriber) && subscriber.ContainsTriggerPoint(m_Location))
+                            // Skip if already collected (item may be in multiple sectors)
+                            if (!notifiedSubscribers.Contains(item))
                             {
-                                notifiedSubscribers.Add(subscriber);
+                                notifiedSubscribers.Add(item);
                             }
                         }
                     }
@@ -4390,17 +4389,17 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                 var entity = moveQueue.Dequeue();
                 entity.OnMovement(this, oldLocation);
 
-                // If this entity is also an area subscriber, remove it from the list to avoid double notification
-                if (entity is IAreaMovementSubscriber subscriber)
+                // If this entity is also an area subscriber, remove it to avoid double notification
+                if (entity is Item item)
                 {
-                    notifiedSubscribers.Remove(subscriber);
+                    notifiedSubscribers.Remove(item);
                 }
             }
 
             // Process remaining area subscribers that weren't already notified via OnMovement
             for (var i = 0; i < notifiedSubscribers.Count; i++)
             {
-                notifiedSubscribers[i].OnAreaMovement(this, oldLocation);
+                notifiedSubscribers[i].OnMovement(this, oldLocation);
             }
 
             notifiedSubscribers.Dispose();
@@ -6704,6 +6703,8 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             }
         }
     }
+
+    public bool HandlesOnMovement { get; }
 
     public virtual void Animate(int action, int frameCount, int repeatCount, bool forward, bool repeat, int delay)
     {

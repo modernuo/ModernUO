@@ -396,7 +396,7 @@ namespace Server.Multis
             }
         }
 
-        public override void OnMapChange()
+        public override void OnMapChange(Map oldMap)
         {
             if (TillerMan != null)
             {

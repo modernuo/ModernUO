@@ -1552,7 +1552,7 @@ namespace Server.Multis
             return SecureAccessResult.Insecure;
         }
 
-        public override void OnMapChange()
+        public override void OnMapChange(Map oldMap)
         {
             if (LockDowns == null)
             {

@@ -103,9 +103,9 @@ public partial class BaseContestHouse : BaseHouse
         }
     }
 
-    public override void OnMapChange()
+    public override void OnMapChange(Map oldMap)
     {
-        base.OnMapChange();
+        base.OnMapChange(oldMap);
 
         if (Fixtures == null)
         {

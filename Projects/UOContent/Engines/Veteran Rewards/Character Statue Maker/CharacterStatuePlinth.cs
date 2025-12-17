@@ -57,7 +57,7 @@ public partial class CharacterStatuePlinth : Static, IAddon
         }
     }
 
-    public override void OnMapChange()
+    public override void OnMapChange(Map oldMap)
     {
         if (_statue != null)
         {

@@ -286,9 +286,9 @@ namespace Server.Multis
             }
         }
 
-        public override void OnMapChange()
+        public override void OnMapChange(Map oldMap)
         {
-            base.OnMapChange();
+            base.OnMapChange(oldMap);
 
             if (SignHanger != null)
             {

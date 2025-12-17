@@ -74,26 +74,3 @@ public interface ISpawnable : IEntity
     void OnBeforeSpawn(Point3D location, Map map);
     void OnAfterSpawn();
 }
-
-/// <summary>
-/// Interface for objects that want to receive movement notifications for an extended area
-/// beyond the normal 24-tile Item.OnMovement range.
-/// </summary>
-/// <remarks>
-/// Subscribers register with specific map sectors via Map.SubscribeToAreaMovement.
-/// When a mobile moves into that sector, OnAreaMovement is called if the mobile
-/// is within the subscriber's trigger bounds.
-/// </remarks>
-public interface IAreaMovementSubscriber
-{
-    /// <summary>
-    /// Checks if the given location is within this subscriber's trigger area.
-    /// </summary>
-    bool ContainsTriggerPoint(Point3D location);
-
-    /// <summary>
-    /// Called when a mobile moves within a sector this subscriber is registered to,
-    /// and the mobile's location is within the trigger area.
-    /// </summary>
-    void OnAreaMovement(Mobile m, Point3D oldLocation);
-}

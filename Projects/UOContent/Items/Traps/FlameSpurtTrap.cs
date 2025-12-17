@@ -49,9 +49,9 @@ public partial class FlameSpurtTrap : BaseTrap
         CheckTimer();
     }
 
-    public override void OnMapChange()
+    public override void OnMapChange(Map oldMap)
     {
-        base.OnMapChange();
+        base.OnMapChange(oldMap);
 
         CheckTimer();
     }
