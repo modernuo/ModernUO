@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2025 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: Map.MultiEnumerator.cs                                          *
  *                                                                       *
@@ -17,15 +17,13 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using Server.Collections;
 using Server.Items;
 
 namespace Server;
 
 public partial class Map
 {
-    private static SectorMultiValueLinkList _emptyMultiLinkList = new();
-    public static ref readonly SectorMultiValueLinkList EmptyMultiLinkList => ref _emptyMultiLinkList;
-
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public MultiSectorEnumerable<BaseMulti> GetMultisInSector(Point3D p) => GetMultisInSector<BaseMulti>(p);
 
@@ -72,8 +70,12 @@ public partial class Map
         GetMultisInRange<T>(p.m_X, p.m_Y, range);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public MultiBoundsEnumerable<T> GetMultisInRange<T>(int x, int y, int range) where T : BaseMulti =>
-        GetMultisInBounds<T>(new Rectangle2D(x - range, y - range, range * 2 + 1, range * 2 + 1));
+    public MultiBoundsEnumerable<T> GetMultisInRange<T>(int x, int y, int range) where T : BaseMulti
+    {
+        var clampedRange = Math.Max(0, range);
+        var edge = clampedRange * 2 + 1;
+        return GetMultisInBounds<T>(new Rectangle2D(x - clampedRange, y - clampedRange, edge, edge));
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public MultiBoundsEnumerable<BaseMulti> GetMultisInBounds(Rectangle2D bounds, bool makeBoundsInclusive = false) =>
@@ -82,6 +84,8 @@ public partial class Map
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public MultiBoundsEnumerable<T> GetMultisInBounds<T>(Rectangle2D bounds, bool makeBoundsInclusive = false) where T : BaseMulti =>
         new(this, bounds, makeBoundsInclusive);
+
+    private static readonly HashSet<Serial> _sharedDupes = [];
 
     public ref struct MultiSectorEnumerable<T>(Map map, Point2D loc) where T : BaseMulti
     {
@@ -98,27 +102,42 @@ public partial class Map
     public ref struct MultiSectorEnumerator<T> where T : BaseMulti
     {
         private readonly Span<BaseMulti> _list;
+        private readonly int _version;
+        private readonly Sector _sector;
         private int _index;
         private T _current;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public MultiSectorEnumerator(Map map, Point2D loc)
         {
-            _list = map == null
-                ? Span<BaseMulti>.Empty
-                : CollectionsMarshal.AsSpan(map.GetSector(loc.m_X, loc.m_Y).Multis);
+            if (map == null)
+            {
+                _list = Span<BaseMulti>.Empty;
+                _sector = null;
+                _version = 0;
+            }
+            else
+            {
+                _sector = map.GetSector(loc.m_X, loc.m_Y);
+                _list = CollectionsMarshal.AsSpan(_sector.Multis);
+                _version = _sector.MultisVersion;
+            }
 
-            _index = 0;
+            _index = -1;
             _current = null;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool MoveNext()
         {
-            while ((uint)_index < (uint)_list.Length)
+            if (_sector != null && _version != _sector.MultisVersion)
             {
-                var current = _list[_index++];
-                if (current is T { Deleted: false } o)
+                throw new InvalidOperationException(CollectionThrowStrings.InvalidOperation_EnumFailedVersion);
+            }
+
+            while (++_index < _list.Length)
+            {
+                if (_list[_index] is T { Deleted: false } o)
                 {
                     _current = o;
                     return true;
@@ -160,24 +179,27 @@ public partial class Map
 
     public ref struct MultiBoundsEnumerator<T> where T : BaseMulti
     {
-        private readonly Map _map;
-        private readonly int _sectorStartX;
-        private readonly int _sectorEndX;
-        private readonly int _sectorEndY;
+        private Map _map;
+        private int _sectorStartX;
+        private int _sectorEndX;
+        private int _sectorEndY;
         private Rectangle2D _bounds;
 
         private int _currentSectorX;
         private int _currentSectorY;
 
-        private Span<BaseMulti> _list;
+        private Span<BaseMulti> _currentList;
+        private int _currentIndex;
+        private int _currentVersion;
+        private Sector _currentSector;
         private T _current;
-        private int _index;
 
-        private HashSet<Serial> _dupes;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public MultiBoundsEnumerator(Map map, Rectangle2D bounds, bool makeBoundsInclusive)
         {
+            _sharedDupes.Clear();
+
             _map = map;
             _bounds = bounds;
 
@@ -196,61 +218,77 @@ public partial class Map
                 // We start the X sector one short because it gets incremented immediately in MoveNext()
                 _currentSectorX = _sectorStartX - 1;
                 _currentSectorY = _sectorStartY;
-                _index = 0;
             }
+
+            _currentList = default;
+            _currentIndex = -1;
+            _currentVersion = 0;
+            _currentSector = null;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private bool GetMulti()
+        public bool MoveNext()
         {
-            ref Rectangle2D bounds = ref _bounds;
+            var map = _map;
 
-            while ((uint)_index < (uint)_list.Length)
+            if (map == null)
             {
-                var current = _list[_index++];
-                _dupes ??= new HashSet<Serial>();
-
-                if (current is T { Deleted: false } o && bounds.Contains(o.Location) && !_dupes.Contains(o.Serial))
-                {
-                    _dupes.Add(o.Serial);
-                    _current = o;
-                    return true;
-                }
+                return false;
             }
 
-            return false;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private bool GetSector()
-        {
+            ref Rectangle2D bounds = ref _bounds;
             var currentSectorX = _currentSectorX;
             var currentSectorY = _currentSectorY;
             var sectorEndX = _sectorEndX;
             var sectorEndY = _sectorEndY;
 
-            // Move to next sector
-            if (currentSectorX < sectorEndX)
+            while (true)
             {
-                _currentSectorX = ++currentSectorX;
-            }
-            else if (currentSectorY < sectorEndY)
-            {
-                _currentSectorX = currentSectorX = _sectorStartX;
-                _currentSectorY = ++currentSectorY;
-            }
-            else
-            {
-                // Ran out of sectors
-                return false;
-            }
+                // Try to advance in the current list
+                if (_currentList.Length > 0)
+                {
+                    if (_currentVersion != _currentSector.MultisVersion)
+                    {
+                        throw new InvalidOperationException(CollectionThrowStrings.InvalidOperation_EnumFailedVersion);
+                    }
 
-            _list = CollectionsMarshal.AsSpan(_map.GetRealSector(currentSectorX, currentSectorY).Multis);
-            return GetMulti();
+                    while (++_currentIndex < _currentList.Length)
+                    {
+                        var item = _currentList[_currentIndex];
+                        if (item is T { Deleted: false } o && bounds.Contains(o.Location))
+                        {
+                            // Multis can span multiple sectors, so we need to deduplicate
+                            if (_sharedDupes.Add(o.Serial))
+                            {
+                                _current = o;
+                                return true;
+                            }
+                        }
+                    }
+                }
+
+                // Move to next sector
+                if (currentSectorX < sectorEndX)
+                {
+                    _currentSectorX = ++currentSectorX;
+                }
+                else if (currentSectorY < sectorEndY)
+                {
+                    _currentSectorX = currentSectorX = _sectorStartX;
+                    _currentSectorY = ++currentSectorY;
+                }
+                else
+                {
+                    // Ran out of sectors
+                    return false;
+                }
+
+                _currentSector = map.GetRealSector(currentSectorX, currentSectorY);
+                _currentList = CollectionsMarshal.AsSpan(_currentSector.Multis);
+                _currentVersion = _currentSector.MultisVersion;
+                _currentIndex = -1;
+            }
         }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool MoveNext() => _map != null && (GetMulti() || GetSector());
 
         public T Current
         {

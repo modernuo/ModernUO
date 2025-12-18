@@ -66,78 +66,46 @@ public ref struct GumpStringsBuilder
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void SetHtmlText(
-        ref RawInterpolatedStringHandler slotKeyHandler, ref RawInterpolatedStringHandler handler, int color, int size = -1,
-        byte fontStyle = 0
+        ref RawInterpolatedStringHandler slotKeyHandler, ref RawInterpolatedStringHandler handler, ReadOnlySpan<char> color = default, int size = -1,
+        byte fontStyle = 0, TextAlignment align = TextAlignment.Left
     )
     {
-        SetHtmlText(ref slotKeyHandler, handler.Text, color, size, fontStyle);
+        SetHtmlText(slotKeyHandler.Text, handler.Text, color, size, fontStyle, align);
+        slotKeyHandler.Clear();
         handler.Clear();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void SetHtmlText(
-        ref RawInterpolatedStringHandler slotKeyHandler, ReadOnlySpan<char> value, int color, int size = -1, byte fontStyle = 0
+        ref RawInterpolatedStringHandler slotKeyHandler, ReadOnlySpan<char> value, ReadOnlySpan<char> color = default, int size = -1, byte fontStyle = 0,
+        TextAlignment align = TextAlignment.Left
     )
     {
-        SetHtmlText(slotKeyHandler.Text, value, color, size, fontStyle);
+        SetHtmlText(slotKeyHandler.Text, value, color, size, fontStyle, align);
         slotKeyHandler.Clear();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void SetHtmlText(
-        ReadOnlySpan<char> slotKey, ref RawInterpolatedStringHandler handler, int color, int size = -1, byte fontStyle = 0
+        ReadOnlySpan<char> slotKey, ref RawInterpolatedStringHandler handler, ReadOnlySpan<char> color = default, int size = -1, byte fontStyle = 0,
+        TextAlignment align = TextAlignment.Left
     )
     {
-        SetHtmlText(slotKey, handler.Text, color, size, fontStyle);
+        SetHtmlText(slotKey, handler.Text, color, size, fontStyle, align);
         handler.Clear();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void SetHtmlText(
-        ReadOnlySpan<char> slotKey, ReadOnlySpan<char> value, int color, int size = -1, byte fontStyle = 0
+        ReadOnlySpan<char> slotKey, ReadOnlySpan<char> value, ReadOnlySpan<char> color = default, int size = -1, byte fontStyle = 0,
+        TextAlignment align = TextAlignment.Left
     )
     {
-        var coloredTextHandler = value.Color(color, size, fontStyle);
-        SetStringSlot(slotKey, ref coloredTextHandler);
-    }
+        var arr = STArrayPool<char>.Shared.Rent(Html.BuildCharCount(value, color));
+        var bytesWritten = Html.Build(value, arr.AsSpan(), color, size, fontStyle, align);
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void SetHtmlTextCentered(
-        ref RawInterpolatedStringHandler slotKeyHandler, ref RawInterpolatedStringHandler handler, int color = -1,
-        int size = -1, byte fontStyle = 0
-    )
-    {
-        SetHtmlTextCentered(ref slotKeyHandler, handler.Text, color, size, fontStyle);
-        handler.Clear();
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void SetHtmlTextCentered(
-        ref RawInterpolatedStringHandler slotKeyHandler, ReadOnlySpan<char> value, int color = -1, int size = -1,
-        byte fontStyle = 0
-    )
-    {
-        SetHtmlTextCentered(slotKeyHandler.Text, value, color, size, fontStyle);
-        slotKeyHandler.Clear();
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void SetHtmlTextCentered(
-        ReadOnlySpan<char> slotKey, ref RawInterpolatedStringHandler handler, int color = -1, int size = -1,
-        byte fontStyle = 0
-    )
-    {
-        SetHtmlTextCentered(slotKey, handler.Text, color, size, fontStyle);
-        handler.Clear();
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void SetHtmlTextCentered(
-        ReadOnlySpan<char> slotKey, ReadOnlySpan<char> value, int color = -1, int size = -1, byte fontStyle = 0
-    )
-    {
-        var coloredTextHandler = value.Center(color, size, fontStyle);
-        SetStringSlot(slotKey, ref coloredTextHandler);
+        SetStringSlot(slotKey, arr.AsSpan(0, bytesWritten));
+        STArrayPool<char>.Shared.Return(arr);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
