@@ -447,15 +447,15 @@ public abstract partial class BaseAI
 
             if (youngFrom && !youngTo)
             {
-                from.SendLocalizedMessage(502040);
-                // As a young player, you may not friend pets to older players.
+                from.SendLocalizedMessage(502040); // As a young player, you may not friend pets to older players.
+                Mobile.ControlOrder = OrderType.None;
                 return true;
             }
 
             if (!youngFrom && youngTo)
             {
-                from.SendLocalizedMessage(502041);
-                // As an older player, you may not friend pets to young players.
+                from.SendLocalizedMessage(502041); // As an older player, you may not friend pets to young players.
+                Mobile.ControlOrder = OrderType.None;
                 return true;
             }
 
@@ -464,6 +464,7 @@ public abstract partial class BaseAI
                 SendTransferRefusalMessages(from, to, 1043248, 1043249);
                 // 1043248: The pet refuses to be transferred because it will not obey ~1_NAME~.~3_BLANK~
                 // 1043249: The pet will not accept you as a master because it does not trust you.~3_BLANK~
+                Mobile.ControlOrder = OrderType.None;
                 return false;
             }
 
@@ -472,6 +473,7 @@ public abstract partial class BaseAI
                 SendTransferRefusalMessages(from, to, 1043250, 1043251);
                 // 1043250: The pet refuses to be transferred because it will not obey you sufficiently.~3_BLANK~
                 // 1043251: The pet will not accept you as a master because it does not trust ~2_NAME~.~3_BLANK~
+                Mobile.ControlOrder = OrderType.None;
                 return false;
             }
 
@@ -480,6 +482,7 @@ public abstract partial class BaseAI
             {
                 from.SendMessage("You can not transfer a pet while in combat.");
                 to.SendMessage("You can not transfer a pet while in combat.");
+                Mobile.ControlOrder = OrderType.None;
                 return false;
             }
 
@@ -488,15 +491,15 @@ public abstract partial class BaseAI
 
             if (fromState == null || toState == null)
             {
+                Mobile.ControlOrder = OrderType.None;
                 return false;
             }
 
             if (from.HasTrade || to.HasTrade)
             {
-                from.SendLocalizedMessage(1010507);
-                // You cannot transfer a pet with a trade pending
-                to.SendLocalizedMessage(1010507);
-                // You cannot transfer a pet with a trade pending
+                from.SendLocalizedMessage(1010507); // You cannot transfer a pet with a trade pending
+                to.SendLocalizedMessage(1010507); // You cannot transfer a pet with a trade pending
+                Mobile.ControlOrder = OrderType.None;
                 return false;
             }
 
