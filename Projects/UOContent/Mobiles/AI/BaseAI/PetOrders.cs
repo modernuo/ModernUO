@@ -484,14 +484,16 @@ public abstract partial class BaseAI
 
             if (youngFrom && !youngTo)
             {
-                from.SendLocalizedMessage(502040); // As a young player, you may not friend pets to older players.
+                from.SendLocalizedMessage(502040);
+                // As a young player, you may not friend pets to older players.
                 Mobile.ControlOrder = OrderType.None;
                 return true;
             }
 
             if (!youngFrom && youngTo)
             {
-                from.SendLocalizedMessage(502041); // As an older player, you may not friend pets to young players.
+                from.SendLocalizedMessage(502041);
+                // As an older player, you may not friend pets to young players.
                 Mobile.ControlOrder = OrderType.None;
                 return true;
             }
@@ -534,8 +536,10 @@ public abstract partial class BaseAI
 
             if (from.HasTrade || to.HasTrade)
             {
-                from.SendLocalizedMessage(1010507); // You cannot transfer a pet with a trade pending
-                to.SendLocalizedMessage(1010507); // You cannot transfer a pet with a trade pending
+                from.SendLocalizedMessage(1010507);
+                // You cannot transfer a pet with a trade pending
+                to.SendLocalizedMessage(1010507);
+                // You cannot transfer a pet with a trade pending
                 Mobile.ControlOrder = OrderType.None;
                 return false;
             }
