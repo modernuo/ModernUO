@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2024 - ModernUO Development Team                       *
+ * Copyright 2019-2025 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: Main.cs                                                         *
  *                                                                       *
@@ -14,6 +14,8 @@
  *************************************************************************/
 
 using System;
+using System.Buffers;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -53,12 +55,21 @@ public static class Core
 
     private static readonly Type[] _serialTypeArray = { typeof(Serial) };
 
+    private static readonly FrozenSet<OSPlatform> UnixPlatforms = 
+        new[] { OSPlatform.Linux, OSPlatform.FreeBSD, OSPlatform.OSX }.ToFrozenSet();
+
     public static readonly bool IsWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
     public static readonly bool IsDarwin = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
     public static readonly bool IsFreeBSD = RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD);
     public static readonly bool IsLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || IsFreeBSD;
     public static readonly bool IsBSD = IsDarwin || IsFreeBSD;
-    public static readonly bool Unix = IsBSD || IsLinux;
+    public static readonly bool Unix = UnixPlatforms.Any(RuntimeInformation.IsOSPlatform);
+
+    private static readonly SearchValues<string> XUnitAssemblyNames = 
+        SearchValues.Create(["xunit.core", "xunit.runner", "xunit.extensibility", "xunit"], StringComparison.OrdinalIgnoreCase);
+
+    private static readonly double[] _cyclesPerSecond = new double[128];
+    private static double _cpsSum = 0.0;
 
     private const string AssembliesConfiguration = "Data/assemblies.json";
 
@@ -73,9 +84,10 @@ public static class Core
                 return _isRunningFromXUnit.Value;
             }
 
-            foreach (var a in AppDomain.CurrentDomain.GetAssemblies())
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
-                if (a.FullName.InsensitiveStartsWith("xunit"))
+                var assemblyName = assembly.GetName().Name;
+                if (assemblyName != null && XUnitAssemblyNames.Contains(assemblyName))
                 {
                     _isRunningFromXUnit = true;
                     return true;
@@ -90,33 +102,47 @@ public static class Core
 
     public static Assembly ApplicationAssembly { get; set; }
     public static Assembly Assembly { get; set; }
-
-    // Assembly file version
     public static Version Version => new(ThisAssembly.AssemblyFileVersion);
-
     public static Process Process { get; private set; }
-
     public static Thread Thread { get; private set; }
-
     private static long _firstTick;
-
     private static long _tickCount;
 
     // Make this available to unit tests for mocking
     internal static DateTime _now;
-
     public static long TickCount => _tickCount;
-
     public static DateTime Now => _now;
-
     public static long Uptime => TickCount - _firstTick;
-
     private static long _cycleIndex;
-    private static readonly double[] _cyclesPerSecond = new double[128];
-
     public static double CyclesPerSecond => _cyclesPerSecond[_cycleIndex];
 
-    public static double AverageCPS => _cyclesPerSecond.Average();
+    public static double AverageCPS
+    {
+        get
+        {
+            return _cyclesPerSecond.Length == 0 ? 0 : _cpsSum / _cyclesPerSecond.Length;
+        }
+    }
+
+    public readonly struct PerformanceMetrics
+    {
+        public readonly double CurrentCPS;
+        public readonly double AverageCPS;
+        public readonly long Uptime;
+        
+        public PerformanceMetrics(double currentCPS, double averageCPS, long uptime)
+        {
+            CurrentCPS = currentCPS;
+            AverageCPS = averageCPS;
+            Uptime = uptime;
+        }
+    }
+
+    public static PerformanceMetrics GetPerformanceMetrics()
+    {
+        var currentCPS = _cyclesPerSecond[_cycleIndex];
+        return new PerformanceMetrics(currentCPS, AverageCPS, Uptime);
+    }
 
     public static string BaseDirectory
     {
@@ -144,86 +170,83 @@ public static class Core
     }
 
     public static CancellationTokenSource ClosingTokenSource { get; } = new();
-
     public static bool Closing => ClosingTokenSource.IsCancellationRequested;
-
     public static int GlobalUpdateRange { get; set; } = 18;
-
     public static int GlobalMaxUpdateRange { get; set; } = 24;
-
     public static int ScriptItems => _itemCount;
     public static int ScriptMobiles => _mobileCount;
-
     public static Expansion Expansion { get; set; }
+
     public static bool T2A => Expansion >= Expansion.T2A;
-
     public static bool UOR => Expansion >= Expansion.UOR;
-
     public static bool UOTD => Expansion >= Expansion.UOTD;
-
     public static bool LBR => Expansion >= Expansion.LBR;
-
     public static bool AOS => Expansion >= Expansion.AOS;
-
     public static bool SE => Expansion >= Expansion.SE;
-
     public static bool ML => Expansion >= Expansion.ML;
-
     public static bool SA => Expansion >= Expansion.SA;
-
     public static bool HS => Expansion >= Expansion.HS;
-
     public static bool TOL => Expansion >= Expansion.TOL;
-
     public static bool EJ => Expansion >= Expansion.EJ;
 
     public static string FindDataFile(string path, bool throwNotFound = true)
     {
-        string fullPath = null;
+        ReadOnlySpan<char> pathSpan = path.AsSpan();
 
-        foreach (var p in ServerConfiguration.DataDirectories)
+        foreach (var directory in ServerConfiguration.DataDirectories)
         {
-            fullPath = Path.Combine(p, path);
-
-            if (IsLinux && !File.Exists(fullPath))
-            {
-                var fi = new FileInfo(fullPath);
-                if (fi.Directory != null && Directory.Exists(fi.Directory.FullName))
-                {
-                    fullPath = fi.Directory.EnumerateFiles(
-                        fi.Name,
-                        new EnumerationOptions { MatchCasing = MatchCasing.CaseInsensitive }
-                    ).FirstOrDefault()?.FullName;
-                }
-            }
+            var fullPath = Path.Combine(directory, path);
 
             if (File.Exists(fullPath))
             {
-                break;
+                return fullPath;
             }
+                
+            if (IsLinux)
+            {
+                var directoryPath = Path.GetDirectoryName(fullPath);
+                if (Directory.Exists(directoryPath))
+                {
+                    var fileName = Path.GetFileName(pathSpan).ToString();
+                    var directoryInfo = new DirectoryInfo(directoryPath);
+                    var foundFile = directoryInfo.EnumerateFiles()
+                        .FirstOrDefault(f => f.Name.Equals(fileName, StringComparison.OrdinalIgnoreCase));
 
-            fullPath = null;
+                    if (foundFile != null)
+                    {
+                        return foundFile.FullName;
+                    }
+                }
+            }
         }
 
-        if (fullPath == null && throwNotFound)
+        if (throwNotFound)
         {
             throw new FileNotFoundException($"Data: {path} was not found");
         }
 
-        return fullPath;
+        return null;
     }
 
+    private static readonly EnumerationOptions DataFileEnumerationOptions = new()
+    {
+        MatchCasing = MatchCasing.CaseInsensitive,
+        RecurseSubdirectories = false,
+        ReturnSpecialDirectories = false
+    };
+    
     public static IEnumerable<string> FindDataFileByPattern(string pattern)
     {
-        var options = new EnumerationOptions { MatchCasing = MatchCasing.CaseInsensitive };
-        foreach (var p in ServerConfiguration.DataDirectories)
+        foreach (var directory in ServerConfiguration.DataDirectories)
         {
-            if (Directory.Exists(p))
+            if (!Directory.Exists(directory))
             {
-                foreach (var file in Directory.EnumerateFiles(p, pattern, options))
-                {
-                    yield return file;
-                }
+                continue;
+            }
+    
+            foreach (var file in Directory.EnumerateFiles(directory, pattern, DataFileEnumerationOptions))
+            {
+                yield return file;
             }
         }
     }
@@ -396,7 +419,7 @@ public static class Core
         Utility.PopColor();
 
         Utility.PushColor(ConsoleColor.DarkGray);
-        Console.WriteLine(@"Copyright 2019-2023 ModernUO Development Team
+        Console.WriteLine(@"Copyright 2019-2025 ModernUO Development Team
                 This program comes with ABSOLUTELY NO WARRANTY;
                 This is free software, and you are welcome to redistribute it under certain conditions.
 
@@ -463,12 +486,15 @@ public static class Core
             var idleCPU = ServerConfiguration.GetOrUpdateSetting("core.enableIdleCPU", false);
 #endif
 
-            var cycleCount = _cyclesPerSecond.Length;
-            long last = _tickCount;
-            const int interval = 100;
-            double frequency = Stopwatch.Frequency * interval;
+            const int cycleCount = 128;
+            const int sampleInterval = 100;
+            var frequencyMultiplier = Stopwatch.Frequency * sampleInterval;
 
-            int sample = 0;
+            var sampleCount = 0;
+            var lastSampleTick = _tickCount;
+
+            const double idleThreshold = 125.0;
+            var sleepDuration = TimeSpan.FromMilliseconds(2);
 
             while (!Closing)
             {
@@ -500,23 +526,24 @@ public static class Core
                     break;
                 }
 
-                if (sample++ == interval)
+                if (++sampleCount >= sampleInterval)
                 {
-                    sample = 0;
-                    var now = GetTimestamp();
+                    sampleCount = 0;
+                    var currentTick = GetTimestamp();
+                    var currentCPS = frequencyMultiplier / (currentTick - lastSampleTick);
 
-                    var cyclesPerSecond = frequency / (now - last);
-                    _cyclesPerSecond[_cycleIndex++] = cyclesPerSecond;
-                    if (_cycleIndex == cycleCount)
+                    var oldValue = _cyclesPerSecond[_cycleIndex];
+                    _cpsSum -= oldValue;
+
+                    _cyclesPerSecond[_cycleIndex] = currentCPS;
+                    _cpsSum += currentCPS;
+
+                    _cycleIndex = (_cycleIndex + 1) % cycleCount;
+                    lastSampleTick = currentTick;
+
+                    if (idleCPU && currentCPS > idleThreshold)
                     {
-                        _cycleIndex = 0;
-                    }
-
-                    last = now;
-
-                    if (idleCPU && cyclesPerSecond > 125)
-                    {
-                        Thread.Sleep(2);
+                        Thread.Sleep(sleepDuration);
                     }
                 }
             }
