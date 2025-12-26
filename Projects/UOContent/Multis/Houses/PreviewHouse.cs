@@ -56,9 +56,9 @@ public partial class PreviewHouse : BaseMulti
         }
     }
 
-    public override void OnMapChange()
+    public override void OnMapChange(Map oldMap)
     {
-        base.OnMapChange();
+        base.OnMapChange(oldMap);
 
         if (_previewComponents == null)
         {

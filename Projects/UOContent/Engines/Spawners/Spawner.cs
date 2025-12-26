@@ -1,13 +1,19 @@
 using System;
+using System.Collections.Generic;
 using System.Text.Json;
 using ModernUO.Serialization;
 using Server.Json;
 
 namespace Server.Engines.Spawners;
 
-[SerializationGenerator(0)]
+[SerializationGenerator(1)]
 public partial class Spawner : BaseSpawner
 {
+    [SerializableField(0)]
+    private List<SpawnerEntry> _spawnEntries;
+
+    public override IReadOnlyList<ISpawnerEntry> Entries => _spawnEntries;
+
     [Constructible(AccessLevel.Developer)]
     public Spawner()
     {
@@ -43,6 +49,59 @@ public partial class Spawner : BaseSpawner
 
     public Spawner(DynamicJson json, JsonSerializerOptions options) : base(json, options)
     {
+    }
+
+    protected override void InitializeEntries()
+    {
+        _spawnEntries = [];
+    }
+
+    public override ISpawnerEntry AddEntry(
+        string creaturename,
+        int probability = 100,
+        int amount = 1,
+        bool dotimer = true,
+        string properties = null,
+        string parameters = null
+    )
+    {
+        var entry = new SpawnerEntry(this, creaturename, probability, amount, properties, parameters);
+        AddToSpawnEntries(entry);
+
+        if (dotimer)
+        {
+            DoTimer(TimeSpan.FromSeconds(1));
+        }
+
+        return entry;
+    }
+
+    public override void RemoveEntry(ISpawnerEntry entry)
+    {
+        if (entry is SpawnerEntry spawnerEntry && _spawnEntries.Contains(spawnerEntry))
+        {
+            CleanupEntrySpawns(entry);
+            RemoveFromSpawnEntries(spawnerEntry);
+        }
+    }
+
+    public override void ClearAllEntries()
+    {
+        for (var i = _spawnEntries.Count - 1; i >= 0; i--)
+        {
+            RemoveEntry(_spawnEntries[i]);
+        }
+    }
+
+    protected override void OnLegacyEntriesLoaded(List<SpawnerEntry> legacyEntries)
+    {
+        _spawnEntries = legacyEntries;
+    }
+
+    private void MigrateFrom(V0Content content)
+    {
+        // Version 0 -> 1: Entries moved from BaseSpawner to Spawner
+        // Legacy entries are populated via OnLegacyEntriesLoaded called from BaseSpawner.Deserialize
     }
 
     public static bool IsValidWater(Map map, int x, int y, int z)

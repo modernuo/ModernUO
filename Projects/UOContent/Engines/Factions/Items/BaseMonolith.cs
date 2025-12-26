@@ -78,9 +78,9 @@ public abstract class BaseMonolith : BaseSystemController
         UpdateSigil();
     }
 
-    public override void OnMapChange()
+    public override void OnMapChange(Map oldMap)
     {
-        base.OnMapChange();
+        base.OnMapChange(oldMap);
         UpdateSigil();
     }
 

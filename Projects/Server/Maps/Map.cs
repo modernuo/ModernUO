@@ -84,7 +84,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
     public static Map TerMur => Maps[5];
     public static Map Internal => Maps[0x7F];
 
-    public static List<Map> AllMaps { get; } = new();
+    public static List<Map> AllMaps { get; } = [];
 
     public int Season { get; set; }
 
@@ -142,7 +142,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
         }
     }
 
-    public static int[] InvalidLandTiles { get; set; } = { 0x244 };
+    public static int[] InvalidLandTiles { get; set; } = [0x244];
 
     public static int MaxLOSDistance { get; set; } = 25;
 
@@ -732,6 +732,85 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
         }
     }
 
+    /// <summary>
+    /// Subscribes an item to movement notifications for a specific tile coordinate.
+    /// The item will receive OnMovement when any mobile moves into the sector containing this tile.
+    /// </summary>
+    public void SubscribeToAreaMovement(int x, int y, Item item)
+    {
+        if (this == Internal)
+        {
+            return;
+        }
+
+        var sector = GetSector(x, y);
+        sector.SubscribeToAreaMovement(item);
+    }
+
+    /// <summary>
+    /// Unsubscribes an item from movement notifications for a specific tile coordinate.
+    /// </summary>
+    public void UnsubscribeFromAreaMovement(int x, int y, Item item)
+    {
+        if (this == Internal)
+        {
+            return;
+        }
+
+        var sector = GetSector(x, y);
+        sector.UnsubscribeFromAreaMovement(item);
+    }
+
+    /// <summary>
+    /// Subscribes an item to movement notifications for all sectors that overlap the given bounds.
+    /// </summary>
+    public void SubscribeToAreaMovement(Rectangle2D bounds, Item item)
+    {
+        if (this == Internal)
+        {
+            return;
+        }
+
+        var startX = bounds.Start.X >> SectorShift;
+        var startY = bounds.Start.Y >> SectorShift;
+        var endX = bounds.End.X >> SectorShift;
+        var endY = bounds.End.Y >> SectorShift;
+
+        for (var x = startX; x <= endX; x++)
+        {
+            for (var y = startY; y <= endY; y++)
+            {
+                var sector = GetRealSector(x, y);
+                sector.SubscribeToAreaMovement(item);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Unsubscribes an item from movement notifications for all sectors that overlap the given bounds.
+    /// </summary>
+    public void UnsubscribeFromAreaMovement(Rectangle2D bounds, Item item)
+    {
+        if (this == Internal)
+        {
+            return;
+        }
+
+        var startX = bounds.Start.X >> SectorShift;
+        var startY = bounds.Start.Y >> SectorShift;
+        var endX = bounds.End.X >> SectorShift;
+        var endY = bounds.End.Y >> SectorShift;
+
+        for (var x = startX; x <= endX; x++)
+        {
+            for (var y = startY; y <= endY; y++)
+            {
+                var sector = GetRealSector(x, y);
+                sector.UnsubscribeFromAreaMovement(item);
+            }
+        }
+    }
+
     public void RegisterRegion(Region reg)
     {
         var regName = reg.Name;
@@ -741,13 +820,9 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
             return;
         }
 
-        if (Regions.ContainsKey(regName))
+        if (!Regions.TryAdd(regName, reg))
         {
             logger.Warning("Duplicate region name '{RegionName}' for map '{MapName}'", regName, Name);
-        }
-        else
-        {
-            Regions[regName] = reg;
         }
     }
 
@@ -1354,8 +1429,8 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
     public class Sector
     {
         // TODO: Can we avoid this?
-        private static readonly List<Region> m_DefaultRectList = new();
-        private static readonly List<BaseMulti> m_DefaultMultiList = new();
+        private static readonly List<Region> m_DefaultRectList = [];
+        private static readonly List<BaseMulti> m_DefaultMultiList = [];
         private bool m_Active;
         private ValueLinkList<NetState> _clients;
         private ValueLinkList<Item> _items;
@@ -1363,6 +1438,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
         private List<BaseMulti> _multis;
         private int _multisVersion;
         private List<Region> _regions;
+        private List<Item> _areaMovementSubscribers;
 
         public Sector(int x, int y, Map owner)
         {
@@ -1383,6 +1459,8 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
         internal ref readonly ValueLinkList<Item> Items => ref _items;
 
         internal ref readonly ValueLinkList<NetState> Clients => ref _clients;
+
+        internal List<Item> AreaMovementSubscribers => _areaMovementSubscribers;
 
         public bool Active => m_Active && Owner != Internal;
 
@@ -1450,6 +1528,25 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
             }
         }
 
+        internal void SubscribeToAreaMovement(Item item)
+        {
+            _areaMovementSubscribers ??= [];
+
+            if (!_areaMovementSubscribers.Contains(item))
+            {
+                _areaMovementSubscribers.Add(item);
+            }
+        }
+
+        internal void UnsubscribeFromAreaMovement(Item item)
+        {
+            if (_areaMovementSubscribers != null &&
+                _areaMovementSubscribers.Remove(item) && _areaMovementSubscribers.Count == 0)
+            {
+                _areaMovementSubscribers = null;
+            }
+        }
+
         public void OnEnter(Region region, Rectangle3D rect)
         {
             if (_regions?.Contains(region) == true)
@@ -1507,7 +1604,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
 
         public void OnMultiEnter(BaseMulti multi)
         {
-            _multis ??= new List<BaseMulti>();
+            _multis ??= [];
             _multis.Add(multi);
             _multisVersion++;
         }

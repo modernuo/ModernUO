@@ -138,7 +138,7 @@ public partial class SchmendrickApprenticeCorpse : Corpse
         }
     }
 
-    public override void OnMapChange()
+    public override void OnMapChange(Map oldMap)
     {
         if (_lantern?.Deleted == false)
         {

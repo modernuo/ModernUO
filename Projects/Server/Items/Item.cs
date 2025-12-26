@@ -1135,7 +1135,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
             m_Map = map;
             m_Map?.OnEnter(this);
 
-            OnMapChange();
+            OnMapChange(old);
 
             if (m_Map != null)
             {
@@ -1275,7 +1275,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
 
                 Delta(ItemDelta.Update);
 
-                OnMapChange();
+                OnMapChange(old);
 
                 if (old == null || old == Map.Internal)
                 {
@@ -2463,7 +2463,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
         MoveToWorld(Point3D.Zero, Map.Internal);
     }
 
-    public virtual void OnMapChange()
+    public virtual void OnMapChange(Map oldMap)
     {
     }
 

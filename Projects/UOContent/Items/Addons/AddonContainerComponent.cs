@@ -69,7 +69,7 @@ namespace Server.Items
             }
         }
 
-        public override void OnMapChange()
+        public override void OnMapChange(Map oldMap)
         {
             if (_addon != null)
             {

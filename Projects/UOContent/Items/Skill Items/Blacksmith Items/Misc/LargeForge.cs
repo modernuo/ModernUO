@@ -35,7 +35,7 @@ public partial class LargeForgeWest : Item
         }
     }
 
-    public override void OnMapChange()
+    public override void OnMapChange(Map oldMap)
     {
         if (_item != null)
         {
@@ -77,7 +77,7 @@ public partial class LargeForgeWest : Item
             }
         }
 
-        public override void OnMapChange()
+        public override void OnMapChange(Map oldMap)
         {
             if (_parent != null)
             {
@@ -114,7 +114,7 @@ public partial class LargeForgeWest : Item
             }
         }
 
-        public override void OnMapChange()
+        public override void OnMapChange(Map oldMap)
         {
             if (_parent != null)
             {
@@ -160,7 +160,7 @@ public partial class LargeForgeEast : Item
         }
     }
 
-    public override void OnMapChange()
+    public override void OnMapChange(Map oldMap)
     {
         if (_item != null)
         {
@@ -202,7 +202,7 @@ public partial class LargeForgeEast : Item
             }
         }
 
-        public override void OnMapChange()
+        public override void OnMapChange(Map oldMap)
         {
             if (_parent != null)
             {
@@ -239,7 +239,7 @@ public partial class LargeForgeEast : Item
             }
         }
 
-        public override void OnMapChange()
+        public override void OnMapChange(Map oldMap)
         {
             if (_parent != null)
             {

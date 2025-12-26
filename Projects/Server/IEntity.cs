@@ -22,20 +22,13 @@ public interface IEntity : IPoint3D, ISerializable
     Point3D Location { get; set; }
     Map Map { get; }
     void MoveToWorld(Point3D location, Map map);
-
     void ProcessDelta();
-
     bool InRange(Point2D p, int range);
-
     bool InRange(Point3D p, int range);
-
     void RemoveItem(Item item);
-
     bool OnMoveOff(Mobile m);
-
     bool OnMoveOver(Mobile m);
-
-    public void OnMovement(Mobile m, Point3D oldLocation);
+    void OnMovement(Mobile m, Point3D oldLocation);
 }
 
 public class Entity : IEntity
