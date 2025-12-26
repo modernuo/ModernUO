@@ -1,3 +1,4 @@
+using System;
 using Server.Collections;
 using Server.Gumps;
 using Server.Network;
@@ -265,28 +266,18 @@ public class SpawnerGump : Gump
 
                     if (maxSpawns != null)
                     {
-                        entry.SpawnedMaxCount = Utility.ToInt32(maxSpawns.Trim());
+                        entry.SpawnedMaxCount = Utility.ToInt32(maxSpawns.AsSpan().Trim());
                     }
 
                     if (probability != null)
                     {
-                        entry.SpawnedProbability = Utility.ToInt32(probability.Trim());
+                        entry.SpawnedProbability = Utility.ToInt32(probability.AsSpan().Trim());
                     }
                 }
                 else
                 {
-                    var maxcount = 1;
-                    var probcount = 100;
-
-                    if (maxSpawns != null)
-                    {
-                        maxcount = Utility.ToInt32(maxSpawns.Trim());
-                    }
-
-                    if (probability != null)
-                    {
-                        probcount = Utility.ToInt32(probability.Trim());
-                    }
+                    var maxcount = maxSpawns != null ? Utility.ToInt32(maxSpawns.AsSpan().Trim()) : 1;
+                    var probcount = probability != null ? Utility.ToInt32(probability.AsSpan().Trim()) : 100;
 
                     entry = spawner.AddEntry(str, probcount, maxcount);
                 }
