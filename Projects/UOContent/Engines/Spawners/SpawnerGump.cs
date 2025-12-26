@@ -157,15 +157,15 @@ public class SpawnerGump : Gump
         }
 
         var totalSpawned = 0;
-        var totalMaxSpawn = 0;
+        var totalWeight = 0;
 
         foreach (SpawnerEntry spawnerEntry in _spawner.Entries)
         {
-            totalMaxSpawn += spawnerEntry.SpawnedMaxCount;
             totalSpawned += spawner.CountSpawns(spawnerEntry);
+            totalWeight += spawnerEntry.SpawnedProbability;
         }
 
-        AddHtml(232, 308 + offset, 35, 20, Html.Center($"{totalSpawns}", 0xF4F4F4));
+        AddHtml(232, 308 + offset, 35, 20, Html.Center($"{totalSpawned}", 0xF4F4F4));
         AddHtml(270, 308 + offset, 35, 20, Html.Center($"{totalWeight}", 0xF4F4F4));
 
         AddHtml(5, 1, 161, 20, $"<BASEFONT COLOR=#FFEA00>{spawner.Name}</BASEFONT><BASEFONT COLOR={GetCountColor(totalSpawned, spawner.Count)}> ({totalSpawned}/{spawner.Count})</BASEFONT>");
