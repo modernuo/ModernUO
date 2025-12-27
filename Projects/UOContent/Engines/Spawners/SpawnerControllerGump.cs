@@ -362,7 +362,8 @@ public class SpawnerControllerGump : GumpGrid
         target.MinDelay = spawner.MinDelay;
         target.MaxDelay = spawner.MaxDelay;
         target.WalkingRange = spawner.WalkingRange;
-        target.HomeRange = spawner.HomeRange;
+        target.SpawnBounds = spawner.SpawnBounds;
+        target.SpawnLocationIsHome = spawner.SpawnLocationIsHome;
         target.Group = spawner.Group;
         target.Count = spawner.Count;
     }

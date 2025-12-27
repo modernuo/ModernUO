@@ -73,11 +73,11 @@
       ]
     },
     {
-      "name": "HomeRange",
-      "type": "int",
-      "rule": "PrimitiveTypeMigrationRule",
+      "name": "SpawnBounds",
+      "type": "Server.Rectangle3D",
+      "rule": "PrimitiveUOTypeMigrationRule",
       "ruleArguments": [
-        ""
+        "Rect3D"
       ]
     },
     {
@@ -89,40 +89,16 @@
       ]
     },
     {
-      "name": "End",
-      "type": "System.DateTime",
-      "rule": "PrimitiveTypeMigrationRule",
-      "ruleArguments": [
-        ""
-      ]
-    },
-    {
-      "name": "SpawnBoundsStart",
-      "type": "Server.Point3D",
-      "rule": "PrimitiveUOTypeMigrationRule",
-      "ruleArguments": [
-        "Point3D"
-      ]
-    },
-    {
-      "name": "SpawnBoundsEnd",
-      "type": "Server.Point3D",
-      "rule": "PrimitiveUOTypeMigrationRule",
-      "ruleArguments": [
-        "Point3D"
-      ]
-    },
-    {
-      "name": "SpawnBoundsEnabled",
-      "type": "bool",
-      "rule": "PrimitiveTypeMigrationRule",
-      "ruleArguments": [
-        ""
-      ]
-    },
-    {
       "name": "SpawnLocationIsHome",
       "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "End",
+      "type": "System.DateTime",
       "rule": "PrimitiveTypeMigrationRule",
       "ruleArguments": [
         ""

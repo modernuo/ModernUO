@@ -15,25 +15,6 @@ namespace Server.Engines.Spawners;
 [SerializationGenerator(11, false)]
 public abstract partial class BaseSpawner : Item, ISpawner
 {
-    private void MigrateFrom(V10Content content)
-    {
-        _guid = content.Guid;
-        _returnOnDeactivate = content.ReturnOnDeactivate;
-        _entries = content.Entries;
-        _walkingRange = content.WalkingRange;
-        _wayPoint = content.WayPoint;
-        _group = content.Group;
-        _minDelay = content.MinDelay;
-        _maxDelay = content.MaxDelay;
-        _team = content.Team;
-        _homeRange = content.HomeRange;
-        _end = content.End;
-        _spawnBoundsStart = Point3D.Zero;
-        _spawnBoundsEnd = Point3D.Zero;
-        _spawnBoundsEnabled = false;
-        _spawnLocationIsHome = false;
-    }
-
     [SerializedIgnoreDupe]
     [SerializableField(0)]
     [SerializedCommandProperty(AccessLevel.Developer)]
@@ -79,68 +60,61 @@ public abstract partial class BaseSpawner : Item, ISpawner
     [InvalidateProperties]
     [SerializableField(10)]
     [SerializedCommandProperty(AccessLevel.Developer)]
-    private int _homeRange;
-
-    [SerializableField(12)]
-    [SerializedCommandProperty(AccessLevel.Developer)]
-    private DateTime _end;
-
-    [SerializableProperty(13)]
-    [CommandProperty(AccessLevel.Developer)]
-    public Point3D SpawnBoundsStart
-    {
-        get => _spawnBoundsStart;
-        set
-        {
-            if (_spawnBoundsEnd != Point3D.Zero && (value.X > _spawnBoundsEnd.X || value.Y > _spawnBoundsEnd.Y))
-            {
-                _spawnBoundsStart = _spawnBoundsEnd;
-            }
-            else
-            {
-                _spawnBoundsStart = value;
-            }
-
-            this.MarkDirty();
-        }
-    }
-
-    [SerializableProperty(14)]
-    [CommandProperty(AccessLevel.Developer)]
-    public Point3D SpawnBoundsEnd
-    {
-        get => _spawnBoundsEnd;
-        set
-        {
-            if (_spawnBoundsStart != Point3D.Zero && (value.X <= _spawnBoundsStart.X || value.Y <= _spawnBoundsStart.Y))
-            {
-                _spawnBoundsEnd = _spawnBoundsStart;
-                _spawnBoundsStart = value;
-            }
-            else
-            {
-                _spawnBoundsEnd = value;
-            }
-
-            this.MarkDirty();
-        }
-    }
-
-    [InvalidateProperties]
-    [SerializableField(15)]
-    [SerializedCommandProperty(AccessLevel.Developer)]
-    private bool _spawnBoundsEnabled;
+    private Rectangle3D _spawnBounds;
 
     /// <summary>
     /// If true, the home location of the spawn is the location where it spawned
     /// If false, the home location of the spawn is the location of the spawner
     /// </summary>
     [InvalidateProperties]
-    [SerializableField(16)]
+    [SerializableField(12)]
     [SerializedCommandProperty(AccessLevel.Developer)]
     private bool _spawnLocationIsHome;
 
+    [SerializableField(13)]
+    [SerializedCommandProperty(AccessLevel.Developer)]
+    private DateTime _end;
+
     private InternalTimer _timer;
+
+    /// <summary>
+    /// Gets the distance from the spawner to the nearest edge of the spawn bounds.
+    /// Setting this creates a square spawn area centered on the spawner location.
+    /// </summary>
+    [CommandProperty(AccessLevel.Developer)]
+    public virtual int HomeRange
+    {
+        get
+        {
+            if (_spawnBounds == default)
+            {
+                return 0;
+            }
+
+            // Distance from spawner location to nearest edge
+            var distToMinX = Math.Abs(Location.X - _spawnBounds.Start.X);
+            var distToMaxX = Math.Abs(_spawnBounds.End.X - Location.X);
+            var distToMinY = Math.Abs(Location.Y - _spawnBounds.Start.Y);
+            var distToMaxY = Math.Abs(_spawnBounds.End.Y - Location.Y);
+
+            // Return smallest distance to any edge
+            return Math.Min(Math.Min(distToMinX, distToMaxX), Math.Min(distToMinY, distToMaxY));
+        }
+        set
+        {
+            // Create square bounds centered on spawner with full Z range
+            _spawnBounds = new Rectangle3D(
+                Location.X - value,
+                Location.Y - value,
+                sbyte.MinValue,
+                value * 2 + 1,
+                value * 2 + 1,
+                256 // Full Z range: -128 to 127
+            );
+            this.MarkDirty();
+            InvalidateProperties();
+        }
+    }
 
     public BaseSpawner() : this(1, TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(10), 0, 4)
     {
@@ -204,14 +178,26 @@ public abstract partial class BaseSpawner : Item, ISpawner
         json.GetProperty("walkingRange", options, out int walkingRange);
         _walkingRange = walkingRange;
 
-        json.GetProperty("spawnStart", options, out Point3D spawnStart);
-        _spawnBoundsStart = spawnStart;
-        json.GetProperty("spawnEnd", options, out Point3D spawnEnd);
-        _spawnBoundsEnd = spawnEnd;
-        json.GetProperty("spawnBoundsEnabled", options, out bool spawnBoundsEnabled);
-        _spawnBoundsEnabled = spawnBoundsEnabled;
-        json.GetProperty("spawnLocationIsHome", options, out bool homeRangeIsRelative);
-        _spawnLocationIsHome = homeRangeIsRelative;
+        // Try new format first
+        if (json.GetProperty("spawnBounds", options, out Rectangle3D spawnBounds))
+        {
+            _spawnBounds = spawnBounds;
+        }
+        // Fall back to homeRange with location for oldest format
+        else if (homeRange > 0 && json.GetProperty("location", options, out Point3D location))
+        {
+            _spawnBounds = new Rectangle3D(
+                location.X - homeRange,
+                location.Y - homeRange,
+                sbyte.MinValue,
+                homeRange * 2 + 1,
+                homeRange * 2 + 1,
+                256
+            );
+        }
+
+        json.GetProperty("spawnLocationIsHome", options, out bool spawnLocationIsHome);
+        _spawnLocationIsHome = spawnLocationIsHome;
 
         InitSpawn(amount, minDelay, maxDelay, team, homeRange);
 
@@ -291,12 +277,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
     public virtual Point3D HomeLocation => Location;
     public bool UnlinkOnTaming => true;
 
-    Region ISpawner.Region => Region.Find(Location, Map);
-
-    public void UpdateEntries(List<SpawnerEntry> entries)
-    {
-        Entries = entries;
-    }
+    public abstract Region Region { get; }
 
     public void Remove(ISpawnable spawn)
     {
@@ -343,12 +324,9 @@ public abstract partial class BaseSpawner : Item, ISpawner
         json.SetProperty("minDelay", options, MinDelay);
         json.SetProperty("maxDelay", options, MaxDelay);
         json.SetProperty("team", options, Team);
-        json.SetProperty("homeRange", options, HomeRange);
         json.SetProperty("walkingRange", options, WalkingRange);
         json.SetProperty("entries", options, Entries);
-        json.SetProperty("spawnBoundsStart", options, SpawnBoundsStart);
-        json.SetProperty("spawnBoundsEnd", options, SpawnBoundsEnd);
-        json.SetProperty("spawnBoundsEnabled", options, SpawnBoundsEnabled);
+        json.SetProperty("spawnBounds", options, SpawnBounds);
         json.SetProperty("spawnLocationIsHome", options, SpawnLocationIsHome);
     }
 
@@ -406,7 +384,9 @@ public abstract partial class BaseSpawner : Item, ISpawner
         _maxDelay = maxDelay;
         _count = amount;
         _team = team;
-        _homeRange = homeRange;
+        // Note: homeRange parameter kept for API compatibility.
+        // SpawnBounds should be set after spawner is placed via HomeRange property.
+        // For programmatic creation, call spawner.HomeRange = value after MoveToWorld.
         Entries = [];
         Spawned = new Dictionary<ISpawnable, SpawnerEntry>();
 
@@ -435,7 +415,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
             list.Add(1060742); // active
 
             list.Add(1060656, _count);                                     // amount to make: ~1_val~
-            list.Add(1061169, _homeRange);                                 // range ~1_val~
+            list.Add(1061169, HomeRange);                                  // range ~1_val~
             list.Add(1050039, $"{"walking range:"}\t{_walkingRange}");     // ~1_NUMBER~ ~2_ITEMNAME~
             list.Add(1053099, $"{"group:"}\t{_group}");                    // ~1_oretype~: ~2_armortype~
             list.Add(1060847, $"{"team:"}\t{_team}");                      // ~1_val~ ~2_val~
@@ -776,7 +756,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
                 {
                     var walkrange = GetWalkingRange();
 
-                    c.RangeHome = walkrange >= 0 ? walkrange : _homeRange;
+                    c.RangeHome = walkrange >= 0 ? walkrange : HomeRange;
                     c.CurrentWayPoint = WayPoint;
 
                     if (_team > 0)
@@ -981,37 +961,22 @@ public abstract partial class BaseSpawner : Item, ISpawner
         RemoveSpawns();
     }
 
-    private void Deserialize(IGenericReader reader, int version)
-    {
-        _guid = reader.ReadGuid();
-        _returnOnDeactivate = reader.ReadBool();
-
-        var count = reader.ReadInt();
-        _entries = new List<SpawnerEntry>(count);
-
-        for (var i = 0; i < count; ++i)
-        {
-            var entry = new SpawnerEntry(this);
-            entry.Deserialize(reader);
-            _entries.Add(entry);
-        }
-
-        _walkingRange = reader.ReadInt();
-        _wayPoint = reader.ReadEntity<WayPoint>();
-        _group = reader.ReadBool();
-        _minDelay = reader.ReadTimeSpan();
-        _maxDelay = reader.ReadTimeSpan();
-        _count = reader.ReadInt();
-        _team = reader.ReadInt();
-        _homeRange = reader.ReadInt();
-        _running = reader.ReadBool();
-
-        _end = _running ? reader.ReadDeltaTime() : Core.Now;
-    }
-
     [AfterDeserialization]
     private void AfterDeserialization()
     {
+        // Handle v10 migration - convert HomeRange to SpawnBounds now that Location is available
+        if (_pendingHomeRangeMigrations.Remove(this, out var homeRange))
+        {
+            _spawnBounds = new Rectangle3D(
+                Location.X - homeRange,
+                Location.Y - homeRange,
+                sbyte.MinValue,
+                homeRange * 2 + 1,
+                homeRange * 2 + 1,
+                256
+            );
+        }
+
         Spawned = new Dictionary<ISpawnable, SpawnerEntry>();
 
         foreach (var entry in Entries)

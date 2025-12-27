@@ -85,6 +85,8 @@ public partial class Spawner : BaseSpawner
     }
     */
 
+    public override Region Region => Region.Find(Location, Map);
+
     public override Point3D GetSpawnPosition(ISpawnable spawned, Map map)
     {
         if (map == null || map == Map.Internal)
@@ -105,23 +107,29 @@ public partial class Spawner : BaseSpawner
             waterOnlyMob = false;
         }
 
+        var bounds = SpawnBounds;
+        var hasBounds = bounds != default;
+
         // Try 10 times to find a valid location.
         for (var i = 0; i < 10; i++)
         {
             int x, y;
 
-            // If the spawner has a defined range, use it
-            if (SpawnBoundsEnabled && SpawnBoundsStart != Point3D.Zero && SpawnBoundsEnd != Point3D.Zero)
+            if (hasBounds)
             {
-                x = Utility.RandomMinMax(SpawnBoundsStart.X, SpawnBoundsEnd.X);
-                y = Utility.RandomMinMax(SpawnBoundsStart.Y, SpawnBoundsEnd.Y);
+                // Use SpawnBounds for X/Y selection
+                x = Utility.RandomMinMax(bounds.Start.X, bounds.End.X - 1);
+                y = Utility.RandomMinMax(bounds.Start.Y, bounds.End.Y - 1);
             }
             else
             {
-                x = Location.X + (Utility.Random(HomeRange * 2 + 1) - HomeRange);
-                y = Location.Y + (Utility.Random(HomeRange * 2 + 1) - HomeRange);
+                // No bounds set - spawn at spawner location
+                x = Location.X;
+                y = Location.Y;
             }
 
+            // Note: Z-level logic uses spawner Z and map average Z.
+            // Multi-story building support (using bounds Z range) is planned for a future PR.
             var mapZ = map.GetAverageZ(x, y);
 
             if (waterMob)

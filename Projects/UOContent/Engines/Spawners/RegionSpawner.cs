@@ -29,6 +29,8 @@ public partial class RegionSpawner : Spawner
 
     private BaseRegion _spawnRegion;
 
+    public override Region Region => _spawnRegion;
+
     [Constructible(AccessLevel.Developer)]
     public RegionSpawner()
     {
