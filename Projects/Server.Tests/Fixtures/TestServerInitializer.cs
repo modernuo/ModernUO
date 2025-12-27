@@ -1,5 +1,6 @@
 using System.IO;
 using System.Reflection;
+using System.Threading;
 
 namespace Server.Tests;
 
@@ -11,7 +12,7 @@ public static class TestServerInitializer
 {
     private const string DefaultDataDirectory = @"C:\Ultima Online Classic";
     private static bool _initialized;
-    private static readonly object _lock = new();
+    private static readonly Lock _lock = new();
 
     /// <summary>
     /// True if TileData was successfully loaded from client files.

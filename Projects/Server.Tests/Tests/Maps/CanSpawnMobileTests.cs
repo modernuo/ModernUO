@@ -1,4 +1,3 @@
-using Server.Items;
 using Xunit;
 
 namespace Server.Tests.Tests.Maps;

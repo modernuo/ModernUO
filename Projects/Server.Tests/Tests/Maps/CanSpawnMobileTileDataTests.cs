@@ -31,8 +31,8 @@ public class CanSpawnMobileTileDataTests
         SkipIfNoTileData();
 
         var map = Map.Felucca;
-        var x = 1100;
-        var y = 1100;
+        const int x = 1100;
+        const int y = 1100;
 
         TestMulti multi = null;
         try
@@ -57,8 +57,8 @@ public class CanSpawnMobileTileDataTests
         SkipIfNoTileData();
 
         var map = Map.Felucca;
-        var x = 1200;
-        var y = 1200;
+        const int x = 1200;
+        const int y = 1200;
 
         TestMulti multi = null;
         try
@@ -85,8 +85,8 @@ public class CanSpawnMobileTileDataTests
         SkipIfNoTileData();
 
         var map = Map.Felucca;
-        var x = 1300;
-        var y = 1300;
+        const int x = 1300;
+        const int y = 1300;
 
         TestMulti multi = null;
         try
@@ -113,8 +113,8 @@ public class CanSpawnMobileTileDataTests
         SkipIfNoTileData();
 
         var map = Map.Felucca;
-        var x = 1400;
-        var y = 1400;
+        const int x = 1400;
+        const int y = 1400;
 
         TestMulti multi = null;
         try
@@ -140,8 +140,8 @@ public class CanSpawnMobileTileDataTests
         SkipIfNoTileData();
 
         var map = Map.Felucca;
-        var x = 1450;
-        var y = 1450;
+        const int x = 1450;
+        const int y = 1450;
 
         TestMulti multi = null;
         try
@@ -165,8 +165,8 @@ public class CanSpawnMobileTileDataTests
         SkipIfNoTileData();
 
         var map = Map.Felucca;
-        var x = 1475;
-        var y = 1475;
+        const int x = 1475;
+        const int y = 1475;
 
         TestMulti multi = null;
         try
@@ -191,8 +191,8 @@ public class CanSpawnMobileTileDataTests
         SkipIfNoTileData();
 
         var map = Map.Felucca;
-        var x = 1550;
-        var y = 1550;
+        const int x = 1550;
+        const int y = 1550;
 
         TestMulti multi = null;
         try
@@ -217,8 +217,8 @@ public class CanSpawnMobileTileDataTests
         SkipIfNoTileData();
 
         var map = Map.Felucca;
-        var x = 1650;
-        var y = 1650;
+        const int x = 1650;
+        const int y = 1650;
 
         Item surfaceItem = null;
         try
@@ -251,8 +251,8 @@ public class CanSpawnMobileTileDataTests
         SkipIfNoTileData();
 
         var map = Map.Malas;
-        var x = 991;
-        var y = 519;
+        const int x = 991;
+        const int y = 519;
 
         var result = map.CanSpawnMobile(x, y, -60, -40, false, false, out var spawnZ);
 
@@ -266,8 +266,8 @@ public class CanSpawnMobileTileDataTests
         SkipIfNoTileData();
 
         var map = Map.Malas;
-        var x = 991;
-        var y = 519;
+        const int x = 991;
+        const int y = 519;
 
         var result = map.CanSpawnMobile(x, y, -30, 0, false, false, out var spawnZ);
 
@@ -281,8 +281,8 @@ public class CanSpawnMobileTileDataTests
         SkipIfNoTileData();
 
         var map = Map.Malas;
-        var x = 991;
-        var y = 519;
+        const int x = 991;
+        const int y = 519;
 
         var result = map.CanSpawnMobile(x, y, -60, 0, false, false, out var spawnZ);
 
