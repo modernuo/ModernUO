@@ -29,6 +29,8 @@ public partial class RegionSpawner : Spawner
 
     private BaseRegion _spawnRegion;
 
+    public override Region Region => _spawnRegion;
+
     [Constructible(AccessLevel.Developer)]
     public RegionSpawner()
     {
@@ -41,24 +43,12 @@ public partial class RegionSpawner : Spawner
 
     [Constructible(AccessLevel.Developer)]
     public RegionSpawner(
-        int amount, int minDelay, int maxDelay, int team, int homeRange,
+        int amount,
+        TimeSpan minDelay,
+        TimeSpan maxDelay,
+        int team = 0,
         params ReadOnlySpan<string> spawnedNames
-    ) : this(
-        amount,
-        TimeSpan.FromMinutes(minDelay),
-        TimeSpan.FromMinutes(maxDelay),
-        team,
-        homeRange,
-        spawnedNames
-    )
-    {
-    }
-
-    [Constructible(AccessLevel.Developer)]
-    public RegionSpawner(
-        int amount, TimeSpan minDelay, TimeSpan maxDelay, int team, int homeRange,
-        params ReadOnlySpan<string> spawnedNames
-    ) : base(amount, minDelay, maxDelay, team, homeRange, spawnedNames)
+    ) : base(amount, minDelay, maxDelay, team, spawnedNames: spawnedNames)
     {
     }
 
@@ -175,7 +165,7 @@ public partial class RegionSpawner : Spawner
             }
         }
 
-        return HomeLocation;
+        return Location;
     }
 
     [AfterDeserialization(false)]

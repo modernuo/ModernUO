@@ -3610,7 +3610,7 @@ namespace Server.Mobiles
 
             if (ReturnsToHome && IsSpawnerBound() && !InRange(Home, RangeHome))
             {
-                if (Combatant == null && Warmode == false && Utility.RandomDouble() < .10) /* some throttling */
+                if (Combatant == null && !Warmode && Utility.RandomDouble() < .10) /* some throttling */
                 {
                     m_FailedReturnHome = !Move(GetDirectionTo(Home.X, Home.Y)) ? m_FailedReturnHome + 1 : 0;
 

@@ -13,6 +13,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.  *
  ************************************************************************/
 
+using Server.Engines.Spawners;
+
 namespace Server.Mobiles;
 
 public abstract partial class BaseAI
@@ -326,7 +328,7 @@ public abstract partial class BaseAI
         return true;
     }
 
-    private bool IsInvalidControlTarget(Mobile target) => target?.Deleted != false || target.Map != Mobile.Map 
+    private bool IsInvalidControlTarget(Mobile target) => target?.Deleted != false || target.Map != Mobile.Map
         || !target.Alive || target.IsDeadBondedPet;
 
     private void HandleInvalidControlTarget()
@@ -344,7 +346,7 @@ public abstract partial class BaseAI
     private void FindCombatant()
     {
         var controlMaster = Mobile.ControlMaster;
-        
+
         foreach (var aggr in Mobile.GetMobilesInRange(Mobile.RangePerception))
         {
             if (!Mobile.CanSee(aggr) || aggr.IsDeadBondedPet || !aggr.Alive)
@@ -354,7 +356,7 @@ public abstract partial class BaseAI
 
             bool isAttackingPet = aggr.Combatant == Mobile;
             bool isAttackingMaster = controlMaster != null && aggr.Combatant == controlMaster;
-            
+
             if (isAttackingPet || isAttackingMaster)
             {
                 if (Mobile.InLOS(aggr))
@@ -377,12 +379,12 @@ public abstract partial class BaseAI
             for (var i = 0; i < controlMaster.Aggressors.Count; i++)
             {
                 var aggressor = controlMaster.Aggressors[i].Attacker;
-                
+
                 if (aggressor?.Deleted != false || !aggressor.Alive || aggressor.IsDeadBondedPet)
                 {
                     continue;
                 }
-                
+
                 if (Mobile.InRange(aggressor, Mobile.RangePerception) && Mobile.CanSee(aggressor) && Mobile.InLOS(aggressor))
                 {
                     Mobile.ControlTarget = aggressor;
@@ -404,10 +406,10 @@ public abstract partial class BaseAI
 
         var spawner = Mobile.Spawner;
 
-        if (spawner != null && spawner.HomeLocation != Point3D.Zero)
+        if (spawner != null)
         {
-            Mobile.Home = spawner.HomeLocation;
-            Mobile.RangeHome = spawner.HomeRange;
+            Mobile.Home = spawner.GetSpawnPosition(Mobile, spawner.Map);
+            Mobile.RangeHome = spawner.WalkingRange;
         }
         else
         {

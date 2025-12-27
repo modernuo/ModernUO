@@ -20,24 +20,13 @@ public partial class Spawner : BaseSpawner
 
     [Constructible(AccessLevel.Developer)]
     public Spawner(
-        int amount, int minDelay, int maxDelay, int team, int homeRange,
+        int amount,
+        TimeSpan minDelay,
+        TimeSpan maxDelay,
+        int team = 0,
+        Rectangle3D spawnBounds = default,
         params ReadOnlySpan<string> spawnedNames
-    ) : this(
-        amount,
-        TimeSpan.FromMinutes(minDelay),
-        TimeSpan.FromMinutes(maxDelay),
-        team,
-        homeRange,
-        spawnedNames
-    )
-    {
-    }
-
-    [Constructible(AccessLevel.Developer)]
-    public Spawner(
-        int amount, TimeSpan minDelay, TimeSpan maxDelay, int team, int homeRange,
-        params ReadOnlySpan<string> spawnedNames
-    ) : base(amount, minDelay, maxDelay, team, homeRange, spawnedNames)
+    ) : base(amount, minDelay, maxDelay, team, spawnBounds, spawnedNames)
     {
     }
 
@@ -85,6 +74,8 @@ public partial class Spawner : BaseSpawner
     }
     */
 
+    public override Region Region => Region.Find(Location, Map);
+
     public override Point3D GetSpawnPosition(ISpawnable spawned, Map map)
     {
         if (map == null || map == Map.Internal)
@@ -105,12 +96,29 @@ public partial class Spawner : BaseSpawner
             waterOnlyMob = false;
         }
 
+        var bounds = SpawnBounds;
+        var hasBounds = bounds != default;
+
         // Try 10 times to find a valid location.
         for (var i = 0; i < 10; i++)
         {
-            var x = Location.X + (Utility.Random(HomeRange * 2 + 1) - HomeRange);
-            var y = Location.Y + (Utility.Random(HomeRange * 2 + 1) - HomeRange);
+            int x, y;
 
+            if (hasBounds)
+            {
+                // Use SpawnBounds for X/Y selection
+                x = Utility.RandomMinMax(bounds.Start.X, bounds.End.X - 1);
+                y = Utility.RandomMinMax(bounds.Start.Y, bounds.End.Y - 1);
+            }
+            else
+            {
+                // No bounds set - spawn at spawner location
+                x = Location.X;
+                y = Location.Y;
+            }
+
+            // Note: Z-level logic uses spawner Z and map average Z.
+            // Multi-story building support (using bounds Z range) is planned for a future PR.
             var mapZ = map.GetAverageZ(x, y);
 
             if (waterMob)
@@ -140,6 +148,6 @@ public partial class Spawner : BaseSpawner
             }
         }
 
-        return HomeLocation;
+        return Location;
     }
 }
