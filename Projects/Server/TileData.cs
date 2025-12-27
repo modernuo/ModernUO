@@ -300,7 +300,7 @@ public static class TileData
         Load();
     }
 
-    private static unsafe void Load()
+    internal static unsafe void Load()
     {
         var filePath = Core.FindDataFile("tiledata.mul");
 
