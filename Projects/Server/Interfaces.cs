@@ -70,7 +70,7 @@ public interface ISpawner : IEntity
     /// <summary>
     /// Checks if the given location is within the spawn bounds.
     /// </summary>
-    bool IsInSpawnBounds(IPoint3D location);
+    bool IsInSpawnBounds(Point3D location);
 }
 
 public interface ISpawnable : IEntity

@@ -469,6 +469,89 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
         return surface;
     }
 
+    /// <summary>
+    ///     Gets the Z level of the highest surface that is at or below <paramref name="p" />.
+    /// </summary>
+    /// <param name="p">The reference point.</param>
+    /// <returns>The Z level of the surface, or p.Z if no surface is found below.</returns>
+    public int GetTopSurfaceZ(Point3D p)
+    {
+        if (this == Internal)
+        {
+            return p.Z;
+        }
+
+        var surfaceZ = int.MinValue;
+
+        var lt = Tiles.GetLandTile(p.X, p.Y);
+
+        if (!lt.Ignored)
+        {
+            var avgZ = GetAverageZ(p.X, p.Y);
+
+            if (avgZ <= p.Z)
+            {
+                surfaceZ = avgZ;
+
+                if (surfaceZ == p.Z)
+                {
+                    return surfaceZ;
+                }
+            }
+        }
+
+        foreach (var tile in Tiles.GetStaticAndMultiTiles(p.X, p.Y))
+        {
+            var id = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
+
+            if (id.Surface || id.Wet)
+            {
+                var tileZ = tile.Z + id.CalcHeight;
+
+                if (tileZ > surfaceZ && tileZ <= p.Z)
+                {
+                    surfaceZ = tileZ;
+
+                    if (surfaceZ == p.Z)
+                    {
+                        return surfaceZ;
+                    }
+                }
+            }
+        }
+
+        var sector = GetSector(p.X, p.Y);
+
+        foreach (var item in sector.Items)
+        {
+            if (item is BaseMulti || item.ItemID > TileData.MaxItemValue || !item.AtWorldPoint(p.X, p.Y) ||
+                item.Movable)
+            {
+                continue;
+            }
+
+            var id = item.ItemData;
+
+            if (id.Surface || id.Wet)
+            {
+                var itemZ = item.Z + id.CalcHeight;
+
+                if (itemZ > surfaceZ && itemZ <= p.Z)
+                {
+                    surfaceZ = itemZ;
+
+                    if (surfaceZ == p.Z)
+                    {
+                        return surfaceZ;
+                    }
+                }
+            }
+        }
+
+        // If no surface found below, return the original Z
+        return surfaceZ == int.MinValue ? p.Z : surfaceZ;
+    }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Bound(int x, int y, out int newX, out int newY)
     {
