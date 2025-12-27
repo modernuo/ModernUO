@@ -943,91 +943,154 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
             return false;
         }
 
-        // Early-out if region doesn't allow spawning
         if (!Region.Find(new Point3D(x, y, minZ), this).AllowSpawn())
         {
             return false;
         }
 
-        var found = false;
-        var bestZ = int.MinValue;
+        // Collect surfaces and blocking info in a single pass through tiles.
+        // A blocking range (low, high) blocks any spawn z where low < z < high.
+        // This avoids iterating tiles multiple times (once per surface candidate).
+        Span<int> surfaceZs = stackalloc int[16];
+        var surfaceCount = 0;
 
-        // 1. Check land tile (only for walking mobs - water is static tiles above land)
-        if (!cantWalk)
+        Span<int> blockLows = stackalloc int[64];
+        Span<int> blockHighs = stackalloc int[64];
+        var blockerCount = 0;
+
+        // 1. Land tile
+        var landTile = Tiles.GetLandTile(x, y);
+        GetAverageZ(x, y, out var lowZ, out var avgZ, out _);
+
+        if (!landTile.Ignored)
         {
-            var landTile = Tiles.GetLandTile(x, y);
-            if (!landTile.Ignored)
+            var landFlags = TileData.LandTable[landTile.ID & TileData.MaxLandValue].Flags;
+            var isImpassable = (landFlags & TileFlag.Impassable) != 0;
+
+            if (isImpassable)
             {
-                var landFlags = TileData.LandTable[landTile.ID & TileData.MaxLandValue].Flags;
-                var isImpassable = (landFlags & TileFlag.Impassable) != 0;
+                // Impassable land blocks z in range (lowZ - 16, avgZ)
+                blockLows[blockerCount] = lowZ - 16;
+                blockHighs[blockerCount] = avgZ;
+                blockerCount++;
+            }
+            else if (!cantWalk && avgZ >= minZ && avgZ <= maxZ)
+            {
+                // Passable land is a surface for walking mobs
+                surfaceZs[surfaceCount++] = avgZ;
+            }
+        }
 
-                if (!isImpassable)
+        // 2. Static and multi tiles
+        foreach (var tile in Tiles.GetStaticAndMultiTiles(x, y))
+        {
+            var id = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
+            var tileTop = tile.Z + id.CalcHeight;
+            var isSurface = id.Surface;
+            var isImpassable = id.Impassable;
+            var isWet = id.Wet;
+
+            // Blocking: (surface || impassable) tiles block z in range (tile.Z - 16, tileTop)
+            if ((isSurface || isImpassable) && blockerCount < 64)
+            {
+                blockLows[blockerCount] = tile.Z - 16;
+                blockHighs[blockerCount] = tileTop;
+                blockerCount++;
+            }
+
+            // Surface candidate
+            if (tileTop >= minZ && tileTop <= maxZ && surfaceCount < 16)
+            {
+                if (canSwim && isWet || !cantWalk && isSurface && !isImpassable)
                 {
-                    var avgZ = GetAverageZ(x, y);
-
-                    if (avgZ >= minZ && avgZ <= maxZ && avgZ > bestZ && CanFit(x, y, avgZ, 16))
-                    {
-                        bestZ = avgZ;
-                        found = true;
-                    }
+                    surfaceZs[surfaceCount++] = tileTop;
                 }
             }
         }
 
-        // 2. Check static and multi tiles for surfaces
-        foreach (var tile in Tiles.GetStaticAndMultiTiles(x, y))
-        {
-            var id = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
-            var surfaceZ = tile.Z + id.CalcHeight; // Standing surface
-
-            if (surfaceZ < minZ || surfaceZ > maxZ || surfaceZ <= bestZ)
-            {
-                continue;
-            }
-
-            var isWet = id.Wet;
-            var isSurface = id.Surface && !id.Impassable;
-
-            if ((canSwim && isWet || !cantWalk && isSurface) && CanFit(x, y, surfaceZ, 16))
-            {
-                bestZ = surfaceZ;
-                found = true;
-            }
-        }
-
-        // 3. Check world items for surfaces (e.g., placed tables, platforms)
+        // 3. World items
         var sector = GetSector(x, y);
         foreach (var item in sector.Items)
         {
-            if (item is BaseMulti || item.ItemID > TileData.MaxItemValue || !item.AtWorldPoint(x, y) || item.Movable)
+            if (item is BaseMulti || item.ItemID > TileData.MaxItemValue || !item.AtWorldPoint(x, y))
             {
                 continue;
             }
 
             var id = item.ItemData;
-            var surfaceZ = item.Z + id.CalcHeight;
+            var itemTop = item.Z + id.CalcHeight;
+            var isSurface = id.Surface;
+            var isImpassable = id.Impassable;
+            var isWet = id.Wet;
 
-            if (surfaceZ < minZ || surfaceZ > maxZ || surfaceZ <= bestZ)
+            // Blocking: (surface || impassable) items block z in range (item.Z - 16, itemTop)
+            if ((isSurface || isImpassable) && blockerCount < 64)
+            {
+                blockLows[blockerCount] = item.Z - 16;
+                blockHighs[blockerCount] = itemTop;
+                blockerCount++;
+            }
+
+            // Surface candidate (non-movable only)
+            if (!item.Movable && itemTop >= minZ && itemTop <= maxZ && surfaceCount < 16)
+            {
+                if (canSwim && isWet || !cantWalk && isSurface && !isImpassable)
+                {
+                    surfaceZs[surfaceCount++] = itemTop;
+                }
+            }
+        }
+
+        // 4. Mobiles (blockers only)
+        foreach (var m in sector.Mobiles)
+        {
+            if (m.Location.m_X == x && m.Location.m_Y == y &&
+                (m.AccessLevel == AccessLevel.Player || !m.Hidden) &&
+                blockerCount < 64)
+            {
+                // Mobiles block z in range (m.Z - 16, m.Z + 16)
+                blockLows[blockerCount] = m.Z - 16;
+                blockHighs[blockerCount] = m.Z + 16;
+                blockerCount++;
+            }
+        }
+
+        // Find the highest unblocked surface
+        var bestZ = int.MinValue;
+
+        for (var i = 0; i < surfaceCount; i++)
+        {
+            var z = surfaceZs[i];
+
+            if (z <= bestZ)
             {
                 continue;
             }
 
-            var isWet = id.Wet;
-            var isSurface = id.Surface && !id.Impassable;
-
-            if ((canSwim && isWet || !cantWalk && isSurface) && CanFit(x, y, surfaceZ, 16))
+            // Check if blocked by any blocker
+            var blocked = false;
+            for (var j = 0; j < blockerCount; j++)
             {
-                bestZ = surfaceZ;
-                found = true;
+                if (z > blockLows[j] && z < blockHighs[j])
+                {
+                    blocked = true;
+                    break;
+                }
+            }
+
+            if (!blocked)
+            {
+                bestZ = z;
             }
         }
 
-        if (found)
+        if (bestZ > int.MinValue)
         {
             spawnZ = bestZ;
+            return true;
         }
 
-        return found;
+        return false;
     }
 
     private class ZComparer : IComparer<Item>
