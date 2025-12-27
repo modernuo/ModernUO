@@ -120,7 +120,12 @@ public abstract partial class BaseSpawner : Item, ISpawner
     {
     }
 
-    public BaseSpawner(string spawnedName) : this(1, TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(10), 0, default, spawnedName)
+    public BaseSpawner(string spawnedName) : this(
+        1,
+        TimeSpan.FromMinutes(5),
+        TimeSpan.FromMinutes(10),
+        spawnedNames: spawnedName
+    )
     {
     }
 

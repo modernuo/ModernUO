@@ -158,7 +158,7 @@ public static class ImportSpawnersCommand
                 Point3D location = Point3D.Parse(Utility.GetText(node["location"], "Error"));
                 Map map = Map.Parse(Utility.GetText(node["map"], "Error"));
 
-                Spawner spawner = new Spawner(count, minDelay, maxDelay, team, default, creatureNames.ToArray());
+                Spawner spawner = new Spawner(count, minDelay, maxDelay, team, spawnedNames: creatureNames.ToArray());
                 if (walkingRange >= 0)
                 {
                     spawner.WalkingRange = walkingRange;
