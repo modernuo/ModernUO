@@ -148,6 +148,6 @@ public partial class Spawner : BaseSpawner
             }
         }
 
-        return HomeLocation;
+        return Location;
     }
 }

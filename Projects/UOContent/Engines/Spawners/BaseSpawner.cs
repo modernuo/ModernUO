@@ -28,9 +28,6 @@ public abstract partial class BaseSpawner : Item, ISpawner
     [SerializableField(2, setter: "private")]
     private List<SpawnerEntry> _entries;
 
-    [InvalidateProperties]
-    [SerializableField(3)]
-    [SerializedCommandProperty(AccessLevel.Developer)]
     private int _walkingRange = -1;
 
     [SerializableField(4)]
@@ -142,6 +139,20 @@ public abstract partial class BaseSpawner : Item, ISpawner
         }
     }
 
+    /// <summary>
+    /// Checks if the given location is within the spawn bounds.
+    /// Virtual to allow RegionSpawner to override with region-based logic.
+    /// </summary>
+    public virtual bool IsInSpawnBounds(IPoint3D location)
+    {
+        if (_spawnBounds == default)
+        {
+            return true; // No bounds = always in bounds
+        }
+
+        return _spawnBounds.Contains(location);
+    }
+
     public BaseSpawner() : this(1, TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(10))
     {
     }
@@ -229,6 +240,18 @@ public abstract partial class BaseSpawner : Item, ISpawner
 
     [IgnoreDupe]
     public Dictionary<ISpawnable, SpawnerEntry> Spawned { get; private set; }
+
+    [CommandProperty(AccessLevel.Developer)]
+    [SerializableProperty(3, nameof(_walkingRange))]
+    public int WalkingRange
+    {
+        get => _walkingRange > 0 ? _walkingRange : HomeRange;
+        set
+        {
+            _walkingRange = value;
+            InvalidateProperties();
+        }
+    }
 
     [SerializableProperty(8)]
     [CommandProperty(AccessLevel.Developer)]
@@ -817,9 +840,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
 
                 if (m is BaseCreature c)
                 {
-                    var walkrange = GetWalkingRange();
-
-                    c.RangeHome = walkrange >= 0 ? walkrange : HomeRange;
+                    c.RangeHome = WalkingRange;
                     c.CurrentWayPoint = WayPoint;
 
                     if (_team > 0)
@@ -875,8 +896,6 @@ public abstract partial class BaseSpawner : Item, ISpawner
         ClearProperties();
         return true;
     }
-
-    public virtual int GetWalkingRange() => _walkingRange;
 
     public virtual Map GetSpawnMap() => Map;
 

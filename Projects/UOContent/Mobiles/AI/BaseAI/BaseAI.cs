@@ -879,15 +879,15 @@ public abstract partial class BaseAI
             _timer.Stop();
         }
 
-        if (ShouldReturnToHome(Mobile.Spawner as Spawner))
+        if (ShouldReturnToHome(Mobile.Spawner))
         {
             Timer.StartTimer(ReturnToHome);
         }
     }
 
-    private bool ShouldReturnToHome(Spawner spawner) =>
+    private bool ShouldReturnToHome(ISpawner spawner) =>
         spawner?.ReturnOnDeactivate == true && !Mobile.Controlled &&
-        (spawner.HomeLocation == Point3D.Zero || !Mobile.InRange(spawner.HomeLocation, spawner.HomeRange));
+        !spawner.IsInSpawnBounds(Mobile.Location);
 
     private void ReturnToHome()
     {

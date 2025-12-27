@@ -165,7 +165,7 @@ public partial class RegionSpawner : Spawner
             }
         }
 
-        return HomeLocation;
+        return Location;
     }
 
     [AfterDeserialization(false)]
