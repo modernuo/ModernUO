@@ -924,7 +924,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
 
     /// <summary>
     /// Finds a valid spawn Z within the specified range by checking land, static, multi tiles, and world items.
-    /// Prefers the highest valid surface for multi-story building support.
+    /// Prefers the lowest valid surface (ground/floor over tables/platforms).
     /// </summary>
     /// <param name="x">X coordinate</param>
     /// <param name="y">Y coordinate</param>
@@ -970,9 +970,14 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
             if (isImpassable)
             {
                 // Impassable land blocks z in range (lowZ - 16, avgZ)
-                blockLows[blockerCount] = lowZ - 16;
-                blockHighs[blockerCount] = avgZ;
-                blockerCount++;
+                // Only add if it could affect surfaces in [minZ, maxZ]
+                var blockLow = lowZ - 16;
+                if (blockLow < maxZ && avgZ > minZ)
+                {
+                    blockLows[blockerCount] = blockLow;
+                    blockHighs[blockerCount] = avgZ;
+                    blockerCount++;
+                }
             }
             else if (!cantWalk && avgZ >= minZ && avgZ <= maxZ)
             {
@@ -991,20 +996,23 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
             var isWet = id.Wet;
 
             // Blocking: (surface || impassable) tiles block z in range (tile.Z - 16, tileTop)
-            if ((isSurface || isImpassable) && blockerCount < 64)
+            // Only add if it could affect surfaces in [minZ, maxZ]
+            if (isSurface || isImpassable)
             {
-                blockLows[blockerCount] = tile.Z - 16;
-                blockHighs[blockerCount] = tileTop;
-                blockerCount++;
+                var blockLow = tile.Z - 16;
+                if (blockLow < maxZ && tileTop > minZ && blockerCount < 64)
+                {
+                    blockLows[blockerCount] = blockLow;
+                    blockHighs[blockerCount] = tileTop;
+                    blockerCount++;
+                }
             }
 
             // Surface candidate
-            if (tileTop >= minZ && tileTop <= maxZ && surfaceCount < 16)
+            if (tileTop >= minZ && tileTop <= maxZ && surfaceCount < 16 &&
+                (canSwim && isWet || !cantWalk && isSurface && !isImpassable))
             {
-                if (canSwim && isWet || !cantWalk && isSurface && !isImpassable)
-                {
-                    surfaceZs[surfaceCount++] = tileTop;
-                }
+                surfaceZs[surfaceCount++] = tileTop;
             }
         }
 
@@ -1024,20 +1032,20 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
             var isWet = id.Wet;
 
             // Blocking: (surface || impassable) items block z in range (item.Z - 16, itemTop)
-            if ((isSurface || isImpassable) && blockerCount < 64)
+            // Only add if it could affect surfaces in [minZ, maxZ]
+            var blockLow = item.Z - 16;
+            if ((isSurface || isImpassable) && blockLow < maxZ && itemTop > minZ && blockerCount < 64)
             {
-                blockLows[blockerCount] = item.Z - 16;
+                blockLows[blockerCount] = blockLow;
                 blockHighs[blockerCount] = itemTop;
                 blockerCount++;
             }
 
             // Surface candidate (non-movable only)
-            if (!item.Movable && itemTop >= minZ && itemTop <= maxZ && surfaceCount < 16)
+            if (!item.Movable && itemTop >= minZ && itemTop <= maxZ && surfaceCount < 16 &&
+                (canSwim && isWet || !cantWalk && isSurface && !isImpassable))
             {
-                if (canSwim && isWet || !cantWalk && isSurface && !isImpassable)
-                {
-                    surfaceZs[surfaceCount++] = itemTop;
-                }
+                surfaceZs[surfaceCount++] = itemTop;
             }
         }
 
@@ -1045,24 +1053,29 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
         foreach (var m in sector.Mobiles)
         {
             if (m.Location.m_X == x && m.Location.m_Y == y &&
-                (m.AccessLevel == AccessLevel.Player || !m.Hidden) &&
-                blockerCount < 64)
+                (m.AccessLevel == AccessLevel.Player || !m.Hidden))
             {
                 // Mobiles block z in range (m.Z - 16, m.Z + 16)
-                blockLows[blockerCount] = m.Z - 16;
-                blockHighs[blockerCount] = m.Z + 16;
-                blockerCount++;
+                // Only add if it could affect surfaces in [minZ, maxZ]
+                var blockLow = m.Z - 16;
+                var blockHigh = m.Z + 16;
+                if (blockLow < maxZ && blockHigh > minZ && blockerCount < 64)
+                {
+                    blockLows[blockerCount] = blockLow;
+                    blockHighs[blockerCount] = blockHigh;
+                    blockerCount++;
+                }
             }
         }
 
-        // Find the highest unblocked surface
-        var bestZ = int.MinValue;
+        // Find the lowest unblocked surface (prefer ground/floor over tables/platforms)
+        var bestZ = int.MaxValue;
 
         for (var i = 0; i < surfaceCount; i++)
         {
             var z = surfaceZs[i];
 
-            if (z <= bestZ)
+            if (z >= bestZ)
             {
                 continue;
             }
@@ -1084,7 +1097,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
             }
         }
 
-        if (bestZ > int.MinValue)
+        if (bestZ < int.MaxValue)
         {
             spawnZ = bestZ;
             return true;

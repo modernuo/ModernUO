@@ -58,19 +58,6 @@ public partial class Spawner : BaseSpawner
             return Location;
         }
 
-        bool canSwim, cantWalk;
-
-        if (spawned is Mobile mob)
-        {
-            canSwim = mob.CanSwim;
-            cantWalk = mob.CantWalk;
-        }
-        else
-        {
-            canSwim = false;
-            cantWalk = false;
-        }
-
         var bounds = SpawnBounds;
         var hasBounds = bounds != default;
 
@@ -96,9 +83,30 @@ public partial class Spawner : BaseSpawner
                 y = Location.Y;
             }
 
-            if (map.CanSpawnMobile(x, y, minZ, maxZ, canSwim, cantWalk, out var spawnZ))
+            if (spawned is Mobile mob)
             {
-                return new Point3D(x, y, spawnZ);
+                if (map.CanSpawnMobile(x, y, minZ, maxZ, mob.CanSwim, mob.CantWalk, out var spawnZ))
+                {
+                    return new Point3D(x, y, spawnZ);
+                }
+            }
+            else if (spawned is Item item)
+            {
+                // Items use their own height for fit checking
+                var itemHeight = item.ItemData.Height;
+                if (itemHeight <= 0)
+                {
+                    itemHeight = 1;
+                }
+
+                // Find a valid surface for the item
+                var avgZ = map.GetAverageZ(x, y);
+                if (avgZ >= minZ && avgZ <= maxZ &&
+                    Region.Find(new Point3D(x, y, avgZ), map).AllowSpawn() &&
+                    map.CanFit(x, y, avgZ, itemHeight))
+                {
+                    return new Point3D(x, y, avgZ);
+                }
             }
         }
 
