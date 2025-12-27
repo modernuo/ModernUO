@@ -275,15 +275,23 @@ public class SpawnerControllerGump : GumpGrid
             //entry
             var entry = i * EntryCount;
 
-            AddImageTiled(item.Cols[2].X - 2, list.Items[i].Y + 18, item.Cols[2].Width, 1, 9357);
-            AddTextEntry(item.Cols[2].X, list.Items[i].Y + 2, list.Header.Cols[2].Width, 80, (int)GridHues.White, entry, spawner.Name, 20);
+            AddImageTiled(item.Cols[2].X - 2, list.Items[i].Y + 18, item.Cols[2].Width - 8, 1, 9357);
+            AddTextEntry(item.Cols[2].X, list.Items[i].Y + 2, list.Header.Cols[2].Width - 8, 80, (int)GridHues.White, entry, spawner.Name, 20);
             AddButton(item.Cols[2].X, list.Items[i].Y + vCenter + 9, 5837, 5838, GetButtonID(6, item.Index));
 
             AddImageTiled(item.Cols[6].X + 8, list.Items[i].Y + 29, item.Cols[6].Width / 2, 1, 9357);
             AddTextEntry(item.Cols[6].X + 12, list.Items[i].Y + 13, list.Header.Cols[6].Width, 80, (int)GridHues.White, entry + 1, spawner.WalkingRange.ToString(), 2);
 
-            AddImageTiled(item.Cols[7].X + 8, list.Items[i].Y + 29, item.Cols[7].Width / 2, 1, 9357);
-            AddTextEntry(item.Cols[7].X + 12, list.Items[i].Y + 13, list.Header.Cols[7].Width, 80, (int)GridHues.White, entry + 2, spawner.HomeRange.ToString(), 2);
+            // Show HomeRange if bounds are HomeRange-style, otherwise show "Custom"
+            if (spawner.IsHomeRangeStyle)
+            {
+                AddImageTiled(item.Cols[7].X + 8, list.Items[i].Y + 29, item.Cols[7].Width / 2, 1, 9357);
+                AddTextEntry(item.Cols[7].X + 12, list.Items[i].Y + 13, list.Header.Cols[7].Width, 80, (int)GridHues.White, entry + 2, spawner.HomeRange.ToString(), 2);
+            }
+            else
+            {
+                AddLabelHtml(item.Cols[7].X - 6, list.Items[i].Y + 13, list.Header.Cols[7].Width, 30, "Custom", GridColors.Yellow);
+            }
 
             AddImageTiled(item.Cols[8].X + 6, list.Items[i].Y + 29, item.Cols[8].Width - 20, 1, 9357);
             AddTextEntry(item.Cols[8].X + 8, list.Items[i].Y + 13, list.Header.Cols[8].Width, 80, (int)GridHues.White, entry + 3, spawner.MinDelay.ToString(), 8);
@@ -511,9 +519,11 @@ public class SpawnerControllerGump : GumpGrid
                             spawner.WalkingRange = walkRange;
                         }
 
-                        if (int.TryParse(info.GetTextEntry(indexEntry + 2), out var homeHange))
+                        // Only update HomeRange if text entry exists (HomeRange-style bounds)
+                        // Custom bounds show a label instead, so this will be null/empty and skip
+                        if (int.TryParse(info.GetTextEntry(indexEntry + 2), out var homeRange))
                         {
-                            spawner.HomeRange = homeHange;
+                            spawner.HomeRange = homeRange;
                         }
 
                         if (TimeSpan.TryParse(info.GetTextEntry(indexEntry + 3), out var minDelay))

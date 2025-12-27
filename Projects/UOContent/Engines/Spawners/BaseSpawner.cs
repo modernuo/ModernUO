@@ -116,6 +116,32 @@ public abstract partial class BaseSpawner : Item, ISpawner
         }
     }
 
+    /// <summary>
+    /// Returns true if SpawnBounds represents a HomeRange-style square centered on the spawner.
+    /// </summary>
+    public bool IsHomeRangeStyle
+    {
+        get
+        {
+            if (_spawnBounds == default)
+            {
+                return true; // No bounds = default HomeRange behavior
+            }
+
+            // Must be square
+            if (_spawnBounds.Width != _spawnBounds.Height)
+            {
+                return false;
+            }
+
+            // Spawner must be at center
+            var centerX = _spawnBounds.Start.X + _spawnBounds.Width / 2;
+            var centerY = _spawnBounds.Start.Y + _spawnBounds.Height / 2;
+
+            return centerX == Location.X && centerY == Location.Y;
+        }
+    }
+
     public BaseSpawner() : this(1, TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(10))
     {
     }
@@ -411,7 +437,16 @@ public abstract partial class BaseSpawner : Item, ISpawner
         _maxDelay = maxDelay;
         _count = amount;
         _team = team;
-        _spawnBounds = spawnBounds;
+
+        if (spawnBounds != default)
+        {
+            _spawnBounds = spawnBounds;
+        }
+        else
+        {
+            HomeRange = 4;
+        }
+
         Entries = [];
         Spawned = new Dictionary<ISpawnable, SpawnerEntry>();
 
