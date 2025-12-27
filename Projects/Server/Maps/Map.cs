@@ -1049,8 +1049,10 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
         {
             var landFlags = TileData.LandTable[landTile.ID & TileData.MaxLandValue].Flags;
             var isImpassable = (landFlags & TileFlag.Impassable) != 0;
+            var isWet = (landFlags & TileFlag.Wet) != 0;
 
-            if (isImpassable)
+            // Impassable land blocks, except water tiles don't block swimming mobs
+            if (isImpassable && !(canSwim && isWet))
             {
                 // Impassable land blocks z in range (lowZ - 16, avgZ)
                 // Only add if it could affect surfaces in [minZ, maxZ]
@@ -1062,10 +1064,14 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
                     blockerCount++;
                 }
             }
-            else if (!cantWalk && avgZ >= minZ && avgZ <= maxZ)
+
+            // Surface: water for swimmers, passable land for walkers
+            if (avgZ >= minZ && avgZ <= maxZ)
             {
-                // Passable land is a surface for walking mobs
-                surfaceZs[surfaceCount++] = avgZ;
+                if (canSwim && isWet || !cantWalk && !isImpassable)
+                {
+                    surfaceZs[surfaceCount++] = avgZ;
+                }
             }
         }
 
@@ -1079,8 +1085,9 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
             var isWet = id.Wet;
 
             // Blocking: (surface || impassable) tiles block z in range (tile.Z - 16, tileTop)
+            // Exception: water tiles (Impassable | Wet) don't block swimming mobs
             // Only add if it could affect surfaces in [minZ, maxZ]
-            if (isSurface || isImpassable)
+            if ((isSurface || isImpassable) && !(canSwim && isWet))
             {
                 var blockLow = tile.Z - 16;
                 if (blockLow < maxZ && tileTop > minZ && blockerCount < 64)
@@ -1115,9 +1122,11 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
             var isWet = id.Wet;
 
             // Blocking: (surface || impassable) items block z in range (item.Z - 16, itemTop)
+            // Exception: water items (Impassable | Wet) don't block swimming mobs
             // Only add if it could affect surfaces in [minZ, maxZ]
             var blockLow = item.Z - 16;
-            if ((isSurface || isImpassable) && blockLow < maxZ && itemTop > minZ && blockerCount < 64)
+            if ((isSurface || isImpassable) && !(canSwim && isWet) &&
+                blockLow < maxZ && itemTop > minZ && blockerCount < 64)
             {
                 blockLows[blockerCount] = blockLow;
                 blockHighs[blockerCount] = itemTop;
