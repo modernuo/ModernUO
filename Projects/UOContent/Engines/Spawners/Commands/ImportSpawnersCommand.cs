@@ -158,7 +158,7 @@ public static class ImportSpawnersCommand
                 Point3D location = Point3D.Parse(Utility.GetText(node["location"], "Error"));
                 Map map = Map.Parse(Utility.GetText(node["map"], "Error"));
 
-                Spawner spawner = new Spawner(count, minDelay, maxDelay, team, homeRange, creatureNames.ToArray());
+                Spawner spawner = new Spawner(count, minDelay, maxDelay, team, default, creatureNames.ToArray());
                 if (walkingRange >= 0)
                 {
                     spawner.WalkingRange = walkingRange;
@@ -166,6 +166,7 @@ public static class ImportSpawnersCommand
 
                 spawner.Name = name;
                 spawner.MoveToWorld(location, map);
+                spawner.HomeRange = homeRange;
                 if (spawner.Map == Map.Internal)
                 {
                     spawner.Delete();
@@ -347,7 +348,7 @@ public static class ImportSpawnersCommand
                             var maxDelay = GetTimeSpan(maxTimeOverride, parts[12]);
                             var homeRange = int.Parse(parts[14]);
 
-                            var spawner = new Spawner(totalCount, minDelay, maxDelay, 0, homeRange)
+                            var spawner = new Spawner(totalCount, minDelay, maxDelay)
                             {
                                 WalkingRange = int.Parse(parts[13]),
                                 Name = $"Spawner ({spawnerIdOverride ?? parts[15]})"
@@ -362,6 +363,7 @@ public static class ImportSpawnersCommand
                                 new Point3D(int.Parse(parts[7]), int.Parse(parts[8]), int.Parse(parts[9])),
                                 map
                             );
+                            spawner.HomeRange = homeRange;
 
                             spawner.Respawn();
                             allSpawners.Add(spawner.Guid, spawner);

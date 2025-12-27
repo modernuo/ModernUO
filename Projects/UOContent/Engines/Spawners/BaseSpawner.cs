@@ -116,42 +116,25 @@ public abstract partial class BaseSpawner : Item, ISpawner
         }
     }
 
-    public BaseSpawner() : this(1, TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(10), 0, 4)
+    public BaseSpawner() : this(1, TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(10))
     {
     }
 
-    public BaseSpawner(string spawnedName) : this(
-        1,
-        TimeSpan.FromMinutes(5),
-        TimeSpan.FromMinutes(10),
-        0,
-        4,
-        spawnedName
-    )
+    public BaseSpawner(string spawnedName) : this(1, TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(10), 0, default, spawnedName)
     {
     }
 
     public BaseSpawner(
-        int amount, int minDelay, int maxDelay, int team, int homeRange,
-        params ReadOnlySpan<string> spawnedNames
-    ) : this(
-        amount,
-        TimeSpan.FromMinutes(minDelay),
-        TimeSpan.FromMinutes(maxDelay),
-        team,
-        homeRange,
-        spawnedNames
-    )
-    {
-    }
-
-    public BaseSpawner(
-        int amount, TimeSpan minDelay, TimeSpan maxDelay, int team, int homeRange,
+        int amount,
+        TimeSpan minDelay,
+        TimeSpan maxDelay,
+        int team = 0,
+        Rectangle3D spawnBounds = default,
         params ReadOnlySpan<string> spawnedNames
     ) : base(0x1f13)
     {
         _guid = Guid.NewGuid();
-        InitSpawn(amount, minDelay, maxDelay, team, homeRange);
+        InitSpawn(amount, minDelay, maxDelay, team, spawnBounds);
         for (var i = 0; i < spawnedNames.Length; i++)
         {
             AddEntry(spawnedNames[i], 100, amount, false);
@@ -199,7 +182,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
         json.GetProperty("spawnLocationIsHome", options, out bool spawnLocationIsHome);
         _spawnLocationIsHome = spawnLocationIsHome;
 
-        InitSpawn(amount, minDelay, maxDelay, team, homeRange);
+        InitSpawn(amount, minDelay, maxDelay, team, _spawnBounds);
 
         json.GetProperty("entries", options, out List<SpawnerEntry> entries);
 
@@ -355,6 +338,45 @@ public abstract partial class BaseSpawner : Item, ISpawner
         }
     }
 
+    public override void OnLocationChange(Point3D oldLocation)
+    {
+        base.OnLocationChange(oldLocation);
+
+        // Only shift bounds if they represent a HomeRange-style square
+        // (spawner was centered and bounds are square)
+        if (_spawnBounds == default)
+        {
+            return;
+        }
+
+        var isSquare = _spawnBounds.Width == _spawnBounds.Height;
+        if (!isSquare)
+        {
+            return;
+        }
+
+        // Check if spawner was at center of bounds
+        var centerX = _spawnBounds.Start.X + _spawnBounds.Width / 2;
+        var centerY = _spawnBounds.Start.Y + _spawnBounds.Height / 2;
+        if (centerX != oldLocation.X || centerY != oldLocation.Y)
+        {
+            return;
+        }
+
+        // Shift bounds by the location delta
+        var deltaX = Location.X - oldLocation.X;
+        var deltaY = Location.Y - oldLocation.Y;
+
+        _spawnBounds = new Rectangle3D(
+            _spawnBounds.Start.X + deltaX,
+            _spawnBounds.Start.Y + deltaY,
+            _spawnBounds.Start.Z,
+            _spawnBounds.Width,
+            _spawnBounds.Height,
+            _spawnBounds.Depth
+        );
+    }
+
     public SpawnerEntry AddEntry(
         string creaturename,
         int probability = 100,
@@ -374,7 +396,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
         return entry;
     }
 
-    public void InitSpawn(int amount, TimeSpan minDelay, TimeSpan maxDelay, int team, int homeRange)
+    public void InitSpawn(int amount, TimeSpan minDelay, TimeSpan maxDelay, int team = 0, Rectangle3D spawnBounds = default)
     {
         Visible = false;
         Movable = false;
@@ -384,9 +406,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
         _maxDelay = maxDelay;
         _count = amount;
         _team = team;
-        // Note: homeRange parameter kept for API compatibility.
-        // SpawnBounds should be set after spawner is placed via HomeRange property.
-        // For programmatic creation, call spawner.HomeRange = value after MoveToWorld.
+        _spawnBounds = spawnBounds;
         Entries = [];
         Spawned = new Dictionary<ISpawnable, SpawnerEntry>();
 
@@ -415,7 +435,10 @@ public abstract partial class BaseSpawner : Item, ISpawner
             list.Add(1060742); // active
 
             list.Add(1060656, _count);                                     // amount to make: ~1_val~
-            list.Add(1061169, HomeRange);                                  // range ~1_val~
+            if (SpawnBounds != default)
+            {
+                list.Add(1061169, SpawnBounds.ToString());                                  // range ~1_val~
+            }
             list.Add(1050039, $"{"walking range:"}\t{_walkingRange}");     // ~1_NUMBER~ ~2_ITEMNAME~
             list.Add(1053099, $"{"group:"}\t{_group}");                    // ~1_oretype~: ~2_armortype~
             list.Add(1060847, $"{"team:"}\t{_team}");                      // ~1_val~ ~2_val~
