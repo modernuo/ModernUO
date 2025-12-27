@@ -34,31 +34,6 @@ public partial class Spawner : BaseSpawner
     {
     }
 
-    public static bool IsValidWater(Map map, int x, int y, int z)
-    {
-        if (!Region.Find(new Point3D(x, y, z), map).AllowSpawn() || !map.CanFit(x, y, z, 16, false, true, false))
-        {
-            return false;
-        }
-
-        var landTile = map.Tiles.GetLandTile(x, y);
-
-        if (landTile.Z == z && (TileData.LandTable[landTile.ID & TileData.MaxLandValue].Flags & TileFlag.Wet) != 0)
-        {
-            return true;
-        }
-
-        foreach (var staticTile in map.Tiles.GetStaticAndMultiTiles(x, y))
-        {
-            if (staticTile.Z == z && TileData.ItemTable[staticTile.ID & TileData.MaxItemValue].Wet)
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     /*
     public override bool OnDefragSpawn(ISpawnable spawned, bool remove)
     {
@@ -83,21 +58,25 @@ public partial class Spawner : BaseSpawner
             return Location;
         }
 
-        bool waterMob, waterOnlyMob;
+        bool canSwim, cantWalk;
 
         if (spawned is Mobile mob)
         {
-            waterMob = mob.CanSwim;
-            waterOnlyMob = mob.CanSwim && mob.CantWalk;
+            canSwim = mob.CanSwim;
+            cantWalk = mob.CantWalk;
         }
         else
         {
-            waterMob = false;
-            waterOnlyMob = false;
+            canSwim = false;
+            cantWalk = false;
         }
 
         var bounds = SpawnBounds;
         var hasBounds = bounds != default;
+
+        // Z range from SpawnBounds (supports multi-story buildings)
+        var minZ = hasBounds ? bounds.Start.Z : sbyte.MinValue;
+        var maxZ = hasBounds ? bounds.End.Z - 1 : sbyte.MaxValue;
 
         // Try 10 times to find a valid location.
         for (var i = 0; i < 10; i++)
@@ -117,34 +96,9 @@ public partial class Spawner : BaseSpawner
                 y = Location.Y;
             }
 
-            // Note: Z-level logic uses spawner Z and map average Z.
-            // Multi-story building support (using bounds Z range) is planned for a future PR.
-            var mapZ = map.GetAverageZ(x, y);
-
-            if (waterMob)
+            if (map.CanSpawnMobile(x, y, minZ, maxZ, canSwim, cantWalk, out var spawnZ))
             {
-                if (IsValidWater(map, x, y, Z))
-                {
-                    return new Point3D(x, y, Z);
-                }
-
-                if (IsValidWater(map, x, y, mapZ))
-                {
-                    return new Point3D(x, y, mapZ);
-                }
-            }
-
-            if (!waterOnlyMob)
-            {
-                if (map.CanSpawnMobile(x, y, Z))
-                {
-                    return new Point3D(x, y, Z);
-                }
-
-                if (map.CanSpawnMobile(x, y, mapZ))
-                {
-                    return new Point3D(x, y, mapZ);
-                }
+                return new Point3D(x, y, spawnZ);
             }
         }
 

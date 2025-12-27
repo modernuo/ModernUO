@@ -922,6 +922,114 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
     public bool CanSpawnMobile(int x, int y, int z) =>
         Region.Find(new Point3D(x, y, z), this).AllowSpawn() && CanFit(x, y, z, 16);
 
+    /// <summary>
+    /// Finds a valid spawn Z within the specified range by checking land, static, multi tiles, and world items.
+    /// Prefers the highest valid surface for multi-story building support.
+    /// </summary>
+    /// <param name="x">X coordinate</param>
+    /// <param name="y">Y coordinate</param>
+    /// <param name="minZ">Minimum Z (inclusive)</param>
+    /// <param name="maxZ">Maximum Z (inclusive)</param>
+    /// <param name="canSwim">Whether the spawned entity can swim (water surfaces valid)</param>
+    /// <param name="cantWalk">Whether the spawned entity cannot walk (water-only)</param>
+    /// <param name="spawnZ">The valid spawn Z if found</param>
+    /// <returns>True if a valid spawn Z was found within the range</returns>
+    public bool CanSpawnMobile(int x, int y, int minZ, int maxZ, bool canSwim, bool cantWalk, out int spawnZ)
+    {
+        spawnZ = 0;
+
+        if (this == Internal || x < 0 || y < 0 || x >= Width || y >= Height)
+        {
+            return false;
+        }
+
+        // Early-out if region doesn't allow spawning
+        if (!Region.Find(new Point3D(x, y, minZ), this).AllowSpawn())
+        {
+            return false;
+        }
+
+        var found = false;
+        var bestZ = int.MinValue;
+
+        // 1. Check land tile (only for walking mobs - water is static tiles above land)
+        if (!cantWalk)
+        {
+            var landTile = Tiles.GetLandTile(x, y);
+            if (!landTile.Ignored)
+            {
+                var landFlags = TileData.LandTable[landTile.ID & TileData.MaxLandValue].Flags;
+                var isImpassable = (landFlags & TileFlag.Impassable) != 0;
+
+                if (!isImpassable)
+                {
+                    var avgZ = GetAverageZ(x, y);
+
+                    if (avgZ >= minZ && avgZ <= maxZ && avgZ > bestZ && CanFit(x, y, avgZ, 16))
+                    {
+                        bestZ = avgZ;
+                        found = true;
+                    }
+                }
+            }
+        }
+
+        // 2. Check static and multi tiles for surfaces
+        foreach (var tile in Tiles.GetStaticAndMultiTiles(x, y))
+        {
+            var id = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
+            var surfaceZ = tile.Z + id.CalcHeight; // Standing surface
+
+            if (surfaceZ < minZ || surfaceZ > maxZ || surfaceZ <= bestZ)
+            {
+                continue;
+            }
+
+            var isWet = id.Wet;
+            var isSurface = id.Surface && !id.Impassable;
+
+            if ((canSwim && isWet || !cantWalk && isSurface) && CanFit(x, y, surfaceZ, 16))
+            {
+                bestZ = surfaceZ;
+                found = true;
+            }
+        }
+
+        // 3. Check world items for surfaces (e.g., placed tables, platforms)
+        var sector = GetSector(x, y);
+        foreach (var item in sector.Items)
+        {
+            if (item is BaseMulti || item.ItemID > TileData.MaxItemValue || !item.AtWorldPoint(x, y) || item.Movable)
+            {
+                continue;
+            }
+
+            var id = item.ItemData;
+            var surfaceZ = item.Z + id.CalcHeight;
+
+            if (surfaceZ < minZ || surfaceZ > maxZ || surfaceZ <= bestZ)
+            {
+                continue;
+            }
+
+            var isWet = id.Wet;
+            var isSurface = id.Surface && !id.Impassable;
+
+            if ((canSwim && isWet || !cantWalk && isSurface) && CanFit(x, y, surfaceZ, 16))
+            {
+                bestZ = surfaceZ;
+                found = true;
+            }
+        }
+
+        if (found)
+        {
+            spawnZ = bestZ;
+        }
+
+        return found;
+    }
+
     private class ZComparer : IComparer<Item>
     {
         public static readonly ZComparer Default = new();

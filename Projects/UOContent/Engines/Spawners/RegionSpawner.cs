@@ -98,17 +98,17 @@ public partial class RegionSpawner : Spawner
             return Location;
         }
 
-        bool waterMob, waterOnlyMob;
+        bool canSwim, cantWalk;
 
         if (spawned is Mobile mob)
         {
-            waterMob = mob.CanSwim;
-            waterOnlyMob = mob.CanSwim && mob.CantWalk;
+            canSwim = mob.CanSwim;
+            cantWalk = mob.CantWalk;
         }
         else
         {
-            waterMob = false;
-            waterOnlyMob = false;
+            canSwim = false;
+            cantWalk = false;
         }
 
         // Try 10 times to find a valid location.
@@ -118,6 +118,8 @@ public partial class RegionSpawner : Spawner
 
             var x = int.MinValue;
             var y = int.MinValue;
+            var minZ = (int)sbyte.MinValue;
+            var maxZ = (int)sbyte.MaxValue;
 
             for (var j = 0; j < _spawnRegion.RectangleWeights.Length; j++)
             {
@@ -130,38 +132,19 @@ public partial class RegionSpawner : Spawner
                     x = rect.Start.X + rand % rect.Width;
                     y = rect.Start.Y + rand / rect.Width;
 
+                    // Use rectangle's Z range for multi-floor region support
+                    minZ = rect.Start.Z;
+                    maxZ = rect.End.Z - 1;
+
                     break;
                 }
 
                 rand -= curWeight;
             }
 
-            var mapZ = map.GetAverageZ(x, y);
-
-            if (waterMob)
+            if (map.CanSpawnMobile(x, y, minZ, maxZ, canSwim, cantWalk, out var spawnZ))
             {
-                if (IsValidWater(map, x, y, Z))
-                {
-                    return new Point3D(x, y, Z);
-                }
-
-                if (IsValidWater(map, x, y, mapZ))
-                {
-                    return new Point3D(x, y, mapZ);
-                }
-            }
-
-            if (!waterOnlyMob)
-            {
-                if (map.CanSpawnMobile(x, y, Z))
-                {
-                    return new Point3D(x, y, Z);
-                }
-
-                if (map.CanSpawnMobile(x, y, mapZ))
-                {
-                    return new Point3D(x, y, mapZ);
-                }
+                return new Point3D(x, y, spawnZ);
             }
         }
 
