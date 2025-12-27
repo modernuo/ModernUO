@@ -59,29 +59,22 @@ public partial class Spawner : BaseSpawner
         }
 
         var bounds = SpawnBounds;
-        var hasBounds = bounds != default;
+
+        // No bounds = HomeRange of 0, spawn at spawner location
+        if (bounds == default)
+        {
+            return Location;
+        }
 
         // Z range from SpawnBounds (supports multi-story buildings)
-        var minZ = hasBounds ? bounds.Start.Z : sbyte.MinValue;
-        var maxZ = hasBounds ? bounds.End.Z - 1 : sbyte.MaxValue;
+        var minZ = bounds.Start.Z;
+        var maxZ = bounds.End.Z - 1;
 
         // Try 10 times to find a valid location.
         for (var i = 0; i < 10; i++)
         {
-            int x, y;
-
-            if (hasBounds)
-            {
-                // Use SpawnBounds for X/Y selection
-                x = Utility.RandomMinMax(bounds.Start.X, bounds.End.X - 1);
-                y = Utility.RandomMinMax(bounds.Start.Y, bounds.End.Y - 1);
-            }
-            else
-            {
-                // No bounds set - spawn at spawner location
-                x = Location.X;
-                y = Location.Y;
-            }
+            var x = Utility.RandomMinMax(bounds.Start.X, bounds.End.X - 1);
+            var y = Utility.RandomMinMax(bounds.Start.Y, bounds.End.Y - 1);
 
             if (spawned is Mobile mob)
             {

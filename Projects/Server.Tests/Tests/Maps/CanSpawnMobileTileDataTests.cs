@@ -8,12 +8,12 @@ namespace Server.Tests.Tests.Maps;
 /// These tests will be skipped if client files are not available.
 /// Configure client path via MODERNUO_CLIENT_PATH environment variable or place files at C:\Ultima Online Classic.
 /// </summary>
-[Collection("TileData Server Tests")]
+[Collection("Sequential Server Tests")]
 public class CanSpawnMobileTileDataTests
 {
-    private readonly TileDataServerFixture _fixture;
+    private readonly ServerFixture _fixture;
 
-    public CanSpawnMobileTileDataTests(TileDataServerFixture fixture)
+    public CanSpawnMobileTileDataTests(ServerFixture fixture)
     {
         _fixture = fixture;
     }
