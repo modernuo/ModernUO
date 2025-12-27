@@ -13,22 +13,22 @@ public class ServerFixture : ICollectionFixture<ServerFixture>, IDisposable
     /// <summary>
     /// True if TileData was successfully loaded from client files.
     /// </summary>
-    public bool TileDataLoaded => TestServerInitializer.TileDataLoaded;
+    public static bool TileDataLoaded => TestServerInitializer.TileDataLoaded;
 
     /// <summary>
     /// A tile ID known to have the Surface flag. 0 if not found.
     /// </summary>
-    public ushort SurfaceTileId => TestServerInitializer.SurfaceTileId;
+    public static ushort SurfaceTileId => TestServerInitializer.SurfaceTileId;
 
     /// <summary>
     /// A tile ID known to have the Impassable flag. 0 if not found.
     /// </summary>
-    public ushort ImpassableTileId => TestServerInitializer.ImpassableTileId;
+    public static ushort ImpassableTileId => TestServerInitializer.ImpassableTileId;
 
     /// <summary>
     /// A tile ID known to have the Wet flag (water). 0 if not found.
     /// </summary>
-    public ushort WetTileId => TestServerInitializer.WetTileId;
+    public static ushort WetTileId => TestServerInitializer.WetTileId;
 
     public ServerFixture()
     {

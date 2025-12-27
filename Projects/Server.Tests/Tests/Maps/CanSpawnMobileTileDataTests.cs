@@ -20,7 +20,7 @@ public class CanSpawnMobileTileDataTests
 
     private void SkipIfNoTileData()
     {
-        Skip.If(!_fixture.TileDataLoaded, "TileData not loaded - client files required");
+        Skip.If(!ServerFixture.TileDataLoaded, "TileData not loaded - client files required");
     }
 
     #region Multi-Based Tests
@@ -224,7 +224,7 @@ public class CanSpawnMobileTileDataTests
         try
         {
             // Create a non-movable item that acts as a surface using a real surface tile ID
-            surfaceItem = new Item(_fixture.SurfaceTileId)
+            surfaceItem = new Item(ServerFixture.SurfaceTileId)
             {
                 Movable = false
             };
@@ -326,7 +326,7 @@ public class CanSpawnMobileTileDataTests
     {
         return new MultiComponentList(
         [
-            new MultiTileEntry(_fixture.SurfaceTileId, 0, 0, (short)floorZ, TileFlag.Surface)
+            new MultiTileEntry(ServerFixture.SurfaceTileId, 0, 0, (short)floorZ, TileFlag.Surface)
         ]);
     }
 
@@ -334,8 +334,8 @@ public class CanSpawnMobileTileDataTests
     {
         return new MultiComponentList(
         [
-            new MultiTileEntry(_fixture.SurfaceTileId, 0, 0, (short)floor1Z, TileFlag.Surface),
-            new MultiTileEntry(_fixture.SurfaceTileId, 0, 0, (short)floor2Z, TileFlag.Surface)
+            new MultiTileEntry(ServerFixture.SurfaceTileId, 0, 0, (short)floor1Z, TileFlag.Surface),
+            new MultiTileEntry(ServerFixture.SurfaceTileId, 0, 0, (short)floor2Z, TileFlag.Surface)
         ]);
     }
 
@@ -343,8 +343,8 @@ public class CanSpawnMobileTileDataTests
     {
         return new MultiComponentList(
         [
-            new MultiTileEntry(_fixture.SurfaceTileId, 0, 0, (short)floorZ, TileFlag.Surface),
-            new MultiTileEntry(_fixture.ImpassableTileId, 0, 0, (short)ceilingZ, TileFlag.Impassable)
+            new MultiTileEntry(ServerFixture.SurfaceTileId, 0, 0, (short)floorZ, TileFlag.Surface),
+            new MultiTileEntry(ServerFixture.ImpassableTileId, 0, 0, (short)ceilingZ, TileFlag.Impassable)
         ]);
     }
 
@@ -352,7 +352,7 @@ public class CanSpawnMobileTileDataTests
     {
         return new MultiComponentList(
         [
-            new MultiTileEntry(_fixture.WetTileId, 0, 0, (short)waterZ, TileFlag.Wet)
+            new MultiTileEntry(ServerFixture.WetTileId, 0, 0, (short)waterZ, TileFlag.Wet)
         ]);
     }
 
