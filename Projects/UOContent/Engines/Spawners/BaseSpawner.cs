@@ -665,6 +665,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
         if (_spawnPositionMode == SpawnPositionMode.Automatic && _spawnPositionState.ShouldAbandon())
         {
             SpawnPositionMode = SpawnPositionMode.Abandoned;
+            _spawnPositionState = null;
             logger.Warning(
                 "Spawner {Serial} at {Location} ({Map}) marked abandoned - no valid spawn positions found after spiral scan.",
                 Serial,
