@@ -301,17 +301,16 @@ public class SectorSpawnCacheManagerTests
         Assert.Equal(1, SectorSpawnCacheManager.CachedSectorCount);
     }
 
-    [Fact]
+    [SkippableFact]
     public void InvalidateSectors_DifferentMaps_Independent()
     {
         var map1 = Map.Felucca;
         var map2 = Map.Internal;
 
-        // Skip if maps aren't properly initialized as distinct objects in test environment
-        if (map1 == null || map2 == null || ReferenceEquals(map1, map2))
-        {
-            return;
-        }
+        Skip.If(
+            map1 == null || map2 == null || ReferenceEquals(map1, map2),
+            "Maps not properly initialized as distinct objects in test environment"
+        );
 
         SectorSpawnCacheManager.SetValid(map1, new Point3D(50, 50, 0), isWater: false);
         SectorSpawnCacheManager.SetValid(map2, new Point3D(50, 50, 0), isWater: false);
