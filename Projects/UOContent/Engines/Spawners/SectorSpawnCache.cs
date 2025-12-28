@@ -145,8 +145,8 @@ public struct SectorSpawnCache
 /// </summary>
 public static class SectorSpawnCacheManager
 {
-    private static readonly Dictionary<(Map, int, int), SectorSpawnCache> _landCaches = new();
-    private static readonly Dictionary<(Map, int, int), SectorSpawnCache> _waterCaches = new();
+    private static readonly Dictionary<(Map, int, int), SectorSpawnCache> _landCaches = [];
+    private static readonly Dictionary<(Map, int, int), SectorSpawnCache> _waterCaches = [];
 
     /// <summary>
     /// Marks a position as valid for spawning in the global cache.

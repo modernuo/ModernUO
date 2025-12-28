@@ -73,7 +73,7 @@ public sealed class SpawnPositionState
     /// Returns true if the spawner should cache successful positions.
     /// </summary>
     public bool ShouldCachePositions(SpawnPositionMode mode) =>
-        mode == SpawnPositionMode.Enabled || (mode == SpawnPositionMode.Automatic && _nonTransientFailures > 0);
+        mode == SpawnPositionMode.Enabled || mode == SpawnPositionMode.Automatic && _nonTransientFailures > FailureThreshold;
 
     /// <summary>
     /// Returns true if the spawner should be marked as abandoned.

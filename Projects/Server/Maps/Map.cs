@@ -1234,8 +1234,9 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
             if ((isSurface || isImpassable) && !(canSwim && isWet))
             {
                 openSlots &= ~CreateBlockerMask(item.Z - 16, itemTop, minZ);
+
                 // Movable items are transient, non-movable are permanent
-                if (item.Movable)
+                if (item.Movable || item.CanDecay())
                 {
                     hasTransientBlocker = true;
                 }
@@ -1270,25 +1271,24 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
         if (validSurfaces == 0)
         {
             // Determine failure reason based on what blockers we encountered
-            if (hasNonTransientBlocker)
+            // If no surfaces existed at all, that's also a non-transient issue (map geometry)
+            if (hasNonTransientBlocker || surfaces == 0)
             {
                 failureReason |= SpawnFailureReason.NonTransientBlocker;
             }
+
             if (hasTransientBlocker)
             {
                 failureReason |= SpawnFailureReason.TransientBlocker;
             }
-            // If no surfaces existed at all, that's also a non-transient issue (map geometry)
-            if (surfaces == 0)
-            {
-                failureReason |= SpawnFailureReason.NonTransientBlocker;
-            }
+
             return false;
         }
 
         // TrailingZeroCount gives the position of the lowest set bit
         var lowestBit = BitOperations.TrailingZeroCount(validSurfaces);
         spawnZ = minZ + lowestBit;
+
         return true;
     }
 
