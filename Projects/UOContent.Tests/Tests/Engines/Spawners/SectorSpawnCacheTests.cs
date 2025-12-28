@@ -515,73 +515,78 @@ public class SpawnPositionStateTests
     {
         var state = new SpawnPositionState();
 
-        // Record 25 failures
+        // Record 25 useless results
         for (var i = 0; i < 25; i++)
         {
-            state.RecordNonTransientFailure();
+            state.RecordUselessResult();
         }
 
         Assert.False(state.ShouldAbandon()); // Spiral not complete
     }
 
     [Fact]
-    public void ShouldAbandon_TrueWhen100PercentFailureRateAfterSpiral()
+    public void ShouldAbandon_TrueAfterThresholdUselessResults()
     {
         var state = new SpawnPositionState();
         state.SpiralComplete = true;
 
-        // Record 25 failures (100% failure rate)
+        // Record 25 useless results (cache miss or Location-only)
         for (var i = 0; i < 25; i++)
         {
-            state.RecordNonTransientFailure();
+            state.RecordUselessResult();
         }
 
         Assert.True(state.ShouldAbandon());
     }
 
     [Fact]
-    public void ShouldAbandon_FalseWithSomeSuccesses()
+    public void ShouldAbandon_FalseWithUsefulCacheHit()
     {
         var state = new SpawnPositionState();
         state.SpiralComplete = true;
 
-        // Record some successes and failures
-        for (var i = 0; i < 20; i++)
+        // Record 24 useless results
+        for (var i = 0; i < 24; i++)
         {
-            state.RecordNonTransientFailure();
-        }
-        for (var i = 0; i < 5; i++)
-        {
-            state.RecordSuccess();
+            state.RecordUselessResult();
         }
 
-        Assert.False(state.ShouldAbandon()); // Not 100% failure rate
+        // Record a useful cache hit - resets counter
+        state.RecordUsefulCacheHit();
+
+        // Record a few more useless results
+        for (var i = 0; i < 5; i++)
+        {
+            state.RecordUselessResult();
+        }
+
+        Assert.False(state.ShouldAbandon()); // Counter was reset, only 5 now
     }
 
     [Fact]
-    public void RecordSuccess_ResetsWindowAfter25Attempts()
+    public void RecordUsefulCacheHit_ResetsUselessCounter()
     {
         var state = new SpawnPositionState();
+        state.SpiralComplete = true;
 
-        // Record 18 successes
-        for (var i = 0; i < 18; i++)
+        // Record 20 useless results
+        for (var i = 0; i < 20; i++)
         {
-            state.RecordSuccess();
+            state.RecordUselessResult();
         }
 
-        // Record 6 failures (more than threshold of 5)
-        for (var i = 0; i < 6; i++)
+        // Useful cache hit resets counter
+        state.RecordUsefulCacheHit();
+
+        // Need 25 more to trigger abandon
+        for (var i = 0; i < 24; i++)
         {
-            state.RecordNonTransientFailure();
+            state.RecordUselessResult();
         }
 
-        // Should cache since we have > 5 failures in window
-        Assert.True(state.ShouldCachePositions(SpawnPositionMode.Automatic));
+        Assert.False(state.ShouldAbandon()); // Only 24 after reset
 
-        // Record 25th attempt (success) - this should reset the window
-        state.RecordSuccess();
-
-        // After reset, no failures in new window
-        Assert.False(state.ShouldCachePositions(SpawnPositionMode.Automatic));
+        state.RecordUselessResult(); // 25th
+        Assert.True(state.ShouldAbandon());
     }
 }

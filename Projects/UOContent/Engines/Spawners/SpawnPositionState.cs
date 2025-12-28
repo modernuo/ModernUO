@@ -23,11 +23,13 @@ public sealed class SpawnPositionState
 {
     // Tunable thresholds for auto-detection
     private const int FailureThreshold = 5;
-    private const int AttemptWindow = 25;
+    private const int AbandonThreshold = 25;
 
     // Failure tracking for auto-detection
-    private int _spawnAttempts;
     private int _nonTransientFailures;
+
+    // Abandon tracking - counts consecutive cache misses or Location-only results
+    private int _consecutiveUselessResults;
 
     // Spiral scan state
     public int SpiralRing;
@@ -39,35 +41,29 @@ public sealed class SpawnPositionState
     /// </summary>
     public void Reset()
     {
-        _spawnAttempts = 0;
         _nonTransientFailures = 0;
+        _consecutiveUselessResults = 0;
         SpiralRing = 0;
         SpiralRingPosition = 0;
         SpiralComplete = false;
     }
 
     /// <summary>
-    /// Records a successful spawn for failure tracking.
+    /// Records a useful cache hit (position other than spawner's own location).
+    /// Resets the abandon counter.
     /// </summary>
-    public void RecordSuccess()
-    {
-        _spawnAttempts++;
-        if (_spawnAttempts >= AttemptWindow)
-        {
-            // Reset window
-            _spawnAttempts = 0;
-            _nonTransientFailures = 0;
-        }
-    }
+    public void RecordUsefulCacheHit() => _consecutiveUselessResults = 0;
+
+    /// <summary>
+    /// Records a useless result (cache miss or cache returned spawner's location).
+    /// Counts toward abandonment threshold.
+    /// </summary>
+    public void RecordUselessResult() => _consecutiveUselessResults++;
 
     /// <summary>
     /// Records a non-transient spawn failure for auto-detection.
     /// </summary>
-    public void RecordNonTransientFailure()
-    {
-        _spawnAttempts++;
-        _nonTransientFailures++;
-    }
+    public void RecordNonTransientFailure() => _nonTransientFailures++;
 
     /// <summary>
     /// Returns true if the spawner should cache successful positions.
@@ -77,8 +73,8 @@ public sealed class SpawnPositionState
 
     /// <summary>
     /// Returns true if the spawner should be marked as abandoned.
+    /// Triggers after spiral completes, and we get consecutive useless results
+    /// (cache misses or cache only returning spawner's own location).
     /// </summary>
-    public bool ShouldAbandon() =>
-        // After spiral scan complete, if we still have 100% failure rate
-        SpiralComplete && _spawnAttempts >= AttemptWindow && _nonTransientFailures >= _spawnAttempts;
+    public bool ShouldAbandon() => SpiralComplete && _consecutiveUselessResults >= AbandonThreshold;
 }

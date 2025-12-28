@@ -453,11 +453,6 @@ public static class SectorSpawnCacheManager
         for (var r = 0; r < ringsToScan; r++)
         {
             var ring = currentRing + r;
-            if (ring > maxRing)
-            {
-                currentRing = ring;
-                return true; // Scan complete
-            }
 
             // Ring 0 is just the center point
             if (ring == 0)
@@ -481,7 +476,7 @@ public static class SectorSpawnCacheManager
         currentRing += ringsToScan;
         ringPosition = 0;
 
-        return currentRing > maxRing;
+        return currentRing >= maxRing;
     }
 
     private static void CheckAndCachePosition(

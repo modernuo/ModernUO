@@ -145,7 +145,8 @@ public abstract partial class BaseSpawner : Item, ISpawner
     /// Controls how spawn position optimization is handled.
     /// </summary>
     [SerializableFieldSaveFlag(14)]
-    private bool ShouldSerializeSpawnPositionMode() => _spawnPositionMode != SpawnPositionMode.Automatic;
+    private bool ShouldSerializeSpawnPositionMode() =>
+        _spawnPositionMode is not SpawnPositionMode.Automatic and not SpawnPositionMode.Abandoned;
 
     [SerializableField(14)]
     [SerializedCommandProperty(AccessLevel.Developer)]
@@ -594,8 +595,6 @@ public abstract partial class BaseSpawner : Item, ISpawner
                 }
                 else
                 {
-                    _spawnPositionState.RecordSuccess();
-
                     // Lazy cache: add successful position to global sector cache
                     if (_spawnPositionState.ShouldCachePositions(_spawnPositionMode))
                     {
@@ -666,11 +665,20 @@ public abstract partial class BaseSpawner : Item, ISpawner
         // Phase 4: Try cached positions from global sector cache (uses deduplicated sectors)
         if (TryGetVerifiedCachedPosition(map, allBounds, isMobile, isWaterMob, canSwim, cantWalk, out var spawnPos))
         {
-            return spawnPos;
+            // Check if cache returned a useful position (not just spawner's own location)
+            if (spawnPos != Location)
+            {
+                _spawnPositionState.RecordUsefulCacheHit();
+                return spawnPos;
+            }
+            // Cache returned Location - count as useless but still return it
         }
 
-        // Phase 5: Check for abandoned state
-        if (_spawnPositionState.ShouldAbandon())
+        // Cache miss or returned Location only
+        _spawnPositionState.RecordUselessResult();
+
+        // Phase 5: Check for abandoned state (only auto-abandon from Automatic mode)
+        if (_spawnPositionMode == SpawnPositionMode.Automatic && _spawnPositionState.ShouldAbandon())
         {
             SpawnPositionMode = SpawnPositionMode.Abandoned;
             logger.Warning(
@@ -724,7 +732,6 @@ public abstract partial class BaseSpawner : Item, ISpawner
             return false;
         }
 
-        _spawnPositionState.RecordSuccess();
         spawnPos = new Point3D(cachedPos.X, cachedPos.Y, verifiedZ);
         return true;
     }
