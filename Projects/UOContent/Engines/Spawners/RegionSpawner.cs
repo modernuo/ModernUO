@@ -146,10 +146,11 @@ public partial class RegionSpawner : Spawner
                 }
 
                 // Find a valid surface for the item
+                // CanFitItem allows Surface+Impassable tiles (tables, furniture) as valid surfaces
                 var avgZ = map.GetAverageZ(x, y);
                 if (avgZ >= minZ && avgZ <= maxZ &&
                     Region.Find(new Point3D(x, y, avgZ), map).AllowSpawn() &&
-                    map.CanFit(x, y, avgZ, itemHeight))
+                    map.CanFitItem(x, y, avgZ, itemHeight))
                 {
                     return new Point3D(x, y, avgZ);
                 }

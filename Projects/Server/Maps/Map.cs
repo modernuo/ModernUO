@@ -998,6 +998,106 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
         return !requireSurface || hasSurface;
     }
 
+    /// <summary>
+    /// Checks if an item can be placed at the specified location.
+    /// Unlike CanFit, this treats Surface+Impassable tiles (tables, furniture) as valid surfaces,
+    /// matching the behavior of item drop logic.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool CanFitItem(Point3D p, int height) => CanFitItem(p.m_X, p.m_Y, p.m_Z, height);
+
+    /// <summary>
+    /// Checks if an item can be placed at the specified location.
+    /// Unlike CanFit, this treats Surface+Impassable tiles (tables, furniture) as valid surfaces,
+    /// matching the behavior of item drop logic.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool CanFitItem(Point2D p, int z, int height) => CanFitItem(p.m_X, p.m_Y, z, height);
+
+    /// <summary>
+    /// Checks if an item can be placed at the specified location.
+    /// Unlike CanFit, this treats Surface+Impassable tiles (tables, furniture) as valid surfaces,
+    /// matching the behavior of item drop logic.
+    /// </summary>
+    public bool CanFitItem(int x, int y, int z, int height)
+    {
+        if (this == Internal)
+        {
+            return false;
+        }
+
+        if (x < 0 || y < 0 || x >= Width || y >= Height)
+        {
+            return false;
+        }
+
+        var hasSurface = false;
+
+        var lt = Tiles.GetLandTile(x, y);
+        GetAverageZ(x, y, out var lowZ, out var avgZ, out _);
+        var landFlags = TileData.LandTable[lt.ID & TileData.MaxLandValue].Flags;
+
+        // Impassable land still blocks items
+        if ((landFlags & TileFlag.Impassable) != 0 && avgZ > z && z + height > lowZ)
+        {
+            return false;
+        }
+
+        // Passable land is a valid surface
+        if ((landFlags & TileFlag.Impassable) == 0 && z == avgZ && !lt.Ignored)
+        {
+            hasSurface = true;
+        }
+
+        foreach (var tile in Tiles.GetStaticAndMultiTiles(x, y))
+        {
+            var id = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
+            var surface = id.Surface;
+            var impassable = id.Impassable;
+
+            // Tiles block if item would intersect with them
+            if ((surface || impassable) && tile.Z + id.CalcHeight > z && z + height > tile.Z)
+            {
+                return false;
+            }
+
+            // Surface tiles (including Surface+Impassable like tables) are valid surfaces for items
+            if (surface && z == tile.Z + id.CalcHeight)
+            {
+                hasSurface = true;
+            }
+        }
+
+        var sector = GetSector(x, y);
+
+        foreach (var item in sector.Items)
+        {
+            if (item is BaseMulti || item.ItemID > TileData.MaxItemValue || !item.AtWorldPoint(x, y))
+            {
+                continue;
+            }
+
+            var id = item.ItemData;
+            var surface = id.Surface;
+            var impassable = id.Impassable;
+
+            // Items block if placement would intersect
+            if ((surface || impassable) && item.Z + id.CalcHeight > z && z + height > item.Z)
+            {
+                return false;
+            }
+
+            // Surface items (including Surface+Impassable like tables) are valid surfaces
+            // Must be non-movable to be a stable surface
+            if (surface && !item.Movable && z == item.Z + id.CalcHeight)
+            {
+                hasSurface = true;
+            }
+        }
+
+        return hasSurface;
+    }
+
     public bool CanSpawnMobile(Point3D p) => CanSpawnMobile(p.m_X, p.m_Y, p.m_Z);
 
     public bool CanSpawnMobile(Point2D p, int z) => CanSpawnMobile(p.m_X, p.m_Y, z);
@@ -1066,12 +1166,9 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
             }
 
             // Surface: water for swimmers, passable land for walkers
-            if (avgZ >= minZ && avgZ <= maxZ)
+            if (avgZ >= minZ && avgZ <= maxZ && (canSwim && isWet || !cantWalk && !isImpassable))
             {
-                if (canSwim && isWet || !cantWalk && !isImpassable)
-                {
-                    surfaceZs[surfaceCount++] = avgZ;
-                }
+                surfaceZs[surfaceCount++] = avgZ;
             }
         }
 

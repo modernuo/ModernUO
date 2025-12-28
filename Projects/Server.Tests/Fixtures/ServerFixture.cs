@@ -30,6 +30,11 @@ public class ServerFixture : ICollectionFixture<ServerFixture>, IDisposable
     /// </summary>
     public static ushort WetTileId => TestServerInitializer.WetTileId;
 
+    /// <summary>
+    /// A tile ID known to have both Surface and Impassable flags (tables, furniture). 0 if not found.
+    /// </summary>
+    public static ushort SurfaceImpassableTileId => TestServerInitializer.SurfaceImpassableTileId;
+
     public ServerFixture()
     {
         TestServerInitializer.Initialize(loadTileData: true);

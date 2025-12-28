@@ -35,6 +35,11 @@ public static class TestServerInitializer
     public static ushort WetTileId { get; private set; }
 
     /// <summary>
+    /// A tile ID known to have both Surface and Impassable flags (tables, furniture). 0 if not found.
+    /// </summary>
+    public static ushort SurfaceImpassableTileId { get; private set; }
+
+    /// <summary>
     /// Initializes the test server. Safe to call multiple times - only initializes once.
     /// </summary>
     /// <param name="loadTileData">If true, attempts to load TileData from client files.</param>
@@ -121,6 +126,7 @@ public static class TestServerInitializer
         SurfaceTileId = FindTileWithFlag(TileFlag.Surface);
         ImpassableTileId = FindTileWithFlag(TileFlag.Impassable);
         WetTileId = FindTileWithFlag(TileFlag.Wet);
+        SurfaceImpassableTileId = FindTileWithFlags(TileFlag.Surface | TileFlag.Impassable);
         TileDataLoaded = SurfaceTileId > 0 && ImpassableTileId > 0 && WetTileId > 0;
     }
 
@@ -130,6 +136,19 @@ public static class TestServerInitializer
         {
             var data = TileData.ItemTable[i];
             if ((data.Flags & flag) != 0)
+            {
+                return i;
+            }
+        }
+        return 0;
+    }
+
+    private static ushort FindTileWithFlags(TileFlag flags)
+    {
+        for (ushort i = 1; i <= TileData.MaxItemValue && i < 0xFFFF; i++)
+        {
+            var data = TileData.ItemTable[i];
+            if ((data.Flags & flags) == flags)
             {
                 return i;
             }
