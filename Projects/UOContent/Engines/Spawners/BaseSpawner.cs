@@ -300,12 +300,8 @@ public abstract partial class BaseSpawner : Item, ISpawner
         json.GetProperty("homeRange", options, out int homeRange);
         json.GetProperty("walkingRange", options, out _walkingRange);
 
-        // Try new format first
-        if (json.GetProperty("spawnBounds", options, out Rectangle3D spawnBounds))
-        {
-            SpawnBounds = spawnBounds;
-        }
-        else if (homeRange > 0 && json.GetProperty("location", options, out Point3D location))
+        // Handle legacy homeRange format (new spawnBounds format handled by derived classes)
+        if (homeRange > 0 && json.GetProperty("location", options, out Point3D location))
         {
             // Fall back to homeRange with location for oldest format
             // Note: Map not available during JSON loading, so use location.Z directly
@@ -507,11 +503,6 @@ public abstract partial class BaseSpawner : Item, ISpawner
         if (_walkingRange != 0)
         {
             json.SetProperty("walkingRange", options, WalkingRange);
-        }
-
-        if (SpawnBounds != default)
-        {
-            json.SetProperty("spawnBounds", options, SpawnBounds);
         }
 
         if (_spawnLocationIsHome)
