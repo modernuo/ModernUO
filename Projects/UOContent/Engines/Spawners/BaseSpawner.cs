@@ -632,38 +632,10 @@ public abstract partial class BaseSpawner : Item, ISpawner
         var allBounds = GetAllSpawnBounds();
         foreach (var bounds in allBounds)
         {
-            if (!SectorSpawnCacheManager.TryGetRandomPosition(map, bounds, isWaterMob, out var cachedPos))
+            if (TryGetVerifiedCachedPosition(map, bounds, isMobile, isWaterMob, canSwim, cantWalk, out var spawnPos))
             {
-                continue;
+                return spawnPos;
             }
-
-            // Re-verify in 3D (handles underground/multi-floor edge cases)
-            var minZ = bounds.Start.Z;
-            var maxZ = bounds.End.Z - 1;
-            int verifiedZ;
-            bool verified;
-
-            if (isMobile)
-            {
-                verified = map.CanSpawnMobile(cachedPos.X, cachedPos.Y, minZ, maxZ, canSwim, cantWalk, out verifiedZ);
-            }
-            else
-            {
-                verified = map.CanSpawnItem(cachedPos.X, cachedPos.Y, minZ, maxZ, out verifiedZ);
-            }
-
-            if (verified)
-            {
-                // Skip positions inside private houses
-                if (isMobile && SectorSpawnCacheManager.IsBlockedByHouse(map, cachedPos.X, cachedPos.Y, verifiedZ))
-                {
-                    continue;
-                }
-
-                _spawnPositionState.RecordSuccess();
-                return new Point3D(cachedPos.X, cachedPos.Y, verifiedZ);
-            }
-            // Position no longer valid - will be lazily replaced
         }
 
         // Phase 4: Spiral scan (only if supported and enabled by admin)
@@ -681,28 +653,9 @@ public abstract partial class BaseSpawner : Item, ISpawner
                     ref _spawnPositionState.SpiralRing, ref _spawnPositionState.SpiralRingPosition, ringsPerTick: 3);
 
                 // Try cache again after scan
-                if (SectorSpawnCacheManager.TryGetRandomPosition(map, primaryBounds, isWaterMob, out var cachedPos))
+                if (TryGetVerifiedCachedPosition(map, primaryBounds, isMobile, isWaterMob, canSwim, cantWalk, out var spawnPos))
                 {
-                    int verifiedZ;
-                    bool verified;
-
-                    verified = isMobile
-                        ? map.CanSpawnMobile(cachedPos.X, cachedPos.Y, minZ, maxZ, canSwim, cantWalk, out verifiedZ)
-                        : map.CanSpawnItem(cachedPos.X, cachedPos.Y, minZ, maxZ, out verifiedZ);
-
-                    if (verified)
-                    {
-                        // Skip positions inside private houses
-                        if (isMobile && SectorSpawnCacheManager.IsBlockedByHouse(map, cachedPos.X, cachedPos.Y, verifiedZ))
-                        {
-                            // Position blocked by house - continue to fallback
-                        }
-                        else
-                        {
-                            _spawnPositionState.RecordSuccess();
-                            return new Point3D(cachedPos.X, cachedPos.Y, verifiedZ);
-                        }
-                    }
+                    return spawnPos;
                 }
             }
         }
@@ -720,6 +673,50 @@ public abstract partial class BaseSpawner : Item, ISpawner
         }
 
         return Location;
+    }
+
+    /// <summary>
+    /// Attempts to get a verified spawn position from the sector cache.
+    /// </summary>
+    private bool TryGetVerifiedCachedPosition(
+        Map map,
+        Rectangle3D bounds,
+        bool isMobile,
+        bool isWaterMob,
+        bool canSwim,
+        bool cantWalk,
+        out Point3D spawnPos)
+    {
+        if (!SectorSpawnCacheManager.TryGetRandomPosition(map, bounds, isWaterMob, out var cachedPos))
+        {
+            spawnPos = default;
+            return false;
+        }
+
+        // Re-verify in 3D (handles underground/multi-floor edge cases)
+        var minZ = bounds.Start.Z;
+        var maxZ = bounds.End.Z - 1;
+
+        var verified = isMobile
+            ? map.CanSpawnMobile(cachedPos.X, cachedPos.Y, minZ, maxZ, canSwim, cantWalk, out var verifiedZ)
+            : map.CanSpawnItem(cachedPos.X, cachedPos.Y, minZ, maxZ, out verifiedZ);
+
+        if (!verified)
+        {
+            spawnPos = default;
+            return false;
+        }
+
+        // Skip positions inside private houses
+        if (isMobile && SectorSpawnCacheManager.IsBlockedByHouse(map, cachedPos.X, cachedPos.Y, verifiedZ))
+        {
+            spawnPos = default;
+            return false;
+        }
+
+        _spawnPositionState.RecordSuccess();
+        spawnPos = new Point3D(cachedPos.X, cachedPos.Y, verifiedZ);
+        return true;
     }
 
     public override void OnAfterDuped(Item newItem)
