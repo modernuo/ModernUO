@@ -333,14 +333,6 @@ public class SpiralScanTests
         SectorSpawnCacheManager.ClearAll();
     }
 
-    [Fact]
-    public void GetSpiralOffset_Ring0_ReturnsCenter()
-    {
-        // Ring 0 is just the center point (no offset)
-        // This is handled specially in ContinueSpiralScan, not GetSpiralOffset
-        // Ring 0 has 0 positions in the loop, center is checked separately
-    }
-
     [Theory]
     [InlineData(1, 0, -1, -1)] // Ring 1, position 0: top-left
     [InlineData(1, 1, 0, -1)]  // Ring 1, position 1: top
@@ -362,21 +354,21 @@ public class SpiralScanTests
     public void SpiralPattern_Ring1Has8Positions()
     {
         // Ring N has 8*N positions
-        var ring1Positions = 1 * 8;
+        const int ring1Positions = 1 * 8;
         Assert.Equal(8, ring1Positions);
     }
 
     [Fact]
     public void SpiralPattern_Ring2Has16Positions()
     {
-        var ring2Positions = 2 * 8;
+        const int ring2Positions = 2 * 8;
         Assert.Equal(16, ring2Positions);
     }
 
     [Fact]
     public void SpiralPattern_Ring10Has80Positions()
     {
-        var ring10Positions = 10 * 8;
+        const int ring10Positions = 10 * 8;
         Assert.Equal(80, ring10Positions);
     }
 
