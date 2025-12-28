@@ -162,10 +162,8 @@ public static class SectorSpawnCacheManager
         var sectorY = pos.Y >> Map.SectorShift;
         var bitIndex = (pos.X & (Map.SectorSize - 1)) + ((pos.Y & (Map.SectorSize - 1)) << Map.SectorShift);
 
-        var key = (map, sectorX, sectorY);
         var caches = isWater ? _waterCaches : _landCaches;
-
-        ref var cache = ref CollectionsMarshal.GetValueRefOrAddDefault(caches, key, out _);
+        ref var cache = ref CollectionsMarshal.GetValueRefOrAddDefault(caches, (map, sectorX, sectorY), out _);
         cache.SetBit(bitIndex);
     }
 

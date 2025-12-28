@@ -149,11 +149,10 @@ public class SectorSpawnCacheManagerTests
         Assert.Equal(1, SectorSpawnCacheManager.WaterCacheCount);
     }
 
-    [SkippableFact]
+    [Fact]
     public void SetValid_LandAndWater_SeparateCaches()
     {
         var map = Map.Felucca;
-        Skip.If(map == null, "Map.Felucca not initialized in test environment");
 
         // Same sector, different cache types
         SectorSpawnCacheManager.SetValid(map, new Point3D(100, 100, 0), isWater: false);
@@ -217,11 +216,10 @@ public class SectorSpawnCacheManagerTests
         Assert.Equal(cachedPos.Y, pos.Y);
     }
 
-    [SkippableFact]
+    [Fact]
     public void TryGetRandomPosition_WaterVsLand_Separated()
     {
         var map = Map.Felucca;
-        Skip.If(map == null, "Map.Felucca not initialized in test environment");
 
         var landPos = new Point3D(50, 50, 0);
         var waterPos = new Point3D(60, 60, 0);
@@ -304,16 +302,11 @@ public class SectorSpawnCacheManagerTests
         Assert.Equal(1, SectorSpawnCacheManager.CachedSectorCount);
     }
 
-    [SkippableFact]
+    [Fact]
     public void InvalidateSectors_DifferentMaps_Independent()
     {
         var map1 = Map.Felucca;
         var map2 = Map.Internal;
-
-        Skip.If(
-            map1 == null || map2 == null || ReferenceEquals(map1, map2),
-            "Maps not properly initialized as distinct objects in test environment"
-        );
 
         SectorSpawnCacheManager.SetValid(map1, new Point3D(50, 50, 0), isWater: false);
         SectorSpawnCacheManager.SetValid(map2, new Point3D(50, 50, 0), isWater: false);
