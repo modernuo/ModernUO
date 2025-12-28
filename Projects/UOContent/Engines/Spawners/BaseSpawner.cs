@@ -99,14 +99,19 @@ public abstract partial class BaseSpawner : Item, ISpawner
         }
         set
         {
-            // Create square bounds centered on spawner with full Z range
+            // Find the surface below the spawner (handles spawners placed in air)
+            var surfaceZ = Map != null && Map != Map.Internal
+                ? Map.GetTopSurfaceZ(Location)
+                : Location.Z;
+
+            // Create square bounds centered on spawner, Z range from surface to surface + 16
             _spawnBounds = new Rectangle3D(
                 Location.X - value,
                 Location.Y - value,
-                sbyte.MinValue,
+                surfaceZ,
                 value * 2 + 1,
                 value * 2 + 1,
-                256 // Full Z range: -128 to 127
+                17 // Z range: surface to surface + 16
             );
             this.MarkDirty();
             InvalidateProperties();
@@ -116,41 +121,38 @@ public abstract partial class BaseSpawner : Item, ISpawner
     /// <summary>
     /// Returns true if SpawnBounds represents a HomeRange-style square centered on the spawner.
     /// </summary>
-    public bool IsHomeRangeStyle
+    public bool IsHomeRangeStyle => IsHomeRangeStyleAt(Location);
+
+    /// <summary>
+    /// Returns true if SpawnBounds represents a HomeRange-style square centered on the given location.
+    /// </summary>
+    public bool IsHomeRangeStyleAt(Point3D location)
     {
-        get
+        if (_spawnBounds == default)
         {
-            if (_spawnBounds == default)
-            {
-                return true; // No bounds = default HomeRange behavior
-            }
-
-            // Must be square
-            if (_spawnBounds.Width != _spawnBounds.Height)
-            {
-                return false;
-            }
-
-            // Spawner must be at center
-            var centerX = _spawnBounds.Start.X + _spawnBounds.Width / 2;
-            var centerY = _spawnBounds.Start.Y + _spawnBounds.Height / 2;
-
-            return centerX == Location.X && centerY == Location.Y;
+            return true; // No bounds = default HomeRange behavior
         }
+
+        // Must be square
+        if (_spawnBounds.Width != _spawnBounds.Height)
+        {
+            return false;
+        }
+
+        // Given location must be at center
+        var centerX = _spawnBounds.Start.X + _spawnBounds.Width / 2;
+        var centerY = _spawnBounds.Start.Y + _spawnBounds.Height / 2;
+
+        return centerX == location.X && centerY == location.Y;
     }
 
     /// <summary>
     /// Checks if the given location is within the spawn bounds.
     /// Virtual to allow RegionSpawner to override with region-based logic.
     /// </summary>
-    public virtual bool IsInSpawnBounds(IPoint3D location)
+    public virtual bool IsInSpawnBounds(Point3D location)
     {
-        if (_spawnBounds == default)
-        {
-            return true; // No bounds = always in bounds
-        }
-
-        return _spawnBounds.Contains(location);
+        return _spawnBounds == default || _spawnBounds.Contains(location);
     }
 
     public BaseSpawner() : this(1, TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(10))
@@ -208,16 +210,17 @@ public abstract partial class BaseSpawner : Item, ISpawner
         {
             _spawnBounds = spawnBounds;
         }
-        // Fall back to homeRange with location for oldest format
         else if (homeRange > 0 && json.GetProperty("location", options, out Point3D location))
         {
+            // Fall back to homeRange with location for oldest format
+            // Note: Map not available during JSON loading, so use location.Z directly
             _spawnBounds = new Rectangle3D(
                 location.X - homeRange,
                 location.Y - homeRange,
-                sbyte.MinValue,
+                location.Z,
                 homeRange * 2 + 1,
                 homeRange * 2 + 1,
-                256
+                17
             );
         }
 
@@ -396,39 +399,11 @@ public abstract partial class BaseSpawner : Item, ISpawner
     {
         base.OnLocationChange(oldLocation);
 
-        // Only shift bounds if they represent a HomeRange-style square
-        // (spawner was centered and bounds are square)
-        if (_spawnBounds == default)
+        // Recalculate HomeRange-style bounds when spawner moves
+        if (IsHomeRangeStyleAt(oldLocation))
         {
-            return;
+            HomeRange = _spawnBounds.Width / 2;
         }
-
-        var isSquare = _spawnBounds.Width == _spawnBounds.Height;
-        if (!isSquare)
-        {
-            return;
-        }
-
-        // Check if spawner was at center of bounds
-        var centerX = _spawnBounds.Start.X + _spawnBounds.Width / 2;
-        var centerY = _spawnBounds.Start.Y + _spawnBounds.Height / 2;
-        if (centerX != oldLocation.X || centerY != oldLocation.Y)
-        {
-            return;
-        }
-
-        // Shift bounds by the location delta
-        var deltaX = Location.X - oldLocation.X;
-        var deltaY = Location.Y - oldLocation.Y;
-
-        _spawnBounds = new Rectangle3D(
-            _spawnBounds.Start.X + deltaX,
-            _spawnBounds.Start.Y + deltaY,
-            _spawnBounds.Start.Z,
-            _spawnBounds.Width,
-            _spawnBounds.Height,
-            _spawnBounds.Depth
-        );
     }
 
     public SpawnerEntry AddEntry(
@@ -833,7 +808,9 @@ public abstract partial class BaseSpawner : Item, ISpawner
                 Spawned.Add(m, entry);
                 entry.AddToSpawned(m);
 
-                var spawnLocation = m is BaseVendor ? Location : GetSpawnPosition(m, map);
+                // var spawnLocation = m is BaseVendor ? Location : GetSpawnPosition(m, map);
+
+                var spawnLocation = GetSpawnPosition(m, map);
 
                 m.OnBeforeSpawn(spawnLocation, map);
                 m.MoveToWorld(spawnLocation, map);
@@ -1049,13 +1026,14 @@ public abstract partial class BaseSpawner : Item, ISpawner
         // Handle v10 migration - convert HomeRange to SpawnBounds now that Location is available
         if (_pendingHomeRangeMigrations.Remove(this, out var homeRange))
         {
+            var surfaceZ = Map?.GetTopSurfaceZ(Location) ?? Location.Z;
             _spawnBounds = new Rectangle3D(
                 Location.X - homeRange,
                 Location.Y - homeRange,
-                sbyte.MinValue,
+                surfaceZ,
                 homeRange * 2 + 1,
                 homeRange * 2 + 1,
-                256
+                17
             );
         }
 

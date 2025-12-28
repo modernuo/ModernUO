@@ -19,8 +19,10 @@ public abstract partial class BaseSpawner
         _group = content.Group;
         _minDelay = content.MinDelay;
         _maxDelay = content.MaxDelay;
+        _count = content.Count;
         _team = content.Team;
-        _end = content.End;
+        _running = content.Running;
+        _end = _running ? content.End : Core.Now;
 
         // Defer SpawnBounds calculation to AfterDeserialization when Location is available
         if (content.HomeRange > 0)

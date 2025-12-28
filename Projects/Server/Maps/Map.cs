@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using Server.Buffers;
 using Server.Collections;
@@ -469,6 +470,89 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
         return surface;
     }
 
+    /// <summary>
+    ///     Gets the Z level of the highest surface that is at or below <paramref name="p" />.
+    /// </summary>
+    /// <param name="p">The reference point.</param>
+    /// <returns>The Z level of the surface, or p.Z if no surface is found below.</returns>
+    public int GetTopSurfaceZ(Point3D p)
+    {
+        if (this == Internal)
+        {
+            return p.Z;
+        }
+
+        var surfaceZ = int.MinValue;
+
+        var lt = Tiles.GetLandTile(p.X, p.Y);
+
+        if (!lt.Ignored)
+        {
+            var avgZ = GetAverageZ(p.X, p.Y);
+
+            if (avgZ <= p.Z)
+            {
+                surfaceZ = avgZ;
+
+                if (surfaceZ == p.Z)
+                {
+                    return surfaceZ;
+                }
+            }
+        }
+
+        foreach (var tile in Tiles.GetStaticAndMultiTiles(p.X, p.Y))
+        {
+            var id = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
+
+            if (id.Surface || id.Wet)
+            {
+                var tileZ = tile.Z + id.CalcHeight;
+
+                if (tileZ > surfaceZ && tileZ <= p.Z)
+                {
+                    surfaceZ = tileZ;
+
+                    if (surfaceZ == p.Z)
+                    {
+                        return surfaceZ;
+                    }
+                }
+            }
+        }
+
+        var sector = GetSector(p.X, p.Y);
+
+        foreach (var item in sector.Items)
+        {
+            if (item is BaseMulti || item.ItemID > TileData.MaxItemValue || !item.AtWorldPoint(p.X, p.Y) ||
+                item.Movable)
+            {
+                continue;
+            }
+
+            var id = item.ItemData;
+
+            if (id.Surface || id.Wet)
+            {
+                var itemZ = item.Z + id.CalcHeight;
+
+                if (itemZ > surfaceZ && itemZ <= p.Z)
+                {
+                    surfaceZ = itemZ;
+
+                    if (surfaceZ == p.Z)
+                    {
+                        return surfaceZ;
+                    }
+                }
+            }
+        }
+
+        // If no surface found below, return the original Z
+        return surfaceZ == int.MinValue ? p.Z : surfaceZ;
+    }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Bound(int x, int y, out int newX, out int newY)
     {
@@ -915,12 +999,368 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
         return !requireSurface || hasSurface;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool CanFitItem(Point3D p, int height) => CanFitItem(p.m_X, p.m_Y, p.m_Z, height);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool CanFitItem(Point2D p, int z, int height) => CanFitItem(p.m_X, p.m_Y, z, height);
+
+    /// <summary>
+    /// Checks if an item can be placed at the specified location.
+    /// Unlike CanFit, this treats Surface+Impassable tiles (tables, furniture) as valid surfaces,
+    /// matching the behavior of item drop logic.
+    /// </summary>
+    public bool CanFitItem(int x, int y, int z, int height)
+    {
+        if (this == Internal || x < 0 || y < 0 || x >= Width || y >= Height)
+        {
+            return false;
+        }
+
+        var hasSurface = false;
+
+        var lt = Tiles.GetLandTile(x, y);
+        GetAverageZ(x, y, out var lowZ, out var avgZ, out _);
+        var landFlags = TileData.LandTable[lt.ID & TileData.MaxLandValue].Flags;
+
+        // Impassable land still blocks items
+        if ((landFlags & TileFlag.Impassable) != 0 && avgZ > z && z + height > lowZ)
+        {
+            return false;
+        }
+
+        // Passable land is a valid surface
+        if ((landFlags & TileFlag.Impassable) == 0 && z == avgZ && !lt.Ignored)
+        {
+            hasSurface = true;
+        }
+
+        foreach (var tile in Tiles.GetStaticAndMultiTiles(x, y))
+        {
+            var id = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
+            var surface = id.Surface;
+            var impassable = id.Impassable;
+
+            // Tiles block if item would intersect with them
+            if ((surface || impassable) && tile.Z + id.CalcHeight > z && z + height > tile.Z)
+            {
+                return false;
+            }
+
+            // Surface tiles (including Surface+Impassable like tables) are valid surfaces for items
+            if (surface && z == tile.Z + id.CalcHeight)
+            {
+                hasSurface = true;
+            }
+        }
+
+        var sector = GetSector(x, y);
+
+        foreach (var item in sector.Items)
+        {
+            if (item is BaseMulti || item.ItemID > TileData.MaxItemValue || !item.AtWorldPoint(x, y))
+            {
+                continue;
+            }
+
+            var id = item.ItemData;
+            var surface = id.Surface;
+            var impassable = id.Impassable;
+
+            // Items block if placement would intersect
+            if ((surface || impassable) && item.Z + id.CalcHeight > z && z + height > item.Z)
+            {
+                return false;
+            }
+
+            // Surface items (including Surface+Impassable like tables) are valid surfaces
+            // Must be non-movable to be a stable surface
+            if (surface && !item.Movable && z == item.Z + id.CalcHeight)
+            {
+                hasSurface = true;
+            }
+        }
+
+        return hasSurface;
+    }
+
     public bool CanSpawnMobile(Point3D p) => CanSpawnMobile(p.m_X, p.m_Y, p.m_Z);
 
     public bool CanSpawnMobile(Point2D p, int z) => CanSpawnMobile(p.m_X, p.m_Y, z);
 
     public bool CanSpawnMobile(int x, int y, int z) =>
         Region.Find(new Point3D(x, y, z), this).AllowSpawn() && CanFit(x, y, z, 16);
+
+    /// <summary>
+    /// Finds a valid spawn Z within the specified range by checking land, static, multi tiles, and world items.
+    /// Prefers the lowest valid surface (ground/floor over tables/platforms).
+    /// </summary>
+    /// <param name="x">X coordinate</param>
+    /// <param name="y">Y coordinate</param>
+    /// <param name="minZ">Minimum Z (inclusive)</param>
+    /// <param name="maxZ">Maximum Z (inclusive)</param>
+    /// <param name="canSwim">Whether the spawned entity can swim (water surfaces valid)</param>
+    /// <param name="cantWalk">Whether the spawned entity cannot walk (water-only)</param>
+    /// <param name="spawnZ">The valid spawn Z if found</param>
+    /// <returns>True if a valid spawn Z was found within the range</returns>
+    public bool CanSpawnMobile(int x, int y, int minZ, int maxZ, bool canSwim, bool cantWalk, out int spawnZ)
+    {
+        spawnZ = 0;
+
+        if (this == Internal || x < 0 || y < 0 || x >= Width || y >= Height)
+        {
+            return false;
+        }
+
+        if (!Region.Find(new Point3D(x, y, minZ), this).AllowSpawn())
+        {
+            return false;
+        }
+
+        // Bitmask approach inspired by Item.DropToWorld's m_OpenSlots pattern.
+        // Each bit represents a Z level relative to minZ.
+        // openSlots: bit set = Z level is not blocked
+        // surfaces: bit set = Z level has a valid surface
+        // Final result: lowest set bit in (surfaces & openSlots)
+        var openSlots = ulong.MaxValue;
+        ulong surfaces = 0;
+
+        // 1. Land tile
+        var landTile = Tiles.GetLandTile(x, y);
+        GetAverageZ(x, y, out var lowZ, out var avgZ, out _);
+
+        if (!landTile.Ignored)
+        {
+            var landFlags = TileData.LandTable[landTile.ID & TileData.MaxLandValue].Flags;
+            var isImpassable = (landFlags & TileFlag.Impassable) != 0;
+            var isWet = (landFlags & TileFlag.Wet) != 0;
+
+            // Impassable land blocks, except water tiles don't block swimming mobs
+            if (isImpassable && !(canSwim && isWet))
+            {
+                // Impassable land blocks z in range (lowZ - 16, avgZ)
+                openSlots &= ~CreateBlockerMask(lowZ - 16, avgZ, minZ);
+            }
+
+            // Surface: water for swimmers, passable land for walkers
+            if (avgZ >= minZ && avgZ <= maxZ && (canSwim && isWet || !cantWalk && !isImpassable))
+            {
+                surfaces |= 1UL << (avgZ - minZ);
+            }
+        }
+
+        // 2. Static and multi tiles
+        foreach (var tile in Tiles.GetStaticAndMultiTiles(x, y))
+        {
+            var id = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
+            var tileTop = tile.Z + id.CalcHeight;
+            var isSurface = id.Surface;
+            var isImpassable = id.Impassable;
+            var isWet = id.Wet;
+
+            // Blocking: (surface || impassable) tiles block z in range (tile.Z - 16, tileTop)
+            // Exception: water tiles (Impassable | Wet) don't block swimming mobs
+            if ((isSurface || isImpassable) && !(canSwim && isWet))
+            {
+                openSlots &= ~CreateBlockerMask(tile.Z - 16, tileTop, minZ);
+            }
+
+            // Surface candidate
+            if (tileTop >= minZ && tileTop <= maxZ &&
+                (canSwim && isWet || !cantWalk && isSurface && !isImpassable))
+            {
+                surfaces |= 1UL << (tileTop - minZ);
+            }
+        }
+
+        // 3. World items
+        var sector = GetSector(x, y);
+        foreach (var item in sector.Items)
+        {
+            if (item is BaseMulti || item.ItemID > TileData.MaxItemValue || !item.AtWorldPoint(x, y))
+            {
+                continue;
+            }
+
+            var id = item.ItemData;
+            var itemTop = item.Z + id.CalcHeight;
+            var isSurface = id.Surface;
+            var isImpassable = id.Impassable;
+            var isWet = id.Wet;
+
+            // Blocking: (surface || impassable) items block z in range (item.Z - 16, itemTop)
+            // Exception: water items (Impassable | Wet) don't block swimming mobs
+            if ((isSurface || isImpassable) && !(canSwim && isWet))
+            {
+                openSlots &= ~CreateBlockerMask(item.Z - 16, itemTop, minZ);
+            }
+
+            // Surface candidate (non-movable only)
+            if (!item.Movable && itemTop >= minZ && itemTop <= maxZ &&
+                (canSwim && isWet || !cantWalk && isSurface && !isImpassable))
+            {
+                surfaces |= 1UL << (itemTop - minZ);
+            }
+        }
+
+        // 4. Mobiles (blockers only)
+        foreach (var m in sector.Mobiles)
+        {
+            if (m.Location.m_X == x && m.Location.m_Y == y &&
+                (m.AccessLevel == AccessLevel.Player || !m.Hidden))
+            {
+                // Mobiles block z in range (m.Z - 16, m.Z + 16)
+                openSlots &= ~CreateBlockerMask(m.Z - 16, m.Z + 16, minZ);
+            }
+        }
+
+        // Find the lowest unblocked surface using bit operations
+        var validSurfaces = surfaces & openSlots;
+        if (validSurfaces == 0)
+        {
+            return false;
+        }
+
+        // TrailingZeroCount gives the position of the lowest set bit
+        var lowestBit = BitOperations.TrailingZeroCount(validSurfaces);
+        spawnZ = minZ + lowestBit;
+        return true;
+    }
+
+    /// <summary>
+    /// Finds a valid spawn Z for items within the specified range.
+    /// Unlike CanSpawnMobile, treats Surface+Impassable tiles (tables, furniture) as valid surfaces.
+    /// </summary>
+    /// <param name="x">X coordinate</param>
+    /// <param name="y">Y coordinate</param>
+    /// <param name="minZ">Minimum Z (inclusive)</param>
+    /// <param name="maxZ">Maximum Z (inclusive)</param>
+    /// <param name="spawnZ">The valid spawn Z if found</param>
+    /// <returns>True if a valid spawn Z was found within the range</returns>
+    public bool CanSpawnItem(int x, int y, int minZ, int maxZ, out int spawnZ)
+    {
+        spawnZ = 0;
+
+        if (this == Internal || x < 0 || y < 0 || x >= Width || y >= Height)
+        {
+            return false;
+        }
+
+        if (!Region.Find(new Point3D(x, y, minZ), this).AllowSpawn())
+        {
+            return false;
+        }
+
+        // Bitmask approach: find surfaces within Z range, check for blockers.
+        // Unlike CanSpawnMobile, Surface+Impassable tiles (tables) are valid surfaces for items.
+        var openSlots = ulong.MaxValue;
+        ulong surfaces = 0;
+
+        // 1. Land tile
+        var landTile = Tiles.GetLandTile(x, y);
+        GetAverageZ(x, y, out var lowZ, out var avgZ, out _);
+
+        if (!landTile.Ignored)
+        {
+            var landFlags = TileData.LandTable[landTile.ID & TileData.MaxLandValue].Flags;
+            var isImpassable = (landFlags & TileFlag.Impassable) != 0;
+
+            // Impassable land blocks
+            if (isImpassable)
+            {
+                openSlots &= ~CreateBlockerMask(lowZ - 16, avgZ, minZ);
+            }
+
+            // Passable land is a valid surface
+            if (!isImpassable && avgZ >= minZ && avgZ <= maxZ)
+            {
+                surfaces |= 1UL << (avgZ - minZ);
+            }
+        }
+
+        // 2. Static and multi tiles
+        foreach (var tile in Tiles.GetStaticAndMultiTiles(x, y))
+        {
+            var id = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
+            var tileTop = tile.Z + id.CalcHeight;
+            var isSurface = id.Surface;
+            var isImpassable = id.Impassable;
+
+            // Blocking: (surface || impassable) tiles block z in range (tile.Z - 16, tileTop)
+            if (isSurface || isImpassable)
+            {
+                openSlots &= ~CreateBlockerMask(tile.Z - 16, tileTop, minZ);
+            }
+
+            // Surface candidate: Surface flag (including Surface+Impassable like tables)
+            if (isSurface && tileTop >= minZ && tileTop <= maxZ)
+            {
+                surfaces |= 1UL << (tileTop - minZ);
+            }
+        }
+
+        // 3. World items
+        var sector = GetSector(x, y);
+        foreach (var item in sector.Items)
+        {
+            if (item is BaseMulti || item.ItemID > TileData.MaxItemValue || !item.AtWorldPoint(x, y))
+            {
+                continue;
+            }
+
+            var id = item.ItemData;
+            var itemTop = item.Z + id.CalcHeight;
+            var isSurface = id.Surface;
+            var isImpassable = id.Impassable;
+
+            // Blocking: (surface || impassable) items block
+            if (isSurface || isImpassable)
+            {
+                openSlots &= ~CreateBlockerMask(item.Z - 16, itemTop, minZ);
+            }
+
+            // Surface candidate: non-movable Surface items (including Surface+Impassable)
+            if (!item.Movable && isSurface && itemTop >= minZ && itemTop <= maxZ)
+            {
+                surfaces |= 1UL << (itemTop - minZ);
+            }
+        }
+
+        // Find the lowest unblocked surface using bit operations
+        var validSurfaces = surfaces & openSlots;
+        if (validSurfaces == 0)
+        {
+            return false;
+        }
+
+        var lowestBit = BitOperations.TrailingZeroCount(validSurfaces);
+        spawnZ = minZ + lowestBit;
+        return true;
+    }
+
+    /// <summary>
+    /// Creates a bitmask for a blocker range. Blocker blocks Z where blockLow &lt; z &lt; blockHigh.
+    /// Bits are relative to minZ, clamped to [0, 63].
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static ulong CreateBlockerMask(int blockLow, int blockHigh, int minZ)
+    {
+        // Blocked range is (blockLow, blockHigh) exclusive, = [blockLow + 1, blockHigh - 1] inclusive
+        var startBit = blockLow - minZ + 1;
+        var endBit = blockHigh - minZ - 1;
+
+        if (endBit < 0 || startBit > 63 || startBit > endBit)
+        {
+            return 0;
+        }
+
+        startBit = Math.Max(0, startBit);
+        endBit = Math.Min(63, endBit);
+
+        var bitCount = endBit - startBit + 1;
+        var mask = bitCount >= 64 ? ulong.MaxValue : (1UL << bitCount) - 1;
+        return mask << startBit;
+    }
 
     private class ZComparer : IComparer<Item>
     {

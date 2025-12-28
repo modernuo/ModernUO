@@ -34,31 +34,6 @@ public partial class Spawner : BaseSpawner
     {
     }
 
-    public static bool IsValidWater(Map map, int x, int y, int z)
-    {
-        if (!Region.Find(new Point3D(x, y, z), map).AllowSpawn() || !map.CanFit(x, y, z, 16, false, true, false))
-        {
-            return false;
-        }
-
-        var landTile = map.Tiles.GetLandTile(x, y);
-
-        if (landTile.Z == z && (TileData.LandTable[landTile.ID & TileData.MaxLandValue].Flags & TileFlag.Wet) != 0)
-        {
-            return true;
-        }
-
-        foreach (var staticTile in map.Tiles.GetStaticAndMultiTiles(x, y))
-        {
-            if (staticTile.Z == z && TileData.ItemTable[staticTile.ID & TileData.MaxItemValue].Wet)
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     /*
     public override bool OnDefragSpawn(ISpawnable spawned, bool remove)
     {
@@ -83,68 +58,28 @@ public partial class Spawner : BaseSpawner
             return Location;
         }
 
-        bool waterMob, waterOnlyMob;
-
-        if (spawned is Mobile mob)
-        {
-            waterMob = mob.CanSwim;
-            waterOnlyMob = mob.CanSwim && mob.CantWalk;
-        }
-        else
-        {
-            waterMob = false;
-            waterOnlyMob = false;
-        }
-
         var bounds = SpawnBounds;
-        var hasBounds = bounds != default;
+
+        // No bounds = HomeRange of 0, spawn at spawner location
+        if (bounds == default)
+        {
+            return Location;
+        }
+
+        // Z range from SpawnBounds (supports multi-story buildings)
+        var minZ = bounds.Start.Z;
+        var maxZ = bounds.End.Z - 1;
 
         // Try 10 times to find a valid location.
         for (var i = 0; i < 10; i++)
         {
-            int x, y;
+            var x = Utility.RandomMinMax(bounds.Start.X, bounds.End.X - 1);
+            var y = Utility.RandomMinMax(bounds.Start.Y, bounds.End.Y - 1);
 
-            if (hasBounds)
+            if (spawned is Mobile mob && map.CanSpawnMobile(x, y, minZ, maxZ, mob.CanSwim, mob.CantWalk, out var spawnZ)
+                || spawned is Item && map.CanSpawnItem(x, y, minZ, maxZ, out spawnZ))
             {
-                // Use SpawnBounds for X/Y selection
-                x = Utility.RandomMinMax(bounds.Start.X, bounds.End.X - 1);
-                y = Utility.RandomMinMax(bounds.Start.Y, bounds.End.Y - 1);
-            }
-            else
-            {
-                // No bounds set - spawn at spawner location
-                x = Location.X;
-                y = Location.Y;
-            }
-
-            // Note: Z-level logic uses spawner Z and map average Z.
-            // Multi-story building support (using bounds Z range) is planned for a future PR.
-            var mapZ = map.GetAverageZ(x, y);
-
-            if (waterMob)
-            {
-                if (IsValidWater(map, x, y, Z))
-                {
-                    return new Point3D(x, y, Z);
-                }
-
-                if (IsValidWater(map, x, y, mapZ))
-                {
-                    return new Point3D(x, y, mapZ);
-                }
-            }
-
-            if (!waterOnlyMob)
-            {
-                if (map.CanSpawnMobile(x, y, Z))
-                {
-                    return new Point3D(x, y, Z);
-                }
-
-                if (map.CanSpawnMobile(x, y, mapZ))
-                {
-                    return new Point3D(x, y, mapZ);
-                }
+                return new Point3D(x, y, spawnZ);
             }
         }
 
