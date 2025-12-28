@@ -19,6 +19,7 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics.X86;
+using Server.Collections;
 using Server.Regions;
 
 namespace Server.Engines.Spawners;
@@ -238,6 +239,137 @@ public static class SectorSpawnCacheManager
 
                 currentIndex += sectorCount;
             }
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Attempts to get a random valid position from cached sectors across multiple bounds.
+    /// Deduplicates overlapping sectors for uniform distribution.
+    /// </summary>
+    /// <param name="map">The map to search</param>
+    /// <param name="allBounds">All spawn bounds to search within</param>
+    /// <param name="isWater">True for water mob, false for land mob</param>
+    /// <param name="pos">The selected position (X, Y only - caller must verify Z)</param>
+    /// <param name="containingBounds">The bounds rectangle containing the selected position</param>
+    /// <returns>True if a cached position was found</returns>
+    public static bool TryGetRandomPosition(
+        Map map,
+        IReadOnlyList<Rectangle3D> allBounds,
+        bool isWater,
+        out Point2D pos,
+        out Rectangle3D containingBounds)
+    {
+        pos = Point2D.Zero;
+        containingBounds = default;
+
+        if (allBounds.Count == 0)
+        {
+            return false;
+        }
+
+        // Fast path for single bounds
+        if (allBounds.Count == 1)
+        {
+            containingBounds = allBounds[0];
+            return TryGetRandomPosition(map, containingBounds, isWater, out pos);
+        }
+
+        var caches = isWater ? _waterCaches : _landCaches;
+
+        // Collect unique sectors and their counts
+        using var sectorList = PooledRefList<(int sx, int sy, int count)>.Create();
+        var totalPositions = 0;
+
+        for (var i = 0; i < allBounds.Count; i++)
+        {
+            var bounds = allBounds[i];
+            var startSectorX = bounds.Start.X >> Map.SectorShift;
+            var startSectorY = bounds.Start.Y >> Map.SectorShift;
+            var endSectorX = (bounds.End.X - 1) >> Map.SectorShift;
+            var endSectorY = (bounds.End.Y - 1) >> Map.SectorShift;
+
+            for (var sx = startSectorX; sx <= endSectorX; sx++)
+            {
+                for (var sy = startSectorY; sy <= endSectorY; sy++)
+                {
+                    // Check if we've already added this sector
+                    var alreadyAdded = false;
+                    for (var j = 0; j < sectorList.Count; j++)
+                    {
+                        var (checkSX, checkSY, _) = sectorList[j];
+                        if (checkSX == sx && checkSY == sy)
+                        {
+                            alreadyAdded = true;
+                            break;
+                        }
+                    }
+
+                    if (alreadyAdded)
+                    {
+                        continue;
+                    }
+
+                    if (caches.TryGetValue((map, sx, sy), out var cache))
+                    {
+                        var count = cache.GetCount();
+                        if (count > 0)
+                        {
+                            sectorList.Add((sx, sy, count));
+                            totalPositions += count;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (totalPositions == 0)
+        {
+            return false;
+        }
+
+        // Pick a random position
+        var targetIndex = Utility.Random(totalPositions);
+
+        // Find the sector containing that index
+        var currentIndex = 0;
+        for (var i = 0; i < sectorList.Count; i++)
+        {
+            var (sx, sy, sectorCount) = sectorList[i];
+            if (targetIndex < currentIndex + sectorCount)
+            {
+                // Target is in this sector - look up cache again
+                if (!caches.TryGetValue((map, sx, sy), out var cache))
+                {
+                    return false; // Should not happen
+                }
+
+                var indexInSector = targetIndex - currentIndex;
+                var bitPosition = cache.GetNthBitPosition(indexInSector);
+
+                var localX = bitPosition & (Map.SectorSize - 1);
+                var localY = bitPosition >> Map.SectorShift;
+
+                pos = new Point2D((sx << Map.SectorShift) + localX, (sy << Map.SectorShift) + localY);
+
+                // Find which bounds contains this position
+                for (var j = 0; j < allBounds.Count; j++)
+                {
+                    var bounds = allBounds[j];
+                    if (pos.X >= bounds.Start.X && pos.X < bounds.End.X &&
+                        pos.Y >= bounds.Start.Y && pos.Y < bounds.End.Y)
+                    {
+                        containingBounds = bounds;
+                        return true;
+                    }
+                }
+
+                // Position not in any bounds (edge of sector outside all bounds)
+                return false;
+            }
+
+            currentIndex += sectorCount;
         }
 
         return false;

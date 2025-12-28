@@ -520,7 +520,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
             json.SetProperty("spawnLocationIsHome", options, SpawnLocationIsHome);
         }
 
-        if (_spawnPositionMode != SpawnPositionMode.Automatic)
+        if (_spawnPositionMode is not SpawnPositionMode.Automatic and not SpawnPositionMode.Abandoned)
         {
             json.SetProperty("spawnPositionMode", options, _spawnPositionMode);
         }
@@ -622,24 +622,21 @@ public abstract partial class BaseSpawner : Item, ISpawner
 
         if (!useOptimization)
         {
-            // Transient failure only - just use spawner location, will work next time
+            // Transient failure only - just use spawner location
             return Location;
         }
 
         _spawnPositionState.RecordNonTransientFailure();
 
-        // Phase 3: Try cached positions from global sector cache
         var allBounds = GetAllSpawnBounds();
-        foreach (var bounds in allBounds)
-        {
-            if (TryGetVerifiedCachedPosition(map, bounds, isMobile, isWaterMob, canSwim, cantWalk, out var spawnPos))
-            {
-                return spawnPos;
-            }
-        }
 
-        // Phase 4: Spiral scan (only if supported and enabled by admin)
-        if (SupportsSpiralScan && !_spawnPositionState.SpiralComplete)
+        // Phase 3: Continue spiral scan to populate cache (before selecting from it)
+        if (!SupportsSpiralScan)
+        {
+            // Mark spiral complete for non-spiral spawners so ShouldAbandon() can trigger
+            _spawnPositionState.SpiralComplete = true;
+        }
+        else if (!_spawnPositionState.SpiralComplete)
         {
             // Use the first bounds for spiral center/range
             var primaryBounds = allBounds.Count > 0 ? allBounds[0] : default;
@@ -648,16 +645,28 @@ public abstract partial class BaseSpawner : Item, ISpawner
                 var minZ = primaryBounds.Start.Z;
                 var maxZ = primaryBounds.End.Z - 1;
 
-                _spawnPositionState.SpiralComplete = SectorSpawnCacheManager.ContinueSpiralScan(
-                    map, Location, primaryBounds, minZ, maxZ, canSwim, cantWalk,
-                    ref _spawnPositionState.SpiralRing, ref _spawnPositionState.SpiralRingPosition, ringsPerTick: 3);
+                // Scan more rings initially (3), fewer once cache has positions (1)
+                var ringsPerTick = _spawnPositionState.SpiralRing == 0 ? 3 : 1;
 
-                // Try cache again after scan
-                if (TryGetVerifiedCachedPosition(map, primaryBounds, isMobile, isWaterMob, canSwim, cantWalk, out var spawnPos))
-                {
-                    return spawnPos;
-                }
+                _spawnPositionState.SpiralComplete = SectorSpawnCacheManager.ContinueSpiralScan(
+                    map,
+                    Location,
+                    primaryBounds,
+                    minZ,
+                    maxZ,
+                    canSwim,
+                    cantWalk,
+                    ref _spawnPositionState.SpiralRing,
+                    ref _spawnPositionState.SpiralRingPosition,
+                    ringsPerTick
+                );
             }
+        }
+
+        // Phase 4: Try cached positions from global sector cache (uses deduplicated sectors)
+        if (TryGetVerifiedCachedPosition(map, allBounds, isMobile, isWaterMob, canSwim, cantWalk, out var spawnPos))
+        {
+            return spawnPos;
         }
 
         // Phase 5: Check for abandoned state
@@ -676,26 +685,27 @@ public abstract partial class BaseSpawner : Item, ISpawner
     }
 
     /// <summary>
-    /// Attempts to get a verified spawn position from the sector cache.
+    /// Attempts to get a verified spawn position from the sector cache across all bounds.
+    /// Uses deduplicated sector lookup for uniform distribution.
     /// </summary>
     private bool TryGetVerifiedCachedPosition(
         Map map,
-        Rectangle3D bounds,
+        IReadOnlyList<Rectangle3D> allBounds,
         bool isMobile,
         bool isWaterMob,
         bool canSwim,
         bool cantWalk,
         out Point3D spawnPos)
     {
-        if (!SectorSpawnCacheManager.TryGetRandomPosition(map, bounds, isWaterMob, out var cachedPos))
+        if (!SectorSpawnCacheManager.TryGetRandomPosition(map, allBounds, isWaterMob, out var cachedPos, out var containingBounds))
         {
             spawnPos = default;
             return false;
         }
 
-        // Re-verify in 3D (handles underground/multi-floor edge cases)
-        var minZ = bounds.Start.Z;
-        var maxZ = bounds.End.Z - 1;
+        // Re-verify in 3D using the bounds that contains this position
+        var minZ = containingBounds.Start.Z;
+        var maxZ = containingBounds.End.Z - 1;
 
         var verified = isMobile
             ? map.CanSpawnMobile(cachedPos.X, cachedPos.Y, minZ, maxZ, canSwim, cantWalk, out var verifiedZ)
