@@ -19,6 +19,7 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics.X86;
+using Server.Regions;
 
 namespace Server.Engines.Spawners;
 
@@ -243,6 +244,28 @@ public static class SectorSpawnCacheManager
     }
 
     /// <summary>
+    /// Checks if a position is blocked by a private house.
+    /// Public AoS houses (with unlocked doors) allow spawning.
+    /// </summary>
+    /// <param name="map">The map to check</param>
+    /// <param name="x">X coordinate</param>
+    /// <param name="y">Y coordinate</param>
+    /// <param name="z">Z coordinate</param>
+    /// <returns>True if blocked by a private house</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsBlockedByHouse(Map map, int x, int y, int z)
+    {
+        if (Region.Find(new Point3D(x, y, z), map) is HouseRegion houseRegion)
+        {
+            var house = houseRegion.House;
+            // Allow spawning in public AoS houses (unlocked doors, free entry)
+            return !(house.IsAosRules && house.Public);
+        }
+
+        return false;
+    }
+
+    /// <summary>
     /// Invalidates all cached data for sectors within the specified bounds.
     /// Called when houses are placed or demolished.
     /// </summary>
@@ -347,6 +370,12 @@ public static class SectorSpawnCacheManager
         // Check if position is valid for spawning
         if (map.CanSpawnMobile(x, y, minZ, maxZ, canSwim, cantWalk, out var spawnZ))
         {
+            // Skip positions inside private houses
+            if (IsBlockedByHouse(map, x, y, spawnZ))
+            {
+                return;
+            }
+
             var pos = new Point3D(x, y, spawnZ);
             var isWater = canSwim && cantWalk;
             SetValid(map, pos, isWater);

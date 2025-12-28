@@ -5,6 +5,10 @@ using Xunit;
 
 namespace UOContent.Tests;
 
+// Collection for tests that use the static SectorSpawnCacheManager
+[CollectionDefinition("SectorSpawnCache", DisableParallelization = true)]
+public class SectorSpawnCacheCollection;
+
 public class SectorSpawnCacheTests
 {
     [Fact]
@@ -99,29 +103,9 @@ public class SectorSpawnCacheTests
         Assert.Equal(10, cache.GetNthBitPosition(1));
         Assert.Equal(20, cache.GetNthBitPosition(2));
     }
-
-    [Fact]
-    public void SectorSpawnCache_BitIndexToCoordinates_CorrectMapping()
-    {
-        // Bit index = (localX) + (localY * 16)
-        // localX = bitIndex & 0xF
-        // localY = bitIndex >> 4
-
-        // Test corner cases
-        Assert.Equal(0, 0 & 0xF);  // (0,0) -> bit 0
-        Assert.Equal(0, 0 >> 4);
-
-        Assert.Equal(15, 15 & 0xF); // (15,0) -> bit 15
-        Assert.Equal(0, 15 >> 4);
-
-        Assert.Equal(0, 16 & 0xF);  // (0,1) -> bit 16
-        Assert.Equal(1, 16 >> 4);
-
-        Assert.Equal(15, 255 & 0xF); // (15,15) -> bit 255
-        Assert.Equal(15, 255 >> 4);
-    }
 }
 
+[Collection("SectorSpawnCache")]
 public class SectorSpawnCacheManagerTests
 {
     public SectorSpawnCacheManagerTests()
@@ -341,6 +325,7 @@ public class SectorSpawnCacheManagerTests
     }
 }
 
+[Collection("SectorSpawnCache")]
 public class SpiralScanTests
 {
     public SpiralScanTests()
@@ -498,12 +483,31 @@ public class SpawnPositionStateTests
     }
 
     [Fact]
-    public void ShouldCachePositions_Automatic_TrueAfterFailure()
+    public void ShouldCachePositions_Automatic_TrueAfterThresholdFailures()
     {
         var state = new SpawnPositionState();
-        state.RecordNonTransientFailure();
+
+        // FailureThreshold is 5, so need more than 5 failures
+        for (var i = 0; i < 6; i++)
+        {
+            state.RecordNonTransientFailure();
+        }
 
         Assert.True(state.ShouldCachePositions(SpawnPositionMode.Automatic));
+    }
+
+    [Fact]
+    public void ShouldCachePositions_Automatic_FalseWithFewerThanThresholdFailures()
+    {
+        var state = new SpawnPositionState();
+
+        // FailureThreshold is 5, so 5 or fewer failures should not trigger caching
+        for (var i = 0; i < 5; i++)
+        {
+            state.RecordNonTransientFailure();
+        }
+
+        Assert.False(state.ShouldCachePositions(SpawnPositionMode.Automatic));
     }
 
     [Fact]
@@ -559,16 +563,19 @@ public class SpawnPositionStateTests
     {
         var state = new SpawnPositionState();
 
-        // Record 24 successes
-        for (var i = 0; i < 24; i++)
+        // Record 18 successes
+        for (var i = 0; i < 18; i++)
         {
             state.RecordSuccess();
         }
 
-        // Record 1 failure
-        state.RecordNonTransientFailure();
+        // Record 6 failures (more than threshold of 5)
+        for (var i = 0; i < 6; i++)
+        {
+            state.RecordNonTransientFailure();
+        }
 
-        // Should still cache since we have failures in window
+        // Should cache since we have > 5 failures in window
         Assert.True(state.ShouldCachePositions(SpawnPositionMode.Automatic));
 
         // Record 25th attempt (success) - this should reset the window

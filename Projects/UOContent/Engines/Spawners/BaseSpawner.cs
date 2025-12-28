@@ -587,18 +587,25 @@ public abstract partial class BaseSpawner : Item, ISpawner
 
             if (success)
             {
-                _spawnPositionState.RecordSuccess();
-
-                // Lazy cache: add successful position to global sector cache
-                if (_spawnPositionState.ShouldCachePositions(_spawnPositionMode))
+                // Check if blocked by a private house (non-transient)
+                if (isMobile && SectorSpawnCacheManager.IsBlockedByHouse(map, x, y, spawnZ))
                 {
-                    SectorSpawnCacheManager.SetValid(map, new Point3D(x, y, spawnZ), isWaterMob);
+                    hasNonTransientFailure = true;
                 }
+                else
+                {
+                    _spawnPositionState.RecordSuccess();
 
-                return new Point3D(x, y, spawnZ);
+                    // Lazy cache: add successful position to global sector cache
+                    if (_spawnPositionState.ShouldCachePositions(_spawnPositionMode))
+                    {
+                        SectorSpawnCacheManager.SetValid(map, new Point3D(x, y, spawnZ), isWaterMob);
+                    }
+
+                    return new Point3D(x, y, spawnZ);
+                }
             }
-
-            if ((failureReason & SpawnFailureReason.NonTransientBlocker) != 0)
+            else if ((failureReason & SpawnFailureReason.NonTransientBlocker) != 0)
             {
                 hasNonTransientFailure = true;
             }
@@ -647,6 +654,12 @@ public abstract partial class BaseSpawner : Item, ISpawner
 
             if (verified)
             {
+                // Skip positions inside private houses
+                if (isMobile && SectorSpawnCacheManager.IsBlockedByHouse(map, cachedPos.X, cachedPos.Y, verifiedZ))
+                {
+                    continue;
+                }
+
                 _spawnPositionState.RecordSuccess();
                 return new Point3D(cachedPos.X, cachedPos.Y, verifiedZ);
             }
@@ -679,8 +692,16 @@ public abstract partial class BaseSpawner : Item, ISpawner
 
                     if (verified)
                     {
-                        _spawnPositionState.RecordSuccess();
-                        return new Point3D(cachedPos.X, cachedPos.Y, verifiedZ);
+                        // Skip positions inside private houses
+                        if (isMobile && SectorSpawnCacheManager.IsBlockedByHouse(map, cachedPos.X, cachedPos.Y, verifiedZ))
+                        {
+                            // Position blocked by house - continue to fallback
+                        }
+                        else
+                        {
+                            _spawnPositionState.RecordSuccess();
+                            return new Point3D(cachedPos.X, cachedPos.Y, verifiedZ);
+                        }
                     }
                 }
             }
