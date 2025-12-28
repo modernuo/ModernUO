@@ -448,34 +448,33 @@ public static class SectorSpawnCacheManager
         int ringsPerTick = 3)
     {
         var maxRing = Math.Max(bounds.Width, bounds.Height) / 2 + 1;
-        var ringsToScan = Math.Min(ringsPerTick, maxRing - currentRing);
+        var ringsToScan = Math.Min(currentRing + ringsPerTick, maxRing);
 
-        for (var r = 0; r < ringsToScan; r++)
+        while (currentRing < ringsToScan)
         {
-            var ring = currentRing + r;
-
             // Ring 0 is just the center point
-            if (ring == 0)
+            if (currentRing == 0)
             {
                 CheckAndCachePosition(map, center.X, center.Y, minZ, maxZ, bounds, canSwim, cantWalk);
-                continue;
             }
-
-            // Ring N has 8*N positions
-            var positionsInRing = ring * 8;
-            for (var p = 0; p < positionsInRing; p++)
+            else
             {
-                var (dx, dy) = GetSpiralOffset(ring, p);
-                var x = center.X + dx;
-                var y = center.Y + dy;
+                // Ring N has 8*N positions
+                var positionsInRing = currentRing * 8;
+                for (var p = 0; p < positionsInRing; p++)
+                {
+                    var (dx, dy) = GetSpiralOffset(currentRing, p);
+                    var x = center.X + dx;
+                    var y = center.Y + dy;
 
-                CheckAndCachePosition(map, x, y, minZ, maxZ, bounds, canSwim, cantWalk);
+                    CheckAndCachePosition(map, x, y, minZ, maxZ, bounds, canSwim, cantWalk);
+                }
             }
+
+            currentRing++;
         }
 
-        currentRing += ringsToScan;
         ringPosition = 0;
-
         return currentRing >= maxRing;
     }
 
