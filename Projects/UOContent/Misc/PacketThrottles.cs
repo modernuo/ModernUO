@@ -45,7 +45,7 @@ public static class PacketThrottles
             Delays[0x75] = 500; // Rename request
         }
 
-        for (int i = 0; i < 0x100; i++)
+        for (var i = 0; i < 0x100; i++)
         {
             if (Delays[i] > 0)
             {
@@ -66,7 +66,7 @@ public static class PacketThrottles
             return;
         }
 
-        int packetID = e.GetInt32(0);
+        var packetID = e.GetInt32(0);
 
         if (packetID is < 0 or > 0x100)
         {
@@ -87,8 +87,8 @@ public static class PacketThrottles
             return;
         }
 
-        int packetID = e.GetInt32(0);
-        int delay = e.GetInt32(1);
+        var packetID = e.GetInt32(0);
+        var delay = e.GetInt32(1);
 
         if (packetID is < 0 or > 0x100)
         {

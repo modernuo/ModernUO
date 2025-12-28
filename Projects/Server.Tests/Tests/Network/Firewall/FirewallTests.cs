@@ -74,7 +74,7 @@ public class FirewallTests
         var entry = new SingleIpFirewallEntry("172.16.0.1");
         Firewall.Add(entry);
 
-        bool found = false;
+        var found = false;
         Firewall.ReadFirewallSet(set =>
         {
             found = set.Contains(entry);
@@ -86,8 +86,8 @@ public class FirewallTests
     [Fact]
     public void Firewall_IsThreadSafe()
     {
-        IPAddress[] testIps = new IPAddress[256];
-        for (int i = 0; i <= 255; i++)
+        var testIps = new IPAddress[256];
+        for (var i = 0; i <= 255; i++)
         {
             testIps[i] = IPAddress.Parse($"192.168.0.{i}");
         }
@@ -97,7 +97,7 @@ public class FirewallTests
 
         Parallel.ForEach(testIps, ip =>
         {
-            bool shouldBlock = int.Parse(ip.ToString().Split('.')[3]) is > 0;
+            var shouldBlock = int.Parse(ip.ToString().Split('.')[3]) is > 0;
             Assert.Equal(shouldBlock, Firewall.IsBlocked(ip));
         });
 

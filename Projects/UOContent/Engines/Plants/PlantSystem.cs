@@ -443,7 +443,7 @@ namespace Server.Engines.Plants
         [OnEvent(nameof(PlayerMobile.PlayerLoginEvent))]
         public static void OnLogin(PlayerMobile from)
         {
-            Container cont = from.Backpack;
+            var cont = from.Backpack;
             if (cont != null)
             {
                 foreach (var plant in cont.FindItemsByType<PlantItem>())

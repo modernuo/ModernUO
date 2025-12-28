@@ -136,7 +136,7 @@ public partial class PowerScroll : SpecialScroll
 
                 _skills = new SkillName[totalSkills];
                 Array.Copy(_preAosSkills, 0, _skills, 0, _preAosSkills.Length);
-                int pos = 0;
+                var pos = 0;
 
                 if (Core.AOS)
                 {

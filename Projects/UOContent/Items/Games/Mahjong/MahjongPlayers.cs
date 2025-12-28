@@ -187,7 +187,7 @@ public partial class MahjongPlayers
     {
         var removed = false;
 
-        Span<byte> relievePacket = stackalloc byte[MahjongPackets.MahjongRelievePacketLength].InitializePacket();
+        var relievePacket = stackalloc byte[MahjongPackets.MahjongRelievePacketLength].InitializePacket();
 
         for (var i = 0; i < _players.Length; i++)
         {
@@ -543,7 +543,7 @@ public partial class MahjongPlayers
             return;
         }
 
-        Span<byte> generalInfo = stackalloc byte[MahjongPackets.MahjongGeneralInfoPacketLength].InitializePacket();
+        var generalInfo = stackalloc byte[MahjongPackets.MahjongGeneralInfoPacketLength].InitializePacket();
 
         foreach (var mobile in mobiles)
         {
@@ -577,7 +577,7 @@ public partial class MahjongPlayers
             return;
         }
 
-        Span<byte> relievePacket = stackalloc byte[MahjongPackets.MahjongRelievePacketLength].InitializePacket();
+        var relievePacket = stackalloc byte[MahjongPackets.MahjongRelievePacketLength].InitializePacket();
 
         foreach (var mobile in mobiles)
         {

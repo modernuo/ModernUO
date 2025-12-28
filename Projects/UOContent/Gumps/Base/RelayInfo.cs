@@ -47,7 +47,7 @@ public readonly ref struct RelayInfo
 
     public string GetTextEntry(int entryId)
     {
-        int index = _textIds.IndexOf((ushort)entryId);
+        var index = _textIds.IndexOf((ushort)entryId);
         return index == -1
             ? default
             : TextEncoding.GetString(_textBlock[_textRanges[index]], TextEncoding.Unicode, true);

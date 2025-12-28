@@ -125,7 +125,7 @@ public static class TextEncoding
         var charCount = encoding.GetMaxCharCount(span.Length);
 
         char[] rentedChars = null;
-        Span<char> chars = charCount <= 256
+        var chars = charCount <= 256
             ? stackalloc char[charCount]
             : rentedChars = STArrayPool<char>.Shared.Rent(charCount);
 

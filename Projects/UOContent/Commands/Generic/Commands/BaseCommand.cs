@@ -36,7 +36,7 @@ namespace Server.Commands.Generic
                 return true;
             }
 
-            Mobile mob = obj switch
+            var mob = obj switch
             {
                 Mobile m  => m,
                 Item item => item.RootParent as Mobile,

@@ -2726,18 +2726,18 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             ? OutgoingVirtualHairPackets.RemovePacketLength
             : OutgoingVirtualHairPackets.EquipUpdatePacketLength;
 
-        Span<byte> hairPacket = stackalloc byte[hairLength].InitializePacket();
+        var hairPacket = stackalloc byte[hairLength].InitializePacket();
 
         var facialHairSerial = FacialHair.VirtualSerial;
         var facialHairLength = removeFacialHair
             ? OutgoingVirtualHairPackets.RemovePacketLength
             : OutgoingVirtualHairPackets.EquipUpdatePacketLength;
 
-        Span<byte> facialHairPacket = stackalloc byte[facialHairLength].InitializePacket();
+        var facialHairPacket = stackalloc byte[facialHairLength].InitializePacket();
 
         const int cacheLength = OutgoingMobilePackets.MobileMovingPacketCacheByteLength;
 
-        Span<byte> mobileMovingCache = stackalloc byte[cacheLength].InitializePacket();
+        var mobileMovingCache = stackalloc byte[cacheLength].InitializePacket();
 
         var ourState = m_NetState;
 
@@ -2879,13 +2879,13 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             return;
         }
 
-        Span<byte> statBufferTrue = stackalloc byte[OutgoingMobilePackets.MobileStatusCompactLength].InitializePacket();
-        Span<byte> statBufferFalse = stackalloc byte[OutgoingMobilePackets.MobileStatusCompactLength].InitializePacket();
-        Span<byte> hbpBuffer = stackalloc byte[OutgoingMobilePackets.MobileHealthbarPacketLength].InitializePacket();
-        Span<byte> hbyBuffer = stackalloc byte[OutgoingMobilePackets.MobileHealthbarPacketLength].InitializePacket();
-        Span<byte> deadBuffer = stackalloc byte[OutgoingMobilePackets.BondedStatusPacketLength].InitializePacket();
-        Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength].InitializePacket();
-        Span<byte> hitsPacket = stackalloc byte[OutgoingMobilePackets.MobileAttributePacketLength].InitializePacket();
+        var statBufferTrue = stackalloc byte[OutgoingMobilePackets.MobileStatusCompactLength].InitializePacket();
+        var statBufferFalse = stackalloc byte[OutgoingMobilePackets.MobileStatusCompactLength].InitializePacket();
+        var hbpBuffer = stackalloc byte[OutgoingMobilePackets.MobileHealthbarPacketLength].InitializePacket();
+        var hbyBuffer = stackalloc byte[OutgoingMobilePackets.MobileHealthbarPacketLength].InitializePacket();
+        var deadBuffer = stackalloc byte[OutgoingMobilePackets.BondedStatusPacketLength].InitializePacket();
+        var removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength].InitializePacket();
+        var hitsPacket = stackalloc byte[OutgoingMobilePackets.MobileAttributePacketLength].InitializePacket();
         mobileMovingCache.InitializePacket();
 
         foreach (var state in Map.GetClientsInRange(m_Location))
@@ -3288,7 +3288,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         var hasTitle = PropertyTitle && !string.IsNullOrEmpty(Title);
         var hasGuild = guild != null && (m_Player || m_DisplayGuildTitle);
 
-        string suffix = hasTitle switch
+        var suffix = hasTitle switch
         {
             true when hasGuild  => $" {Title} [{guild.Abbreviation.FixHtmlFormattable()}]",
             true                => $" {Title}",
@@ -4759,8 +4759,8 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         {
             var corpseSerial = c?.Serial ?? Serial.Zero;
 
-            Span<byte> deathAnimation = stackalloc byte[OutgoingMobilePackets.DeathAnimationPacketLength].InitializePacket();
-            Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength].InitializePacket();
+            var deathAnimation = stackalloc byte[OutgoingMobilePackets.DeathAnimationPacketLength].InitializePacket();
+            var removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength].InitializePacket();
 
             foreach (var state in m_Map.GetClientsInRange(m_Location))
             {
@@ -5049,7 +5049,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                         {
                             var rootItem = root as Item;
 
-                            Span<byte> buffer = stackalloc byte[OutgoingPlayerPackets.DragEffectPacketLength]
+                            var buffer = stackalloc byte[OutgoingPlayerPackets.DragEffectPacketLength]
                                 .InitializePacket();
 
                             foreach (var ns in map.GetClientsInRange(from.Location))
@@ -5205,7 +5205,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             return;
         }
 
-        Span<byte> buffer = stackalloc byte[OutgoingPlayerPackets.DragEffectPacketLength].InitializePacket();
+        var buffer = stackalloc byte[OutgoingPlayerPackets.DragEffectPacketLength].InitializePacket();
 
         foreach (var ns in map.GetClientsInRange(m_Location))
         {
@@ -5352,7 +5352,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
         var length = text.Length;
         char[] rentedChars = null;
-        Span<char> chars = length <= 256
+        var chars = length <= 256
             ? stackalloc char[length]
             : rentedChars = STArrayPool<char>.Shared.Rent(length);
 
@@ -5565,8 +5565,8 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
             ProcessDelta();
 
-            Span<byte> regBuffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)].InitializePacket();
-            Span<byte> mutBuffer =
+            var regBuffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)].InitializePacket();
+            var mutBuffer =
                 stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(mutatedText)].InitializePacket();
 
             // TODO: Should this be sorted like onSpeech is below?
@@ -6658,7 +6658,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
         ProcessDelta();
 
-        Span<byte> buffer = stackalloc byte[OutgoingMobilePackets.MobileAnimationPacketLength].InitializePacket();
+        var buffer = stackalloc byte[OutgoingMobilePackets.MobileAnimationPacketLength].InitializePacket();
 
         foreach (var state in map.GetClientsInRange(m_Location))
         {
@@ -6735,7 +6735,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             return;
         }
 
-        Span<byte> buffer = stackalloc byte[OutgoingEffectPackets.SoundPacketLength].InitializePacket();
+        var buffer = stackalloc byte[OutgoingEffectPackets.SoundPacketLength].InitializePacket();
 
         foreach (var state in m_Map.GetClientsInRange(m_Location))
         {
@@ -6785,7 +6785,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             return;
         }
 
-        Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength].InitializePacket();
+        var removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength].InitializePacket();
 
         foreach (var state in m_Map.GetClientsInRange(m_Location))
         {
@@ -7015,7 +7015,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             return;
         }
 
-        Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength].InitializePacket();
+        var removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength].InitializePacket();
 
         foreach (var state in m_Map.GetClientsInRange(m_Location))
         {
@@ -7238,7 +7238,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         if (map != null)
         {
             // First, send a remove message to everyone who can no longer see us. (inOldRange && !inNewRange)
-            Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength].InitializePacket();
+            var removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength].InitializePacket();
 
             foreach (var ns in map.GetClientsInRange(oldLocation))
             {
@@ -8795,7 +8795,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             return;
         }
 
-        Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)].InitializePacket();
+        var buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)].InitializePacket();
 
         foreach (var state in m_Map.GetClientsInRange(m_Location))
         {
@@ -8835,7 +8835,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             return;
         }
 
-        Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedLength(args)].InitializePacket();
+        var buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedLength(args)].InitializePacket();
 
         foreach (var state in m_Map.GetClientsInRange(m_Location))
         {
@@ -8874,7 +8874,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             return;
         }
 
-        Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedAffixLength(affix, args)]
+        var buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedAffixLength(affix, args)]
             .InitializePacket();
 
         foreach (var state in m_Map.GetClientsInRange(m_Location))
@@ -8933,7 +8933,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             return;
         }
 
-        Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedLength(args)].InitializePacket();
+        var buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedLength(args)].InitializePacket();
 
         foreach (var state in m_Map.GetClientsInRange(m_Location))
         {
@@ -8968,7 +8968,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             return;
         }
 
-        Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)].InitializePacket();
+        var buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)].InitializePacket();
 
         foreach (var state in m_Map.GetClientsInRange(m_Location))
         {

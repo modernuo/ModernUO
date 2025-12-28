@@ -146,7 +146,7 @@ public abstract partial class BaseDockedBoat : Item
                 return;
             }
 
-            Point3D p = ip switch
+            var p = ip switch
             {
                 Item item => item.GetWorldTop(),
                 Mobile m  => m.Location,

@@ -38,7 +38,7 @@ namespace Server.Network
 
             using var builder = new PacketContainerBuilder(stackalloc byte[minLength]);
 
-            Span<byte> buffer = builder.GetSpan(OutgoingEntityPackets.MaxWorldEntityPacketLength);
+            var buffer = builder.GetSpan(OutgoingEntityPackets.MaxWorldEntityPacketLength);
 
             foreach (var entity in entities)
             {

@@ -188,7 +188,7 @@ public class SpanReaderTests
     [Fact]
     public void TestReadAsciiString()
     {
-        ReadOnlySpan<byte> buffer = "Hello"u8;
+        var buffer = "Hello"u8;
         var reader = new SpanReader(buffer);
 
         var result = reader.ReadAscii();
@@ -200,7 +200,7 @@ public class SpanReaderTests
     [Fact]
     public void TestReadAsciiStringWithNull()
     {
-        ReadOnlySpan<byte> buffer = "Hel\0o"u8;
+        var buffer = "Hel\0o"u8;
         var reader = new SpanReader(buffer);
 
         var result = reader.ReadAscii();
@@ -212,7 +212,7 @@ public class SpanReaderTests
     [Fact]
     public void TestReadAsciiStringFixedLength()
     {
-        ReadOnlySpan<byte> buffer = "Hello\0\0\0\0\0"u8;
+        var buffer = "Hello\0\0\0\0\0"u8;
         var reader = new SpanReader(buffer);
 
         var result = reader.ReadAscii(10);
@@ -227,7 +227,7 @@ public class SpanReaderTests
         Assert.Throws<EndOfStreamException>(
             () =>
             {
-                ReadOnlySpan<byte> buffer = "Hel"u8;
+                var buffer = "Hel"u8;
                 var reader = new SpanReader(buffer);
                 reader.ReadAscii(10);
             }
@@ -249,7 +249,7 @@ public class SpanReaderTests
     [Fact]
     public void TestReadUTF8String()
     {
-        ReadOnlySpan<byte> buffer = "Hello"u8;
+        var buffer = "Hello"u8;
         var reader = new SpanReader(buffer);
 
         var result = reader.ReadUTF8();
@@ -261,7 +261,7 @@ public class SpanReaderTests
     [Fact]
     public void TestReadUTF8StringWithNull()
     {
-        ReadOnlySpan<byte> buffer = "Hi\0Bye"u8;
+        var buffer = "Hi\0Bye"u8;
         var reader = new SpanReader(buffer);
 
         var result = reader.ReadUTF8();
@@ -273,7 +273,7 @@ public class SpanReaderTests
     [Fact]
     public void TestReadLittleUniString()
     {
-        ReadOnlySpan<byte> buffer = "H\0i\0"u8;
+        var buffer = "H\0i\0"u8;
         var reader = new SpanReader(buffer);
 
         var result = reader.ReadLittleUni();
@@ -285,7 +285,7 @@ public class SpanReaderTests
     [Fact]
     public void TestReadLittleUniStringWithNull()
     {
-        ReadOnlySpan<byte> buffer = "H\0i\0\0\0X\0"u8;
+        var buffer = "H\0i\0\0\0X\0"u8;
         var reader = new SpanReader(buffer);
 
         var result = reader.ReadLittleUni();
@@ -297,7 +297,7 @@ public class SpanReaderTests
     [Fact]
     public void TestReadLittleUniStringFixedLength()
     {
-        ReadOnlySpan<byte> buffer = "H\0i\0\0\0\0\0"u8;
+        var buffer = "H\0i\0\0\0\0\0"u8;
         var reader = new SpanReader(buffer);
 
         var result = reader.ReadLittleUni(4);
@@ -321,7 +321,7 @@ public class SpanReaderTests
     [Fact]
     public void TestReadBigUniString()
     {
-        ReadOnlySpan<byte> buffer = "\0H\0i"u8;
+        var buffer = "\0H\0i"u8;
         var reader = new SpanReader(buffer);
 
         var result = reader.ReadBigUni();
@@ -333,7 +333,7 @@ public class SpanReaderTests
     [Fact]
     public void TestReadBigUniStringWithNull()
     {
-        ReadOnlySpan<byte> buffer = "\0H\0i\0\0\0X"u8;
+        var buffer = "\0H\0i\0\0\0X"u8;
         var reader = new SpanReader(buffer);
 
         var result = reader.ReadBigUni();
@@ -345,7 +345,7 @@ public class SpanReaderTests
     [Fact]
     public void TestReadBigUniStringFixedLength()
     {
-        ReadOnlySpan<byte> buffer = "\0H\0i\0\0\0\0"u8;
+        var buffer = "\0H\0i\0\0\0\0"u8;
         var reader = new SpanReader(buffer);
 
         var result = reader.ReadBigUni(4);
@@ -560,7 +560,7 @@ public class SpanReaderTests
     [Fact]
     public void TestReadMultipleStringsWithNullTerminators()
     {
-        ReadOnlySpan<byte> buffer = "AB\0CD\0EF"u8;
+        var buffer = "AB\0CD\0EF"u8;
         var reader = new SpanReader(buffer);
 
         Assert.Equal("AB", reader.ReadAscii());

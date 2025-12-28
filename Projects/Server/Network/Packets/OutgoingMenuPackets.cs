@@ -47,7 +47,7 @@ public static class OutgoingMenuPackets
         int entriesLength = (byte)entries.Length;
 
         var maxLength = 11 + questionLength;
-        for (int i = 0; i < entriesLength; i++)
+        for (var i = 0; i < entriesLength; i++)
         {
             maxLength += 5 + entries[i].Name?.Length ?? 0; // could be trimmed
         }
@@ -106,7 +106,7 @@ public static class OutgoingMenuPackets
         int answersLength = (byte)answers.Length;
 
         var maxLength = 11 + questionLength;
-        for (int i = 0; i < answersLength; i++)
+        for (var i = 0; i < answersLength; i++)
         {
             maxLength += 5 + answers[i]?.Length ?? 0; // could be trimmed
         }

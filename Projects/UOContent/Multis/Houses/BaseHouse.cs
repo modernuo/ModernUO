@@ -793,8 +793,8 @@ namespace Server.Multis
 
         public List<Mobile> AvailableVendorsFor(Mobile m)
         {
-            List<Mobile> list = new List<Mobile>();
-            foreach (PlayerVendor vendor in PlayerVendors)
+            var list = new List<Mobile>();
+            foreach (var vendor in PlayerVendors)
             {
                 if (vendor.CanInteractWith(m, false))
                 {

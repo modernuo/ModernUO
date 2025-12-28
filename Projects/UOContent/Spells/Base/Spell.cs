@@ -163,7 +163,7 @@ namespace Server.Spells
             {
                 _contextTable[type] = context = new DelayedDamageContextWrapper();
 
-                for (int i = 0; i < damageStacking.Length; i++)
+                for (var i = 0; i < damageStacking.Length; i++)
                 {
                     _contextTable.Add(damageStacking[i], context);
                 }

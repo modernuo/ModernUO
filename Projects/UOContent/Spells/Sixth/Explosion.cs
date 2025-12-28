@@ -34,7 +34,7 @@ namespace Server.Spells.Sixth
 
             if (Caster.CanBeHarmful(m) && CheckSequence())
             {
-                Mobile defender = m;
+                var defender = m;
 
                 SpellHelper.Turn(Caster, m);
                 SpellHelper.CheckReflect((int)Circle, Caster, ref m);

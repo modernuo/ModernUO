@@ -117,10 +117,10 @@ public static class ImportSpawnersCommand
         ref int totalFailures
     )
     {
-        XmlDocument doc = new XmlDocument();
+        var doc = new XmlDocument();
         doc.Load(file.FullName);
 
-        XmlElement root = doc["spawners"];
+        var root = doc["spawners"];
 
         if (root == null)
         {
@@ -132,15 +132,15 @@ public static class ImportSpawnersCommand
         {
             try
             {
-                int count = int.Parse(Utility.GetText(node["count"], "1"));
-                int homeRange = int.Parse(Utility.GetText(node["homerange"], "4"));
+                var count = int.Parse(Utility.GetText(node["count"], "1"));
+                var homeRange = int.Parse(Utility.GetText(node["homerange"], "4"));
 
-                int walkingRange = int.Parse(Utility.GetText(node["walkingrange"], "-1"));
+                var walkingRange = int.Parse(Utility.GetText(node["walkingrange"], "-1"));
 
-                int team = int.Parse(Utility.GetText(node["team"], "0"));
+                var team = int.Parse(Utility.GetText(node["team"], "0"));
 
-                TimeSpan maxDelay = TimeSpan.Parse(Utility.GetText(node["maxdelay"], "10:00"));
-                TimeSpan minDelay = TimeSpan.Parse(Utility.GetText(node["mindelay"], "05:00"));
+                var maxDelay = TimeSpan.Parse(Utility.GetText(node["maxdelay"], "10:00"));
+                var minDelay = TimeSpan.Parse(Utility.GetText(node["mindelay"], "05:00"));
                 var creaturesNameNode = node["creaturesname"];
                 List<string> creatureNames = [];
                 if (creaturesNameNode != null)
@@ -154,11 +154,11 @@ public static class ImportSpawnersCommand
                     }
                 }
 
-                string name = Utility.GetText(node["name"], "Spawner");
-                Point3D location = Point3D.Parse(Utility.GetText(node["location"], "Error"));
-                Map map = Map.Parse(Utility.GetText(node["map"], "Error"));
+                var name = Utility.GetText(node["name"], "Spawner");
+                var location = Point3D.Parse(Utility.GetText(node["location"], "Error"));
+                var map = Map.Parse(Utility.GetText(node["map"], "Error"));
 
-                Spawner spawner = new Spawner(count, minDelay, maxDelay, team, spawnedNames: creatureNames.ToArray());
+                var spawner = new Spawner(count, minDelay, maxDelay, team, spawnedNames: creatureNames.ToArray());
                 if (walkingRange >= 0)
                 {
                     spawner.WalkingRange = walkingRange;
@@ -303,9 +303,9 @@ public static class ImportSpawnersCommand
     {
         var lines = File.ReadAllLines(file.FullName);
 
-        TimeSpan minTimeOverride = TimeSpan.MinValue;
-        TimeSpan maxTimeOverride = TimeSpan.MinValue;
-        int mapIdOverride = -1;
+        var minTimeOverride = TimeSpan.MinValue;
+        var maxTimeOverride = TimeSpan.MinValue;
+        var mapIdOverride = -1;
         string spawnerIdOverride = null;
 
         for (var i = 0; i < lines.Length; i++)

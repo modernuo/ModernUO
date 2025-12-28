@@ -278,9 +278,9 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
             return 0;
         }
 
-        for (int i = 0; i < _packetCounts.Length; i++)
+        for (var i = 0; i < _packetCounts.Length; i++)
         {
-            long count = _packetCounts[i];
+            var count = _packetCounts[i];
             _packetCounts[i] = 0;
 
             if (count > PacketPerSecondThreshold)
@@ -583,7 +583,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
                 var packetReader = new SpanReader(buffer);
                 var packetId = packetReader.ReadByte();
-                int packetLength = length;
+                var packetLength = length;
 
                 // These can arrive at any time and are only informational
                 if (_protocolState != ProtocolState.AwaitingSeed && IncomingPackets.IsInfoPacket(packetId))
@@ -608,7 +608,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
                                 }
                                 else if (length >= 4)
                                 {
-                                    int newSeed = (packetId << 24) | (packetReader.ReadByte() << 16) | (packetReader.ReadByte() << 8) | packetReader.ReadByte();
+                                    var newSeed = (packetId << 24) | (packetReader.ReadByte() << 16) | (packetReader.ReadByte() << 8) | packetReader.ReadByte();
 
                                     if (newSeed == 0)
                                     {
@@ -763,8 +763,8 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
      */
     private unsafe ParserState HandlePacket(SpanReader packetReader, byte packetId, out int packetLength)
     {
-        PacketHandler handler = IncomingPackets.GetHandler(packetId);
-        int length = packetReader.Length;
+        var handler = IncomingPackets.GetHandler(packetId);
+        var length = packetReader.Length;
 
         if (handler == null)
         {
@@ -999,7 +999,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
         if (count > 0)
         {
-            for (int i = 0; i < count; i++)
+            for (var i = 0; i < count; i++)
             {
                 (_polledStates[i].Target as NetState)?.HandleReceive();
                 _polledStates[i] = default;
@@ -1050,7 +1050,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     {
         try
         {
-            long curTicks = Core.TickCount;
+            var curTicks = Core.TickCount;
 
             foreach (var ns in Instances)
             {

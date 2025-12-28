@@ -67,15 +67,15 @@ public static class NetworkCompression
             return 0;
         }
 
-        int bitCount = 0;
-        int bitValue = 0;
+        var bitCount = 0;
+        var bitValue = 0;
 
-        int inputIdx = 0;
-        int outputIdx = 0;
+        var inputIdx = 0;
+        var outputIdx = 0;
 
         while (inputIdx < input.Length)
         {
-            int i = input[inputIdx++] << 1;
+            var i = input[inputIdx++] << 1;
 
             bitCount += _huffmanTable[i];
             bitValue = (bitValue << _huffmanTable[i]) | _huffmanTable[i + 1];

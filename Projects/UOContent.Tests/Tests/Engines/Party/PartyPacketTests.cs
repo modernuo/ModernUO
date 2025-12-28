@@ -12,7 +12,7 @@ public class PartyPacketTests
     [Fact]
     public void TestPartyEmptyList()
     {
-        Serial m = (Serial)0x1024u;
+        var m = (Serial)0x1024u;
 
         var expected = new PartyEmptyList(m).Compile();
 
@@ -70,7 +70,7 @@ public class PartyPacketTests
     [InlineData(false)]
     public void TestPartyTextMessage(bool toAll)
     {
-        Serial serial = (Serial)0x1024u;
+        var serial = (Serial)0x1024u;
         var text = "[Party] Stuff Happens";
 
         var expected = new PartyTextMessage(toAll, serial, text).Compile();
@@ -85,7 +85,7 @@ public class PartyPacketTests
     [Fact]
     public void TestPartyInvitation()
     {
-        Serial m = (Serial)0x1024u;
+        var m = (Serial)0x1024u;
 
         var expected = new PartyInvitation(m).Compile();
 

@@ -300,7 +300,7 @@ namespace Server.Commands
                 $"{m.AccessLevel} {CommandLogging.Format(m)} playing sound {index} (toAll={toAll})"
             );
 
-            Span<byte> buffer = stackalloc byte[OutgoingEffectPackets.SoundPacketLength].InitializePacket();
+            var buffer = stackalloc byte[OutgoingEffectPackets.SoundPacketLength].InitializePacket();
 
             foreach (var state in m.GetClientsInRange(12))
             {

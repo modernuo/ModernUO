@@ -17,7 +17,7 @@ namespace Server.Items
 
             ClearCurrentAbility(attacker);
 
-            Map map = attacker.Map;
+            var map = attacker.Map;
 
             if (map == null || attacker.Weapon is not BaseWeapon weapon || !CheckMana(attacker, true))
             {
@@ -25,7 +25,7 @@ namespace Server.Items
             }
 
             using var list = PooledRefList<Mobile>.Create();
-            foreach (Mobile m in worldLocation.Map.GetMobilesInRange(worldLocation.Location, 5))
+            foreach (var m in worldLocation.Map.GetMobilesInRange(worldLocation.Location, 5))
             {
                 if (m != defender && m != attacker && SpellHelper.ValidIndirectTarget(attacker, m) &&
                     m is { Deleted: false, Alive: true } && attacker.CanSee(m) && attacker.CanBeHarmful(m) &&

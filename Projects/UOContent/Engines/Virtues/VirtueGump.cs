@@ -124,7 +124,7 @@ public class VirtueGump : Gump
             value = 20000;
         }
 
-        int vl = value switch
+        var vl = value switch
         {
             < 10000                  => 0,
             >= 20000 when index == 5 => 2,

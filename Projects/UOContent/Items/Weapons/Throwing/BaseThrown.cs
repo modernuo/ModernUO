@@ -18,7 +18,7 @@ public abstract partial class BaseThrown : BaseRanged
     {
         get
         {
-            int baseRange = MaxThrowRange;
+            var baseRange = MaxThrowRange;
 
             return Parent is Mobile attacker
                 ? baseRange - 3 + (attacker.Str - AosStrengthReq) / ((140 - AosStrengthReq) / 3)

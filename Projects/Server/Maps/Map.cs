@@ -494,10 +494,10 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
         out int sectorStartX, out int sectorStartY,
         out int sectorEndX, out int sectorEndY)
     {
-        int left = bounds.Start.X;
-        int top = bounds.Start.Y;
-        int right = bounds.End.X;
-        int bottom = bounds.End.Y;
+        var left = bounds.Start.X;
+        var top = bounds.Start.Y;
+        var right = bounds.End.X;
+        var bottom = bounds.End.Y;
 
         // Limit the coordinates to inside the valid map region
         Bound(left, top, out left, out top);
@@ -1070,7 +1070,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
                 contains = ltID == InvalidLandTiles[j];
             }
 
-            bool foundStatic = false;
+            var foundStatic = false;
 
             foreach (var t in Tiles.GetStaticAndMultiTiles(point.X, point.Y))
             {
@@ -1094,7 +1094,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
 
             if (contains && !foundStatic)
             {
-                foreach (Item item in GetItemsAt(point))
+                foreach (var item in GetItemsAt(point))
                 {
                     if (item.Visible)
                     {
@@ -1289,7 +1289,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
             return Internal;
         }
 
-        for (int i = 0; i < Maps.Length; i++)
+        for (var i = 0; i < Maps.Length; i++)
         {
             var map = Maps[i];
             if (map == null)
@@ -1332,7 +1332,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
             return true;
         }
 
-        for (int i = 0; i < Maps.Length; i++)
+        for (var i = 0; i < Maps.Length; i++)
         {
             var map = Maps[i];
             if (map == null)

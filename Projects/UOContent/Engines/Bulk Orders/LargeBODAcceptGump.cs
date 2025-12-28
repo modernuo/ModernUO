@@ -81,7 +81,7 @@ namespace Server.Engines.BulkOrders
 
         public override void OnResponse(NetState sender, in RelayInfo info)
         {
-            Mobile from = sender.Mobile;
+            var from = sender.Mobile;
 
             if (info.ButtonID == 1) // Ok
             {

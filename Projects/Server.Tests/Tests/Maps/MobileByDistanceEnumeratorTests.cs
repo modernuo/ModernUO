@@ -402,7 +402,7 @@ public class MobileByDistanceEnumeratorTests
                 for (var side = 0; side < 4; side++)
                 {
                     var offset = ringOffset * Map.SectorSize;
-                    Point3D pos = side switch
+                    var pos = side switch
                     {
                         0 => new Point3D(center.X + offset, center.Y, 0),
                         1 => new Point3D(center.X, center.Y + offset, 0),

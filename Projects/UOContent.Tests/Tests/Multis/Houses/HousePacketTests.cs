@@ -53,7 +53,7 @@ public class HousePacketTests
     [Fact]
     public void TestHouseDesignStateDetailed()
     {
-        Serial serial = (Serial)0x40000001;
+        var serial = (Serial)0x40000001;
         var revision = 10;
         var tiles = new MultiTileEntry[250];
         for (var i = 0; i < tiles.Length; i++)
