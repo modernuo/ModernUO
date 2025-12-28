@@ -533,12 +533,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
     public virtual Point3D GetSpawnPosition(ISpawnable spawned, Map map)
     {
         // Abandoned spawners skip all work
-        if (_spawnPositionMode == SpawnPositionMode.Abandoned)
-        {
-            return Location;
-        }
-
-        if (map == null || map == Map.Internal)
+        if (map == null || map == Map.Internal || _spawnPositionMode == SpawnPositionMode.Abandoned)
         {
             return Location;
         }
