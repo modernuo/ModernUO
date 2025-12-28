@@ -189,7 +189,7 @@ public abstract partial class BaseWeapon
 
     [SerializableFieldSaveFlag(30)]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private bool ShouldSerializeEngravedText() => string.IsNullOrEmpty(_engravedText);
+    private bool ShouldSerializeEngravedText() => !string.IsNullOrEmpty(_engravedText);
 
     private FactionItem m_FactionState;
     private SkillMod m_SkillMod, m_MageMod;
