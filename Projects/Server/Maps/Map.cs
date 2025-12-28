@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using Server.Buffers;
 using Server.Collections;
@@ -998,19 +999,9 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
         return !requireSurface || hasSurface;
     }
 
-    /// <summary>
-    /// Checks if an item can be placed at the specified location.
-    /// Unlike CanFit, this treats Surface+Impassable tiles (tables, furniture) as valid surfaces,
-    /// matching the behavior of item drop logic.
-    /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool CanFitItem(Point3D p, int height) => CanFitItem(p.m_X, p.m_Y, p.m_Z, height);
 
-    /// <summary>
-    /// Checks if an item can be placed at the specified location.
-    /// Unlike CanFit, this treats Surface+Impassable tiles (tables, furniture) as valid surfaces,
-    /// matching the behavior of item drop logic.
-    /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool CanFitItem(Point2D p, int z, int height) => CanFitItem(p.m_X, p.m_Y, z, height);
 
@@ -1021,12 +1012,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
     /// </summary>
     public bool CanFitItem(int x, int y, int z, int height)
     {
-        if (this == Internal)
-        {
-            return false;
-        }
-
-        if (x < 0 || y < 0 || x >= Width || y >= Height)
+        if (this == Internal || x < 0 || y < 0 || x >= Width || y >= Height)
         {
             return false;
         }
@@ -1131,15 +1117,13 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
             return false;
         }
 
-        // Collect surfaces and blocking info in a single pass through tiles.
-        // A blocking range (low, high) blocks any spawn z where low < z < high.
-        // This avoids iterating tiles multiple times (once per surface candidate).
-        Span<int> surfaceZs = stackalloc int[16];
-        var surfaceCount = 0;
-
-        Span<int> blockLows = stackalloc int[64];
-        Span<int> blockHighs = stackalloc int[64];
-        var blockerCount = 0;
+        // Bitmask approach inspired by Item.DropToWorld's m_OpenSlots pattern.
+        // Each bit represents a Z level relative to minZ.
+        // openSlots: bit set = Z level is not blocked
+        // surfaces: bit set = Z level has a valid surface
+        // Final result: lowest set bit in (surfaces & openSlots)
+        var openSlots = ulong.MaxValue;
+        ulong surfaces = 0;
 
         // 1. Land tile
         var landTile = Tiles.GetLandTile(x, y);
@@ -1155,20 +1139,13 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
             if (isImpassable && !(canSwim && isWet))
             {
                 // Impassable land blocks z in range (lowZ - 16, avgZ)
-                // Only add if it could affect surfaces in [minZ, maxZ]
-                var blockLow = lowZ - 16;
-                if (blockLow < maxZ && avgZ > minZ)
-                {
-                    blockLows[blockerCount] = blockLow;
-                    blockHighs[blockerCount] = avgZ;
-                    blockerCount++;
-                }
+                openSlots &= ~CreateBlockerMask(lowZ - 16, avgZ, minZ);
             }
 
             // Surface: water for swimmers, passable land for walkers
             if (avgZ >= minZ && avgZ <= maxZ && (canSwim && isWet || !cantWalk && !isImpassable))
             {
-                surfaceZs[surfaceCount++] = avgZ;
+                surfaces |= 1UL << (avgZ - minZ);
             }
         }
 
@@ -1183,23 +1160,16 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
 
             // Blocking: (surface || impassable) tiles block z in range (tile.Z - 16, tileTop)
             // Exception: water tiles (Impassable | Wet) don't block swimming mobs
-            // Only add if it could affect surfaces in [minZ, maxZ]
             if ((isSurface || isImpassable) && !(canSwim && isWet))
             {
-                var blockLow = tile.Z - 16;
-                if (blockLow < maxZ && tileTop > minZ && blockerCount < 64)
-                {
-                    blockLows[blockerCount] = blockLow;
-                    blockHighs[blockerCount] = tileTop;
-                    blockerCount++;
-                }
+                openSlots &= ~CreateBlockerMask(tile.Z - 16, tileTop, minZ);
             }
 
             // Surface candidate
-            if (tileTop >= minZ && tileTop <= maxZ && surfaceCount < 16 &&
+            if (tileTop >= minZ && tileTop <= maxZ &&
                 (canSwim && isWet || !cantWalk && isSurface && !isImpassable))
             {
-                surfaceZs[surfaceCount++] = tileTop;
+                surfaces |= 1UL << (tileTop - minZ);
             }
         }
 
@@ -1220,21 +1190,16 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
 
             // Blocking: (surface || impassable) items block z in range (item.Z - 16, itemTop)
             // Exception: water items (Impassable | Wet) don't block swimming mobs
-            // Only add if it could affect surfaces in [minZ, maxZ]
-            var blockLow = item.Z - 16;
-            if ((isSurface || isImpassable) && !(canSwim && isWet) &&
-                blockLow < maxZ && itemTop > minZ && blockerCount < 64)
+            if ((isSurface || isImpassable) && !(canSwim && isWet))
             {
-                blockLows[blockerCount] = blockLow;
-                blockHighs[blockerCount] = itemTop;
-                blockerCount++;
+                openSlots &= ~CreateBlockerMask(item.Z - 16, itemTop, minZ);
             }
 
             // Surface candidate (non-movable only)
-            if (!item.Movable && itemTop >= minZ && itemTop <= maxZ && surfaceCount < 16 &&
+            if (!item.Movable && itemTop >= minZ && itemTop <= maxZ &&
                 (canSwim && isWet || !cantWalk && isSurface && !isImpassable))
             {
-                surfaceZs[surfaceCount++] = itemTop;
+                surfaces |= 1UL << (itemTop - minZ);
             }
         }
 
@@ -1245,54 +1210,45 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
                 (m.AccessLevel == AccessLevel.Player || !m.Hidden))
             {
                 // Mobiles block z in range (m.Z - 16, m.Z + 16)
-                // Only add if it could affect surfaces in [minZ, maxZ]
-                var blockLow = m.Z - 16;
-                var blockHigh = m.Z + 16;
-                if (blockLow < maxZ && blockHigh > minZ && blockerCount < 64)
-                {
-                    blockLows[blockerCount] = blockLow;
-                    blockHighs[blockerCount] = blockHigh;
-                    blockerCount++;
-                }
+                openSlots &= ~CreateBlockerMask(m.Z - 16, m.Z + 16, minZ);
             }
         }
 
-        // Find the lowest unblocked surface (prefer ground/floor over tables/platforms)
-        var bestZ = int.MaxValue;
-
-        for (var i = 0; i < surfaceCount; i++)
+        // Find the lowest unblocked surface using bit operations
+        var validSurfaces = surfaces & openSlots;
+        if (validSurfaces == 0)
         {
-            var z = surfaceZs[i];
-
-            if (z >= bestZ)
-            {
-                continue;
-            }
-
-            // Check if blocked by any blocker
-            var blocked = false;
-            for (var j = 0; j < blockerCount; j++)
-            {
-                if (z > blockLows[j] && z < blockHighs[j])
-                {
-                    blocked = true;
-                    break;
-                }
-            }
-
-            if (!blocked)
-            {
-                bestZ = z;
-            }
+            return false;
         }
 
-        if (bestZ < int.MaxValue)
+        // TrailingZeroCount gives the position of the lowest set bit
+        var lowestBit = BitOperations.TrailingZeroCount(validSurfaces);
+        spawnZ = minZ + lowestBit;
+        return true;
+    }
+
+    /// <summary>
+    /// Creates a bitmask for a blocker range. Blocker blocks Z where blockLow &lt; z &lt; blockHigh.
+    /// Bits are relative to minZ, clamped to [0, 63].
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static ulong CreateBlockerMask(int blockLow, int blockHigh, int minZ)
+    {
+        // Blocked range is (blockLow, blockHigh) exclusive, = [blockLow + 1, blockHigh - 1] inclusive
+        var startBit = blockLow - minZ + 1;
+        var endBit = blockHigh - minZ - 1;
+
+        if (endBit < 0 || startBit > 63 || startBit > endBit)
         {
-            spawnZ = bestZ;
-            return true;
+            return 0;
         }
 
-        return false;
+        startBit = Math.Max(0, startBit);
+        endBit = Math.Min(63, endBit);
+
+        var bitCount = endBit - startBit + 1;
+        var mask = bitCount >= 64 ? ulong.MaxValue : (1UL << bitCount) - 1;
+        return mask << startBit;
     }
 
     private class ZComparer : IComparer<Item>
