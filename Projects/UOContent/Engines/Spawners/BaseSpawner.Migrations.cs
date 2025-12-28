@@ -31,6 +31,38 @@ public abstract partial class BaseSpawner
         }
 
         _spawnLocationIsHome = false;
+
+        // New v12 fields default to automatic/default
+        _spawnPositionMode = SpawnPositionMode.Automatic;
+        _maxSpawnAttempts = DefaultMaxSpawnAttempts;
+    }
+
+    private void MigrateFrom(V11Content content)
+    {
+        _guid = content.Guid;
+        _returnOnDeactivate = content.ReturnOnDeactivate;
+        _entries = content.Entries;
+        _walkingRange = content.WalkingRange;
+        _wayPoint = content.WayPoint;
+        _group = content.Group;
+        _minDelay = content.MinDelay;
+        _maxDelay = content.MaxDelay;
+        _count = content.Count;
+        _team = content.Team;
+
+        // Moved to Spawner
+        if (this is Spawner spawner)
+        {
+            spawner.SpawnBounds = content.SpawnBounds;
+        }
+
+        _running = content.Running;
+        _spawnLocationIsHome = content.SpawnLocationIsHome;
+        _end = _running ? content.End : Core.Now;
+
+        // New v12 fields default to automatic/default
+        _spawnPositionMode = SpawnPositionMode.Automatic;
+        _maxSpawnAttempts = DefaultMaxSpawnAttempts;
     }
 
     private void Deserialize(IGenericReader reader, int version)

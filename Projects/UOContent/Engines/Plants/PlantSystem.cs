@@ -1,7 +1,6 @@
 using System;
 using ModernUO.CodeGeneratedEvents;
 using ModernUO.Serialization;
-using Server.Items;
 using Server.Misc;
 using Server.Mobiles;
 

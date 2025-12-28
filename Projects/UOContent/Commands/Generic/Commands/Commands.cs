@@ -1199,7 +1199,7 @@ namespace Server.Commands.Generic
                     {
                         CommandLogging.WriteLine(
                             from,
-                            $"{from.AccessLevel} {CommandLogging.Format(from)} {(m_Ban ? "banning" : "kicking")} {(CommandLogging.Format(targ))}"
+                            $"{from.AccessLevel} {CommandLogging.Format(from)} {(m_Ban ? "banning" : "kicking")} {CommandLogging.Format(targ)}"
                         );
 
                         targ.Say(m_Ban ? "I've been banned." : "I've been kicked");
