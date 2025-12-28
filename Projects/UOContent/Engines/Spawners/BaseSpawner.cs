@@ -655,7 +655,6 @@ public abstract partial class BaseSpawner : Item, ISpawner
                 _spawnPositionState.RecordUsefulCacheHit();
                 return spawnPos;
             }
-            // Cache returned Location - count as useless but still return it
         }
 
         // Cache miss or returned Location only
