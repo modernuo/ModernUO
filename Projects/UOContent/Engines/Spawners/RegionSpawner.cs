@@ -129,31 +129,10 @@ public partial class RegionSpawner : Spawner
                 rand -= curWeight;
             }
 
-            if (spawned is Mobile mob)
+            if (spawned is Mobile mob && map.CanSpawnMobile(x, y, minZ, maxZ, mob.CanSwim, mob.CantWalk, out var spawnZ)
+                || spawned is Item && map.CanSpawnItem(x, y, minZ, maxZ, out spawnZ))
             {
-                if (map.CanSpawnMobile(x, y, minZ, maxZ, mob.CanSwim, mob.CantWalk, out var spawnZ))
-                {
-                    return new Point3D(x, y, spawnZ);
-                }
-            }
-            else if (spawned is Item item)
-            {
-                // Items use their own height for fit checking
-                var itemHeight = item.ItemData.Height;
-                if (itemHeight <= 0)
-                {
-                    itemHeight = 1;
-                }
-
-                // Find a valid surface for the item
-                // CanFitItem allows Surface+Impassable tiles (tables, furniture) as valid surfaces
-                var avgZ = map.GetAverageZ(x, y);
-                if (avgZ >= minZ && avgZ <= maxZ &&
-                    Region.Find(new Point3D(x, y, avgZ), map).AllowSpawn() &&
-                    map.CanFitItem(x, y, avgZ, itemHeight))
-                {
-                    return new Point3D(x, y, avgZ);
-                }
+                return new Point3D(x, y, spawnZ);
             }
         }
 

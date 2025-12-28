@@ -1228,6 +1228,117 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
     }
 
     /// <summary>
+    /// Finds a valid spawn Z for items within the specified range.
+    /// Unlike CanSpawnMobile, treats Surface+Impassable tiles (tables, furniture) as valid surfaces.
+    /// </summary>
+    /// <param name="x">X coordinate</param>
+    /// <param name="y">Y coordinate</param>
+    /// <param name="minZ">Minimum Z (inclusive)</param>
+    /// <param name="maxZ">Maximum Z (inclusive)</param>
+    /// <param name="spawnZ">The valid spawn Z if found</param>
+    /// <returns>True if a valid spawn Z was found within the range</returns>
+    public bool CanSpawnItem(int x, int y, int minZ, int maxZ, out int spawnZ)
+    {
+        spawnZ = 0;
+
+        if (this == Internal || x < 0 || y < 0 || x >= Width || y >= Height)
+        {
+            return false;
+        }
+
+        if (!Region.Find(new Point3D(x, y, minZ), this).AllowSpawn())
+        {
+            return false;
+        }
+
+        // Bitmask approach: find surfaces within Z range, check for blockers.
+        // Unlike CanSpawnMobile, Surface+Impassable tiles (tables) are valid surfaces for items.
+        var openSlots = ulong.MaxValue;
+        ulong surfaces = 0;
+
+        // 1. Land tile
+        var landTile = Tiles.GetLandTile(x, y);
+        GetAverageZ(x, y, out var lowZ, out var avgZ, out _);
+
+        if (!landTile.Ignored)
+        {
+            var landFlags = TileData.LandTable[landTile.ID & TileData.MaxLandValue].Flags;
+            var isImpassable = (landFlags & TileFlag.Impassable) != 0;
+
+            // Impassable land blocks
+            if (isImpassable)
+            {
+                openSlots &= ~CreateBlockerMask(lowZ - 16, avgZ, minZ);
+            }
+
+            // Passable land is a valid surface
+            if (!isImpassable && avgZ >= minZ && avgZ <= maxZ)
+            {
+                surfaces |= 1UL << (avgZ - minZ);
+            }
+        }
+
+        // 2. Static and multi tiles
+        foreach (var tile in Tiles.GetStaticAndMultiTiles(x, y))
+        {
+            var id = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
+            var tileTop = tile.Z + id.CalcHeight;
+            var isSurface = id.Surface;
+            var isImpassable = id.Impassable;
+
+            // Blocking: (surface || impassable) tiles block z in range (tile.Z - 16, tileTop)
+            if (isSurface || isImpassable)
+            {
+                openSlots &= ~CreateBlockerMask(tile.Z - 16, tileTop, minZ);
+            }
+
+            // Surface candidate: Surface flag (including Surface+Impassable like tables)
+            if (isSurface && tileTop >= minZ && tileTop <= maxZ)
+            {
+                surfaces |= 1UL << (tileTop - minZ);
+            }
+        }
+
+        // 3. World items
+        var sector = GetSector(x, y);
+        foreach (var item in sector.Items)
+        {
+            if (item is BaseMulti || item.ItemID > TileData.MaxItemValue || !item.AtWorldPoint(x, y))
+            {
+                continue;
+            }
+
+            var id = item.ItemData;
+            var itemTop = item.Z + id.CalcHeight;
+            var isSurface = id.Surface;
+            var isImpassable = id.Impassable;
+
+            // Blocking: (surface || impassable) items block
+            if (isSurface || isImpassable)
+            {
+                openSlots &= ~CreateBlockerMask(item.Z - 16, itemTop, minZ);
+            }
+
+            // Surface candidate: non-movable Surface items (including Surface+Impassable)
+            if (!item.Movable && isSurface && itemTop >= minZ && itemTop <= maxZ)
+            {
+                surfaces |= 1UL << (itemTop - minZ);
+            }
+        }
+
+        // Find the lowest unblocked surface using bit operations
+        var validSurfaces = surfaces & openSlots;
+        if (validSurfaces == 0)
+        {
+            return false;
+        }
+
+        var lowestBit = BitOperations.TrailingZeroCount(validSurfaces);
+        spawnZ = minZ + lowestBit;
+        return true;
+    }
+
+    /// <summary>
     /// Creates a bitmask for a blocker range. Blocker blocks Z where blockLow &lt; z &lt; blockHigh.
     /// Bits are relative to minZ, clamped to [0, 63].
     /// </summary>
