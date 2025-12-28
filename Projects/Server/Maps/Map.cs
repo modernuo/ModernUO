@@ -39,6 +39,20 @@ public enum MapRules
     FeluccaRules = None
 }
 
+/// <summary>
+/// Indicates why a spawn position check failed. Used by spawners to determine
+/// if optimization (caching) should be enabled.
+/// </summary>
+[Flags]
+public enum SpawnFailureReason
+{
+    None = 0,
+    InvalidMap = 1 << 0,              // Internal map or out of bounds
+    RegionBlocked = 1 << 1,           // Region doesn't allow spawning
+    TransientBlocker = 1 << 2,        // Mobile or movable item blocking
+    NonTransientBlocker = 1 << 3      // Static, multi, impassable land, or non-movable item
+}
+
 public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsable<Map>
 {
     public const int SectorSize = 16;
@@ -1103,17 +1117,38 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
     /// <param name="cantWalk">Whether the spawned entity cannot walk (water-only)</param>
     /// <param name="spawnZ">The valid spawn Z if found</param>
     /// <returns>True if a valid spawn Z was found within the range</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool CanSpawnMobile(int x, int y, int minZ, int maxZ, bool canSwim, bool cantWalk, out int spawnZ)
+        => CanSpawnMobile(x, y, minZ, maxZ, canSwim, cantWalk, out spawnZ, out _);
+
+    /// <summary>
+    /// Finds a valid spawn Z within the specified range by checking land, static, multi tiles, and world items.
+    /// Prefers the lowest valid surface (ground/floor over tables/platforms).
+    /// Also reports the reason for failure if no valid position is found.
+    /// </summary>
+    /// <param name="x">X coordinate</param>
+    /// <param name="y">Y coordinate</param>
+    /// <param name="minZ">Minimum Z (inclusive)</param>
+    /// <param name="maxZ">Maximum Z (inclusive)</param>
+    /// <param name="canSwim">Whether the spawned entity can swim (water surfaces valid)</param>
+    /// <param name="cantWalk">Whether the spawned entity cannot walk (water-only)</param>
+    /// <param name="spawnZ">The valid spawn Z if found</param>
+    /// <param name="failureReason">Indicates why spawn failed (if it did)</param>
+    /// <returns>True if a valid spawn Z was found within the range</returns>
+    public bool CanSpawnMobile(int x, int y, int minZ, int maxZ, bool canSwim, bool cantWalk, out int spawnZ, out SpawnFailureReason failureReason)
     {
         spawnZ = 0;
+        failureReason = SpawnFailureReason.None;
 
         if (this == Internal || x < 0 || y < 0 || x >= Width || y >= Height)
         {
+            failureReason = SpawnFailureReason.InvalidMap;
             return false;
         }
 
         if (!Region.Find(new Point3D(x, y, minZ), this).AllowSpawn())
         {
+            failureReason = SpawnFailureReason.RegionBlocked;
             return false;
         }
 
@@ -1124,6 +1159,10 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
         // Final result: lowest set bit in (surfaces & openSlots)
         var openSlots = ulong.MaxValue;
         ulong surfaces = 0;
+
+        // Track what types of blockers we encounter (for failure reason)
+        var hasNonTransientBlocker = false;
+        var hasTransientBlocker = false;
 
         // 1. Land tile
         var landTile = Tiles.GetLandTile(x, y);
@@ -1140,6 +1179,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
             {
                 // Impassable land blocks z in range (lowZ - 16, avgZ)
                 openSlots &= ~CreateBlockerMask(lowZ - 16, avgZ, minZ);
+                hasNonTransientBlocker = true;
             }
 
             // Surface: water for swimmers, passable land for walkers
@@ -1149,7 +1189,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
             }
         }
 
-        // 2. Static and multi tiles
+        // 2. Static and multi tiles (always non-transient)
         foreach (var tile in Tiles.GetStaticAndMultiTiles(x, y))
         {
             var id = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
@@ -1163,6 +1203,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
             if ((isSurface || isImpassable) && !(canSwim && isWet))
             {
                 openSlots &= ~CreateBlockerMask(tile.Z - 16, tileTop, minZ);
+                hasNonTransientBlocker = true;
             }
 
             // Surface candidate
@@ -1193,6 +1234,15 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
             if ((isSurface || isImpassable) && !(canSwim && isWet))
             {
                 openSlots &= ~CreateBlockerMask(item.Z - 16, itemTop, minZ);
+                // Movable items are transient, non-movable are permanent
+                if (item.Movable)
+                {
+                    hasTransientBlocker = true;
+                }
+                else
+                {
+                    hasNonTransientBlocker = true;
+                }
             }
 
             // Surface candidate (non-movable only)
@@ -1203,7 +1253,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
             }
         }
 
-        // 4. Mobiles (blockers only)
+        // 4. Mobiles (always transient blockers)
         foreach (var m in sector.Mobiles)
         {
             if (m.Location.m_X == x && m.Location.m_Y == y &&
@@ -1211,6 +1261,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
             {
                 // Mobiles block z in range (m.Z - 16, m.Z + 16)
                 openSlots &= ~CreateBlockerMask(m.Z - 16, m.Z + 16, minZ);
+                hasTransientBlocker = true;
             }
         }
 
@@ -1218,6 +1269,20 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
         var validSurfaces = surfaces & openSlots;
         if (validSurfaces == 0)
         {
+            // Determine failure reason based on what blockers we encountered
+            if (hasNonTransientBlocker)
+            {
+                failureReason |= SpawnFailureReason.NonTransientBlocker;
+            }
+            if (hasTransientBlocker)
+            {
+                failureReason |= SpawnFailureReason.TransientBlocker;
+            }
+            // If no surfaces existed at all, that's also a non-transient issue (map geometry)
+            if (surfaces == 0)
+            {
+                failureReason |= SpawnFailureReason.NonTransientBlocker;
+            }
             return false;
         }
 

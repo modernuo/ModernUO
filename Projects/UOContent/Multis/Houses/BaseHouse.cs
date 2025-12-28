@@ -4,6 +4,7 @@ using ModernUO.CodeGeneratedEvents;
 using Server.Accounting;
 using Server.Collections;
 using Server.ContextMenus;
+using Server.Engines.Spawners;
 using Server.Ethics;
 using Server.Guilds;
 using Server.Gumps;
@@ -1560,6 +1561,19 @@ namespace Server.Multis
             }
 
             UpdateRegion();
+
+            // Invalidate spawn position cache for affected sectors
+            if (Map != null && Map != Map.Internal)
+            {
+                var mcl = Components;
+                var bounds = new Rectangle2D(
+                    X + mcl.Min.X,
+                    Y + mcl.Min.Y,
+                    mcl.Width,
+                    mcl.Height
+                );
+                SectorSpawnCacheManager.InvalidateSectors(Map, bounds);
+            }
 
             if (Sign?.Deleted == false)
             {
@@ -3328,6 +3342,19 @@ namespace Server.Multis
         public override void OnDelete()
         {
             RestoreRelocatedEntities();
+
+            // Invalidate spawn position cache for affected sectors before deletion
+            if (Map != null && Map != Map.Internal)
+            {
+                var mcl = Components;
+                var bounds = new Rectangle2D(
+                    X + mcl.Min.X,
+                    Y + mcl.Min.Y,
+                    mcl.Width,
+                    mcl.Height
+                );
+                SectorSpawnCacheManager.InvalidateSectors(Map, bounds);
+            }
 
             new FixColumnTimer(this).Start();
 

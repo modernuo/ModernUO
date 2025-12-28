@@ -7,18 +7,57 @@ using Server.Commands;
 using Server.Gumps;
 using Server.Items;
 using Server.Json;
+using Server.Logging;
 using Server.Mobiles;
 using static Server.Attributes;
 
 namespace Server.Engines.Spawners;
 
-[SerializationGenerator(11, false)]
+/// <summary>
+/// Controls how a spawner handles spawn position optimization.
+/// </summary>
+public enum SpawnPositionMode : byte
+{
+    /// <summary>
+    /// Auto-detect if optimization is needed based on failure patterns.
+    /// Only engages lazy caching after non-transient spawn failures.
+    /// </summary>
+    Automatic = 0,
+
+    /// <summary>
+    /// Force optimization on. Always cache successful spawn positions.
+    /// </summary>
+    Enabled = 1,
+
+    /// <summary>
+    /// Force optimization off. Use only random position attempts.
+    /// </summary>
+    Disabled = 2,
+
+    /// <summary>
+    /// Spawner has given up due to 100% failure rate.
+    /// Skips all spawn position logic and returns spawner location.
+    /// Admin can reset via [props.
+    /// </summary>
+    Abandoned = 3
+}
+
+[SerializationGenerator(12, false)]
 public abstract partial class BaseSpawner : Item, ISpawner
 {
+    private static readonly ILogger logger = LogFactory.GetLogger(typeof(BaseSpawner));
+
+    // Default values for serialization optimization
+    private static readonly TimeSpan DefaultMinDelay = TimeSpan.FromMinutes(5);
+    private static readonly TimeSpan DefaultMaxDelay = TimeSpan.FromMinutes(10);
+
     [SerializedIgnoreDupe]
     [SerializableField(0)]
     [SerializedCommandProperty(AccessLevel.Developer)]
     private Guid _guid;
+
+    [SerializableFieldSaveFlag(1)]
+    private bool ShouldSerializeReturnOnDeactivate() => _returnOnDeactivate;
 
     [SerializableField(1)]
     [SerializedCommandProperty(AccessLevel.Developer)]
@@ -30,29 +69,53 @@ public abstract partial class BaseSpawner : Item, ISpawner
 
     private int _walkingRange = -1;
 
+    [SerializableFieldSaveFlag(4)]
+    private bool ShouldSerializeWayPoint() => _wayPoint != null;
+
     [SerializableField(4)]
     [SerializedCommandProperty(AccessLevel.Developer)]
     private WayPoint _wayPoint;
+
+    [SerializableFieldSaveFlag(5)]
+    private bool ShouldSerializeGroup() => _group;
 
     [InvalidateProperties]
     [SerializableField(5)]
     [SerializedCommandProperty(AccessLevel.Developer)]
     private bool _group;
 
+    [SerializableFieldSaveFlag(6)]
+    private bool ShouldSerializeMinDelay() => _minDelay != DefaultMinDelay;
+
+    [SerializableFieldDefault(6)]
+    private TimeSpan MinDelayDefault() => DefaultMinDelay;
+
     [InvalidateProperties]
     [SerializableField(6)]
     [SerializedCommandProperty(AccessLevel.Developer)]
     private TimeSpan _minDelay;
+
+    [SerializableFieldSaveFlag(7)]
+    private bool ShouldSerializeMaxDelay() => _maxDelay != DefaultMaxDelay;
+
+    [SerializableFieldDefault(7)]
+    private TimeSpan MaxDelayDefault() => DefaultMaxDelay;
 
     [InvalidateProperties]
     [SerializableField(7)]
     [SerializedCommandProperty(AccessLevel.Developer)]
     private TimeSpan _maxDelay;
 
+    [SerializableFieldSaveFlag(9)]
+    private bool ShouldSerializeTeam() => _team != 0;
+
     [InvalidateProperties]
     [SerializableField(9)]
     [SerializedCommandProperty(AccessLevel.Developer)]
     private int _team;
+
+    [SerializableFieldSaveFlag(10)]
+    private bool ShouldSerializeSpawnBounds() => _spawnBounds != default;
 
     [InvalidateProperties]
     [SerializableField(10)]
@@ -63,14 +126,48 @@ public abstract partial class BaseSpawner : Item, ISpawner
     /// If true, the home location of the spawn is the location where it spawned
     /// If false, the home location of the spawn is the location of the spawner
     /// </summary>
+    [SerializableFieldSaveFlag(12)]
+    private bool ShouldSerializeSpawnLocationIsHome() => _spawnLocationIsHome;
+
     [InvalidateProperties]
     [SerializableField(12)]
     [SerializedCommandProperty(AccessLevel.Developer)]
     private bool _spawnLocationIsHome;
 
+    [SerializableFieldSaveFlag(13)]
+    private bool ShouldSerializeEnd() => _end != default;
+
     [SerializableField(13)]
     [SerializedCommandProperty(AccessLevel.Developer)]
     private DateTime _end;
+
+    /// <summary>
+    /// Controls how spawn position optimization is handled.
+    /// </summary>
+    [SerializableFieldSaveFlag(14)]
+    private bool ShouldSerializeSpawnPositionMode() => _spawnPositionMode != SpawnPositionMode.Automatic;
+
+    [SerializableField(14)]
+    [SerializedCommandProperty(AccessLevel.Developer)]
+    private SpawnPositionMode _spawnPositionMode;
+
+    private const int DefaultMaxSpawnAttempts = 10;
+
+    /// <summary>
+    /// Maximum number of random position attempts before engaging optimization.
+    /// </summary>
+    [SerializableFieldSaveFlag(15)]
+    private bool ShouldSerializeMaxSpawnAttempts() => _maxSpawnAttempts != DefaultMaxSpawnAttempts;
+
+    [SerializableFieldDefault(15)]
+    private int MaxSpawnAttemptsDefault() => DefaultMaxSpawnAttempts;
+
+    [SerializableField(15)]
+    [SerializedCommandProperty(AccessLevel.Developer)]
+    private int _maxSpawnAttempts;
+
+    // Non-serialized: Runtime state for spawn position optimization
+    private SpawnPositionState _spawnPositionState;
 
     private InternalTimer _timer;
 
@@ -198,12 +295,11 @@ public abstract partial class BaseSpawner : Item, ISpawner
         }
 
         json.GetProperty("count", options, out int amount);
-        json.GetProperty("minDelay", options, out TimeSpan minDelay);
-        json.GetProperty("maxDelay", options, out TimeSpan maxDelay);
+        json.GetProperty("minDelay", options, DefaultMinDelay, out TimeSpan minDelay);
+        json.GetProperty("maxDelay", options, DefaultMaxDelay, out TimeSpan maxDelay);
         json.GetProperty("team", options, out int team);
         json.GetProperty("homeRange", options, out int homeRange);
-        json.GetProperty("walkingRange", options, out int walkingRange);
-        _walkingRange = walkingRange;
+        json.GetProperty("walkingRange", options, out _walkingRange);
 
         // Try new format first
         if (json.GetProperty("spawnBounds", options, out Rectangle3D spawnBounds))
@@ -224,8 +320,9 @@ public abstract partial class BaseSpawner : Item, ISpawner
             );
         }
 
-        json.GetProperty("spawnLocationIsHome", options, out bool spawnLocationIsHome);
-        _spawnLocationIsHome = spawnLocationIsHome;
+        json.GetProperty("spawnLocationIsHome", options, out _spawnLocationIsHome);
+        json.GetProperty("spawnPositionMode", options, out _spawnPositionMode);
+        json.GetProperty("maxSpawnAttempts", options, DefaultMaxSpawnAttempts, out _maxSpawnAttempts);
 
         InitSpawn(amount, minDelay, maxDelay, team, _spawnBounds);
 
@@ -319,6 +416,29 @@ public abstract partial class BaseSpawner : Item, ISpawner
 
     public abstract Region Region { get; }
 
+    /// <summary>
+    /// Returns the bounds to use for a single spawn attempt.
+    /// Called for each random attempt in Phase 1.
+    /// Spawner: returns SpawnBounds
+    /// RegionSpawner: picks a weighted random rectangle from the region
+    /// </summary>
+    protected abstract Rectangle3D GetBoundsForSpawnAttempt();
+
+    /// <summary>
+    /// Returns all possible spawn bounds for cache operations.
+    /// Used in Phase 3 to search for cached positions.
+    /// Spawner: returns single-element array with SpawnBounds
+    /// RegionSpawner: returns all region rectangles
+    /// </summary>
+    protected abstract IReadOnlyList<Rectangle3D> GetAllSpawnBounds();
+
+    /// <summary>
+    /// Whether this spawner supports spiral scanning.
+    /// Only makes sense for contiguous bounds (Spawner).
+    /// Disjoint rectangles (RegionSpawner) should return false.
+    /// </summary>
+    protected virtual bool SupportsSpiralScan => false;
+
     public void Remove(ISpawnable spawn)
     {
         Defrag();
@@ -356,21 +476,230 @@ public abstract partial class BaseSpawner : Item, ISpawner
     public virtual void ToJson(DynamicJson json, JsonSerializerOptions options)
     {
         json.Type = GetType().Name;
-        json.SetProperty("name", options, Name);
+
+        // Always required
         json.SetProperty("guid", options, _guid);
         json.SetProperty("location", options, Location);
         json.SetProperty("map", options, Map);
         json.SetProperty("count", options, Count);
-        json.SetProperty("minDelay", options, MinDelay);
-        json.SetProperty("maxDelay", options, MaxDelay);
-        json.SetProperty("team", options, Team);
-        json.SetProperty("walkingRange", options, WalkingRange);
         json.SetProperty("entries", options, Entries);
-        json.SetProperty("spawnBounds", options, SpawnBounds);
-        json.SetProperty("spawnLocationIsHome", options, SpawnLocationIsHome);
+
+        // Only write if non-default
+        if (!string.IsNullOrEmpty(Name))
+        {
+            json.SetProperty("name", options, Name);
+        }
+
+        if (_minDelay != DefaultMinDelay)
+        {
+            json.SetProperty("minDelay", options, MinDelay);
+        }
+
+        if (_maxDelay != DefaultMaxDelay)
+        {
+            json.SetProperty("maxDelay", options, MaxDelay);
+        }
+
+        if (_team != 0)
+        {
+            json.SetProperty("team", options, Team);
+        }
+
+        if (_walkingRange != 0)
+        {
+            json.SetProperty("walkingRange", options, WalkingRange);
+        }
+
+        if (_spawnBounds != default)
+        {
+            json.SetProperty("spawnBounds", options, SpawnBounds);
+        }
+
+        if (_spawnLocationIsHome)
+        {
+            json.SetProperty("spawnLocationIsHome", options, SpawnLocationIsHome);
+        }
+
+        if (_spawnPositionMode != SpawnPositionMode.Automatic)
+        {
+            json.SetProperty("spawnPositionMode", options, _spawnPositionMode);
+        }
+
+        if (_maxSpawnAttempts != DefaultMaxSpawnAttempts)
+        {
+            json.SetProperty("maxSpawnAttempts", options, _maxSpawnAttempts);
+        }
     }
 
-    public abstract Point3D GetSpawnPosition(ISpawnable spawned, Map map);
+    public virtual Point3D GetSpawnPosition(ISpawnable spawned, Map map)
+    {
+        // Abandoned spawners skip all work
+        if (_spawnPositionMode == SpawnPositionMode.Abandoned)
+        {
+            return Location;
+        }
+
+        if (map == null || map == Map.Internal)
+        {
+            return Location;
+        }
+
+        // Ensure state is initialized
+        _spawnPositionState ??= new SpawnPositionState();
+
+        // Determine mob type for caching
+        var isMobile = spawned is Mobile;
+        var canSwim = isMobile && ((Mobile)spawned).CanSwim;
+        var cantWalk = isMobile && ((Mobile)spawned).CantWalk;
+        var isWaterMob = canSwim && cantWalk;
+        var hasNonTransientFailure = false;
+
+        // Phase 1: Random attempts (always first - maintains randomness)
+        var maxAttempts = _maxSpawnAttempts > 0 ? _maxSpawnAttempts : DefaultMaxSpawnAttempts;
+        for (var i = 0; i < maxAttempts; i++)
+        {
+            var bounds = GetBoundsForSpawnAttempt();
+
+            // No bounds = spawn at spawner location
+            if (bounds == default)
+            {
+                return Location;
+            }
+
+            var x = Utility.RandomMinMax(bounds.Start.X, bounds.End.X - 1);
+            var y = Utility.RandomMinMax(bounds.Start.Y, bounds.End.Y - 1);
+            var minZ = bounds.Start.Z;
+            var maxZ = bounds.End.Z - 1;
+
+            bool success;
+            int spawnZ;
+            SpawnFailureReason failureReason;
+
+            if (isMobile)
+            {
+                success = map.CanSpawnMobile(x, y, minZ, maxZ, canSwim, cantWalk, out spawnZ, out failureReason);
+            }
+            else
+            {
+                success = map.CanSpawnItem(x, y, minZ, maxZ, out spawnZ);
+                failureReason = success ? SpawnFailureReason.None : SpawnFailureReason.NonTransientBlocker;
+            }
+
+            if (success)
+            {
+                _spawnPositionState.RecordSuccess();
+
+                // Lazy cache: add successful position to global sector cache
+                if (_spawnPositionState.ShouldCachePositions(_spawnPositionMode))
+                {
+                    SectorSpawnCacheManager.SetValid(map, new Point3D(x, y, spawnZ), isWaterMob);
+                }
+
+                return new Point3D(x, y, spawnZ);
+            }
+
+            if ((failureReason & SpawnFailureReason.NonTransientBlocker) != 0)
+            {
+                hasNonTransientFailure = true;
+            }
+        }
+
+        // Phase 2: Check if optimization should engage
+        if (_spawnPositionMode == SpawnPositionMode.Disabled)
+        {
+            return Location;
+        }
+
+        var useOptimization = _spawnPositionMode == SpawnPositionMode.Enabled
+                              || _spawnPositionMode == SpawnPositionMode.Automatic && hasNonTransientFailure;
+
+        if (!useOptimization)
+        {
+            // Transient failure only - just use spawner location, will work next time
+            return Location;
+        }
+
+        _spawnPositionState.RecordNonTransientFailure();
+
+        // Phase 3: Try cached positions from global sector cache
+        var allBounds = GetAllSpawnBounds();
+        foreach (var bounds in allBounds)
+        {
+            if (!SectorSpawnCacheManager.TryGetRandomPosition(map, bounds, isWaterMob, out var cachedPos))
+            {
+                continue;
+            }
+
+            // Re-verify in 3D (handles underground/multi-floor edge cases)
+            var minZ = bounds.Start.Z;
+            var maxZ = bounds.End.Z - 1;
+            int verifiedZ;
+            bool verified;
+
+            if (isMobile)
+            {
+                verified = map.CanSpawnMobile(cachedPos.X, cachedPos.Y, minZ, maxZ, canSwim, cantWalk, out verifiedZ);
+            }
+            else
+            {
+                verified = map.CanSpawnItem(cachedPos.X, cachedPos.Y, minZ, maxZ, out verifiedZ);
+            }
+
+            if (verified)
+            {
+                _spawnPositionState.RecordSuccess();
+                return new Point3D(cachedPos.X, cachedPos.Y, verifiedZ);
+            }
+            // Position no longer valid - will be lazily replaced
+        }
+
+        // Phase 4: Spiral scan (only if supported and enabled by admin)
+        if (SupportsSpiralScan && !_spawnPositionState.SpiralComplete)
+        {
+            // Use the first bounds for spiral center/range
+            var primaryBounds = allBounds.Count > 0 ? allBounds[0] : default;
+            if (primaryBounds != default)
+            {
+                var minZ = primaryBounds.Start.Z;
+                var maxZ = primaryBounds.End.Z - 1;
+
+                _spawnPositionState.SpiralComplete = SectorSpawnCacheManager.ContinueSpiralScan(
+                    map, Location, primaryBounds, minZ, maxZ, canSwim, cantWalk,
+                    ref _spawnPositionState.SpiralRing, ref _spawnPositionState.SpiralRingPosition, ringsPerTick: 3);
+
+                // Try cache again after scan
+                if (SectorSpawnCacheManager.TryGetRandomPosition(map, primaryBounds, isWaterMob, out var cachedPos))
+                {
+                    int verifiedZ;
+                    bool verified;
+
+                    verified = isMobile
+                        ? map.CanSpawnMobile(cachedPos.X, cachedPos.Y, minZ, maxZ, canSwim, cantWalk, out verifiedZ)
+                        : map.CanSpawnItem(cachedPos.X, cachedPos.Y, minZ, maxZ, out verifiedZ);
+
+                    if (verified)
+                    {
+                        _spawnPositionState.RecordSuccess();
+                        return new Point3D(cachedPos.X, cachedPos.Y, verifiedZ);
+                    }
+                }
+            }
+        }
+
+        // Phase 5: Check for abandoned state
+        if (_spawnPositionState.ShouldAbandon())
+        {
+            SpawnPositionMode = SpawnPositionMode.Abandoned;
+            logger.Warning(
+                "Spawner {Serial} at {Location} ({Map}) marked abandoned - no valid spawn positions found after spiral scan.",
+                Serial,
+                Location,
+                map.Name ?? "null"
+            );
+        }
+
+        return Location;
+    }
 
     public override void OnAfterDuped(Item newItem)
     {
@@ -403,6 +732,24 @@ public abstract partial class BaseSpawner : Item, ISpawner
         if (IsHomeRangeStyleAt(oldLocation))
         {
             HomeRange = _spawnBounds.Width / 2;
+        }
+
+        // Reset spawn position optimization state when spawner moves
+        ResetSpawnPositionState();
+    }
+
+    /// <summary>
+    /// Resets the spawn position optimization state.
+    /// Called when spawner moves or bounds change.
+    /// </summary>
+    protected void ResetSpawnPositionState()
+    {
+        _spawnPositionState?.Reset();
+
+        // If we were abandoned, reset to automatic to give it another chance
+        if (_spawnPositionMode == SpawnPositionMode.Abandoned)
+        {
+            _spawnPositionMode = SpawnPositionMode.Automatic;
         }
     }
 

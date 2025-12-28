@@ -1,13 +1,28 @@
 using System;
+using System.Collections.Generic;
 using System.Text.Json;
 using ModernUO.Serialization;
 using Server.Json;
 
 namespace Server.Engines.Spawners;
 
-[SerializationGenerator(0)]
+[SerializationGenerator(1)]
 public partial class Spawner : BaseSpawner
 {
+    // Cached single-element list for GetAllSpawnBounds
+    private Rectangle3D[] _boundsCache;
+
+    /// <summary>
+    /// When true, enables proactive spiral scanning to find valid spawn positions.
+    /// Only relevant when SpawnPositionMode is Automatic or Enabled.
+    /// </summary>
+    [SerializableFieldSaveFlag(0)]
+    private bool ShouldSerializeUseSpiralScan() => _useSpiralScan;
+
+    [SerializableField(0)]
+    [SerializedCommandProperty(AccessLevel.Developer)]
+    private bool _useSpiralScan;
+
     [Constructible(AccessLevel.Developer)]
     public Spawner()
     {
@@ -51,38 +66,24 @@ public partial class Spawner : BaseSpawner
 
     public override Region Region => Region.Find(Location, Map);
 
-    public override Point3D GetSpawnPosition(ISpawnable spawned, Map map)
+    protected override bool SupportsSpiralScan => _useSpiralScan;
+
+    protected override Rectangle3D GetBoundsForSpawnAttempt() => SpawnBounds;
+
+    protected override IReadOnlyList<Rectangle3D> GetAllSpawnBounds()
     {
-        if (map == null || map == Map.Internal)
-        {
-            return Location;
-        }
-
         var bounds = SpawnBounds;
-
-        // No bounds = HomeRange of 0, spawn at spawner location
         if (bounds == default)
         {
-            return Location;
+            return Array.Empty<Rectangle3D>();
         }
 
-        // Z range from SpawnBounds (supports multi-story buildings)
-        var minZ = bounds.Start.Z;
-        var maxZ = bounds.End.Z - 1;
-
-        // Try 10 times to find a valid location.
-        for (var i = 0; i < 10; i++)
+        // Cache the array to avoid allocation per spawn
+        if (_boundsCache == null || _boundsCache[0] != bounds)
         {
-            var x = Utility.RandomMinMax(bounds.Start.X, bounds.End.X - 1);
-            var y = Utility.RandomMinMax(bounds.Start.Y, bounds.End.Y - 1);
-
-            if (spawned is Mobile mob && map.CanSpawnMobile(x, y, minZ, maxZ, mob.CanSwim, mob.CantWalk, out var spawnZ)
-                || spawned is Item && map.CanSpawnItem(x, y, minZ, maxZ, out spawnZ))
-            {
-                return new Point3D(x, y, spawnZ);
-            }
+            _boundsCache = [bounds];
         }
 
-        return Location;
+        return _boundsCache;
     }
 }

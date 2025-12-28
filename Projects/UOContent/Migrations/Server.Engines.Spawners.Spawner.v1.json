@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "type": "Server.Engines.Spawners.Spawner",
+  "properties": [
+    {
+      "name": "UseSpiralScan",
+      "type": "bool",
+      "usesSaveFlag": true,
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

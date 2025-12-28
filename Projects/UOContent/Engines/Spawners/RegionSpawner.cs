@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2025 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: RegionSpawner.cs                                                *
  *                                                                       *
@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System;
+using System.Collections.Generic;
 using System.Text.Json;
 using ModernUO.Serialization;
 using Server.Json;
@@ -74,6 +75,49 @@ public partial class RegionSpawner : Spawner
         }
     }
 
+    // RegionSpawner does not support spiral scan (disjoint rectangles make it ineffective)
+    protected override bool SupportsSpiralScan => false;
+
+    protected override Rectangle3D GetBoundsForSpawnAttempt()
+    {
+        if (_spawnRegion == null || _spawnRegion.TotalWeight <= 0)
+        {
+            return default;
+        }
+
+        // Pick a weighted random rectangle from the region
+        var rand = Utility.Random(_spawnRegion.TotalWeight);
+
+        for (var j = 0; j < _spawnRegion.RectangleWeights.Length; j++)
+        {
+            var curWeight = _spawnRegion.RectangleWeights[j];
+
+            if (rand < curWeight)
+            {
+                return _spawnRegion.Rectangles[j];
+            }
+
+            rand -= curWeight;
+        }
+
+        return default;
+    }
+
+    protected override IReadOnlyList<Rectangle3D> GetAllSpawnBounds() =>
+        _spawnRegion?.Rectangles ?? Array.Empty<Rectangle3D>();
+
+    public override Point3D GetSpawnPosition(ISpawnable spawned, Map map)
+    {
+        // Check for region/map mismatch before delegating to base
+        if (_spawnRegion == null || map == null || map == Map.Internal ||
+            map != _spawnRegion.Map || _spawnRegion.TotalWeight <= 0)
+        {
+            return Location;
+        }
+
+        return base.GetSpawnPosition(spawned, map);
+    }
+
     public override void ToJson(DynamicJson json, JsonSerializerOptions options)
     {
         base.ToJson(json, options);
@@ -88,55 +132,6 @@ public partial class RegionSpawner : Spawner
         {
             list.Add(1076228, $"{"region:"}\t{_spawnRegion.Name}"); // ~1_DUMMY~ ~2_DUMMY~
         }
-    }
-
-    public override Point3D GetSpawnPosition(ISpawnable spawned, Map map)
-    {
-        if (_spawnRegion == null || map == null || map == Map.Internal || map != _spawnRegion.Map ||
-            _spawnRegion.TotalWeight <= 0)
-        {
-            return Location;
-        }
-
-        // Try 10 times to find a valid location.
-        for (var i = 0; i < 10; i++)
-        {
-            var rand = Utility.Random(_spawnRegion.TotalWeight);
-
-            var x = int.MinValue;
-            var y = int.MinValue;
-            var minZ = (int)sbyte.MinValue;
-            var maxZ = (int)sbyte.MaxValue;
-
-            for (var j = 0; j < _spawnRegion.RectangleWeights.Length; j++)
-            {
-                var curWeight = _spawnRegion.RectangleWeights[j];
-
-                if (rand < curWeight)
-                {
-                    var rect = _spawnRegion.Rectangles[j];
-
-                    x = rect.Start.X + rand % rect.Width;
-                    y = rect.Start.Y + rand / rect.Width;
-
-                    // Use rectangle's Z range for multi-floor region support
-                    minZ = rect.Start.Z;
-                    maxZ = rect.End.Z - 1;
-
-                    break;
-                }
-
-                rand -= curWeight;
-            }
-
-            if (spawned is Mobile mob && map.CanSpawnMobile(x, y, minZ, maxZ, mob.CanSwim, mob.CantWalk, out var spawnZ)
-                || spawned is Item && map.CanSpawnItem(x, y, minZ, maxZ, out spawnZ))
-            {
-                return new Point3D(x, y, spawnZ);
-            }
-        }
-
-        return Location;
     }
 
     [AfterDeserialization(false)]
