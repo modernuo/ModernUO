@@ -79,15 +79,6 @@
       ]
     },
     {
-      "name": "SpawnBounds",
-      "type": "Server.Rectangle3D",
-      "usesSaveFlag": true,
-      "rule": "PrimitiveUOTypeMigrationRule",
-      "ruleArguments": [
-        "Rect3D"
-      ]
-    },
-    {
       "name": "Running",
       "type": "bool",
       "rule": "PrimitiveTypeMigrationRule",

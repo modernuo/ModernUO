@@ -14,7 +14,6 @@
  *************************************************************************/
 
 using System;
-using System.Collections.Generic;
 using System.Text.Json;
 using ModernUO.Serialization;
 using Server.Json;
@@ -103,8 +102,7 @@ public partial class RegionSpawner : Spawner
         return default;
     }
 
-    protected override IReadOnlyList<Rectangle3D> GetAllSpawnBounds() =>
-        _spawnRegion?.Rectangles ?? Array.Empty<Rectangle3D>();
+    protected override ReadOnlySpan<Rectangle3D> GetAllSpawnBounds() => _spawnRegion?.Rectangles;
 
     public override Point3D GetSpawnPosition(ISpawnable spawned, Map map)
     {

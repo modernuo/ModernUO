@@ -49,7 +49,13 @@ public abstract partial class BaseSpawner
         _maxDelay = content.MaxDelay;
         _count = content.Count;
         _team = content.Team;
-        _spawnBounds = content.SpawnBounds;
+
+        // Moved to Spawner
+        if (this is Spawner spawner)
+        {
+            spawner.SpawnBounds = content.SpawnBounds;
+        }
+
         _running = content.Running;
         _spawnLocationIsHome = content.SpawnLocationIsHome;
         _end = _running ? content.End : Core.Now;

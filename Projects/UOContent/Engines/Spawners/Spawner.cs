@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Text.Json;
 using ModernUO.Serialization;
 using Server.Json;
@@ -9,9 +8,6 @@ namespace Server.Engines.Spawners;
 [SerializationGenerator(1)]
 public partial class Spawner : BaseSpawner
 {
-    // Cached single-element list for GetAllSpawnBounds
-    private Rectangle3D[] _boundsCache;
-
     /// <summary>
     /// When true, enables proactive spiral scanning to find valid spawn positions.
     /// Only relevant when SpawnPositionMode is Automatic or Enabled.
@@ -22,6 +18,21 @@ public partial class Spawner : BaseSpawner
     [SerializableField(0)]
     [SerializedCommandProperty(AccessLevel.Developer)]
     private bool _useSpiralScan;
+
+    [SerializableFieldSaveFlag(1)]
+    private bool ShouldSerializeSpawnBounds() => _spawnBounds != default;
+
+    [SerializableProperty(1)]
+    public override Rectangle3D SpawnBounds
+    {
+        get => _spawnBounds;
+        set
+        {
+            _spawnBounds = value;
+            InvalidateProperties();
+            this.MarkDirty();
+        }
+    }
 
     [Constructible(AccessLevel.Developer)]
     public Spawner()
@@ -70,20 +81,5 @@ public partial class Spawner : BaseSpawner
 
     protected override Rectangle3D GetBoundsForSpawnAttempt() => SpawnBounds;
 
-    protected override IReadOnlyList<Rectangle3D> GetAllSpawnBounds()
-    {
-        var bounds = SpawnBounds;
-        if (bounds == default)
-        {
-            return Array.Empty<Rectangle3D>();
-        }
-
-        // Cache the array to avoid allocation per spawn
-        if (_boundsCache == null || _boundsCache[0] != bounds)
-        {
-            _boundsCache = [bounds];
-        }
-
-        return _boundsCache;
-    }
+    protected override ReadOnlySpan<Rectangle3D> GetAllSpawnBounds() => new(ref _spawnBounds);
 }

@@ -114,41 +114,39 @@ public abstract partial class BaseSpawner : Item, ISpawner
     [SerializedCommandProperty(AccessLevel.Developer)]
     private int _team;
 
-    [SerializableFieldSaveFlag(10)]
-    private bool ShouldSerializeSpawnBounds() => _spawnBounds != default;
-
-    [InvalidateProperties]
-    [SerializableField(10)]
-    [SerializedCommandProperty(AccessLevel.Developer)]
-    private Rectangle3D _spawnBounds;
+    /// <summary>
+    /// The spawn bounds for this spawner. Abstract to allow derived classes to manage their own storage.
+    /// </summary>
+    [CommandProperty(AccessLevel.Developer)]
+    public abstract Rectangle3D SpawnBounds { get; set; }
 
     /// <summary>
     /// If true, the home location of the spawn is the location where it spawned
     /// If false, the home location of the spawn is the location of the spawner
     /// </summary>
-    [SerializableFieldSaveFlag(12)]
+    [SerializableFieldSaveFlag(11)]
     private bool ShouldSerializeSpawnLocationIsHome() => _spawnLocationIsHome;
 
     [InvalidateProperties]
-    [SerializableField(12)]
+    [SerializableField(11)]
     [SerializedCommandProperty(AccessLevel.Developer)]
     private bool _spawnLocationIsHome;
 
-    [SerializableFieldSaveFlag(13)]
+    [SerializableFieldSaveFlag(12)]
     private bool ShouldSerializeEnd() => _end != default;
 
-    [SerializableField(13)]
+    [SerializableField(12)]
     [SerializedCommandProperty(AccessLevel.Developer)]
     private DateTime _end;
 
     /// <summary>
     /// Controls how spawn position optimization is handled.
     /// </summary>
-    [SerializableFieldSaveFlag(14)]
+    [SerializableFieldSaveFlag(13)]
     private bool ShouldSerializeSpawnPositionMode() =>
         _spawnPositionMode is not SpawnPositionMode.Automatic and not SpawnPositionMode.Abandoned;
 
-    [SerializableField(14)]
+    [SerializableField(13)]
     [SerializedCommandProperty(AccessLevel.Developer)]
     private SpawnPositionMode _spawnPositionMode;
 
@@ -157,13 +155,13 @@ public abstract partial class BaseSpawner : Item, ISpawner
     /// <summary>
     /// Maximum number of random position attempts before engaging optimization.
     /// </summary>
-    [SerializableFieldSaveFlag(15)]
+    [SerializableFieldSaveFlag(14)]
     private bool ShouldSerializeMaxSpawnAttempts() => _maxSpawnAttempts != DefaultMaxSpawnAttempts;
 
-    [SerializableFieldDefault(15)]
+    [SerializableFieldDefault(14)]
     private int MaxSpawnAttemptsDefault() => DefaultMaxSpawnAttempts;
 
-    [SerializableField(15)]
+    [SerializableField(14)]
     [SerializedCommandProperty(AccessLevel.Developer)]
     private int _maxSpawnAttempts;
 
@@ -181,16 +179,16 @@ public abstract partial class BaseSpawner : Item, ISpawner
     {
         get
         {
-            if (_spawnBounds == default)
+            if (SpawnBounds == default)
             {
                 return 0;
             }
 
             // Distance from spawner location to nearest edge
-            var distToMinX = Math.Abs(Location.X - _spawnBounds.Start.X);
-            var distToMaxX = Math.Abs(_spawnBounds.End.X - Location.X);
-            var distToMinY = Math.Abs(Location.Y - _spawnBounds.Start.Y);
-            var distToMaxY = Math.Abs(_spawnBounds.End.Y - Location.Y);
+            var distToMinX = Math.Abs(Location.X - SpawnBounds.Start.X);
+            var distToMaxX = Math.Abs(SpawnBounds.End.X - Location.X);
+            var distToMinY = Math.Abs(Location.Y - SpawnBounds.Start.Y);
+            var distToMaxY = Math.Abs(SpawnBounds.End.Y - Location.Y);
 
             // Return smallest distance to any edge
             return Math.Min(Math.Min(distToMinX, distToMaxX), Math.Min(distToMinY, distToMaxY));
@@ -203,7 +201,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
                 : Location.Z;
 
             // Create square bounds centered on spawner, Z range from surface to surface + 16
-            _spawnBounds = new Rectangle3D(
+            SpawnBounds = new Rectangle3D(
                 Location.X - value,
                 Location.Y - value,
                 surfaceZ,
@@ -226,20 +224,20 @@ public abstract partial class BaseSpawner : Item, ISpawner
     /// </summary>
     public bool IsHomeRangeStyleAt(Point3D location)
     {
-        if (_spawnBounds == default)
+        if (SpawnBounds == default)
         {
             return true; // No bounds = default HomeRange behavior
         }
 
         // Must be square
-        if (_spawnBounds.Width != _spawnBounds.Height)
+        if (SpawnBounds.Width != SpawnBounds.Height)
         {
             return false;
         }
 
         // Given location must be at center
-        var centerX = _spawnBounds.Start.X + _spawnBounds.Width / 2;
-        var centerY = _spawnBounds.Start.Y + _spawnBounds.Height / 2;
+        var centerX = SpawnBounds.Start.X + SpawnBounds.Width / 2;
+        var centerY = SpawnBounds.Start.Y + SpawnBounds.Height / 2;
 
         return centerX == location.X && centerY == location.Y;
     }
@@ -250,7 +248,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
     /// </summary>
     public virtual bool IsInSpawnBounds(Point3D location)
     {
-        return _spawnBounds == default || _spawnBounds.Contains(location);
+        return SpawnBounds == default || SpawnBounds.Contains(location);
     }
 
     public BaseSpawner() : this(1, TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(10))
@@ -305,13 +303,13 @@ public abstract partial class BaseSpawner : Item, ISpawner
         // Try new format first
         if (json.GetProperty("spawnBounds", options, out Rectangle3D spawnBounds))
         {
-            _spawnBounds = spawnBounds;
+            SpawnBounds = spawnBounds;
         }
         else if (homeRange > 0 && json.GetProperty("location", options, out Point3D location))
         {
             // Fall back to homeRange with location for oldest format
             // Note: Map not available during JSON loading, so use location.Z directly
-            _spawnBounds = new Rectangle3D(
+            SpawnBounds = new Rectangle3D(
                 location.X - homeRange,
                 location.Y - homeRange,
                 location.Z,
@@ -325,7 +323,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
         json.GetProperty("spawnPositionMode", options, out _spawnPositionMode);
         json.GetProperty("maxSpawnAttempts", options, DefaultMaxSpawnAttempts, out _maxSpawnAttempts);
 
-        InitSpawn(amount, minDelay, maxDelay, team, _spawnBounds);
+        InitSpawn(amount, minDelay, maxDelay, team, SpawnBounds);
 
         json.GetProperty("entries", options, out List<SpawnerEntry> entries);
 
@@ -377,7 +375,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
         }
     }
 
-    [SerializableProperty(11)]
+    [SerializableProperty(10)]
     [CommandProperty(AccessLevel.Developer)]
     public bool Running
     {
@@ -431,7 +429,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
     /// Spawner: returns single-element array with SpawnBounds
     /// RegionSpawner: returns all region rectangles
     /// </summary>
-    protected abstract IReadOnlyList<Rectangle3D> GetAllSpawnBounds();
+    protected abstract ReadOnlySpan<Rectangle3D> GetAllSpawnBounds();
 
     /// <summary>
     /// Whether this spawner supports spiral scanning.
@@ -511,7 +509,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
             json.SetProperty("walkingRange", options, WalkingRange);
         }
 
-        if (_spawnBounds != default)
+        if (SpawnBounds != default)
         {
             json.SetProperty("spawnBounds", options, SpawnBounds);
         }
@@ -638,7 +636,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
         else if (!_spawnPositionState.SpiralComplete)
         {
             // Use the first bounds for spiral center/range
-            var primaryBounds = allBounds.Count > 0 ? allBounds[0] : default;
+            var primaryBounds = allBounds.Length > 0 ? allBounds[0] : default;
             if (primaryBounds != default)
             {
                 var minZ = primaryBounds.Start.Z;
@@ -696,16 +694,22 @@ public abstract partial class BaseSpawner : Item, ISpawner
     /// Attempts to get a verified spawn position from the sector cache across all bounds.
     /// Uses deduplicated sector lookup for uniform distribution.
     /// </summary>
-    private bool TryGetVerifiedCachedPosition(
+    private static bool TryGetVerifiedCachedPosition(
         Map map,
-        IReadOnlyList<Rectangle3D> allBounds,
+        ReadOnlySpan<Rectangle3D> allBounds,
         bool isMobile,
         bool isWaterMob,
         bool canSwim,
         bool cantWalk,
         out Point3D spawnPos)
     {
-        if (!SectorSpawnCacheManager.TryGetRandomPosition(map, allBounds, isWaterMob, out var cachedPos, out var containingBounds))
+        if (!SectorSpawnCacheManager.TryGetRandomPosition(
+                map,
+                allBounds,
+                isWaterMob,
+                out var cachedPos,
+                out var containingBounds
+            ))
         {
             spawnPos = default;
             return false;
@@ -766,7 +770,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
         // Recalculate HomeRange-style bounds when spawner moves
         if (IsHomeRangeStyleAt(oldLocation))
         {
-            HomeRange = _spawnBounds.Width / 2;
+            HomeRange = SpawnBounds.Width / 2;
         }
 
         // Reset spawn position optimization state when spawner moves
@@ -820,7 +824,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
 
         if (spawnBounds != default)
         {
-            _spawnBounds = spawnBounds;
+            SpawnBounds = spawnBounds;
         }
         else
         {
@@ -1409,7 +1413,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
         if (_pendingHomeRangeMigrations.Remove(this, out var homeRange))
         {
             var surfaceZ = Map?.GetTopSurfaceZ(Location) ?? Location.Z;
-            _spawnBounds = new Rectangle3D(
+            SpawnBounds = new Rectangle3D(
                 Location.X - homeRange,
                 Location.Y - homeRange,
                 surfaceZ,
