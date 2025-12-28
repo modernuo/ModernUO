@@ -74,7 +74,7 @@ public static class OutgoingAccountPackets
         writer.Write((ushort)length);
         writer.Write((ushort)0); // Count & Placeholder
 
-        int count = 0;
+        var count = 0;
 
         for (var i = 0; i < a.Length; ++i)
         {
@@ -265,7 +265,7 @@ public static class OutgoingAccountPackets
 
         writer.Write((byte)count);
 
-        for (int i = 0; i < count; i++)
+        for (var i = 0; i < count; i++)
         {
             var m = a[i];
 
@@ -330,7 +330,7 @@ public static class OutgoingAccountPackets
         writer.Write((ushort)length);
         writer.Write((byte)count); // TODO: It is probably more proper to use count.
 
-        for (int i = 0; i < count; i++)
+        for (var i = 0; i < count; i++)
         {
             var m = acct[i];
 
@@ -348,7 +348,7 @@ public static class OutgoingAccountPackets
 
         writer.Write((byte)cityInfo.Length);
 
-        for (int i = 0; i < cityInfo.Length; ++i)
+        for (var i = 0; i < cityInfo.Length; ++i)
         {
             var ci = cityInfo[i];
 

@@ -60,7 +60,7 @@ public class SpawnerControllerGump : GumpGrid
         AddImageTiled(0, row1Y + 21, _main.Width, 3, 9357);
         AddAlphaRegion(0, row1Y + 21, _main.Width, 3);
 
-        for (int i = 0; i < list.ColsCount - 1; i++)
+        for (var i = 0; i < list.ColsCount - 1; i++)
         {
             var x = list.Header.Cols[i].HEnd - 8;
             var y = list.Header.Y + 10;
@@ -159,7 +159,7 @@ public class SpawnerControllerGump : GumpGrid
                 continue;
             }
 
-            bool enqueue = _search.Type switch
+            var enqueue = _search.Type switch
             {
                 SpawnSearchType.Creature => SearchSpawnerCreatures(spawner, _search.SearchPattern),
                 SpawnSearchType.Coords   => _mobile.InRange(spawner.Location, range),
@@ -238,7 +238,7 @@ public class SpawnerControllerGump : GumpGrid
 
     public void DrawSpawner(ListView list)
     {
-        for (int i = 0; i < list.Items.Length; i++)
+        for (var i = 0; i < list.Items.Length; i++)
         {
             const int vCenter = 15;
             const int perItem = 45;
@@ -381,7 +381,7 @@ public class SpawnerControllerGump : GumpGrid
         {
             target.Entries?.Clear();
 
-            for (int i = 0; i < spawner.Entries.Count; i++)
+            for (var i = 0; i < spawner.Entries.Count; i++)
             {
                 var item = spawner.Entries[i];
                 var targetEntry = target.AddEntry(item.SpawnedName, item.SpawnedProbability, item.SpawnedMaxCount);

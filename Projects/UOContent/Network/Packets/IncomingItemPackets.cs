@@ -78,7 +78,7 @@ public static class IncomingItemPackets
             reader.ReadByte(); // Grid Location?
         }
 
-        Serial dest = (Serial)reader.ReadUInt32();
+        var dest = (Serial)reader.ReadUInt32();
 
         var loc = new Point3D(x, y, z);
 

@@ -291,7 +291,7 @@ public class AddGump : DynamicGump
                 return;
             }
 
-            Point3D p = ip switch
+            var p = ip switch
             {
                 Item item => item.GetWorldTop(),
                 Mobile m  => m.Location,

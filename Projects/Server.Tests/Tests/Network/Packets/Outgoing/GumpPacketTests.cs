@@ -22,7 +22,7 @@ public class GumpPacketTests
     [Fact]
     public void TestDisplaySignGump()
     {
-        Serial gumpSerial = (Serial)0x1000;
+        var gumpSerial = (Serial)0x1000;
         const int gumpId = 100;
         const string unknownString = "This is an unknown string";
         const string caption = "This is a caption";

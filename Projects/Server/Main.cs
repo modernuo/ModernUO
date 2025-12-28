@@ -464,11 +464,11 @@ public static class Core
 #endif
 
             var cycleCount = _cyclesPerSecond.Length;
-            long last = _tickCount;
+            var last = _tickCount;
             const int interval = 100;
             double frequency = Stopwatch.Frequency * interval;
 
-            int sample = 0;
+            var sample = 0;
 
             while (!Closing)
             {

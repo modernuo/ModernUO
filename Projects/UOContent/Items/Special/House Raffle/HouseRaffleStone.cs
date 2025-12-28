@@ -309,7 +309,7 @@ public partial class HouseRaffleStone : Item
 
         var xLong = 0;
         var yLat = 0;
-        int xMins = 0;
+        var xMins = 0;
         var yMins = 0;
         bool xEast = false, ySouth = false;
 

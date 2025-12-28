@@ -3161,7 +3161,7 @@ namespace Server.Mobiles
 
                 var topDamage = rights[0].m_Damage;
 
-                int minDamage = hitsMax switch
+                var minDamage = hitsMax switch
                 {
                     >= 3000 => topDamage / 16,
                     >= 1000 => topDamage / 8,
@@ -3840,7 +3840,7 @@ namespace Server.Mobiles
 
             IsDeadPet = false;
 
-            Span<byte> buffer = stackalloc byte[OutgoingMobilePackets.BondedStatusPacketLength].InitializePacket();
+            var buffer = stackalloc byte[OutgoingMobilePackets.BondedStatusPacketLength].InitializePacket();
             OutgoingMobilePackets.CreateBondedStatus(buffer, Serial, false);
             Effects.SendPacket(Location, Map, buffer);
 
@@ -4233,7 +4233,7 @@ namespace Server.Mobiles
 
             if (amount > 0)
             {
-                int stamGain = dropped switch
+                var stamGain = dropped switch
                 {
                     Gold => amount - 50,
                     _    => amount * 15 - 50
@@ -4254,7 +4254,7 @@ namespace Server.Mobiles
                 else if (m_Loyalty < MaxLoyalty)
                 {
                     // Calculate the loyalty increase
-                    int loyaltyIncrease = Utility.CoinFlips(amount, MaxLoyaltyIncrease) * 10;
+                    var loyaltyIncrease = Utility.CoinFlips(amount, MaxLoyaltyIncrease) * 10;
 
                     if (loyaltyIncrease > 0)  // Only update if there's an actual increase
                     {

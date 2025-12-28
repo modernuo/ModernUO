@@ -147,7 +147,7 @@ public partial class Map
                 throw new InvalidOperationException(CollectionThrowStrings.InvalidOperation_EnumFailedVersion);
             }
 
-            NetState current = _current;
+            var current = _current;
 
             while (true)
             {

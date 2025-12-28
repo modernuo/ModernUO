@@ -236,7 +236,7 @@ public partial class Map
                 return false;
             }
 
-            ref Rectangle2D bounds = ref _bounds;
+            ref var bounds = ref _bounds;
             var currentSectorX = _currentSectorX;
             var currentSectorY = _currentSectorY;
             var sectorEndX = _sectorEndX;

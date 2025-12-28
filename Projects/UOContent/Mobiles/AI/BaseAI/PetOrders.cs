@@ -354,8 +354,8 @@ public abstract partial class BaseAI
                 continue;
             }
 
-            bool isAttackingPet = aggr.Combatant == Mobile;
-            bool isAttackingMaster = controlMaster != null && aggr.Combatant == controlMaster;
+            var isAttackingPet = aggr.Combatant == Mobile;
+            var isAttackingMaster = controlMaster != null && aggr.Combatant == controlMaster;
 
             if (isAttackingPet || isAttackingMaster)
             {

@@ -20,7 +20,7 @@ public class MysticArc : WeaponAbility
             return;
         }
 
-        BaseThrown weapon = attacker.Weapon as BaseThrown;
+        var weapon = attacker.Weapon as BaseThrown;
 
         if (weapon == null)
         {
@@ -28,7 +28,7 @@ public class MysticArc : WeaponAbility
         }
 
         using var queue = PooledRefQueue<Mobile>.Create();
-        foreach (Mobile m in attacker.GetMobilesInRange(weapon.MaxRange))
+        foreach (var m in attacker.GetMobilesInRange(weapon.MaxRange))
         {
             if (m == defender)
             {

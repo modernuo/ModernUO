@@ -136,10 +136,10 @@ public class IPRateLimiter
         {
             await _cleanupSignal.WaitAsync(_cts.Token);
 
-            int maxToProcess = Math.Min(_cleanupQueue.Count, 500);
+            var maxToProcess = Math.Min(_cleanupQueue.Count, 500);
             var nowTicks = Core.TickCount;
 
-            for (int i = 0; i < maxToProcess; i++)
+            for (var i = 0; i < maxToProcess; i++)
             {
                 if (!_cts.IsCancellationRequested)
                 {

@@ -74,7 +74,7 @@ public class EventSchedulerTests
 
         try
         {
-            bool called = false;
+            var called = false;
             var evt = EventScheduler.Shared.ScheduleEvent(
                 Core._now,
                 TimeOnly.FromDateTime(Core._now),
@@ -154,7 +154,7 @@ public class EventSchedulerTests
 
             try
             {
-                int callCount = 0;
+                var callCount = 0;
 
                 // Create a recurrence pattern that fires every 10 seconds, up to 3 times
                 var recurrence = new TestRecurrencePattern(TimeSpan.FromSeconds(10), 3);
@@ -191,8 +191,8 @@ public class EventSchedulerTests
 
         try
         {
-            bool failedEventCalled = false;
-            bool laterEventCalled = false;
+            var failedEventCalled = false;
+            var laterEventCalled = false;
 
             // Event that throws exception
             var failedEvt = EventScheduler.Shared.ScheduleEvent(
@@ -234,7 +234,7 @@ public class EventSchedulerTests
 
         try
         {
-            bool eventCalled = false;
+            var eventCalled = false;
 
             var evt = EventScheduler.Shared.ScheduleEvent(
                 Core._now.AddSeconds(10),
@@ -264,7 +264,7 @@ public class EventSchedulerTests
 
         try
         {
-            int callCount = 0;
+            var callCount = 0;
 
             // Create a recurrence pattern that fires every 10 seconds
             var recurrence = new TestRecurrencePattern(TimeSpan.FromSeconds(10));

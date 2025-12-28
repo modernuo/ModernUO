@@ -20,7 +20,7 @@ public class OrderedSetTests
         Assert.True(set.Contains(4));
         Assert.False(set.Contains(8));
 
-        int index = 0;
+        var index = 0;
         foreach (var value in set)
         {
             Assert.Equal(expected[index++], value);

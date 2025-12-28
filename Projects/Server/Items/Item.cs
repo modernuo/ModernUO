@@ -131,7 +131,7 @@ public class BounceInfo
             var loc = reader.ReadPoint3D();
             var worldLoc = reader.ReadPoint3D();
 
-            IEntity parent = reader.ReadEntity<IEntity>();
+            var parent = reader.ReadEntity<IEntity>();
 
             return new BounceInfo(map, loc, worldLoc, parent);
         }
@@ -353,7 +353,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
                 {
                     var worldLoc = GetWorldLocation();
 
-                    Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength].InitializePacket();
+                    var removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength].InitializePacket();
 
                     foreach (var state in m_Map.GetClientsInRange(worldLoc, GetMaxUpdateRange()))
                     {
@@ -1139,9 +1139,9 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
 
             if (m_Map != null)
             {
-                Span<byte> oldWorldItem = stackalloc byte[OutgoingEntityPackets.MaxWorldEntityPacketLength].InitializePacket();
-                Span<byte> saWorldItem = stackalloc byte[OutgoingEntityPackets.MaxWorldEntityPacketLength].InitializePacket();
-                Span<byte> hsWorldItem = stackalloc byte[OutgoingEntityPackets.MaxWorldEntityPacketLength].InitializePacket();
+                var oldWorldItem = stackalloc byte[OutgoingEntityPackets.MaxWorldEntityPacketLength].InitializePacket();
+                var saWorldItem = stackalloc byte[OutgoingEntityPackets.MaxWorldEntityPacketLength].InitializePacket();
+                var hsWorldItem = stackalloc byte[OutgoingEntityPackets.MaxWorldEntityPacketLength].InitializePacket();
 
                 foreach (var state in m_Map.GetClientsInRange(m_Location, GetMaxUpdateRange()))
                 {
@@ -1194,7 +1194,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
         {
             if (oldLocation.m_X != 0)
             {
-                Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength].InitializePacket();
+                var removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength].InitializePacket();
 
                 foreach (var state in m_Map.GetClientsInRange(oldLocation, GetMaxUpdateRange()))
                 {
@@ -1522,7 +1522,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
                 {
                     if (m_Location.m_X != 0)
                     {
-                        Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength].InitializePacket();
+                        var removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength].InitializePacket();
 
                         foreach (var state in m_Map.GetClientsInRange(oldLocation, GetMaxUpdateRange()))
                         {
@@ -2663,7 +2663,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
 
                     if (GetSaveFlag(flags, SaveFlag.Parent))
                     {
-                        Serial parent = reader.ReadSerial();
+                        var parent = reader.ReadSerial();
 
                         if (parent.IsMobile)
                         {
@@ -2824,7 +2824,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
 
                     if (GetSaveFlag(flags, SaveFlag.Parent))
                     {
-                        Serial parent = reader.ReadSerial();
+                        var parent = reader.ReadSerial();
 
                         if (parent.IsMobile)
                         {
@@ -2942,7 +2942,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
                         AcquireCompactInfo().m_Name = name;
                     }
 
-                    Serial parent = reader.ReadSerial();
+                    var parent = reader.ReadSerial();
 
                     if (parent.IsMobile)
                     {
@@ -3296,7 +3296,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
 
         var worldLoc = GetWorldLocation();
 
-        Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)].InitializePacket();
+        var buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)].InitializePacket();
 
         foreach (var state in m_Map.GetClientsInRange(worldLoc, GetMaxUpdateRange()))
         {
@@ -3327,7 +3327,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
 
         var worldLoc = GetWorldLocation();
 
-        Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedLength(args)].InitializePacket();
+        var buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedLength(args)].InitializePacket();
 
         foreach (var state in m_Map.GetClientsInRange(worldLoc, GetMaxUpdateRange()))
         {
@@ -3820,7 +3820,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
             return;
         }
 
-        Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength].InitializePacket();
+        var removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength].InitializePacket();
 
         foreach (var state in m_Map.GetClientsInRange(worldLoc, GetMaxUpdateRange()))
         {

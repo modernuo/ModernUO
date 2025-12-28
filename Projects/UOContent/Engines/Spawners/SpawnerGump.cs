@@ -160,7 +160,7 @@ public class SpawnerGump : Gump
         var totalSpawned = 0;
         var totalWeight = 0;
 
-        foreach (SpawnerEntry spawnerEntry in _spawner.Entries)
+        foreach (var spawnerEntry in _spawner.Entries)
         {
             totalSpawned += spawner.CountSpawns(spawnerEntry);
             totalWeight += spawnerEntry.SpawnedProbability;

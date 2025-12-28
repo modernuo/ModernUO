@@ -1191,7 +1191,7 @@ namespace Server.Mobiles
                 return false;
             }
 
-            long totalCostLong = (long)totalCost + bii.Price * amount;
+            var totalCostLong = (long)totalCost + bii.Price * amount;
 
             if (totalCostLong > int.MaxValue)
             {

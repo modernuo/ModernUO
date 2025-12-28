@@ -236,8 +236,8 @@ public partial class Map
                 throw new InvalidOperationException(CollectionThrowStrings.InvalidOperation_EnumFailedVersion);
             }
 
-            NetState current = _current;
-            ref Rectangle2D bounds = ref _bounds;
+            var current = _current;
+            ref var bounds = ref _bounds;
             var currentSectorX = _currentSectorX;
             var currentSectorY = _currentSectorY;
             var sectorEndX = _sectorEndX;

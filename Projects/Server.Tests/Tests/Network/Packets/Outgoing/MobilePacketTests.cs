@@ -9,8 +9,8 @@ public class MobilePacketTests
     [Fact]
     public void TestDeathAnimation()
     {
-        Serial killed = (Serial)0x1;
-        Serial corpse = (Serial)0x1000;
+        var killed = (Serial)0x1;
+        var corpse = (Serial)0x1000;
 
         var expected = new DeathAnimation(killed, corpse).Compile();
 
@@ -24,7 +24,7 @@ public class MobilePacketTests
     [Fact]
     public void TestBondStatus()
     {
-        Serial petSerial = (Serial)0x1;
+        var petSerial = (Serial)0x1;
         const bool bonded = true;
 
         var expected = new BondedStatus(petSerial, bonded).Compile();
@@ -79,7 +79,7 @@ public class MobilePacketTests
     [InlineData(10, 100, 25, true, false, 0)]
     public void TestMobileAnimation(int action, int frameCount, int repeatCount, bool reverse, bool repeat, byte delay)
     {
-        Serial mobile = (Serial)0x1;
+        var mobile = (Serial)0x1;
 
         var expected = new MobileAnimation(
             mobile,
@@ -111,7 +111,7 @@ public class MobilePacketTests
     [InlineData(10, 100, 20)]
     public void TestNewMobileAnimation(int action, int frameCount, byte delay)
     {
-        Serial mobile = (Serial)0x1;
+        var mobile = (Serial)0x1;
 
         var expected = new NewMobileAnimation(
             mobile,
@@ -490,7 +490,7 @@ public class MobilePacketTests
     [Fact]
     public void TestRemoveEntity()
     {
-        Serial e = (Serial)0x1000;
+        var e = (Serial)0x1000;
         var expected = new RemoveEntity(e).Compile();
 
         var ns = PacketTestUtilities.CreateTestNetState();

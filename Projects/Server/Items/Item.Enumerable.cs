@@ -268,7 +268,7 @@ public partial class Item
 
             while (_index < _items.Length)
             {
-                Item item = _items[_index++];
+                var item = _items[_index++];
                 if (_recurse && item.LookupItems() is { Count: > 0 } items)
                 {
                     _containers.Enqueue(item);

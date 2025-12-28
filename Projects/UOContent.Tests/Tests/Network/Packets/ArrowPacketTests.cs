@@ -38,7 +38,7 @@ public class ArrowPacketTests
     [InlineData(100000, 100000)]
     public void TestCancelArrowHS(int x, int y)
     {
-        Serial serial = (Serial)0x1024;
+        var serial = (Serial)0x1024;
 
         var expected = new CancelArrowHS(x, y, serial).Compile();
 
@@ -56,7 +56,7 @@ public class ArrowPacketTests
     [InlineData(100000, 100000)]
     public void TestSetArrowHS(int x, int y)
     {
-        Serial serial = (Serial)0x1024;
+        var serial = (Serial)0x1024;
 
         var expected = new SetArrowHS(x, y, serial).Compile();
 

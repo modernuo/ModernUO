@@ -49,7 +49,7 @@ namespace Server.Spells.Chivalry
                  * Chance of removing curse is affected by Caster's Karma.
                  */
 
-                int chance = Caster.Karma switch
+                var chance = Caster.Karma switch
                 {
                     < -5000 => 0,
                     < 0     => (int)Math.Sqrt(20000 + Caster.Karma) - 122,

@@ -26,7 +26,7 @@ public class InfusedThrow : WeaponAbility
 
         AOS.Damage(defender, attacker, 15, false, 0, 0, 0, 0, 0, 100);
 
-        IMount mount = defender.Mount;
+        var mount = defender.Mount;
 
         if ((defender.Mounted || defender.Flying || AnimalForm.UnderTransformation(defender)) &&
             !attacker.Mounted && !attacker.Flying && defender is not ChaosDragoon && defender is not ChaosDragoonElite)

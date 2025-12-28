@@ -12,7 +12,7 @@ public class MahjongPacketTests
     [Fact]
     public void TestMahjongJoinGame()
     {
-        Serial game = (Serial)0x1024u;
+        var game = (Serial)0x1024u;
 
         var expected = new MahjongJoinGame(game).Compile();
 
@@ -104,7 +104,7 @@ public class MahjongPacketTests
     [Fact]
     public void TestMahjongRelieve()
     {
-        Serial game = (Serial)0x1024u;
+        var game = (Serial)0x1024u;
 
         var expected = new MahjongRelieve(game).Compile();
 

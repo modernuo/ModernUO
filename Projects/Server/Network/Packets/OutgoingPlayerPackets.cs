@@ -235,7 +235,7 @@ public static class OutgoingPlayerPackets
             return;
         }
 
-        Span<byte> buffer = stackalloc byte[DragEffectPacketLength].InitializePacket();
+        var buffer = stackalloc byte[DragEffectPacketLength].InitializePacket();
         CreateDragEffect(buffer, srcSerial, srcLocation, trgSerial, trgLocation, itemID, hue, amount);
         ns.Send(buffer);
     }

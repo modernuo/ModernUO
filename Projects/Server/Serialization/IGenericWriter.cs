@@ -163,8 +163,8 @@ public interface IGenericWriter
 
     public void Write(BitArray bitArray)
     {
-        int bitLength = bitArray.Length;
-        int byteLength = (bitLength + 7) / 8;
+        var bitLength = bitArray.Length;
+        var byteLength = (bitLength + 7) / 8;
 
         WriteEncodedInt(bitLength);
 

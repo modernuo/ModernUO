@@ -40,7 +40,7 @@ public class GumpGrid : Gump
     private void InitColumn(string name, int column, int w, int x)
     {
         var width = w / column;
-        for (int i = 0; i < column; i++)
+        for (var i = 0; i < column; i++)
         {
             AddColumn(name, i * width + x, width);
         }
@@ -49,7 +49,7 @@ public class GumpGrid : Gump
     private void InitRow(string name, int row, int h, int y)
     {
         var height = h / row;
-        for (int i = 0; i < row; i++)
+        for (var i = 0; i < row; i++)
         {
             AddRow(name, i * height + y, height);
         }
@@ -57,7 +57,7 @@ public class GumpGrid : Gump
 
     private static Swap Exist(ref PooledRefList<Swap> list, int index)
     {
-        for (int i = 0; i < list.Count; i++)
+        for (var i = 0; i < list.Count; i++)
         {
             var item = list[i];
             if (item.Index == index)
@@ -73,7 +73,7 @@ public class GumpGrid : Gump
     {
         var cropSize = 0;
 
-        for (int i = 0; i < column; i++)
+        for (var i = 0; i < column; i++)
         {
             if (sizes[i] == "*")
             {
@@ -96,7 +96,7 @@ public class GumpGrid : Gump
         var cropHeight = CalculateCustom(row, height, sizes, ref list);
         var Height = height - cropHeight;
         var factor = row - list.Count;
-        for (int i = 0; i < row; i++)
+        for (var i = 0; i < row; i++)
         {
             var swap = Exist(ref list, i);
             if (swap != null)
@@ -137,7 +137,7 @@ public class GumpGrid : Gump
         var Width = width - cropWidth;
         var factor = column - list.Count;
 
-        for (int i = 0; i < column; i++)
+        for (var i = 0; i < column; i++)
         {
             var swap = Exist(ref list, i);
             if (swap != null)
@@ -300,7 +300,7 @@ public class GumpGrid : Gump
         if (_grids.TryGetValue(name, out var grid))
         {
             var count = columnSpan == 0 ? column + 1 : row + columnSpan;
-            for (int i = column; i < count; i++)
+            for (var i = column; i < count; i++)
             {
                 if (i >= grid.Columns.Count)
                 {
@@ -317,7 +317,7 @@ public class GumpGrid : Gump
             }
 
             count = rowSpan == 0 ? row + 1 : row + rowSpan;
-            for (int i = row; i < count; i++)
+            for (var i = row; i < count; i++)
             {
                 if (i >= grid.Rows.Count)
                 {
@@ -423,7 +423,7 @@ public class GumpGrid : Gump
             };
 
             var length = x + marginX;
-            for (int col = 0; col < columns; col++)
+            for (var col = 0; col < columns; col++)
             {
                 Header.Cols[col] = new Col();
                 Header.Cols[col].Width = ColWidth[col];
@@ -433,7 +433,7 @@ public class GumpGrid : Gump
 
             Items = new ListItem[itemsPerPageCount];
 
-            for (int i = 0; i < itemsPerPageCount; i++)
+            for (var i = 0; i < itemsPerPageCount; i++)
             {
                 Items[i] = new ListItem
                 {
@@ -470,11 +470,11 @@ public class GumpGrid : Gump
             w = width > 0 ? width : w;
             h = height > 0 ? height : h;
 
-            int[] colWidth = new int[createColumn];
+            var colWidth = new int[createColumn];
 
             if (colSize == string.Empty)
             {
-                for (int i = 0; i < createColumn; i++)
+                for (var i = 0; i < createColumn; i++)
                 {
                     colWidth[i] = w / createColumn;
                 }

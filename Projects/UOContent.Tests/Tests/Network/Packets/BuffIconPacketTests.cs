@@ -30,7 +30,7 @@ public class BuffIconPacketTests
     [Fact]
     public void TestRemoveBuffIcon()
     {
-        Serial m = (Serial)0x1024;
+        var m = (Serial)0x1024;
         var buffIcon = BuffIcon.Disguised;
         var expected = new RemoveBuffPacket(m, buffIcon).Compile();
 

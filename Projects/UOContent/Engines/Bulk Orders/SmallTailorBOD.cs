@@ -83,7 +83,7 @@ namespace Server.Engines.BulkOrders
 
             if (entries.Length > 0)
             {
-                int amountMax = theirSkill switch
+                var amountMax = theirSkill switch
                 {
                     >= 70.1 => Utility.RandomList(10, 15, 20, 20),
                     >= 50.1 => Utility.RandomList(10, 15, 15, 20),

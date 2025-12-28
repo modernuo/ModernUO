@@ -278,11 +278,11 @@ public ref struct DynamicGumpBuilder
         }
 
         var newSize = Math.Max(_stringBytesWritten + needed, _stringsBuffer.Length * 2);
-        byte[] poolArray = STArrayPool<byte>.Shared.Rent(newSize);
+        var poolArray = STArrayPool<byte>.Shared.Rent(newSize);
 
         _stringsBuffer.AsSpan(0, _stringBytesWritten).CopyTo(poolArray);
 
-        byte[] toReturn = _stringsBuffer;
+        var toReturn = _stringsBuffer;
         _stringsBuffer = poolArray;
 
         if (toReturn != null && toReturn != _staticStringsBuffer)

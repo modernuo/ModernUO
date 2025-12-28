@@ -1372,7 +1372,7 @@ namespace Server.Multis
                 }
 
                 // Changing the interval or flipping between commands: "Forward" and "Forward One"
-                TimeSpan delay = TimeSpan.Zero;
+                var delay = TimeSpan.Zero;
                 if (interval.TotalMilliseconds > Math.Abs(moverTimerNext))
                 {
                     var addedDelay = (int)(interval.TotalMilliseconds - Math.Abs(moverTimerNext));
@@ -1789,7 +1789,7 @@ namespace Server.Multis
                     list.Add(e);
                 }
 
-                Span<byte> moveBoatPacket = stackalloc byte[BoatPackets.GetMoveBoatHSPacketLength(list.Count)]
+                var moveBoatPacket = stackalloc byte[BoatPackets.GetMoveBoatHSPacketLength(list.Count)]
                     .InitializePacket();
 
                 // Packet must be sent before actual locations are changed

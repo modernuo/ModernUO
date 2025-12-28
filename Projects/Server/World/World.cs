@@ -125,7 +125,7 @@ public static class World
     {
         var length = OutgoingMessagePackets.GetMaxMessageLength(text);
 
-        Span<byte> buffer = stackalloc byte[length].InitializePacket();
+        var buffer = stackalloc byte[length].InitializePacket();
 
         foreach (var ns in NetState.Instances)
         {
@@ -153,7 +153,7 @@ public static class World
     {
         var length = OutgoingMessagePackets.GetMaxMessageLength(text);
 
-        Span<byte> buffer = stackalloc byte[length].InitializePacket();
+        var buffer = stackalloc byte[length].InitializePacket();
 
         foreach (var ns in NetState.Instances)
         {

@@ -42,7 +42,7 @@ public class BookPacketTests
         var m = new Mobile((Serial)0x1);
         m.DefaultMobileInit();
 
-        Serial serial = (Serial)0x1001;
+        var serial = (Serial)0x1001;
         var book = new TestBook(serial) { Author = author, Title = title };
 
         var expected = new BookHeader(m, book).Compile();
@@ -60,7 +60,7 @@ public class BookPacketTests
         var m = new Mobile((Serial)0x1);
         m.DefaultMobileInit();
 
-        Serial serial = (Serial)0x1001;
+        var serial = (Serial)0x1001;
         var book = new TestBook(serial) { Author = "Some Author", Title = "Some Title" };
         book.Pages[0].Lines = new[]
         {
