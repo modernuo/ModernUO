@@ -5,10 +5,6 @@ using Xunit;
 
 namespace UOContent.Tests;
 
-// Collection for tests that use the static SectorSpawnCacheManager
-[CollectionDefinition("SectorSpawnCache", DisableParallelization = true)]
-public class SectorSpawnCacheCollection;
-
 public class SectorSpawnCacheTests
 {
     [Fact]
@@ -105,7 +101,7 @@ public class SectorSpawnCacheTests
     }
 }
 
-[Collection("SectorSpawnCache")]
+[Collection("Sequential UOContent Tests")]
 public class SectorSpawnCacheManagerTests
 {
     public SectorSpawnCacheManagerTests()
