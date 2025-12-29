@@ -202,6 +202,11 @@ public abstract partial class BaseSpawner : Item, ISpawner
                 z = SpawnBounds.Start.Z;
                 depth = SpawnBounds.Depth;
             }
+            else if (value == 0)
+            {
+                z = Location.Z;
+                depth = 0;
+            }
             else
             {
                 z = -128;
@@ -305,21 +310,34 @@ public abstract partial class BaseSpawner : Item, ISpawner
         json.GetProperty("minDelay", options, DefaultMinDelay, out TimeSpan minDelay);
         json.GetProperty("maxDelay", options, DefaultMaxDelay, out TimeSpan maxDelay);
         json.GetProperty("team", options, out int team);
-        json.GetProperty("homeRange", options, out int homeRange);
+        json.GetProperty("homeRange", options, -1, out int homeRange);
         json.GetProperty("walkingRange", options, out _walkingRange);
 
         // Handle legacy homeRange format (new spawnBounds format handled by derived classes)
-        if (homeRange > 0 && json.GetProperty("location", options, out Point3D location))
+        if (homeRange >= 0 && json.GetProperty("location", options, out Point3D location))
         {
+            int z;
+            int depth;
+            if (homeRange == 0)
+            {
+                z = location.Z;
+                depth = 0;
+            }
+            else
+            {
+                z = -128;
+                depth = 256;
+            }
+
             // Fall back to homeRange with location for oldest format
             // Note: Map not available during JSON loading, so use location.Z directly
             SpawnBounds = new Rectangle3D(
                 location.X - homeRange,
                 location.Y - homeRange,
-                -128,
+                z,
                 homeRange * 2 + 1,
                 homeRange * 2 + 1,
-                256
+                depth
             );
         }
 
@@ -1416,7 +1434,6 @@ public abstract partial class BaseSpawner : Item, ISpawner
         // Handle v10 migration - convert HomeRange to SpawnBounds now that Location is available
         if (_pendingHomeRangeMigrations.Remove(this, out var homeRange))
         {
-            var surfaceZ = Map?.GetTopSurfaceZ(Location) ?? Location.Z;
             SpawnBounds = new Rectangle3D(
                 Location.X - homeRange,
                 Location.Y - homeRange,
