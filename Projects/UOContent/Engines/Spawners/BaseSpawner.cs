@@ -195,19 +195,32 @@ public abstract partial class BaseSpawner : Item, ISpawner
         }
         set
         {
-            // Find the surface below the spawner (handles spawners placed in air)
-            var surfaceZ = Map != null && Map != Map.Internal
-                ? Map.GetTopSurfaceZ(Location)
-                : Location.Z;
+            int z;
+            int depth;
+            if (SpawnBounds != default)
+            {
+                z = SpawnBounds.Start.Z;
+                depth = SpawnBounds.Depth;
+            }
+            else if (value == 0)
+            {
+                z = Location.Z;
+                depth = 0;
+            }
+            else
+            {
+                z = -128;
+                depth = 256;
+            }
 
             // Create square bounds centered on spawner, Z range from surface to surface + 16
             SpawnBounds = new Rectangle3D(
                 Location.X - value,
                 Location.Y - value,
-                surfaceZ,
+                z,
                 value * 2 + 1,
                 value * 2 + 1,
-                17 // Z range: surface to surface + 16
+                depth
             );
             this.MarkDirty();
             InvalidateProperties();
@@ -297,21 +310,34 @@ public abstract partial class BaseSpawner : Item, ISpawner
         json.GetProperty("minDelay", options, DefaultMinDelay, out TimeSpan minDelay);
         json.GetProperty("maxDelay", options, DefaultMaxDelay, out TimeSpan maxDelay);
         json.GetProperty("team", options, out int team);
-        json.GetProperty("homeRange", options, out int homeRange);
+        json.GetProperty("homeRange", options, -1, out int homeRange);
         json.GetProperty("walkingRange", options, out _walkingRange);
 
         // Handle legacy homeRange format (new spawnBounds format handled by derived classes)
-        if (homeRange > 0 && json.GetProperty("location", options, out Point3D location))
+        if (homeRange >= 0 && json.GetProperty("location", options, out Point3D location))
         {
+            int z;
+            int depth;
+            if (homeRange == 0)
+            {
+                z = location.Z;
+                depth = 0;
+            }
+            else
+            {
+                z = -128;
+                depth = 256;
+            }
+
             // Fall back to homeRange with location for oldest format
             // Note: Map not available during JSON loading, so use location.Z directly
             SpawnBounds = new Rectangle3D(
                 location.X - homeRange,
                 location.Y - homeRange,
-                location.Z,
+                z,
                 homeRange * 2 + 1,
                 homeRange * 2 + 1,
-                17
+                depth
             );
         }
 
@@ -438,9 +464,8 @@ public abstract partial class BaseSpawner : Item, ISpawner
     {
         Defrag();
 
-        if (spawn != null)
+        if (spawn != null && Spawned?.Remove(spawn, out var entry) == true)
         {
-            Spawned.Remove(spawn, out var entry);
             entry?.RemoveFromSpawned(spawn);
         }
 
@@ -749,6 +774,16 @@ public abstract partial class BaseSpawner : Item, ISpawner
         }
     }
 
+    public override void OnMapChange()
+    {
+        base.OnMapChange();
+
+        if (IsHomeRangeStyleAt(Location))
+        {
+            ShowSpawnerBordersCommand.RemoveProjection(this);
+        }
+    }
+
     public override void OnLocationChange(Point3D oldLocation)
     {
         base.OnLocationChange(oldLocation);
@@ -757,6 +792,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
         if (IsHomeRangeStyleAt(oldLocation))
         {
             HomeRange = SpawnBounds.Width / 2;
+            ShowSpawnerBordersCommand.RemoveProjection(this);
         }
 
         // Reset spawn position optimization state when spawner moves
@@ -1359,7 +1395,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
 
                 if (e != null)
                 {
-                    Spawned.Remove(e);
+                    Spawned?.Remove(e);
                     entry.Spawned.RemoveAt(j);
                     e.Delete();
                 }
@@ -1398,14 +1434,13 @@ public abstract partial class BaseSpawner : Item, ISpawner
         // Handle v10 migration - convert HomeRange to SpawnBounds now that Location is available
         if (_pendingHomeRangeMigrations.Remove(this, out var homeRange))
         {
-            var surfaceZ = Map?.GetTopSurfaceZ(Location) ?? Location.Z;
             SpawnBounds = new Rectangle3D(
                 Location.X - homeRange,
                 Location.Y - homeRange,
-                surfaceZ,
+                -128,
                 homeRange * 2 + 1,
                 homeRange * 2 + 1,
-                17
+                256
             );
         }
 
