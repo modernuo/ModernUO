@@ -345,7 +345,20 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
         _entities.Clear();
         _entities.TrimExcess();
         _entities = null;
+
+        if (_toDelete != null)
+        {
+            foreach (var t in _toDelete)
+            {
+                t.Delete();
+            }
+
+            _toDelete.Clear();
+            _toDelete = null;
+        }
     }
+
+    private static List<T> _toDelete;
 
     private unsafe void InternalDeserialize(string filePath, int index, Dictionary<ulong, string> typesDb)
     {
@@ -415,7 +428,8 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
                     }
                 }
 
-                t.Delete();
+                _toDelete ??= [];
+                _toDelete.Add(t);
             }
         }
 
