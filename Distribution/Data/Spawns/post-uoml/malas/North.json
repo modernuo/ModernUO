@@ -1,34 +1,35 @@
 ﻿[
   {
-    "guid": "b37c3d38-2d53-4d2d-a8aa-a2e4926a29c6",
     "type": "Spawner",
+    "guid": "b37c3d38-2d53-4d2d-a8aa-a2e4926a29c6",
+    "name": "Spawner (402)",
     "location": [1119, 530, -90],
     "map": "Malas",
-    "homeRange": 39,
-    "walkingRange": 60,
+    "count": 22,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "count": 22,
+    "homeRange": 39,
+    "walkingRange": 60,
     "entries": [
       { "name": "Bird", "maxCount": 10, "probability": 100 },
       { "name": "GreatHart", "maxCount": 1, "probability": 100 },
       { "name": "JackRabbit", "maxCount": 10, "probability": 100 },
       { "name": "Hind", "maxCount": 1, "probability": 100 }
-    ],
-    "name": "Spawner (402)"
+    ]
   },
   {
-    "guid": "e1ba3ada-d1fd-44fb-83b8-82e0e1fcf94f",
     "type": "Spawner",
+    "guid": "e1ba3ada-d1fd-44fb-83b8-82e0e1fcf94f",
+    "name": "Spawner (402)",
     "location": [1674, 659, -84],
     "map": "Malas",
-    "homeRange": 100,
-    "walkingRange": 120,
+    "count": 15,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "count": 15,
+    "homeRange": 100,
+    "walkingRange": 120,
     "entries": [
       { "name": "CrystalElemental", "maxCount": 3, "probability": 100 },
       { "name": "SkitteringHopper", "maxCount": 3, "probability": 100 },
@@ -36,20 +37,20 @@
       { "name": "Hind", "maxCount": 2, "probability": 100 },
       { "name": "GreatHart", "maxCount": 1, "probability": 100 },
       { "name": "JackRabbit", "maxCount": 3, "probability": 100 }
-    ],
-    "name": "Spawner (402)"
+    ]
   },
   {
-    "guid": "099efd1a-520c-4e6b-bb39-552def69e2df",
     "type": "Spawner",
+    "guid": "099efd1a-520c-4e6b-bb39-552def69e2df",
+    "name": "Spawner (402)",
     "location": [1434, 607, -89],
     "map": "Malas",
-    "homeRange": 100,
-    "walkingRange": 120,
+    "count": 15,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "count": 15,
+    "homeRange": 100,
+    "walkingRange": 120,
     "entries": [
       { "name": "CrystalElemental", "maxCount": 3, "probability": 100 },
       { "name": "SkitteringHopper", "maxCount": 3, "probability": 100 },
@@ -57,20 +58,20 @@
       { "name": "Hind", "maxCount": 2, "probability": 100 },
       { "name": "GreatHart", "maxCount": 1, "probability": 100 },
       { "name": "JackRabbit", "maxCount": 3, "probability": 100 }
-    ],
-    "name": "Spawner (402)"
+    ]
   },
   {
-    "guid": "c9c80a39-40db-4cb9-a3c7-243957ecdd39",
     "type": "Spawner",
+    "guid": "c9c80a39-40db-4cb9-a3c7-243957ecdd39",
+    "name": "Spawner (402)",
     "location": [1194, 638, -84],
     "map": "Malas",
+    "count": 20,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
     "homeRange": 100,
     "walkingRange": 120,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "count": 20,
     "entries": [
       { "name": "CrystalElemental", "maxCount": 4, "probability": 100 },
       { "name": "SkitteringHopper", "maxCount": 4, "probability": 100 },
@@ -78,20 +79,20 @@
       { "name": "Hind", "maxCount": 3, "probability": 100 },
       { "name": "GreatHart", "maxCount": 1, "probability": 100 },
       { "name": "JackRabbit", "maxCount": 4, "probability": 100 }
-    ],
-    "name": "Spawner (402)"
+    ]
   },
   {
-    "guid": "0335054c-d38b-4c5a-9fc6-c04c42ba9de1",
     "type": "Spawner",
+    "guid": "0335054c-d38b-4c5a-9fc6-c04c42ba9de1",
+    "name": "Spawner (402)",
     "location": [920, 356, -85],
     "map": "Malas",
-    "homeRange": 60,
-    "walkingRange": 70,
+    "count": 20,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "count": 20,
+    "homeRange": 60,
+    "walkingRange": 70,
     "entries": [
       { "name": "CrystalElemental", "maxCount": 4, "probability": 100 },
       { "name": "SkitteringHopper", "maxCount": 4, "probability": 100 },
@@ -99,7 +100,6 @@
       { "name": "Hind", "maxCount": 3, "probability": 100 },
       { "name": "GreatHart", "maxCount": 1, "probability": 100 },
       { "name": "JackRabbit", "maxCount": 4, "probability": 100 }
-    ],
-    "name": "Spawner (402)"
+    ]
   }
 ]

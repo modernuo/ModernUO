@@ -1,0 +1,67 @@
+﻿[
+  {
+    "type": "Spawner",
+    "guid": "7431d589-5e24-4f05-b479-30dc17c7e942",
+    "name": "Spawner (306)",
+    "location": [1098, 698, -60],
+    "map": "Ilshenar",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 1,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "GolemController", "maxCount": 1, "probability": 100 },
+      { "name": "Golem", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "8ed26f0f-de07-4412-bc99-6cee204f1f40",
+    "name": "Spawner (306)",
+    "location": [1072, 651, -60],
+    "map": "Ilshenar",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 6,
+    "walkingRange": 6,
+    "entries": [
+      { "name": "JukaWarrior", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "d7d89534-d330-4b6a-a6b0-83187bf9ff54",
+    "name": "Spawner (306)",
+    "location": [1091, 702, -40],
+    "map": "Ilshenar",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 5,
+    "walkingRange": 10,
+    "entries": [
+      { "name": "Golem", "maxCount": 1, "probability": 100 }
+    ]
+  },
+  {
+    "type": "Spawner",
+    "guid": "e15d8287-9350-468d-8144-dd3baa906a53",
+    "name": "Spawner (306)",
+    "location": [1086, 702, -60],
+    "map": "Ilshenar",
+    "count": 2,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 5,
+    "walkingRange": 5,
+    "entries": [
+      { "name": "GolemController", "maxCount": 2, "probability": 100 }
+    ]
+  }
+]

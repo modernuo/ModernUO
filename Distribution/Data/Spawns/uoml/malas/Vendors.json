@@ -1,21 +1,21 @@
 ﻿[
   {
-    "guid": "706b7616-e5d6-465d-9f4f-3094eda8a29f",
     "type": "Spawner",
+    "guid": "706b7616-e5d6-465d-9f4f-3094eda8a29f",
+    "name": "Spawner (2405)",
     "location": [1051, 1434, -85],
     "map": "Malas",
-    "homeRange": 0,
-    "walkingRange": 5,
+    "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "count": 4,
+    "homeRange": 0,
+    "walkingRange": 5,
     "entries": [
       { "name": "TavernKeeper", "maxCount": 1, "probability": 100 },
       { "name": "Waiter", "maxCount": 1, "probability": 100 },
       { "name": "Cook", "maxCount": 1, "probability": 100 },
       { "name": "Barkeeper", "maxCount": 1, "probability": 100 }
-    ],
-    "name": "Spawner (2405)"
+    ]
   }
 ]

@@ -1,37 +1,37 @@
 ﻿[
   {
-    "guid": "befc0201-8bec-432e-8ced-3ee5ceb57d09",
     "type": "Spawner",
+    "guid": "befc0201-8bec-432e-8ced-3ee5ceb57d09",
+    "name": "Spawner (405)",
     "location": [1050, 1434, -85],
     "map": "Malas",
-    "homeRange": 0,
-    "walkingRange": 5,
+    "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "count": 3,
+    "homeRange": 0,
+    "walkingRange": 5,
     "entries": [
       { "name": "Waiter", "maxCount": 1, "probability": 100 },
       { "name": "Cook", "maxCount": 1, "probability": 100 },
       { "name": "Barkeeper", "maxCount": 1, "probability": 100 }
-    ],
-    "name": "Spawner (405)"
+    ]
   },
   {
-    "guid": "d8e03ce8-cd76-433e-af76-0c0767290705",
     "type": "Spawner",
+    "guid": "d8e03ce8-cd76-433e-af76-0c0767290705",
+    "name": "Spawner (405)",
     "location": [1042, 1444, -90],
     "map": "Malas",
-    "homeRange": 4,
-    "walkingRange": 6,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "count": 2,
+    "homeRange": 4,
+    "walkingRange": 6,
     "entries": [
       { "name": "AnimalTrainer", "maxCount": 1, "probability": 100 },
       { "name": "Veterinarian", "maxCount": 1, "probability": 100 }
-    ],
-    "name": "Spawner (405)"
+    ]
   }
 ]

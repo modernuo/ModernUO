@@ -1,56 +1,56 @@
 ﻿[
   {
-    "guid": "1ddbb313-bf13-4c9e-9116-3e67c835fbb9",
     "type": "Spawner",
+    "guid": "1ddbb313-bf13-4c9e-9116-3e67c835fbb9",
+    "name": "Spawner (2122)",
     "location": [3674, 2624, 0],
     "map": "Trammel",
-    "homeRange": 80,
-    "walkingRange": 80,
+    "count": 40,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "count": 40,
+    "homeRange": 80,
+    "walkingRange": 80,
     "entries": [
       { "name": "Bird", "maxCount": 10, "probability": 100 },
       { "name": "Cat", "maxCount": 10, "probability": 100 },
       { "name": "Dog", "maxCount": 10, "probability": 100 },
       { "name": "Rat", "maxCount": 10, "probability": 100 }
-    ],
-    "name": "Spawner (2122)"
+    ]
   },
   {
-    "guid": "988e7381-2448-4d37-b763-714f1078540b",
     "type": "Spawner",
+    "guid": "988e7381-2448-4d37-b763-714f1078540b",
+    "name": "Spawner (2122)",
     "location": [3726, 2647, 0],
     "map": "Trammel",
+    "count": 10,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
     "homeRange": 25,
     "walkingRange": 25,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "count": 10,
     "entries": [
       { "name": "Chicken", "maxCount": 10, "probability": 100 }
-    ],
-    "name": "Spawner (2122)"
+    ]
   },
   {
-    "guid": "b52ecefe-4f07-4bcd-9870-d01a0a1a41be",
     "type": "Spawner",
+    "guid": "b52ecefe-4f07-4bcd-9870-d01a0a1a41be",
+    "name": "Spawner (2122)",
     "location": [3652, 2511, 0],
     "map": "Trammel",
-    "homeRange": 50,
-    "walkingRange": 50,
+    "count": 16,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "count": 16,
+    "homeRange": 50,
+    "walkingRange": 50,
     "entries": [
       { "name": "Bird", "maxCount": 4, "probability": 100 },
       { "name": "Cat", "maxCount": 4, "probability": 100 },
       { "name": "Dog", "maxCount": 4, "probability": 100 },
       { "name": "Rat", "maxCount": 4, "probability": 100 }
-    ],
-    "name": "Spawner (2122)"
+    ]
   }
 ]

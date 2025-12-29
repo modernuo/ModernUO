@@ -1,47 +1,48 @@
 ﻿[
   {
-    "guid": "949f3b33-3f72-4065-b212-a15495e305d6",
     "type": "Spawner",
+    "guid": "949f3b33-3f72-4065-b212-a15495e305d6",
+    "name": "Spawner (2113)",
     "location": [3619, 2814, 21],
     "map": "Trammel",
-    "homeRange": 50,
-    "walkingRange": 50,
+    "count": 17,
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "count": 17,
+    "homeRange": 50,
+    "walkingRange": 50,
     "entries": [
       { "name": "HordeMinion", "maxCount": 17, "probability": 100 }
-    ],
-    "name": "Spawner (2113)"
+    ]
   },
   {
-    "guid": "b4555e77-ee2f-44d0-b85b-d7d6f26612ef",
     "type": "Spawner",
+    "guid": "b4555e77-ee2f-44d0-b85b-d7d6f26612ef",
+    "name": "Spawner (2113)",
     "location": [3619, 2814, 21],
     "map": "Trammel",
+    "count": 17,
+    "minDelay": "01:00:00",
+    "maxDelay": "01:00:00",
+    "team": 0,
     "homeRange": 50,
     "walkingRange": 50,
-    "minDelay": "01:00:00",
-    "maxDelay": "01:00:00",
-    "team": 0,
-    "count": 17,
     "entries": [
       { "name": "Mongbat", "maxCount": 17, "probability": 100 }
-    ],
-    "name": "Spawner (2113)"
+    ]
   },
   {
-    "guid": "8cd18e64-2c1c-4853-b82e-8842b4b71dcd",
     "type": "Spawner",
+    "guid": "8cd18e64-2c1c-4853-b82e-8842b4b71dcd",
+    "name": "Spawner (2113)",
     "location": [3485, 2595, 12],
     "map": "Trammel",
-    "homeRange": 30,
-    "walkingRange": 30,
+    "count": 3,
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "count": 3,
+    "homeRange": 30,
+    "walkingRange": 30,
     "entries": [
       { "name": "Brigand", "maxCount": 3, "probability": 100 },
       { "name": "Harpy", "maxCount": 3, "probability": 100 },
@@ -51,20 +52,20 @@
       { "name": "Ratman", "maxCount": 3, "probability": 100 },
       { "name": "Spectre", "maxCount": 3, "probability": 100 },
       { "name": "Troll", "maxCount": 3, "probability": 100 }
-    ],
-    "name": "Spawner (2113)"
+    ]
   },
   {
-    "guid": "c08f91a3-eb9d-464c-96ce-d70f6c5a8fc4",
     "type": "Spawner",
+    "guid": "c08f91a3-eb9d-464c-96ce-d70f6c5a8fc4",
+    "name": "Spawner (2113)",
     "location": [3446, 2741, 49],
     "map": "Trammel",
-    "homeRange": 50,
-    "walkingRange": 50,
+    "count": 7,
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "count": 7,
+    "homeRange": 50,
+    "walkingRange": 50,
     "entries": [
       { "name": "Brigand", "maxCount": 7, "probability": 100 },
       { "name": "Harpy", "maxCount": 7, "probability": 100 },
@@ -74,20 +75,20 @@
       { "name": "Ratman", "maxCount": 7, "probability": 100 },
       { "name": "Spectre", "maxCount": 7, "probability": 100 },
       { "name": "Troll", "maxCount": 7, "probability": 100 }
-    ],
-    "name": "Spawner (2113)"
+    ]
   },
   {
-    "guid": "0111020b-4ccf-45e7-bfbe-8a4f4fbeedad",
     "type": "Spawner",
+    "guid": "0111020b-4ccf-45e7-bfbe-8a4f4fbeedad",
+    "name": "Spawner (2113)",
     "location": [3459, 2655, 9],
     "map": "Trammel",
-    "homeRange": 30,
-    "walkingRange": 30,
+    "count": 3,
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "count": 3,
+    "homeRange": 30,
+    "walkingRange": 30,
     "entries": [
       { "name": "Brigand", "maxCount": 3, "probability": 100 },
       { "name": "Harpy", "maxCount": 3, "probability": 100 },
@@ -97,20 +98,20 @@
       { "name": "Ratman", "maxCount": 3, "probability": 100 },
       { "name": "Spectre", "maxCount": 3, "probability": 100 },
       { "name": "Troll", "maxCount": 3, "probability": 100 }
-    ],
-    "name": "Spawner (2113)"
+    ]
   },
   {
-    "guid": "ed918ae7-13cc-45da-a9ee-166d198bb83f",
     "type": "Spawner",
+    "guid": "ed918ae7-13cc-45da-a9ee-166d198bb83f",
+    "name": "Spawner (2113)",
     "location": [3379, 2693, 35],
     "map": "Trammel",
-    "homeRange": 30,
-    "walkingRange": 30,
+    "count": 3,
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "count": 3,
+    "homeRange": 30,
+    "walkingRange": 30,
     "entries": [
       { "name": "Brigand", "maxCount": 3, "probability": 100 },
       { "name": "Harpy", "maxCount": 3, "probability": 100 },
@@ -120,20 +121,20 @@
       { "name": "Ratman", "maxCount": 3, "probability": 100 },
       { "name": "Spectre", "maxCount": 3, "probability": 100 },
       { "name": "Troll", "maxCount": 3, "probability": 100 }
-    ],
-    "name": "Spawner (2113)"
+    ]
   },
   {
-    "guid": "63c48500-e80c-4662-a58d-b32b2591f94d",
     "type": "Spawner",
+    "guid": "63c48500-e80c-4662-a58d-b32b2591f94d",
+    "name": "Spawner (2113)",
     "location": [3411, 2592, 44],
     "map": "Trammel",
-    "homeRange": 40,
-    "walkingRange": 40,
+    "count": 6,
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "count": 6,
+    "homeRange": 40,
+    "walkingRange": 40,
     "entries": [
       { "name": "Brigand", "maxCount": 6, "probability": 100 },
       { "name": "Harpy", "maxCount": 6, "probability": 100 },
@@ -143,20 +144,20 @@
       { "name": "Ratman", "maxCount": 6, "probability": 100 },
       { "name": "Spectre", "maxCount": 6, "probability": 100 },
       { "name": "Troll", "maxCount": 6, "probability": 100 }
-    ],
-    "name": "Spawner (2113)"
+    ]
   },
   {
-    "guid": "8dc26593-aecf-4d5c-97c6-d4d11e8411dc",
     "type": "Spawner",
+    "guid": "8dc26593-aecf-4d5c-97c6-d4d11e8411dc",
+    "name": "Spawner (2113)",
     "location": [3464, 2503, 49],
     "map": "Trammel",
-    "homeRange": 50,
-    "walkingRange": 50,
+    "count": 7,
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "count": 7,
+    "homeRange": 50,
+    "walkingRange": 50,
     "entries": [
       { "name": "Brigand", "maxCount": 7, "probability": 100 },
       { "name": "Harpy", "maxCount": 7, "probability": 100 },
@@ -166,24 +167,23 @@
       { "name": "Ratman", "maxCount": 7, "probability": 100 },
       { "name": "Spectre", "maxCount": 7, "probability": 100 },
       { "name": "Troll", "maxCount": 7, "probability": 100 }
-    ],
-    "name": "Spawner (2113)"
+    ]
   },
   {
-    "guid": "2733ca83-6c31-48d5-b360-eedf6f885beb",
     "type": "Spawner",
+    "guid": "2733ca83-6c31-48d5-b360-eedf6f885beb",
+    "name": "Spawner (2113)",
     "location": [3602, 2815, 28],
     "map": "Trammel",
-    "homeRange": 1,
-    "walkingRange": 10,
+    "count": 1,
     "minDelay": "00:45:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "count": 1,
+    "homeRange": 1,
+    "walkingRange": 10,
     "entries": [
       { "name": "OrcCamp", "maxCount": 1, "probability": 100 },
       { "name": "RatCamp", "maxCount": 1, "probability": 100 }
-    ],
-    "name": "Spawner (2113)"
+    ]
   }
 ]

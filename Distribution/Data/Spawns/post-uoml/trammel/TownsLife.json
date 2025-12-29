@@ -1,36 +1,36 @@
 ﻿[
   {
-    "guid": "076e8845-e42b-434d-8df6-380aaf7a3383",
     "type": "Spawner",
+    "guid": "076e8845-e42b-434d-8df6-380aaf7a3383",
+    "name": "Spawner (122)",
     "location": [3444, 2556, 30],
     "map": "Trammel",
+    "count": 3,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
     "homeRange": 3,
     "walkingRange": 3,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "count": 3,
     "entries": [
       { "name": "Cat", "maxCount": 3, "probability": 100 }
-    ],
-    "name": "Spawner (122)"
+    ]
   },
   {
-    "guid": "af813f31-3e6a-4657-bd6d-640e0d74c328",
     "type": "Spawner",
+    "guid": "af813f31-3e6a-4657-bd6d-640e0d74c328",
+    "name": "Spawner (122)",
     "location": [3487, 2549, 16],
     "map": "Trammel",
-    "homeRange": 100,
-    "walkingRange": 100,
+    "count": 30,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "count": 30,
+    "homeRange": 100,
+    "walkingRange": 100,
     "entries": [
       { "name": "Dog", "maxCount": 5, "probability": 100 },
       { "name": "Cat", "maxCount": 5, "probability": 100 },
       { "name": "Bird", "maxCount": 20, "probability": 100 }
-    ],
-    "name": "Spawner (122)"
+    ]
   }
 ]

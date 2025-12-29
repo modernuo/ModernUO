@@ -1,552 +1,552 @@
 ﻿[
   {
-    "guid": "3df0543a-373c-4673-a98b-8191686f4ab3",
     "type": "Spawner",
+    "guid": "3df0543a-373c-4673-a98b-8191686f4ab3",
+    "name": "Spawner (225)",
     "location": [4571, 2303, -2],
     "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
     "homeRange": 0,
     "walkingRange": -1,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "count": 1,
     "entries": [
       { "name": "Fisherman", "maxCount": 1, "probability": 100 }
-    ],
-    "name": "Spawner (225)"
+    ]
   },
   {
-    "guid": "72828840-4db8-4607-9227-fcfd2f6ac819",
     "type": "Spawner",
+    "guid": "72828840-4db8-4607-9227-fcfd2f6ac819",
+    "name": "Spawner (225)",
     "location": [4553, 2318, -2],
     "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
     "homeRange": 1,
     "walkingRange": -1,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "count": 1,
     "entries": [
       { "name": "Tanner", "maxCount": 1, "probability": 100 }
-    ],
-    "name": "Spawner (225)"
+    ]
   },
   {
-    "guid": "3e40c9ba-b486-47e2-98c3-1547ed17236f",
     "type": "Spawner",
+    "guid": "3e40c9ba-b486-47e2-98c3-1547ed17236f",
+    "name": "Spawner (225)",
     "location": [4550, 2307, -2],
     "map": "Felucca",
-    "homeRange": 10,
-    "walkingRange": -1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "count": 2,
+    "homeRange": 10,
+    "walkingRange": -1,
     "entries": [
       { "name": "WanderingHealer", "maxCount": 1, "probability": 100 },
       { "name": "Bard", "maxCount": 1, "probability": 100 }
-    ],
-    "name": "Spawner (225)"
+    ]
   },
   {
-    "guid": "602fb6c4-16b8-42cc-ad4d-eaec24989698",
     "type": "Spawner",
+    "guid": "602fb6c4-16b8-42cc-ad4d-eaec24989698",
+    "name": "Spawner (225)",
     "location": [4557, 2307, -2],
     "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
     "homeRange": 1,
     "walkingRange": -1,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "count": 1,
     "entries": [
       { "name": "Fisherman", "maxCount": 1, "probability": 100 }
-    ],
-    "name": "Spawner (225)"
+    ]
   },
   {
-    "guid": "056fee00-19c9-459b-8062-bb8d32aa9684",
     "type": "Spawner",
+    "guid": "056fee00-19c9-459b-8062-bb8d32aa9684",
+    "name": "Spawner (225)",
     "location": [4540, 2301, -1],
     "map": "Felucca",
-    "homeRange": 4,
-    "walkingRange": -1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "count": 2,
+    "homeRange": 4,
+    "walkingRange": -1,
     "entries": [
       { "name": "TavernKeeper", "maxCount": 1, "probability": 100 },
       { "name": "Waiter", "maxCount": 1, "probability": 100 }
-    ],
-    "name": "Spawner (225)"
+    ]
   },
   {
-    "guid": "957a0aac-b3b4-4565-a36c-80223d09f884",
     "type": "Spawner",
+    "guid": "957a0aac-b3b4-4565-a36c-80223d09f884",
+    "name": "Spawner (225)",
     "location": [4547, 2321, -2],
     "map": "Felucca",
-    "homeRange": 4,
-    "walkingRange": -1,
+    "count": 1,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "count": 1,
+    "homeRange": 4,
+    "walkingRange": -1,
     "entries": [
       { "name": "bodysculptor", "maxCount": 1, "probability": 100 }
-    ],
-    "name": "Spawner (225)"
+    ]
   },
   {
-    "guid": "e5204866-5351-4ea0-b2b3-5ebae2b5a70b",
     "type": "Spawner",
+    "guid": "e5204866-5351-4ea0-b2b3-5ebae2b5a70b",
+    "name": "Spawner (225)",
     "location": [4551, 2334, -2],
     "map": "Felucca",
-    "homeRange": 1,
-    "walkingRange": -1,
+    "count": 1,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "count": 1,
+    "homeRange": 1,
+    "walkingRange": -1,
     "entries": [
       { "name": "Shipwright", "maxCount": 1, "probability": 100 }
-    ],
-    "name": "Spawner (225)"
+    ]
   },
   {
-    "guid": "fc335c32-274c-406a-af4d-359e4b36bc4b",
     "type": "Spawner",
+    "guid": "fc335c32-274c-406a-af4d-359e4b36bc4b",
+    "name": "Spawner (225)",
     "location": [4556, 2330, -2],
     "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
     "homeRange": 1,
     "walkingRange": -1,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "count": 1,
     "entries": [
       { "name": "Fisherman", "maxCount": 1, "probability": 100 }
-    ],
-    "name": "Spawner (225)"
+    ]
   },
   {
-    "guid": "e2a30c0b-02e7-4f98-9093-db9f2c69a338",
     "type": "Spawner",
+    "guid": "e2a30c0b-02e7-4f98-9093-db9f2c69a338",
+    "name": "Spawner (225)",
     "location": [4533, 2333, -2],
     "map": "Felucca",
-    "homeRange": 4,
-    "walkingRange": -1,
+    "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "count": 3,
+    "homeRange": 4,
+    "walkingRange": -1,
     "entries": [
       { "name": "Tailor", "maxCount": 1, "probability": 100 },
       { "name": "Provisioner", "maxCount": 1, "probability": 100 },
       { "name": "Fisherman", "maxCount": 1, "probability": 100 }
-    ],
-    "name": "Spawner (225)"
+    ]
   },
   {
-    "guid": "a6b874c9-ffc6-41c3-b57d-505e1cc0b127",
     "type": "Spawner",
+    "guid": "a6b874c9-ffc6-41c3-b57d-505e1cc0b127",
+    "name": "Spawner (225)",
     "location": [4569, 2304, -2],
     "map": "Felucca",
-    "homeRange": 1,
-    "walkingRange": -1,
+    "count": 1,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "count": 1,
+    "homeRange": 1,
+    "walkingRange": -1,
     "entries": [
       { "name": "dockmaster", "maxCount": 1, "probability": 100 }
-    ],
-    "name": "Spawner (225)"
+    ]
   },
   {
-    "guid": "9174aac6-9b43-4a79-a29a-bfd85e66a4c4",
     "type": "Spawner",
+    "guid": "9174aac6-9b43-4a79-a29a-bfd85e66a4c4",
+    "name": "Spawner (225)",
     "location": [4549, 2346, -2],
     "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
     "homeRange": 1,
     "walkingRange": -1,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "count": 1,
     "entries": [
       { "name": "Fisherman", "maxCount": 1, "probability": 100 }
-    ],
-    "name": "Spawner (225)"
+    ]
   },
   {
-    "guid": "5b6c1209-b817-4852-8a1c-d378ea9cb0b6",
     "type": "Spawner",
+    "guid": "5b6c1209-b817-4852-8a1c-d378ea9cb0b6",
+    "name": "Spawner (225)",
     "location": [4562, 2349, -2],
     "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
     "homeRange": 4,
     "walkingRange": -1,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "count": 1,
     "entries": [
       { "name": "hiresailor", "maxCount": 1, "probability": 100 }
-    ],
-    "name": "Spawner (225)"
+    ]
   },
   {
-    "guid": "12dab98a-eac6-4729-9d04-42b0e16271a5",
     "type": "Spawner",
+    "guid": "12dab98a-eac6-4729-9d04-42b0e16271a5",
+    "name": "Spawner (225)",
     "location": [4570, 2400, -2],
     "map": "Felucca",
-    "homeRange": 4,
-    "walkingRange": 7,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "count": 2,
+    "homeRange": 4,
+    "walkingRange": 7,
     "entries": [
       { "name": "Fisherman", "maxCount": 1, "probability": 100 },
       { "name": "hiresailor", "maxCount": 1, "probability": 100 }
-    ],
-    "name": "Spawner (225)"
+    ]
   },
   {
-    "guid": "c1330899-bfe5-4dd5-9add-8708c6564101",
     "type": "Spawner",
+    "guid": "c1330899-bfe5-4dd5-9add-8708c6564101",
+    "name": "Spawner (225)",
     "location": [4551, 2327, -2],
     "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
     "homeRange": 7,
     "walkingRange": -1,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "count": 1,
     "entries": [
       { "name": "FisherGuildmaster", "maxCount": 1, "probability": 100 }
-    ],
-    "name": "Spawner (225)"
+    ]
   },
   {
-    "guid": "4dca1873-97db-40ae-9206-3da39bf12eb9",
     "type": "Spawner",
+    "guid": "4dca1873-97db-40ae-9206-3da39bf12eb9",
+    "name": "Spawner (225)",
     "location": [4530, 2382, -2],
     "map": "Felucca",
-    "homeRange": 1,
-    "walkingRange": -1,
+    "count": 1,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "count": 1,
+    "homeRange": 1,
+    "walkingRange": -1,
     "entries": [
       { "name": "Fisherman", "maxCount": 1, "probability": 100 }
-    ],
-    "name": "Spawner (225)"
+    ]
   },
   {
-    "guid": "9c5549c8-0ac4-48c5-8dcd-53fea6ab3fc1",
     "type": "Spawner",
+    "guid": "9c5549c8-0ac4-48c5-8dcd-53fea6ab3fc1",
+    "name": "Spawner (225)",
     "location": [4551, 2320, -2],
     "map": "Felucca",
-    "homeRange": 1,
-    "walkingRange": -1,
+    "count": 1,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "count": 1,
+    "homeRange": 1,
+    "walkingRange": -1,
     "entries": [
       { "name": "boatpainter", "maxCount": 1, "probability": 100 }
-    ],
-    "name": "Spawner (225)"
+    ]
   },
   {
-    "guid": "8f87e0c7-f32f-4c15-8fef-f35249144384",
     "type": "Spawner",
+    "guid": "8f87e0c7-f32f-4c15-8fef-f35249144384",
+    "name": "Spawner (225)",
     "location": [4573, 2364, -2],
     "map": "Felucca",
-    "homeRange": 1,
-    "walkingRange": -1,
+    "count": 1,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "count": 1,
+    "homeRange": 1,
+    "walkingRange": -1,
     "entries": [
       { "name": "Fisherman", "maxCount": 1, "probability": 100 }
-    ],
-    "name": "Spawner (225)"
+    ]
   },
   {
-    "guid": "91aad75f-c75f-4ac2-9cd0-78b44f1e7e99",
     "type": "Spawner",
+    "guid": "91aad75f-c75f-4ac2-9cd0-78b44f1e7e99",
+    "name": "Spawner (225)",
     "location": [4553, 2351, -2],
     "map": "Felucca",
-    "homeRange": 1,
-    "walkingRange": -1,
+    "count": 1,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "count": 1,
+    "homeRange": 1,
+    "walkingRange": -1,
     "entries": [
       { "name": "Fisherman", "maxCount": 1, "probability": 100 }
-    ],
-    "name": "Spawner (225)"
+    ]
   },
   {
-    "guid": "f054eaef-7c05-4422-b92d-38de870a606f",
     "type": "Spawner",
+    "guid": "f054eaef-7c05-4422-b92d-38de870a606f",
+    "name": "Spawner (225)",
     "location": [4537, 2348, -2],
     "map": "Felucca",
-    "homeRange": 1,
-    "walkingRange": -1,
+    "count": 1,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "count": 1,
+    "homeRange": 1,
+    "walkingRange": -1,
     "entries": [
       { "name": "Fisherman", "maxCount": 1, "probability": 100 }
-    ],
-    "name": "Spawner (225)"
+    ]
   },
   {
-    "guid": "0d40622f-69f2-4d5b-8375-40fa1e17f429",
     "type": "Spawner",
+    "guid": "0d40622f-69f2-4d5b-8375-40fa1e17f429",
+    "name": "Spawner (225)",
     "location": [4549, 2301, -2],
     "map": "Felucca",
-    "homeRange": 1,
-    "walkingRange": -1,
+    "count": 1,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "count": 1,
+    "homeRange": 1,
+    "walkingRange": -1,
     "entries": [
       { "name": "Blacksmith", "maxCount": 1, "probability": 100 }
-    ],
-    "name": "Spawner (225)"
+    ]
   },
   {
-    "guid": "2a6c3d42-36b5-4f96-b477-ddbafbcb22da",
     "type": "Spawner",
+    "guid": "2a6c3d42-36b5-4f96-b477-ddbafbcb22da",
+    "name": "Spawner (225)",
     "location": [4553, 2343, -2],
     "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
     "homeRange": 1,
     "walkingRange": -1,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "count": 1,
     "entries": [
       { "name": "Fisherman", "maxCount": 1, "probability": 100 }
-    ],
-    "name": "Spawner (225)"
+    ]
   },
   {
-    "guid": "94b31286-98ac-4832-9cc9-f6b95e8a21d4",
     "type": "Spawner",
+    "guid": "94b31286-98ac-4832-9cc9-f6b95e8a21d4",
+    "name": "Spawner (225)",
     "location": [4544, 2299, -1],
     "map": "Felucca",
-    "homeRange": 4,
-    "walkingRange": -1,
+    "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "count": 2,
+    "homeRange": 4,
+    "walkingRange": -1,
     "entries": [
       { "name": "TavernKeeper", "maxCount": 1, "probability": 100 },
       { "name": "Cook", "maxCount": 1, "probability": 100 }
-    ],
-    "name": "Spawner (225)"
+    ]
   },
   {
-    "guid": "aadd2ea6-a598-4805-b4dd-737fff405f6b",
     "type": "Spawner",
+    "guid": "aadd2ea6-a598-4805-b4dd-737fff405f6b",
+    "name": "Spawner (225)",
     "location": [4561, 2328, -2],
     "map": "Felucca",
-    "homeRange": 1,
-    "walkingRange": -1,
+    "count": 1,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "count": 1,
+    "homeRange": 1,
+    "walkingRange": -1,
     "entries": [
       { "name": "Tinker", "maxCount": 1, "probability": 100 }
-    ],
-    "name": "Spawner (225)"
+    ]
   },
   {
-    "guid": "90268f42-c87d-4ab2-8f88-1bd135f0a463",
     "type": "Spawner",
+    "guid": "90268f42-c87d-4ab2-8f88-1bd135f0a463",
+    "name": "Spawner (225)",
     "location": [4551, 2381, -2],
     "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
     "homeRange": 15,
     "walkingRange": -1,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "count": 1,
     "entries": [
       { "name": "WanderingHealer", "maxCount": 1, "probability": 100 }
-    ],
-    "name": "Spawner (225)"
+    ]
   },
   {
-    "guid": "251b9d65-ab66-42b4-ad7f-6fff5e477b14",
     "type": "Spawner",
+    "guid": "251b9d65-ab66-42b4-ad7f-6fff5e477b14",
+    "name": "Spawner (225)",
     "location": [4552, 2349, -2],
     "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
     "homeRange": 5,
     "walkingRange": -1,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "count": 1,
     "entries": [
       { "name": "WanderingHealer", "maxCount": 1, "probability": 100 }
-    ],
-    "name": "Spawner (225)"
+    ]
   },
   {
-    "guid": "3d6c13d4-d1b1-46e5-82ea-2aea918057ab",
     "type": "Spawner",
+    "guid": "3d6c13d4-d1b1-46e5-82ea-2aea918057ab",
+    "name": "Spawner (225)",
     "location": [4552, 2390, -2],
     "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
     "homeRange": 7,
     "walkingRange": -1,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "count": 1,
     "entries": [
       { "name": "hiresailor", "maxCount": 1, "probability": 100 }
-    ],
-    "name": "Spawner (225)"
+    ]
   },
   {
-    "guid": "35d48eae-3966-4f92-966e-e7f40e7be19b",
     "type": "Spawner",
+    "guid": "35d48eae-3966-4f92-966e-e7f40e7be19b",
+    "name": "Spawner (225)",
     "location": [4542, 2329, -2],
     "map": "Felucca",
-    "homeRange": 1,
-    "walkingRange": -1,
+    "count": 1,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "count": 1,
+    "homeRange": 1,
+    "walkingRange": -1,
     "entries": [
       { "name": "Alchemist", "maxCount": 1, "probability": 100 }
-    ],
-    "name": "Spawner (225)"
+    ]
   },
   {
-    "guid": "a5f81c37-59df-4510-bac7-e4809bf4c71d",
     "type": "Spawner",
+    "guid": "a5f81c37-59df-4510-bac7-e4809bf4c71d",
+    "name": "Spawner (225)",
     "location": [4551, 2323, -2],
     "map": "Felucca",
-    "homeRange": 1,
-    "walkingRange": -1,
+    "count": 1,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "count": 1,
+    "homeRange": 1,
+    "walkingRange": -1,
     "entries": [
       { "name": "Banker", "maxCount": 1, "probability": 100 }
-    ],
-    "name": "Spawner (225)"
+    ]
   },
   {
-    "guid": "b40aaca3-893a-4d86-a3bc-a8dcfd929794",
     "type": "Spawner",
+    "guid": "b40aaca3-893a-4d86-a3bc-a8dcfd929794",
+    "name": "Spawner (225)",
     "location": [4564, 2298, -2],
     "map": "Felucca",
-    "homeRange": 1,
-    "walkingRange": -1,
+    "count": 1,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "count": 1,
+    "homeRange": 1,
+    "walkingRange": -1,
     "entries": [
       { "name": "Shipwright", "maxCount": 1, "probability": 100 }
-    ],
-    "name": "Spawner (225)"
+    ]
   },
   {
-    "guid": "643cc355-1279-47c8-a088-48cb02f214bf",
     "type": "Spawner",
+    "guid": "643cc355-1279-47c8-a088-48cb02f214bf",
+    "name": "Spawner (225)",
     "location": [4547, 2376, -2],
     "map": "Felucca",
-    "homeRange": 1,
-    "walkingRange": -1,
+    "count": 1,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "count": 1,
+    "homeRange": 1,
+    "walkingRange": -1,
     "entries": [
       { "name": "Fisherman", "maxCount": 1, "probability": 100 }
-    ],
-    "name": "Spawner (225)"
+    ]
   },
   {
-    "guid": "91ee98c3-bf4f-46b6-b844-c4539c8a91a7",
     "type": "Spawner",
+    "guid": "91ee98c3-bf4f-46b6-b844-c4539c8a91a7",
+    "name": "Spawner (225)",
     "location": [4540, 2306, -1],
     "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
     "homeRange": 4,
     "walkingRange": -1,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "count": 1,
     "entries": [
       { "name": "Waiter", "maxCount": 1, "probability": 100 }
-    ],
-    "name": "Spawner (225)"
+    ]
   },
   {
-    "guid": "173fb37f-69be-40b5-99f1-eeaade1956c3",
     "type": "Spawner",
+    "guid": "173fb37f-69be-40b5-99f1-eeaade1956c3",
+    "name": "Spawner (225)",
     "location": [4554, 2389, -2],
     "map": "Felucca",
+    "count": 1,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
     "homeRange": 1,
     "walkingRange": -1,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "count": 1,
     "entries": [
       { "name": "Fisherman", "maxCount": 1, "probability": 100 }
-    ],
-    "name": "Spawner (225)"
+    ]
   },
   {
-    "guid": "0f374a41-ce2d-4eb6-8bcd-5ecc9f87ba20",
     "type": "Spawner",
+    "guid": "0f374a41-ce2d-4eb6-8bcd-5ecc9f87ba20",
+    "name": "Spawner (225)",
     "location": [4534, 2349, -2],
     "map": "Felucca",
-    "homeRange": 0,
-    "walkingRange": -1,
+    "count": 1,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "count": 1,
+    "homeRange": 0,
+    "walkingRange": -1,
     "entries": [
       { "name": "treasurelevel1h", "maxCount": 1, "probability": 100 }
-    ],
-    "name": "Spawner (225)"
+    ]
   },
   {
-    "guid": "3faeebac-5ea9-4262-bf9b-a6764358547b",
     "type": "Spawner",
+    "guid": "3faeebac-5ea9-4262-bf9b-a6764358547b",
+    "name": "Spawner (225)",
     "location": [4535, 2349, -2],
     "map": "Felucca",
-    "homeRange": 0,
-    "walkingRange": -1,
+    "count": 1,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "count": 1,
+    "homeRange": 0,
+    "walkingRange": -1,
     "entries": [
       { "name": "treasurelevel1h", "maxCount": 1, "probability": 100 }
-    ],
-    "name": "Spawner (225)"
+    ]
   }
 ]

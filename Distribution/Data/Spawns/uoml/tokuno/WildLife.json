@@ -1,92 +1,92 @@
 ﻿[
   {
-    "guid": "4e6fb0ca-fe70-4eef-84e7-841ecf8dc448",
     "type": "Spawner",
+    "guid": "4e6fb0ca-fe70-4eef-84e7-841ecf8dc448",
+    "name": "Spawner (2505)",
     "location": [926, 145, 49],
     "map": "Tokuno",
-    "homeRange": 30,
-    "walkingRange": 30,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "count": 8,
+    "homeRange": 30,
+    "walkingRange": 30,
     "entries": [
       { "name": "PolarBear", "maxCount": 8, "probability": 100 },
       { "name": "Walrus", "maxCount": 8, "probability": 100 },
       { "name": "SnowLeopard", "maxCount": 8, "probability": 100 }
-    ],
-    "name": "Spawner (2505)"
+    ]
   },
   {
-    "guid": "ebe89f8e-f0ac-4a42-9b01-f7fc624c4bd4",
     "type": "Spawner",
+    "guid": "ebe89f8e-f0ac-4a42-9b01-f7fc624c4bd4",
+    "name": "Spawner (2505)",
     "location": [879, 128, 44],
     "map": "Tokuno",
-    "homeRange": 30,
-    "walkingRange": 30,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "count": 8,
+    "homeRange": 30,
+    "walkingRange": 30,
     "entries": [
       { "name": "PolarBear", "maxCount": 8, "probability": 100 },
       { "name": "Walrus", "maxCount": 8, "probability": 100 },
       { "name": "SnowLeopard", "maxCount": 8, "probability": 100 }
-    ],
-    "name": "Spawner (2505)"
+    ]
   },
   {
-    "guid": "c4dd55c7-4108-4f31-897c-f563f1639e2b",
     "type": "Spawner",
+    "guid": "c4dd55c7-4108-4f31-897c-f563f1639e2b",
+    "name": "Spawner (2505)",
     "location": [914, 55, 36],
     "map": "Tokuno",
-    "homeRange": 30,
-    "walkingRange": 30,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "count": 8,
+    "homeRange": 30,
+    "walkingRange": 30,
     "entries": [
       { "name": "PolarBear", "maxCount": 8, "probability": 100 },
       { "name": "Walrus", "maxCount": 8, "probability": 100 },
       { "name": "SnowLeopard", "maxCount": 8, "probability": 100 }
-    ],
-    "name": "Spawner (2505)"
+    ]
   },
   {
-    "guid": "f0063c43-6b87-44af-9255-a10aa29f60f0",
     "type": "Spawner",
+    "guid": "f0063c43-6b87-44af-9255-a10aa29f60f0",
+    "name": "Spawner (2505)",
     "location": [947, 103, 46],
     "map": "Tokuno",
-    "homeRange": 30,
-    "walkingRange": 30,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "count": 8,
+    "homeRange": 30,
+    "walkingRange": 30,
     "entries": [
       { "name": "PolarBear", "maxCount": 8, "probability": 100 },
       { "name": "Walrus", "maxCount": 8, "probability": 100 },
       { "name": "SnowLeopard", "maxCount": 8, "probability": 100 }
-    ],
-    "name": "Spawner (2505)"
+    ]
   },
   {
-    "guid": "c871b42a-1409-4899-a2fe-23299cd6c4ee",
     "type": "Spawner",
+    "guid": "c871b42a-1409-4899-a2fe-23299cd6c4ee",
+    "name": "Spawner (2505)",
     "location": [976, 144, 35],
     "map": "Tokuno",
-    "homeRange": 30,
-    "walkingRange": 30,
+    "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "count": 8,
+    "homeRange": 30,
+    "walkingRange": 30,
     "entries": [
       { "name": "PolarBear", "maxCount": 8, "probability": 100 },
       { "name": "Walrus", "maxCount": 8, "probability": 100 },
       { "name": "SnowLeopard", "maxCount": 8, "probability": 100 }
-    ],
-    "name": "Spawner (2505)"
+    ]
   }
 ]

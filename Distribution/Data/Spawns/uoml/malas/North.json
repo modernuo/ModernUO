@@ -1,15 +1,16 @@
 ﻿[
   {
-    "guid": "6f75ce3a-5afe-4d59-8cea-521a9cab1c9a",
     "type": "Spawner",
+    "guid": "6f75ce3a-5afe-4d59-8cea-521a9cab1c9a",
+    "name": "Spawner (2402)",
     "location": [1674, 659, -84],
     "map": "Malas",
-    "homeRange": 100,
-    "walkingRange": 120,
+    "count": 15,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "count": 15,
+    "homeRange": 100,
+    "walkingRange": 120,
     "entries": [
       { "name": "CrystalElemental", "maxCount": 3, "probability": 100 },
       { "name": "SkitteringHopper", "maxCount": 3, "probability": 100 },
@@ -17,20 +18,20 @@
       { "name": "Hind", "maxCount": 2, "probability": 100 },
       { "name": "GreatHart", "maxCount": 1, "probability": 100 },
       { "name": "Rabbit", "maxCount": 3, "probability": 100 }
-    ],
-    "name": "Spawner (2402)"
+    ]
   },
   {
-    "guid": "b2985f08-8004-4d85-8b11-e98cd205b584",
     "type": "Spawner",
+    "guid": "b2985f08-8004-4d85-8b11-e98cd205b584",
+    "name": "Spawner (2402)",
     "location": [1434, 607, -89],
     "map": "Malas",
-    "homeRange": 100,
-    "walkingRange": 120,
+    "count": 15,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "count": 15,
+    "homeRange": 100,
+    "walkingRange": 120,
     "entries": [
       { "name": "CrystalElemental", "maxCount": 3, "probability": 100 },
       { "name": "SkitteringHopper", "maxCount": 3, "probability": 100 },
@@ -38,20 +39,20 @@
       { "name": "Hind", "maxCount": 2, "probability": 100 },
       { "name": "GreatHart", "maxCount": 1, "probability": 100 },
       { "name": "Rabbit", "maxCount": 3, "probability": 100 }
-    ],
-    "name": "Spawner (2402)"
+    ]
   },
   {
-    "guid": "7ef09a35-9032-4c5c-8273-9cdeb13281f6",
     "type": "Spawner",
+    "guid": "7ef09a35-9032-4c5c-8273-9cdeb13281f6",
+    "name": "Spawner (2402)",
     "location": [1194, 638, -84],
     "map": "Malas",
+    "count": 20,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
     "homeRange": 100,
     "walkingRange": 120,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "count": 20,
     "entries": [
       { "name": "CrystalElemental", "maxCount": 4, "probability": 100 },
       { "name": "SkitteringHopper", "maxCount": 4, "probability": 100 },
@@ -59,20 +60,20 @@
       { "name": "Hind", "maxCount": 3, "probability": 100 },
       { "name": "GreatHart", "maxCount": 1, "probability": 100 },
       { "name": "Rabbit", "maxCount": 4, "probability": 100 }
-    ],
-    "name": "Spawner (2402)"
+    ]
   },
   {
-    "guid": "5a950bac-ad86-44ce-9c3f-b26ac67b1f63",
     "type": "Spawner",
+    "guid": "5a950bac-ad86-44ce-9c3f-b26ac67b1f63",
+    "name": "Spawner (2402)",
     "location": [920, 356, -85],
     "map": "Malas",
-    "homeRange": 60,
-    "walkingRange": 70,
+    "count": 20,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "count": 20,
+    "homeRange": 60,
+    "walkingRange": 70,
     "entries": [
       { "name": "CrystalElemental", "maxCount": 4, "probability": 100 },
       { "name": "SkitteringHopper", "maxCount": 4, "probability": 100 },
@@ -80,7 +81,6 @@
       { "name": "Hind", "maxCount": 3, "probability": 100 },
       { "name": "GreatHart", "maxCount": 1, "probability": 100 },
       { "name": "Rabbit", "maxCount": 4, "probability": 100 }
-    ],
-    "name": "Spawner (2402)"
+    ]
   }
 ]
