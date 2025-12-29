@@ -23,6 +23,7 @@ public partial class Spawner : BaseSpawner
     private bool ShouldSerializeSpawnBounds() => _spawnBounds != default;
 
     [SerializableProperty(1)]
+    [CommandProperty(AccessLevel.Developer)]
     public override Rectangle3D SpawnBounds
     {
         get => _spawnBounds;
