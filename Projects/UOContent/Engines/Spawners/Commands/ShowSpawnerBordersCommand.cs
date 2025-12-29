@@ -5,7 +5,7 @@ using Server.Items;
 
 namespace Server.Engines.Spawners;
 
-public class ProjectSpawnerCommand : BaseCommand
+public class ShowSpawnerBordersCommand : BaseCommand
 {
     // ItemID constants for border pieces
     private const int SouthEastCorner = 0xF8; // Bottom-right corner
@@ -17,17 +17,17 @@ public class ProjectSpawnerCommand : BaseCommand
 
     public static void Configure()
     {
-        TargetCommands.Register(new ProjectSpawnerCommand());
+        TargetCommands.Register(new ShowSpawnerBordersCommand());
     }
 
-    public ProjectSpawnerCommand()
+    public ShowSpawnerBordersCommand()
     {
         AccessLevel = AccessLevel.Developer;
         Supports = CommandSupport.Simple;
-        Commands = ["ProjectSpawner"];
+        Commands = ["ShowSpawnerBorders"];
         ObjectTypes = ObjectTypes.Items;
-        Usage = "ProjectSpawner";
-        Description = "Toggles spawn bounds projection for the targeted spawner.";
+        Usage = "ShowSpawnerBorders";
+        Description = "Toggles a projection of the targeted spawner's borders.";
     }
 
     public override void Execute(CommandEventArgs e, object obj)
@@ -64,7 +64,7 @@ public class ProjectSpawnerCommand : BaseCommand
         }
 
         _projectedSpawners[spawner] = borders;
-        e.Mobile.SendMessage($"Spawner projection created with {borders.Count} border pieces.");
+        e.Mobile.SendMessage($"Spawner projection created with {borders.Count} border tiles.");
     }
 
     private static List<SpawnerBorder> CreateBorders(Item spawner, Rectangle3D bounds)
@@ -171,7 +171,7 @@ public partial class SpawnerBorder : ProjectedItem
         // Check if spawner was deleted
         if (Spawner.Deleted)
         {
-            ProjectSpawnerCommand.RemoveBorderFromProjection(Spawner, this);
+            ShowSpawnerBordersCommand.RemoveBorderFromProjection(Spawner, this);
             Spawner = null;
             Delete();
             return false;

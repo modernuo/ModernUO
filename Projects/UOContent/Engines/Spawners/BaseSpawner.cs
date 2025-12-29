@@ -780,7 +780,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
 
         if (IsHomeRangeStyleAt(Location))
         {
-            ProjectSpawnerCommand.RemoveProjection(this);
+            ShowSpawnerBordersCommand.RemoveProjection(this);
         }
     }
 
@@ -792,7 +792,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
         if (IsHomeRangeStyleAt(oldLocation))
         {
             HomeRange = SpawnBounds.Width / 2;
-            ProjectSpawnerCommand.RemoveProjection(this);
+            ShowSpawnerBordersCommand.RemoveProjection(this);
         }
 
         // Reset spawn position optimization state when spawner moves
