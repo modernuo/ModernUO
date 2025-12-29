@@ -1,0 +1,772 @@
+﻿[
+  {
+    "guid": "0bb98d0c-0614-431b-a6ce-c30718f447c8",
+    "type": "Spawner",
+    "location": [447, 25, -1],
+    "map": "Malas",
+    "homeRange": 10,
+    "walkingRange": 10,
+    "minDelay": "00:01:00",
+    "maxDelay": "00:02:00",
+    "team": 0,
+    "count": 6,
+    "entries": [
+      { "name": "Skeleton", "maxCount": 6, "probability": 100 }
+    ],
+    "name": "Spawner (401)"
+  },
+  {
+    "guid": "0e708303-8a2d-4207-bdc3-d7f732e04efe",
+    "type": "Spawner",
+    "location": [496, 75, 0],
+    "map": "Malas",
+    "homeRange": 8,
+    "walkingRange": 8,
+    "minDelay": "00:01:00",
+    "maxDelay": "00:02:00",
+    "team": 0,
+    "count": 3,
+    "entries": [
+      { "name": "PatchworkSkeleton", "maxCount": 3, "probability": 100 }
+    ],
+    "name": "Spawner (401)"
+  },
+  {
+    "guid": "1210b304-4b1a-47be-a503-9f490764d069",
+    "type": "Spawner",
+    "location": [287, 81, -1],
+    "map": "Malas",
+    "homeRange": 30,
+    "walkingRange": 30,
+    "minDelay": "00:01:00",
+    "maxDelay": "00:02:00",
+    "team": 0,
+    "count": 6,
+    "entries": [
+      { "name": "Skeleton", "maxCount": 6, "probability": 100 }
+    ],
+    "name": "Spawner (401)"
+  },
+  {
+    "guid": "13e0051b-bff0-4826-9e89-73ea9ec64e7a",
+    "type": "Spawner",
+    "location": [320, 207, -1],
+    "map": "Malas",
+    "homeRange": 15,
+    "walkingRange": 15,
+    "minDelay": "00:01:00",
+    "maxDelay": "00:02:00",
+    "team": 0,
+    "count": 2,
+    "entries": [
+      { "name": "Lich", "maxCount": 2, "probability": 100 }
+    ],
+    "name": "Spawner (401)"
+  },
+  {
+    "guid": "182c0603-13fa-414f-849c-dcbde31a739a",
+    "type": "Spawner",
+    "location": [479, 168, -1],
+    "map": "Malas",
+    "homeRange": 20,
+    "walkingRange": 20,
+    "minDelay": "00:02:00",
+    "maxDelay": "00:03:00",
+    "team": 0,
+    "count": 4,
+    "entries": [
+      { "name": "Devourer", "maxCount": 3, "probability": 100 },
+      { "name": "BoneKnight", "maxCount": 1, "probability": 100 }
+    ],
+    "name": "Spawner (401)"
+  },
+  {
+    "guid": "20977621-9e81-4c25-b802-19fa12fc3633",
+    "type": "Spawner",
+    "location": [323, 90, -1],
+    "map": "Malas",
+    "homeRange": 40,
+    "walkingRange": 40,
+    "minDelay": "00:01:00",
+    "maxDelay": "00:02:00",
+    "team": 0,
+    "count": 9,
+    "entries": [
+      { "name": "Skeleton", "maxCount": 4, "probability": 100 },
+      { "name": "PatchworkSkeleton", "maxCount": 5, "probability": 100 }
+    ],
+    "name": "Spawner (401)"
+  },
+  {
+    "guid": "218aaa26-c02b-4605-8c79-c9879523ea0b",
+    "type": "Spawner",
+    "location": [356, 40, -1],
+    "map": "Malas",
+    "homeRange": 8,
+    "walkingRange": 8,
+    "minDelay": "00:01:00",
+    "maxDelay": "00:02:00",
+    "team": 0,
+    "count": 6,
+    "entries": [
+      { "name": "VampireBat", "maxCount": 4, "probability": 100 },
+      { "name": "Skeleton", "maxCount": 2, "probability": 100 }
+    ],
+    "name": "Spawner (401)"
+  },
+  {
+    "guid": "298afdb1-74fb-4668-9bc2-5f625a61caed",
+    "type": "Spawner",
+    "location": [478, 206, -1],
+    "map": "Malas",
+    "homeRange": 20,
+    "walkingRange": 20,
+    "minDelay": "00:01:00",
+    "maxDelay": "00:02:00",
+    "team": 0,
+    "count": 2,
+    "entries": [
+      { "name": "RottingCorpse", "maxCount": 2, "probability": 100 }
+    ],
+    "name": "Spawner (401)"
+  },
+  {
+    "guid": "2a98c34c-cb3d-4d28-8c12-1a3cf7cc58ad",
+    "type": "Spawner",
+    "location": [330, 136, 0],
+    "map": "Malas",
+    "homeRange": 15,
+    "walkingRange": 15,
+    "minDelay": "00:01:00",
+    "maxDelay": "00:02:00",
+    "team": 0,
+    "count": 2,
+    "entries": [
+      { "name": "Lich", "maxCount": 2, "probability": 100 }
+    ],
+    "name": "Spawner (401)"
+  },
+  {
+    "guid": "2be25342-c032-406a-af47-8eb5994c0875",
+    "type": "Spawner",
+    "location": [427, 256, -1],
+    "map": "Malas",
+    "homeRange": 10,
+    "walkingRange": 30,
+    "minDelay": "00:01:00",
+    "maxDelay": "00:02:00",
+    "team": 0,
+    "count": 2,
+    "entries": [
+      { "name": "RottingCorpse", "maxCount": 2, "probability": 100 }
+    ],
+    "name": "Spawner (401)"
+  },
+  {
+    "guid": "32a2e0d8-8246-42ff-8e13-c15b51a9f73f",
+    "type": "Spawner",
+    "location": [470, 30, -2],
+    "map": "Malas",
+    "homeRange": 20,
+    "walkingRange": 20,
+    "minDelay": "00:01:00",
+    "maxDelay": "00:02:00",
+    "team": 0,
+    "count": 6,
+    "entries": [
+      { "name": "PatchworkSkeleton", "maxCount": 4, "probability": 100 },
+      { "name": "Lich", "maxCount": 2, "probability": 100 }
+    ],
+    "name": "Spawner (401)"
+  },
+  {
+    "guid": "42bbf95d-6b39-4df6-a4f4-7a8d385b49ef",
+    "type": "Spawner",
+    "location": [442, 205, -1],
+    "map": "Malas",
+    "homeRange": 30,
+    "walkingRange": 30,
+    "minDelay": "00:20:00",
+    "maxDelay": "00:40:00",
+    "team": 0,
+    "count": 1,
+    "entries": [
+      { "name": "BoneDemon", "maxCount": 1, "probability": 100 }
+    ],
+    "name": "Spawner (401)"
+  },
+  {
+    "guid": "48538f93-9afa-44c9-baab-b1c3612bdde5",
+    "type": "Spawner",
+    "location": [356, 234, -1],
+    "map": "Malas",
+    "homeRange": 15,
+    "walkingRange": 15,
+    "minDelay": "00:01:00",
+    "maxDelay": "00:02:00",
+    "team": 0,
+    "count": 3,
+    "entries": [
+      { "name": "Devourer", "maxCount": 3, "probability": 100 }
+    ],
+    "name": "Spawner (401)"
+  },
+  {
+    "guid": "5110399b-8443-448e-a68c-f59ac2303716",
+    "type": "Spawner",
+    "location": [441, 78, -1],
+    "map": "Malas",
+    "homeRange": 30,
+    "walkingRange": 30,
+    "minDelay": "00:01:00",
+    "maxDelay": "00:02:00",
+    "team": 0,
+    "count": 6,
+    "entries": [
+      { "name": "PatchworkSkeleton", "maxCount": 4, "probability": 100 },
+      { "name": "RottingCorpse", "maxCount": 2, "probability": 100 }
+    ],
+    "name": "Spawner (401)"
+  },
+  {
+    "guid": "55898d74-f2cf-4c30-953e-e5f3d9a3b5bf",
+    "type": "Spawner",
+    "location": [278, 233, 0],
+    "map": "Malas",
+    "homeRange": 30,
+    "walkingRange": 30,
+    "minDelay": "00:01:00",
+    "maxDelay": "00:02:00",
+    "team": 0,
+    "count": 4,
+    "entries": [
+      { "name": "PatchworkSkeleton", "maxCount": 2, "probability": 100 },
+      { "name": "VampireBat", "maxCount": 2, "probability": 100 }
+    ],
+    "name": "Spawner (401)"
+  },
+  {
+    "guid": "59819649-f460-4934-ba36-a89a98aa13f2",
+    "type": "Spawner",
+    "location": [320, 114, -1],
+    "map": "Malas",
+    "homeRange": 35,
+    "walkingRange": 35,
+    "minDelay": "00:01:00",
+    "maxDelay": "00:02:00",
+    "team": 0,
+    "count": 7,
+    "entries": [
+      { "name": "Zombie", "maxCount": 7, "probability": 100 }
+    ],
+    "name": "Spawner (401)"
+  },
+  {
+    "guid": "59d35721-49b5-4ff9-9c91-fad1b3d4b953",
+    "type": "Spawner",
+    "location": [395, 33, -1],
+    "map": "Malas",
+    "homeRange": 8,
+    "walkingRange": 8,
+    "minDelay": "00:01:00",
+    "maxDelay": "00:02:00",
+    "team": 0,
+    "count": 4,
+    "entries": [
+      { "name": "VampireBat", "maxCount": 4, "probability": 100 }
+    ],
+    "name": "Spawner (401)"
+  },
+  {
+    "guid": "5bc9de9b-c7d7-4152-9fd1-19e57598100e",
+    "type": "Spawner",
+    "location": [320, 114, -1],
+    "map": "Malas",
+    "homeRange": 25,
+    "walkingRange": 25,
+    "minDelay": "00:01:00",
+    "maxDelay": "00:02:00",
+    "team": 0,
+    "count": 3,
+    "entries": [
+      { "name": "Mummy", "maxCount": 3, "probability": 100 }
+    ],
+    "name": "Spawner (401)"
+  },
+  {
+    "guid": "5c28d40c-81f7-428d-b661-6e272aeabf3d",
+    "type": "Spawner",
+    "location": [480, 227, -1],
+    "map": "Malas",
+    "homeRange": 20,
+    "walkingRange": 20,
+    "minDelay": "00:03:00",
+    "maxDelay": "00:05:00",
+    "team": 0,
+    "count": 2,
+    "entries": [
+      { "name": "Lich", "maxCount": 2, "probability": 100 }
+    ],
+    "name": "Spawner (401)"
+  },
+  {
+    "guid": "613d79a6-10e0-4465-9937-142ee7e701b0",
+    "type": "Spawner",
+    "location": [289, 154, 5],
+    "map": "Malas",
+    "homeRange": 5,
+    "walkingRange": 5,
+    "minDelay": "00:01:00",
+    "maxDelay": "00:02:00",
+    "team": 0,
+    "count": 1,
+    "entries": [
+      { "name": "LichLord", "maxCount": 1, "probability": 100 }
+    ],
+    "name": "Spawner (401)"
+  },
+  {
+    "guid": "646d5241-162f-477e-a05c-17ba7eb95a83",
+    "type": "Spawner",
+    "location": [379, 147, -1],
+    "map": "Malas",
+    "homeRange": 40,
+    "walkingRange": 40,
+    "minDelay": "00:01:00",
+    "maxDelay": "00:02:00",
+    "team": 0,
+    "count": 20,
+    "entries": [
+      { "name": "PatchworkSkeleton", "maxCount": 10, "probability": 100 },
+      { "name": "VampireBat", "maxCount": 10, "probability": 100 }
+    ],
+    "name": "Spawner (401)"
+  },
+  {
+    "guid": "6492e163-beb3-4abc-a674-921cbf5ba5df",
+    "type": "Spawner",
+    "location": [356, 234, -1],
+    "map": "Malas",
+    "homeRange": 10,
+    "walkingRange": 10,
+    "minDelay": "00:01:00",
+    "maxDelay": "00:02:00",
+    "team": 0,
+    "count": 3,
+    "entries": [
+      { "name": "Skeleton", "maxCount": 3, "probability": 100 }
+    ],
+    "name": "Spawner (401)"
+  },
+  {
+    "guid": "693a953a-75cf-43df-9708-b781c8a04439",
+    "type": "Spawner",
+    "location": [325, 172, -1],
+    "map": "Malas",
+    "homeRange": 35,
+    "walkingRange": 35,
+    "minDelay": "00:01:00",
+    "maxDelay": "00:02:00",
+    "team": 0,
+    "count": 6,
+    "entries": [
+      { "name": "PatchworkSkeleton", "maxCount": 3, "probability": 100 },
+      { "name": "VampireBat", "maxCount": 3, "probability": 100 }
+    ],
+    "name": "Spawner (401)"
+  },
+  {
+    "guid": "74182f58-a286-4576-9615-f92bbd4e7b71",
+    "type": "Spawner",
+    "location": [378, 236, -1],
+    "map": "Malas",
+    "homeRange": 8,
+    "walkingRange": 8,
+    "minDelay": "00:01:00",
+    "maxDelay": "00:02:00",
+    "team": 0,
+    "count": 2,
+    "entries": [
+      { "name": "Devourer", "maxCount": 2, "probability": 100 }
+    ],
+    "name": "Spawner (401)"
+  },
+  {
+    "guid": "92450262-dc59-4666-b8bd-233fa481ddcb",
+    "type": "Spawner",
+    "location": [400, 174, -1],
+    "map": "Malas",
+    "homeRange": 5,
+    "walkingRange": 5,
+    "minDelay": "00:01:00",
+    "maxDelay": "00:02:00",
+    "team": 0,
+    "count": 1,
+    "entries": [
+      { "name": "Lich", "maxCount": 1, "probability": 100 }
+    ],
+    "name": "Spawner (401)"
+  },
+  {
+    "guid": "93ce2586-d403-49a2-acbb-034ef0ee797a",
+    "type": "Spawner",
+    "location": [278, 233, 0],
+    "map": "Malas",
+    "homeRange": 35,
+    "walkingRange": 35,
+    "minDelay": "00:01:00",
+    "maxDelay": "00:02:00",
+    "team": 0,
+    "count": 3,
+    "entries": [
+      { "name": "Devourer", "maxCount": 3, "probability": 100 }
+    ],
+    "name": "Spawner (401)"
+  },
+  {
+    "guid": "968ff190-b606-41f5-8cf0-36e15d3fd7d4",
+    "type": "Spawner",
+    "location": [382, 82, -1],
+    "map": "Malas",
+    "homeRange": 40,
+    "walkingRange": 40,
+    "minDelay": "00:01:00",
+    "maxDelay": "00:02:00",
+    "team": 0,
+    "count": 6,
+    "entries": [
+      { "name": "VampireBat", "maxCount": 6, "probability": 100 }
+    ],
+    "name": "Spawner (401)"
+  },
+  {
+    "guid": "9e641eb9-2f8a-41ae-afb9-24a4b5879a0a",
+    "type": "Spawner",
+    "location": [305, 28, 0],
+    "map": "Malas",
+    "homeRange": 10,
+    "walkingRange": 10,
+    "minDelay": "00:01:00",
+    "maxDelay": "00:02:00",
+    "team": 0,
+    "count": 4,
+    "entries": [
+      { "name": "Gibberling", "maxCount": 4, "probability": 100 }
+    ],
+    "name": "Spawner (401)"
+  },
+  {
+    "guid": "a1434ffe-19f2-4076-b1ce-28e59dc9f627",
+    "type": "Spawner",
+    "location": [496, 75, 0],
+    "map": "Malas",
+    "homeRange": 10,
+    "walkingRange": 10,
+    "minDelay": "00:01:00",
+    "maxDelay": "00:02:00",
+    "team": 0,
+    "count": 4,
+    "entries": [
+      { "name": "VampireBat", "maxCount": 4, "probability": 100 }
+    ],
+    "name": "Spawner (401)"
+  },
+  {
+    "guid": "a42b1d2c-dcd4-4d43-aada-f5707a5f9e9f",
+    "type": "Spawner",
+    "location": [468, 141, -1],
+    "map": "Malas",
+    "homeRange": 6,
+    "walkingRange": 6,
+    "minDelay": "00:01:00",
+    "maxDelay": "00:03:00",
+    "team": 0,
+    "count": 2,
+    "entries": [
+      { "name": "Lich", "maxCount": 2, "probability": 100 }
+    ],
+    "name": "Spawner (401)"
+  },
+  {
+    "guid": "a81f4ff2-ee77-4e1f-968d-335a0ecbe7b9",
+    "type": "Spawner",
+    "location": [427, 256, -1],
+    "map": "Malas",
+    "homeRange": 30,
+    "walkingRange": 30,
+    "minDelay": "00:01:00",
+    "maxDelay": "00:02:00",
+    "team": 0,
+    "count": 4,
+    "entries": [
+      { "name": "LichLord", "maxCount": 1, "probability": 100 },
+      { "name": "RestlessSoul", "maxCount": 3, "probability": 100 }
+    ],
+    "name": "Spawner (401)"
+  },
+  {
+    "guid": "b0f74ae9-9e85-4525-9903-6e69c2f818e4",
+    "type": "Spawner",
+    "location": [309, 15, 0],
+    "map": "Malas",
+    "homeRange": 10,
+    "walkingRange": 10,
+    "minDelay": "00:01:00",
+    "maxDelay": "00:02:00",
+    "team": 0,
+    "count": 7,
+    "entries": [
+      { "name": "Skeleton", "maxCount": 4, "probability": 100 },
+      { "name": "BoneMagi", "maxCount": 2, "probability": 100 },
+      { "name": "BoneKnight", "maxCount": 1, "probability": 100 }
+    ],
+    "name": "Spawner (401)"
+  },
+  {
+    "guid": "bbfc66e4-a4fd-486a-960e-5cb7c64c2e72",
+    "type": "Spawner",
+    "location": [456, 48, -1],
+    "map": "Malas",
+    "homeRange": 15,
+    "walkingRange": 15,
+    "minDelay": "00:01:00",
+    "maxDelay": "00:02:00",
+    "team": 0,
+    "count": 12,
+    "entries": [
+      { "name": "FleshGolem", "maxCount": 6, "probability": 100 },
+      { "name": "Devourer", "maxCount": 6, "probability": 100 }
+    ],
+    "name": "Spawner (401)"
+  },
+  {
+    "guid": "c2ca4b73-4847-47ab-83de-c3f0abb570a9",
+    "type": "Spawner",
+    "location": [493, 202, -1],
+    "map": "Malas",
+    "homeRange": 12,
+    "walkingRange": 12,
+    "minDelay": "00:01:00",
+    "maxDelay": "00:02:00",
+    "team": 0,
+    "count": 6,
+    "entries": [
+      { "name": "Skeleton", "maxCount": 6, "probability": 100 }
+    ],
+    "name": "Spawner (401)"
+  },
+  {
+    "guid": "c85f6fd0-ad43-4e05-a43e-b49002b7f22c",
+    "type": "Spawner",
+    "location": [372, 201, -1],
+    "map": "Malas",
+    "homeRange": 20,
+    "walkingRange": 20,
+    "minDelay": "00:01:00",
+    "maxDelay": "00:02:00",
+    "team": 0,
+    "count": 4,
+    "entries": [
+      { "name": "Skeleton", "maxCount": 3, "probability": 100 },
+      { "name": "BoneKnight", "maxCount": 1, "probability": 100 }
+    ],
+    "name": "Spawner (401)"
+  },
+  {
+    "guid": "cf26832d-8e20-4277-8491-91461dd2995e",
+    "type": "Spawner",
+    "location": [487, 118, -1],
+    "map": "Malas",
+    "homeRange": 8,
+    "walkingRange": 8,
+    "minDelay": "00:01:00",
+    "maxDelay": "00:02:00",
+    "team": 0,
+    "count": 5,
+    "entries": [
+      { "name": "Skeleton", "maxCount": 3, "probability": 100 },
+      { "name": "Mummy", "maxCount": 2, "probability": 100 }
+    ],
+    "name": "Spawner (401)"
+  },
+  {
+    "guid": "d03c82ab-0be4-4818-8708-14afba5d8eee",
+    "type": "Spawner",
+    "location": [366, 13, -1],
+    "map": "Malas",
+    "homeRange": 10,
+    "walkingRange": 10,
+    "minDelay": "00:01:00",
+    "maxDelay": "00:02:00",
+    "team": 0,
+    "count": 3,
+    "entries": [
+      { "name": "Lich", "maxCount": 3, "probability": 100 }
+    ],
+    "name": "Spawner (401)"
+  },
+  {
+    "guid": "d5daa218-49a1-446c-a871-a7ebc77cacf9",
+    "type": "Spawner",
+    "location": [480, 227, -1],
+    "map": "Malas",
+    "homeRange": 20,
+    "walkingRange": 20,
+    "minDelay": "00:01:00",
+    "maxDelay": "00:02:00",
+    "team": 0,
+    "count": 3,
+    "entries": [
+      { "name": "Skeleton", "maxCount": 3, "probability": 100 }
+    ],
+    "name": "Spawner (401)"
+  },
+  {
+    "guid": "d8a6cfe1-0e71-423a-94e9-4ad92ef8d73d",
+    "type": "Spawner",
+    "location": [330, 136, 0],
+    "map": "Malas",
+    "homeRange": 4,
+    "walkingRange": 4,
+    "minDelay": "00:01:00",
+    "maxDelay": "00:02:00",
+    "team": 0,
+    "count": 1,
+    "entries": [
+      { "name": "LichLord", "maxCount": 1, "probability": 100 }
+    ],
+    "name": "Spawner (401)"
+  },
+  {
+    "guid": "d99b3aa7-013c-4dd9-8258-ec68e91e6bf5",
+    "type": "Spawner",
+    "location": [443, 128, -1],
+    "map": "Malas",
+    "homeRange": 40,
+    "walkingRange": 40,
+    "minDelay": "00:01:00",
+    "maxDelay": "00:02:00",
+    "team": 0,
+    "count": 16,
+    "entries": [
+      { "name": "PatchworkSkeleton", "maxCount": 7, "probability": 100 },
+      { "name": "VampireBat", "maxCount": 7, "probability": 100 },
+      { "name": "RottingCorpse", "maxCount": 2, "probability": 100 }
+    ],
+    "name": "Spawner (401)"
+  },
+  {
+    "guid": "dcade1a7-1652-4eb7-a550-d9ed7a7449ac",
+    "type": "Spawner",
+    "location": [442, 205, -1],
+    "map": "Malas",
+    "homeRange": 30,
+    "walkingRange": 30,
+    "minDelay": "00:01:00",
+    "maxDelay": "00:02:00",
+    "team": 0,
+    "count": 11,
+    "entries": [
+      { "name": "PatchworkSkeleton", "maxCount": 6, "probability": 100 },
+      { "name": "VampireBat", "maxCount": 5, "probability": 100 }
+    ],
+    "name": "Spawner (401)"
+  },
+  {
+    "guid": "e12bb836-80f3-4ce1-b068-9d2485922b0f",
+    "type": "Spawner",
+    "location": [290, 28, 0],
+    "map": "Malas",
+    "homeRange": 10,
+    "walkingRange": 10,
+    "minDelay": "00:01:00",
+    "maxDelay": "00:02:00",
+    "team": 0,
+    "count": 4,
+    "entries": [
+      { "name": "GoreFiend", "maxCount": 4, "probability": 100 }
+    ],
+    "name": "Spawner (401)"
+  },
+  {
+    "guid": "e764f652-de2c-420f-8419-7d29a2d6cd9c",
+    "type": "Spawner",
+    "location": [287, 81, -1],
+    "map": "Malas",
+    "homeRange": 40,
+    "walkingRange": 40,
+    "minDelay": "00:01:00",
+    "maxDelay": "00:02:00",
+    "team": 0,
+    "count": 8,
+    "entries": [
+      { "name": "VampireBat", "maxCount": 6, "probability": 100 },
+      { "name": "RottingCorpse", "maxCount": 2, "probability": 100 }
+    ],
+    "name": "Spawner (401)"
+  },
+  {
+    "guid": "f20c08f3-28e9-47a3-b24e-b31370ce2c18",
+    "type": "Spawner",
+    "location": [447, 25, -1],
+    "map": "Malas",
+    "homeRange": 15,
+    "walkingRange": 15,
+    "minDelay": "00:01:00",
+    "maxDelay": "00:02:00",
+    "team": 0,
+    "count": 2,
+    "entries": [
+      { "name": "Lich", "maxCount": 2, "probability": 100 }
+    ],
+    "name": "Spawner (401)"
+  },
+  {
+    "guid": "f909d2a4-b3bf-4d0c-b07c-f36839c99209",
+    "type": "Spawner",
+    "location": [479, 168, -1],
+    "map": "Malas",
+    "homeRange": 20,
+    "walkingRange": 20,
+    "minDelay": "00:01:00",
+    "maxDelay": "00:02:00",
+    "team": 0,
+    "count": 5,
+    "entries": [
+      { "name": "Skeleton", "maxCount": 5, "probability": 100 }
+    ],
+    "name": "Spawner (401)"
+  },
+  {
+    "guid": "f9c8b1af-1ea5-466d-90a1-e956f8c8de31",
+    "type": "Spawner",
+    "location": [266, 26, 0],
+    "map": "Malas",
+    "homeRange": 5,
+    "walkingRange": 8,
+    "minDelay": "00:01:00",
+    "maxDelay": "00:02:00",
+    "team": 0,
+    "count": 2,
+    "entries": [
+      { "name": "LichLord", "maxCount": 2, "probability": 100 }
+    ],
+    "name": "Spawner (401)"
+  },
+  {
+    "guid": "ff72dd04-bba5-4a6f-8899-d851b4c1fe88",
+    "type": "Spawner",
+    "location": [480, 227, -1],
+    "map": "Malas",
+    "homeRange": 20,
+    "walkingRange": 20,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "count": 1,
+    "entries": [
+      { "name": "LichLord", "maxCount": 1, "probability": 100 }
+    ],
+    "name": "Spawner (401)"
+  }
+]

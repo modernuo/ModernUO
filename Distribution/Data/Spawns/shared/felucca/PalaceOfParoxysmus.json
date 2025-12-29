@@ -1,0 +1,286 @@
+﻿[
+  {
+    "guid": "04a75e0b-4499-4fe6-8bd6-49e3dbf0d528",
+    "type": "Spawner",
+    "location": [6416, 447, -40],
+    "map": "Felucca",
+    "homeRange": 20,
+    "walkingRange": 20,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "count": 15,
+    "entries": [
+      { "name": "PlagueBeast", "maxCount": 8, "probability": 100 },
+      { "name": "PlagueSpawn", "maxCount": 8, "probability": 100 },
+      { "name": "AcidElemental", "maxCount": 7, "probability": 100 },
+      { "name": "CorrosiveSlime", "maxCount": 7, "probability": 100 }
+    ],
+    "name": "Spawner (215)"
+  },
+  {
+    "guid": "04cc01ab-f7da-4992-8913-4db4ea63149e",
+    "type": "Spawner",
+    "location": [6298, 395, 60],
+    "map": "Felucca",
+    "homeRange": 8,
+    "walkingRange": 8,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "count": 2,
+    "entries": [
+      { "name": "EarthElemental", "maxCount": 2, "probability": 100 },
+      { "name": "CorrosiveSlime", "maxCount": 2, "probability": 100 }
+    ],
+    "name": "Spawner (215)"
+  },
+  {
+    "guid": "3a0d9e92-6661-4ad8-a38e-dcf7516e05de",
+    "type": "Spawner",
+    "location": [6354, 455, -40],
+    "map": "Felucca",
+    "homeRange": 20,
+    "walkingRange": 20,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "count": 10,
+    "entries": [
+      { "name": "PlagueBeast", "maxCount": 5, "probability": 100 },
+      { "name": "CorrosiveSlime", "maxCount": 5, "probability": 100 },
+      { "name": "PoisonElemental", "maxCount": 5, "probability": 100 },
+      { "name": "PlagueSpawn", "maxCount": 5, "probability": 100 }
+    ],
+    "name": "Spawner (215)"
+  },
+  {
+    "guid": "5a586bde-b6a0-4f4d-b147-1e1886aae735",
+    "type": "Spawner",
+    "location": [6384, 580, -50],
+    "map": "Felucca",
+    "homeRange": 30,
+    "walkingRange": 30,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "count": 31,
+    "entries": [
+      { "name": "InterredGrizzle", "maxCount": 4, "probability": 100 },
+      { "name": "CorrosiveSlime", "maxCount": 4, "probability": 100 },
+      { "name": "PoisonElemental", "maxCount": 3, "probability": 100 },
+      { "name": "Balron", "maxCount": 9, "probability": 100 },
+      { "name": "Succubus", "maxCount": 9, "probability": 100 },
+      { "name": "Daemon", "maxCount": 9, "probability": 100 },
+      { "name": "PlagueBeastLord", "maxCount": 11, "probability": 100 },
+      { "name": "PlagueBeast", "maxCount": 11, "probability": 100 },
+      { "name": "PlagueSpawn", "maxCount": 11, "probability": 100 }
+    ],
+    "name": "Spawner (215)"
+  },
+  {
+    "guid": "5ef37566-7b9c-47fb-a88c-d6c0177d92f3",
+    "type": "Spawner",
+    "location": [6418, 358, -40],
+    "map": "Felucca",
+    "homeRange": 25,
+    "walkingRange": 25,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "count": 22,
+    "entries": [
+      { "name": "PlagueSpawn", "maxCount": 12, "probability": 100 },
+      { "name": "PlagueBeast", "maxCount": 12, "probability": 100 },
+      { "name": "AcidElemental", "maxCount": 12, "probability": 100 },
+      { "name": "CorrosiveSlime", "maxCount": 12, "probability": 100 },
+      { "name": "PoisonElemental", "maxCount": 12, "probability": 100 },
+      { "name": "PlagueSpawn", "maxCount": 2, "probability": 100 },
+      { "name": "PlagueBeast", "maxCount": 2, "probability": 100 },
+      { "name": "AcidElemental", "maxCount": 2, "probability": 100 },
+      { "name": "CorrosiveSlime", "maxCount": 2, "probability": 100 },
+      { "name": "PoisonElemental", "maxCount": 2, "probability": 100 }
+    ],
+    "name": "Spawner (215)"
+  },
+  {
+    "guid": "604b87ed-6718-4802-b1b6-f572ed7d9935",
+    "type": "Spawner",
+    "location": [6295, 616, -50],
+    "map": "Felucca",
+    "homeRange": 50,
+    "walkingRange": 50,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "count": 27,
+    "entries": [
+      { "name": "Daemon", "maxCount": 6, "probability": 100 },
+      { "name": "Succubus", "maxCount": 6, "probability": 100 },
+      { "name": "InterredGrizzle", "maxCount": 6, "probability": 100 },
+      { "name": "PoisonElemental", "maxCount": 6, "probability": 100 },
+      { "name": "PlagueBeast", "maxCount": 6, "probability": 100 },
+      { "name": "PlagueSpawn", "maxCount": 6, "probability": 100 },
+      { "name": "CorrosiveSlime", "maxCount": 3, "probability": 100 },
+      { "name": "Putrefier", "maxCount": 3, "probability": 100 },
+      { "name": "PlagueBeastLord", "maxCount": 3, "probability": 100 }
+    ],
+    "name": "Spawner (215)"
+  },
+  {
+    "guid": "74269ae8-5e94-4496-ad04-611e81b14168",
+    "type": "Spawner",
+    "location": [6404, 378, -40],
+    "map": "Felucca",
+    "homeRange": 18,
+    "walkingRange": 18,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "count": 4,
+    "entries": [
+      { "name": "AcidElemental", "maxCount": 2, "probability": 100 },
+      { "name": "PlagueSpawn", "maxCount": 2, "probability": 100 },
+      { "name": "AcidElemental", "maxCount": 1, "probability": 100 },
+      { "name": "PlagueSpawn", "maxCount": 1, "probability": 100 }
+    ],
+    "name": "Spawner (215)"
+  },
+  {
+    "guid": "9c1149a5-ac2a-42e6-b6e2-296e6ca05602",
+    "type": "Spawner",
+    "location": [6249, 352, 60],
+    "map": "Felucca",
+    "homeRange": 15,
+    "walkingRange": 15,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "count": 9,
+    "entries": [
+      { "name": "AcidElemental", "maxCount": 6, "probability": 100 },
+      { "name": "EarthElemental", "maxCount": 6, "probability": 100 },
+      { "name": "CorrosiveSlime", "maxCount": 6, "probability": 100 },
+      { "name": "AcidElemental", "maxCount": 1, "probability": 100 },
+      { "name": "EarthElemental", "maxCount": 1, "probability": 100 },
+      { "name": "CorrosiveSlime", "maxCount": 1, "probability": 100 }
+    ],
+    "name": "Spawner (215)"
+  },
+  {
+    "guid": "ad3fbc20-7914-4651-a7c1-994d9b88ed22",
+    "type": "Spawner",
+    "location": [6466, 543, -50],
+    "map": "Felucca",
+    "homeRange": 30,
+    "walkingRange": 30,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "count": 22,
+    "entries": [
+      { "name": "Balron", "maxCount": 6, "probability": 100 },
+      { "name": "Succubus", "maxCount": 6, "probability": 100 },
+      { "name": "Daemon", "maxCount": 6, "probability": 100 },
+      { "name": "CorrosiveSlime", "maxCount": 3, "probability": 100 },
+      { "name": "PlagueBeastLord", "maxCount": 8, "probability": 100 },
+      { "name": "PlagueBeast", "maxCount": 8, "probability": 100 },
+      { "name": "PlagueSpawn", "maxCount": 8, "probability": 100 },
+      { "name": "InterredGrizzle", "maxCount": 5, "probability": 100 },
+      { "name": "PoisonElemental", "maxCount": 5, "probability": 100 }
+    ],
+    "name": "Spawner (215)"
+  },
+  {
+    "guid": "af6ef316-bb00-417f-852c-14e9c98ca74c",
+    "type": "Spawner",
+    "location": [6285, 353, 60],
+    "map": "Felucca",
+    "homeRange": 5,
+    "walkingRange": 5,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "count": 1,
+    "entries": [
+      { "name": "PoisonElemental", "maxCount": 1, "probability": 100 }
+    ],
+    "name": "Spawner (215)"
+  },
+  {
+    "guid": "b7da2a27-b13e-4113-b8c8-e5f2e7ac2e3a",
+    "type": "Spawner",
+    "location": [6292, 462, -50],
+    "map": "Felucca",
+    "homeRange": 40,
+    "walkingRange": 40,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "count": 18,
+    "entries": [
+      { "name": "ChaosDaemon", "maxCount": 7, "probability": 100 },
+      { "name": "Moloch", "maxCount": 7, "probability": 100 },
+      { "name": "Succubus", "maxCount": 7, "probability": 100 },
+      { "name": "Daemon", "maxCount": 7, "probability": 100 },
+      { "name": "Balron", "maxCount": 4, "probability": 100 }
+    ],
+    "name": "Spawner (215)"
+  },
+  {
+    "guid": "bbed003d-43d6-4690-b93e-763f42a4187f",
+    "type": "Spawner",
+    "location": [6353, 400, 60],
+    "map": "Felucca",
+    "homeRange": 10,
+    "walkingRange": 10,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "count": 4,
+    "entries": [
+      { "name": "EarthElemental", "maxCount": 4, "probability": 100 },
+      { "name": "CorrosiveSlime", "maxCount": 4, "probability": 100 }
+    ],
+    "name": "Spawner (215)"
+  },
+  {
+    "guid": "d3ba2375-fc73-4996-9f54-3a09dc39c653",
+    "type": "Spawner",
+    "location": [6319, 348, 60],
+    "map": "Felucca",
+    "homeRange": 20,
+    "walkingRange": 20,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "count": 9,
+    "entries": [
+      { "name": "EarthElemental", "maxCount": 5, "probability": 100 },
+      { "name": "CorrosiveSlime", "maxCount": 5, "probability": 100 },
+      { "name": "AcidElemental", "maxCount": 5, "probability": 100 },
+      { "name": "PlagueSpawn", "maxCount": 5, "probability": 100 },
+      { "name": "EarthElemental", "maxCount": 1, "probability": 100 },
+      { "name": "CorrosiveSlime", "maxCount": 1, "probability": 100 },
+      { "name": "AcidElemental", "maxCount": 1, "probability": 100 },
+      { "name": "PlagueSpawn", "maxCount": 1, "probability": 100 }
+    ],
+    "name": "Spawner (215)"
+  },
+  {
+    "guid": "e695b242-221c-49b5-853a-9e943afe8355",
+    "type": "Spawner",
+    "location": [6328, 517, -50],
+    "map": "Felucca",
+    "homeRange": 10,
+    "walkingRange": 10,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "count": 4,
+    "entries": [
+      { "name": "PoisonElemental", "maxCount": 4, "probability": 100 }
+    ],
+    "name": "Spawner (215)"
+  }
+]

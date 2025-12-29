@@ -1,0 +1,322 @@
+﻿[
+  {
+    "guid": "0076bc53-87a0-493c-9251-8b689c0aac25",
+    "type": "Spawner",
+    "location": [5354, 1332, 0],
+    "map": "Trammel",
+    "homeRange": 8,
+    "walkingRange": 8,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "count": 4,
+    "entries": [
+      { "name": "OrcCaptain", "maxCount": 1, "probability": 100 },
+      { "name": "OrcishLord", "maxCount": 1, "probability": 100 },
+      { "name": "OrcishMage", "maxCount": 1, "probability": 100 },
+      { "name": "OrcBomber", "maxCount": 1, "probability": 100 }
+    ],
+    "name": "Spawner (112)"
+  },
+  {
+    "guid": "02f05175-47b3-49ce-adfd-6838f0bb93a7",
+    "type": "Spawner",
+    "location": [5331, 1346, 0],
+    "map": "Trammel",
+    "homeRange": 8,
+    "walkingRange": 8,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "count": 3,
+    "entries": [
+      { "name": "DireWolf", "maxCount": 3, "probability": 100 }
+    ],
+    "name": "Spawner (112)"
+  },
+  {
+    "guid": "03496f57-4e3d-4a83-a12c-8ee3523f4efb",
+    "type": "Spawner",
+    "location": [5348, 2011, 0],
+    "map": "Trammel",
+    "homeRange": 10,
+    "walkingRange": 15,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "count": 5,
+    "entries": [
+      { "name": "OrcBomber", "maxCount": 1, "probability": 100 },
+      { "name": "EarthElemental", "maxCount": 4, "probability": 100 }
+    ],
+    "name": "Spawner (112)"
+  },
+  {
+    "guid": "04dd6b85-c84e-49e1-8e6a-fbea6734f30b",
+    "type": "Spawner",
+    "location": [5153, 1971, 0],
+    "map": "Trammel",
+    "homeRange": 8,
+    "walkingRange": 8,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "count": 5,
+    "entries": [
+      { "name": "Orc", "maxCount": 5, "probability": 100 }
+    ],
+    "name": "Spawner (112)"
+  },
+  {
+    "guid": "17e3d0fd-73d1-435c-9d32-ea6716977e80",
+    "type": "Spawner",
+    "location": [5308, 1372, 0],
+    "map": "Trammel",
+    "homeRange": 8,
+    "walkingRange": 8,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "count": 1,
+    "entries": [
+      { "name": "Noble", "maxCount": 1, "probability": 100 }
+    ],
+    "name": "Spawner (112)"
+  },
+  {
+    "guid": "20658391-8218-48bd-bdab-fd04bbafad31",
+    "type": "Spawner",
+    "location": [5141, 1968, 0],
+    "map": "Trammel",
+    "homeRange": 8,
+    "walkingRange": 8,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "count": 3,
+    "entries": [
+      { "name": "OrcCaptain", "maxCount": 3, "probability": 100 }
+    ],
+    "name": "Spawner (112)"
+  },
+  {
+    "guid": "264b83e9-092d-4d4b-9dac-8f717b8a21a6",
+    "type": "Spawner",
+    "location": [5153, 1961, 0],
+    "map": "Trammel",
+    "homeRange": 8,
+    "walkingRange": 8,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "count": 2,
+    "entries": [
+      { "name": "DireWolf", "maxCount": 2, "probability": 100 }
+    ],
+    "name": "Spawner (112)"
+  },
+  {
+    "guid": "434454b5-2093-4125-8b2c-59c57d6bd98b",
+    "type": "Spawner",
+    "location": [5292, 1316, 0],
+    "map": "Trammel",
+    "homeRange": 8,
+    "walkingRange": 8,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "count": 2,
+    "entries": [
+      { "name": "Corpser", "maxCount": 2, "probability": 100 }
+    ],
+    "name": "Spawner (112)"
+  },
+  {
+    "guid": "48b68bf1-d9b1-4fac-af9e-9c51c90fe891",
+    "type": "Spawner",
+    "location": [5302, 1355, 0],
+    "map": "Trammel",
+    "homeRange": 8,
+    "walkingRange": 12,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "count": 4,
+    "entries": [
+      { "name": "OrcishLord", "maxCount": 1, "probability": 100 },
+      { "name": "Orc", "maxCount": 3, "probability": 100 }
+    ],
+    "name": "Spawner (112)"
+  },
+  {
+    "guid": "4abbaeaf-4d90-4eef-bca1-55bbc1b0b631",
+    "type": "Spawner",
+    "location": [5144, 1960, 0],
+    "map": "Trammel",
+    "homeRange": 8,
+    "walkingRange": 8,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "count": 3,
+    "entries": [
+      { "name": "OrcishLord", "maxCount": 3, "probability": 100 }
+    ],
+    "name": "Spawner (112)"
+  },
+  {
+    "guid": "646f189b-b834-4e7d-9e96-dc8b5d71412d",
+    "type": "Spawner",
+    "location": [5300, 1314, 0],
+    "map": "Trammel",
+    "homeRange": 8,
+    "walkingRange": 10,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "count": 6,
+    "entries": [
+      { "name": "Orc", "maxCount": 3, "probability": 100 },
+      { "name": "OrcishMage", "maxCount": 1, "probability": 100 },
+      { "name": "OrcishLord", "maxCount": 2, "probability": 100 }
+    ],
+    "name": "Spawner (112)"
+  },
+  {
+    "guid": "6d6544ae-63b4-4c8b-8be3-7b52b505f7f9",
+    "type": "Spawner",
+    "location": [5317, 1309, 0],
+    "map": "Trammel",
+    "homeRange": 8,
+    "walkingRange": 8,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "count": 6,
+    "entries": [
+      { "name": "OrcishLord", "maxCount": 1, "probability": 100 },
+      { "name": "OrcishMage", "maxCount": 2, "probability": 100 },
+      { "name": "OrcBomber", "maxCount": 1, "probability": 100 },
+      { "name": "Orc", "maxCount": 2, "probability": 100 }
+    ],
+    "name": "Spawner (112)"
+  },
+  {
+    "guid": "c13bf083-3691-486a-b5af-7779a398b1f8",
+    "type": "Spawner",
+    "location": [5308, 2005, 0],
+    "map": "Trammel",
+    "homeRange": 12,
+    "walkingRange": 12,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "count": 5,
+    "entries": [
+      { "name": "OrcBrute", "maxCount": 1, "probability": 100 },
+      { "name": "Orc", "maxCount": 4, "probability": 100 }
+    ],
+    "name": "Spawner (112)"
+  },
+  {
+    "guid": "c343a444-ed8b-4bc7-9c5f-4ac06bcb18f8",
+    "type": "Spawner",
+    "location": [5332, 1365, 0],
+    "map": "Trammel",
+    "homeRange": 8,
+    "walkingRange": 8,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "count": 3,
+    "entries": [
+      { "name": "Orc", "maxCount": 3, "probability": 100 }
+    ],
+    "name": "Spawner (112)"
+  },
+  {
+    "guid": "cd4b9397-58f2-42bf-ac91-033ad8396eda",
+    "type": "Spawner",
+    "location": [5146, 1995, 0],
+    "map": "Trammel",
+    "homeRange": 8,
+    "walkingRange": 8,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "count": 3,
+    "entries": [
+      { "name": "Orc", "maxCount": 1, "probability": 100 },
+      { "name": "OrcCaptain", "maxCount": 1, "probability": 100 },
+      { "name": "OrcishLord", "maxCount": 1, "probability": 100 }
+    ],
+    "name": "Spawner (112)"
+  },
+  {
+    "guid": "def6d26d-288a-4659-9ccc-b7556ba93dfe",
+    "type": "Spawner",
+    "location": [5281, 2029, 0],
+    "map": "Trammel",
+    "homeRange": 8,
+    "walkingRange": 8,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "count": 3,
+    "entries": [
+      { "name": "Orc", "maxCount": 3, "probability": 100 }
+    ],
+    "name": "Spawner (112)"
+  },
+  {
+    "guid": "ebff4db1-6752-4457-b629-109818ec0294",
+    "type": "Spawner",
+    "location": [5356, 1304, 0],
+    "map": "Trammel",
+    "homeRange": 8,
+    "walkingRange": 10,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "count": 4,
+    "entries": [
+      { "name": "OrcBomber", "maxCount": 1, "probability": 100 },
+      { "name": "OrcCaptain", "maxCount": 1, "probability": 100 },
+      { "name": "Orc", "maxCount": 2, "probability": 100 }
+    ],
+    "name": "Spawner (112)"
+  },
+  {
+    "guid": "f128f5b2-ca75-465f-87b2-d5bbf8c933cf",
+    "type": "Spawner",
+    "location": [5316, 1332, 0],
+    "map": "Trammel",
+    "homeRange": 8,
+    "walkingRange": 8,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "count": 3,
+    "entries": [
+      { "name": "GiantRat", "maxCount": 3, "probability": 100 }
+    ],
+    "name": "Spawner (112)"
+  },
+  {
+    "guid": "f769344d-9b4e-4573-b61a-5d1e4d66361d",
+    "type": "Spawner",
+    "location": [5310, 1969, 0],
+    "map": "Trammel",
+    "homeRange": 12,
+    "walkingRange": 12,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "count": 4,
+    "entries": [
+      { "name": "OrcBomber", "maxCount": 2, "probability": 100 },
+      { "name": "Orc", "maxCount": 2, "probability": 100 }
+    ],
+    "name": "Spawner (112)"
+  }
+]

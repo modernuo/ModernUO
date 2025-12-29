@@ -1,0 +1,286 @@
+﻿[
+  {
+    "guid": "02cf36b9-6188-4bda-9e7f-66d0aac930b8",
+    "type": "Spawner",
+    "location": [6416, 447, -40],
+    "map": "Trammel",
+    "homeRange": 20,
+    "walkingRange": 20,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "count": 15,
+    "entries": [
+      { "name": "PlagueBeast", "maxCount": 8, "probability": 100 },
+      { "name": "PlagueSpawn", "maxCount": 8, "probability": 100 },
+      { "name": "AcidElemental", "maxCount": 7, "probability": 100 },
+      { "name": "CorrosiveSlime", "maxCount": 7, "probability": 100 }
+    ],
+    "name": "Spawner (115)"
+  },
+  {
+    "guid": "4b986151-c607-40ec-b8b2-3b8a09e1e828",
+    "type": "Spawner",
+    "location": [6292, 462, -50],
+    "map": "Trammel",
+    "homeRange": 40,
+    "walkingRange": 40,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "count": 18,
+    "entries": [
+      { "name": "ChaosDaemon", "maxCount": 7, "probability": 100 },
+      { "name": "Moloch", "maxCount": 7, "probability": 100 },
+      { "name": "Succubus", "maxCount": 7, "probability": 100 },
+      { "name": "Daemon", "maxCount": 7, "probability": 100 },
+      { "name": "Balron", "maxCount": 4, "probability": 100 }
+    ],
+    "name": "Spawner (115)"
+  },
+  {
+    "guid": "546847b9-bd52-4a7b-be03-bd9b9f26cb17",
+    "type": "Spawner",
+    "location": [6249, 352, 60],
+    "map": "Trammel",
+    "homeRange": 15,
+    "walkingRange": 15,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "count": 9,
+    "entries": [
+      { "name": "AcidElemental", "maxCount": 6, "probability": 100 },
+      { "name": "EarthElemental", "maxCount": 6, "probability": 100 },
+      { "name": "CorrosiveSlime", "maxCount": 6, "probability": 100 },
+      { "name": "AcidElemental", "maxCount": 1, "probability": 100 },
+      { "name": "EarthElemental", "maxCount": 1, "probability": 100 },
+      { "name": "CorrosiveSlime", "maxCount": 1, "probability": 100 }
+    ],
+    "name": "Spawner (115)"
+  },
+  {
+    "guid": "676cc139-9378-4935-9667-0cbd86e0b2b1",
+    "type": "Spawner",
+    "location": [6285, 353, 60],
+    "map": "Trammel",
+    "homeRange": 5,
+    "walkingRange": 5,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "count": 1,
+    "entries": [
+      { "name": "PoisonElemental", "maxCount": 1, "probability": 100 }
+    ],
+    "name": "Spawner (115)"
+  },
+  {
+    "guid": "851856f8-49a9-4dfd-95bc-e969d748bd9c",
+    "type": "Spawner",
+    "location": [6404, 378, -40],
+    "map": "Trammel",
+    "homeRange": 18,
+    "walkingRange": 18,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "count": 4,
+    "entries": [
+      { "name": "AcidElemental", "maxCount": 2, "probability": 100 },
+      { "name": "PlagueSpawn", "maxCount": 2, "probability": 100 },
+      { "name": "AcidElemental", "maxCount": 1, "probability": 100 },
+      { "name": "PlagueSpawn", "maxCount": 1, "probability": 100 }
+    ],
+    "name": "Spawner (115)"
+  },
+  {
+    "guid": "8bbbe927-ffbd-4f1c-aa89-4982088f1dca",
+    "type": "Spawner",
+    "location": [6298, 395, 60],
+    "map": "Trammel",
+    "homeRange": 8,
+    "walkingRange": 8,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "count": 2,
+    "entries": [
+      { "name": "EarthElemental", "maxCount": 2, "probability": 100 },
+      { "name": "CorrosiveSlime", "maxCount": 2, "probability": 100 }
+    ],
+    "name": "Spawner (115)"
+  },
+  {
+    "guid": "9599a1e0-f678-49f5-8ec6-c4f01998f96f",
+    "type": "Spawner",
+    "location": [6295, 616, -50],
+    "map": "Trammel",
+    "homeRange": 50,
+    "walkingRange": 50,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "count": 27,
+    "entries": [
+      { "name": "Daemon", "maxCount": 6, "probability": 100 },
+      { "name": "Succubus", "maxCount": 6, "probability": 100 },
+      { "name": "InterredGrizzle", "maxCount": 6, "probability": 100 },
+      { "name": "PoisonElemental", "maxCount": 6, "probability": 100 },
+      { "name": "PlagueBeast", "maxCount": 6, "probability": 100 },
+      { "name": "PlagueSpawn", "maxCount": 6, "probability": 100 },
+      { "name": "CorrosiveSlime", "maxCount": 3, "probability": 100 },
+      { "name": "Putrefier", "maxCount": 3, "probability": 100 },
+      { "name": "PlagueBeastLord", "maxCount": 3, "probability": 100 }
+    ],
+    "name": "Spawner (115)"
+  },
+  {
+    "guid": "ad7e7828-7b85-416c-8ca6-6a9e7de99d95",
+    "type": "Spawner",
+    "location": [6319, 348, 60],
+    "map": "Trammel",
+    "homeRange": 20,
+    "walkingRange": 20,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "count": 9,
+    "entries": [
+      { "name": "EarthElemental", "maxCount": 5, "probability": 100 },
+      { "name": "CorrosiveSlime", "maxCount": 5, "probability": 100 },
+      { "name": "AcidElemental", "maxCount": 5, "probability": 100 },
+      { "name": "PlagueSpawn", "maxCount": 5, "probability": 100 },
+      { "name": "EarthElemental", "maxCount": 1, "probability": 100 },
+      { "name": "CorrosiveSlime", "maxCount": 1, "probability": 100 },
+      { "name": "AcidElemental", "maxCount": 1, "probability": 100 },
+      { "name": "PlagueSpawn", "maxCount": 1, "probability": 100 }
+    ],
+    "name": "Spawner (115)"
+  },
+  {
+    "guid": "bae60d5d-cbc7-4fed-ae27-75eb68d79870",
+    "type": "Spawner",
+    "location": [6384, 580, -50],
+    "map": "Trammel",
+    "homeRange": 30,
+    "walkingRange": 30,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "count": 31,
+    "entries": [
+      { "name": "InterredGrizzle", "maxCount": 4, "probability": 100 },
+      { "name": "CorrosiveSlime", "maxCount": 4, "probability": 100 },
+      { "name": "PoisonElemental", "maxCount": 3, "probability": 100 },
+      { "name": "Balron", "maxCount": 9, "probability": 100 },
+      { "name": "Succubus", "maxCount": 9, "probability": 100 },
+      { "name": "Daemon", "maxCount": 9, "probability": 100 },
+      { "name": "PlagueBeastLord", "maxCount": 11, "probability": 100 },
+      { "name": "PlagueBeast", "maxCount": 11, "probability": 100 },
+      { "name": "PlagueSpawn", "maxCount": 11, "probability": 100 }
+    ],
+    "name": "Spawner (115)"
+  },
+  {
+    "guid": "c32b93fc-8549-4d80-8d8a-de99e885a477",
+    "type": "Spawner",
+    "location": [6353, 400, 60],
+    "map": "Trammel",
+    "homeRange": 10,
+    "walkingRange": 10,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "count": 4,
+    "entries": [
+      { "name": "EarthElemental", "maxCount": 4, "probability": 100 },
+      { "name": "CorrosiveSlime", "maxCount": 4, "probability": 100 }
+    ],
+    "name": "Spawner (115)"
+  },
+  {
+    "guid": "c3c0fc01-0e9e-420e-a994-ce64bc57a96e",
+    "type": "Spawner",
+    "location": [6354, 455, -40],
+    "map": "Trammel",
+    "homeRange": 20,
+    "walkingRange": 20,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "count": 10,
+    "entries": [
+      { "name": "PlagueBeast", "maxCount": 5, "probability": 100 },
+      { "name": "CorrosiveSlime", "maxCount": 5, "probability": 100 },
+      { "name": "PoisonElemental", "maxCount": 5, "probability": 100 },
+      { "name": "PlagueSpawn", "maxCount": 5, "probability": 100 }
+    ],
+    "name": "Spawner (115)"
+  },
+  {
+    "guid": "c68cc7ec-9447-455e-ac60-ab1d1f319bc5",
+    "type": "Spawner",
+    "location": [6466, 543, -50],
+    "map": "Trammel",
+    "homeRange": 30,
+    "walkingRange": 30,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "count": 22,
+    "entries": [
+      { "name": "Balron", "maxCount": 6, "probability": 100 },
+      { "name": "Succubus", "maxCount": 6, "probability": 100 },
+      { "name": "Daemon", "maxCount": 6, "probability": 100 },
+      { "name": "CorrosiveSlime", "maxCount": 3, "probability": 100 },
+      { "name": "PlagueBeastLord", "maxCount": 8, "probability": 100 },
+      { "name": "PlagueBeast", "maxCount": 8, "probability": 100 },
+      { "name": "PlagueSpawn", "maxCount": 8, "probability": 100 },
+      { "name": "InterredGrizzle", "maxCount": 5, "probability": 100 },
+      { "name": "PoisonElemental", "maxCount": 5, "probability": 100 }
+    ],
+    "name": "Spawner (115)"
+  },
+  {
+    "guid": "cb00720f-c41e-413f-8cec-b90e2fe72b4a",
+    "type": "Spawner",
+    "location": [6328, 517, -50],
+    "map": "Trammel",
+    "homeRange": 10,
+    "walkingRange": 10,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "count": 4,
+    "entries": [
+      { "name": "PoisonElemental", "maxCount": 4, "probability": 100 }
+    ],
+    "name": "Spawner (115)"
+  },
+  {
+    "guid": "dcc7984a-1911-4368-81df-344fa7b0a2b5",
+    "type": "Spawner",
+    "location": [6418, 358, -40],
+    "map": "Trammel",
+    "homeRange": 25,
+    "walkingRange": 25,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "count": 22,
+    "entries": [
+      { "name": "PlagueSpawn", "maxCount": 12, "probability": 100 },
+      { "name": "PlagueBeast", "maxCount": 12, "probability": 100 },
+      { "name": "AcidElemental", "maxCount": 12, "probability": 100 },
+      { "name": "CorrosiveSlime", "maxCount": 12, "probability": 100 },
+      { "name": "PoisonElemental", "maxCount": 12, "probability": 100 },
+      { "name": "PlagueSpawn", "maxCount": 2, "probability": 100 },
+      { "name": "PlagueBeast", "maxCount": 2, "probability": 100 },
+      { "name": "AcidElemental", "maxCount": 2, "probability": 100 },
+      { "name": "CorrosiveSlime", "maxCount": 2, "probability": 100 },
+      { "name": "PoisonElemental", "maxCount": 2, "probability": 100 }
+    ],
+    "name": "Spawner (115)"
+  }
+]
