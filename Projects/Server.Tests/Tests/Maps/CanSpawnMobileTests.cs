@@ -9,8 +9,6 @@ namespace Server.Tests.Tests.Maps;
 [Collection("Sequential Server Tests")]
 public class CanSpawnMobileTests
 {
-    #region Basic Validation Tests
-
     [Fact]
     public void CanSpawnMobile_InternalMapReturnsFalse()
     {
@@ -30,10 +28,6 @@ public class CanSpawnMobileTests
         Assert.False(map.CanSpawnMobile(map.Width + 1, 100, -128, 127, false, false, out _));
         Assert.False(map.CanSpawnMobile(100, map.Height + 1, -128, 127, false, false, out _));
     }
-
-    #endregion
-
-    #region Land Surface Tests
 
     // Use coordinates near Britain which should be walkable land in both test and real data
     private const int TestLandX = 1500;
@@ -73,10 +67,6 @@ public class CanSpawnMobileTests
 
         Assert.False(result, "cantWalk=true should not find land as valid surface");
     }
-
-    #endregion
-
-    #region Mobile Blocking Tests
 
     [Fact]
     public void CanSpawnMobile_MobileBlocksSpawn()
@@ -162,10 +152,6 @@ public class CanSpawnMobileTests
         }
     }
 
-    #endregion
-
-    #region Helper Classes
-
     private class TestMobile : Mobile
     {
         public TestMobile()
@@ -174,6 +160,4 @@ public class CanSpawnMobileTests
             Hidden = false;
         }
     }
-
-    #endregion
 }

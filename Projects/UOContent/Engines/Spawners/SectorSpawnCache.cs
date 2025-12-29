@@ -15,129 +15,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Runtime.Intrinsics.X86;
 using Server.Collections;
 using Server.Regions;
 
 namespace Server.Engines.Spawners;
-
-/// <summary>
-/// Cached spawn position data for a 16x16 sector.
-/// Uses a bitmap to track valid spawn positions (256 bits = 4 ulongs = 32 bytes).
-/// </summary>
-public struct SectorSpawnCache
-{
-    public ulong Bits0;
-    public ulong Bits1;
-    public ulong Bits2;
-    public ulong Bits3;
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly int GetCount() =>
-        BitOperations.PopCount(Bits0) +
-        BitOperations.PopCount(Bits1) +
-        BitOperations.PopCount(Bits2) +
-        BitOperations.PopCount(Bits3);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void SetBit(int bitIndex)
-    {
-        var ulongIndex = bitIndex >> 6; // / 64
-        var bitPosition = bitIndex & 0x3F; // % 64
-
-        switch (ulongIndex)
-        {
-            case 0: Bits0 |= 1UL << bitPosition; break;
-            case 1: Bits1 |= 1UL << bitPosition; break;
-            case 2: Bits2 |= 1UL << bitPosition; break;
-            case 3: Bits3 |= 1UL << bitPosition; break;
-        }
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly bool GetBit(int bitIndex)
-    {
-        var ulongIndex = bitIndex >> 6;
-        var bitPosition = bitIndex & 0x3F;
-
-        return ulongIndex switch
-        {
-            0 => (Bits0 & (1UL << bitPosition)) != 0,
-            1 => (Bits1 & (1UL << bitPosition)) != 0,
-            2 => (Bits2 & (1UL << bitPosition)) != 0,
-            3 => (Bits3 & (1UL << bitPosition)) != 0,
-            _ => false
-        };
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void ClearBit(int bitIndex)
-    {
-        var ulongIndex = bitIndex >> 6;
-        var bitPosition = bitIndex & 0x3F;
-
-        switch (ulongIndex)
-        {
-            case 0: Bits0 &= ~(1UL << bitPosition); break;
-            case 1: Bits1 &= ~(1UL << bitPosition); break;
-            case 2: Bits2 &= ~(1UL << bitPosition); break;
-            case 3: Bits3 &= ~(1UL << bitPosition); break;
-        }
-    }
-
-    /// <summary>
-    /// Gets the Nth set bit position (0-indexed) from the bitmap.
-    /// </summary>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public readonly int GetNthBitPosition(int n)
-    {
-        var count0 = BitOperations.PopCount(Bits0);
-        if (n < count0)
-        {
-            return GetNthBitInUlong(Bits0, n);
-        }
-        n -= count0;
-
-        var count1 = BitOperations.PopCount(Bits1);
-        if (n < count1)
-        {
-            return 64 + GetNthBitInUlong(Bits1, n);
-        }
-        n -= count1;
-
-        var count2 = BitOperations.PopCount(Bits2);
-        if (n < count2)
-        {
-            return 128 + GetNthBitInUlong(Bits2, n);
-        }
-        n -= count2;
-
-        return 192 + GetNthBitInUlong(Bits3, n);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static int GetNthBitInUlong(ulong bits, int n)
-    {
-        // BMI2 PDEP: O(1) - deposits the nth selector bit into the position of the nth set bit
-        if (Bmi2.X64.IsSupported)
-        {
-            var deposited = Bmi2.X64.ParallelBitDeposit(1UL << n, bits);
-            return BitOperations.TrailingZeroCount(deposited);
-        }
-
-        // Fallback: O(popcount) - clear n set bits, then find position of next one
-        while (n > 0 && bits != 0)
-        {
-            bits &= bits - 1; // Clear lowest set bit
-            n--;
-        }
-
-        return bits == 0 ? -1 : BitOperations.TrailingZeroCount(bits);
-    }
-}
 
 /// <summary>
 /// Global manager for sector-based spawn position caching.
@@ -147,8 +30,8 @@ public struct SectorSpawnCache
 /// </summary>
 public static class SectorSpawnCacheManager
 {
-    private static readonly Dictionary<(Map, int, int), SectorSpawnCache> _landCaches = [];
-    private static readonly Dictionary<(Map, int, int), SectorSpawnCache> _waterCaches = [];
+    private static readonly Dictionary<(Map, int, int), BitMask256> _landCaches = [];
+    private static readonly Dictionary<(Map, int, int), BitMask256> _waterCaches = [];
 
     /// <summary>
     /// Marks a position as valid for spawning in the global cache.
@@ -245,7 +128,7 @@ public static class SectorSpawnCacheManager
 
                     if (caches.TryGetValue((map, sx, sy), out var cache))
                     {
-                        var count = cache.GetCount();
+                        var count = cache.PopCount();
                         if (count > 0)
                         {
                             sectorList.Add((sx, sy, count));
@@ -281,7 +164,7 @@ public static class SectorSpawnCacheManager
                     }
 
                     var indexInSector = targetIndex - currentIndex;
-                    var bitPosition = cache.GetNthBitPosition(indexInSector);
+                    var bitPosition = cache.GetNthSetBit(indexInSector);
 
                     var localX = bitPosition & (Map.SectorSize - 1);
                     var localY = bitPosition >> Map.SectorShift;

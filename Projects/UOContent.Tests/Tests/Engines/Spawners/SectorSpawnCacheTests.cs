@@ -5,14 +5,14 @@ using Xunit;
 
 namespace UOContent.Tests;
 
-public class SectorSpawnCacheTests
+public class BitMask256Tests
 {
     [Fact]
-    public void SectorSpawnCache_InitialState_AllBitsZero()
+    public void BitMask256_InitialState_AllBitsZero()
     {
-        var cache = new SectorSpawnCache();
+        var mask = BitMask256.AllClear();
 
-        Assert.Equal(0, cache.GetCount());
+        Assert.Equal(0, mask.PopCount());
     }
 
     [Theory]
@@ -24,48 +24,48 @@ public class SectorSpawnCacheTests
     [InlineData(191)]
     [InlineData(192)]
     [InlineData(255)]
-    public void SectorSpawnCache_SetBit_SetsCorrectBit(int bitIndex)
+    public void BitMask256_SetBit_SetsCorrectBit(int bitIndex)
     {
-        var cache = new SectorSpawnCache();
+        var mask = BitMask256.AllClear();
 
-        cache.SetBit(bitIndex);
+        mask.SetBit(bitIndex);
 
-        Assert.True(cache.GetBit(bitIndex));
-        Assert.Equal(1, cache.GetCount());
+        Assert.True(mask.GetBit(bitIndex));
+        Assert.Equal(1, mask.PopCount());
     }
 
     [Fact]
-    public void SectorSpawnCache_SetMultipleBits_CountsCorrectly()
+    public void BitMask256_SetMultipleBits_CountsCorrectly()
     {
-        var cache = new SectorSpawnCache();
+        var mask = BitMask256.AllClear();
 
-        cache.SetBit(0);
-        cache.SetBit(64);
-        cache.SetBit(128);
-        cache.SetBit(192);
+        mask.SetBit(0);
+        mask.SetBit(64);
+        mask.SetBit(128);
+        mask.SetBit(192);
 
-        Assert.Equal(4, cache.GetCount());
-        Assert.True(cache.GetBit(0));
-        Assert.True(cache.GetBit(64));
-        Assert.True(cache.GetBit(128));
-        Assert.True(cache.GetBit(192));
-        Assert.False(cache.GetBit(1));
+        Assert.Equal(4, mask.PopCount());
+        Assert.True(mask.GetBit(0));
+        Assert.True(mask.GetBit(64));
+        Assert.True(mask.GetBit(128));
+        Assert.True(mask.GetBit(192));
+        Assert.False(mask.GetBit(1));
     }
 
     [Fact]
-    public void SectorSpawnCache_ClearBit_ClearsCorrectBit()
+    public void BitMask256_ClearBit_ClearsCorrectBit()
     {
-        var cache = new SectorSpawnCache();
+        var mask = BitMask256.AllClear();
 
-        cache.SetBit(50);
-        cache.SetBit(100);
-        Assert.Equal(2, cache.GetCount());
+        mask.SetBit(50);
+        mask.SetBit(100);
+        Assert.Equal(2, mask.PopCount());
 
-        cache.ClearBit(50);
+        mask.ClearBit(50);
 
-        Assert.False(cache.GetBit(50));
-        Assert.True(cache.GetBit(100));
-        Assert.Equal(1, cache.GetCount());
+        Assert.False(mask.GetBit(50));
+        Assert.True(mask.GetBit(100));
+        Assert.Equal(1, mask.PopCount());
     }
 
     [Theory]
@@ -73,31 +73,31 @@ public class SectorSpawnCacheTests
     [InlineData(1, 64)]  // First bit of second ulong
     [InlineData(2, 128)] // First bit of third ulong
     [InlineData(3, 192)] // First bit of fourth ulong
-    public void SectorSpawnCache_GetNthBitPosition_FirstBitInEachUlong(int n, int expectedPosition)
+    public void BitMask256_GetNthSetBit_FirstBitInEachUlong(int n, int expectedPosition)
     {
-        var cache = new SectorSpawnCache();
+        var mask = BitMask256.AllClear();
 
         // Set first bit in each ulong
-        cache.SetBit(0);
-        cache.SetBit(64);
-        cache.SetBit(128);
-        cache.SetBit(192);
+        mask.SetBit(0);
+        mask.SetBit(64);
+        mask.SetBit(128);
+        mask.SetBit(192);
 
-        Assert.Equal(expectedPosition, cache.GetNthBitPosition(n));
+        Assert.Equal(expectedPosition, mask.GetNthSetBit(n));
     }
 
     [Fact]
-    public void SectorSpawnCache_GetNthBitPosition_WithinSingleUlong()
+    public void BitMask256_GetNthSetBit_WithinSingleUlong()
     {
-        var cache = new SectorSpawnCache();
+        var mask = BitMask256.AllClear();
 
-        cache.SetBit(5);
-        cache.SetBit(10);
-        cache.SetBit(20);
+        mask.SetBit(5);
+        mask.SetBit(10);
+        mask.SetBit(20);
 
-        Assert.Equal(5, cache.GetNthBitPosition(0));
-        Assert.Equal(10, cache.GetNthBitPosition(1));
-        Assert.Equal(20, cache.GetNthBitPosition(2));
+        Assert.Equal(5, mask.GetNthSetBit(0));
+        Assert.Equal(10, mask.GetNthSetBit(1));
+        Assert.Equal(20, mask.GetNthSetBit(2));
     }
 }
 

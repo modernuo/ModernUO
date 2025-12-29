@@ -21,8 +21,6 @@ public class CanFitItemTests
         Skip.If(!ServerFixture.TileDataLoaded, "TileData not loaded - client files required");
     }
 
-    #region Basic Validation Tests
-
     [Fact]
     public void CanFitItem_InternalMapReturnsFalse()
     {
@@ -41,10 +39,6 @@ public class CanFitItemTests
         Assert.False(map.CanFitItem(map.Width + 1, 100, 0, 1));
         Assert.False(map.CanFitItem(100, map.Height + 1, 0, 1));
     }
-
-    #endregion
-
-    #region Land Surface Tests
 
     private const int TestLandX = 1500;
     private const int TestLandY = 1600;
@@ -71,10 +65,6 @@ public class CanFitItemTests
 
         Assert.False(result, "No surface 50 units above land");
     }
-
-    #endregion
-
-    #region Surface + Impassable Tests (Tables, Furniture)
 
     [SkippableFact]
     public void CanFitItem_SurfaceImpassableMultiIsValidSurface()
@@ -145,10 +135,6 @@ public class CanFitItemTests
         }
     }
 
-    #endregion
-
-    #region World Item Surface Tests
-
     [SkippableFact]
     public void CanFitItem_NonMovableWorldItemSurfaceWorks()
     {
@@ -215,10 +201,6 @@ public class CanFitItemTests
         }
     }
 
-    #endregion
-
-    #region Blocking Tests
-
     [SkippableFact]
     public void CanFitItem_ImpassableTileBlocksPlacement()
     {
@@ -278,10 +260,6 @@ public class CanFitItemTests
         }
     }
 
-    #endregion
-
-    #region Helper Methods and Classes
-
     private TestMulti CreateSurfaceImpassableMulti(Map map, Point3D location, int surfaceZ)
     {
         // Use SurfaceImpassableTileId - a tile that has both Surface and Impassable flags
@@ -322,6 +300,4 @@ public class CanFitItemTests
 
         public override MultiComponentList Components => _components;
     }
-
-    #endregion
 }

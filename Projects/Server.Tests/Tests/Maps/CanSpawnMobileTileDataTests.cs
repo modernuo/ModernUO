@@ -23,8 +23,6 @@ public class CanSpawnMobileTileDataTests
         Skip.If(!ServerFixture.TileDataLoaded, "TileData not loaded - client files required");
     }
 
-    #region Multi-Based Tests
-
     [SkippableFact]
     public void CanSpawnMobile_FindsSurfaceOnMulti()
     {
@@ -241,10 +239,6 @@ public class CanSpawnMobileTileDataTests
         }
     }
 
-    #endregion
-
-    #region Real Map Data Tests
-
     [SkippableFact]
     public void CanSpawnMobile_MalasBuilding_FindsGroundFloor()
     {
@@ -289,10 +283,6 @@ public class CanSpawnMobileTileDataTests
         Assert.True(result);
         Assert.True(spawnZ <= -40, $"Expected lowest floor around -50, got {spawnZ}");
     }
-
-    #endregion
-
-    #region Helper Methods and Classes
 
     private TestMulti CreateFloorMulti(Map map, Point3D location, int floorZ)
     {
@@ -367,6 +357,4 @@ public class CanSpawnMobileTileDataTests
 
         public override MultiComponentList Components => _components;
     }
-
-    #endregion
 }
