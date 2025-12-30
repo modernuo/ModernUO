@@ -465,7 +465,7 @@ namespace Server.Engines.Mahjong
                 return;
             }
 
-            Span<byte> buffer = stackalloc byte[MahjongGeneralInfoPacketLength].InitializePacket();
+            var buffer = stackalloc byte[MahjongGeneralInfoPacketLength].InitializePacket();
             CreateMahjongGeneralInfo(buffer, game);
 
             ns.Send(buffer);
@@ -508,7 +508,7 @@ namespace Server.Engines.Mahjong
                 return;
             }
 
-            Span<byte> buffer = stackalloc byte[MahjongRelievePacketLength].InitializePacket();
+            var buffer = stackalloc byte[MahjongRelievePacketLength].InitializePacket();
             CreateMahjongRelieve(buffer, game);
 
             ns.Send(buffer);

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using ModernUO.CodeGeneratedEvents;
+using Server.Engines.BuffIcons;
 using Server.Mobiles;
 
 namespace Server.Spells.First
@@ -72,7 +73,7 @@ namespace Server.Spells.First
                             Caster.RemoveResistanceMod(mods[i]);
                         }
 
-                        BuffInfo.RemoveBuff(Caster, BuffIcon.ReactiveArmor);
+                        (Caster as PlayerMobile)?.RemoveBuff(BuffIcon.ReactiveArmor);
                     }
                     else
                     {
@@ -102,7 +103,7 @@ namespace Server.Spells.First
                         var physresist = 15 + (int)(Caster.Skills.Inscribe.Value / 20);
                         var args = $"{physresist}\t{5}\t{5}\t{5}\t{5}";
 
-                        BuffInfo.AddBuff(Caster, new BuffInfo(BuffIcon.ReactiveArmor, 1075812, 1075813, args));
+                        (Caster as PlayerMobile)?.AddBuff(new BuffInfo(BuffIcon.ReactiveArmor, 1075812, 1075813, args: args));
                     }
                 }
 
@@ -157,7 +158,7 @@ namespace Server.Spells.First
                 m.RemoveResistanceMod(mods[i]);
             }
 
-            BuffInfo.RemoveBuff(m, BuffIcon.ReactiveArmor);
+            (m as PlayerMobile)?.RemoveBuff(BuffIcon.ReactiveArmor);
         }
     }
 }

@@ -7,13 +7,14 @@ public abstract class StaticWarningGump<T> : StaticGump<T> where T : StaticWarni
 {
     public virtual int Header => 1060635; // <CENTER>WARNING</CENTER>
     public virtual int HeaderColor => 0x7800;
-    public virtual int ContentColor => StaticLocalizedContent > 0 ? 0x7F00 : 0xFFC000;
+    public virtual string ContentColor => "#FFC000";
     public abstract int Width { get; }
     public abstract int Height { get; }
     public virtual bool CancelButton => true;
 
     // If this is overridden, then the content will be localized and cached.
     public virtual int StaticLocalizedContent => 0;
+    public virtual int StaticLocalizedContentColor => 0x7F00;
 
     public virtual string Content => null;
 
@@ -55,7 +56,7 @@ public abstract class StaticWarningGump<T> : StaticGump<T> where T : StaticWarni
                 width - 20,
                 height - 80,
                 StaticLocalizedContent,
-                (short)ContentColor,
+                StaticLocalizedContentColor,
                 false,
                 true
             );
@@ -88,7 +89,7 @@ public abstract class StaticWarningGump<T> : StaticGump<T> where T : StaticWarni
 
     protected sealed override void BuildStrings(ref GumpStringsBuilder builder)
     {
-        builder.SetStringSlot("content", Content.Color(ContentColor));
+        builder.SetHtmlText("content", Content, ContentColor);
     }
 
     public override void OnResponse(NetState sender, in RelayInfo info) => _callback?.Invoke(info.ButtonID == 1);

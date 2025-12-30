@@ -15,9 +15,10 @@ public partial class PlagueBeastMutationCore : Item, IScissorable
     public PlagueBeastMutationCore() : base(0x1CF0)
     {
         _cut = true;
-        Weight = 1.0;
         Hue = 0x480;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1153760; // a plague beast mutation core
 

@@ -19,9 +19,9 @@ public abstract partial class BaseBoard : Container, ISecurable
     public BaseBoard(int itemID) : base(itemID)
     {
         CreatePieces();
-
-        Weight = 5.0;
     }
+
+    public override double DefaultWeight => 5.0;
 
     public override bool DisplaysContent => false; // Do not display (x items, y stones)
 
@@ -71,7 +71,7 @@ public abstract partial class BaseBoard : Container, ISecurable
             }
             else
             {
-                Span<byte> buffer = stackalloc byte[OutgoingEffectPackets.SoundPacketLength].InitializePacket();
+                var buffer = stackalloc byte[OutgoingEffectPackets.SoundPacketLength].InitializePacket();
 
                 foreach (var state in GetClientsInRange(2))
                 {

@@ -194,7 +194,7 @@ namespace Server.Engines.Harvest
 
         public override bool CheckResources(Mobile from, Item tool, HarvestDefinition def, Map map, Point3D loc, bool timed)
         {
-            Container pack = from.Backpack;
+            var pack = from.Backpack;
 
             if (pack != null)
             {

@@ -47,35 +47,17 @@ public partial class ProximitySpawner : Spawner
     }
 
     [Constructible(AccessLevel.Developer)]
-    public ProximitySpawner(int amount, int minDelay, int maxDelay, int team, int homeRange, string spawnName)
-        : base(amount, minDelay, maxDelay, team, homeRange, spawnName)
-    {
-    }
-
-    [Constructible(AccessLevel.Developer)]
     public ProximitySpawner(
-        int amount, int minDelay, int maxDelay, int team, int homeRange, int triggerRange,
-        string spawnMessage, bool instantFlag, string spawnName
-    ) : base(amount, minDelay, maxDelay, team, homeRange, spawnName)
-    {
-        TriggerRange = triggerRange;
-        SpawnMessage = TextDefinition.Parse(spawnMessage);
-        InstantFlag = instantFlag;
-    }
-
-    [Constructible(AccessLevel.Developer)]
-    public ProximitySpawner(
-        int amount, TimeSpan minDelay, TimeSpan maxDelay, int team, int homeRange,
-        params string[] spawnedNames
-    ) : base(amount, minDelay, maxDelay, team, homeRange, spawnedNames)
-    {
-    }
-
-    [Constructible(AccessLevel.Developer)]
-    public ProximitySpawner(
-        int amount, TimeSpan minDelay, TimeSpan maxDelay, int team, int homeRange, int triggerRange,
-        TextDefinition spawnMessage, bool instantFlag, params string[] spawnedNames
-    ) : base(amount, minDelay, maxDelay, team, homeRange, spawnedNames)
+        int amount,
+        TimeSpan minDelay,
+        TimeSpan maxDelay,
+        int team = 0,
+        Rectangle3D spawnBounds = default,
+        int triggerRange = 0,
+        TextDefinition spawnMessage = null,
+        bool instantFlag = false,
+        params ReadOnlySpan<string> spawnedNames
+    ) : base(amount, minDelay, maxDelay, team, spawnBounds, spawnedNames)
     {
         TriggerRange = triggerRange;
         SpawnMessage = spawnMessage;

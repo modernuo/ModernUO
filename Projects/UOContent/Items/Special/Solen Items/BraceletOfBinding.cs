@@ -23,11 +23,9 @@ public partial class BraceletOfBinding : BaseBracelet, TranslocationItem
     private TransportTimer _timer;
 
     [Constructible]
-    public BraceletOfBinding() : base(0x1086)
-    {
-        Hue = 0x489;
-        Weight = 1.0;
-    }
+    public BraceletOfBinding() : base(0x1086) => Hue = 0x489;
+
+    public override double DefaultWeight => 1.0;
 
     [SerializableProperty(0)]
     [CommandProperty(AccessLevel.GameMaster)]

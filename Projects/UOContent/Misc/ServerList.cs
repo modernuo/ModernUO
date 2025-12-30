@@ -239,7 +239,7 @@ namespace Server.Misc
                 try
                 {
                     // This isn't called often so we don't need to optimize
-                    using HttpClient hc = new HttpClient();
+                    using var hc = new HttpClient();
                     hc.Timeout = TimeSpan.FromSeconds(1); // Only wait 1 second
                     var ipAddress = hc.GetStringAsync(_ipifyUrl).Result;
                     return IPAddress.Parse(ipAddress);

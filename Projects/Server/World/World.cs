@@ -125,7 +125,7 @@ public static class World
     {
         var length = OutgoingMessagePackets.GetMaxMessageLength(text);
 
-        Span<byte> buffer = stackalloc byte[length].InitializePacket();
+        var buffer = stackalloc byte[length].InitializePacket();
 
         foreach (var ns in NetState.Instances)
         {
@@ -153,7 +153,7 @@ public static class World
     {
         var length = OutgoingMessagePackets.GetMaxMessageLength(text);
 
-        Span<byte> buffer = stackalloc byte[length].InitializePacket();
+        var buffer = stackalloc byte[length].InitializePacket();
 
         foreach (var ns in NetState.Instances)
         {
@@ -279,8 +279,6 @@ public static class World
 
     private static void Preserialize(object state)
     {
-        var tempPath = PathUtility.EnsureRandomPath(_tempSavePath);
-
         try
         {
             // Allocate the heaps for the GC
@@ -290,7 +288,9 @@ public static class World
             }
 
             WakeSerializationThreads();
-            Core.RequestSnapshot(tempPath);
+
+            // Execute this synchronously so we don't have a race condition
+            Core.LoopContext.Post(() => Core.RequestSnapshot(PathUtility.EnsureRandomPath(_tempSavePath)));
         }
         catch (Exception ex)
         {
@@ -323,6 +323,11 @@ public static class World
         try
         {
             _serializationStart = Core.Now;
+
+            if (string.IsNullOrEmpty(snapshotPath))
+            {
+                throw new ArgumentException("Snapshot path cannot be null or empty", nameof(snapshotPath));
+            }
 
             Persistence.SerializeAll();
             PauseSerializationThreads();
@@ -487,7 +492,12 @@ public static class World
         else
         {
             logger.Warning($"Attempted to call World.RemoveEntity with '{entity.GetType()}'. Must be a mobile or item.");
+            return;
         }
+
+#if TRACK_LEAKS
+        EntityFinalizationTracker.TrackEntity(entity);
+#endif
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

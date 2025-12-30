@@ -7,7 +7,11 @@ namespace Server.Items;
 public partial class MasonryBook : Item
 {
     [Constructible]
-    public MasonryBook() : base(0xFBE) => Weight = 1.0;
+    public MasonryBook() : base(0xFBE)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1153527; // Making valuables with Stonecrafting
 

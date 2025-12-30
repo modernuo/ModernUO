@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2024 - ModernUO Development Team                       *
+ * Copyright 2019-2025 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: ArtData.cs                                                      *
  *                                                                       *
@@ -50,18 +50,18 @@ public class ArtData : IDisposable
         }
     }
 
-    public Rectangle2D GetStaticBounds(int index)
+    public (ushort Width, ushort Height, Rectangle2D Bounds) GetStaticBounds(int index)
     {
         if (index is < 0 or > 0x10000)
         {
-            return Rectangle2D.Empty;
+            return (0, 0, Rectangle2D.Empty);
         }
 
         index += 16384;
 
         if (!_dataRanges.TryGetValue(index, out var entry))
         {
-            return Rectangle2D.Empty;
+            return (0, 0, Rectangle2D.Empty);
         }
 
         Span<ushort> buffer = stackalloc ushort[entry.Size / 2];
@@ -73,10 +73,10 @@ public class ArtData : IDisposable
 
         if (width == 0 || height == 0)
         {
-            return Rectangle2D.Empty;
+            return (0, 0, Rectangle2D.Empty);
         }
 
-        return GetBoundsFromRGBA1555Bitmap(width, height, buffer[4..]);
+        return (width, height, GetBoundsFromRGBA1555Bitmap(width, height, buffer[4..]));
     }
 
     private static Dictionary<int, UOPEntry> LoadMulRanges(string idxPath)
@@ -106,15 +106,15 @@ public class ArtData : IDisposable
 
     public static Rectangle2D GetBoundsFromRGBA1555Bitmap(int width, int height, ReadOnlySpan<ushort> data)
     {
-        ReadOnlySpan<ushort> lookups = data[..height];
+        var lookups = data[..height];
         data = data[height..];
 
-        int xMin = width;
-        int yMin = height;
-        int xMax = -1;
-        int yMax = -1;
+        var xMin = width;
+        var yMin = height;
+        var xMax = -1;
+        var yMax = -1;
 
-        for (int y = 0; y < height; y++)
+        for (var y = 0; y < height; y++)
         {
             var i = lookups[y];
             var x = 0;
@@ -133,7 +133,7 @@ public class ArtData : IDisposable
                 for (var end = x + pixelCount; x < end; x++)
                 {
                     // Get the pixel value from the bitmap data
-                    ushort pixel = data[i++];
+                    var pixel = data[i++];
 
                     // Check if the pixel is non-black (0 in 555 RGB is completely black)
                     if (pixel == 0)

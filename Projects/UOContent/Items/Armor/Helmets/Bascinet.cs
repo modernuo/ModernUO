@@ -6,7 +6,11 @@ namespace Server.Items
     public partial class Bascinet : BaseArmor
     {
         [Constructible]
-        public Bascinet() : base(0x140C) => Weight = 5.0;
+        public Bascinet() : base(0x140C)
+        {
+        }
+
+        public override double DefaultWeight => 5.0;
 
         public override int BasePhysicalResistance => 7;
         public override int BaseFireResistance => 2;

@@ -163,7 +163,7 @@ namespace Server.Spells
             {
                 _contextTable[type] = context = new DelayedDamageContextWrapper();
 
-                for (int i = 0; i < damageStacking.Length; i++)
+                for (var i = 0; i < damageStacking.Length; i++)
                 {
                     _contextTable.Add(damageStacking[i], context);
                 }
@@ -828,6 +828,12 @@ namespace Server.Spells
             if (!target.Alive && !allowDead)
             {
                 Caster.SendLocalizedMessage(501857); // This spell won't work on that!
+                return false;
+            }
+
+            if ((Caster as PlayerMobile)?.Young == true && (target as PlayerMobile)?.Young == false)
+            {
+                Caster.SendLocalizedMessage(500278); // As a young player, you may not cast beneficial spells onto older players.
                 return false;
             }
 

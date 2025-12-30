@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Server.Buffers;
+using Server.Text;
 
 namespace Server;
 
@@ -82,7 +83,7 @@ public static class StringHelpers
             return "";
         }
 
-        char[] chrs = STArrayPool<char>.Shared.Rent(a.Length);
+        var chrs = STArrayPool<char>.Shared.Rent(a.Length);
         var span = chrs.AsSpan(0, a.Length);
 
         a.Remove(b, comparison, span, out var size);
@@ -101,7 +102,7 @@ public static class StringHelpers
             return value;
         }
 
-        char[] chrs = STArrayPool<char>.Shared.Rent(value.Length);
+        var chrs = STArrayPool<char>.Shared.Rent(value.Length);
         var span = chrs.AsSpan(0, value.Length);
 
         var sliced = value.AsSpan();
@@ -285,5 +286,19 @@ public static class StringHelpers
         var chars = STArrayPool<char>.Shared.Rent(str.Length);
         str.CopyTo(chars);
         return chars;
+    }
+
+    public static void AppendSpaceWithArticle(this ref ValueStringBuilder builder, string text, bool articleAn)
+    {
+        if (builder.Length != 0)
+        {
+            builder.Append(' ');
+        }
+        else
+        {
+            builder.Append(articleAn ? "an " : "a ");
+        }
+
+        builder.Append(text);
     }
 }

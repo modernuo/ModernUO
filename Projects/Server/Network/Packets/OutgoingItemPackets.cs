@@ -88,7 +88,7 @@ public static class OutgoingItemPackets
             return;
         }
 
-        Span<byte> buffer = stackalloc byte[OutgoingEntityPackets.MaxWorldEntityPacketLength].InitializePacket();
+        var buffer = stackalloc byte[OutgoingEntityPackets.MaxWorldEntityPacketLength].InitializePacket();
 
         var length = ns.StygianAbyss ?
             OutgoingEntityPackets.CreateWorldEntity(buffer, item, ns.HighSeas) :

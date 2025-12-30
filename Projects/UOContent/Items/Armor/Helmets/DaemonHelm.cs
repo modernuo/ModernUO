@@ -10,10 +10,11 @@ namespace Server.Items
         public DaemonHelm() : base(0x1451)
         {
             Hue = 0x648;
-            Weight = 3.0;
 
             ArmorAttributes.SelfRepair = 1;
         }
+
+        public override double DefaultWeight => 3.0;
 
         public override int BasePhysicalResistance => 6;
         public override int BaseFireResistance => 6;

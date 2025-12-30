@@ -3,8 +3,8 @@ using Xunit;
 
 namespace Server.Tests;
 
-[Collection("Sequential Tests")]
-public class TimerTests : IClassFixture<ServerFixture>
+[Collection("Sequential Server Tests")]
+public class TimerTests
 {
     [Theory]
     [InlineData(0L, 8L)]
@@ -23,7 +23,7 @@ public class TimerTests : IClassFixture<ServerFixture>
 
         var tickCount = expectedTicks / 8;
 
-        for (int i = 1; i <= tickCount; i++)
+        for (var i = 1; i <= tickCount; i++)
         {
             timerTicks.Ticks = i * 8;
 
@@ -52,7 +52,7 @@ public class TimerTests : IClassFixture<ServerFixture>
 
         var tickCount = (expectedDelayTicks + (expectedIntervalTicks * count - 1)) / 8;
 
-        for (int i = 1; i <= tickCount; i++)
+        for (var i = 1; i <= tickCount; i++)
         {
             timerTicks.Ticks = i * 8;
 

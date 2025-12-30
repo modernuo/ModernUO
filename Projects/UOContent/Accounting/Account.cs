@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Runtime.CompilerServices;
 using System.Xml;
+using ModernUO.CodeGeneratedEvents;
 using ModernUO.Serialization;
 using Server.Accounting.Security;
 using Server.Misc;
@@ -12,6 +13,7 @@ using Server.Network;
 
 namespace Server.Accounting;
 
+[PropertyObject]
 [SerializationGenerator(6)]
 public partial class Account : IAccount, IComparable<Account>
 {
@@ -20,7 +22,7 @@ public partial class Account : IAccount, IComparable<Account>
     public static readonly TimeSpan EmptyInactiveDuration = TimeSpan.FromDays(30.0);
 
     [InternString]
-    [SerializableField(0)]
+    [SerializableField(0, setter: "private")]
     private string _username;
 
     [SerializableField(1)]
@@ -363,6 +365,19 @@ public partial class Account : IAccount, IComparable<Account>
     }
 
     public bool Deleted { get; private set; }
+
+    public bool TrySetUsername(string username)
+    {
+        if (username == _username || Accounts.GetAccount(username) != null)
+        {
+            return false;
+        }
+
+        Accounts.Remove(this);
+        Username = username;
+        Accounts.Add(this);
+        return true;
+    }
 
     public void SetPassword(string plainPassword)
     {
@@ -768,31 +783,24 @@ public partial class Account : IAccount, IComparable<Account>
         acc.TotalGameTime += Core.Now - pm.SessionStart;
     }
 
-    public static void OnLogin(Mobile m)
+    [OnEvent(nameof(PlayerMobile.PlayerLoginEvent))]
+    public static void OnLogin(PlayerMobile pm)
     {
-        if (m is not PlayerMobile pm)
+        if (pm.Account is not Account acc || !pm.Young || !acc.Young)
         {
             return;
         }
 
-        if (m.Account is not Account acc)
+        var ts = YoungDuration - acc.TotalGameTime;
+        var hours = Math.Max((int)ts.TotalHours, 0);
+
+        if (hours == 1)
         {
-            return;
+            pm.SendAsciiMessage($"You will enjoy the benefits and relatively safe status of a young player for {hours} more hour.");
         }
-
-        if (pm.Young && acc.Young)
+        else
         {
-            var ts = YoungDuration - acc.TotalGameTime;
-            var hours = Math.Max((int)ts.TotalHours, 0);
-
-            if (hours == 1)
-            {
-                m.SendAsciiMessage($"You will enjoy the benefits and relatively safe status of a young player for {hours} more hour.");
-            }
-            else
-            {
-                m.SendAsciiMessage($"You will enjoy the benefits and relatively safe status of a young player for {hours} more hours.");
-            }
+            pm.SendAsciiMessage($"You will enjoy the benefits and relatively safe status of a young player for {hours} more hours.");
         }
     }
 
@@ -840,40 +848,6 @@ public partial class Account : IAccount, IComparable<Account>
         PasswordAlgorithm = algorithm;
         Password = password.ReplaceOrdinal("-", string.Empty);
         return true;
-    }
-
-    /// <summary>
-    ///     Deserializes a list of string values from an xml element. Null values are not added to the list.
-    /// </summary>
-    /// <param name="node">The XmlElement from which to deserialize.</param>
-    /// <returns>String list. Value will never be null.</returns>
-    private static string[] LoadAccessCheck(XmlElement node)
-    {
-        string[] stringList;
-        var accessCheck = node["accessCheck"];
-
-        if (accessCheck != null)
-        {
-            var list = new List<string>();
-
-            foreach (XmlElement ip in accessCheck.GetElementsByTagName("ip"))
-            {
-                var text = Utility.GetText(ip, null);
-
-                if (text != null)
-                {
-                    list.Add(text);
-                }
-            }
-
-            stringList = list.ToArray();
-        }
-        else
-        {
-            stringList = [];
-        }
-
-        return stringList;
     }
 
     /// <summary>
@@ -1160,7 +1134,7 @@ public partial class Account : IAccount, IComparable<Account>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool MoveNext()
         {
-            Mobile[] localList = _mobiles;
+            var localList = _mobiles;
 
             while ((uint)_index < (uint)localList.Length)
             {

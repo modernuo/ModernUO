@@ -72,19 +72,19 @@ public abstract partial class BasePigmentsOfTokuno : Item, IUsesRemaining
 
     public BasePigmentsOfTokuno() : base(0xEFF)
     {
-        Weight = 1.0;
         _usesRemaining = 1;
     }
 
     public BasePigmentsOfTokuno(int uses) : base(0xEFF)
     {
-        Weight = 1.0;
         _usesRemaining = uses;
     }
 
     public BasePigmentsOfTokuno(Serial serial) : base(serial)
     {
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1070933; // Pigments of Tokuno
 

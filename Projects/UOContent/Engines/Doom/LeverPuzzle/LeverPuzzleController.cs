@@ -321,8 +321,8 @@ public partial class LeverPuzzleController : Item
     {
         for (var i = 0; i < 4; i++)
         {
-            Item l;
-            if ((l = GetLever(i)) != null)
+            var l = GetLever(i);
+            if (l != null)
             {
                 l.ItemID = 0x108E;
                 Effects.PlaySound(l.Location, Map, 0x3E8);
@@ -361,43 +361,41 @@ public partial class LeverPuzzleController : Item
         {
             PuzzleStatus(1050004); // The circle is the key...
         }
+        else if (TheirKey == MyKey)
+        {
+            GenKey();
+            Successful = GetOccupant(0);
+            if (Successful != null)
+            {
+                SendLocationEffect(lp_Center, 0x1153, 0, 60, 1);
+                PlaySounds(lp_Center, cs1);
+
+                Effects.SendBoltEffect(Successful);
+                Successful.MoveToWorld(lr_Enter, Map.Malas);
+
+                m_Timer = new LampRoomTimer(this);
+                m_Timer.Start();
+                Enabled = false;
+            }
+        }
         else
         {
-            Mobile player;
-            if (TheirKey == MyKey)
+            for (var i = 0; i < 16; i++) /* Count matching SET bits, ie correct codes */
             {
-                GenKey();
-                if ((Successful = player = GetOccupant(0)) != null)
+                if (((MyKey >> i) & 1) == 1 && ((TheirKey >> i) & 1) == 1)
                 {
-                    SendLocationEffect(lp_Center, 0x1153, 0, 60, 1);
-                    PlaySounds(lp_Center, cs1);
-
-                    Effects.SendBoltEffect(player);
-                    player.MoveToWorld(lr_Enter, Map.Malas);
-
-                    m_Timer = new LampRoomTimer(this);
-                    m_Timer.Start();
-                    Enabled = false;
+                    correct++;
                 }
             }
-            else
+
+            PuzzleStatus(Statue_Msg[correct], correct > 0 ? correct.ToString() : null);
+
+            for (var i = 0; i < 5; i++)
             {
-                for (var i = 0; i < 16; i++) /* Count matching SET bits, ie correct codes */
+                var player = GetOccupant(i);
+                if (player != null)
                 {
-                    if (((MyKey >> i) & 1) == 1 && ((TheirKey >> i) & 1) == 1)
-                    {
-                        correct++;
-                    }
-                }
-
-                PuzzleStatus(Statue_Msg[correct], correct > 0 ? correct.ToString() : null);
-
-                for (var i = 0; i < 5; i++)
-                {
-                    if ((player = GetOccupant(i)) != null)
-                    {
-                        new RockTimer(player).Start();
-                    }
+                    new RockTimer(player).Start();
                 }
             }
         }
@@ -504,7 +502,7 @@ public partial class LeverPuzzleController : Item
     /* I cant find any better way to send "speech" using fonts other than default */
     public static void POHMessage(Mobile from, int index)
     {
-        Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(Msgs[index])].InitializePacket();
+        var buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(Msgs[index])].InitializePacket();
 
         foreach (var state in from.Map.GetClientsInRange(from.Location))
         {
@@ -669,12 +667,13 @@ public partial class LeverPuzzleController : Item
         protected override void OnTick()
         {
             ticks++;
-            var mobiles = m_Controller._lampRoom.GetMobiles();
+            using var mobiles = m_Controller._lampRoom.GetMobilesPooled();
 
             if (ticks >= 71 || m_Controller._lampRoom.GetPlayerCount() == 0)
             {
-                foreach (var mobile in mobiles)
+                for (var i = 0; i < mobiles.Count; i++)
                 {
+                    var mobile = mobiles[i];
                     if (mobile?.Deleted == false && !mobile.IsDeadBondedPet)
                     {
                         mobile.Kill();
@@ -691,33 +690,36 @@ public partial class LeverPuzzleController : Item
                     level++;
                 }
 
-                foreach (var mobile in mobiles)
+                for (var i = 0; i < mobiles.Count; i++)
                 {
-                    if (IsValidDamagable(mobile))
+                    var mobile = mobiles[i];
+                    if (!IsValidDamagable(mobile))
                     {
-                        if (ticks % 2 == 0 && level == 5)
+                        continue;
+                    }
+
+                    if (ticks % 2 == 0 && level == 5)
+                    {
+                        if (mobile.Player)
                         {
-                            if (mobile.Player)
+                            mobile.Say(1062092);
+                            if (AniSafe(mobile))
                             {
-                                mobile.Say(1062092);
-                                if (AniSafe(mobile))
-                                {
-                                    mobile.Animate(32, 5, 1, true, false, 0);
-                                }
+                                mobile.Animate(32, 5, 1, true, false, 0);
                             }
-
-                            DoDamage(mobile, 15, 20, true);
                         }
 
-                        if (Utility.Random((int)(level & ~0xfffffffc), 3) == 3)
-                        {
-                            mobile.ApplyPoison(mobile, PA2[level]);
-                        }
+                        DoDamage(mobile, 15, 20, true);
+                    }
 
-                        if (ticks % 12 == 0 && level > 0 && mobile.Player)
-                        {
-                            mobile.SendLocalizedMessage(PA[level][0], null, PA[level][1]);
-                        }
+                    if (Utility.Random((int)(level & ~0xfffffffc), 3) == 3)
+                    {
+                        mobile.ApplyPoison(mobile, PA2[level]);
+                    }
+
+                    if (ticks % 12 == 0 && level > 0 && mobile.Player)
+                    {
+                        mobile.SendLocalizedMessage(PA[level][0], null, PA[level][1]);
                     }
                 }
 

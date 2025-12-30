@@ -4,6 +4,7 @@ using ModernUO.CodeGeneratedEvents;
 using Server.Accounting;
 using Server.Collections;
 using Server.ContextMenus;
+using Server.Engines.Spawners;
 using Server.Ethics;
 using Server.Guilds;
 using Server.Gumps;
@@ -99,6 +100,8 @@ namespace Server.Multis
 
         [CommandProperty(AccessLevel.GameMaster)]
         public bool RestrictDecay { get; set; }
+
+        public virtual Direction HouseDirection => Direction.South;
 
         public virtual TimeSpan DecayPeriod => TimeSpan.FromDays(5.0);
 
@@ -791,8 +794,8 @@ namespace Server.Multis
 
         public List<Mobile> AvailableVendorsFor(Mobile m)
         {
-            List<Mobile> list = new List<Mobile>();
-            foreach (PlayerVendor vendor in PlayerVendors)
+            var list = new List<Mobile>();
+            foreach (var vendor in PlayerVendors)
             {
                 if (vendor.CanInteractWith(m, false))
                 {
@@ -1233,24 +1236,24 @@ namespace Server.Multis
             return list;
         }
 
-        public List<Mobile> GetMobiles()
+        public PooledRefList<Mobile> GetMobilesPooled()
         {
             if (Map == null || Map == Map.Internal)
             {
-                return new List<Mobile>();
+                return PooledRefList<Mobile>.Create(0);
             }
 
-            var list = new List<Mobile>();
-
-            foreach (var mobile in Region.GetMobiles())
+            var mobileList = Region.GetMobilesPooled();
+            for (var i = mobileList.Count - 1; i >= 0; i--)
             {
-                if (IsInside(mobile))
+                var mobile = mobileList[i];
+                if (!IsInside(mobile))
                 {
-                    list.Add(mobile);
+                    mobileList.Remove(mobile);
                 }
             }
 
-            return list;
+            return mobileList;
         }
 
         public virtual bool CheckAosLockdowns(int need) => GetAosCurLockdowns() + need <= GetAosMaxLockdowns();
@@ -1558,6 +1561,19 @@ namespace Server.Multis
             }
 
             UpdateRegion();
+
+            // Invalidate spawn position cache for affected sectors
+            if (Map != null && Map != Map.Internal)
+            {
+                var mcl = Components;
+                var bounds = new Rectangle2D(
+                    X + mcl.Min.X,
+                    Y + mcl.Min.Y,
+                    mcl.Width,
+                    mcl.Height
+                );
+                SectorSpawnCacheManager.InvalidateSectors(Map, bounds);
+            }
 
             if (Sign?.Deleted == false)
             {
@@ -2334,9 +2350,7 @@ namespace Server.Multis
                     }
                     else
                     {
-                        Container c = fromState.AddTrade(toState);
-
-                        c.DropItem(new TransferItem(this));
+                        fromState.AddTrade(toState).DropItem(new TransferItem(this));
                     }
                 }
             }
@@ -3329,6 +3343,19 @@ namespace Server.Multis
         {
             RestoreRelocatedEntities();
 
+            // Invalidate spawn position cache for affected sectors before deletion
+            if (Map != null && Map != Map.Internal)
+            {
+                var mcl = Components;
+                var bounds = new Rectangle2D(
+                    X + mcl.Min.X,
+                    Y + mcl.Min.Y,
+                    mcl.Width,
+                    mcl.Height
+                );
+                SectorSpawnCacheManager.InvalidateSectors(Map, bounds);
+            }
+
             new FixColumnTimer(this).Start();
 
             base.OnDelete();
@@ -3357,9 +3384,7 @@ namespace Server.Multis
             {
                 for (var i = 0; i < Doors.Count; ++i)
                 {
-                    Item item = Doors[i];
-
-                    item?.Delete();
+                    Doors[i]?.Delete();
                 }
 
                 Doors.Clear();

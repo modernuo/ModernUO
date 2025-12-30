@@ -127,7 +127,7 @@ public class Region : IComparable<Region>, IValueLinkListNode<Region>
     public const int MinZ = sbyte.MinValue;
     public const int MaxZ = sbyte.MaxValue + 1;
 
-    public Region(string name, Map map, int priority, params Rectangle2D[] area) : this(
+    public Region(string name, Map map, int priority, params ReadOnlySpan<Rectangle2D> area) : this(
         name,
         map,
         priority,
@@ -147,7 +147,7 @@ public class Region : IComparable<Region>, IValueLinkListNode<Region>
     public Region(string name, Map map, Region parent, int priority, params Rectangle3D[] area) : this(name, map, parent, area) =>
         Priority = priority;
 
-    public Region(string name, Map map, Region parent, params Rectangle2D[] area) : this(
+    public Region(string name, Map map, Region parent, params ReadOnlySpan<Rectangle2D> area) : this(
         name,
         map,
         parent,
@@ -314,7 +314,7 @@ public class Region : IComparable<Region>, IValueLinkListNode<Region>
     public static Rectangle3D ConvertTo3D(Rectangle2D rect) =>
         new(new Point3D(rect.Start, MinZ), new Point3D(rect.End, MaxZ));
 
-    public static Rectangle3D[] ConvertTo3D(Rectangle2D[] rects)
+    public static Rectangle3D[] ConvertTo3D(ReadOnlySpan<Rectangle2D> rects)
     {
         var ret = new Rectangle3D[rects.Length];
 
@@ -547,10 +547,29 @@ public class Region : IComparable<Region>, IValueLinkListNode<Region>
     public virtual bool AcceptsSpawnsFrom(Region region) =>
         AllowSpawn() && (region == this || Parent?.AcceptsSpawnsFrom(region) == true);
 
+    public PooledRefList<Mobile> GetPlayersPooled()
+    {
+        var list = PooledRefList<Mobile>.Create();
+        for (var i = 0; i < Sectors?.Length; i++)
+        {
+            var sector = Sectors[i];
+
+            foreach (var ns in sector.Clients)
+            {
+                var player = ns.Mobile;
+                if (player?.Deleted == false && player.Region.IsPartOf(this))
+                {
+                    list.Add(ns.Mobile);
+                }
+            }
+        }
+
+        return list;
+    }
+
     public List<Mobile> GetPlayers()
     {
-        var list = new List<Mobile>();
-
+        List<Mobile> list = [];
         for (var i = 0; i < Sectors?.Length; i++)
         {
             var sector = Sectors[i];
@@ -609,6 +628,25 @@ public class Region : IComparable<Region>, IValueLinkListNode<Region>
         return list;
     }
 
+    public PooledRefList<Mobile> GetMobilesPooled()
+    {
+        var list = PooledRefList<Mobile>.Create();
+        for (var i = 0; i < Sectors?.Length; i++)
+        {
+            var sector = Sectors[i];
+
+            foreach (var mobile in sector.Mobiles)
+            {
+                if (mobile.Region.IsPartOf(this))
+                {
+                    list.Add(mobile);
+                }
+            }
+        }
+
+        return list;
+    }
+
     public int GetMobileCount()
     {
         var count = 0;
@@ -632,6 +670,26 @@ public class Region : IComparable<Region>, IValueLinkListNode<Region>
     public List<Item> GetItems()
     {
         var list = new List<Item>();
+
+        for (var i = 0; i < Sectors?.Length; i++)
+        {
+            var sector = Sectors[i];
+
+            foreach (var item in sector.Items)
+            {
+                if (Find(item.Location, item.Map).IsPartOf(this))
+                {
+                    list.Add(item);
+                }
+            }
+        }
+
+        return list;
+    }
+
+    public PooledRefList<Item> GetItemsPooled()
+    {
+        var list = PooledRefList<Item>.Create();
 
         for (var i = 0; i < Sectors?.Length; i++)
         {

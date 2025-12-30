@@ -27,27 +27,22 @@ namespace Server.SkillHandlers
             from.RevealingAction();
             from.SendLocalizedMessage(1049525); // Whom do you wish to calm?
             from.Target = new InternalTarget(from, instrument);
-            from.NextSkillTime = Core.TickCount + 21600000;
+            from.NextSkillTime = Core.TickCount + 30000; // 30s timeout on the targeter
         }
 
         private class InternalTarget : Target
         {
             private readonly BaseInstrument m_Instrument;
-            private bool m_SetSkillTime = true;
 
             public InternalTarget(Mobile from, BaseInstrument instrument) : base(
                 BaseInstrument.GetBardRange(from, SkillName.Peacemaking),
                 false,
                 TargetFlags.None
-            ) =>
-                m_Instrument = instrument;
+            ) => m_Instrument = instrument;
 
-            protected override void OnTargetFinish(Mobile from)
+            protected override void OnTargetCancel(Mobile from, TargetCancelType cancelType)
             {
-                if (m_SetSkillTime)
-                {
-                    from.NextSkillTime = Core.TickCount;
-                }
+                from.NextSkillTime = Core.TickCount;
             }
 
             protected override void OnTarget(Mobile from, object targeted)
@@ -60,21 +55,19 @@ namespace Server.SkillHandlers
                 }
                 else if (from.Region.IsPartOf<SafeZone>())
                 {
-                    from.SendMessage("You may not peacemake in this area.");
+                    from.SendMessage("You may not use peacemaking in this area.");
                 }
                 else if (targ.Region.IsPartOf<SafeZone>())
                 {
-                    from.SendMessage("You may not peacemake there.");
+                    from.SendMessage("You may not use peacemaking there.");
                 }
                 else if (!m_Instrument.IsChildOf(from.Backpack))
                 {
-                    from.SendLocalizedMessage(
-                        1062488
-                    ); // The instrument you are trying to play is no longer in your backpack!
+                    // The instrument you are trying to play is no longer in your backpack!
+                    from.SendLocalizedMessage(1062488);
                 }
                 else
                 {
-                    m_SetSkillTime = false;
                     from.NextSkillTime = Core.TickCount + 10000;
 
                     if (targeted == from)
@@ -149,17 +142,14 @@ namespace Server.SkillHandlers
                         if (!from.CanBeHarmful(targ, false))
                         {
                             from.SendLocalizedMessage(1049528);
-                            m_SetSkillTime = true;
                         }
                         else if (bc?.Uncalmable == true)
                         {
                             from.SendLocalizedMessage(1049526); // You have no chance of calming that creature.
-                            m_SetSkillTime = true;
                         }
                         else if (bc?.BardPacified == true)
                         {
                             from.SendLocalizedMessage(1049527); // That creature is already being calmed.
-                            m_SetSkillTime = true;
                         }
                         else if (!BaseInstrument.CheckMusicianship(from))
                         {
@@ -193,10 +183,10 @@ namespace Server.SkillHandlers
                                 targ.Combatant = null;
                                 targ.Warmode = false;
 
+                                from.SendLocalizedMessage(1049532); // You play hypnotic music, calming your target.
                                 if (bc != null)
                                 {
-                                    from.SendLocalizedMessage(1049532); // You play hypnotic music, calming your target.
-
+                                    // You play hypnotic music, calming your target.
                                     var seconds = 100 - diff / 1.5;
 
                                     if (seconds > 120)
@@ -212,8 +202,7 @@ namespace Server.SkillHandlers
                                 }
                                 else
                                 {
-                                    from.SendLocalizedMessage(1049532); // You play hypnotic music, calming your target.
-
+                                    // You play hypnotic music, calming your target.
                                     // You hear lovely music, and forget to continue battling!
                                     targ.SendLocalizedMessage(500616);
                                 }

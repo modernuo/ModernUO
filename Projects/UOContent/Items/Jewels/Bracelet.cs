@@ -16,12 +16,20 @@ public abstract partial class BaseBracelet : BaseJewel
 public partial class GoldBracelet : BaseBracelet
 {
     [Constructible]
-    public GoldBracelet() : base(0x1086) => Weight = 0.1;
+    public GoldBracelet() : base(0x1086)
+    {
+    }
+
+    public override double DefaultWeight => 0.1;
 }
 
 [SerializationGenerator(0, false)]
 public partial class SilverBracelet : BaseBracelet
 {
     [Constructible]
-    public SilverBracelet() : base(0x1F06) => Weight = 0.1;
+    public SilverBracelet() : base(0x1F06)
+    {
+    }
+
+    public override double DefaultWeight => 0.1;
 }

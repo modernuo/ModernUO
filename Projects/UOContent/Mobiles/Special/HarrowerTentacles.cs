@@ -11,10 +11,10 @@ public partial class HarrowerTentacles : BaseCreature
 
     [SerializableField(0)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
-    private Mobile _harrower;
+    private Harrower _harrower;
 
     [Constructible]
-    public HarrowerTentacles(Mobile harrower = null) : base(AIType.AI_Melee)
+    public HarrowerTentacles(Harrower harrower = null) : base(AIType.AI_Melee)
     {
         _harrower = harrower;
         Body = 129;
@@ -101,6 +101,7 @@ public partial class HarrowerTentacles : BaseCreature
         _timer = null;
 
         base.OnAfterDelete();
+        Harrower?.RemoveFromTentacles(this);
     }
 
     private class DrainTimer : Timer

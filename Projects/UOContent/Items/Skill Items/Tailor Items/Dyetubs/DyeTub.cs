@@ -25,11 +25,9 @@ namespace Server.Items
         private bool _redyable;
 
         [Constructible]
-        public DyeTub() : base(0xFAB)
-        {
-            Weight = 10.0;
-            _redyable = true;
-        }
+        public DyeTub() : base(0xFAB) => _redyable = true;
+
+        public override double DefaultWeight => 10.0;
 
         public virtual CustomHuePicker CustomHuePicker => null;
 

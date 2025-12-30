@@ -6,7 +6,11 @@ namespace Server.Items
     public partial class PlateHaidate : BaseArmor
     {
         [Constructible]
-        public PlateHaidate() : base(0x278D) => Weight = 7.0;
+        public PlateHaidate() : base(0x278D)
+        {
+        }
+
+        public override double DefaultWeight => 7.0;
 
         public override int BasePhysicalResistance => 5;
         public override int BaseFireResistance => 3;

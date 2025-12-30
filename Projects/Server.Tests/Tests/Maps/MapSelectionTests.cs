@@ -40,8 +40,8 @@ namespace Server.Tests.Tests.Maps
             };
 
             // When
-            string serialized = JsonConfig.Serialize(mapConfig);
-            TestMapConfig deserialized = JsonSerializer.Deserialize<TestMapConfig>(serialized, JsonConfig.GetOptions());
+            var serialized = JsonConfig.Serialize(mapConfig);
+            var deserialized = JsonSerializer.Deserialize<TestMapConfig>(serialized, JsonConfig.GetOptions());
 
             // Then
             Assert.Equal(mapConfig.TestMapFlags, deserialized.TestMapFlags);

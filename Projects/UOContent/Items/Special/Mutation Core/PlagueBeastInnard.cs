@@ -10,8 +10,9 @@ public partial class PlagueBeastInnard : Item, IScissorable, ICarvable
     {
         Hue = hue;
         Movable = false;
-        Weight = 1.0;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public PlagueBeastLord Owner => RootParent as PlagueBeastLord;
     public override string DefaultName => "plague beast innards";

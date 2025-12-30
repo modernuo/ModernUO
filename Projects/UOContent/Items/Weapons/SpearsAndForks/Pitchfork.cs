@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class Pitchfork : BaseSpear
     {
         [Constructible]
-        public Pitchfork() : base(0xE87) => Weight = 11.0;
+        public Pitchfork() : base(0xE87)
+        {
+        }
+
+        public override double DefaultWeight => 11.0;
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.BleedAttack;
         public override WeaponAbility SecondaryAbility => WeaponAbility.Dismount;

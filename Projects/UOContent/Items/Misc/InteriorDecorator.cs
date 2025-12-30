@@ -22,9 +22,10 @@ public partial class InteriorDecorator : Item
     [Constructible]
     public InteriorDecorator() : base(0xFC1)
     {
-        Weight = 1.0;
         LootType = LootType.Blessed;
     }
+
+    public override double DefaultWeight => 1.0;
 
     [CommandProperty(AccessLevel.GameMaster)]
     public DecorateCommand Command

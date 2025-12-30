@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using ModernUO.Serialization;
+using Server.Engines.BuffIcons;
+using Server.Mobiles;
 
 namespace Server.Items;
 
@@ -57,8 +59,11 @@ public partial class InvisibilityPotion : BasePotion
 
         m.Hidden = true;
 
-        BuffInfo.RemoveBuff(m, BuffIcon.HidingAndOrStealth);
-        BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.Invisibility, 1075825)); // Invisibility/Invisible
+        if (m is PlayerMobile pm)
+        {
+            pm.RemoveBuff(BuffIcon.HidingAndOrStealth);
+            pm.AddBuff(new BuffInfo(BuffIcon.Invisibility, 1075825)); // Invisibility/Invisible
+        }
 
         RemoveTimer(m);
 

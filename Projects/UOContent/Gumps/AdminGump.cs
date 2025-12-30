@@ -12,6 +12,7 @@ using Server.Misc;
 using Server.Multis;
 using Server.Network;
 using Server.Prompts;
+using Server.Saves;
 using Server.Text;
 
 namespace Server.Gumps
@@ -91,12 +92,12 @@ namespace Server.Gumps
 
             AddPage(0);
 
-            AddBackground(0, 0, 420, 440, 5054);
+            AddBackground(0, 0, 420, 480, 5054);
 
             AddBlackAlpha(10, 10, 170, 100);
             AddBlackAlpha(190, 10, 220, 100);
-            AddBlackAlpha(10, 120, 400, 260);
-            AddBlackAlpha(10, 390, 400, 40);
+            AddBlackAlpha(10, 120, 400, 300);
+            AddBlackAlpha(10, 430, 400, 40);
 
             AddPageButton(
                 10,
@@ -140,7 +141,7 @@ namespace Server.Gumps
 
             if (notice != null)
             {
-                AddHtml(12, 392, 396, 36, notice.Color(LabelColor32));
+                AddHtml(20, 440, 396, 36, notice.Color(LabelColor32));
             }
 
             switch (pageType)
@@ -169,7 +170,7 @@ namespace Server.Gumps
                         AddLabel(150, 150, LabelHue, banned.ToString());
 
                         AddLabel(20, 170, LabelHue, "Firewalled:");
-                        AddLabel(150, 170, LabelHue, Firewall.FirewallSet.Count.ToString());
+                        AddLabel(150, 170, LabelHue, Firewall.FirewallSetCount.ToString());
 
                         AddLabel(20, 190, LabelHue, "Clients:");
                         AddLabel(150, 190, LabelHue, NetState.Instances.Count.ToString());
@@ -295,6 +296,9 @@ namespace Server.Gumps
 
                         AddButtonLabeled(20, 230, GetButtonID(3, 203), "Shutdown & Restart (With Save)");
                         AddButtonLabeled(20, 250, GetButtonID(3, 204), "Shutdown & Restart (Without Save)");
+
+                        AddButtonLabeled(20, 270, GetButtonID(3, 205), "Shutdown (With 15m Delay & Save)");
+
                         /*}
                         else
                         {
@@ -615,6 +619,14 @@ namespace Server.Gumps
 
                         AddButtonLabeled(20, y, GetButtonID(7, 12), "Kill");
                         AddButtonLabeled(200, y, GetButtonID(7, 13), "Resurrect");
+                        y += 20;
+
+                        AddButtonLabeled(20, y, GetButtonID(7, 15), "Jail");
+                        AddButtonLabeled(200, y, GetButtonID(7, 16), "Unjail");
+                        y += 25;
+
+                        AddLabel(20, y, LabelHue, "Jail Reason:");
+                        AddTextField(100, y, 300, 20, 1);
 
                         break;
                     }
@@ -1023,7 +1035,7 @@ namespace Server.Gumps
 
                         for (int i = 0, index = listPage * 6; i < 6 && index >= 0 && index < m_List.Count; ++i, ++index)
                         {
-                            AddHtml(18, 243 + i * 22, 114, 20, m_List[index].ToString().Color(LabelColor32));
+                            AddHtml(18, 243 + i * 22, 114, 20, Html.Color($"{m_List[index]}", LabelColor32));
                             AddButton(130, 242 + i * 22, 0xFA2, 0xFA4, GetButtonID(8, index));
                             AddButton(160, 242 + i * 22, 0xFA8, 0xFAA, GetButtonID(9, index));
                             AddButton(190, 242 + i * 22, 0xFB1, 0xFB3, GetButtonID(10, index));
@@ -1161,7 +1173,16 @@ namespace Server.Gumps
                     {
                         AddFirewallHeader();
 
-                        m_List ??= Firewall.FirewallSet.ToList<object>();
+                        if (m_List == null)
+                        {
+                            Firewall.ReadFirewallSet(firewallSet =>
+                            {
+                                list = new List<object>(firewallSet.Count);
+                                list.AddRange(firewallSet);
+                            });
+
+                            m_List = list;
+                        }
 
                         AddLabelCropped(12, 120, 358, 20, LabelHue, "IP Address");
 
@@ -1174,7 +1195,7 @@ namespace Server.Gumps
                             AddImage(375, 122, 0x25EA);
                         }
 
-                        if ((listPage + 1) * 12 < m_List.Count)
+                        if ((listPage + 1) * 12 < m_List!.Count)
                         {
                             AddButton(392, 122, 0x15E1, 0x15E5, GetButtonID(1, 1));
                         }
@@ -1216,7 +1237,7 @@ namespace Server.Gumps
                             break;
                         }
 
-                        AddHtml(10, 125, 400, 20, firewallEntry.ToString().Center(LabelColor32));
+                        AddHtml(10, 125, 400, 20, Html.Center($"{firewallEntry}", LabelColor32));
 
                         AddButtonLabeled(20, 150, GetButtonID(6, 3), "Remove");
 
@@ -1309,7 +1330,7 @@ namespace Server.Gumps
 
         public void AddPageButton(
             int x, int y, int buttonID, string text, AdminGumpPage page,
-            params AdminGumpPage[] subPages
+            params ReadOnlySpan<AdminGumpPage> subPages
         )
         {
             var isSelection = m_PageType == page;
@@ -2145,6 +2166,12 @@ namespace Server.Gumps
                             case 204:
                                 {
                                     Shutdown(true, false);
+                                    break;
+                                }
+                            case 205: // shutdown with delay and save
+                                {
+                                    var t = new ShutdownTimer(this);
+                                    t.Start();
                                     break;
                                 }
                             case 210:
@@ -3460,19 +3487,22 @@ namespace Server.Gumps
 
                                     if (string.IsNullOrEmpty(match))
                                     {
-                                        notice = "You must enter a username to search.";
+                                        notice = "You must enter an IP to search.";
                                     }
                                     else
                                     {
-                                        foreach (var check in Firewall.FirewallSet)
+                                        Firewall.ReadFirewallSet(firewallSet =>
                                         {
-                                            var checkStr = check.ToString();
-
-                                            if (checkStr.ContainsOrdinal(match))
+                                            foreach (var check in firewallSet)
                                             {
-                                                results.Add(check);
+                                                var checkStr = check.ToString();
+
+                                                if (checkStr.ContainsOrdinal(match))
+                                                {
+                                                    results.Add(check);
+                                                }
                                             }
-                                        }
+                                        });
                                     }
 
                                     if (results.Count == 1)
@@ -3779,6 +3809,33 @@ namespace Server.Gumps
                                     sendGump = false;
                                     break;
                                 }
+                            case 15:
+                                {
+                                    var reason = info.GetTextEntry(1)?.Trim();
+
+                                    if (string.IsNullOrWhiteSpace(reason))
+                                    {
+                                        reason = "";
+                                    }
+
+                                    CommandLogging.WriteLine(
+                                        from,
+                                        $"{from.AccessLevel} {CommandLogging.Format(from)} jailing {CommandLogging.Format(m)} - Reason: {reason}"
+                                    );
+                                    InvokeCommand($"Jail {m.Name} \"{reason}\"");
+                                    notice = $"Player has been sent to jail. Reason: {reason}";
+                                    break;
+                                }
+                            case 16:
+                                {
+                                    CommandLogging.WriteLine(
+                                        from,
+                                        $"{from.AccessLevel} {CommandLogging.Format(from)} unjailing {CommandLogging.Format(m)}"
+                                    );
+                                    InvokeCommand($"Unjail {m.Name}");
+                                    notice = "Player has been unjailed.";
+                                    break;
+                                }
                         }
 
                         if (sendGump)
@@ -3927,32 +3984,38 @@ namespace Server.Gumps
             var availableMaps = ExpansionInfo.CoreExpansion.MapSelectionFlags;
             if (Core.SA && availableMaps.Includes(MapSelectionFlags.TerMur))
             {
-                InvokeCommand("GenerateSpawners Data/Spawns/post-uoml/termur/*.json");
+                InvokeCommand("GenerateSpawners Data/Spawns/post-uoml/termur/**.json");
+                InvokeCommand("GenerateSpawners Data/Spawns/shared/termur/**.json");
             }
 
             if (availableMaps.Includes(MapSelectionFlags.Malas))
             {
-                InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/malas/*.json");
+                InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/malas/**.json");
+                InvokeCommand("GenerateSpawners Data/Spawns/shared/malas/**.json");
             }
 
             if (availableMaps.Includes(MapSelectionFlags.Tokuno))
             {
-                InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/tokuno/*.json");
+                InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/tokuno/**.json");
+                InvokeCommand("GenerateSpawners Data/Spawns/shared/tokuno/**.json");
             }
 
             if (availableMaps.Includes(MapSelectionFlags.Ilshenar))
             {
-                InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/ilshenar/*.json");
+                InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/ilshenar/**.json");
+                InvokeCommand("GenerateSpawners Data/Spawns/shared/ilshenar/**.json");
             }
 
             if (availableMaps.Includes(MapSelectionFlags.Trammel))
             {
-                InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/trammel/*.json");
+                InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/trammel/**.json");
+                InvokeCommand("GenerateSpawners Data/Spawns/shared/trammel/**.json");
             }
 
             if (availableMaps.Includes(MapSelectionFlags.Felucca))
             {
-                InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/felucca/*.json");
+                InvokeCommand($"GenerateSpawners Data/Spawns/{folder}/felucca/**.json");
+                InvokeCommand("GenerateSpawners Data/Spawns/shared/felucca/**.json");
             }
         }
 
@@ -4038,15 +4101,15 @@ namespace Server.Gumps
             {
                 if (x is not KeyValuePair<IPAddress, List<Account>> a)
                 {
-                    return -1;
+                    return 1;
                 }
 
                 if (y is not KeyValuePair<IPAddress, List<Account>> b)
                 {
-                    return 1;
+                    return -1;
                 }
 
-                return a.Value.Count - b.Value.Count;
+                return b.Value.Count - a.Value.Count;
             }
         }
 
@@ -4250,6 +4313,31 @@ namespace Server.Gumps
             public override string Content { get; }
 
             public AdminNoticeGump(string content, Action callback) : base(callback) => Content = content;
+        }
+
+        public class ShutdownTimer : Timer
+        {
+            private readonly AdminGump _adminGump;
+
+            public ShutdownTimer(AdminGump gump) : base(TimeSpan.Zero, TimeSpan.Zero, 8) =>
+                _adminGump = gump;
+
+            protected override void OnTick()
+            {
+                if (Index >= 7)
+                {
+                    AutoSave.SavesEnabled = false;
+                    _adminGump.Shutdown(false, true);
+                    return;
+                }
+
+                ReadOnlySpan<int> times = [15, 10, 5, 4, 3, 2, 1, 0];
+                var time = times[Index];
+                _adminGump.m_From.SendMessage(
+                    $"The shard will shutdown in {time} minute{(time == 1 ? "s" : "")} for maintenance."
+                );
+                Interval = TimeSpan.FromMinutes(time - times[Index + 1]);
+            }
         }
     }
 }

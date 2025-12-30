@@ -13,8 +13,9 @@ public partial class ArcaneGem : Item
     public ArcaneGem() : base(0x1EA7)
     {
         Stackable = Core.ML;
-        Weight = 1.0;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override string DefaultName => "arcane gem";
 

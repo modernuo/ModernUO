@@ -228,14 +228,14 @@ namespace Server.Mobiles
 
             var total = Skills.Magery.Value + Skills.Poisoning.Value;
 
-            var dist = GetDistanceToSqrt(m);
+            var dist = this.GetDistanceToSqrt(m);
 
             if (dist >= 3.0)
             {
                 total -= (dist - 3.0) * 10.0;
             }
 
-            int level = total switch
+            var level = total switch
             {
                 >= 200.0 => Utility.Random(10) == 0 ? 3 : 2,
                 > 170.0  => 2,

@@ -560,8 +560,6 @@ namespace Server.Mobiles
                     }
                 }
             }
-            // no cliloc for this?
-            // SayTo( seller, true, "Thank you! I bought {0} item{1}. Here is your {2}gp.", Sold, (Sold > 1 ? "s" : ""), GiveGold );
 
             return true;
         }
@@ -1165,7 +1163,7 @@ namespace Server.Mobiles
         }
 
         private static bool ProcessSinglePurchase(
-            BuyItemResponse buy, IBuyItemInfo bii, List<BuyItemResponse> validBuy,
+            BuyItemResponse buy, GenericBuyInfo bii, List<BuyItemResponse> validBuy,
             ref int controlSlots, ref bool fullPurchase, ref int totalCost
         )
         {
@@ -1193,7 +1191,7 @@ namespace Server.Mobiles
                 return false;
             }
 
-            long totalCostLong = (long)totalCost + bii.Price * amount;
+            var totalCostLong = (long)totalCost + bii.Price * amount;
 
             if (totalCostLong > int.MaxValue)
             {
@@ -1213,7 +1211,7 @@ namespace Server.Mobiles
             return true;
         }
 
-        private static void ProcessValidPurchase(int amount, IBuyItemInfo bii, Mobile buyer, Container cont)
+        private static void ProcessValidPurchase(int amount, GenericBuyInfo bii, Mobile buyer, Container cont)
         {
             if (amount > bii.Amount)
             {

@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class GargishClothLegsType2 : BaseArmor
     {
         [Constructible]
-        public GargishClothLegsType2() : base(0x409) => Weight = 2.0;
+        public GargishClothLegsType2() : base(0x409)
+        {
+        }
+
+        public override double DefaultWeight => 2.0;
 
         public override int BasePhysicalResistance => 5;
         public override int BaseFireResistance => 7;

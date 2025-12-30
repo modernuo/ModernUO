@@ -70,7 +70,7 @@ namespace Server.Engines.Quests.Ambitious
         {
             if (bagOfSending)
             {
-                Item reward = new BagOfSending();
+                var reward = new BagOfSending();
 
                 if (player.PlaceInBackpack(reward))
                 {
@@ -85,7 +85,7 @@ namespace Server.Engines.Quests.Ambitious
 
             if (powderOfTranslocation)
             {
-                Item reward = new PowderOfTranslocation(Utility.RandomMinMax(10, 12));
+                var reward = new PowderOfTranslocation(Utility.RandomMinMax(10, 12));
 
                 if (player.PlaceInBackpack(reward))
                 {
@@ -100,7 +100,7 @@ namespace Server.Engines.Quests.Ambitious
 
             if (gold)
             {
-                Item reward = new Gold(Utility.RandomMinMax(250, 350));
+                var reward = new Gold(Utility.RandomMinMax(250, 350));
 
                 if (player.PlaceInBackpack(reward))
                 {

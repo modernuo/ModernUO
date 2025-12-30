@@ -118,7 +118,7 @@ public class TownCrierDurationPrompt : Prompt
     {
         if (!TimeSpan.TryParse(text, out var ts))
         {
-            from.SendMessage("Value was not properly formatted. Use: <hours:minutes:seconds>");
+            from.SendMessage("Value was not properly formatted. Use: <hours:minutes:seconds, 00:00:00>");
             from.SendGump(new TownCrierGump(from, m_Owner));
             return;
         }
@@ -272,7 +272,7 @@ public class TownCrierGump : Gump
     {
         if (info.ButtonID == 1)
         {
-            m_From.SendMessage("Enter the duration for the new message. Format: <hours:minutes:seconds>");
+            m_From.SendMessage("Enter the duration for the new message. Format: <hours:minutes:seconds, 00:00:00>");
             m_From.Prompt = new TownCrierDurationPrompt(m_Owner);
         }
         else if (info.ButtonID > 1)
@@ -433,7 +433,7 @@ public partial class TownCrier : Mobile, ITownCrierEntryList
 
         if (tce == null)
         {
-            _autoShoutTimer.Stop();
+            _autoShoutTimer?.Stop();
             _autoShoutTimer = null;
         }
         else if (_newsTimer == null)
@@ -454,7 +454,7 @@ public partial class TownCrier : Mobile, ITownCrierEntryList
         var index = _newsTimer.Index;
         if (index >= tce.Lines.Length)
         {
-            _newsTimer.Stop();
+            _newsTimer?.Stop();
             _newsTimer = null;
         }
         else

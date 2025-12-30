@@ -7,7 +7,8 @@ using Xunit;
 
 namespace Server.Tests.Network;
 
-public class AccountPacketTests : IClassFixture<ServerFixture>
+[Collection("Sequential Server Tests")]
+public class AccountPacketTests
 {
     private class MockedAccount : IAccount
     {
@@ -25,7 +26,7 @@ public class AccountPacketTests : IClassFixture<ServerFixture>
 
         public int CompareTo(IAccount other) => throw new NotImplementedException();
 
-        public string Username { get; set; }
+        public string Username { get; }
         public string Email { get; set; }
         public AccessLevel AccessLevel { get; set; }
         public int Length { get; }
@@ -60,6 +61,7 @@ public class AccountPacketTests : IClassFixture<ServerFixture>
         public bool Deleted { get; }
 
         public void Delete() => throw new NotImplementedException();
+        public bool TrySetUsername(string username) => throw new NotImplementedException();
 
         public void SetPassword(string password) => throw new NotImplementedException();
 

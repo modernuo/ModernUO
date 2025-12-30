@@ -370,7 +370,7 @@ public partial class CharacterStatue : Mobile, IRewardItem
         }
 
         ProcessDelta();
-        Span<byte> animPacket = stackalloc byte[CharacterStatuePackets.StatueAnimationPacketLength].InitializePacket();
+        var animPacket = stackalloc byte[CharacterStatuePackets.StatueAnimationPacketLength].InitializePacket();
 
         foreach (var state in Map.GetClientsInRange(Location))
         {
@@ -419,8 +419,9 @@ public partial class CharacterStatueDeed : Item, IRewardItem
         }
 
         LootType = LootType.Blessed;
-        Weight = 1.0;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber
     {

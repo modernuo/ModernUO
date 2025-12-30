@@ -11,7 +11,11 @@ public partial class Dyes : Item
     // TODO: Add uses remaining
 
     [Constructible]
-    public Dyes() : base(0xFA9) => Weight = 3.0;
+    public Dyes() : base(0xFA9)
+    {
+    }
+
+    public override double DefaultWeight => 3.0;
 
     public override void OnDoubleClick(Mobile from)
     {

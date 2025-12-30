@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using ModernUO.CodeGeneratedEvents;
 using ModernUO.Serialization;
 using Server.Collections;
 using Server.Engines.Plants;
@@ -36,7 +38,11 @@ public interface IWaterSource : IHasQuantity
 public partial class BeverageBottle : BaseBeverage
 {
     [Constructible]
-    public BeverageBottle(BeverageType type) : base(type) => Weight = 1.0;
+    public BeverageBottle(BeverageType type) : base(type)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override int BaseLabelNumber => 1042959; // a bottle of Ale
     public override int MaxQuantity => 5;
@@ -66,7 +72,11 @@ public partial class BeverageBottle : BaseBeverage
 public partial class Jug : BaseBeverage
 {
     [Constructible]
-    public Jug(BeverageType type) : base(type) => Weight = 1.0;
+    public Jug(BeverageType type) : base(type)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override int BaseLabelNumber => 1042965; // a jug of Ale
     public override int MaxQuantity => 10;
@@ -79,10 +89,16 @@ public partial class Jug : BaseBeverage
 public partial class CeramicMug : BaseBeverage
 {
     [Constructible]
-    public CeramicMug() => Weight = 1.0;
+    public CeramicMug()
+    {
+    }
 
     [Constructible]
-    public CeramicMug(BeverageType type) : base(type) => Weight = 1.0;
+    public CeramicMug(BeverageType type) : base(type)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override int BaseLabelNumber => 1042982; // a ceramic mug of Ale
     public override int MaxQuantity => 1;
@@ -94,10 +110,16 @@ public partial class CeramicMug : BaseBeverage
 public partial class PewterMug : BaseBeverage
 {
     [Constructible]
-    public PewterMug() => Weight = 1.0;
+    public PewterMug()
+    {
+    }
 
     [Constructible]
-    public PewterMug(BeverageType type) : base(type) => Weight = 1.0;
+    public PewterMug(BeverageType type) : base(type)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override int BaseLabelNumber => 1042994; // a pewter mug with Ale
     public override int MaxQuantity => 1;
@@ -109,10 +131,16 @@ public partial class PewterMug : BaseBeverage
 public partial class Goblet : BaseBeverage
 {
     [Constructible]
-    public Goblet() => Weight = 1.0;
+    public Goblet()
+    {
+    }
 
     [Constructible]
-    public Goblet(BeverageType type) : base(type) => Weight = 1.0;
+    public Goblet(BeverageType type) : base(type)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override int BaseLabelNumber => 1043000; // a goblet of Ale
     public override int MaxQuantity => 1;
@@ -132,10 +160,16 @@ public partial class Goblet : BaseBeverage
 public partial class GlassMug : BaseBeverage
 {
     [Constructible]
-    public GlassMug() => Weight = 1.0;
+    public GlassMug()
+    {
+    }
 
     [Constructible]
-    public GlassMug(BeverageType type) : base(type) => Weight = 1.0;
+    public GlassMug(BeverageType type) : base(type)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override int EmptyLabelNumber => 1022456; // mug
     public override int BaseLabelNumber => 1042976;  // a mug of Ale
@@ -174,10 +208,16 @@ public partial class GlassMug : BaseBeverage
 public partial class Pitcher : BaseBeverage
 {
     [Constructible]
-    public Pitcher() => Weight = 2.0;
+    public Pitcher()
+    {
+    }
 
     [Constructible]
-    public Pitcher(BeverageType type) : base(type) => Weight = 2.0;
+    public Pitcher(BeverageType type) : base(type)
+    {
+    }
+
+    public override double DefaultWeight => 2.0;
 
     public override int BaseLabelNumber => 1048128; // a Pitcher of Ale
     public override int MaxQuantity => 5;
@@ -359,17 +399,17 @@ public abstract partial class BaseBeverage : Item, IHasQuantity
             }
         }
 
-        if (from.Map != Map || !from.InRange(GetWorldLocation(), 2) || !from.InLOS(this))
+        if (from.Map == Map && from.InRange(GetWorldLocation(), 2) && from.InLOS(this))
         {
-            if (message)
-            {
-                from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
-            }
-
-            return false;
+            return true;
         }
 
-        return true;
+        if (message)
+        {
+            from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+        }
+
+        return false;
     }
 
     public virtual void Fill_OnTarget(Mobile from, object targ)
@@ -711,10 +751,9 @@ public abstract partial class BaseBeverage : Item, IHasQuantity
         _quantity = reader.ReadInt();
     }
 
-    public static void OnLogin(Mobile m)
-    {
-        CheckHeaveTimer(m);
-    }
+    [OnEvent(nameof(PlayerMobile.PlayerLoginEvent))]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void OnLogin(PlayerMobile pm) => CheckHeaveTimer(pm);
 
     public static void CheckHeaveTimer(Mobile from)
     {

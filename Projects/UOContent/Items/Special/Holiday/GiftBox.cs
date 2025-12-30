@@ -13,9 +13,7 @@ public partial class GiftBox : BaseContainer
     }
 
     [Constructible]
-    public GiftBox(int hue) : base(Utility.Random(0x232A, 2))
-    {
-        Weight = 2.0;
-        Hue = hue;
-    }
+    public GiftBox(int hue) : base(Utility.Random(0x232A, 2)) => Hue = hue;
+
+    public override double DefaultWeight => 2.0;
 }

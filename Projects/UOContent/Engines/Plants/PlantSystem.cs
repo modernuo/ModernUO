@@ -1,7 +1,8 @@
 using System;
+using ModernUO.CodeGeneratedEvents;
 using ModernUO.Serialization;
-using Server.Items;
 using Server.Misc;
+using Server.Mobiles;
 
 namespace Server.Engines.Plants
 {
@@ -318,7 +319,10 @@ namespace Server.Engines.Plants
         }
 
         [SerializableFieldSaveFlag(17)]
-        private bool ShouldSerializeLeftSeeds() => _leftSeeds != 0;
+        private bool ShouldSerializeLeftSeeds() => _leftSeeds != 8;
+
+        [SerializableFieldDefault(17)]
+        private int LeftSeedsDefaultValue() => 8;
 
         [SerializableProperty(18)]
         public int AvailableResources
@@ -338,7 +342,10 @@ namespace Server.Engines.Plants
         }
 
         [SerializableFieldSaveFlag(19)]
-        private bool ShouldSerializeLeftResources() => _leftResources != 0;
+        private bool ShouldSerializeLeftResources() => _leftResources != 8;
+
+        [SerializableFieldDefault(19)]
+        private int LeftResourcesDefaultValue() => 8;
 
         public void Reset(bool potions)
         {
@@ -432,9 +439,10 @@ namespace Server.Engines.Plants
             }
         }
 
-        public static void OnLogin(Mobile from)
+        [OnEvent(nameof(PlayerMobile.PlayerLoginEvent))]
+        public static void OnLogin(PlayerMobile from)
         {
-            Container cont = from.Backpack;
+            var cont = from.Backpack;
             if (cont != null)
             {
                 foreach (var plant in cont.FindItemsByType<PlantItem>())

@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using Server.Engines.BuffIcons;
+using Server.Mobiles;
 
 namespace Server.Spells.Bushido;
 
@@ -40,59 +42,51 @@ public class HonorableExecution : SamuraiMove
 
             var swingBonus = Math.Max(1, (int)(bushido / 720.0));
 
-            timer = new HonorableExecutionTimer(attacker, swingBonus);
+            timer = new HonorableExecutionTimer(TimeSpan.FromSeconds(20.0), attacker, swingBonus: swingBonus);
 
-            BuffInfo.AddBuff(
-                attacker,
+            (attacker as PlayerMobile)?.AddBuff(
                 new BuffInfo(
                     BuffIcon.HonorableExecution,
                     1060595,
                     1153807,
                     TimeSpan.FromSeconds(20.0),
-                    attacker,
                     $"{swingBonus}"
                 )
             );
         }
         else
         {
-            var mods = new List<object>
-            {
-                new ResistanceMod(ResistanceType.Physical, "PhysicalResistHonorableExecution", -40),
-                new ResistanceMod(ResistanceType.Fire, "FireResistHonorableExecution", -40),
-                new ResistanceMod(ResistanceType.Cold, "ColdResistHonorableExecution", -40),
-                new ResistanceMod(ResistanceType.Poison, "PoisonResistHonorableExecution", -40),
-                new ResistanceMod(ResistanceType.Energy, "EnergyResistHonorableExecution", -40)
-            };
+            attacker.AddResistanceMod(new ResistanceMod(ResistanceType.Physical, "PhysicalResistHonorableExecution", -40));
+            attacker.AddResistanceMod(new ResistanceMod(ResistanceType.Fire, "FireResistHonorableExecution", -40));
+            attacker.AddResistanceMod(new ResistanceMod(ResistanceType.Cold, "ColdResistHonorableExecution", -40));
+            attacker.AddResistanceMod(new ResistanceMod(ResistanceType.Poison, "PoisonResistHonorableExecution", -40));
+            attacker.AddResistanceMod(new ResistanceMod(ResistanceType.Energy, "EnergyResistHonorableExecution", -40));
 
             var resSpells = attacker.Skills.MagicResist.Value;
 
             if (resSpells > 0.0)
             {
-                mods.Add(new DefaultSkillMod(SkillName.MagicResist, "MagicResistHonorableExecution", true, -resSpells));
+                attacker.AddSkillMod(new DefaultSkillMod(SkillName.MagicResist, "MagicResistHonorableExecution", true, -resSpells));
             }
 
-            timer = new HonorableExecutionTimer(attacker, mods);
+            timer = new HonorableExecutionTimer(TimeSpan.FromSeconds(7.0), attacker, penalty: true);
 
             if (Core.HS)
             {
-                BuffInfo.AddBuff(
-                    attacker,
+                (attacker as PlayerMobile)?.AddBuff(
                     new BuffInfo(
                         BuffIcon.HonorableExecution,
                         1060595,
                         1153808,
                         TimeSpan.FromSeconds(7.0),
-                        attacker,
                         $"{resSpells}\t{40}\t{40}\t{40}\t{40}\t{40}"
                     )
                 );
             }
             else
             {
-                BuffInfo.AddBuff(
-                    attacker,
-                    new BuffInfo(BuffIcon.HonorableExecution, 1060595, TimeSpan.FromSeconds(7.0), attacker)
+                (attacker as PlayerMobile)?.AddBuff(
+                    new BuffInfo(BuffIcon.HonorableExecution, 1060595, TimeSpan.FromSeconds(7.0))
                 );
             }
         }
@@ -104,9 +98,9 @@ public class HonorableExecution : SamuraiMove
         CheckGain(attacker);
     }
 
-    public static int GetSwingBonus(Mobile target) => _table.TryGetValue(target, out var info) ? info.m_SwingBonus : 0;
+    public static int GetSwingBonus(Mobile target) => _table.TryGetValue(target, out var info) ? info._swingBonus : 0;
 
-    public static bool IsUnderPenalty(Mobile target) => _table.TryGetValue(target, out var info) && info.m_Penalty;
+    public static bool IsUnderPenalty(Mobile target) => _table.TryGetValue(target, out var info) && info._penalty;
 
     public static void RemovePenalty(Mobile target)
     {
@@ -118,81 +112,33 @@ public class HonorableExecution : SamuraiMove
 
     private class HonorableExecutionTimer : Timer
     {
-        public readonly Mobile m_Mobile;
-        public readonly List<object> m_Mods;
-        public readonly bool m_Penalty;
-        public readonly int m_SwingBonus;
+        public readonly Mobile _from;
+        public readonly bool _penalty;
+        public readonly int _swingBonus;
 
-        public HonorableExecutionTimer(Mobile from, List<object> mods) : this(TimeSpan.FromSeconds(7.0), from, 0, mods, mods != null)
+        public HonorableExecutionTimer(TimeSpan duration, Mobile from, int swingBonus = 0, bool penalty = false) : base(duration)
         {
-        }
-
-        public HonorableExecutionTimer(Mobile from, int swingBonus) : this(TimeSpan.FromSeconds(20.0), from, swingBonus)
-        {
-        }
-
-        public HonorableExecutionTimer(
-            TimeSpan duration, Mobile from, int swingBonus, List<object> mods = null, bool penalty = false
-        ) : base(duration)
-        {
-            m_Mobile = from;
-            m_SwingBonus = swingBonus;
-            m_Mods = mods;
-            m_Penalty = penalty;
-
-            Apply();
+            _from = from;
+            _swingBonus = swingBonus;
+            _penalty = penalty;
         }
 
         protected override void OnTick()
         {
-            m_Mobile?.Delta(MobileDelta.WeaponDamage);
-            RemovePenalty(m_Mobile);
-        }
-
-        public void Apply()
-        {
-            if (m_Mods == null)
-            {
-                return;
-            }
-
-            for (var i = 0; i < m_Mods.Count; ++i)
-            {
-                var mod = m_Mods[i];
-
-                if (mod is ResistanceMod resistanceMod)
-                {
-                    m_Mobile.AddResistanceMod(resistanceMod);
-                }
-                else if (mod is SkillMod skillMod)
-                {
-                    m_Mobile.AddSkillMod(skillMod);
-                }
-            }
+            _from?.Delta(MobileDelta.WeaponDamage);
+            RemovePenalty(_from);
         }
 
         public void Clear()
         {
             Stop();
 
-            if (m_Mods == null)
-            {
-                return;
-            }
-
-            for (var i = 0; i < m_Mods.Count; ++i)
-            {
-                var mod = m_Mods[i];
-
-                if (mod is ResistanceMod resistanceMod)
-                {
-                    m_Mobile?.RemoveResistanceMod(resistanceMod);
-                }
-                else if (mod is SkillMod skillMod)
-                {
-                    m_Mobile?.RemoveSkillMod(skillMod);
-                }
-            }
+            _from.RemoveResistanceMod("PhysicalResistHonorableExecution");
+            _from.RemoveResistanceMod("FireResistHonorableExecution");
+            _from.RemoveResistanceMod("ColdResistHonorableExecution");
+            _from.RemoveResistanceMod("PoisonResistHonorableExecution");
+            _from.RemoveResistanceMod("EnergyResistHonorableExecution");
+            _from.RemoveSkillMod("MagicResistHonorableExecution");
         }
     }
 }

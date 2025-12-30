@@ -16,24 +16,23 @@ public partial class IronMaidenAddon : BaseAddon
 
     public override void OnComponentUsed(AddonComponent c, Mobile from)
     {
-        if (from.InRange(GetWorldLocation(), 2) && from.InLOS(GetWorldLocation()))
+        if (!from.InRange(GetWorldLocation(), 2) || !from.InLOS(GetWorldLocation()))
         {
-            if (Utility.RandomBool())
-            {
-                from.Location = Location;
-                c.ItemID = 0x124A;
+            from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+            return;
+        }
 
-                Timer.StartTimer(TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(0.5), 3, () => Activate(c, from));
-            }
-            else
-            {
-                // Hmm... you suspect that if you used this again, it might hurt.
-                from.LocalOverheadMessage(MessageType.Regular, 0, 501777);
-            }
+        if (Utility.RandomBool())
+        {
+            from.Location = Location;
+            c.ItemID = 0x124A;
+
+            Timer.StartTimer(TimeSpan.FromSeconds(0.5), TimeSpan.FromSeconds(0.5), 3, () => Activate(c, from));
         }
         else
         {
-            from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+            // Hmm... you suspect that if you used this again, it might hurt.
+            from.LocalOverheadMessage(MessageType.Regular, 0, 501777);
         }
     }
 

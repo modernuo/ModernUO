@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text.Json.Serialization;
+using ModernUO.CodeGeneratedEvents;
 using Server.Collections;
 using Server.Json;
 using Server.Mobiles;
@@ -138,10 +139,11 @@ public static class AntiMacroSystem
         }
     }
 
-    public static void OnLogin(Mobile m)
+    [OnEvent(nameof(PlayerMobile.PlayerLoginEvent))]
+    public static void OnLogin(PlayerMobile pm)
     {
         // Stop the clear out timer
-        if (_logoutCleanup?.Remove(m, out var timer) == true)
+        if (_logoutCleanup?.Remove(pm, out var timer) == true)
         {
             timer.Stop();
         }
@@ -201,7 +203,7 @@ public static class AntiMacroSystem
         _antiMacroTable ??= new Dictionary<Mobile, PlayerAntiMacro>();
 
         // Hot path so use optimized code
-        ref PlayerAntiMacro antiMacro = ref CollectionsMarshal.GetValueRefOrAddDefault(_antiMacroTable, pm, out var exists);
+        ref var antiMacro = ref CollectionsMarshal.GetValueRefOrAddDefault(_antiMacroTable, pm, out var exists);
         if (!exists)
         {
             antiMacro = new PlayerAntiMacro();
@@ -239,8 +241,8 @@ public static class AntiMacroSystem
             var now = Core.Now;
 
             // Potential hot path, so use optimized code
-            ref CountAndTimeStamp _countTimeStamp =
-                ref CollectionsMarshal.GetValueRefOrAddDefault(_antiMacroTracking, (skill, obj), out bool exists);
+            ref var _countTimeStamp =
+                ref CollectionsMarshal.GetValueRefOrAddDefault(_antiMacroTracking, (skill, obj), out var exists);
 
             _countTimeStamp._count++;
 

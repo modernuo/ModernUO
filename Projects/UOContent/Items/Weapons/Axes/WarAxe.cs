@@ -8,7 +8,11 @@ namespace Server.Items
     public partial class WarAxe : BaseAxe
     {
         [Constructible]
-        public WarAxe() : base(0x13B0) => Weight = 8.0;
+        public WarAxe() : base(0x13B0)
+        {
+        }
+
+        public override double DefaultWeight => 8.0;
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.ArmorIgnore;
         public override WeaponAbility SecondaryAbility => WeaponAbility.BleedAttack;

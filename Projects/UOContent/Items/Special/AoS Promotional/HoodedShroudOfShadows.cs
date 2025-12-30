@@ -7,11 +7,9 @@ namespace Server.Items;
 public partial class HoodedShroudOfShadows : BaseOuterTorso
 {
     [Constructible]
-    public HoodedShroudOfShadows(int hue = 0x455) : base(0x2684, hue)
-    {
-        LootType = LootType.Blessed;
-        Weight = 3.0;
-    }
+    public HoodedShroudOfShadows(int hue = 0x455) : base(0x2684, hue) => LootType = LootType.Blessed;
+
+    public override double DefaultWeight => 3.0;
 
     public override bool Dye(Mobile from, DyeTub sender)
     {

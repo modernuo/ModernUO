@@ -19,7 +19,11 @@ public abstract partial class FillableContainer : LockableContainer
         }
     }
 
-    public FillableContainer(int itemID) : base(itemID) => Movable = false;
+    public FillableContainer(int itemID) : base(itemID)
+    {
+        Movable = false;
+        _contentType = FillableContentType.None;
+    }
 
     public virtual int MinRespawnMinutes => 60;
     public virtual int MaxRespawnMinutes => 90;
@@ -75,18 +79,21 @@ public abstract partial class FillableContainer : LockableContainer
 
     public virtual void AcquireContent()
     {
-        if (_contentType != FillableContentType.None)
+        if (_contentType == FillableContentType.None)
         {
-            return;
+            _contentType = FillableContent.Acquire(GetWorldLocation(), Map);
         }
-
-        // Don't trigger serialization code
-        _contentType = FillableContent.Acquire(GetWorldLocation(), Map);
 
         if (_contentType != FillableContentType.None)
         {
             Respawn();
         }
+    }
+
+    public override void LockPick(Mobile from)
+    {
+        base.LockPick(from);
+        CheckRespawn();
     }
 
     public override void OnItemRemoved(Item item)
@@ -116,29 +123,13 @@ public abstract partial class FillableContainer : LockableContainer
 
     public void CheckRespawn()
     {
-        var canSpawn =
-            _contentType != FillableContentType.None &&
-            !Deleted && !Movable && Parent == null && !IsLockedDown && !IsSecure &&
-            (
-                GetItemsCount() <= SpawnThreshold ||
-                IsLockable && !Locked ||
-                IsTrappable && TrapType == TrapType.None
-            );
+        if (_respawnTimer?.Running == true)
+        {
+            return;
+        }
 
-        if (canSpawn)
-        {
-            if (_respawnTimer?.Running != true)
-            {
-                var mins = Utility.RandomMinMax(MinRespawnMinutes, MaxRespawnMinutes);
-                var delay = TimeSpan.FromMinutes(mins);
-                _respawnTimer = Timer.DelayCall(delay, Respawn);
-            }
-        }
-        else
-        {
-            _respawnTimer?.Stop();
-            _respawnTimer = null;
-        }
+        var delay = TimeSpan.FromMinutes(Utility.RandomMinMax(MinRespawnMinutes, MaxRespawnMinutes));
+        _respawnTimer = Timer.DelayCall(delay, Respawn);
     }
 
     public void Respawn()
@@ -178,8 +169,6 @@ public abstract partial class FillableContainer : LockableContainer
             TrapPower = 0;
             TrapLevel = 0;
         }
-
-        CheckRespawn();
     }
 
     protected virtual int GetSpawnCount()

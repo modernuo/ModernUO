@@ -37,7 +37,7 @@ public static class IncomingMovementPackets
         }
 
         var steps = reader.ReadByte();
-        for (int i = 0; i < steps; i++)
+        for (var i = 0; i < steps; i++)
         {
             var t1 = reader.ReadUInt64(); // start time?
             var t2 = reader.ReadUInt64(); // end time?

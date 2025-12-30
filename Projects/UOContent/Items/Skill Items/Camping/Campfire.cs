@@ -15,11 +15,11 @@ public enum CampfireStatus
 [SerializationGenerator(0, false)]
 public partial class Campfire : Item
 {
-    public static readonly int SecureRange = 7;
+    public const int SecureRange = 7;
 
-    private static readonly Dictionary<Mobile, CampfireEntry> m_Table = new();
+    private static readonly Dictionary<Mobile, CampfireEntry> _table = [];
 
-    private readonly List<CampfireEntry> m_Entries;
+    private readonly List<CampfireEntry> _entries;
 
     private TimerExecutionToken _timerToken;
 
@@ -28,8 +28,7 @@ public partial class Campfire : Item
         Movable = false;
         Light = LightType.Circle300;
 
-        m_Entries = new List<CampfireEntry>();
-
+        _entries = [];
         Timer.StartTimer(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0), OnTick, out _timerToken);
     }
 
@@ -79,16 +78,12 @@ public partial class Campfire : Item
         }
     }
 
-    public static CampfireEntry GetEntry(Mobile player)
-    {
-        m_Table.TryGetValue(player, out var value);
-        return value;
-    }
+    public static CampfireEntry GetEntry(Mobile player) => _table.GetValueOrDefault(player);
 
     public static void RemoveEntry(CampfireEntry entry)
     {
-        m_Table.Remove(entry.Player);
-        entry.Fire.m_Entries.Remove(entry);
+        _table.Remove(entry.Player);
+        entry.Fire._entries.Remove(entry);
     }
 
     private void OnTick()
@@ -114,9 +109,9 @@ public partial class Campfire : Item
             return;
         }
 
-        for (var i = m_Entries.Count - 1; i >= 0; i--)
+        for (var i = _entries.Count - 1; i >= 0; i--)
         {
-            var entry = m_Entries[i];
+            var entry = _entries[i];
 
             if (!entry.Valid || entry.Player.NetState == null)
             {
@@ -135,8 +130,8 @@ public partial class Campfire : Item
             {
                 var entry = new CampfireEntry(pm, this);
 
-                m_Table[pm] = entry;
-                m_Entries.Add(entry);
+                _table[pm] = entry;
+                _entries.Add(entry);
 
                 pm.SendLocalizedMessage(500620); // You feel it would take a few moments to secure your camp.
             }
@@ -145,24 +140,23 @@ public partial class Campfire : Item
 
     private void ClearEntries()
     {
-        if (m_Entries == null)
+        if (_entries == null)
         {
             return;
         }
 
-        foreach (var entry in m_Entries)
+        foreach (var entry in _entries)
         {
-            m_Table.Remove(entry.Player);
+            _table.Remove(entry.Player);
         }
 
-        m_Entries.Clear();
-        m_Entries.TrimExcess();
+        _entries.Clear();
+        _entries.TrimExcess();
     }
 
     public override void OnAfterDelete()
     {
         _timerToken.Cancel();
-
         ClearEntries();
     }
 

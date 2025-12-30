@@ -9,9 +9,10 @@ public partial class Fish : Item, ICarvable
     public Fish(int amount = 1) : base(Utility.Random(0x09CC, 4))
     {
         Stackable = true;
-        Weight = 1.0;
         Amount = amount;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public void Carve(Mobile from, Item item)
     {

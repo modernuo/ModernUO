@@ -9,24 +9,24 @@ namespace Server.Items;
 public partial class FishingPole : Item
 {
     [Constructible]
-    public FishingPole() : base(0x0DC0)
-    {
-        Layer = Layer.TwoHanded;
-        Weight = 8.0;
-    }
+    public FishingPole() : base(0x0DC0) => Layer = Layer.TwoHanded;
+
+    public override double DefaultWeight => 8.0;
 
     public override void OnDoubleClick(Mobile from)
     {
-        var loc = GetWorldLocation();
+        if (!IsChildOf(from))
+        {
+            var loc = GetWorldLocation();
 
-        if (!from.InLOS(loc) || !from.InRange(loc, 2))
-        {
-            from.LocalOverheadMessage(MessageType.Regular, 0x3E9, 1019045); // I can't reach that
+            if (!from.InLOS(loc) || !from.InRange(loc, 2))
+            {
+                from.LocalOverheadMessage(MessageType.Regular, 0x3E9, 1019045); // I can't reach that
+                return;
+            }
         }
-        else
-        {
-            Fishing.System.BeginHarvesting(from, this);
-        }
+
+        Fishing.System.BeginHarvesting(from, this);
     }
 
     public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)

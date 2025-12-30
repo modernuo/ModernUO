@@ -54,7 +54,7 @@ public static class OutgoingEntityPackets
             return;
         }
 
-        Span<byte> buffer = stackalloc byte[OPLPacketLength].InitializePacket();
+        var buffer = stackalloc byte[OPLPacketLength].InitializePacket();
         CreateOPLInfo(buffer, serial, hash);
 
         ns.Send(buffer);
@@ -79,7 +79,7 @@ public static class OutgoingEntityPackets
             return;
         }
 
-        Span<byte> buffer = stackalloc byte[RemoveEntityLength].InitializePacket();
+        var buffer = stackalloc byte[RemoveEntityLength].InitializePacket();
         CreateRemoveEntity(buffer, serial);
 
         ns.Send(buffer);
@@ -96,12 +96,12 @@ public static class OutgoingEntityPackets
         writer.Write((byte)0xF3); // Packet ID
         writer.Write((short)0x1); // command
 
-        int type = 0;
-        int gfx = 0;
-        int amount = 1;
-        int hue = 0;
+        var type = 0;
+        var gfx = 0;
+        var amount = 1;
+        var hue = 0;
         byte light = 0;
-        int flags = 0;
+        var flags = 0;
 
         if (entity is BaseMulti multi)
         {

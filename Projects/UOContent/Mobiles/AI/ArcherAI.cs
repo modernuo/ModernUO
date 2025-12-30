@@ -11,19 +11,13 @@ public class ArcherAI : BaseAI
 
     public override bool DoActionWander()
     {
-        if (m_Mobile.Debug)
-        {
-            m_Mobile.DebugSay("I have no combatant");
-        }
+        DebugSay("I have no combatant");
 
-        if (AcquireFocusMob(m_Mobile.RangePerception, m_Mobile.FightMode, false, false, true))
+        if (AcquireFocusMob(Mobile.RangePerception, Mobile.FightMode, false, false, true))
         {
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay($"I have detected {m_Mobile.FocusMob.Name} and I will attack");
-            }
+            this.DebugSayFormatted($"I have detected {Mobile.FocusMob.Name} and I will attack");
 
-            m_Mobile.Combatant = m_Mobile.FocusMob;
+            Mobile.Combatant = Mobile.FocusMob;
             Action = ActionType.Combat;
         }
         else
@@ -36,62 +30,44 @@ public class ArcherAI : BaseAI
 
     public override bool DoActionCombat()
     {
-        var combatant = m_Mobile.Combatant;
+        var combatant = Mobile.Combatant;
 
-        if (combatant == null || combatant.Deleted || combatant.Map != m_Mobile.Map || !combatant.Alive ||
+        if (combatant == null || combatant.Deleted || combatant.Map != Mobile.Map || !combatant.Alive ||
             combatant.IsDeadBondedPet)
         {
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay("My combatant is gone, so my guard is up");
-            }
+            DebugSay("My combatant is gone, so my guard is up");
 
             Action = ActionType.Guard;
             return true;
         }
 
-        if (Core.TickCount - m_Mobile.LastMoveTime > 1000 && !WalkMobileRange(
-                combatant,
-                1,
-                true,
-                m_Mobile.RangeFight,
-                m_Mobile.Weapon.MaxRange
-            ))
+        if (!WalkMobileRange(combatant, 1, false, Mobile.RangeFight, Mobile.Weapon.MaxRange))
         {
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay($"I am still not in range of {combatant.Name}");
-            }
+            this.DebugSayFormatted($"I am still not in range of {combatant.Name}");
 
-            if ((int)m_Mobile.GetDistanceToSqrt(combatant) > m_Mobile.RangePerception + 1)
+            if ((int)Mobile.GetDistanceToSqrt(combatant) > Mobile.RangePerception + 1)
             {
-                if (m_Mobile.Debug)
-                {
-                    m_Mobile.DebugSay($"I have lost {combatant.Name}");
-                }
+                this.DebugSayFormatted($"I have lost {combatant.Name}");
 
-                m_Mobile.Combatant = null;
+                Mobile.Combatant = null;
                 Action = ActionType.Guard;
                 return true;
             }
         }
-        else if (Core.TickCount - m_Mobile.LastMoveTime > 400)
+        else if (Core.TickCount - Mobile.LastMoveTime > 400)
         {
-            m_Mobile.Direction = m_Mobile.GetDirectionTo(combatant);
+            Mobile.Direction = Mobile.GetDirectionTo(combatant);
         }
 
-        if (m_Mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, combatant))
+        if (Mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, combatant))
         {
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay($"I used my abilities on {combatant.Name}!");
-            }
+            this.DebugSayFormatted($"I used my abilities on {combatant.Name}!");
 
             return true;
         }
 
         // When we have no ammo, we flee
-        var pack = m_Mobile.Backpack;
+        var pack = Mobile.Backpack;
 
         if (pack?.FindItemByType<Arrow>() == null)
         {
@@ -100,10 +76,10 @@ public class ArcherAI : BaseAI
         }
 
         // At 20% we should check if we must leave
-        if (m_Mobile.Combatant != null && m_Mobile.Hits < m_Mobile.HitsMax * 20 / 100 && m_Mobile.CanFlee)
+        if (Mobile.Combatant != null && Mobile.Hits < Mobile.HitsMax * 20 / 100 && Mobile.CanFlee)
         {
             // 10% to flee + the diff of hits
-            var fleeChance = 10 + Math.Max(0, m_Mobile.Combatant.Hits - m_Mobile.Hits);
+            var fleeChance = 10 + Math.Max(0, Mobile.Combatant.Hits - Mobile.Hits);
 
             if (Utility.Random(0, 100) > fleeChance)
             {
@@ -116,14 +92,11 @@ public class ArcherAI : BaseAI
 
     public override bool DoActionGuard()
     {
-        if (AcquireFocusMob(m_Mobile.RangePerception, m_Mobile.FightMode, false, false, true))
+        if (AcquireFocusMob(Mobile.RangePerception, Mobile.FightMode, false, false, true))
         {
-            if (m_Mobile.Debug)
-            {
-                m_Mobile.DebugSay($"I have detected {m_Mobile.FocusMob.Name}, attacking");
-            }
+            this.DebugSayFormatted($"I have detected {Mobile.FocusMob.Name}, attacking");
 
-            m_Mobile.Combatant = m_Mobile.FocusMob;
+            Mobile.Combatant = Mobile.FocusMob;
             Action = ActionType.Combat;
         }
         else

@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class GlassSword : BaseSword
     {
         [Constructible]
-        public GlassSword() : base(0x90C) => Weight = 6.0;
+        public GlassSword() : base(0x90C)
+        {
+        }
+
+        public override double DefaultWeight => 6.0;
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.BleedAttack;
         public override WeaponAbility SecondaryAbility => WeaponAbility.MortalStrike;

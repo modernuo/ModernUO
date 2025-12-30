@@ -91,13 +91,7 @@ public ref struct StaticGumpBuilder
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void AddHtmlPlaceholder(
-        int x,
-        int y,
-        int width,
-        int height,
-        ReadOnlySpan<char> slotKey,
-        bool background = false,
-        bool scrollbar = false
+        int x, int y, int width, int height, ReadOnlySpan<char> slotKey, bool background = false, bool scrollbar = false
     )
     {
         var index = _gumpBuilder.AddHtmlPlaceholder(x, y, width, height, background, scrollbar);
@@ -106,12 +100,7 @@ public ref struct StaticGumpBuilder
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void AddHtmlPlaceholder(
-        int x,
-        int y,
-        int width,
-        int height,
-        ref RawInterpolatedStringHandler handler,
-        bool background = false,
+        int x, int y, int width, int height, ref RawInterpolatedStringHandler handler, bool background = false,
         bool scrollbar = false
     )
     {
@@ -121,115 +110,33 @@ public ref struct StaticGumpBuilder
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void AddHtml(
-        int x,
-        int y,
-        int width,
-        int height,
-        ReadOnlySpan<char> text,
-        bool background = false,
-        bool scrollbar = false
+        int x, int y, int width, int height, ReadOnlySpan<char> text, ReadOnlySpan<char> color = default, int size = -1, byte fontStyle = 0,
+        TextAlignment align = TextAlignment.Left, bool background = false, bool scrollbar = false
     )
     {
-        WriteInternalizedString(text);
+        if (color.Length > 0 || size != -1 || fontStyle != 0 || align != TextAlignment.Left)
+        {
+            var arr = STArrayPool<char>.Shared.Rent(Html.BuildCharCount(text, color));
+            var bytesWritten = Html.Build(text, arr.AsSpan(), color, size, fontStyle, align);
+
+            WriteInternalizedString(arr.AsSpan(0, bytesWritten));
+            STArrayPool<char>.Shared.Return(arr);
+        }
+        else
+        {
+            WriteInternalizedString(text);
+        }
+
         _gumpBuilder.AddHtml(x, y, width, height, _stringsCount++, background, scrollbar);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void AddHtml(
-        int x, int y, int width, int height, ref RawInterpolatedStringHandler handler,
-        bool background = false, bool scrollbar = false
+        int x, int y, int width, int height, ref RawInterpolatedStringHandler handler, ReadOnlySpan<char> color = default, int size = -1,
+        byte fontStyle = 0, TextAlignment align = TextAlignment.Left, bool background = false, bool scrollbar = false
     )
     {
-        AddHtml(x, y, width, height, handler.Text, background, scrollbar);
-        handler.Clear();
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void AddHtml(
-        int x,
-        int y,
-        int width,
-        int height,
-        int color,
-        ReadOnlySpan<char> text,
-        bool background = false,
-        bool scrollbar = false
-    )
-    {
-        var handler = text.Color(color);
-        AddHtml(x, y, width, height, ref handler, background, scrollbar);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void AddHtml(
-        int x,
-        int y,
-        int width,
-        int height,
-        int color,
-        ref RawInterpolatedStringHandler handler,
-        bool background = false,
-        bool scrollbar = false
-    )
-    {
-        AddHtml(x, y, width, height, color, handler.Text, background, scrollbar);
-        handler.Clear();
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void AddHtmlCentered(
-        int x, int y, int width, int height, ReadOnlySpan<char> text, bool background = false, bool scrollbar = false
-    )
-    {
-        var handler = text.Center();
-        AddHtml(x, y, width, height, ref handler, background, scrollbar);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void AddHtmlCentered(
-        int x,
-        int y,
-        int width,
-        int height,
-        ref RawInterpolatedStringHandler handler,
-        bool background = false,
-        bool scrollbar = false
-    )
-    {
-        var centerHandler = handler.Text.Center();
-        AddHtml(x, y, width, height, ref centerHandler, background, scrollbar);
-        handler.Clear();
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void AddHtmlCentered(
-        int x,
-        int y,
-        int width,
-        int height,
-        int color,
-        ReadOnlySpan<char> text,
-        bool background = false,
-        bool scrollbar = false
-    )
-    {
-        var handler = text.Center(color);
-        AddHtml(x, y, width, height,  ref handler, background, scrollbar);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void AddHtmlCentered(
-        int x,
-        int y,
-        int width,
-        int height,
-        int color,
-        ref RawInterpolatedStringHandler handler,
-        bool background = false,
-        bool scrollbar = false
-    )
-    {
-        AddHtmlCentered(x, y, width, height, color, handler.Text, background, scrollbar);
+        AddHtml(x, y, width, height, handler.Text, color, size, fontStyle, align, background, scrollbar);
         handler.Clear();
     }
 
@@ -312,7 +219,7 @@ public ref struct StaticGumpBuilder
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void AddLabelPlaceholder(int x, int y, int hue, ref RawInterpolatedStringHandler handler)
     {
-        AddHtmlPlaceholder(x, y, 0, 0, handler.Text);
+        AddLabelPlaceholder(x, y, hue, handler.Text);
         handler.Clear();
     }
 
@@ -482,11 +389,11 @@ public ref struct StaticGumpBuilder
         }
 
         var newSize = Math.Max(_stringBytesWritten + needed, _stringsBuffer.Length * 2);
-        byte[] poolArray = STArrayPool<byte>.Shared.Rent(newSize);
+        var poolArray = STArrayPool<byte>.Shared.Rent(newSize);
 
         _stringsBuffer.AsSpan(0, _stringBytesWritten).CopyTo(poolArray);
 
-        byte[] toReturn = _stringsBuffer;
+        var toReturn = _stringsBuffer;
         _stringsBuffer = poolArray;
 
         if (toReturn != _staticStringsBuffer)

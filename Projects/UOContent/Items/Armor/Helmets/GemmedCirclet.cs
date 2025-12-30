@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class GemmedCirclet : BaseArmor
     {
         [Constructible]
-        public GemmedCirclet() : base(0x2B70) => Weight = 2.0;
+        public GemmedCirclet() : base(0x2B70)
+        {
+        }
+
+        public override double DefaultWeight => 2.0;
 
         public override int RequiredRaces => Race.AllowElvesOnly;
 

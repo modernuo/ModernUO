@@ -82,17 +82,19 @@ public static class StaminaSystem
         RemoveEntry(m as IHasSteps);
     }
 
-    public static void OnLogin(Mobile m)
+    [OnEvent(nameof(PlayerMobile.PlayerLoginEvent))]
+    public static void OnLogin(PlayerMobile pm)
     {
+        bool exists;
         if (EnableMountStamina)
         {
             // Start idle for mount
-            ref var stepsTaken = ref GetStepsTaken(m.Mount, out var exists);
+            ref var stepsTaken = ref GetStepsTaken(pm.Mount, out exists);
             if (exists)
             {
                 if (stepsTaken.Steps <= 0 || Core.Now >= stepsTaken.IdleStartTime + ResetDuration)
                 {
-                    _stepsTaken.Remove(m.Mount);
+                    _stepsTaken.Remove(pm.Mount);
                 }
                 else
                 {
@@ -100,16 +102,13 @@ public static class StaminaSystem
                 }
             }
 
-            _resetHash.Remove(m.Mount);
+            _resetHash.Remove(pm.Mount);
         }
 
-        if (m is PlayerMobile pm)
+        ref var regenStepsTaken = ref RegenSteps(pm, out exists);
+        if (exists)
         {
-            ref var stepsTaken = ref RegenSteps(pm, out var exists);
-            if (exists)
-            {
-                stepsTaken.IdleStartTime = Core.Now;
-            }
+            regenStepsTaken.IdleStartTime = Core.Now;
         }
     }
 
@@ -359,7 +358,7 @@ public static class StaminaSystem
 
         if (from is PlayerMobile pm)
         {
-            ref StepsTaken stepsTaken = ref GetOrCreateStepsTaken(pm, out var created);
+            ref var stepsTaken = ref GetOrCreateStepsTaken(pm, out var created);
             if (!created)
             {
                 RegenSteps(ref stepsTaken, removeOnInvalidation: false);
@@ -475,7 +474,7 @@ public static class StaminaSystem
             {
                 using var queue = PooledRefQueue<IHasSteps>.Create();
 
-                ref StepsTaken stepsTaken = ref Unsafe.NullRef<StepsTaken>();
+                ref var stepsTaken = ref Unsafe.NullRef<StepsTaken>();
                 foreach (var m in _resetHash)
                 {
                     stepsTaken = ref GetStepsTaken(m, out var exists);

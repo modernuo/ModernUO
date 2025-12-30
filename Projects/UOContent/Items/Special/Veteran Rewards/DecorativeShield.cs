@@ -55,23 +55,22 @@ public partial class DecorativeShield : Item, IAddon, IRewardItem
 
     public override void OnDoubleClick(Mobile from)
     {
-        if (from.InRange(Location, 2))
+        if (!from.InRange(Location, 2))
         {
-            var house = BaseHouse.FindHouseAt(this);
+            from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+            return;
+        }
 
-            if (house?.IsOwner(from) == true)
-            {
-                from.SendGump(new RewardDemolitionGump(this, 1049783)); // Do you wish to re-deed this decoration?
-            }
-            else
-            {
-                // You can only re-deed this decoration if you are the house owner or originally placed the decoration.
-                from.SendLocalizedMessage(1049784);
-            }
+        var house = BaseHouse.FindHouseAt(this);
+
+        if (house?.IsOwner(from) == true)
+        {
+            from.SendGump(new RewardDemolitionGump(this, 1049783)); // Do you wish to re-deed this decoration?
         }
         else
         {
-            from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
+            // You can only re-deed this decoration if you are the house owner or originally placed the decoration.
+            from.SendLocalizedMessage(1049784);
         }
     }
 }
@@ -85,12 +84,9 @@ public partial class DecorativeShieldDeed : Item, IRewardItem
     private bool _isRewardItem;
 
     [Constructible]
-    public DecorativeShieldDeed() : base(0x14F0)
-    {
-        LootType = LootType.Blessed;
-        Weight = 1.0;
-    }
+    public DecorativeShieldDeed() : base(0x14F0) => LootType = LootType.Blessed;
 
+    public override double DefaultWeight => 1.0;
     public override int LabelNumber => 1049771; // deed for a decorative shield wall hanging
 
     public override void GetProperties(IPropertyList list)

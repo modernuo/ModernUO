@@ -1,3 +1,4 @@
+using System;
 using ModernUO.Serialization;
 
 namespace Server.Items;
@@ -11,16 +12,11 @@ public partial class Vines : Item
     }
 
     [Constructible]
-    public Vines(int v) : base(0xCEB)
+    public Vines(int v) : base(0xCEB + Math.Clamp(v, 0, 7))
     {
-        if (v is < 0 or > 7)
-        {
-            v = 0;
-        }
-
-        ItemID += v;
-        Weight = 1.0;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override bool ForceShowProperties => ObjectPropertyList.Enabled;
 }

@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class Maul : BaseBashing
     {
         [Constructible]
-        public Maul() : base(0x143B) => Weight = 10.0;
+        public Maul() : base(0x143B)
+        {
+        }
+
+        public override double DefaultWeight => 10.0;
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.CrushingBlow;
         public override WeaponAbility SecondaryAbility => WeaponAbility.ConcussionBlow;

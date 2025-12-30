@@ -75,17 +75,17 @@ public static class PathUtility
 
         Directory.CreateDirectory(destDir);
 
-        foreach (FileInfo file in dir.GetFiles())
+        foreach (var file in dir.GetFiles())
         {
-            string targetFilePath = Path.Combine(destDir, file.Name);
+            var targetFilePath = Path.Combine(destDir, file.Name);
             file.CopyTo(targetFilePath, true);
         }
 
         if (recursive)
         {
-            foreach (DirectoryInfo subdir in dir.GetDirectories())
+            foreach (var subdir in dir.GetDirectories())
             {
-                string destSubDir = Path.Combine(destDir, subdir.Name);
+                var destSubDir = Path.Combine(destDir, subdir.Name);
                 CopyDirectoryContents(subdir.FullName, destSubDir);
             }
         }
@@ -102,16 +102,16 @@ public static class PathUtility
 
         Directory.CreateDirectory(destDir);
 
-        foreach (FileInfo file in dir.GetFiles())
+        foreach (var file in dir.GetFiles())
         {
             file.MoveTo(Path.Combine(destDir, file.Name));
         }
 
         if (recursive)
         {
-            foreach (DirectoryInfo subdir in dir.GetDirectories())
+            foreach (var subdir in dir.GetDirectories())
             {
-                string destSubDir = Path.Combine(destDir, subdir.Name);
+                var destSubDir = Path.Combine(destDir, subdir.Name);
                 MoveDirectoryContents(subdir.FullName, destSubDir);
             }
         }

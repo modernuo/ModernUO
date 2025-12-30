@@ -23,7 +23,6 @@ public abstract partial class BaseDockedBoat : Item
 
     public BaseDockedBoat(int id, Point3D offset, BaseBoat boat) : base(0x14F4)
     {
-        Weight = 1.0;
         LootType = LootType.Blessed;
 
         _multiId = id;
@@ -31,6 +30,8 @@ public abstract partial class BaseDockedBoat : Item
 
         _shipName = boat.ShipName;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public abstract BaseBoat Boat { get; }
 
@@ -145,7 +146,7 @@ public abstract partial class BaseDockedBoat : Item
                 return;
             }
 
-            Point3D p = ip switch
+            var p = ip switch
             {
                 Item item => item.GetWorldTop(),
                 Mobile m  => m.Location,

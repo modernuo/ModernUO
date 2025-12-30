@@ -6,7 +6,11 @@ namespace Server.Items
     public partial class PlateDo : BaseArmor
     {
         [Constructible]
-        public PlateDo() : base(0x277D) => Weight = 10.0;
+        public PlateDo() : base(0x277D)
+        {
+        }
+
+        public override double DefaultWeight => 10.0;
 
         public override int BasePhysicalResistance => 5;
         public override int BaseFireResistance => 3;

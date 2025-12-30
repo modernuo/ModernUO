@@ -163,9 +163,10 @@ public partial class MistletoeDeed : Item
     public MistletoeDeed(int hue = 0) : base(0x14F0)
     {
         Hue = hue;
-        Weight = 1.0;
         LootType = LootType.Blessed;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1070882; // Mistletoe Deed
 
@@ -226,7 +227,7 @@ public partial class MistletoeDeed : Item
 
         if (northWall && westWall)
         {
-            from.SendGump(new MistletoeDeedGump(from, loc, this));
+            from.SendGump(new MistletoeDeedGump(loc, this));
         }
         else
         {
@@ -266,9 +267,11 @@ public partial class MistletoeDeed : Item
 
         if (itemID > 0)
         {
-            Item addon = new MistletoeAddon(Hue);
+            var addon = new MistletoeAddon(Hue)
+            {
+                ItemID = itemID
+            };
 
-            addon.ItemID = itemID;
             addon.MoveToWorld(loc, from.Map);
 
             house.Addons.Add(addon);
@@ -276,47 +279,47 @@ public partial class MistletoeDeed : Item
         }
     }
 
-    private class MistletoeDeedGump : Gump
+    private class MistletoeDeedGump : StaticGump<MistletoeDeedGump>
     {
         private readonly MistletoeDeed _deed;
-        private readonly Mobile _from;
         private readonly Point3D _loc;
 
-        public MistletoeDeedGump(Mobile from, Point3D loc, MistletoeDeed deed) : base(150, 50)
+        public override bool Singleton => false;
+
+        public MistletoeDeedGump(Point3D loc, MistletoeDeed deed) : base(150, 50)
         {
-            _from = from;
             _loc = loc;
             _deed = deed;
+        }
 
-            AddBackground(0, 0, 300, 150, 0xA28);
+        protected override void BuildLayout(ref StaticGumpBuilder builder)
+        {
+            builder.AddBackground(0, 0, 300, 150, 0xA28);
 
-            AddPage(0);
+            builder.AddPage();
 
-            AddItem(90, 30, 0x2375);
-            AddItem(180, 30, 0x2374);
-            AddButton(50, 35, 0x868, 0x869, 1);
-            AddButton(145, 35, 0x868, 0x869, 2);
+            builder.AddItem(90, 30, 0x2375);
+            builder.AddItem(180, 30, 0x2374);
+            builder.AddButton(50, 35, 0x868, 0x869, 1);
+            builder.AddButton(145, 35, 0x868, 0x869, 2);
         }
 
         public override void OnResponse(NetState sender, in RelayInfo info)
         {
-            if (_deed.Deleted)
+            if (_deed.Deleted || info.ButtonID == 0)
             {
                 return;
             }
 
-            switch (info.ButtonID)
+            var from = sender.Mobile;
+
+            if (info.ButtonID == 1)
             {
-                case 1:
-                    {
-                        _deed.PlaceAddon(_from, _loc, false, true);
-                        break;
-                    }
-                case 2:
-                    {
-                        _deed.PlaceAddon(_from, _loc, true, false);
-                        break;
-                    }
+                _deed.PlaceAddon(from, _loc, false, true);
+            }
+            else
+            {
+                _deed.PlaceAddon(from, _loc, true, false);
             }
         }
     }

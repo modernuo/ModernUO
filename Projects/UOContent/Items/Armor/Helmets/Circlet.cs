@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class Circlet : BaseArmor
     {
         [Constructible]
-        public Circlet() : base(0x2B6E) => Weight = 2.0;
+        public Circlet() : base(0x2B6E)
+        {
+        }
+
+        public override double DefaultWeight => 2.0;
 
         public override int BasePhysicalResistance => 1;
         public override int BaseFireResistance => 5;

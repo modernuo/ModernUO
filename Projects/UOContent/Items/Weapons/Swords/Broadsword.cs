@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class Broadsword : BaseSword
     {
         [Constructible]
-        public Broadsword() : base(0xF5E) => Weight = 6.0;
+        public Broadsword() : base(0xF5E)
+        {
+        }
+
+        public override double DefaultWeight => 6.0;
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.CrushingBlow;
         public override WeaponAbility SecondaryAbility => WeaponAbility.ArmorIgnore;

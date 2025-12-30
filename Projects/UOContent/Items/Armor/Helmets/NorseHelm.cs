@@ -6,7 +6,11 @@ namespace Server.Items
     public partial class NorseHelm : BaseArmor
     {
         [Constructible]
-        public NorseHelm() : base(0x140E) => Weight = 5.0;
+        public NorseHelm() : base(0x140E)
+        {
+        }
+
+        public override double DefaultWeight => 5.0;
 
         public override int BasePhysicalResistance => 4;
         public override int BaseFireResistance => 1;

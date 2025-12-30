@@ -1,6 +1,9 @@
+using ModernUO.Serialization;
+
 namespace Server.Items;
 
-public class LysanderNotebook1 : BaseBook
+[SerializationGenerator(0)]
+public partial class LysanderNotebook1 : BaseBook
 {
     public static readonly BookContent Content = new(
         "Lysander's Notebook",
@@ -35,28 +38,11 @@ public class LysanderNotebook1 : BaseBook
     {
     }
 
-    public LysanderNotebook1(Serial serial) : base(serial)
-    {
-    }
-
     public override BookContent DefaultContent => Content;
-
-    public override void Serialize(IGenericWriter writer)
-    {
-        base.Serialize(writer);
-
-        writer.WriteEncodedInt(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadEncodedInt();
-    }
 }
 
-public class LysanderNotebook2 : BaseBook
+[SerializationGenerator(0)]
+public partial class LysanderNotebook2 : BaseBook
 {
     public static readonly BookContent Content = new(
         "Lysander's Notebook",
@@ -124,28 +110,11 @@ public class LysanderNotebook2 : BaseBook
     {
     }
 
-    public LysanderNotebook2(Serial serial) : base(serial)
-    {
-    }
-
     public override BookContent DefaultContent => Content;
-
-    public override void Serialize(IGenericWriter writer)
-    {
-        base.Serialize(writer);
-
-        writer.WriteEncodedInt(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadEncodedInt();
-    }
 }
 
-public class LysanderNotebook3 : BaseBook
+[SerializationGenerator(0)]
+public partial class LysanderNotebook3 : BaseBook
 {
     public static readonly BookContent Content = new(
         "Lysander's Notebook",
@@ -207,28 +176,11 @@ public class LysanderNotebook3 : BaseBook
     {
     }
 
-    public LysanderNotebook3(Serial serial) : base(serial)
-    {
-    }
-
     public override BookContent DefaultContent => Content;
-
-    public override void Serialize(IGenericWriter writer)
-    {
-        base.Serialize(writer);
-
-        writer.WriteEncodedInt(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadEncodedInt();
-    }
 }
 
-public class LysanderNotebook7 : BaseBook
+[SerializationGenerator(0)]
+public partial class LysanderNotebook7 : BaseBook
 {
     public static readonly BookContent Content = new(
         "Lysander's Notebook",
@@ -305,28 +257,11 @@ public class LysanderNotebook7 : BaseBook
     {
     }
 
-    public LysanderNotebook7(Serial serial) : base(serial)
-    {
-    }
-
     public override BookContent DefaultContent => Content;
-
-    public override void Serialize(IGenericWriter writer)
-    {
-        base.Serialize(writer);
-
-        writer.WriteEncodedInt(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadEncodedInt();
-    }
 }
 
-public class LysanderNotebook8 : BaseBook
+[SerializationGenerator(0)]
+public partial class LysanderNotebook8 : BaseBook
 {
     public static readonly BookContent Content = new(
         "Lysander's Notebook",
@@ -394,28 +329,11 @@ public class LysanderNotebook8 : BaseBook
     {
     }
 
-    public LysanderNotebook8(Serial serial) : base(serial)
-    {
-    }
-
     public override BookContent DefaultContent => Content;
-
-    public override void Serialize(IGenericWriter writer)
-    {
-        base.Serialize(writer);
-
-        writer.WriteEncodedInt(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadEncodedInt();
-    }
 }
 
-public class LysanderNotebook11 : BaseBook
+[SerializationGenerator(0)]
+public partial class LysanderNotebook11 : BaseBook
 {
     public static readonly BookContent Content = new(
         "Lysander's Notebook",
@@ -480,23 +398,5 @@ public class LysanderNotebook11 : BaseBook
     {
     }
 
-    public LysanderNotebook11(Serial serial) : base(serial)
-    {
-    }
-
     public override BookContent DefaultContent => Content;
-
-    public override void Serialize(IGenericWriter writer)
-    {
-        base.Serialize(writer);
-
-        writer.WriteEncodedInt(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadEncodedInt();
-    }
 }

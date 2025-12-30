@@ -10,9 +10,10 @@ public partial class Cotton : Item, IDyable
     public Cotton(int amount = 1) : base(0xDF9)
     {
         Stackable = true;
-        Weight = 4.0;
         Amount = amount;
     }
+
+    public override double DefaultWeight => 4.0;
 
     public bool Dye(Mobile from, DyeTub sender)
     {
@@ -41,10 +42,10 @@ public partial class Cotton : Item, IDyable
 
     public virtual void OnSpun(ISpinningWheel wheel, Mobile from, int hue)
     {
-        Item item = new SpoolOfThread(6);
-        item.Hue = hue;
-
-        from.AddToBackpack(item);
+        from.AddToBackpack(new SpoolOfThread(6)
+        {
+            Hue = hue
+        });
         from.SendLocalizedMessage(1010577); // You put the spools of thread in your backpack.
     }
 

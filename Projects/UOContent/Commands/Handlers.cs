@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Text;
 using Server.Commands.Generic;
@@ -239,7 +238,7 @@ namespace Server.Commands
 
                     for (var i = 0; i < pets.Count; ++i)
                     {
-                        Mobile pet = pets[i];
+                        var pet = pets[i];
 
                         if (pet is IMount mount)
                         {
@@ -300,7 +299,7 @@ namespace Server.Commands
                 $"{m.AccessLevel} {CommandLogging.Format(m)} playing sound {index} (toAll={toAll})"
             );
 
-            Span<byte> buffer = stackalloc byte[OutgoingEffectPackets.SoundPacketLength].InitializePacket();
+            var buffer = stackalloc byte[OutgoingEffectPackets.SoundPacketLength].InitializePacket();
 
             foreach (var state in m.GetClientsInRange(12))
             {

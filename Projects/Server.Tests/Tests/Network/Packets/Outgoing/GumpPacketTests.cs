@@ -3,8 +3,8 @@ using Xunit;
 
 namespace Server.Tests.Network;
 
-[Collection("Sequential Tests")]
-public class GumpPacketTests : IClassFixture<ServerFixture>
+[Collection("Sequential Server Tests")]
+public class GumpPacketTests
 {
     [Theory]
     [InlineData(100, 10)]
@@ -22,7 +22,7 @@ public class GumpPacketTests : IClassFixture<ServerFixture>
     [Fact]
     public void TestDisplaySignGump()
     {
-        Serial gumpSerial = (Serial)0x1000;
+        var gumpSerial = (Serial)0x1000;
         const int gumpId = 100;
         const string unknownString = "This is an unknown string";
         const string caption = "This is a caption";

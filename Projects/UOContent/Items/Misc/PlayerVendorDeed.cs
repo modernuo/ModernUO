@@ -8,7 +8,11 @@ namespace Server.Items;
 public partial class ContractOfEmployment : Item
 {
     [Constructible]
-    public ContractOfEmployment() : base(0x14F0) => Weight = 1.0;
+    public ContractOfEmployment() : base(0x14F0)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1041243; // a contract of employment
 
@@ -22,9 +26,11 @@ public partial class ContractOfEmployment : Item
         {
             from.SendLocalizedMessage(503248); // Your godly powers allow you to place this vendor whereever you wish.
 
-            Mobile v = new PlayerVendor(from, BaseHouse.FindHouseAt(from));
+            var v = new PlayerVendor(from, BaseHouse.FindHouseAt(from))
+            {
+                Direction = from.Direction & Direction.Mask
+            };
 
-            v.Direction = from.Direction & Direction.Mask;
             v.MoveToWorld(from.Location, from.Map);
 
             v.SayTo(from, 503246); // Ah! it feels good to be working again.
@@ -69,9 +75,11 @@ public partial class ContractOfEmployment : Item
                 }
                 else
                 {
-                    Mobile v = new PlayerVendor(from, house);
+                    var v = new PlayerVendor(from, house)
+                    {
+                        Direction = from.Direction & Direction.Mask
+                    };
 
-                    v.Direction = from.Direction & Direction.Mask;
                     v.MoveToWorld(from.Location, from.Map);
 
                     v.SayTo(from, 503246); // Ah! it feels good to be working again.

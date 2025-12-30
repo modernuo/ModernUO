@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2025 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: RegionSpawner.cs                                                *
  *                                                                       *
@@ -29,6 +29,8 @@ public partial class RegionSpawner : Spawner
 
     private BaseRegion _spawnRegion;
 
+    public override Region Region => _spawnRegion;
+
     [Constructible(AccessLevel.Developer)]
     public RegionSpawner()
     {
@@ -41,24 +43,12 @@ public partial class RegionSpawner : Spawner
 
     [Constructible(AccessLevel.Developer)]
     public RegionSpawner(
-        int amount, int minDelay, int maxDelay, int team, int homeRange,
-        params string[] spawnedNames
-    ) : this(
-        amount,
-        TimeSpan.FromMinutes(minDelay),
-        TimeSpan.FromMinutes(maxDelay),
-        team,
-        homeRange,
-        spawnedNames
-    )
-    {
-    }
-
-    [Constructible(AccessLevel.Developer)]
-    public RegionSpawner(
-        int amount, TimeSpan minDelay, TimeSpan maxDelay, int team, int homeRange,
-        params string[] spawnedNames
-    ) : base(amount, minDelay, maxDelay, team, homeRange, spawnedNames)
+        int amount,
+        TimeSpan minDelay,
+        TimeSpan maxDelay,
+        int team = 0,
+        params ReadOnlySpan<string> spawnedNames
+    ) : base(amount, minDelay, maxDelay, team, spawnedNames: spawnedNames)
     {
     }
 
@@ -84,6 +74,48 @@ public partial class RegionSpawner : Spawner
         }
     }
 
+    // RegionSpawner does not support spiral scan (disjoint rectangles make it ineffective)
+    protected override bool SupportsSpiralScan => false;
+
+    protected override Rectangle3D GetBoundsForSpawnAttempt()
+    {
+        if (_spawnRegion == null || _spawnRegion.TotalWeight <= 0)
+        {
+            return default;
+        }
+
+        // Pick a weighted random rectangle from the region
+        var rand = Utility.Random(_spawnRegion.TotalWeight);
+
+        for (var j = 0; j < _spawnRegion.RectangleWeights.Length; j++)
+        {
+            var curWeight = _spawnRegion.RectangleWeights[j];
+
+            if (rand < curWeight)
+            {
+                return _spawnRegion.Rectangles[j];
+            }
+
+            rand -= curWeight;
+        }
+
+        return default;
+    }
+
+    protected override ReadOnlySpan<Rectangle3D> GetAllSpawnBounds() => _spawnRegion?.Rectangles;
+
+    public override Point3D GetSpawnPosition(ISpawnable spawned, Map map)
+    {
+        // Check for region/map mismatch before delegating to base
+        if (_spawnRegion == null || map == null || map == Map.Internal ||
+            map != _spawnRegion.Map || _spawnRegion.TotalWeight <= 0)
+        {
+            return Location;
+        }
+
+        return base.GetSpawnPosition(spawned, map);
+    }
+
     public override void ToJson(DynamicJson json, JsonSerializerOptions options)
     {
         base.ToJson(json, options);
@@ -98,84 +130,6 @@ public partial class RegionSpawner : Spawner
         {
             list.Add(1076228, $"{"region:"}\t{_spawnRegion.Name}"); // ~1_DUMMY~ ~2_DUMMY~
         }
-    }
-
-    public override Point3D GetSpawnPosition(ISpawnable spawned, Map map)
-    {
-        if (_spawnRegion == null || map == null || map == Map.Internal || map != _spawnRegion.Map ||
-            _spawnRegion.TotalWeight <= 0)
-        {
-            return Location;
-        }
-
-        bool waterMob, waterOnlyMob;
-
-        if (spawned is Mobile mob)
-        {
-            waterMob = mob.CanSwim;
-            waterOnlyMob = mob.CanSwim && mob.CantWalk;
-        }
-        else
-        {
-            waterMob = false;
-            waterOnlyMob = false;
-        }
-
-        // Try 10 times to find a valid location.
-        for (var i = 0; i < 10; i++)
-        {
-            var rand = Utility.Random(_spawnRegion.TotalWeight);
-
-            var x = int.MinValue;
-            var y = int.MinValue;
-
-            for (var j = 0; j < _spawnRegion.RectangleWeights.Length; j++)
-            {
-                var curWeight = _spawnRegion.RectangleWeights[j];
-
-                if (rand < curWeight)
-                {
-                    var rect = _spawnRegion.Rectangles[j];
-
-                    x = rect.Start.X + rand % rect.Width;
-                    y = rect.Start.Y + rand / rect.Width;
-
-                    break;
-                }
-
-                rand -= curWeight;
-            }
-
-            var mapZ = map.GetAverageZ(x, y);
-
-            if (waterMob)
-            {
-                if (IsValidWater(map, x, y, Z))
-                {
-                    return new Point3D(x, y, Z);
-                }
-
-                if (IsValidWater(map, x, y, mapZ))
-                {
-                    return new Point3D(x, y, mapZ);
-                }
-            }
-
-            if (!waterOnlyMob)
-            {
-                if (map.CanSpawnMobile(x, y, Z))
-                {
-                    return new Point3D(x, y, Z);
-                }
-
-                if (map.CanSpawnMobile(x, y, mapZ))
-                {
-                    return new Point3D(x, y, mapZ);
-                }
-            }
-        }
-
-        return HomeLocation;
     }
 
     [AfterDeserialization(false)]

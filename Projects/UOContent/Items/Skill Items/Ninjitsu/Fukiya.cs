@@ -26,11 +26,9 @@ public partial class Fukiya : Item, INinjaWeapon
     private int _poisonCharges;
 
     [Constructible]
-    public Fukiya() : base(0x27AA)
-    {
-        Weight = 4.0;
-        Layer = Layer.OneHanded;
-    }
+    public Fukiya() : base(0x27AA) => Layer = Layer.OneHanded;
+
+    public override double DefaultWeight => 1.0;
 
     public virtual int WrongAmmoMessage => 1063329;    // You can only load fukiya darts
     public virtual int NoFreeHandMessage => 1063327;   // You must have a free hand to use a fukiya.

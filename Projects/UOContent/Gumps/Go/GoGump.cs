@@ -162,7 +162,7 @@ public class GoGump : Gump
 
     public static void DisplayTo(Mobile from)
     {
-        LocationTree tree = GoLocations.GetLocations(from.Map);
+        var tree = GoLocations.GetLocations(from.Map);
 
         if (!tree.LastBranch.TryGetValue(from, out var branch))
         {

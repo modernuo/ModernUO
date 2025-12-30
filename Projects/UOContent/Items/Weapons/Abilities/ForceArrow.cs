@@ -1,6 +1,8 @@
 using Server.Spells;
 using System;
 using System.Collections.Generic;
+using Server.Engines.BuffIcons;
+using Server.Mobiles;
 
 namespace Server.Items
 {
@@ -28,7 +30,7 @@ namespace Server.Items
                 defender.Warmode = false;
             }
 
-            ForceArrowInfo info = GetInfo(attacker, defender);
+            var info = GetInfo(attacker, defender);
 
             if (info == null)
             {
@@ -38,8 +40,9 @@ namespace Server.Items
             {
                 info.Timer.IncreaseExpiration();
 
-                BuffInfo.RemoveBuff(defender, BuffIcon.ForceArrow);
-                BuffInfo.AddBuff(defender, new BuffInfo(BuffIcon.ForceArrow, 1151285, 1151286, info.DefenseChanceMalus.ToString()));
+                (defender as PlayerMobile)?.AddBuff(
+                    new BuffInfo(BuffIcon.ForceArrow, 1151285, 1151286, args: info.DefenseChanceMalus.ToString())
+                );
             }
 
             if (defender.Spell is Spell spell && spell.IsCasting)
@@ -52,7 +55,7 @@ namespace Server.Items
 
         public static void BeginForceArrow(Mobile attacker, Mobile defender)
         {
-            ForceArrowInfo info = new ForceArrowInfo(attacker, defender);
+            var info = new ForceArrowInfo(attacker, defender);
             info.Timer = new ForceArrowTimer(info);
 
             if (_table.TryGetValue(attacker, out var list))
@@ -64,7 +67,9 @@ namespace Server.Items
                 _table.Add(attacker, new List<ForceArrowInfo> { info });
             }
 
-            BuffInfo.AddBuff(defender, new BuffInfo(BuffIcon.ForceArrow, 1151285, 1151286, info.DefenseChanceMalus.ToString()));
+            (defender as PlayerMobile)?.AddBuff(
+                new BuffInfo(BuffIcon.ForceArrow, 1151285, 1151286, args: info.DefenseChanceMalus.ToString())
+            );
         }
 
         public static void EndForceArrow(ForceArrowInfo info)
@@ -74,21 +79,21 @@ namespace Server.Items
                 return;
             }
 
-            Mobile attacker = info.Attacker;
+            var attacker = info.Attacker;
 
             if (_table.TryGetValue(attacker, out var list) && list.Remove(info) && list.Count == 0)
             {
                 _table.Remove(attacker);
             }
 
-            BuffInfo.RemoveBuff(info.Defender, BuffIcon.ForceArrow);
+            (info.Defender as PlayerMobile)?.RemoveBuff(BuffIcon.ForceArrow);
         }
 
         public static bool HasForceArrow(Mobile attacker, Mobile defender)
         {
             if (_table.TryGetValue(attacker, out var list))
             {
-                foreach (ForceArrowInfo info in list)
+                foreach (var info in list)
                 {
                     if (info.Defender == defender)
                     {
@@ -104,7 +109,7 @@ namespace Server.Items
         {
             if (_table.TryGetValue(attacker, out var list))
             {
-                foreach (ForceArrowInfo info in list)
+                foreach (var info in list)
                 {
                     if (info.Defender == defender)
                     {

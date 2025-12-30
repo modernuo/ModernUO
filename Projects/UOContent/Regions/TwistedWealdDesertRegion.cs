@@ -1,4 +1,6 @@
 using System.Text.Json.Serialization;
+using ModernUO.CodeGeneratedEvents;
+using Server.Mobiles;
 using Server.Network;
 using Server.Spells;
 using Server.Spells.Ninjitsu;
@@ -41,11 +43,12 @@ public class TwistedWealdDesertRegion : MondainRegion
         }
     }
 
-    public static void OnLogin(Mobile m)
+    [OnEvent(nameof(PlayerMobile.PlayerLoginEvent))]
+    public static void OnLogin(PlayerMobile pm)
     {
-        if (m.Region.IsPartOf<TwistedWealdDesertRegion>() && m.AccessLevel == AccessLevel.Player)
+        if (pm.AccessLevel == AccessLevel.Player && pm.Region.IsPartOf<TwistedWealdDesertRegion>())
         {
-            m.NetState.SendSpeedControl(SpeedControlSetting.Walk);
+            pm.NetState.SendSpeedControl(SpeedControlSetting.Walk);
         }
     }
 }

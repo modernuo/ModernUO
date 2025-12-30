@@ -64,11 +64,12 @@ public class AnimalForm : NinjaSpell
         new(typeof(Reptalon), 1075202, 11669, 0, 1075222, 90.0, 0x114, 0, 0, false, false)
     };
 
-    public static void OnLogin(Mobile m)
+    [OnEvent(nameof(PlayerMobile.PlayerLoginEvent))]
+    public static void OnLogin(PlayerMobile pm)
     {
-        if (GetContext(m)?.SpeedBoost == true)
+        if (GetContext(pm)?.SpeedBoost == true)
         {
-            m.NetState.SendSpeedControl(SpeedControlSetting.Mount);
+            pm.NetState.SendSpeedControl(SpeedControlSetting.Mount);
         }
     }
 
@@ -385,15 +386,15 @@ public class AnimalForm : NinjaSpell
             builder.AddButton(10, 374, 0xFB1, 0xFB2, 0);
             builder.AddHtmlLocalized(45, 376, 450, 20, 1011012, 0x7FFF); // CANCEL
 
-            int ninjitsu = _caster.Skills[SkillName.Ninjitsu].Fixed;
-            int current = 0;
+            var ninjitsu = _caster.Skills[SkillName.Ninjitsu].Fixed;
+            var current = 0;
 
-            for (int i = 0; i < _entries.Length; ++i)
+            for (var i = 0; i < _entries.Length; ++i)
             {
-                bool enabled = ninjitsu >= _entries[i].ReqSkill && BaseFormTalisman.EntryEnabled(_caster, _entries[i].Type);
+                var enabled = ninjitsu >= _entries[i].ReqSkill && BaseFormTalisman.EntryEnabled(_caster, _entries[i].Type);
 
-                int page = current / 10 + 1;
-                int pos = current % 10;
+                var page = current / 10 + 1;
+                var pos = current % 10;
 
                 if (pos == 0)
                 {
@@ -417,11 +418,11 @@ public class AnimalForm : NinjaSpell
                     continue;
                 }
 
-                AnimalFormEntry entry = _entries[i];
+                var entry = _entries[i];
 
-                int y = Math.DivRem(pos, 2, out var rem) * 64 + 44;
-                int x = rem == 0 ? 14 : 264;
-                Rectangle2D b = ItemBounds.Table[entry.ItemID];
+                var y = Math.DivRem(pos, 2, out var rem) * 64 + 44;
+                var x = rem == 0 ? 14 : 264;
+                var b = ItemBounds.Bounds[entry.ItemID];
 
                 builder.AddImageTiledButton(x, y, 0x918, 0x919, i + 1, GumpButtonType.Reply, 0, entry.ItemID,
                     entry.Hue, 40 - b.Width / 2 - b.X, 30 - b.Height / 2 - b.Y, entry.Tooltip);

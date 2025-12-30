@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class WoodlandLegs : BaseArmor
     {
         [Constructible]
-        public WoodlandLegs() : base(0x2B6B) => Weight = 8.0;
+        public WoodlandLegs() : base(0x2B6B)
+        {
+        }
+
+        public override double DefaultWeight => 8.0;
 
         public override int BasePhysicalResistance => 5;
         public override int BaseFireResistance => 3;

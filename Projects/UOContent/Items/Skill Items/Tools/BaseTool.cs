@@ -56,7 +56,7 @@ public abstract partial class BaseTool : Item, IUsesRemaining, ICraftable
 
     private bool ShowUsesRemaining { get; set; } = true;
 
-    public int OnCraft(
+    public virtual int OnCraft(
         int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool,
         CraftItem craftItem, int resHue
     )
@@ -66,6 +66,18 @@ public abstract partial class BaseTool : Item, IUsesRemaining, ICraftable
         if (makersMark)
         {
             Crafter = from?.RawName;
+        }
+
+        if (Core.UOR)
+        {
+            if (Quality == ToolQuality.Exceptional)
+            {
+                UsesRemaining = 100;
+            }
+        }
+        else if (Quality != ToolQuality.Regular)
+        {
+            UsesRemaining += (int)(UsesRemaining * ((int)Quality - 1) * 0.2);
         }
 
         return quality;

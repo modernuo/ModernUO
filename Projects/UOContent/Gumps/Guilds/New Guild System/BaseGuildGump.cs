@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using Server.Gumps;
 using Server.Misc;
 using Server.Mobiles;
@@ -78,55 +79,20 @@ namespace Server.Guilds
             !(m.Deleted || g.Disbanded || m is not PlayerMobile ||
               m.AccessLevel < AccessLevel.GameMaster && !g.IsMember(m));
 
-        public static bool CheckProfanity(string s, int maxLength = 50)
-        {
-            // return NameVerification.Validate( s, 1, 50, true, true, false, int.MaxValue, ProfanityProtection.Exceptions, ProfanityProtection.Disallowed, ProfanityProtection.StartDisallowed );	//What am I doing wrong, this still allows chars like the <3 symbol... 3 AM.  someone change this to use this
-
-            // With testing on OSI, Guild stuff seems to follow a 'simpler' method of profanity protection
-            if (s.Length < 1 || s.Length > maxLength)
-            {
-                return false;
-            }
-
-            var exceptions = ProfanityProtection.Exceptions;
-
-            s = s.ToLower();
-
-            for (var i = 0; i < s.Length; ++i)
-            {
-                var c = s[i];
-
-                if (c is < 'a' or > 'z' && c is < '0' or > '9')
-                {
-                    var except = false;
-
-                    for (var j = 0; !except && j < exceptions.Length; j++)
-                    {
-                        if (c == exceptions[j])
-                        {
-                            except = true;
-                        }
-                    }
-
-                    if (!except)
-                    {
-                        return false;
-                    }
-                }
-            }
-
-            var disallowed = ProfanityProtection.Disallowed;
-
-            for (var i = 0; i < disallowed.Length; i++)
-            {
-                if (s.IndexOfOrdinal(disallowed[i]) != -1)
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool CheckProfanity(string s, int maxLength = 50) =>
+            NameVerification.Validate(
+                s,
+                1,
+                maxLength,
+                true,
+                true,
+                false,
+                0,
+                ProfanityProtection.Exceptions,
+                ProfanityProtection.Disallowed,
+                ProfanityProtection.DisallowedSearchValues
+            );
 
         public void AddHtmlText(int x, int y, int width, int height, TextDefinition text, bool back, bool scroll)
         {

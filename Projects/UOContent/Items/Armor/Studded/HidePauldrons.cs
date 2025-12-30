@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class HidePauldrons : BaseArmor
     {
         [Constructible]
-        public HidePauldrons() : base(0x2B77) => Weight = 4.0;
+        public HidePauldrons() : base(0x2B77)
+        {
+        }
+
+        public override double DefaultWeight => 4.0;
 
         public override int RequiredRaces => Race.AllowElvesOnly;
 

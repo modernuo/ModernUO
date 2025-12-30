@@ -59,28 +59,29 @@ public partial class RecipeScroll : Item
 
         var r = Recipe;
 
-        if (r != null && from is PlayerMobile pm)
+        if (r == null || from is not PlayerMobile pm)
         {
-            if (!pm.HasRecipe(r))
-            {
-                var chance = r.CraftItem.GetSuccessChance(pm, null, r.CraftSystem, false, out var allRequiredSkills);
+            return;
+        }
 
-                if (allRequiredSkills && chance >= 0.0)
-                {
-                    // You have learned a new recipe: ~1_RECIPE~
-                    pm.SendLocalizedMessage(1073451, r.TextDefinition.ToString());
-                    pm.AcquireRecipe(r);
-                    Delete();
-                }
-                else
-                {
-                    pm.SendLocalizedMessage(1044153); // You don't have the required skills to attempt this item.
-                }
-            }
-            else
-            {
-                pm.SendLocalizedMessage(1073427); // You already know this recipe.
-            }
+        if (pm.HasRecipe(r))
+        {
+            pm.SendLocalizedMessage(1073427); // You already know this recipe.
+            return;
+        }
+
+        var chance = r.CraftItem.GetSuccessChance(pm, null, r.CraftSystem, false, out var allRequiredSkills);
+
+        if (allRequiredSkills && chance >= 0.0)
+        {
+            // You have learned a new recipe: ~1_RECIPE~
+            pm.SendLocalizedMessage(1073451, r.TextDefinition.ToString());
+            pm.AcquireRecipe(r);
+            Delete();
+        }
+        else
+        {
+            pm.SendLocalizedMessage(1044153); // You don't have the required skills to attempt this item.
         }
     }
 }

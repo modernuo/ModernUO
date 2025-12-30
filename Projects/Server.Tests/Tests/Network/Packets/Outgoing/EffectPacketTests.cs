@@ -24,9 +24,9 @@ namespace Server.Tests.Network
         public void TestParticleEffect()
         {
             var effectType = EffectType.Moving;
-            Serial serial = (Serial)0x4000;
-            Serial from = (Serial)0x1000;
-            Serial to = (Serial)0x2000;
+            var serial = (Serial)0x4000;
+            var from = (Serial)0x1000;
+            var to = (Serial)0x2000;
             var itemId = 0x100;
             var fromPoint = new Point3D(1000, 100, -10);
             var toPoint = new Point3D(1500, 500, 0);
@@ -63,8 +63,8 @@ namespace Server.Tests.Network
         public void TestHuedEffect()
         {
             var effectType = EffectType.Moving;
-            Serial from = (Serial)0x1000;
-            Serial to = (Serial)0x2000;
+            var from = (Serial)0x1000;
+            var to = (Serial)0x2000;
             var itemId = 0x100;
             var fromPoint = new Point3D(1000, 100, -10);
             var toPoint = new Point3D(1500, 500, 0);

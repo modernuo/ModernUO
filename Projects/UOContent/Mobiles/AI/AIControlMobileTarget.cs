@@ -6,7 +6,7 @@ namespace Server.Targets;
 
 public class AIControlMobileTarget : Target
 {
-    private readonly List<BaseAI> m_List;
+    private readonly List<BaseAI> _list;
 
     public AIControlMobileTarget(BaseAI ai, OrderType order) : base(
         -1,
@@ -14,19 +14,17 @@ public class AIControlMobileTarget : Target
         order == OrderType.Attack ? TargetFlags.Harmful : TargetFlags.None
     )
     {
-        m_List = new List<BaseAI>();
+        _list = [ai];
         Order = order;
-
-        AddAI(ai);
     }
 
     public OrderType Order { get; }
 
     public void AddAI(BaseAI ai)
     {
-        if (!m_List.Contains(ai))
+        if (!_list.Contains(ai))
         {
-            m_List.Add(ai);
+            _list.Add(ai);
         }
     }
 
@@ -34,9 +32,9 @@ public class AIControlMobileTarget : Target
     {
         if (o is Mobile m)
         {
-            for (var i = 0; i < m_List.Count; ++i)
+            for (var i = 0; i < _list.Count; ++i)
             {
-                m_List[i].EndPickTarget(from, m, Order);
+                _list[i].EndPickTarget(from, m, Order);
             }
         }
     }

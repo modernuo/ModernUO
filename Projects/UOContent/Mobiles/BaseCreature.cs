@@ -56,11 +56,12 @@ namespace Server.Mobiles
         Attack, // "(All/Name) kill",
 
         // "(All/Name) attack"  All or the specified pet(s) currently under your control attack the target.
-        Patrol,  // "(Name) patrol"  Roves between two or more guarded targets.
-        Release, // "(Name) release"  Releases pet back into the wild (removes "tame" status).
-        Stay,    // "(All/Name) stay" All or the specified pet(s) will stop and stay in current spot.
-        Stop,    // "(All/Name) stop Cancels any current orders to attack, guard or follow.
-        Transfer // "(Name) transfer" Transfers complete ownership to targeted player.
+        Patrol,   // "(Name) patrol"  Roves between two or more guarded targets.
+        Release,  // "(Name) release"  Releases pet back into the wild (removes "tame" status).
+        Stay,     // "(All/Name) stay" All or the specified pet(s) will stop and stay in current spot.
+        Stop,     // "(All/Name) stop Cancels any current orders to attack, guard or follow.
+        Transfer, // "(Name) transfer" Transfers complete ownership to targeted player.
+        Rename    // "(Name) rename"  Changes the name of the pet.
     }
 
     [Flags]
@@ -130,30 +131,6 @@ namespace Server.Mobiles
         }
 
         public int CompareTo(DamageStore ds) => (ds?.m_Damage ?? 0).CompareTo(m_Damage);
-    }
-
-    [AttributeUsage(AttributeTargets.Class)]
-    public class FriendlyNameAttribute : Attribute
-    {
-        public FriendlyNameAttribute(TextDefinition friendlyName) => FriendlyName = friendlyName;
-        // future use: Talisman 'Protection/Bonus vs. Specific Creature
-
-        public TextDefinition FriendlyName { get; }
-
-        public static TextDefinition GetFriendlyNameFor(Type t)
-        {
-            if (t.IsDefined(typeof(FriendlyNameAttribute), false))
-            {
-                var objs = t.GetCustomAttributes(typeof(FriendlyNameAttribute), false);
-
-                if (objs.Length > 0)
-                {
-                    return (objs[0] as FriendlyNameAttribute)?.FriendlyName ?? "";
-                }
-            }
-
-            return t.Name;
-        }
     }
 
     public abstract partial class BaseCreature : Mobile, IHonorTarget, IQuestGiver
@@ -278,7 +255,7 @@ namespace Server.Mobiles
         private bool m_bTamable;
         private int m_ColdResistance;
 
-        private bool m_Controlled;        // Is controlled
+        private bool _controlled;        // Is controlled
         private Mobile m_ControlMaster;   // My master
         private OrderType m_ControlOrder; // My order
 
@@ -364,13 +341,17 @@ namespace Server.Mobiles
 
             FightMode = mode;
 
-            ResetSpeeds();
+            GetSpeeds(out var activeSpeed, out var passiveSpeed);
+
+            ActiveSpeed = activeSpeed;
+            PassiveSpeed = passiveSpeed;
+            CurrentSpeed = passiveSpeed;
 
             m_Team = 0;
 
             Debug = false;
 
-            m_Controlled = false;
+            _controlled = false;
             m_ControlMaster = null;
             ControlTarget = null;
             m_ControlOrder = OrderType.None;
@@ -447,6 +428,8 @@ namespace Server.Mobiles
 
         [CommandProperty(AccessLevel.GameMaster)]
         public bool IsPrisoner { get; set; }
+
+        public virtual bool FollowsAcquireRules => true;
 
         protected DateTime SummonEnd { get; set; }
 
@@ -749,15 +732,15 @@ namespace Server.Mobiles
         [CommandProperty(AccessLevel.GameMaster)]
         public bool Controlled
         {
-            get => m_Controlled;
+            get => _controlled;
             set
             {
-                if (m_Controlled == value)
+                if (_controlled == value)
                 {
                     return;
                 }
 
-                m_Controlled = value;
+                _controlled = value;
                 Delta(MobileDelta.Noto);
 
                 InvalidateProperties();
@@ -923,8 +906,6 @@ namespace Server.Mobiles
 
         public virtual bool ReturnsToHome =>
             SeeksHome && Home != Point3D.Zero && !m_ReturnQueued && !Controlled && !Summoned;
-
-        public virtual bool ScaleSpeedByDex => NPCSpeeds.ScaleSpeedByDex && !IsMonster;
 
         // used for deleting untamed creatures [in houses]
         [CommandProperty(AccessLevel.GameMaster)]
@@ -1214,7 +1195,7 @@ namespace Server.Mobiles
             for (var i = 0; i < abilities.Length; i++)
             {
                 var ability = abilities[i];
-                if (ability.WillTrigger(trigger) && ability.CanTrigger(this, trigger))
+                if (ability.CanTrigger(this, trigger))
                 {
                     ability.Trigger(trigger, this, defender);
                     triggered = true;
@@ -1236,7 +1217,7 @@ namespace Server.Mobiles
             for (var i = 0; i < abilities.Length; i++)
             {
                 var ability = abilities[i];
-                if (ability.WillTrigger(trigger) && ability.CanTrigger(this, trigger))
+                if (ability.CanTrigger(this, trigger))
                 {
                     ability.Move(this, d);
                 }
@@ -1255,7 +1236,7 @@ namespace Server.Mobiles
             for (var i = 0; i < abilities.Length; i++)
             {
                 var ability = abilities[i];
-                if (ability.WillTrigger(trigger) && ability.CanTrigger(this, trigger))
+                if (ability.CanTrigger(this, trigger))
                 {
                     if ((trigger & MonsterAbilityTrigger.GiveMeleeDamage) != 0)
                     {
@@ -1296,7 +1277,7 @@ namespace Server.Mobiles
             for (var i = 0; i < abilities.Length; i++)
             {
                 var ability = abilities[i];
-                if (ability.WillTrigger(trigger) && ability.CanTrigger(this, trigger))
+                if (ability.CanTrigger(this, trigger))
                 {
                     if ((trigger & MonsterAbilityTrigger.GiveSpellDamage) != 0)
                     {
@@ -1353,24 +1334,23 @@ namespace Server.Mobiles
                 return false;
             }
 
-            if (FightMode == FightMode.Evil && m.Karma < 0 || c.FightMode == FightMode.Evil && Karma < 0)
+            if (m_Team != c.Team || FightMode == FightMode.Evil && m.Karma < 0 || c.FightMode == FightMode.Evil && Karma < 0)
             {
                 return true;
             }
 
-            if (m_Team != c.Team)
+            var master = GetMaster();
+            var cMaster = c.GetMaster();
+
+            if (master == null)
             {
-                return true;
+                // Non-summons will attack summons of non-NPCs
+                return cMaster != null && cMaster is not BaseCreature;
             }
 
-            var targetControlled = c._summoned || c.m_Controlled;
-
-            if (_summoned || m_Controlled)
-            {
-                return targetControlled || c.IsEnemy(GetMaster());
-            }
-
-            return targetControlled && IsEnemy(c.GetMaster());
+            // Summons will attack others summons, if they are enemies with their master
+            // Pets will attack non-summons, but not other summons (legacy logic)
+            return (master as BaseCreature)?.IsEnemy(cMaster ?? m) ?? cMaster == null;
         }
 
         public override string ApplyNameSuffix(string suffix)
@@ -1513,15 +1493,6 @@ namespace Server.Mobiles
             if (isTeleport)
             {
                 AIObject?.OnTeleported();
-            }
-        }
-
-        public override void OnRawDexChange(int oldValue)
-        {
-            // This only really happens for pets or when a GM modifies a mob.
-            if (oldValue != RawDex && ScaleSpeedByDex)
-            {
-                ResetSpeeds();
             }
         }
 
@@ -1871,7 +1842,7 @@ namespace Server.Mobiles
             // Version 2
             writer.Write((int)FightMode);
 
-            writer.Write(m_Controlled);
+            writer.Write(_controlled);
             writer.Write(m_ControlMaster);
             writer.Write(ControlTarget);
             writer.Write(ControlDest);
@@ -2021,7 +1992,7 @@ namespace Server.Mobiles
             {
                 FightMode = (FightMode)reader.ReadInt();
 
-                m_Controlled = reader.ReadBool();
+                _controlled = reader.ReadBool();
                 m_ControlMaster = reader.ReadEntity<Mobile>();
                 ControlTarget = reader.ReadEntity<Mobile>();
                 ControlDest = reader.ReadPoint3D();
@@ -2049,7 +2020,7 @@ namespace Server.Mobiles
             {
                 FightMode = FightMode.Closest;
 
-                m_Controlled = false;
+                _controlled = false;
                 m_ControlMaster = null;
                 ControlTarget = null;
                 m_ControlOrder = OrderType.None;
@@ -2257,7 +2228,7 @@ namespace Server.Mobiles
 
         public void ChangeAIType(AIType newAI)
         {
-            AIObject?.m_Timer.Stop();
+            AIObject?._timer.Stop();
 
             if (ForcedAI != null)
             {
@@ -2380,7 +2351,7 @@ namespace Server.Mobiles
         {
             if (AIObject != null)
             {
-                AIObject.m_Timer?.Stop();
+                AIObject._timer?.Stop();
                 AIObject = null;
             }
 
@@ -2413,13 +2384,6 @@ namespace Server.Mobiles
             base.OnAfterDelete();
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void DebugSay(string text)
-        {
-            // Moved the debug check to implementation layer so we can avoid string formatting when we do not need it
-            PublicOverheadMessage(MessageType.Regular, 41, false, text);
-        }
-
         /*
          * This function can be overridden.. so a "Strongest" mobile, can have a different definition depending
          * on who check for value
@@ -2438,7 +2402,7 @@ namespace Server.Mobiles
             {
                 FightMode.Strongest => m.Skills.Tactics.Value + m.Str, // returns strongest mobile
                 FightMode.Weakest   => -m.Hits,                        // returns weakest mobile
-                _                   => -GetDistanceToSqrt(m)
+                _                   => -this.GetDistanceToSqrt(m)
             };
         }
 
@@ -2460,7 +2424,7 @@ namespace Server.Mobiles
 
         public bool IsHurt() => Hits != HitsMax;
 
-        public double GetHomeDistance() => GetDistanceToSqrt(m_Home);
+        public double GetHomeDistance() => this.GetDistanceToSqrt(m_Home);
 
         public virtual int GetTeamSize(int iRange)
         {
@@ -2497,7 +2461,7 @@ namespace Server.Mobiles
                 }
                 else
                 {
-                    DebugSay("I'm being attacked but my master told me not to fight.");
+                    AIObject.DebugSay("I'm being attacked but my master told me not to fight.");
                     Warmode = false;
                     return;
                 }
@@ -2517,7 +2481,7 @@ namespace Server.Mobiles
                 }
             }
 
-            if (aggressor.ChangingCombatant && (m_Controlled || _summoned) &&
+            if (aggressor.ChangingCombatant && (_controlled || _summoned) &&
                 (ct == OrderType.Come || !Core.ML && ct == OrderType.Stay || ct is OrderType.Stop or OrderType.None or OrderType.Follow))
             {
                 ControlTarget = aggressor;
@@ -2561,7 +2525,7 @@ namespace Server.Mobiles
                 AIObject?.GetContextMenuEntries(from, ref list);
             }
 
-            if (m_bTamable && !m_Controlled && from.Alive)
+            if (m_bTamable && !_controlled && from.Alive)
             {
                 list.Add(new TameEntry(from.Female ? AllowFemaleTamer : AllowMaleTamer));
             }
@@ -2662,13 +2626,10 @@ namespace Server.Mobiles
 
                 if (ai.Defender == target)
                 {
-                    if (m_ControlMaster?.Player == true && m_ControlMaster.CanBeHarmful(target, false))
+                    var master = GetMaster();
+                    if (master?.Player == true && master.CanBeHarmful(target, false))
                     {
-                        m_ControlMaster.DoHarmful(target, true);
-                    }
-                    else if (m_SummonMaster?.Player == true && m_SummonMaster.CanBeHarmful(target, false))
-                    {
-                        m_SummonMaster.DoHarmful(target, true);
+                        master.DoHarmful(target, true);
                     }
 
                     return;
@@ -2715,19 +2676,7 @@ namespace Server.Mobiles
 
             if (Body.IsHuman)
             {
-                switch (Utility.Random(2))
-                {
-                    case 0:
-                        {
-                            CheckedAnimate(5, 5, 1, true, true, 1);
-                            break;
-                        }
-                    case 1:
-                        {
-                            CheckedAnimate(6, 5, 1, true, false, 1);
-                            break;
-                        }
-                }
+                CheckedAnimate(Utility.RandomBool() ? 5 : 6, 5, 1, true, false, 1);
             }
             else if (Body.IsAnimal)
             {
@@ -2752,19 +2701,7 @@ namespace Server.Mobiles
             }
             else if (Body.IsMonster)
             {
-                switch (Utility.Random(2))
-                {
-                    case 0:
-                        {
-                            CheckedAnimate(17, 5, 1, true, false, 1);
-                            break;
-                        }
-                    case 1:
-                        {
-                            CheckedAnimate(18, 5, 1, true, false, 1);
-                            break;
-                        }
-                }
+                CheckedAnimate(Utility.RandomBool() ? 17 : 18, 5, 1, true, false, 1);
             }
 
             PlaySound(GetIdleSound());
@@ -3224,7 +3161,7 @@ namespace Server.Mobiles
 
                 var topDamage = rights[0].m_Damage;
 
-                int minDamage = hitsMax switch
+                var minDamage = hitsMax switch
                 {
                     >= 3000 => topDamage / 16,
                     >= 1000 => topDamage / 8,
@@ -3262,7 +3199,7 @@ namespace Server.Mobiles
         }
 
         [GeneratedEvent(nameof(CreatureDeathEvent))]
-        public static partial void CreatureDeathEvent(Mobile m);
+        public static partial void CreatureDeathEvent(BaseCreature bc);
 
         public override void OnDeath(Container c)
         {
@@ -3453,8 +3390,13 @@ namespace Server.Mobiles
             CreatureDeathEvent(this);
         }
 
+        [GeneratedEvent(nameof(CreatureDeletedEvent))]
+        public static partial void CreatureDeletedEvent(BaseCreature bc);
+
         public override void OnDelete()
         {
+            CreatureDeletedEvent(this);
+
             var m = m_ControlMaster;
             SetControlMaster(null);
 
@@ -3537,7 +3479,6 @@ namespace Server.Mobiles
             }
 
             Guild = null;
-            ResetSpeeds();
 
             Delta(MobileDelta.Noto);
 
@@ -3669,7 +3610,7 @@ namespace Server.Mobiles
 
             if (ReturnsToHome && IsSpawnerBound() && !InRange(Home, RangeHome))
             {
-                if (Combatant == null && Warmode == false && Utility.RandomDouble() < .10) /* some throttling */
+                if (Combatant == null && !Warmode && Utility.RandomDouble() < .10) /* some throttling */
                 {
                     m_FailedReturnHome = !Move(GetDirectionTo(Home.X, Home.Y)) ? m_FailedReturnHome + 1 : 0;
 
@@ -3748,7 +3689,7 @@ namespace Server.Mobiles
                 return BardMaster;
             }
 
-            if (m_Controlled && m_ControlMaster != null)
+            if (_controlled && m_ControlMaster != null)
             {
                 return m_ControlMaster;
             }
@@ -3899,7 +3840,7 @@ namespace Server.Mobiles
 
             IsDeadPet = false;
 
-            Span<byte> buffer = stackalloc byte[OutgoingMobilePackets.BondedStatusPacketLength].InitializePacket();
+            var buffer = stackalloc byte[OutgoingMobilePackets.BondedStatusPacketLength].InitializePacket();
             OutgoingMobilePackets.CreateBondedStatus(buffer, Serial, false);
             Effects.SendPacket(Location, Map, buffer);
 
@@ -4117,7 +4058,7 @@ namespace Server.Mobiles
 
         public virtual bool IsFriend(Mobile m) =>
             OppositionGroup?.IsEnemy(this, m) != true && m is BaseCreature c && m_Team == c.m_Team
-            && (_summoned || m_Controlled) == (c._summoned || c.m_Controlled);
+            && (_summoned || _controlled) == (c._summoned || c._controlled);
 
         public virtual Allegiance GetFactionAllegiance(Mobile mob)
         {
@@ -4292,7 +4233,7 @@ namespace Server.Mobiles
 
             if (amount > 0)
             {
-                int stamGain = dropped switch
+                var stamGain = dropped switch
                 {
                     Gold => amount - 50,
                     _    => amount * 15 - 50
@@ -4312,12 +4253,15 @@ namespace Server.Mobiles
                 }
                 else if (m_Loyalty < MaxLoyalty)
                 {
-                    // 50% chance to increase 10 loyalty per food
-                    m_Loyalty = Math.Min(MaxLoyalty, Utility.CoinFlips(amount, MaxLoyaltyIncrease) * 10);
-                }
+                    // Calculate the loyalty increase
+                    var loyaltyIncrease = Utility.CoinFlips(amount, MaxLoyaltyIncrease) * 10;
 
-                // looks like in OSI pets say they are happier even if they are at maximum loyalty
-                SayTo(from, 502060); // Your pet looks happier.
+                    if (loyaltyIncrease > 0)  // Only update if there's an actual increase
+                    {
+                        m_Loyalty = Math.Min(MaxLoyalty, m_Loyalty + loyaltyIncrease);
+                        SayTo(from, 502060); // Your pet looks happier.
+                    }
+                }
 
                 if (Body.IsAnimal)
                 {
@@ -4924,20 +4868,11 @@ namespace Server.Mobiles
             NPCSpeeds.GetSpeeds(this, out activeSpeed, out passiveSpeed);
         }
 
-        public void ResetSpeeds(bool currentUseActive = false)
-        {
-            GetSpeeds(out var activeSpeed, out var passiveSpeed);
-
-            ActiveSpeed = activeSpeed;
-            PassiveSpeed = passiveSpeed;
-            CurrentSpeed = currentUseActive ? activeSpeed : passiveSpeed;
-        }
-
         public virtual void DropBackpack()
         {
             if (Backpack?.Items.Count > 0)
             {
-                Backpack b = new CreatureBackpack(Name);
+                var b = new CreatureBackpack(Name);
 
                 var list = new List<Item>(Backpack.Items);
                 foreach (var item in list)

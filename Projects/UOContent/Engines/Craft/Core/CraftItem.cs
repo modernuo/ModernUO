@@ -432,11 +432,11 @@ namespace Server.Engines.Craft
 
         public static bool IsQuantityType(Type[][] types)
         {
-            for (int i = 0; i < types.Length; ++i)
+            for (var i = 0; i < types.Length; ++i)
             {
-                Type[] check = types[i];
+                var check = types[i];
 
-                for (int j = 0; j < check.Length; ++j)
+                for (var j = 0; j < check.Length; ++j)
                 {
                     if (typeof(IHasQuantity).IsAssignableFrom(check[j]))
                     {
@@ -883,7 +883,7 @@ namespace Server.Engines.Craft
 
             var minChance = craftSystem.GetChanceAtMin(this);
 
-            double chance = minChance + (valMainSkill - minMainSkill) / (maxMainSkill - minMainSkill) * (1.0 - minChance);
+            var chance = minChance + (valMainSkill - minMainSkill) / (maxMainSkill - minMainSkill) * (1.0 - minChance);
 
             if (from.Talisman is BaseTalisman talisman && talisman.Skill == craftSystem.MainSkill)
             {
@@ -1400,7 +1400,6 @@ namespace Server.Engines.Craft
                     m_From.SendGump(
                         new QueryMakersMarkGump(
                             quality,
-                            m_From,
                             m_CraftItem,
                             m_CraftSystem,
                             m_TypeRes,

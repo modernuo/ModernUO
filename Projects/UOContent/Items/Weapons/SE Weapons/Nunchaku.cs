@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class Nunchaku : BaseBashing
     {
         [Constructible]
-        public Nunchaku() : base(0x27AE) => Weight = 5.0;
+        public Nunchaku() : base(0x27AE)
+        {
+        }
+
+        public override double DefaultWeight => 5.0;
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.Block;
         public override WeaponAbility SecondaryAbility => WeaponAbility.Feint;

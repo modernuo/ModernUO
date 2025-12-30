@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using Server.Engines.BuffIcons;
 using Server.Misc;
+using Server.Mobiles;
 using Server.Targeting;
 
 namespace Server.Spells.Necromancy;
@@ -70,7 +72,7 @@ public class PainSpikeSpell : NecromancerSpell, ITargetingSpell<Mobile>
                 buffTime = timer.Next - Core.Now;
             }
 
-            BuffInfo.AddBuff(m, new BuffInfo(BuffIcon.PainSpike, 1075667, buffTime, m, Convert.ToString((int)damage)));
+            (m as PlayerMobile)?.AddBuff(new BuffInfo(BuffIcon.PainSpike, 1075667, buffTime, Convert.ToString((int)damage)));
 
             // TODO: Find a better way to do this
             StaminaSystem.DFA = DFAlgorithm.PainSpike;
@@ -109,7 +111,7 @@ public class PainSpikeSpell : NecromancerSpell, ITargetingSpell<Mobile>
                 _mobile.Hits += _toRestore;
             }
 
-            BuffInfo.RemoveBuff(_mobile, BuffIcon.PainSpike);
+            (_mobile as PlayerMobile)?.RemoveBuff(BuffIcon.PainSpike);
         }
     }
 }

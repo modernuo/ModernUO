@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Text.RegularExpressions;
+using ModernUO.CodeGeneratedEvents;
 using ModernUO.Serialization;
 using Server.Gumps;
+using Server.Mobiles;
 using Server.Network;
 using Server.Prompts;
 
@@ -125,14 +127,15 @@ public partial class ShardPoller : Item
         Options[^1] = option;
     }
 
-    public static void OnLogin(Mobile m)
+    [OnEvent(nameof(PlayerMobile.PlayerLoginEvent))]
+    public static void OnLogin(PlayerMobile pm)
     {
         if (_activePollers.Count == 0)
         {
             return;
         }
 
-        Timer.StartTimer(TimeSpan.FromSeconds(1.0), () => EventSink_Login_Callback(m));
+        Timer.StartTimer(TimeSpan.FromSeconds(1.0), () => EventSink_Login_Callback(pm));
     }
 
     private static void EventSink_Login_Callback(Mobile from)
@@ -394,7 +397,7 @@ public class ShardPollGump : Gump
 
         if (editing)
         {
-            AddHtml(22, 22, 294, 20, $"{totalVotes} total".Color(LabelColor32));
+            AddHtml(22, 22, 294, 20, Html.Color($"{totalVotes} total", LabelColor32));
             AddButton(287, 23, 0x2622, 0x2623, 2);
         }
 

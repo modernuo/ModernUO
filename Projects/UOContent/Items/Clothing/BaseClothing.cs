@@ -95,7 +95,7 @@ namespace Server.Items
         private string _crafter;
 
         [SerializableFieldSaveFlag(8)]
-        private bool ShouldSerializeCrafter() => _crafter != null;
+        private bool ShouldSerializeCrafter() => !string.IsNullOrEmpty(_crafter);
 
         [InvalidateProperties]
         [SerializableField(9)]
@@ -429,63 +429,65 @@ namespace Server.Items
 
         public override bool CanEquip(Mobile from)
         {
+            if (!from.Player || from.AccessLevel >= AccessLevel.GameMaster)
+            {
+                return base.CanEquip(from);
+            }
+
             if (!Ethic.CheckEquip(from, this))
             {
                 return false;
             }
 
-            if (from.AccessLevel < AccessLevel.GameMaster)
+            if (RequiredRace != null && from.Race != RequiredRace)
             {
-                if (RequiredRace != null && from.Race != RequiredRace)
+                if (RequiredRace == Race.Elf)
                 {
-                    if (RequiredRace == Race.Elf)
-                    {
-                        from.SendLocalizedMessage(1072203); // Only Elves may use this.
-                    }
-                    else
-                    {
-                        from.SendMessage($"Only {RequiredRace.PluralName} may use this.");
-                    }
-
-                    return false;
+                    from.SendLocalizedMessage(1072203); // Only Elves may use this.
+                }
+                else
+                {
+                    from.SendMessage($"Only {RequiredRace.PluralName} may use this.");
                 }
 
-                if (!AllowMaleWearer && !from.Female)
-                {
-                    if (AllowFemaleWearer)
-                    {
-                        from.SendLocalizedMessage(1010388); // Only females can wear this.
-                    }
-                    else
-                    {
-                        from.SendMessage("You may not wear this.");
-                    }
+                return false;
+            }
 
-                    return false;
+            if (!AllowMaleWearer && !from.Female)
+            {
+                if (AllowFemaleWearer)
+                {
+                    from.SendLocalizedMessage(1010388); // Only females can wear this.
+                }
+                else
+                {
+                    from.SendMessage("You may not wear this.");
                 }
 
-                if (!AllowFemaleWearer && from.Female)
-                {
-                    if (AllowMaleWearer)
-                    {
-                        from.SendLocalizedMessage(1063343); // Only males can wear this.
-                    }
-                    else
-                    {
-                        from.SendMessage("You may not wear this.");
-                    }
+                return false;
+            }
 
-                    return false;
+            if (!AllowFemaleWearer && from.Female)
+            {
+                if (AllowMaleWearer)
+                {
+                    from.SendLocalizedMessage(1063343); // Only males can wear this.
+                }
+                else
+                {
+                    from.SendMessage("You may not wear this.");
                 }
 
-                var strBonus = ComputeStatBonus(StatType.Str);
-                var strReq = ComputeStatReq(StatType.Str);
+                return false;
+            }
 
-                if (from.Str < strReq || from.Str + strBonus < 1)
-                {
-                    from.SendLocalizedMessage(500213); // You are not strong enough to equip that.
-                    return false;
-                }
+            var strBonus = ComputeStatBonus(StatType.Str);
+            var strReq = ComputeStatReq(StatType.Str);
+
+            if (from.Str < strReq || from.Str + strBonus < 1)
+            {
+                from.SendLocalizedMessage(500213); // You are not strong enough to equip that.
+                return false;
             }
 
             return base.CanEquip(from);
@@ -907,8 +909,13 @@ namespace Server.Items
 
         public override void OnSingleClick(Mobile from)
         {
-            var attrs = new List<EquipInfoAttribute>();
+            if (!Core.UOTD)
+            {
+                OnSingleClickPreUOTD(from);
+                return;
+            }
 
+            var attrs = new List<EquipInfoAttribute>();
             AddEquipInfoAttributes(from, attrs);
 
             int number;
@@ -929,6 +936,30 @@ namespace Server.Items
             }
 
             from.NetState.SendDisplayEquipmentInfo(Serial, number, _crafter, false, attrs);
+        }
+
+        public void OnSingleClickPreUOTD(Mobile from)
+        {
+            var name = Name;
+
+            if (name == null)
+            {
+                var articleAnName = (TileData.ItemTable[ItemID].Flags & TileFlag.ArticleAn) != 0;
+                name = $"{(articleAnName ? "an" : "a")} {Localization.GetText(LabelNumber).ToLowerInvariant()}";
+            }
+
+            if (Crafter == null)
+            {
+                LabelTo(from, Quality == ClothingQuality.Exceptional ? $"{name} of exceptional quality" : name);
+                return;
+            }
+
+            LabelTo(
+                from,
+                Quality == ClothingQuality.Exceptional
+                    ? $"{name} crafted with exceptional quality by {Crafter}"
+                    : $"{name} crafted by {Crafter}"
+            );
         }
 
         public virtual void AddEquipInfoAttributes(Mobile from, List<EquipInfoAttribute> attrs)

@@ -27,6 +27,8 @@ public partial class SchmendrickApprenticeCorpse : Corpse
 
         _lantern = new Lantern { Movable = false, Protected = true };
         _lantern.Ignite();
+
+        Owner = null;
     }
 
     private static Mobile GetOwner()
@@ -152,5 +154,7 @@ public partial class SchmendrickApprenticeCorpse : Corpse
         {
             _lantern.Delete();
         }
+
+        Owner?.Delete();
     }
 }

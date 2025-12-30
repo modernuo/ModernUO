@@ -111,10 +111,10 @@ namespace Server.Gumps
 
             AddImage(10, 10, 100);
 
-            if (m_House.Sign != null)
-            {
-                var lines = m_House.Sign.GetName().Wrap(10, 6);
+            var lines = m_House.Sign?.GetName().Wrap(10, 6);
 
+            if (lines != null)
+            {
                 for (int i = 0, y = (114 - lines.Count * 14) / 2; i < lines.Count; ++i, y += 14)
                 {
                     var s = lines[i];
@@ -870,7 +870,7 @@ namespace Server.Gumps
                     }
 
                     var items = house.GetItems();
-                    var mobiles = house.GetMobiles();
+                    using var mobiles = house.GetMobilesPooled();
 
                     newHouse.MoveToWorld(
                         new Point3D(
@@ -1216,7 +1216,7 @@ namespace Server.Gumps
                                         );
 
                                         var r = m_House.Region;
-                                        var list = r.GetMobiles();
+                                        using var list = r.GetMobilesPooled();
 
                                         for (var i = 0; i < list.Count; ++i)
                                         {
@@ -1258,7 +1258,7 @@ namespace Server.Gumps
                                         }
 
                                         var r = m_House.Region;
-                                        var list = r.GetMobiles();
+                                        using var list = r.GetMobilesPooled();
 
                                         for (var i = 0; i < list.Count; ++i)
                                         {

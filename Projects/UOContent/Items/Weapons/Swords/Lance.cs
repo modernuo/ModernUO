@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class Lance : BaseSword
     {
         [Constructible]
-        public Lance() : base(0x26C0) => Weight = 12.0;
+        public Lance() : base(0x26C0)
+        {
+        }
+
+        public override double DefaultWeight => 12.0;
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.Dismount;
         public override WeaponAbility SecondaryAbility => WeaponAbility.ConcussionBlow;

@@ -8,7 +8,11 @@ namespace Server.Items
     public partial class Throne : Item
     {
         [Constructible]
-        public Throne() : base(0xB33) => Weight = 1.0;
+        public Throne() : base(0xB33)
+        {
+        }
+
+        public override double DefaultWeight => 1.0;
     }
 
     [Furniture]
@@ -17,6 +21,10 @@ namespace Server.Items
     public partial class WoodenThrone : Item
     {
         [Constructible]
-        public WoodenThrone() : base(0xB2E) => Weight = 15.0;
+        public WoodenThrone() : base(0xB2E)
+        {
+        }
+
+        public override double DefaultWeight => 15.0;
     }
 }

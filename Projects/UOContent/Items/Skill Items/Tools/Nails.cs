@@ -8,10 +8,16 @@ namespace Server.Items;
 public partial class Nails : BaseTool
 {
     [Constructible]
-    public Nails() : base(0x102E) => Weight = 2.0;
+    public Nails() : base(0x102E)
+    {
+    }
 
     [Constructible]
-    public Nails(int uses) : base(uses, 0x102E) => Weight = 2.0;
+    public Nails(int uses) : base(uses, 0x102E)
+    {
+    }
+
+    public override double DefaultWeight => 2.0;
 
     public override CraftSystem CraftSystem => DefCarpentry.CraftSystem;
 }

@@ -6,12 +6,9 @@ namespace Server.Items;
 public partial class Boomerang : BaseThrown
 {
     [Constructible]
-    public Boomerang() : base(0x8FF)
-    {
-        Weight = 4.0;
-        Layer = Layer.OneHanded;
-    }
+    public Boomerang() : base(0x8FF) => Layer = Layer.OneHanded;
 
+    public override double DefaultWeight => 4.0;
     public override int MinThrowRange => 4;
 
     public override WeaponAbility PrimaryAbility => WeaponAbility.MysticArc;

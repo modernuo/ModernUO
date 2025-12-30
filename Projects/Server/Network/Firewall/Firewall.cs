@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2024 - ModernUO Development Team                       *
+ * Copyright 2019-2025 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: Firewall.cs                                                     *
  *                                                                       *
@@ -14,28 +14,44 @@
  *************************************************************************/
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Net;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+using System.Threading;
 
 namespace Server.Network;
 
 public static class Firewall
 {
+    [ThreadStatic]
     private static InternalValidationEntry _validationEntry;
-    private static readonly Dictionary<IPAddress, bool> _isBlockedCache = new();
+    private static readonly ConcurrentDictionary<IPAddress, int> _isBlockedCache = [];
+    private static readonly ReaderWriterLockSlim _firewallLock = new(LockRecursionPolicy.NoRecursion);
 
-    private static readonly SortedSet<IFirewallEntry> _firewallSet = new();
+    private static int _firewallVersion;
+    private static readonly SortedSet<IFirewallEntry> _firewallSet = [];
 
-    public static SortedSet<IFirewallEntry> FirewallSet => _firewallSet;
+    public static int FirewallSetCount => _firewallSet.Count;
+
+    public static void ReadFirewallSet(Action<IReadOnlySet<IFirewallEntry>> callback)
+    {
+        _firewallLock.EnterReadLock();
+        try
+        {
+            callback(_firewallSet);
+        }
+        finally
+        {
+            _firewallLock.ExitReadLock();
+        }
+    }
 
     internal static bool IsBlocked(IPAddress address)
     {
-        ref var isBlocked = ref CollectionsMarshal.GetValueRefOrAddDefault(_isBlockedCache, address, out var exists);
-        if (exists)
+        if (_isBlockedCache.TryGetValue(address, out var blockVersion) && blockVersion == _firewallVersion)
         {
-            return isBlocked;
+            return true;
         }
 
         if (_validationEntry == null)
@@ -47,34 +63,68 @@ public static class Firewall
             _validationEntry.Address = address;
         }
 
-        // Get all entries that are lower than our validation entry
-        var view = _firewallSet.GetViewBetween(_firewallSet.Min, _validationEntry);
-
-        // Loop backward since there shouldn't be any entries where the Min address is higher than ours
-        foreach (var firewallEntry in view.Reverse())
+        if (CheckBlocked(_validationEntry))
         {
-            if (firewallEntry.IsBlocked(_validationEntry.MinIpAddress))
-            {
-                isBlocked = true;
-                return true;
-            }
+            _isBlockedCache[address] = _firewallVersion;
+            return true;
         }
 
-        isBlocked = view.Max?.IsBlocked(_validationEntry.MinIpAddress) == true;
+        return false;
+    }
 
-        return isBlocked;
+    private static bool CheckBlocked(IFirewallEntry validationEntry)
+    {
+        if (_firewallSet.Count == 0)
+        {
+            return false;
+        }
+
+        _firewallLock.EnterReadLock();
+        try
+        {
+            var min = _firewallSet.Min;
+            if (validationEntry.CompareTo(min) < 0)
+            {
+                return false;
+            }
+
+            // Get all entries that are lower than our validation entry
+            var view = _firewallSet.GetViewBetween(min, validationEntry);
+
+            // Loop backward since there shouldn't be any entries where the Min address is higher than ours
+            foreach (var firewallEntry in view.Reverse())
+            {
+                if (firewallEntry.IsBlocked(validationEntry.MinIpAddress))
+                {
+                    return true;
+                }
+            }
+
+            return view.Max?.IsBlocked(validationEntry.MinIpAddress) == true;
+        }
+        finally
+        {
+            _firewallLock.ExitReadLock();
+        }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool Add(IFirewallEntry firewallEntry)
     {
-        if (_firewallSet.Add(firewallEntry))
+        _firewallLock.EnterWriteLock();
+        try
         {
-            _isBlockedCache.Clear();
-            return true;
+            if (_firewallSet.Add(firewallEntry))
+            {
+                Interlocked.Increment(ref _firewallVersion); // Update version
+                return true;
+            }
+            return false;
         }
-
-        return false;
+        finally
+        {
+            _firewallLock.ExitWriteLock();
+        }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -85,13 +135,20 @@ public static class Firewall
             return false;
         }
 
-        if (_firewallSet.Remove(entry))
+        _firewallLock.EnterWriteLock();
+        try
         {
-            _isBlockedCache.Clear();
-            return true;
+            if (_firewallSet.Remove(entry))
+            {
+                Interlocked.Increment(ref _firewallVersion); // Update version
+                return true;
+            }
+            return false;
         }
-
-        return false;
+        finally
+        {
+            _firewallLock.ExitWriteLock();
+        }
     }
 
     private class InternalValidationEntry : BaseFirewallEntry

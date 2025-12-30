@@ -48,7 +48,7 @@ public partial class PlantItem : Item, ISecurable
     private PlantSystem _plantSystem;
 
     [SerializableFieldSaveFlag(5)]
-    private bool ShouldSerializePlantSystem() => _plantStatus != PlantStatus.DecorativePlant;
+    private bool ShouldSerializePlantSystem() => _plantStatus < PlantStatus.DecorativePlant;
 
     // For clients older than 7.0.12.0
     private ObjectPropertyList _oldClientPropertyList;
@@ -56,8 +56,6 @@ public partial class PlantItem : Item, ISecurable
     [Constructible]
     public PlantItem(bool fertileDirt = false) : base(0x1602)
     {
-        Weight = 1.0;
-
         _plantStatus = PlantStatus.BowlOfDirt;
         _plantSystem = new PlantSystem(this)
         {
@@ -68,6 +66,8 @@ public partial class PlantItem : Item, ISecurable
 
         Plants.Add(this);
     }
+
+    public override double DefaultWeight => 1.0;
 
     public ObjectPropertyList OldClientPropertyList
     {
@@ -467,12 +467,15 @@ public partial class PlantItem : Item, ISecurable
             return;
         }
 
-        var loc = GetWorldLocation();
-
-        if (!from.InLOS(loc) || !from.InRange(loc, 2))
+        if (!IsChildOf(from))
         {
-            from.LocalOverheadMessage(MessageType.Regular, 0x3E9, 1019045); // I can't reach that.
-            return;
+            var loc = GetWorldLocation();
+
+            if (!from.InLOS(loc) || !from.InRange(loc, 2))
+            {
+                from.LocalOverheadMessage(MessageType.Regular, 0x3E9, 1019045); // I can't reach that
+                return;
+            }
         }
 
         if (!IsUsableBy(from))

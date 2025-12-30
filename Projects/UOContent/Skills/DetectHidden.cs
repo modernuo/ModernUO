@@ -18,7 +18,7 @@ namespace Server.SkillHandlers
             src.SendLocalizedMessage(500819); // Where will you search?
             src.Target = new InternalTarget();
 
-            return TimeSpan.FromSeconds(6.0);
+            return TimeSpan.FromSeconds(30.0);
         }
 
         private class InternalTarget : Target
@@ -27,11 +27,16 @@ namespace Server.SkillHandlers
             {
             }
 
+            protected override void OnTargetCancel(Mobile from, TargetCancelType cancelType)
+            {
+                from.NextSkillTime = Core.TickCount;
+            }
+
             protected override void OnTarget(Mobile src, object targ)
             {
                 var foundAnyone = false;
 
-                Point3D p = targ switch
+                var p = targ switch
                 {
                     Mobile mobile => mobile.Location,
                     Item item     => item.Location,
@@ -108,6 +113,14 @@ namespace Server.SkillHandlers
                 {
                     src.SendLocalizedMessage(500817); // You can see nothing hidden there.
                 }
+
+                const int TargeterCooldown = 30000; // 30s
+                const int SkillCooldown = 10000;    // 10s
+
+                // Calculate how much time has passed since the targeter was opened
+                var ticksSinceTargeter = (int)(Core.TickCount - (src.NextSkillTime - TargeterCooldown));
+                var remainingCooldown = Math.Max(0, SkillCooldown - ticksSinceTargeter);
+                src.NextSkillTime = Core.TickCount + remainingCooldown;
             }
         }
     }

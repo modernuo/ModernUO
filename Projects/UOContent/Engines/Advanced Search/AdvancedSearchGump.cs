@@ -301,8 +301,8 @@ public class AdvancedSearchGump : Gump
             );
 
             // Count the number of selected objects
-            int count = 0;
-            foreach (AdvancedSearchResult e in SearchResults)
+            var count = 0;
+            foreach (var e in SearchResults)
             {
                 if (e.Selected)
                 {
@@ -319,7 +319,7 @@ public class AdvancedSearchGump : Gump
 
             var allDisplayedSelected = true;
 
-            for (int i = 0; i < MaxEntries; i++)
+            for (var i = 0; i < MaxEntries; i++)
             {
                 var offset = SortDescending ? MaxEntries - 1 - i : i;
                 var index = offset + DisplayFrom;
@@ -896,7 +896,7 @@ public class AdvancedSearchGump : Gump
         var commandSpan = commandString.AsSpan().Trim();
 
         string command = null;
-        string[] commandArgs = new string[commandSpan.Count(" ")];
+        var commandArgs = new string[commandSpan.Count(" ")];
 
         var index = 0;
         foreach (var part in commandSpan.Tokenize(' '))
@@ -933,9 +933,9 @@ public class AdvancedSearchGump : Gump
             return;
         }
 
-        CommandEventArgs cmdEventArgs = new CommandEventArgs(from, command, commandString, commandArgs);
+        var cmdEventArgs = new CommandEventArgs(from, command, commandString, commandArgs);
 
-        bool flushToLog = false;
+        var flushToLog = false;
 
         // execute the command on the objects in the list
 

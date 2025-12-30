@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class Halberd : BasePoleArm
     {
         [Constructible]
-        public Halberd() : base(0x143E) => Weight = 16.0;
+        public Halberd() : base(0x143E)
+        {
+        }
+
+        public override double DefaultWeight => 16.0;
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.WhirlwindAttack;
         public override WeaponAbility SecondaryAbility => WeaponAbility.ConcussionBlow;

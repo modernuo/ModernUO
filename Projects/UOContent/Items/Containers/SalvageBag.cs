@@ -19,10 +19,11 @@ public partial class SalvageBag : Bag
     [Constructible]
     public SalvageBag(int hue)
     {
-        Weight = 2.0;
         Hue = hue;
         m_Failure = false;
     }
+
+    public override double DefaultWeight => 2.0;
 
     public override int LabelNumber => 1079931; // Salvage Bag
 

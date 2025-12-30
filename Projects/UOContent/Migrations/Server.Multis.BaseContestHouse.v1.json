@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "type": "Server.Multis.BaseContestHouse",
+  "properties": [
+    {
+      "name": "HouseType",
+      "type": "Server.Multis.ContestHouseType",
+      "rule": "EnumMigrationRule"
+    },
+    {
+      "name": "Fixtures",
+      "type": "System.Collections.Generic.List\u003CServer.Item\u003E",
+      "rule": "ListMigrationRule",
+      "ruleArguments": [
+        "@Tidy",
+        "@CanBeNull",
+        "Server.Item",
+        "SerializableInterfaceMigrationRule"
+      ]
+    }
+  ]
+}

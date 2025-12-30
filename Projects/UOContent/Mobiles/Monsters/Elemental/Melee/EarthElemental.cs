@@ -36,20 +36,17 @@ namespace Server.Mobiles
             Karma = -3500;
 
             VirtualArmor = 34;
-            ControlSlots = 2;
 
             PackItem(new FertileDirt(Utility.RandomMinMax(1, 4)));
             PackItem(new MandrakeRoot());
 
-            Item ore = new IronOre(5);
-            ore.ItemID = 0x19B7;
-            PackItem(ore);
+            PackItem(new IronOre(5)
+            {
+                ItemID = 0x19B7
+            });
         }
 
         public override string CorpseName => "an earth elemental corpse";
-        public override double DispelDifficulty => 117.5;
-        public override double DispelFocus => 45.0;
-
         public override string DefaultName => "an earth elemental";
 
         public override bool BleedImmune => true;

@@ -1,4 +1,5 @@
 using System;
+using ModernUO.CodeGeneratedEvents;
 using Server.Gumps;
 using Server.Items;
 using Server.Mobiles;
@@ -29,13 +30,14 @@ public class HouseRegion : BaseRegion
     {
     }
 
-    public static void OnLogin(Mobile m)
+    [OnEvent(nameof(PlayerMobile.PlayerLoginEvent))]
+    public static void OnLogin(PlayerMobile pm)
     {
-        var house = BaseHouse.FindHouseAt(m);
+        var house = BaseHouse.FindHouseAt(pm);
 
-        if (house?.Public == false && !house.IsFriend(m))
+        if (house?.Public == false && !house.IsFriend(pm))
         {
-            m.Location = house.BanLocation;
+            pm.Location = house.BanLocation;
         }
     }
 

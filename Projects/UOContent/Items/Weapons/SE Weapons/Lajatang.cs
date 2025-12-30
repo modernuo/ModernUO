@@ -7,12 +7,9 @@ namespace Server.Items
     public partial class Lajatang : BaseKnife
     {
         [Constructible]
-        public Lajatang() : base(0x27A7)
-        {
-            Weight = 12.0;
-            Layer = Layer.TwoHanded;
-        }
+        public Lajatang() : base(0x27A7) => Layer = Layer.TwoHanded;
 
+        public override double DefaultWeight => 12.0;
         public override WeaponAbility PrimaryAbility => WeaponAbility.DefenseMastery;
         public override WeaponAbility SecondaryAbility => WeaponAbility.FrenziedWhirlwind;
 

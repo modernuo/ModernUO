@@ -1,5 +1,8 @@
 using System;
+using ModernUO.CodeGeneratedEvents;
+using Server.Engines.BuffIcons;
 using Server.Items;
+using Server.Mobiles;
 using Server.Network;
 
 namespace Server
@@ -55,10 +58,8 @@ namespace Server
             }
         }
 
-        public static void OnLogin(Mobile m)
-        {
-            m.CheckLightLevels(true);
-        }
+        [OnEvent(nameof(PlayerMobile.PlayerLoginEvent))]
+        public static void OnLogin(PlayerMobile pm) => pm.CheckLightLevels(true);
 
         public static int ComputeLevelFor(Mobile from)
         {
@@ -120,7 +121,7 @@ namespace Server
             {
                 m_Owner.EndAction<LightCycle>();
                 m_Owner.LightLevel = 0;
-                BuffInfo.RemoveBuff(m_Owner, BuffIcon.NightSight);
+                (m_Owner as PlayerMobile)?.RemoveBuff(BuffIcon.NightSight);
             }
         }
     }

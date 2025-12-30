@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using Server.Engines.BuffIcons;
+using Server.Mobiles;
 using Server.Targeting;
 
 namespace Server.Spells.Necromancy;
@@ -72,7 +74,7 @@ public class MindRotSpell : NecromancerSpell, ITargetingSpell<Mobile>
         {
             timer.Stop();
             m.SendLocalizedMessage(1060872); // Your mind feels normal again.
-            BuffInfo.RemoveBuff(m, BuffIcon.Mindrot);
+            (m as PlayerMobile)?.RemoveBuff(BuffIcon.Mindrot);
 
             return true;
         }
@@ -101,7 +103,7 @@ public class MindRotSpell : NecromancerSpell, ITargetingSpell<Mobile>
             timer.Start();
             _table[target] = timer;
 
-            BuffInfo.AddBuff(target, new BuffInfo(BuffIcon.Mindrot, 1075665, duration, target));
+            (target as PlayerMobile)?.AddBuff(new BuffInfo(BuffIcon.Mindrot, 1075665, duration));
             target.SendLocalizedMessage(1074384);
         }
     }

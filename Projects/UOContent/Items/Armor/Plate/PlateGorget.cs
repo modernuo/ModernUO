@@ -6,7 +6,11 @@ namespace Server.Items
     public partial class PlateGorget : BaseArmor
     {
         [Constructible]
-        public PlateGorget() : base(0x1413) => Weight = 2.0;
+        public PlateGorget() : base(0x1413)
+        {
+        }
+
+        public override double DefaultWeight => 2.0;
 
         public override int BasePhysicalResistance => 5;
         public override int BaseFireResistance => 3;

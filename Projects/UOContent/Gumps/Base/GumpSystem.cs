@@ -45,7 +45,7 @@ public static partial class GumpSystem
     {
         if (_gumps.TryGetValue(ns, out var gumps))
         {
-            for (int i = 0; i < gumps.Count; i++)
+            for (var i = 0; i < gumps.Count; i++)
             {
                 if (gumps[i] == gump)
                 {
@@ -63,7 +63,7 @@ public static partial class GumpSystem
             return new NetStateGumps(null, null);
         }
 
-        ref List<BaseGump> list = ref CollectionsMarshal.GetValueRefOrAddDefault(_gumps, ns, out bool exists);
+        ref var list = ref CollectionsMarshal.GetValueRefOrAddDefault(_gumps, ns, out var exists);
 
         if (!exists)
         {

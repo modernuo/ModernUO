@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class ElvenMachete : BaseSword
     {
         [Constructible]
-        public ElvenMachete() : base(0x2D35) => Weight = 6.0;
+        public ElvenMachete() : base(0x2D35)
+        {
+        }
+
+        public override double DefaultWeight => 6.0;
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.DefenseMastery;
         public override WeaponAbility SecondaryAbility => WeaponAbility.Bladeweave;
