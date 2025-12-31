@@ -579,7 +579,7 @@ public abstract partial class BaseSpawner : Item, ISpawner
             var x = Utility.RandomMinMax(bounds.Start.X, bounds.End.X - 1);
             var y = Utility.RandomMinMax(bounds.Start.Y, bounds.End.Y - 1);
             var minZ = bounds.Start.Z;
-            var maxZ = bounds.End.Z - 1;
+            var maxZ = Math.Max(minZ, bounds.End.Z - 1);
 
             bool success;
             int spawnZ;
