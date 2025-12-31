@@ -568,18 +568,21 @@ public abstract partial class BaseSpawner : Item, ISpawner
         var maxAttempts = _maxSpawnAttempts > 0 ? _maxSpawnAttempts : DefaultMaxSpawnAttempts;
         for (var i = 0; i < maxAttempts; i++)
         {
-            var bounds = GetBoundsForSpawnAttempt();
+            var rawBounds = GetBoundsForSpawnAttempt();
 
             // No bounds = spawn at spawner location
-            if (bounds == default)
+            if (rawBounds == default)
             {
                 return Location;
             }
 
+            // Normalize to ensure Start <= End in all dimensions
+            var bounds = rawBounds.Normalized;
+
             var x = Utility.RandomMinMax(bounds.Start.X, bounds.End.X - 1);
             var y = Utility.RandomMinMax(bounds.Start.Y, bounds.End.Y - 1);
             var minZ = bounds.Start.Z;
-            var maxZ = bounds.End.Z - 1;
+            var maxZ = Math.Max(minZ, bounds.End.Z - 1);
 
             bool success;
             int spawnZ;
@@ -647,11 +650,12 @@ public abstract partial class BaseSpawner : Item, ISpawner
         else if (!_spawnPositionState.SpiralComplete)
         {
             // Use the first bounds for spiral center/range
-            var primaryBounds = allBounds.Length > 0 ? allBounds[0] : default;
-            if (primaryBounds != default)
+            var rawPrimaryBounds = allBounds.Length > 0 ? allBounds[0] : default;
+            if (rawPrimaryBounds != default)
             {
+                var primaryBounds = rawPrimaryBounds.Normalized;
                 var minZ = primaryBounds.Start.Z;
-                var maxZ = primaryBounds.End.Z - 1;
+                var maxZ = Math.Max(minZ, primaryBounds.End.Z - 1);
 
                 // Scan more rings initially (3), fewer once cache has positions (1)
                 var ringsPerTick = _spawnPositionState.SpiralRing == 0 ? 3 : 1;
@@ -727,8 +731,9 @@ public abstract partial class BaseSpawner : Item, ISpawner
         }
 
         // Re-verify in 3D using the bounds that contains this position
-        var minZ = containingBounds.Start.Z;
-        var maxZ = containingBounds.End.Z - 1;
+        var normalizedBounds = containingBounds.Normalized;
+        var minZ = normalizedBounds.Start.Z;
+        var maxZ = Math.Max(minZ, normalizedBounds.End.Z - 1);
 
         var verified = isMobile
             ? map.CanSpawnMobile(cachedPos.X, cachedPos.Y, minZ, maxZ, canSwim, cantWalk, out var verifiedZ)
