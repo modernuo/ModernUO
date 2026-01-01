@@ -1,0 +1,161 @@
+{
+  "category": "Container",
+  "packets": [
+    {
+      "id": "0x24",
+      "name": "Display Container",
+      "description": "Opens a container gump on the client.",
+      "direction": "outgoing",
+      "isDynamic": false,
+      "size": "7 (pre-HS) or 9 (HS+)",
+      "variants": [
+        {
+          "version": "pre-HighSeas",
+          "name": "Classic",
+          "size": 7,
+          "fields": [
+            { "name": "packetId", "type": "byte", "size": 1, "value": "0x24", "description": "Packet identifier" },
+            { "name": "containerSerial", "type": "uint", "size": 4, "description": "Serial of the container" },
+            { "name": "gumpId", "type": "ushort", "size": 2, "description": "Gump graphic ID" }
+          ]
+        },
+        {
+          "version": "HighSeas+",
+          "name": "High Seas Extended",
+          "condition": "Client version >= 7.0.9.0 (HighSeas)",
+          "size": 9,
+          "fields": [
+            { "name": "packetId", "type": "byte", "size": 1, "value": "0x24", "description": "Packet identifier" },
+            { "name": "containerSerial", "type": "uint", "size": 4, "description": "Serial of the container" },
+            { "name": "gumpId", "type": "ushort", "size": 2, "description": "Gump graphic ID" },
+            { "name": "containerType", "type": "short", "size": 2, "value": "0x007D", "description": "Container type (125)" }
+          ]
+        }
+      ],
+      "clientVersion": {
+        "feature": "HighSeas adds containerType field"
+      },
+      "source": {
+        "file": "Projects/Server/Network/Packets/OutgoingContainerPackets.cs",
+        "line": 108
+      }
+    },
+    {
+      "id": "0x25",
+      "name": "Container Content Update",
+      "description": "Updates a single item in a container.",
+      "direction": "outgoing",
+      "isDynamic": false,
+      "size": "20 (pre-6017) or 21 (6017+)",
+      "variants": [
+        {
+          "version": "pre-6017",
+          "name": "Classic",
+          "size": 20,
+          "fields": [
+            { "name": "packetId", "type": "byte", "size": 1, "value": "0x25", "description": "Packet identifier" },
+            { "name": "itemSerial", "type": "uint", "size": 4, "description": "Serial of the item" },
+            { "name": "itemId", "type": "ushort", "size": 2, "description": "Item graphic ID" },
+            { "name": "itemIdOffset", "type": "byte", "size": 1, "value": "0x00", "description": "Item ID offset (signed)" },
+            { "name": "amount", "type": "ushort", "size": 2, "description": "Stack amount" },
+            { "name": "x", "type": "short", "size": 2, "description": "X position in container" },
+            { "name": "y", "type": "short", "size": 2, "description": "Y position in container" },
+            { "name": "containerSerial", "type": "uint", "size": 4, "description": "Serial of parent container" },
+            { "name": "hue", "type": "ushort", "size": 2, "description": "Item hue" }
+          ]
+        },
+        {
+          "version": "6017+",
+          "name": "Container Grid Lines",
+          "condition": "Client version >= 6.0.1.7 (ContainerGridLines)",
+          "size": 21,
+          "fields": [
+            { "name": "packetId", "type": "byte", "size": 1, "value": "0x25", "description": "Packet identifier" },
+            { "name": "itemSerial", "type": "uint", "size": 4, "description": "Serial of the item" },
+            { "name": "itemId", "type": "ushort", "size": 2, "description": "Item graphic ID" },
+            { "name": "itemIdOffset", "type": "byte", "size": 1, "value": "0x00", "description": "Item ID offset (signed)" },
+            { "name": "amount", "type": "ushort", "size": 2, "description": "Stack amount" },
+            { "name": "x", "type": "short", "size": 2, "description": "X position in container" },
+            { "name": "y", "type": "short", "size": 2, "description": "Y position in container" },
+            { "name": "gridLocation", "type": "byte", "size": 1, "description": "Grid slot position" },
+            { "name": "containerSerial", "type": "uint", "size": 4, "description": "Serial of parent container" },
+            { "name": "hue", "type": "ushort", "size": 2, "description": "Item hue" }
+          ]
+        }
+      ],
+      "clientVersion": {
+        "feature": "ContainerGridLines adds gridLocation byte"
+      },
+      "source": {
+        "file": "Projects/Server/Network/Packets/OutgoingContainerPackets.cs",
+        "line": 127
+      }
+    },
+    {
+      "id": "0x3C",
+      "name": "Container Content",
+      "description": "Sends full contents of a container.",
+      "direction": "outgoing",
+      "isDynamic": true,
+      "size": "Dynamic",
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0x3C", "description": "Packet identifier" },
+        { "name": "length", "type": "ushort", "size": 2, "description": "Packet length" },
+        { "name": "itemCount", "type": "ushort", "size": 2, "description": "Number of items" },
+        {
+          "name": "items",
+          "type": "loop",
+          "loop": {
+            "countField": "itemCount",
+            "itemSize": "19 (pre-6017) or 20 (6017+)",
+            "fields": [
+              { "name": "itemSerial", "type": "uint", "size": 4, "description": "Serial of the item" },
+              { "name": "itemId", "type": "ushort", "size": 2, "description": "Item graphic ID" },
+              { "name": "itemIdOffset", "type": "byte", "size": 1, "description": "Item ID offset (signed)" },
+              { "name": "amount", "type": "ushort", "size": 2, "description": "Stack amount" },
+              { "name": "x", "type": "short", "size": 2, "description": "X position in container" },
+              { "name": "y", "type": "short", "size": 2, "description": "Y position in container" },
+              { "name": "gridLocation", "type": "byte", "size": 1, "description": "Grid slot (6017+ only)", "condition": "ContainerGridLines" },
+              { "name": "containerSerial", "type": "uint", "size": 4, "description": "Serial of parent container" },
+              { "name": "hue", "type": "ushort", "size": 2, "description": "Item hue" }
+            ]
+          }
+        }
+      ],
+      "clientVersion": {
+        "feature": "ContainerGridLines adds gridLocation byte per item"
+      },
+      "source": {
+        "file": "Projects/Server/Network/Packets/OutgoingContainerPackets.cs",
+        "line": 169
+      }
+    },
+    {
+      "id": "0xBF/0x1B",
+      "name": "New Spellbook Content",
+      "description": "Sends spellbook contents using AOS format.",
+      "direction": "outgoing",
+      "isDynamic": false,
+      "size": 23,
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0xBF", "description": "Packet identifier" },
+        { "name": "length", "type": "ushort", "size": 2, "value": "23", "description": "Packet length" },
+        { "name": "subCommand", "type": "short", "size": 2, "value": "0x1B", "description": "Subcommand (New Spellbook Content)" },
+        { "name": "command", "type": "short", "size": 2, "value": "0x01", "description": "Command (always 1)" },
+        { "name": "bookSerial", "type": "uint", "size": 4, "description": "Serial of the spellbook" },
+        { "name": "graphic", "type": "short", "size": 2, "description": "Spellbook graphic ID" },
+        { "name": "offset", "type": "short", "size": 2, "description": "Spell offset (circle/school start)" },
+        { "name": "spellBits", "type": "ulong", "size": 8, "description": "64-bit mask of known spells (Little Endian)" }
+      ],
+      "clientVersion": {
+        "min": "5.0.0a",
+        "feature": "NewSpellbook"
+      },
+      "notes": "Used when Core.AOS && ns.NewSpellbook. Otherwise, old 0x3C format is used.",
+      "source": {
+        "file": "Projects/Server/Network/Packets/OutgoingContainerPackets.cs",
+        "line": 46
+      }
+    }
+  ]
+}

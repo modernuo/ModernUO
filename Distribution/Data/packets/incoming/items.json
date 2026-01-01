@@ -1,0 +1,142 @@
+{
+  "category": "Items",
+  "packets": [
+    {
+      "id": "0x07",
+      "name": "Lift Request",
+      "description": "Client requests to pick up an item from the world or a container.",
+      "direction": "incoming",
+      "isDynamic": false,
+      "size": 7,
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0x07", "description": "Packet identifier" },
+        { "name": "serial", "type": "uint", "size": 4, "description": "Serial of the item to lift" },
+        { "name": "amount", "type": "ushort", "size": 2, "description": "Amount to pick up" }
+      ],
+      "related": [
+        { "id": "0x27", "relationship": "rej", "note": "Sent if lift is rejected" }
+      ],
+      "source": {
+        "file": "Projects/UOContent/Network/Packets/IncomingItemPackets.cs",
+        "line": 35
+      }
+    },
+    {
+      "id": "0x08",
+      "name": "Drop Request",
+      "description": "Client requests to drop an item at a location or into a container. Size varies by client version.",
+      "direction": "incoming",
+      "isDynamic": false,
+      "size": "14 (pre-6017) or 15 (6017+)",
+      "variants": [
+        {
+          "version": "pre-6017",
+          "name": "Classic",
+          "size": 14,
+          "fields": [
+            { "name": "packetId", "type": "byte", "size": 1, "value": "0x08", "description": "Packet identifier" },
+            { "name": "serial", "type": "uint", "size": 4, "description": "Serial of item being dropped (ignored)" },
+            { "name": "x", "type": "short", "size": 2, "description": "Target X coordinate" },
+            { "name": "y", "type": "short", "size": 2, "description": "Target Y coordinate" },
+            { "name": "z", "type": "sbyte", "size": 1, "description": "Target Z coordinate" },
+            { "name": "dest", "type": "uint", "size": 4, "description": "Target container/mobile serial, or 0xFFFFFFFF for world" }
+          ]
+        },
+        {
+          "version": "6017+",
+          "name": "Container Grid Lines",
+          "condition": "Client version >= 6.0.1.7 (ContainerGridLines)",
+          "size": 15,
+          "fields": [
+            { "name": "packetId", "type": "byte", "size": 1, "value": "0x08", "description": "Packet identifier" },
+            { "name": "serial", "type": "uint", "size": 4, "description": "Serial of item being dropped (ignored)" },
+            { "name": "x", "type": "short", "size": 2, "description": "Target X coordinate" },
+            { "name": "y", "type": "short", "size": 2, "description": "Target Y coordinate" },
+            { "name": "z", "type": "sbyte", "size": 1, "description": "Target Z coordinate" },
+            { "name": "gridLocation", "type": "byte", "size": 1, "description": "Grid slot position in container" },
+            { "name": "dest", "type": "uint", "size": 4, "description": "Target container/mobile serial, or 0xFFFFFFFF for world" }
+          ]
+        }
+      ],
+      "clientVersion": {
+        "feature": "ContainerGridLines adds gridLocation byte"
+      },
+      "source": {
+        "file": "Projects/UOContent/Network/Packets/IncomingItemPackets.cs",
+        "line": 69
+      }
+    },
+    {
+      "id": "0x13",
+      "name": "Equip Request",
+      "description": "Client requests to equip a held item on a mobile.",
+      "direction": "incoming",
+      "isDynamic": false,
+      "size": 10,
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0x13", "description": "Packet identifier" },
+        { "name": "itemSerial", "type": "uint", "size": 4, "description": "Serial of item to equip" },
+        { "name": "layer", "type": "byte", "size": 1, "description": "Equipment layer" },
+        { "name": "mobileSerial", "type": "uint", "size": 4, "description": "Serial of target mobile" }
+      ],
+      "source": {
+        "file": "Projects/UOContent/Network/Packets/IncomingItemPackets.cs",
+        "line": 44
+      }
+    },
+    {
+      "id": "0xEC",
+      "name": "Equip Macro",
+      "description": "Client requests to equip multiple items from a saved macro.",
+      "direction": "incoming",
+      "isDynamic": true,
+      "size": "Dynamic",
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0xEC", "description": "Packet identifier" },
+        { "name": "length", "type": "ushort", "size": 2, "description": "Packet length" },
+        { "name": "count", "type": "byte", "size": 1, "description": "Number of items to equip" },
+        {
+          "name": "items",
+          "type": "loop",
+          "loop": {
+            "countField": "count",
+            "fields": [
+              { "name": "serial", "type": "uint", "size": 4, "description": "Serial of item to equip" }
+            ]
+          }
+        }
+      ],
+      "source": {
+        "file": "Projects/UOContent/Network/Packets/IncomingItemPackets.cs",
+        "line": 112
+      }
+    },
+    {
+      "id": "0xED",
+      "name": "Unequip Macro",
+      "description": "Client requests to unequip items from specific layers via macro.",
+      "direction": "incoming",
+      "isDynamic": true,
+      "size": "Dynamic",
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0xED", "description": "Packet identifier" },
+        { "name": "length", "type": "ushort", "size": 2, "description": "Packet length" },
+        { "name": "count", "type": "byte", "size": 1, "description": "Number of layers to unequip" },
+        {
+          "name": "layers",
+          "type": "loop",
+          "loop": {
+            "countField": "count",
+            "fields": [
+              { "name": "layer", "type": "ushort", "size": 2, "description": "Layer to unequip from" }
+            ]
+          }
+        }
+      ],
+      "source": {
+        "file": "Projects/UOContent/Network/Packets/IncomingItemPackets.cs",
+        "line": 125
+      }
+    }
+  ]
+}

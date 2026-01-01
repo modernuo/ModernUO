@@ -1,0 +1,71 @@
+{
+  "category": "Entity",
+  "packets": [
+    {
+      "id": "0x1D",
+      "name": "Remove Entity",
+      "description": "Removes an entity (item, mobile, or multi) from the client's view.",
+      "direction": "outgoing",
+      "isDynamic": false,
+      "size": 5,
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0x1D", "description": "Packet identifier" },
+        { "name": "serial", "type": "uint", "size": 4, "description": "Serial of entity to remove" }
+      ],
+      "source": {
+        "file": "Projects/Server/Network/Packets/OutgoingEntityPackets.cs",
+        "line": 75
+      }
+    },
+    {
+      "id": "0xDC",
+      "name": "OPL Info (Object Property List)",
+      "description": "Notifies the client of an entity's Object Property List hash. Client compares hash to cached version and requests full OPL if different.",
+      "direction": "outgoing",
+      "isDynamic": false,
+      "size": 9,
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0xDC", "description": "Packet identifier" },
+        { "name": "serial", "type": "uint", "size": 4, "description": "Entity serial" },
+        { "name": "hash", "type": "int", "size": 4, "description": "Hash of the Object Property List" }
+      ],
+      "source": {
+        "file": "Projects/Server/Network/Packets/OutgoingEntityPackets.cs",
+        "line": 33
+      }
+    },
+    {
+      "id": "0xF3",
+      "name": "World Entity (SA+)",
+      "description": "Unified entity packet for items, mobiles, and multis. Replaces older item/mobile-specific packets for Stygian Abyss+ clients.",
+      "direction": "outgoing",
+      "isDynamic": false,
+      "size": "24 (pre-HS) or 26 (HS+)",
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0xF3", "description": "Packet identifier" },
+        { "name": "command", "type": "short", "size": 2, "value": "0x0001", "description": "Command (always 1)" },
+        { "name": "entityType", "type": "byte", "size": 1, "description": "Entity type: 0=Item, 1=Mobile, 2=Multi" },
+        { "name": "serial", "type": "uint", "size": 4, "description": "Entity serial" },
+        { "name": "graphicId", "type": "ushort", "size": 2, "description": "Graphic/Body ID" },
+        { "name": "direction", "type": "byte", "size": 1, "description": "Direction (mobiles) or 0" },
+        { "name": "amountMin", "type": "short", "size": 2, "description": "Minimum amount (items) or 1" },
+        { "name": "amountMax", "type": "short", "size": 2, "description": "Maximum amount (items) or 1" },
+        { "name": "x", "type": "short", "size": 2, "description": "X coordinate (masked with 0x7FFF)" },
+        { "name": "y", "type": "short", "size": 2, "description": "Y coordinate (masked with 0x3FFF)" },
+        { "name": "z", "type": "sbyte", "size": 1, "description": "Z coordinate" },
+        { "name": "light", "type": "byte", "size": 1, "description": "Light level (items)" },
+        { "name": "hue", "type": "short", "size": 2, "description": "Hue/color" },
+        { "name": "flags", "type": "byte", "size": 1, "description": "Packet flags (hidden, blessed, etc.)" },
+        { "name": "unknown", "type": "short", "size": 2, "description": "Unknown (HS+ only)", "condition": "HighSeas" }
+      ],
+      "clientVersion": {
+        "min": "7.0.9.0",
+        "feature": "StygianAbyss"
+      },
+      "source": {
+        "file": "Projects/Server/Network/Packets/OutgoingEntityPackets.cs",
+        "line": 88
+      }
+    }
+  ]
+}

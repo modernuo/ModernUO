@@ -1,0 +1,339 @@
+{
+  "category": "Mobile",
+  "packets": [
+    {
+      "id": "0x11",
+      "name": "Mobile Status",
+      "description": "Detailed status information for a mobile. Length and content varies based on client version and whether viewing self or others.",
+      "direction": "outgoing",
+      "isDynamic": true,
+      "size": "43-121 bytes (version dependent)",
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0x11", "description": "Packet identifier" },
+        { "name": "length", "type": "ushort", "size": 2, "description": "Packet length" },
+        { "name": "serial", "type": "uint", "size": 4, "description": "Mobile serial" },
+        { "name": "name", "type": "ascii", "size": 30, "description": "Mobile name" },
+        { "name": "hitsMax", "type": "short", "size": 2, "description": "Maximum hits (normalized to 100 for non-self)" },
+        { "name": "hits", "type": "short", "size": 2, "description": "Current hits" },
+        { "name": "canBeRenamed", "type": "bool", "size": 1, "description": "Whether the mobile can be renamed by viewer" },
+        { "name": "version", "type": "byte", "size": 1, "description": "Status version: 0=compact, 3=basic, 4=AOS, 5=ML, 6=HS" },
+        { "name": "female", "type": "bool", "size": 1, "description": "Gender flag (version 1+)", "condition": "version >= 1" },
+        { "name": "str", "type": "short", "size": 2, "description": "Strength", "condition": "version >= 1" },
+        { "name": "dex", "type": "short", "size": 2, "description": "Dexterity", "condition": "version >= 1" },
+        { "name": "int", "type": "short", "size": 2, "description": "Intelligence", "condition": "version >= 1" },
+        { "name": "stam", "type": "short", "size": 2, "description": "Current stamina", "condition": "version >= 1" },
+        { "name": "stamMax", "type": "short", "size": 2, "description": "Maximum stamina", "condition": "version >= 1" },
+        { "name": "mana", "type": "short", "size": 2, "description": "Current mana", "condition": "version >= 1" },
+        { "name": "manaMax", "type": "short", "size": 2, "description": "Maximum mana", "condition": "version >= 1" },
+        { "name": "gold", "type": "int", "size": 4, "description": "Total gold", "condition": "version >= 1" },
+        { "name": "armorRating", "type": "short", "size": 2, "description": "Armor rating (physical resist in AOS+)", "condition": "version >= 1" },
+        { "name": "weight", "type": "short", "size": 2, "description": "Current weight", "condition": "version >= 1" },
+        { "name": "maxWeight", "type": "short", "size": 2, "description": "Maximum weight", "condition": "version >= 5" },
+        { "name": "race", "type": "byte", "size": 1, "description": "Race ID + 1 (0 = no race)", "condition": "version >= 5" },
+        { "name": "statCap", "type": "short", "size": 2, "description": "Stat cap", "condition": "version >= 1" },
+        { "name": "followers", "type": "byte", "size": 1, "description": "Current followers", "condition": "version >= 1" },
+        { "name": "followersMax", "type": "byte", "size": 1, "description": "Maximum followers", "condition": "version >= 1" },
+        { "name": "fireResist", "type": "short", "size": 2, "description": "Fire resistance", "condition": "version >= 4" },
+        { "name": "coldResist", "type": "short", "size": 2, "description": "Cold resistance", "condition": "version >= 4" },
+        { "name": "poisonResist", "type": "short", "size": 2, "description": "Poison resistance", "condition": "version >= 4" },
+        { "name": "energyResist", "type": "short", "size": 2, "description": "Energy resistance", "condition": "version >= 4" },
+        { "name": "luck", "type": "short", "size": 2, "description": "Luck", "condition": "version >= 4" },
+        { "name": "damageMin", "type": "short", "size": 2, "description": "Minimum weapon damage", "condition": "version >= 4" },
+        { "name": "damageMax", "type": "short", "size": 2, "description": "Maximum weapon damage", "condition": "version >= 4" },
+        { "name": "tithingPoints", "type": "int", "size": 4, "description": "Tithing points", "condition": "version >= 4" },
+        { "name": "aosStatus", "type": "short[15]", "size": 30, "description": "Extended AOS status values", "condition": "version >= 6" }
+      ],
+      "source": {
+        "file": "Projects/Server/Network/Packets/OutgoingMobilePackets.cs",
+        "line": 497
+      }
+    },
+    {
+      "id": "0x20",
+      "name": "Mobile Update",
+      "description": "Updates a mobile's basic display information (body, hue, position, flags).",
+      "direction": "outgoing",
+      "isDynamic": false,
+      "size": 19,
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0x20", "description": "Packet identifier" },
+        { "name": "serial", "type": "uint", "size": 4, "description": "Mobile serial" },
+        { "name": "body", "type": "short", "size": 2, "description": "Body/graphic ID" },
+        { "name": "unknown", "type": "byte", "size": 1, "description": "Unknown (always 0)" },
+        { "name": "hue", "type": "short", "size": 2, "description": "Hue/color (or solid hue override)" },
+        { "name": "flags", "type": "byte", "size": 1, "description": "Packet flags (hidden, poisoned, etc.)" },
+        { "name": "x", "type": "short", "size": 2, "description": "X coordinate" },
+        { "name": "y", "type": "short", "size": 2, "description": "Y coordinate" },
+        { "name": "unknown2", "type": "short", "size": 2, "description": "Unknown (always 0)" },
+        { "name": "direction", "type": "byte", "size": 1, "description": "Facing direction" },
+        { "name": "z", "type": "sbyte", "size": 1, "description": "Z coordinate" }
+      ],
+      "source": {
+        "file": "Projects/Server/Network/Packets/OutgoingMobilePackets.cs",
+        "line": 578
+      }
+    },
+    {
+      "id": "0x77",
+      "name": "Mobile Moving",
+      "description": "Sent when a mobile moves. Contains position, direction, hue, and notoriety.",
+      "direction": "outgoing",
+      "isDynamic": false,
+      "size": 17,
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0x77", "description": "Packet identifier" },
+        { "name": "serial", "type": "uint", "size": 4, "description": "Mobile serial" },
+        { "name": "body", "type": "short", "size": 2, "description": "Body/graphic ID" },
+        { "name": "x", "type": "short", "size": 2, "description": "X coordinate" },
+        { "name": "y", "type": "short", "size": 2, "description": "Y coordinate" },
+        { "name": "z", "type": "sbyte", "size": 1, "description": "Z coordinate" },
+        { "name": "direction", "type": "byte", "size": 1, "description": "Direction (0-7) with running flag (0x80)" },
+        { "name": "hue", "type": "short", "size": 2, "description": "Hue/color" },
+        { "name": "flags", "type": "byte", "size": 1, "description": "Packet flags" },
+        { "name": "notoriety", "type": "byte", "size": 1, "description": "Notoriety (0=Innocent, 1=Friend, 2=Gray, 3=Criminal, 4=Enemy, 5=Murderer, 6=Invulnerable)" }
+      ],
+      "source": {
+        "file": "Projects/Server/Network/Packets/OutgoingMobilePackets.cs",
+        "line": 104
+      }
+    },
+    {
+      "id": "0x78",
+      "name": "Mobile Incoming",
+      "description": "Full mobile information including equipped items. Sent when a mobile enters view range.",
+      "direction": "outgoing",
+      "isDynamic": true,
+      "size": "23 + (equipment count * 7-9 bytes)",
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0x78", "description": "Packet identifier" },
+        { "name": "length", "type": "ushort", "size": 2, "description": "Packet length" },
+        { "name": "serial", "type": "uint", "size": 4, "description": "Mobile serial" },
+        { "name": "body", "type": "short", "size": 2, "description": "Body/graphic ID" },
+        { "name": "x", "type": "short", "size": 2, "description": "X coordinate" },
+        { "name": "y", "type": "short", "size": 2, "description": "Y coordinate" },
+        { "name": "z", "type": "sbyte", "size": 1, "description": "Z coordinate" },
+        { "name": "direction", "type": "byte", "size": 1, "description": "Facing direction" },
+        { "name": "hue", "type": "short", "size": 2, "description": "Hue/color" },
+        { "name": "flags", "type": "byte", "size": 1, "description": "Packet flags" },
+        { "name": "notoriety", "type": "byte", "size": 1, "description": "Notoriety flag" },
+        {
+          "name": "equipment",
+          "type": "array",
+          "description": "Equipped items (terminated by 0x00000000)",
+          "loop": {
+            "countField": "variable (until terminator)",
+            "fields": [
+              { "name": "itemSerial", "type": "uint", "size": 4, "description": "Item serial (0 = end of list)" },
+              { "name": "itemId", "type": "ushort", "size": 2, "description": "Item graphic ID (bit 0x8000 = hue follows for old clients)" },
+              { "name": "layer", "type": "byte", "size": 1, "description": "Equipment layer" },
+              { "name": "hue", "type": "short", "size": 2, "description": "Item hue (only if bit 0x8000 set or NewMobileIncoming)", "condition": "hue flag or NewMobileIncoming" }
+            ]
+          }
+        },
+        { "name": "terminator", "type": "int", "size": 4, "value": "0x00000000", "description": "Equipment list terminator" }
+      ],
+      "clientVersion": {
+        "feature": "NewMobileIncoming",
+        "notes": "NewMobileIncoming clients always include hue field for equipment"
+      },
+      "source": {
+        "file": "Projects/Server/Network/Packets/OutgoingMobilePackets.cs",
+        "line": 601
+      }
+    },
+    {
+      "id": "0xA1",
+      "name": "Mobile Hits",
+      "description": "Updates a mobile's hit points. Can be normalized to 0-100 scale for non-self mobiles.",
+      "direction": "outgoing",
+      "isDynamic": false,
+      "size": 9,
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0xA1", "description": "Packet identifier" },
+        { "name": "serial", "type": "uint", "size": 4, "description": "Mobile serial" },
+        { "name": "hitsMax", "type": "short", "size": 2, "description": "Maximum hits" },
+        { "name": "hits", "type": "short", "size": 2, "description": "Current hits" }
+      ],
+      "source": {
+        "file": "Projects/Server/Network/Packets/OutgoingMobilePackets.cs",
+        "line": 210
+      }
+    },
+    {
+      "id": "0xA2",
+      "name": "Mobile Mana",
+      "description": "Updates a mobile's mana points.",
+      "direction": "outgoing",
+      "isDynamic": false,
+      "size": 9,
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0xA2", "description": "Packet identifier" },
+        { "name": "serial", "type": "uint", "size": 4, "description": "Mobile serial" },
+        { "name": "manaMax", "type": "short", "size": 2, "description": "Maximum mana" },
+        { "name": "mana", "type": "short", "size": 2, "description": "Current mana" }
+      ],
+      "source": {
+        "file": "Projects/Server/Network/Packets/OutgoingMobilePackets.cs",
+        "line": 235
+      }
+    },
+    {
+      "id": "0xA3",
+      "name": "Mobile Stamina",
+      "description": "Updates a mobile's stamina points.",
+      "direction": "outgoing",
+      "isDynamic": false,
+      "size": 9,
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0xA3", "description": "Packet identifier" },
+        { "name": "serial", "type": "uint", "size": 4, "description": "Mobile serial" },
+        { "name": "stamMax", "type": "short", "size": 2, "description": "Maximum stamina" },
+        { "name": "stam", "type": "short", "size": 2, "description": "Current stamina" }
+      ],
+      "source": {
+        "file": "Projects/Server/Network/Packets/OutgoingMobilePackets.cs",
+        "line": 260
+      }
+    },
+    {
+      "id": "0x2D",
+      "name": "Mobile Attributes",
+      "description": "Updates all three attribute bars (hits, mana, stamina) in a single packet.",
+      "direction": "outgoing",
+      "isDynamic": false,
+      "size": 17,
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0x2D", "description": "Packet identifier" },
+        { "name": "serial", "type": "uint", "size": 4, "description": "Mobile serial" },
+        { "name": "hitsMax", "type": "short", "size": 2, "description": "Maximum hits" },
+        { "name": "hits", "type": "short", "size": 2, "description": "Current hits" },
+        { "name": "manaMax", "type": "short", "size": 2, "description": "Maximum mana" },
+        { "name": "mana", "type": "short", "size": 2, "description": "Current mana" },
+        { "name": "stamMax", "type": "short", "size": 2, "description": "Maximum stamina" },
+        { "name": "stam", "type": "short", "size": 2, "description": "Current stamina" }
+      ],
+      "source": {
+        "file": "Projects/Server/Network/Packets/OutgoingMobilePackets.cs",
+        "line": 285
+      }
+    },
+    {
+      "id": "0x98",
+      "name": "Mobile Name",
+      "description": "Returns a mobile's name in response to a name request.",
+      "direction": "outgoing",
+      "isDynamic": false,
+      "size": 37,
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0x98", "description": "Packet identifier" },
+        { "name": "length", "type": "ushort", "size": 2, "value": "0x0025", "description": "Packet length (37)" },
+        { "name": "serial", "type": "uint", "size": 4, "description": "Mobile serial" },
+        { "name": "name", "type": "ascii", "size": 30, "description": "Mobile name (null-terminated)" }
+      ],
+      "source": {
+        "file": "Projects/Server/Network/Packets/OutgoingMobilePackets.cs",
+        "line": 301
+      }
+    },
+    {
+      "id": "0x6E",
+      "name": "Mobile Animation",
+      "description": "Triggers an animation on a mobile.",
+      "direction": "outgoing",
+      "isDynamic": false,
+      "size": 14,
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0x6E", "description": "Packet identifier" },
+        { "name": "serial", "type": "uint", "size": 4, "description": "Mobile serial" },
+        { "name": "action", "type": "short", "size": 2, "description": "Animation action ID" },
+        { "name": "frameCount", "type": "short", "size": 2, "description": "Number of frames" },
+        { "name": "repeatCount", "type": "short", "size": 2, "description": "Number of times to repeat" },
+        { "name": "reverse", "type": "bool", "size": 1, "description": "Play animation in reverse" },
+        { "name": "repeat", "type": "bool", "size": 1, "description": "Loop the animation" },
+        { "name": "delay", "type": "byte", "size": 1, "description": "Frame delay" }
+      ],
+      "source": {
+        "file": "Projects/Server/Network/Packets/OutgoingMobilePackets.cs",
+        "line": 318
+      }
+    },
+    {
+      "id": "0xE2",
+      "name": "New Mobile Animation",
+      "description": "Simplified animation packet for newer clients.",
+      "direction": "outgoing",
+      "isDynamic": false,
+      "size": 10,
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0xE2", "description": "Packet identifier" },
+        { "name": "serial", "type": "uint", "size": 4, "description": "Mobile serial" },
+        { "name": "action", "type": "short", "size": 2, "description": "Animation action ID" },
+        { "name": "frameCount", "type": "short", "size": 2, "description": "Number of frames" },
+        { "name": "delay", "type": "byte", "size": 1, "description": "Frame delay" }
+      ],
+      "source": {
+        "file": "Projects/Server/Network/Packets/OutgoingMobilePackets.cs",
+        "line": 354
+      }
+    },
+    {
+      "id": "0x17",
+      "name": "Mobile Healthbar",
+      "description": "Updates a mobile's healthbar status (poison level, yellow bar for invulnerability).",
+      "direction": "outgoing",
+      "isDynamic": false,
+      "size": 12,
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0x17", "description": "Packet identifier" },
+        { "name": "length", "type": "ushort", "size": 2, "value": "0x000C", "description": "Packet length (12)" },
+        { "name": "serial", "type": "uint", "size": 4, "description": "Mobile serial" },
+        { "name": "showBar", "type": "short", "size": 2, "value": "0x0001", "description": "Show bar (always 1)" },
+        { "name": "healthbarType", "type": "short", "size": 2, "description": "Healthbar type: 1=Poison, 2=Yellow" },
+        { "name": "level", "type": "byte", "size": 1, "description": "Level (0=off, 1-4 for poison levels, 1=on for yellow)" }
+      ],
+      "source": {
+        "file": "Projects/Server/Network/Packets/OutgoingMobilePackets.cs",
+        "line": 419
+      }
+    },
+    {
+      "id": "0xAF",
+      "name": "Death Animation",
+      "description": "Triggers the death animation and corpse creation for a mobile.",
+      "direction": "outgoing",
+      "isDynamic": false,
+      "size": 13,
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0xAF", "description": "Packet identifier" },
+        { "name": "killedSerial", "type": "uint", "size": 4, "description": "Serial of the killed mobile" },
+        { "name": "corpseSerial", "type": "uint", "size": 4, "description": "Serial of the corpse created" },
+        { "name": "unknown", "type": "int", "size": 4, "description": "Unknown (always 0)" }
+      ],
+      "source": {
+        "file": "Projects/Server/Network/Packets/OutgoingMobilePackets.cs",
+        "line": 78
+      }
+    },
+    {
+      "id": "0xBF",
+      "subId": "0x0019",
+      "name": "Bonded Status",
+      "description": "Indicates whether a mobile (pet) is bonded to its owner.",
+      "direction": "outgoing",
+      "isDynamic": false,
+      "size": 11,
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0xBF", "description": "Packet identifier" },
+        { "name": "length", "type": "ushort", "size": 2, "value": "0x000B", "description": "Packet length (11)" },
+        { "name": "subCommand", "type": "ushort", "size": 2, "value": "0x0019", "description": "Sub-command for bonded status" },
+        { "name": "command", "type": "byte", "size": 1, "value": "0x00", "description": "Command type (0 for bonded)" },
+        { "name": "serial", "type": "uint", "size": 4, "description": "Mobile serial" },
+        { "name": "bonded", "type": "bool", "size": 1, "description": "Bonded status" }
+      ],
+      "source": {
+        "file": "Projects/Server/Network/Packets/OutgoingMobilePackets.cs",
+        "line": 44
+      }
+    }
+  ]
+}

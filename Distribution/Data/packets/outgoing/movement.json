@@ -1,0 +1,101 @@
+{
+  "category": "Movement",
+  "packets": [
+    {
+      "id": "0x21",
+      "name": "Movement Rejection",
+      "description": "Sent by the server when player movement is blocked (collision, teleport area, etc). Contains the corrected position the client should snap back to.",
+      "direction": "outgoing",
+      "isDynamic": false,
+      "size": 8,
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0x21", "description": "Packet identifier" },
+        { "name": "sequence", "type": "byte", "size": 1, "description": "Sequence number of the rejected movement request" },
+        { "name": "x", "type": "short", "size": 2, "description": "Correct X coordinate" },
+        { "name": "y", "type": "short", "size": 2, "description": "Correct Y coordinate" },
+        { "name": "direction", "type": "byte", "size": 1, "description": "Correct facing direction (0-7)" },
+        { "name": "z", "type": "sbyte", "size": 1, "description": "Correct Z coordinate" }
+      ],
+      "related": [
+        { "id": "0x02", "relationship": "request", "note": "The movement request that was rejected" }
+      ],
+      "source": {
+        "file": "Projects/Server/Network/Packets/OutgoingMovementPackets.cs",
+        "line": 45
+      }
+    },
+    {
+      "id": "0x22",
+      "name": "Movement Acknowledgment",
+      "description": "Sent by the server to confirm successful player movement. Includes the player's current notoriety for display purposes.",
+      "direction": "outgoing",
+      "isDynamic": false,
+      "size": 3,
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0x22", "description": "Packet identifier" },
+        { "name": "sequence", "type": "byte", "size": 1, "description": "Sequence number of the accepted movement request" },
+        { "name": "notoriety", "type": "byte", "size": 1, "description": "Player's current notoriety flag (0=Innocent, 1=Friend, 2=Gray/Attackable, 3=Criminal, 4=Enemy, 5=Murderer, 6=Invulnerable)" }
+      ],
+      "related": [
+        { "id": "0x02", "relationship": "request", "note": "The movement request that was accepted" }
+      ],
+      "source": {
+        "file": "Projects/Server/Network/Packets/OutgoingMovementPackets.cs",
+        "line": 42
+      }
+    },
+    {
+      "id": "0x97",
+      "name": "Move Player",
+      "description": "Server-initiated player movement. Forces the client to move in a direction (used for pushback effects, conveyors, etc).",
+      "direction": "outgoing",
+      "isDynamic": false,
+      "size": 2,
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0x97", "description": "Packet identifier" },
+        { "name": "direction", "type": "byte", "size": 1, "description": "Direction to move (0-7). Bit 0x80 indicates running." }
+      ],
+      "source": {
+        "file": "Projects/Server/Network/Packets/OutgoingMovementPackets.cs",
+        "line": 35
+      }
+    },
+    {
+      "id": "0xBF",
+      "subId": "0x0026",
+      "name": "Speed Control",
+      "description": "Controls the player's movement speed. Used for mount speed changes, walk/run restrictions, etc.",
+      "direction": "outgoing",
+      "isDynamic": false,
+      "size": 6,
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0xBF", "description": "Packet identifier" },
+        { "name": "length", "type": "ushort", "size": 2, "value": "0x0006", "description": "Packet length" },
+        { "name": "subCommand", "type": "ushort", "size": 2, "value": "0x0026", "description": "Sub-command for speed control" },
+        { "name": "speedSetting", "type": "byte", "size": 1, "description": "Speed setting: 0=Disable (normal), 1=Mount speed, 2=Walk only" }
+      ],
+      "source": {
+        "file": "Projects/Server/Network/Packets/OutgoingMovementPackets.cs",
+        "line": 31
+      }
+    },
+    {
+      "id": "0xF2",
+      "name": "Time Sync Response",
+      "description": "Server response to client time synchronization request. Contains tick counts for latency calculation.",
+      "direction": "outgoing",
+      "isDynamic": false,
+      "size": 25,
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0xF2", "description": "Packet identifier" },
+        { "name": "tickCount1", "type": "long", "size": 8, "description": "Server tick count" },
+        { "name": "tickCount2", "type": "long", "size": 8, "description": "Server tick count" },
+        { "name": "tickCount3", "type": "long", "size": 8, "description": "Server tick count" }
+      ],
+      "source": {
+        "file": "Projects/Server/Network/Packets/OutgoingMovementPackets.cs",
+        "line": 63
+      }
+    }
+  ]
+}

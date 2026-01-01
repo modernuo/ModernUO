@@ -1,0 +1,320 @@
+{
+  "category": "Account",
+  "packets": [
+    {
+      "id": "0x82",
+      "name": "Account Login Rejected",
+      "description": "Sent when account login fails. Contains the reason for rejection.",
+      "direction": "outgoing",
+      "isDynamic": false,
+      "size": 2,
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0x82", "description": "Packet identifier" },
+        { "name": "reason", "type": "byte", "size": 1, "description": "Rejection reason: 0=Invalid, 1=InUse, 2=Blocked, 3=BadPass, 254=Idle, 255=BadComm" }
+      ],
+      "related": [
+        { "id": "0x80", "relationship": "request", "note": "The login attempt that failed" }
+      ],
+      "source": {
+        "file": "Projects/Server/Network/Packets/OutgoingAccountPackets.cs",
+        "line": 402
+      }
+    },
+    {
+      "id": "0xA8",
+      "name": "Account Login Ack (Server List)",
+      "description": "Sent after successful account login. Contains the list of available game servers.",
+      "direction": "outgoing",
+      "isDynamic": true,
+      "size": "6 + (40 * serverCount)",
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0xA8", "description": "Packet identifier" },
+        { "name": "length", "type": "ushort", "size": 2, "description": "Packet length" },
+        { "name": "systemInfoFlag", "type": "byte", "size": 1, "value": "0x5D", "description": "System info flag" },
+        { "name": "serverCount", "type": "ushort", "size": 2, "description": "Number of servers in list" },
+        {
+          "name": "servers",
+          "type": "array",
+          "description": "Server list entries",
+          "loop": {
+            "countField": "serverCount",
+            "fields": [
+              { "name": "index", "type": "ushort", "size": 2, "description": "Server index" },
+              { "name": "name", "type": "ascii", "size": 32, "description": "Server name" },
+              { "name": "fullPercent", "type": "byte", "size": 1, "description": "Server load percentage" },
+              { "name": "timezone", "type": "sbyte", "size": 1, "description": "Server timezone offset" },
+              { "name": "ipAddress", "type": "uint", "size": 4, "description": "Server IP address (IPv4)" }
+            ]
+          }
+        }
+      ],
+      "related": [
+        { "id": "0x80", "relationship": "request", "note": "The successful login request" }
+      ],
+      "source": {
+        "file": "Projects/Server/Network/Packets/OutgoingAccountPackets.cs",
+        "line": 411
+      }
+    },
+    {
+      "id": "0x8C",
+      "name": "Play Server Ack",
+      "description": "Sent after selecting a server. Contains connection details for the game server.",
+      "direction": "outgoing",
+      "isDynamic": false,
+      "size": 11,
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0x8C", "description": "Packet identifier" },
+        { "name": "ipAddress", "type": "uint", "size": 4, "description": "Game server IP address (little-endian)" },
+        { "name": "port", "type": "short", "size": 2, "description": "Game server port" },
+        { "name": "authId", "type": "int", "size": 4, "description": "Authentication ID for game login" }
+      ],
+      "related": [
+        { "id": "0xA0", "relationship": "request", "note": "The server selection request" },
+        { "id": "0x91", "relationship": "response", "note": "Client sends game login with this authId" }
+      ],
+      "source": {
+        "file": "Projects/Server/Network/Packets/OutgoingAccountPackets.cs",
+        "line": 447
+      }
+    },
+    {
+      "id": "0xA9",
+      "name": "Character List",
+      "description": "Sent after game login. Contains the list of characters on the account and starting city information.",
+      "direction": "outgoing",
+      "isDynamic": true,
+      "size": "variable (client version dependent)",
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0xA9", "description": "Packet identifier" },
+        { "name": "length", "type": "ushort", "size": 2, "description": "Packet length" },
+        { "name": "charCount", "type": "byte", "size": 1, "description": "Number of character slots" },
+        {
+          "name": "characters",
+          "type": "array",
+          "description": "Character list entries",
+          "loop": {
+            "countField": "charCount",
+            "fields": [
+              { "name": "name", "type": "ascii", "size": 30, "description": "Character name (empty if slot unused)" },
+              { "name": "password", "type": "ascii", "size": 30, "description": "Always empty" }
+            ]
+          }
+        },
+        { "name": "cityCount", "type": "byte", "size": 1, "description": "Number of starting cities" },
+        {
+          "name": "cities",
+          "type": "array",
+          "description": "Starting city entries",
+          "loop": {
+            "countField": "cityCount",
+            "fields": [
+              { "name": "index", "type": "byte", "size": 1, "description": "City index" },
+              { "name": "cityName", "type": "ascii", "size": 31, "description": "City name (32 for 7.0.13.0+)" },
+              { "name": "buildingName", "type": "ascii", "size": 31, "description": "Building name (32 for 7.0.13.0+)" },
+              { "name": "x", "type": "int", "size": 4, "description": "X coordinate (7.0.13.0+ only)", "condition": "client >= 7.0.13.0" },
+              { "name": "y", "type": "int", "size": 4, "description": "Y coordinate (7.0.13.0+ only)", "condition": "client >= 7.0.13.0" },
+              { "name": "z", "type": "int", "size": 4, "description": "Z coordinate (7.0.13.0+ only)", "condition": "client >= 7.0.13.0" },
+              { "name": "mapId", "type": "int", "size": 4, "description": "Map ID (7.0.13.0+ only)", "condition": "client >= 7.0.13.0" },
+              { "name": "cliloc", "type": "int", "size": 4, "description": "Description cliloc (7.0.13.0+ only)", "condition": "client >= 7.0.13.0" },
+              { "name": "unknown", "type": "int", "size": 4, "description": "Unknown (7.0.13.0+ only)", "condition": "client >= 7.0.13.0" }
+            ]
+          }
+        },
+        { "name": "flags", "type": "int", "size": 4, "description": "Character list flags (slot limits, features)" },
+        { "name": "lastCharSlot", "type": "short", "size": 2, "description": "Last played character slot (7.0.13.0+ only)", "condition": "client >= 7.0.13.0" }
+      ],
+      "clientVersion": {
+        "feature": "NewCharacterList",
+        "notes": "Clients 7.0.13.0+ use extended city format with coordinates"
+      },
+      "related": [
+        { "id": "0x91", "relationship": "request", "note": "Game login request" }
+      ],
+      "source": {
+        "file": "Projects/Server/Network/Packets/OutgoingAccountPackets.cs",
+        "line": 293
+      }
+    },
+    {
+      "id": "0x1B",
+      "name": "Login Confirmation",
+      "description": "Sent when entering the world. Confirms the player's mobile serial and initial position.",
+      "direction": "outgoing",
+      "isDynamic": false,
+      "size": 37,
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0x1B", "description": "Packet identifier" },
+        { "name": "serial", "type": "uint", "size": 4, "description": "Player mobile serial" },
+        { "name": "unknown", "type": "int", "size": 4, "value": "0", "description": "Unknown (always 0)" },
+        { "name": "body", "type": "short", "size": 2, "description": "Player body ID" },
+        { "name": "x", "type": "short", "size": 2, "description": "X coordinate" },
+        { "name": "y", "type": "short", "size": 2, "description": "Y coordinate" },
+        { "name": "z", "type": "short", "size": 2, "description": "Z coordinate" },
+        { "name": "direction", "type": "byte", "size": 1, "description": "Facing direction" },
+        { "name": "unknown2", "type": "byte", "size": 1, "value": "0", "description": "Unknown" },
+        { "name": "unknown3", "type": "int", "size": 4, "value": "-1", "description": "Unknown (always -1)" },
+        { "name": "unknown4", "type": "int", "size": 4, "value": "0", "description": "Unknown" },
+        { "name": "mapWidth", "type": "short", "size": 2, "description": "Map width in tiles" },
+        { "name": "mapHeight", "type": "short", "size": 2, "description": "Map height in tiles" },
+        { "name": "unknown5", "type": "byte[6]", "size": 6, "description": "Unknown (zeros)" }
+      ],
+      "related": [
+        { "id": "0x5D", "relationship": "request", "note": "Play character request" }
+      ],
+      "source": {
+        "file": "Projects/Server/Network/Packets/OutgoingAccountPackets.cs",
+        "line": 190
+      }
+    },
+    {
+      "id": "0x55",
+      "name": "Login Complete",
+      "description": "Final packet in the login sequence. Signals that the client can begin normal gameplay.",
+      "direction": "outgoing",
+      "isDynamic": false,
+      "size": 1,
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0x55", "description": "Packet identifier" }
+      ],
+      "source": {
+        "file": "Projects/Server/Network/Packets/OutgoingAccountPackets.cs",
+        "line": 231
+      }
+    },
+    {
+      "id": "0xBD",
+      "name": "Client Version Request",
+      "description": "Request for the client to send its version string.",
+      "direction": "outgoing",
+      "isDynamic": false,
+      "size": 3,
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0xBD", "description": "Packet identifier" },
+        { "name": "length", "type": "ushort", "size": 2, "value": "0x0003", "description": "Packet length" }
+      ],
+      "related": [
+        { "id": "0xBD", "relationship": "response", "note": "Client responds with version string" }
+      ],
+      "source": {
+        "file": "Projects/Server/Network/Packets/OutgoingAccountPackets.cs",
+        "line": 112
+      },
+      "notes": "Same packet ID (0xBD) is used for both request (server) and response (client)."
+    },
+    {
+      "id": "0xB9",
+      "name": "Supported Features",
+      "description": "Informs the client which features are enabled on the server.",
+      "direction": "outgoing",
+      "isDynamic": false,
+      "size": "3 or 5 (client version dependent)",
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0xB9", "description": "Packet identifier" },
+        { "name": "features", "type": "ushort/uint", "size": "2 or 4", "description": "Feature flags bitmask. Extended (4 bytes) for newer clients." }
+      ],
+      "clientVersion": {
+        "feature": "ExtendedSupportedFeatures",
+        "notes": "Clients with ExtendedSupportedFeatures use 4-byte flags instead of 2-byte"
+      },
+      "source": {
+        "file": "Projects/Server/Network/Packets/OutgoingAccountPackets.cs",
+        "line": 140
+      }
+    },
+    {
+      "id": "0x85",
+      "name": "Character Delete Result",
+      "description": "Result of a character deletion request.",
+      "direction": "outgoing",
+      "isDynamic": false,
+      "size": 2,
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0x85", "description": "Packet identifier" },
+        { "name": "result", "type": "byte", "size": 1, "description": "Result: 0=PasswordInvalid, 1=CharNotExist, 2=CharBeingPlayed, 3=CharTooYoung, 4=CharQueued, 5=BadRequest" }
+      ],
+      "related": [
+        { "id": "0x83", "relationship": "request", "note": "The delete request" }
+      ],
+      "source": {
+        "file": "Projects/Server/Network/Packets/OutgoingAccountPackets.cs",
+        "line": 121
+      }
+    },
+    {
+      "id": "0x53",
+      "name": "Popup Message",
+      "description": "Displays a predefined popup message to the client.",
+      "direction": "outgoing",
+      "isDynamic": false,
+      "size": 2,
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0x53", "description": "Packet identifier" },
+        { "name": "messageId", "type": "byte", "size": 1, "description": "Message ID: 1=CharNoExist, 2=CharExists, 5=CharInWorld, 6=LoginSyncError, 7=IdleWarning" }
+      ],
+      "source": {
+        "file": "Projects/Server/Network/Packets/OutgoingAccountPackets.cs",
+        "line": 131
+      }
+    },
+    {
+      "id": "0x81",
+      "name": "Change Character",
+      "description": "Updates the character list during reconnection. Currently unused.",
+      "direction": "outgoing",
+      "isDynamic": true,
+      "size": "5 + (60 * charCount)",
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0x81", "description": "Packet identifier" },
+        { "name": "length", "type": "ushort", "size": 2, "description": "Packet length" },
+        { "name": "charCount", "type": "ushort", "size": 2, "description": "Number of characters" },
+        {
+          "name": "characters",
+          "type": "array",
+          "description": "Character list entries",
+          "loop": {
+            "countField": "charCount",
+            "fields": [
+              { "name": "name", "type": "ascii", "size": 30, "description": "Character name" },
+              { "name": "password", "type": "ascii", "size": 30, "description": "Always empty" }
+            ]
+          }
+        }
+      ],
+      "source": {
+        "file": "Projects/Server/Network/Packets/OutgoingAccountPackets.cs",
+        "line": 63
+      },
+      "notes": "Currently unused in ModernUO."
+    },
+    {
+      "id": "0x86",
+      "name": "Character List Update",
+      "description": "Updates the character list after character creation or deletion.",
+      "direction": "outgoing",
+      "isDynamic": true,
+      "size": "4 + (60 * charCount)",
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0x86", "description": "Packet identifier" },
+        { "name": "length", "type": "ushort", "size": 2, "description": "Packet length" },
+        { "name": "charCount", "type": "byte", "size": 1, "description": "Number of character slots" },
+        {
+          "name": "characters",
+          "type": "array",
+          "description": "Character list entries",
+          "loop": {
+            "countField": "charCount",
+            "fields": [
+              { "name": "name", "type": "ascii", "size": 30, "description": "Character name (empty if slot unused)" },
+              { "name": "password", "type": "ascii", "size": 30, "description": "Always empty" }
+            ]
+          }
+        }
+      ],
+      "source": {
+        "file": "Projects/Server/Network/Packets/OutgoingAccountPackets.cs",
+        "line": 242
+      }
+    }
+  ]
+}

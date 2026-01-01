@@ -1,0 +1,97 @@
+{
+  "category": "Message",
+  "packets": [
+    {
+      "id": "0x03",
+      "name": "ASCII Speech",
+      "description": "Client sends ASCII-encoded speech message.",
+      "direction": "incoming",
+      "isDynamic": true,
+      "size": "Dynamic",
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0x03", "description": "Packet identifier" },
+        { "name": "length", "type": "ushort", "size": 2, "description": "Packet length" },
+        {
+          "name": "type",
+          "type": "enum",
+          "enumType": "sequential",
+          "size": 1,
+          "description": "Message type",
+          "values": [
+            { "value": 0, "name": "Regular", "description": "Normal speech" },
+            { "value": 1, "name": "System", "description": "System message" },
+            { "value": 2, "name": "Emote", "description": "Emote (*action*)" },
+            { "value": 6, "name": "Label", "description": "Object label" },
+            { "value": 7, "name": "Focus", "description": "Focused message" },
+            { "value": 8, "name": "Whisper", "description": "Whisper" },
+            { "value": 9, "name": "Yell", "description": "Yell" },
+            { "value": 10, "name": "Spell", "description": "Spell words" },
+            { "value": 13, "name": "Guild", "description": "Guild chat" },
+            { "value": 14, "name": "Alliance", "description": "Alliance chat" },
+            { "value": 15, "name": "Command", "description": "Command" }
+          ]
+        },
+        { "name": "hue", "type": "short", "size": 2, "description": "Text color hue" },
+        { "name": "font", "type": "short", "size": 2, "description": "Font ID" },
+        { "name": "text", "type": "ascii-null", "description": "Speech text (max 128 chars)" }
+      ],
+      "related": [
+        { "id": "0x1C", "relationship": "response", "note": "ASCII Message sent to other clients" }
+      ],
+      "source": {
+        "file": "Projects/UOContent/Network/Packets/IncomingMessagePackets.cs",
+        "line": 31
+      }
+    },
+    {
+      "id": "0xAD",
+      "name": "Unicode Speech",
+      "description": "Client sends Unicode-encoded speech message with optional keywords.",
+      "direction": "incoming",
+      "isDynamic": true,
+      "size": "Dynamic",
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0xAD", "description": "Packet identifier" },
+        { "name": "length", "type": "ushort", "size": 2, "description": "Packet length" },
+        {
+          "name": "type",
+          "type": "bitfield",
+          "size": 1,
+          "description": "Message type with possible Encoded flag",
+          "flags": [
+            { "bit": "0x0F", "name": "MessageType", "description": "Base message type (see 0x03)" },
+            { "bit": "0xC0", "name": "Encoded", "description": "If set, packet contains encoded keywords" }
+          ]
+        },
+        { "name": "hue", "type": "short", "size": 2, "description": "Text color hue" },
+        { "name": "font", "type": "short", "size": 2, "description": "Font ID" },
+        { "name": "language", "type": "ascii", "size": 4, "description": "Language code (e.g., 'ENU')" },
+        {
+          "name": "encodedKeywords",
+          "type": "conditional",
+          "condition": "type & 0xC0 != 0",
+          "fields": [
+            { "name": "keywordValue", "type": "short", "size": 2, "description": "Keyword count (upper 12 bits) and first hold value (lower 4 bits)" },
+            { "name": "keywords", "type": "byte[]", "description": "Packed keyword IDs" },
+            { "name": "text", "type": "utf8-null", "description": "Speech text (UTF-8 when encoded)" }
+          ]
+        },
+        {
+          "name": "unicodeText",
+          "type": "conditional",
+          "condition": "type & 0xC0 == 0",
+          "fields": [
+            { "name": "text", "type": "unicode-be-null", "description": "Speech text (Big Endian Unicode)" }
+          ]
+        }
+      ],
+      "related": [
+        { "id": "0xAE", "relationship": "response", "note": "Unicode Message sent to other clients" }
+      ],
+      "source": {
+        "file": "Projects/UOContent/Network/Packets/IncomingMessagePackets.cs",
+        "line": 58
+      }
+    }
+  ]
+}

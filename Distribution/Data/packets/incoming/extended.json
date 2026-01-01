@@ -1,0 +1,356 @@
+{
+  "category": "Extended Commands (0xBF)",
+  "packets": [
+    {
+      "id": "0xBF",
+      "name": "Extended Command",
+      "description": "Wrapper packet for extended command subpackets.",
+      "direction": "incoming",
+      "isDynamic": true,
+      "size": "Dynamic",
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0xBF", "description": "Packet identifier" },
+        { "name": "length", "type": "ushort", "size": 2, "description": "Packet length" },
+        { "name": "subCommand", "type": "ushort", "size": 2, "description": "Extended command ID" },
+        { "name": "data", "type": "byte[]", "description": "Subcommand-specific data" }
+      ],
+      "notes": "See individual 0xBF/0xXX packets for subcommand details.",
+      "source": {
+        "file": "Projects/UOContent/Network/Packets/IncomingExtendedCommandPackets.cs",
+        "line": 43
+      }
+    },
+    {
+      "id": "0xBF/0x05",
+      "subId": "0x05",
+      "name": "Screen Size",
+      "description": "Client reports screen size.",
+      "direction": "incoming",
+      "isDynamic": true,
+      "size": "Dynamic",
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0xBF", "description": "Packet identifier" },
+        { "name": "length", "type": "ushort", "size": 2, "description": "Packet length" },
+        { "name": "subCommand", "type": "ushort", "size": 2, "value": "0x05", "description": "Screen Size subcommand" },
+        { "name": "width", "type": "int", "size": 4, "description": "Screen width" },
+        { "name": "unknown", "type": "int", "size": 4, "description": "Unknown value" }
+      ],
+      "source": {
+        "file": "Projects/UOContent/Network/Packets/IncomingExtendedCommandPackets.cs",
+        "line": 136
+      }
+    },
+    {
+      "id": "0xBF/0x06",
+      "subId": "0x06",
+      "name": "Party Message",
+      "description": "Client sends party-related commands.",
+      "direction": "incoming",
+      "isDynamic": true,
+      "size": "Dynamic",
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0xBF", "description": "Packet identifier" },
+        { "name": "length", "type": "ushort", "size": 2, "description": "Packet length" },
+        { "name": "subCommand", "type": "ushort", "size": 2, "value": "0x06", "description": "Party Message subcommand" },
+        {
+          "name": "partyCommand",
+          "type": "enum",
+          "enumType": "sequential",
+          "size": 1,
+          "description": "Party command type",
+          "values": [
+            { "value": 1, "name": "AddMember", "description": "Add member to party" },
+            { "value": 2, "name": "RemoveMember", "description": "Remove member from party" },
+            { "value": 3, "name": "PrivateMessage", "description": "Send private message to party member" },
+            { "value": 4, "name": "PublicMessage", "description": "Send public message to party" },
+            { "value": 6, "name": "SetCanLoot", "description": "Set loot permission" },
+            { "value": 8, "name": "Accept", "description": "Accept party invitation" },
+            { "value": 9, "name": "Decline", "description": "Decline party invitation" }
+          ]
+        },
+        { "name": "data", "type": "byte[]", "description": "Command-specific data (target serial, message text)" }
+      ],
+      "source": {
+        "file": "Projects/UOContent/Network/Packets/IncomingExtendedCommandPackets.cs",
+        "line": 142
+      }
+    },
+    {
+      "id": "0xBF/0x09",
+      "subId": "0x09",
+      "name": "Disarm Request",
+      "description": "Client requests to disarm opponent.",
+      "direction": "incoming",
+      "isDynamic": true,
+      "size": "Dynamic",
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0xBF", "description": "Packet identifier" },
+        { "name": "length", "type": "ushort", "size": 2, "description": "Packet length" },
+        { "name": "subCommand", "type": "ushort", "size": 2, "value": "0x09", "description": "Disarm Request subcommand" }
+      ],
+      "source": {
+        "file": "Projects/UOContent/Network/Packets/IncomingExtendedCommandPackets.cs",
+        "line": 289
+      }
+    },
+    {
+      "id": "0xBF/0x0A",
+      "subId": "0x0A",
+      "name": "Stun Request",
+      "description": "Client requests to stun opponent.",
+      "direction": "incoming",
+      "isDynamic": true,
+      "size": "Dynamic",
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0xBF", "description": "Packet identifier" },
+        { "name": "length", "type": "ushort", "size": 2, "description": "Packet length" },
+        { "name": "subCommand", "type": "ushort", "size": 2, "value": "0x0A", "description": "Stun Request subcommand" }
+      ],
+      "source": {
+        "file": "Projects/UOContent/Network/Packets/IncomingExtendedCommandPackets.cs",
+        "line": 277
+      }
+    },
+    {
+      "id": "0xBF/0x0B",
+      "subId": "0x0B",
+      "name": "Language",
+      "description": "Client sets language preference.",
+      "direction": "incoming",
+      "isDynamic": true,
+      "size": "Dynamic",
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0xBF", "description": "Packet identifier" },
+        { "name": "length", "type": "ushort", "size": 2, "description": "Packet length" },
+        { "name": "subCommand", "type": "ushort", "size": 2, "value": "0x0B", "description": "Language subcommand" },
+        { "name": "language", "type": "ascii", "size": 4, "description": "Language code (e.g., 'ENU')" }
+      ],
+      "source": {
+        "file": "Projects/UOContent/Network/Packets/IncomingExtendedCommandPackets.cs",
+        "line": 343
+      }
+    },
+    {
+      "id": "0xBF/0x0C",
+      "subId": "0x0C",
+      "name": "Close Status",
+      "description": "Client closes a status gump.",
+      "direction": "incoming",
+      "isDynamic": true,
+      "size": "Dynamic",
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0xBF", "description": "Packet identifier" },
+        { "name": "length", "type": "ushort", "size": 2, "description": "Packet length" },
+        { "name": "subCommand", "type": "ushort", "size": 2, "value": "0x0C", "description": "Close Status subcommand" },
+        { "name": "serial", "type": "uint", "size": 4, "description": "Serial of mobile whose status to close" }
+      ],
+      "source": {
+        "file": "Projects/UOContent/Network/Packets/IncomingExtendedCommandPackets.cs",
+        "line": 338
+      }
+    },
+    {
+      "id": "0xBF/0x0E",
+      "subId": "0x0E",
+      "name": "Animate",
+      "description": "Client requests to play an animation.",
+      "direction": "incoming",
+      "isDynamic": true,
+      "size": "Dynamic",
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0xBF", "description": "Packet identifier" },
+        { "name": "length", "type": "ushort", "size": 2, "description": "Packet length" },
+        { "name": "subCommand", "type": "ushort", "size": 2, "value": "0x0E", "description": "Animate subcommand" },
+        { "name": "action", "type": "int", "size": 4, "description": "Animation action ID (must be in valid list)" }
+      ],
+      "notes": "Only specific animation IDs are allowed for security.",
+      "source": {
+        "file": "Projects/UOContent/Network/Packets/IncomingExtendedCommandPackets.cs",
+        "line": 233
+      }
+    },
+    {
+      "id": "0xBF/0x10",
+      "subId": "0x10",
+      "name": "Query Properties",
+      "description": "Client queries Object Property List (tooltip) for an entity.",
+      "direction": "incoming",
+      "isDynamic": true,
+      "size": "Dynamic",
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0xBF", "description": "Packet identifier" },
+        { "name": "length", "type": "ushort", "size": 2, "description": "Packet length" },
+        { "name": "subCommand", "type": "ushort", "size": 2, "value": "0x10", "description": "Query Properties subcommand" },
+        { "name": "serial", "type": "uint", "size": 4, "description": "Serial of entity to query" }
+      ],
+      "related": [
+        { "id": "0xDC", "relationship": "response", "note": "OPL Info packet" }
+      ],
+      "source": {
+        "file": "Projects/UOContent/Network/Packets/IncomingExtendedCommandPackets.cs",
+        "line": 355
+      }
+    },
+    {
+      "id": "0xBF/0x1A",
+      "subId": "0x1A",
+      "name": "Stat Lock Change",
+      "description": "Client changes stat lock (STR/DEX/INT).",
+      "direction": "incoming",
+      "isDynamic": true,
+      "size": "Dynamic",
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0xBF", "description": "Packet identifier" },
+        { "name": "length", "type": "ushort", "size": 2, "description": "Packet length" },
+        { "name": "subCommand", "type": "ushort", "size": 2, "value": "0x1A", "description": "Stat Lock Change subcommand" },
+        {
+          "name": "stat",
+          "type": "enum",
+          "enumType": "sequential",
+          "size": 1,
+          "description": "Which stat to change",
+          "values": [
+            { "value": 0, "name": "Strength", "description": "Strength lock" },
+            { "value": 1, "name": "Dexterity", "description": "Dexterity lock" },
+            { "value": 2, "name": "Intelligence", "description": "Intelligence lock" }
+          ]
+        },
+        {
+          "name": "lockValue",
+          "type": "enum",
+          "enumType": "sequential",
+          "size": 1,
+          "description": "New lock state",
+          "values": [
+            { "value": 0, "name": "Up", "description": "Stat gains enabled" },
+            { "value": 1, "name": "Down", "description": "Stat decreases enabled" },
+            { "value": 2, "name": "Locked", "description": "Stat locked" }
+          ]
+        }
+      ],
+      "source": {
+        "file": "Projects/UOContent/Network/Packets/IncomingExtendedCommandPackets.cs",
+        "line": 301
+      }
+    },
+    {
+      "id": "0xBF/0x1C",
+      "subId": "0x1C",
+      "name": "Cast Spell",
+      "description": "Client casts a spell (optionally from spellbook).",
+      "direction": "incoming",
+      "isDynamic": true,
+      "size": "Dynamic",
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0xBF", "description": "Packet identifier" },
+        { "name": "length", "type": "ushort", "size": 2, "description": "Packet length" },
+        { "name": "subCommand", "type": "ushort", "size": 2, "value": "0x1C", "description": "Cast Spell subcommand" },
+        { "name": "hasBook", "type": "short", "size": 2, "description": "1 if casting from book, 0 otherwise" },
+        { "name": "bookSerial", "type": "uint", "size": 4, "description": "Serial of spellbook (if hasBook)", "condition": "hasBook == 1" },
+        { "name": "spellId", "type": "short", "size": 2, "description": "Spell ID + 1 (1-based)" }
+      ],
+      "source": {
+        "file": "Projects/UOContent/Network/Packets/IncomingExtendedCommandPackets.cs",
+        "line": 257
+      }
+    },
+    {
+      "id": "0xBF/0x2C",
+      "subId": "0x2C",
+      "name": "Bandage Target",
+      "description": "Client uses bandage on a target.",
+      "direction": "incoming",
+      "isDynamic": true,
+      "size": "Dynamic",
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0xBF", "description": "Packet identifier" },
+        { "name": "length", "type": "ushort", "size": 2, "description": "Packet length" },
+        { "name": "subCommand", "type": "ushort", "size": 2, "value": "0x2C", "description": "Bandage Target subcommand" },
+        { "name": "bandageSerial", "type": "uint", "size": 4, "description": "Serial of the bandage item" },
+        { "name": "targetSerial", "type": "uint", "size": 4, "description": "Serial of target mobile" }
+      ],
+      "source": {
+        "file": "Projects/UOContent/Network/Packets/IncomingExtendedCommandPackets.cs",
+        "line": 387
+      }
+    },
+    {
+      "id": "0xBF/0x2D",
+      "subId": "0x2D",
+      "name": "Targeted Spell",
+      "description": "Client casts spell with pre-selected target.",
+      "direction": "incoming",
+      "isDynamic": true,
+      "size": "Dynamic",
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0xBF", "description": "Packet identifier" },
+        { "name": "length", "type": "ushort", "size": 2, "description": "Packet length" },
+        { "name": "subCommand", "type": "ushort", "size": 2, "value": "0x2D", "description": "Targeted Spell subcommand" },
+        { "name": "spellId", "type": "short", "size": 2, "description": "Spell ID + 1 (1-based)" },
+        { "name": "targetSerial", "type": "uint", "size": 4, "description": "Serial of target entity" }
+      ],
+      "source": {
+        "file": "Projects/UOContent/Network/Packets/IncomingExtendedCommandPackets.cs",
+        "line": 422
+      }
+    },
+    {
+      "id": "0xBF/0x2E",
+      "subId": "0x2E",
+      "name": "Targeted Skill Use",
+      "description": "Client uses skill with pre-selected target.",
+      "direction": "incoming",
+      "isDynamic": true,
+      "size": "Dynamic",
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0xBF", "description": "Packet identifier" },
+        { "name": "length", "type": "ushort", "size": 2, "description": "Packet length" },
+        { "name": "subCommand", "type": "ushort", "size": 2, "value": "0x2E", "description": "Targeted Skill Use subcommand" },
+        { "name": "skillId", "type": "short", "size": 2, "description": "Skill ID" },
+        { "name": "targetSerial", "type": "uint", "size": 4, "description": "Serial of target entity" }
+      ],
+      "source": {
+        "file": "Projects/UOContent/Network/Packets/IncomingExtendedCommandPackets.cs",
+        "line": 429
+      }
+    },
+    {
+      "id": "0xBF/0x30",
+      "subId": "0x30",
+      "name": "Target By Resource Macro",
+      "description": "Client uses resource-based targeting macro.",
+      "direction": "incoming",
+      "isDynamic": true,
+      "size": "Dynamic",
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0xBF", "description": "Packet identifier" },
+        { "name": "length", "type": "ushort", "size": 2, "description": "Packet length" },
+        { "name": "subCommand", "type": "ushort", "size": 2, "value": "0x30", "description": "Target By Resource Macro subcommand" },
+        { "name": "itemSerial", "type": "uint", "size": 4, "description": "Serial of item" },
+        { "name": "resourceType", "type": "short", "size": 2, "description": "Resource type ID" }
+      ],
+      "source": {
+        "file": "Projects/UOContent/Network/Packets/IncomingExtendedCommandPackets.cs",
+        "line": 439
+      }
+    },
+    {
+      "id": "0xBF/0x32",
+      "subId": "0x32",
+      "name": "Toggle Flying",
+      "description": "Client toggles gargoyle flying mode.",
+      "direction": "incoming",
+      "isDynamic": true,
+      "size": "Dynamic",
+      "fields": [
+        { "name": "packetId", "type": "byte", "size": 1, "value": "0xBF", "description": "Packet identifier" },
+        { "name": "length", "type": "ushort", "size": 2, "description": "Packet length" },
+        { "name": "subCommand", "type": "ushort", "size": 2, "value": "0x32", "description": "Toggle Flying subcommand" }
+      ],
+      "source": {
+        "file": "Projects/UOContent/Network/Packets/IncomingExtendedCommandPackets.cs",
+        "line": 272
+      }
+    }
+  ]
+}

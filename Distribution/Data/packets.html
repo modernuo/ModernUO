@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="Network packet documentation for the Ultima Online Server Emulator ModernUO">
+  <meta name="author" content="ModernUO Development Team">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="https://modernuo.com/branding/favicon.png">
+  <title>ModernUO Packet Documentation</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com/3.4.1?plugins=typography@0.5.10"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            mono: ['Roboto Mono', 'monospace'],
+          },
+          colors: {
+            "modern-black": "#212121",
+            "modern-black-hover": "#2F2F2F",
+            "modern-dark-black": "#1A1A1A",
+            "incoming": "#3b82f6",
+            "outgoing": "#22c55e",
+            "both": "#a855f7",
+            gold: {
+              50: "#fbf3ee",
+              100: "#f8e9dd",
+              200: "#f0d9bd",
+              300: "#e8cea1",
+              400: "#dfc688",
+              500: "#d5bf74",
+              600: "#cab664",
+              700: "#bdab58",
+              800: "#b09f4f",
+              900: "#a29147",
+            },
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    .packet-list::-webkit-scrollbar {
+      width: 8px;
+    }
+    .packet-list::-webkit-scrollbar-track {
+      background: #1A1A1A;
+    }
+    .packet-list::-webkit-scrollbar-thumb {
+      background: #404040;
+      border-radius: 4px;
+    }
+    .packet-list::-webkit-scrollbar-thumb:hover {
+      background: #525252;
+    }
+    .field-row:nth-child(even) {
+      background-color: rgba(255, 255, 255, 0.02);
+    }
+    .loop-field {
+      border-left: 2px solid #d5bf74;
+      margin-left: 1rem;
+      padding-left: 0.75rem;
+    }
+  </style>
+</head>
+
+<body class="bg-modern-dark-black text-gold-300 font-sans">
+<div id="app" class="min-h-screen flex flex-col">
+  <!-- Header -->
+  <header class="bg-modern-black p-4 shadow-lg border-b border-gold-500/30">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center space-x-4">
+        <img src="https://modernuo.com/branding/logo.svg" class="h-12 w-12">
+        <div>
+          <h1 class="text-white text-xl font-medium">ModernUO Packet Documentation</h1>
+          <p class="text-gold-500/70 text-sm">Ultima Online Network Protocol Reference</p>
+        </div>
+      </div>
+      <div class="flex items-center space-x-2">
+        <span id="packetCount" class="text-gold-500/70 text-sm"></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="flex-1 flex overflow-hidden">
+    <!-- Left Panel: Packet List -->
+    <aside id="sidebar" class="w-80 bg-modern-black border-r border-gold-500/30 flex flex-col">
+      <!-- Search & Filter -->
+      <div class="p-3 border-b border-gold-500/20 space-y-2">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Search packets (ID, name, field)..."
+          class="w-full bg-modern-dark-black text-gold-300 placeholder-gold-500/50 px-3 py-2 rounded border border-gold-500/30 focus:outline-none focus:border-gold-500 text-sm"
+        >
+        <div class="flex space-x-1">
+          <button data-filter="all" class="filter-btn flex-1 px-2 py-1 text-xs rounded bg-gold-500 text-modern-black font-medium">All</button>
+          <button data-filter="incoming" class="filter-btn flex-1 px-2 py-1 text-xs rounded bg-modern-dark-black text-incoming border border-incoming/50 hover:bg-incoming/20">In</button>
+          <button data-filter="outgoing" class="filter-btn flex-1 px-2 py-1 text-xs rounded bg-modern-dark-black text-outgoing border border-outgoing/50 hover:bg-outgoing/20">Out</button>
+          <button data-filter="both" class="filter-btn flex-1 px-2 py-1 text-xs rounded bg-modern-dark-black text-both border border-both/50 hover:bg-both/20">Both</button>
+        </div>
+        <select id="categoryFilter" class="w-full bg-modern-dark-black text-gold-300 px-3 py-2 rounded border border-gold-500/30 focus:outline-none focus:border-gold-500 text-sm">
+          <option value="">All Categories</option>
+        </select>
+      </div>
+
+      <!-- Packet List -->
+      <div id="packetList" class="packet-list flex-1 overflow-y-auto">
+        <!-- Populated by JavaScript -->
+      </div>
+    </aside>
+
+    <!-- Right Panel: Packet Details -->
+    <main class="flex-1 overflow-y-auto bg-modern-dark-black">
+      <div id="packetDetails" class="p-6 max-w-4xl mx-auto">
+        <!-- Welcome message when no packet selected -->
+        <div id="welcomeMessage" class="text-center py-16">
+          <div class="text-gold-500/50 text-6xl mb-4">&#x1F4E6;</div>
+          <h2 class="text-gold-500 text-xl mb-2">Select a Packet</h2>
+          <p class="text-gold-500/70">Choose a packet from the list to view its documentation.</p>
+          <p class="text-gold-500/50 text-sm mt-4">Use the search box to find packets by ID (0x02), name, or field names.</p>
+        </div>
+
+        <!-- Packet detail content (hidden by default) -->
+        <div id="packetContent" class="hidden">
+          <!-- Header -->
+          <div class="flex items-start justify-between mb-6">
+            <div>
+              <div class="flex items-center space-x-3 mb-2">
+                <span id="detailId" class="font-mono text-2xl text-white"></span>
+                <span id="detailSubId" class="font-mono text-lg text-gold-500/70 hidden"></span>
+                <span id="detailDirection" class="px-2 py-0.5 rounded text-xs font-medium uppercase"></span>
+              </div>
+              <h2 id="detailName" class="text-xl text-gold-500 font-medium"></h2>
+            </div>
+            <a id="sourceLink" href="#" target="_blank" class="flex items-center space-x-1 text-sm text-gold-500/70 hover:text-gold-500 transition-colors">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+              <span>View Source</span>
+            </a>
+          </div>
+
+          <!-- Description -->
+          <p id="detailDescription" class="text-gold-300/90 mb-6 leading-relaxed"></p>
+
+          <!-- Size Info -->
+          <div class="bg-modern-black rounded-lg p-4 mb-6 border border-gold-500/20">
+            <div class="flex items-center space-x-6">
+              <div>
+                <span class="text-gold-500/70 text-sm">Size:</span>
+                <span id="detailSize" class="text-white font-mono ml-2"></span>
+              </div>
+              <div id="detailDynamic" class="hidden">
+                <span class="px-2 py-0.5 bg-gold-500/20 text-gold-500 rounded text-xs">Dynamic Length</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Client Version Requirements -->
+          <div id="clientVersionSection" class="bg-modern-black rounded-lg p-4 mb-6 border border-gold-500/20 hidden">
+            <h3 class="text-gold-500 font-medium mb-2">Client Version Requirements</h3>
+            <div id="clientVersionContent" class="text-gold-300/80 text-sm"></div>
+          </div>
+
+          <!-- Fields Table -->
+          <div class="mb-6">
+            <h3 class="text-gold-500 font-medium mb-3">Packet Structure</h3>
+            <div class="bg-modern-black rounded-lg border border-gold-500/20 overflow-hidden">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="bg-gold-500/10 text-gold-500">
+                    <th class="px-4 py-2 text-left font-medium">Offset</th>
+                    <th class="px-4 py-2 text-left font-medium">Name</th>
+                    <th class="px-4 py-2 text-left font-medium">Type</th>
+                    <th class="px-4 py-2 text-left font-medium">Size</th>
+                    <th class="px-4 py-2 text-left font-medium">Description</th>
+                  </tr>
+                </thead>
+                <tbody id="fieldsTable">
+                  <!-- Populated by JavaScript -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Related Packets -->
+          <div id="relatedSection" class="mb-6 hidden">
+            <h3 class="text-gold-500 font-medium mb-3">Related Packets</h3>
+            <div id="relatedPackets" class="space-y-2">
+              <!-- Populated by JavaScript -->
+            </div>
+          </div>
+
+          <!-- Packet Variants -->
+          <div id="variantsSection" class="mb-6 hidden">
+            <h3 class="text-gold-500 font-medium mb-3">Packet Variants</h3>
+            <div id="variantsList" class="space-y-4">
+              <!-- Populated by JavaScript -->
+            </div>
+          </div>
+
+          <!-- Notes -->
+          <div id="notesSection" class="hidden">
+            <h3 class="text-gold-500 font-medium mb-2">Notes</h3>
+            <p id="detailNotes" class="text-gold-300/80 text-sm bg-modern-black rounded-lg p-4 border border-gold-500/20"></p>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- Hidden data containers -->
+<span id="packets" style="display:none; visibility: hidden">
+  <!-- PACKETS -->
+</span>
+
+<script>
+// Parse packet data
+let allPackets = { incoming: [], outgoing: [] };
+try {
+  allPackets = JSON.parse(document.getElementById('packets').innerText.trim() || '{"incoming":[],"outgoing":[]}');
+} catch (e) {
+  console.error('Failed to parse packet data:', e);
+}
+
+// Flatten all packets into a single array with direction info preserved
+const packets = [
+  ...allPackets.incoming.map(p => ({ ...p, direction: p.direction || 'incoming' })),
+  ...allPackets.outgoing.map(p => ({ ...p, direction: p.direction || 'outgoing' }))
+];
+
+// Build packet index by ID for quick lookups
+const packetIndex = new Map();
+packets.forEach(p => {
+  const key = p.subId ? `${p.id}/${p.subId}` : p.id;
+  packetIndex.set(key, p);
+  packetIndex.set(p.id, p); // Also index by just ID for basic lookups
+});
+
+// State
+let currentFilter = 'all';
+let currentCategory = '';
+let currentSearch = '';
+let selectedPacket = null;
+
+// DOM elements
+const searchInput = document.getElementById('searchInput');
+const categoryFilter = document.getElementById('categoryFilter');
+const packetList = document.getElementById('packetList');
+const packetCount = document.getElementById('packetCount');
+const welcomeMessage = document.getElementById('welcomeMessage');
+const packetContent = document.getElementById('packetContent');
+
+// Extract unique categories
+const categories = [...new Set(packets.map(p => p.category).filter(Boolean))].sort();
+categories.forEach(cat => {
+  const option = document.createElement('option');
+  option.value = cat;
+  option.textContent = cat;
+  categoryFilter.appendChild(option);
+});
+
+// Update packet count
+function updatePacketCount() {
+  const filtered = getFilteredPackets();
+  packetCount.textContent = `${filtered.length} of ${packets.length} packets`;
+}
+
+// Get direction color class
+function getDirectionClass(direction) {
+  switch(direction) {
+    case 'incoming': return 'text-incoming';
+    case 'outgoing': return 'text-outgoing';
+    case 'both': return 'text-both';
+    default: return 'text-gold-500';
+  }
+}
+
+function getDirectionBgClass(direction) {
+  switch(direction) {
+    case 'incoming': return 'bg-incoming';
+    case 'outgoing': return 'bg-outgoing';
+    case 'both': return 'bg-both';
+    default: return 'bg-gold-500';
+  }
+}
+
+// Filter packets
+function getFilteredPackets() {
+  return packets.filter(p => {
+    // Direction filter
+    if (currentFilter !== 'all' && p.direction !== currentFilter) return false;
+
+    // Category filter
+    if (currentCategory && p.category !== currentCategory) return false;
+
+    // Search filter
+    if (currentSearch) {
+      const search = currentSearch.toLowerCase();
+      const matchId = p.id.toLowerCase().includes(search) ||
+                      (p.subId && p.subId.toLowerCase().includes(search));
+      const matchName = p.name.toLowerCase().includes(search);
+      const matchDesc = p.description && p.description.toLowerCase().includes(search);
+      const matchFields = p.fields && p.fields.some(f =>
+        f.name.toLowerCase().includes(search) ||
+        (f.description && f.description.toLowerCase().includes(search))
+      );
+
+      // Also search decimal ID
+      const decimalId = parseInt(p.id, 16);
+      const matchDecimal = !isNaN(decimalId) && decimalId.toString() === search;
+
+      if (!matchId && !matchName && !matchDesc && !matchFields && !matchDecimal) return false;
+    }
+
+    return true;
+  });
+}
+
+// Render packet list
+function renderPacketList() {
+  const filtered = getFilteredPackets();
+
+  // Sort by ID
+  filtered.sort((a, b) => {
+    const aId = parseInt(a.id, 16);
+    const bId = parseInt(b.id, 16);
+    if (aId !== bId) return aId - bId;
+
+    // If same ID, sort by subId
+    if (a.subId && b.subId) {
+      return parseInt(a.subId, 16) - parseInt(b.subId, 16);
+    }
+    return a.subId ? 1 : -1;
+  });
+
+  packetList.innerHTML = filtered.map(p => {
+    const displayId = p.subId ? `${p.id}/${p.subId}` : p.id;
+    const isSelected = selectedPacket &&
+      selectedPacket.id === p.id &&
+      selectedPacket.subId === p.subId;
+
+    return `
+      <div
+        class="packet-item px-3 py-2 cursor-pointer border-b border-gold-500/10 hover:bg-modern-black-hover transition-colors ${isSelected ? 'bg-gold-500/20' : ''}"
+        data-id="${p.id}"
+        data-subid="${p.subId || ''}"
+      >
+        <div class="flex items-center space-x-2">
+          <span class="font-mono text-sm ${getDirectionClass(p.direction)}">${displayId}</span>
+          <span class="text-gold-300/90 text-sm truncate">${p.name}</span>
+        </div>
+        <div class="text-gold-500/50 text-xs mt-0.5">${p.category || 'Uncategorized'}</div>
+      </div>
+    `;
+  }).join('');
+
+  // Add click handlers
+  document.querySelectorAll('.packet-item').forEach(el => {
+    el.addEventListener('click', () => {
+      const id = el.dataset.id;
+      const subId = el.dataset.subid;
+      const packet = packets.find(p => p.id === id && (p.subId || '') === subId);
+      if (packet) selectPacket(packet);
+    });
+  });
+
+  updatePacketCount();
+}
+
+// Calculate field offsets
+function calculateOffsets(fields) {
+  let offset = 0;
+  return fields.map(f => {
+    const fieldOffset = offset;
+    if (f.size && typeof f.size === 'number') {
+      offset += f.size;
+    }
+    return { ...f, offset: fieldOffset };
+  });
+}
+
+// Render enum values
+function renderEnumValues(f) {
+  if (!f.values || f.values.length === 0) return '';
+
+  const enumType = f.enumType === 'bitfield' || f.type === 'bitfield' ? 'bitfield' : 'enum';
+  const typeLabel = enumType === 'bitfield' ? 'Flags' : 'Values';
+
+  return `
+    <div class="mt-2 text-xs">
+      <div class="text-gold-500/70 mb-1">${typeLabel}:</div>
+      <div class="grid grid-cols-1 gap-1 pl-2 border-l-2 border-gold-500/30">
+        ${f.values.map(v => `
+          <div class="flex items-start">
+            <span class="font-mono text-gold-400 w-16 flex-shrink-0">${typeof v.value === 'number' ? (enumType === 'bitfield' ? '0x' + v.value.toString(16).toUpperCase().padStart(2, '0') : v.value) : v.value}</span>
+            <span class="text-gold-300 font-medium">${v.name}</span>
+            ${v.description ? `<span class="text-gold-500/60 ml-2">- ${v.description}</span>` : ''}
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+// Render bitfield flags
+function renderBitfieldFlags(f) {
+  if (!f.flags || f.flags.length === 0) return '';
+
+  return `
+    <div class="mt-2 text-xs">
+      <div class="text-gold-500/70 mb-1">Flags:</div>
+      <div class="grid grid-cols-1 gap-1 pl-2 border-l-2 border-purple-500/30">
+        ${f.flags.map(flag => `
+          <div class="flex items-start">
+            <span class="font-mono text-purple-400 w-16 flex-shrink-0">${flag.bit}</span>
+            <span class="text-gold-300 font-medium">${flag.name}</span>
+            ${flag.description ? `<span class="text-gold-500/60 ml-2">- ${flag.description}</span>` : ''}
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+// Render fields table
+function renderFields(fields, parentOffset = 0) {
+  const fieldsWithOffsets = calculateOffsets(fields);
+
+  return fieldsWithOffsets.map(f => {
+    const offset = parentOffset + f.offset;
+    const isEnum = f.type === 'enum' || f.values;
+    const isBitfield = f.type === 'bitfield' || f.flags;
+    const typeDisplay = isEnum ? `enum (${f.size || 1} byte${(f.size || 1) > 1 ? 's' : ''})` :
+                        isBitfield ? `bitfield (${f.size || 1} byte${(f.size || 1) > 1 ? 's' : ''})` :
+                        f.type;
+
+    let row = `
+      <tr class="field-row border-b border-gold-500/10">
+        <td class="px-4 py-2 font-mono text-gold-500/70">${f.size ? offset : '-'}</td>
+        <td class="px-4 py-2 font-mono text-white">${f.name}</td>
+        <td class="px-4 py-2 font-mono ${isEnum ? 'text-green-400' : isBitfield ? 'text-purple-400' : 'text-gold-400'}">${typeDisplay}</td>
+        <td class="px-4 py-2 font-mono text-gold-500/70">${f.size || 'var'}</td>
+        <td class="px-4 py-2 text-gold-300/80">
+          ${f.description || ''}
+          ${f.value ? `<span class="text-gold-500/70 ml-1">(${f.value})</span>` : ''}
+          ${f.condition ? `<span class="text-gold-400/70 ml-1 text-xs italic">[${f.condition}]</span>` : ''}
+          ${isEnum ? renderEnumValues(f) : ''}
+          ${isBitfield ? renderBitfieldFlags(f) : ''}
+        </td>
+      </tr>
+    `;
+
+    // Handle loop fields
+    if (f.loop && f.loop.fields) {
+      row += `
+        <tr class="field-row border-b border-gold-500/10 bg-gold-500/5">
+          <td colspan="5" class="px-4 py-2">
+            <div class="loop-field">
+              <div class="text-gold-500/70 text-xs mb-2">Repeats for each ${f.loop.countField || 'item'}:</div>
+              <table class="w-full text-sm">
+                <tbody>
+                  ${renderFields(f.loop.fields, 0)}
+                </tbody>
+              </table>
+            </div>
+          </td>
+        </tr>
+      `;
+    }
+
+    return row;
+  }).join('');
+}
+
+// Select and display a packet
+function selectPacket(packet) {
+  selectedPacket = packet;
+
+  // Update list selection
+  document.querySelectorAll('.packet-item').forEach(el => {
+    const isMatch = el.dataset.id === packet.id && (el.dataset.subid || '') === (packet.subId || '');
+    el.classList.toggle('bg-gold-500/20', isMatch);
+  });
+
+  // Show content, hide welcome
+  welcomeMessage.classList.add('hidden');
+  packetContent.classList.remove('hidden');
+
+  // Populate header
+  document.getElementById('detailId').textContent = packet.id;
+
+  const subIdEl = document.getElementById('detailSubId');
+  if (packet.subId) {
+    subIdEl.textContent = `/ ${packet.subId}`;
+    subIdEl.classList.remove('hidden');
+  } else {
+    subIdEl.classList.add('hidden');
+  }
+
+  document.getElementById('detailName').textContent = packet.name;
+
+  const directionEl = document.getElementById('detailDirection');
+  directionEl.textContent = packet.direction;
+  directionEl.className = `px-2 py-0.5 rounded text-xs font-medium uppercase ${getDirectionBgClass(packet.direction)} text-white`;
+
+  // Description
+  document.getElementById('detailDescription').textContent = packet.description || 'No description available.';
+
+  // Size
+  const sizeText = typeof packet.size === 'number'
+    ? `${packet.size} bytes`
+    : packet.size || 'Variable';
+  document.getElementById('detailSize').textContent = sizeText;
+  document.getElementById('detailDynamic').classList.toggle('hidden', !packet.isDynamic);
+
+  // Client version
+  const versionSection = document.getElementById('clientVersionSection');
+  const versionContent = document.getElementById('clientVersionContent');
+  if (packet.clientVersion) {
+    versionSection.classList.remove('hidden');
+    let versionText = '';
+    if (packet.clientVersion.min) versionText += `Min: ${packet.clientVersion.min} `;
+    if (packet.clientVersion.max) versionText += `Max: ${packet.clientVersion.max} `;
+    if (packet.clientVersion.feature) versionText += `Feature: ${packet.clientVersion.feature} `;
+    if (packet.clientVersion.notes) versionText += `<br>${packet.clientVersion.notes}`;
+    versionContent.innerHTML = versionText || 'Version-specific behavior';
+  } else {
+    versionSection.classList.add('hidden');
+  }
+
+  // Fields
+  const fieldsTable = document.getElementById('fieldsTable');
+  if (packet.fields && packet.fields.length > 0) {
+    fieldsTable.innerHTML = renderFields(packet.fields);
+  } else {
+    fieldsTable.innerHTML = '<tr><td colspan="5" class="px-4 py-4 text-center text-gold-500/50">No field documentation available</td></tr>';
+  }
+
+  // Related packets
+  const relatedSection = document.getElementById('relatedSection');
+  const relatedPackets = document.getElementById('relatedPackets');
+  if (packet.related && packet.related.length > 0) {
+    relatedSection.classList.remove('hidden');
+    relatedPackets.innerHTML = packet.related.map(r => {
+      const relatedPacket = packetIndex.get(r.id);
+      const relationshipColors = {
+        'request': 'bg-blue-500/20 text-blue-400',
+        'response': 'bg-green-500/20 text-green-400',
+        'ack': 'bg-green-500/20 text-green-400',
+        'rej': 'bg-red-500/20 text-red-400',
+        'variant': 'bg-purple-500/20 text-purple-400'
+      };
+      const colorClass = relationshipColors[r.relationship] || 'bg-gold-500/20 text-gold-400';
+
+      return `
+        <div class="flex items-center justify-between bg-modern-black rounded-lg p-3 border border-gold-500/20 cursor-pointer hover:border-gold-500/40 transition-colors related-packet" data-id="${r.id}">
+          <div class="flex items-center space-x-3">
+            <span class="font-mono text-white">${r.id}</span>
+            <span class="text-gold-300/90">${relatedPacket?.name || 'Unknown'}</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="px-2 py-0.5 rounded text-xs ${colorClass}">${r.relationship}</span>
+            ${r.note ? `<span class="text-gold-500/50 text-sm">${r.note}</span>` : ''}
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    // Add click handlers to related packets
+    document.querySelectorAll('.related-packet').forEach(el => {
+      el.addEventListener('click', () => {
+        const id = el.dataset.id;
+        const relatedPacket = packetIndex.get(id);
+        if (relatedPacket) selectPacket(relatedPacket);
+      });
+    });
+  } else {
+    relatedSection.classList.add('hidden');
+  }
+
+  // Variants
+  const variantsSection = document.getElementById('variantsSection');
+  const variantsList = document.getElementById('variantsList');
+  if (packet.variants && packet.variants.length > 0) {
+    variantsSection.classList.remove('hidden');
+    variantsList.innerHTML = packet.variants.map((v, index) => `
+      <div class="bg-modern-black rounded-lg border border-gold-500/20 overflow-hidden">
+        <div class="bg-gold-500/10 px-4 py-2 flex items-center justify-between">
+          <div>
+            <span class="text-gold-500 font-medium">${v.name || 'Variant ' + (index + 1)}</span>
+            ${v.version ? `<span class="text-gold-500/70 ml-2 text-sm">(${v.version})</span>` : ''}
+          </div>
+          <div class="flex items-center space-x-3 text-sm">
+            ${v.size ? `<span class="text-gold-500/70">Size: <span class="text-white font-mono">${v.size} bytes</span></span>` : ''}
+            ${v.condition ? `<span class="text-gold-400/70 italic">${v.condition}</span>` : ''}
+          </div>
+        </div>
+        ${v.fields && v.fields.length > 0 ? `
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="bg-gold-500/5 text-gold-500 text-xs">
+                <th class="px-4 py-1 text-left font-medium">Offset</th>
+                <th class="px-4 py-1 text-left font-medium">Name</th>
+                <th class="px-4 py-1 text-left font-medium">Type</th>
+                <th class="px-4 py-1 text-left font-medium">Size</th>
+                <th class="px-4 py-1 text-left font-medium">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${renderFields(v.fields)}
+            </tbody>
+          </table>
+        ` : ''}
+      </div>
+    `).join('');
+  } else {
+    variantsSection.classList.add('hidden');
+  }
+
+  // Notes
+  const notesSection = document.getElementById('notesSection');
+  const notesEl = document.getElementById('detailNotes');
+  if (packet.notes) {
+    notesSection.classList.remove('hidden');
+    notesEl.textContent = packet.notes;
+  } else {
+    notesSection.classList.add('hidden');
+  }
+
+  // Source link
+  const sourceLink = document.getElementById('sourceLink');
+  if (packet.source && packet.source.file) {
+    sourceLink.href = `https://github.com/modernuo/ModernUO/blob/main/${packet.source.file}#L${packet.source.line || 1}`;
+    sourceLink.classList.remove('hidden');
+  } else {
+    sourceLink.classList.add('hidden');
+  }
+
+  // Update URL hash
+  const hash = packet.subId ? `${packet.id}-${packet.subId}` : packet.id;
+  history.replaceState(null, '', `#${hash}`);
+}
+
+// Filter button handlers
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    currentFilter = btn.dataset.filter;
+
+    // Update button styles
+    document.querySelectorAll('.filter-btn').forEach(b => {
+      const isActive = b.dataset.filter === currentFilter;
+      if (b.dataset.filter === 'all') {
+        b.classList.toggle('bg-gold-500', isActive);
+        b.classList.toggle('text-modern-black', isActive);
+        b.classList.toggle('bg-modern-dark-black', !isActive);
+        b.classList.toggle('text-gold-500', !isActive);
+      } else {
+        const color = b.dataset.filter;
+        b.classList.toggle(`bg-${color}/20`, isActive);
+        b.classList.toggle('bg-modern-dark-black', !isActive);
+      }
+    });
+
+    renderPacketList();
+  });
+});
+
+// Search handler
+let searchTimeout;
+searchInput.addEventListener('input', (e) => {
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(() => {
+    currentSearch = e.target.value;
+    renderPacketList();
+  }, 150);
+});
+
+// Category filter handler
+categoryFilter.addEventListener('change', (e) => {
+  currentCategory = e.target.value;
+  renderPacketList();
+});
+
+// Keyboard navigation
+document.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+
+  const filtered = getFilteredPackets();
+  if (filtered.length === 0) return;
+
+  let currentIndex = selectedPacket
+    ? filtered.findIndex(p => p.id === selectedPacket.id && p.subId === selectedPacket.subId)
+    : -1;
+
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    currentIndex = Math.min(currentIndex + 1, filtered.length - 1);
+    selectPacket(filtered[currentIndex]);
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    currentIndex = Math.max(currentIndex - 1, 0);
+    selectPacket(filtered[currentIndex]);
+  }
+});
+
+// Handle URL hash on load
+function loadFromHash() {
+  const hash = window.location.hash.slice(1);
+  if (hash) {
+    // Try to find packet by hash (format: 0x02 or 0xBF-0x0026)
+    const parts = hash.split('-');
+    const id = parts[0];
+    const subId = parts[1];
+
+    const packet = packets.find(p =>
+      p.id.toLowerCase() === id.toLowerCase() &&
+      (p.subId || '').toLowerCase() === (subId || '').toLowerCase()
+    );
+
+    if (packet) selectPacket(packet);
+  }
+}
+
+// Initialize
+renderPacketList();
+loadFromHash();
+
+// Handle hash changes
+window.addEventListener('hashchange', loadFromHash);
+</script>
+</body>
+</html>
