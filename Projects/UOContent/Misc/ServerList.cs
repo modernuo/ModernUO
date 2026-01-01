@@ -19,6 +19,12 @@ namespace Server.Misc
      * "serverListing.address": null,
      * "serverListing.autoDetect": false
      *
+     * For Mult-NAT scenarios such as containerization, you need to tell MUO the realAddress
+     * of the server hosting the container. If the server has multiple IP interfaces this
+     * address is typically the one that has the default gateway. This allows clients connecting from the same LAN
+     * (assuming RFC-1918 addresses detected by IsPrivateNetwork()) to connect to MUO even though we may be advertising
+     * the outside Internet address for Serverlisting.
+     *
      * If you want players outside your LAN to be able to connect to your server and you are behind a router, you must also
      * forward TCP port 2593 to your private IP address. The procedure for doing this varies by manufacturer but generally
      * involves configuration of the router through your web browser.
@@ -36,7 +42,9 @@ namespace Server.Misc
         private static readonly ILogger logger = LogFactory.GetLogger(typeof(ServerList));
 
         private static IPAddress _publicAddress;
+        private static IPAddress _realAddress;
         public static string Address { get; private set; }
+        public static string realAddress { get; private set; }
         public static string ServerName { get; private set; }
 
         public static bool AutoDetect { get; private set; }
@@ -46,6 +54,7 @@ namespace Server.Misc
         public static void Configure()
         {
             Address = ServerConfiguration.GetOrUpdateSetting("serverListing.address", null);
+            realAddress = ServerConfiguration.GetOrUpdateSetting("serverListing.realAddress", null);
             AutoDetect = ServerConfiguration.GetOrUpdateSetting("serverListing.autoDetect", true);
             ServerName = ServerConfiguration.GetOrUpdateSetting("serverListing.serverName", "ModernUO");
         }
@@ -59,6 +68,7 @@ namespace Server.Misc
                     AutoDetection();
                 }
             }
+
             else
             {
                 Resolve(Address, out _publicAddress);
@@ -70,6 +80,12 @@ namespace Server.Misc
                     logger.Information("Server listing address set from config: {address}", _publicAddress);
                 }
             }
+
+            if (realAddress != null)
+            {
+                Resolve(realAddress, out _realAddress);
+                logger.Information("Local clients will be told to connect to realAddress: {Address}", _realAddress);
+            }
         }
 
         [OnEvent(nameof(GatewayServer.ServerListEvent))]
@@ -80,6 +96,8 @@ namespace Server.Misc
                 var ns = e.State;
 
                 var ipep = (IPEndPoint)ns.Connection?.LocalEndPoint;
+                var ripep = (IPEndPoint)ns.Connection?.RemoteEndPoint;
+
                 if (ipep == null)
                 {
                     return;
@@ -92,14 +110,23 @@ namespace Server.Misc
                 {
                     localAddress = _publicAddress;
                 }
+
                 else if (IsPrivateNetwork(localAddress))
                 {
-                    ipep = (IPEndPoint)ns.Connection.RemoteEndPoint;
-
-                    if (ipep == null || !IsPrivateNetwork(ipep.Address) && _publicAddress != null)
+                    if (ripep == null || !IsPrivateNetwork(ripep.Address) && _publicAddress != null)
                     {
                         localAddress = _publicAddress;
                     }
+                }
+
+                // if a realAddress is configured AND the client is connecting
+                // from an IsPrivateNetwork(), hand out the user-configured realAddress
+                // instead of the one we publish for the server listing
+                // this allows LAN-local clients to connect directly to the server
+                // rather than going to their default-gateway which probably won't work
+                if (IsPrivateNetwork(ripep.Address) && _realAddress != null)
+                {
+                    localAddress = _realAddress;
                 }
 
                 e.AddServer(ServerName, new IPEndPoint(localAddress, localPort));
