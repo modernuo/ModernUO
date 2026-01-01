@@ -348,7 +348,7 @@ namespace Server.Engines.Craft
 
                 if (from.Skills[craftSystem.MainSkill].Value < res.RequiredSkill)
                 {
-                    from.SendGump(new CraftGump(from, craftSystem, tool, res.Message));
+                    CraftItem.ShowCraftMenu(from, craftSystem, tool, res.Message);
                 }
                 else
                 {
@@ -362,29 +362,13 @@ namespace Server.Engines.Craft
                     }
                     else
                     {
-                        from.SendGump(
-                            new CraftGump(
-                                from,
-                                craftSystem,
-                                tool,
-                                // You must select a special material in order to enhance an item with its properties.
-                                1061010
-                            )
-                        );
+                        CraftItem.ShowCraftMenu(from, craftSystem, tool, 1061010);
                     }
                 }
             }
             else
             {
-                from.SendGump(
-                    new CraftGump(
-                        from,
-                        craftSystem,
-                        tool,
-                        // You must select a special material in order to enhance an item with its properties.
-                        1061010
-                    )
-                );
+                CraftItem.ShowCraftMenu(from, craftSystem, tool, 1061010);
             }
         }
 
@@ -435,7 +419,7 @@ namespace Server.Engines.Craft
                         _                             => message
                     };
 
-                    from.SendGump(new CraftGump(from, m_CraftSystem, m_Tool, message));
+                    CraftItem.ShowCraftMenu(from, m_CraftSystem, m_Tool, message);
                 }
             }
         }
