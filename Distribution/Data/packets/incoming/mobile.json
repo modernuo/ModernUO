@@ -1,132 +1,236 @@
-{
-  "category": "Mobile",
-  "packets": [
-    {
-      "id": "0x6F",
-      "name": "Secure Trade",
-      "description": "Client interacts with a secure trade window.",
-      "direction": "incoming",
-      "isDynamic": true,
-      "size": "Dynamic",
-      "fields": [
-        { "name": "packetId", "type": "byte", "size": 1, "value": "0x6F", "description": "Packet identifier" },
-        { "name": "length", "type": "ushort", "size": 2, "description": "Packet length" },
-        {
-          "name": "action",
-          "type": "enum",
-          "enumType": "sequential",
-          "size": 1,
-          "description": "Trade action type",
-          "values": [
-            { "value": 1, "name": "Cancel", "description": "Cancel the trade" },
-            { "value": 2, "name": "Check", "description": "Toggle accept checkbox" },
-            { "value": 3, "name": "UpdateGold", "description": "Update virtual gold/platinum amounts" }
-          ]
-        },
-        { "name": "containerSerial", "type": "uint", "size": 4, "description": "Serial of the trade container" },
-        {
-          "name": "checkData",
-          "type": "conditional",
-          "condition": "action == 2",
-          "fields": [
-            { "name": "accepted", "type": "int", "size": 4, "description": "Non-zero if accepting trade" }
-          ]
-        },
-        {
-          "name": "goldData",
-          "type": "conditional",
-          "condition": "action == 3",
-          "fields": [
-            { "name": "gold", "type": "int", "size": 4, "description": "Gold amount to trade" },
-            { "name": "platinum", "type": "int", "size": 4, "description": "Platinum amount to trade" }
-          ]
-        }
-      ],
-      "related": [
-        { "id": "0x6F", "relationship": "response", "note": "Server sends Secure Trade packet updates" }
-      ],
-      "source": {
-        "file": "Projects/UOContent/Network/Packets/IncomingMobilePackets.cs",
-        "line": 93
-      }
-    },
-    {
-      "id": "0x75",
-      "name": "Rename Request",
-      "description": "Client requests to rename a mobile (pet).",
-      "direction": "incoming",
-      "isDynamic": false,
-      "size": 35,
-      "fields": [
-        { "name": "packetId", "type": "byte", "size": 1, "value": "0x75", "description": "Packet identifier" },
-        { "name": "targetSerial", "type": "uint", "size": 4, "description": "Serial of mobile to rename" },
-        { "name": "newName", "type": "ascii", "size": 30, "description": "New name for the mobile" }
-      ],
-      "source": {
-        "file": "Projects/UOContent/Network/Packets/IncomingMobilePackets.cs",
-        "line": 32
-      }
-    },
-    {
-      "id": "0x98",
-      "name": "Mobile Name Request",
-      "description": "Client requests the name of a mobile.",
-      "direction": "incoming",
-      "isDynamic": true,
-      "size": "Dynamic",
-      "fields": [
-        { "name": "packetId", "type": "byte", "size": 1, "value": "0x98", "description": "Packet identifier" },
-        { "name": "length", "type": "ushort", "size": 2, "description": "Packet length" },
-        { "name": "mobileSerial", "type": "uint", "size": 4, "description": "Serial of mobile to query" }
-      ],
-      "related": [
-        { "id": "0x98", "relationship": "response", "note": "Server sends Mobile Name response" }
-      ],
-      "source": {
-        "file": "Projects/UOContent/Network/Packets/IncomingMobilePackets.cs",
-        "line": 43
-      }
-    },
-    {
-      "id": "0xB8",
-      "name": "Profile Request",
-      "description": "Client requests to view or edit a mobile's profile.",
-      "direction": "incoming",
-      "isDynamic": true,
-      "size": "Dynamic",
-      "fields": [
-        { "name": "packetId", "type": "byte", "size": 1, "value": "0xB8", "description": "Packet identifier" },
-        { "name": "length", "type": "ushort", "size": 2, "description": "Packet length" },
-        {
-          "name": "mode",
-          "type": "enum",
-          "enumType": "sequential",
-          "size": 1,
-          "description": "Request mode",
-          "values": [
-            { "value": 0, "name": "Display", "description": "Request to view profile" },
-            { "value": 1, "name": "Edit", "description": "Request to edit profile" }
-          ]
-        },
-        { "name": "mobileSerial", "type": "uint", "size": 4, "description": "Serial of target mobile" },
-        {
-          "name": "editData",
-          "type": "conditional",
-          "condition": "mode == 1",
-          "fields": [
-            { "name": "padding", "type": "short", "size": 2, "description": "Unused padding" },
-            { "name": "textLength", "type": "ushort", "size": 2, "description": "Length of text in characters" },
-            { "name": "text", "type": "unicode-be", "description": "New profile text" }
-          ]
-        }
-      ],
-      "related": [
-        { "id": "0xB8", "relationship": "response", "note": "Display Profile packet" }
-      ],
-      "source": {
-        "file": "Projects/UOContent/Network/Packets/IncomingMobilePackets.cs",
-        "line": 53
-      }
-    }
-  ]
+﻿{
+    "category":  "Mobile",
+    "packets":  [
+                    {
+                        "id":  "0x6F",
+                        "name":  "Secure Trade",
+                        "description":  "Client interacts with a secure trade window.",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "var",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x6F",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Action",
+                                           "type":  "enum",
+                                           "enumType":  "sequential",
+                                           "size":  1,
+                                           "description":  "Trade action type",
+                                           "values":  [
+                                                          {
+                                                              "value":  1,
+                                                              "name":  "Cancel",
+                                                              "description":  "Cancel the trade"
+                                                          },
+                                                          {
+                                                              "value":  2,
+                                                              "name":  "Check",
+                                                              "description":  "Toggle accept checkbox"
+                                                          },
+                                                          {
+                                                              "value":  3,
+                                                              "name":  "Update Gold",
+                                                              "description":  "Update virtual gold/platinum amounts"
+                                                          }
+                                                      ]
+                                       },
+                                       {
+                                           "name":  "Container Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the trade container"
+                                       },
+                                       {
+                                           "name":  "Check Data",
+                                           "type":  "conditional",
+                                           "condition":  "action == 2",
+                                           "fields":  [
+                                                          {
+                                                              "name":  "Accepted",
+                                                              "type":  "int",
+                                                              "size":  4,
+                                                              "description":  "Non-zero if accepting trade"
+                                                          }
+                                                      ]
+                                       },
+                                       {
+                                           "name":  "Gold Data",
+                                           "type":  "conditional",
+                                           "condition":  "action == 3",
+                                           "fields":  [
+                                                          {
+                                                              "name":  "Gold",
+                                                              "type":  "int",
+                                                              "size":  4,
+                                                              "description":  "Gold amount to trade"
+                                                          },
+                                                          {
+                                                              "name":  "Platinum",
+                                                              "type":  "int",
+                                                              "size":  4,
+                                                              "description":  "Platinum amount to trade"
+                                                          }
+                                                      ]
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingMobilePackets.cs",
+                                       "line":  93
+                                   }
+                    },
+                    {
+                        "id":  "0x75",
+                        "name":  "Rename Request",
+                        "description":  "Client requests to rename a mobile (pet).",
+                        "direction":  "incoming",
+                        "isDynamic":  false,
+                        "size":  35,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x75",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Target Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of mobile to rename"
+                                       },
+                                       {
+                                           "name":  "New Name",
+                                           "type":  "ascii",
+                                           "size":  30,
+                                           "description":  "New name for the mobile"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingMobilePackets.cs",
+                                       "line":  32
+                                   }
+                    },
+                    {
+                        "id":  "0x98",
+                        "name":  "Mobile Name Request",
+                        "description":  "Client requests the name of a mobile.",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "var",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x98",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Mobile Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of mobile to query"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingMobilePackets.cs",
+                                       "line":  43
+                                   }
+                    },
+                    {
+                        "id":  "0xB8",
+                        "name":  "Profile Request",
+                        "description":  "Client requests to view or edit a mobile\u0027s profile.",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "var",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xB8",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Mode",
+                                           "type":  "enum",
+                                           "enumType":  "sequential",
+                                           "size":  1,
+                                           "description":  "Request mode",
+                                           "values":  [
+                                                          {
+                                                              "value":  0,
+                                                              "name":  "Display",
+                                                              "description":  "Request to view profile"
+                                                          },
+                                                          {
+                                                              "value":  1,
+                                                              "name":  "Edit",
+                                                              "description":  "Request to edit profile"
+                                                          }
+                                                      ]
+                                       },
+                                       {
+                                           "name":  "Mobile Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of target mobile"
+                                       },
+                                       {
+                                           "name":  "Edit Data",
+                                           "type":  "conditional",
+                                           "condition":  "mode == 1",
+                                           "fields":  [
+                                                          {
+                                                              "name":  "Padding",
+                                                              "type":  "short",
+                                                              "size":  2,
+                                                              "description":  "Unused padding"
+                                                          },
+                                                          {
+                                                              "name":  "Text Length",
+                                                              "type":  "ushort",
+                                                              "size":  2,
+                                                              "description":  "Length of text in characters"
+                                                          },
+                                                          {
+                                                              "name":  "Text",
+                                                              "type":  "utf16be",
+                                                              "description":  "New profile text"
+                                                          }
+                                                      ]
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingMobilePackets.cs",
+                                       "line":  53
+                                   }
+                    }
+                ]
 }

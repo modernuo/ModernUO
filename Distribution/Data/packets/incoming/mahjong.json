@@ -1,0 +1,56 @@
+﻿{
+    "category":  "Mahjong",
+    "packets":  [
+                    {
+                        "id":  "0xDA",
+                        "name":  "Mahjong Command",
+                        "description":  "Client sends Mahjong game commands. Various subcommands control game actions like moving tiles, rolling dice, and managing players.",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "7+",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xDA",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Game Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the Mahjong game"
+                                       },
+                                       {
+                                           "name":  "Unknown",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Unknown byte"
+                                       },
+                                       {
+                                           "name":  "Command",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Subcommand: 0x06=Exit, 0x0A=GivePoints, 0x0B=RollDice, 0x0C=BuildWalls, 0x0D=ResetScores, 0x0F=AssignDealer, 0x10=OpenSeat, 0x11=ChangeOption, 0x15=MoveWallBreak, 0x16=TogglePublicHand, 0x17=MoveTile, 0x18=MoveDealerIndicator"
+                                       },
+                                       {
+                                           "name":  "Data",
+                                           "type":  "byte[]",
+                                           "size":  "var",
+                                           "description":  "Command-specific data (varies by subcommand)"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Items/Games/Mahjong/MahjongPackets.cs",
+                                       "line":  64
+                                   }
+                    }
+                ]
+}

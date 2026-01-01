@@ -65,8 +65,8 @@
   </style>
 </head>
 
-<body class="bg-modern-dark-black text-gold-300 font-sans">
-<div id="app" class="min-h-screen flex flex-col">
+<body class="bg-modern-dark-black text-gold-300 font-sans h-screen overflow-hidden">
+<div id="app" class="h-screen flex flex-col">
   <!-- Header -->
   <header class="bg-modern-black p-4 shadow-lg border-b border-gold-500/30">
     <div class="max-w-7xl mx-auto flex items-center justify-between">
@@ -77,16 +77,20 @@
           <p class="text-gold-500/70 text-sm">Ultima Online Network Protocol Reference</p>
         </div>
       </div>
-      <div class="flex items-center space-x-2">
+      <div class="flex items-center space-x-4">
+        <button id="typeLegendBtn" class="px-3 py-1.5 text-sm bg-modern-dark-black text-gold-400 rounded border border-gold-500/30 hover:border-gold-500 hover:bg-gold-500/10 transition-colors flex items-center space-x-1.5">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          <span>Types</span>
+        </button>
         <span id="packetCount" class="text-gold-500/70 text-sm"></span>
       </div>
     </div>
   </header>
 
   <!-- Main Content -->
-  <div class="flex-1 flex overflow-hidden">
+  <div class="flex-1 flex overflow-hidden min-h-0">
     <!-- Left Panel: Packet List -->
-    <aside id="sidebar" class="w-80 bg-modern-black border-r border-gold-500/30 flex flex-col">
+    <aside id="sidebar" class="w-80 bg-modern-black border-r border-gold-500/30 flex flex-col overflow-hidden">
       <!-- Search & Filter -->
       <div class="p-3 border-b border-gold-500/20 space-y-2">
         <input
@@ -107,7 +111,7 @@
       </div>
 
       <!-- Packet List -->
-      <div id="packetList" class="packet-list flex-1 overflow-y-auto">
+      <div id="packetList" class="packet-list flex-1 overflow-y-auto min-h-0">
         <!-- Populated by JavaScript -->
       </div>
     </aside>
@@ -164,20 +168,40 @@
           </div>
 
           <!-- Fields Table -->
-          <div class="mb-6">
+          <div id="fieldsSection" class="mb-6">
             <h3 class="text-gold-500 font-medium mb-3">Packet Structure</h3>
             <div class="bg-modern-black rounded-lg border border-gold-500/20 overflow-hidden">
-              <table class="w-full text-sm">
+              <table class="w-full text-sm table-fixed">
                 <thead>
                   <tr class="bg-gold-500/10 text-gold-500">
-                    <th class="px-4 py-2 text-left font-medium">Offset</th>
-                    <th class="px-4 py-2 text-left font-medium">Name</th>
-                    <th class="px-4 py-2 text-left font-medium">Type</th>
-                    <th class="px-4 py-2 text-left font-medium">Size</th>
+                    <th class="px-4 py-2 text-left font-medium w-16">Offset</th>
+                    <th class="px-4 py-2 text-left font-medium w-44">Name</th>
+                    <th class="px-4 py-2 text-left font-medium w-24">Type</th>
+                    <th class="px-4 py-2 text-left font-medium w-20">Size</th>
                     <th class="px-4 py-2 text-left font-medium">Description</th>
                   </tr>
                 </thead>
                 <tbody id="fieldsTable">
+                  <!-- Populated by JavaScript -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Subpackets (for container packets like 0xBF, 0xD7) -->
+          <div id="subpacketsSection" class="mb-6 hidden">
+            <h3 class="text-gold-500 font-medium mb-3">Subpackets</h3>
+            <div class="bg-modern-black rounded-lg border border-gold-500/20 overflow-hidden">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="bg-gold-500/10 text-gold-500">
+                    <th class="px-4 py-2 text-left font-medium w-24">SubID</th>
+                    <th class="px-4 py-2 text-left font-medium w-20">Direction</th>
+                    <th class="px-4 py-2 text-left font-medium w-48">Name</th>
+                    <th class="px-4 py-2 text-left font-medium">Description</th>
+                  </tr>
+                </thead>
+                <tbody id="subpacketsTable">
                   <!-- Populated by JavaScript -->
                 </tbody>
               </table>
@@ -194,20 +218,127 @@
 
           <!-- Packet Variants -->
           <div id="variantsSection" class="mb-6 hidden">
-            <h3 class="text-gold-500 font-medium mb-3">Packet Variants</h3>
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-gold-500 font-medium">Packet Variants</h3>
+              <select id="variantSelect" class="bg-modern-black text-gold-300 px-3 py-1 rounded border border-gold-500/30 focus:outline-none focus:border-gold-500 text-sm">
+                <option value="">Jump to variant...</option>
+              </select>
+            </div>
             <div id="variantsList" class="space-y-4">
               <!-- Populated by JavaScript -->
             </div>
           </div>
 
+          <!-- Floating Back to Top Button -->
+          <button id="backToTopBtn" class="hidden fixed bottom-6 right-6 bg-modern-black text-gold-300 px-4 py-2 rounded-lg border border-gold-500/30 hover:border-gold-500 hover:bg-gold-500/10 text-sm transition-all shadow-lg z-50" title="Back to Top">
+            ↑ Top
+          </button>
+
           <!-- Notes -->
-          <div id="notesSection" class="hidden">
-            <h3 class="text-gold-500 font-medium mb-2">Notes</h3>
+          <div id="notesSection" class="mb-6 hidden">
+            <h3 class="text-gold-500 font-medium mb-3">Notes</h3>
             <p id="detailNotes" class="text-gold-300/80 text-sm bg-modern-black rounded-lg p-4 border border-gold-500/20"></p>
+          </div>
+
+          <!-- Compression Info -->
+          <div id="compressionSection" class="mb-6 hidden">
+            <h3 class="text-gold-500 font-medium mb-3">Compression</h3>
+            <div id="compressionContent" class="text-sm bg-modern-black rounded-lg p-4 border border-gold-500/20">
+            </div>
+          </div>
+
+          <!-- Plane Format (for house packets) -->
+          <div id="planeFormatSection" class="mb-6 hidden">
+            <h3 class="text-gold-500 font-medium mb-3">Plane Format</h3>
+            <div id="planeFormatContent" class="bg-modern-black rounded-lg border border-gold-500/20 overflow-hidden">
+            </div>
+          </div>
+
+          <!-- Layout Format -->
+          <div id="layoutFormatSection" class="mb-6 hidden">
+            <h3 class="text-gold-500 font-medium mb-3">Layout Format</h3>
+            <div id="layoutFormatContent" class="bg-modern-black rounded-lg border border-gold-500/20 overflow-hidden">
+            </div>
+          </div>
+
+          <!-- Strings Format -->
+          <div id="stringsFormatSection" class="mb-6 hidden">
+            <h3 class="text-gold-500 font-medium mb-3">Strings Format</h3>
+            <div id="stringsFormatContent" class="bg-modern-black rounded-lg border border-gold-500/20 overflow-hidden">
+            </div>
           </div>
         </div>
       </div>
     </main>
+  </div>
+</div>
+
+<!-- Type Legend Modal -->
+<div id="typeLegendModal" class="hidden fixed inset-0 z-50 flex items-center justify-center">
+  <div class="absolute inset-0 bg-black/60" id="typeLegendBackdrop"></div>
+  <div class="relative bg-modern-black rounded-lg border border-gold-500/30 shadow-2xl max-w-2xl w-full mx-4 max-h-[80vh] overflow-hidden">
+    <div class="flex items-center justify-between px-4 py-3 border-b border-gold-500/20">
+      <h3 class="text-gold-500 font-medium">Type Legend</h3>
+      <button id="typeLegendClose" class="text-gold-500/70 hover:text-gold-500 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+      </button>
+    </div>
+    <div class="p-4 overflow-y-auto max-h-[calc(80vh-60px)]">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+        <!-- Integer Types -->
+        <div class="bg-modern-dark-black rounded-lg p-3 border border-gold-500/10">
+          <h4 class="text-gold-400 font-medium mb-2">Integer Types</h4>
+          <div class="space-y-1.5 text-gold-300/80">
+            <div class="flex"><span class="font-mono text-gold-400 w-20 flex-shrink-0">byte</span><span>Unsigned 8-bit (0-255)</span></div>
+            <div class="flex"><span class="font-mono text-gold-400 w-20 flex-shrink-0">sbyte</span><span>Signed 8-bit (-128 to 127)</span></div>
+            <div class="flex"><span class="font-mono text-gold-400 w-20 flex-shrink-0">bool</span><span>Boolean (0=false, else true)</span></div>
+            <div class="flex"><span class="font-mono text-gold-400 w-20 flex-shrink-0">short</span><span>Signed 16-bit BE</span></div>
+            <div class="flex"><span class="font-mono text-gold-400 w-20 flex-shrink-0">ushort</span><span>Unsigned 16-bit BE</span></div>
+            <div class="flex"><span class="font-mono text-gold-400 w-20 flex-shrink-0">int</span><span>Signed 32-bit BE</span></div>
+            <div class="flex"><span class="font-mono text-gold-400 w-20 flex-shrink-0">uint</span><span>Unsigned 32-bit BE</span></div>
+            <div class="flex"><span class="font-mono text-gold-400 w-20 flex-shrink-0">long</span><span>Signed 64-bit BE</span></div>
+            <div class="flex"><span class="font-mono text-gold-400 w-20 flex-shrink-0">ulong</span><span>Unsigned 64-bit BE</span></div>
+          </div>
+        </div>
+        <!-- String Types -->
+        <div class="bg-modern-dark-black rounded-lg p-3 border border-gold-500/10">
+          <h4 class="text-gold-400 font-medium mb-2">String Types</h4>
+          <p class="text-gold-500/60 text-xs mb-2">-t suffix = null-terminated</p>
+          <div class="space-y-1.5 text-gold-300/80">
+            <div class="flex"><span class="font-mono text-gold-400 w-20 flex-shrink-0">ascii</span><span>Fixed-length ASCII</span></div>
+            <div class="flex"><span class="font-mono text-gold-400 w-20 flex-shrink-0">ascii-t</span><span>Null-terminated ASCII</span></div>
+            <div class="flex"><span class="font-mono text-gold-400 w-20 flex-shrink-0">utf8</span><span>Fixed-length UTF-8</span></div>
+            <div class="flex"><span class="font-mono text-gold-400 w-20 flex-shrink-0">utf8-t</span><span>Null-terminated UTF-8</span></div>
+            <div class="flex"><span class="font-mono text-gold-400 w-20 flex-shrink-0">utf16be</span><span>UTF-16 Big Endian</span></div>
+            <div class="flex"><span class="font-mono text-gold-400 w-20 flex-shrink-0">utf16be-t</span><span>Null-term UTF-16 BE</span></div>
+            <div class="flex"><span class="font-mono text-gold-400 w-20 flex-shrink-0">utf16le</span><span>UTF-16 Little Endian</span></div>
+            <div class="flex"><span class="font-mono text-gold-400 w-20 flex-shrink-0">utf16le-t</span><span>Null-term UTF-16 LE</span></div>
+          </div>
+        </div>
+        <!-- Special Types -->
+        <div class="bg-modern-dark-black rounded-lg p-3 border border-gold-500/10">
+          <h4 class="text-gold-400 font-medium mb-2">Special Types</h4>
+          <div class="space-y-1.5 text-gold-300/80">
+            <div class="flex"><span class="font-mono text-green-400 w-20 flex-shrink-0">enum</span><span>Enumerated value</span></div>
+            <div class="flex"><span class="font-mono text-purple-400 w-20 flex-shrink-0">bitfield</span><span>Bit flags</span></div>
+            <div class="flex"><span class="font-mono text-gold-400 w-20 flex-shrink-0">byte[]</span><span>Byte array</span></div>
+            <div class="flex"><span class="font-mono text-gold-400 w-20 flex-shrink-0">bytes</span><span>Variable byte data</span></div>
+          </div>
+        </div>
+        <!-- Structure Types -->
+        <div class="bg-modern-dark-black rounded-lg p-3 border border-gold-500/10">
+          <h4 class="text-gold-400 font-medium mb-2">Structure Types</h4>
+          <div class="space-y-1.5 text-gold-300/80">
+            <div class="flex"><span class="font-mono text-gold-400 w-20 flex-shrink-0">loop</span><span>Repeated field group</span></div>
+            <div class="flex"><span class="font-mono text-gold-400 w-20 flex-shrink-0">array</span><span>Array of elements</span></div>
+            <div class="flex"><span class="font-mono text-gold-400 w-20 flex-shrink-0">packet</span><span>Embedded packet</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="mt-4 text-xs text-gold-500/60">
+        <p><strong>Note:</strong> All multi-byte integers use Big Endian (network) byte order unless otherwise specified.</p>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -225,18 +356,145 @@ try {
   console.error('Failed to parse packet data:', e);
 }
 
-// Flatten all packets into a single array with direction info preserved
-const packets = [
-  ...allPackets.incoming.map(p => ({ ...p, direction: p.direction || 'incoming' })),
-  ...allPackets.outgoing.map(p => ({ ...p, direction: p.direction || 'outgoing' }))
-];
+// Get canonical packet key (handles both "0xBF" with subId and "0xBF/0x05" formats)
+function getPacketKey(p) {
+  // If id already contains a slash, it's already a full subpacket id
+  if (p.id.includes('/')) return p.id;
+  // Otherwise, append subId if present
+  return p.subId ? `${p.id}/${p.subId}` : p.id;
+}
+
+// Flatten and merge bidirectional packets
+function mergePackets(incoming, outgoing) {
+  const incomingMap = new Map();
+  const outgoingMap = new Map();
+
+  // Index incoming packets by ID/subId
+  incoming.forEach(p => {
+    const key = getPacketKey(p);
+    // Preserve original direction if already set to "both"
+    const direction = p.direction === 'both' ? 'both' : 'incoming';
+    incomingMap.set(key, { ...p, direction });
+  });
+
+  // Index outgoing packets by ID/subId
+  outgoing.forEach(p => {
+    const key = getPacketKey(p);
+    outgoingMap.set(key, { ...p, direction: 'outgoing' });
+  });
+
+  const merged = [];
+  const processed = new Set();
+
+  // Process all incoming packets, checking for bidirectional matches
+  incomingMap.forEach((inPacket, key) => {
+    const outPacket = outgoingMap.get(key);
+
+    // If packet is already marked as "both", keep it as-is (don't merge)
+    if (inPacket.direction === 'both') {
+      merged.push(inPacket);
+      processed.add(key); // Mark so outgoing doesn't add duplicate
+      return;
+    }
+
+    // If either packet has noMerge flag, don't merge them (they're different packets sharing same ID)
+    if (inPacket.noMerge || (outPacket && outPacket.noMerge)) {
+      merged.push(inPacket);
+      // Don't mark as processed - let outgoing add its own entry
+      return;
+    }
+
+    if (outPacket) {
+      // Bidirectional packet - merge them
+      processed.add(key);
+
+      // Create direction variants from both packets
+      const directionVariants = [];
+
+      // Incoming variant
+      const inVariant = {
+        name: 'Incoming',
+        direction: 'incoming',
+        size: inPacket.size,
+        condition: inPacket.description,
+        fields: inPacket.fields || []
+      };
+      if (inPacket.variants && inPacket.variants.length > 0) {
+        // If incoming has its own variants, nest them
+        inVariant.subVariants = inPacket.variants;
+        inVariant.fields = null;
+      }
+      directionVariants.push(inVariant);
+
+      // Outgoing variant
+      const outVariant = {
+        name: 'Outgoing',
+        direction: 'outgoing',
+        size: outPacket.size,
+        condition: outPacket.description,
+        fields: outPacket.fields || []
+      };
+      if (outPacket.variants && outPacket.variants.length > 0) {
+        // If outgoing has its own variants, nest them
+        outVariant.subVariants = outPacket.variants;
+        outVariant.fields = null;
+      }
+      directionVariants.push(outVariant);
+
+      // Merge packet info
+      merged.push({
+        id: inPacket.id,
+        subId: inPacket.subId,
+        name: inPacket.name || outPacket.name,
+        description: `Bidirectional packet used for both client requests and server responses.`,
+        direction: 'both',
+        category: inPacket.category || outPacket.category,
+        isDynamic: inPacket.isDynamic || outPacket.isDynamic,
+        size: inPacket.size === outPacket.size ? inPacket.size : 'Variable',
+        fields: [], // Empty - use direction variants instead
+        directionVariants: directionVariants,
+        related: [...(inPacket.related || []), ...(outPacket.related || [])].filter((r, i, arr) =>
+          arr.findIndex(x => x.id === r.id) === i // deduplicate
+        ),
+        subpackets: inPacket.subpackets || outPacket.subpackets, // Preserve subpackets
+        notes: [inPacket.notes, outPacket.notes].filter(Boolean).join(' '),
+        source: inPacket.source || outPacket.source,
+        clientVersion: inPacket.clientVersion || outPacket.clientVersion
+      });
+    } else {
+      // Incoming-only packet
+      merged.push(inPacket);
+    }
+  });
+
+  // Add remaining outgoing-only packets
+  outgoingMap.forEach((outPacket, key) => {
+    if (!processed.has(key)) {
+      merged.push(outPacket);
+    }
+  });
+
+  return merged;
+}
+
+const packets = mergePackets(
+  allPackets.incoming || [],
+  allPackets.outgoing || []
+);
 
 // Build packet index by ID for quick lookups
 const packetIndex = new Map();
 packets.forEach(p => {
-  const key = p.subId ? `${p.id}/${p.subId}` : p.id;
+  const key = getPacketKey(p);
   packetIndex.set(key, p);
-  packetIndex.set(p.id, p); // Also index by just ID for basic lookups
+  // Index by direction:id for direction-specific lookups (e.g., "incoming:0x66")
+  if (p.direction) {
+    packetIndex.set(`${p.direction}:${p.id}`, p);
+  }
+  // Also index by base ID for basic lookups (but don't overwrite more specific keys)
+  if (!packetIndex.has(p.id)) {
+    packetIndex.set(p.id, p);
+  }
 });
 
 // State
@@ -337,16 +595,21 @@ function renderPacketList() {
   });
 
   packetList.innerHTML = filtered.map(p => {
-    const displayId = p.subId ? `${p.id}/${p.subId}` : p.id;
+    // Use getPacketKey for consistent display (avoids "0xBF/0x05/0x05")
+    const displayId = getPacketKey(p);
+    // For noMerge packets, we need to also compare direction to distinguish them
     const isSelected = selectedPacket &&
       selectedPacket.id === p.id &&
-      selectedPacket.subId === p.subId;
+      selectedPacket.subId === p.subId &&
+      (!p.noMerge || selectedPacket.direction === p.direction);
 
     return `
       <div
         class="packet-item px-3 py-2 cursor-pointer border-b border-gold-500/10 hover:bg-modern-black-hover transition-colors ${isSelected ? 'bg-gold-500/20' : ''}"
         data-id="${p.id}"
         data-subid="${p.subId || ''}"
+        data-direction="${p.direction}"
+        data-nomerge="${p.noMerge || false}"
       >
         <div class="flex items-center space-x-2">
           <span class="font-mono text-sm ${getDirectionClass(p.direction)}">${displayId}</span>
@@ -362,7 +625,14 @@ function renderPacketList() {
     el.addEventListener('click', () => {
       const id = el.dataset.id;
       const subId = el.dataset.subid;
-      const packet = packets.find(p => p.id === id && (p.subId || '') === subId);
+      const direction = el.dataset.direction;
+      const noMerge = el.dataset.nomerge === 'true';
+      // For noMerge packets, also match by direction to find the correct one
+      const packet = packets.find(p =>
+        p.id === id &&
+        (p.subId || '') === subId &&
+        (!noMerge || p.direction === direction)
+      );
       if (packet) selectPacket(packet);
     });
   });
@@ -411,7 +681,7 @@ function renderBitfieldFlags(f) {
 
   return `
     <div class="mt-2 text-xs">
-      <div class="text-gold-500/70 mb-1">Flags:</div>
+      <div class="text-gold-500/70 mb-1">Bit Layout:</div>
       <div class="grid grid-cols-1 gap-1 pl-2 border-l-2 border-purple-500/30">
         ${f.flags.map(flag => `
           <div class="flex items-start">
@@ -425,30 +695,52 @@ function renderBitfieldFlags(f) {
   `;
 }
 
+// Render bitfield values (for fields that have both flags and value meanings)
+function renderBitfieldValues(f) {
+  if (!f.values || f.values.length === 0) return '';
+
+  return `
+    <div class="mt-2 text-xs">
+      <div class="text-gold-500/70 mb-1">Values (per field):</div>
+      <div class="grid grid-cols-1 gap-1 pl-2 border-l-2 border-purple-500/30">
+        ${f.values.map(v => `
+          <div class="flex items-start">
+            <span class="font-mono text-purple-400 w-16 flex-shrink-0">${v.value}</span>
+            <span class="text-gold-300 font-medium">${v.name}</span>
+            ${v.description ? `<span class="text-gold-500/60 ml-2">- ${v.description}</span>` : ''}
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
 // Render fields table
 function renderFields(fields, parentOffset = 0) {
   const fieldsWithOffsets = calculateOffsets(fields);
 
   return fieldsWithOffsets.map(f => {
     const offset = parentOffset + f.offset;
-    const isEnum = f.type === 'enum' || f.values;
+    // Bitfield takes precedence if it has flags, otherwise check for enum/values
     const isBitfield = f.type === 'bitfield' || f.flags;
-    const typeDisplay = isEnum ? `enum (${f.size || 1} byte${(f.size || 1) > 1 ? 's' : ''})` :
-                        isBitfield ? `bitfield (${f.size || 1} byte${(f.size || 1) > 1 ? 's' : ''})` :
-                        f.type;
+    const isEnum = !isBitfield && (f.type === 'enum' || f.values);
+    const hasValues = f.values && f.values.length > 0;
+    const typeDisplay = isBitfield ? 'bitfield' : isEnum ? 'enum' : f.type;
 
     let row = `
       <tr class="field-row border-b border-gold-500/10">
         <td class="px-4 py-2 font-mono text-gold-500/70">${f.size ? offset : '-'}</td>
         <td class="px-4 py-2 font-mono text-white">${f.name}</td>
-        <td class="px-4 py-2 font-mono ${isEnum ? 'text-green-400' : isBitfield ? 'text-purple-400' : 'text-gold-400'}">${typeDisplay}</td>
+        <td class="px-4 py-2 font-mono ${isBitfield ? 'text-purple-400' : isEnum ? 'text-green-400' : 'text-gold-400'}">${typeDisplay}</td>
         <td class="px-4 py-2 font-mono text-gold-500/70">${f.size || 'var'}</td>
         <td class="px-4 py-2 text-gold-300/80">
           ${f.description || ''}
           ${f.value ? `<span class="text-gold-500/70 ml-1">(${f.value})</span>` : ''}
           ${f.condition ? `<span class="text-gold-400/70 ml-1 text-xs italic">[${f.condition}]</span>` : ''}
-          ${isEnum ? renderEnumValues(f) : ''}
+          ${f.notes ? `<div class="text-gold-500/60 text-xs mt-1 italic">${f.notes}</div>` : ''}
           ${isBitfield ? renderBitfieldFlags(f) : ''}
+          ${isBitfield && hasValues ? renderBitfieldValues(f) : ''}
+          ${isEnum ? renderEnumValues(f) : ''}
         </td>
       </tr>
     `;
@@ -460,7 +752,14 @@ function renderFields(fields, parentOffset = 0) {
           <td colspan="5" class="px-4 py-2">
             <div class="loop-field">
               <div class="text-gold-500/70 text-xs mb-2">Repeats for each ${f.loop.countField || 'item'}:</div>
-              <table class="w-full text-sm">
+              <table class="w-full text-sm table-fixed">
+                <colgroup>
+                  <col class="w-16">
+                  <col class="w-44">
+                  <col class="w-24">
+                  <col class="w-20">
+                  <col>
+                </colgroup>
                 <tbody>
                   ${renderFields(f.loop.fields, 0)}
                 </tbody>
@@ -481,7 +780,10 @@ function selectPacket(packet) {
 
   // Update list selection
   document.querySelectorAll('.packet-item').forEach(el => {
-    const isMatch = el.dataset.id === packet.id && (el.dataset.subid || '') === (packet.subId || '');
+    const idMatch = el.dataset.id === packet.id && (el.dataset.subid || '') === (packet.subId || '');
+    // For noMerge packets, also check direction to distinguish between same-ID packets
+    const noMerge = el.dataset.nomerge === 'true';
+    const isMatch = idMatch && (!noMerge || el.dataset.direction === packet.direction);
     el.classList.toggle('bg-gold-500/20', isMatch);
   });
 
@@ -531,12 +833,65 @@ function selectPacket(packet) {
     versionSection.classList.add('hidden');
   }
 
-  // Fields
+  // Fields - hide if empty and packet has variants or direction variants
+  const fieldsSection = document.getElementById('fieldsSection');
   const fieldsTable = document.getElementById('fieldsTable');
+  const hasVariants = (packet.variants && packet.variants.length > 0) ||
+                      (packet.directionVariants && packet.directionVariants.length > 0);
+
   if (packet.fields && packet.fields.length > 0) {
+    fieldsSection.classList.remove('hidden');
     fieldsTable.innerHTML = renderFields(packet.fields);
+  } else if (hasVariants) {
+    // Hide empty fields section if packet has variants (structure is in variants)
+    fieldsSection.classList.add('hidden');
   } else {
+    fieldsSection.classList.remove('hidden');
     fieldsTable.innerHTML = '<tr><td colspan="5" class="px-4 py-4 text-center text-gold-500/50">No field documentation available</td></tr>';
+  }
+
+  // Subpackets (for container packets like 0xBF, 0xD7)
+  const subpacketsSection = document.getElementById('subpacketsSection');
+  const subpacketsTable = document.getElementById('subpacketsTable');
+  if (packet.subpackets && packet.subpackets.length > 0) {
+    subpacketsSection.classList.remove('hidden');
+    subpacketsTable.innerHTML = packet.subpackets.map(sp => {
+      // Build the full packet ID for lookup (e.g., "0xBF/0x05")
+      const fullId = `${packet.id}/${sp.subId}`;
+      const subPacket = packetIndex.get(fullId);
+      const hasDetails = !!subPacket;
+
+      // Direction badge for subpacket
+      const spDirection = sp.direction || 'incoming';
+      const dirBadgeClass = spDirection === 'incoming' ? 'bg-incoming' :
+                            spDirection === 'outgoing' ? 'bg-outgoing' : 'bg-both';
+      const dirBadge = `<span class="px-1.5 py-0.5 rounded text-xs font-medium uppercase ${dirBadgeClass} text-white">${spDirection === 'both' ? 'both' : spDirection.substring(0, 3)}</span>`;
+
+      return `
+        <tr class="field-row border-b border-gold-500/10 ${hasDetails ? 'cursor-pointer hover:bg-gold-500/10' : ''} transition-colors subpacket-row" data-id="${fullId}" data-has-details="${hasDetails}">
+          <td class="px-4 py-2 font-mono ${hasDetails ? 'text-gold-400' : 'text-gold-500/70'}">${sp.subId}</td>
+          <td class="px-4 py-2">${dirBadge}</td>
+          <td class="px-4 py-2 ${hasDetails ? 'text-white' : 'text-gold-300/70'}">${sp.name}</td>
+          <td class="px-4 py-2 text-gold-300/80">
+            ${sp.description || ''}
+            ${hasDetails ? '<span class="text-gold-500/50 text-xs ml-2">→ Click for details</span>' : ''}
+          </td>
+        </tr>
+      `;
+    }).join('');
+
+    // Add click handlers to subpacket rows
+    document.querySelectorAll('.subpacket-row').forEach(el => {
+      if (el.dataset.hasDetails === 'true') {
+        el.addEventListener('click', () => {
+          const id = el.dataset.id;
+          const subPacket = packetIndex.get(id);
+          if (subPacket) selectPacket(subPacket);
+        });
+      }
+    });
+  } else {
+    subpacketsSection.classList.add('hidden');
   }
 
   // Related packets
@@ -545,20 +900,26 @@ function selectPacket(packet) {
   if (packet.related && packet.related.length > 0) {
     relatedSection.classList.remove('hidden');
     relatedPackets.innerHTML = packet.related.map(r => {
-      const relatedPacket = packetIndex.get(r.id);
+      // Look up by direction:id if direction specified, else fall back to just id
+      const lookupKey = r.direction ? `${r.direction}:${r.id}` : r.id;
+      const relatedPacket = packetIndex.get(lookupKey) || packetIndex.get(r.id);
       const relationshipColors = {
         'request': 'bg-blue-500/20 text-blue-400',
         'response': 'bg-green-500/20 text-green-400',
         'ack': 'bg-green-500/20 text-green-400',
         'rej': 'bg-red-500/20 text-red-400',
-        'variant': 'bg-purple-500/20 text-purple-400'
+        'variant': 'bg-purple-500/20 text-purple-400',
+        'notification': 'bg-yellow-500/20 text-yellow-400'
       };
       const colorClass = relationshipColors[r.relationship] || 'bg-gold-500/20 text-gold-400';
+      const directionBadge = r.direction ?
+        `<span class="px-1.5 py-0.5 rounded text-xs font-medium uppercase ${getDirectionBgClass(r.direction)} text-white">${r.direction}</span>` : '';
 
       return `
-        <div class="flex items-center justify-between bg-modern-black rounded-lg p-3 border border-gold-500/20 cursor-pointer hover:border-gold-500/40 transition-colors related-packet" data-id="${r.id}">
+        <div class="flex items-center justify-between bg-modern-black rounded-lg p-3 border border-gold-500/20 cursor-pointer hover:border-gold-500/40 transition-colors related-packet" data-id="${r.id}" data-direction="${r.direction || ''}">
           <div class="flex items-center space-x-3">
             <span class="font-mono text-white">${r.id}</span>
+            ${directionBadge}
             <span class="text-gold-300/90">${relatedPacket?.name || 'Unknown'}</span>
           </div>
           <div class="flex items-center space-x-2">
@@ -573,7 +934,10 @@ function selectPacket(packet) {
     document.querySelectorAll('.related-packet').forEach(el => {
       el.addEventListener('click', () => {
         const id = el.dataset.id;
-        const relatedPacket = packetIndex.get(id);
+        const direction = el.dataset.direction;
+        // Look up by direction:id if direction specified, else fall back to just id
+        const lookupKey = direction ? `${direction}:${id}` : id;
+        const relatedPacket = packetIndex.get(lookupKey) || packetIndex.get(id);
         if (relatedPacket) selectPacket(relatedPacket);
       });
     });
@@ -581,41 +945,126 @@ function selectPacket(packet) {
     relatedSection.classList.add('hidden');
   }
 
-  // Variants
-  const variantsSection = document.getElementById('variantsSection');
-  const variantsList = document.getElementById('variantsList');
-  if (packet.variants && packet.variants.length > 0) {
-    variantsSection.classList.remove('hidden');
-    variantsList.innerHTML = packet.variants.map((v, index) => `
-      <div class="bg-modern-black rounded-lg border border-gold-500/20 overflow-hidden">
+  // Render a single variant card
+  function renderVariantCard(v, id) {
+    const directionBadge = v.direction ?
+      `<span class="px-2 py-0.5 rounded text-xs font-medium uppercase ${getDirectionBgClass(v.direction)} text-white ml-2">${v.direction}</span>` : '';
+
+    let content = '';
+
+    // If variant has subVariants (nested version variants), render those
+    if (v.subVariants && v.subVariants.length > 0) {
+      content = v.subVariants.map((sv, svIndex) => `
+        <div class="border-t border-gold-500/10">
+          <div class="bg-gold-500/5 px-4 py-2 flex items-center justify-between">
+            <div>
+              <span class="text-gold-400 font-medium text-sm">${sv.name || 'Version ' + (svIndex + 1)}</span>
+              ${sv.version ? `<span class="text-gold-500/70 ml-2 text-xs">(${sv.version})</span>` : ''}
+            </div>
+            <div class="flex items-center space-x-3 text-xs">
+              ${sv.size ? `<span class="text-gold-500/70">Size: <span class="text-white font-mono">${typeof sv.size === 'number' ? sv.size + ' bytes' : sv.size}</span></span>` : ''}
+              ${sv.condition ? `<span class="text-gold-400/70 italic">${sv.condition}</span>` : ''}
+            </div>
+          </div>
+          ${sv.fields && sv.fields.length > 0 ? `
+            <table class="w-full text-sm table-fixed">
+              <thead>
+                <tr class="bg-gold-500/5 text-gold-500 text-xs">
+                  <th class="px-4 py-1 text-left font-medium w-16">Offset</th>
+                  <th class="px-4 py-1 text-left font-medium w-44">Name</th>
+                  <th class="px-4 py-1 text-left font-medium w-24">Type</th>
+                  <th class="px-4 py-1 text-left font-medium w-20">Size</th>
+                  <th class="px-4 py-1 text-left font-medium">Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${renderFields(sv.fields)}
+              </tbody>
+            </table>
+          ` : ''}
+        </div>
+      `).join('');
+    } else if (v.fields && v.fields.length > 0) {
+      // Regular variant with fields
+      content = `
+        <table class="w-full text-sm table-fixed">
+          <thead>
+            <tr class="bg-gold-500/5 text-gold-500 text-xs">
+              <th class="px-4 py-1 text-left font-medium w-16">Offset</th>
+              <th class="px-4 py-1 text-left font-medium w-44">Name</th>
+              <th class="px-4 py-1 text-left font-medium w-32">Type</th>
+              <th class="px-4 py-1 text-left font-medium w-14">Size</th>
+              <th class="px-4 py-1 text-left font-medium">Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${renderFields(v.fields)}
+          </tbody>
+        </table>
+      `;
+    }
+
+    // Show condition/description below header for all variants (not inline)
+    const hasCondition = v.condition && !v.subVariants;
+
+    return `
+      <div id="${id}" class="bg-modern-black rounded-lg border border-gold-500/20 overflow-hidden">
         <div class="bg-gold-500/10 px-4 py-2 flex items-center justify-between">
-          <div>
-            <span class="text-gold-500 font-medium">${v.name || 'Variant ' + (index + 1)}</span>
+          <div class="flex items-center flex-shrink-0">
+            <span class="text-gold-500 font-medium">${v.name || 'Variant'}</span>
+            ${directionBadge}
             ${v.version ? `<span class="text-gold-500/70 ml-2 text-sm">(${v.version})</span>` : ''}
           </div>
-          <div class="flex items-center space-x-3 text-sm">
-            ${v.size ? `<span class="text-gold-500/70">Size: <span class="text-white font-mono">${v.size} bytes</span></span>` : ''}
-            ${v.condition ? `<span class="text-gold-400/70 italic">${v.condition}</span>` : ''}
+          <div class="flex items-center space-x-3 text-sm flex-shrink-0">
+            ${v.size ? `<span class="text-gold-500/70">Size: <span class="text-white font-mono">${typeof v.size === 'number' ? v.size + ' bytes' : v.size}</span></span>` : ''}
           </div>
         </div>
-        ${v.fields && v.fields.length > 0 ? `
-          <table class="w-full text-sm">
-            <thead>
-              <tr class="bg-gold-500/5 text-gold-500 text-xs">
-                <th class="px-4 py-1 text-left font-medium">Offset</th>
-                <th class="px-4 py-1 text-left font-medium">Name</th>
-                <th class="px-4 py-1 text-left font-medium">Type</th>
-                <th class="px-4 py-1 text-left font-medium">Size</th>
-                <th class="px-4 py-1 text-left font-medium">Description</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${renderFields(v.fields)}
-            </tbody>
-          </table>
-        ` : ''}
+        ${hasCondition ? `<div class="px-4 py-2 text-gold-300/80 text-sm border-b border-gold-500/10">${v.condition}</div>` : ''}
+        ${content}
       </div>
-    `).join('');
+    `;
+  }
+
+  // Variants (including direction variants for bidirectional packets)
+  const variantsSection = document.getElementById('variantsSection');
+  const variantsList = document.getElementById('variantsList');
+  const variantSelect = document.getElementById('variantSelect');
+
+  // Combine direction variants and regular variants
+  const allVariants = [
+    ...(packet.directionVariants || []),
+    ...(packet.variants || [])
+  ];
+
+  if (allVariants.length > 0) {
+    variantsSection.classList.remove('hidden');
+
+    // Populate variant dropdown
+    variantSelect.innerHTML = `
+      <option value="">Jump to variant...</option>
+      ${allVariants.map((v, index) => `
+        <option value="variant-${index}">${v.name || 'Variant ' + (index + 1)}</option>
+      `).join('')}
+    `;
+
+    // Render variant cards with IDs for scrolling
+    variantsList.innerHTML = allVariants.map((v, index) =>
+      renderVariantCard(v, `variant-${index}`)
+    ).join('');
+
+    // Handle variant dropdown change
+    variantSelect.onchange = function() {
+      const value = this.value;
+      if (value) {
+        const el = document.getElementById(value);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        // Reset dropdown
+        setTimeout(() => { this.value = ''; }, 100);
+      }
+    };
+
   } else {
     variantsSection.classList.add('hidden');
   }
@@ -628,6 +1077,233 @@ function selectPacket(packet) {
     notesEl.textContent = packet.notes;
   } else {
     notesSection.classList.add('hidden');
+  }
+
+  // Compression Info
+  const compressionSection = document.getElementById('compressionSection');
+  const compressionContent = document.getElementById('compressionContent');
+  if (packet.compression) {
+    compressionSection.classList.remove('hidden');
+    compressionContent.innerHTML = `
+      <div class="flex items-center space-x-4">
+        <span class="text-gold-400">Algorithm:</span>
+        <span class="text-gold-300 font-mono">${packet.compression.algorithm || 'Unknown'}</span>
+      </div>
+      ${packet.compression.notes ? `<p class="text-gold-300/70 mt-2">${packet.compression.notes}</p>` : ''}
+    `;
+  } else {
+    compressionSection.classList.add('hidden');
+  }
+
+  // Plane Format (for house customization packets)
+  const planeFormatSection = document.getElementById('planeFormatSection');
+  const planeFormatContent = document.getElementById('planeFormatContent');
+  if (packet.planeFormat) {
+    planeFormatSection.classList.remove('hidden');
+    let planeHtml = `
+      <div class="p-4 border-b border-gold-500/10">
+        <p class="text-gold-300/80 text-sm">${packet.planeFormat.description || ''}</p>
+      </div>
+    `;
+
+    // Header Decoding
+    if (packet.planeFormat.headerDecoding) {
+      const hd = packet.planeFormat.headerDecoding;
+      planeHtml += `
+        <div class="p-4 border-b border-gold-500/10">
+          <h4 class="text-gold-400 font-medium mb-2">Header Decoding (4-byte packed)</h4>
+          <table class="w-full text-sm">
+            <tbody>
+              ${Object.entries(hd).map(([key, formula]) => `
+                <tr class="border-b border-gold-500/10 last:border-0">
+                  <td class="py-2 font-mono text-gold-300 w-28">${key}</td>
+                  <td class="py-2 font-mono text-gold-500/80 text-xs">${formula}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    // Plane Z Mapping
+    if (packet.planeFormat.planeZMapping && packet.planeFormat.planeZMapping.length > 0) {
+      planeHtml += `
+        <div class="p-4 border-b border-gold-500/10">
+          <h4 class="text-gold-400 font-medium mb-2">Plane Z-Height Mapping</h4>
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="bg-gold-500/5 text-gold-500 text-xs">
+                <th class="px-3 py-2 text-left font-medium w-24">Plane</th>
+                <th class="px-3 py-2 text-left font-medium w-24">Z</th>
+                <th class="px-3 py-2 text-left font-medium">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${packet.planeFormat.planeZMapping.map(m => `
+                <tr class="border-b border-gold-500/10 last:border-0">
+                  <td class="px-3 py-2 font-mono text-gold-300">${m.plane}</td>
+                  <td class="px-3 py-2 font-mono text-gold-400">${m.z}</td>
+                  <td class="px-3 py-2 text-gold-300/70">${m.description || ''}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    // Encoding Modes
+    if (packet.planeFormat.encodingModes && packet.planeFormat.encodingModes.length > 0) {
+      planeHtml += `
+        <div class="p-4 border-b border-gold-500/10">
+          <h4 class="text-gold-400 font-medium mb-2">Encoding Modes</h4>
+          <div class="space-y-3">
+            ${packet.planeFormat.encodingModes.map(em => `
+              <div class="bg-modern-darker rounded p-3">
+                <div class="flex items-center gap-3 mb-1">
+                  <span class="bg-gold-500/20 text-gold-400 px-2 py-0.5 rounded text-xs font-mono">Mode ${em.mode}</span>
+                  <span class="text-gold-300 font-medium">${em.name}</span>
+                  <span class="text-gold-500 text-xs">${em.bytesPerTile} bytes/tile</span>
+                </div>
+                <div class="font-mono text-xs text-gold-500/80 mb-1">${em.format}</div>
+                <p class="text-gold-300/60 text-xs">${em.description || ''}</p>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    // Grid Sizes
+    if (packet.planeFormat.gridSizes && packet.planeFormat.gridSizes.length > 0) {
+      planeHtml += `
+        <div class="p-4">
+          <h4 class="text-gold-400 font-medium mb-2">Grid Sizes by Plane</h4>
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="bg-gold-500/5 text-gold-500 text-xs">
+                <th class="px-3 py-2 text-left font-medium w-24">Plane</th>
+                <th class="px-3 py-2 text-left font-medium w-32">Width</th>
+                <th class="px-3 py-2 text-left font-medium w-32">Height</th>
+                <th class="px-3 py-2 text-left font-medium">Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${packet.planeFormat.gridSizes.map(gs => `
+                <tr class="border-b border-gold-500/10 last:border-0">
+                  <td class="px-3 py-2 font-mono text-gold-300">${gs.plane}</td>
+                  <td class="px-3 py-2 font-mono text-gold-400">${gs.width}</td>
+                  <td class="px-3 py-2 font-mono text-gold-400">${gs.height}</td>
+                  <td class="px-3 py-2 text-gold-300/70">${gs.notes || ''}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    planeFormatContent.innerHTML = planeHtml;
+  } else {
+    planeFormatSection.classList.add('hidden');
+  }
+
+  // Layout Format (for gump packets)
+  const layoutFormatSection = document.getElementById('layoutFormatSection');
+  const layoutFormatContent = document.getElementById('layoutFormatContent');
+  if (packet.layoutFormat) {
+    layoutFormatSection.classList.remove('hidden');
+    let layoutHtml = `
+      <div class="p-4 border-b border-gold-500/10">
+        <p class="text-gold-300/80 text-sm">${packet.layoutFormat.description || ''}</p>
+        ${packet.layoutFormat.encoding ? `<p class="text-gold-400 text-sm mt-1">Encoding: <span class="font-mono text-gold-300">${packet.layoutFormat.encoding}</span></p>` : ''}
+      </div>
+    `;
+    if (packet.layoutFormat.commands && packet.layoutFormat.commands.length > 0) {
+      layoutHtml += `
+        <div class="divide-y divide-gold-500/20">
+          ${packet.layoutFormat.commands.map(cmd => {
+            const hasArgs = cmd.args && cmd.args.length > 0;
+            // Build syntax string dynamically: { command arg1 arg2 [optional] }
+            const syntaxArgs = hasArgs ? cmd.args.map(arg => arg.optional ? `[${arg.name}]` : arg.name).join(' ') : '';
+            const syntax = syntaxArgs ? `{ ${cmd.name} ${syntaxArgs} }` : `{ ${cmd.name} }`;
+
+            const argsHtml = hasArgs ? `
+              <div class="pl-6 pr-4 pb-3 border-l-2 border-gold-500/30 ml-4 mt-1">
+                <table class="w-full text-xs">
+                  <tbody>
+                    ${cmd.args.map((arg, idx) => `
+                      <tr class="${idx > 0 ? 'border-t border-gold-500/10' : ''}">
+                        <td class="py-1 font-mono text-gold-300 w-28">${arg.name}${arg.optional ? ' <span class="text-gold-500/50 text-xs">(opt)</span>' : ''}</td>
+                        <td class="py-1 text-gold-500 w-16">${arg.type}</td>
+                        <td class="py-1 text-gold-300/60">${arg.description || ''}</td>
+                      </tr>
+                    `).join('')}
+                  </tbody>
+                </table>
+              </div>
+            ` : '';
+
+            return `
+              <div class="py-3 px-4">
+                <div class="flex items-start justify-between gap-4">
+                  <div>
+                    <span class="font-mono text-gold-400 font-medium">${cmd.name}</span>
+                    <span class="text-gold-300/70 ml-3">${cmd.description || ''}</span>
+                  </div>
+                </div>
+                <div class="font-mono text-xs text-gold-500/80 mt-1">${syntax}</div>
+                ${argsHtml}
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+    layoutFormatContent.innerHTML = layoutHtml;
+  } else {
+    layoutFormatSection.classList.add('hidden');
+  }
+
+  // Strings Format (for gump packets)
+  const stringsFormatSection = document.getElementById('stringsFormatSection');
+  const stringsFormatContent = document.getElementById('stringsFormatContent');
+  if (packet.stringsFormat) {
+    stringsFormatSection.classList.remove('hidden');
+    let stringsHtml = `
+      <div class="p-4 border-b border-gold-500/10">
+        <p class="text-gold-300/80 text-sm">${packet.stringsFormat.description || ''}</p>
+        ${packet.stringsFormat.encoding ? `<p class="text-gold-400 text-sm mt-1">Encoding: <span class="font-mono text-gold-300">${packet.stringsFormat.encoding}</span></p>` : ''}
+      </div>
+    `;
+    if (packet.stringsFormat.entryFormat && packet.stringsFormat.entryFormat.length > 0) {
+      stringsHtml += `
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="bg-gold-500/5 text-gold-500 text-xs">
+              <th class="px-4 py-2 text-left font-medium w-32">Field</th>
+              <th class="px-4 py-2 text-left font-medium w-24">Type</th>
+              <th class="px-4 py-2 text-left font-medium w-20">Size</th>
+              <th class="px-4 py-2 text-left font-medium">Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${packet.stringsFormat.entryFormat.map(f => `
+              <tr class="border-b border-gold-500/10">
+                <td class="px-4 py-2 font-mono text-gold-300">${f.name}</td>
+                <td class="px-4 py-2 text-gold-400">${f.type}</td>
+                <td class="px-4 py-2 text-gold-300/70">${f.size || ''}</td>
+                <td class="px-4 py-2 text-gold-300/70">${f.description || ''}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+    }
+    stringsFormatContent.innerHTML = stringsHtml;
+  } else {
+    stringsFormatSection.classList.add('hidden');
   }
 
   // Source link
@@ -710,14 +1386,30 @@ document.addEventListener('keydown', (e) => {
 function loadFromHash() {
   const hash = window.location.hash.slice(1);
   if (hash) {
-    // Try to find packet by hash (format: 0x02 or 0xBF-0x0026)
+    // Try to find packet by hash
+    // Formats: 0x02, 0xBF-0x0026, 0x22-incoming, 0x22-outgoing (for noMerge packets)
     const parts = hash.split('-');
     const id = parts[0];
-    const subId = parts[1];
+    let subId = null;
+    let direction = null;
+
+    // Check if second part is a direction or a subId
+    if (parts[1]) {
+      if (['incoming', 'outgoing', 'both'].includes(parts[1].toLowerCase())) {
+        direction = parts[1].toLowerCase();
+      } else {
+        subId = parts[1];
+        // Third part could be direction for subpackets with noMerge
+        if (parts[2] && ['incoming', 'outgoing', 'both'].includes(parts[2].toLowerCase())) {
+          direction = parts[2].toLowerCase();
+        }
+      }
+    }
 
     const packet = packets.find(p =>
       p.id.toLowerCase() === id.toLowerCase() &&
-      (p.subId || '').toLowerCase() === (subId || '').toLowerCase()
+      (p.subId || '').toLowerCase() === (subId || '').toLowerCase() &&
+      (!direction || p.direction === direction)
     );
 
     if (packet) selectPacket(packet);
@@ -730,6 +1422,46 @@ loadFromHash();
 
 // Handle hash changes
 window.addEventListener('hashchange', loadFromHash);
+
+// Back to top button
+const backToTopBtn = document.getElementById('backToTopBtn');
+const mainContent = document.querySelector('main');
+
+mainContent.addEventListener('scroll', function() {
+  if (mainContent.scrollTop > 200) {
+    backToTopBtn.classList.remove('hidden');
+  } else {
+    backToTopBtn.classList.add('hidden');
+  }
+});
+
+backToTopBtn.addEventListener('click', function() {
+  mainContent.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+// Type Legend Modal
+const typeLegendBtn = document.getElementById('typeLegendBtn');
+const typeLegendModal = document.getElementById('typeLegendModal');
+const typeLegendClose = document.getElementById('typeLegendClose');
+const typeLegendBackdrop = document.getElementById('typeLegendBackdrop');
+
+typeLegendBtn.addEventListener('click', () => {
+  typeLegendModal.classList.remove('hidden');
+});
+
+typeLegendClose.addEventListener('click', () => {
+  typeLegendModal.classList.add('hidden');
+});
+
+typeLegendBackdrop.addEventListener('click', () => {
+  typeLegendModal.classList.add('hidden');
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && !typeLegendModal.classList.contains('hidden')) {
+    typeLegendModal.classList.add('hidden');
+  }
+});
 </script>
 </body>
 </html>

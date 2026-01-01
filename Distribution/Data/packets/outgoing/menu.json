@@ -1,0 +1,185 @@
+﻿{
+    "category":  "Menu",
+    "packets":  [
+                    {
+                        "id":  "0x7C",
+                        "name":  "Display Menu",
+                        "description":  "Displays an item list menu or question menu to the client.",
+                        "direction":  "outgoing",
+                        "isDynamic":  true,
+                        "size":  "Varies",
+                        "variants":  [
+                                         {
+                                             "name":  "Item List Menu",
+                                             "condition":  "Menu is ItemListMenu",
+                                             "fields":  [
+                                                            {
+                                                                "name":  "Packet ID",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0x7C",
+                                                                "description":  "Packet identifier"
+                                                            },
+                                                            {
+                                                                "name":  "Length",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "description":  "Packet length"
+                                                            },
+                                                            {
+                                                                "name":  "Menu Serial",
+                                                                "type":  "uint",
+                                                                "size":  4,
+                                                                "description":  "Menu serial"
+                                                            },
+                                                            {
+                                                                "name":  "Menu ID",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "value":  "0x0000",
+                                                                "description":  "Menu ID (always 0)"
+                                                            },
+                                                            {
+                                                                "name":  "Question Length",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "description":  "Length of question text"
+                                                            },
+                                                            {
+                                                                "name":  "Question",
+                                                                "type":  "ascii",
+                                                                "description":  "Question text"
+                                                            },
+                                                            {
+                                                                "name":  "Entry Count",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "description":  "Number of menu entries"
+                                                            },
+                                                            {
+                                                                "name":  "Entries",
+                                                                "type":  "loop",
+                                                                "description":  "Menu entries",
+                                                                "loop":  {
+                                                                             "countField":  "entryCount",
+                                                                             "fields":  [
+                                                                                            {
+                                                                                                "name":  "Item ID",
+                                                                                                "type":  "ushort",
+                                                                                                "size":  2,
+                                                                                                "description":  "Item graphic ID"
+                                                                                            },
+                                                                                            {
+                                                                                                "name":  "Hue",
+                                                                                                "type":  "short",
+                                                                                                "size":  2,
+                                                                                                "description":  "Item hue"
+                                                                                            },
+                                                                                            {
+                                                                                                "name":  "Name Length",
+                                                                                                "type":  "byte",
+                                                                                                "size":  1,
+                                                                                                "description":  "Length of entry name"
+                                                                                            },
+                                                                                            {
+                                                                                                "name":  "Name",
+                                                                                                "type":  "ascii",
+                                                                                                "description":  "Entry name"
+                                                                                            }
+                                                                                        ]
+                                                                         }
+                                                            }
+                                                        ]
+                                         },
+                                         {
+                                             "name":  "Question Menu",
+                                             "condition":  "Menu is QuestionMenu",
+                                             "fields":  [
+                                                            {
+                                                                "name":  "Packet ID",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0x7C",
+                                                                "description":  "Packet identifier"
+                                                            },
+                                                            {
+                                                                "name":  "Length",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "description":  "Packet length"
+                                                            },
+                                                            {
+                                                                "name":  "Menu Serial",
+                                                                "type":  "uint",
+                                                                "size":  4,
+                                                                "description":  "Menu serial"
+                                                            },
+                                                            {
+                                                                "name":  "Menu ID",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "value":  "0x0000",
+                                                                "description":  "Menu ID (always 0)"
+                                                            },
+                                                            {
+                                                                "name":  "Question Length",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "description":  "Length of question text"
+                                                            },
+                                                            {
+                                                                "name":  "Question",
+                                                                "type":  "ascii",
+                                                                "description":  "Question text"
+                                                            },
+                                                            {
+                                                                "name":  "Answer Count",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "description":  "Number of answers"
+                                                            },
+                                                            {
+                                                                "name":  "Answers",
+                                                                "type":  "loop",
+                                                                "description":  "Answer options",
+                                                                "loop":  {
+                                                                             "countField":  "answerCount",
+                                                                             "fields":  [
+                                                                                            {
+                                                                                                "name":  "Padding",
+                                                                                                "type":  "int",
+                                                                                                "size":  4,
+                                                                                                "value":  "0",
+                                                                                                "description":  "Unused padding"
+                                                                                            },
+                                                                                            {
+                                                                                                "name":  "Answer Length",
+                                                                                                "type":  "byte",
+                                                                                                "size":  1,
+                                                                                                "description":  "Length of answer text"
+                                                                                            },
+                                                                                            {
+                                                                                                "name":  "Answer",
+                                                                                                "type":  "ascii",
+                                                                                                "description":  "Answer text"
+                                                                                            }
+                                                                                        ]
+                                                                         }
+                                                            }
+                                                        ]
+                                         }
+                                     ],
+                        "related":  [
+                                        {
+                                            "id":  "0x7D",
+                                            "relationship":  "response",
+                                            "note":  "Menu Response from client"
+                                        }
+                                    ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingMenuPackets.cs",
+                                       "line":  36
+                                   }
+                    }
+                ]
+}
