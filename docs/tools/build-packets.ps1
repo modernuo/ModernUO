@@ -42,7 +42,7 @@ $outgoingDir = Join-Path $packetsDir "outgoing"
 
 # Read incoming packets
 if (Test-Path $incomingDir) {
-    $incomingFiles = Get-ChildItem "$incomingDir\*.json" -ErrorAction SilentlyContinue
+    $incomingFiles = Get-ChildItem "$incomingDir\*.json" -ErrorAction SilentlyContinue | Sort-Object Name
     foreach ($file in $incomingFiles) {
         Write-Host "  Reading: $($file.Name)" -ForegroundColor Gray
         try {
@@ -88,7 +88,7 @@ if (Test-Path $incomingDir) {
 
 # Read outgoing packets
 if (Test-Path $outgoingDir) {
-    $outgoingFiles = Get-ChildItem "$outgoingDir\*.json" -ErrorAction SilentlyContinue
+    $outgoingFiles = Get-ChildItem "$outgoingDir\*.json" -ErrorAction SilentlyContinue | Sort-Object Name
     foreach ($file in $outgoingFiles) {
         Write-Host "  Reading: $($file.Name)" -ForegroundColor Gray
         try {
@@ -139,6 +139,25 @@ Write-Host "Total packets: $totalPackets" -ForegroundColor Cyan
 if ($totalPackets -eq 0) {
     Write-Warning "No packets found! The output will have empty documentation."
 }
+
+# Sort packets by ID for deterministic output
+# Handle IDs like "0x02" and "0xBF/0x05" (split on / and parse first part)
+$allPackets.incoming = @($allPackets.incoming | Sort-Object {
+    $baseId = $_.id -split '/' | Select-Object -First 1
+    [Convert]::ToInt32($baseId, 16)
+}, {
+    if ($_.subId) { [Convert]::ToInt32($_.subId, 16) }
+    elseif ($_.id -match '/') { [Convert]::ToInt32(($_.id -split '/' | Select-Object -Last 1), 16) }
+    else { 0 }
+})
+$allPackets.outgoing = @($allPackets.outgoing | Sort-Object {
+    $baseId = $_.id -split '/' | Select-Object -First 1
+    [Convert]::ToInt32($baseId, 16)
+}, {
+    if ($_.subId) { [Convert]::ToInt32($_.subId, 16) }
+    elseif ($_.id -match '/') { [Convert]::ToInt32(($_.id -split '/' | Select-Object -Last 1), 16) }
+    else { 0 }
+})
 
 # Convert to JSON
 $packetsJson = $allPackets | ConvertTo-Json -Depth 20 -Compress
