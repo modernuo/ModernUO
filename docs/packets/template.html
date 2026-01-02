@@ -525,9 +525,16 @@ const packetCount = document.getElementById('packetCount');
 const welcomeMessage = document.getElementById('welcomeMessage');
 const packetContent = document.getElementById('packetContent');
 
+// Helper to ensure tags is always an array
+function ensureArray(val) {
+  if (!val) return [];
+  if (Array.isArray(val)) return val;
+  return [val];
+}
+
 // Extract all unique tags from all packets
 const allTags = [...new Set(
-  packets.flatMap(p => p.tags || [p.category]).filter(Boolean)
+  packets.flatMap(p => ensureArray(p.tags).length ? ensureArray(p.tags) : [p.category]).filter(Boolean)
 )].sort();
 
 // Render tag filter badges
@@ -602,7 +609,7 @@ function getFilteredPackets() {
 
     // Tag filter (OR logic: packet shown if it has ANY selected tag)
     if (selectedTags.size > 0) {
-      const packetTags = p.tags || [p.category];
+      const packetTags = ensureArray(p.tags).length ? ensureArray(p.tags) : [p.category];
       if (!packetTags.some(tag => selectedTags.has(tag))) return false;
     }
 
@@ -675,9 +682,9 @@ function renderPacketList() {
           <span class="text-gold-300/90 text-sm truncate">${p.name}</span>
         </div>
         <div class="flex flex-wrap gap-1 mt-0.5">
-          ${(p.tags || [p.category]).filter(Boolean).slice(0, 3).map(tag =>
+          ${(ensureArray(p.tags).length ? ensureArray(p.tags) : [p.category]).filter(Boolean).slice(0, 3).map(tag =>
             `<span class="text-xs px-1 py-0 rounded bg-gold-500/10 text-gold-500/70">${tag}</span>`
-          ).join('')}${(p.tags || []).length > 3 ? `<span class="text-xs text-gold-500/50">+${(p.tags.length - 3)}</span>` : ''}
+          ).join('')}${ensureArray(p.tags).length > 3 ? `<span class="text-xs text-gold-500/50">+${(ensureArray(p.tags).length - 3)}</span>` : ''}
         </div>
       </div>
     `;

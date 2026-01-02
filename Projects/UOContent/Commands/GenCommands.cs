@@ -57,15 +57,17 @@ public static class GenCommands
             options
         );
 
-        var template = File.ReadAllText(Path.Combine(Core.BaseDirectory, "Data", "commands.html"))
+        // Template and output are in the docs/commands folder
+        var docsCommandsFolder = Path.Combine(Core.BaseDirectory, "..", "docs", "commands");
+        var templatePath = Path.Combine(docsCommandsFolder, "template.html");
+
+        var template = File.ReadAllText(templatePath)
             .Replace("<!-- COMMANDS -->", commandsJson.EscapeHtml())
             .Replace("<!-- MODIFIERS -->", modifiersJson.EscapeHtml());
 
-        // Write the new file to the web folder
-        var webFolder = Path.Combine(Core.BaseDirectory, "web");
-        PathUtility.EnsureDirectory(webFolder);
-        var webPath = Path.Combine(webFolder, "commands.html");
-        File.WriteAllText(webPath, template, Encoding.UTF8);
-        e.Mobile.SendMessage($"Commands webpage generated at {webPath}.");
+        // Write the new file to the docs/commands folder
+        var outputPath = Path.Combine(docsCommandsFolder, "commands.html");
+        File.WriteAllText(outputPath, template, Encoding.UTF8);
+        e.Mobile.SendMessage($"Commands webpage generated at {outputPath}.");
     }
 }
