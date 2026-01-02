@@ -1,0 +1,138 @@
+﻿{
+    "category":  "Quest",
+    "packets":  [
+                    {
+                        "id":  "0xBA",
+                        "name":  "Quest Arrow",
+                        "description":  "Sets or cancels the quest tracking arrow on the client.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  "Varies",
+                        "variants":  [
+                                         {
+                                             "name":  "Pre-High Seas Set Arrow",
+                                             "version":  "pre-HS",
+                                             "condition":  "command == 1 (Set), pre-HighSeas client",
+                                             "size":  6,
+                                             "fields":  [
+                                                            {
+                                                                "name":  "Packet ID",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0xBA",
+                                                                "description":  "Packet identifier"
+                                                            },
+                                                            {
+                                                                "name":  "Command",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0x01",
+                                                                "description":  "Set arrow command"
+                                                            },
+                                                            {
+                                                                "name":  "X",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Target X coordinate"
+                                                            },
+                                                            {
+                                                                "name":  "Y",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Target Y coordinate"
+                                                            }
+                                                        ]
+                                         },
+                                         {
+                                             "name":  "Pre-High Seas Cancel Arrow",
+                                             "version":  "pre-HS",
+                                             "condition":  "command == 0 (Cancel), pre-HighSeas client",
+                                             "size":  6,
+                                             "fields":  [
+                                                            {
+                                                                "name":  "Packet ID",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0xBA",
+                                                                "description":  "Packet identifier"
+                                                            },
+                                                            {
+                                                                "name":  "Command",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0x00",
+                                                                "description":  "Cancel arrow command"
+                                                            },
+                                                            {
+                                                                "name":  "X",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "value":  "-1",
+                                                                "description":  "X coordinate (-1)"
+                                                            },
+                                                            {
+                                                                "name":  "Y",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "value":  "-1",
+                                                                "description":  "Y coordinate (-1)"
+                                                            }
+                                                        ]
+                                         },
+                                         {
+                                             "name":  "High Seas",
+                                             "version":  "HS+",
+                                             "condition":  "HighSeas client (7.0.9.0+)",
+                                             "size":  10,
+                                             "fields":  [
+                                                            {
+                                                                "name":  "Packet ID",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0xBA",
+                                                                "description":  "Packet identifier"
+                                                            },
+                                                            {
+                                                                "name":  "Command",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "description":  "Command (0 = cancel, 1 = set)"
+                                                            },
+                                                            {
+                                                                "name":  "X",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Target X coordinate"
+                                                            },
+                                                            {
+                                                                "name":  "Y",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Target Y coordinate"
+                                                            },
+                                                            {
+                                                                "name":  "Target Serial",
+                                                                "type":  "uint",
+                                                                "size":  4,
+                                                                "description":  "Serial of tracked target"
+                                                            }
+                                                        ]
+                                         }
+                                     ],
+                        "related":  [
+                                        {
+                                            "id":  "0xBF/0x07",
+                                            "relationship":  "request",
+                                            "note":  "Quest Arrow Click from client"
+                                        }
+                                    ],
+                        "clientVersion":  {
+                                              "feature":  "HighSeas (7.0.9.0+) adds target serial"
+                                          },
+                        "source":  {
+                                       "file":  "Projects/UOContent/Skills/Tracking/OutgoingArrowPackets.cs",
+                                       "line":  29
+                                   }
+                    }
+                ]
+}

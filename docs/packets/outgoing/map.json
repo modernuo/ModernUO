@@ -1,0 +1,424 @@
+﻿{
+    "category":  "Map",
+    "packets":  [
+                    {
+                        "id":  "0xC6",
+                        "name":  "Invalid Map",
+                        "description":  "Notifies client that the current map is invalid.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  1,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xC6",
+                                           "description":  "Packet identifier"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingMapPackets.cs",
+                                       "line":  53
+                                   }
+                    },
+                    {
+                        "id":  "0xBF",
+                        "subId":  "0x08",
+                        "name":  "Map Change",
+                        "description":  "Notifies client of a facet/map change.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  6,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xBF",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x0006",
+                                           "description":  "Packet length (6)"
+                                       },
+                                       {
+                                           "name":  "Sub-Command",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x0008",
+                                           "description":  "Map Change subcommand"
+                                       },
+                                       {
+                                           "name":  "Map ID",
+                                           "type":  "enum",
+                                           "enumType":  "sequential",
+                                           "size":  1,
+                                           "description":  "Map/Facet ID",
+                                           "values":  [
+                                                          {
+                                                              "value":  0,
+                                                              "name":  "Felucca",
+                                                              "description":  "Felucca facet"
+                                                          },
+                                                          {
+                                                              "value":  1,
+                                                              "name":  "Trammel",
+                                                              "description":  "Trammel facet"
+                                                          },
+                                                          {
+                                                              "value":  2,
+                                                              "name":  "Ilshenar",
+                                                              "description":  "Ilshenar facet"
+                                                          },
+                                                          {
+                                                              "value":  3,
+                                                              "name":  "Malas",
+                                                              "description":  "Malas facet"
+                                                          },
+                                                          {
+                                                              "value":  4,
+                                                              "name":  "Tokuno",
+                                                              "description":  "Tokuno Islands facet"
+                                                          },
+                                                          {
+                                                              "value":  5,
+                                                              "name":  "Ter Mur",
+                                                              "description":  "Ter Mur facet"
+                                                          }
+                                                      ]
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingMapPackets.cs",
+                                       "line":  55
+                                   }
+                    },
+                    {
+                        "id":  "0xBF",
+                        "subId":  "0x18",
+                        "name":  "Map Patches",
+                        "description":  "Sends map patch information for static and land blocks.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  41,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xBF",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x0029",
+                                           "description":  "Packet length (41)"
+                                       },
+                                       {
+                                           "name":  "Sub-Command",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x0018",
+                                           "description":  "Map Patches subcommand"
+                                       },
+                                       {
+                                           "name":  "Map Count",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "value":  "4",
+                                           "description":  "Number of maps (always 4)"
+                                       },
+                                       {
+                                           "name":  "Patches",
+                                           "type":  "loop",
+                                           "description":  "Patch counts for each map (Felucca, Trammel, Ilshenar, Malas)",
+                                           "loop":  {
+                                                        "countField":  "4",
+                                                        "fields":  [
+                                                                       {
+                                                                           "name":  "Static Blocks",
+                                                                           "type":  "int",
+                                                                           "size":  4,
+                                                                           "description":  "Number of patched static blocks"
+                                                                       },
+                                                                       {
+                                                                           "name":  "Land Blocks",
+                                                                           "type":  "int",
+                                                                           "size":  4,
+                                                                           "description":  "Number of patched land blocks"
+                                                                       }
+                                                                   ]
+                                                    }
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingMapPackets.cs",
+                                       "line":  25
+                                   }
+                    },
+                    {
+                        "id":  "0x56",
+                        "name":  "Map Command",
+                        "description":  "Server sends map pin commands to update the client\u0027s map display.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  11,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x56",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Map Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the map item"
+                                       },
+                                       {
+                                           "name":  "Command",
+                                           "type":  "enum",
+                                           "size":  1,
+                                           "description":  "Map command type",
+                                           "values":  [
+                                               { "value":  "1", "name":  "AddPin", "description":  "Add a pin to the map" },
+                                               { "value":  "5", "name":  "DisplayMap", "description":  "Display the map to client" },
+                                               { "value":  "7", "name":  "SetEditable", "description":  "Set map editable state" }
+                                           ]
+                                       },
+                                       {
+                                           "name":  "Editable",
+                                           "type":  "bool",
+                                           "size":  1,
+                                           "description":  "True if map is editable (for command 7)"
+                                       },
+                                       {
+                                           "name":  "X",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "X coordinate of pin"
+                                       },
+                                       {
+                                           "name":  "Y",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Y coordinate of pin"
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0x56",
+                                            "direction":  "incoming",
+                                            "relationship":  "related",
+                                            "note":  "Client map pin commands"
+                                        },
+                                        {
+                                            "id":  "0x90",
+                                            "relationship":  "related",
+                                            "note":  "Map Details packet (old)"
+                                        },
+                                        {
+                                            "id":  "0xF5",
+                                            "relationship":  "related",
+                                            "note":  "Map Details packet (new)"
+                                        }
+                                    ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Items/Maps/MapItemPackets.cs",
+                                       "line":  106
+                                   }
+                    },
+                    {
+                        "id":  "0x90",
+                        "name":  "Map Details",
+                        "description":  "Sends map details including bounds, dimensions, and graphic ID. Pre-NewCharacterList clients.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  19,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x90",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Map Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the map item"
+                                       },
+                                       {
+                                           "name":  "Graphic ID",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "value":  "0x139D",
+                                           "description":  "Map gump graphic ID"
+                                       },
+                                       {
+                                           "name":  "Start X",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Map bounds start X coordinate"
+                                       },
+                                       {
+                                           "name":  "Start Y",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Map bounds start Y coordinate"
+                                       },
+                                       {
+                                           "name":  "End X",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Map bounds end X coordinate"
+                                       },
+                                       {
+                                           "name":  "End Y",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Map bounds end Y coordinate"
+                                       },
+                                       {
+                                           "name":  "Width",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Map width in pixels"
+                                       },
+                                       {
+                                           "name":  "Height",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Map height in pixels"
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0x56",
+                                            "direction":  "both",
+                                            "relationship":  "related",
+                                            "note":  "Map pin commands (client and server)"
+                                        },
+                                        {
+                                            "id":  "0xF5",
+                                            "relationship":  "variant",
+                                            "note":  "New Map Details for NewCharacterList clients"
+                                        }
+                                    ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Items/Maps/MapItemPackets.cs",
+                                       "line":  78
+                                   }
+                    },
+                    {
+                        "id":  "0xF5",
+                        "name":  "Map Details (New)",
+                        "description":  "Sends map details for NewCharacterList clients. Includes facet ID.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  21,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xF5",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Map Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the map item"
+                                       },
+                                       {
+                                           "name":  "Graphic ID",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "value":  "0x139D",
+                                           "description":  "Map gump graphic ID"
+                                       },
+                                       {
+                                           "name":  "Start X",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Map bounds start X coordinate"
+                                       },
+                                       {
+                                           "name":  "Start Y",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Map bounds start Y coordinate"
+                                       },
+                                       {
+                                           "name":  "End X",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Map bounds end X coordinate"
+                                       },
+                                       {
+                                           "name":  "End Y",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Map bounds end Y coordinate"
+                                       },
+                                       {
+                                           "name":  "Width",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Map width in pixels"
+                                       },
+                                       {
+                                           "name":  "Height",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Map height in pixels"
+                                       },
+                                       {
+                                           "name":  "Facet ID",
+                                           "type":  "enum",
+                                           "size":  2,
+                                           "description":  "Map facet/world identifier",
+                                           "values":  [
+                                               { "value":  "0", "name":  "Felucca", "description":  "Felucca facet" },
+                                               { "value":  "1", "name":  "Trammel", "description":  "Trammel facet" },
+                                               { "value":  "2", "name":  "Ilshenar", "description":  "Ilshenar facet" },
+                                               { "value":  "3", "name":  "Malas", "description":  "Malas facet" },
+                                               { "value":  "4", "name":  "Tokuno", "description":  "Tokuno Islands" },
+                                               { "value":  "5", "name":  "TerMur", "description":  "Ter Mur facet" }
+                                           ]
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0x56",
+                                            "direction":  "both",
+                                            "relationship":  "related",
+                                            "note":  "Map pin commands (client and server)"
+                                        },
+                                        {
+                                            "id":  "0x90",
+                                            "relationship":  "variant",
+                                            "note":  "Old Map Details for pre-NewCharacterList clients"
+                                        }
+                                    ],
+                        "clientVersion":  {
+                                              "min":  "7.0.13.0",
+                                              "feature":  "NewCharacterList"
+                                          },
+                        "source":  {
+                                       "file":  "Projects/UOContent/Items/Maps/MapItemPackets.cs",
+                                       "line":  78
+                                   }
+                    }
+                ]
+}

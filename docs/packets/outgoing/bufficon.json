@@ -1,0 +1,304 @@
+﻿{
+    "category":  "Buff Icon",
+    "packets":  [
+                    {
+                        "id":  "0xDF",
+                        "name":  "Buff/Debuff System",
+                        "description":  "Manages buff and debuff icons displayed on the client.",
+                        "direction":  "outgoing",
+                        "isDynamic":  true,
+                        "size":  "Varies",
+                        "variants":  [
+                                         {
+                                             "name":  "Remove Buff",
+                                             "condition":  "command == 0 (Remove)",
+                                             "size":  15,
+                                             "fields":  [
+                                                            {
+                                                                "name":  "Packet ID",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0xDF",
+                                                                "description":  "Packet identifier"
+                                                            },
+                                                            {
+                                                                "name":  "Length",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "value":  "15",
+                                                                "description":  "Packet length"
+                                                            },
+                                                            {
+                                                                "name":  "Mobile Serial",
+                                                                "type":  "uint",
+                                                                "size":  4,
+                                                                "description":  "Serial of the mobile"
+                                                            },
+                                                            {
+                                                                "name":  "Icon ID",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Buff icon ID"
+                                                            },
+                                                            {
+                                                                "name":  "Command",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "value":  "0x0000",
+                                                                "description":  "Remove command"
+                                                            },
+                                                            {
+                                                                "name":  "Unused",
+                                                                "type":  "int",
+                                                                "size":  4,
+                                                                "value":  "0",
+                                                                "description":  "Unused"
+                                                            }
+                                                        ]
+                                         },
+                                         {
+                                             "name":  "Add Buff (No Args)",
+                                             "condition":  "command == 1 (Add), no arguments",
+                                             "size":  46,
+                                             "fields":  [
+                                                            {
+                                                                "name":  "Packet ID",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0xDF",
+                                                                "description":  "Packet identifier"
+                                                            },
+                                                            {
+                                                                "name":  "Length",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "value":  "46",
+                                                                "description":  "Packet length"
+                                                            },
+                                                            {
+                                                                "name":  "Mobile Serial",
+                                                                "type":  "uint",
+                                                                "size":  4,
+                                                                "description":  "Serial of the mobile"
+                                                            },
+                                                            {
+                                                                "name":  "Icon ID",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Buff icon ID"
+                                                            },
+                                                            {
+                                                                "name":  "Command1",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "value":  "0x0001",
+                                                                "description":  "Add command"
+                                                            },
+                                                            {
+                                                                "name":  "Unused1",
+                                                                "type":  "int",
+                                                                "size":  4,
+                                                                "value":  "0",
+                                                                "description":  "Unused"
+                                                            },
+                                                            {
+                                                                "name":  "Icon Id2",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Buff icon ID (repeated)"
+                                                            },
+                                                            {
+                                                                "name":  "Command2",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "value":  "0x0001",
+                                                                "description":  "Add command (repeated)"
+                                                            },
+                                                            {
+                                                                "name":  "Unused2",
+                                                                "type":  "int",
+                                                                "size":  4,
+                                                                "value":  "0",
+                                                                "description":  "Unused"
+                                                            },
+                                                            {
+                                                                "name":  "Duration",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Duration in seconds"
+                                                            },
+                                                            {
+                                                                "name":  "Padding",
+                                                                "type":  "byte[]",
+                                                                "size":  3,
+                                                                "description":  "Padding (zeros)"
+                                                            },
+                                                            {
+                                                                "name":  "Title Cliloc",
+                                                                "type":  "int",
+                                                                "size":  4,
+                                                                "description":  "Title cliloc number"
+                                                            },
+                                                            {
+                                                                "name":  "Secondary Cliloc",
+                                                                "type":  "int",
+                                                                "size":  4,
+                                                                "description":  "Secondary cliloc number"
+                                                            },
+                                                            {
+                                                                "name":  "Empty Args",
+                                                                "type":  "byte[]",
+                                                                "size":  10,
+                                                                "description":  "Empty arguments (zeros)"
+                                                            }
+                                                        ]
+                                         },
+                                         {
+                                             "name":  "Add Buff (With Args)",
+                                             "condition":  "command == 1 (Add), with arguments",
+                                             "size":  "52 + (args.Length x 2)",
+                                             "fields":  [
+                                                            {
+                                                                "name":  "Packet ID",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0xDF",
+                                                                "description":  "Packet identifier"
+                                                            },
+                                                            {
+                                                                "name":  "Length",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "description":  "Packet length"
+                                                            },
+                                                            {
+                                                                "name":  "Mobile Serial",
+                                                                "type":  "uint",
+                                                                "size":  4,
+                                                                "description":  "Serial of the mobile"
+                                                            },
+                                                            {
+                                                                "name":  "Icon ID",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Buff icon ID"
+                                                            },
+                                                            {
+                                                                "name":  "Command1",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "value":  "0x0001",
+                                                                "description":  "Add command"
+                                                            },
+                                                            {
+                                                                "name":  "Unused1",
+                                                                "type":  "int",
+                                                                "size":  4,
+                                                                "value":  "0",
+                                                                "description":  "Unused"
+                                                            },
+                                                            {
+                                                                "name":  "Icon Id2",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Buff icon ID (repeated)"
+                                                            },
+                                                            {
+                                                                "name":  "Command2",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "value":  "0x0001",
+                                                                "description":  "Add command (repeated)"
+                                                            },
+                                                            {
+                                                                "name":  "Unused2",
+                                                                "type":  "int",
+                                                                "size":  4,
+                                                                "value":  "0",
+                                                                "description":  "Unused"
+                                                            },
+                                                            {
+                                                                "name":  "Duration",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Duration in seconds"
+                                                            },
+                                                            {
+                                                                "name":  "Padding",
+                                                                "type":  "byte[]",
+                                                                "size":  3,
+                                                                "description":  "Padding (zeros)"
+                                                            },
+                                                            {
+                                                                "name":  "Title Cliloc",
+                                                                "type":  "int",
+                                                                "size":  4,
+                                                                "description":  "Title cliloc number"
+                                                            },
+                                                            {
+                                                                "name":  "Secondary Cliloc",
+                                                                "type":  "int",
+                                                                "size":  4,
+                                                                "description":  "Secondary cliloc number"
+                                                            },
+                                                            {
+                                                                "name":  "Unused3",
+                                                                "type":  "int",
+                                                                "size":  4,
+                                                                "value":  "0",
+                                                                "description":  "Unused"
+                                                            },
+                                                            {
+                                                                "name":  "Has Args",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "value":  "0x0001",
+                                                                "description":  "Has arguments flag"
+                                                            },
+                                                            {
+                                                                "name":  "Unused4",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "value":  "0",
+                                                                "description":  "Unused"
+                                                            },
+                                                            {
+                                                                "name":  "Tab Prefix",
+                                                                "type":  "utf16le",
+                                                                "size":  2,
+                                                                "value":  "\\t",
+                                                                "description":  "Tab character prefix"
+                                                            },
+                                                            {
+                                                                "name":  "Arguments",
+                                                                "type":  "utf16le-t",
+                                                                "description":  "Cliloc arguments"
+                                                            },
+                                                            {
+                                                                "name":  "Has Args2",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "value":  "0x0001",
+                                                                "description":  "Has arguments flag (repeated)"
+                                                            },
+                                                            {
+                                                                "name":  "Unused5",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "value":  "0",
+                                                                "description":  "Unused"
+                                                            }
+                                                        ]
+                                         }
+                                     ],
+                        "clientVersion":  {
+                                              "min":  "5.0.2b",
+                                              "feature":  "BuffIcon"
+                                          },
+                        "source":  {
+                                       "file":  "Projects/UOContent/Engines/BuffIcons/BuffIconPackets.cs",
+                                       "line":  8
+                                   }
+                    }
+                ]
+}

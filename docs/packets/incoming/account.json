@@ -1,0 +1,817 @@
+﻿{
+    "category":  "Account",
+    "packets":  [
+                    {
+                        "id":  "0x80",
+                        "name":  "Account Login",
+                        "description":  "Initial login request sent to the login server. Contains account credentials for authentication.",
+                        "direction":  "incoming",
+                        "isDynamic":  false,
+                        "size":  62,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x80",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Username",
+                                           "type":  "ascii",
+                                           "size":  30,
+                                           "description":  "Account username (null-terminated)"
+                                       },
+                                       {
+                                           "name":  "Password",
+                                           "type":  "ascii",
+                                           "size":  30,
+                                           "description":  "Account password (null-terminated)"
+                                       },
+                                       {
+                                           "name":  "Next Login Key",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Next login key"
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0x82",
+                                            "relationship":  "rej",
+                                            "note":  "Sent if login fails"
+                                        },
+                                        {
+                                            "id":  "0xA8",
+                                            "relationship":  "ack",
+                                            "note":  "Sent if login succeeds (server list)"
+                                        }
+                                    ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingAccountPackets.cs",
+                                       "line":  439
+                                   }
+                    },
+                    {
+                        "id":  "0x91",
+                        "name":  "Game Login",
+                        "description":  "Login request sent to the game server after selecting a shard from the server list.",
+                        "direction":  "incoming",
+                        "isDynamic":  false,
+                        "size":  65,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x91",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Auth ID",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Authentication ID from PlayServerAck (0x8C)"
+                                       },
+                                       {
+                                           "name":  "Username",
+                                           "type":  "ascii",
+                                           "size":  30,
+                                           "description":  "Account username"
+                                       },
+                                       {
+                                           "name":  "Password",
+                                           "type":  "ascii",
+                                           "size":  30,
+                                           "description":  "Account password"
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0xA9",
+                                            "relationship":  "response",
+                                            "note":  "Character list sent on success"
+                                        }
+                                    ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingAccountPackets.cs",
+                                       "line":  345
+                                   }
+                    },
+                    {
+                        "id":  "0x5D",
+                        "name":  "Play Character",
+                        "description":  "Request to enter the world with a selected character from the character list.",
+                        "direction":  "incoming",
+                        "isDynamic":  false,
+                        "size":  73,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x5D",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Pattern",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "value":  "0xEDEDEDED",
+                                           "description":  "Fixed pattern"
+                                       },
+                                       {
+                                           "name":  "Name",
+                                           "type":  "ascii",
+                                           "size":  30,
+                                           "description":  "Character name (unused)"
+                                       },
+                                       {
+                                           "name":  "Unknown",
+                                           "type":  "byte[2]",
+                                           "size":  2,
+                                           "description":  "Unknown"
+                                       },
+                                       {
+                                           "name":  "Flags",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Client flags"
+                                       },
+                                       {
+                                           "name":  "Unknown2",
+                                           "type":  "byte[24]",
+                                           "size":  24,
+                                           "description":  "Unknown"
+                                       },
+                                       {
+                                           "name":  "Char Slot",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Character slot index (0-based)"
+                                       },
+                                       {
+                                           "name":  "Client IP",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Client IP address"
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0x1B",
+                                            "relationship":  "response",
+                                            "note":  "Login confirmation sent on success"
+                                        }
+                                    ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingAccountPackets.cs",
+                                       "line":  210
+                                   }
+                    },
+                    {
+                        "id":  "0xA0",
+                        "name":  "Play Server",
+                        "description":  "Request to connect to a specific game server from the server list.",
+                        "direction":  "incoming",
+                        "isDynamic":  false,
+                        "size":  3,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xA0",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Server Index",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Index of selected server in the list"
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0x8C",
+                                            "relationship":  "response",
+                                            "note":  "Server connection details"
+                                        }
+                                    ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingAccountPackets.cs",
+                                       "line":  398
+                                   }
+                    },
+                    {
+                        "id":  "0x83",
+                        "name":  "Delete Character",
+                        "description":  "Request to delete a character from the account.",
+                        "direction":  "incoming",
+                        "isDynamic":  false,
+                        "size":  39,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x83",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Password",
+                                           "type":  "ascii",
+                                           "size":  30,
+                                           "description":  "Account password for verification"
+                                       },
+                                       {
+                                           "name":  "Char Index",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Character slot index to delete"
+                                       },
+                                       {
+                                           "name":  "Client IP",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Client IP address"
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0x85",
+                                            "relationship":  "response",
+                                            "note":  "Delete result"
+                                        }
+                                    ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingAccountPackets.cs",
+                                       "line":  185
+                                   }
+                    },
+                    {
+                        "id":  "0xEF",
+                        "name":  "Login Server Seed",
+                        "description":  "Initial connection packet sent before account login. Contains seed and client version information.",
+                        "direction":  "incoming",
+                        "isDynamic":  false,
+                        "size":  21,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xEF",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Seed",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Random seed for encryption"
+                                       },
+                                       {
+                                           "name":  "Client Major",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Client major version"
+                                       },
+                                       {
+                                           "name":  "Client Minor",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Client minor version"
+                                       },
+                                       {
+                                           "name":  "Client Revision",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Client revision"
+                                       },
+                                       {
+                                           "name":  "Client Patch",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Client patch level"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingAccountPackets.cs",
+                                       "line":  419
+                                   }
+                    },
+                    {
+                        "id":  "0xBD",
+                        "name":  "Client Version",
+                        "description":  "Response to server\u0027s version request (0xBD). Contains the client version string.",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "3 + version string length",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xBD",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Version",
+                                           "type":  "ascii",
+                                           "description":  "Client version string (e.g., \u00277.0.95.0\u0027)"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingAccountPackets.cs",
+                                       "line":  193
+                                   }
+                    },
+                    {
+                        "id":  "0xE1",
+                        "name":  "Client Type",
+                        "description":  "Sent by the client to identify the client type and version.",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "var",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xE1",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Unknown",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Unknown"
+                                       },
+                                       {
+                                           "name":  "Client Type",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Client type identifier"
+                                       },
+                                       {
+                                           "name":  "Version",
+                                           "type":  "ascii",
+                                           "description":  "Client version string"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingAccountPackets.cs",
+                                       "line":  200
+                                   }
+                    },
+                    {
+                        "id":  "0x00",
+                        "name":  "Create Character (Old)",
+                        "description":  "Request to create a new character. This is the older 104-byte version with 3 starting skills. Replaced by 0xF8 in client 7.0.16.0+.",
+                        "direction":  "incoming",
+                        "isDynamic":  false,
+                        "size":  104,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x00",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Unknown1",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Unknown"
+                                       },
+                                       {
+                                           "name":  "Unknown2",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Unknown"
+                                       },
+                                       {
+                                           "name":  "Unknown3",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Unknown"
+                                       },
+                                       {
+                                           "name":  "Name",
+                                           "type":  "ascii",
+                                           "size":  30,
+                                           "description":  "Character name"
+                                       },
+                                       {
+                                           "name":  "Unknown4",
+                                           "type":  "byte[2]",
+                                           "size":  2,
+                                           "description":  "Unknown"
+                                       },
+                                       {
+                                           "name":  "Flags",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Client flags"
+                                       },
+                                       {
+                                           "name":  "Unknown5",
+                                           "type":  "byte[8]",
+                                           "size":  8,
+                                           "description":  "Unknown"
+                                       },
+                                       {
+                                           "name":  "Profession",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Starting profession"
+                                       },
+                                       {
+                                           "name":  "Unknown6",
+                                           "type":  "byte[15]",
+                                           "size":  15,
+                                           "description":  "Unknown"
+                                       },
+                                       {
+                                           "name":  "Gender Race",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Gender and race combined value"
+                                       },
+                                       {
+                                           "name":  "Strength",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Starting strength"
+                                       },
+                                       {
+                                           "name":  "Dexterity",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Starting dexterity"
+                                       },
+                                       {
+                                           "name":  "Intelligence",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Starting intelligence"
+                                       },
+                                       {
+                                           "name":  "Skill1Id",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "First skill ID"
+                                       },
+                                       {
+                                           "name":  "Skill1Value",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "First skill value"
+                                       },
+                                       {
+                                           "name":  "Skill2Id",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Second skill ID"
+                                       },
+                                       {
+                                           "name":  "Skill2Value",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Second skill value"
+                                       },
+                                       {
+                                           "name":  "Skill3Id",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Third skill ID"
+                                       },
+                                       {
+                                           "name":  "Skill3Value",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Third skill value"
+                                       },
+                                       {
+                                           "name":  "Skin Hue",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Skin color hue"
+                                       },
+                                       {
+                                           "name":  "Hair Style",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Hair style ID"
+                                       },
+                                       {
+                                           "name":  "Hair Hue",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Hair color hue"
+                                       },
+                                       {
+                                           "name":  "Facial Hair Style",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Facial hair style ID"
+                                       },
+                                       {
+                                           "name":  "Facial Hair Hue",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Facial hair color hue"
+                                       },
+                                       {
+                                           "name":  "Unknown7",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Unknown"
+                                       },
+                                       {
+                                           "name":  "City Index",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Starting city index"
+                                       },
+                                       {
+                                           "name":  "Char Slot",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Character slot"
+                                       },
+                                       {
+                                           "name":  "Client IP",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Client IP"
+                                       },
+                                       {
+                                           "name":  "Shirt Hue",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Starting shirt hue"
+                                       },
+                                       {
+                                           "name":  "Pants Hue",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Starting pants hue"
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0xF8",
+                                            "relationship":  "variant",
+                                            "note":  "Create Character (New) for 7.0.16.0+ with 4th skill"
+                                        }
+                                    ],
+                        "clientVersion":  {
+                                              "max":  "7.0.15.x",
+                                              "notes":  "Replaced by 0xF8 in client 7.0.16.0+"
+                                          },
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingAccountPackets.cs",
+                                       "line":  58
+                                   }
+                    },
+                    {
+                        "id":  "0xF8",
+                        "name":  "Create Character (New)",
+                        "description":  "Request to create a new character. This is the newer 106-byte version with support for 4 skills.",
+                        "direction":  "incoming",
+                        "isDynamic":  false,
+                        "size":  106,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xF8",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Unknown1",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Unknown"
+                                       },
+                                       {
+                                           "name":  "Unknown2",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Unknown"
+                                       },
+                                       {
+                                           "name":  "Unknown3",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Unknown"
+                                       },
+                                       {
+                                           "name":  "Name",
+                                           "type":  "ascii",
+                                           "size":  30,
+                                           "description":  "Character name"
+                                       },
+                                       {
+                                           "name":  "Unknown4",
+                                           "type":  "byte[2]",
+                                           "size":  2,
+                                           "description":  "Unknown"
+                                       },
+                                       {
+                                           "name":  "Flags",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Client flags"
+                                       },
+                                       {
+                                           "name":  "Unknown5",
+                                           "type":  "byte[8]",
+                                           "size":  8,
+                                           "description":  "Unknown"
+                                       },
+                                       {
+                                           "name":  "Profession",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Starting profession"
+                                       },
+                                       {
+                                           "name":  "Unknown6",
+                                           "type":  "byte[15]",
+                                           "size":  15,
+                                           "description":  "Unknown"
+                                       },
+                                       {
+                                           "name":  "Gender Race",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Gender and race combined value"
+                                       },
+                                       {
+                                           "name":  "Strength",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Starting strength"
+                                       },
+                                       {
+                                           "name":  "Dexterity",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Starting dexterity"
+                                       },
+                                       {
+                                           "name":  "Intelligence",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Starting intelligence"
+                                       },
+                                       {
+                                           "name":  "Skill1Id",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "First skill ID"
+                                       },
+                                       {
+                                           "name":  "Skill1Value",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "First skill value"
+                                       },
+                                       {
+                                           "name":  "Skill2Id",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Second skill ID"
+                                       },
+                                       {
+                                           "name":  "Skill2Value",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Second skill value"
+                                       },
+                                       {
+                                           "name":  "Skill3Id",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Third skill ID"
+                                       },
+                                       {
+                                           "name":  "Skill3Value",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Third skill value"
+                                       },
+                                       {
+                                           "name":  "Skill4Id",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Fourth skill ID (newer clients)"
+                                       },
+                                       {
+                                           "name":  "Skill4Value",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Fourth skill value (newer clients)"
+                                       },
+                                       {
+                                           "name":  "Skin Hue",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Skin color hue"
+                                       },
+                                       {
+                                           "name":  "Hair Style",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Hair style ID"
+                                       },
+                                       {
+                                           "name":  "Hair Hue",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Hair color hue"
+                                       },
+                                       {
+                                           "name":  "Facial Hair Style",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Facial hair style ID"
+                                       },
+                                       {
+                                           "name":  "Facial Hair Hue",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Facial hair color hue"
+                                       },
+                                       {
+                                           "name":  "Unknown7",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Unknown"
+                                       },
+                                       {
+                                           "name":  "City Index",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Starting city index"
+                                       },
+                                       {
+                                           "name":  "Char Slot",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Character slot"
+                                       },
+                                       {
+                                           "name":  "Client IP",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Client IP"
+                                       },
+                                       {
+                                           "name":  "Shirt Hue",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Starting shirt hue"
+                                       },
+                                       {
+                                           "name":  "Pants Hue",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Starting pants hue"
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0x00",
+                                            "relationship":  "variant",
+                                            "note":  "Create Character (Old) for pre-7.0.16.0 with 3 skills"
+                                        }
+                                    ],
+                        "clientVersion":  {
+                                              "min":  "7.0.16.0",
+                                              "notes":  "Replaces 0x00, adds 4th starting skill"
+                                          },
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingAccountPackets.cs",
+                                       "line":  58
+                                   },
+                        "notes":  "Uses the same handler as 0x00 but with 2 additional bytes for the 4th skill."
+                    }
+                ]
+}

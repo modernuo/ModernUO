@@ -1,0 +1,1057 @@
+﻿{
+    "category":  "Player",
+    "packets":  [
+                    {
+                        "id":  "0x23",
+                        "name":  "Drag Effect",
+                        "description":  "Displays a drag/drop visual effect between two points.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  26,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x23",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Item ID",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Item graphic ID"
+                                       },
+                                       {
+                                           "name":  "Unknown",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x00",
+                                           "description":  "Unknown"
+                                       },
+                                       {
+                                           "name":  "Hue",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Item hue"
+                                       },
+                                       {
+                                           "name":  "Amount",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Item amount"
+                                       },
+                                       {
+                                           "name":  "Src Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Source entity serial"
+                                       },
+                                       {
+                                           "name":  "Src X",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Source X coordinate"
+                                       },
+                                       {
+                                           "name":  "Src Y",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Source Y coordinate"
+                                       },
+                                       {
+                                           "name":  "Src Z",
+                                           "type":  "sbyte",
+                                           "size":  1,
+                                           "description":  "Source Z coordinate"
+                                       },
+                                       {
+                                           "name":  "Dst Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Destination entity serial"
+                                       },
+                                       {
+                                           "name":  "Dst X",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Destination X coordinate"
+                                       },
+                                       {
+                                           "name":  "Dst Y",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Destination Y coordinate"
+                                       },
+                                       {
+                                           "name":  "Dst Z",
+                                           "type":  "sbyte",
+                                           "size":  1,
+                                           "description":  "Destination Z coordinate"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingPlayerPackets.cs",
+                                       "line":  198
+                                   }
+                    },
+                    {
+                        "id":  "0x27",
+                        "name":  "Lift Reject",
+                        "description":  "Server rejects a lift/pick up request.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  2,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x27",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Reason",
+                                           "type":  "enum",
+                                           "enumType":  "sequential",
+                                           "size":  1,
+                                           "description":  "Rejection reason",
+                                           "values":  [
+                                                          {
+                                                              "value":  0,
+                                                              "name":  "Cannot Lift",
+                                                              "description":  "You cannot pick that up"
+                                                          },
+                                                          {
+                                                              "value":  1,
+                                                              "name":  "Out Of Range",
+                                                              "description":  "That is out of range"
+                                                          },
+                                                          {
+                                                              "value":  2,
+                                                              "name":  "Out Of Sight",
+                                                              "description":  "That is out of sight"
+                                                          },
+                                                          {
+                                                              "value":  3,
+                                                              "name":  "Try To Steal",
+                                                              "description":  "That does not belong to you"
+                                                          },
+                                                          {
+                                                              "value":  4,
+                                                              "name":  "Are Holding",
+                                                              "description":  "You are already holding an item"
+                                                          },
+                                                          {
+                                                              "value":  5,
+                                                              "name":  "Inspecific",
+                                                              "description":  "You cannot pick that up"
+                                                          }
+                                                      ]
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0x07",
+                                            "relationship":  "request",
+                                            "note":  "Lift Request that was rejected"
+                                        }
+                                    ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingPlayerPackets.cs",
+                                       "line":  90
+                                   }
+                    },
+                    {
+                        "id":  "0x2C",
+                        "name":  "Death Status",
+                        "description":  "Notifies client of death/resurrection state.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  2,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x2C",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Dead",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x02",
+                                           "description":  "Always 2 (dead)"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingPlayerPackets.cs",
+                                       "line":  63
+                                   }
+                    },
+                    {
+                        "id":  "0x38",
+                        "name":  "Pathfind Message",
+                        "description":  "Instructs client to pathfind to a location.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  7,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x38",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "X",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Target X coordinate"
+                                       },
+                                       {
+                                           "name":  "Y",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Target Y coordinate"
+                                       },
+                                       {
+                                           "name":  "Z",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Target Z coordinate"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingPlayerPackets.cs",
+                                       "line":  319
+                                   }
+                    },
+                    {
+                        "id":  "0x3A",
+                        "name":  "Skills Update",
+                        "description":  "Sends full skills list or single skill update to client.",
+                        "direction":  "outgoing",
+                        "isDynamic":  true,
+                        "size":  "var",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x3A",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Type",
+                                           "type":  "enum",
+                                           "enumType":  "sequential",
+                                           "size":  1,
+                                           "description":  "Update type",
+                                           "values":  [
+                                                          {
+                                                              "value":  "0x00",
+                                                              "name":  "Full No Caps",
+                                                              "description":  "Full list without caps"
+                                                          },
+                                                          {
+                                                              "value":  "0x02",
+                                                              "name":  "Full With Caps",
+                                                              "description":  "Full list with skill caps"
+                                                          },
+                                                          {
+                                                              "value":  "0xDF",
+                                                              "name":  "Single With Caps",
+                                                              "description":  "Single skill update with cap"
+                                                          },
+                                                          {
+                                                              "value":  "0xFF",
+                                                              "name":  "Single No Caps",
+                                                              "description":  "Single skill update"
+                                                          }
+                                                      ]
+                                       },
+                                       {
+                                           "name":  "Skills",
+                                           "type":  "loop",
+                                           "loop":  {
+                                                        "until":  "skillId == 0",
+                                                        "fields":  [
+                                                                       {
+                                                                           "name":  "Skill ID",
+                                                                           "type":  "ushort",
+                                                                           "size":  2,
+                                                                           "description":  "Skill ID + 1 (0 terminates)"
+                                                                       },
+                                                                       {
+                                                                           "name":  "Value",
+                                                                           "type":  "ushort",
+                                                                           "size":  2,
+                                                                           "description":  "Current skill value * 10"
+                                                                       },
+                                                                       {
+                                                                           "name":  "Base",
+                                                                           "type":  "ushort",
+                                                                           "size":  2,
+                                                                           "description":  "Base skill value * 10"
+                                                                       },
+                                                                       {
+                                                                           "name":  "Lock",
+                                                                           "type":  "enum",
+                                                                           "enumType":  "sequential",
+                                                                           "size":  1,
+                                                                           "description":  "Skill lock state",
+                                                                           "values":  [
+                                                                                          {
+                                                                                              "value":  0,
+                                                                                              "name":  "Up",
+                                                                                              "description":  "Skill gains enabled"
+                                                                                          },
+                                                                                          {
+                                                                                              "value":  1,
+                                                                                              "name":  "Down",
+                                                                                              "description":  "Skill decreases enabled"
+                                                                                          },
+                                                                                          {
+                                                                                              "value":  2,
+                                                                                              "name":  "Locked",
+                                                                                              "description":  "Skill locked"
+                                                                                          }
+                                                                                      ]
+                                                                       },
+                                                                       {
+                                                                           "name":  "Cap",
+                                                                           "type":  "ushort",
+                                                                           "size":  2,
+                                                                           "description":  "Skill cap * 10 (if type includes caps)"
+                                                                       }
+                                                                   ]
+                                                    }
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0x34",
+                                            "direction":  "incoming",
+                                            "relationship":  "request",
+                                            "note":  "Mobile Query (skills) triggers this response"
+                                        },
+                                        {
+                                            "id":  "0x3A",
+                                            "direction":  "incoming",
+                                            "relationship":  "related",
+                                            "note":  "Change Skill Lock may trigger update"
+                                        }
+                                    ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingPlayerPackets.cs",
+                                       "line":  121
+                                   }
+                    },
+                    {
+                        "id":  "0x5B",
+                        "name":  "Current Time",
+                        "description":  "Sends current server time to client.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  4,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x5B",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Hour",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Hour (0-23)"
+                                       },
+                                       {
+                                           "name":  "Minute",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Minute (0-59)"
+                                       },
+                                       {
+                                           "name":  "Second",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Second (0-59)"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingPlayerPackets.cs",
+                                       "line":  316
+                                   }
+                    },
+                    {
+                        "id":  "0x65",
+                        "name":  "Weather",
+                        "description":  "Sets weather conditions for client.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  4,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x65",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Type",
+                                           "type":  "enum",
+                                           "enumType":  "sequential",
+                                           "size":  1,
+                                           "description":  "Weather type",
+                                           "values":  [
+                                                          {
+                                                              "value":  0,
+                                                              "name":  "Rain",
+                                                              "description":  "Raining"
+                                                          },
+                                                          {
+                                                              "value":  1,
+                                                              "name":  "Storm Brewing",
+                                                              "description":  "Storm brewing"
+                                                          },
+                                                          {
+                                                              "value":  2,
+                                                              "name":  "Snow",
+                                                              "description":  "Snowing"
+                                                          },
+                                                          {
+                                                              "value":  3,
+                                                              "name":  "Storm",
+                                                              "description":  "Storm in progress"
+                                                          },
+                                                          {
+                                                              "value":  254,
+                                                              "name":  "None",
+                                                              "description":  "No weather"
+                                                          },
+                                                          {
+                                                              "value":  255,
+                                                              "name":  "Clear",
+                                                              "description":  "Clear weather (stops current)"
+                                                          }
+                                                      ]
+                                       },
+                                       {
+                                           "name":  "Intensity",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Weather intensity (0-255)"
+                                       },
+                                       {
+                                           "name":  "Temperature",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Temperature value"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingPlayerPackets.cs",
+                                       "line":  97
+                                   }
+                    },
+                    {
+                        "id":  "0x6D",
+                        "name":  "Play Music",
+                        "description":  "Plays background music on client.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  3,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x6D",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Music ID",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Music track ID (0x1FFF = stop)"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingPlayerPackets.cs",
+                                       "line":  275
+                                   }
+                    },
+                    {
+                        "id":  "0x73",
+                        "name":  "Ping Ack",
+                        "description":  "Server acknowledges ping request.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  2,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x73",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Sequence",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Ping sequence (echoed from request)"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingPlayerPackets.cs",
+                                       "line":  336
+                                   }
+                    },
+                    {
+                        "id":  "0x76",
+                        "name":  "Server Change",
+                        "description":  "Notifies client of server/map transition.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  16,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x76",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "X",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "New X coordinate"
+                                       },
+                                       {
+                                           "name":  "Y",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "New Y coordinate"
+                                       },
+                                       {
+                                           "name":  "Z",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "New Z coordinate"
+                                       },
+                                       {
+                                           "name":  "Unknown",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x00",
+                                           "description":  "Unknown"
+                                       },
+                                       {
+                                           "name":  "Unknown2",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "value":  "0x0000",
+                                           "description":  "Unknown"
+                                       },
+                                       {
+                                           "name":  "Unknown3",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "value":  "0x0000",
+                                           "description":  "Unknown"
+                                       },
+                                       {
+                                           "name":  "Map Width",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Map width"
+                                       },
+                                       {
+                                           "name":  "Map Height",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Map height"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingPlayerPackets.cs",
+                                       "line":  100
+                                   }
+                    },
+                    {
+                        "id":  "0x7B",
+                        "name":  "Sequence",
+                        "description":  "Sends sequence number to client for synchronization.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  2,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x7B",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Sequence",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Sequence number"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingPlayerPackets.cs",
+                                       "line":  154
+                                   }
+                    },
+                    {
+                        "id":  "0x88",
+                        "name":  "Display Paperdoll",
+                        "description":  "Opens paperdoll window for a mobile.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  66,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x88",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of mobile"
+                                       },
+                                       {
+                                           "name":  "Title",
+                                           "type":  "ascii",
+                                           "size":  60,
+                                           "description":  "Title/name displayed"
+                                       },
+                                       {
+                                           "name":  "Flags",
+                                           "type":  "bitfield",
+                                           "size":  1,
+                                           "description":  "Paperdoll flags",
+                                           "flags":  [
+                                                         {
+                                                             "bit":  "0",
+                                                             "name":  "Warmode",
+                                                             "description":  "Mobile is in war mode"
+                                                         },
+                                                         {
+                                                             "bit":  "1",
+                                                             "name":  "Can Lift",
+                                                             "description":  "Viewer can lift equipment"
+                                                         }
+                                                     ]
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingPlayerPackets.cs",
+                                       "line":  247
+                                   }
+                    },
+                    {
+                        "id":  "0x95",
+                        "name":  "Display Hue Picker",
+                        "description":  "Opens hue picker dialog on client.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  9,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x95",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Hue picker serial"
+                                       },
+                                       {
+                                           "name":  "Unknown",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "value":  "0x0000",
+                                           "description":  "Unknown"
+                                       },
+                                       {
+                                           "name":  "Item ID",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Item graphic to preview hue on"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingPlayerPackets.cs",
+                                       "line":  338
+                                   }
+                    },
+                    {
+                        "id":  "0xA5",
+                        "name":  "Launch Browser",
+                        "description":  "Opens a URL in client\u0027s web browser.",
+                        "direction":  "outgoing",
+                        "isDynamic":  true,
+                        "size":  "var",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xA5",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "URL",
+                                           "type":  "ascii-t",
+                                           "description":  "URL to open"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingPlayerPackets.cs",
+                                       "line":  180
+                                   }
+                    },
+                    {
+                        "id":  "0xA6",
+                        "name":  "Scroll Message",
+                        "description":  "Displays a scrollable tips/message window.",
+                        "direction":  "outgoing",
+                        "isDynamic":  true,
+                        "size":  "var",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xA6",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Type",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Scroll type"
+                                       },
+                                       {
+                                           "name":  "Tip Number",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Tip/message number"
+                                       },
+                                       {
+                                           "name":  "Text Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Length of text"
+                                       },
+                                       {
+                                           "name":  "Text",
+                                           "type":  "ascii",
+                                           "description":  "Message text"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingPlayerPackets.cs",
+                                       "line":  291
+                                   }
+                    },
+                    {
+                        "id":  "0xB8",
+                        "name":  "Display Profile",
+                        "description":  "Displays a mobile\u0027s profile.",
+                        "direction":  "outgoing",
+                        "isDynamic":  true,
+                        "size":  "var",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xB8",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of mobile"
+                                       },
+                                       {
+                                           "name":  "Header",
+                                           "type":  "ascii-t",
+                                           "description":  "Profile header"
+                                       },
+                                       {
+                                           "name":  "Footer",
+                                           "type":  "utf16be-t",
+                                           "description":  "Profile footer"
+                                       },
+                                       {
+                                           "name":  "Body",
+                                           "type":  "utf16be-t",
+                                           "description":  "Profile body text"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingPlayerPackets.cs",
+                                       "line":  66
+                                   }
+                    },
+                    {
+                        "id":  "0xBC",
+                        "name":  "Season Change",
+                        "description":  "Changes the visual season on client.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  3,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xBC",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Season",
+                                           "type":  "enum",
+                                           "enumType":  "sequential",
+                                           "size":  1,
+                                           "description":  "Season value",
+                                           "values":  [
+                                                          {
+                                                              "value":  0,
+                                                              "name":  "Spring",
+                                                              "description":  "Spring season"
+                                                          },
+                                                          {
+                                                              "value":  1,
+                                                              "name":  "Summer",
+                                                              "description":  "Summer season"
+                                                          },
+                                                          {
+                                                              "value":  2,
+                                                              "name":  "Fall",
+                                                              "description":  "Fall/Autumn season"
+                                                          },
+                                                          {
+                                                              "value":  3,
+                                                              "name":  "Winter",
+                                                              "description":  "Winter season"
+                                                          },
+                                                          {
+                                                              "value":  4,
+                                                              "name":  "Desolation",
+                                                              "description":  "Desolation (dead trees)"
+                                                          }
+                                                      ]
+                                       },
+                                       {
+                                           "name":  "Play Sound",
+                                           "type":  "bool",
+                                           "size":  1,
+                                           "description":  "Play season change sound"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingPlayerPackets.cs",
+                                       "line":  244
+                                   }
+                    },
+                    {
+                        "id":  "0xBF/0x19",
+                        "name":  "Stat Lock Info",
+                        "description":  "Sends stat lock states (STR/DEX/INT) to client.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  12,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xBF",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "12",
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Sub-Command",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "value":  "0x19",
+                                           "description":  "Subcommand (Stat Lock Info)"
+                                       },
+                                       {
+                                           "name":  "Type",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x02",
+                                           "description":  "Type (2 = stat locks)"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Mobile serial"
+                                       },
+                                       {
+                                           "name":  "Unknown",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x00",
+                                           "description":  "Unknown"
+                                       },
+                                       {
+                                           "name":  "Lock Bits",
+                                           "type":  "bitfield",
+                                           "size":  1,
+                                           "description":  "Packed stat lock states. Bit layout: 00SSDDII where SS=Str, DD=Dex, II=Int",
+                                           "flags":  [
+                                                         {
+                                                             "bit":  "5-4",
+                                                             "name":  "Str Lock",
+                                                             "description":  "Strength lock (value \u003c\u003c 4)"
+                                                         },
+                                                         {
+                                                             "bit":  "3-2",
+                                                             "name":  "Dex Lock",
+                                                             "description":  "Dexterity lock (value \u003c\u003c 2)"
+                                                         },
+                                                         {
+                                                             "bit":  "1-0",
+                                                             "name":  "Int Lock",
+                                                             "description":  "Intelligence lock (value \u003c\u003c 0)"
+                                                         }
+                                                     ],
+                                           "values":  [
+                                                          {
+                                                              "value":  0,
+                                                              "name":  "Up",
+                                                              "description":  "Stat will increase when gains are available"
+                                                          },
+                                                          {
+                                                              "value":  1,
+                                                              "name":  "Down",
+                                                              "description":  "Stat will decrease to allow other stats to increase"
+                                                          },
+                                                          {
+                                                              "value":  2,
+                                                              "name":  "Locked",
+                                                              "description":  "Stat will not change"
+                                                          }
+                                                      ],
+                                           "notes":  "Formula: (StrLock \u003c\u003c 4) | (DexLock \u003c\u003c 2) | IntLock. Example: Str=Locked(2), Dex=Up(0), Int=Down(1) = 0b00100001 = 0x21"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingPlayerPackets.cs",
+                                       "line":  36
+                                   }
+                    },
+                    {
+                        "id":  "0xC8",
+                        "name":  "Change Update Range",
+                        "description":  "Sets the client\u0027s update range.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  2,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xC8",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Range",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Update range (typically 18)"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingPlayerPackets.cs",
+                                       "line":  59
+                                   }
+                    },
+                    {
+                        "id":  "0xD1",
+                        "name":  "Logout Ack",
+                        "description":  "Server acknowledges logout request.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  2,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xD1",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Ack",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x01",
+                                           "description":  "Acknowledgment (1 = OK)"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingPlayerPackets.cs",
+                                       "line":  94
+                                   }
+                    }
+                ]
+}

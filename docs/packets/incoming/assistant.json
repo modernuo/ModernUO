@@ -1,0 +1,39 @@
+﻿{
+    "category":  "Assistant",
+    "packets":  [
+                    {
+                        "id":  "0xBE",
+                        "name":  "Assistant Version",
+                        "description":  "Client sends assistant version information. Razor CE sends version as ASCII string.",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "3+",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xBE",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Version String",
+                                           "type":  "ascii",
+                                           "size":  "var",
+                                           "description":  "Assistant version string (Razor CE sends \u0027version\u0027 or \u0027ProductName version\u0027)"
+                                       }
+                                   ],
+                        "notes":  "Razor Community Edition sends version as ASCII. Legacy UOAssist would send int32 + ASCII client version.",
+                        "source":  {
+                                       "file":  "Projects/UOContent/Assistants/AssistantHandler.cs",
+                                       "line":  69
+                                   }
+                    }
+                ]
+}

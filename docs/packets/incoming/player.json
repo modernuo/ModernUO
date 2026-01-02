@@ -1,0 +1,989 @@
+﻿{
+    "category":  "Player",
+    "packets":  [
+                    {
+                        "id":  "0x01",
+                        "name":  "Disconnect",
+                        "description":  "Client sends disconnect notification.",
+                        "direction":  "incoming",
+                        "isDynamic":  false,
+                        "size":  5,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x01",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Minus One",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "value":  "0xFFFFFFFF",
+                                           "description":  "Always -1"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingPlayerPackets.cs",
+                                       "line":  317
+                                   }
+                    },
+                    {
+                        "id":  "0x05",
+                        "name":  "Attack Request",
+                        "description":  "Client requests to attack a mobile.",
+                        "direction":  "incoming",
+                        "isDynamic":  false,
+                        "size":  5,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x05",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Target Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of mobile to attack"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingPlayerPackets.cs",
+                                       "line":  69
+                                   }
+                    },
+                    {
+                        "id":  "0x12",
+                        "name":  "Text Command",
+                        "description":  "Client sends text-based commands for skills, spells, virtues, etc.",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "var",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x12",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Command Type",
+                                           "type":  "enum",
+                                           "enumType":  "sequential",
+                                           "size":  1,
+                                           "description":  "Type of text command",
+                                           "values":  [
+                                                          {
+                                                              "value":  "0x24",
+                                                              "name":  "Use Skill",
+                                                              "description":  "Use a skill by ID"
+                                                          },
+                                                          {
+                                                              "value":  "0x27",
+                                                              "name":  "Cast Spell From Book",
+                                                              "description":  "Cast spell from spellbook"
+                                                          },
+                                                          {
+                                                              "value":  "0x2F",
+                                                              "name":  "Old Scroll Click",
+                                                              "description":  "Old scroll double-click"
+                                                          },
+                                                          {
+                                                              "value":  "0x43",
+                                                              "name":  "Open Spellbook",
+                                                              "description":  "Open spellbook of type"
+                                                          },
+                                                          {
+                                                              "value":  "0x56",
+                                                              "name":  "Cast Spell Macro",
+                                                              "description":  "Cast spell from macro"
+                                                          },
+                                                          {
+                                                              "value":  "0x58",
+                                                              "name":  "Open Door",
+                                                              "description":  "Open door macro"
+                                                          },
+                                                          {
+                                                              "value":  "0xC7",
+                                                              "name":  "Animate",
+                                                              "description":  "Play animation"
+                                                          },
+                                                          {
+                                                              "value":  "0xF4",
+                                                              "name":  "Invoke Virtue",
+                                                              "description":  "Invoke virtue from macro"
+                                                          }
+                                                      ]
+                                       },
+                                       {
+                                           "name":  "Command",
+                                           "type":  "ascii-t",
+                                           "description":  "Command-specific text (skill ID, spell ID, etc.)"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingPlayerPackets.cs",
+                                       "line":  119
+                                   }
+                    },
+                    {
+                        "id":  "0x22",
+                        "name":  "Resynchronize",
+                        "description":  "Client requests full world state resync.",
+                        "direction":  "incoming",
+                        "noMerge":  true,
+                        "isDynamic":  false,
+                        "size":  3,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x22",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Padding",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Unused padding"
+                                       }
+                                   ],
+                        "notes":  "Not related to outgoing 0x22 (Movement Acknowledgment) despite sharing the same packet ID.",
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingPlayerPackets.cs",
+                                       "line":  349
+                                   }
+                    },
+                    {
+                        "id":  "0x2C",
+                        "name":  "Death Status Response",
+                        "description":  "Client acknowledges death status packet. Currently ignored by server.",
+                        "direction":  "incoming",
+                        "isDynamic":  false,
+                        "size":  2,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x2C",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Unknown",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Unknown"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingPlayerPackets.cs",
+                                       "line":  58
+                                   }
+                    },
+                    {
+                        "id":  "0x34",
+                        "name":  "Mobile Query",
+                        "description":  "Client queries information about a mobile (stats or skills).",
+                        "direction":  "incoming",
+                        "isDynamic":  false,
+                        "size":  10,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x34",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Pattern",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "value":  "0xEDEDEDED",
+                                           "description":  "Fixed pattern"
+                                       },
+                                       {
+                                           "name":  "Query Type",
+                                           "type":  "enum",
+                                           "enumType":  "sequential",
+                                           "size":  1,
+                                           "description":  "Type of query",
+                                           "values":  [
+                                                          {
+                                                              "value":  "0x04",
+                                                              "name":  "Stats",
+                                                              "description":  "Request mobile stats"
+                                                          },
+                                                          {
+                                                              "value":  "0x05",
+                                                              "name":  "Skills",
+                                                              "description":  "Request mobile skills"
+                                                          }
+                                                      ]
+                                       },
+                                       {
+                                           "name":  "Mobile Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of mobile to query"
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0x11",
+                                            "relationship":  "response",
+                                            "note":  "Mobile Status packet sent in response to stats query"
+                                        },
+                                        {
+                                            "id":  "0x3A",
+                                            "relationship":  "response",
+                                            "note":  "Skills Update sent in response to skills query"
+                                        }
+                                    ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingPlayerPackets.cs",
+                                       "line":  376
+                                   }
+                    },
+                    {
+                        "id":  "0x3A",
+                        "name":  "Change Skill Lock",
+                        "description":  "Client changes the lock state of a skill.",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "var",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x3A",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Skill Index",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Skill index to change"
+                                       },
+                                       {
+                                           "name":  "Lock State",
+                                           "type":  "enum",
+                                           "enumType":  "sequential",
+                                           "size":  1,
+                                           "description":  "New lock state",
+                                           "values":  [
+                                                          {
+                                                              "value":  0,
+                                                              "name":  "Up",
+                                                              "description":  "Skill gains enabled"
+                                                          },
+                                                          {
+                                                              "value":  1,
+                                                              "name":  "Down",
+                                                              "description":  "Skill decreases enabled"
+                                                          },
+                                                          {
+                                                              "value":  2,
+                                                              "name":  "Locked",
+                                                              "description":  "Skill locked at current value"
+                                                          }
+                                                      ]
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingPlayerPackets.cs",
+                                       "line":  331
+                                   }
+                    },
+                    {
+                        "id":  "0x72",
+                        "name":  "Set War Mode",
+                        "description":  "Client toggles war/peace mode.",
+                        "direction":  "incoming",
+                        "isDynamic":  false,
+                        "size":  5,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x72",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Warmode",
+                                           "type":  "bool",
+                                           "size":  1,
+                                           "description":  "True = war mode, False = peace mode"
+                                       },
+                                       {
+                                           "name":  "Padding",
+                                           "type":  "byte",
+                                           "size":  3,
+                                           "description":  "Unused padding (0x00, 0x32, 0x00)"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingPlayerPackets.cs",
+                                       "line":  343
+                                   }
+                    },
+                    {
+                        "id":  "0x73",
+                        "name":  "Ping Request",
+                        "description":  "Client sends ping for latency measurement.",
+                        "direction":  "incoming",
+                        "isDynamic":  false,
+                        "size":  2,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x73",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Sequence",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Ping sequence number"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingPlayerPackets.cs",
+                                       "line":  366
+                                   }
+                    },
+                    {
+                        "id":  "0x7D",
+                        "name":  "Menu Response",
+                        "description":  "Client responds to a displayed item menu.",
+                        "direction":  "incoming",
+                        "isDynamic":  false,
+                        "size":  13,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x7D",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Menu dialog serial"
+                                       },
+                                       {
+                                           "name":  "Menu ID",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Menu ID (unused in implementation)"
+                                       },
+                                       {
+                                           "name":  "Index",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Selected item index (1-based, 0 = cancel)"
+                                       },
+                                       {
+                                           "name":  "Item ID",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Item graphic ID of selection"
+                                       },
+                                       {
+                                           "name":  "Hue",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Hue of selection"
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0x7C",
+                                            "relationship":  "request",
+                                            "note":  "Display Item List Menu packet"
+                                        }
+                                    ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingPlayerPackets.cs",
+                                       "line":  287
+                                   }
+                    },
+                    {
+                        "id":  "0x95",
+                        "name":  "Hue Picker Response",
+                        "description":  "Client responds to a hue picker dialog.",
+                        "direction":  "incoming",
+                        "isDynamic":  false,
+                        "size":  9,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x95",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Hue picker serial"
+                                       },
+                                       {
+                                           "name":  "Item ID",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Item ID (unused)"
+                                       },
+                                       {
+                                           "name":  "Hue",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Selected hue (masked with 0x3FFF)"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingPlayerPackets.cs",
+                                       "line":  86
+                                   }
+                    },
+                    {
+                        "id":  "0x9A",
+                        "name":  "ASCII Prompt Response",
+                        "description":  "Client responds to an ASCII text prompt.",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "var",
+                        "tags":  ["Menu"],
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x9A",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Prompt serial"
+                                       },
+                                       {
+                                           "name":  "Prompt ID",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Prompt ID"
+                                       },
+                                       {
+                                           "name":  "Type",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Response type: 0 = cancel, other = submit"
+                                       },
+                                       {
+                                           "name":  "Text",
+                                           "type":  "ascii-t",
+                                           "description":  "Response text (max 128 chars)"
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0xC2",
+                                            "relationship":  "request",
+                                            "note":  "Unicode Prompt packet that triggered this response"
+                                        }
+                                    ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingPlayerPackets.cs",
+                                       "line":  214
+                                   }
+                    },
+                    {
+                        "id":  "0x9B",
+                        "name":  "Help Request",
+                        "description":  "Client requests help/GM assistance.",
+                        "direction":  "incoming",
+                        "isDynamic":  false,
+                        "size":  258,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x9B",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Data",
+                                           "type":  "byte[]",
+                                           "size":  257,
+                                           "description":  "Help request data (format TBD)"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingPlayerPackets.cs",
+                                       "line":  338
+                                   }
+                    },
+                    {
+                        "id":  "0xA4",
+                        "name":  "System Info",
+                        "description":  "Client sends system/hardware information.",
+                        "direction":  "incoming",
+                        "isDynamic":  false,
+                        "size":  149,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xA4",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Unknown1",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Unknown"
+                                       },
+                                       {
+                                           "name":  "Unknown2",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Unknown"
+                                       },
+                                       {
+                                           "name":  "Unknown3",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Unknown"
+                                       },
+                                       {
+                                           "name":  "String1",
+                                           "type":  "ascii",
+                                           "size":  32,
+                                           "description":  "System string 1"
+                                       },
+                                       {
+                                           "name":  "String2",
+                                           "type":  "ascii",
+                                           "size":  32,
+                                           "description":  "System string 2"
+                                       },
+                                       {
+                                           "name":  "String3",
+                                           "type":  "ascii",
+                                           "size":  32,
+                                           "description":  "System string 3"
+                                       },
+                                       {
+                                           "name":  "String4",
+                                           "type":  "ascii",
+                                           "size":  32,
+                                           "description":  "System string 4"
+                                       },
+                                       {
+                                           "name":  "Unknown4",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Unknown"
+                                       },
+                                       {
+                                           "name":  "Unknown5",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Unknown"
+                                       },
+                                       {
+                                           "name":  "Unknown6",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Unknown"
+                                       },
+                                       {
+                                           "name":  "Unknown7",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Unknown"
+                                       },
+                                       {
+                                           "name":  "Unknown8",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Unknown"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingPlayerPackets.cs",
+                                       "line":  103
+                                   }
+                    },
+                    {
+                        "id":  "0xA7",
+                        "name":  "Request Scroll Window",
+                        "description":  "Client requests a tips/scroll window.",
+                        "direction":  "incoming",
+                        "isDynamic":  false,
+                        "size":  4,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xA7",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Last Tip",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Last tip ID viewed"
+                                       },
+                                       {
+                                           "name":  "Type",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Scroll type"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingPlayerPackets.cs",
+                                       "line":  63
+                                   }
+                    },
+                    {
+                        "id":  "0xC2",
+                        "name":  "Unicode Prompt Response",
+                        "description":  "Client responds to a Unicode text prompt.",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "var",
+                        "tags":  ["Menu"],
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xC2",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Prompt serial"
+                                       },
+                                       {
+                                           "name":  "Prompt ID",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Prompt ID"
+                                       },
+                                       {
+                                           "name":  "Type",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Response type: 0 = cancel, other = submit"
+                                       },
+                                       {
+                                           "name":  "Language",
+                                           "type":  "ascii",
+                                           "size":  4,
+                                           "description":  "Language code (e.g., \u0027ENU\u0027)"
+                                       },
+                                       {
+                                           "name":  "Text",
+                                           "type":  "utf16le-t",
+                                           "description":  "Response text (max 128 chars)"
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0xC2",
+                                            "direction":  "outgoing",
+                                            "relationship":  "request",
+                                            "note":  "Unicode Prompt packet that triggered this response"
+                                        }
+                                    ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingPlayerPackets.cs",
+                                       "line":  250
+                                   }
+                    },
+                    {
+                        "id":  "0xC8",
+                        "name":  "Set Update Range",
+                        "description":  "Client requests to change update range. Server ignores and sends back fixed range.",
+                        "direction":  "incoming",
+                        "isDynamic":  false,
+                        "size":  2,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xC8",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Range",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Requested update range (ignored)"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingPlayerPackets.cs",
+                                       "line":  371
+                                   }
+                    },
+                    {
+                        "id":  "0xD0",
+                        "name":  "Configuration File",
+                        "description":  "Client sends configuration data. Currently ignored by server.",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "var",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xD0",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Data",
+                                           "type":  "byte[]",
+                                           "description":  "Configuration data (ignored)"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingPlayerPackets.cs",
+                                       "line":  322
+                                   }
+                    },
+                    {
+                        "id":  "0xD1",
+                        "name":  "Logout Request",
+                        "description":  "Client requests to logout.",
+                        "direction":  "incoming",
+                        "isDynamic":  false,
+                        "size":  2,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xD1",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Unknown",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Unknown (typically 0x01)"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingPlayerPackets.cs",
+                                       "line":  326
+                                   }
+                    },
+                    {
+                        "id":  "0xF4",
+                        "name":  "Crash Report",
+                        "description":  "Client sends crash/error report.",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "var",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xF4",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Client Major",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Client major version"
+                                       },
+                                       {
+                                           "name":  "Client Minor",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Client minor version"
+                                       },
+                                       {
+                                           "name":  "Client Rev",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Client revision"
+                                       },
+                                       {
+                                           "name":  "Client Pat",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Client patch"
+                                       },
+                                       {
+                                           "name":  "X",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Player X coordinate at crash"
+                                       },
+                                       {
+                                           "name":  "Y",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Player Y coordinate at crash"
+                                       },
+                                       {
+                                           "name":  "Z",
+                                           "type":  "sbyte",
+                                           "size":  1,
+                                           "description":  "Player Z coordinate at crash"
+                                       },
+                                       {
+                                           "name":  "Map",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Map ID at crash"
+                                       },
+                                       {
+                                           "name":  "Account Name",
+                                           "type":  "ascii",
+                                           "size":  32,
+                                           "description":  "Account name"
+                                       },
+                                       {
+                                           "name":  "Character Name",
+                                           "type":  "ascii",
+                                           "size":  32,
+                                           "description":  "Character name"
+                                       },
+                                       {
+                                           "name":  "IP Address",
+                                           "type":  "ascii",
+                                           "size":  15,
+                                           "description":  "Client IP address"
+                                       },
+                                       {
+                                           "name":  "Unknown1",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Unknown"
+                                       },
+                                       {
+                                           "name":  "Exception Code",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Exception code"
+                                       },
+                                       {
+                                           "name":  "Process Name",
+                                           "type":  "ascii",
+                                           "size":  100,
+                                           "description":  "Process name"
+                                       },
+                                       {
+                                           "name":  "Report Text",
+                                           "type":  "ascii",
+                                           "size":  100,
+                                           "description":  "Report text"
+                                       },
+                                       {
+                                           "name":  "Terminator",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x00",
+                                           "description":  "Null terminator"
+                                       },
+                                       {
+                                           "name":  "Offset",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Crash offset"
+                                       },
+                                       {
+                                           "name":  "Stack Count",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Number of stack trace entries"
+                                       },
+                                       {
+                                           "name":  "Stack Addresses",
+                                           "type":  "loop",
+                                           "loop":  {
+                                                        "countField":  "stackCount",
+                                                        "fields":  [
+                                                                       {
+                                                                           "name":  "Address",
+                                                                           "type":  "int",
+                                                                           "size":  4,
+                                                                           "description":  "Stack frame address"
+                                                                       }
+                                                                   ]
+                                                    }
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingPlayerPackets.cs",
+                                       "line":  413
+                                   }
+                    }
+                ]
+}

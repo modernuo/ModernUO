@@ -1,0 +1,216 @@
+﻿{
+    "category":  "Book",
+    "packets":  [
+                    {
+                        "id":  "0x66",
+                        "name":  "Book Content Change",
+                        "description":  "Client sends updated book page content when player edits a writable book.",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "9+",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x66",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Book Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the book being edited"
+                                       },
+                                       {
+                                           "name":  "Page Count",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Number of pages being updated"
+                                       },
+                                       {
+                                           "name":  "Pages",
+                                           "type":  "loop",
+                                           "description":  "Page contents being updated",
+                                           "loop":  {
+                                                        "countField":  "pageCount",
+                                                        "fields":  [
+                                                                       {
+                                                                           "name":  "Page Index",
+                                                                           "type":  "ushort",
+                                                                           "size":  2,
+                                                                           "description":  "Page number (1-indexed)"
+                                                                       },
+                                                                       {
+                                                                           "name":  "Line Count",
+                                                                           "type":  "ushort",
+                                                                           "size":  2,
+                                                                           "description":  "Number of lines on page (max 8)"
+                                                                       },
+                                                                       {
+                                                                           "name":  "Lines",
+                                                                           "type":  "loop",
+                                                                           "description":  "Lines on the page",
+                                                                           "loop":  {
+                                                                                        "countField":  "lineCount",
+                                                                                        "fields":  [
+                                                                                                       {
+                                                                                                           "name":  "Text",
+                                                                                                           "type":  "utf8-t",
+                                                                                                           "description":  "Line text (max 80 characters)"
+                                                                                                       }
+                                                                                                   ]
+                                                                                    }
+                                                                       }
+                                                                   ]
+                                                    }
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Items/Books/BookPackets.cs",
+                                       "line":  87
+                                   }
+                    },
+                    {
+                        "id":  "0xD4",
+                        "name":  "Book Header Change",
+                        "description":  "Client sends updated book title and author when player edits a writable book\u0027s cover.",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "13+",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xD4",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Book Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the book being edited"
+                                       },
+                                       {
+                                           "name":  "Flags",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Book flags (ignored by server)"
+                                       },
+                                       {
+                                           "name":  "Page Count",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Number of pages (ignored by server)"
+                                       },
+                                       {
+                                           "name":  "Title Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Length of title string including null terminator (max 61)"
+                                       },
+                                       {
+                                           "name":  "Title",
+                                           "type":  "utf8-t",
+                                           "description":  "Book title (max 60 characters)"
+                                       },
+                                       {
+                                           "name":  "Author Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Length of author string including null terminator (max 31)"
+                                       },
+                                       {
+                                           "name":  "Author",
+                                           "type":  "utf8-t",
+                                           "description":  "Book author (max 30 characters)"
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0x93",
+                                            "direction":  "incoming",
+                                            "relationship":  "variant",
+                                            "note":  "Old Header Change format for older clients"
+                                        }
+                                    ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Items/Books/BookPackets.cs",
+                                       "line":  51
+                                   }
+                    },
+                    {
+                        "id":  "0x93",
+                        "name":  "Old Book Header Change",
+                        "description":  "Legacy format for book header changes. Uses fixed-size ASCII strings.",
+                        "direction":  "incoming",
+                        "isDynamic":  false,
+                        "size":  99,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x93",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Book Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the book being edited"
+                                       },
+                                       {
+                                           "name":  "Flags",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Book flags (ignored by server)"
+                                       },
+                                       {
+                                           "name":  "Page Count",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Number of pages (ignored by server)"
+                                       },
+                                       {
+                                           "name":  "Title",
+                                           "type":  "ascii",
+                                           "size":  60,
+                                           "description":  "Book title (fixed 60 bytes, null-padded)"
+                                       },
+                                       {
+                                           "name":  "Author",
+                                           "type":  "ascii",
+                                           "size":  30,
+                                           "description":  "Book author (fixed 30 bytes, null-padded)"
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0xD4",
+                                            "direction":  "incoming",
+                                            "relationship":  "variant",
+                                            "note":  "New Header Change format for newer clients"
+                                        }
+                                    ],
+                        "notes":  "Old format used by older clients. Title and author are fixed-size ASCII.",
+                        "source":  {
+                                       "file":  "Projects/UOContent/Items/Books/BookPackets.cs",
+                                       "line":  32
+                                   }
+                    }
+                ]
+}

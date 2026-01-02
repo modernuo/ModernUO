@@ -1,0 +1,56 @@
+﻿{
+    "category":  "Movement",
+    "packets":  [
+                    {
+                        "id":  "0x02",
+                        "name":  "Movement Request",
+                        "description":  "Sent by the client when the player attempts to move in a direction. The server responds with either MovementAck (0x22) if successful or MovementRej (0x21) if blocked.",
+                        "direction":  "incoming",
+                        "isDynamic":  false,
+                        "size":  7,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x02",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Direction",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Movement direction (0-7). Bit 0x80 indicates running."
+                                       },
+                                       {
+                                           "name":  "Sequence",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Movement sequence number (1-255, wraps). Used for ack/rej matching."
+                                       },
+                                       {
+                                           "name":  "Fastwalk Key",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Anti-speedhack prevention key. Set to 0 if fastwalk prevention is disabled."
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0x21",
+                                            "relationship":  "rej",
+                                            "note":  "Sent if movement is blocked"
+                                        },
+                                        {
+                                            "id":  "0x22",
+                                            "relationship":  "ack",
+                                            "note":  "Sent if movement is successful"
+                                        }
+                                    ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingMovementPackets.cs",
+                                       "line":  83
+                                   }
+                    }
+                ]
+}

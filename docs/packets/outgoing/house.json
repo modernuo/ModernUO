@@ -1,0 +1,306 @@
+﻿{
+    "category":  "House",
+    "packets":  [
+                    {
+                        "id":  "0xD8",
+                        "name":  "House Design State Detailed",
+                        "description":  "Sends detailed house customization design data. Contains compressed plane data organized by floor level and component type. Tiles are encoded using grid-based or coordinate-based formats depending on their Z-height.",
+                        "direction":  "outgoing",
+                        "isDynamic":  true,
+                        "size":  "18+",
+                        "tags":  ["House"],
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xD8",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Compression Type",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x03",
+                                           "description":  "Compression type (always 3 = compressed)"
+                                       },
+                                       {
+                                           "name":  "Unknown",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x00",
+                                           "description":  "Unknown (always 0)"
+                                       },
+                                       {
+                                           "name":  "House Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the house foundation"
+                                       },
+                                       {
+                                           "name":  "Revision",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Design revision number"
+                                       },
+                                       {
+                                           "name":  "Tile Count",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Total number of tiles in the design"
+                                       },
+                                       {
+                                           "name":  "Buffer Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Length of remaining data (plane count + all plane sections)"
+                                       },
+                                       {
+                                           "name":  "Plane Count",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Number of plane/buffer sections that follow"
+                                       },
+                                       {
+                                           "name":  "Plane Sections",
+                                           "type":  "array",
+                                           "description":  "Each section has a 4-byte header followed by compressed tile data",
+                                           "loop":  {
+                                                        "countField":  "Plane Count",
+                                                        "fields":  [
+                                                                       {
+                                                                           "name":  "Section Header",
+                                                                           "type":  "uint",
+                                                                           "size":  4,
+                                                                           "description":  "Packed header: bits 28-31=mode, bits 24-27=planeZ, bits 16-23+(bits 4-7<<8)=decompLen, bits 8-15+(bits 0-3<<8)=compLen"
+                                                                       },
+                                                                       {
+                                                                           "name":  "Compressed Data",
+                                                                           "type":  "bytes",
+                                                                           "size":  "var",
+                                                                           "description":  "DEFLATE compressed tile data (length from header)"
+                                                                       }
+                                                                   ]
+                                                    }
+                                       }
+                                   ],
+                        "planeFormat":  {
+                                            "description":  "Tiles are organized into planes based on Z-height. Planes 0-8 use grid encoding; planes 9+ use explicit coordinates for overflow items.",
+                                            "headerDecoding":  {
+                                                                   "mode":  "(header >> 28) & 0x0F",
+                                                                   "planeZ":  "(header >> 24) & 0x0F",
+                                                                   "decompLen":  "((header & 0xFF0000) >> 16) | ((header & 0xF0) << 4)",
+                                                                   "compLen":  "((header & 0xFF00) >> 8) | ((header & 0x0F) << 8)"
+                                                               },
+                                            "planeZMapping":  [
+                                                                  { "plane":  0, "z":  0, "description":  "Ground floor" },
+                                                                  { "plane":  1, "z":  7, "description":  "1st storey (floor items)" },
+                                                                  { "plane":  2, "z":  27, "description":  "2nd storey (floor items)" },
+                                                                  { "plane":  3, "z":  47, "description":  "3rd storey (floor items)" },
+                                                                  { "plane":  4, "z":  67, "description":  "4th storey (floor items)" },
+                                                                  { "plane":  "5-8", "z":  "7/27/47/67", "description":  "Non-floor items per storey" },
+                                                                  { "plane":  "9+", "z":  "varies", "description":  "Overflow/stair buffers (explicit coords)" }
+                                                              ],
+                                            "encodingModes":  [
+                                                                  {
+                                                                      "mode":  0,
+                                                                      "name":  "Full Coordinates",
+                                                                      "bytesPerTile":  5,
+                                                                      "format":  "ushort itemId, sbyte x, sbyte y, sbyte z",
+                                                                      "description":  "Used for overflow buffers with non-standard Z heights"
+                                                                  },
+                                                                  {
+                                                                      "mode":  1,
+                                                                      "name":  "XY Coordinates",
+                                                                      "bytesPerTile":  4,
+                                                                      "format":  "ushort itemId, sbyte x, sbyte y",
+                                                                      "description":  "Z calculated: ((planeZ - 1) % 4) * 20 + 7"
+                                                                  },
+                                                                  {
+                                                                      "mode":  2,
+                                                                      "name":  "Grid-Based",
+                                                                      "bytesPerTile":  2,
+                                                                      "format":  "ushort itemId (0x0000 = empty)",
+                                                                      "description":  "X,Y from grid index: x = i / gridHeight, y = i % gridHeight"
+                                                                  }
+                                                              ],
+                                            "gridSizes":  [
+                                                              { "plane":  0, "width":  "width", "height":  "height", "notes":  "Full foundation footprint" },
+                                                              { "plane":  "1-4", "width":  "width - 1", "height":  "height - 2", "notes":  "Interior (floor items), offset by (1,1)" },
+                                                              { "plane":  "5-8", "width":  "width", "height":  "height - 1", "notes":  "Interior (non-floor items)" }
+                                                          ]
+                                        },
+                        "compression":  {
+                                            "algorithm":  "DEFLATE",
+                                            "notes":  "Raw DEFLATE compression (no zlib header/footer). Each plane buffer compressed independently. Max 750 items per overflow buffer (splits into multiple buffers if exceeded)."
+                                        },
+                        "related":  [
+                                        {
+                                            "id":  "0xBF/0x1D",
+                                            "relationship":  "related",
+                                            "note":  "Design State General provides revision info only"
+                                        },
+                                        {
+                                            "id":  "0xBF/0x20",
+                                            "relationship":  "related",
+                                            "note":  "Begin/End House Customization commands"
+                                        }
+                                    ],
+                        "clientVersion":  {
+                                              "min":  "4.0.0a",
+                                              "feature":  "AOS House Customization"
+                                          },
+                        "source":  {
+                                       "file":  "Projects/UOContent/Multis/Houses/HousePackets.cs",
+                                       "line":  93
+                                   }
+                    },
+                    {
+                        "id":  "0xBF",
+                        "subId":  "0x1D",
+                        "name":  "Design State General",
+                        "description":  "Sends house design revision information. Client requests full details if revision differs.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  13,
+                        "tags":  ["Extended Commands (0xBF)", "House"],
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xBF",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x000D",
+                                           "description":  "Packet length (13)"
+                                       },
+                                       {
+                                           "name":  "Sub-Command",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x001D",
+                                           "description":  "Design State General subcommand"
+                                       },
+                                       {
+                                           "name":  "House Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the house"
+                                       },
+                                       {
+                                           "name":  "Revision",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Design revision number"
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0xD8",
+                                            "relationship":  "related",
+                                            "note":  "Full design details requested if revision differs"
+                                        }
+                                    ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Multis/Houses/HousePackets.cs",
+                                       "line":  72
+                                   }
+                    },
+                    {
+                        "id":  "0xBF",
+                        "subId":  "0x20",
+                        "name":  "Begin House Customization",
+                        "description":  "Notifies client to enter house customization mode.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  17,
+                        "tags":  ["Extended Commands (0xBF)", "House"],
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xBF",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x0011",
+                                           "description":  "Packet length (17)"
+                                       },
+                                       {
+                                           "name":  "Sub-Command",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x0020",
+                                           "description":  "House Customization subcommand"
+                                       },
+                                       {
+                                           "name":  "House Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the house"
+                                       },
+                                       {
+                                           "name":  "Command",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x04",
+                                           "description":  "Begin customization command"
+                                       },
+                                       {
+                                           "name":  "Unknown 1",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x0000",
+                                           "description":  "Unknown (always 0)"
+                                       },
+                                       {
+                                           "name":  "Unknown 2",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0xFFFF",
+                                           "description":  "Unknown (always 0xFFFF)"
+                                       },
+                                       {
+                                           "name":  "Unknown 3",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0xFFFF",
+                                           "description":  "Unknown (always 0xFFFF)"
+                                       },
+                                       {
+                                           "name":  "Unknown 4",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xFF",
+                                           "description":  "Unknown (always 0xFF)"
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0xBF/0x20",
+                                            "relationship":  "variant",
+                                            "note":  "End House Customization uses command 0x05"
+                                        }
+                                    ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Multis/Houses/HousePackets.cs",
+                                       "line":  30
+                                   }
+                    }
+                ]
+}

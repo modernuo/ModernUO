@@ -1,0 +1,75 @@
+﻿{
+    "category":  "Assistant",
+    "packets":  [
+                    {
+                        "id":  "0xF0",
+                        "name":  "Assistant Handshake",
+                        "description":  "Server sends handshake to negotiate assistant features with Razor-style clients. Contains disallowed feature flags.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  12,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xF0",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x000C",
+                                           "description":  "Packet length (12)"
+                                       },
+                                       {
+                                           "name":  "Command",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xFE",
+                                           "description":  "Handshake command"
+                                       },
+                                       {
+                                           "name":  "Disallowed Features",
+                                           "type":  "ulong",
+                                           "size":  8,
+                                           "description":  "Bitmask of disallowed assistant features"
+                                       }
+                                   ],
+                        "notes":  "Used for assistant negotiation with Razor Community Edition and similar clients. If negotiation fails within 30 seconds, the server may kick the player.",
+                        "source":  {
+                                       "file":  "Projects/UOContent/Assistants/AssistantHandler.cs",
+                                       "line":  132
+                                   }
+                    },
+                    {
+                        "id":  "0xBE",
+                        "name":  "Assistant Version Request",
+                        "description":  "Server requests assistant version information from the client.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  3,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xBE",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x0003",
+                                           "description":  "Packet length (3)"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Assistants/AssistantHandler.cs",
+                                       "line":  122
+                                   }
+                    }
+                ]
+}

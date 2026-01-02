@@ -1,0 +1,142 @@
+﻿{
+    "category":  "Item",
+    "tags": ["Mobile"],
+    "packets":  [
+                    {
+                        "id":  "0x06",
+                        "name":  "Use Request (Double-Click)",
+                        "description":  "Sent when the player double-clicks an item or mobile. Can also trigger paperdoll if high bit is set.",
+                        "direction":  "incoming",
+                        "isDynamic":  false,
+                        "size":  5,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x06",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the target. If high bit (0x80000000) is set, opens player\u0027s paperdoll instead."
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingEntityPackets.cs",
+                                       "line":  61
+                                   }
+                    },
+                    {
+                        "id":  "0x09",
+                        "name":  "Look Request (Single-Click)",
+                        "description":  "Sent when the player single-clicks an item or mobile to see its name/properties.",
+                        "direction":  "incoming",
+                        "isDynamic":  false,
+                        "size":  5,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x09",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the target entity"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingEntityPackets.cs",
+                                       "line":  105
+                                   }
+                    },
+                    {
+                        "id":  "0xB6",
+                        "name":  "Object Help Request",
+                        "description":  "Sent when the player requests help/info about an object (Shift+Click or context menu).",
+                        "direction":  "incoming",
+                        "isDynamic":  false,
+                        "size":  9,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xB6",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the target entity"
+                                       },
+                                       {
+                                           "name":  "Unknown",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Unknown"
+                                       },
+                                       {
+                                           "name":  "Language",
+                                           "type":  "ascii",
+                                           "size":  3,
+                                           "description":  "Language code (e.g., \u0027ENU\u0027)"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingEntityPackets.cs",
+                                       "line":  32
+                                   }
+                    },
+                    {
+                        "id":  "0xD6",
+                        "name":  "Batch Query Properties",
+                        "description":  "Sent by the client to request Object Property Lists (tooltips) for multiple entities at once.",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "3 + (4 x entityCount)",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xD6",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Serials",
+                                           "type":  "array",
+                                           "description":  "List of entity serials to query",
+                                           "loop":  {
+                                                        "countField":  "(length-3)/4",
+                                                        "fields":  [
+                                                                       {
+                                                                           "name":  "Serial",
+                                                                           "type":  "uint",
+                                                                           "size":  4,
+                                                                           "description":  "Entity serial"
+                                                                       }
+                                                                   ]
+                                                    }
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingEntityPackets.cs",
+                                       "line":  154
+                                   }
+                    }
+                ]
+}

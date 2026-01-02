@@ -1,0 +1,221 @@
+﻿{
+    "category":  "Targeting",
+    "packets":  [
+                    {
+                        "id":  "0x6C",
+                        "name":  "Target Request",
+                        "description":  "Requests the client to select a target.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  19,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x6C",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Allow Ground",
+                                           "type":  "bool",
+                                           "size":  1,
+                                           "description":  "True = allow ground targeting"
+                                       },
+                                       {
+                                           "name":  "Target ID",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Target cursor ID for matching response"
+                                       },
+                                       {
+                                           "name":  "Flags",
+                                           "type":  "enum",
+                                           "enumType":  "sequential",
+                                           "size":  1,
+                                           "description":  "Target cursor flags",
+                                           "values":  [
+                                                          {
+                                                              "value":  0,
+                                                              "name":  "Neutral",
+                                                              "description":  "Neutral targeting (gray cursor)"
+                                                          },
+                                                          {
+                                                              "value":  1,
+                                                              "name":  "Harmful",
+                                                              "description":  "Harmful action (red cursor)"
+                                                          },
+                                                          {
+                                                              "value":  2,
+                                                              "name":  "Beneficial",
+                                                              "description":  "Beneficial action (green cursor)"
+                                                          },
+                                                          {
+                                                              "value":  3,
+                                                              "name":  "Cancel",
+                                                              "description":  "Cancel targeting"
+                                                          }
+                                                      ]
+                                       },
+                                       {
+                                           "name":  "Padding",
+                                           "type":  "byte[]",
+                                           "size":  12,
+                                           "description":  "Padding (zeros)"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingTargetPackets.cs",
+                                       "line":  57
+                                   }
+                    },
+                    {
+                        "id":  "0x99",
+                        "name":  "Multi Target Request",
+                        "description":  "Requests the client to place a multi (house/boat) structure.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  "Varies",
+                        "variants":  [
+                                         {
+                                             "version":  "pre-HighSeas",
+                                             "name":  "Classic",
+                                             "size":  26,
+                                             "fields":  [
+                                                            {
+                                                                "name":  "Packet ID",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0x99",
+                                                                "description":  "Packet identifier"
+                                                            },
+                                                            {
+                                                                "name":  "Allow Ground",
+                                                                "type":  "bool",
+                                                                "size":  1,
+                                                                "description":  "Allow ground targeting"
+                                                            },
+                                                            {
+                                                                "name":  "Target ID",
+                                                                "type":  "int",
+                                                                "size":  4,
+                                                                "description":  "Target cursor ID"
+                                                            },
+                                                            {
+                                                                "name":  "Flags",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "description":  "Target cursor flags"
+                                                            },
+                                                            {
+                                                                "name":  "Padding",
+                                                                "type":  "byte[]",
+                                                                "size":  11,
+                                                                "description":  "Padding (zeros)"
+                                                            },
+                                                            {
+                                                                "name":  "Multi ID",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Multi graphic ID"
+                                                            },
+                                                            {
+                                                                "name":  "Offset X",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "X offset for placement"
+                                                            },
+                                                            {
+                                                                "name":  "Offset Y",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Y offset for placement"
+                                                            },
+                                                            {
+                                                                "name":  "Offset Z",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Z offset for placement"
+                                                            }
+                                                        ]
+                                         },
+                                         {
+                                             "version":  "HighSeas+",
+                                             "name":  "High Seas Extended",
+                                             "condition":  "Client version \u003e= 7.0.9.0 (HighSeas)",
+                                             "size":  30,
+                                             "fields":  [
+                                                            {
+                                                                "name":  "Packet ID",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0x99",
+                                                                "description":  "Packet identifier"
+                                                            },
+                                                            {
+                                                                "name":  "Allow Ground",
+                                                                "type":  "bool",
+                                                                "size":  1,
+                                                                "description":  "Allow ground targeting"
+                                                            },
+                                                            {
+                                                                "name":  "Target ID",
+                                                                "type":  "int",
+                                                                "size":  4,
+                                                                "description":  "Target cursor ID"
+                                                            },
+                                                            {
+                                                                "name":  "Flags",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "description":  "Target cursor flags"
+                                                            },
+                                                            {
+                                                                "name":  "Padding",
+                                                                "type":  "byte[]",
+                                                                "size":  11,
+                                                                "description":  "Padding (zeros)"
+                                                            },
+                                                            {
+                                                                "name":  "Multi ID",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Multi graphic ID"
+                                                            },
+                                                            {
+                                                                "name":  "Offset X",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "X offset for placement"
+                                                            },
+                                                            {
+                                                                "name":  "Offset Y",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Y offset for placement"
+                                                            },
+                                                            {
+                                                                "name":  "Offset Z",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Z offset for placement"
+                                                            },
+                                                            {
+                                                                "name":  "Unknown",
+                                                                "type":  "int",
+                                                                "size":  4,
+                                                                "description":  "Unknown (HighSeas extension)"
+                                                            }
+                                                        ]
+                                         }
+                                     ],
+                        "clientVersion":  {
+                                              "feature":  "HighSeas adds 4 bytes"
+                                          },
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingTargetPackets.cs",
+                                       "line":  23
+                                   }
+                    }
+                ]
+}

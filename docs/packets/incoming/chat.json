@@ -1,0 +1,93 @@
+﻿{
+    "category":  "Chat",
+    "packets":  [
+                    {
+                        "id":  "0xB5",
+                        "name":  "Open Chat Window Request",
+                        "description":  "Client requests to open the chat window. Newer clients don\u0027t send chat username.",
+                        "direction":  "incoming",
+                        "isDynamic":  false,
+                        "size":  64,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xB5",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Reserved",
+                                           "type":  "byte[]",
+                                           "size":  63,
+                                           "description":  "Reserved/unused (newer clients don\u0027t send chat username)"
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0xB2",
+                                            "direction":  "outgoing",
+                                            "relationship":  "response",
+                                            "note":  "Server responds with Chat Message (OpenChatWindow command)"
+                                        }
+                                    ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Engines/Chat/ChatPackets.cs",
+                                       "line":  30
+                                   }
+                    },
+                    {
+                        "id":  "0xB3",
+                        "name":  "Chat Action",
+                        "description":  "Client sends chat action commands like sending messages, joining channels, etc.",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "8+",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xB3",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Language",
+                                           "type":  "ascii",
+                                           "size":  4,
+                                           "description":  "Language code (e.g., \u0027enu\u0027 for English)"
+                                       },
+                                       {
+                                           "name":  "Action ID",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Chat action ID"
+                                       },
+                                       {
+                                           "name":  "Parameter",
+                                           "type":  "utf16be",
+                                           "size":  "var",
+                                           "description":  "Action parameter (Big Endian Unicode)"
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0xB2",
+                                            "direction":  "outgoing",
+                                            "relationship":  "response",
+                                            "note":  "Server responds with Chat Message"
+                                        }
+                                    ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Engines/Chat/ChatPackets.cs",
+                                       "line":  51
+                                   }
+                    }
+                ]
+}

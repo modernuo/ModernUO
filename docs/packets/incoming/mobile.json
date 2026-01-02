@@ -1,0 +1,168 @@
+﻿{
+    "category":  "Mobile",
+    "packets":  [
+                    {
+                        "id":  "0x75",
+                        "name":  "Rename Request",
+                        "description":  "Client requests to rename a mobile (pet).",
+                        "direction":  "incoming",
+                        "isDynamic":  false,
+                        "size":  35,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x75",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Target Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of mobile to rename"
+                                       },
+                                       {
+                                           "name":  "New Name",
+                                           "type":  "ascii",
+                                           "size":  30,
+                                           "description":  "New name for the mobile"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingMobilePackets.cs",
+                                       "line":  32
+                                   }
+                    },
+                    {
+                        "id":  "0x98",
+                        "name":  "Mobile Name Request",
+                        "description":  "Client requests the name of a mobile.",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "var",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x98",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Mobile Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of mobile to query"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingMobilePackets.cs",
+                                       "line":  43
+                                   }
+                    },
+                    {
+                        "id":  "0xB8",
+                        "name":  "Profile Request",
+                        "description":  "Client requests to view or edit a mobile's profile.",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "Varies",
+                        "variants":  [
+                                         {
+                                             "name":  "Display Profile",
+                                             "condition":  "mode == Display (0)",
+                                             "size":  8,
+                                             "fields":  [
+                                                            {
+                                                                "name":  "Packet ID",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0xB8",
+                                                                "description":  "Packet identifier"
+                                                            },
+                                                            {
+                                                                "name":  "Length",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "description":  "Packet length"
+                                                            },
+                                                            {
+                                                                "name":  "Mode",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0",
+                                                                "description":  "Display mode"
+                                                            },
+                                                            {
+                                                                "name":  "Mobile Serial",
+                                                                "type":  "uint",
+                                                                "size":  4,
+                                                                "description":  "Serial of target mobile"
+                                                            }
+                                                        ]
+                                         },
+                                         {
+                                             "name":  "Edit Profile",
+                                             "condition":  "mode == Edit (1)",
+                                             "size":  "12+",
+                                             "fields":  [
+                                                            {
+                                                                "name":  "Packet ID",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0xB8",
+                                                                "description":  "Packet identifier"
+                                                            },
+                                                            {
+                                                                "name":  "Length",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "description":  "Packet length"
+                                                            },
+                                                            {
+                                                                "name":  "Mode",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "1",
+                                                                "description":  "Edit mode"
+                                                            },
+                                                            {
+                                                                "name":  "Mobile Serial",
+                                                                "type":  "uint",
+                                                                "size":  4,
+                                                                "description":  "Serial of target mobile"
+                                                            },
+                                                            {
+                                                                "name":  "Padding",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Unused padding"
+                                                            },
+                                                            {
+                                                                "name":  "Text Length",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "description":  "Length of text in characters"
+                                                            },
+                                                            {
+                                                                "name":  "Text",
+                                                                "type":  "utf16be",
+                                                                "description":  "New profile text (Big Endian Unicode)"
+                                                            }
+                                                        ]
+                                         }
+                                     ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingMobilePackets.cs",
+                                       "line":  53
+                                   }
+                    }
+                ]
+}

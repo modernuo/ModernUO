@@ -1,0 +1,279 @@
+﻿{
+    "category":  "Bulletin Board",
+    "packets":  [
+                    {
+                        "id":  "0x71",
+                        "name":  "Bulletin Board",
+                        "description":  "Bulletin board display and message packets.",
+                        "direction":  "outgoing",
+                        "isDynamic":  true,
+                        "size":  "Varies",
+                        "variants":  [
+                                         {
+                                             "name":  "Display Board",
+                                             "version":  "0x00",
+                                             "condition":  "command == 0x00",
+                                             "size":  38,
+                                             "fields":  [
+                                                            {
+                                                                "name":  "Packet ID",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0x71",
+                                                                "description":  "Packet identifier"
+                                                            },
+                                                            {
+                                                                "name":  "Length",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "value":  "38",
+                                                                "description":  "Packet length"
+                                                            },
+                                                            {
+                                                                "name":  "Command",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0x00",
+                                                                "description":  "Display board command"
+                                                            },
+                                                            {
+                                                                "name":  "Board Serial",
+                                                                "type":  "uint",
+                                                                "size":  4,
+                                                                "description":  "Serial of the bulletin board"
+                                                            },
+                                                            {
+                                                                "name":  "Board Name",
+                                                                "type":  "utf8",
+                                                                "size":  30,
+                                                                "description":  "Board name (null-padded to 30 bytes)"
+                                                            }
+                                                        ]
+                                         },
+                                         {
+                                             "name":  "Message Header",
+                                             "version":  "0x01",
+                                             "condition":  "command == 0x01",
+                                             "size":  "22+",
+                                             "fields":  [
+                                                            {
+                                                                "name":  "Packet ID",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0x71",
+                                                                "description":  "Packet identifier"
+                                                            },
+                                                            {
+                                                                "name":  "Length",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "description":  "Packet length"
+                                                            },
+                                                            {
+                                                                "name":  "Command",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0x01",
+                                                                "description":  "Message header command"
+                                                            },
+                                                            {
+                                                                "name":  "Board Serial",
+                                                                "type":  "uint",
+                                                                "size":  4,
+                                                                "description":  "Serial of the bulletin board"
+                                                            },
+                                                            {
+                                                                "name":  "Message Serial",
+                                                                "type":  "uint",
+                                                                "size":  4,
+                                                                "description":  "Serial of the message"
+                                                            },
+                                                            {
+                                                                "name":  "Thread Serial",
+                                                                "type":  "uint",
+                                                                "size":  4,
+                                                                "description":  "Serial of parent thread (0 if root)"
+                                                            },
+                                                            {
+                                                                "name":  "Poster Length",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "description":  "Length of poster name"
+                                                            },
+                                                            {
+                                                                "name":  "Poster",
+                                                                "type":  "utf8-t",
+                                                                "description":  "Poster name"
+                                                            },
+                                                            {
+                                                                "name":  "Subject Length",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "description":  "Length of subject"
+                                                            },
+                                                            {
+                                                                "name":  "Subject",
+                                                                "type":  "utf8-t",
+                                                                "description":  "Message subject"
+                                                            },
+                                                            {
+                                                                "name":  "Time Length",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "description":  "Length of time string"
+                                                            },
+                                                            {
+                                                                "name":  "Time",
+                                                                "type":  "utf8-t",
+                                                                "description":  "Posted time string"
+                                                            }
+                                                        ]
+                                         },
+                                         {
+                                             "name":  "Message Content",
+                                             "version":  "0x02",
+                                             "condition":  "command == 0x02",
+                                             "size":  "22+",
+                                             "fields":  [
+                                                            {
+                                                                "name":  "Packet ID",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0x71",
+                                                                "description":  "Packet identifier"
+                                                            },
+                                                            {
+                                                                "name":  "Length",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "description":  "Packet length"
+                                                            },
+                                                            {
+                                                                "name":  "Command",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0x02",
+                                                                "description":  "Message content command"
+                                                            },
+                                                            {
+                                                                "name":  "Board Serial",
+                                                                "type":  "uint",
+                                                                "size":  4,
+                                                                "description":  "Serial of the bulletin board"
+                                                            },
+                                                            {
+                                                                "name":  "Message Serial",
+                                                                "type":  "uint",
+                                                                "size":  4,
+                                                                "description":  "Serial of the message"
+                                                            },
+                                                            {
+                                                                "name":  "Poster Length",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "description":  "Length of poster name"
+                                                            },
+                                                            {
+                                                                "name":  "Poster",
+                                                                "type":  "utf8-t",
+                                                                "description":  "Poster name"
+                                                            },
+                                                            {
+                                                                "name":  "Subject Length",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "description":  "Length of subject"
+                                                            },
+                                                            {
+                                                                "name":  "Subject",
+                                                                "type":  "utf8-t",
+                                                                "description":  "Message subject"
+                                                            },
+                                                            {
+                                                                "name":  "Time Length",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "description":  "Length of time string"
+                                                            },
+                                                            {
+                                                                "name":  "Time",
+                                                                "type":  "utf8-t",
+                                                                "description":  "Posted time string"
+                                                            },
+                                                            {
+                                                                "name":  "Poster Body",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Poster body graphic"
+                                                            },
+                                                            {
+                                                                "name":  "Poster Hue",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Poster body hue"
+                                                            },
+                                                            {
+                                                                "name":  "Equip Count",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "description":  "Number of equipment items"
+                                                            },
+                                                            {
+                                                                "name":  "Equipment",
+                                                                "type":  "loop",
+                                                                "description":  "Poster\u0027s equipment",
+                                                                "loop":  {
+                                                                             "countField":  "equipCount",
+                                                                             "fields":  [
+                                                                                            {
+                                                                                                "name":  "Item ID",
+                                                                                                "type":  "short",
+                                                                                                "size":  2,
+                                                                                                "description":  "Equipment item graphic"
+                                                                                            },
+                                                                                            {
+                                                                                                "name":  "Hue",
+                                                                                                "type":  "short",
+                                                                                                "size":  2,
+                                                                                                "description":  "Equipment hue"
+                                                                                            }
+                                                                                        ]
+                                                                         }
+                                                            },
+                                                            {
+                                                                "name":  "Line Count",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "description":  "Number of text lines"
+                                                            },
+                                                            {
+                                                                "name":  "Lines",
+                                                                "type":  "loop",
+                                                                "description":  "Message lines",
+                                                                "loop":  {
+                                                                             "countField":  "lineCount",
+                                                                             "fields":  [
+                                                                                            {
+                                                                                                "name":  "Line Length",
+                                                                                                "type":  "byte",
+                                                                                                "size":  1,
+                                                                                                "description":  "Line length"
+                                                                                            },
+                                                                                            {
+                                                                                                "name":  "Line",
+                                                                                                "type":  "utf8",
+                                                                                                "description":  "Line text with 2-byte terminator (old client bug)"
+                                                                                            }
+                                                                                        ]
+                                                                         }
+                                                            }
+                                                        ]
+                                         }
+                                     ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Items/Bulletin Boards/BulletinBoardPackets.cs",
+                                       "line":  168
+                                   }
+                    }
+                ]
+}

@@ -1,0 +1,1043 @@
+﻿{
+    "category":  "Gump",
+    "packets":  [
+                    {
+                        "id":  "0x8B",
+                        "name":  "Display Sign Gump",
+                        "description":  "Displays a sign gump with text to the client.",
+                        "direction":  "outgoing",
+                        "isDynamic":  true,
+                        "size":  "15+",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x8B",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Sign serial"
+                                       },
+                                       {
+                                           "name":  "Gump ID",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Gump graphic ID"
+                                       },
+                                       {
+                                           "name":  "Unknown Length",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Length of unknown text + 1"
+                                       },
+                                       {
+                                           "name":  "Unknown",
+                                           "type":  "ascii-t",
+                                           "description":  "Unknown text"
+                                       },
+                                       {
+                                           "name":  "Caption Length",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Length of caption + 1"
+                                       },
+                                       {
+                                           "name":  "Caption",
+                                           "type":  "ascii-t",
+                                           "description":  "Caption text"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Gumps/Base/OutgoingGumpPackets.cs",
+                                       "line":  58
+                                   }
+                    },
+                    {
+                        "id":  "0xBF",
+                        "subId":  "0x04",
+                        "name":  "Close Gump",
+                        "description":  "Instructs client to close a specific gump.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  13,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xBF",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "13",
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Sub-Command",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x0004",
+                                           "description":  "Close Gump subcommand"
+                                       },
+                                       {
+                                           "name":  "Gump Type ID",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Gump type ID to close"
+                                       },
+                                       {
+                                           "name":  "Button ID",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Button ID (0 to close without response)"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Gumps/Base/OutgoingGumpPackets.cs",
+                                       "line":  83
+                                   }
+                    },
+                    {
+                        "id":  "0xDD",
+                        "name":  "Dynamic Gump (Compressed)",
+                        "description":  "Sends a custom gump dialog with compressed layout and text strings. Uses raw DEFLATE compression (no zlib headers).",
+                        "direction":  "outgoing",
+                        "isDynamic":  true,
+                        "size":  "23+",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xDD",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Gump serial (unique per gump instance)"
+                                       },
+                                       {
+                                           "name":  "Type ID",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Gump type ID (identifies the gump class)"
+                                       },
+                                       {
+                                           "name":  "X",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Screen X position"
+                                       },
+                                       {
+                                           "name":  "Y",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Screen Y position"
+                                       },
+                                       {
+                                           "name":  "Layout Compressed Length",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Compressed layout data length (includes +4)"
+                                       },
+                                       {
+                                           "name":  "Layout Uncompressed Length",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Uncompressed layout data length"
+                                       },
+                                       {
+                                           "name":  "Layout Data",
+                                           "type":  "bytes",
+                                           "size":  "var",
+                                           "description":  "DEFLATE compressed layout commands (ASCII, no zlib header/footer). Length = Layout Compressed Length - 4"
+                                       },
+                                       {
+                                           "name":  "String Count",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Number of text strings"
+                                       },
+                                       {
+                                           "name":  "Strings Compressed Length",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Compressed strings data length (includes +4)"
+                                       },
+                                       {
+                                           "name":  "Strings Uncompressed Length",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Uncompressed strings data length"
+                                       },
+                                       {
+                                           "name":  "Strings Data",
+                                           "type":  "bytes",
+                                           "size":  "var",
+                                           "description":  "DEFLATE compressed strings (no zlib header/footer). Length = Strings Compressed Length - 4"
+                                       }
+                                   ],
+                        "compression":  {
+                                            "algorithm":  "DEFLATE (raw)",
+                                            "notes":  "Uses libdeflate. NO zlib header (0x78 0x9C) or footer (adler32 checksum). Layout and strings are compressed separately."
+                                        },
+                        "layoutFormat":  {
+                                             "description":  "Layout is a custom ASCII text format. Each command is brace-wrapped: { command param1 param2 ... }",
+                                             "encoding":  "ASCII (arguments must be ASCII characters only)",
+                                             "commands":  [
+                                                              {
+                                                                  "name":  "Noclose",
+                                                                  "description":  "Prevent closing via right-click or ESC"
+                                                              },
+                                                              {
+                                                                  "name":  "Nomove",
+                                                                  "description":  "Prevent dragging the gump"
+                                                              },
+                                                              {
+                                                                  "name":  "Noresize",
+                                                                  "description":  "Prevent resizing (Enhanced Client)"
+                                                              },
+                                                              {
+                                                                  "name":  "Nodispose",
+                                                                  "description":  "Prevent server-side disposal"
+                                                              },
+                                                              {
+                                                                  "name":  "Page",
+                                                                  "description":  "Define page (0=base visible on all pages)",
+                                                                  "args":  [
+                                                                               {
+                                                                                   "name":  "N",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Page number (0 = always visible)"
+                                                                               }
+                                                                           ]
+                                                              },
+                                                              {
+                                                                  "name":  "Group",
+                                                                  "description":  "Radio button group ID",
+                                                                  "args":  [
+                                                                               {
+                                                                                   "name":  "Group ID",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Group identifier for radio buttons"
+                                                                               }
+                                                                           ]
+                                                              },
+                                                              {
+                                                                  "name":  "Resizepic",
+                                                                  "description":  "Resizable background panel (9-slice)",
+                                                                  "args":  [
+                                                                               {
+                                                                                   "name":  "X",
+                                                                                   "type":  "int",
+                                                                                   "description":  "X coordinate"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Y",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Y coordinate"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Gump ID",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Gump graphic ID for the background"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "W",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Width in pixels"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "H",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Height in pixels"
+                                                                               }
+                                                                           ]
+                                                              },
+                                                              {
+                                                                  "name":  "Gumppic",
+                                                                  "description":  "Static gump image",
+                                                                  "args":  [
+                                                                               {
+                                                                                   "name":  "X",
+                                                                                   "type":  "int",
+                                                                                   "description":  "X coordinate"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Y",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Y coordinate"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Gump ID",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Gump graphic ID"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Hue=N",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Optional hue override",
+                                                                                   "optional":  true
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Class=S",
+                                                                                   "type":  "string",
+                                                                                   "description":  "Optional CSS class (Enhanced Client)",
+                                                                                   "optional":  true
+                                                                               }
+                                                                           ]
+                                                              },
+                                                              {
+                                                                  "name":  "Gumppictiled",
+                                                                  "description":  "Tiled gump image",
+                                                                  "args":  [
+                                                                               {
+                                                                                   "name":  "X",
+                                                                                   "type":  "int",
+                                                                                   "description":  "X coordinate"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Y",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Y coordinate"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "W",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Width in pixels"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "H",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Height in pixels"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Gump ID",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Gump graphic ID to tile"
+                                                                               }
+                                                                           ]
+                                                              },
+                                                              {
+                                                                  "name":  "Tilepic",
+                                                                  "description":  "Item/tile graphic from art.mul",
+                                                                  "args":  [
+                                                                               {
+                                                                                   "name":  "X",
+                                                                                   "type":  "int",
+                                                                                   "description":  "X coordinate"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Y",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Y coordinate"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Item ID",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Item graphic ID from art.mul"
+                                                                               }
+                                                                           ]
+                                                              },
+                                                              {
+                                                                  "name":  "Tilepichue",
+                                                                  "description":  "Item graphic with hue",
+                                                                  "args":  [
+                                                                               {
+                                                                                   "name":  "X",
+                                                                                   "type":  "int",
+                                                                                   "description":  "X coordinate"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Y",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Y coordinate"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Item ID",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Item graphic ID"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Hue",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Color hue"
+                                                                               }
+                                                                           ]
+                                                              },
+                                                              {
+                                                                  "name":  "Picinpic",
+                                                                  "description":  "Cropped sprite from gump",
+                                                                  "args":  [
+                                                                               {
+                                                                                   "name":  "X",
+                                                                                   "type":  "int",
+                                                                                   "description":  "X coordinate"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Y",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Y coordinate"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Gump ID",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Gump graphic ID"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "W",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Display width"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "H",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Display height"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Sprite X",
+                                                                                   "type":  "int",
+                                                                                   "description":  "X offset within sprite"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Sprite Y",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Y offset within sprite"
+                                                                               }
+                                                                           ]
+                                                              },
+                                                              {
+                                                                  "name":  "Checkertrans",
+                                                                  "description":  "Checkerboard transparency region",
+                                                                  "args":  [
+                                                                               {
+                                                                                   "name":  "X",
+                                                                                   "type":  "int",
+                                                                                   "description":  "X coordinate"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Y",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Y coordinate"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "W",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Width in pixels"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "H",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Height in pixels"
+                                                                               }
+                                                                           ]
+                                                              },
+                                                              {
+                                                                  "name":  "Text",
+                                                                  "description":  "Static text label",
+                                                                  "args":  [
+                                                                               {
+                                                                                   "name":  "X",
+                                                                                   "type":  "int",
+                                                                                   "description":  "X coordinate"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Y",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Y coordinate"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Hue",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Text color hue"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "String Index",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Index into strings array"
+                                                                               }
+                                                                           ]
+                                                              },
+                                                              {
+                                                                  "name":  "Croppedtext",
+                                                                  "description":  "Cropped/clipped text",
+                                                                  "args":  [
+                                                                               {
+                                                                                   "name":  "X",
+                                                                                   "type":  "int",
+                                                                                   "description":  "X coordinate"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Y",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Y coordinate"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "W",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Crop width"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "H",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Crop height"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Hue",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Text color hue"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "String Index",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Index into strings array"
+                                                                               }
+                                                                           ]
+                                                              },
+                                                              {
+                                                                  "name":  "Htmlgump",
+                                                                  "description":  "HTML text area",
+                                                                  "args":  [
+                                                                               {
+                                                                                   "name":  "X",
+                                                                                   "type":  "int",
+                                                                                   "description":  "X coordinate"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Y",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Y coordinate"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "W",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Width in pixels"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "H",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Height in pixels"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "String Index",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Index into strings array (HTML content)"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "BG",
+                                                                                   "type":  "bool",
+                                                                                   "description":  "Display background panel"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Scroll",
+                                                                                   "type":  "bool",
+                                                                                   "description":  "Display scrollbar"
+                                                                               }
+                                                                           ]
+                                                              },
+                                                              {
+                                                                  "name":  "Xmfhtmlgump",
+                                                                  "description":  "Localized HTML from cliloc",
+                                                                  "args":  [
+                                                                               {
+                                                                                   "name":  "X",
+                                                                                   "type":  "int",
+                                                                                   "description":  "X coordinate"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Y",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Y coordinate"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "W",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Width in pixels"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "H",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Height in pixels"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Cliloc",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Cliloc string number"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "BG",
+                                                                                   "type":  "bool",
+                                                                                   "description":  "Display background panel"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Scroll",
+                                                                                   "type":  "bool",
+                                                                                   "description":  "Display scrollbar"
+                                                                               }
+                                                                           ]
+                                                              },
+                                                              {
+                                                                  "name":  "Xmfhtmlgumpcolor",
+                                                                  "description":  "Localized HTML with color",
+                                                                  "args":  [
+                                                                               {
+                                                                                   "name":  "X",
+                                                                                   "type":  "int",
+                                                                                   "description":  "X coordinate"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Y",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Y coordinate"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "W",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Width in pixels"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "H",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Height in pixels"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Cliloc",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Cliloc string number"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "BG",
+                                                                                   "type":  "bool",
+                                                                                   "description":  "Display background panel"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Scroll",
+                                                                                   "type":  "bool",
+                                                                                   "description":  "Display scrollbar"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Color",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Text color (RGB format)"
+                                                                               }
+                                                                           ]
+                                                              },
+                                                              {
+                                                                  "name":  "Xmfhtmltok",
+                                                                  "description":  "Localized HTML with arguments",
+                                                                  "args":  [
+                                                                               {
+                                                                                   "name":  "X",
+                                                                                   "type":  "int",
+                                                                                   "description":  "X coordinate"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Y",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Y coordinate"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "W",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Width in pixels"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "H",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Height in pixels"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "BG",
+                                                                                   "type":  "bool",
+                                                                                   "description":  "Display background panel"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Scroll",
+                                                                                   "type":  "bool",
+                                                                                   "description":  "Display scrollbar"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Color",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Text color (RGB format)"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Cliloc",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Cliloc string number"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "@Args@",
+                                                                                   "type":  "string",
+                                                                                   "description":  "Tab-separated cliloc arguments"
+                                                                               }
+                                                                           ]
+                                                              },
+                                                              {
+                                                                  "name":  "Button",
+                                                                  "description":  "Clickable button",
+                                                                  "args":  [
+                                                                               {
+                                                                                   "name":  "X",
+                                                                                   "type":  "int",
+                                                                                   "description":  "X coordinate"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Y",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Y coordinate"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Normal ID",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Gump ID for normal state"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Pressed ID",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Gump ID for pressed state"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Type",
+                                                                                   "type":  "enum",
+                                                                                   "description":  "Button type",
+                                                                                  "values":  [
+                                                                                      { "value":  "0", "name":  "PageChange", "description":  "Navigate to different page" },
+                                                                                      { "value":  "1", "name":  "ServerReply", "description":  "Send response to server" }
+                                                                                  ]
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Param",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Page number (Type=0) or unused (Type=1)"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Button ID",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Button ID sent to server on click"
+                                                                               }
+                                                                           ]
+                                                              },
+                                                              {
+                                                                  "name":  "Buttontileart",
+                                                                  "description":  "Button with item overlay",
+                                                                  "args":  [
+                                                                               {
+                                                                                   "name":  "X",
+                                                                                   "type":  "int",
+                                                                                   "description":  "X coordinate"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Y",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Y coordinate"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Normal ID",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Gump ID for normal state"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Pressed ID",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Gump ID for pressed state"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Type",
+                                                                                   "type":  "enum",
+                                                                                   "description":  "Button type",
+                                                                                  "values":  [
+                                                                                      { "value":  "0", "name":  "PageChange", "description":  "Navigate to different page" },
+                                                                                      { "value":  "1", "name":  "ServerReply", "description":  "Send response to server" }
+                                                                                  ]
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Param",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Page number (Type=0) or unused (Type=1)"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Button ID",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Button ID sent to server on click"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Item ID",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Item graphic ID to overlay"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Hue",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Item hue"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "W",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Item display width"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "H",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Item display height"
+                                                                               }
+                                                                           ]
+                                                              },
+                                                              {
+                                                                  "name":  "Checkbox",
+                                                                  "description":  "Checkbox toggle",
+                                                                  "args":  [
+                                                                               {
+                                                                                   "name":  "X",
+                                                                                   "type":  "int",
+                                                                                   "description":  "X coordinate"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Y",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Y coordinate"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Inactive ID",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Gump ID when unchecked"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Active ID",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Gump ID when checked"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "State",
+                                                                                   "type":  "bool",
+                                                                                   "description":  "Initial checked state"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Switch ID",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Switch ID sent to server"
+                                                                               }
+                                                                           ]
+                                                              },
+                                                              {
+                                                                  "name":  "Radio",
+                                                                  "description":  "Radio button (use with group)",
+                                                                  "args":  [
+                                                                               {
+                                                                                   "name":  "X",
+                                                                                   "type":  "int",
+                                                                                   "description":  "X coordinate"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Y",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Y coordinate"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Inactive ID",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Gump ID when unselected"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Active ID",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Gump ID when selected"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "State",
+                                                                                   "type":  "bool",
+                                                                                   "description":  "Initial selected state"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Switch ID",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Switch ID sent to server"
+                                                                               }
+                                                                           ]
+                                                              },
+                                                              {
+                                                                  "name":  "Textentry",
+                                                                  "description":  "Text input field",
+                                                                  "args":  [
+                                                                               {
+                                                                                   "name":  "X",
+                                                                                   "type":  "int",
+                                                                                   "description":  "X coordinate"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Y",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Y coordinate"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "W",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Width in pixels"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "H",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Height in pixels"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Hue",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Text color hue"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Entry ID",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Entry ID for server response"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "String Index",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Index into strings array (default text)"
+                                                                               }
+                                                                           ]
+                                                              },
+                                                              {
+                                                                  "name":  "Textentrylimited",
+                                                                  "description":  "Text input with max length",
+                                                                  "args":  [
+                                                                               {
+                                                                                   "name":  "X",
+                                                                                   "type":  "int",
+                                                                                   "description":  "X coordinate"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Y",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Y coordinate"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "W",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Width in pixels"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "H",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Height in pixels"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Hue",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Text color hue"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Entry ID",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Entry ID for server response"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "String Index",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Index into strings array (default text)"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "Max Len",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Maximum character length"
+                                                                               }
+                                                                           ]
+                                                              },
+                                                              {
+                                                                  "name":  "Tooltip",
+                                                                  "description":  "Tooltip on previous element",
+                                                                  "args":  [
+                                                                               {
+                                                                                   "name":  "Cliloc",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Cliloc string number for tooltip"
+                                                                               },
+                                                                               {
+                                                                                   "name":  "@Args@",
+                                                                                   "type":  "string",
+                                                                                   "description":  "Optional cliloc arguments",
+                                                                                   "optional":  true
+                                                                               }
+                                                                           ]
+                                                              },
+                                                              {
+                                                                  "name":  "Itemproperty",
+                                                                  "description":  "Display item\u0027s OPL tooltip",
+                                                                  "args":  [
+                                                                               {
+                                                                                   "name":  "Serial",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Item serial number"
+                                                                               }
+                                                                           ]
+                                                              },
+                                                              {
+                                                                  "name":  "Mastergump",
+                                                                  "description":  "Master gump ID override",
+                                                                  "args":  [
+                                                                               {
+                                                                                   "name":  "Gump ID",
+                                                                                   "type":  "int",
+                                                                                   "description":  "Master gump identifier"
+                                                                               }
+                                                                           ]
+                                                              }
+                                                          ]
+                                         },
+                        "stringsFormat":  {
+                                              "description":  "Array of UTF-16 BE encoded strings for text/textentry elements",
+                                              "encoding":  "UTF-16 Big Endian",
+                                              "entryFormat":  [
+                                                                  {
+                                                                      "name":  "Length",
+                                                                      "type":  "ushort",
+                                                                      "size":  2,
+                                                                      "description":  "String length in characters (Big Endian)"
+                                                                  },
+                                                                  {
+                                                                      "name":  "Text",
+                                                                      "type":  "utf16be",
+                                                                      "size":  "var",
+                                                                      "description":  "UTF-16 BE encoded text. Length = Length field * 2 bytes"
+                                                                  }
+                                                              ]
+                                          },
+                        "related":  [
+                                        {
+                                            "id":  "0xB1",
+                                            "relationship":  "response",
+                                            "note":  "Gump Response - client reply to button/checkbox/text"
+                                        }
+                                    ],
+                        "clientVersion":  {
+                                              "min":  "3.0.0",
+                                              "feature":  "Compressed gumps"
+                                          },
+                        "notes":  "Layout uses ASCII encoding only. The compressed lengths include a +4 offset. Decompression produces: layout as ASCII text, strings as length-prefixed UTF-16 BE entries.",
+                        "source":  {
+                                       "file":  "Projects/UOContent/Gumps/Base/DynamicGump.cs",
+                                       "line":  105
+                                   }
+                    }
+                ]
+}

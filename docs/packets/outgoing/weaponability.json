@@ -1,0 +1,89 @@
+﻿{
+    "category":  "Weapon Ability",
+    "packets":  [
+                    {
+                        "id":  "0xBF",
+                        "subId":  "0x21",
+                        "name":  "Clear Weapon Ability",
+                        "description":  "Clears the currently selected weapon ability.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  5,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xBF",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "5",
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Sub-Command",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x0021",
+                                           "description":  "Clear Weapon Ability subcommand"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Items/Weapons/Abilities/WeaponAbilityPackets.cs",
+                                       "line":  37
+                                   }
+                    },
+                    {
+                        "id":  "0xBF",
+                        "subId":  "0x25",
+                        "name":  "Toggle Special Ability",
+                        "description":  "Toggles a special weapon ability on or off.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  8,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xBF",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "8",
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Sub-Command",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x0025",
+                                           "description":  "Toggle Special Ability subcommand"
+                                       },
+                                       {
+                                           "name":  "Ability ID",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Ability ID"
+                                       },
+                                       {
+                                           "name":  "Active",
+                                           "type":  "bool",
+                                           "size":  1,
+                                           "description":  "True if ability is active"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Items/Weapons/Abilities/WeaponAbilityPackets.cs",
+                                       "line":  40
+                                   }
+                    }
+                ]
+}

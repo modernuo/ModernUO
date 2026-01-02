@@ -1,0 +1,534 @@
+﻿{
+    "category":  "Message",
+    "packets":  [
+                    {
+                        "id":  "0x15",
+                        "name":  "Follow Message",
+                        "description":  "Instructs client to follow one entity with another.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  9,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x15",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Follower Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the follower"
+                                       },
+                                       {
+                                           "name":  "Target Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the target to follow"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingMessagePackets.cs",
+                                       "line":  231
+                                   }
+                    },
+                    {
+                        "id":  "0x1C",
+                        "name":  "ASCII Message",
+                        "description":  "Server sends ASCII-encoded message to client.",
+                        "direction":  "outgoing",
+                        "isDynamic":  true,
+                        "size":  "var",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x1C",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of speaker (0xFFFFFFFF for system)"
+                                       },
+                                       {
+                                           "name":  "Graphic",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Body graphic of speaker"
+                                       },
+                                       {
+                                           "name":  "Type",
+                                           "type":  "enum",
+                                           "enumType":  "sequential",
+                                           "size":  1,
+                                           "description":  "Message type",
+                                           "values":  [
+                                                          {
+                                                              "value":  0,
+                                                              "name":  "Regular",
+                                                              "description":  "Normal speech"
+                                                          },
+                                                          {
+                                                              "value":  1,
+                                                              "name":  "System",
+                                                              "description":  "System message"
+                                                          },
+                                                          {
+                                                              "value":  2,
+                                                              "name":  "Emote",
+                                                              "description":  "Emote (*action*)"
+                                                          },
+                                                          {
+                                                              "value":  6,
+                                                              "name":  "Label",
+                                                              "description":  "Object label"
+                                                          },
+                                                          {
+                                                              "value":  7,
+                                                              "name":  "Focus",
+                                                              "description":  "Focused message"
+                                                          },
+                                                          {
+                                                              "value":  8,
+                                                              "name":  "Whisper",
+                                                              "description":  "Whisper"
+                                                          },
+                                                          {
+                                                              "value":  9,
+                                                              "name":  "Yell",
+                                                              "description":  "Yell"
+                                                          },
+                                                          {
+                                                              "value":  10,
+                                                              "name":  "Spell",
+                                                              "description":  "Spell words"
+                                                          },
+                                                          {
+                                                              "value":  13,
+                                                              "name":  "Guild",
+                                                              "description":  "Guild chat"
+                                                          },
+                                                          {
+                                                              "value":  14,
+                                                              "name":  "Alliance",
+                                                              "description":  "Alliance chat"
+                                                          },
+                                                          {
+                                                              "value":  15,
+                                                              "name":  "Command",
+                                                              "description":  "Command"
+                                                          }
+                                                      ]
+                                       },
+                                       {
+                                           "name":  "Hue",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Text color hue"
+                                       },
+                                       {
+                                           "name":  "Font",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Font ID"
+                                       },
+                                       {
+                                           "name":  "Name",
+                                           "type":  "ascii",
+                                           "size":  30,
+                                           "description":  "Speaker name"
+                                       },
+                                       {
+                                           "name":  "Text",
+                                           "type":  "ascii-t",
+                                           "description":  "Message text"
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0x03",
+                                            "relationship":  "request",
+                                            "note":  "ASCII Speech from client"
+                                        }
+                                    ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingMessagePackets.cs",
+                                       "line":  180
+                                   }
+                    },
+                    {
+                        "id":  "0xAE",
+                        "name":  "Unicode Message",
+                        "description":  "Server sends Unicode-encoded message to client.",
+                        "direction":  "outgoing",
+                        "isDynamic":  true,
+                        "size":  "var",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xAE",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of speaker (0xFFFFFFFF for system)"
+                                       },
+                                       {
+                                           "name":  "Graphic",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Body graphic of speaker"
+                                       },
+                                       {
+                                           "name":  "Type",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Message type (see 0x1C)"
+                                       },
+                                       {
+                                           "name":  "Hue",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Text color hue"
+                                       },
+                                       {
+                                           "name":  "Font",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Font ID"
+                                       },
+                                       {
+                                           "name":  "Language",
+                                           "type":  "ascii",
+                                           "size":  4,
+                                           "description":  "Language code (e.g., \u0027ENU\u0027)"
+                                       },
+                                       {
+                                           "name":  "Name",
+                                           "type":  "ascii",
+                                           "size":  30,
+                                           "description":  "Speaker name"
+                                       },
+                                       {
+                                           "name":  "Text",
+                                           "type":  "utf16be-t",
+                                           "description":  "Message text (Big Endian Unicode)"
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0xAD",
+                                            "relationship":  "request",
+                                            "note":  "Unicode Speech from client"
+                                        }
+                                    ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingMessagePackets.cs",
+                                       "line":  180
+                                   }
+                    },
+                    {
+                        "id":  "0xB7",
+                        "name":  "Help Response",
+                        "description":  "Server sends help text response to client.",
+                        "direction":  "outgoing",
+                        "isDynamic":  true,
+                        "size":  "var",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xB7",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of entity"
+                                       },
+                                       {
+                                           "name":  "Text",
+                                           "type":  "utf16be-t",
+                                           "description":  "Help text"
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0xB6",
+                                            "relationship":  "request",
+                                            "note":  "Object Help Request from client"
+                                        }
+                                    ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingMessagePackets.cs",
+                                       "line":  263
+                                   }
+                    },
+                    {
+                        "id":  "0xC1",
+                        "name":  "Localized Message",
+                        "description":  "Server sends a localized (cliloc) message to client.",
+                        "direction":  "outgoing",
+                        "isDynamic":  true,
+                        "size":  "var",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xC1",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of speaker"
+                                       },
+                                       {
+                                           "name":  "Graphic",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Body graphic of speaker"
+                                       },
+                                       {
+                                           "name":  "Type",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Message type (see 0x1C)"
+                                       },
+                                       {
+                                           "name":  "Hue",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Text color hue"
+                                       },
+                                       {
+                                           "name":  "Font",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Font ID"
+                                       },
+                                       {
+                                           "name":  "Cliloc Number",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Cliloc entry number"
+                                       },
+                                       {
+                                           "name":  "Name",
+                                           "type":  "ascii",
+                                           "size":  30,
+                                           "description":  "Speaker name"
+                                       },
+                                       {
+                                           "name":  "Arguments",
+                                           "type":  "utf16le-t",
+                                           "description":  "Tab-separated arguments for cliloc"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingMessagePackets.cs",
+                                       "line":  55
+                                   }
+                    },
+                    {
+                        "id":  "0xC2",
+                        "name":  "Unicode Prompt",
+                        "description":  "Server requests text input from client.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  21,
+                        "tags":  ["Menu"],
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xC2",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "21",
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Prompt serial"
+                                       },
+                                       {
+                                           "name":  "Prompt ID",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Prompt ID (same as serial)"
+                                       },
+                                       {
+                                           "name":  "Padding",
+                                           "type":  "byte[]",
+                                           "size":  10,
+                                           "description":  "Unused padding (zeros)"
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0x9A",
+                                            "direction":  "incoming",
+                                            "relationship":  "response",
+                                            "note":  "ASCII Prompt Response"
+                                        },
+                                        {
+                                            "id":  "0xC2",
+                                            "direction":  "incoming",
+                                            "relationship":  "response",
+                                            "note":  "Unicode Prompt Response"
+                                        }
+                                    ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingMessagePackets.cs",
+                                       "line":  246
+                                   }
+                    },
+                    {
+                        "id":  "0xCC",
+                        "name":  "Localized Message Affix",
+                        "description":  "Server sends a localized message with text prefix/suffix.",
+                        "direction":  "outgoing",
+                        "isDynamic":  true,
+                        "size":  "var",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xCC",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of speaker"
+                                       },
+                                       {
+                                           "name":  "Graphic",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Body graphic of speaker"
+                                       },
+                                       {
+                                           "name":  "Type",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Message type (see 0x1C)"
+                                       },
+                                       {
+                                           "name":  "Hue",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Text color hue"
+                                       },
+                                       {
+                                           "name":  "Font",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Font ID"
+                                       },
+                                       {
+                                           "name":  "Cliloc Number",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Cliloc entry number"
+                                       },
+                                       {
+                                           "name":  "Affix Type",
+                                           "type":  "enum",
+                                           "size":  1,
+                                           "description":  "How to apply the affix",
+                                           "values":  [
+                                                          {
+                                                              "value":  0,
+                                                              "name":  "Append",
+                                                              "description":  "Append affix to end"
+                                                          },
+                                                          {
+                                                              "value":  1,
+                                                              "name":  "Prepend",
+                                                              "description":  "Prepend affix to start"
+                                                          },
+                                                          {
+                                                              "value":  2,
+                                                              "name":  "System",
+                                                              "description":  "System message style"
+                                                          }
+                                                      ]
+                                       },
+                                       {
+                                           "name":  "Name",
+                                           "type":  "ascii",
+                                           "size":  30,
+                                           "description":  "Speaker name"
+                                       },
+                                       {
+                                           "name":  "Affix",
+                                           "type":  "ascii-t",
+                                           "description":  "Text to prepend/append"
+                                       },
+                                       {
+                                           "name":  "Arguments",
+                                           "type":  "utf16be-t",
+                                           "description":  "Tab-separated arguments for cliloc"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingMessagePackets.cs",
+                                       "line":  112
+                                   }
+                    }
+                ]
+}

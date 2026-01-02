@@ -1,0 +1,459 @@
+﻿{
+    "category":  "Effects",
+    "packets":  [
+                    {
+                        "id":  "0x54",
+                        "name":  "Sound Effect",
+                        "description":  "Plays a sound effect at a location.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  12,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x54",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Flags",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x01",
+                                           "description":  "Sound flags"
+                                       },
+                                       {
+                                           "name":  "Sound ID",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Sound effect ID"
+                                       },
+                                       {
+                                           "name":  "Volume",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "value":  "0x0000",
+                                           "description":  "Volume (unused)"
+                                       },
+                                       {
+                                           "name":  "X",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "X coordinate"
+                                       },
+                                       {
+                                           "name":  "Y",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Y coordinate"
+                                       },
+                                       {
+                                           "name":  "Z",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Z coordinate"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingEffectPackets.cs",
+                                       "line":  41
+                                   }
+                    },
+                    {
+                        "id":  "0x70",
+                        "name":  "Screen Effect",
+                        "description":  "Triggers a screen-wide visual effect (fade in/out).",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  28,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x70",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Effect Type",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x04",
+                                           "description":  "Effect type (4)"
+                                       },
+                                       {
+                                           "name":  "Padding1",
+                                           "type":  "byte[]",
+                                           "size":  8,
+                                           "description":  "Padding (zeros)"
+                                       },
+                                       {
+                                           "name":  "Type",
+                                           "type":  "enum",
+                                           "enumType":  "sequential",
+                                           "size":  2,
+                                           "description":  "Screen effect type",
+                                           "values":  [
+                                                          {
+                                                              "value":  0,
+                                                              "name":  "Fade Out",
+                                                              "description":  "Fade screen to black"
+                                                          },
+                                                          {
+                                                              "value":  1,
+                                                              "name":  "Fade In",
+                                                              "description":  "Fade screen from black"
+                                                          },
+                                                          {
+                                                              "value":  2,
+                                                              "name":  "Light Flash",
+                                                              "description":  "Light flash effect"
+                                                          },
+                                                          {
+                                                              "value":  3,
+                                                              "name":  "Fade In Out",
+                                                              "description":  "Fade out then in"
+                                                          },
+                                                          {
+                                                              "value":  4,
+                                                              "name":  "Darken Screen",
+                                                              "description":  "Darken screen"
+                                                          }
+                                                      ]
+                                       },
+                                       {
+                                           "name":  "Padding2",
+                                           "type":  "byte[]",
+                                           "size":  16,
+                                           "description":  "Padding (zeros)"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingEffectPackets.cs",
+                                       "line":  322
+                                   }
+                    },
+                    {
+                        "id":  "0xC0",
+                        "name":  "Hued Effect",
+                        "description":  "Displays a graphical effect with hue and render mode.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  36,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xC0",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Effect Type",
+                                           "type":  "enum",
+                                           "enumType":  "sequential",
+                                           "size":  1,
+                                           "description":  "Effect type",
+                                           "values":  [
+                                                          {
+                                                              "value":  0,
+                                                              "name":  "Moving",
+                                                              "description":  "Effect moves between two points"
+                                                          },
+                                                          {
+                                                              "value":  1,
+                                                              "name":  "Lightning",
+                                                              "description":  "Lightning bolt effect"
+                                                          },
+                                                          {
+                                                              "value":  2,
+                                                              "name":  "Fixed XYZ",
+                                                              "description":  "Effect at fixed location"
+                                                          },
+                                                          {
+                                                              "value":  3,
+                                                              "name":  "Fixed From",
+                                                              "description":  "Effect attached to source"
+                                                          }
+                                                      ]
+                                       },
+                                       {
+                                           "name":  "Source Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of source entity"
+                                       },
+                                       {
+                                           "name":  "Target Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of target entity"
+                                       },
+                                       {
+                                           "name":  "Item ID",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Effect graphic ID"
+                                       },
+                                       {
+                                           "name":  "Src X",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Source X coordinate"
+                                       },
+                                       {
+                                           "name":  "Src Y",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Source Y coordinate"
+                                       },
+                                       {
+                                           "name":  "Src Z",
+                                           "type":  "sbyte",
+                                           "size":  1,
+                                           "description":  "Source Z coordinate"
+                                       },
+                                       {
+                                           "name":  "Dst X",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Destination X coordinate"
+                                       },
+                                       {
+                                           "name":  "Dst Y",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Destination Y coordinate"
+                                       },
+                                       {
+                                           "name":  "Dst Z",
+                                           "type":  "sbyte",
+                                           "size":  1,
+                                           "description":  "Destination Z coordinate"
+                                       },
+                                       {
+                                           "name":  "Speed",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Effect speed"
+                                       },
+                                       {
+                                           "name":  "Duration",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Effect duration"
+                                       },
+                                       {
+                                           "name":  "Unknown1",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x00",
+                                           "description":  "Unknown"
+                                       },
+                                       {
+                                           "name":  "Unknown2",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x00",
+                                           "description":  "Unknown"
+                                       },
+                                       {
+                                           "name":  "Fixed Direction",
+                                           "type":  "bool",
+                                           "size":  1,
+                                           "description":  "Fixed direction"
+                                       },
+                                       {
+                                           "name":  "Explode",
+                                           "type":  "bool",
+                                           "size":  1,
+                                           "description":  "Explode on impact"
+                                       },
+                                       {
+                                           "name":  "Hue",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Effect hue"
+                                       },
+                                       {
+                                           "name":  "Render Mode",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Render mode"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingEffectPackets.cs",
+                                       "line":  175
+                                   }
+                    },
+                    {
+                        "id":  "0xC7",
+                        "name":  "Particle Effect",
+                        "description":  "Displays an advanced particle effect with extended parameters.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  49,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xC7",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Effect Type",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Effect type (see 0xC0)"
+                                       },
+                                       {
+                                           "name":  "Source Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of source entity"
+                                       },
+                                       {
+                                           "name":  "Target Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of target entity"
+                                       },
+                                       {
+                                           "name":  "Item ID",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Effect graphic ID"
+                                       },
+                                       {
+                                           "name":  "Src X",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Source X coordinate"
+                                       },
+                                       {
+                                           "name":  "Src Y",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Source Y coordinate"
+                                       },
+                                       {
+                                           "name":  "Src Z",
+                                           "type":  "sbyte",
+                                           "size":  1,
+                                           "description":  "Source Z coordinate"
+                                       },
+                                       {
+                                           "name":  "Dst X",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Destination X coordinate"
+                                       },
+                                       {
+                                           "name":  "Dst Y",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Destination Y coordinate"
+                                       },
+                                       {
+                                           "name":  "Dst Z",
+                                           "type":  "sbyte",
+                                           "size":  1,
+                                           "description":  "Destination Z coordinate"
+                                       },
+                                       {
+                                           "name":  "Speed",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Effect speed"
+                                       },
+                                       {
+                                           "name":  "Duration",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Effect duration"
+                                       },
+                                       {
+                                           "name":  "Unknown1",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x00",
+                                           "description":  "Unknown"
+                                       },
+                                       {
+                                           "name":  "Unknown2",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x00",
+                                           "description":  "Unknown"
+                                       },
+                                       {
+                                           "name":  "Fixed Direction",
+                                           "type":  "bool",
+                                           "size":  1,
+                                           "description":  "Fixed direction"
+                                       },
+                                       {
+                                           "name":  "Explode",
+                                           "type":  "bool",
+                                           "size":  1,
+                                           "description":  "Explode on impact"
+                                       },
+                                       {
+                                           "name":  "Hue",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Effect hue"
+                                       },
+                                       {
+                                           "name":  "Render Mode",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Render mode"
+                                       },
+                                       {
+                                           "name":  "Effect",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Particle effect ID"
+                                       },
+                                       {
+                                           "name":  "Explode Effect",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Explosion effect ID"
+                                       },
+                                       {
+                                           "name":  "Explode Sound",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Explosion sound ID"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Associated entity serial"
+                                       },
+                                       {
+                                           "name":  "Layer",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Effect layer"
+                                       },
+                                       {
+                                           "name":  "Unknown3",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Unknown"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingEffectPackets.cs",
+                                       "line":  58
+                                   }
+                    }
+                ]
+}

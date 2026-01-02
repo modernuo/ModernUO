@@ -1,0 +1,102 @@
+﻿{
+    "category":  "Combat",
+    "packets":  [
+                    {
+                        "id":  "0x0B",
+                        "name":  "Damage",
+                        "description":  "Shows damage dealt to a mobile (client 5.0.0a+).",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  7,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x0B",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of damaged mobile"
+                                       },
+                                       {
+                                           "name":  "Damage",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Damage amount (clamped 0-65535)"
+                                       }
+                                   ],
+                        "clientVersion":  {
+                                              "min":  "5.0.0a",
+                                              "feature":  "DamagePacket"
+                                          },
+                        "notes":  "For pre-5.0.0a clients, use 0xBF/0x22 instead.",
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingDamagePackets.cs",
+                                       "line":  34
+                                   }
+                    },
+                    {
+                        "id":  "0xBF/0x22",
+                        "name":  "Damage (Old)",
+                        "description":  "Shows damage dealt to a mobile (pre-5.0.0a clients).",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  11,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xBF",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "11",
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Sub-Command",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x22",
+                                           "description":  "Subcommand (Damage)"
+                                       },
+                                       {
+                                           "name":  "Unknown",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x01",
+                                           "description":  "Unknown (always 1)"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of damaged mobile"
+                                       },
+                                       {
+                                           "name":  "Damage",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Damage amount (clamped 0-255)"
+                                       }
+                                   ],
+                        "clientVersion":  {
+                                              "max":  "5.0.0a",
+                                              "notes":  "For clients before DamagePacket feature"
+                                          },
+                        "notes":  "Damage is capped at 255 for old clients.",
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingDamagePackets.cs",
+                                       "line":  40
+                                   }
+                    }
+                ]
+}

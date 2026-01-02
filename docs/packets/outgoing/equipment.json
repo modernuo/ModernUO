@@ -1,0 +1,173 @@
+﻿{
+    "category":  "Equipment",
+    "packets":  [
+                    {
+                        "id":  "0x2E",
+                        "name":  "Equip Update",
+                        "description":  "Notifies client that an item has been equipped on a mobile.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  15,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x2E",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Item Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the equipped item"
+                                       },
+                                       {
+                                           "name":  "Item ID",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Item graphic ID"
+                                       },
+                                       {
+                                           "name":  "Layer",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Equipment layer"
+                                       },
+                                       {
+                                           "name":  "Mobile Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the mobile wearing the item"
+                                       },
+                                       {
+                                           "name":  "Hue",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Item hue (may be overridden by SolidHueOverride)"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingEquipmentPackets.cs",
+                                       "line":  86
+                                   }
+                    },
+                    {
+                        "id":  "0xBF",
+                        "subId":  "0x10",
+                        "name":  "Display Equipment Info",
+                        "description":  "Displays detailed equipment information including crafter name and magical properties.",
+                        "direction":  "outgoing",
+                        "isDynamic":  true,
+                        "size":  "17+",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xBF",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Sub-Command",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x0010",
+                                           "description":  "Display Equipment Info subcommand"
+                                       },
+                                       {
+                                           "name":  "Item Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the item"
+                                       },
+                                       {
+                                           "name":  "Cliloc Number",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Base cliloc number for item name"
+                                       },
+                                       {
+                                           "name":  "Crafter Info",
+                                           "type":  "conditional",
+                                           "description":  "Crafter information (if present)",
+                                           "condition":  "crafterName.Length \u003e 0",
+                                           "fields":  [
+                                                          {
+                                                              "name":  "Crafted By",
+                                                              "type":  "int",
+                                                              "size":  4,
+                                                              "value":  "-3",
+                                                              "description":  "Crafter marker"
+                                                          },
+                                                          {
+                                                              "name":  "Crafter Name Length",
+                                                              "type":  "ushort",
+                                                              "size":  2,
+                                                              "description":  "Length of crafter name"
+                                                          },
+                                                          {
+                                                              "name":  "Crafter Name",
+                                                              "type":  "ascii",
+                                                              "description":  "Crafter name"
+                                                          }
+                                                      ]
+                                       },
+                                       {
+                                           "name":  "Unidentified",
+                                           "type":  "conditional",
+                                           "description":  "Unidentified marker",
+                                           "condition":  "unidentified",
+                                           "fields":  [
+                                                          {
+                                                              "name":  "Unidentified Marker",
+                                                              "type":  "int",
+                                                              "size":  4,
+                                                              "value":  "-4",
+                                                              "description":  "Unidentified marker"
+                                                          }
+                                                      ]
+                                       },
+                                       {
+                                           "name":  "Attributes",
+                                           "type":  "loop",
+                                           "description":  "Equipment attributes",
+                                           "loop":  {
+                                                        "countField":  "variable",
+                                                        "fields":  [
+                                                                       {
+                                                                           "name":  "Attribute Number",
+                                                                           "type":  "int",
+                                                                           "size":  4,
+                                                                           "description":  "Attribute cliloc number"
+                                                                       },
+                                                                       {
+                                                                           "name":  "Charges",
+                                                                           "type":  "short",
+                                                                           "size":  2,
+                                                                           "description":  "Charges (-1 if not applicable)"
+                                                                       }
+                                                                   ]
+                                                    }
+                                       },
+                                       {
+                                           "name":  "Terminator",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "value":  "-1",
+                                           "description":  "End of attributes marker"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingEquipmentPackets.cs",
+                                       "line":  37
+                                   }
+                    }
+                ]
+}

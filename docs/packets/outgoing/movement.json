@@ -1,0 +1,256 @@
+﻿{
+    "category":  "Movement",
+    "packets":  [
+                    {
+                        "id":  "0x21",
+                        "name":  "Movement Rejection",
+                        "description":  "Sent by the server when player movement is blocked (collision, teleport area, etc). Contains the corrected position the client should snap back to.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  8,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x21",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Sequence",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Sequence number of the rejected movement request"
+                                       },
+                                       {
+                                           "name":  "X",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Correct X coordinate"
+                                       },
+                                       {
+                                           "name":  "Y",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Correct Y coordinate"
+                                       },
+                                       {
+                                           "name":  "Direction",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Correct facing direction (0-7)"
+                                       },
+                                       {
+                                           "name":  "Z",
+                                           "type":  "sbyte",
+                                           "size":  1,
+                                           "description":  "Correct Z coordinate"
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0x02",
+                                            "relationship":  "request",
+                                            "note":  "The movement request that was rejected"
+                                        }
+                                    ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingMovementPackets.cs",
+                                       "line":  45
+                                   }
+                    },
+                    {
+                        "id":  "0x22",
+                        "name":  "Movement Acknowledgment",
+                        "description":  "Sent by the server to confirm successful player movement. Includes the player\u0027s current notoriety for display purposes.",
+                        "direction":  "outgoing",
+                        "noMerge":  true,
+                        "isDynamic":  false,
+                        "size":  3,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x22",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Sequence",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Sequence number of the accepted movement request"
+                                       },
+                                       {
+                                           "name":  "Notoriety",
+                                           "type":  "enum",
+                                           "enumType":  "sequential",
+                                           "size":  1,
+                                           "description":  "Player\u0027s current notoriety flag",
+                                           "values":  [
+                                                          {
+                                                              "value":  0,
+                                                              "name":  "Innocent",
+                                                              "description":  "Blue - innocent player"
+                                                          },
+                                                          {
+                                                              "value":  1,
+                                                              "name":  "Friend",
+                                                              "description":  "Green - ally/friend"
+                                                          },
+                                                          {
+                                                              "value":  2,
+                                                              "name":  "Attackable",
+                                                              "description":  "Gray - can be attacked"
+                                                          },
+                                                          {
+                                                              "value":  3,
+                                                              "name":  "Criminal",
+                                                              "description":  "Gray - criminal flag"
+                                                          },
+                                                          {
+                                                              "value":  4,
+                                                              "name":  "Enemy",
+                                                              "description":  "Orange - enemy"
+                                                          },
+                                                          {
+                                                              "value":  5,
+                                                              "name":  "Murderer",
+                                                              "description":  "Red - murderer"
+                                                          },
+                                                          {
+                                                              "value":  6,
+                                                              "name":  "Invulnerable",
+                                                              "description":  "Yellow - invulnerable"
+                                                          }
+                                                      ]
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0x02",
+                                            "relationship":  "request",
+                                            "note":  "The movement request that was accepted"
+                                        }
+                                    ],
+                        "notes":  "Not related to incoming 0x22 (Resynchronize) despite sharing the same packet ID.",
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingMovementPackets.cs",
+                                       "line":  42
+                                   }
+                    },
+                    {
+                        "id":  "0x97",
+                        "name":  "Move Player",
+                        "description":  "Server-initiated player movement. Forces the client to move in a direction (used for pushback effects, conveyors, etc).",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  2,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x97",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Direction",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Direction to move (0-7). Bit 0x80 indicates running."
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingMovementPackets.cs",
+                                       "line":  35
+                                   }
+                    },
+                    {
+                        "id":  "0xBF",
+                        "subId":  "0x26",
+                        "name":  "Speed Control",
+                        "description":  "Controls the player\u0027s movement speed. Used for mount speed changes, walk/run restrictions, etc.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  6,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xBF",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x0006",
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Sub-Command",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x0026",
+                                           "description":  "Sub-command for speed control"
+                                       },
+                                       {
+                                           "name":  "Speed Setting",
+                                           "type":  "enum",
+                                           "size":  1,
+                                           "description":  "Movement speed mode",
+                                           "values":  [
+                                               { "value":  "0", "name":  "Disable", "description":  "Normal speed (remove override)" },
+                                               { "value":  "1", "name":  "MountSpeed", "description":  "Force mounted movement speed" },
+                                               { "value":  "2", "name":  "WalkOnly", "description":  "Force walk speed only" }
+                                           ]
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingMovementPackets.cs",
+                                       "line":  31
+                                   }
+                    },
+                    {
+                        "id":  "0xF2",
+                        "name":  "Time Sync Response",
+                        "description":  "Server response to client time synchronization request. Contains tick counts for latency calculation.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  25,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xF2",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Tick Count1",
+                                           "type":  "long",
+                                           "size":  8,
+                                           "description":  "Server tick count"
+                                       },
+                                       {
+                                           "name":  "Tick Count2",
+                                           "type":  "long",
+                                           "size":  8,
+                                           "description":  "Server tick count"
+                                       },
+                                       {
+                                           "name":  "Tick Count3",
+                                           "type":  "long",
+                                           "size":  8,
+                                           "description":  "Server tick count"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingMovementPackets.cs",
+                                       "line":  63
+                                   }
+                    }
+                ]
+}

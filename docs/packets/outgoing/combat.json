@@ -1,0 +1,120 @@
+﻿{
+    "category":  "Combat",
+    "packets":  [
+                    {
+                        "id":  "0x2F",
+                        "name":  "Swing",
+                        "description":  "Notifies client of a melee swing between two mobiles.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  10,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x2F",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Unknown",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x00",
+                                           "description":  "Unknown"
+                                       },
+                                       {
+                                           "name":  "Attacker Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of attacker"
+                                       },
+                                       {
+                                           "name":  "Defender Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of defender"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingCombatPackets.cs",
+                                       "line":  23
+                                   }
+                    },
+                    {
+                        "id":  "0x72",
+                        "name":  "Set War Mode",
+                        "description":  "Sets the client\u0027s war/peace mode state.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  5,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x72",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Warmode",
+                                           "type":  "bool",
+                                           "size":  1,
+                                           "description":  "True = war mode, False = peace mode"
+                                       },
+                                       {
+                                           "name":  "Unknown1",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x00",
+                                           "description":  "Unknown"
+                                       },
+                                       {
+                                           "name":  "Unknown2",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x32",
+                                           "description":  "Unknown (50)"
+                                       },
+                                       {
+                                           "name":  "Unknown3",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x00",
+                                           "description":  "Unknown"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingCombatPackets.cs",
+                                       "line":  40
+                                   }
+                    },
+                    {
+                        "id":  "0xAA",
+                        "name":  "Change Combatant",
+                        "description":  "Notifies client of current combat target.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  5,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xAA",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Combatant Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of current combatant (0 = none)"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingCombatPackets.cs",
+                                       "line":  43
+                                   }
+                    }
+                ]
+}
