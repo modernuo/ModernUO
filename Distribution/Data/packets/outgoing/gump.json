@@ -720,9 +720,9 @@
                                                                                },
                                                                                {
                                                                                    "name":  "Type",
-                                                                                   "type":  "int",
+                                                                                   "type":  "enum",
                                                                                    "description":  "Button type",
-                                                                                  "enum":  [
+                                                                                  "values":  [
                                                                                       { "value":  "0", "name":  "PageChange", "description":  "Navigate to different page" },
                                                                                       { "value":  "1", "name":  "ServerReply", "description":  "Send response to server" }
                                                                                   ]
@@ -765,9 +765,9 @@
                                                                                },
                                                                                {
                                                                                    "name":  "Type",
-                                                                                   "type":  "int",
+                                                                                   "type":  "enum",
                                                                                    "description":  "Button type",
-                                                                                  "enum":  [
+                                                                                  "values":  [
                                                                                       { "value":  "0", "name":  "PageChange", "description":  "Navigate to different page" },
                                                                                       { "value":  "1", "name":  "ServerReply", "description":  "Send response to server" }
                                                                                   ]

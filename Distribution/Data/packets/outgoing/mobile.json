@@ -895,6 +895,14 @@
                                          }
                                      ],
                         "notes":  "ModernUO supports 15 AOS status values (indices 0-14). Enhanced Client extends this to 29 values (indices 0-28), but ModernUO does not support Enhanced Client.",
+                        "related":  [
+                                        {
+                                            "id":  "0x34",
+                                            "direction":  "incoming",
+                                            "relationship":  "request",
+                                            "note":  "Mobile Query (stats) triggers this response"
+                                        }
+                                    ],
                         "source":  {
                                        "file":  "Projects/Server/Network/Packets/OutgoingMobilePackets.cs",
                                        "line":  497
@@ -1624,20 +1632,20 @@
                                        },
                                        {
                                            "name":  "Healthbar Type",
-                                           "type":  "short",
+                                           "type":  "enum",
                                            "size":  2,
                                            "description":  "Type of healthbar overlay",
-                                           "enum":  [
+                                           "values":  [
                                                { "value":  "1", "name":  "Poison", "description":  "Poison status bar" },
                                                { "value":  "2", "name":  "Yellow", "description":  "Yellow/invulnerable bar" }
                                            ]
                                        },
                                        {
                                            "name":  "Level",
-                                           "type":  "byte",
+                                           "type":  "enum",
                                            "size":  1,
                                            "description":  "Status level",
-                                           "enum":  [
+                                           "values":  [
                                                { "value":  "0", "name":  "Off", "description":  "Status disabled" },
                                                { "value":  "1", "name":  "Level1/On", "description":  "Poison level 1 or yellow on" },
                                                { "value":  "2", "name":  "Level2", "description":  "Poison level 2 (Greater)" },

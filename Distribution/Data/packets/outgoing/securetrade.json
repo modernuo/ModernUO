@@ -258,6 +258,14 @@
                                                         ]
                                          }
                                      ],
+                        "related":  [
+                                        {
+                                            "id":  "0x6F",
+                                            "direction":  "incoming",
+                                            "relationship":  "request",
+                                            "note":  "Client trade actions"
+                                        }
+                                    ],
                         "source":  {
                                        "file":  "Projects/Server/Network/Packets/OutgoingSecureTradePackets.cs",
                                        "line":  32

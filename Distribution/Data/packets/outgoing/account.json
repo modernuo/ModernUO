@@ -18,10 +18,10 @@
                                        },
                                        {
                                            "name":  "Reason",
-                                           "type":  "byte",
+                                           "type":  "enum",
                                            "size":  1,
                                            "description":  "Rejection reason code",
-                                           "enum":  [
+                                           "values":  [
                                                { "value":  "0", "name":  "Invalid", "description":  "Invalid credentials" },
                                                { "value":  "1", "name":  "InUse", "description":  "Account already in use" },
                                                { "value":  "2", "name":  "Blocked", "description":  "Account blocked" },
@@ -1007,10 +1007,10 @@
                                        },
                                        {
                                            "name":  "Result",
-                                           "type":  "byte",
+                                           "type":  "enum",
                                            "size":  1,
                                            "description":  "Deletion result code",
-                                           "enum":  [
+                                           "values":  [
                                                { "value":  "0", "name":  "PasswordInvalid", "description":  "Password is invalid" },
                                                { "value":  "1", "name":  "CharNotExist", "description":  "Character does not exist" },
                                                { "value":  "2", "name":  "CharBeingPlayed", "description":  "Character is being played" },
@@ -1049,10 +1049,10 @@
                                        },
                                        {
                                            "name":  "Message ID",
-                                           "type":  "byte",
+                                           "type":  "enum",
                                            "size":  1,
                                            "description":  "Predefined message identifier",
-                                           "enum":  [
+                                           "values":  [
                                                { "value":  "1", "name":  "CharNoExist", "description":  "Character does not exist" },
                                                { "value":  "2", "name":  "CharExists", "description":  "Character already exists" },
                                                { "value":  "5", "name":  "CharInWorld", "description":  "Character is in world" },

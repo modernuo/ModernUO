@@ -337,6 +337,20 @@
                                                     }
                                        }
                                    ],
+                        "related":  [
+                                        {
+                                            "id":  "0x34",
+                                            "direction":  "incoming",
+                                            "relationship":  "request",
+                                            "note":  "Mobile Query (skills) triggers this response"
+                                        },
+                                        {
+                                            "id":  "0x3A",
+                                            "direction":  "incoming",
+                                            "relationship":  "related",
+                                            "note":  "Change Skill Lock may trigger update"
+                                        }
+                                    ],
                         "source":  {
                                        "file":  "Projects/Server/Network/Packets/OutgoingPlayerPackets.cs",
                                        "line":  121

@@ -2,6 +2,148 @@
     "category":  "Encoded Commands (0xD7)",
     "packets":  [
                     {
+                        "id":  "0xD7",
+                        "name":  "Encoded Command",
+                        "description":  "Wrapper packet for encoded commands (0xD7 subpackets). Used for house design, abilities, guild/quest requests.",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "var",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xD7",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Entity Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of target entity"
+                                       },
+                                       {
+                                           "name":  "Sub-Command",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Encoded command ID"
+                                       },
+                                       {
+                                           "name":  "Data",
+                                           "type":  "byte[]",
+                                           "description":  "Subcommand-specific data"
+                                       }
+                                   ],
+                        "subpackets":  [
+                                           {
+                                               "subId":  "0x02",
+                                               "name":  "Backup",
+                                               "description":  "Backup current house design state",
+                                               "direction":  "incoming"
+                                           },
+                                           {
+                                               "subId":  "0x03",
+                                               "name":  "Restore",
+                                               "description":  "Restore house design from backup",
+                                               "direction":  "incoming"
+                                           },
+                                           {
+                                               "subId":  "0x04",
+                                               "name":  "Commit",
+                                               "description":  "Commit house design changes",
+                                               "direction":  "incoming"
+                                           },
+                                           {
+                                               "subId":  "0x05",
+                                               "name":  "Delete Component",
+                                               "description":  "Delete component from house",
+                                               "direction":  "incoming"
+                                           },
+                                           {
+                                               "subId":  "0x06",
+                                               "name":  "Build Component",
+                                               "description":  "Place component in house",
+                                               "direction":  "incoming"
+                                           },
+                                           {
+                                               "subId":  "0x0C",
+                                               "name":  "Close Tool",
+                                               "description":  "Close house design tool",
+                                               "direction":  "incoming"
+                                           },
+                                           {
+                                               "subId":  "0x0D",
+                                               "name":  "Add Stairs",
+                                               "description":  "Add stairs to house design",
+                                               "direction":  "incoming"
+                                           },
+                                           {
+                                               "subId":  "0x0E",
+                                               "name":  "Sync Request",
+                                               "description":  "Synchronize house design state",
+                                               "direction":  "incoming"
+                                           },
+                                           {
+                                               "subId":  "0x10",
+                                               "name":  "Clear Floor",
+                                               "description":  "Clear a floor in house design",
+                                               "direction":  "incoming"
+                                           },
+                                           {
+                                               "subId":  "0x12",
+                                               "name":  "Change Floor Level",
+                                               "description":  "Change visible floor level",
+                                               "direction":  "incoming"
+                                           },
+                                           {
+                                               "subId":  "0x13",
+                                               "name":  "Add Roof",
+                                               "description":  "Add roof tile (SE+)",
+                                               "direction":  "incoming"
+                                           },
+                                           {
+                                               "subId":  "0x14",
+                                               "name":  "Delete Roof",
+                                               "description":  "Delete roof tile (SE+)",
+                                               "direction":  "incoming"
+                                           },
+                                           {
+                                               "subId":  "0x19",
+                                               "name":  "Set Weapon Ability",
+                                               "description":  "Select weapon special ability",
+                                               "direction":  "incoming"
+                                           },
+                                           {
+                                               "subId":  "0x1A",
+                                               "name":  "Revert",
+                                               "description":  "Revert house to original state",
+                                               "direction":  "incoming"
+                                           },
+                                           {
+                                               "subId":  "0x28",
+                                               "name":  "Guild Gump Request",
+                                               "description":  "Open guild gump",
+                                               "direction":  "incoming"
+                                           },
+                                           {
+                                               "subId":  "0x32",
+                                               "name":  "Quest Gump Request",
+                                               "description":  "Open quest/MLB gump",
+                                               "direction":  "incoming"
+                                           }
+                                       ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingPlayerPackets.cs",
+                                       "line":  457
+                                   }
+                    },
+                    {
                         "id":  "0xD7/0x02",
                         "subId":  "0x02",
                         "name":  "House Design: Backup",

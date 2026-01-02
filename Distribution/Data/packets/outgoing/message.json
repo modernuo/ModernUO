@@ -411,8 +411,15 @@
                         "related":  [
                                         {
                                             "id":  "0x9A",
+                                            "direction":  "incoming",
                                             "relationship":  "response",
                                             "note":  "ASCII Prompt Response"
+                                        },
+                                        {
+                                            "id":  "0xC2",
+                                            "direction":  "incoming",
+                                            "relationship":  "response",
+                                            "note":  "Unicode Prompt Response"
                                         }
                                     ],
                         "source":  {

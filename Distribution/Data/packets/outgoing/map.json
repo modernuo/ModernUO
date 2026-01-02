@@ -185,10 +185,10 @@
                                        },
                                        {
                                            "name":  "Command",
-                                           "type":  "byte",
+                                           "type":  "enum",
                                            "size":  1,
                                            "description":  "Map command type",
-                                           "enum":  [
+                                           "values":  [
                                                { "value":  "1", "name":  "AddPin", "description":  "Add a pin to the map" },
                                                { "value":  "5", "name":  "DisplayMap", "description":  "Display the map to client" },
                                                { "value":  "7", "name":  "SetEditable", "description":  "Set map editable state" }
@@ -215,9 +215,20 @@
                                    ],
                         "related":  [
                                         {
+                                            "id":  "0x56",
+                                            "direction":  "incoming",
+                                            "relationship":  "related",
+                                            "note":  "Client map pin commands"
+                                        },
+                                        {
                                             "id":  "0x90",
                                             "relationship":  "related",
-                                            "note":  "Map Details packet"
+                                            "note":  "Map Details packet (old)"
+                                        },
+                                        {
+                                            "id":  "0xF5",
+                                            "relationship":  "related",
+                                            "note":  "Map Details packet (new)"
                                         }
                                     ],
                         "source":  {
@@ -291,6 +302,12 @@
                                        }
                                    ],
                         "related":  [
+                                        {
+                                            "id":  "0x56",
+                                            "direction":  "both",
+                                            "relationship":  "related",
+                                            "note":  "Map pin commands (client and server)"
+                                        },
                                         {
                                             "id":  "0xF5",
                                             "relationship":  "variant",
@@ -368,10 +385,10 @@
                                        },
                                        {
                                            "name":  "Facet ID",
-                                           "type":  "short",
+                                           "type":  "enum",
                                            "size":  2,
                                            "description":  "Map facet/world identifier",
-                                           "enum":  [
+                                           "values":  [
                                                { "value":  "0", "name":  "Felucca", "description":  "Felucca facet" },
                                                { "value":  "1", "name":  "Trammel", "description":  "Trammel facet" },
                                                { "value":  "2", "name":  "Ilshenar", "description":  "Ilshenar facet" },
@@ -382,6 +399,12 @@
                                        }
                                    ],
                         "related":  [
+                                        {
+                                            "id":  "0x56",
+                                            "direction":  "both",
+                                            "relationship":  "related",
+                                            "note":  "Map pin commands (client and server)"
+                                        },
                                         {
                                             "id":  "0x90",
                                             "relationship":  "variant",

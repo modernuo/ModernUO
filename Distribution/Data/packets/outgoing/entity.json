@@ -192,10 +192,10 @@
                                                             },
                                                             {
                                                                 "name":  "Entity Type",
-                                                                "type":  "byte",
+                                                                "type":  "enum",
                                                                 "size":  1,
                                                                 "description":  "Entity type",
-                                                                "enum":  [
+                                                                "values":  [
                                                                     { "value":  "0", "name":  "Item", "description":  "World item" },
                                                                     { "value":  "1", "name":  "Mobile", "description":  "Mobile/creature" },
                                                                     { "value":  "2", "name":  "Multi", "description":  "Multi/structure" }
@@ -291,10 +291,10 @@
                                                             },
                                                             {
                                                                 "name":  "Entity Type",
-                                                                "type":  "byte",
+                                                                "type":  "enum",
                                                                 "size":  1,
                                                                 "description":  "Entity type",
-                                                                "enum":  [
+                                                                "values":  [
                                                                     { "value":  "0", "name":  "Item", "description":  "World item" },
                                                                     { "value":  "1", "name":  "Mobile", "description":  "Mobile/creature" },
                                                                     { "value":  "2", "name":  "Multi", "description":  "Multi/structure" }

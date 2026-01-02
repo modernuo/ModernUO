@@ -231,7 +231,7 @@
                     {
                         "id":  "0x3C",
                         "name":  "Container \u0026 Old Spellbook Content",
-                        "description":  "Sends full contents of a container. Also used for old-style spellbook content (pre-AOS clients without NewSpellbook support). For AOS+ clients with NewSpellbook, use 0xBF/0x1B instead for spellbooks.",
+                        "description":  "Sends full contents of a container. Also used for corpse contents and old-style spellbook content (pre-AOS clients). For AOS+ spellbooks, use 0xBF/0x1B instead.",
                         "direction":  "outgoing",
                         "isDynamic":  true,
                         "size":  "Varies",
@@ -420,11 +420,17 @@
                                             "id":  "0xBF/0x1B",
                                             "relationship":  "variant",
                                             "note":  "New Spellbook Content for AOS+ clients"
+                                        },
+                                        {
+                                            "id":  "0x89",
+                                            "relationship":  "related",
+                                            "note":  "Corpse Equipment (layer mappings for corpse items)"
                                         }
                                     ],
                         "clientVersion":  {
                                               "feature":  "ContainerGridLines (6.0.1.7+) adds gridLocation byte per item"
                                           },
+                        "notes":  "Also used for corpse contents. Corpses are special containers that display equipped items on a body graphic. Use with 0x89 Corpse Equipment for full corpse display.",
                         "source":  {
                                        "file":  "Projects/Server/Network/Packets/OutgoingContainerPackets.cs",
                                        "line":  169

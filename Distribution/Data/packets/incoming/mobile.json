@@ -2,95 +2,6 @@
     "category":  "Mobile",
     "packets":  [
                     {
-                        "id":  "0x6F",
-                        "name":  "Secure Trade",
-                        "description":  "Client interacts with a secure trade window.",
-                        "direction":  "incoming",
-                        "isDynamic":  true,
-                        "size":  "var",
-                        "fields":  [
-                                       {
-                                           "name":  "Packet ID",
-                                           "type":  "byte",
-                                           "size":  1,
-                                           "value":  "0x6F",
-                                           "description":  "Packet identifier"
-                                       },
-                                       {
-                                           "name":  "Length",
-                                           "type":  "ushort",
-                                           "size":  2,
-                                           "description":  "Packet length"
-                                       },
-                                       {
-                                           "name":  "Action",
-                                           "type":  "enum",
-                                           "enumType":  "sequential",
-                                           "size":  1,
-                                           "description":  "Trade action type",
-                                           "values":  [
-                                                          {
-                                                              "value":  1,
-                                                              "name":  "Cancel",
-                                                              "description":  "Cancel the trade"
-                                                          },
-                                                          {
-                                                              "value":  2,
-                                                              "name":  "Check",
-                                                              "description":  "Toggle accept checkbox"
-                                                          },
-                                                          {
-                                                              "value":  3,
-                                                              "name":  "Update Gold",
-                                                              "description":  "Update virtual gold/platinum amounts"
-                                                          }
-                                                      ]
-                                       },
-                                       {
-                                           "name":  "Container Serial",
-                                           "type":  "uint",
-                                           "size":  4,
-                                           "description":  "Serial of the trade container"
-                                       },
-                                       {
-                                           "name":  "Check Data",
-                                           "type":  "conditional",
-                                           "condition":  "action == 2",
-                                           "fields":  [
-                                                          {
-                                                              "name":  "Accepted",
-                                                              "type":  "int",
-                                                              "size":  4,
-                                                              "description":  "Non-zero if accepting trade"
-                                                          }
-                                                      ]
-                                       },
-                                       {
-                                           "name":  "Gold Data",
-                                           "type":  "conditional",
-                                           "condition":  "action == 3",
-                                           "fields":  [
-                                                          {
-                                                              "name":  "Gold",
-                                                              "type":  "int",
-                                                              "size":  4,
-                                                              "description":  "Gold amount to trade"
-                                                          },
-                                                          {
-                                                              "name":  "Platinum",
-                                                              "type":  "int",
-                                                              "size":  4,
-                                                              "description":  "Platinum amount to trade"
-                                                          }
-                                                      ]
-                                       }
-                                   ],
-                        "source":  {
-                                       "file":  "Projects/UOContent/Network/Packets/IncomingMobilePackets.cs",
-                                       "line":  93
-                                   }
-                    },
-                    {
                         "id":  "0x75",
                         "name":  "Rename Request",
                         "description":  "Client requests to rename a mobile (pet).",
@@ -159,74 +70,95 @@
                     {
                         "id":  "0xB8",
                         "name":  "Profile Request",
-                        "description":  "Client requests to view or edit a mobile\u0027s profile.",
+                        "description":  "Client requests to view or edit a mobile's profile.",
                         "direction":  "incoming",
                         "isDynamic":  true,
-                        "size":  "var",
-                        "fields":  [
-                                       {
-                                           "name":  "Packet ID",
-                                           "type":  "byte",
-                                           "size":  1,
-                                           "value":  "0xB8",
-                                           "description":  "Packet identifier"
-                                       },
-                                       {
-                                           "name":  "Length",
-                                           "type":  "ushort",
-                                           "size":  2,
-                                           "description":  "Packet length"
-                                       },
-                                       {
-                                           "name":  "Mode",
-                                           "type":  "enum",
-                                           "enumType":  "sequential",
-                                           "size":  1,
-                                           "description":  "Request mode",
-                                           "values":  [
-                                                          {
-                                                              "value":  0,
-                                                              "name":  "Display",
-                                                              "description":  "Request to view profile"
-                                                          },
-                                                          {
-                                                              "value":  1,
-                                                              "name":  "Edit",
-                                                              "description":  "Request to edit profile"
-                                                          }
-                                                      ]
-                                       },
-                                       {
-                                           "name":  "Mobile Serial",
-                                           "type":  "uint",
-                                           "size":  4,
-                                           "description":  "Serial of target mobile"
-                                       },
-                                       {
-                                           "name":  "Edit Data",
-                                           "type":  "conditional",
-                                           "condition":  "mode == 1",
-                                           "fields":  [
-                                                          {
-                                                              "name":  "Padding",
-                                                              "type":  "short",
-                                                              "size":  2,
-                                                              "description":  "Unused padding"
-                                                          },
-                                                          {
-                                                              "name":  "Text Length",
-                                                              "type":  "ushort",
-                                                              "size":  2,
-                                                              "description":  "Length of text in characters"
-                                                          },
-                                                          {
-                                                              "name":  "Text",
-                                                              "type":  "utf16be",
-                                                              "description":  "New profile text"
-                                                          }
-                                                      ]
-                                       }
-                                   ],
+                        "size":  "Varies",
+                        "variants":  [
+                                         {
+                                             "name":  "Display Profile",
+                                             "condition":  "mode == Display (0)",
+                                             "size":  8,
+                                             "fields":  [
+                                                            {
+                                                                "name":  "Packet ID",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0xB8",
+                                                                "description":  "Packet identifier"
+                                                            },
+                                                            {
+                                                                "name":  "Length",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "description":  "Packet length"
+                                                            },
+                                                            {
+                                                                "name":  "Mode",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0",
+                                                                "description":  "Display mode"
+                                                            },
+                                                            {
+                                                                "name":  "Mobile Serial",
+                                                                "type":  "uint",
+                                                                "size":  4,
+                                                                "description":  "Serial of target mobile"
+                                                            }
+                                                        ]
+                                         },
+                                         {
+                                             "name":  "Edit Profile",
+                                             "condition":  "mode == Edit (1)",
+                                             "size":  "12+",
+                                             "fields":  [
+                                                            {
+                                                                "name":  "Packet ID",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0xB8",
+                                                                "description":  "Packet identifier"
+                                                            },
+                                                            {
+                                                                "name":  "Length",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "description":  "Packet length"
+                                                            },
+                                                            {
+                                                                "name":  "Mode",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "1",
+                                                                "description":  "Edit mode"
+                                                            },
+                                                            {
+                                                                "name":  "Mobile Serial",
+                                                                "type":  "uint",
+                                                                "size":  4,
+                                                                "description":  "Serial of target mobile"
+                                                            },
+                                                            {
+                                                                "name":  "Padding",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Unused padding"
+                                                            },
+                                                            {
+                                                                "name":  "Text Length",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "description":  "Length of text in characters"
+                                                            },
+                                                            {
+                                                                "name":  "Text",
+                                                                "type":  "utf16be",
+                                                                "description":  "New profile text (Big Endian Unicode)"
+                                                            }
+                                                        ]
+                                         }
+                                     ],
                         "source":  {
                                        "file":  "Projects/UOContent/Network/Packets/IncomingMobilePackets.cs",
                                        "line":  53

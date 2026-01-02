@@ -198,10 +198,10 @@
                                        },
                                        {
                                            "name":  "Speed Setting",
-                                           "type":  "byte",
+                                           "type":  "enum",
                                            "size":  1,
                                            "description":  "Movement speed mode",
-                                           "enum":  [
+                                           "values":  [
                                                { "value":  "0", "name":  "Disable", "description":  "Normal speed (remove override)" },
                                                { "value":  "1", "name":  "MountSpeed", "description":  "Force mounted movement speed" },
                                                { "value":  "2", "name":  "WalkOnly", "description":  "Force walk speed only" }

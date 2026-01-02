@@ -62,6 +62,15 @@
       margin-left: 1rem;
       padding-left: 0.75rem;
     }
+    select {
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23d5bf74' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.75rem center;
+      padding-right: 2rem;
+    }
   </style>
 </head>
 
@@ -208,14 +217,6 @@
             </div>
           </div>
 
-          <!-- Related Packets -->
-          <div id="relatedSection" class="mb-6 hidden">
-            <h3 class="text-gold-500 font-medium mb-3">Related Packets</h3>
-            <div id="relatedPackets" class="space-y-2">
-              <!-- Populated by JavaScript -->
-            </div>
-          </div>
-
           <!-- Packet Variants -->
           <div id="variantsSection" class="mb-6 hidden">
             <div class="flex items-center justify-between mb-3">
@@ -225,6 +226,14 @@
               </select>
             </div>
             <div id="variantsList" class="space-y-4">
+              <!-- Populated by JavaScript -->
+            </div>
+          </div>
+
+          <!-- Related Packets -->
+          <div id="relatedSection" class="mb-6 hidden">
+            <h3 class="text-gold-500 font-medium mb-3">Related Packets</h3>
+            <div id="relatedPackets" class="space-y-2">
               <!-- Populated by JavaScript -->
             </div>
           </div>
@@ -583,15 +592,22 @@ function renderPacketList() {
 
   // Sort by ID
   filtered.sort((a, b) => {
-    const aId = parseInt(a.id, 16);
-    const bId = parseInt(b.id, 16);
+    // Extract base ID and subId (handles both "0xBF" and "0xBF/0x22" formats)
+    const aParts = a.id.split('/');
+    const bParts = b.id.split('/');
+    const aId = parseInt(aParts[0], 16);
+    const bId = parseInt(bParts[0], 16);
     if (aId !== bId) return aId - bId;
 
-    // If same ID, sort by subId
-    if (a.subId && b.subId) {
-      return parseInt(a.subId, 16) - parseInt(b.subId, 16);
+    // Get subId from property or embedded in id
+    const aSubId = a.subId || aParts[1];
+    const bSubId = b.subId || bParts[1];
+
+    // If same ID, sort by subId (base packet without subId comes first)
+    if (aSubId && bSubId) {
+      return parseInt(aSubId, 16) - parseInt(bSubId, 16);
     }
-    return a.subId ? 1 : -1;
+    return aSubId ? 1 : -1;
   });
 
   packetList.innerHTML = filtered.map(p => {
