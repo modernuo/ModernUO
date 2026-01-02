@@ -75,9 +75,38 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
     public GCHandle Handle => _handle;
 
-    // Speed Hack Prevention
-    internal long _movementCredit;
-    internal long _nextMovementTime;
+    // Speed Hack Prevention - Movement Queue System
+    internal struct QueuedMovement
+    {
+        public Direction Direction;
+        public int Sequence;
+        public long QueuedAt;
+    }
+
+    internal Queue<QueuedMovement> _movementQueue;          // Lazy initialized
+    internal long _movementCredit;                          // Credit buffer for timing jitter
+    internal long _nextMovementTime = Core.TickCount;       // When next movement is allowed
+    internal long _lastSuspiciousActivityLog = Core.TickCount - 60000;
+    internal int _sustainedQueueDepth;                      // Tracks sustained high queue depth
+    internal long _lastQueueDepthCheck;                     // Throttle depth check frequency
+    internal bool _hasQueuedMovements;                      // Fast check for Slice()
+
+    // RTT Measurement - Using ClientVersionRequest (0xBD) as probe
+    internal long _rttProbeTime;                            // When we sent the probe (0 = not waiting)
+    internal long _lastRtt;                                 // Most recent RTT measurement
+    internal long[] _rttHistory;                            // Rolling history (lazy init)
+    internal int _rttHistoryIndex;                          // Current position in history
+    internal long _rttVariance;                             // Calculated variance for stability
+    internal long _nextRttProbe;                            // When to send next probe
+
+    // Movement packet rate tracking (for speed hack detection)
+    internal long _movementWindowStart;                     // Start of current 1-second window
+    internal int _movementsInWindow;                        // Count in current window
+    internal int _peakMovementRate;                         // Highest rate seen (packets/sec)
+
+    // General packet throttle state (used for other throttled packets)
+    internal bool _isThrottled;
+
     private IAccount _account;
 
     internal enum ParserState
@@ -441,6 +470,208 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     {
         HuePickers?.Clear();
     }
+
+    /// <summary>
+    /// Resets movement state when sequence needs to be cleared (paralysis, teleport, map change, etc.)
+    /// </summary>
+    public void ResetMovementState()
+    {
+        _movementQueue?.Clear();
+        Sequence = 0;
+        _nextMovementTime = Core.TickCount;
+        _movementCredit = 0;
+        _hasQueuedMovements = false;
+        _sustainedQueueDepth = 0;
+    }
+
+    // RTT Measurement Configuration
+    private const int RttProbeInterval = 5000;  // Send probe every 5 seconds
+    private const int RttProbeJitter = 1000;    // Random jitter to keep probes staggered
+    private const int RttHistorySize = 8;       // Keep 8 samples
+    private const long StableVarianceThreshold = 2500; // Variance < 50ms std dev = stable
+
+    /// <summary>
+    /// Sends an RTT probe if enough time has passed since the last one.
+    /// Called periodically from the game loop after player is logged in.
+    /// </summary>
+    public void MaybeSendRttProbe()
+    {
+        // Only probe logged-in players
+        if (Mobile?.Deleted != false)
+        {
+            return;
+        }
+
+        var now = Core.TickCount;
+
+        // Don't send if we're still waiting for a response
+        if (_rttProbeTime > 0)
+        {
+            // Timeout after 10 seconds - connection is probably dead or very laggy
+            if (now - _rttProbeTime > 10000)
+            {
+                _rttProbeTime = 0;
+            }
+            return;
+        }
+
+        // First probe: stagger to avoid all players probing simultaneously
+        if (_nextRttProbe == 0)
+        {
+            _nextRttProbe = now + Utility.Random(RttProbeInterval);
+            return;
+        }
+
+        // Check if it's time to send a probe
+        if (now < _nextRttProbe)
+        {
+            return;
+        }
+
+        _rttProbeTime = now;
+        // Add jitter to keep probes staggered (prevents burst after long world saves)
+        _nextRttProbe = now + RttProbeInterval + Utility.Random(RttProbeJitter);
+        this.SendClientVersionRequest();
+    }
+
+    /// <summary>
+    /// Records an RTT measurement when ClientVersion response is received.
+    /// </summary>
+    public void RecordRttMeasurement()
+    {
+        if (_rttProbeTime <= 0)
+        {
+            return; // Not expecting a response (client-initiated version send)
+        }
+
+        var now = Core.TickCount;
+        var rtt = now - _rttProbeTime;
+        _rttProbeTime = 0;
+
+        // Sanity check - RTT should be positive and reasonable
+        if (rtt is <= 0 or > 10000)
+        {
+            return;
+        }
+
+        // Lazy init history
+        _rttHistory ??= new long[RttHistorySize];
+
+        // Update history
+        _rttHistory[_rttHistoryIndex++ & (RttHistorySize - 1)] = rtt;
+        _lastRtt = rtt;
+
+        // Recalculate variance
+        UpdateRttVariance();
+    }
+
+    /// <summary>
+    /// Calculates the variance of RTT measurements for connection stability assessment.
+    /// </summary>
+    private void UpdateRttVariance()
+    {
+        if (_rttHistory == null)
+        {
+            _rttVariance = 0;
+            return;
+        }
+
+        long sum = 0;
+        long sumSq = 0;
+        int count = 0;
+
+        for (int i = 0; i < RttHistorySize; i++)
+        {
+            var sample = _rttHistory[i];
+            if (sample > 0)
+            {
+                sum += sample;
+                sumSq += sample * sample;
+                count++;
+            }
+        }
+
+        if (count < 2)
+        {
+            _rttVariance = 0;
+            return;
+        }
+
+        var mean = sum / count;
+        _rttVariance = sumSq / count - mean * mean;
+    }
+
+    /// <summary>
+    /// Gets the average RTT from recent measurements.
+    /// </summary>
+    public long AverageRtt
+    {
+        get
+        {
+            if (_rttHistory == null)
+            {
+                return 0;
+            }
+
+            long sum = 0;
+            int count = 0;
+
+            for (int i = 0; i < RttHistorySize; i++)
+            {
+                var sample = _rttHistory[i];
+                if (sample > 0)
+                {
+                    sum += sample;
+                    count++;
+                }
+            }
+
+            return count > 0 ? sum / count : 0;
+        }
+    }
+
+    /// <summary>
+    /// Returns true if the connection has stable, low-variance latency.
+    /// </summary>
+    public bool HasStableConnection => _rttVariance > 0 && _rttVariance < StableVarianceThreshold;
+
+    /// <summary>
+    /// Tracks movement packet rate. Called for each movement packet received.
+    /// Returns the current rate (packets per second in the last window).
+    /// </summary>
+    public int TrackMovementRate()
+    {
+        var now = Core.TickCount;
+
+        // Check if we're in a new 1-second window
+        if (now - _movementWindowStart >= 1000)
+        {
+            // Record peak rate if this window had movements
+            if (_movementsInWindow > _peakMovementRate)
+            {
+                _peakMovementRate = _movementsInWindow;
+            }
+
+            // Start new window
+            _movementWindowStart = now;
+            _movementsInWindow = 1;
+            return 1;
+        }
+
+        // Same window, increment count
+        _movementsInWindow++;
+        return _movementsInWindow;
+    }
+
+    /// <summary>
+    /// Gets the current movement rate (packets in the current 1-second window).
+    /// </summary>
+    public int CurrentMovementRate => _movementsInWindow;
+
+    /// <summary>
+    /// Gets the peak movement rate observed for this session.
+    /// </summary>
+    public int PeakMovementRate => _peakMovementRate;
 
     public void LaunchBrowser(string url)
     {
@@ -983,6 +1214,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         while (_throttled.Count > 0)
         {
             var ns = _throttled.Dequeue();
+            ns._isThrottled = false;
             if (ns.Running)
             {
                 ns.HandleReceive(true);
@@ -992,8 +1224,16 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         // This is enqueued by HandleReceive if already throttled and still throttled
         while (_throttledPending.Count > 0)
         {
-            _throttled.Enqueue(_throttledPending.Dequeue());
+            var throttled = _throttledPending.Dequeue();
+            throttled._isThrottled = true;
+            _throttled.Enqueue(throttled);
         }
+
+        // Process queued movements at proper intervals
+        MovementThrottle.ProcessAllQueues();
+
+        // Send RTT probes to logged-in players
+        SendRttProbes();
 
         var count = _pollGroup.Poll(_polledStates);
 
@@ -1001,7 +1241,10 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         {
             for (var i = 0; i < count; i++)
             {
-                (_polledStates[i].Target as NetState)?.HandleReceive();
+                if (_polledStates[i].Target is NetState { _isThrottled: false } ns)
+                {
+                    ns.HandleReceive();
+                }
                 _polledStates[i] = default;
             }
         }
@@ -1060,6 +1303,17 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         catch (Exception ex)
         {
             TraceException(ex);
+        }
+    }
+
+    /// <summary>
+    /// Sends RTT probes to all logged-in players that are due for measurement.
+    /// </summary>
+    public static void SendRttProbes()
+    {
+        foreach (var ns in Instances)
+        {
+            ns.MaybeSendRttProbe();
         }
     }
 

@@ -107,6 +107,8 @@ public static class Core
 
     public static long TickCount => _tickCount;
 
+    internal static void UpdateTickCount() => _tickCount = GetTimestamp();
+
     public static DateTime Now => _now;
 
     public static long Uptime => TickCount - _firstTick;
