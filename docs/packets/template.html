@@ -975,11 +975,6 @@ function selectPacket(packet) {
   // Switch to detail view on mobile
   showMobileDetailView();
 
-  // Auto-collapse sidebar on medium screens
-  if (isMediumScreen()) {
-    collapseSidebar();
-  }
-
   // Update list selection
   document.querySelectorAll('.packet-item').forEach(el => {
     const idMatch = el.dataset.id === packet.id && (el.dataset.subid || '') === (packet.subId || '');
@@ -1609,7 +1604,13 @@ function loadFromHash() {
       (!direction || p.direction === direction)
     );
 
-    if (packet) selectPacket(packet);
+    if (packet) {
+      selectPacket(packet);
+      // Collapse sidebar on medium screens when loading with hash
+      if (isMediumScreen()) {
+        collapseSidebar();
+      }
+    }
   }
 }
 
