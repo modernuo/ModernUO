@@ -50,11 +50,28 @@ if (Test-Path $incomingDir) {
             $content = Get-Content $file.FullName -Raw -Encoding UTF8
             $data = $content | ConvertFrom-Json
             if ($data.packets) {
-                # Add category to each packet if not present
+                # Add category and merge tags for each packet
                 foreach ($packet in $data.packets) {
+                    # Add category if not present (backward compatibility)
                     if (-not $packet.category -and $data.category) {
                         $packet | Add-Member -NotePropertyName "category" -NotePropertyValue $data.category -Force
                     }
+
+                    # Merge tags: file-level + packet-level
+                    $fileTags = @()
+                    if ($data.tags) { $fileTags = @($data.tags) }
+
+                    $packetTags = @()
+                    if ($packet.tags) { $packetTags = @($packet.tags) }
+
+                    $allTags = @($fileTags + $packetTags) | Select-Object -Unique
+
+                    # Always include the primary category as a tag (first position)
+                    if ($data.category -and $data.category -notin $allTags) {
+                        $allTags = @($data.category) + $allTags
+                    }
+
+                    $packet | Add-Member -NotePropertyName "tags" -NotePropertyValue $allTags -Force
                 }
                 $allPackets.incoming += $data.packets
             }
@@ -76,11 +93,28 @@ if (Test-Path $outgoingDir) {
             $content = Get-Content $file.FullName -Raw -Encoding UTF8
             $data = $content | ConvertFrom-Json
             if ($data.packets) {
-                # Add category to each packet if not present
+                # Add category and merge tags for each packet
                 foreach ($packet in $data.packets) {
+                    # Add category if not present (backward compatibility)
                     if (-not $packet.category -and $data.category) {
                         $packet | Add-Member -NotePropertyName "category" -NotePropertyValue $data.category -Force
                     }
+
+                    # Merge tags: file-level + packet-level
+                    $fileTags = @()
+                    if ($data.tags) { $fileTags = @($data.tags) }
+
+                    $packetTags = @()
+                    if ($packet.tags) { $packetTags = @($packet.tags) }
+
+                    $allTags = @($fileTags + $packetTags) | Select-Object -Unique
+
+                    # Always include the primary category as a tag (first position)
+                    if ($data.category -and $data.category -notin $allTags) {
+                        $allTags = @($data.category) + $allTags
+                    }
+
+                    $packet | Add-Member -NotePropertyName "tags" -NotePropertyValue $allTags -Force
                 }
                 $allPackets.outgoing += $data.packets
             }

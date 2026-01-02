@@ -151,6 +151,7 @@
                         "direction":  "incoming",
                         "isDynamic":  true,
                         "size":  "var",
+                        "tags":  ["House"],
                         "fields":  [
                                        {
                                            "name":  "Packet ID",
@@ -192,6 +193,7 @@
                         "direction":  "incoming",
                         "isDynamic":  true,
                         "size":  "var",
+                        "tags":  ["House"],
                         "fields":  [
                                        {
                                            "name":  "Packet ID",
@@ -233,6 +235,7 @@
                         "direction":  "incoming",
                         "isDynamic":  true,
                         "size":  "var",
+                        "tags":  ["House"],
                         "fields":  [
                                        {
                                            "name":  "Packet ID",
@@ -274,6 +277,7 @@
                         "direction":  "incoming",
                         "isDynamic":  true,
                         "size":  "var",
+                        "tags":  ["House"],
                         "fields":  [
                                        {
                                            "name":  "Packet ID",
@@ -339,6 +343,7 @@
                         "direction":  "incoming",
                         "isDynamic":  true,
                         "size":  "var",
+                        "tags":  ["House"],
                         "fields":  [
                                        {
                                            "name":  "Packet ID",
@@ -398,6 +403,7 @@
                         "direction":  "incoming",
                         "isDynamic":  true,
                         "size":  "var",
+                        "tags":  ["House"],
                         "fields":  [
                                        {
                                            "name":  "Packet ID",
@@ -439,6 +445,7 @@
                         "direction":  "incoming",
                         "isDynamic":  true,
                         "size":  "var",
+                        "tags":  ["House"],
                         "fields":  [
                                        {
                                            "name":  "Packet ID",
@@ -498,6 +505,7 @@
                         "direction":  "incoming",
                         "isDynamic":  true,
                         "size":  "var",
+                        "tags":  ["House"],
                         "fields":  [
                                        {
                                            "name":  "Packet ID",
@@ -539,6 +547,7 @@
                         "direction":  "incoming",
                         "isDynamic":  true,
                         "size":  "var",
+                        "tags":  ["House"],
                         "fields":  [
                                        {
                                            "name":  "Packet ID",
@@ -580,6 +589,7 @@
                         "direction":  "incoming",
                         "isDynamic":  true,
                         "size":  "var",
+                        "tags":  ["House"],
                         "fields":  [
                                        {
                                            "name":  "Packet ID",
@@ -627,6 +637,7 @@
                         "direction":  "incoming",
                         "isDynamic":  true,
                         "size":  "var",
+                        "tags":  ["House"],
                         "fields":  [
                                        {
                                            "name":  "Packet ID",
@@ -696,6 +707,7 @@
                         "direction":  "incoming",
                         "isDynamic":  true,
                         "size":  "var",
+                        "tags":  ["House"],
                         "fields":  [
                                        {
                                            "name":  "Packet ID",
@@ -765,6 +777,7 @@
                         "direction":  "incoming",
                         "isDynamic":  true,
                         "size":  "var",
+                        "tags":  ["Combat"],
                         "fields":  [
                                        {
                                            "name":  "Packet ID",
@@ -824,6 +837,7 @@
                         "direction":  "incoming",
                         "isDynamic":  true,
                         "size":  "var",
+                        "tags":  ["House"],
                         "fields":  [
                                        {
                                            "name":  "Packet ID",
@@ -865,6 +879,7 @@
                         "direction":  "incoming",
                         "isDynamic":  true,
                         "size":  "var",
+                        "tags":  ["Guild"],
                         "fields":  [
                                        {
                                            "name":  "Packet ID",
@@ -906,6 +921,7 @@
                         "direction":  "incoming",
                         "isDynamic":  true,
                         "size":  "var",
+                        "tags":  ["Quest"],
                         "fields":  [
                                        {
                                            "name":  "Packet ID",

@@ -8,6 +8,7 @@
                         "direction":  "outgoing",
                         "isDynamic":  true,
                         "size":  "18+",
+                        "tags":  ["House"],
                         "fields":  [
                                        {
                                            "name":  "Packet ID",
@@ -168,6 +169,7 @@
                         "direction":  "outgoing",
                         "isDynamic":  false,
                         "size":  13,
+                        "tags":  ["Extended Commands (0xBF)", "House"],
                         "fields":  [
                                        {
                                            "name":  "Packet ID",
@@ -223,6 +225,7 @@
                         "direction":  "outgoing",
                         "isDynamic":  false,
                         "size":  17,
+                        "tags":  ["Extended Commands (0xBF)", "House"],
                         "fields":  [
                                        {
                                            "name":  "Packet ID",

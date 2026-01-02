@@ -114,9 +114,13 @@
           <button data-filter="outgoing" class="filter-btn flex-1 px-2 py-1 text-xs rounded bg-modern-dark-black text-outgoing border border-outgoing/50 hover:bg-outgoing/20">Out</button>
           <button data-filter="both" class="filter-btn flex-1 px-2 py-1 text-xs rounded bg-modern-dark-black text-both border border-both/50 hover:bg-both/20">Both</button>
         </div>
-        <select id="categoryFilter" class="w-full bg-modern-dark-black text-gold-300 px-3 py-2 rounded border border-gold-500/30 focus:outline-none focus:border-gold-500 text-sm">
-          <option value="">All Categories</option>
-        </select>
+        <div class="flex items-center gap-2">
+          <span class="text-gold-500/70 text-xs flex-shrink-0">Tags:</span>
+          <button id="clearTagsBtn" class="text-xs px-2 py-0.5 rounded bg-modern-dark-black text-gold-500/70 border border-gold-500/30 hover:border-gold-500 hover:text-gold-400 hidden">Clear</button>
+        </div>
+        <div id="tagFilter" class="flex flex-wrap gap-1 max-h-32 overflow-y-auto">
+          <!-- Tags will be populated by JavaScript -->
+        </div>
       </div>
 
       <!-- Packet List -->
@@ -508,26 +512,62 @@ packets.forEach(p => {
 
 // State
 let currentFilter = 'all';
-let currentCategory = '';
+let selectedTags = new Set();
 let currentSearch = '';
 let selectedPacket = null;
 
 // DOM elements
 const searchInput = document.getElementById('searchInput');
-const categoryFilter = document.getElementById('categoryFilter');
+const tagFilterContainer = document.getElementById('tagFilter');
+const clearTagsBtn = document.getElementById('clearTagsBtn');
 const packetList = document.getElementById('packetList');
 const packetCount = document.getElementById('packetCount');
 const welcomeMessage = document.getElementById('welcomeMessage');
 const packetContent = document.getElementById('packetContent');
 
-// Extract unique categories
-const categories = [...new Set(packets.map(p => p.category).filter(Boolean))].sort();
-categories.forEach(cat => {
-  const option = document.createElement('option');
-  option.value = cat;
-  option.textContent = cat;
-  categoryFilter.appendChild(option);
+// Extract all unique tags from all packets
+const allTags = [...new Set(
+  packets.flatMap(p => p.tags || [p.category]).filter(Boolean)
+)].sort();
+
+// Render tag filter badges
+function renderTagFilter() {
+  tagFilterContainer.innerHTML = allTags.map(tag => {
+    const isSelected = selectedTags.has(tag);
+    return `<button class="tag-badge text-xs px-2 py-0.5 rounded border transition-colors ${
+      isSelected
+        ? 'bg-gold-500 text-modern-black border-gold-500 font-medium'
+        : 'bg-modern-dark-black text-gold-300 border-gold-500/30 hover:border-gold-500'
+    }" data-tag="${tag}">${tag}</button>`;
+  }).join('');
+
+  // Show/hide clear button
+  clearTagsBtn.classList.toggle('hidden', selectedTags.size === 0);
+
+  // Add click handlers to tag badges
+  document.querySelectorAll('.tag-badge').forEach(badge => {
+    badge.addEventListener('click', () => {
+      const tag = badge.dataset.tag;
+      if (selectedTags.has(tag)) {
+        selectedTags.delete(tag);
+      } else {
+        selectedTags.add(tag);
+      }
+      renderTagFilter();
+      renderPacketList();
+    });
+  });
+}
+
+// Clear tags button handler
+clearTagsBtn.addEventListener('click', () => {
+  selectedTags.clear();
+  renderTagFilter();
+  renderPacketList();
 });
+
+// Initial render of tag filter
+renderTagFilter();
 
 // Update packet count
 function updatePacketCount() {
@@ -560,8 +600,11 @@ function getFilteredPackets() {
     // Direction filter
     if (currentFilter !== 'all' && p.direction !== currentFilter) return false;
 
-    // Category filter
-    if (currentCategory && p.category !== currentCategory) return false;
+    // Tag filter (OR logic: packet shown if it has ANY selected tag)
+    if (selectedTags.size > 0) {
+      const packetTags = p.tags || [p.category];
+      if (!packetTags.some(tag => selectedTags.has(tag))) return false;
+    }
 
     // Search filter
     if (currentSearch) {
@@ -631,7 +674,11 @@ function renderPacketList() {
           <span class="font-mono text-sm ${getDirectionClass(p.direction)}">${displayId}</span>
           <span class="text-gold-300/90 text-sm truncate">${p.name}</span>
         </div>
-        <div class="text-gold-500/50 text-xs mt-0.5">${p.category || 'Uncategorized'}</div>
+        <div class="flex flex-wrap gap-1 mt-0.5">
+          ${(p.tags || [p.category]).filter(Boolean).slice(0, 3).map(tag =>
+            `<span class="text-xs px-1 py-0 rounded bg-gold-500/10 text-gold-500/70">${tag}</span>`
+          ).join('')}${(p.tags || []).length > 3 ? `<span class="text-xs text-gold-500/50">+${(p.tags.length - 3)}</span>` : ''}
+        </div>
       </div>
     `;
   }).join('');
@@ -1370,11 +1417,6 @@ searchInput.addEventListener('input', (e) => {
   }, 150);
 });
 
-// Category filter handler
-categoryFilter.addEventListener('change', (e) => {
-  currentCategory = e.target.value;
-  renderPacketList();
-});
 
 // Keyboard navigation
 document.addEventListener('keydown', (e) => {

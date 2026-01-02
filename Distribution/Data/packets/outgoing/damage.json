@@ -1,5 +1,5 @@
 ﻿{
-    "category":  "Damage",
+    "category":  "Combat",
     "packets":  [
                     {
                         "id":  "0x0B",

@@ -235,6 +235,7 @@
                         "direction":  "outgoing",
                         "isDynamic":  true,
                         "size":  "Varies",
+                        "tags":  ["Spellbook", "Corpse"],
                         "variants":  [
                                          {
                                              "version":  "pre-6017",
@@ -444,6 +445,7 @@
                         "direction":  "outgoing",
                         "isDynamic":  false,
                         "size":  23,
+                        "tags":  ["Spell", "Spellbook", "Extended Commands (0xBF)"],
                         "fields":  [
                                        {
                                            "name":  "Packet ID",

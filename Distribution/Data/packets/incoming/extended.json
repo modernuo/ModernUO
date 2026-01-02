@@ -877,6 +877,7 @@
                         "direction":  "incoming",
                         "isDynamic":  true,
                         "size":  "var",
+                        "tags":  ["Spell"],
                         "fields":  [
                                        {
                                            "name":  "Packet ID",
@@ -931,6 +932,7 @@
                         "direction":  "incoming",
                         "isDynamic":  true,
                         "size":  "var",
+                        "tags":  ["House"],
                         "fields":  [
                                        {
                                            "name":  "Packet ID",
@@ -1089,6 +1091,7 @@
                         "direction":  "incoming",
                         "isDynamic":  true,
                         "size":  "var",
+                        "tags":  ["Spell"],
                         "fields":  [
                                        {
                                            "name":  "Packet ID",

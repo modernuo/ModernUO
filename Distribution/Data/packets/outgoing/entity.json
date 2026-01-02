@@ -1,5 +1,6 @@
 ﻿{
-    "category":  "Entity",
+    "category":  "Item",
+    "tags": ["Mobile"],
     "packets":  [
                     {
                         "id":  "0xD6",

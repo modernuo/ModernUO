@@ -369,11 +369,12 @@
                     },
                     {
                         "id":  "0xC2",
-                        "name":  "Prompt",
+                        "name":  "Unicode Prompt",
                         "description":  "Server requests text input from client.",
                         "direction":  "outgoing",
                         "isDynamic":  false,
                         "size":  21,
+                        "tags":  ["Menu"],
                         "fields":  [
                                        {
                                            "name":  "Packet ID",
