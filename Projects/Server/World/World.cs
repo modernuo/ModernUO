@@ -332,10 +332,6 @@ public static class World
             Persistence.SerializeAll();
             PauseSerializationThreads();
 
-            // Update our sense of time for InvokeWorldSave to have accurate time-keeping
-            Core.UpdateTickCount();
-            MovementThrottle._lastWorldSave = Core.TickCount;
-
             EventSink.InvokeWorldSave();
         }
         catch (Exception ex)
@@ -416,6 +412,7 @@ public static class World
     {
         WorldState = WorldState.Running;
         Persistence.PostWorldSaveAll(); // Process decay and safety queues
+        MovementThrottle.ResetAllMovementTiming(); // Prevent post-save movement rejection bursts
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

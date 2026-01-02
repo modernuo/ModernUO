@@ -270,7 +270,7 @@ public static class IncomingAccountPackets
 
         state.SendSupportedFeature();
 
-        state.Sequence = 0;
+        state.ResetMovementState();
 
         state.SendMobileUpdate(m);
         state.SendMobileUpdate(m);

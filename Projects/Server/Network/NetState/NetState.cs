@@ -75,13 +75,25 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
     public GCHandle Handle => _handle;
 
-    // Speed Hack Prevention
-    internal long _movementCredit;
-    internal long _nextMovementTime = Core.TickCount;
+    // Speed Hack Prevention - Movement Queue System
+    internal struct QueuedMovement
+    {
+        public Direction Direction;
+        public int Sequence;
+        public long QueuedAt;
+    }
+
+    internal Queue<QueuedMovement> _movementQueue;          // Lazy initialized
+    internal long _movementCredit;                          // Credit buffer for timing jitter
+    internal long _nextMovementTime = Core.TickCount;       // When next movement is allowed
     internal long _lastSuspiciousActivityLog = Core.TickCount - 60000;
-    internal long _lastSuspiciousActivityBroadcast = Core.TickCount - 2000;
-    internal int _consecutiveMovementThrottles;
+    internal int _sustainedQueueDepth;                      // Tracks sustained high queue depth
+    internal long _lastQueueDepthCheck;                     // Throttle depth check frequency
+    internal bool _hasQueuedMovements;                      // Fast check for Slice()
+
+    // General packet throttle state (used for other throttled packets)
     internal bool _isThrottled;
+
     private IAccount _account;
 
     internal enum ParserState
@@ -444,6 +456,19 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     public void ClearHuePickers()
     {
         HuePickers?.Clear();
+    }
+
+    /// <summary>
+    /// Resets movement state when sequence needs to be cleared (paralysis, teleport, map change, etc.)
+    /// </summary>
+    public void ResetMovementState()
+    {
+        _movementQueue?.Clear();
+        Sequence = 0;
+        _nextMovementTime = Core.TickCount;
+        _movementCredit = 0;
+        _hasQueuedMovements = false;
+        _sustainedQueueDepth = 0;
     }
 
     public void LaunchBrowser(string url)
@@ -1001,6 +1026,9 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
             throttled._isThrottled = true;
             _throttled.Enqueue(throttled);
         }
+
+        // Process queued movements at proper intervals
+        MovementThrottle.ProcessAllQueues();
 
         var count = _pollGroup.Poll(_polledStates);
 

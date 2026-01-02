@@ -14,38 +14,52 @@
  *************************************************************************/
 
 using System;
+using System.Collections.Generic;
 using Server.Logging;
+using Server.Mobiles;
 
 namespace Server.Network;
 
 /// <summary>
-/// A high-performance, token-bucket-based movement throttle
-/// combined with a lightweight, consecutive-throttle-based
-/// speed hack detection system.
+/// Movement throttle system using a hybrid credit + queue approach.
+/// Credit buffer absorbs small timing jitter from legitimate players.
+/// Queue handles larger bursts, draining at proper intervals.
+/// Speed hacks detected by sustained high queue depth.
 /// </summary>
 public static class MovementThrottle
 {
-    internal static long _lastWorldSave;
-    private static int _idleThreshold = 1200; // 1.2 seconds
-    private static int _consecutiveThrottleThreshold = 5;
-    private static int _suspiciousLogCooldown = 60000;          // 1 minute
-    private static int _suspiciousActivityBroadcastCooldown = 2000; // 2s
-    private const int _worldSaveCooldown = 1600;                // 3 seconds
-    private static long _lastCheck;
-    private static bool _isMounted;
-
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(MovementThrottle));
+
+    // Configuration values
+    private static int _maxCredit = 200;           // Max credit buffer (ms)
+    private static int _softQueueLimit = 6;        // Start logging when reached
+    private static int _hardQueueLimit = 10;       // Reject and clear at this limit
+    private static int _sustainedThreshold = 10;   // Sustained abuse threshold (seconds)
+    private static int _suspiciousLogCooldown = 60000; // Log cooldown (ms)
+
+    // Track NetStates with queued movements for efficient processing
+    private static readonly HashSet<NetState> _netStatesWithQueuedMovements = new(256);
 
     public static void Configure()
     {
-        _idleThreshold = ServerConfiguration.GetOrUpdateSetting(
-            "movementThrottle.idleThreshold",
-            _idleThreshold
+        _maxCredit = ServerConfiguration.GetOrUpdateSetting(
+            "movementThrottle.maxCredit",
+            _maxCredit
         );
 
-        _consecutiveThrottleThreshold = ServerConfiguration.GetOrUpdateSetting(
-            "movementThrottle.consecutiveThrottleThreshold",
-            _consecutiveThrottleThreshold
+        _softQueueLimit = ServerConfiguration.GetOrUpdateSetting(
+            "movementThrottle.softQueueLimit",
+            _softQueueLimit
+        );
+
+        _hardQueueLimit = ServerConfiguration.GetOrUpdateSetting(
+            "movementThrottle.hardQueueLimit",
+            _hardQueueLimit
+        );
+
+        _sustainedThreshold = ServerConfiguration.GetOrUpdateSetting(
+            "movementThrottle.sustainedThreshold",
+            _sustainedThreshold
         );
 
         _suspiciousLogCooldown = ServerConfiguration.GetOrUpdateSetting(
@@ -54,75 +68,370 @@ public static class MovementThrottle
         );
     }
 
-    public static unsafe void Initialize()
+    public static void Initialize()
     {
-        _lastWorldSave = Core.TickCount;
-        IncomingPackets.RegisterThrottler(0x02, &Throttle);
+        // No longer registering a packet-level throttle
+        // All validation now happens in MovementReq handler with full context
     }
 
-    public static bool Throttle(int packetId, NetState ns)
+    /// <summary>
+    /// Called from MovementReq packet handler. Validates timing and either
+    /// executes the movement immediately or queues it for later execution.
+    /// </summary>
+    public static void ValidateAndQueueMovement(NetState ns, Mobile mobile, Direction dir, int seq)
     {
-        var from = ns.Mobile;
-
-        if (from?.Deleted != false || from.AccessLevel > AccessLevel.Player)
+        if (mobile?.Deleted != false)
         {
-            return false;
+            return;
+        }
+
+        // Staff bypass all throttling
+        if (mobile.AccessLevel > AccessLevel.Player)
+        {
+            ExecuteMovement(ns, mobile, dir, seq);
+            return;
+        }
+
+        // Check for sequence mismatch (sequence was reset by paralysis, teleport, etc.)
+        if (ns.Sequence == 0 && seq != 0)
+        {
+            RejectAndReset(ns, mobile, seq);
+            return;
         }
 
         var now = Core.TickCount;
-        var nextMove = ns._nextMovementTime;
-        var delta = now - nextMove;
 
-        if (_lastCheck != now && delta < -16 || delta > 16 || _isMounted != from.Mounted)
+        // Calculate movement cost - this has FULL CONTEXT (mounted, running, direction change)
+        var cost = mobile.ComputeMovementSpeed(dir);
+
+        // Calculate timing delta: positive = on-time/late, negative = early
+        var delta = now - ns._nextMovementTime;
+
+        // If there are already queued movements, add to queue to maintain order
+        if (ns._hasQueuedMovements)
         {
-            logger.Debug("Movement Throttle Check: {Character} | Now: {Now} | NextMove: {NextMove} | Delta: {Delta} | Mounted: {Mounted}",
-                from.RawName,
-                now,
-                nextMove,
-                delta,
-                from.Mounted
-            );
+            QueueMovement(ns, dir, seq, now);
+            return;
         }
 
-        _isMounted = from.Mounted;
-
-        // Idle too long
-        if (now - _lastWorldSave > _worldSaveCooldown && delta < -16)
+        // Handle early packets with credit buffer
+        if (delta < 0)
         {
-            // LogSuspiciousActivity(ns, delta, 0);
-            return true;
+            // Packet arrived early
+            var earlyAmount = -delta;
+
+            // Can we absorb this with credit?
+            // Credit can go negative up to -_maxCredit (debt limit)
+            if (ns._movementCredit - earlyAmount >= -_maxCredit)
+            {
+                // Use credit to cover early arrival
+                ns._movementCredit -= earlyAmount;
+                // Execute immediately since credit covers it
+                ExecuteMovement(ns, mobile, dir, seq);
+                return;
+            }
+
+            // Credit exhausted - must queue
+            QueueMovement(ns, dir, seq, now);
+            return;
         }
 
-        _lastCheck = now;
-        ns._nextMovementTime = now;
-        return false;
+        // On-time or late - rebuild credit (capped at max)
+        if (delta > 0)
+        {
+            ns._movementCredit = Math.Min(ns._movementCredit + delta, _maxCredit);
+        }
+
+        // Execute immediately
+        ExecuteMovement(ns, mobile, dir, seq);
     }
 
-    private static void LogSuspiciousActivity(NetState ns, long cost, long credit)
+    /// <summary>
+    /// Executes a single movement and updates state.
+    /// </summary>
+    private static void ExecuteMovement(NetState ns, Mobile mobile, Direction dir, int seq)
     {
-        var now = Core.TickCount;
-        var from = ns.Mobile;
-        string name = null;
-
-        if (now - ns._lastSuspiciousActivityLog >= _suspiciousLogCooldown)
+        if (!mobile.Move(dir))
         {
-            ns._lastSuspiciousActivityLog = now;
-            name = from.RawName;
-            logger.Warning(
-                "Potential speed hack detected: {Character} | " +
-                "Cost: {Cost}ms | Credit: {Credit}ms | " +
-                "Consecutive Throttles: {Count}",
-                name,
-                cost,
-                credit,
-                ns._consecutiveMovementThrottles
-            );
+            // Movement failed (blocked, paralyzed, frozen, etc.)
+            RejectAndReset(ns, mobile, seq);
+            return;
         }
 
-        if (now - ns._lastSuspiciousActivityBroadcast >= _suspiciousActivityBroadcastCooldown)
+        // Success - Mobile.Move() already updated _nextMovementTime and sent ack
+        // Update sequence
+        var newSeq = seq + 1;
+        if (newSeq == 256)
         {
-            ns._lastSuspiciousActivityBroadcast = now;
-            World.Broadcast(0x35, true, $"Staff Alert: Potential speed hack detected for character {name ?? from.RawName}.");
+            newSeq = 1;
+        }
+        ns.Sequence = newSeq;
+    }
+
+    /// <summary>
+    /// Queues a movement for later execution.
+    /// </summary>
+    private static void QueueMovement(NetState ns, Direction dir, int seq, long now)
+    {
+        // Lazy initialize queue
+        ns._movementQueue ??= new Queue<NetState.QueuedMovement>(_hardQueueLimit);
+
+        // Check hard limit
+        if (ns._movementQueue.Count >= _hardQueueLimit)
+        {
+            LogQueueOverflow(ns);
+            RejectAndReset(ns, ns.Mobile, seq);
+            return;
+        }
+
+        // Check soft limit for abuse tracking
+        if (ns._movementQueue.Count >= _softQueueLimit)
+        {
+            TrackSustainedQueueDepth(ns);
+        }
+
+        // Enqueue
+        ns._movementQueue.Enqueue(new NetState.QueuedMovement
+        {
+            Direction = dir,
+            Sequence = seq,
+            QueuedAt = now
+        });
+
+        ns._hasQueuedMovements = true;
+        _netStatesWithQueuedMovements.Add(ns);
+    }
+
+    /// <summary>
+    /// Rejects a movement and resets movement state.
+    /// </summary>
+    private static void RejectAndReset(NetState ns, Mobile mobile, int seq)
+    {
+        ns.SendMovementRej(seq, mobile);
+        ns.ResetMovementState();
+        _netStatesWithQueuedMovements.Remove(ns);
+    }
+
+    /// <summary>
+    /// Processes queued movements for all NetStates. Called from NetState.Slice().
+    /// </summary>
+    public static void ProcessAllQueues()
+    {
+        if (_netStatesWithQueuedMovements.Count == 0)
+        {
+            return;
+        }
+
+        // Process each NetState with queued movements
+        // Use a snapshot to avoid modification during iteration
+        var toProcess = new List<NetState>(_netStatesWithQueuedMovements);
+
+        foreach (var ns in toProcess)
+        {
+            if (!ns.Running)
+            {
+                _netStatesWithQueuedMovements.Remove(ns);
+                continue;
+            }
+
+            ProcessMovementQueue(ns);
+        }
+    }
+
+    /// <summary>
+    /// Processes the movement queue for a single NetState.
+    /// </summary>
+    public static void ProcessMovementQueue(NetState ns)
+    {
+        var mobile = ns.Mobile;
+        if (mobile?.Deleted != false)
+        {
+            ClearQueue(ns);
+            return;
+        }
+
+        // Staff don't queue
+        if (mobile.AccessLevel > AccessLevel.Player)
+        {
+            DrainQueueImmediately(ns, mobile);
+            return;
+        }
+
+        var now = Core.TickCount;
+
+        while (ns._movementQueue?.Count > 0)
+        {
+            // Check if it's time to execute
+            if (now < ns._nextMovementTime)
+            {
+                // Not yet - leave remaining items in queue for next Slice
+                break;
+            }
+
+            var movement = ns._movementQueue.Dequeue();
+
+            // Validate sequence
+            if (ns.Sequence == 0 && movement.Sequence != 0)
+            {
+                // Sequence was reset (paralysis, teleport, etc.)
+                RejectAndReset(ns, mobile, movement.Sequence);
+                return;
+            }
+
+            // Execute the move
+            if (!mobile.Move(movement.Direction))
+            {
+                // Movement failed
+                RejectAndReset(ns, mobile, movement.Sequence);
+                return;
+            }
+
+            // Success - update sequence
+            var newSeq = movement.Sequence + 1;
+            if (newSeq == 256)
+            {
+                newSeq = 1;
+            }
+            ns.Sequence = newSeq;
+
+            // Refresh time for next iteration
+            now = Core.TickCount;
+        }
+
+        // Update tracking
+        ns._hasQueuedMovements = ns._movementQueue?.Count > 0;
+        if (!ns._hasQueuedMovements)
+        {
+            _netStatesWithQueuedMovements.Remove(ns);
+        }
+    }
+
+    /// <summary>
+    /// Drains the entire queue immediately for staff members.
+    /// </summary>
+    private static void DrainQueueImmediately(NetState ns, Mobile mobile)
+    {
+        while (ns._movementQueue?.Count > 0)
+        {
+            var movement = ns._movementQueue.Dequeue();
+
+            if (!mobile.Move(movement.Direction))
+            {
+                RejectAndReset(ns, mobile, movement.Sequence);
+                return;
+            }
+
+            var newSeq = movement.Sequence + 1;
+            if (newSeq == 256)
+            {
+                newSeq = 1;
+            }
+            ns.Sequence = newSeq;
+        }
+
+        ClearQueue(ns);
+    }
+
+    /// <summary>
+    /// Clears the movement queue for a NetState.
+    /// </summary>
+    private static void ClearQueue(NetState ns)
+    {
+        ns._movementQueue?.Clear();
+        ns._hasQueuedMovements = false;
+        _netStatesWithQueuedMovements.Remove(ns);
+    }
+
+    /// <summary>
+    /// Tracks sustained queue depth for speed hack detection.
+    /// </summary>
+    private static void TrackSustainedQueueDepth(NetState ns)
+    {
+        var now = Core.TickCount;
+
+        // Only check every 1 second
+        if (now - ns._lastQueueDepthCheck < 1000)
+        {
+            return;
+        }
+
+        ns._lastQueueDepthCheck = now;
+
+        if (ns._movementQueue?.Count >= _softQueueLimit)
+        {
+            ns._sustainedQueueDepth++;
+
+            if (ns._sustainedQueueDepth >= _sustainedThreshold)
+            {
+                LogSuspiciousActivity(ns);
+            }
+        }
+        else
+        {
+            // Queue is healthy, decay the counter
+            ns._sustainedQueueDepth = Math.Max(0, ns._sustainedQueueDepth - 1);
+        }
+    }
+
+    /// <summary>
+    /// Logs suspicious movement activity (potential speed hack).
+    /// </summary>
+    private static void LogSuspiciousActivity(NetState ns)
+    {
+        var now = Core.TickCount;
+
+        // Rate-limit logging
+        if (now - ns._lastSuspiciousActivityLog < _suspiciousLogCooldown)
+        {
+            return;
+        }
+
+        ns._lastSuspiciousActivityLog = now;
+
+        var mobile = ns.Mobile;
+        logger.Warning(
+            "Potential speed hack: {Character} ({Account}) | " +
+            "Queue: {QueueDepth} | Sustained: {SustainedCount}s | " +
+            "Location: {Location} Map: {Map} | IP: {IP}",
+            mobile?.RawName ?? "Unknown",
+            ns.Account?.Username ?? "Unknown",
+            ns._movementQueue?.Count ?? 0,
+            ns._sustainedQueueDepth,
+            mobile?.Location,
+            mobile?.Map?.Name,
+            ns.Address
+        );
+    }
+
+    /// <summary>
+    /// Logs when a queue overflow occurs (hard limit reached).
+    /// </summary>
+    private static void LogQueueOverflow(NetState ns)
+    {
+        var mobile = ns.Mobile;
+        logger.Information(
+            "Movement queue overflow: {Character} ({Account}) | " +
+            "Queue reached hard limit: {Limit} | IP: {IP}",
+            mobile?.RawName ?? "Unknown",
+            ns.Account?.Username ?? "Unknown",
+            _hardQueueLimit,
+            ns.Address
+        );
+    }
+
+    /// <summary>
+    /// Resets movement timing for all connected players after a world save.
+    /// This prevents post-save burst rejections.
+    /// </summary>
+    public static void ResetAllMovementTiming()
+    {
+        foreach (var ns in NetState.Instances)
+        {
+            if (ns.Mobile?.Deleted == false)
+            {
+                ns._nextMovementTime = Core.TickCount;
+                ns._movementCredit = _maxCredit; // Give full credit after save
+            }
         }
     }
 }
