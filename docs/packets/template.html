@@ -105,6 +105,12 @@
     <aside id="sidebar" class="w-full md:w-80 bg-modern-black border-r border-gold-500/30 flex flex-col overflow-hidden">
       <!-- Search & Filter -->
       <div class="p-3 border-b border-gold-500/20 space-y-2">
+        <!-- Collapse button for medium screens -->
+        <div class="hidden md:flex xl:hidden justify-end -mt-1 -mr-1 mb-1">
+          <button id="collapseSidebarBtn" class="p-1 text-gold-500/70 hover:text-gold-500 transition-colors" title="Collapse sidebar">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"></path></svg>
+          </button>
+        </div>
         <input
           type="text"
           id="searchInput"
@@ -135,6 +141,11 @@
         <!-- Populated by JavaScript -->
       </div>
     </aside>
+
+    <!-- Expand sidebar button (shown when collapsed on medium screens) -->
+    <button id="expandSidebarBtn" class="hidden bg-modern-black border-r border-gold-500/30 px-2 py-4 text-gold-500/70 hover:text-gold-500 hover:bg-modern-black-hover transition-colors" title="Expand sidebar">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"></path></svg>
+    </button>
 
     <!-- Right Panel: Packet Details -->
     <main id="detailPanel" class="hidden md:block flex-1 overflow-y-auto bg-modern-dark-black">
@@ -540,13 +551,40 @@ const packetContent = document.getElementById('packetContent');
 const sidebar = document.getElementById('sidebar');
 const detailPanel = document.getElementById('detailPanel');
 const mobileBackBtn = document.getElementById('mobileBackBtn');
+const collapseSidebarBtn = document.getElementById('collapseSidebarBtn');
+const expandSidebarBtn = document.getElementById('expandSidebarBtn');
 
-// Mobile responsive helpers
+// Responsive breakpoints
 const MOBILE_BREAKPOINT = 768; // md breakpoint
+const LARGE_BREAKPOINT = 1280; // xl breakpoint
 
 function isMobile() {
   return window.innerWidth < MOBILE_BREAKPOINT;
 }
+
+function isMediumScreen() {
+  return window.innerWidth >= MOBILE_BREAKPOINT && window.innerWidth < LARGE_BREAKPOINT;
+}
+
+// Sidebar collapse state (for medium screens)
+let isSidebarCollapsed = false;
+
+function collapseSidebar() {
+  if (!isMediumScreen()) return;
+  isSidebarCollapsed = true;
+  sidebar.classList.add('hidden');
+  expandSidebarBtn.classList.remove('hidden');
+}
+
+function expandSidebar() {
+  isSidebarCollapsed = false;
+  sidebar.classList.remove('hidden');
+  expandSidebarBtn.classList.add('hidden');
+}
+
+// Collapse/expand button handlers
+collapseSidebarBtn.addEventListener('click', collapseSidebar);
+expandSidebarBtn.addEventListener('click', expandSidebar);
 
 function showMobileDetailView() {
   if (!isMobile()) return;
@@ -567,14 +605,29 @@ mobileBackBtn.addEventListener('click', () => {
 
 // Handle window resize - reset to proper state
 window.addEventListener('resize', () => {
-  if (!isMobile()) {
-    // Desktop: show both panels
+  if (isMobile()) {
+    // Mobile: hide expand button, handle list/detail toggle
+    expandSidebarBtn.classList.add('hidden');
+    if (!selectedPacket) {
+      sidebar.classList.remove('hidden');
+      detailPanel.classList.add('hidden');
+    }
+  } else if (isMediumScreen()) {
+    // Medium: show both panels, respect collapsed state
+    detailPanel.classList.remove('hidden');
+    if (isSidebarCollapsed) {
+      sidebar.classList.add('hidden');
+      expandSidebarBtn.classList.remove('hidden');
+    } else {
+      sidebar.classList.remove('hidden');
+      expandSidebarBtn.classList.add('hidden');
+    }
+  } else {
+    // Large: always show both panels, no collapse
     sidebar.classList.remove('hidden');
     detailPanel.classList.remove('hidden');
-  } else if (!selectedPacket) {
-    // Mobile with no selection: show list only
-    sidebar.classList.remove('hidden');
-    detailPanel.classList.add('hidden');
+    expandSidebarBtn.classList.add('hidden');
+    isSidebarCollapsed = false;
   }
 });
 
@@ -921,6 +974,11 @@ function selectPacket(packet) {
 
   // Switch to detail view on mobile
   showMobileDetailView();
+
+  // Auto-collapse sidebar on medium screens
+  if (isMediumScreen()) {
+    collapseSidebar();
+  }
 
   // Update list selection
   document.querySelectorAll('.packet-item').forEach(el => {
