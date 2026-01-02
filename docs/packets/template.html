@@ -77,21 +77,24 @@
 <body class="bg-modern-dark-black text-gold-300 font-sans h-screen overflow-hidden">
 <div id="app" class="h-screen flex flex-col">
   <!-- Header -->
-  <header class="bg-modern-black p-4 shadow-lg border-b border-gold-500/30">
-    <div class="max-w-7xl mx-auto flex items-center justify-between">
-      <div class="flex items-center space-x-4">
-        <img src="https://modernuo.com/branding/logo.svg" class="h-12 w-12">
-        <div>
-          <h1 class="text-white text-xl font-medium">ModernUO Packet Documentation</h1>
-          <p class="text-gold-500/70 text-sm">Ultima Online Network Protocol Reference</p>
+  <header class="bg-modern-black p-3 md:p-4 shadow-lg border-b border-gold-500/30">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-2">
+      <div class="flex items-center space-x-2 md:space-x-4 min-w-0">
+        <img src="https://modernuo.com/branding/logo.svg" class="h-8 w-8 md:h-12 md:w-12 flex-shrink-0">
+        <div class="min-w-0">
+          <h1 class="text-white text-base md:text-xl font-medium">
+            <span class="md:hidden">Packet Documentation</span>
+            <span class="hidden md:inline">ModernUO Packet Documentation</span>
+          </h1>
+          <p class="text-gold-500/70 text-xs md:text-sm hidden sm:block">Ultima Online Network Protocol Reference</p>
         </div>
       </div>
-      <div class="flex items-center space-x-4">
-        <button id="typeLegendBtn" class="px-3 py-1.5 text-sm bg-modern-dark-black text-gold-400 rounded border border-gold-500/30 hover:border-gold-500 hover:bg-gold-500/10 transition-colors flex items-center space-x-1.5">
+      <div class="flex items-center space-x-2 md:space-x-4 flex-shrink-0">
+        <button id="typeLegendBtn" class="px-2 md:px-3 py-1.5 text-sm bg-modern-dark-black text-gold-400 rounded border border-gold-500/30 hover:border-gold-500 hover:bg-gold-500/10 transition-colors flex items-center space-x-1.5">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-          <span>Types</span>
+          <span class="hidden sm:inline">Types</span>
         </button>
-        <span id="packetCount" class="text-gold-500/70 text-sm"></span>
+        <span id="packetCount" class="text-gold-500/70 text-xs md:text-sm whitespace-nowrap"></span>
       </div>
     </div>
   </header>
@@ -99,7 +102,7 @@
   <!-- Main Content -->
   <div class="flex-1 flex overflow-hidden min-h-0">
     <!-- Left Panel: Packet List -->
-    <aside id="sidebar" class="w-80 bg-modern-black border-r border-gold-500/30 flex flex-col overflow-hidden">
+    <aside id="sidebar" class="w-full md:w-80 bg-modern-black border-r border-gold-500/30 flex flex-col overflow-hidden">
       <!-- Search & Filter -->
       <div class="p-3 border-b border-gold-500/20 space-y-2">
         <input
@@ -115,10 +118,14 @@
           <button data-filter="both" class="filter-btn flex-1 px-2 py-1 text-xs rounded bg-modern-dark-black text-both border border-both/50 hover:bg-both/20">Both</button>
         </div>
         <div class="flex items-center gap-2">
-          <span class="text-gold-500/70 text-xs flex-shrink-0">Tags:</span>
+          <button id="toggleTagsBtn" class="md:hidden text-gold-500/70 text-xs flex items-center gap-1 hover:text-gold-400">
+            <span>Tags</span>
+            <svg id="toggleTagsIcon" class="w-3 h-3 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+          </button>
+          <span class="text-gold-500/70 text-xs flex-shrink-0 hidden md:inline">Tags:</span>
           <button id="clearTagsBtn" class="text-xs px-2 py-0.5 rounded bg-modern-dark-black text-gold-500/70 border border-gold-500/30 hover:border-gold-500 hover:text-gold-400 hidden">Clear</button>
         </div>
-        <div id="tagFilter" class="flex flex-wrap gap-1 max-h-32 overflow-y-auto">
+        <div id="tagFilter" class="hidden md:flex flex-wrap gap-1 max-h-32 overflow-y-auto">
           <!-- Tags will be populated by JavaScript -->
         </div>
       </div>
@@ -130,8 +137,14 @@
     </aside>
 
     <!-- Right Panel: Packet Details -->
-    <main class="flex-1 overflow-y-auto bg-modern-dark-black">
-      <div id="packetDetails" class="p-6 max-w-4xl mx-auto">
+    <main id="detailPanel" class="hidden md:block flex-1 overflow-y-auto bg-modern-dark-black">
+      <div id="packetDetails" class="p-4 md:p-6 max-w-4xl mx-auto">
+        <!-- Mobile back button -->
+        <button id="mobileBackBtn" class="md:hidden flex items-center space-x-2 text-gold-500 hover:text-gold-400 mb-4 -ml-1">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+          <span>Back to list</span>
+        </button>
+
         <!-- Welcome message when no packet selected -->
         <div id="welcomeMessage" class="text-center py-16">
           <div class="text-gold-500/50 text-6xl mb-4">&#x1F4E6;</div>
@@ -152,9 +165,9 @@
               </div>
               <h2 id="detailName" class="text-xl text-gold-500 font-medium"></h2>
             </div>
-            <a id="sourceLink" href="#" target="_blank" class="flex items-center space-x-1 text-sm text-gold-500/70 hover:text-gold-500 transition-colors">
-              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-              <span>View Source</span>
+            <a id="sourceLink" href="#" target="_blank" class="flex items-center space-x-1 text-sm text-gold-500/70 hover:text-gold-500 transition-colors" title="View Source on GitHub">
+              <svg class="w-5 h-5 md:w-4 md:h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+              <span class="hidden md:inline">View Source</span>
             </a>
           </div>
 
@@ -183,8 +196,8 @@
           <!-- Fields Table -->
           <div id="fieldsSection" class="mb-6">
             <h3 class="text-gold-500 font-medium mb-3">Packet Structure</h3>
-            <div class="bg-modern-black rounded-lg border border-gold-500/20 overflow-hidden">
-              <table class="w-full text-sm table-fixed">
+            <div class="bg-modern-black rounded-lg border border-gold-500/20 overflow-x-auto">
+              <table class="w-full text-sm table-fixed min-w-[600px]">
                 <thead>
                   <tr class="bg-gold-500/10 text-gold-500">
                     <th class="px-4 py-2 text-left font-medium w-16">Offset</th>
@@ -204,8 +217,8 @@
           <!-- Subpackets (for container packets like 0xBF, 0xD7) -->
           <div id="subpacketsSection" class="mb-6 hidden">
             <h3 class="text-gold-500 font-medium mb-3">Subpackets</h3>
-            <div class="bg-modern-black rounded-lg border border-gold-500/20 overflow-hidden">
-              <table class="w-full text-sm">
+            <div class="bg-modern-black rounded-lg border border-gold-500/20 overflow-x-auto">
+              <table class="w-full text-sm min-w-[500px]">
                 <thead>
                   <tr class="bg-gold-500/10 text-gold-500">
                     <th class="px-4 py-2 text-left font-medium w-24">SubID</th>
@@ -524,6 +537,64 @@ const packetList = document.getElementById('packetList');
 const packetCount = document.getElementById('packetCount');
 const welcomeMessage = document.getElementById('welcomeMessage');
 const packetContent = document.getElementById('packetContent');
+const sidebar = document.getElementById('sidebar');
+const detailPanel = document.getElementById('detailPanel');
+const mobileBackBtn = document.getElementById('mobileBackBtn');
+
+// Mobile responsive helpers
+const MOBILE_BREAKPOINT = 768; // md breakpoint
+
+function isMobile() {
+  return window.innerWidth < MOBILE_BREAKPOINT;
+}
+
+function showMobileDetailView() {
+  if (!isMobile()) return;
+  sidebar.classList.add('hidden');
+  detailPanel.classList.remove('hidden');
+}
+
+function showMobileListView() {
+  if (!isMobile()) return;
+  sidebar.classList.remove('hidden');
+  detailPanel.classList.add('hidden');
+}
+
+// Back button handler
+mobileBackBtn.addEventListener('click', () => {
+  showMobileListView();
+});
+
+// Handle window resize - reset to proper state
+window.addEventListener('resize', () => {
+  if (!isMobile()) {
+    // Desktop: show both panels
+    sidebar.classList.remove('hidden');
+    detailPanel.classList.remove('hidden');
+  } else if (!selectedPacket) {
+    // Mobile with no selection: show list only
+    sidebar.classList.remove('hidden');
+    detailPanel.classList.add('hidden');
+  }
+});
+
+// Tags toggle for mobile
+const toggleTagsBtn = document.getElementById('toggleTagsBtn');
+const toggleTagsIcon = document.getElementById('toggleTagsIcon');
+let tagsExpanded = false;
+
+toggleTagsBtn.addEventListener('click', () => {
+  tagsExpanded = !tagsExpanded;
+  if (tagsExpanded) {
+    tagFilterContainer.classList.remove('hidden');
+    tagFilterContainer.classList.add('flex');
+    toggleTagsIcon.style.transform = 'rotate(180deg)';
+  } else {
+    tagFilterContainer.classList.add('hidden');
+    tagFilterContainer.classList.remove('flex');
+    toggleTagsIcon.style.transform = '';
+  }
+});
 
 // Helper to ensure tags is always an array
 function ensureArray(val) {
@@ -847,6 +918,9 @@ function renderFields(fields, parentOffset = 0) {
 // Select and display a packet
 function selectPacket(packet) {
   selectedPacket = packet;
+
+  // Switch to detail view on mobile
+  showMobileDetailView();
 
   // Update list selection
   document.querySelectorAll('.packet-item').forEach(el => {
