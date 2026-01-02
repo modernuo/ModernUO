@@ -598,7 +598,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         }
 
         var mean = sum / count;
-        _rttVariance = (sumSq / count) - (mean * mean);
+        _rttVariance = sumSq / count - mean * mean;
     }
 
     /// <summary>
