@@ -522,6 +522,7 @@
                         "name":  "Packet Container",
                         "description":  "Container packet for batching multiple entity packets. Used for sending groups of related entities efficiently, such as all items and mobiles visible on a boat.",
                         "direction":  "outgoing",
+                        "tags": ["Boat"],
                         "isDynamic":  true,
                         "size":  "5+",
                         "fields":  [
@@ -566,16 +567,20 @@
                                             "id":  "0xF3",
                                             "relationship":  "contains",
                                             "note":  "Typically contains World Entity packets"
+                                        },
+                                        {
+                                            "id":  "0xF6",
+                                            "relationship":  "variant",
+                                            "note":  "Used alongside Move Boat HS for boat display"
                                         }
                                     ],
                         "clientVersion":  {
-                                              "min":  "7.0.0.0",
-                                              "feature":  "StygianAbyss"
+                                              "feature":  "HighSeas"
                                           },
-                        "notes":  "Uses PacketContainerBuilder for efficient dynamic growth. Commonly used by boat system to batch all visible entities on deck.",
+                        "notes":  "Uses PacketContainerBuilder for efficient dynamic growth. Commonly used by boat system to batch all visible entities on deck. Minimum packet length is 5 bytes (header only).",
                         "source":  {
                                        "file":  "Projects/Server/Network/Packets/PacketContainerBuilder.cs",
-                                       "line":  9
+                                       "line":  23
                                    }
                     }
                 ]
