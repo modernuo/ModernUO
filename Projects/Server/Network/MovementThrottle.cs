@@ -32,6 +32,7 @@ public static class MovementThrottle
 
     // Configuration values
     private static int _maxCredit = 200;           // Max credit buffer (ms)
+    private static int _maxRttBonus = 150;         // Max extra credit for high-latency players (ms)
     private static int _softQueueLimit = 6;        // Start logging when reached
     private static int _hardQueueLimit = 10;       // Reject and clear at this limit
     private static int _sustainedThreshold = 10;   // Sustained abuse threshold (seconds)
@@ -39,6 +40,31 @@ public static class MovementThrottle
 
     // Track NetStates with queued movements for efficient processing
     private static readonly HashSet<NetState> _netStatesWithQueuedMovements = new(256);
+
+    /// <summary>
+    /// Gets the dynamic credit buffer for a connection based on measured RTT.
+    /// High-latency players get more tolerance; stable low-latency gets tighter security.
+    /// </summary>
+    private static int GetDynamicCredit(NetState ns)
+    {
+        var avgRtt = ns.AverageRtt;
+
+        // No RTT data yet - use default
+        if (avgRtt <= 0)
+        {
+            return _maxCredit;
+        }
+
+        // Stable, low-latency connection - use base credit (tighter security)
+        if (ns.HasStableConnection && avgRtt < 50)
+        {
+            return _maxCredit;
+        }
+
+        // Add RTT-based bonus for higher latency, capped at max bonus
+        var rttBonus = Math.Min(avgRtt / 2, _maxRttBonus);
+        return _maxCredit + (int)rttBonus;
+    }
 
     public static void Configure()
     {
@@ -101,6 +127,9 @@ public static class MovementThrottle
 
         var now = Core.TickCount;
 
+        // Track movement packet rate (packets per second)
+        ns.TrackMovementRate();
+
         // Calculate movement cost - this has FULL CONTEXT (mounted, running, direction change)
         var cost = mobile.ComputeMovementSpeed(dir);
 
@@ -114,6 +143,9 @@ public static class MovementThrottle
             return;
         }
 
+        // Get dynamic credit limit based on connection latency
+        var dynamicCredit = GetDynamicCredit(ns);
+
         // Handle early packets with credit buffer
         if (delta < 0)
         {
@@ -121,8 +153,8 @@ public static class MovementThrottle
             var earlyAmount = -delta;
 
             // Can we absorb this with credit?
-            // Credit can go negative up to -_maxCredit (debt limit)
-            if (ns._movementCredit - earlyAmount >= -_maxCredit)
+            // Credit can go negative up to -dynamicCredit (debt limit)
+            if (ns._movementCredit - earlyAmount >= -dynamicCredit)
             {
                 // Use credit to cover early arrival
                 ns._movementCredit -= earlyAmount;
@@ -136,10 +168,10 @@ public static class MovementThrottle
             return;
         }
 
-        // On-time or late - rebuild credit (capped at max)
+        // On-time or late - rebuild credit (capped at dynamic max)
         if (delta > 0)
         {
-            ns._movementCredit = Math.Min(ns._movementCredit + delta, _maxCredit);
+            ns._movementCredit = Math.Min(ns._movementCredit + delta, dynamicCredit);
         }
 
         // Execute immediately
@@ -342,8 +374,12 @@ public static class MovementThrottle
         _netStatesWithQueuedMovements.Remove(ns);
     }
 
+    // Maximum expected packets per second (mounted running = 100ms = 10/sec, plus tolerance)
+    private const int MaxExpectedPacketRate = 12;
+
     /// <summary>
     /// Tracks sustained queue depth for speed hack detection.
+    /// Uses RTT data and packet rate to distinguish between lag bursts and speed hacks.
     /// </summary>
     private static void TrackSustainedQueueDepth(NetState ns)
     {
@@ -357,9 +393,33 @@ public static class MovementThrottle
 
         ns._lastQueueDepthCheck = now;
 
-        if (ns._movementQueue?.Count >= _softQueueLimit)
+        var rate = ns.CurrentMovementRate;
+        var hasHighQueue = ns._movementQueue?.Count >= _softQueueLimit;
+        var hasExcessiveRate = rate > MaxExpectedPacketRate;
+
+        if (hasHighQueue || hasExcessiveRate)
         {
-            ns._sustainedQueueDepth++;
+            // High queue depth or excessive packet rate - but is it suspicious?
+            // Stable, low-latency connection with issues = more suspicious
+            // Unstable or high-latency connection = could be legitimate lag burst
+            if (ns.HasStableConnection && ns.AverageRtt < 100)
+            {
+                // Stable connection shouldn't have problems - escalate faster
+                ns._sustainedQueueDepth += hasExcessiveRate ? 3 : 2;
+            }
+            else if (ns._rttVariance > 10000 || ns.AverageRtt > 300)
+            {
+                // Very unstable or high-latency connection - don't penalize as harshly
+                if (ns._sustainedQueueDepth < _sustainedThreshold)
+                {
+                    ns._sustainedQueueDepth++;
+                }
+            }
+            else
+            {
+                // Normal case
+                ns._sustainedQueueDepth += hasExcessiveRate ? 2 : 1;
+            }
 
             if (ns._sustainedQueueDepth >= _sustainedThreshold)
             {
@@ -368,7 +428,7 @@ public static class MovementThrottle
         }
         else
         {
-            // Queue is healthy, decay the counter
+            // Queue is healthy and rate is normal, decay the counter
             ns._sustainedQueueDepth = Math.Max(0, ns._sustainedQueueDepth - 1);
         }
     }
@@ -391,12 +451,17 @@ public static class MovementThrottle
         var mobile = ns.Mobile;
         logger.Warning(
             "Potential speed hack: {Character} ({Account}) | " +
-            "Queue: {QueueDepth} | Sustained: {SustainedCount}s | " +
+            "Queue: {QueueDepth} | Rate: {Rate}/s (peak: {PeakRate}/s) | " +
+            "Sustained: {SustainedCount}s | RTT: {Rtt}ms (stable: {Stable}) | " +
             "Location: {Location} Map: {Map} | IP: {IP}",
             mobile?.RawName ?? "Unknown",
             ns.Account?.Username ?? "Unknown",
             ns._movementQueue?.Count ?? 0,
+            ns.CurrentMovementRate,
+            ns.PeakMovementRate,
             ns._sustainedQueueDepth,
+            ns.AverageRtt,
+            ns.HasStableConnection,
             mobile?.Location,
             mobile?.Map?.Name,
             ns.Address
