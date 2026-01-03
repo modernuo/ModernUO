@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="description" content="Network packet documentation for the Ultima Online Server Emulator ModernUO">
   <meta name="author" content="ModernUO Development Team">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <link rel="icon" href="https://modernuo.com/branding/favicon.png">
   <title>ModernUO Packet Documentation</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -41,6 +41,19 @@
     }
   </script>
   <style>
+    /* Mobile viewport fix: 100vh doesn't account for browser chrome/gesture nav */
+    .h-dvh {
+      height: 100vh; /* fallback for older browsers */
+      height: 100dvh; /* dynamic viewport height - adjusts for browser chrome */
+    }
+
+    /* Safe area insets for edge-to-edge phones (notches, gesture nav) */
+    @supports (padding-bottom: env(safe-area-inset-bottom)) {
+      .safe-area-bottom {
+        padding-bottom: env(safe-area-inset-bottom);
+      }
+    }
+
     .packet-list::-webkit-scrollbar {
       width: 8px;
     }
@@ -74,8 +87,8 @@
   </style>
 </head>
 
-<body class="bg-modern-dark-black text-gold-300 font-sans h-screen overflow-hidden">
-<div id="app" class="h-screen flex flex-col">
+<body class="bg-modern-dark-black text-gold-300 font-sans h-dvh overflow-hidden safe-area-bottom">
+<div id="app" class="h-dvh flex flex-col">
   <!-- Header -->
   <header class="bg-modern-black p-3 md:p-4 shadow-lg border-b border-gold-500/30">
     <div class="max-w-7xl mx-auto flex items-center justify-between gap-2">
