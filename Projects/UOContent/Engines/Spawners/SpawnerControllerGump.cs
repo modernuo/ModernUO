@@ -40,7 +40,7 @@ public class SpawnerControllerGump : DynamicGump
     private const int GumpWidth = 1000;
     private const int GumpHeight = 800;
     private const int RowHeight = 45;
-    private const int HeaderHeight = 30;
+    private const int HeaderHeight = 28;
     private const int EntryCount = 5;
     private const int TypeCount = 15;
 
@@ -130,7 +130,7 @@ public class SpawnerControllerGump : DynamicGump
         for (var i = 0; i < listView.ColumnCount - 1; i++)
         {
             var x = listColPos[i] + listColWidths[i] - 8;
-            var y = mainRowPos[1] + 10;
+            var y = mainRowPos[1] + 3;
             builder.AddImageTiled(x, y, 3, 20, 9355);
             builder.AddAlphaRegion(x, y, 3, 20);
         }
@@ -157,7 +157,7 @@ public class SpawnerControllerGump : DynamicGump
             var offsetX = i >= 4 ? -4 : 0;
             builder.AddHtml(
                 cell.X + offsetX,
-                cell.Y + 10,
+                cell.Y + 3,
                 cell.Width,
                 30,
                 headers[i],
@@ -168,7 +168,7 @@ public class SpawnerControllerGump : DynamicGump
         }
 
         // Draw spawner rows
-        const int vCenter = 15;
+        const int vCenter = 10;
         for (var i = 0; i < listView.VisibleCount; i++)
         {
             var dataIndex = listView.GetDataIndex(i);
@@ -178,28 +178,28 @@ public class SpawnerControllerGump : DynamicGump
             // Column 0: Copy button
             var col0X = listColPos[0];
             var col0Width = listColWidths[0];
-            builder.AddButton(col0X + 15, rowY + 5, 4011, 4012, GetButtonID(2, dataIndex));
-            builder.AddHtml(col0X, rowY + 26, col0Width, 30, "copy", GumpTextColors.White, 3, align: TextAlignment.Center);
+            builder.AddButton(col0X + 15, rowY, 4011, 4012, GetButtonID(2, dataIndex));
+            builder.AddHtml(col0X, rowY + 21, col0Width, 30, "copy", GumpTextColors.White, 3, align: TextAlignment.Center);
 
             // Column 1: Paste buttons
             var col1X = listColPos[1];
             var col1Width = listColWidths[1];
             var col1HCenter = col1X + col1Width / 2;
-            builder.AddButton(col1X + 2, rowY + 5, 4029, 4031, GetButtonID(3, dataIndex));
-            builder.AddHtml(col1X + 3, rowY + 26, col1Width, 30, "props", GumpTextColors.White, 3);
+            builder.AddButton(col1X + 2, rowY, 4029, 4031, GetButtonID(3, dataIndex));
+            builder.AddHtml(col1X + 3, rowY + 21, col1Width, 30, "props", GumpTextColors.White, 3);
 
-            builder.AddButton(col1HCenter - 2, rowY + 5, 4029, 4031, GetButtonID(4, dataIndex));
-            builder.AddHtml(col1HCenter - 3, rowY + 26, 55, 30, "entry", GumpTextColors.White, 3);
+            builder.AddButton(col1HCenter - 2, rowY, 4029, 4031, GetButtonID(4, dataIndex));
+            builder.AddHtml(col1HCenter - 3, rowY + 21, 55, 30, "entry", GumpTextColors.White, 3);
 
             // Column 2: Name/Serial
             var col2X = listColPos[2];
             var col2Width = listColWidths[2];
             var entryIndex = i * EntryCount;
 
-            builder.AddImageTiled(col2X - 2, rowY + 18, col2Width - 8, 1, 9357);
-            builder.AddTextEntry(col2X, rowY + 2, col2Width - 8, 80, GumpHues.White, entryIndex, spawner.Name);
-            builder.AddButton(col2X, rowY + vCenter + 9, 5837, 5838, GetButtonID(6, dataIndex));
-            builder.AddHtml(col2X, rowY + vCenter + 10, col2Width, 30, $"{spawner.Serial}", GumpTextColors.White, 4);
+            builder.AddImageTiled(col2X + 6, rowY + 13, col2Width - 8, 1, 9357);
+            builder.AddTextEntry(col2X + 8, rowY - 3, col2Width - 8, 80, GumpHues.White, entryIndex, spawner.Name);
+            builder.AddButton(col2X + 8, rowY + 19, 5837, 5838, GetButtonID(6, dataIndex));
+            builder.AddHtml(col2X + 54, rowY + 19, col2Width, 30, $"{spawner.Serial}", GumpTextColors.White, 4);
 
             // Column 3: Map
             var col3X = listColPos[3];
@@ -218,10 +218,10 @@ public class SpawnerControllerGump : DynamicGump
             // Column 4: Coords with teleport button
             var col4X = listColPos[4];
             var col4Width = listColWidths[4];
-            builder.AddButton(col4X - 5, rowY + vCenter, 2062, 2062, GetButtonID(5, dataIndex));
-            builder.AddImage(col4X - 5, rowY + vCenter, 2062, 936);
+            builder.AddButton(col4X + 3, rowY + vCenter, 2062, 2062, GetButtonID(5, dataIndex));
+            builder.AddImage(col4X + 3, rowY + vCenter, 2062, 936);
             builder.AddHtml(
-                col4X - 7,
+                col4X + 12,
                 rowY + vCenter,
                 col4Width,
                 30,
@@ -249,10 +249,10 @@ public class SpawnerControllerGump : DynamicGump
             // Column 6: Walk Range
             var col6X = listColPos[6];
             var col6Width = listColWidths[6];
-            builder.AddImageTiled(col6X + 8, rowY + 29, col6Width / 2, 1, 9357);
+            builder.AddImageTiled(col6X + 8, rowY + 24, col6Width / 2, 1, 9357);
             builder.AddTextEntry(
                 col6X + 12,
-                rowY + 13,
+                rowY + 8,
                 col6Width,
                 80,
                 GumpHues.White,
@@ -265,25 +265,25 @@ public class SpawnerControllerGump : DynamicGump
             var col7Width = listColWidths[7];
             if (spawner.IsHomeRangeStyle)
             {
-                builder.AddImageTiled(col7X + 8, rowY + 29, col7Width / 2, 1, 9357);
-                builder.AddTextEntry(col7X + 12, rowY + 13, col7Width, 80, GumpHues.White, entryIndex + 2, $"{spawner.HomeRange}");
+                builder.AddImageTiled(col7X + 8, rowY + 24, col7Width / 2, 1, 9357);
+                builder.AddTextEntry(col7X + 12, rowY + 8, col7Width, 80, GumpHues.White, entryIndex + 2, $"{spawner.HomeRange}");
             }
             else
             {
-                builder.AddHtml(col7X - 6, rowY + 13, col7Width, 30, "Custom", GumpTextColors.Yellow, 4, align: TextAlignment.Center);
+                builder.AddHtml(col7X - 6, rowY + 8, col7Width, 30, "Custom", GumpTextColors.Yellow, 4, align: TextAlignment.Center);
             }
 
             // Column 8: Min Delay
             var col8X = listColPos[8];
             var col8Width = listColWidths[8];
-            builder.AddImageTiled(col8X + 6, rowY + 29, col8Width - 20, 1, 9357);
-            builder.AddTextEntry(col8X + 8, rowY + 13, col8Width, 80, GumpHues.White, entryIndex + 3, $"{spawner.MinDelay}");
+            builder.AddImageTiled(col8X + 6, rowY + 24, col8Width - 20, 1, 9357);
+            builder.AddTextEntry(col8X + 8, rowY + 8, col8Width, 80, GumpHues.White, entryIndex + 3, $"{spawner.MinDelay}");
 
             // Column 9: Max Delay
             var col9X = listColPos[9];
             var col9Width = listColWidths[9];
-            builder.AddImageTiled(col9X + 6, rowY + 29, col9Width - 20, 1, 9357);
-            builder.AddTextEntry(col9X + 8, rowY + 13, col9Width, 80, GumpHues.White, entryIndex + 4, $"{spawner.MaxDelay}");
+            builder.AddImageTiled(col9X + 6, rowY + 24, col9Width - 20, 1, 9357);
+            builder.AddTextEntry(col9X + 8, rowY + 8, col9Width, 80, GumpHues.White, entryIndex + 4, $"{spawner.MaxDelay}");
 
             // Column 10: Next Spawn
             var col10X = listColPos[10];
@@ -301,11 +301,11 @@ public class SpawnerControllerGump : DynamicGump
 
             // Column 11: Actions
             var col11X = listColPos[11];
-            builder.AddButton(col11X, rowY + 5, 4023, 4025, GetButtonID(8, dataIndex));
-            builder.AddHtml(col11X + 4, rowY + 26, 55, 30, "save", GumpTextColors.White, 3);
+            builder.AddButton(col11X, rowY, 4023, 4025, GetButtonID(8, dataIndex));
+            builder.AddHtml(col11X + 4, rowY + 21, 55, 30, "save", GumpTextColors.White, 3);
 
-            builder.AddButton(col11X + RowHeight, rowY + 5, 4017, 4018, GetButtonID(9, dataIndex));
-            builder.AddHtml(col11X + RowHeight, rowY + 26, 55, 30, "delete", GumpTextColors.White, 3);
+            builder.AddButton(col11X + RowHeight, rowY, 4017, 4018, GetButtonID(9, dataIndex));
+            builder.AddHtml(col11X + RowHeight, rowY + 21, 55, 30, "delete", GumpTextColors.White, 3);
 
             // Row separator
             builder.AddImageTiled(0, rowY + RowHeight, GumpWidth, 1, 9357);
