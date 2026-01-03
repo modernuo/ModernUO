@@ -209,7 +209,7 @@ public static partial class Utility
         var span = chars.AsSpan(0, str.Length);
         str.CopyTo(span);
 
-        FixHtml(span);
+        span.FixHtml();
 
         var fixedStr = span.ToString();
         STArrayPool<char>.Shared.Return(chars);
@@ -243,7 +243,7 @@ public static partial class Utility
 
         if (!str.IsNullOrWhiteSpace())
         {
-            FixHtml(span);
+            span.FixHtml();
         }
 
         return formattable;

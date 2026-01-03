@@ -180,12 +180,7 @@ public ref struct ListViewLayout
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public GridCell GetHeaderCell(int column, ReadOnlySpan<int> columnPositions, ReadOnlySpan<int> columnWidths) =>
-        new(
-            columnPositions[column],
-            _originY,
-            columnWidths[column],
-            _headerHeight
-        );
+        new(columnPositions[column], _originY, columnWidths[column], _headerHeight);
 
     /// <summary>
     /// Gets the data cell for the specified visible row and column.

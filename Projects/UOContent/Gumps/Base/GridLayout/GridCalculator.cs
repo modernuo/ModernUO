@@ -173,12 +173,7 @@ public static class GridCalculator
         ReadOnlySpan<int> rowHeights,
         int column,
         int row
-    ) => new(
-        columnPositions[column],
-        rowPositions[row],
-        columnWidths[column],
-        rowHeights[row]
-    );
+    ) => new(columnPositions[column], rowPositions[row], columnWidths[column], rowHeights[row]);
 
     /// <summary>
     /// Gets a cell spanning multiple columns and/or rows from pre-computed grid arrays.
@@ -192,7 +187,8 @@ public static class GridCalculator
         int column,
         int row,
         int columnSpan,
-        int rowSpan)
+        int rowSpan
+    )
     {
         var width = 0;
         var endCol = Math.Min(column + columnSpan, columnWidths.Length);

@@ -138,31 +138,6 @@ public readonly struct GridSizeSpec
 
         return count;
     }
-
-    /// <summary>
-    /// Counts the number of tokens in a space-separated size specification string.
-    /// </summary>
-    public static int CountTokens(ReadOnlySpan<char> sizeSpec)
-    {
-        var count = 0;
-        var inToken = false;
-
-        for (var i = 0; i < sizeSpec.Length; i++)
-        {
-            var isSpace = char.IsWhiteSpace(sizeSpec[i]);
-            if (!isSpace && !inToken)
-            {
-                count++;
-                inToken = true;
-            }
-            else if (isSpace)
-            {
-                inToken = false;
-            }
-        }
-
-        return count;
-    }
 }
 
 /// <summary>

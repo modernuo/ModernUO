@@ -98,7 +98,8 @@ public readonly struct GridEntryStyle
         int textOffsetX,
         int entryHeight,
         int borderSize,
-        int offsetSize)
+        int offsetSize
+    )
     {
         EntryGumpID = entryGumpID;
         HeaderGumpID = headerGumpID;
@@ -115,24 +116,25 @@ public readonly struct GridEntryStyle
     /// Creates a copy with modified values.
     /// </summary>
     public GridEntryStyle With(
-        int? entryGumpID = null,
-        int? headerGumpID = null,
-        int? offsetGumpID = null,
-        int? backGumpID = null,
-        int? textHue = null,
-        int? textOffsetX = null,
-        int? entryHeight = null,
-        int? borderSize = null,
-        int? offsetSize = null) => new(
-        entryGumpID ?? EntryGumpID,
-        headerGumpID ?? HeaderGumpID,
-        offsetGumpID ?? OffsetGumpID,
-        backGumpID ?? BackGumpID,
-        textHue ?? TextHue,
-        textOffsetX ?? TextOffsetX,
-        entryHeight ?? EntryHeight,
-        borderSize ?? BorderSize,
-        offsetSize ?? OffsetSize
+        int entryGumpID = -1,
+        int headerGumpID = -1,
+        int offsetGumpID = -1,
+        int backGumpID = -1,
+        int textHue = -1,
+        int textOffsetX = -1,
+        int entryHeight = -1,
+        int borderSize = -1,
+        int offsetSize = -1
+    ) => new(
+        entryGumpID < 0 ? EntryGumpID : entryGumpID,
+        headerGumpID < 0 ? HeaderGumpID : headerGumpID,
+        offsetGumpID < 0 ? OffsetGumpID : offsetGumpID,
+        backGumpID < 0 ? BackGumpID : backGumpID,
+        textHue < 0 ? TextHue : textHue,
+        textOffsetX < 0 ? TextOffsetX : textOffsetX,
+        entryHeight < 0 ? EntryHeight : entryHeight,
+        borderSize < 0 ? BorderSize : borderSize,
+        offsetSize < 0 ? OffsetSize : offsetSize
     );
 
     /// <summary>
@@ -159,6 +161,5 @@ public readonly struct GridEntryStyle
     /// <summary>
     /// Calculates content height given number of rows.
     /// </summary>
-    public int GetContentHeight(int rowCount) =>
-        rowCount * EntryHeight + (rowCount - 1) * OffsetSize;
+    public int GetContentHeight(int rowCount) => rowCount * EntryHeight + (rowCount - 1) * OffsetSize;
 }
