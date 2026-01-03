@@ -114,7 +114,8 @@ public class SpawnerControllerGump : DynamicGump
             HeaderHeight,
             ColumnSpec,
             listColPos,
-            listColWidths);
+            listColWidths
+        );
 
         _lineCount = listView.ItemsPerPage;
 
@@ -154,7 +155,16 @@ public class SpawnerControllerGump : DynamicGump
         {
             var cell = listView.GetHeaderCell(i, listColPos, listColWidths);
             var offsetX = i >= 4 ? -4 : 0;
-            builder.AddHtml(cell.X + offsetX, cell.Y + 10, cell.Width, 30, headers[i], GumpTextColors.Gold, 4, align: TextAlignment.Center);
+            builder.AddHtml(
+                cell.X + offsetX,
+                cell.Y + 10,
+                cell.Width,
+                30,
+                headers[i],
+                GumpTextColors.Gold,
+                4,
+                align: TextAlignment.Center
+            );
         }
 
         // Draw spawner rows
@@ -194,27 +204,61 @@ public class SpawnerControllerGump : DynamicGump
             // Column 3: Map
             var col3X = listColPos[3];
             var col3Width = listColWidths[3];
-            builder.AddHtml(col3X, rowY + vCenter, col3Width, 30, $"{spawner.Map}", GumpTextColors.White, 4, align: TextAlignment.Center);
+            builder.AddHtml(
+                col3X,
+                rowY + vCenter,
+                col3Width,
+                30,
+                $"{spawner.Map}",
+                GumpTextColors.White,
+                4,
+                align: TextAlignment.Center
+            );
 
             // Column 4: Coords with teleport button
             var col4X = listColPos[4];
             var col4Width = listColWidths[4];
             builder.AddButton(col4X - 5, rowY + vCenter, 2062, 2062, GetButtonID(5, dataIndex));
             builder.AddImage(col4X - 5, rowY + vCenter, 2062, 936);
-            builder.AddHtml(col4X - 7, rowY + vCenter, col4Width, 30, $"X {spawner.Location.X} Y {spawner.Location.Y}", GumpTextColors.White, 4);
+            builder.AddHtml(
+                col4X - 7,
+                rowY + vCenter,
+                col4Width,
+                30,
+                $"X {spawner.Location.X} Y {spawner.Location.Y}",
+                GumpTextColors.White,
+                4
+            );
 
             // Column 5: Entry count with button
             var col5X = listColPos[5];
             var col5Width = listColWidths[5];
             builder.AddButton(col5X + 6, rowY + vCenter - 4, 0x2635, 0x2635, GetButtonID(7, dataIndex));
             builder.AddImage(col5X + 6, rowY + vCenter - 7, 0x2635, 827);
-            builder.AddHtml(col5X, rowY + vCenter, col5Width, 30, $"{spawner.Entries?.Count ?? 0}", GumpTextColors.White, 4, align: TextAlignment.Center);
+            builder.AddHtml(
+                col5X,
+                rowY + vCenter,
+                col5Width,
+                30,
+                $"{spawner.Entries?.Count ?? 0}",
+                GumpTextColors.White,
+                4,
+                align: TextAlignment.Center
+            );
 
             // Column 6: Walk Range
             var col6X = listColPos[6];
             var col6Width = listColWidths[6];
             builder.AddImageTiled(col6X + 8, rowY + 29, col6Width / 2, 1, 9357);
-            builder.AddTextEntry(col6X + 12, rowY + 13, col6Width, 80, GumpHues.White, entryIndex + 1, $"{spawner.WalkingRange}");
+            builder.AddTextEntry(
+                col6X + 12,
+                rowY + 13,
+                col6Width,
+                80,
+                GumpHues.White,
+                entryIndex + 1,
+                $"{spawner.WalkingRange}"
+            );
 
             // Column 7: Home Range
             var col7X = listColPos[7];
@@ -244,7 +288,16 @@ public class SpawnerControllerGump : DynamicGump
             // Column 10: Next Spawn
             var col10X = listColPos[10];
             var col10Width = listColWidths[10];
-            builder.AddHtml(col10X, rowY + vCenter, col10Width, 30, $@"{spawner.NextSpawn:hh\:mm\:ss}", GumpTextColors.White, 4, align: TextAlignment.Center);
+            builder.AddHtml(
+                col10X,
+                rowY + vCenter,
+                col10Width,
+                30,
+                $@"{spawner.NextSpawn:hh\:mm\:ss}",
+                GumpTextColors.White,
+                4,
+                align: TextAlignment.Center
+            );
 
             // Column 11: Actions
             var col11X = listColPos[11];
@@ -260,7 +313,7 @@ public class SpawnerControllerGump : DynamicGump
         }
 
         // Draw footer
-        var col0HCenter = GumpWidth / 2;
+        const int col0HCenter = GumpWidth / 2;
         var row2VCenter = row2Y + mainRowHeights[2] / 2;
 
         if (listView.CanGoNext)
@@ -282,7 +335,15 @@ public class SpawnerControllerGump : DynamicGump
         builder.AddButton(275, row2Y, 4029, 4031, GetButtonID(1, 7));
         builder.AddHtml(315, row2Y + 4, GumpWidth, 20, "Paste copy to the ground", GumpTextColors.Yellow, 4);
 
-        builder.AddHtml(16, row2VCenter + 17, GumpWidth, 20, $"Pages {listView.CurrentPage + 1}/{listView.TotalPages}", GumpTextColors.White, 4);
+        builder.AddHtml(
+            16,
+            row2VCenter + 17,
+            GumpWidth,
+            20,
+            $"Pages {listView.CurrentPage + 1}/{listView.TotalPages}",
+            GumpTextColors.White,
+            4
+        );
         builder.AddHtml(120, row2VCenter + 17, GumpWidth, 20, $"Total Spawners {_spawners.Length}", GumpTextColors.White, 4);
     }
 
@@ -354,7 +415,7 @@ public class SpawnerControllerGump : DynamicGump
 
         using var queue = PooledRefQueue<BaseSpawner>.Create();
 
-        if (!(_search.Type == SpawnSearchType.Coords && int.TryParse(_search.SearchPattern, out var range)))
+        if (_search.Type != SpawnSearchType.Coords || !int.TryParse(_search.SearchPattern, out var range))
         {
             range = -1;
         }
