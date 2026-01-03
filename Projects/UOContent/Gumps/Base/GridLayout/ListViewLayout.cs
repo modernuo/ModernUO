@@ -23,9 +23,8 @@ namespace Server.Gumps;
 /// This struct does NOT hold column data - column positions/widths are passed
 /// separately via spans to avoid ref struct limitations.
 /// </summary>
-public readonly struct ListViewLayout
+public ref struct ListViewLayout
 {
-    private readonly int _originX;
     private readonly int _originY;
     private readonly int _headerHeight;
     private readonly int _rowHeight;
@@ -119,30 +118,31 @@ public readonly struct ListViewLayout
         int headerHeight,
         ReadOnlySpan<char> columnSpec,
         Span<int> columnPositions,
-        Span<int> columnWidths)
+        Span<int> columnWidths
+    )
     {
         // Parse and compute column widths
         var columnCount = GridCalculator.ComputeFromSpec(columnSpec, width, originX, columnPositions, columnWidths);
 
         return new ListViewLayout(
-            originX, originY,
+            originY,
             headerHeight, rowHeight,
             totalItems, currentPage,
             height,
-            columnCount);
+            columnCount
+        );
     }
 
     private ListViewLayout(
-        int originX,
         int originY,
         int headerHeight,
         int rowHeight,
         int totalItems,
         int currentPage,
         int totalHeight,
-        int columnCount)
+        int columnCount
+    )
     {
-        _originX = originX;
         _originY = originY;
         _headerHeight = headerHeight;
         _rowHeight = rowHeight;
@@ -179,14 +179,13 @@ public readonly struct ListViewLayout
     /// Gets the header cell for the specified column using pre-computed column data.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public GridCell GetHeaderCell(int column, ReadOnlySpan<int> columnPositions, ReadOnlySpan<int> columnWidths)
-    {
-        return new GridCell(
+    public GridCell GetHeaderCell(int column, ReadOnlySpan<int> columnPositions, ReadOnlySpan<int> columnWidths) =>
+        new(
             columnPositions[column],
             _originY,
             columnWidths[column],
-            _headerHeight);
-    }
+            _headerHeight
+        );
 
     /// <summary>
     /// Gets the data cell for the specified visible row and column.
@@ -196,14 +195,14 @@ public readonly struct ListViewLayout
     /// <param name="columnPositions">Pre-computed column X positions.</param>
     /// <param name="columnWidths">Pre-computed column widths.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public GridCell GetRowCell(int visibleRowIndex, int column, ReadOnlySpan<int> columnPositions, ReadOnlySpan<int> columnWidths)
-    {
-        return new GridCell(
-            columnPositions[column],
-            _originY + _headerHeight + visibleRowIndex * _rowHeight,
-            columnWidths[column],
-            _rowHeight);
-    }
+    public GridCell GetRowCell(
+        int visibleRowIndex, int column, ReadOnlySpan<int> columnPositions, ReadOnlySpan<int> columnWidths
+    ) => new(
+        columnPositions[column],
+        _originY + _headerHeight + visibleRowIndex * _rowHeight,
+        columnWidths[column],
+        _rowHeight
+    );
 
     /// <summary>
     /// Gets the data index for a visible row.
@@ -233,13 +232,13 @@ public readonly struct ListViewLayout
     /// Gets the horizontal center of a column.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int GetColumnCenterX(ReadOnlySpan<int> columnPositions, ReadOnlySpan<int> columnWidths, int column)
-        => columnPositions[column] + columnWidths[column] / 2;
+    public static int GetColumnCenterX(ReadOnlySpan<int> columnPositions, ReadOnlySpan<int> columnWidths, int column) =>
+        columnPositions[column] + columnWidths[column] / 2;
 
     /// <summary>
     /// Gets the right edge of a column.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int GetColumnRightX(ReadOnlySpan<int> columnPositions, ReadOnlySpan<int> columnWidths, int column)
-        => columnPositions[column] + columnWidths[column];
+    public static int GetColumnRightX(ReadOnlySpan<int> columnPositions, ReadOnlySpan<int> columnWidths, int column) =>
+        columnPositions[column] + columnWidths[column];
 }

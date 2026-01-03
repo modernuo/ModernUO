@@ -86,12 +86,7 @@ public readonly struct GridSizeSpec
         if (starIndex == -1)
         {
             // No star - absolute pixel value
-            if (int.TryParse(token, out var pixels))
-            {
-                return Absolute(pixels);
-            }
-
-            return Star();
+            return int.TryParse(token, out var pixels) ? Absolute(pixels) : Star();
         }
 
         if (starIndex == 0 && token.Length == 1)
@@ -102,12 +97,7 @@ public readonly struct GridSizeSpec
 
         // "N*" format - percentage
         var percentPart = token[..starIndex];
-        if (int.TryParse(percentPart, out var percent))
-        {
-            return Percent(percent);
-        }
-
-        return Star();
+        return int.TryParse(percentPart, out var percent) ? Percent(percent) : Star();
     }
 
     /// <summary>

@@ -21,7 +21,7 @@ namespace Server.Gumps;
 /// Represents a pre-calculated cell position within a grid layout.
 /// This is a value type with zero heap allocations.
 /// </summary>
-public readonly struct GridCell
+public ref struct GridCell
 {
     public readonly int X;
     public readonly int Y;
@@ -98,20 +98,17 @@ public readonly struct GridCell
     /// Creates a new cell with an offset applied to the position.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public GridCell Offset(int offsetX, int offsetY) =>
-        new(X + offsetX, Y + offsetY, Width, Height);
+    public GridCell Offset(int offsetX, int offsetY) => new(X + offsetX, Y + offsetY, Width, Height);
 
     /// <summary>
     /// Creates a new cell with a different width.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public GridCell WithWidth(int width) =>
-        new(X, Y, width, Height);
+    public GridCell WithWidth(int width) => new(X, Y, width, Height);
 
     /// <summary>
     /// Creates a new cell with a different height.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public GridCell WithHeight(int height) =>
-        new(X, Y, Width, height);
+    public GridCell WithHeight(int height) => new(X, Y, Width, height);
 }

@@ -15,6 +15,7 @@
 
 using System;
 using System.Runtime.CompilerServices;
+using Server.Buffers;
 
 namespace Server.Gumps;
 
@@ -28,28 +29,22 @@ public static class GridBuilderExtensions
     /// Adds a background element filling the entire cell.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void AddBackground(ref this DynamicGumpBuilder builder, in GridCell cell, int gumpId)
-    {
+    public static void AddBackground(ref this DynamicGumpBuilder builder, in GridCell cell, int gumpId) =>
         builder.AddBackground(cell.X, cell.Y, cell.Width, cell.Height, gumpId);
-    }
 
     /// <summary>
     /// Adds an alpha region filling the entire cell.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void AddAlphaRegion(ref this DynamicGumpBuilder builder, in GridCell cell)
-    {
+    public static void AddAlphaRegion(ref this DynamicGumpBuilder builder, in GridCell cell) =>
         builder.AddAlphaRegion(cell.X, cell.Y, cell.Width, cell.Height);
-    }
 
     /// <summary>
     /// Adds a tiled image filling the entire cell.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void AddImageTiled(ref this DynamicGumpBuilder builder, in GridCell cell, int gumpId)
-    {
+    public static void AddImageTiled(ref this DynamicGumpBuilder builder, in GridCell cell, int gumpId) =>
         builder.AddImageTiled(cell.X, cell.Y, cell.Width, cell.Height, gumpId);
-    }
 
     /// <summary>
     /// Adds an image at the cell position with optional offset.
@@ -61,10 +56,8 @@ public static class GridBuilderExtensions
         int gumpId,
         int hue = 0,
         int offsetX = 0,
-        int offsetY = 0)
-    {
-        builder.AddImage(cell.X + offsetX, cell.Y + offsetY, gumpId, hue);
-    }
+        int offsetY = 0
+    ) => builder.AddImage(cell.X + offsetX, cell.Y + offsetY, gumpId, hue);
 
     /// <summary>
     /// Adds an item display at the cell position with optional offset.
@@ -76,10 +69,8 @@ public static class GridBuilderExtensions
         int itemId,
         int hue = 0,
         int offsetX = 0,
-        int offsetY = 0)
-    {
-        builder.AddItem(cell.X + offsetX, cell.Y + offsetY, itemId, hue);
-    }
+        int offsetY = 0
+    ) => builder.AddItem(cell.X + offsetX, cell.Y + offsetY, itemId, hue);
 
     /// <summary>
     /// Adds a label at the cell position with optional offset.
@@ -91,9 +82,24 @@ public static class GridBuilderExtensions
         int hue,
         ReadOnlySpan<char> text,
         int offsetX = 0,
-        int offsetY = 0)
+        int offsetY = 0
+    ) => builder.AddLabel(cell.X + offsetX, cell.Y + offsetY, hue, text);
+
+    /// <summary>
+    /// Adds a label at the cell position with optional offset using interpolated string.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void AddLabel(
+        ref this DynamicGumpBuilder builder,
+        in GridCell cell,
+        int hue,
+        ref RawInterpolatedStringHandler handler,
+        int offsetX = 0,
+        int offsetY = 0
+    )
     {
-        builder.AddLabel(cell.X + offsetX, cell.Y + offsetY, hue, text);
+        builder.AddLabel(cell.X + offsetX, cell.Y + offsetY, hue, handler.Text);
+        handler.Clear();
     }
 
     /// <summary>
@@ -106,7 +112,28 @@ public static class GridBuilderExtensions
         int hue,
         ReadOnlySpan<char> text,
         int offsetX = 0,
-        int offsetY = 0)
+        int offsetY = 0
+    ) => builder.AddLabelCropped(
+        cell.X + offsetX,
+        cell.Y + offsetY,
+        cell.Width - offsetX,
+        cell.Height - offsetY,
+        hue,
+        text
+    );
+
+    /// <summary>
+    /// Adds a cropped label filling the cell with optional offset using interpolated string.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void AddLabelCropped(
+        ref this DynamicGumpBuilder builder,
+        in GridCell cell,
+        int hue,
+        ref RawInterpolatedStringHandler handler,
+        int offsetX = 0,
+        int offsetY = 0
+    )
     {
         builder.AddLabelCropped(
             cell.X + offsetX,
@@ -114,7 +141,9 @@ public static class GridBuilderExtensions
             cell.Width - offsetX,
             cell.Height - offsetY,
             hue,
-            text);
+            handler.Text
+        );
+        handler.Clear();
     }
 
     /// <summary>
@@ -130,9 +159,27 @@ public static class GridBuilderExtensions
         byte fontStyle = 0,
         TextAlignment align = TextAlignment.Left,
         bool background = false,
-        bool scrollbar = false)
+        bool scrollbar = false
+    ) => builder.AddHtml(cell.X, cell.Y, cell.Width, cell.Height, text, color, size, fontStyle, align, background, scrollbar);
+
+    /// <summary>
+    /// Adds HTML text filling the entire cell using interpolated string.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void AddHtml(
+        ref this DynamicGumpBuilder builder,
+        in GridCell cell,
+        ref RawInterpolatedStringHandler handler,
+        ReadOnlySpan<char> color = default,
+        int size = -1,
+        byte fontStyle = 0,
+        TextAlignment align = TextAlignment.Left,
+        bool background = false,
+        bool scrollbar = false
+    )
     {
-        builder.AddHtml(cell.X, cell.Y, cell.Width, cell.Height, text, color, size, fontStyle, align, background, scrollbar);
+        builder.AddHtml(cell.X, cell.Y, cell.Width, cell.Height, handler.Text, color, size, fontStyle, align, background, scrollbar);
+        handler.Clear();
     }
 
     /// <summary>
@@ -150,20 +197,53 @@ public static class GridBuilderExtensions
         byte fontStyle = 0,
         TextAlignment align = TextAlignment.Left,
         bool background = false,
-        bool scrollbar = false)
+        bool scrollbar = false
+    ) => builder.AddHtml(
+        cell.X + offsetX,
+        cell.Y + offsetY,
+        cell.Width - offsetX,
+        cell.Height - offsetY,
+        text,
+        color,
+        size,
+        fontStyle,
+        align,
+        background,
+        scrollbar
+    );
+
+    /// <summary>
+    /// Adds HTML text filling the cell with offset using interpolated string.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void AddHtml(
+        ref this DynamicGumpBuilder builder,
+        in GridCell cell,
+        ref RawInterpolatedStringHandler handler,
+        int offsetX,
+        int offsetY,
+        ReadOnlySpan<char> color = default,
+        int size = -1,
+        byte fontStyle = 0,
+        TextAlignment align = TextAlignment.Left,
+        bool background = false,
+        bool scrollbar = false
+    )
     {
         builder.AddHtml(
             cell.X + offsetX,
             cell.Y + offsetY,
             cell.Width - offsetX,
             cell.Height - offsetY,
-            text,
+            handler.Text,
             color,
             size,
             fontStyle,
             align,
             background,
-            scrollbar);
+            scrollbar
+        );
+        handler.Clear();
     }
 
     /// <summary>
@@ -175,10 +255,8 @@ public static class GridBuilderExtensions
         in GridCell cell,
         int number,
         bool background = false,
-        bool scrollbar = false)
-    {
-        builder.AddHtmlLocalized(cell.X, cell.Y, cell.Width, cell.Height, number, background, scrollbar);
-    }
+        bool scrollbar = false
+    ) => builder.AddHtmlLocalized(cell.X, cell.Y, cell.Width, cell.Height, number, background, scrollbar);
 
     /// <summary>
     /// Adds a localized HTML element with color.
@@ -190,10 +268,36 @@ public static class GridBuilderExtensions
         int number,
         int color,
         bool background = false,
-        bool scrollbar = false)
-    {
-        builder.AddHtmlLocalized(cell.X, cell.Y, cell.Width, cell.Height, number, color, background, scrollbar);
-    }
+        bool scrollbar = false
+    ) => builder.AddHtmlLocalized(cell.X, cell.Y, cell.Width, cell.Height, number, color, background, scrollbar);
+
+    /// <summary>
+    /// Adds a localized HTML element with arguments.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void AddHtmlLocalized(
+        ref this DynamicGumpBuilder builder,
+        in GridCell cell,
+        int number,
+        ReadOnlySpan<char> args,
+        int color,
+        bool background = false,
+        bool scrollbar = false
+    ) => builder.AddHtmlLocalized(cell.X, cell.Y, cell.Width, cell.Height, number, args, color, background, scrollbar);
+
+    /// <summary>
+    /// Adds a localized HTML element with arguments using interpolated string.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void AddHtmlLocalized(
+        ref this DynamicGumpBuilder builder,
+        in GridCell cell,
+        int number,
+        ref RawInterpolatedStringHandler handler,
+        int color,
+        bool background = false,
+        bool scrollbar = false
+    ) => builder.AddHtmlLocalized(cell.X, cell.Y, cell.Width, cell.Height, number, ref handler, color, background, scrollbar);
 
     /// <summary>
     /// Adds a button at the cell position with optional offset.
@@ -208,10 +312,8 @@ public static class GridBuilderExtensions
         GumpButtonType type = GumpButtonType.Reply,
         int param = 0,
         int offsetX = 0,
-        int offsetY = 0)
-    {
-        builder.AddButton(cell.X + offsetX, cell.Y + offsetY, normalId, pressedId, buttonId, type, param);
-    }
+        int offsetY = 0
+    ) => builder.AddButton(cell.X + offsetX, cell.Y + offsetY, normalId, pressedId, buttonId, type, param);
 
     /// <summary>
     /// Adds a checkbox at the cell position with optional offset.
@@ -225,10 +327,8 @@ public static class GridBuilderExtensions
         bool selected,
         int switchId,
         int offsetX = 0,
-        int offsetY = 0)
-    {
-        builder.AddCheckbox(cell.X + offsetX, cell.Y + offsetY, inactiveId, activeId, selected, switchId);
-    }
+        int offsetY = 0
+    ) => builder.AddCheckbox(cell.X + offsetX, cell.Y + offsetY, inactiveId, activeId, selected, switchId);
 
     /// <summary>
     /// Adds a radio button at the cell position with optional offset.
@@ -242,10 +342,8 @@ public static class GridBuilderExtensions
         bool selected,
         int switchId,
         int offsetX = 0,
-        int offsetY = 0)
-    {
-        builder.AddRadio(cell.X + offsetX, cell.Y + offsetY, inactiveId, activeId, selected, switchId);
-    }
+        int offsetY = 0
+    ) => builder.AddRadio(cell.X + offsetX, cell.Y + offsetY, inactiveId, activeId, selected, switchId);
 
     /// <summary>
     /// Adds a text entry filling the cell.
@@ -256,9 +354,23 @@ public static class GridBuilderExtensions
         in GridCell cell,
         int hue,
         int entryId,
-        ReadOnlySpan<char> initialText = default)
+        ReadOnlySpan<char> initialText = default
+    ) => builder.AddTextEntry(cell.X, cell.Y, cell.Width, cell.Height, hue, entryId, initialText);
+
+    /// <summary>
+    /// Adds a text entry filling the cell using interpolated string.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void AddTextEntry(
+        ref this DynamicGumpBuilder builder,
+        in GridCell cell,
+        int hue,
+        int entryId,
+        ref RawInterpolatedStringHandler handler
+    )
     {
-        builder.AddTextEntry(cell.X, cell.Y, cell.Width, cell.Height, hue, entryId, initialText);
+        builder.AddTextEntry(cell.X, cell.Y, cell.Width, cell.Height, hue, entryId, handler.Text);
+        handler.Clear();
     }
 
     /// <summary>
@@ -272,7 +384,30 @@ public static class GridBuilderExtensions
         int entryId,
         int offsetX,
         int offsetY,
-        ReadOnlySpan<char> initialText = default)
+        ReadOnlySpan<char> initialText = default
+    ) => builder.AddTextEntry(
+        cell.X + offsetX,
+        cell.Y + offsetY,
+        cell.Width - offsetX,
+        cell.Height - offsetY,
+        hue,
+        entryId,
+        initialText
+    );
+
+    /// <summary>
+    /// Adds a text entry with offset using interpolated string.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void AddTextEntry(
+        ref this DynamicGumpBuilder builder,
+        in GridCell cell,
+        int hue,
+        int entryId,
+        int offsetX,
+        int offsetY,
+        ref RawInterpolatedStringHandler handler
+    )
     {
         builder.AddTextEntry(
             cell.X + offsetX,
@@ -281,7 +416,9 @@ public static class GridBuilderExtensions
             cell.Height - offsetY,
             hue,
             entryId,
-            initialText);
+            handler.Text
+        );
+        handler.Clear();
     }
 
     /// <summary>
@@ -294,9 +431,24 @@ public static class GridBuilderExtensions
         int hue,
         int entryId,
         int size,
-        ReadOnlySpan<char> initialText = default)
+        ReadOnlySpan<char> initialText = default
+    ) => builder.AddTextEntryLimited(cell.X, cell.Y, cell.Width, cell.Height, hue, entryId, initialText, size);
+
+    /// <summary>
+    /// Adds a limited text entry filling the cell using interpolated string.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void AddTextEntryLimited(
+        ref this DynamicGumpBuilder builder,
+        in GridCell cell,
+        int hue,
+        int entryId,
+        int size,
+        ref RawInterpolatedStringHandler handler
+    )
     {
-        builder.AddTextEntryLimited(cell.X, cell.Y, cell.Width, cell.Height, hue, entryId, initialText, size);
+        builder.AddTextEntryLimited(cell.X, cell.Y, cell.Width, cell.Height, hue, entryId, handler.Text, size);
+        handler.Clear();
     }
 
     /// <summary>
@@ -313,20 +465,47 @@ public static class GridBuilderExtensions
         int param,
         int itemId,
         int hue,
-        int localizedTooltip = -1)
-    {
-        builder.AddImageTiledButton(
-            cell.X,
-            cell.Y,
-            normalId,
-            pressedId,
-            buttonId,
-            type,
-            param,
-            itemId,
-            hue,
-            cell.Width,
-            cell.Height,
-            localizedTooltip);
-    }
+        int localizedTooltip = -1
+    ) => builder.AddImageTiledButton(
+        cell.X,
+        cell.Y,
+        normalId,
+        pressedId,
+        buttonId,
+        type,
+        param,
+        itemId,
+        hue,
+        cell.Width,
+        cell.Height,
+        localizedTooltip
+    );
+
+    /// <summary>
+    /// Adds a sprite image using the cell dimensions.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void AddSpriteImage(
+        ref this DynamicGumpBuilder builder,
+        in GridCell cell,
+        int gumpId,
+        int sx,
+        int sy
+    ) => builder.AddSpriteImage(cell.X, cell.Y, gumpId, cell.Width, cell.Height, sx, sy);
+
+    /// <summary>
+    /// Adds a sprite image at the cell position with optional offset.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void AddSpriteImage(
+        ref this DynamicGumpBuilder builder,
+        in GridCell cell,
+        int gumpId,
+        int width,
+        int height,
+        int sx,
+        int sy,
+        int offsetX = 0,
+        int offsetY = 0
+    ) => builder.AddSpriteImage(cell.X + offsetX, cell.Y + offsetY, gumpId, width, height, sx, sy);
 }

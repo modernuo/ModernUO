@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2025 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: SpawnerControllerGump.cs                                        *
+ * File: SpawnerControllerGump.cs                                       *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -154,7 +154,7 @@ public class SpawnerControllerGump : DynamicGump
         {
             var cell = listView.GetHeaderCell(i, listColPos, listColWidths);
             var offsetX = i >= 4 ? -4 : 0;
-            builder.AddHtml(cell.X + offsetX, cell.Y + 10, cell.Width, 30, headers[i], GridColors.Gold, 4, align: TextAlignment.Center);
+            builder.AddHtml(cell.X + offsetX, cell.Y + 10, cell.Width, 30, headers[i], GumpTextColors.Gold, 4, align: TextAlignment.Center);
         }
 
         // Draw spawner rows
@@ -169,17 +169,17 @@ public class SpawnerControllerGump : DynamicGump
             var col0X = listColPos[0];
             var col0Width = listColWidths[0];
             builder.AddButton(col0X + 15, rowY + 5, 4011, 4012, GetButtonID(2, dataIndex));
-            builder.AddHtml(col0X, rowY + 26, col0Width, 30, "copy", GridColors.White, 3, align: TextAlignment.Center);
+            builder.AddHtml(col0X, rowY + 26, col0Width, 30, "copy", GumpTextColors.White, 3, align: TextAlignment.Center);
 
             // Column 1: Paste buttons
             var col1X = listColPos[1];
             var col1Width = listColWidths[1];
             var col1HCenter = col1X + col1Width / 2;
             builder.AddButton(col1X + 2, rowY + 5, 4029, 4031, GetButtonID(3, dataIndex));
-            builder.AddHtml(col1X + 3, rowY + 26, col1Width, 30, "props", GridColors.White, 3);
+            builder.AddHtml(col1X + 3, rowY + 26, col1Width, 30, "props", GumpTextColors.White, 3);
 
             builder.AddButton(col1HCenter - 2, rowY + 5, 4029, 4031, GetButtonID(4, dataIndex));
-            builder.AddHtml(col1HCenter - 3, rowY + 26, 55, 30, "entry", GridColors.White, 3);
+            builder.AddHtml(col1HCenter - 3, rowY + 26, 55, 30, "entry", GumpTextColors.White, 3);
 
             // Column 2: Name/Serial
             var col2X = listColPos[2];
@@ -187,34 +187,34 @@ public class SpawnerControllerGump : DynamicGump
             var entryIndex = i * EntryCount;
 
             builder.AddImageTiled(col2X - 2, rowY + 18, col2Width - 8, 1, 9357);
-            builder.AddTextEntry(col2X, rowY + 2, col2Width - 8, 80, (int)GridHues.White, entryIndex, spawner.Name);
+            builder.AddTextEntry(col2X, rowY + 2, col2Width - 8, 80, GumpHues.White, entryIndex, spawner.Name);
             builder.AddButton(col2X, rowY + vCenter + 9, 5837, 5838, GetButtonID(6, dataIndex));
-            builder.AddHtml(col2X, rowY + vCenter + 10, col2Width, 30, spawner.Serial.ToString(), GridColors.White, 4);
+            builder.AddHtml(col2X, rowY + vCenter + 10, col2Width, 30, $"{spawner.Serial}", GumpTextColors.White, 4);
 
             // Column 3: Map
             var col3X = listColPos[3];
             var col3Width = listColWidths[3];
-            builder.AddHtml(col3X, rowY + vCenter, col3Width, 30, spawner.Map.ToString(), GridColors.White, 4, align: TextAlignment.Center);
+            builder.AddHtml(col3X, rowY + vCenter, col3Width, 30, $"{spawner.Map}", GumpTextColors.White, 4, align: TextAlignment.Center);
 
             // Column 4: Coords with teleport button
             var col4X = listColPos[4];
             var col4Width = listColWidths[4];
             builder.AddButton(col4X - 5, rowY + vCenter, 2062, 2062, GetButtonID(5, dataIndex));
             builder.AddImage(col4X - 5, rowY + vCenter, 2062, 936);
-            builder.AddHtml(col4X - 7, rowY + vCenter, col4Width, 30, $"X {spawner.Location.X} Y {spawner.Location.Y}", GridColors.White, 4);
+            builder.AddHtml(col4X - 7, rowY + vCenter, col4Width, 30, $"X {spawner.Location.X} Y {spawner.Location.Y}", GumpTextColors.White, 4);
 
             // Column 5: Entry count with button
             var col5X = listColPos[5];
             var col5Width = listColWidths[5];
             builder.AddButton(col5X + 6, rowY + vCenter - 4, 0x2635, 0x2635, GetButtonID(7, dataIndex));
             builder.AddImage(col5X + 6, rowY + vCenter - 7, 0x2635, 827);
-            builder.AddHtml(col5X, rowY + vCenter, col5Width, 30, spawner.Entries?.Count.ToString() ?? "0", GridColors.White, 4, align: TextAlignment.Center);
+            builder.AddHtml(col5X, rowY + vCenter, col5Width, 30, $"{spawner.Entries?.Count ?? 0}", GumpTextColors.White, 4, align: TextAlignment.Center);
 
             // Column 6: Walk Range
             var col6X = listColPos[6];
             var col6Width = listColWidths[6];
             builder.AddImageTiled(col6X + 8, rowY + 29, col6Width / 2, 1, 9357);
-            builder.AddTextEntry(col6X + 12, rowY + 13, col6Width, 80, (int)GridHues.White, entryIndex + 1, spawner.WalkingRange.ToString());
+            builder.AddTextEntry(col6X + 12, rowY + 13, col6Width, 80, GumpHues.White, entryIndex + 1, $"{spawner.WalkingRange}");
 
             // Column 7: Home Range
             var col7X = listColPos[7];
@@ -222,37 +222,37 @@ public class SpawnerControllerGump : DynamicGump
             if (spawner.IsHomeRangeStyle)
             {
                 builder.AddImageTiled(col7X + 8, rowY + 29, col7Width / 2, 1, 9357);
-                builder.AddTextEntry(col7X + 12, rowY + 13, col7Width, 80, (int)GridHues.White, entryIndex + 2, spawner.HomeRange.ToString());
+                builder.AddTextEntry(col7X + 12, rowY + 13, col7Width, 80, GumpHues.White, entryIndex + 2, $"{spawner.HomeRange}");
             }
             else
             {
-                builder.AddHtml(col7X - 6, rowY + 13, col7Width, 30, "Custom", GridColors.Yellow, 4, align: TextAlignment.Center);
+                builder.AddHtml(col7X - 6, rowY + 13, col7Width, 30, "Custom", GumpTextColors.Yellow, 4, align: TextAlignment.Center);
             }
 
             // Column 8: Min Delay
             var col8X = listColPos[8];
             var col8Width = listColWidths[8];
             builder.AddImageTiled(col8X + 6, rowY + 29, col8Width - 20, 1, 9357);
-            builder.AddTextEntry(col8X + 8, rowY + 13, col8Width, 80, (int)GridHues.White, entryIndex + 3, spawner.MinDelay.ToString());
+            builder.AddTextEntry(col8X + 8, rowY + 13, col8Width, 80, GumpHues.White, entryIndex + 3, $"{spawner.MinDelay}");
 
             // Column 9: Max Delay
             var col9X = listColPos[9];
             var col9Width = listColWidths[9];
             builder.AddImageTiled(col9X + 6, rowY + 29, col9Width - 20, 1, 9357);
-            builder.AddTextEntry(col9X + 8, rowY + 13, col9Width, 80, (int)GridHues.White, entryIndex + 4, spawner.MaxDelay.ToString());
+            builder.AddTextEntry(col9X + 8, rowY + 13, col9Width, 80, GumpHues.White, entryIndex + 4, $"{spawner.MaxDelay}");
 
             // Column 10: Next Spawn
             var col10X = listColPos[10];
             var col10Width = listColWidths[10];
-            builder.AddHtml(col10X, rowY + vCenter, col10Width, 30, spawner.NextSpawn.ToString(@"hh\:mm\:ss"), GridColors.White, 4, align: TextAlignment.Center);
+            builder.AddHtml(col10X, rowY + vCenter, col10Width, 30, $@"{spawner.NextSpawn:hh\:mm\:ss}", GumpTextColors.White, 4, align: TextAlignment.Center);
 
             // Column 11: Actions
             var col11X = listColPos[11];
             builder.AddButton(col11X, rowY + 5, 4023, 4025, GetButtonID(8, dataIndex));
-            builder.AddHtml(col11X + 4, rowY + 26, 55, 30, "save", GridColors.White, 3);
+            builder.AddHtml(col11X + 4, rowY + 26, 55, 30, "save", GumpTextColors.White, 3);
 
             builder.AddButton(col11X + RowHeight, rowY + 5, 4017, 4018, GetButtonID(9, dataIndex));
-            builder.AddHtml(col11X + RowHeight, rowY + 26, 55, 30, "delete", GridColors.White, 3);
+            builder.AddHtml(col11X + RowHeight, rowY + 26, 55, 30, "delete", GumpTextColors.White, 3);
 
             // Row separator
             builder.AddImageTiled(0, rowY + RowHeight, GumpWidth, 1, 9357);
@@ -274,16 +274,16 @@ public class SpawnerControllerGump : DynamicGump
         }
 
         builder.AddButton(15, row2Y, 4029, 4031, GetButtonID(1, 5));
-        builder.AddHtml(55, row2Y + 4, GumpWidth, 20, $"Paste props for {_spawners.Length} spawners", GridColors.Orange, 4);
+        builder.AddHtml(55, row2Y + 4, GumpWidth, 20, $"Paste props for {_spawners.Length} spawners", GumpTextColors.Orange, 4);
 
         builder.AddButton(15, row2Y + 28, 4029, 4031, GetButtonID(1, 6));
-        builder.AddHtml(55, row2Y + 32, GumpWidth, 20, $"Paste entry for {_spawners.Length} spawners", GridColors.Orange, 4);
+        builder.AddHtml(55, row2Y + 32, GumpWidth, 20, $"Paste entry for {_spawners.Length} spawners", GumpTextColors.Orange, 4);
 
         builder.AddButton(275, row2Y, 4029, 4031, GetButtonID(1, 7));
-        builder.AddHtml(315, row2Y + 4, GumpWidth, 20, "Paste copy to the ground", GridColors.Yellow, 4);
+        builder.AddHtml(315, row2Y + 4, GumpWidth, 20, "Paste copy to the ground", GumpTextColors.Yellow, 4);
 
-        builder.AddHtml(16, row2VCenter + 17, GumpWidth, 20, $"Pages {listView.CurrentPage + 1}/{listView.TotalPages}", GridColors.White, 4);
-        builder.AddHtml(120, row2VCenter + 17, GumpWidth, 20, $"Total Spawners {_spawners.Length}", GridColors.White, 4);
+        builder.AddHtml(16, row2VCenter + 17, GumpWidth, 20, $"Pages {listView.CurrentPage + 1}/{listView.TotalPages}", GumpTextColors.White, 4);
+        builder.AddHtml(120, row2VCenter + 17, GumpWidth, 20, $"Total Spawners {_spawners.Length}", GumpTextColors.White, 4);
     }
 
     private void DrawSearch(ref DynamicGumpBuilder builder, int row0Y, int searchHeight)
@@ -301,8 +301,8 @@ public class SpawnerControllerGump : DynamicGump
         const int deltaX = 140;
 
         // Labels
-        builder.AddHtml(col0X, row0Y + 8, searchColWidths[0], 30, "Search type", GridColors.Gold, 4, align: TextAlignment.Center);
-        builder.AddHtml(col1X, row0Y + 8, searchColWidths[1], 30, "Search Match", GridColors.Gold, 4, align: TextAlignment.Center);
+        builder.AddHtml(col0X, row0Y + 8, searchColWidths[0], 30, "Search type", GumpTextColors.Gold, 4, align: TextAlignment.Center);
+        builder.AddHtml(col1X, row0Y + 8, searchColWidths[1], 30, "Search Match", GumpTextColors.Gold, 4, align: TextAlignment.Center);
 
         // Separators
         builder.AddImageTiled(0, row0Y + 30, GumpWidth, 3, 9357);
@@ -317,20 +317,20 @@ public class SpawnerControllerGump : DynamicGump
         var name = _search.Type == SpawnSearchType.Name ? 9021 : 9020;
 
         builder.AddButton(col0X + 10, row0Y + 45, creature, creature, GetButtonID(1, 0));
-        builder.AddHtml(col0X + 15, row0Y + 48, 100, 30, "Creature", GridColors.White, 4, align: TextAlignment.Center);
+        builder.AddHtml(col0X + 15, row0Y + 48, 100, 30, "Creature", GumpTextColors.White, 4, align: TextAlignment.Center);
 
         builder.AddButton(col0X + 10 + deltaX - 40, row0Y + 45, coords, coords, GetButtonID(1, 1));
-        builder.AddHtml(col0X + 40 + deltaX - 40, row0Y + 48, 150, 30, "Range", GridColors.White, 4);
+        builder.AddHtml(col0X + 40 + deltaX - 40, row0Y + 48, 150, 30, "Range", GumpTextColors.White, 4);
 
         builder.AddButton(col0X + 10 + deltaX * 2 - 100, row0Y + 45, props, props, GetButtonID(1, 2));
-        builder.AddHtml(col0X + 40 + deltaX * 2 - 100, row0Y + 48, 150, 30, "Creature Props", GridColors.White, 4);
+        builder.AddHtml(col0X + 40 + deltaX * 2 - 100, row0Y + 48, 150, 30, "Creature Props", GumpTextColors.White, 4);
 
         builder.AddButton(col0X + 10 + deltaX * 3 - 100, row0Y + 45, name, name, GetButtonID(1, 3));
-        builder.AddHtml(col0X + 40 + deltaX * 3 - 100, row0Y + 48, 150, 30, "Spawner Name", GridColors.White, 4);
+        builder.AddHtml(col0X + 40 + deltaX * 3 - 100, row0Y + 48, 150, 30, "Spawner Name", GumpTextColors.White, 4);
 
         // Search text entry
         builder.AddImageTiled(col1HCenter - 100, row0VCenter + 16, 200, 1, 9357);
-        builder.AddTextEntry(col1HCenter - 100, row0VCenter, 200, 20, (int)GridHues.White, 0xFFFF, _search.SearchPattern);
+        builder.AddTextEntry(col1HCenter - 100, row0VCenter, 200, 20, GumpHues.White, 0xFFFF, _search.SearchPattern);
         builder.AddButton(col1HCenter + 120, row0VCenter, 4023, 4024, GetButtonID(1, 4));
 
         // Search type description
@@ -342,7 +342,7 @@ public class SpawnerControllerGump : DynamicGump
             3 => "Search by spawner name",
             _ => ""
         };
-        builder.AddHtml(col1X, row0VCenter + 20, searchColWidths[1], 30, description, GridColors.White, 4, align: TextAlignment.Center);
+        builder.AddHtml(col1X, row0VCenter + 20, searchColWidths[1], 30, description, GumpTextColors.White, 4, align: TextAlignment.Center);
     }
 
     private void SearchSpawner()
@@ -458,185 +458,186 @@ public class SpawnerControllerGump : DynamicGump
     public override void OnResponse(NetState sender, in RelayInfo info)
     {
         var mobile = sender.Mobile;
+        if (info.ButtonID == 0)
+        {
+            return;
+        }
+
         var buttonID = info.ButtonID - 1;
         var type = buttonID % TypeCount;
         var index = buttonID / TypeCount;
 
         switch (type)
         {
-            case -1:
-                return;
-
             case 1:
-            {
-                if (index < 4)
                 {
-                    _search.Type = (SpawnSearchType)index;
-                    var isNumeric = int.TryParse(_search.SearchPattern, out _);
-                    if (index == 1 && !isNumeric || index != 1 && isNumeric)
+                    if (index < 4)
                     {
-                        _search.SearchPattern = "";
+                        _search.Type = (SpawnSearchType)index;
+                        var isNumeric = int.TryParse(_search.SearchPattern, out _);
+                        if (index == 1 && !isNumeric || index != 1 && isNumeric)
+                        {
+                            _search.SearchPattern = "";
+                        }
                     }
-                }
-                else if (index == 4)
-                {
-                    var entry = info.GetTextEntry(0xFFFF);
-                    if (entry?.Length > 0)
+                    else if (index == 4)
                     {
-                        _search.SearchPattern = entry;
+                        var entry = info.GetTextEntry(0xFFFF);
+                        if (entry?.Length > 0)
+                        {
+                            _search.SearchPattern = entry;
+                        }
                     }
-                }
-                else if (index == 5 && _copy != null && _spawners?.Length > 0)
-                {
-                    foreach (var spawner in _spawners)
+                    else if (index == 5 && _copy != null && _spawners?.Length > 0)
                     {
-                        CopyProperty(_copy, spawner);
+                        foreach (var spawner in _spawners)
+                        {
+                            CopyProperty(_copy, spawner);
+                        }
                     }
-                }
-                else if (index == 6 && _copy != null && _spawners?.Length > 0)
-                {
-                    foreach (var spawner in _spawners)
+                    else if (index == 6 && _copy != null && _spawners?.Length > 0)
                     {
-                        CopyEntry(_copy, spawner);
+                        foreach (var spawner in _spawners)
+                        {
+                            CopyEntry(_copy, spawner);
+                        }
                     }
-                }
-                else if (index == 7 && _copy != null)
-                {
-                    var newSpawner = new Spawner();
-                    FullCopy(_copy, newSpawner);
-                    newSpawner.Map = mobile.Map;
-                    newSpawner.Location = mobile.Location;
-                    newSpawner.Stop();
-                    newSpawner.Start();
-                    newSpawner.Respawn();
-                }
+                    else if (index == 7 && _copy != null)
+                    {
+                        var newSpawner = new Spawner();
+                        FullCopy(_copy, newSpawner);
+                        newSpawner.Map = mobile.Map;
+                        newSpawner.Location = mobile.Location;
+                        newSpawner.Stop();
+                        newSpawner.Start();
+                        newSpawner.Respawn();
+                    }
 
-                _page = 0;
-                Refresh(mobile);
-                return;
-            }
+                    _page = 0;
+                    break;
+                }
 
             case 2:
-            {
-                if (index < _spawners.Length)
                 {
-                    _copy = _spawners[index];
+                    if (index < _spawners.Length)
+                    {
+                        _copy = _spawners[index];
+                    }
+                    break;
                 }
-                break;
-            }
 
             case 3:
-            {
-                if (index < _spawners.Length && _copy != null)
                 {
-                    CopyProperty(_copy, _spawners[index]);
+                    if (index < _spawners.Length && _copy != null)
+                    {
+                        CopyProperty(_copy, _spawners[index]);
+                    }
+                    break;
                 }
-                break;
-            }
 
             case 4:
-            {
-                if (index < _spawners.Length && _copy != null)
                 {
-                    CopyEntry(_copy, _spawners[index]);
+                    if (index < _spawners.Length && _copy != null)
+                    {
+                        CopyEntry(_copy, _spawners[index]);
+                    }
+                    break;
                 }
-                break;
-            }
 
             case 5:
-            {
-                if (index < _spawners.Length)
                 {
-                    var spawner = _spawners[index];
-                    mobile.Map = spawner.Map;
-                    mobile.Location = spawner.Location;
+                    if (index < _spawners.Length)
+                    {
+                        var spawner = _spawners[index];
+                        mobile.Map = spawner.Map;
+                        mobile.Location = spawner.Location;
+                    }
+                    Refresh(mobile, reSearch: false);
+                    return;
                 }
-                Refresh(mobile, reSearch: false);
-                return;
-            }
 
             case 6:
             case 7:
-            {
-                if (index < _spawners.Length)
                 {
-                    var spawner = _spawners[index];
-                    Refresh(mobile);
+                    if (index < _spawners.Length)
+                    {
+                        var spawner = _spawners[index];
+                        Refresh(mobile);
 
-                    if (type == 7)
-                    {
-                        mobile.SendGump(new SpawnerGump(spawner));
+                        if (type == 7)
+                        {
+                            mobile.SendGump(new SpawnerGump(spawner));
+                        }
+                        else
+                        {
+                            mobile.SendGump(new PropertiesGump(mobile, spawner));
+                        }
+                        return;
                     }
-                    else
-                    {
-                        mobile.SendGump(new PropertiesGump(mobile, spawner));
-                    }
-                    return;
+                    break;
                 }
-                break;
-            }
 
             case 8:
-            {
-                if (index < _spawners.Length)
                 {
-                    var spawner = _spawners[index];
-                    var entryIndex = index >= _lineCount ? (index - _lineCount * _page) * EntryCount : index * EntryCount;
-
-                    var name = info.GetTextEntry(entryIndex);
-                    if (name?.Length > 0)
+                    if (index < _spawners.Length)
                     {
-                        spawner.Name = name;
-                    }
+                        var spawner = _spawners[index];
+                        var entryIndex = index >= _lineCount ? (index - _lineCount * _page) * EntryCount : index * EntryCount;
 
-                    if (int.TryParse(info.GetTextEntry(entryIndex + 1), out var walkRange))
-                    {
-                        spawner.WalkingRange = walkRange;
-                    }
+                        var name = info.GetTextEntry(entryIndex);
+                        if (name?.Length > 0)
+                        {
+                            spawner.Name = name;
+                        }
 
-                    if (int.TryParse(info.GetTextEntry(entryIndex + 2), out var homeRange))
-                    {
-                        spawner.HomeRange = homeRange;
-                    }
+                        if (int.TryParse(info.GetTextEntry(entryIndex + 1), out var walkRange))
+                        {
+                            spawner.WalkingRange = walkRange;
+                        }
 
-                    if (TimeSpan.TryParse(info.GetTextEntry(entryIndex + 3), out var minDelay))
-                    {
-                        spawner.MinDelay = minDelay;
-                    }
+                        if (int.TryParse(info.GetTextEntry(entryIndex + 2), out var homeRange))
+                        {
+                            spawner.HomeRange = homeRange;
+                        }
 
-                    if (TimeSpan.TryParse(info.GetTextEntry(entryIndex + 4), out var maxDelay))
-                    {
-                        spawner.MaxDelay = maxDelay;
+                        if (TimeSpan.TryParse(info.GetTextEntry(entryIndex + 3), out var minDelay))
+                        {
+                            spawner.MinDelay = minDelay;
+                        }
+
+                        if (TimeSpan.TryParse(info.GetTextEntry(entryIndex + 4), out var maxDelay))
+                        {
+                            spawner.MaxDelay = maxDelay;
+                        }
                     }
+                    break;
                 }
-                break;
-            }
 
             case 9:
-            {
-                if (index < _spawners.Length)
                 {
-                    _spawners[index].Delete();
+                    if (index < _spawners.Length)
+                    {
+                        _spawners[index].Delete();
+                    }
+                    break;
                 }
-                break;
-            }
 
             case 10:
-            {
-                _page++;
-                Refresh(mobile, reSearch: false);
-                return;
-            }
+                {
+                    _page++;
+                    Refresh(mobile, reSearch: false);
+                    return;
+                }
 
             case 11:
-            {
-                if (_page > 0)
                 {
-                    _page--;
+                    if (_page > 0)
+                    {
+                        _page--;
+                    }
+                    Refresh(mobile, reSearch: false);
+                    return;
                 }
-                Refresh(mobile, reSearch: false);
-                return;
-            }
         }
 
         Refresh(mobile);

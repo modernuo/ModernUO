@@ -44,7 +44,8 @@ public static class GridCalculator
         int totalSize,
         int origin,
         Span<int> positions,
-        Span<int> sizes)
+        Span<int> sizes
+    )
     {
         var trackCount = specs.Length;
 
@@ -58,17 +59,23 @@ public static class GridCalculator
             switch (spec.Type)
             {
                 case GridSizeType.Absolute:
-                    sizes[i] = spec.Value;
-                    remainingSize -= spec.Value;
-                    break;
+                    {
+                        sizes[i] = spec.Value;
+                        remainingSize -= spec.Value;
+                        break;
+                    }
                 case GridSizeType.Percent:
-                    sizes[i] = totalSize * spec.Value / 100;
-                    remainingSize -= sizes[i];
-                    break;
+                    {
+                        sizes[i] = totalSize * spec.Value / 100;
+                        remainingSize -= sizes[i];
+                        break;
+                    }
                 case GridSizeType.Star:
-                    starCount++;
-                    sizes[i] = -1; // Mark as star for second pass
-                    break;
+                    {
+                        starCount++;
+                        sizes[i] = -1; // Mark as star for second pass
+                        break;
+                    }
             }
         }
 
@@ -114,7 +121,8 @@ public static class GridCalculator
         int totalSize,
         int origin,
         Span<int> positions,
-        Span<int> sizes)
+        Span<int> sizes
+    )
     {
         var trackSize = totalSize / trackCount;
         var pos = origin;
@@ -164,14 +172,13 @@ public static class GridCalculator
         ReadOnlySpan<int> rowPositions,
         ReadOnlySpan<int> rowHeights,
         int column,
-        int row)
-    {
-        return new GridCell(
-            columnPositions[column],
-            rowPositions[row],
-            columnWidths[column],
-            rowHeights[row]);
-    }
+        int row
+    ) => new(
+        columnPositions[column],
+        rowPositions[row],
+        columnWidths[column],
+        rowHeights[row]
+    );
 
     /// <summary>
     /// Gets a cell spanning multiple columns and/or rows from pre-computed grid arrays.
