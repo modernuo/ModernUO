@@ -144,10 +144,30 @@ public static class GridCalculator
     /// <param name="positions">Output: position of each track.</param>
     /// <param name="sizes">Output: size of each track.</param>
     /// <returns>The number of tracks computed.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int ComputeFromSpec(
         ReadOnlySpan<char> sizeSpec,
         int totalSize,
         int origin,
+        Span<int> positions,
+        Span<int> sizes
+    ) => ComputeFromSpec(sizeSpec, totalSize, origin, 0, positions, sizes);
+
+    /// <summary>
+    /// Parses a size specification string and computes track sizes with gaps between tracks.
+    /// </summary>
+    /// <param name="sizeSpec">Space-separated size specification (e.g., "10* * 100").</param>
+    /// <param name="totalSize">The total available size.</param>
+    /// <param name="origin">The starting position.</param>
+    /// <param name="gap">The gap size between tracks.</param>
+    /// <param name="positions">Output: position of each track.</param>
+    /// <param name="sizes">Output: size of each track.</param>
+    /// <returns>The number of tracks computed.</returns>
+    public static int ComputeFromSpec(
+        ReadOnlySpan<char> sizeSpec,
+        int totalSize,
+        int origin,
+        int gap,
         Span<int> positions,
         Span<int> sizes)
     {
@@ -156,7 +176,20 @@ public static class GridCalculator
 
         if (trackCount > 0)
         {
-            ComputeTrackSizes(specs[..trackCount], totalSize, origin, positions, sizes);
+            // Subtract total gap space from available size before computing track sizes
+            var totalGapSpace = gap * (trackCount - 1);
+            var availableSize = totalSize - totalGapSpace;
+
+            ComputeTrackSizes(specs[..trackCount], availableSize, origin, positions, sizes);
+
+            // Adjust positions to account for gaps
+            if (gap > 0)
+            {
+                for (var i = 1; i < trackCount; i++)
+                {
+                    positions[i] += gap * i;
+                }
+            }
         }
 
         return trackCount;

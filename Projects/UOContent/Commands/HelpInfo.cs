@@ -223,9 +223,7 @@ public static class HelpInfo
         // Layout constants matching BaseGridGump defaults
         private const int ContentWidth = 360;  // 20 + 320 + 20
         private const int MaxRows = 16;        // 1 header + 15 entries
-        private const int Col0Width = 20;      // Button column
-        private const int Col1Width = 320;     // Content column
-        private const int Col2Width = 20;      // Button column
+        private const string ColumnSpec = "20 320 20";
 
         private static readonly GridEntryStyle Style = GridEntryStyle.Default;
 
@@ -246,22 +244,22 @@ public static class HelpInfo
             var totalWidth = Style.GetTotalWidth(ContentWidth);
             var totalHeight = Style.GetTotalHeight(MaxRows);
 
-            // Calculate column positions (matching cursor behavior with OffsetSize gaps)
-            var originX = Style.ContentOriginX;
-            var originY = Style.ContentOriginY;
+            // Calculate column positions with gaps
             Span<int> colPos = stackalloc int[3];
             Span<int> colWidths = stackalloc int[3];
-            colPos[0] = originX;
-            colWidths[0] = Col0Width;
-            colPos[1] = originX + Col0Width + Style.OffsetSize;
-            colWidths[1] = Col1Width;
-            colPos[2] = colPos[1] + Col1Width + Style.OffsetSize;
-            colWidths[2] = Col2Width;
+            GridCalculator.ComputeFromSpec(
+                ColumnSpec,
+                ContentWidth,
+                Style.ContentOriginX,
+                Style.OffsetSize,
+                colPos,
+                colWidths
+            );
 
             // Background
             builder.AddGridBackground(totalWidth, totalHeight, Style);
 
-            var rowY = originY;
+            var rowY = Style.ContentOriginY;
             var totalPages = (list.Count + EntriesPerPage - 1) / EntriesPerPage;
 
             // Header row
@@ -292,7 +290,7 @@ public static class HelpInfo
 
             // Data rows
             var last = (int)AccessLevel.Player - 1;
-            var dataContentWidth = Col0Width + Style.OffsetSize + Col1Width; // 341
+            var dataContentWidth = colWidths[0] + Style.OffsetSize + colWidths[1];
 
             // Extract the StringBuilder to avoid repeated allocations
             using var sb = ValueStringBuilder.Create();
