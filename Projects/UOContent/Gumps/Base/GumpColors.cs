@@ -10,6 +10,7 @@ public class GumpTextColors
     public const string Orange = "#F28B00";
     public const string Purple = "#F3ACF6";
     public const string Red = "#B52B2D";
+    public const string BrightRed = "#FF0000";
     public const string LightGreen = "#E6FFC0";
     public const string Yellow = "#FFFFBB";
 }

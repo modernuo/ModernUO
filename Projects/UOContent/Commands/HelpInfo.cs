@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Server.Commands.Generic;
@@ -183,12 +184,21 @@ public static class HelpInfo
         }
     }
 
-    public class CommandListGump : BaseGridGump
+    public class CommandListGump : DynamicGump
     {
         private const int EntriesPerPage = 15;
-        private readonly List<CommandInfo> _list;
 
-        private readonly int _page;
+        // Layout constants matching BaseGridGump defaults
+        private const int ContentWidth = 360;  // 20 + 320 + 20
+        private const int MaxRows = 16;        // 1 header + 15 entries
+        private const int Col0Width = 20;      // Button column
+        private const int Col1Width = 320;     // Content column
+        private const int Col2Width = 20;      // Button column
+
+        private static readonly GridEntryStyle Style = GridEntryStyle.Default;
+
+        private readonly List<CommandInfo> _list;
+        private int _page;
 
         public CommandListGump(int page, Mobile from, List<CommandInfo> list) : base(30, 30)
         {
@@ -210,81 +220,109 @@ public static class HelpInfo
             {
                 _list = list;
             }
+        }
 
-            AddNewPage();
+        protected override void BuildLayout(ref DynamicGumpBuilder builder)
+        {
+            var totalWidth = Style.GetTotalWidth(ContentWidth);
+            var totalHeight = Style.GetTotalHeight(MaxRows);
+
+            // Calculate column positions (matching cursor behavior with OffsetSize gaps)
+            var originX = Style.ContentOriginX;
+            var originY = Style.ContentOriginY;
+            Span<int> colPos = stackalloc int[3];
+            Span<int> colWidths = stackalloc int[3];
+            colPos[0] = originX;
+            colWidths[0] = Col0Width;
+            colPos[1] = originX + Col0Width + Style.OffsetSize;
+            colWidths[1] = Col1Width;
+            colPos[2] = colPos[1] + Col1Width + Style.OffsetSize;
+            colWidths[2] = Col2Width;
+
+            // Background
+            builder.AddGridBackground(totalWidth, totalHeight, Style);
+
+            var rowY = originY;
+            var totalPages = (_list.Count + EntriesPerPage - 1) / EntriesPerPage;
+
+            // Header row
+            var headerCell0 = new GridCell(colPos[0], rowY, colWidths[0], Style.EntryHeight);
+            var headerCell1 = new GridCell(colPos[1], rowY, colWidths[1], Style.EntryHeight);
+            var headerCell2 = new GridCell(colPos[2], rowY, colWidths[2], Style.EntryHeight);
 
             if (_page > 0)
             {
-                AddEntryButton(20, ArrowLeftID1, ArrowLeftID2, 1, ArrowLeftWidth, ArrowLeftHeight);
+                builder.AddEntryArrowLeft(headerCell0, Style, 1);
             }
             else
             {
-                AddEntryHeader(20);
+                builder.AddEntryHeader(headerCell0, Style);
             }
 
-            AddEntryHtml(
-                320,
-                Center(
-                    $"Page {_page + 1} of {(_list.Count + EntriesPerPage - 1) / EntriesPerPage}"
-                )
-            );
+            builder.AddImageTiled(headerCell1, Style.EntryGumpID);
+            builder.AddHtml(headerCell1, $"Page {_page + 1} of {totalPages}", Style.TextOffsetX, 0, align: TextAlignment.Center);
 
             if ((_page + 1) * EntriesPerPage < _list.Count)
             {
-                AddEntryButton(20, ArrowRightID1, ArrowRightID2, 2, ArrowRightWidth, ArrowRightHeight);
+                builder.AddEntryArrowRight(headerCell2, Style, 2);
             }
             else
             {
-                AddEntryHeader(20);
+                builder.AddEntryHeader(headerCell2, Style);
             }
 
+            // Data rows
             var last = (int)AccessLevel.Player - 1;
+            var dataContentWidth = Col0Width + Style.OffsetSize + Col1Width; // 341
 
             for (int i = _page * EntriesPerPage, line = 0; line < EntriesPerPage && i < _list.Count; ++i, ++line)
             {
                 var c = _list[i];
-                if (from.AccessLevel >= c.AccessLevel)
+
+                // Access level separator
+                if ((int)c.AccessLevel != last)
                 {
-                    if ((int)c.AccessLevel != last)
-                    {
-                        AddNewLine();
-                        AddEntryHtml(20 + OffsetSize + 320, Color(c.AccessLevel.ToString(), 0xFF0000));
-                        AddEntryHeader(20);
-                        line++;
-                    }
+                    rowY += Style.EntryHeight + Style.OffsetSize;
+                    var sepContentCell = new GridCell(colPos[0], rowY, dataContentWidth, Style.EntryHeight);
+                    var sepButtonCell = new GridCell(colPos[2], rowY, colWidths[2], Style.EntryHeight);
 
-                    last = (int)c.AccessLevel;
-
-                    AddNewLine();
-                    string name;
-                    if (c.Aliases?.Length > 0)
-                    {
-                        using var sb = ValueStringBuilder.Create();
-                        sb.Append($"{c.Name} <i>(");
-                        for (var j = 0; j < c.Aliases.Length; ++j)
-                        {
-                            if (j != 0)
-                            {
-                                sb.Append(", ");
-                            }
-
-                            sb.Append(c.Aliases[j]);
-                        }
-
-                        sb.Append(")</i>");
-                        name = sb.ToString();
-                    }
-                    else
-                    {
-                        name = c.Name;
-                    }
-
-                    AddEntryHtml(20 + OffsetSize + 320, name);
-                    AddEntryButton(20, ArrowRightID1, ArrowRightID2, 3 + i, ArrowRightWidth, ArrowRightHeight);
+                    builder.AddImageTiled(sepContentCell, Style.EntryGumpID);
+                    builder.AddHtml(sepContentCell, $"{c.AccessLevel}", Style.TextOffsetX, 0, GumpTextColors.BrightRed);
+                    builder.AddEntryHeader(sepButtonCell, Style);
+                    line++;
                 }
-            }
 
-            FinishPage();
+                last = (int)c.AccessLevel;
+
+                // Entry row
+                rowY += Style.EntryHeight + Style.OffsetSize;
+                var contentCell = new GridCell(colPos[0], rowY, dataContentWidth, Style.EntryHeight);
+                var buttonCell = new GridCell(colPos[2], rowY, colWidths[2], Style.EntryHeight);
+
+                builder.AddImageTiled(contentCell, Style.EntryGumpID);
+
+                if (c.Aliases?.Length > 0)
+                {
+                    using var sb = ValueStringBuilder.Create();
+                    sb.Append($"{c.Name} <i>(");
+                    for (var j = 0; j < c.Aliases.Length; ++j)
+                    {
+                        if (j != 0)
+                        {
+                            sb.Append(", ");
+                        }
+                        sb.Append(c.Aliases[j]);
+                    }
+                    sb.Append(")</i>");
+                    builder.AddHtml(contentCell, sb.RawChars[..sb.Length], Style.TextOffsetX, 0);
+                }
+                else
+                {
+                    builder.AddHtml(contentCell, c.Name, Style.TextOffsetX, 0);
+                }
+
+                builder.AddEntryArrowRight(buttonCell, Style, 3 + i);
+            }
         }
 
         public override void OnResponse(NetState sender, in RelayInfo info)
@@ -295,50 +333,49 @@ public static class HelpInfo
             switch (info.ButtonID)
             {
                 case 0:
-                    {
-                        gumps.Close<CommandInfoGump>();
-                        break;
-                    }
+                {
+                    gumps.Close<CommandInfoGump>();
+                    break;
+                }
                 case 1:
+                {
+                    if (_page > 0)
                     {
-                        if (_page > 0)
-                        {
-                            gumps.Send(new CommandListGump(_page - 1, m, _list));
-                        }
-
-                        break;
+                        _page--;
+                        m.SendGump(this);
                     }
+                    break;
+                }
                 case 2:
+                {
+                    if ((_page + 1) * EntriesPerPage < _list.Count)
                     {
-                        if ((_page + 1) * EntriesPerPage < SortedHelpInfo.Count)
-                        {
-                            gumps.Send(new CommandListGump(_page + 1, m, _list));
-                        }
-
-                        break;
+                        _page++;
+                        m.SendGump(this);
                     }
+                    break;
+                }
                 default:
+                {
+                    var v = info.ButtonID - 3;
+
+                    if (v >= 0 && v < _list.Count)
                     {
-                        var v = info.ButtonID - 3;
+                        var c = _list[v];
 
-                        if (v >= 0 && v < _list.Count)
+                        if (m.AccessLevel >= c.AccessLevel)
                         {
-                            var c = _list[v];
-
-                            if (m.AccessLevel >= c.AccessLevel)
-                            {
-                                gumps.Send(new CommandInfoGump(c));
-                                gumps.Send(new CommandListGump(_page, m, _list));
-                            }
-                            else
-                            {
-                                m.SendMessage("You no longer have access to that command.");
-                                gumps.Send(new CommandListGump(_page, m, null));
-                            }
+                            gumps.Send(new CommandInfoGump(c));
+                            m.SendGump(this);
                         }
-
-                        break;
+                        else
+                        {
+                            m.SendMessage("You no longer have access to that command.");
+                            gumps.Send(new CommandListGump(_page, m, null));
+                        }
                     }
+                    break;
+                }
             }
         }
     }
