@@ -512,6 +512,19 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         _movementCredit = 0;
         _hasQueuedMovements = false;
         _sustainedQueueDepth = 0;
+
+        // Reset movement history - next movement starts a new chain
+        _lastMovementRecordTime = 0;
+        _movementHistoryIndex = 0;
+        _movementHistoryFull = false;
+
+        // Reset detection state - sustained detection loses context on teleport/map change
+        _consecutiveHighRateSeconds = 0;
+        _rttProbeInterval = RttProbeIntervalNormal;
+
+        // Reset packet rate window
+        _movementWindowStart = 0;
+        _movementsInWindow = 0;
     }
 
     // RTT Measurement Configuration
