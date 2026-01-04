@@ -91,23 +91,9 @@ public static class IncomingMovementPackets
 
         var dir = (Direction)reader.ReadByte();
         int seq = reader.ReadByte();
-        var key = reader.ReadUInt32();
+        var key = reader.ReadUInt32(); // FastWalkStack key - not used (not on EA servers)
 
-        if (state.Sequence == 0 && seq != 0 || !from.Move(dir))
-        {
-            state.SendMovementRej(seq, from);
-            state.Sequence = 0;
-        }
-        else
-        {
-            ++seq;
-
-            if (seq == 256)
-            {
-                seq = 1;
-            }
-
-            state.Sequence = seq;
-        }
+        // Delegate to MovementThrottle which has full context for timing validation
+        MovementThrottle.ValidateAndQueueMovement(state, from, dir, seq);
     }
 }

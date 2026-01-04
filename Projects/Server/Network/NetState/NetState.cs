@@ -66,9 +66,9 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     // Managed socket with buffers (handles lifecycle automatically)
     internal RingSocket _socket;
 
-    // Speed Hack Prevention
-    internal long _movementCredit;
-    internal long _nextMovementTime;
+    // General packet throttle state (used for other throttled packets)
+    internal bool _isThrottled;
+
     private IAccount _account;
 
     internal enum ParserState
