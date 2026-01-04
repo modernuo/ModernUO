@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using System.Text;
+using Server.Gumps;
 using Server.Items;
 using static Server.Attributes;
 using static Server.Types;
@@ -84,9 +85,19 @@ namespace Server.Commands
                 }
             }
 
-            var type = AssemblyHandler.FindTypeByName(name);
+            Type type = null;
+            var matches = AddGump.Match(name);
+            for (var i = 0; i < matches.Length; i++)
+            {
+                var match = matches[i];
+                if (match.Name.InsensitiveEquals(name))
+                {
+                    type = match;
+                    break;
+                }
+            }
 
-            if (!IsEntity(type))
+            if (type == null)
             {
                 from.SendMessage("No type with that name was found.");
                 return;

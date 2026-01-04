@@ -513,28 +513,32 @@ namespace Server.Commands.Generic
         {
             if (e.Length >= 1)
             {
-                var t = AssemblyHandler.FindTypeByName(e.GetString(0));
+                var match = e.GetString(0).Trim();
+                var matches = AddGump.Match(match);
 
-                if (t == null)
+                if (matches.Length == 0)
                 {
                     e.Mobile.SendMessage("No type with that name was found.");
-
-                    var match = e.GetString(0).Trim();
-
-                    if (match.Length < 3)
-                    {
-                        e.Mobile.SendMessage("Invalid search string.");
-                        e.Mobile.SendGump(new AddGump(match, 0, Type.EmptyTypes, false));
-                    }
-                    else
-                    {
-                        e.Mobile.SendGump(new AddGump(match, 0, AddGump.Match(match), true));
-                    }
                 }
                 else
                 {
-                    return true;
+                    for (var i = 0; i < matches.Length; i++)
+                    {
+                        var checkMatch = matches[i];
+                        if (checkMatch.Name.InsensitiveEquals(match))
+                        {
+                            return true;
+                        }
+                    }
                 }
+
+                bool explicitSearch = match.Length >= 3;
+                if (!explicitSearch)
+                {
+                    e.Mobile.SendMessage("Invalid search string.");
+                }
+
+                e.Mobile.SendGump(new AddGump(match, 0, matches, true));
             }
             else
             {
