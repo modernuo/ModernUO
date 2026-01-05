@@ -1001,9 +1001,6 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         // Process queued movements at proper intervals
         MovementThrottle.ProcessAllQueues();
 
-        // RTT probes are now event-driven from movement packets (see MovementThrottle)
-        // No need to loop all NetStates - we only probe players who are actively moving
-
         var count = _pollGroup.Poll(_polledStates);
 
         if (count > 0)
@@ -1072,17 +1069,6 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         catch (Exception ex)
         {
             TraceException(ex);
-        }
-    }
-
-    /// <summary>
-    /// Sends RTT probes to all logged-in players that are due for measurement.
-    /// </summary>
-    public static void SendRttProbes()
-    {
-        foreach (var ns in Instances)
-        {
-            ns.MaybeSendRttProbe();
         }
     }
 
