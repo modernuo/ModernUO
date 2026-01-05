@@ -53,7 +53,7 @@ public static class MovementThrottle
     private const int MaxQueueWithUnmodifiedClient = ClientMaxUnackedMovements - 1;  // 4
 
     // Debug logging - enable for testing speed hack detection
-    private static bool _debugLogging;
+    private static bool _debugLogging = true;
 
     // Track NetStates with queued movements for efficient processing
     private static readonly HashSet<NetState> _netStatesWithQueuedMovements = new(256);
@@ -500,15 +500,16 @@ public static class MovementThrottle
                 if (_debugLogging && mobile?.RawName != null)
                 {
                     var action = shouldReset ? "history reset" : "history preserved (possible lag)";
-                    Console.WriteLine(
-                        $"[Movement] {mobile.RawName}: SKIP recording (gap {interval}ms > {_maxChainGap}ms, " +
-                        $"RTT={avgRtt}ms stable={ns.HasStableConnection} → {action})"
+                    logger.Debug(
+                        "[Movement] {Name}: SKIP recording (gap {Gap}ms > {MaxGap}ms, " +
+                        "RTT={RTT}ms stable={Stable} → {Action})",
+                        mobile.RawName, interval, _maxChainGap, avgRtt, ns.HasStableConnection, action
                     );
                 }
             }
             else if (_debugLogging && mobile?.RawName != null)
             {
-                Console.WriteLine($"[Movement] {mobile.RawName}: SKIP recording (first in chain)");
+                logger.Debug("[Movement] {Name}: SKIP recording (first in chain)", mobile.RawName);
             }
 
             return;
@@ -518,6 +519,22 @@ public static class MovementThrottle
         ns._movementHistory ??= new NetState.MovementRecord[_movementHistorySize];
 
         // Build flags
+        // Direction-only changes (cost=0) don't contribute to rate calculation.
+        // Don't record them - they would pollute interval measurements.
+        // Example bug if recorded: direction changes between real moves make
+        // the next real move's interval artificially short, inflating rate.
+        if (cost == 0)
+        {
+            if (_debugLogging && mobile?.RawName != null)
+            {
+                logger.Debug(
+                    "[Movement] {Name}: SKIP direction-only change (preserves interval measurement)",
+                    mobile.RawName
+                );
+            }
+            return;
+        }
+
         var flags = NetState.MovementRecordFlags.None;
         if ((dir & Direction.Running) != 0)
         {
@@ -526,10 +543,6 @@ public static class MovementThrottle
         if (mobile.Mounted)
         {
             flags |= NetState.MovementRecordFlags.Mounted;
-        }
-        if (cost == 0)
-        {
-            flags |= NetState.MovementRecordFlags.DirectionChangeOnly;
         }
         if (ns._hasQueuedMovements)
         {
@@ -540,7 +553,7 @@ public static class MovementThrottle
         // interval is already validated: > 0 and <= _maxChainGap (2000ms < short.MaxValue)
         ref var record = ref ns._movementHistory[ns._movementHistoryIndex];
         record.Interval = (short)interval;
-        record.TargetSpeed = (ushort)Math.Max(cost, 0);
+        record.TargetSpeed = (ushort)cost;
         record.QueueDepth = (byte)Math.Min(ns._movementQueue?.Count ?? 0, 255);
         record.Flags = (byte)flags;
 
@@ -558,10 +571,11 @@ public static class MovementThrottle
         if (_debugLogging && mobile?.RawName != null)
         {
             var historyCount = ns._movementHistoryFull ? _movementHistorySize : ns._movementHistoryIndex;
-            Console.WriteLine(
-                $"[Movement] {mobile.RawName}: interval={interval}ms target={cost}ms queue={record.QueueDepth} " +
-                $"flags={flags} history={historyCount}/{_movementHistorySize} " +
-                $"RTT={ns.AverageRtt}ms last={ns._lastRtt}ms var={ns._rttVariance}"
+            logger.Debug(
+                "[Movement] {Name}: interval={Interval}ms target={Target}ms queue={Queue} " +
+                "flags={Flags} history={History}/{MaxHistory} RTT={RTT}ms",
+                mobile.RawName, interval, cost, record.QueueDepth,
+                flags, historyCount, _movementHistorySize, ns.AverageRtt
             );
         }
     }
@@ -626,6 +640,46 @@ public static class MovementThrottle
         }
 
         return (float)totalTarget / totalActual;
+    }
+
+    /// <summary>
+    /// Dumps movement history for debugging rate calculation.
+    /// </summary>
+    private static void DumpMovementHistory(NetState ns, int limit)
+    {
+        if (ns._movementHistory == null)
+        {
+            logger.Debug("  [History] null");
+            return;
+        }
+
+        var historyCount = ns._movementHistoryFull ? _movementHistorySize : ns._movementHistoryIndex;
+        var showCount = Math.Min(limit, historyCount);
+        long totalTarget = 0;
+        long totalActual = 0;
+
+        logger.Debug("  [History] Showing {ShowCount} of {HistoryCount} entries:", showCount, historyCount);
+
+        for (var i = 0; i < showCount; i++)
+        {
+            var idx = ns._movementHistoryIndex - 1 - i;
+            if (idx < 0)
+            {
+                idx += _movementHistorySize;
+            }
+
+            ref readonly var record = ref ns._movementHistory[idx];
+            var flags = (NetState.MovementRecordFlags)record.Flags;
+
+            totalTarget += record.TargetSpeed;
+            totalActual += record.Interval;
+
+            var cumRate = totalActual > 0 ? (float)totalTarget / totalActual : 0;
+            logger.Debug(
+                "    [{Index}] interval={Interval}ms target={Target}ms queue={Queue} flags={Flags} cumRate={CumRate:F3}",
+                i, record.Interval, record.TargetSpeed, record.QueueDepth, flags, cumRate
+            );
+        }
     }
 
     /// <summary>
@@ -709,6 +763,16 @@ public static class MovementThrottle
             return DetectionVerdict.Normal;
         }
 
+        var averageRtt = ns.AverageRtt;
+
+        // Detailed rate breakdown for debugging
+        if (_debugLogging)
+        {
+            logger.Debug("[MovementAnalysis] Rate={Rate:F3}, Samples={Samples}, RTT={RTT}ms",
+                rate, sampleCount, averageRtt);
+            DumpMovementHistory(ns, sampleCount);
+        }
+
         // Signal 1: Movement rate (primary signal)
         if (rate > 1.15f)
         {
@@ -757,7 +821,7 @@ public static class MovementThrottle
         }
 
         // Signal 3: RTT correlation (modifier)
-        if (ns.HasStableConnection && ns.AverageRtt < 100)
+        if (ns.HasStableConnection && averageRtt < 100)
         {
             // Stable, low-latency connection - problems are more suspicious
             if (rate > 1.02f)
@@ -765,7 +829,7 @@ public static class MovementThrottle
                 confidence += 0.2f;
             }
         }
-        else if (ns._rttVariance > 10000 || ns.AverageRtt > 300)
+        else if (ns._rttVariance > 10000 || averageRtt > 300)
         {
             // Unstable connection - reduce confidence
             confidence *= 0.6f;
@@ -811,7 +875,7 @@ public static class MovementThrottle
         // A legitimate lag burst can momentarily fill queue to 4, but it drains quickly.
         // Speed hackers maintain queue at 4 continuously because they send at max ACK rate.
         // We use Likely here and require sustained detection before alerting.
-        if (queueDepth >= MaxQueueWithUnmodifiedClient && ns.HasStableConnection && ns.AverageRtt < 100)
+        if (queueDepth >= MaxQueueWithUnmodifiedClient && ns.HasStableConnection && averageRtt < 100)
         {
             // Stable low-latency connection with high queue - suspicious but needs sustained check
             return DetectionVerdict.Likely;
@@ -857,16 +921,17 @@ public static class MovementThrottle
         // Debug logging
         if (_debugLogging && ns.Mobile?.RawName != null)
         {
-            var (burstSize, burstGap) = DetectRecentBurst(ns);
+            var (burstSize, _) = DetectRecentBurst(ns);
             var probeStatus = ns._rttProbeTime > 0 ? "pending" : "idle";
             var queueDepth = ns._movementQueue?.Count ?? 0;
-            Console.WriteLine(
-                $"[RateCheck] {ns.Mobile.RawName}: rate={rate:F3} samples={sampleCount} verdict={verdict} " +
-                $"confidence={confidence:P0} queue={queueDepth} burst={burstSize} sustained={ns._consecutiveHighRateSeconds}s"
+            logger.Debug(
+                "[RateCheck] {Name}: rate={Rate:F3} samples={Samples} verdict={Verdict} " +
+                "confidence={Confidence:P0} queue={Queue} burst={Burst} sustained={Sustained}s",
+                ns.Mobile.RawName, rate, sampleCount, verdict, confidence, queueDepth, burstSize, ns._consecutiveHighRateSeconds
             );
-            Console.WriteLine(
-                $"    RTT: avg={ns.AverageRtt}ms last={ns._lastRtt}ms var={ns._rttVariance} " +
-                $"stable={ns.HasStableConnection} probe={probeStatus}"
+            logger.Debug(
+                "    RTT: avg={Avg}ms last={Last}ms var={Var} samples={RttSamples} stable={Stable} probe={Probe}",
+                ns.AverageRtt, ns._lastRtt, ns._rttVariance, ns._rttSampleCount, ns.HasStableConnection, probeStatus
             );
         }
 
@@ -904,8 +969,9 @@ public static class MovementThrottle
         {
             if (_debugLogging)
             {
-                Console.WriteLine(
-                    $"[ALERT] {urgency} - {ns.Mobile?.RawName}: rate={rate:F3} verdict={verdict} confidence={confidence:P0}"
+                logger.Debug(
+                    "[ALERT] {Urgency} - {Name}: rate={Rate:F3} verdict={Verdict} confidence={Confidence:P0}",
+                    urgency, ns.Mobile?.RawName, rate, verdict, confidence
                 );
             }
             NotifyStaff(ns, rate, sampleCount, confidence, verdict, urgency);

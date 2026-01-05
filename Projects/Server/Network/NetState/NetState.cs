@@ -126,6 +126,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     internal long _lastRtt;                                 // Most recent RTT measurement
     internal long[] _rttHistory;                            // Rolling history (lazy init)
     internal int _rttHistoryIndex;                          // Current position in history
+    internal int _rttSampleCount;                           // Number of samples collected (saturates at RttHistorySize)
     internal long _rttVariance;                             // Calculated variance for stability
     internal long _nextRttProbe;                            // When to send next probe
 
@@ -552,6 +553,9 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         };
     }
 
+    // High-resolution timestamp for RTT measurement (Stopwatch ticks, not game loop ticks)
+    private long _rttProbeTimestampHiRes;
+
     /// <summary>
     /// Sends an RTT probe if enough time has passed since the last one.
     /// Called from movement validation when player is actively moving.
@@ -573,28 +577,21 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
             if (now - _rttProbeTime > 10000)
             {
                 _rttProbeTime = 0;
+                _rttProbeTimestampHiRes = 0;
             }
             return;
         }
 
         // First probe: send immediately when player starts moving
-        if (_nextRttProbe == 0)
+        // Subsequent probes: send when interval has passed
+        if (_nextRttProbe == 0 || now >= _nextRttProbe)
         {
             _rttProbeTime = now;
+            _rttProbeTimestampHiRes = System.Diagnostics.Stopwatch.GetTimestamp();
             _nextRttProbe = now + _rttProbeInterval + Utility.Random(RttProbeJitter);
+            Console.WriteLine($"[RTT-Probe] Sending at TickCount={now}, HiRes={_rttProbeTimestampHiRes}");
             this.SendClientVersionRequest();
-            return;
         }
-
-        // Check if it's time to send a probe
-        if (now < _nextRttProbe)
-        {
-            return;
-        }
-
-        _rttProbeTime = now;
-        _nextRttProbe = now + _rttProbeInterval + Utility.Random(RttProbeJitter);
-        this.SendClientVersionRequest();
     }
 
     /// <summary>
@@ -602,18 +599,28 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     /// </summary>
     public void RecordRttMeasurement()
     {
+        var nowHiRes = System.Diagnostics.Stopwatch.GetTimestamp();
+        var now = Core.TickCount;
+
         if (_rttProbeTime <= 0)
         {
+            Console.WriteLine($"[RTT-Response] Received at TickCount={now} but no probe pending (client-initiated?)");
             return; // Not expecting a response (client-initiated version send)
         }
 
-        var now = Core.TickCount;
         var rtt = now - _rttProbeTime;
+
+        // High-resolution RTT in microseconds
+        var rttHiResUs = (nowHiRes - _rttProbeTimestampHiRes) * 1_000_000 / System.Diagnostics.Stopwatch.Frequency;
+        Console.WriteLine($"[RTT-Response] TickCount: {_rttProbeTime} → {now} = {rtt}ms | HiRes: {rttHiResUs}µs ({rttHiResUs/1000.0:F2}ms)");
+
         _rttProbeTime = 0;
+        _rttProbeTimestampHiRes = 0;
 
         // Sanity check - RTT should be positive and reasonable
         if (rtt is <= 0 or > 10000)
         {
+            Console.WriteLine($"[RTT-Response] Invalid RTT {rtt}ms, discarding");
             return;
         }
 
@@ -624,8 +631,15 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         _rttHistory[_rttHistoryIndex++ & (RttHistorySize - 1)] = rtt;
         _lastRtt = rtt;
 
+        // Track sample count (saturates at buffer size)
+        if (_rttSampleCount < RttHistorySize)
+        {
+            _rttSampleCount++;
+        }
+
         // Recalculate variance
         UpdateRttVariance();
+        Console.WriteLine($"[RTT-Response] Recorded RTT={rtt}ms, AvgRTT={AverageRtt}ms, Variance={_rttVariance}, Samples={_rttSampleCount}, Stable={HasStableConnection}");
     }
 
     /// <summary>
@@ -695,8 +709,10 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
     /// <summary>
     /// Returns true if the connection has stable, low-variance latency.
+    /// Requires at least 3 samples to make a stability determination.
+    /// Low variance (including 0 for identical samples) indicates stability.
     /// </summary>
-    public bool HasStableConnection => _rttVariance > 0 && _rttVariance < StableVarianceThreshold;
+    public bool HasStableConnection => _rttSampleCount >= 3 && _rttVariance < StableVarianceThreshold;
 
     /// <summary>
     /// Tracks movement packet rate. Called for each movement packet received.
