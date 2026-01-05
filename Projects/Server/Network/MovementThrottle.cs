@@ -181,7 +181,7 @@ public static class MovementThrottle
         // If there are already queued movements, add to queue to maintain order
         if (ns._hasQueuedMovements)
         {
-            QueueMovement(ns, dir, seq, now);
+            QueueMovement(ns, dir, seq);
             return;
         }
 
@@ -206,7 +206,7 @@ public static class MovementThrottle
             }
 
             // Credit exhausted - must queue
-            QueueMovement(ns, dir, seq, now);
+            QueueMovement(ns, dir, seq);
             return;
         }
 
@@ -245,7 +245,7 @@ public static class MovementThrottle
     /// <summary>
     /// Queues a movement for later execution.
     /// </summary>
-    private static void QueueMovement(NetState ns, Direction dir, int seq, long now)
+    private static void QueueMovement(NetState ns, Direction dir, int seq)
     {
         // Lazy initialize queue
         ns._movementQueue ??= new Queue<NetState.QueuedMovement>(_hardQueueLimit);
@@ -268,8 +268,7 @@ public static class MovementThrottle
         ns._movementQueue.Enqueue(new NetState.QueuedMovement
         {
             Direction = dir,
-            Sequence = seq,
-            QueuedAt = now
+            Sequence = seq
         });
 
         ns._hasQueuedMovements = true;
