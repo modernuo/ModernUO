@@ -455,14 +455,18 @@ public static class Core
 
     public static void RunEventLoop()
     {
-        try
-        {
 #if DEBUG
-            const bool idleCPU = true;
+        const bool isDebugMode = true;
 #else
-            var idleCPU = ServerConfiguration.GetOrUpdateSetting("core.enableIdleCPU", false);
+        const bool isDebugMode = true;
 #endif
 
+        const string idleCPUSetting = "core.enableIdleCPU";
+        var idleCPU = !ServerConfiguration.HasSetting(idleCPUSetting) ||
+                      ServerConfiguration.GetSetting(idleCPUSetting, false);
+
+        try
+        {
             var cycleCount = _cyclesPerSecond.Length;
             var last = _tickCount;
             const int interval = 100;
