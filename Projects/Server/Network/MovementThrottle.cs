@@ -461,8 +461,6 @@ public static class MovementThrottle
         }
     }
 
-    #region Movement History and Rate Detection
-
     /// <summary>
     /// Records a movement in the history buffer for rate analysis.
     /// This is a hot path - optimized for minimal allocations and branches.
@@ -1037,6 +1035,4 @@ public static class MovementThrottle
     /// Server operators can subscribe to broadcast to staff or take other actions.
     /// </summary>
     public static event Action<NetState, Mobile, float, DetectionVerdict, string> OnSpeedHackDetected;
-
-    #endregion
 }

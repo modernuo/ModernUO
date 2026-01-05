@@ -17,12 +17,27 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using Server.Logging;
 
 namespace Server.Network;
 
 public partial class NetState
 {
-    #region Movement Queue System (Speed Hack Prevention)
+    private static readonly ILogger movementLogger = LogFactory.GetLogger(typeof(NetState));
+
+    // Per-connection movement logging (RTT instrumentation, etc.)
+    // Can be enabled at runtime for specific connections
+    internal bool _movementLogging;
+
+    /// <summary>
+    /// Gets or sets whether movement/RTT logging is enabled for this connection.
+    /// When enabled, logs detailed RTT probe and response timing.
+    /// </summary>
+    public bool MovementLogging
+    {
+        get => _movementLogging;
+        set => _movementLogging = value;
+    }
 
     internal struct QueuedMovement
     {
@@ -138,10 +153,6 @@ public partial class NetState
     /// </summary>
     public int PeakMovementRate => _peakMovementRate;
 
-    #endregion
-
-    #region RTT Measurement (Using ClientVersionRequest 0xBD as probe)
-
     // RTT Measurement Configuration
     private const int RttProbeIntervalNormal = 5000;      // Normal: probe every 5 seconds
     private const int RttProbeIntervalSuspicious = 2000;  // Suspicious: probe every 2 seconds
@@ -210,7 +221,15 @@ public partial class NetState
             _rttProbeTime = now;
             _rttProbeTimestampHiRes = Stopwatch.GetTimestamp();
             _nextRttProbe = now + _rttProbeInterval + Utility.Random(RttProbeJitter);
-            Console.WriteLine($"[RTT-Probe] Sending at TickCount={now}, HiRes={_rttProbeTimestampHiRes}");
+
+            if (_movementLogging)
+            {
+                movementLogger.Debug(
+                    "[RTT-Probe] {Account}: Sending probe at TickCount={TickCount}",
+                    Account?.Username ?? _toString, now
+                );
+            }
+
             this.SendClientVersionRequest();
         }
     }
@@ -225,15 +244,22 @@ public partial class NetState
 
         if (_rttProbeTime <= 0)
         {
-            Console.WriteLine($"[RTT-Response] Received at TickCount={now} but no probe pending (client-initiated?)");
-            return; // Not expecting a response (client-initiated version send)
+            // Not expecting a response (client-initiated version send) - ignore silently
+            return;
         }
 
         var rtt = now - _rttProbeTime;
 
         // High-resolution RTT in microseconds
         var rttHiResUs = (nowHiRes - _rttProbeTimestampHiRes) * 1_000_000 / Stopwatch.Frequency;
-        Console.WriteLine($"[RTT-Response] TickCount: {_rttProbeTime} → {now} = {rtt}ms | HiRes: {rttHiResUs}µs ({rttHiResUs/1000.0:F2}ms)");
+
+        if (_movementLogging)
+        {
+            movementLogger.Debug(
+                "[RTT-Response] {Account}: {Rtt}ms (HiRes: {RttHiRes:F2}ms)",
+                Account?.Username ?? _toString, rtt, rttHiResUs / 1000.0
+            );
+        }
 
         _rttProbeTime = 0;
         _rttProbeTimestampHiRes = 0;
@@ -241,7 +267,13 @@ public partial class NetState
         // Sanity check - RTT should be positive and reasonable
         if (rtt is <= 0 or > 10000)
         {
-            Console.WriteLine($"[RTT-Response] Invalid RTT {rtt}ms, discarding");
+            if (_movementLogging)
+            {
+                movementLogger.Debug(
+                    "[RTT-Response] {Account}: Invalid RTT {Rtt}ms, discarding",
+                    Account?.Username ?? _toString, rtt
+                );
+            }
             return;
         }
 
@@ -260,7 +292,14 @@ public partial class NetState
 
         // Recalculate variance
         UpdateRttVariance();
-        Console.WriteLine($"[RTT-Response] Recorded RTT={rtt}ms, AvgRTT={AverageRtt}ms, Variance={_rttVariance}, Samples={_rttSampleCount}, Stable={HasStableConnection}");
+
+        if (_movementLogging)
+        {
+            movementLogger.Debug(
+                "[RTT-Response] {Account}: Recorded RTT={Rtt}ms, Avg={Avg}ms, Var={Var}, Samples={Samples}, Stable={Stable}",
+                Account?.Username ?? _toString, rtt, AverageRtt, _rttVariance, _rttSampleCount, HasStableConnection
+            );
+        }
     }
 
     /// <summary>
@@ -334,6 +373,4 @@ public partial class NetState
     /// Low variance (including 0 for identical samples) indicates stability.
     /// </summary>
     public bool HasStableConnection => _rttSampleCount >= 3 && _rttVariance < StableVarianceThreshold;
-
-    #endregion
 }
