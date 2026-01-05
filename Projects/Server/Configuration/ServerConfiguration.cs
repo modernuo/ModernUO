@@ -40,8 +40,6 @@ public static class ServerConfiguration
 
     public static string ConfigurationFilePath => _relPath;
 
-    public static bool HasSetting(string key) => _settings.Settings.ContainsKey(key);
-
     public static ClientVersion GetSetting(string key, ClientVersion defaultValue) =>
         _settings.Settings.TryGetValue(key, out var value) ? new ClientVersion(value) : defaultValue;
 

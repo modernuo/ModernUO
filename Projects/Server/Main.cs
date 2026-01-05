@@ -458,12 +458,10 @@ public static class Core
 #if DEBUG
         const bool isDebugMode = true;
 #else
-        const bool isDebugMode = true;
+        const bool isDebugMode = false;
 #endif
 
-        const string idleCPUSetting = "core.enableIdleCPU";
-        var idleCPU = !ServerConfiguration.HasSetting(idleCPUSetting) ||
-                      ServerConfiguration.GetSetting(idleCPUSetting, false);
+        var idleCPU = ServerConfiguration.GetSetting("core.enableIdleCPU", isDebugMode);
 
         try
         {
