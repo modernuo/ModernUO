@@ -44,7 +44,7 @@ namespace Server.Mobiles
             // See SBAnimalTrainer for an example
             _enableVendorBuyOPL = ServerConfiguration.GetSetting("opl.enableForVendorBuy", true);
 
-            _vendorInvulnerable = ServerConfiguration.GetSetting("vendor.isInvulnerable", false);
+            _vendorInvulnerable = ServerConfiguration.GetSetting("vendor.isInvulnerable", Core.LBR);
         }
 
         public static void Initialize()
@@ -96,7 +96,7 @@ namespace Server.Mobiles
 
         public virtual NpcGuild NpcGuild => NpcGuild.None;
 
-        public override bool IsInvulnerable => Core.LBR || _vendorInvulnerable;
+        public override bool IsInvulnerable => _vendorInvulnerable;
 
         public virtual DateTime NextTrickOrTreat { get; set; }
 
