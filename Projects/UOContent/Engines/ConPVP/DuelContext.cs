@@ -1764,7 +1764,7 @@ namespace Server.Engines.ConPVP
                         {
                             if (Rematch)
                             {
-                                mob.SendMessage(0x22, $"You have rejected the rematch.");
+                                mob.SendMessage(0x22, "You have rejected the rematch.");
                             }
                             else
                             {

@@ -82,7 +82,7 @@ public partial class GamblingStone : Item
         }
         else
         {
-            from.SendMessage(0x22, $"You need at least 250gp in your backpack to use this.");
+            from.SendMessage(0x22, "You need at least 250gp in your backpack to use this.");
         }
     }
 }
