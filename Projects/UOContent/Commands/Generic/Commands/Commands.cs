@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using Server.Accounting;
 using Server.Engines.Help;
 using Server.Factions;
@@ -514,30 +515,35 @@ namespace Server.Commands.Generic
             if (e.Length >= 1)
             {
                 var match = e.GetString(0).Trim();
-                var matches = AddGump.Match(match);
-
-                if (matches.Length == 0)
+                if (e.GetContext<Type>("exactMatch", out var exactMatch))
                 {
-                    e.Mobile.SendMessage("No type with that name was found.");
-                }
-                else
-                {
-                    for (var i = 0; i < matches.Length; i++)
-                    {
-                        var checkMatch = matches[i];
-                        if (checkMatch.Name.InsensitiveEquals(match))
-                        {
-                            return true;
-                        }
-                    }
+                    return true;
                 }
 
-                bool explicitSearch = match.Length >= 3;
-                if (!explicitSearch)
+                var exactMatches = AddGump.Match(match);
+                if (exactMatches.Length == 1)
+                {
+                    exactMatch = e.SetContext("exactMatch", exactMatches[0]);
+                }
+
+                if (exactMatch != null)
+                {
+                    return true;
+                }
+
+                if (match.Length < 3)
                 {
                     e.Mobile.SendMessage("Invalid search string.");
+                    e.Mobile.SendGump(new AddGump(match, 0, [], false));
+                    return false;
                 }
 
+                if (!e.GetContext<ConstructorInfo[]>("matches", out var matches))
+                {
+                    matches = e.SetContext("matches", AddGump.MatchEmptyCtor(match));
+                }
+
+                e.Mobile.SendMessage("No type with that name was found.");
                 e.Mobile.SendGump(new AddGump(match, 0, matches, true));
             }
             else
@@ -562,7 +568,13 @@ namespace Server.Commands.Generic
                 _         => new Point3D(ip)
             };
 
-            Add.Invoke(e.Mobile, p, p, e.Arguments);
+            if (e.GetContext<Type>("exactMatch", out var exactMatch))
+            {
+                Add.Invoke(e.Mobile, p, p, exactMatch, e.Arguments);
+                return;
+            }
+
+            e.Mobile.SendMessage("No type with that name was found.");
         }
     }
 

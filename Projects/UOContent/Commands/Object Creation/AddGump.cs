@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using Server.Network;
 using Server.Targeting;
 
@@ -10,13 +12,13 @@ public class AddGump : DynamicGump
     private static readonly Type _typeofItem = typeof(Item);
     private static readonly Type _typeofMobile = typeof(Mobile);
     private readonly int _page;
-    private readonly Type[] _searchResults;
+    private readonly ConstructorInfo[] _searchResults;
     private readonly string _searchString;
     private readonly bool _explicitSearch;
 
     public override bool Singleton => true;
 
-    public AddGump(string searchString, int page, Type[] searchResults, bool explicitSearch) : base(50, 50)
+    public AddGump(string searchString, int page, ConstructorInfo[] searchResults, bool explicitSearch) : base(50, 50)
     {
         _searchString = searchString;
         _searchResults = searchResults;
@@ -102,28 +104,28 @@ public class AddGump : DynamicGump
     private static void AddMenu_OnCommand(CommandEventArgs e)
     {
         var val = e.ArgString.Trim();
-        Type[] types;
+        ConstructorInfo[] ctors;
         var explicitSearch = false;
 
         if (val.Length == 0)
         {
-            types = Type.EmptyTypes;
+            ctors = [];
         }
         else if (val.Length < 3)
         {
             e.Mobile.SendMessage("Invalid search string.");
-            types = Type.EmptyTypes;
+            ctors = [];
         }
         else
         {
-            types = Match(val);
+            ctors = MatchEmptyCtor(val);
             explicitSearch = true;
         }
 
-        e.Mobile.SendGump(new AddGump(val, 0, types, explicitSearch));
+        e.Mobile.SendGump(new AddGump(val, 0, ctors, explicitSearch));
     }
 
-    private static void Match(string match, Type[] types, HashSet<Type> results)
+    private static void Match(string match, Assembly assembly, Type[] types, HashSet<Type> results)
     {
         if (match.Length == 0)
         {
@@ -132,12 +134,72 @@ public class AddGump : DynamicGump
 
         match = match.ToLower();
 
-        for (var i = 0; i < types.Length; i++)
+        if (!_mobileItemTypes.TryGetValue(assembly, out var mobileItemTypes))
+        {
+            List<Type> typeList = [];
+            for (var i = 0; i < types.Length; i++)
+            {
+                var t = types[i];
+                if (_typeofMobile.IsAssignableFrom(t) || _typeofItem.IsAssignableFrom(t))
+                {
+                    typeList.Add(t);
+                }
+            }
+
+            _mobileItemTypes[assembly] = mobileItemTypes = typeList.ToArray();
+        }
+
+        for (var i = 0; i < mobileItemTypes.Length; i++)
         {
             var t = types[i];
 
-            if (!(_typeofMobile.IsAssignableFrom(t) || _typeofItem.IsAssignableFrom(t)) ||
-                !t.Name.InsensitiveContains(match) || results.Contains(t))
+            if (!t.Name.InsensitiveContains(match))
+            {
+                continue;
+            }
+
+            var ctors = t.GetConstructors();
+
+            for (var j = 0; j < ctors.Length; j++)
+            {
+                if (ctors[j].GetCustomAttributes(Types.OfConstructible, false).Length > 0)
+                {
+                    results.Add(t);
+                    break;
+                }
+            }
+        }
+    }
+
+    private static void MatchEmptyCtor(string match, Assembly assembly, Type[] types, List<ConstructorInfo> results)
+    {
+        if (match.Length == 0)
+        {
+            return;
+        }
+
+        match = match.ToLower();
+
+        if (!_mobileItemTypes.TryGetValue(assembly, out var mobileItemTypes))
+        {
+            List<Type> typeList = [];
+            for (var i = 0; i < types.Length; i++)
+            {
+                var t = types[i];
+                if (_typeofMobile.IsAssignableFrom(t) || _typeofItem.IsAssignableFrom(t))
+                {
+                    typeList.Add(t);
+                }
+            }
+
+            _mobileItemTypes[assembly] = mobileItemTypes = typeList.ToArray();
+        }
+
+        for (var i = 0; i < mobileItemTypes.Length; i++)
+        {
+            var t = types[i];
+
+            if (!t.Name.InsensitiveContains(match))
             {
                 continue;
             }
@@ -158,44 +220,60 @@ public class AddGump : DynamicGump
                     }
                 }
 
-                if (isEmptyCtor && ctors[j].IsDefined(typeof(ConstructibleAttribute), false))
+                if (isEmptyCtor && ctor.GetCustomAttributes(Types.OfConstructible, false).Length > 0)
                 {
-                    results.Add(t);
+                    results.Add(ctor);
                     break;
                 }
             }
         }
     }
 
-    public static Type[] Match(string match)
+    private static readonly Dictionary<Assembly, Type[]> _mobileItemTypes = [];
+
+    public static ConstructorInfo[] MatchEmptyCtor(string match)
     {
-        var results = new HashSet<Type>();
-        Type[] types;
+        List<ConstructorInfo> results = [];
+        var types = AssemblyHandler.GetTypeCache(Core.Assembly).Types;
+        MatchEmptyCtor(match, Core.Assembly, types, results);
 
-        var asms = AssemblyHandler.Assemblies;
-
-        for (var i = 0; i < asms.Length; ++i)
+        for (var i = 0; i < AssemblyHandler.Assemblies.Length; ++i)
         {
-            types = AssemblyHandler.GetTypeCache(asms[i]).Types;
-            Match(match, types, results);
+            types = AssemblyHandler.GetTypeCache(AssemblyHandler.Assemblies[i]).Types;
+            MatchEmptyCtor(match, AssemblyHandler.Assemblies[i], types, results);
         }
-
-        types = AssemblyHandler.GetTypeCache(Core.Assembly).Types;
-        Match(match, types, results);
 
         if (results.Count == 0)
         {
-            return Array.Empty<Type>();
+            return [];
         }
 
-        var finalResults = new Type[results.Count];
-        var index = 0;
-        foreach (var t in results)
+        var finalResults = results.ToArray();
+        Array.Sort(finalResults, ConstructorNameComparer.Instance);
+
+        return finalResults;
+    }
+
+    public static Type[] Match(string match)
+    {
+        HashSet<Type> results = [];
+        var types = AssemblyHandler.GetTypeCache(Core.Assembly).Types;
+        Match(match, Core.Assembly, types, results);
+
+        for (var i = 0; i < AssemblyHandler.Assemblies.Length; ++i)
         {
-            finalResults[index++] = t;
+            types = AssemblyHandler.GetTypeCache(AssemblyHandler.Assemblies[i]).Types;
+            Match(match, AssemblyHandler.Assemblies[i], types, results);
         }
 
+        if (results.Count == 0)
+        {
+            return [];
+        }
+
+        var finalResults = results.ToArray();
         Array.Sort(finalResults, TypeNameComparer.Instance);
+
         return finalResults;
     }
 
@@ -216,7 +294,7 @@ public class AddGump : DynamicGump
                     }
                     else
                     {
-                        from.SendGump(new AddGump(match, 0, Match(match), true));
+                        from.SendGump(new AddGump(match, 0, MatchEmptyCtor(match), true));
                     }
 
                     break;
@@ -262,26 +340,33 @@ public class AddGump : DynamicGump
     private class TypeNameComparer : IComparer<Type>
     {
         public static readonly TypeNameComparer Instance = new();
-        public int Compare(Type x, Type y) => string.CompareOrdinal(x?.Name, y?.Name);
+        public int Compare(Type x, Type y) => x?.Name.CompareOrdinal(y?.Name) ?? 0;
+    }
+
+    private class ConstructorNameComparer : IComparer<ConstructorInfo>
+    {
+        public static readonly ConstructorNameComparer Instance = new();
+        public int Compare(ConstructorInfo x, ConstructorInfo y) =>
+            x?.DeclaringType!.Name.CompareOrdinal(y?.DeclaringType!.Name) ?? 0;
     }
 
     public class InternalTarget : Target
     {
-        private readonly int m_Page;
-        private readonly Type[] m_SearchResults;
-        private readonly string m_SearchString;
-        private readonly Type m_Type;
+        private readonly int _page;
+        private readonly ConstructorInfo[] _searchResults;
+        private readonly string _searchString;
+        private readonly ConstructorInfo _ctor;
 
-        public InternalTarget(Type type, Type[] searchResults, string searchString, int page) : base(
+        public InternalTarget(ConstructorInfo ctor, ConstructorInfo[] searchResults, string searchString, int page) : base(
             -1,
             true,
             TargetFlags.None
         )
         {
-            m_Type = type;
-            m_SearchResults = searchResults;
-            m_SearchString = searchString;
-            m_Page = page;
+            _ctor = ctor;
+            _searchResults = searchResults;
+            _searchString = searchString;
+            _page = page;
         }
 
         protected override void OnTarget(Mobile from, object o)
@@ -298,16 +383,15 @@ public class AddGump : DynamicGump
                 _         => new Point3D(ip)
             };
 
-            Commands.Add.Invoke(from, new Point3D(p), new Point3D(p), new[] { m_Type.Name });
-
-            from.Target = new InternalTarget(m_Type, m_SearchResults, m_SearchString, m_Page);
+            Commands.Add.Invoke(from, new Point3D(p), new Point3D(p), [_ctor.DeclaringType!.Name]);
+            from.Target = new InternalTarget(_ctor, _searchResults, _searchString, _page);
         }
 
         protected override void OnTargetCancel(Mobile from, TargetCancelType cancelType)
         {
             if (cancelType == TargetCancelType.Canceled)
             {
-                from.SendGump(new AddGump(m_SearchString, m_Page, m_SearchResults, true));
+                from.SendGump(new AddGump(_searchString, _page, _searchResults, true));
             }
         }
     }
