@@ -68,7 +68,15 @@ public static class Add
 
         Utility.FixPoints(ref start, ref end);
 
-        var built = Build(from, start, end, ctor, null, null, null, null);
+        // Handle optional parameters
+        var paramList = ctor.GetParameters();
+        var parms = paramList.Length == 0 ? Array.Empty<object>() : new object[paramList.Length];
+        for (var i = 0; i < parms.Length; i++)
+        {
+            parms[i] = Type.Missing;
+        }
+
+        var built = Build(from, start, end, ctor, parms, null, null, null);
 
         if (built <= 0)
         {
