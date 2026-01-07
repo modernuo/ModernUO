@@ -512,45 +512,39 @@ namespace Server.Commands.Generic
 
         public override bool ValidateArgs(BaseCommandImplementor impl, CommandEventArgs e)
         {
-            if (e.Length >= 1)
-            {
-                var match = e.GetString(0).Trim();
-                if (e.GetContext<Type>("exactMatch", out var exactMatch))
-                {
-                    return true;
-                }
-
-                var exactMatches = AddGump.Match(match);
-                if (exactMatches.Length == 1)
-                {
-                    exactMatch = e.SetContext("exactMatch", exactMatches[0]);
-                }
-
-                if (exactMatch != null)
-                {
-                    return true;
-                }
-
-                if (match.Length < 3)
-                {
-                    e.Mobile.SendMessage("Invalid search string.");
-                    e.Mobile.SendGump(new AddGump(match, 0, [], false));
-                    return false;
-                }
-
-                if (!e.GetContext<ConstructorInfo[]>("matches", out var matches))
-                {
-                    matches = e.SetContext("matches", AddGump.MatchEmptyCtor(match));
-                }
-
-                e.Mobile.SendMessage("No type with that name was found.");
-                e.Mobile.SendGump(new AddGump(match, 0, matches, true));
-            }
-            else
+            if (e.Length < 1)
             {
                 e.Mobile.SendGump(new CategorizedAddGump(e.Mobile));
+                return false;
             }
 
+            var match = e.GetString(0).Trim();
+            if (e.GetContext<Type>("exactMatch", out var exactMatch))
+            {
+                return true;
+            }
+
+            exactMatch = AddGump.ExactMatch(match);
+            if (exactMatch != null)
+            {
+                e.SetContext("exactMatch", exactMatch);
+                return true;
+            }
+
+            if (match.Length < 3)
+            {
+                e.Mobile.SendMessage("Invalid search string.");
+                e.Mobile.SendGump(new AddGump(match, 0, [], false));
+                return false;
+            }
+
+            if (!e.GetContext<ConstructorInfo[]>("matches", out var matches))
+            {
+                matches = e.SetContext("matches", AddGump.MatchEmptyCtor(match));
+            }
+
+            e.Mobile.SendMessage("No type with that name was found.");
+            e.Mobile.SendGump(new AddGump(match, 0, matches, true));
             return false;
         }
 
@@ -570,7 +564,7 @@ namespace Server.Commands.Generic
 
             if (e.GetContext<Type>("exactMatch", out var exactMatch))
             {
-                Add.Invoke(e.Mobile, p, p, exactMatch, e.Arguments);
+                Add.Invoke(e.Mobile, p, p, exactMatch, e.Arguments.AsSpan(1));
                 return;
             }
 

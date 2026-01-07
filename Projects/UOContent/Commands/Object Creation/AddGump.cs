@@ -52,7 +52,7 @@ public class AddGump : DynamicGump
             {
                 var index = i % 10;
 
-                builder.AddLabel(44, 39 + index * 20, 0x480, _searchResults[i].Name);
+                builder.AddLabel(44, 39 + index * 20, 0x480, _searchResults[i].DeclaringType!.Name);
                 builder.AddButton(10, 39 + index * 20, 4023, 4025, 4 + i);
             }
         }
@@ -125,18 +125,12 @@ public class AddGump : DynamicGump
         e.Mobile.SendGump(new AddGump(val, 0, ctors, explicitSearch));
     }
 
-    private static void Match(string match, Assembly assembly, Type[] types, HashSet<Type> results)
+    private static bool ExactMatch(string match, Assembly assembly, out Type type)
     {
-        if (match.Length == 0)
-        {
-            return;
-        }
-
-        match = match.ToLower();
-
         if (!_mobileItemTypes.TryGetValue(assembly, out var mobileItemTypes))
         {
             List<Type> typeList = [];
+            var types = AssemblyHandler.GetTypeCache(assembly).Types;
             for (var i = 0; i < types.Length; i++)
             {
                 var t = types[i];
@@ -151,38 +145,25 @@ public class AddGump : DynamicGump
 
         for (var i = 0; i < mobileItemTypes.Length; i++)
         {
-            var t = types[i];
+            var t = mobileItemTypes[i];
 
-            if (!t.Name.InsensitiveContains(match))
+            if (t.Name.InsensitiveEquals(match))
             {
-                continue;
-            }
-
-            var ctors = t.GetConstructors();
-
-            for (var j = 0; j < ctors.Length; j++)
-            {
-                if (ctors[j].GetCustomAttributes(Types.OfConstructible, false).Length > 0)
-                {
-                    results.Add(t);
-                    break;
-                }
+                type = t;
+                return true;
             }
         }
+
+        type = null;
+        return false;
     }
 
-    private static void MatchEmptyCtor(string match, Assembly assembly, Type[] types, List<ConstructorInfo> results)
+    private static void MatchEmptyCtor(string match, Assembly assembly, List<ConstructorInfo> results)
     {
-        if (match.Length == 0)
-        {
-            return;
-        }
-
-        match = match.ToLower();
-
         if (!_mobileItemTypes.TryGetValue(assembly, out var mobileItemTypes))
         {
             List<Type> typeList = [];
+            var types = AssemblyHandler.GetTypeCache(assembly).Types;
             for (var i = 0; i < types.Length; i++)
             {
                 var t = types[i];
@@ -197,7 +178,7 @@ public class AddGump : DynamicGump
 
         for (var i = 0; i < mobileItemTypes.Length; i++)
         {
-            var t = types[i];
+            var t = mobileItemTypes[i];
 
             if (!t.Name.InsensitiveContains(match))
             {
@@ -233,14 +214,19 @@ public class AddGump : DynamicGump
 
     public static ConstructorInfo[] MatchEmptyCtor(string match)
     {
+        if (string.IsNullOrWhiteSpace(match))
+        {
+            return [];
+        }
+
+        match = match.ToLower();
+
         List<ConstructorInfo> results = [];
-        var types = AssemblyHandler.GetTypeCache(Core.Assembly).Types;
-        MatchEmptyCtor(match, Core.Assembly, types, results);
+        MatchEmptyCtor(match, Core.Assembly, results);
 
         for (var i = 0; i < AssemblyHandler.Assemblies.Length; ++i)
         {
-            types = AssemblyHandler.GetTypeCache(AssemblyHandler.Assemblies[i]).Types;
-            MatchEmptyCtor(match, AssemblyHandler.Assemblies[i], types, results);
+            MatchEmptyCtor(match, AssemblyHandler.Assemblies[i], results);
         }
 
         if (results.Count == 0)
@@ -254,27 +240,29 @@ public class AddGump : DynamicGump
         return finalResults;
     }
 
-    public static Type[] Match(string match)
+    public static Type ExactMatch(string match)
     {
-        HashSet<Type> results = [];
-        var types = AssemblyHandler.GetTypeCache(Core.Assembly).Types;
-        Match(match, Core.Assembly, types, results);
+        if (string.IsNullOrWhiteSpace(match))
+        {
+            return null;
+        }
+
+        match = match.ToLower();
+
+        if (ExactMatch(match, Core.Assembly, out var type))
+        {
+            return type;
+        }
 
         for (var i = 0; i < AssemblyHandler.Assemblies.Length; ++i)
         {
-            types = AssemblyHandler.GetTypeCache(AssemblyHandler.Assemblies[i]).Types;
-            Match(match, AssemblyHandler.Assemblies[i], types, results);
+            if (ExactMatch(match, AssemblyHandler.Assemblies[i], out type))
+            {
+                return type;
+            }
         }
 
-        if (results.Count == 0)
-        {
-            return [];
-        }
-
-        var finalResults = results.ToArray();
-        Array.Sort(finalResults, TypeNameComparer.Instance);
-
-        return finalResults;
+        return null;
     }
 
     public override void OnResponse(NetState sender, in RelayInfo info)
@@ -337,12 +325,6 @@ public class AddGump : DynamicGump
         }
     }
 
-    private class TypeNameComparer : IComparer<Type>
-    {
-        public static readonly TypeNameComparer Instance = new();
-        public int Compare(Type x, Type y) => x?.Name.CompareOrdinal(y?.Name) ?? 0;
-    }
-
     private class ConstructorNameComparer : IComparer<ConstructorInfo>
     {
         public static readonly ConstructorNameComparer Instance = new();
@@ -383,7 +365,7 @@ public class AddGump : DynamicGump
                 _         => new Point3D(ip)
             };
 
-            Commands.Add.Invoke(from, new Point3D(p), new Point3D(p), [_ctor.DeclaringType!.Name]);
+            Commands.Add.Invoke(from, new Point3D(p), new Point3D(p), _ctor);
             from.Target = new InternalTarget(_ctor, _searchResults, _searchString, _page);
         }
 

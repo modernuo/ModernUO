@@ -33,17 +33,15 @@ public static class Add
         bool outline = false, bool mapAvg = false
     )
     {
-        var name = args[0];
+        var type = AddGump.ExactMatch(args[0]);
 
-        Type[] types = AddGump.Match(name);
-
-        if (types.Length != 1)
+        if (type == null)
         {
             from.SendMessage("No type with that name was found.");
             return;
         }
 
-        Invoke(from, start, end, types[0], args.AsSpan(1), packs, outline, mapAvg);
+        Invoke(from, start, end, type, args.AsSpan(1), packs, outline, mapAvg);
     }
 
     public static void Invoke(Mobile from, Point3D start, Point3D end, ConstructorInfo ctor)
@@ -143,7 +141,7 @@ public static class Add
 
         CommandLogging.WriteLine(from, sb.ToString());
 
-        ReadOnlySpan<string> ctorArgs = setArgsIndex != -1 ? args[..setArgsIndex] : ReadOnlySpan<string>.Empty;
+        ReadOnlySpan<string> ctorArgs = setArgsIndex != -1 ? args[..setArgsIndex] : args;
 
         var watch = new Stopwatch();
         watch.Start();
@@ -435,7 +433,6 @@ public static class Add
                 from.SendMessage("Usage:");
             }
 
-            from.SendMessage("Usage:");
             SendCtor(ctor, from);
         }
 
