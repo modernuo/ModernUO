@@ -665,11 +665,11 @@ namespace Server.Commands
 
             if (m.AutoPageNotify)
             {
-                m.SendMessage($"Your auto-page-notify has been turned on.");
+                m.SendMessage("Your auto-page-notify has been turned on.");
             }
             else
             {
-                m.SendMessage($"Your auto-page-notify has been turned off.");
+                m.SendMessage("Your auto-page-notify has been turned off.");
             }
         }
 
