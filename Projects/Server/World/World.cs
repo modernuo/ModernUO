@@ -300,11 +300,7 @@ public static class World
                 throw new ArgumentException("Snapshot path cannot be null or empty", nameof(snapshotPath));
             }
 
-            var stopwatch = Stopwatch.StartNew();
             Persistence.SerializeAll();
-            stopwatch.Stop();
-            logger.Information("WorldSave {Elapsed} ticks", stopwatch.ElapsedTicks);
-
             PauseSerializationThreads();
             EventSink.InvokeWorldSave();
         }
