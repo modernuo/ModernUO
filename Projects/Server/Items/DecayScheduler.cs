@@ -96,10 +96,7 @@ public class DecayScheduler : Timer
         }
 
         // Start timer if not running
-        if (!Shared.Running)
-        {
-            Shared.Start();
-        }
+        Shared.Start();
 
         var decayTime = item.ScheduledDecayTime;
         var timeUntilDecay = decayTime - Core.Now;
@@ -118,11 +115,10 @@ public class DecayScheduler : Timer
 
     /// <summary>
     /// Unregisters an item from decay tracking. Call when item is picked up, deleted, or otherwise ineligible.
-    /// O(bucketCount) but each operation is O(1), so effectively O(1) constant time.
     /// </summary>
     public static void Unregister(Item item)
     {
-        if (item == null)
+        if (item?.Deleted != false)
         {
             return;
         }
