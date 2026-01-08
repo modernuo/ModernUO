@@ -25,17 +25,21 @@ namespace Server.Items;
 /// </summary>
 public class DecayScheduler : Timer
 {
-    // Configuration
+    private const int BucketCount = 12;
     private static int _maxItemsPerTick;
     private static TimeSpan _tickInterval;
     private static TimeSpan _bucketInterval;
-    private static int _bucketCount;
     private static int _jitterMaxMilliseconds;
 
     // Timer wheel buckets (HashSets for O(1) add/remove)
     private static HashSet<Item>[] _buckets;
     private static int _currentBucketIndex;
-    private static DateTime _lastBucketRotation;
+    private static DateTime _nextBucketRotation;
+
+    // Overflow bucket (separate from regular rotation, for items with decay > total bucket span)
+    private static HashSet<Item> _overflowBucket;
+    private static TimeSpan _totalBucketSpan;
+    private static DateTime _nextOverflowCheck;
 
     // Active processing queue for items due within current bucket window
     private static readonly PriorityQueue<Item, DateTime> _activeQueue = new();
@@ -47,16 +51,22 @@ public class DecayScheduler : Timer
         _maxItemsPerTick = ServerConfiguration.GetSetting("decay.maxItemsPerTick", 250);
         _tickInterval = ServerConfiguration.GetSetting("decay.tickInterval", TimeSpan.FromMilliseconds(256));
         _bucketInterval = ServerConfiguration.GetSetting("decay.bucketInterval", TimeSpan.FromMinutes(5));
-        _bucketCount = ServerConfiguration.GetSetting("decay.bucketCount", 13);           // 12 buckets + 1 overflow
         _jitterMaxMilliseconds = ServerConfiguration.GetSetting("decay.jitterMaxMs", 25); // ±25ms jitter
 
-        _buckets = new HashSet<Item>[_bucketCount];
-        for (var i = 0; i < _bucketCount; i++)
+        _buckets = new HashSet<Item>[BucketCount];
+        for (var i = 0; i < BucketCount; i++)
         {
             _buckets[i] = [];
         }
 
-        _lastBucketRotation = Core.Now;
+        // Overflow bucket is separate from the timer wheel
+        _overflowBucket = [];
+        _totalBucketSpan = TimeSpan.FromTicks(_bucketInterval.Ticks * BucketCount);
+
+        var now = Core.Now;
+        _nextBucketRotation = now + _bucketInterval;
+        _nextOverflowCheck = now + _totalBucketSpan;
+
         Shared = new DecayScheduler();
     }
 
@@ -69,12 +79,12 @@ public class DecayScheduler : Timer
     /// </summary>
     private static bool IsEmpty()
     {
-        if (_activeQueue.Count > 0)
+        if (_activeQueue.Count > 0 || _overflowBucket.Count > 0)
         {
             return false;
         }
 
-        for (var i = 0; i < _bucketCount; i++)
+        for (var i = 0; i < BucketCount; i++)
         {
             if (_buckets[i].Count > 0)
             {
@@ -106,10 +116,17 @@ public class DecayScheduler : Timer
         {
             _activeQueue.Enqueue(item, decayTime);
         }
+        // If beyond the total bucket span, add to overflow bucket
+        else if (timeUntilDecay > _totalBucketSpan)
+        {
+            _overflowBucket.Add(item);
+        }
         else
         {
-            var bucketIndex = GetBucketIndex(timeUntilDecay);
-            _buckets[bucketIndex].Add(item);
+            // Calculate bucket index relative to current position
+            var bucketOffset = GetBucketOffset(timeUntilDecay);
+            var absoluteIndex = (_currentBucketIndex + bucketOffset) % BucketCount;
+            _buckets[absoluteIndex].Add(item);
         }
     }
 
@@ -123,7 +140,14 @@ public class DecayScheduler : Timer
             return;
         }
 
-        for (var i = 0; i < _bucketCount; i++)
+        // Check overflow bucket first
+        if (_overflowBucket.Remove(item))
+        {
+            return;
+        }
+
+        // Check regular buckets
+        for (var i = 0; i < BucketCount; i++)
         {
             if (_buckets[i].Remove(item))
             {
@@ -135,15 +159,16 @@ public class DecayScheduler : Timer
     }
 
     /// <summary>
-    /// Gets the bucket index for an item based on time until decay.
+    /// Gets the bucket offset for an item based on time until decay.
+    /// Returns a value from 0 to BucketCount - 1, representing how many buckets ahead of current.
     /// </summary>
-    private static int GetBucketIndex(TimeSpan timeUntilDecay)
+    private static int GetBucketOffset(TimeSpan timeUntilDecay)
     {
-        // Bucket 0 is handled by _activeQueue, so buckets start at index 0 for _bucketInterval to 2*_bucketInterval
-        var bucketOffset = (int)(timeUntilDecay.TotalMilliseconds / _bucketInterval.TotalMilliseconds) - 1;
+        // Items due within _bucketInterval go to active queue, so offset 0 means _bucketInterval to 2*_bucketInterval
+        var bucketOffset = (int)(timeUntilDecay.Ticks / _bucketInterval.Ticks) - 1;
 
-        // Clamp to valid range (last bucket is overflow for items with very long decay times)
-        return Math.Clamp(bucketOffset, 0, _bucketCount - 1);
+        // Clamp to valid range within regular buckets
+        return Math.Clamp(bucketOffset, 0, BucketCount - 1);
     }
 
     protected override void OnTick()
@@ -154,9 +179,15 @@ public class DecayScheduler : Timer
         ProcessActiveQueue(now);
 
         // Then check if it's time to rotate buckets (adds items for next tick)
-        if (now - _lastBucketRotation >= _bucketInterval)
+        if (now >= _nextBucketRotation)
         {
             RotateBuckets(now);
+        }
+
+        // Check overflow bucket on its own schedule (when items might enter the regular window)
+        if (now >= _nextOverflowCheck)
+        {
+            ProcessOverflow(now);
         }
 
         // Stop timer if nothing left to track
@@ -179,7 +210,7 @@ public class DecayScheduler : Timer
     /// </summary>
     private static void RotateBuckets(DateTime now)
     {
-        _lastBucketRotation = now;
+        _nextBucketRotation = now + _bucketInterval;
 
         // Get the next bucket to process
         var bucket = _buckets[_currentBucketIndex];
@@ -193,18 +224,33 @@ public class DecayScheduler : Timer
             }
 
             var decayTime = item.ScheduledDecayTime;
+            var timeUntilDecay = decayTime - now;
 
-            if (decayTime > now + _bucketInterval)
+            if (timeUntilDecay > _bucketInterval)
             {
-                // Item was moved (SetLastMoved called) - re-bucket
-                var newBucketIndex = GetBucketIndex(decayTime - now);
-                var actualIndex = (newBucketIndex + _currentBucketIndex) % _bucketCount;
-
-                if (actualIndex != _currentBucketIndex)
+                // Item was moved (SetLastMoved called) - re-bucket or move to overflow
+                if (timeUntilDecay > _totalBucketSpan)
                 {
-                    _buckets[actualIndex].Add(item);
-                    continue;
+                    // Extended beyond total span - move to overflow
+                    _overflowBucket.Add(item);
                 }
+                else
+                {
+                    // Re-bucket within regular buckets
+                    var bucketOffset = GetBucketOffset(timeUntilDecay);
+                    var actualIndex = (_currentBucketIndex + bucketOffset) % BucketCount;
+
+                    if (actualIndex != _currentBucketIndex)
+                    {
+                        _buckets[actualIndex].Add(item);
+                    }
+                    else
+                    {
+                        // Still maps to current bucket - add to active queue
+                        _activeQueue.Enqueue(item, decayTime);
+                    }
+                }
+                continue;
             }
 
             // Due within next window - add to active queue
@@ -215,7 +261,45 @@ public class DecayScheduler : Timer
         bucket.Clear();
 
         // Advance to next bucket
-        _currentBucketIndex = (_currentBucketIndex + 1) % _bucketCount;
+        _currentBucketIndex = (_currentBucketIndex + 1) % BucketCount;
+    }
+
+    /// <summary>
+    /// Processes the overflow bucket, moving items that are now within the regular bucket window.
+    /// </summary>
+    private static void ProcessOverflow(DateTime now)
+    {
+        _nextOverflowCheck = now + _totalBucketSpan;
+
+        // Move items that are now within the regular bucket span
+        _overflowBucket.RemoveWhere(item =>
+        {
+            if (item.Deleted || !item.CanDecay())
+            {
+                return true; // Remove invalid items
+            }
+
+            var timeUntilDecay = item.ScheduledDecayTime - now;
+
+            if (timeUntilDecay > _totalBucketSpan)
+            {
+                return false; // Keep in overflow
+            }
+
+            // Now within regular bucket range - move to appropriate bucket
+            if (timeUntilDecay <= _bucketInterval)
+            {
+                _activeQueue.Enqueue(item, item.ScheduledDecayTime);
+            }
+            else
+            {
+                var bucketOffset = GetBucketOffset(timeUntilDecay);
+                var actualIndex = (_currentBucketIndex + bucketOffset) % BucketCount;
+                _buckets[actualIndex].Add(item);
+            }
+
+            return true; // Remove from overflow
+        });
     }
 
     /// <summary>
