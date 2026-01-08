@@ -368,6 +368,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
                 }
 
                 Delta(ItemDelta.Update);
+                UpdateDecayRegistration();
             }
         }
     }
@@ -383,6 +384,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
                 SetFlag(ImplFlag.Movable, value);
 
                 Delta(ItemDelta.Update);
+                UpdateDecayRegistration();
             }
         }
     }
@@ -1436,6 +1438,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
         }
 
         OnDelete();
+        DecayScheduler.Unregister(this);
 
         var items = LookupItems();
 
@@ -1478,6 +1481,8 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
         ClearProperties();
     }
 
+    public virtual bool SkipSerialization => false;
+
     [IgnoreDupe]
     public ISpawner Spawner
     {
@@ -1485,12 +1490,18 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
         set
         {
             var info = AcquireCompactInfo();
+            var oldValue = info.m_Spawner;
 
             info.m_Spawner = value;
 
             if (info.m_Spawner == null)
             {
                 VerifyCompactInfo();
+            }
+
+            if (oldValue != value)
+            {
+                UpdateDecayRegistration();
             }
         }
     }
@@ -2268,9 +2279,22 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
     public virtual bool OnDecay() =>
         CanDecay() && Region.Find(Location, Map).OnDecay(this);
 
+    public DateTime ScheduledDecayTime => LastMoved + DecayTime;
+
+    public void UpdateDecayRegistration()
+    {
+        DecayScheduler.Unregister(this);
+
+        if (CanDecay())
+        {
+            DecayScheduler.Register(this);
+        }
+    }
+
     public void SetLastMoved()
     {
         LastMoved = Core.Now;
+        UpdateDecayRegistration();
     }
 
     public virtual bool CanStackWith(Item dropped) =>
@@ -3205,6 +3229,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
         }
 
         item.Delta(ItemDelta.Update);
+        item.UpdateDecayRegistration();
 
         item.OnAdded(this);
         OnItemAdded(item);
@@ -3374,6 +3399,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
             }
 
             item.Parent = null;
+            item.UpdateDecayRegistration();
 
             item.OnRemoved(this);
             OnItemRemoved(item);

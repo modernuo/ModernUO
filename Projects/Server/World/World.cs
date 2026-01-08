@@ -47,7 +47,6 @@ public static class World
     private static int _threadId;
     internal static SerializationThreadWorker[] _threadWorkers;
     private static readonly ManualResetEvent _diskWriteHandle = new(true);
-    private static readonly ConcurrentQueue<Item> _decayQueue = new();
 
     private static string _tempSavePath; // Path to the temporary folder for the save
 
@@ -108,18 +107,6 @@ public static class World
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void WaitForWriteCompletion() => _diskWriteHandle.WaitOne();
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static void EnqueueForDecay(Item item)
-    {
-        if (WorldState != WorldState.Saving)
-        {
-            logger.Warning("Attempting to queue {Item} for decay but the world is not saving", item);
-            return;
-        }
-
-        _decayQueue.Enqueue(item);
-    }
 
     public static void Broadcast(int hue, bool ascii, string text)
     {
@@ -216,20 +203,6 @@ public static class World
         }
     }
 
-    private static void ProcessDecay()
-    {
-        while (_decayQueue.TryDequeue(out var item))
-        {
-            if (item.OnDecay())
-            {
-                // TODO: Add Logging
-                item.Delete();
-            }
-        }
-    }
-
-    private static DateTime _serializationStart;
-
     /**
      * Duplicates can be weeded out asynchronously while flushing
      * If performance becomes a problem, we need to build a dual mode concurrent array.
@@ -322,8 +295,6 @@ public static class World
 
         try
         {
-            _serializationStart = Core.Now;
-
             if (string.IsNullOrEmpty(snapshotPath))
             {
                 throw new ArgumentException("Snapshot path cannot be null or empty", nameof(snapshotPath));
@@ -543,27 +514,8 @@ public static class World
                 }
 
                 item.ClearProperties();
+                item.UpdateDecayRegistration();
             }
-        }
-
-        public override void Serialize()
-        {
-            foreach (var item in EntitiesBySerial.Values)
-            {
-                if (item.CanDecay() && item.LastMoved + item.DecayTime <= _serializationStart)
-                {
-                    EnqueueForDecay(item);
-                }
-
-                PushToCache(item);
-            }
-        }
-
-        public override void PostWorldSave()
-        {
-            ProcessDecay(); // Run this before the safety queue
-
-            base.PostWorldSave();
         }
     }
 

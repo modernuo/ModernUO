@@ -160,11 +160,7 @@ public partial class SpawnerBorder : ProjectedItem
         MinimumVisible = AccessLevel.Developer;
     }
 
-    [AfterDeserialization(false)]
-    private void AfterDeserialization()
-    {
-        Delete();
-    }
+    public override bool SkipSerialization => true;
 
     protected override bool SendEffect()
     {
