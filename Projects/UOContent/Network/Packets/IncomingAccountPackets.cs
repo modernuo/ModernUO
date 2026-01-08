@@ -194,6 +194,9 @@ public static class IncomingAccountPackets
     {
         var version = state.Version = new ClientVersion(reader.ReadAscii());
 
+        // Record RTT if this is a response to our probe
+        state.RecordRttMeasurement();
+
         ClientVerification.ClientVersionReceived(state, version);
     }
 
@@ -203,6 +206,9 @@ public static class IncomingAccountPackets
 
         int type = reader.ReadUInt16();
         var version = state.Version = new ClientVersion(reader.ReadAscii());
+
+        // Record RTT if this is a response to our probe
+        state.RecordRttMeasurement();
 
         ClientVerification.ClientVersionReceived(state, version);
     }
@@ -270,7 +276,7 @@ public static class IncomingAccountPackets
 
         state.SendSupportedFeature();
 
-        state.Sequence = 0;
+        state.ResetMovementState();
 
         state.SendMobileUpdate(m);
         state.SendMobileUpdate(m);
