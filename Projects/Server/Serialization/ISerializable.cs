@@ -28,4 +28,6 @@ public interface ISerializable : IGenericSerializable
 
     bool Deleted { get; }
     void Delete();
+
+    bool SkipSerialization { get; }
 }

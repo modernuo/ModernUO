@@ -34,13 +34,9 @@ internal sealed partial class TransferItem : Item
         Hue = creature.Hue & 0x0FFF;
     }
 
-    public static bool IsInCombat(BaseCreature creature) => creature?.Aggressors.Count > 0 || creature?.Aggressed.Count > 0;
+    public override bool SkipSerialization => true;
 
-    [AfterDeserialization(false)]
-    private void AfterDeserialization()
-    {
-        Delete();
-    }
+    public static bool IsInCombat(BaseCreature creature) => creature?.Aggressors.Count > 0 || creature?.Aggressed.Count > 0;
 
     public override void GetProperties(IPropertyList list)
     {

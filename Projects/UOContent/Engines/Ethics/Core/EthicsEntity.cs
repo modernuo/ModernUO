@@ -27,4 +27,6 @@ public partial class EthicsEntity : ISerializable
         Deleted = true;
         EthicsSystem.Remove(this);
     }
+
+    public bool SkipSerialization => false;
 }

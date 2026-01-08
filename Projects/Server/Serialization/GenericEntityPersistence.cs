@@ -98,10 +98,19 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
         }
 
         idx.Write(3); // Version
-        idx.Write(EntitiesBySerial.Values.Count);
 
+        var countPosition = idx.Position;
+        idx.Write(0);
+
+        var entityCount = EntitiesBySerial.Count;
         foreach (var e in EntitiesBySerial.Values)
         {
+            if (e.SkipSerialization)
+            {
+                entityCount--;
+                continue;
+            }
+
             var thread = e.SerializedThread;
             var heapStart = e.SerializedPosition;
             var heapLength = e.SerializedLength;
@@ -130,13 +139,21 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
 
             binPosition += heapLength;
         }
+
+        var currentPosition = idx.Position;
+        idx.Seek(countPosition, SeekOrigin.Begin);
+        idx.Write(entityCount);
+        idx.Seek(currentPosition, SeekOrigin.Begin);
     }
 
     public override void Serialize()
     {
         foreach (var entity in EntitiesBySerial.Values)
         {
-            World.PushToCache(entity);
+            if (!entity.SkipSerialization)
+            {
+                World.PushToCache(entity);
+            }
         }
 
         World.PushToCache(this);

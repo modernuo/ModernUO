@@ -44,6 +44,8 @@ public abstract partial class BaseBOBEntry : IBOBEntry
         BOBEntries.Remove(this);
     }
 
+    public bool SkipSerialization => false;
+
     public abstract Item Reconstruct();
 
     private void Deserialize(IGenericReader reader, int version)

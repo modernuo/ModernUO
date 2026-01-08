@@ -3739,6 +3739,8 @@ namespace Server.Multis
                 Movable = false;
             }
 
+            public override bool SkipSerialization => true;
+
             public override string DefaultName => "a house transfer contract";
 
             public override void GetProperties(IPropertyList list)
@@ -3773,12 +3775,6 @@ namespace Server.Multis
                 {
                     list.Add(1061114, "unknown"); // Location: ~1_val~
                 }
-            }
-
-            [AfterDeserialization(false)]
-            private void AfterDeserialization()
-            {
-                Delete();
             }
 
             public override bool AllowSecureTrade(Mobile from, Mobile to, Mobile newOwner, bool accepted)

@@ -35,6 +35,8 @@ public partial class PreviewHouse : BaseMulti
         _timer.Start();
     }
 
+    public override bool SkipSerialization => true;
+
     public override void OnLocationChange(Point3D oldLocation)
     {
         base.OnLocationChange(oldLocation);
@@ -92,12 +94,6 @@ public partial class PreviewHouse : BaseMulti
         _timer = null;
 
         base.OnAfterDelete();
-    }
-
-    [AfterDeserialization(false)]
-    private void AfterDeserialization()
-    {
-        Delete();
     }
 
     private class DecayTimer : Timer

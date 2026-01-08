@@ -449,6 +449,7 @@ public class ClientEnumeratorTests
         public void Serialize(IGenericWriter writer) => throw new NotImplementedException();
         public bool Deleted { get; }
         public void Delete() => throw new NotImplementedException();
+        public bool SkipSerialization => false;
         public bool TrySetUsername(string username) => throw new NotImplementedException();
         public void SetPassword(string password) => throw new NotImplementedException();
         public bool CheckPassword(string password) => throw new NotImplementedException();

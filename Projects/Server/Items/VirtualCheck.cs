@@ -35,8 +35,14 @@ public sealed partial class VirtualCheck : Item
         }
     }
 
+    [InvalidateProperties]
+    [SerializableField(0)]
+    [SerializedCommandProperty(AccessLevel.Administrator)]
     private int _gold;
 
+    [InvalidateProperties]
+    [SerializableField(1)]
+    [SerializedCommandProperty(AccessLevel.Administrator)]
     private int _plat;
 
     public VirtualCheck(int plat = 0, int gold = 0) : base(0x14F0)
@@ -47,6 +53,8 @@ public sealed partial class VirtualCheck : Item
         Movable = false;
     }
 
+    public override bool SkipSerialization => true;
+
     public override bool IsVirtualItem => true;
     public override bool DisplayWeight => false;
     public override bool DisplayLootType => false;
@@ -54,28 +62,6 @@ public sealed partial class VirtualCheck : Item
     public override string DefaultName => "Offer Of Currency";
 
     public IVirtualCheckGump Editor { get; private set; }
-
-    [CommandProperty(AccessLevel.Administrator)]
-    public int Plat
-    {
-        get => _plat;
-        set
-        {
-            _plat = value;
-            InvalidateProperties();
-        }
-    }
-
-    [CommandProperty(AccessLevel.Administrator)]
-    public int Gold
-    {
-        get => _gold;
-        set
-        {
-            _gold = value;
-            InvalidateProperties();
-        }
-    }
 
     public override bool IsAccessibleTo(Mobile check)
     {
@@ -157,11 +143,5 @@ public sealed partial class VirtualCheck : Item
             Editor.Close();
             Editor = null;
         }
-    }
-
-    [AfterDeserialization(false)]
-    private void AfterDeserialization()
-    {
-        Delete();
     }
 }

@@ -32,6 +32,8 @@ public partial class Campfire : Item
         Timer.StartTimer(TimeSpan.FromSeconds(1.0), TimeSpan.FromSeconds(1.0), OnTick, out _timerToken);
     }
 
+    public override bool SkipSerialization => true;
+
     [CommandProperty(AccessLevel.GameMaster)]
     public CampfireStatus Status
     {
@@ -158,12 +160,6 @@ public partial class Campfire : Item
     {
         _timerToken.Cancel();
         ClearEntries();
-    }
-
-    [AfterDeserialization(false)]
-    private void AfterDeserialization()
-    {
-        Delete();
     }
 }
 

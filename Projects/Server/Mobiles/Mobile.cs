@@ -2458,6 +2458,8 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         m_PropertyList = null;
     }
 
+    public virtual bool SkipSerialization => false;
+
     [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
     public Map Map
     {

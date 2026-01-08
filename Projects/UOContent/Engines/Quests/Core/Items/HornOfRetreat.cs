@@ -115,6 +115,8 @@ public partial class HornOfRetreatMoongate : Moongate
 
     public override int LabelNumber => 1049114; // Sanctuary Gate
 
+    public override bool SkipSerialization => true;
+
     public override void BeginConfirmation(Mobile from)
     {
         EndConfirmation(from);
@@ -131,11 +133,5 @@ public partial class HornOfRetreatMoongate : Moongate
             base.UseGate(m);
             Delete();
         }
-    }
-
-    [AfterDeserialization(false)]
-    private void AfterDeserialization()
-    {
-        Delete();
     }
 }

@@ -1478,6 +1478,8 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
         ClearProperties();
     }
 
+    public virtual bool SkipSerialization => false;
+
     [IgnoreDupe]
     public ISpawner Spawner
     {
