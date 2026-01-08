@@ -42,8 +42,6 @@ public abstract class BaseGuild : ISerializable
 
     public abstract void Delete();
 
-    public bool SkipSerialization => false;
-
     public bool Deleted => Disbanded;
 
     [IgnoreDupe]

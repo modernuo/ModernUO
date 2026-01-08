@@ -366,8 +366,6 @@ public partial class Account : IAccount, IComparable<Account>
 
     public bool Deleted { get; private set; }
 
-    public bool SkipSerialization => false;
-
     public bool TrySetUsername(string username)
     {
         if (username == _username || Accounts.GetAccount(username) != null)

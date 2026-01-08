@@ -75,8 +75,6 @@ public class Entity : IEntity
     {
     }
 
-    public bool SkipSerialization => true;
-
     public void ProcessDelta()
     {
     }
@@ -113,6 +111,8 @@ public class Entity : IEntity
 
     public void Deserialize(IGenericReader reader)
     {
+        // Should not actually be saved
+        Timer.StartTimer(Delete);
     }
 
     public byte SerializedThread { get; set; }

@@ -105,7 +105,7 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
         var entityCount = EntitiesBySerial.Count;
         foreach (var e in EntitiesBySerial.Values)
         {
-            if (e.SkipSerialization)
+            if (e is Item { SkipSerialization: true } or Mobile { SkipSerialization: true })
             {
                 entityCount--;
                 continue;
@@ -150,10 +150,7 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
     {
         foreach (var entity in EntitiesBySerial.Values)
         {
-            if (!entity.SkipSerialization)
-            {
-                World.PushToCache(entity);
-            }
+            World.PushToCache(entity);
         }
 
         World.PushToCache(this);
