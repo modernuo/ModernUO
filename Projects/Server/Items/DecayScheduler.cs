@@ -44,11 +44,11 @@ public class DecayScheduler : Timer
 
     public static void Configure()
     {
-        _maxItemsPerTick = ServerConfiguration.GetOrUpdateSetting("decay.maxItemsPerTick", 250);
-        _tickInterval = ServerConfiguration.GetOrUpdateSetting("decay.tickInterval", TimeSpan.FromMilliseconds(256));
-        _bucketInterval = ServerConfiguration.GetOrUpdateSetting("decay.bucketInterval", TimeSpan.FromMinutes(5));
-        _bucketCount = ServerConfiguration.GetOrUpdateSetting("decay.bucketCount", 13); // 12 buckets + 1 overflow
-        _jitterMaxMilliseconds = ServerConfiguration.GetOrUpdateSetting("decay.jitterMaxMs", 25); // ±25ms jitter
+        _maxItemsPerTick = ServerConfiguration.GetSetting("decay.maxItemsPerTick", 250);
+        _tickInterval = ServerConfiguration.GetSetting("decay.tickInterval", TimeSpan.FromMilliseconds(256));
+        _bucketInterval = ServerConfiguration.GetSetting("decay.bucketInterval", TimeSpan.FromMinutes(5));
+        _bucketCount = ServerConfiguration.GetSetting("decay.bucketCount", 13);           // 12 buckets + 1 overflow
+        _jitterMaxMilliseconds = ServerConfiguration.GetSetting("decay.jitterMaxMs", 25); // ±25ms jitter
 
         _buckets = new HashSet<Item>[_bucketCount];
         for (var i = 0; i < _bucketCount; i++)

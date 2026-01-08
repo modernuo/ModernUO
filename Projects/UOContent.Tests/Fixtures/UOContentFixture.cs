@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using Server.Items;
 using Server.Misc;
 using Xunit;
 
@@ -39,6 +40,8 @@ public class UOContentFixture : ICollectionFixture<UOContentFixture>, IDisposabl
         World.Load();
 
         World.ExitSerializationThreads();
+
+        DecayScheduler.Configure();
     }
 
     private static int _counter;

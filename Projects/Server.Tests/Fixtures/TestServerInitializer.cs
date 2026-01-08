@@ -1,6 +1,7 @@
 using System.IO;
 using System.Reflection;
 using System.Threading;
+using Server.Items;
 
 namespace Server.Tests;
 
@@ -94,6 +95,8 @@ public static class TestServerInitializer
             {
                 DetectTileIds();
             }
+
+            DecayScheduler.Configure();
 
             _initialized = true;
         }
