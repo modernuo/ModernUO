@@ -55,12 +55,9 @@ public class DecayScheduler : Timer
         {
             _buckets[i] = [];
         }
-    }
 
-    public static void Initialize()
-    {
-        Shared = new DecayScheduler();
         _lastBucketRotation = Core.Now;
+        Shared = new DecayScheduler();
     }
 
     private DecayScheduler() : base(_tickInterval, _tickInterval)
