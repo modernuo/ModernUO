@@ -250,7 +250,7 @@ namespace Server.Mobiles
             [AfterDeserialization]
             private void AfterDeserialization()
             {
-                if (_cache == null && Items.Count <= 0 && _mobiles.Count <= 0)
+                if (_cache == this && Items.Count <= 0 && _mobiles.Count <= 0)
                 {
                     return;
                 }
