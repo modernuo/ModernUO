@@ -642,7 +642,8 @@ public class ItsHammerTime : MLQuest
     }
 }
 
-public class Aelorn : KeeperOfChivalry
+[SerializationGenerator(0, false)]
+public partial class Aelorn : KeeperOfChivalry
 {
     [Constructible]
     public Aelorn()
@@ -667,11 +668,6 @@ public class Aelorn : KeeperOfChivalry
         SetSkill(SkillName.Chivalry, 120.0);
     }
 
-    public Aelorn(Serial serial)
-        : base(serial)
-    {
-    }
-
     public override string DefaultName => "Aelorn";
     public override bool CanShout => true;
 
@@ -690,20 +686,6 @@ public class Aelorn : KeeperOfChivalry
         AddItem(new PlateArms());
         AddItem(new PlateGorget());
         AddItem(new OrderShield());
-    }
-
-    public override void Serialize(IGenericWriter writer)
-    {
-        base.Serialize(writer);
-
-        writer.Write(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadInt();
     }
 }
 

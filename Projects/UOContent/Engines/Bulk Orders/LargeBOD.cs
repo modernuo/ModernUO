@@ -13,8 +13,7 @@ namespace Server.Engines.BulkOrders
 
         public LargeBOD(
             int hue, int amountMax, bool requireExeptional, BulkMaterialType material, LargeBulkEntry[] entries
-        ) : base(hue, amountMax, requireExeptional, material) =>
-            _entries = entries;
+        ) : base(hue, amountMax, requireExeptional, material) => _entries = entries;
 
         public LargeBOD()
         {
