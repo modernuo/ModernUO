@@ -233,38 +233,22 @@ public class DecayScheduler : Timer
                 break;
             }
 
+            processed++;
             _activeQueue.Dequeue();
 
-            // Item was deleted
-            if (item.Deleted)
+            if (item.Deleted || !item.CanDecay())
             {
                 continue;
             }
 
-            // Check actual decay time (item may have moved)
-            var currentDecayTime = item.ScheduledDecayTime;
-            if (currentDecayTime > now)
+            if (item.ScheduledDecayTime > now)
             {
-                // Item was moved - re-register with new time
-                if (item.CanDecay())
-                {
-                    Register(item);
-                }
-
-                continue;
+                Register(item);
             }
-
-            if (!item.CanDecay())
-            {
-                continue;
-            }
-
-            if (item.OnDecay())
+            else if (item.OnDecay())
             {
                 item.Delete();
             }
-
-            processed++;
         }
     }
 }
