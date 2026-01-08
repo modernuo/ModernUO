@@ -61,7 +61,6 @@ public class AccountPacketTests
         public bool Deleted { get; }
 
         public void Delete() => throw new NotImplementedException();
-
         public bool TrySetUsername(string username) => throw new NotImplementedException();
 
         public void SetPassword(string password) => throw new NotImplementedException();
