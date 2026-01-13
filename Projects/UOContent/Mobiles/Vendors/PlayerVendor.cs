@@ -171,7 +171,7 @@ public partial class PlayerVendor : Mobile
         reader.ReadBool(); // New vendor system?
         _shopName = reader.ReadString();
         _nextPayTime = reader.ReadDeltaTime();
-        _house = reader.ReadEntity<BaseHouse>();
+        House = reader.ReadEntity<BaseHouse>();
         _owner = reader.ReadEntity<Mobile>();
         _bankAccount = reader.ReadInt();
         _holdGold = reader.ReadInt();
@@ -201,6 +201,34 @@ public partial class PlayerVendor : Mobile
         {
             NameHue = -1;
         }
+
+        // Do we have a vendor that may have been orphaned? Let's try to recover them and attach them to their house.
+        if (_house == null)
+        {
+            if (_owner == null)
+            {
+                Timer.DelayCall(Delete); // Don't try to dismiss, no owner.
+            }
+            Timer.DelayCall(() =>
+                {
+                    var house = BaseHouse.FindHouseAt(this);
+
+                    if (house != null)
+                    {
+                        House = house;
+                    }
+                    else if (_owner.AccessLevel == AccessLevel.Player)
+                    {
+                        // If we can't find a house, dismiss the vendor.
+                        Dismiss(_owner);
+                    }
+                }
+            );
+        }
+        else
+        {
+            _house.PlayerVendors.Add(this);
+        }
     }
 
     public void InitBody()
@@ -227,9 +255,10 @@ public partial class PlayerVendor : Mobile
 
     public virtual void InitOutfit()
     {
-        Item item = new FancyShirt(Utility.RandomNeutralHue());
-        item.Layer = Layer.InnerTorso;
-        AddItem(item);
+        AddItem(new FancyShirt(Utility.RandomNeutralHue())
+        {
+            Layer = Layer.InnerTorso
+        });
         AddItem(new LongPants(Utility.RandomNeutralHue()));
         AddItem(new BodySash(Utility.RandomNeutralHue()));
         AddItem(new Boots(Utility.RandomNeutralHue()));
@@ -1232,9 +1261,9 @@ public partial class PlayerVendor : Mobile
                 return;
             }
 
-            var name = text.Trim();
+            var name = text.AsSpan().Trim();
 
-            if (!NameVerification.Validate(name, 1, 20, true, true, true, 0, NameVerification.Empty))
+            if (!NameVerification.ValidateVendorName(name))
             {
                 m_Vendor.SayTo(from, "That name is unacceptable.");
                 return;
@@ -1261,9 +1290,9 @@ public partial class PlayerVendor : Mobile
                 return;
             }
 
-            var name = text.Trim();
+            var name = text.AsSpan().Trim();
 
-            if (!NameVerification.Validate(name, 1, 20, true, true, true, 0, NameVerification.Empty))
+            if (!NameVerification.ValidateVendorName(name))
             {
                 m_Vendor.SayTo(from, "That name is unacceptable.");
                 return;

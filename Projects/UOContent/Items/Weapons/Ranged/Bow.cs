@@ -10,11 +10,11 @@ namespace Server.Items
         [Constructible]
         public Bow() : base(0x13B2)
         {
-            Weight = 6.0;
             Layer = Layer.TwoHanded;
             Resource = CraftResource.RegularWood;
         }
 
+        public override double DefaultWeight => 6.0;
         public override int EffectID => 0xF42;
         public override Type AmmoType => typeof(Arrow);
         public override Item Ammo => new Arrow();

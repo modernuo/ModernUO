@@ -41,7 +41,7 @@ public static class OutgoingMessagePackets
             return;
         }
 
-        Span<byte> buffer = stackalloc byte[GetMaxMessageLocalizedLength(args)].InitializePacket();
+        var buffer = stackalloc byte[GetMaxMessageLocalizedLength(args)].InitializePacket();
         var length = CreateMessageLocalized(
             buffer, serial, graphic, type, hue, font, number, name, args
         );
@@ -97,7 +97,7 @@ public static class OutgoingMessagePackets
             return;
         }
 
-        Span<byte> buffer = stackalloc byte[GetMaxMessageLocalizedAffixLength(affix, args)].InitializePacket();
+        var buffer = stackalloc byte[GetMaxMessageLocalizedAffixLength(affix, args)].InitializePacket();
         var length = CreateMessageLocalizedAffix(
             buffer, serial, graphic, type, hue, font, number, name, affixType, affix, args
         );
@@ -157,7 +157,7 @@ public static class OutgoingMessagePackets
             return;
         }
 
-        Span<byte> buffer = stackalloc byte[GetMaxMessageLength(text)].InitializePacket();
+        var buffer = stackalloc byte[GetMaxMessageLength(text)].InitializePacket();
         var length = CreateMessage(
             buffer,
             serial,

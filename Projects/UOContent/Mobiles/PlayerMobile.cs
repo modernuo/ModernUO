@@ -857,7 +857,7 @@ namespace Server.Mobiles
 
             if (Core.AOS)
             {
-                foreach (Mobile m in Map.GetMobilesAt(location))
+                foreach (var m in Map.GetMobilesAt(location))
                 {
                     if (m.Z >= location.Z && m.Z < location.Z + 16 && (!m.Hidden || m.AccessLevel == AccessLevel.Player))
                     {
@@ -988,67 +988,71 @@ namespace Server.Mobiles
             from.TargetLocked = false;
         }
 
-        public static void EquipMacro(Mobile m, List<Serial> list)
+        public static void EquipMacro(Mobile m, ref PooledRefList<Serial> list)
         {
-            if (m is PlayerMobile { Alive: true } pm && pm.Backpack != null)
+            if (m is not PlayerMobile { Alive: true } pm || pm.Backpack == null)
             {
-                var pack = pm.Backpack;
+                return;
+            }
 
-                foreach (var serial in list)
+            var pack = pm.Backpack;
+
+            foreach (var serial in list)
+            {
+                Item item = null;
+                foreach (var i in pack.Items)
                 {
-                    Item item = null;
-                    foreach (var i in pack.Items)
+                    if (i.Serial == serial)
                     {
-                        if (i.Serial == serial)
-                        {
-                            item = i;
-                            break;
-                        }
+                        item = i;
+                        break;
                     }
+                }
 
-                    if (item == null)
+                if (item == null)
+                {
+                    continue;
+                }
+
+                var toMove = pm.FindItemOnLayer(item.Layer);
+
+                if (toMove != null)
+                {
+                    // pack.DropItem(toMove);
+                    toMove.Internalize();
+
+                    if (!pm.EquipItem(item))
                     {
-                        continue;
-                    }
-
-                    var toMove = pm.FindItemOnLayer(item.Layer);
-
-                    if (toMove != null)
-                    {
-                        // pack.DropItem(toMove);
-                        toMove.Internalize();
-
-                        if (!pm.EquipItem(item))
-                        {
-                            pm.EquipItem(toMove);
-                        }
-                        else
-                        {
-                            pack.DropItem(toMove);
-                        }
+                        pm.EquipItem(toMove);
                     }
                     else
                     {
-                        pm.EquipItem(item);
+                        pack.DropItem(toMove);
                     }
+                }
+                else
+                {
+                    pm.EquipItem(item);
                 }
             }
         }
 
-        public static void UnequipMacro(Mobile m, List<Layer> layers)
+        public static void UnequipMacro(Mobile m, ref PooledRefList<Layer> layers)
         {
-            if (m is PlayerMobile { Alive: true } pm && pm.Backpack != null)
+            if (m is not PlayerMobile { Alive: true } pm || pm.Backpack == null)
             {
-                var pack = pm.Backpack;
-                var eq = m.Items;
+                return;
+            }
 
-                for (var i = eq.Count - 1; i >= 0; i--)
+            var pack = pm.Backpack;
+            var eq = m.Items;
+
+            for (var i = eq.Count - 1; i >= 0; i--)
+            {
+                var item = eq[i];
+                if (layers.Contains(item.Layer))
                 {
-                    var item = eq[i];
-                    if (layers.Contains(item.Layer))
-                    {
-                        pack.TryDropItem(pm, item, false);
-                    }
+                    pack.TryDropItem(pm, item, false);
                 }
             }
         }
@@ -1549,13 +1553,17 @@ namespace Server.Mobiles
                 // Eject all from house
                 from.RevealingAction();
 
-                foreach (var item in context.Foundation.GetItems())
+                var list = context.Foundation.GetItems();
+                for (var i = 0; i < list.Count; i++)
                 {
+                    var item = list[i];
                     item.Location = context.Foundation.BanLocation;
                 }
 
-                foreach (var mobile in context.Foundation.GetMobiles())
+                using var mobiles = context.Foundation.GetMobilesPooled();
+                for (var i = 0; i < mobiles.Count; i++)
                 {
+                    var mobile = mobiles[i];
                     mobile.Location = context.Foundation.BanLocation;
                 }
 
@@ -2362,7 +2370,7 @@ namespace Server.Mobiles
 
             if (Alive && !wasAlive)
             {
-                Item deathRobe = new DeathRobe();
+                var deathRobe = new DeathRobe();
 
                 if (!EquipItem(deathRobe))
                 {
@@ -2723,9 +2731,9 @@ namespace Server.Mobiles
             }
         }
 
-        private static void SendToStaffMessage(Mobile from, string text)
+        private static void SendToStaffMessage(PlayerMobile from, string text)
         {
-            Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)].InitializePacket();
+            var buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)].InitializePacket();
 
             foreach (var ns in from.GetClientsInRange(8))
             {
@@ -2835,7 +2843,7 @@ namespace Server.Mobiles
             base.Deserialize(reader);
             var version = reader.ReadInt();
 
-            VirtueContext virtues = version < 32 ? Virtues : null;
+            var virtues = version < 32 ? Virtues : null;
 
             switch (version)
             {

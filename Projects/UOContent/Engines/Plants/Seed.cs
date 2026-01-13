@@ -24,7 +24,6 @@ public partial class Seed : Item
     [Constructible]
     public Seed(PlantType plantType, PlantHue plantHue, bool showType = false) : base(0xDCF)
     {
-        Weight = 1.0;
         Stackable = Core.SA;
 
         _plantType = plantType;
@@ -33,6 +32,8 @@ public partial class Seed : Item
 
         Hue = PlantHueInfo.GetInfo(plantHue).Hue;
     }
+
+    public override double DefaultWeight => 1.0;
 
     [CommandProperty(AccessLevel.GameMaster)]
     [SerializableProperty(1)]

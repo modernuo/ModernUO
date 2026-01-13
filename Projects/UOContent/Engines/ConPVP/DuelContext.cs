@@ -134,7 +134,7 @@ namespace Server.Engines.ConPVP
                 return false;
             }
 
-            string title = move switch
+            var title = move switch
             {
                 NinjaMove => "Bushido",
                 SamuraiMove => "Ninjitsu",
@@ -1764,7 +1764,7 @@ namespace Server.Engines.ConPVP
                         {
                             if (Rematch)
                             {
-                                mob.SendMessage(0x22, $"You have rejected the rematch.");
+                                mob.SendMessage(0x22, "You have rejected the rematch.");
                             }
                             else
                             {
@@ -1898,7 +1898,7 @@ namespace Server.Engines.ConPVP
             var rx = dx - dy;
             var ry = dx + dy;
 
-            bool eastToWest = rx == 0 && ry >= 0 || rx >= 0 && ry == 0;
+            var eastToWest = rx == 0 && ry >= 0 || rx >= 0 && ry == 0;
 
             Effects.PlaySound(wall, Arena.Facet, 0x1F6);
 
@@ -2043,7 +2043,7 @@ namespace Server.Engines.ConPVP
                     pack.DropItem(item);
 
                     // TODO: Use Layer instead of Type
-                    int number = item switch
+                    var number = item switch
                     {
                         BaseWeapon _ => 1062001, // You can no longer wield your ~1_WEAPON~
                         not BaseShield when item is BaseArmor or BaseClothing => 1062002, // You can no longer wear your ~1_ARMOR~

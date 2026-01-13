@@ -12,10 +12,11 @@ public partial class GreenThorns : Item
     public GreenThorns(int amount = 1) : base(0xF42)
     {
         Stackable = true;
-        Weight = 1.0;
         Hue = 0x42;
         Amount = amount;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1060837; // green thorns
 
@@ -509,7 +510,7 @@ public class FurrowsGreenThornsEffect : GreenThornsEffect
                     // * A magical bunny leaps out of its hole, disturbed by the thorn's effect! *
                     dummy.PublicOverheadMessage(MessageType.Regular, 0x3B2, 1114428);
 
-                    BaseCreature spawn = new VorpalBunny();
+                    var spawn = new VorpalBunny();
                     if (!SpawnCreature(spawn))
                     {
                         spawn.Delete();
@@ -564,7 +565,7 @@ public class SwampGreenThornsEffect : GreenThornsEffect
                     dummy.PublicOverheadMessage(MessageType.Regular, 0x3B2, 1114429);
                     Effects.PlaySound(Location, Map, 0x2B0);
 
-                    BaseCreature spawn = new WhippingVine();
+                    var spawn = new WhippingVine();
                     if (!SpawnCreature(spawn))
                     {
                         spawn.Delete();
@@ -618,7 +619,7 @@ public class SnowGreenThornsEffect : GreenThornsEffect
                     // * Slithering ice serpents rise to the surface to investigate the disturbance! *
                     dummy.PublicOverheadMessage(MessageType.Regular, 0x3B2, 1114430);
 
-                    BaseCreature spawn = new GiantIceWorm();
+                    var spawn = new GiantIceWorm();
                     if (!SpawnCreature(spawn))
                     {
                         spawn.Delete();
@@ -626,7 +627,7 @@ public class SnowGreenThornsEffect : GreenThornsEffect
 
                     for (var i = 0; i < 3; i++)
                     {
-                        BaseCreature snake = new IceSnake();
+                        var snake = new IceSnake();
                         if (!SpawnCreature(snake))
                         {
                             snake.Delete();
@@ -702,6 +703,8 @@ public partial class GreenThornsSHTeleporter : Item
 
     public override string DefaultName => "a hole";
 
+    public override bool SkipSerialization => true;
+
     public static void Create(Point3D location, Map map)
     {
         var tele = new GreenThornsSHTeleporter();
@@ -723,12 +726,6 @@ public partial class GreenThornsSHTeleporter : Item
         {
             from.SendLocalizedMessage(1019045); // I can't reach that.
         }
-    }
-
-    [AfterDeserialization(false)]
-    private void AfterDeserialization()
-    {
-        Delete();
     }
 
     private class InternalTimer : Timer

@@ -27,9 +27,10 @@ public partial class HornOfRetreat : Item
     public HornOfRetreat() : base(0xFC4)
     {
         Hue = 0x482;
-        Weight = 1.0;
         _charges = 10;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1049117; // Horn of Retreat
 
@@ -114,6 +115,8 @@ public partial class HornOfRetreatMoongate : Moongate
 
     public override int LabelNumber => 1049114; // Sanctuary Gate
 
+    public override bool SkipSerialization => true;
+
     public override void BeginConfirmation(Mobile from)
     {
         EndConfirmation(from);
@@ -130,11 +133,5 @@ public partial class HornOfRetreatMoongate : Moongate
             base.UseGate(m);
             Delete();
         }
-    }
-
-    [AfterDeserialization(false)]
-    private void AfterDeserialization()
-    {
-        Delete();
     }
 }

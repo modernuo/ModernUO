@@ -1,0 +1,145 @@
+﻿{
+    "category":  "Vendor",
+    "packets":  [
+                    {
+                        "id":  "0x3B",
+                        "name":  "Vendor Buy Reply",
+                        "description":  "Client confirms items to purchase from a vendor.",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "var",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x3B",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Vendor Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the vendor"
+                                       },
+                                       {
+                                           "name":  "Flag",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "0x00 = buy, 0x02 = cancel"
+                                       },
+                                       {
+                                           "name":  "Items",
+                                           "type":  "loop",
+                                           "loop":  {
+                                                        "untilEnd":  true,
+                                                        "fields":  [
+                                                                       {
+                                                                           "name":  "Layer",
+                                                                           "type":  "byte",
+                                                                           "size":  1,
+                                                                           "description":  "Layer/container index"
+                                                                       },
+                                                                       {
+                                                                           "name":  "Item Serial",
+                                                                           "type":  "uint",
+                                                                           "size":  4,
+                                                                           "description":  "Serial of item to buy"
+                                                                       },
+                                                                       {
+                                                                           "name":  "Amount",
+                                                                           "type":  "short",
+                                                                           "size":  2,
+                                                                           "description":  "Amount to purchase"
+                                                                       }
+                                                                   ]
+                                                    }
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0x74",
+                                            "relationship":  "request",
+                                            "note":  "Vendor Buy List packet that initiated this"
+                                        }
+                                    ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingVendorPackets.cs",
+                                       "line":  25
+                                   }
+                    },
+                    {
+                        "id":  "0x9F",
+                        "name":  "Vendor Sell Reply",
+                        "description":  "Client confirms items to sell to a vendor.",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "var",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x9F",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Vendor Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the vendor"
+                                       },
+                                       {
+                                           "name":  "Item Count",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Number of items to sell"
+                                       },
+                                       {
+                                           "name":  "Items",
+                                           "type":  "loop",
+                                           "loop":  {
+                                                        "countField":  "itemCount",
+                                                        "fields":  [
+                                                                       {
+                                                                           "name":  "Item Serial",
+                                                                           "type":  "uint",
+                                                                           "size":  4,
+                                                                           "description":  "Serial of item to sell"
+                                                                       },
+                                                                       {
+                                                                           "name":  "Amount",
+                                                                           "type":  "short",
+                                                                           "size":  2,
+                                                                           "description":  "Amount to sell"
+                                                                       }
+                                                                   ]
+                                                    }
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0x9E",
+                                            "relationship":  "request",
+                                            "note":  "Vendor Sell List packet that initiated this"
+                                        }
+                                    ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingVendorPackets.cs",
+                                       "line":  26
+                                   }
+                    }
+                ]
+}

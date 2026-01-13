@@ -152,32 +152,15 @@ public class GuardedRegion : BaseRegion
 
     public override void MakeGuard(Mobile focus)
     {
-        BaseGuard useGuard = null;
-        foreach (var m in focus.GetMobilesInRange<BaseGuard>(8))
-        {
-            if (m.Focus == null)
-            {
-                useGuard = m;
-                break;
-            }
-        }
+        m_GuardParams[0] = focus;
 
-        if (useGuard == null)
+        try
         {
-            m_GuardParams[0] = focus;
-
-            try
-            {
-                GuardType.CreateInstance<object>(m_GuardParams);
-            }
-            catch
-            {
-                // ignored
-            }
+            GuardType.CreateInstance<object>(m_GuardParams);
         }
-        else
+        catch
         {
-            useGuard.Focus = focus;
+            // ignored
         }
     }
 
@@ -296,7 +279,7 @@ public class GuardedRegion : BaseRegion
             {
                 fakeCall.Say(Utility.Random(1013037, 16));
 
-                MakeGuard(m);
+                BaseGuard.Spawn(fakeCall, m);
                 timer.Stop();
                 m_GuardCandidates.Remove(m);
                 m.SendLocalizedMessage(502276); // Guards can no longer be called on you.
@@ -332,7 +315,7 @@ public class GuardedRegion : BaseRegion
         while (queue.Count > 0)
         {
             var m = queue.Dequeue();
-            MakeGuard(m);
+            BaseGuard.Spawn(this, m);
             m.SendLocalizedMessage(502276); // Guards can no longer be called on you.
         }
     }

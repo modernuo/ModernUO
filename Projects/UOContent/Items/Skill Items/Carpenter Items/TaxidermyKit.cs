@@ -22,7 +22,11 @@ public partial class TaxidermyKit : Item
     };
 
     [Constructible]
-    public TaxidermyKit() : base(0x1EBA) => Weight = 1.0;
+    public TaxidermyKit() : base(0x1EBA)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1041279; // a taxidermy kit
 
@@ -120,7 +124,7 @@ public partial class TaxidermyKit : Item
                     from.SendLocalizedMessage(1042278);
                     from.SendLocalizedMessage(1042602); // You use your kit up making the trophy.
 
-                    Mobile hunter = fish?.Fisher;
+                    var hunter = fish?.Fisher;
                     var weight = (int)(fish?.Weight ?? 0);
                     fish?.Consume();
 

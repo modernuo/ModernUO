@@ -7,7 +7,11 @@ namespace Server.Engines.Quests.Haven;
 public partial class QuestFertileDirt : QuestItem
 {
     [Constructible]
-    public QuestFertileDirt() : base(0xF81) => Weight = 1.0;
+    public QuestFertileDirt() : base(0xF81)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override bool CanDrop(PlayerMobile player) => player.Quest is not UzeraanTurmoilQuest;
 }

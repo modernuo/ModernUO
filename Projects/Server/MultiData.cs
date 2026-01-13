@@ -56,7 +56,7 @@ public static class MultiData
         // TODO: Find out if housing.bin is needed and read that.
         var uopEntries = UOPFiles.ReadUOPIndexes(stream, ".bin", 0x10000, 4, 6);
 
-        byte[] compressionBuffer = STArrayPool<byte>.Shared.Rent(0x10000);
+        var compressionBuffer = STArrayPool<byte>.Shared.Rent(0x10000);
         var buffer = STArrayPool<byte>.Shared.Rent(0x10000);
 
         foreach (var (i, entry) in uopEntries)

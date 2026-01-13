@@ -8,9 +8,10 @@ namespace Server.Items
         [Constructible]
         public RangerGorget() : base(0x13D6)
         {
-            Weight = 1.0;
             Hue = 0x59C;
         }
+
+        public override double DefaultWeight => 1.0;
 
         public override int BasePhysicalResistance => 2;
         public override int BaseFireResistance => 4;

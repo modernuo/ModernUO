@@ -8,7 +8,11 @@ namespace Server.Engines.Quests.Necro;
 public partial class ScrollOfAbraxus : QuestItem
 {
     [Constructible]
-    public ScrollOfAbraxus() : base(0x227B) => Weight = 1.0;
+    public ScrollOfAbraxus() : base(0x227B)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1028827; // Scroll of Abraxus
 

@@ -51,7 +51,7 @@ namespace Server.Gumps
 
                 var m = m_List[i];
 
-                string name = m.Name?.Trim().DefaultIfNullOrEmpty("(empty)");
+                var name = m.Name?.Trim().DefaultIfNullOrEmpty("(empty)");
                 AddLabel(radio ? 55 : 20, 35 + i % 11 * 30, 0, name);
             }
         }

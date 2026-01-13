@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class Cutlass : BaseSword
     {
         [Constructible]
-        public Cutlass() : base(0x1441) => Weight = 8.0;
+        public Cutlass() : base(0x1441)
+        {
+        }
+
+        public override double DefaultWeight => 8.0;
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.BleedAttack;
         public override WeaponAbility SecondaryAbility => WeaponAbility.ShadowStrike;

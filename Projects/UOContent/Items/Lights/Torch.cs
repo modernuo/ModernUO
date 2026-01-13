@@ -15,8 +15,9 @@ public partial class Torch : BaseEquipableLight
 
         Stackable = true;
         Light = LightType.Circle300;
-        Weight = 1.0;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LitItemID => 0xA12;
     public override int UnlitItemID => 0xF6B;

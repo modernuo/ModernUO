@@ -6,5 +6,9 @@ namespace Server.Items;
 public partial class Tambourine : BaseInstrument
 {
     [Constructible]
-    public Tambourine() : base(0xE9D, 0x52, 0x53) => Weight = 1.0;
+    public Tambourine() : base(0xE9D, 0x52, 0x53)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 }

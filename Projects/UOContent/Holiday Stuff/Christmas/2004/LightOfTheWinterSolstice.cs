@@ -18,11 +18,12 @@ public partial class LightOfTheWinterSolstice : Item
     {
         _dipper = dipper?.Intern() ?? StaffInfo.GetRandomStaff();
 
-        Weight = 1.0;
         LootType = LootType.Blessed;
         Light = LightType.Circle300;
         Hue = Utility.RandomDyedHue();
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override void OnSingleClick(Mobile from)
     {

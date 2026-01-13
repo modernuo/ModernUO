@@ -9,7 +9,6 @@ public partial class RewardCake : Item
     public RewardCake() : base(0x9e9)
     {
         Stackable = false;
-        Weight = 1.0;
         Hue = Utility.RandomList(
             0x135,
             0xcd,
@@ -30,6 +29,8 @@ public partial class RewardCake : Item
         );
         LootType = LootType.Blessed;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1049786; // Happy Birthday!  ...
 

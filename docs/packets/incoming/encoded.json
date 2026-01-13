@@ -1,0 +1,959 @@
+﻿{
+    "category":  "Encoded Commands (0xD7)",
+    "packets":  [
+                    {
+                        "id":  "0xD7",
+                        "name":  "Encoded Command",
+                        "description":  "Wrapper packet for encoded commands (0xD7 subpackets). Used for house design, abilities, guild/quest requests.",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "var",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xD7",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Entity Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of target entity"
+                                       },
+                                       {
+                                           "name":  "Sub-Command",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Encoded command ID"
+                                       },
+                                       {
+                                           "name":  "Data",
+                                           "type":  "byte[]",
+                                           "description":  "Subcommand-specific data"
+                                       }
+                                   ],
+                        "subpackets":  [
+                                           {
+                                               "subId":  "0x02",
+                                               "name":  "Backup",
+                                               "description":  "Backup current house design state",
+                                               "direction":  "incoming"
+                                           },
+                                           {
+                                               "subId":  "0x03",
+                                               "name":  "Restore",
+                                               "description":  "Restore house design from backup",
+                                               "direction":  "incoming"
+                                           },
+                                           {
+                                               "subId":  "0x04",
+                                               "name":  "Commit",
+                                               "description":  "Commit house design changes",
+                                               "direction":  "incoming"
+                                           },
+                                           {
+                                               "subId":  "0x05",
+                                               "name":  "Delete Component",
+                                               "description":  "Delete component from house",
+                                               "direction":  "incoming"
+                                           },
+                                           {
+                                               "subId":  "0x06",
+                                               "name":  "Build Component",
+                                               "description":  "Place component in house",
+                                               "direction":  "incoming"
+                                           },
+                                           {
+                                               "subId":  "0x0C",
+                                               "name":  "Close Tool",
+                                               "description":  "Close house design tool",
+                                               "direction":  "incoming"
+                                           },
+                                           {
+                                               "subId":  "0x0D",
+                                               "name":  "Add Stairs",
+                                               "description":  "Add stairs to house design",
+                                               "direction":  "incoming"
+                                           },
+                                           {
+                                               "subId":  "0x0E",
+                                               "name":  "Sync Request",
+                                               "description":  "Synchronize house design state",
+                                               "direction":  "incoming"
+                                           },
+                                           {
+                                               "subId":  "0x10",
+                                               "name":  "Clear Floor",
+                                               "description":  "Clear a floor in house design",
+                                               "direction":  "incoming"
+                                           },
+                                           {
+                                               "subId":  "0x12",
+                                               "name":  "Change Floor Level",
+                                               "description":  "Change visible floor level",
+                                               "direction":  "incoming"
+                                           },
+                                           {
+                                               "subId":  "0x13",
+                                               "name":  "Add Roof",
+                                               "description":  "Add roof tile (SE+)",
+                                               "direction":  "incoming"
+                                           },
+                                           {
+                                               "subId":  "0x14",
+                                               "name":  "Delete Roof",
+                                               "description":  "Delete roof tile (SE+)",
+                                               "direction":  "incoming"
+                                           },
+                                           {
+                                               "subId":  "0x19",
+                                               "name":  "Set Weapon Ability",
+                                               "description":  "Select weapon special ability",
+                                               "direction":  "incoming"
+                                           },
+                                           {
+                                               "subId":  "0x1A",
+                                               "name":  "Revert",
+                                               "description":  "Revert house to original state",
+                                               "direction":  "incoming"
+                                           },
+                                           {
+                                               "subId":  "0x28",
+                                               "name":  "Guild Gump Request",
+                                               "description":  "Open guild gump",
+                                               "direction":  "incoming"
+                                           },
+                                           {
+                                               "subId":  "0x32",
+                                               "name":  "Quest Gump Request",
+                                               "description":  "Open quest/MLB gump",
+                                               "direction":  "incoming"
+                                           }
+                                       ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingPlayerPackets.cs",
+                                       "line":  457
+                                   }
+                    },
+                    {
+                        "id":  "0xD7/0x02",
+                        "subId":  "0x02",
+                        "name":  "House Design: Backup",
+                        "description":  "Client requests to backup current house design state.",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "var",
+                        "tags":  ["House"],
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xD7",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "House foundation serial"
+                                       },
+                                       {
+                                           "name":  "Sub-Command",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x02",
+                                           "description":  "Backup subcommand"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Multis/Houses/HouseFoundation.cs",
+                                       "line":  1024
+                                   }
+                    },
+                    {
+                        "id":  "0xD7/0x03",
+                        "subId":  "0x03",
+                        "name":  "House Design: Restore",
+                        "description":  "Client requests to restore house design from backup.",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "var",
+                        "tags":  ["House"],
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xD7",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "House foundation serial"
+                                       },
+                                       {
+                                           "name":  "Sub-Command",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x03",
+                                           "description":  "Restore subcommand"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Multis/Houses/HouseFoundation.cs",
+                                       "line":  1025
+                                   }
+                    },
+                    {
+                        "id":  "0xD7/0x04",
+                        "subId":  "0x04",
+                        "name":  "House Design: Commit",
+                        "description":  "Client commits the current house design changes.",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "var",
+                        "tags":  ["House"],
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xD7",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "House foundation serial"
+                                       },
+                                       {
+                                           "name":  "Sub-Command",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x04",
+                                           "description":  "Commit subcommand"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Multis/Houses/HouseFoundation.cs",
+                                       "line":  1026
+                                   }
+                    },
+                    {
+                        "id":  "0xD7/0x05",
+                        "subId":  "0x05",
+                        "name":  "House Design: Delete Component",
+                        "description":  "Client requests to delete a component from house design.",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "var",
+                        "tags":  ["House"],
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xD7",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "House foundation serial"
+                                       },
+                                       {
+                                           "name":  "Sub-Command",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x05",
+                                           "description":  "Delete subcommand"
+                                       },
+                                       {
+                                           "name":  "Tile ID",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Tile graphic ID to delete"
+                                       },
+                                       {
+                                           "name":  "X",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "X offset from foundation"
+                                       },
+                                       {
+                                           "name":  "Y",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Y offset from foundation"
+                                       },
+                                       {
+                                           "name":  "Z",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Z offset from foundation"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Multis/Houses/HouseFoundation.cs",
+                                       "line":  1027
+                                   }
+                    },
+                    {
+                        "id":  "0xD7/0x06",
+                        "subId":  "0x06",
+                        "name":  "House Design: Build Component",
+                        "description":  "Client requests to place a component in house design.",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "var",
+                        "tags":  ["House"],
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xD7",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "House foundation serial"
+                                       },
+                                       {
+                                           "name":  "Sub-Command",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x06",
+                                           "description":  "Build subcommand"
+                                       },
+                                       {
+                                           "name":  "Tile ID",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Tile graphic ID to place"
+                                       },
+                                       {
+                                           "name":  "X",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "X offset from foundation"
+                                       },
+                                       {
+                                           "name":  "Y",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Y offset from foundation"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Multis/Houses/HouseFoundation.cs",
+                                       "line":  1028
+                                   }
+                    },
+                    {
+                        "id":  "0xD7/0x0C",
+                        "subId":  "0x0C",
+                        "name":  "House Design: Close Tool",
+                        "description":  "Client closes the house design tool.",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "var",
+                        "tags":  ["House"],
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xD7",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "House foundation serial"
+                                       },
+                                       {
+                                           "name":  "Sub-Command",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x0C",
+                                           "description":  "Close subcommand"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Multis/Houses/HouseFoundation.cs",
+                                       "line":  1029
+                                   }
+                    },
+                    {
+                        "id":  "0xD7/0x0D",
+                        "subId":  "0x0D",
+                        "name":  "House Design: Add Stairs",
+                        "description":  "Client requests to add stairs to house design.",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "var",
+                        "tags":  ["House"],
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xD7",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "House foundation serial"
+                                       },
+                                       {
+                                           "name":  "Sub-Command",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x0D",
+                                           "description":  "Stairs subcommand"
+                                       },
+                                       {
+                                           "name":  "Tile ID",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Stair tile graphic ID"
+                                       },
+                                       {
+                                           "name":  "X",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "X offset from foundation"
+                                       },
+                                       {
+                                           "name":  "Y",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Y offset from foundation"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Multis/Houses/HouseFoundation.cs",
+                                       "line":  1030
+                                   }
+                    },
+                    {
+                        "id":  "0xD7/0x0E",
+                        "subId":  "0x0E",
+                        "name":  "House Design: Sync Request",
+                        "description":  "Client requests to synchronize house design state.",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "var",
+                        "tags":  ["House"],
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xD7",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "House foundation serial"
+                                       },
+                                       {
+                                           "name":  "Sub-Command",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x0E",
+                                           "description":  "Sync subcommand"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Multis/Houses/HouseFoundation.cs",
+                                       "line":  1031
+                                   }
+                    },
+                    {
+                        "id":  "0xD7/0x10",
+                        "subId":  "0x10",
+                        "name":  "House Design: Clear Floor",
+                        "description":  "Client requests to clear a floor in house design.",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "var",
+                        "tags":  ["House"],
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xD7",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "House foundation serial"
+                                       },
+                                       {
+                                           "name":  "Sub-Command",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x10",
+                                           "description":  "Clear subcommand"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Multis/Houses/HouseFoundation.cs",
+                                       "line":  1032
+                                   }
+                    },
+                    {
+                        "id":  "0xD7/0x12",
+                        "subId":  "0x12",
+                        "name":  "House Design: Change Floor Level",
+                        "description":  "Client changes the visible floor level in house design.",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "var",
+                        "tags":  ["House"],
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xD7",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "House foundation serial"
+                                       },
+                                       {
+                                           "name":  "Sub-Command",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x12",
+                                           "description":  "Level subcommand"
+                                       },
+                                       {
+                                           "name":  "Floor",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Floor level (1-4)"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Multis/Houses/HouseFoundation.cs",
+                                       "line":  1033
+                                   }
+                    },
+                    {
+                        "id":  "0xD7/0x13",
+                        "subId":  "0x13",
+                        "name":  "House Design: Add Roof",
+                        "description":  "Client requests to add a roof tile (Samurai Empire+).",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "var",
+                        "tags":  ["House"],
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xD7",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "House foundation serial"
+                                       },
+                                       {
+                                           "name":  "Sub-Command",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x13",
+                                           "description":  "Roof subcommand"
+                                       },
+                                       {
+                                           "name":  "Tile ID",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Roof tile graphic ID"
+                                       },
+                                       {
+                                           "name":  "X",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "X offset from foundation"
+                                       },
+                                       {
+                                           "name":  "Y",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Y offset from foundation"
+                                       },
+                                       {
+                                           "name":  "Z",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Z offset for roof placement"
+                                       }
+                                   ],
+                        "clientVersion":  {
+                                              "min":  "Samurai Empire",
+                                              "notes":  "Added with Samurai Empire expansion"
+                                          },
+                        "source":  {
+                                       "file":  "Projects/UOContent/Multis/Houses/HouseFoundation.cs",
+                                       "line":  1035
+                                   }
+                    },
+                    {
+                        "id":  "0xD7/0x14",
+                        "subId":  "0x14",
+                        "name":  "House Design: Delete Roof",
+                        "description":  "Client requests to delete a roof tile (Samurai Empire+).",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "var",
+                        "tags":  ["House"],
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xD7",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "House foundation serial"
+                                       },
+                                       {
+                                           "name":  "Sub-Command",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x14",
+                                           "description":  "Roof Delete subcommand"
+                                       },
+                                       {
+                                           "name":  "Tile ID",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Roof tile graphic ID"
+                                       },
+                                       {
+                                           "name":  "X",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "X offset from foundation"
+                                       },
+                                       {
+                                           "name":  "Y",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Y offset from foundation"
+                                       },
+                                       {
+                                           "name":  "Z",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Z offset of roof to delete"
+                                       }
+                                   ],
+                        "clientVersion":  {
+                                              "min":  "Samurai Empire",
+                                              "notes":  "Added with Samurai Empire expansion"
+                                          },
+                        "source":  {
+                                       "file":  "Projects/UOContent/Multis/Houses/HouseFoundation.cs",
+                                       "line":  1036
+                                   }
+                    },
+                    {
+                        "id":  "0xD7/0x19",
+                        "subId":  "0x19",
+                        "name":  "Set Weapon Ability",
+                        "description":  "Client selects a weapon special ability.",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "var",
+                        "tags":  ["Combat"],
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xD7",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Player serial"
+                                       },
+                                       {
+                                           "name":  "Sub-Command",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x19",
+                                           "description":  "Set Ability subcommand"
+                                       },
+                                       {
+                                           "name":  "Ability Index",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Ability index (0 = clear, 1+ = ability index)"
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0xBF/0x21",
+                                            "relationship":  "response",
+                                            "note":  "Clear Weapon Ability"
+                                        },
+                                        {
+                                            "id":  "0xBF/0x25",
+                                            "relationship":  "response",
+                                            "note":  "Toggle Special Ability"
+                                        }
+                                    ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Items/Weapons/Abilities/WeaponAbilityPackets.cs",
+                                       "line":  11
+                                   }
+                    },
+                    {
+                        "id":  "0xD7/0x1A",
+                        "subId":  "0x1A",
+                        "name":  "House Design: Revert",
+                        "description":  "Client requests to revert house design to original state.",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "var",
+                        "tags":  ["House"],
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xD7",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "House foundation serial"
+                                       },
+                                       {
+                                           "name":  "Sub-Command",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x1A",
+                                           "description":  "Revert subcommand"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Multis/Houses/HouseFoundation.cs",
+                                       "line":  1038
+                                   }
+                    },
+                    {
+                        "id":  "0xD7/0x28",
+                        "subId":  "0x28",
+                        "name":  "Guild Gump Request",
+                        "description":  "Client requests to open the guild gump.",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "var",
+                        "tags":  ["Guild"],
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xD7",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Player serial"
+                                       },
+                                       {
+                                           "name":  "Sub-Command",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x28",
+                                           "description":  "Guild Gump subcommand"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingPlayerPackets.cs",
+                                       "line":  54
+                                   }
+                    },
+                    {
+                        "id":  "0xD7/0x32",
+                        "subId":  "0x32",
+                        "name":  "Quest Gump Request",
+                        "description":  "Client requests to open the quest/MLB gump.",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "var",
+                        "tags":  ["Quest"],
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xD7",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Player serial"
+                                       },
+                                       {
+                                           "name":  "Sub-Command",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x32",
+                                           "description":  "Quest Gump subcommand"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingPlayerPackets.cs",
+                                       "line":  55
+                                   }
+                    }
+                ]
+}

@@ -9,9 +9,10 @@ namespace Server.Items
         [Constructible]
         public RangerChest() : base(0x13DB)
         {
-            Weight = 8.0;
             Hue = 0x59C;
         }
+
+        public override double DefaultWeight => 8.0;
 
         public override int BasePhysicalResistance => 2;
         public override int BaseFireResistance => 4;

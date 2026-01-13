@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class Club : BaseBashing
     {
         [Constructible]
-        public Club() : base(0x13B4) => Weight = 9.0;
+        public Club() : base(0x13B4)
+        {
+        }
+
+        public override double DefaultWeight => 9.0;
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.ShadowStrike;
         public override WeaponAbility SecondaryAbility => WeaponAbility.Dismount;

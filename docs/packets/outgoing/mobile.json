@@ -1,0 +1,1757 @@
+﻿{
+    "category":  "Mobile",
+    "packets":  [
+                    {
+                        "id":  "0x11",
+                        "name":  "Mobile Status",
+                        "description":  "Detailed status information for a mobile. Version 0 (compact) is sent when viewing other mobiles. Versions 3-6 are sent for self based on expansion.",
+                        "direction":  "outgoing",
+                        "isDynamic":  true,
+                        "size":  "Varies",
+                        "variants":  [
+                                         {
+                                             "version":  "Version 0 (Compact)",
+                                             "name":  "Other Mobile Status",
+                                             "condition":  "Viewing another mobile (not self)",
+                                             "size":  43,
+                                             "fields":  [
+                                                            {
+                                                                "name":  "Packet ID",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0x11",
+                                                                "description":  "Packet identifier"
+                                                            },
+                                                            {
+                                                                "name":  "Length",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "value":  "43",
+                                                                "description":  "Packet length"
+                                                            },
+                                                            {
+                                                                "name":  "Serial",
+                                                                "type":  "uint",
+                                                                "size":  4,
+                                                                "description":  "Mobile serial"
+                                                            },
+                                                            {
+                                                                "name":  "Name",
+                                                                "type":  "ascii",
+                                                                "size":  30,
+                                                                "description":  "Mobile name"
+                                                            },
+                                                            {
+                                                                "name":  "Hits",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Current hits (normalized 0-100)"
+                                                            },
+                                                            {
+                                                                "name":  "Hits Max",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "value":  "100",
+                                                                "description":  "Maximum hits (always 100 for normalized)"
+                                                            },
+                                                            {
+                                                                "name":  "Can Be Renamed",
+                                                                "type":  "bool",
+                                                                "size":  1,
+                                                                "description":  "Whether the mobile can be renamed by viewer"
+                                                            },
+                                                            {
+                                                                "name":  "Version",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0",
+                                                                "description":  "Status version (0 = compact)"
+                                                            }
+                                                        ]
+                                         },
+                                         {
+                                             "version":  "Version 3 (Basic)",
+                                             "name":  "Self Status (Pre-AOS)",
+                                             "condition":  "Viewing self, pre-AOS expansion",
+                                             "size":  70,
+                                             "fields":  [
+                                                            {
+                                                                "name":  "Packet ID",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0x11",
+                                                                "description":  "Packet identifier"
+                                                            },
+                                                            {
+                                                                "name":  "Length",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "value":  "70",
+                                                                "description":  "Packet length"
+                                                            },
+                                                            {
+                                                                "name":  "Serial",
+                                                                "type":  "uint",
+                                                                "size":  4,
+                                                                "description":  "Mobile serial"
+                                                            },
+                                                            {
+                                                                "name":  "Name",
+                                                                "type":  "ascii",
+                                                                "size":  30,
+                                                                "description":  "Mobile name"
+                                                            },
+                                                            {
+                                                                "name":  "Hits",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Current hits"
+                                                            },
+                                                            {
+                                                                "name":  "Hits Max",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Maximum hits"
+                                                            },
+                                                            {
+                                                                "name":  "Can Be Renamed",
+                                                                "type":  "bool",
+                                                                "size":  1,
+                                                                "description":  "Whether the mobile can be renamed"
+                                                            },
+                                                            {
+                                                                "name":  "Version",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "3",
+                                                                "description":  "Status version"
+                                                            },
+                                                            {
+                                                                "name":  "Female",
+                                                                "type":  "bool",
+                                                                "size":  1,
+                                                                "description":  "Gender flag (true = female)"
+                                                            },
+                                                            {
+                                                                "name":  "Str",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Strength"
+                                                            },
+                                                            {
+                                                                "name":  "Dex",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Dexterity"
+                                                            },
+                                                            {
+                                                                "name":  "Int",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Intelligence"
+                                                            },
+                                                            {
+                                                                "name":  "Stam",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Current stamina"
+                                                            },
+                                                            {
+                                                                "name":  "Stam Max",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Maximum stamina"
+                                                            },
+                                                            {
+                                                                "name":  "Mana",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Current mana"
+                                                            },
+                                                            {
+                                                                "name":  "Mana Max",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Maximum mana"
+                                                            },
+                                                            {
+                                                                "name":  "Gold",
+                                                                "type":  "int",
+                                                                "size":  4,
+                                                                "description":  "Total gold in backpack"
+                                                            },
+                                                            {
+                                                                "name":  "Armor Rating",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Armor rating"
+                                                            },
+                                                            {
+                                                                "name":  "Weight",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Current weight (body weight + carried)"
+                                                            },
+                                                            {
+                                                                "name":  "Stat Cap",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Total stat cap"
+                                                            },
+                                                            {
+                                                                "name":  "Followers",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "description":  "Current follower count"
+                                                            },
+                                                            {
+                                                                "name":  "Followers Max",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "description":  "Maximum follower slots"
+                                                            }
+                                                        ]
+                                         },
+                                         {
+                                             "version":  "Version 4 (AOS)",
+                                             "name":  "Self Status (Age of Shadows)",
+                                             "condition":  "Viewing self, AOS expansion",
+                                             "size":  88,
+                                             "fields":  [
+                                                            {
+                                                                "name":  "Packet ID",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0x11",
+                                                                "description":  "Packet identifier"
+                                                            },
+                                                            {
+                                                                "name":  "Length",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "value":  "88",
+                                                                "description":  "Packet length"
+                                                            },
+                                                            {
+                                                                "name":  "Serial",
+                                                                "type":  "uint",
+                                                                "size":  4,
+                                                                "description":  "Mobile serial"
+                                                            },
+                                                            {
+                                                                "name":  "Name",
+                                                                "type":  "ascii",
+                                                                "size":  30,
+                                                                "description":  "Mobile name"
+                                                            },
+                                                            {
+                                                                "name":  "Hits",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Current hits"
+                                                            },
+                                                            {
+                                                                "name":  "Hits Max",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Maximum hits"
+                                                            },
+                                                            {
+                                                                "name":  "Can Be Renamed",
+                                                                "type":  "bool",
+                                                                "size":  1,
+                                                                "description":  "Whether the mobile can be renamed"
+                                                            },
+                                                            {
+                                                                "name":  "Version",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "4",
+                                                                "description":  "Status version"
+                                                            },
+                                                            {
+                                                                "name":  "Female",
+                                                                "type":  "bool",
+                                                                "size":  1,
+                                                                "description":  "Gender flag (true = female)"
+                                                            },
+                                                            {
+                                                                "name":  "Str",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Strength"
+                                                            },
+                                                            {
+                                                                "name":  "Dex",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Dexterity"
+                                                            },
+                                                            {
+                                                                "name":  "Int",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Intelligence"
+                                                            },
+                                                            {
+                                                                "name":  "Stam",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Current stamina"
+                                                            },
+                                                            {
+                                                                "name":  "Stam Max",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Maximum stamina"
+                                                            },
+                                                            {
+                                                                "name":  "Mana",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Current mana"
+                                                            },
+                                                            {
+                                                                "name":  "Mana Max",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Maximum mana"
+                                                            },
+                                                            {
+                                                                "name":  "Gold",
+                                                                "type":  "int",
+                                                                "size":  4,
+                                                                "description":  "Total gold in backpack"
+                                                            },
+                                                            {
+                                                                "name":  "Physical Resist",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Physical resistance"
+                                                            },
+                                                            {
+                                                                "name":  "Weight",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Current weight"
+                                                            },
+                                                            {
+                                                                "name":  "Stat Cap",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Total stat cap"
+                                                            },
+                                                            {
+                                                                "name":  "Followers",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "description":  "Current follower count"
+                                                            },
+                                                            {
+                                                                "name":  "Followers Max",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "description":  "Maximum follower slots"
+                                                            },
+                                                            {
+                                                                "name":  "Fire Resist",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Fire resistance"
+                                                            },
+                                                            {
+                                                                "name":  "Cold Resist",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Cold resistance"
+                                                            },
+                                                            {
+                                                                "name":  "Poison Resist",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Poison resistance"
+                                                            },
+                                                            {
+                                                                "name":  "Energy Resist",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Energy resistance"
+                                                            },
+                                                            {
+                                                                "name":  "Luck",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Luck"
+                                                            },
+                                                            {
+                                                                "name":  "Damage Min",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Minimum weapon damage"
+                                                            },
+                                                            {
+                                                                "name":  "Damage Max",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Maximum weapon damage"
+                                                            },
+                                                            {
+                                                                "name":  "Tithing Points",
+                                                                "type":  "int",
+                                                                "size":  4,
+                                                                "description":  "Tithing points (for Chivalry)"
+                                                            }
+                                                        ]
+                                         },
+                                         {
+                                             "version":  "Version 5 (ML)",
+                                             "name":  "Self Status (Mondain\u0027s Legacy)",
+                                             "condition":  "Viewing self, ML expansion",
+                                             "size":  91,
+                                             "fields":  [
+                                                            {
+                                                                "name":  "Packet ID",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0x11",
+                                                                "description":  "Packet identifier"
+                                                            },
+                                                            {
+                                                                "name":  "Length",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "value":  "91",
+                                                                "description":  "Packet length"
+                                                            },
+                                                            {
+                                                                "name":  "Serial",
+                                                                "type":  "uint",
+                                                                "size":  4,
+                                                                "description":  "Mobile serial"
+                                                            },
+                                                            {
+                                                                "name":  "Name",
+                                                                "type":  "ascii",
+                                                                "size":  30,
+                                                                "description":  "Mobile name"
+                                                            },
+                                                            {
+                                                                "name":  "Hits",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Current hits"
+                                                            },
+                                                            {
+                                                                "name":  "Hits Max",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Maximum hits"
+                                                            },
+                                                            {
+                                                                "name":  "Can Be Renamed",
+                                                                "type":  "bool",
+                                                                "size":  1,
+                                                                "description":  "Whether the mobile can be renamed"
+                                                            },
+                                                            {
+                                                                "name":  "Version",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "5",
+                                                                "description":  "Status version"
+                                                            },
+                                                            {
+                                                                "name":  "Female",
+                                                                "type":  "bool",
+                                                                "size":  1,
+                                                                "description":  "Gender flag (true = female)"
+                                                            },
+                                                            {
+                                                                "name":  "Str",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Strength"
+                                                            },
+                                                            {
+                                                                "name":  "Dex",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Dexterity"
+                                                            },
+                                                            {
+                                                                "name":  "Int",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Intelligence"
+                                                            },
+                                                            {
+                                                                "name":  "Stam",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Current stamina"
+                                                            },
+                                                            {
+                                                                "name":  "Stam Max",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Maximum stamina"
+                                                            },
+                                                            {
+                                                                "name":  "Mana",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Current mana"
+                                                            },
+                                                            {
+                                                                "name":  "Mana Max",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Maximum mana"
+                                                            },
+                                                            {
+                                                                "name":  "Gold",
+                                                                "type":  "int",
+                                                                "size":  4,
+                                                                "description":  "Total gold in backpack"
+                                                            },
+                                                            {
+                                                                "name":  "Physical Resist",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Physical resistance"
+                                                            },
+                                                            {
+                                                                "name":  "Weight",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Current weight"
+                                                            },
+                                                            {
+                                                                "name":  "Max Weight",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Maximum carry weight"
+                                                            },
+                                                            {
+                                                                "name":  "Race",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "description":  "Race ID + 1 (1=Human, 2=Elf, 0=none)"
+                                                            },
+                                                            {
+                                                                "name":  "Stat Cap",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Total stat cap"
+                                                            },
+                                                            {
+                                                                "name":  "Followers",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "description":  "Current follower count"
+                                                            },
+                                                            {
+                                                                "name":  "Followers Max",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "description":  "Maximum follower slots"
+                                                            },
+                                                            {
+                                                                "name":  "Fire Resist",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Fire resistance"
+                                                            },
+                                                            {
+                                                                "name":  "Cold Resist",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Cold resistance"
+                                                            },
+                                                            {
+                                                                "name":  "Poison Resist",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Poison resistance"
+                                                            },
+                                                            {
+                                                                "name":  "Energy Resist",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Energy resistance"
+                                                            },
+                                                            {
+                                                                "name":  "Luck",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Luck"
+                                                            },
+                                                            {
+                                                                "name":  "Damage Min",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Minimum weapon damage"
+                                                            },
+                                                            {
+                                                                "name":  "Damage Max",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Maximum weapon damage"
+                                                            },
+                                                            {
+                                                                "name":  "Tithing Points",
+                                                                "type":  "int",
+                                                                "size":  4,
+                                                                "description":  "Tithing points (for Chivalry)"
+                                                            }
+                                                        ]
+                                         },
+                                         {
+                                             "version":  "Version 6 (HS)",
+                                             "name":  "Self Status (High Seas)",
+                                             "condition":  "Viewing self, High Seas expansion with ExtendedStatus",
+                                             "size":  121,
+                                             "fields":  [
+                                                            {
+                                                                "name":  "Packet ID",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0x11",
+                                                                "description":  "Packet identifier"
+                                                            },
+                                                            {
+                                                                "name":  "Length",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "value":  "121",
+                                                                "description":  "Packet length"
+                                                            },
+                                                            {
+                                                                "name":  "Serial",
+                                                                "type":  "uint",
+                                                                "size":  4,
+                                                                "description":  "Mobile serial"
+                                                            },
+                                                            {
+                                                                "name":  "Name",
+                                                                "type":  "ascii",
+                                                                "size":  30,
+                                                                "description":  "Mobile name"
+                                                            },
+                                                            {
+                                                                "name":  "Hits",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Current hits"
+                                                            },
+                                                            {
+                                                                "name":  "Hits Max",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Maximum hits"
+                                                            },
+                                                            {
+                                                                "name":  "Can Be Renamed",
+                                                                "type":  "bool",
+                                                                "size":  1,
+                                                                "description":  "Whether the mobile can be renamed"
+                                                            },
+                                                            {
+                                                                "name":  "Version",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "6",
+                                                                "description":  "Status version"
+                                                            },
+                                                            {
+                                                                "name":  "Female",
+                                                                "type":  "bool",
+                                                                "size":  1,
+                                                                "description":  "Gender flag (true = female)"
+                                                            },
+                                                            {
+                                                                "name":  "Str",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Strength"
+                                                            },
+                                                            {
+                                                                "name":  "Dex",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Dexterity"
+                                                            },
+                                                            {
+                                                                "name":  "Int",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Intelligence"
+                                                            },
+                                                            {
+                                                                "name":  "Stam",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Current stamina"
+                                                            },
+                                                            {
+                                                                "name":  "Stam Max",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Maximum stamina"
+                                                            },
+                                                            {
+                                                                "name":  "Mana",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Current mana"
+                                                            },
+                                                            {
+                                                                "name":  "Mana Max",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Maximum mana"
+                                                            },
+                                                            {
+                                                                "name":  "Gold",
+                                                                "type":  "int",
+                                                                "size":  4,
+                                                                "description":  "Total gold in backpack"
+                                                            },
+                                                            {
+                                                                "name":  "Physical Resist",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Physical resistance"
+                                                            },
+                                                            {
+                                                                "name":  "Weight",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Current weight"
+                                                            },
+                                                            {
+                                                                "name":  "Max Weight",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Maximum carry weight"
+                                                            },
+                                                            {
+                                                                "name":  "Race",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "description":  "Race ID + 1 (1=Human, 2=Elf, 3=Gargoyle)"
+                                                            },
+                                                            {
+                                                                "name":  "Stat Cap",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Total stat cap"
+                                                            },
+                                                            {
+                                                                "name":  "Followers",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "description":  "Current follower count"
+                                                            },
+                                                            {
+                                                                "name":  "Followers Max",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "description":  "Maximum follower slots"
+                                                            },
+                                                            {
+                                                                "name":  "Fire Resist",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Fire resistance"
+                                                            },
+                                                            {
+                                                                "name":  "Cold Resist",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Cold resistance"
+                                                            },
+                                                            {
+                                                                "name":  "Poison Resist",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Poison resistance"
+                                                            },
+                                                            {
+                                                                "name":  "Energy Resist",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Energy resistance"
+                                                            },
+                                                            {
+                                                                "name":  "Luck",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Luck"
+                                                            },
+                                                            {
+                                                                "name":  "Damage Min",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Minimum weapon damage"
+                                                            },
+                                                            {
+                                                                "name":  "Damage Max",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Maximum weapon damage"
+                                                            },
+                                                            {
+                                                                "name":  "Tithing Points",
+                                                                "type":  "int",
+                                                                "size":  4,
+                                                                "description":  "Tithing points (for Chivalry)"
+                                                            },
+                                                            {
+                                                                "name":  "Aos Statuses",
+                                                                "type":  "short[15]",
+                                                                "size":  30,
+                                                                "description":  "Extended AOS status values. Array of 15 shorts indexed by status type.",
+                                                                "values":  [
+                                                                               {
+                                                                                   "value":  0,
+                                                                                   "name":  "Max Physical Resist",
+                                                                                   "description":  "Maximum physical resistance cap"
+                                                                               },
+                                                                               {
+                                                                                   "value":  1,
+                                                                                   "name":  "Max Fire Resist",
+                                                                                   "description":  "Maximum fire resistance cap"
+                                                                               },
+                                                                               {
+                                                                                   "value":  2,
+                                                                                   "name":  "Max Cold Resist",
+                                                                                   "description":  "Maximum cold resistance cap"
+                                                                               },
+                                                                               {
+                                                                                   "value":  3,
+                                                                                   "name":  "Max Poison Resist",
+                                                                                   "description":  "Maximum poison resistance cap"
+                                                                               },
+                                                                               {
+                                                                                   "value":  4,
+                                                                                   "name":  "Max Energy Resist",
+                                                                                   "description":  "Maximum energy resistance cap"
+                                                                               },
+                                                                               {
+                                                                                   "value":  5,
+                                                                                   "name":  "Defense Chance Increase",
+                                                                                   "description":  "Current defense chance increase %"
+                                                                               },
+                                                                               {
+                                                                                   "value":  6,
+                                                                                   "name":  "Defense Chance Cap",
+                                                                                   "description":  "Maximum defense chance cap (always 45)"
+                                                                               },
+                                                                               {
+                                                                                   "value":  7,
+                                                                                   "name":  "Hit Chance Increase",
+                                                                                   "description":  "Hit chance increase %"
+                                                                               },
+                                                                               {
+                                                                                   "value":  8,
+                                                                                   "name":  "Swing Speed Increase",
+                                                                                   "description":  "Swing speed increase %"
+                                                                               },
+                                                                               {
+                                                                                   "value":  9,
+                                                                                   "name":  "Damage Increase",
+                                                                                   "description":  "Damage increase %"
+                                                                               },
+                                                                               {
+                                                                                   "value":  10,
+                                                                                   "name":  "Lower Reagent Cost",
+                                                                                   "description":  "Lower reagent cost %"
+                                                                               },
+                                                                               {
+                                                                                   "value":  11,
+                                                                                   "name":  "Spell Damage Increase",
+                                                                                   "description":  "Spell damage increase %"
+                                                                               },
+                                                                               {
+                                                                                   "value":  12,
+                                                                                   "name":  "Faster Cast Recovery",
+                                                                                   "description":  "Faster cast recovery"
+                                                                               },
+                                                                               {
+                                                                                   "value":  13,
+                                                                                   "name":  "Faster Casting",
+                                                                                   "description":  "Faster casting"
+                                                                               },
+                                                                               {
+                                                                                   "value":  14,
+                                                                                   "name":  "Lower Mana Cost",
+                                                                                   "description":  "Lower mana cost %"
+                                                                               }
+                                                                           ]
+                                                            }
+                                                        ],
+                                             "notes":  "Enhanced Client supports additional status indices 15-28 (HP/Stam/Mana regen, Reflect Physical, Enhance Potions, Stat Increases). ModernUO does not support Enhanced Client."
+                                         }
+                                     ],
+                        "notes":  "ModernUO supports 15 AOS status values (indices 0-14). Enhanced Client extends this to 29 values (indices 0-28), but ModernUO does not support Enhanced Client.",
+                        "related":  [
+                                        {
+                                            "id":  "0x34",
+                                            "direction":  "incoming",
+                                            "relationship":  "request",
+                                            "note":  "Mobile Query (stats) triggers this response"
+                                        }
+                                    ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingMobilePackets.cs",
+                                       "line":  497
+                                   }
+                    },
+                    {
+                        "id":  "0x20",
+                        "name":  "Mobile Update",
+                        "description":  "Updates a mobile\u0027s basic display information (body, hue, position, flags).",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  19,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x20",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Mobile serial"
+                                       },
+                                       {
+                                           "name":  "Body",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Body/graphic ID"
+                                       },
+                                       {
+                                           "name":  "Unknown",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Unknown (always 0)"
+                                       },
+                                       {
+                                           "name":  "Hue",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Hue/color (or solid hue override)"
+                                       },
+                                       {
+                                           "name":  "Flags",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Packet flags (hidden, poisoned, etc.)"
+                                       },
+                                       {
+                                           "name":  "X",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "X coordinate"
+                                       },
+                                       {
+                                           "name":  "Y",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Y coordinate"
+                                       },
+                                       {
+                                           "name":  "Unknown2",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Unknown (always 0)"
+                                       },
+                                       {
+                                           "name":  "Direction",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Facing direction"
+                                       },
+                                       {
+                                           "name":  "Z",
+                                           "type":  "sbyte",
+                                           "size":  1,
+                                           "description":  "Z coordinate"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingMobilePackets.cs",
+                                       "line":  578
+                                   }
+                    },
+                    {
+                        "id":  "0x77",
+                        "name":  "Mobile Moving",
+                        "description":  "Sent when a mobile moves. Contains position, direction, hue, and notoriety.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  17,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x77",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Mobile serial"
+                                       },
+                                       {
+                                           "name":  "Body",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Body/graphic ID"
+                                       },
+                                       {
+                                           "name":  "X",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "X coordinate"
+                                       },
+                                       {
+                                           "name":  "Y",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Y coordinate"
+                                       },
+                                       {
+                                           "name":  "Z",
+                                           "type":  "sbyte",
+                                           "size":  1,
+                                           "description":  "Z coordinate"
+                                       },
+                                       {
+                                           "name":  "Direction",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Direction (0-7) with running flag (0x80)"
+                                       },
+                                       {
+                                           "name":  "Hue",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Hue/color"
+                                       },
+                                       {
+                                           "name":  "Flags",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Packet flags"
+                                       },
+                                       {
+                                           "name":  "Notoriety",
+                                           "type":  "enum",
+                                           "enumType":  "sequential",
+                                           "size":  1,
+                                           "description":  "Notoriety flag",
+                                           "values":  [
+                                                          {
+                                                              "value":  0,
+                                                              "name":  "Innocent",
+                                                              "description":  "Blue - innocent player"
+                                                          },
+                                                          {
+                                                              "value":  1,
+                                                              "name":  "Friend",
+                                                              "description":  "Green - ally/friend"
+                                                          },
+                                                          {
+                                                              "value":  2,
+                                                              "name":  "Attackable",
+                                                              "description":  "Gray - can be attacked"
+                                                          },
+                                                          {
+                                                              "value":  3,
+                                                              "name":  "Criminal",
+                                                              "description":  "Gray - criminal flag"
+                                                          },
+                                                          {
+                                                              "value":  4,
+                                                              "name":  "Enemy",
+                                                              "description":  "Orange - enemy"
+                                                          },
+                                                          {
+                                                              "value":  5,
+                                                              "name":  "Murderer",
+                                                              "description":  "Red - murderer"
+                                                          },
+                                                          {
+                                                              "value":  6,
+                                                              "name":  "Invulnerable",
+                                                              "description":  "Yellow - invulnerable"
+                                                          }
+                                                      ]
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingMobilePackets.cs",
+                                       "line":  104
+                                   }
+                    },
+                    {
+                        "id":  "0x78",
+                        "name":  "Mobile Incoming",
+                        "description":  "Full mobile information including equipped items. Sent when a mobile enters view range.",
+                        "direction":  "outgoing",
+                        "isDynamic":  true,
+                        "size":  "23+",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x78",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Mobile serial"
+                                       },
+                                       {
+                                           "name":  "Body",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Body/graphic ID"
+                                       },
+                                       {
+                                           "name":  "X",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "X coordinate"
+                                       },
+                                       {
+                                           "name":  "Y",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Y coordinate"
+                                       },
+                                       {
+                                           "name":  "Z",
+                                           "type":  "sbyte",
+                                           "size":  1,
+                                           "description":  "Z coordinate"
+                                       },
+                                       {
+                                           "name":  "Direction",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Facing direction"
+                                       },
+                                       {
+                                           "name":  "Hue",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Hue/color"
+                                       },
+                                       {
+                                           "name":  "Flags",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Packet flags"
+                                       },
+                                       {
+                                           "name":  "Notoriety",
+                                           "type":  "enum",
+                                           "enumType":  "sequential",
+                                           "size":  1,
+                                           "description":  "Notoriety flag",
+                                           "values":  [
+                                                          {
+                                                              "value":  0,
+                                                              "name":  "Innocent",
+                                                              "description":  "Blue - innocent player"
+                                                          },
+                                                          {
+                                                              "value":  1,
+                                                              "name":  "Friend",
+                                                              "description":  "Green - ally/friend"
+                                                          },
+                                                          {
+                                                              "value":  2,
+                                                              "name":  "Attackable",
+                                                              "description":  "Gray - can be attacked"
+                                                          },
+                                                          {
+                                                              "value":  3,
+                                                              "name":  "Criminal",
+                                                              "description":  "Gray - criminal flag"
+                                                          },
+                                                          {
+                                                              "value":  4,
+                                                              "name":  "Enemy",
+                                                              "description":  "Orange - enemy"
+                                                          },
+                                                          {
+                                                              "value":  5,
+                                                              "name":  "Murderer",
+                                                              "description":  "Red - murderer"
+                                                          },
+                                                          {
+                                                              "value":  6,
+                                                              "name":  "Invulnerable",
+                                                              "description":  "Yellow - invulnerable"
+                                                          }
+                                                      ]
+                                       },
+                                       {
+                                           "name":  "Equipment",
+                                           "type":  "array",
+                                           "description":  "Equipped items (terminated by 0x00000000)",
+                                           "loop":  {
+                                                        "countField":  "variable (until terminator)",
+                                                        "fields":  [
+                                                                       {
+                                                                           "name":  "Item Serial",
+                                                                           "type":  "uint",
+                                                                           "size":  4,
+                                                                           "description":  "Item serial (0 = end of list)"
+                                                                       },
+                                                                       {
+                                                                           "name":  "Item ID",
+                                                                           "type":  "ushort",
+                                                                           "size":  2,
+                                                                           "description":  "Item graphic ID (bit 0x8000 = hue follows for old clients)"
+                                                                       },
+                                                                       {
+                                                                           "name":  "Layer",
+                                                                           "type":  "byte",
+                                                                           "size":  1,
+                                                                           "description":  "Equipment layer"
+                                                                       },
+                                                                       {
+                                                                           "name":  "Hue",
+                                                                           "type":  "short",
+                                                                           "size":  2,
+                                                                           "description":  "Item hue (only if bit 0x8000 set or NewMobileIncoming)",
+                                                                           "condition":  "hue flag or NewMobileIncoming"
+                                                                       }
+                                                                   ]
+                                                    }
+                                       },
+                                       {
+                                           "name":  "Terminator",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "value":  "0x00000000",
+                                           "description":  "Equipment list terminator"
+                                       }
+                                   ],
+                        "clientVersion":  {
+                                              "feature":  "NewMobileIncoming",
+                                              "notes":  "NewMobileIncoming clients always include hue field for equipment"
+                                          },
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingMobilePackets.cs",
+                                       "line":  601
+                                   }
+                    },
+                    {
+                        "id":  "0xA1",
+                        "name":  "Mobile Hits",
+                        "description":  "Updates a mobile\u0027s hit points. Can be normalized to 0-100 scale for non-self mobiles.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  9,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xA1",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Mobile serial"
+                                       },
+                                       {
+                                           "name":  "Hits Max",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Maximum hits"
+                                       },
+                                       {
+                                           "name":  "Hits",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Current hits"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingMobilePackets.cs",
+                                       "line":  210
+                                   }
+                    },
+                    {
+                        "id":  "0xA2",
+                        "name":  "Mobile Mana",
+                        "description":  "Updates a mobile\u0027s mana points.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  9,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xA2",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Mobile serial"
+                                       },
+                                       {
+                                           "name":  "Mana Max",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Maximum mana"
+                                       },
+                                       {
+                                           "name":  "Mana",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Current mana"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingMobilePackets.cs",
+                                       "line":  235
+                                   }
+                    },
+                    {
+                        "id":  "0xA3",
+                        "name":  "Mobile Stamina",
+                        "description":  "Updates a mobile\u0027s stamina points.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  9,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xA3",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Mobile serial"
+                                       },
+                                       {
+                                           "name":  "Stam Max",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Maximum stamina"
+                                       },
+                                       {
+                                           "name":  "Stam",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Current stamina"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingMobilePackets.cs",
+                                       "line":  260
+                                   }
+                    },
+                    {
+                        "id":  "0x2D",
+                        "name":  "Mobile Attributes",
+                        "description":  "Updates all three attribute bars (hits, mana, stamina) in a single packet.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  17,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x2D",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Mobile serial"
+                                       },
+                                       {
+                                           "name":  "Hits Max",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Maximum hits"
+                                       },
+                                       {
+                                           "name":  "Hits",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Current hits"
+                                       },
+                                       {
+                                           "name":  "Mana Max",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Maximum mana"
+                                       },
+                                       {
+                                           "name":  "Mana",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Current mana"
+                                       },
+                                       {
+                                           "name":  "Stam Max",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Maximum stamina"
+                                       },
+                                       {
+                                           "name":  "Stam",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Current stamina"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingMobilePackets.cs",
+                                       "line":  285
+                                   }
+                    },
+                    {
+                        "id":  "0x98",
+                        "name":  "Mobile Name",
+                        "description":  "Returns a mobile\u0027s name in response to a name request.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  37,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x98",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x0025",
+                                           "description":  "Packet length (37)"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Mobile serial"
+                                       },
+                                       {
+                                           "name":  "Name",
+                                           "type":  "ascii",
+                                           "size":  30,
+                                           "description":  "Mobile name (null-terminated)"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingMobilePackets.cs",
+                                       "line":  301
+                                   }
+                    },
+                    {
+                        "id":  "0x6E",
+                        "name":  "Mobile Animation",
+                        "description":  "Triggers an animation on a mobile.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  14,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x6E",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Mobile serial"
+                                       },
+                                       {
+                                           "name":  "Action",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Animation action ID"
+                                       },
+                                       {
+                                           "name":  "Frame Count",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Number of frames"
+                                       },
+                                       {
+                                           "name":  "Repeat Count",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Number of times to repeat"
+                                       },
+                                       {
+                                           "name":  "Reverse",
+                                           "type":  "bool",
+                                           "size":  1,
+                                           "description":  "Play animation in reverse"
+                                       },
+                                       {
+                                           "name":  "Repeat",
+                                           "type":  "bool",
+                                           "size":  1,
+                                           "description":  "Loop the animation"
+                                       },
+                                       {
+                                           "name":  "Delay",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Frame delay"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingMobilePackets.cs",
+                                       "line":  318
+                                   }
+                    },
+                    {
+                        "id":  "0xE2",
+                        "name":  "New Mobile Animation",
+                        "description":  "Simplified animation packet for newer clients.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  10,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xE2",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Mobile serial"
+                                       },
+                                       {
+                                           "name":  "Action",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Animation action ID"
+                                       },
+                                       {
+                                           "name":  "Frame Count",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Number of frames"
+                                       },
+                                       {
+                                           "name":  "Delay",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Frame delay"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingMobilePackets.cs",
+                                       "line":  354
+                                   }
+                    },
+                    {
+                        "id":  "0x17",
+                        "name":  "Mobile Healthbar",
+                        "description":  "Updates a mobile\u0027s healthbar status (poison level, yellow bar for invulnerability).",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  12,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x17",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x000C",
+                                           "description":  "Packet length (12)"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Mobile serial"
+                                       },
+                                       {
+                                           "name":  "Show Bar",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "value":  "0x0001",
+                                           "description":  "Show bar (always 1)"
+                                       },
+                                       {
+                                           "name":  "Healthbar Type",
+                                           "type":  "enum",
+                                           "size":  2,
+                                           "description":  "Type of healthbar overlay",
+                                           "values":  [
+                                               { "value":  "1", "name":  "Poison", "description":  "Poison status bar" },
+                                               { "value":  "2", "name":  "Yellow", "description":  "Yellow/invulnerable bar" }
+                                           ]
+                                       },
+                                       {
+                                           "name":  "Level",
+                                           "type":  "enum",
+                                           "size":  1,
+                                           "description":  "Status level",
+                                           "values":  [
+                                               { "value":  "0", "name":  "Off", "description":  "Status disabled" },
+                                               { "value":  "1", "name":  "Level1/On", "description":  "Poison level 1 or yellow on" },
+                                               { "value":  "2", "name":  "Level2", "description":  "Poison level 2 (Greater)" },
+                                               { "value":  "3", "name":  "Level3", "description":  "Poison level 3 (Deadly)" },
+                                               { "value":  "4", "name":  "Level4", "description":  "Poison level 4 (Lethal)" }
+                                           ]
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingMobilePackets.cs",
+                                       "line":  419
+                                   }
+                    },
+                    {
+                        "id":  "0xAF",
+                        "name":  "Death Animation",
+                        "description":  "Triggers the death animation and corpse creation for a mobile.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  13,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xAF",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Killed Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the killed mobile"
+                                       },
+                                       {
+                                           "name":  "Corpse Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the corpse created"
+                                       },
+                                       {
+                                           "name":  "Unknown",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Unknown (always 0)"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingMobilePackets.cs",
+                                       "line":  78
+                                   }
+                    },
+                    {
+                        "id":  "0xBF",
+                        "subId":  "0x19",
+                        "name":  "Bonded Status",
+                        "description":  "Indicates whether a mobile (pet) is bonded to its owner.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  11,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xBF",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x000B",
+                                           "description":  "Packet length (11)"
+                                       },
+                                       {
+                                           "name":  "Sub-Command",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x0019",
+                                           "description":  "Sub-command for bonded status"
+                                       },
+                                       {
+                                           "name":  "Command",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x00",
+                                           "description":  "Command type (0 for bonded)"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Mobile serial"
+                                       },
+                                       {
+                                           "name":  "Bonded",
+                                           "type":  "bool",
+                                           "size":  1,
+                                           "description":  "Bonded status"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingMobilePackets.cs",
+                                       "line":  44
+                                   }
+                    }
+                ]
+}

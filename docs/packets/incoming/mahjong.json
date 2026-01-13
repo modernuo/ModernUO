@@ -1,0 +1,907 @@
+{
+    "category":  "Mahjong",
+    "packets":  [
+                    {
+                        "id":  "0xDA",
+                        "name":  "Mahjong Game",
+                        "description":  "Mahjong game packets for controlling the in-game Mahjong table. Used for both client commands and server updates.",
+                        "direction":  "both",
+                        "isDynamic":  true,
+                        "size":  "var",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xDA",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Game Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the Mahjong game"
+                                       },
+                                       {
+                                           "name":  "Command",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Command ID (incoming uses byte prefix + byte command)"
+                                       },
+                                       {
+                                           "name":  "Data",
+                                           "type":  "byte[]",
+                                           "description":  "Command-specific data"
+                                       }
+                                   ],
+                        "subpackets":  [
+                                           {
+                                               "subId":  "0x02",
+                                               "name":  "Players Info",
+                                               "description":  "Sends player information for all seats",
+                                               "direction":  "outgoing"
+                                           },
+                                           {
+                                               "subId":  "0x03",
+                                               "name":  "Tile Info",
+                                               "description":  "Sends information about a single tile",
+                                               "direction":  "outgoing"
+                                           },
+                                           {
+                                               "subId":  "0x04",
+                                               "name":  "Tiles Info",
+                                               "description":  "Sends information about all tiles",
+                                               "direction":  "outgoing"
+                                           },
+                                           {
+                                               "subId":  "0x05",
+                                               "name":  "General Info",
+                                               "description":  "Sends game state (dice, dealer, wall break)",
+                                               "direction":  "outgoing"
+                                           },
+                                           {
+                                               "subId":  "0x06",
+                                               "name":  "Exit Game",
+                                               "description":  "Client exits the game",
+                                               "direction":  "incoming"
+                                           },
+                                           {
+                                               "subId":  "0x0A",
+                                               "name":  "Give Points",
+                                               "description":  "Transfer points to another player",
+                                               "direction":  "incoming"
+                                           },
+                                           {
+                                               "subId":  "0x0B",
+                                               "name":  "Roll Dice",
+                                               "description":  "Client requests to roll dice",
+                                               "direction":  "incoming"
+                                           },
+                                           {
+                                               "subId":  "0x0C",
+                                               "name":  "Build Walls",
+                                               "description":  "Dealer builds/resets tile walls",
+                                               "direction":  "incoming"
+                                           },
+                                           {
+                                               "subId":  "0x0D",
+                                               "name":  "Reset Scores",
+                                               "description":  "Dealer resets all scores",
+                                               "direction":  "incoming"
+                                           },
+                                           {
+                                               "subId":  "0x0F",
+                                               "name":  "Assign Dealer",
+                                               "description":  "Assign a new dealer",
+                                               "direction":  "incoming"
+                                           },
+                                           {
+                                               "subId":  "0x10",
+                                               "name":  "Open Seat",
+                                               "description":  "Open a seat for new players",
+                                               "direction":  "incoming"
+                                           },
+                                           {
+                                               "subId":  "0x11",
+                                               "name":  "Change Option",
+                                               "description":  "Change game options",
+                                               "direction":  "incoming"
+                                           },
+                                           {
+                                               "subId":  "0x15",
+                                               "name":  "Move Wall Break",
+                                               "description":  "Move wall break indicator",
+                                               "direction":  "incoming"
+                                           },
+                                           {
+                                               "subId":  "0x16",
+                                               "name":  "Toggle Public Hand",
+                                               "description":  "Toggle hand visibility",
+                                               "direction":  "incoming"
+                                           },
+                                           {
+                                               "subId":  "0x17",
+                                               "name":  "Move Tile",
+                                               "description":  "Move a tile on the board",
+                                               "direction":  "incoming"
+                                           },
+                                           {
+                                               "subId":  "0x18",
+                                               "name":  "Move Dealer Indicator",
+                                               "description":  "Move dealer indicator",
+                                               "direction":  "incoming"
+                                           },
+                                           {
+                                               "subId":  "0x19",
+                                               "name":  "Join Game",
+                                               "description":  "Server opens game interface",
+                                               "direction":  "outgoing"
+                                           },
+                                           {
+                                               "subId":  "0x1A",
+                                               "name":  "Relieve",
+                                               "description":  "Server closes game interface",
+                                               "direction":  "outgoing"
+                                           }
+                                       ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Items/Games/Mahjong/MahjongPackets.cs",
+                                       "line":  46
+                                   }
+                    },
+                    {
+                        "id":  "0xDA",
+                        "subId":  "0x06",
+                        "name":  "Mahjong Exit Game",
+                        "description":  "Client requests to exit the Mahjong game.",
+                        "direction":  "incoming",
+                        "isDynamic":  false,
+                        "size":  9,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xDA",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Game Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the Mahjong game"
+                                       },
+                                       {
+                                           "name":  "Unknown",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Unknown byte"
+                                       },
+                                       {
+                                           "name":  "Command",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x06",
+                                           "description":  "Exit Game command"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Items/Games/Mahjong/MahjongPackets.cs",
+                                       "line":  108
+                                   }
+                    },
+                    {
+                        "id":  "0xDA",
+                        "subId":  "0x0A",
+                        "name":  "Mahjong Give Points",
+                        "description":  "Client transfers points to another player.",
+                        "direction":  "incoming",
+                        "isDynamic":  false,
+                        "size":  14,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xDA",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Game Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the Mahjong game"
+                                       },
+                                       {
+                                           "name":  "Unknown",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Unknown byte"
+                                       },
+                                       {
+                                           "name":  "Command",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x0A",
+                                           "description":  "Give Points command"
+                                       },
+                                       {
+                                           "name":  "To Position",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Target player seat position"
+                                       },
+                                       {
+                                           "name":  "Amount",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Points to transfer"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Items/Games/Mahjong/MahjongPackets.cs",
+                                       "line":  120
+                                   }
+                    },
+                    {
+                        "id":  "0xDA",
+                        "subId":  "0x0B",
+                        "name":  "Mahjong Roll Dice",
+                        "description":  "Client requests to roll the dice.",
+                        "direction":  "incoming",
+                        "isDynamic":  false,
+                        "size":  9,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xDA",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Game Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the Mahjong game"
+                                       },
+                                       {
+                                           "name":  "Unknown",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Unknown byte"
+                                       },
+                                       {
+                                           "name":  "Command",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x0B",
+                                           "description":  "Roll Dice command"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Items/Games/Mahjong/MahjongPackets.cs",
+                                       "line":  133
+                                   }
+                    },
+                    {
+                        "id":  "0xDA",
+                        "subId":  "0x0C",
+                        "name":  "Mahjong Build Walls",
+                        "description":  "Dealer requests to reset and build the tile walls.",
+                        "direction":  "incoming",
+                        "isDynamic":  false,
+                        "size":  9,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xDA",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Game Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the Mahjong game"
+                                       },
+                                       {
+                                           "name":  "Unknown",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Unknown byte"
+                                       },
+                                       {
+                                           "name":  "Command",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x0C",
+                                           "description":  "Build Walls command"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Items/Games/Mahjong/MahjongPackets.cs",
+                                       "line":  143
+                                   }
+                    },
+                    {
+                        "id":  "0xDA",
+                        "subId":  "0x0D",
+                        "name":  "Mahjong Reset Scores",
+                        "description":  "Dealer requests to reset all player scores to base value.",
+                        "direction":  "incoming",
+                        "isDynamic":  false,
+                        "size":  9,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xDA",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Game Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the Mahjong game"
+                                       },
+                                       {
+                                           "name":  "Unknown",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Unknown byte"
+                                       },
+                                       {
+                                           "name":  "Command",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x0D",
+                                           "description":  "Reset Scores command"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Items/Games/Mahjong/MahjongPackets.cs",
+                                       "line":  153
+                                   }
+                    },
+                    {
+                        "id":  "0xDA",
+                        "subId":  "0x0F",
+                        "name":  "Mahjong Assign Dealer",
+                        "description":  "Dealer assigns another player as the new dealer.",
+                        "direction":  "incoming",
+                        "isDynamic":  false,
+                        "size":  10,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xDA",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Game Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the Mahjong game"
+                                       },
+                                       {
+                                           "name":  "Unknown",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Unknown byte"
+                                       },
+                                       {
+                                           "name":  "Command",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x0F",
+                                           "description":  "Assign Dealer command"
+                                       },
+                                       {
+                                           "name":  "Position",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Seat position of new dealer"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Items/Games/Mahjong/MahjongPackets.cs",
+                                       "line":  163
+                                   }
+                    },
+                    {
+                        "id":  "0xDA",
+                        "subId":  "0x10",
+                        "name":  "Mahjong Open Seat",
+                        "description":  "Dealer opens a seat, removing the current player.",
+                        "direction":  "incoming",
+                        "isDynamic":  false,
+                        "size":  10,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xDA",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Game Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the Mahjong game"
+                                       },
+                                       {
+                                           "name":  "Unknown",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Unknown byte"
+                                       },
+                                       {
+                                           "name":  "Command",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x10",
+                                           "description":  "Open Seat command"
+                                       },
+                                       {
+                                           "name":  "Position",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Seat position to open"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Items/Games/Mahjong/MahjongPackets.cs",
+                                       "line":  175
+                                   }
+                    },
+                    {
+                        "id":  "0xDA",
+                        "subId":  "0x11",
+                        "name":  "Mahjong Change Option",
+                        "description":  "Dealer changes game options (show scores, spectator vision).",
+                        "direction":  "incoming",
+                        "isDynamic":  false,
+                        "size":  13,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xDA",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Game Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the Mahjong game"
+                                       },
+                                       {
+                                           "name":  "Unknown",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Unknown byte"
+                                       },
+                                       {
+                                           "name":  "Command",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x11",
+                                           "description":  "Change Option command"
+                                       },
+                                       {
+                                           "name":  "Reserved",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Reserved (not used)"
+                                       },
+                                       {
+                                           "name":  "Reserved 2",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Reserved (not used)"
+                                       },
+                                       {
+                                           "name":  "Options",
+                                           "type":  "bitflags",
+                                           "size":  1,
+                                           "description":  "Game options",
+                                           "values":  [
+                                               { "value":  "0x01", "name":  "Show Scores", "description":  "Display player scores" },
+                                               { "value":  "0x02", "name":  "Spectator Vision", "description":  "Spectators can see all tiles" }
+                                           ]
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Items/Games/Mahjong/MahjongPackets.cs",
+                                       "line":  192
+                                   }
+                    },
+                    {
+                        "id":  "0xDA",
+                        "subId":  "0x15",
+                        "name":  "Mahjong Move Wall Break Indicator",
+                        "description":  "Dealer moves the wall break indicator position.",
+                        "direction":  "incoming",
+                        "isDynamic":  false,
+                        "size":  13,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xDA",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Game Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the Mahjong game"
+                                       },
+                                       {
+                                           "name":  "Unknown",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Unknown byte"
+                                       },
+                                       {
+                                           "name":  "Command",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x15",
+                                           "description":  "Move Wall Break Indicator command"
+                                       },
+                                       {
+                                           "name":  "Y Position",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "New Y coordinate"
+                                       },
+                                       {
+                                           "name":  "X Position",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "New X coordinate"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Items/Games/Mahjong/MahjongPackets.cs",
+                                       "line":  208
+                                   }
+                    },
+                    {
+                        "id":  "0xDA",
+                        "subId":  "0x16",
+                        "name":  "Mahjong Toggle Public Hand",
+                        "description":  "Player toggles whether their hand is visible to others.",
+                        "direction":  "incoming",
+                        "isDynamic":  false,
+                        "size":  13,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xDA",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Game Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the Mahjong game"
+                                       },
+                                       {
+                                           "name":  "Unknown",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Unknown byte"
+                                       },
+                                       {
+                                           "name":  "Command",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x16",
+                                           "description":  "Toggle Public Hand command"
+                                       },
+                                       {
+                                           "name":  "Reserved",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Reserved (not used)"
+                                       },
+                                       {
+                                           "name":  "Reserved 2",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Reserved (not used)"
+                                       },
+                                       {
+                                           "name":  "Public Hand",
+                                           "type":  "bool",
+                                           "size":  1,
+                                           "description":  "True to show hand publicly"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Items/Games/Mahjong/MahjongPackets.cs",
+                                       "line":  221
+                                   }
+                    },
+                    {
+                        "id":  "0xDA",
+                        "subId":  "0x17",
+                        "name":  "Mahjong Move Tile",
+                        "description":  "Player moves a tile to a new position with direction and flip state.",
+                        "direction":  "incoming",
+                        "isDynamic":  false,
+                        "size":  22,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xDA",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Game Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the Mahjong game"
+                                       },
+                                       {
+                                           "name":  "Unknown",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Unknown byte"
+                                       },
+                                       {
+                                           "name":  "Command",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x17",
+                                           "description":  "Move Tile command"
+                                       },
+                                       {
+                                           "name":  "Tile Number",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Tile index number"
+                                       },
+                                       {
+                                           "name":  "Current Direction",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Current tile direction (unused)"
+                                       },
+                                       {
+                                           "name":  "New Direction",
+                                           "type":  "enum",
+                                           "size":  1,
+                                           "description":  "New tile direction",
+                                           "values":  [
+                                               { "value":  "0", "name":  "Up", "description":  "Facing up" },
+                                               { "value":  "1", "name":  "Left", "description":  "Facing left" },
+                                               { "value":  "2", "name":  "Down", "description":  "Facing down" },
+                                               { "value":  "3", "name":  "Right", "description":  "Facing right" }
+                                           ]
+                                       },
+                                       {
+                                           "name":  "Reserved",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Reserved byte"
+                                       },
+                                       {
+                                           "name":  "Flip",
+                                           "type":  "bool",
+                                           "size":  1,
+                                           "description":  "True to flip tile face-up"
+                                       },
+                                       {
+                                           "name":  "Current Y",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Current Y position (unused)"
+                                       },
+                                       {
+                                           "name":  "Current X",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Current X position (unused)"
+                                       },
+                                       {
+                                           "name":  "Reserved 2",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Reserved byte"
+                                       },
+                                       {
+                                           "name":  "New Y",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "New Y position"
+                                       },
+                                       {
+                                           "name":  "New X",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "New X position"
+                                       },
+                                       {
+                                           "name":  "Reserved 3",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Reserved byte"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Items/Games/Mahjong/MahjongPackets.cs",
+                                       "line":  236
+                                   }
+                    },
+                    {
+                        "id":  "0xDA",
+                        "subId":  "0x18",
+                        "name":  "Mahjong Move Dealer Indicator",
+                        "description":  "Dealer moves the dealer indicator with direction and wind.",
+                        "direction":  "incoming",
+                        "isDynamic":  false,
+                        "size":  15,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xDA",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Game Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the Mahjong game"
+                                       },
+                                       {
+                                           "name":  "Unknown",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Unknown byte"
+                                       },
+                                       {
+                                           "name":  "Command",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x18",
+                                           "description":  "Move Dealer Indicator command"
+                                       },
+                                       {
+                                           "name":  "Direction",
+                                           "type":  "enum",
+                                           "size":  1,
+                                           "description":  "Indicator direction",
+                                           "values":  [
+                                               { "value":  "0", "name":  "Up", "description":  "Facing up" },
+                                               { "value":  "1", "name":  "Left", "description":  "Facing left" },
+                                               { "value":  "2", "name":  "Down", "description":  "Facing down" },
+                                               { "value":  "3", "name":  "Right", "description":  "Facing right" }
+                                           ]
+                                       },
+                                       {
+                                           "name":  "Wind",
+                                           "type":  "enum",
+                                           "size":  1,
+                                           "description":  "Wind direction displayed",
+                                           "values":  [
+                                               { "value":  "0", "name":  "North", "description":  "North wind" },
+                                               { "value":  "1", "name":  "East", "description":  "East wind" },
+                                               { "value":  "2", "name":  "South", "description":  "South wind" },
+                                               { "value":  "3", "name":  "West", "description":  "West wind" }
+                                           ]
+                                       },
+                                       {
+                                           "name":  "Y Position",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "New Y position"
+                                       },
+                                       {
+                                           "name":  "X Position",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "New X position"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Items/Games/Mahjong/MahjongPackets.cs",
+                                       "line":  271
+                                   }
+                    }
+                ]
+}

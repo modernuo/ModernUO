@@ -21,7 +21,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestPersonalLightLevel()
         {
-            Serial serial = (Serial)0x1024;
+            var serial = (Serial)0x1024;
             byte lightLevel = 5;
             var expected = new PersonalLightLevel(serial, lightLevel).Compile();
 

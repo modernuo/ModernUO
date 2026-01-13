@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class WarFork : BaseSpear
     {
         [Constructible]
-        public WarFork() : base(0x1405) => Weight = 9.0;
+        public WarFork() : base(0x1405)
+        {
+        }
+
+        public override double DefaultWeight => 9.0;
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.BleedAttack;
         public override WeaponAbility SecondaryAbility => WeaponAbility.Disarm;

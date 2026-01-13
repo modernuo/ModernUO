@@ -9,7 +9,7 @@ namespace Server.Mobiles;
 public partial class LordOaks : BaseChampion
 {
     [SerializableField(0)]
-    private BaseCreature _queen;
+    private Silvani _queen;
 
     [SerializableField(1)]
     private bool _spawnedQueen;

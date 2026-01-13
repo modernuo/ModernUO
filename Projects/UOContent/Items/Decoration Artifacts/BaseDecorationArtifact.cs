@@ -5,7 +5,11 @@ namespace Server.Items;
 [SerializationGenerator(0)]
 public abstract partial class BaseDecorationArtifact : Item
 {
-    public BaseDecorationArtifact(int itemID) : base(itemID) => Weight = 10.0;
+    public BaseDecorationArtifact(int itemID) : base(itemID)
+    {
+    }
+
+    public override double DefaultWeight => 10.0;
 
     public abstract int ArtifactRarity { get; }
 
@@ -22,7 +26,11 @@ public abstract partial class BaseDecorationArtifact : Item
 [SerializationGenerator(0)]
 public abstract partial class BaseDecorationContainerArtifact : BaseContainer
 {
-    public BaseDecorationContainerArtifact(int itemID) : base(itemID) => Weight = 10.0;
+    public BaseDecorationContainerArtifact(int itemID) : base(itemID)
+    {
+    }
+
+    public override double DefaultWeight => 10.0;
 
     public abstract int ArtifactRarity { get; }
 

@@ -147,7 +147,7 @@ public partial class PublicMoongate : Item
 
         foreach (var entry in list.Entries)
         {
-            Item item = new PublicMoongate();
+            var item = new PublicMoongate();
 
             item.MoveToWorld(entry.Location, list.Map);
 
@@ -375,7 +375,7 @@ public class MoongateGump : Gump
             }
         }
 
-        int mapCount = filteredBySelectedMaps.Count;
+        var mapCount = filteredBySelectedMaps.Count;
         _lists = new PMList[mapCount];
         for (var i = 0; i < mapCount; i++)
         {

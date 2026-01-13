@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System;
+using System.Buffers;
 using System.Collections;
 using System.IO;
 using System.Net;
@@ -51,7 +52,7 @@ public interface IGenericReader
             var delta     => new DateTime(delta + DateTime.UtcNow.Ticks, DateTimeKind.Utc)
         };
     }
-    decimal ReadDecimal() => new(stackalloc int[4] { ReadInt(), ReadInt(), ReadInt(), ReadInt() });
+    decimal ReadDecimal() => new([ReadInt(), ReadInt(), ReadInt(), ReadInt()]);
     int ReadEncodedInt()
     {
         int v = 0, shift = 0;
@@ -69,7 +70,7 @@ public interface IGenericReader
     }
     IPAddress ReadIPAddress()
     {
-        byte length = ReadByte();
+        var length = ReadByte();
         // Either 2 ushorts, or 8 ushorts
         Span<byte> integer = stackalloc byte[length];
         Read(integer);
@@ -119,14 +120,19 @@ public interface IGenericReader
 
     public BitArray ReadBitArray()
     {
-        var byteArrayLength = ReadEncodedInt();
+        var bitLength = ReadEncodedInt();
+        var byteLength = (bitLength + 7) / 8;
 
-        // We need an exact array size since the ctor doesn't allow for offset/length, not much we can do at this point.
-        var byteArray = new byte[byteArrayLength];
-
-        Read(byteArray);
-
-        return new BitArray(byteArray);
+        var buffer = ArrayPool<byte>.Shared.Rent(byteLength);
+        try
+        {
+            Read(buffer.AsSpan(0, byteLength));
+            return new BitArray(buffer) { Length = bitLength };
+        }
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(buffer);
+        }
     }
 
     TextDefinition ReadTextDefinition()

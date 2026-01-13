@@ -9,11 +9,12 @@ public partial class SturdyPickaxe : BaseAxe, IUsesRemaining
     [Constructible]
     public SturdyPickaxe(int uses = 180) : base(0xE86)
     {
-        Weight = 11.0;
         Hue = 0x973;
         UsesRemaining = uses;
         ShowUsesRemaining = true;
     }
+
+    public override double DefaultWeight => 11.0;
 
     public override int LabelNumber => 1045126; // sturdy pickaxe
     public override HarvestSystem HarvestSystem => Mining.System;

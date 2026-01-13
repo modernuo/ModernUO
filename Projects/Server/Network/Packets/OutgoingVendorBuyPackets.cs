@@ -82,7 +82,7 @@ public static class OutgoingVendorBuyPackets
         }
 
         var length = 8;
-        for (int i = 0; i < list.Count; i++)
+        for (var i = 0; i < list.Count; i++)
         {
             length += 6 + list[i].Description?.Length ?? 0;
         }

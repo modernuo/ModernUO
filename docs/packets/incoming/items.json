@@ -1,0 +1,292 @@
+﻿{
+    "category":  "Items",
+    "packets":  [
+                    {
+                        "id":  "0x07",
+                        "name":  "Lift Request",
+                        "description":  "Client requests to pick up an item from the world or a container.",
+                        "direction":  "incoming",
+                        "isDynamic":  false,
+                        "size":  7,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x07",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the item to lift"
+                                       },
+                                       {
+                                           "name":  "Amount",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Amount to pick up"
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0x27",
+                                            "relationship":  "rej",
+                                            "note":  "Sent if lift is rejected"
+                                        }
+                                    ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingItemPackets.cs",
+                                       "line":  35
+                                   }
+                    },
+                    {
+                        "id":  "0x08",
+                        "name":  "Drop Request",
+                        "description":  "Client requests to drop an item at a location or into a container. Size varies by client version.",
+                        "direction":  "incoming",
+                        "isDynamic":  false,
+                        "size":  "Varies",
+                        "variants":  [
+                                         {
+                                             "version":  "pre-6017",
+                                             "name":  "Classic",
+                                             "size":  14,
+                                             "fields":  [
+                                                            {
+                                                                "name":  "Packet ID",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0x08",
+                                                                "description":  "Packet identifier"
+                                                            },
+                                                            {
+                                                                "name":  "Serial",
+                                                                "type":  "uint",
+                                                                "size":  4,
+                                                                "description":  "Serial of item being dropped (ignored)"
+                                                            },
+                                                            {
+                                                                "name":  "X",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Target X coordinate"
+                                                            },
+                                                            {
+                                                                "name":  "Y",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Target Y coordinate"
+                                                            },
+                                                            {
+                                                                "name":  "Z",
+                                                                "type":  "sbyte",
+                                                                "size":  1,
+                                                                "description":  "Target Z coordinate"
+                                                            },
+                                                            {
+                                                                "name":  "Dest",
+                                                                "type":  "uint",
+                                                                "size":  4,
+                                                                "description":  "Target container/mobile serial, or 0xFFFFFFFF for world"
+                                                            }
+                                                        ]
+                                         },
+                                         {
+                                             "version":  "6017+",
+                                             "name":  "Container Grid Lines",
+                                             "condition":  "Client version \u003e= 6.0.1.7 (ContainerGridLines)",
+                                             "size":  15,
+                                             "fields":  [
+                                                            {
+                                                                "name":  "Packet ID",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0x08",
+                                                                "description":  "Packet identifier"
+                                                            },
+                                                            {
+                                                                "name":  "Serial",
+                                                                "type":  "uint",
+                                                                "size":  4,
+                                                                "description":  "Serial of item being dropped (ignored)"
+                                                            },
+                                                            {
+                                                                "name":  "X",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Target X coordinate"
+                                                            },
+                                                            {
+                                                                "name":  "Y",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Target Y coordinate"
+                                                            },
+                                                            {
+                                                                "name":  "Z",
+                                                                "type":  "sbyte",
+                                                                "size":  1,
+                                                                "description":  "Target Z coordinate"
+                                                            },
+                                                            {
+                                                                "name":  "Grid Location",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "description":  "Grid slot position in container"
+                                                            },
+                                                            {
+                                                                "name":  "Dest",
+                                                                "type":  "uint",
+                                                                "size":  4,
+                                                                "description":  "Target container/mobile serial, or 0xFFFFFFFF for world"
+                                                            }
+                                                        ]
+                                         }
+                                     ],
+                        "clientVersion":  {
+                                              "feature":  "ContainerGridLines adds gridLocation byte"
+                                          },
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingItemPackets.cs",
+                                       "line":  69
+                                   }
+                    },
+                    {
+                        "id":  "0x13",
+                        "name":  "Equip Request",
+                        "description":  "Client requests to equip a held item on a mobile.",
+                        "direction":  "incoming",
+                        "isDynamic":  false,
+                        "size":  10,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x13",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Item Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of item to equip"
+                                       },
+                                       {
+                                           "name":  "Layer",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Equipment layer"
+                                       },
+                                       {
+                                           "name":  "Mobile Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of target mobile"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingItemPackets.cs",
+                                       "line":  44
+                                   }
+                    },
+                    {
+                        "id":  "0xEC",
+                        "name":  "Equip Macro",
+                        "description":  "Client requests to equip multiple items from a saved macro.",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "var",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xEC",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Count",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Number of items to equip"
+                                       },
+                                       {
+                                           "name":  "Items",
+                                           "type":  "loop",
+                                           "loop":  {
+                                                        "countField":  "count",
+                                                        "fields":  [
+                                                                       {
+                                                                           "name":  "Serial",
+                                                                           "type":  "uint",
+                                                                           "size":  4,
+                                                                           "description":  "Serial of item to equip"
+                                                                       }
+                                                                   ]
+                                                    }
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingItemPackets.cs",
+                                       "line":  112
+                                   }
+                    },
+                    {
+                        "id":  "0xED",
+                        "name":  "Unequip Macro",
+                        "description":  "Client requests to unequip items from specific layers via macro.",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "var",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xED",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Count",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Number of layers to unequip"
+                                       },
+                                       {
+                                           "name":  "Layers",
+                                           "type":  "loop",
+                                           "loop":  {
+                                                        "countField":  "count",
+                                                        "fields":  [
+                                                                       {
+                                                                           "name":  "Layer",
+                                                                           "type":  "ushort",
+                                                                           "size":  2,
+                                                                           "description":  "Layer to unequip from"
+                                                                       }
+                                                                   ]
+                                                    }
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingItemPackets.cs",
+                                       "line":  125
+                                   }
+                    }
+                ]
+}

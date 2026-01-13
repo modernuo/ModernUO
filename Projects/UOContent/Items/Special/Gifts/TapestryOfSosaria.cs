@@ -18,9 +18,10 @@ public partial class TapestryOfSosaria : Item, ISecurable
     [Constructible]
     public TapestryOfSosaria() : base(0x234E)
     {
-        Weight = 1.0;
         LootType = LootType.Blessed;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1062917; // The Tapestry of Sosaria
 

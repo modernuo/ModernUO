@@ -1,4 +1,4 @@
-[
+﻿[
   {
     "type": "Spawner",
     "guid": "436de8ee-4a2f-4494-ab76-e24fc6658954",
@@ -179,26 +179,6 @@
   },
   {
     "type": "Spawner",
-    "guid": "6bbb82e4-b0d1-4a23-a9da-5d35911ce762",
-    "name": "Spawner (2404)",
-    "location": [2231, 1605, -95],
-    "map": "Malas",
-    "count": 33,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 160,
-    "walkingRange": 160,
-    "entries": [
-      { "name": "Mongbat", "maxCount": 7, "probability": 100 },
-      { "name": "SandVortex", "maxCount": 6, "probability": 100 },
-      { "name": "Scorpion", "maxCount": 7, "probability": 100 },
-      { "name": "Snake", "maxCount": 6, "probability": 100 },
-      { "name": "Spectre", "maxCount": 7, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
     "guid": "db534aca-9faa-4405-90a0-ba19554e47fb",
     "name": "Spawner (2404)",
     "location": [1641, 1797, -110],
@@ -268,7 +248,9 @@
     "team": 0,
     "homeRange": 30,
     "walkingRange": 30,
-    "entries": [{ "name": "Pixie", "maxCount": 6, "probability": 100 }]
+    "entries": [
+      { "name": "Pixie", "maxCount": 6, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -299,7 +281,9 @@
     "team": 0,
     "homeRange": 200,
     "walkingRange": 200,
-    "entries": [{ "name": "Eagle", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      { "name": "Eagle", "maxCount": 1, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -313,7 +297,9 @@
     "team": 0,
     "homeRange": 100,
     "walkingRange": 100,
-    "entries": [{ "name": "EvilHealer", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      { "name": "EvilHealer", "maxCount": 1, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -327,7 +313,9 @@
     "team": 0,
     "homeRange": 70,
     "walkingRange": 70,
-    "entries": [{ "name": "EvilHealer", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      { "name": "EvilHealer", "maxCount": 1, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",

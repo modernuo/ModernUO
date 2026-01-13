@@ -279,10 +279,10 @@ namespace Server.Mobiles
             AddItem(new Backpack());
             AddItem(new Kamishimo(0x483));
 
-            Item item = new LightPlateJingasa();
-            item.Hue = 0x711;
-
-            AddItem(item);
+            AddItem(new LightPlateJingasa
+            {
+                Hue = 0x711
+            });
         }
 
         public override bool CanBeDamaged() => false;

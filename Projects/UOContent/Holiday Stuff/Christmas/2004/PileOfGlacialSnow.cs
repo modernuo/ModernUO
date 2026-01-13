@@ -9,9 +9,10 @@ public partial class PileOfGlacialSnow : Item
     public PileOfGlacialSnow() : base(0x913)
     {
         Hue = 0x480;
-        Weight = 1.0;
         LootType = LootType.Blessed;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1070874; // a Pile of Glacial Snow
 

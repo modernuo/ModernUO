@@ -81,7 +81,7 @@ namespace Server.Spells.Chivalry
                     }
                     else
                     {
-                        bool sendEffect = false;
+                        var sendEffect = false;
 
                         if (m.Poisoned && m.CurePoison(Caster))
                         {

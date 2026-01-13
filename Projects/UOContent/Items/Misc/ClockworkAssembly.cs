@@ -34,9 +34,10 @@ public partial class ClockworkAssembly : Item
     [Constructible]
     public ClockworkAssembly() : base(0x1EA8)
     {
-        Weight = 5.0;
         Hue = 1102;
     }
+
+    public override double DefaultWeight => 5.0;
 
     public override int LabelNumber => 1073426; // Clockwork Assembly
 
@@ -63,7 +64,7 @@ public partial class ClockworkAssembly : Item
             return;
         }
 
-        double scalar = tinkerSkill switch
+        var scalar = tinkerSkill switch
         {
             >= 100.0 => 1.0,
             >= 90.0  => 0.9,

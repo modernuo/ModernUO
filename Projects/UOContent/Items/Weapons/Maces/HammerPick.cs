@@ -7,12 +7,9 @@ namespace Server.Items
     public partial class HammerPick : BaseBashing
     {
         [Constructible]
-        public HammerPick() : base(0x143D)
-        {
-            Weight = 9.0;
-            Layer = Layer.OneHanded;
-        }
+        public HammerPick() : base(0x143D) => Layer = Layer.OneHanded;
 
+        public override double DefaultWeight => 9.0;
         public override WeaponAbility PrimaryAbility => WeaponAbility.ArmorIgnore;
         public override WeaponAbility SecondaryAbility => WeaponAbility.MortalStrike;
 

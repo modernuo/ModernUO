@@ -76,10 +76,11 @@ public partial class RawRibs : CookableFood
     [Constructible]
     public RawRibs(int amount = 1) : base(0x9F1, 10)
     {
-        Weight = 1.0;
         Stackable = true;
         Amount = amount;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override Food Cook() => new Ribs();
 }
@@ -103,9 +104,10 @@ public partial class RawChickenLeg : CookableFood
     [Constructible]
     public RawChickenLeg() : base(0x1607, 10)
     {
-        Weight = 1.0;
         Stackable = true;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override Food Cook() => new ChickenLeg();
 }
@@ -116,10 +118,11 @@ public partial class RawBird : CookableFood
     [Constructible]
     public RawBird(int amount = 1) : base(0x9B9, 10)
     {
-        Weight = 1.0;
         Stackable = true;
         Amount = amount;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override Food Cook() => new CookedBird();
 }
@@ -128,7 +131,11 @@ public partial class RawBird : CookableFood
 public partial class UnbakedPeachCobbler : CookableFood
 {
     [Constructible]
-    public UnbakedPeachCobbler() : base(0x1042, 25) => Weight = 1.0;
+    public UnbakedPeachCobbler() : base(0x1042, 25)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1041335; // unbaked peach cobbler
 
@@ -139,7 +146,11 @@ public partial class UnbakedPeachCobbler : CookableFood
 public partial class UnbakedFruitPie : CookableFood
 {
     [Constructible]
-    public UnbakedFruitPie() : base(0x1042, 25) => Weight = 1.0;
+    public UnbakedFruitPie() : base(0x1042, 25)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1041334; // unbaked fruit pie
 
@@ -150,7 +161,11 @@ public partial class UnbakedFruitPie : CookableFood
 public partial class UnbakedMeatPie : CookableFood
 {
     [Constructible]
-    public UnbakedMeatPie() : base(0x1042, 25) => Weight = 1.0;
+    public UnbakedMeatPie() : base(0x1042, 25)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1041338; // unbaked meat pie
 
@@ -161,7 +176,11 @@ public partial class UnbakedMeatPie : CookableFood
 public partial class UnbakedPumpkinPie : CookableFood
 {
     [Constructible]
-    public UnbakedPumpkinPie() : base(0x1042, 25) => Weight = 1.0;
+    public UnbakedPumpkinPie() : base(0x1042, 25)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1041342; // unbaked pumpkin pie
 
@@ -172,7 +191,11 @@ public partial class UnbakedPumpkinPie : CookableFood
 public partial class UnbakedApplePie : CookableFood
 {
     [Constructible]
-    public UnbakedApplePie() : base(0x1042, 25) => Weight = 1.0;
+    public UnbakedApplePie() : base(0x1042, 25)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1041336; // unbaked apple pie
 
@@ -184,7 +207,11 @@ public partial class UnbakedApplePie : CookableFood
 public partial class UncookedCheesePizza : CookableFood
 {
     [Constructible]
-    public UncookedCheesePizza() : base(0x1083, 20) => Weight = 1.0;
+    public UncookedCheesePizza() : base(0x1083, 20)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1041341; // uncooked cheese pizza
 
@@ -195,7 +222,11 @@ public partial class UncookedCheesePizza : CookableFood
 public partial class UncookedSausagePizza : CookableFood
 {
     [Constructible]
-    public UncookedSausagePizza() : base(0x1083, 20) => Weight = 1.0;
+    public UncookedSausagePizza() : base(0x1083, 20)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1041337; // uncooked sausage pizza
 
@@ -206,7 +237,11 @@ public partial class UncookedSausagePizza : CookableFood
 public partial class UnbakedQuiche : CookableFood
 {
     [Constructible]
-    public UnbakedQuiche() : base(0x1042, 25) => Weight = 1.0;
+    public UnbakedQuiche() : base(0x1042, 25)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1041339; // unbaked quiche
 
@@ -219,10 +254,11 @@ public partial class Eggs : CookableFood
     [Constructible]
     public Eggs(int amount = 1) : base(0x9B5, 15)
     {
-        Weight = 1.0;
         Stackable = true;
         Amount = amount;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override Food Cook() => new FriedEggs();
 }
@@ -233,12 +269,11 @@ public partial class BrightlyColoredEggs : CookableFood
     [Constructible]
     public BrightlyColoredEggs() : base(0x9B5, 15)
     {
-        Weight = 0.5;
         Hue = 3 + Utility.Random(20) * 5;
     }
 
+    public override double DefaultWeight => 0.5;
     public override string DefaultName => "brightly colored eggs";
-
     public override Food Cook() => new FriedEggs();
 }
 
@@ -248,12 +283,11 @@ public partial class EasterEggs : CookableFood
     [Constructible]
     public EasterEggs() : base(0x9B5, 15)
     {
-        Weight = 0.5;
         Hue = 3 + Utility.Random(20) * 5;
     }
 
+    public override double DefaultWeight => 0.5;
     public override int LabelNumber => 1016105; // Easter Eggs
-
     public override Food Cook() => new FriedEggs();
 }
 
@@ -261,7 +295,11 @@ public partial class EasterEggs : CookableFood
 public partial class CookieMix : CookableFood
 {
     [Constructible]
-    public CookieMix() : base(0x103F, 20) => Weight = 1.0;
+    public CookieMix() : base(0x103F, 20)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override Food Cook() => new Cookies();
 }
@@ -270,7 +308,11 @@ public partial class CookieMix : CookableFood
 public partial class CakeMix : CookableFood
 {
     [Constructible]
-    public CakeMix() : base(0x103F, 40) => Weight = 1.0;
+    public CakeMix() : base(0x103F, 40)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1041002; // cake mix
 

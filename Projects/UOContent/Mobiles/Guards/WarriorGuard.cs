@@ -124,7 +124,7 @@ public partial class WarriorGuard : BaseGuard
                 if (_focus != null)
                 {
                     AttackTimer = new GuardAttackTimer(this);
-                    AttackTimer.DoOnTick();
+                    AttackTimer.Start();
                 }
                 else
                 {

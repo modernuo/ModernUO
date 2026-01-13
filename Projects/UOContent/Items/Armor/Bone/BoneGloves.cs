@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class BoneGloves : BaseArmor
     {
         [Constructible]
-        public BoneGloves() : base(0x1450) => Weight = 2.0;
+        public BoneGloves() : base(0x1450)
+        {
+        }
+
+        public override double DefaultWeight => 2.0;
 
         public override int BasePhysicalResistance => 3;
         public override int BaseFireResistance => 3;

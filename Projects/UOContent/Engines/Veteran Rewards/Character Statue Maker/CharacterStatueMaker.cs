@@ -19,8 +19,9 @@ public partial class CharacterStatueMaker : Item, IRewardItem
         InvalidateHue();
 
         LootType = LootType.Blessed;
-        Weight = 5.0;
     }
+
+    public override double DefaultWeight => 5.0;
 
     public override int LabelNumber => 1076173; // Character Statue Maker
 
@@ -84,80 +85,29 @@ public partial class CharacterStatueMaker : Item, IRewardItem
     }
 }
 
-public class MarbleStatueMaker : CharacterStatueMaker
+[SerializationGenerator(0)]
+public partial class MarbleStatueMaker : CharacterStatueMaker
 {
     [Constructible]
     public MarbleStatueMaker() : base(StatueType.Marble)
     {
     }
-
-    public MarbleStatueMaker(Serial serial) : base(serial)
-    {
-    }
-
-    public override void Serialize(IGenericWriter writer)
-    {
-        base.Serialize(writer);
-
-        writer.WriteEncodedInt(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadEncodedInt();
-    }
 }
 
-public class JadeStatueMaker : CharacterStatueMaker
+[SerializationGenerator(0)]
+public partial class JadeStatueMaker : CharacterStatueMaker
 {
     [Constructible]
     public JadeStatueMaker() : base(StatueType.Jade)
     {
     }
-
-    public JadeStatueMaker(Serial serial) : base(serial)
-    {
-    }
-
-    public override void Serialize(IGenericWriter writer)
-    {
-        base.Serialize(writer);
-
-        writer.WriteEncodedInt(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadEncodedInt();
-    }
 }
 
-public class BronzeStatueMaker : CharacterStatueMaker
+[SerializationGenerator(0)]
+public partial class BronzeStatueMaker : CharacterStatueMaker
 {
     [Constructible]
     public BronzeStatueMaker() : base(StatueType.Bronze)
     {
-    }
-
-    public BronzeStatueMaker(Serial serial) : base(serial)
-    {
-    }
-
-    public override void Serialize(IGenericWriter writer)
-    {
-        base.Serialize(writer);
-
-        writer.WriteEncodedInt(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadEncodedInt();
     }
 }

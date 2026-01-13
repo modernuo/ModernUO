@@ -17,10 +17,11 @@ public partial class MessageInABottle : Item
     [Constructible]
     public MessageInABottle(Map map, int level) : base(0x099F)
     {
-        Weight = 1.0;
         TargetMap = map ?? Map.Trammel;
         _level = level;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1041080; // a message in a bottle
 

@@ -1,0 +1,84 @@
+﻿{
+    "category":  "Map",
+    "packets":  [
+                    {
+                        "id":  "0x56",
+                        "name":  "Map Command",
+                        "description":  "Client sends map pin commands for editable map items. Commands include adding, inserting, changing, and removing pins.",
+                        "direction":  "incoming",
+                        "isDynamic":  false,
+                        "size":  11,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x56",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Map Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the map item"
+                                       },
+                                       {
+                                           "name":  "Command",
+                                           "type":  "enum",
+                                           "size":  1,
+                                           "description":  "Map pin command type",
+                                           "values":  [
+                                               { "value":  "1", "name":  "AddPin", "description":  "Add a new pin" },
+                                               { "value":  "2", "name":  "InsertPin", "description":  "Insert pin at position" },
+                                               { "value":  "3", "name":  "ChangePin", "description":  "Change existing pin" },
+                                               { "value":  "4", "name":  "RemovePin", "description":  "Remove a pin" },
+                                               { "value":  "5", "name":  "ClearPins", "description":  "Clear all pins" },
+                                               { "value":  "6", "name":  "ToggleEditable", "description":  "Toggle edit mode" }
+                                           ]
+                                       },
+                                       {
+                                           "name":  "Number",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Pin number (for insert, change, remove commands)"
+                                       },
+                                       {
+                                           "name":  "X",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "X coordinate of pin"
+                                       },
+                                       {
+                                           "name":  "Y",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Y coordinate of pin"
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0x56",
+                                            "direction":  "outgoing",
+                                            "relationship":  "related",
+                                            "note":  "Server map pin commands"
+                                        },
+                                        {
+                                            "id":  "0x90",
+                                            "direction":  "outgoing",
+                                            "relationship":  "related",
+                                            "note":  "Map Details packet (old)"
+                                        },
+                                        {
+                                            "id":  "0xF5",
+                                            "direction":  "outgoing",
+                                            "relationship":  "related",
+                                            "note":  "Map Details packet (new)"
+                                        }
+                                    ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Items/Maps/MapItemPackets.cs",
+                                       "line":  28
+                                   }
+                    }
+                ]
+}

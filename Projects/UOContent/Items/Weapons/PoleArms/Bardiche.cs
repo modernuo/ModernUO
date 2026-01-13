@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class Bardiche : BasePoleArm
     {
         [Constructible]
-        public Bardiche() : base(0xF4D) => Weight = 7.0;
+        public Bardiche() : base(0xF4D)
+        {
+        }
+
+        public override double DefaultWeight => 7.0;
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.ParalyzingBlow;
         public override WeaponAbility SecondaryAbility => WeaponAbility.Dismount;

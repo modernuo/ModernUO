@@ -163,9 +163,10 @@ public partial class MistletoeDeed : Item
     public MistletoeDeed(int hue = 0) : base(0x14F0)
     {
         Hue = hue;
-        Weight = 1.0;
         LootType = LootType.Blessed;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1070882; // Mistletoe Deed
 
@@ -266,9 +267,11 @@ public partial class MistletoeDeed : Item
 
         if (itemID > 0)
         {
-            Item addon = new MistletoeAddon(Hue);
+            var addon = new MistletoeAddon(Hue)
+            {
+                ItemID = itemID
+            };
 
-            addon.ItemID = itemID;
             addon.MoveToWorld(loc, from.Map);
 
             house.Addons.Add(addon);

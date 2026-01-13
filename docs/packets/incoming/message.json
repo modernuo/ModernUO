@@ -1,0 +1,300 @@
+﻿{
+    "category":  "Message",
+    "packets":  [
+                    {
+                        "id":  "0x03",
+                        "name":  "ASCII Speech",
+                        "description":  "Client sends ASCII-encoded speech message.",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "var",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x03",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Type",
+                                           "type":  "enum",
+                                           "enumType":  "sequential",
+                                           "size":  1,
+                                           "description":  "Message type",
+                                           "values":  [
+                                                          {
+                                                              "value":  0,
+                                                              "name":  "Regular",
+                                                              "description":  "Normal speech"
+                                                          },
+                                                          {
+                                                              "value":  1,
+                                                              "name":  "System",
+                                                              "description":  "System message"
+                                                          },
+                                                          {
+                                                              "value":  2,
+                                                              "name":  "Emote",
+                                                              "description":  "Emote (*action*)"
+                                                          },
+                                                          {
+                                                              "value":  6,
+                                                              "name":  "Label",
+                                                              "description":  "Object label"
+                                                          },
+                                                          {
+                                                              "value":  7,
+                                                              "name":  "Focus",
+                                                              "description":  "Focused message"
+                                                          },
+                                                          {
+                                                              "value":  8,
+                                                              "name":  "Whisper",
+                                                              "description":  "Whisper"
+                                                          },
+                                                          {
+                                                              "value":  9,
+                                                              "name":  "Yell",
+                                                              "description":  "Yell"
+                                                          },
+                                                          {
+                                                              "value":  10,
+                                                              "name":  "Spell",
+                                                              "description":  "Spell words"
+                                                          },
+                                                          {
+                                                              "value":  13,
+                                                              "name":  "Guild",
+                                                              "description":  "Guild chat"
+                                                          },
+                                                          {
+                                                              "value":  14,
+                                                              "name":  "Alliance",
+                                                              "description":  "Alliance chat"
+                                                          },
+                                                          {
+                                                              "value":  15,
+                                                              "name":  "Command",
+                                                              "description":  "Command"
+                                                          }
+                                                      ]
+                                       },
+                                       {
+                                           "name":  "Hue",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Text color hue"
+                                       },
+                                       {
+                                           "name":  "Font",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Font ID"
+                                       },
+                                       {
+                                           "name":  "Text",
+                                           "type":  "ascii-t",
+                                           "description":  "Speech text (max 128 chars)"
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0x1C",
+                                            "relationship":  "response",
+                                            "note":  "ASCII Message sent to other clients"
+                                        }
+                                    ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingMessagePackets.cs",
+                                       "line":  31
+                                   }
+                    },
+                    {
+                        "id":  "0xAD",
+                        "name":  "Unicode Speech",
+                        "description":  "Client sends Unicode-encoded speech message. Type byte upper bits (0xC0) indicate if keywords are encoded.",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "Varies",
+                        "variants":  [
+                                         {
+                                             "name":  "Standard Unicode",
+                                             "condition":  "type & 0xC0 == 0",
+                                             "size":  "12+",
+                                             "fields":  [
+                                                            {
+                                                                "name":  "Packet ID",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0xAD",
+                                                                "description":  "Packet identifier"
+                                                            },
+                                                            {
+                                                                "name":  "Length",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "description":  "Packet length"
+                                                            },
+                                                            {
+                                                                "name":  "Type",
+                                                                "type":  "enum",
+                                                                "size":  1,
+                                                                "description":  "Message type (0xC0 bits clear)",
+                                                                "values":  [
+                                                                               {
+                                                                                   "value":  0,
+                                                                                   "name":  "Regular",
+                                                                                   "description":  "Normal speech"
+                                                                               },
+                                                                               {
+                                                                                   "value":  1,
+                                                                                   "name":  "System",
+                                                                                   "description":  "System message"
+                                                                               },
+                                                                               {
+                                                                                   "value":  2,
+                                                                                   "name":  "Emote",
+                                                                                   "description":  "Emote (*action*)"
+                                                                               },
+                                                                               {
+                                                                                   "value":  8,
+                                                                                   "name":  "Whisper",
+                                                                                   "description":  "Whisper"
+                                                                               },
+                                                                               {
+                                                                                   "value":  9,
+                                                                                   "name":  "Yell",
+                                                                                   "description":  "Yell"
+                                                                               },
+                                                                               {
+                                                                                   "value":  13,
+                                                                                   "name":  "Guild",
+                                                                                   "description":  "Guild chat"
+                                                                               },
+                                                                               {
+                                                                                   "value":  14,
+                                                                                   "name":  "Alliance",
+                                                                                   "description":  "Alliance chat"
+                                                                               },
+                                                                               {
+                                                                                   "value":  15,
+                                                                                   "name":  "Command",
+                                                                                   "description":  "Command"
+                                                                               }
+                                                                           ]
+                                                            },
+                                                            {
+                                                                "name":  "Hue",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Text color hue"
+                                                            },
+                                                            {
+                                                                "name":  "Font",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Font ID"
+                                                            },
+                                                            {
+                                                                "name":  "Language",
+                                                                "type":  "ascii",
+                                                                "size":  4,
+                                                                "description":  "Language code (e.g., 'ENU')"
+                                                            },
+                                                            {
+                                                                "name":  "Text",
+                                                                "type":  "utf16be-t",
+                                                                "description":  "Speech text (Big Endian Unicode, null-terminated)"
+                                                            }
+                                                        ]
+                                         },
+                                         {
+                                             "name":  "Encoded Keywords",
+                                             "condition":  "type & 0xC0 != 0",
+                                             "size":  "14+",
+                                             "fields":  [
+                                                            {
+                                                                "name":  "Packet ID",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0xAD",
+                                                                "description":  "Packet identifier"
+                                                            },
+                                                            {
+                                                                "name":  "Length",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "description":  "Packet length"
+                                                            },
+                                                            {
+                                                                "name":  "Type",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "description":  "Message type with 0xC0 flag set. Lower 4 bits = message type (see Standard variant)"
+                                                            },
+                                                            {
+                                                                "name":  "Hue",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Text color hue"
+                                                            },
+                                                            {
+                                                                "name":  "Font",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Font ID"
+                                                            },
+                                                            {
+                                                                "name":  "Language",
+                                                                "type":  "ascii",
+                                                                "size":  4,
+                                                                "description":  "Language code (e.g., 'ENU')"
+                                                            },
+                                                            {
+                                                                "name":  "Keyword Header",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "description":  "Bits 15-4: keyword count (0-50), Bits 3-0: first hold value for packed IDs"
+                                                            },
+                                                            {
+                                                                "name":  "Packed Keywords",
+                                                                "type":  "byte[]",
+                                                                "description":  "12-bit keyword IDs packed alternating: even indices use hold<<8|byte, odd indices use (short&0xFFF0)>>4 with new hold"
+                                                            },
+                                                            {
+                                                                "name":  "Text",
+                                                                "type":  "utf8-t",
+                                                                "description":  "Speech text (UTF-8, null-terminated)"
+                                                            }
+                                                        ]
+                                         }
+                                     ],
+                        "notes":  "Encoded keywords use 12-bit speech IDs packed efficiently. Keyword count must be 0-50. The packing alternates: even-indexed keywords combine the previous 4-bit hold with a new byte (12 bits total), odd-indexed keywords read a short and extract bits 15-4 as the ID, bits 3-0 as the next hold.",
+                        "related":  [
+                                        {
+                                            "id":  "0x03",
+                                            "direction":  "incoming",
+                                            "relationship":  "variant",
+                                            "note":  "ASCII Speech (simpler format)"
+                                        },
+                                        {
+                                            "id":  "0xAE",
+                                            "direction":  "outgoing",
+                                            "relationship":  "response",
+                                            "note":  "Unicode Message sent to other clients"
+                                        }
+                                    ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingMessagePackets.cs",
+                                       "line":  58
+                                   }
+                    }
+                ]
+}

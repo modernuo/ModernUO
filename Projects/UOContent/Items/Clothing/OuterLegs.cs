@@ -15,7 +15,11 @@ namespace Server.Items
     public partial class FurSarong : BaseOuterLegs
     {
         [Constructible]
-        public FurSarong(int hue = 0) : base(0x230C, hue) => Weight = 3.0;
+        public FurSarong(int hue = 0) : base(0x230C, hue)
+        {
+        }
+
+        public override double DefaultWeight => 3.0;
     }
 
     [SerializationGenerator(0, false)]
@@ -23,7 +27,11 @@ namespace Server.Items
     public partial class Skirt : BaseOuterLegs
     {
         [Constructible]
-        public Skirt(int hue = 0) : base(0x1516, hue) => Weight = 4.0;
+        public Skirt(int hue = 0) : base(0x1516, hue)
+        {
+        }
+
+        public override double DefaultWeight => 4.0;
     }
 
     [SerializationGenerator(0, false)]
@@ -31,7 +39,11 @@ namespace Server.Items
     public partial class Kilt : BaseOuterLegs
     {
         [Constructible]
-        public Kilt(int hue = 0) : base(0x1537, hue) => Weight = 2.0;
+        public Kilt(int hue = 0) : base(0x1537, hue)
+        {
+        }
+
+        public override double DefaultWeight => 2.0;
     }
 
     [SerializationGenerator(0, false)]
@@ -39,6 +51,10 @@ namespace Server.Items
     public partial class Hakama : BaseOuterLegs
     {
         [Constructible]
-        public Hakama(int hue = 0) : base(0x279A, hue) => Weight = 2.0;
+        public Hakama(int hue = 0) : base(0x279A, hue)
+        {
+        }
+
+        public override double DefaultWeight => 2.0;
     }
 }

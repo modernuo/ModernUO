@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class Hatchet : BaseAxe
     {
         [Constructible]
-        public Hatchet() : base(0xF43) => Weight = 4.0;
+        public Hatchet() : base(0xF43)
+        {
+        }
+
+        public override double DefaultWeight => 4.0;
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.ArmorIgnore;
         public override WeaponAbility SecondaryAbility => WeaponAbility.Disarm;

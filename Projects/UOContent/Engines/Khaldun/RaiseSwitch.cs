@@ -101,7 +101,7 @@ public partial class RaiseSwitch : Item
         }
     }
 
-    [AfterDeserialization]
+    [AfterDeserialization(false)]
     private void AfterDeserialization()
     {
         Reset();
@@ -109,35 +109,28 @@ public partial class RaiseSwitch : Item
 
     private class ResetTimer : Timer
     {
-        private readonly RaiseSwitch m_RaiseSwitch;
+        private readonly RaiseSwitch _raiseSwitch;
 
-        public ResetTimer(RaiseSwitch raiseSwitch, TimeSpan delay) : base(delay)
-        {
-            m_RaiseSwitch = raiseSwitch;
-        }
+        public ResetTimer(RaiseSwitch raiseSwitch, TimeSpan delay) : base(delay) => _raiseSwitch = raiseSwitch;
 
         protected override void OnTick()
         {
-            if (m_RaiseSwitch.Deleted)
+            if (_raiseSwitch.Deleted)
             {
                 return;
             }
 
-            m_RaiseSwitch._resetTimer = null;
-
-            m_RaiseSwitch.Reset();
+            _raiseSwitch._resetTimer = null;
+            _raiseSwitch.Reset();
         }
     }
 }
 
-public class DisappearingRaiseSwitch : RaiseSwitch
+[SerializationGenerator(0)]
+public partial class DisappearingRaiseSwitch : RaiseSwitch
 {
     [Constructible]
     public DisappearingRaiseSwitch() : base(0x108F)
-    {
-    }
-
-    public DisappearingRaiseSwitch(Serial serial) : base(serial)
     {
     }
 
@@ -177,6 +170,7 @@ public class DisappearingRaiseSwitch : RaiseSwitch
         }
     }
 
+    [AfterDeserialization(false)]
     public void Refresh()
     {
         foreach (var mob in GetMobilesInRange(CurrentRange))
@@ -187,26 +181,5 @@ public class DisappearingRaiseSwitch : RaiseSwitch
                 break;
             }
         }
-    }
-
-    public override void Serialize(IGenericWriter writer)
-    {
-        if (RaisableItem?.Deleted == true)
-        {
-            RaisableItem = null;
-        }
-
-        base.Serialize(writer);
-
-        writer.WriteEncodedInt(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadEncodedInt();
-
-        Timer.StartTimer(Refresh);
     }
 }

@@ -1,0 +1,69 @@
+﻿{
+    "category":  "Chat",
+    "packets":  [
+                    {
+                        "id":  "0xB2",
+                        "name":  "Chat Message",
+                        "description":  "Server sends chat system messages and commands to the client.",
+                        "direction":  "outgoing",
+                        "isDynamic":  true,
+                        "size":  "13+",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xB2",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Command",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Chat command number (original number minus 20)"
+                                       },
+                                       {
+                                           "name":  "Language",
+                                           "type":  "ascii",
+                                           "size":  4,
+                                           "description":  "Language code (e.g., \u0027enu\u0027 for English)"
+                                       },
+                                       {
+                                           "name":  "Param 1",
+                                           "type":  "utf16be-t",
+                                           "description":  "First parameter (Big Endian Unicode, null-terminated)"
+                                       },
+                                       {
+                                           "name":  "Param 2",
+                                           "type":  "utf16be-t",
+                                           "description":  "Second parameter (Big Endian Unicode, null-terminated)"
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0xB3",
+                                            "direction":  "incoming",
+                                            "relationship":  "request",
+                                            "note":  "Client sends Chat Action"
+                                        },
+                                        {
+                                            "id":  "0xB5",
+                                            "direction":  "incoming",
+                                            "relationship":  "request",
+                                            "note":  "Client sends Open Chat Window Request"
+                                        }
+                                    ],
+                        "notes":  "Part of the in-game chat system. Command numbers are offset by -20 from original values.",
+                        "source":  {
+                                       "file":  "Projects/UOContent/Engines/Chat/ChatPackets.cs",
+                                       "line":  104
+                                   }
+                    }
+                ]
+}

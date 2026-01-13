@@ -10,11 +10,11 @@ namespace Server.Items
         [Constructible]
         public Yumi() : base(0x27A5)
         {
-            Weight = 9.0;
             Layer = Layer.TwoHanded;
             Resource = CraftResource.RegularWood;
         }
 
+        public override double DefaultWeight => 9.0;
         public override int EffectID => 0xF42;
         public override Type AmmoType => typeof(Arrow);
         public override Item Ammo => new Arrow();

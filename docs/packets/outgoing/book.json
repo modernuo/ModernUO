@@ -1,0 +1,217 @@
+﻿{
+    "category":  "Book",
+    "packets":  [
+                    {
+                        "id":  "0x66",
+                        "name":  "Book Content",
+                        "description":  "Sends full book content including all pages and lines.",
+                        "direction":  "outgoing",
+                        "isDynamic":  true,
+                        "size":  "9+",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x66",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Book Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the book"
+                                       },
+                                       {
+                                           "name":  "Page Count",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Number of pages"
+                                       },
+                                       {
+                                           "name":  "Pages",
+                                           "type":  "loop",
+                                           "description":  "Page contents",
+                                           "loop":  {
+                                                        "countField":  "pageCount",
+                                                        "fields":  [
+                                                                       {
+                                                                           "name":  "Page Number",
+                                                                           "type":  "ushort",
+                                                                           "size":  2,
+                                                                           "description":  "Page number (1-indexed)"
+                                                                       },
+                                                                       {
+                                                                           "name":  "Line Count",
+                                                                           "type":  "ushort",
+                                                                           "size":  2,
+                                                                           "description":  "Number of lines on page"
+                                                                       },
+                                                                       {
+                                                                           "name":  "Lines",
+                                                                           "type":  "loop",
+                                                                           "description":  "Lines on the page",
+                                                                           "loop":  {
+                                                                                        "countField":  "lineCount",
+                                                                                        "fields":  [
+                                                                                                       {
+                                                                                                           "name":  "Text",
+                                                                                                           "type":  "utf8-t",
+                                                                                                           "description":  "Line text"
+                                                                                                       }
+                                                                                                   ]
+                                                                                    }
+                                                                       }
+                                                                   ]
+                                                    }
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Items/Books/BookPackets.cs",
+                                       "line":  136
+                                   }
+                    },
+                    {
+                        "id":  "0xD4",
+                        "name":  "Book Header",
+                        "description":  "Sends book cover information (title, author, writable status).",
+                        "direction":  "outgoing",
+                        "isDynamic":  true,
+                        "size":  "17+",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xD4",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Book Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the book"
+                                       },
+                                       {
+                                           "name":  "Flag On",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x01",
+                                           "description":  "Flag on (always 1)"
+                                       },
+                                       {
+                                           "name":  "Writable",
+                                           "type":  "bool",
+                                           "size":  1,
+                                           "description":  "True if book is writable and in range"
+                                       },
+                                       {
+                                           "name":  "Page Count",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Number of pages"
+                                       },
+                                       {
+                                           "name":  "Title Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Length of title + 1 (for null)"
+                                       },
+                                       {
+                                           "name":  "Title",
+                                           "type":  "utf8-t",
+                                           "description":  "Book title"
+                                       },
+                                       {
+                                           "name":  "Author Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Length of author + 1 (for null)"
+                                       },
+                                       {
+                                           "name":  "Author",
+                                           "type":  "utf8-t",
+                                           "description":  "Book author"
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0x93",
+                                            "relationship":  "variant",
+                                            "note":  "Old Book Header format (outgoing)"
+                                        }
+                                    ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Items/Books/BookPackets.cs",
+                                       "line":  184
+                                   }
+                    },
+                    {
+                        "id":  "0x93",
+                        "name":  "Old Book Header",
+                        "description":  "Old format for book cover (fixed-size ASCII strings).",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  99,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x93",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Book Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the book"
+                                       },
+                                       {
+                                           "name":  "Flags",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Book flags"
+                                       },
+                                       {
+                                           "name":  "Page Count",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Number of pages"
+                                       },
+                                       {
+                                           "name":  "Title",
+                                           "type":  "ascii",
+                                           "size":  60,
+                                           "description":  "Book title (fixed 60 bytes)"
+                                       },
+                                       {
+                                           "name":  "Author",
+                                           "type":  "ascii",
+                                           "size":  30,
+                                           "description":  "Book author (fixed 30 bytes)"
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0xD4",
+                                            "relationship":  "variant",
+                                            "note":  "New Book Header format (outgoing)"
+                                        }
+                                    ],
+                        "notes":  "Old format used by older clients. Title and author are fixed-size ASCII."
+                    }
+                ]
+}

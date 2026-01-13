@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class WarMace : BaseBashing
     {
         [Constructible]
-        public WarMace() : base(0x1407) => Weight = 17.0;
+        public WarMace() : base(0x1407)
+        {
+        }
+
+        public override double DefaultWeight => 17.0;
 
         public override WeaponAbility PrimaryAbility => WeaponAbility.CrushingBlow;
         public override WeaponAbility SecondaryAbility => WeaponAbility.MortalStrike;

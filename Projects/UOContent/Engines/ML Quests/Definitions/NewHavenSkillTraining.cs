@@ -642,7 +642,8 @@ public class ItsHammerTime : MLQuest
     }
 }
 
-public class Aelorn : KeeperOfChivalry
+[SerializationGenerator(0, false)]
+public partial class Aelorn : KeeperOfChivalry
 {
     [Constructible]
     public Aelorn()
@@ -667,11 +668,6 @@ public class Aelorn : KeeperOfChivalry
         SetSkill(SkillName.Chivalry, 120.0);
     }
 
-    public Aelorn(Serial serial)
-        : base(serial)
-    {
-    }
-
     public override string DefaultName => "Aelorn";
     public override bool CanShout => true;
 
@@ -690,20 +686,6 @@ public class Aelorn : KeeperOfChivalry
         AddItem(new PlateArms());
         AddItem(new PlateGorget());
         AddItem(new OrderShield());
-    }
-
-    public override void Serialize(IGenericWriter writer)
-    {
-        base.Serialize(writer);
-
-        writer.Write(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadInt();
     }
 }
 
@@ -1274,11 +1256,10 @@ public partial class Mithneral : BaseCreature
         AddItem(new Backpack());
         AddItem(new Sandals());
 
-        Item item;
-
-        item = new GustarShroud();
-        item.Hue = 0x51C;
-        AddItem(item);
+        AddItem(new GustarShroud
+        {
+            Hue = 0x51C
+        });
     }
 
     public override bool IsInvulnerable => true;
@@ -1876,10 +1857,9 @@ public partial class GeorgeHephaestus : Blacksmith
         AddItem(new Bascinet());
         AddItem(new FullApron(0x8AB));
 
-        Item item;
-
-        item = new SmithHammer();
-        item.Hue = 0x8AB;
-        AddItem(item);
+        AddItem(new SmithHammer
+        {
+            Hue = 0x8AB
+        });
     }
 }

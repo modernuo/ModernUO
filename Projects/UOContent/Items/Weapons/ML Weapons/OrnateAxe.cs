@@ -7,12 +7,9 @@ namespace Server.Items
     public partial class OrnateAxe : BaseAxe
     {
         [Constructible]
-        public OrnateAxe() : base(0x2D28)
-        {
-            Weight = 12.0;
-            Layer = Layer.TwoHanded;
-        }
+        public OrnateAxe() : base(0x2D28) => Layer = Layer.TwoHanded;
 
+        public override double DefaultWeight => 12.0;
         public override WeaponAbility PrimaryAbility => WeaponAbility.Disarm;
         public override WeaponAbility SecondaryAbility => WeaponAbility.CrushingBlow;
 

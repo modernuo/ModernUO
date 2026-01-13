@@ -43,7 +43,7 @@ public abstract class DynamicGump : BaseGump
         writer.Write(X);
         writer.Write(Y);
 
-        DynamicGumpBuilder gumpBuilder = new DynamicGumpBuilder();
+        var gumpBuilder = new DynamicGumpBuilder();
         BuildLayout(ref gumpBuilder);
         gumpBuilder.FinalizeLayout();
 

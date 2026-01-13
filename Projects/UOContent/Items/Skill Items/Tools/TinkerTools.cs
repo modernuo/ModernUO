@@ -8,10 +8,16 @@ namespace Server.Items;
 public partial class TinkerTools : BaseTool
 {
     [Constructible]
-    public TinkerTools() : base(0x1EB8) => Weight = 1.0;
+    public TinkerTools() : base(0x1EB8)
+    {
+    }
 
     [Constructible]
-    public TinkerTools(int uses) : base(uses, 0x1EB8) => Weight = 1.0;
+    public TinkerTools(int uses) : base(uses, 0x1EB8)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override CraftSystem CraftSystem => DefTinkering.CraftSystem;
 }
@@ -20,10 +26,16 @@ public partial class TinkerTools : BaseTool
 public partial class TinkersTools : BaseTool
 {
     [Constructible]
-    public TinkersTools() : base(0x1EBC) => Weight = 1.0;
+    public TinkersTools() : base(0x1EBC)
+    {
+    }
 
     [Constructible]
-    public TinkersTools(int uses) : base(uses, 0x1EBC) => Weight = 1.0;
+    public TinkersTools(int uses) : base(uses, 0x1EBC)
+    {
+    }
+
+    public override double DefaultWeight => 1.0;
 
     public override CraftSystem CraftSystem => DefTinkering.CraftSystem;
 }

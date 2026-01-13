@@ -1,0 +1,118 @@
+﻿{
+    "category":  "Boat",
+    "packets":  [
+                    {
+                        "id":  "0xF6",
+                        "name":  "Boat Move (High Seas)",
+                        "description":  "Sent when a boat moves, containing the boat\u0027s new position and all entities on board with their updated positions.",
+                        "direction":  "outgoing",
+                        "isDynamic":  true,
+                        "size":  "18 + (entityCount x 10)",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xF6",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Boat Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the boat"
+                                       },
+                                       {
+                                           "name":  "Speed",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Boat movement speed"
+                                       },
+                                       {
+                                           "name":  "Direction",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Movement direction (0-7)"
+                                       },
+                                       {
+                                           "name":  "Facing",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Boat facing direction"
+                                       },
+                                       {
+                                           "name":  "X",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Boat X coordinate"
+                                       },
+                                       {
+                                           "name":  "Y",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Boat Y coordinate"
+                                       },
+                                       {
+                                           "name":  "Z",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Boat Z coordinate"
+                                       },
+                                       {
+                                           "name":  "Entity Count",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Number of entities on boat (max 65535)"
+                                       },
+                                       {
+                                           "name":  "Entities",
+                                           "type":  "array",
+                                           "description":  "Entities on the boat with their positions",
+                                           "loop":  {
+                                                        "countField":  "entityCount",
+                                                        "fields":  [
+                                                                       {
+                                                                           "name":  "Serial",
+                                                                           "type":  "uint",
+                                                                           "size":  4,
+                                                                           "description":  "Entity serial"
+                                                                       },
+                                                                       {
+                                                                           "name":  "X",
+                                                                           "type":  "short",
+                                                                           "size":  2,
+                                                                           "description":  "Entity X coordinate (boat offset applied)"
+                                                                       },
+                                                                       {
+                                                                           "name":  "Y",
+                                                                           "type":  "short",
+                                                                           "size":  2,
+                                                                           "description":  "Entity Y coordinate (boat offset applied)"
+                                                                       },
+                                                                       {
+                                                                           "name":  "Z",
+                                                                           "type":  "short",
+                                                                           "size":  2,
+                                                                           "description":  "Entity Z coordinate"
+                                                                       }
+                                                                   ]
+                                                    }
+                                       }
+                                   ],
+                        "clientVersion":  {
+                                              "feature":  "HighSeas"
+                                          },
+                        "source":  {
+                                       "file":  "Projects/UOContent/Multis/Boats/BoatPackets.cs",
+                                       "line":  27
+                                   },
+                        "notes":  "High Seas expansion only. Entities include mobiles and items on the boat. Coordinates include the boat\u0027s movement offset."
+                    }
+                ]
+}

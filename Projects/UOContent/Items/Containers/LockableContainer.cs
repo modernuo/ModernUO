@@ -155,7 +155,7 @@ public abstract partial class LockableContainer : TrappableContainer, ILockable,
 
         var inaccessible = from.AccessLevel < AccessLevel.GameMaster;
 
-        int number = inaccessible
+        var number = inaccessible
             ? 501747 // It appears to be locked.
             : 502502;    // That is locked, but you open it with your godly powers.
 

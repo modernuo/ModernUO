@@ -6,7 +6,11 @@ namespace Server.Items;
 public partial class BarrelLid : Item
 {
     [Constructible]
-    public BarrelLid() : base(0x1DB8) => Weight = 2;
+    public BarrelLid() : base(0x1DB8)
+    {
+    }
+
+    public override double DefaultWeight => 2;
 }
 
 [Flippable(0x1EB1, 0x1EB2, 0x1EB3, 0x1EB4)]
@@ -14,14 +18,22 @@ public partial class BarrelLid : Item
 public partial class BarrelStaves : Item
 {
     [Constructible]
-    public BarrelStaves() : base(0x1EB1) => Weight = 1;
+    public BarrelStaves() : base(0x1EB1)
+    {
+    }
+
+    public override double DefaultWeight => 1;
 }
 
 [SerializationGenerator(0, false)]
 public partial class BarrelHoops : Item
 {
     [Constructible]
-    public BarrelHoops() : base(0x1DB7) => Weight = 5;
+    public BarrelHoops() : base(0x1DB7)
+    {
+    }
+
+    public override double DefaultWeight => 5;
 
     public override int LabelNumber => 1011228; // Barrel hoops
 }
@@ -30,5 +42,9 @@ public partial class BarrelHoops : Item
 public partial class BarrelTap : Item
 {
     [Constructible]
-    public BarrelTap() : base(0x1004) => Weight = 1;
+    public BarrelTap() : base(0x1004)
+    {
+    }
+
+    public override double DefaultWeight => 1;
 }

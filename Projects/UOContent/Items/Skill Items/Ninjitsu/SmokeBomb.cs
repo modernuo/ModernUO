@@ -7,11 +7,9 @@ namespace Server.Items;
 public partial class SmokeBomb : Item
 {
     [Constructible]
-    public SmokeBomb() : base(0x2808)
-    {
-        Stackable = Core.ML;
-        Weight = 1.0;
-    }
+    public SmokeBomb() : base(0x2808) => Stackable = Core.ML;
+
+    public override double DefaultWeight => 1.0;
 
     public override void OnDoubleClick(Mobile from)
     {

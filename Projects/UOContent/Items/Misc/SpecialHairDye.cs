@@ -9,11 +9,9 @@ namespace Server.Items;
 public partial class SpecialHairDye : Item
 {
     [Constructible]
-    public SpecialHairDye() : base(0xE26)
-    {
-        Weight = 1.0;
-        LootType = LootType.Newbied;
-    }
+    public SpecialHairDye() : base(0xE26) => LootType = LootType.Newbied;
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1074402;
 

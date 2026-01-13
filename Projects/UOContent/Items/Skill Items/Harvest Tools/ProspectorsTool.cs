@@ -14,11 +14,9 @@ public partial class ProspectorsTool : BaseBashing, IUsesRemaining
     private int _usesRemaining;
 
     [Constructible]
-    public ProspectorsTool() : base(0xFB4)
-    {
-        Weight = 9.0;
-        UsesRemaining = 50;
-    }
+    public ProspectorsTool() : base(0xFB4) => UsesRemaining = 50;
+
+    public override double DefaultWeight => 9.0;
 
     public override int LabelNumber => 1049065; // prospector's tool
 
@@ -61,7 +59,7 @@ public partial class ProspectorsTool : BaseBashing, IUsesRemaining
             return;
         }
 
-        HarvestSystem system = Mining.System;
+        var system = Mining.System;
 
         if (!system.GetHarvestDetails(from, this, toProspect, out var tileID, out var map, out var loc, out var isLand))
         {

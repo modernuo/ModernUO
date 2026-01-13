@@ -7,11 +7,9 @@ namespace Server.Engines.Quests.Ninja;
 public partial class NoteForZoel : QuestItem
 {
     [Constructible]
-    public NoteForZoel() : base(0x14EF)
-    {
-        Weight = 1.0;
-        Hue = 0x6B9;
-    }
+    public NoteForZoel() : base(0x14EF) => Hue = 0x6B9;
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1063186; // A Note for Zoel
 

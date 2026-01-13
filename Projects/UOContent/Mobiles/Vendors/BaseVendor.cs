@@ -44,7 +44,7 @@ namespace Server.Mobiles
             // See SBAnimalTrainer for an example
             _enableVendorBuyOPL = ServerConfiguration.GetSetting("opl.enableForVendorBuy", true);
 
-            _vendorInvulnerable = ServerConfiguration.GetSetting("vendor.isInvulnerable", false);
+            _vendorInvulnerable = ServerConfiguration.GetSetting("vendor.isInvulnerable", Core.LBR);
         }
 
         public static void Initialize()
@@ -96,7 +96,7 @@ namespace Server.Mobiles
 
         public virtual NpcGuild NpcGuild => NpcGuild.None;
 
-        public override bool IsInvulnerable => Core.LBR || _vendorInvulnerable;
+        public override bool IsInvulnerable => _vendorInvulnerable;
 
         public virtual DateTime NextTrickOrTreat { get; set; }
 
@@ -1163,7 +1163,7 @@ namespace Server.Mobiles
         }
 
         private static bool ProcessSinglePurchase(
-            BuyItemResponse buy, IBuyItemInfo bii, List<BuyItemResponse> validBuy,
+            BuyItemResponse buy, GenericBuyInfo bii, List<BuyItemResponse> validBuy,
             ref int controlSlots, ref bool fullPurchase, ref int totalCost
         )
         {
@@ -1191,7 +1191,7 @@ namespace Server.Mobiles
                 return false;
             }
 
-            long totalCostLong = (long)totalCost + bii.Price * amount;
+            var totalCostLong = (long)totalCost + bii.Price * amount;
 
             if (totalCostLong > int.MaxValue)
             {
@@ -1211,7 +1211,7 @@ namespace Server.Mobiles
             return true;
         }
 
-        private static void ProcessValidPurchase(int amount, IBuyItemInfo bii, Mobile buyer, Container cont)
+        private static void ProcessValidPurchase(int amount, GenericBuyInfo bii, Mobile buyer, Container cont)
         {
             if (amount > bii.Amount)
             {

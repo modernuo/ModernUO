@@ -54,7 +54,7 @@ public class LocalizationEntry
         var sb = ValueStringBuilder.Create(256);
         using var queue = PooledRefQueue<string>.Create();
 
-        bool hasMatch = false;
+        var hasMatch = false;
         var prevIndex = 0;
         foreach (Match match in _textRegex.Matches(text))
         {

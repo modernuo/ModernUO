@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2025 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: HashAlgorithmPasswordProtection.cs                              *
  *                                                                       *
@@ -17,24 +17,23 @@ using System;
 using System.Security.Cryptography;
 using Server.Text;
 
-namespace Server.Accounting.Security
+namespace Server.Accounting.Security;
+
+public class HashAlgorithmPasswordProtection : IPasswordProtection
 {
-    public class HashAlgorithmPasswordProtection : IPasswordProtection
+    public static IPasswordProtection MD5Instance = new HashAlgorithmPasswordProtection(MD5.Create());
+    public static IPasswordProtection SHA1Instance = new HashAlgorithmPasswordProtection(SHA1.Create());
+    public static IPasswordProtection SHA2Instance = new HashAlgorithmPasswordProtection(SHA512.Create());
+    private readonly HashAlgorithm _hashAlgorithm;
+
+    public HashAlgorithmPasswordProtection(HashAlgorithm hashAlgorithm) => _hashAlgorithm = hashAlgorithm;
+
+    public string EncryptPassword(string plainPassword)
     {
-        public static IPasswordProtection MD5Instance = new HashAlgorithmPasswordProtection(MD5.Create());
-        public static IPasswordProtection SHA1Instance = new HashAlgorithmPasswordProtection(SHA1.Create());
-        public static IPasswordProtection SHA2Instance = new HashAlgorithmPasswordProtection(SHA512.Create());
-        private readonly HashAlgorithm _hashAlgorithm;
-
-        public HashAlgorithmPasswordProtection(HashAlgorithm hashAlgorithm) => _hashAlgorithm = hashAlgorithm;
-
-        public string EncryptPassword(string plainPassword)
-        {
-            byte[] bytes = plainPassword.AsSpan(0, Math.Min(256, plainPassword.Length)).GetBytesAscii();
-            return _hashAlgorithm.ComputeHash(bytes).ToHexString();
-        }
-
-        public bool ValidatePassword(string encryptedPassword, string plainPassword) =>
-            EncryptPassword(plainPassword) == encryptedPassword;
+        var bytes = plainPassword.AsSpan(0, Math.Min(256, plainPassword.Length)).GetBytesAscii();
+        return _hashAlgorithm.ComputeHash(bytes).ToHexString();
     }
+
+    public bool ValidatePassword(string encryptedPassword, string plainPassword) =>
+        EncryptPassword(plainPassword) == encryptedPassword;
 }

@@ -116,7 +116,7 @@ public static class IncomingAccountPackets
         var female = genderRace % 2 != 0;
 
         var raceID = state.StygianAbyss ? (byte)(genderRace < 4 ? 0 : genderRace / 2 - 1) : (byte)(genderRace / 2);
-        Race race = Race.Races[raceID] ?? Race.DefaultRace;
+        var race = Race.Races[raceID] ?? Race.DefaultRace;
 
         var info = state.CityInfo;
         var a = state.Account;

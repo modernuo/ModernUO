@@ -73,7 +73,6 @@ public partial class BaseQuiver : Container, ICraftable, IAosItem
 
     public BaseQuiver(int itemID = 0x2FB7) : base(itemID)
     {
-        Weight = 2.0;
         Capacity = 500;
         Layer = Layer.Cloak;
 
@@ -181,7 +180,7 @@ public partial class BaseQuiver : Container, ICraftable, IAosItem
             return false;
         }
 
-        Item ammo = Ammo;
+        var ammo = Ammo;
 
         return ammo?.Deleted == false && ammo.Amount + item.Amount <= _capacity;
     }

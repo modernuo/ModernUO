@@ -1,0 +1,65 @@
+﻿{
+    "category":  "Light",
+    "packets":  [
+                    {
+                        "id":  "0x4E",
+                        "name":  "Personal Light Level",
+                        "description":  "Sets the light level for a specific entity.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  6,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x4E",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of entity"
+                                       },
+                                       {
+                                           "name":  "Level",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Light level (0=brightest, 25-30=typical night)"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingLightPackets.cs",
+                                       "line":  23
+                                   }
+                    },
+                    {
+                        "id":  "0x4F",
+                        "name":  "Global Light Level",
+                        "description":  "Sets the global ambient light level for the client.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  2,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x4F",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Level",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Light level (0=brightest, 25-30=typical night)"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingLightPackets.cs",
+                                       "line":  39
+                                   }
+                    }
+                ]
+}

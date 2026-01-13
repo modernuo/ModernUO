@@ -56,12 +56,10 @@ public static class OutgoingPlayerPackets
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void SendChangeUpdateRange(this NetState ns, byte range) =>
-        ns?.Send(stackalloc byte[] { 0xC8, range });
+    public static void SendChangeUpdateRange(this NetState ns, byte range) => ns?.Send(stackalloc byte[] { 0xC8, range });
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void SendDeathStatus(this NetState ns) =>
-        ns?.Send(stackalloc byte[] { 0x2C, 2 });
+    public static void SendDeathStatus(this NetState ns) => ns?.Send(stackalloc byte[] { 0x2C, 2 });
 
     public static void SendDisplayProfile(this NetState ns, Serial m, string header, string body, string footer)
     {
@@ -235,7 +233,7 @@ public static class OutgoingPlayerPackets
             return;
         }
 
-        Span<byte> buffer = stackalloc byte[DragEffectPacketLength].InitializePacket();
+        var buffer = stackalloc byte[DragEffectPacketLength].InitializePacket();
         CreateDragEffect(buffer, srcSerial, srcLocation, trgSerial, trgLocation, itemID, hue, amount);
         ns.Send(buffer);
     }

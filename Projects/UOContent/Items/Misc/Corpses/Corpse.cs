@@ -109,7 +109,7 @@ public partial class Corpse : Container, ICarvable
     [SerializableField(7, setter: "private")]
     private List<Mobile> _aggressors;
 
-    [SerializableField(8, setter: "private")]
+    [SerializableField(8, setter: "protected")]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private Mobile _owner;
 
@@ -824,25 +824,28 @@ public partial class Corpse : Container, ICarvable
             }
 
             var pack = from.Backpack;
+            using var items = PooledRefList<Item>.Create(128);
 
             if (RestoreEquip != null && pack != null)
             {
-                var packItems = new List<Item>(pack.Items); // Only items in the top-level pack are re-equipped
+                items.AddRange(pack.Items);
 
-                for (var i = 0; i < packItems.Count; i++)
+                // Only items in the top-level pack are re-equipped
+                for (var i = 0; i < items.Count; i++)
                 {
-                    var packItem = packItems[i];
+                    var packItem = items[i];
 
                     if (RestoreEquip.Contains(packItem) && packItem.Movable)
                     {
                         from.EquipItem(packItem);
                     }
                 }
+
+                items.Clear();
             }
 
-            var items = new List<Item>(Items);
-
             var didntFit = false;
+            items.AddRange(Items);
 
             for (var i = 0; !didntFit && i < items.Count; ++i)
             {
@@ -912,7 +915,7 @@ public partial class Corpse : Container, ICarvable
             var obj = qs.FindObjective<GetDaemonBoneObjective>();
             if (obj?.CorpseWithBone == this && (!obj.Completed || UzeraanTurmoilQuest.HasLostDaemonBone(player)))
             {
-                Item bone = new QuestDaemonBone();
+                var bone = new QuestDaemonBone();
 
                 if (player.PlaceInBackpack(bone))
                 {

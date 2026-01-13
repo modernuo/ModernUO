@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class LeafArms : BaseArmor
     {
         [Constructible]
-        public LeafArms() : base(0x2FC8) => Weight = 2.0;
+        public LeafArms() : base(0x2FC8)
+        {
+        }
+
+        public override double DefaultWeight => 2.0;
 
         public override int RequiredRaces => Race.AllowElvesOnly;
         public override int BasePhysicalResistance => 2;

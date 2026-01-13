@@ -6,7 +6,11 @@ namespace Server.Items
     public partial class ChainHatsuburi : BaseArmor
     {
         [Constructible]
-        public ChainHatsuburi() : base(0x2774) => Weight = 7.0;
+        public ChainHatsuburi() : base(0x2774)
+        {
+        }
+
+        public override double DefaultWeight => 7.0;
 
         public override int BasePhysicalResistance => 5;
         public override int BaseFireResistance => 2;

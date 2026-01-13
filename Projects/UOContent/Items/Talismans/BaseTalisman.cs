@@ -260,8 +260,7 @@ public partial class BaseTalisman : Item, IAosItem
     [SerializableFieldSaveFlag(14)]
     public bool ShouldSerializeSlayer() => _slayer != TalismanSlayerName.None;
 
-    private Mobile _creature;
-
+    private BaseCreature _creature;
 
     private TimerExecutionToken _timerToken;
 
@@ -272,7 +271,6 @@ public partial class BaseTalisman : Item, IAosItem
     public BaseTalisman(int itemID) : base(itemID)
     {
         Layer = Layer.Talisman;
-        Weight = 1.0;
 
         _protection = new TalismanAttribute();
         _killer = new TalismanAttribute();
@@ -280,6 +278,8 @@ public partial class BaseTalisman : Item, IAosItem
         Attributes = new AosAttributes(this);
         SkillBonuses = new AosSkillBonuses(this);
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1071023; // Talisman
     public virtual bool ForceShowName => false; // used to override default summoner/removal name

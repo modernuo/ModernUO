@@ -6,7 +6,11 @@ namespace Server.Items
     public partial class PlateBattleKabuto : BaseArmor
     {
         [Constructible]
-        public PlateBattleKabuto() : base(0x2785) => Weight = 6.0;
+        public PlateBattleKabuto() : base(0x2785)
+        {
+        }
+
+        public override double DefaultWeight => 6.0;
 
         public override int BasePhysicalResistance => 6;
         public override int BaseFireResistance => 2;

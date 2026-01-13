@@ -1,0 +1,1181 @@
+﻿{
+    "category":  "Account",
+    "packets":  [
+                    {
+                        "id":  "0x82",
+                        "name":  "Account Login Rejected",
+                        "description":  "Sent when account login fails. Contains the reason for rejection.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  2,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x82",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Reason",
+                                           "type":  "enum",
+                                           "size":  1,
+                                           "description":  "Rejection reason code",
+                                           "values":  [
+                                               { "value":  "0", "name":  "Invalid", "description":  "Invalid credentials" },
+                                               { "value":  "1", "name":  "InUse", "description":  "Account already in use" },
+                                               { "value":  "2", "name":  "Blocked", "description":  "Account blocked" },
+                                               { "value":  "3", "name":  "BadPass", "description":  "Incorrect password" },
+                                               { "value":  "254", "name":  "Idle", "description":  "Idle timeout" },
+                                               { "value":  "255", "name":  "BadComm", "description":  "Communication error" }
+                                           ]
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0x80",
+                                            "relationship":  "request",
+                                            "note":  "The login attempt that failed"
+                                        }
+                                    ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingAccountPackets.cs",
+                                       "line":  402
+                                   }
+                    },
+                    {
+                        "id":  "0xA8",
+                        "name":  "Account Login Ack (Server List)",
+                        "description":  "Sent after successful account login. Contains the list of available game servers.",
+                        "direction":  "outgoing",
+                        "isDynamic":  true,
+                        "size":  "6 + (40 x serverCount)",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xA8",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "System Info Flag",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x5D",
+                                           "description":  "System info flag"
+                                       },
+                                       {
+                                           "name":  "Server Count",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Number of servers in list"
+                                       },
+                                       {
+                                           "name":  "Servers",
+                                           "type":  "array",
+                                           "description":  "Server list entries",
+                                           "loop":  {
+                                                        "countField":  "serverCount",
+                                                        "fields":  [
+                                                                       {
+                                                                           "name":  "Index",
+                                                                           "type":  "ushort",
+                                                                           "size":  2,
+                                                                           "description":  "Server index"
+                                                                       },
+                                                                       {
+                                                                           "name":  "Name",
+                                                                           "type":  "ascii",
+                                                                           "size":  32,
+                                                                           "description":  "Server name"
+                                                                       },
+                                                                       {
+                                                                           "name":  "Full Percent",
+                                                                           "type":  "byte",
+                                                                           "size":  1,
+                                                                           "description":  "Server load percentage"
+                                                                       },
+                                                                       {
+                                                                           "name":  "Timezone",
+                                                                           "type":  "sbyte",
+                                                                           "size":  1,
+                                                                           "description":  "Server timezone offset"
+                                                                       },
+                                                                       {
+                                                                           "name":  "IP Address",
+                                                                           "type":  "uint",
+                                                                           "size":  4,
+                                                                           "description":  "Server IP address (IPv4)"
+                                                                       }
+                                                                   ]
+                                                    }
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0x80",
+                                            "relationship":  "request",
+                                            "note":  "The successful login request"
+                                        }
+                                    ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingAccountPackets.cs",
+                                       "line":  411
+                                   }
+                    },
+                    {
+                        "id":  "0x8C",
+                        "name":  "Play Server Ack",
+                        "description":  "Sent after selecting a server. Contains connection details for the game server.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  11,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x8C",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "IP Address",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Game server IP address (little-endian)"
+                                       },
+                                       {
+                                           "name":  "Port",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Game server port"
+                                       },
+                                       {
+                                           "name":  "Auth ID",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Authentication ID for game login"
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0xA0",
+                                            "relationship":  "request",
+                                            "note":  "The server selection request"
+                                        },
+                                        {
+                                            "id":  "0x91",
+                                            "relationship":  "response",
+                                            "note":  "Client sends game login with this authId"
+                                        }
+                                    ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingAccountPackets.cs",
+                                       "line":  447
+                                   }
+                    },
+                    {
+                        "id":  "0xA9",
+                        "name":  "Character List",
+                        "description":  "Sent after game login. Contains the list of characters on the account and starting city information. Extended format in 7.0.13.0+ includes city coordinates.",
+                        "direction":  "outgoing",
+                        "isDynamic":  true,
+                        "size":  "Varies",
+                        "variants":  [
+                                         {
+                                             "version":  "Classic",
+                                             "name":  "Pre-7.0.13.0 Format",
+                                             "condition":  "Client version \u003c 7.0.13.0",
+                                             "size":  "9+",
+                                             "fields":  [
+                                                            {
+                                                                "name":  "Packet ID",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0xA9",
+                                                                "description":  "Packet identifier"
+                                                            },
+                                                            {
+                                                                "name":  "Length",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "description":  "Packet length"
+                                                            },
+                                                            {
+                                                                "name":  "Char Count",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "description":  "Number of character slots (1, 5, 6, or 7)"
+                                                            },
+                                                            {
+                                                                "name":  "Characters",
+                                                                "type":  "loop",
+                                                                "description":  "Character list entries (60 bytes each)",
+                                                                "loop":  {
+                                                                             "countField":  "charCount",
+                                                                             "itemSize":  60,
+                                                                             "fields":  [
+                                                                                            {
+                                                                                                "name":  "Name",
+                                                                                                "type":  "ascii",
+                                                                                                "size":  30,
+                                                                                                "description":  "Character name (empty if slot unused)"
+                                                                                            },
+                                                                                            {
+                                                                                                "name":  "Password",
+                                                                                                "type":  "ascii",
+                                                                                                "size":  30,
+                                                                                                "description":  "Always empty (legacy field)"
+                                                                                            }
+                                                                                        ]
+                                                                         }
+                                                            },
+                                                            {
+                                                                "name":  "City Count",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "description":  "Number of starting cities"
+                                                            },
+                                                            {
+                                                                "name":  "Cities",
+                                                                "type":  "loop",
+                                                                "description":  "Starting city entries (63 bytes each)",
+                                                                "loop":  {
+                                                                             "countField":  "cityCount",
+                                                                             "itemSize":  63,
+                                                                             "fields":  [
+                                                                                            {
+                                                                                                "name":  "Index",
+                                                                                                "type":  "byte",
+                                                                                                "size":  1,
+                                                                                                "description":  "City index"
+                                                                                            },
+                                                                                            {
+                                                                                                "name":  "City Name",
+                                                                                                "type":  "ascii",
+                                                                                                "size":  31,
+                                                                                                "description":  "City name"
+                                                                                            },
+                                                                                            {
+                                                                                                "name":  "Building Name",
+                                                                                                "type":  "ascii",
+                                                                                                "size":  31,
+                                                                                                "description":  "Building/tavern name"
+                                                                                            }
+                                                                                        ]
+                                                                         }
+                                                            },
+                                                            {
+                                                                "name":  "Flags",
+                                                                "type":  "bitfield",
+                                                                "size":  4,
+                                                                "description":  "Character list flags",
+                                                                "flags":  [
+                                                                              {
+                                                                                  "bit":  "0",
+                                                                                  "name":  "Unknown1",
+                                                                                  "description":  "Unknown"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "1",
+                                                                                  "name":  "Overwrite Config",
+                                                                                  "description":  "Overwrite configuration file"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "2",
+                                                                                  "name":  "One Character Slot",
+                                                                                  "description":  "Limit to 1 character slot"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "3",
+                                                                                  "name":  "Context Menus",
+                                                                                  "description":  "Enable context menus"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "4",
+                                                                                  "name":  "Slot Limit",
+                                                                                  "description":  "Limit character slots"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "5",
+                                                                                  "name":  "AOS",
+                                                                                  "description":  "Age of Shadows features"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "6",
+                                                                                  "name":  "Sixth Character Slot",
+                                                                                  "description":  "Enable 6th character slot"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "7",
+                                                                                  "name":  "SE",
+                                                                                  "description":  "Samurai Empire features"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "8",
+                                                                                  "name":  "ML",
+                                                                                  "description":  "Mondain\u0027s Legacy features"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "9",
+                                                                                  "name":  "Unknown2",
+                                                                                  "description":  "Unknown"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "10",
+                                                                                  "name":  "KR",
+                                                                                  "description":  "Kingdom Reborn features"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "11",
+                                                                                  "name":  "SA",
+                                                                                  "description":  "Stygian Abyss features"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "12",
+                                                                                  "name":  "HS",
+                                                                                  "description":  "High Seas features"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "13",
+                                                                                  "name":  "Seventh Character Slot",
+                                                                                  "description":  "Enable 7th character slot"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "14",
+                                                                                  "name":  "Unknown3",
+                                                                                  "description":  "Unknown"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "15",
+                                                                                  "name":  "New Movement",
+                                                                                  "description":  "New movement system"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "16",
+                                                                                  "name":  "New Felucca Areas",
+                                                                                  "description":  "New Felucca areas"
+                                                                              }
+                                                                          ]
+                                                            }
+                                                        ]
+                                         },
+                                         {
+                                             "version":  "NewCharacterList (7.0.13.0+)",
+                                             "name":  "Extended City Format",
+                                             "condition":  "Client version \u003e= 7.0.13.0 (NewCharacterList)",
+                                             "size":  "11+",
+                                             "fields":  [
+                                                            {
+                                                                "name":  "Packet ID",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0xA9",
+                                                                "description":  "Packet identifier"
+                                                            },
+                                                            {
+                                                                "name":  "Length",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "description":  "Packet length"
+                                                            },
+                                                            {
+                                                                "name":  "Char Count",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "description":  "Number of character slots (1, 5, 6, or 7)"
+                                                            },
+                                                            {
+                                                                "name":  "Characters",
+                                                                "type":  "loop",
+                                                                "description":  "Character list entries (60 bytes each)",
+                                                                "loop":  {
+                                                                             "countField":  "charCount",
+                                                                             "itemSize":  60,
+                                                                             "fields":  [
+                                                                                            {
+                                                                                                "name":  "Name",
+                                                                                                "type":  "ascii",
+                                                                                                "size":  30,
+                                                                                                "description":  "Character name (empty if slot unused)"
+                                                                                            },
+                                                                                            {
+                                                                                                "name":  "Password",
+                                                                                                "type":  "ascii",
+                                                                                                "size":  30,
+                                                                                                "description":  "Always empty (legacy field)"
+                                                                                            }
+                                                                                        ]
+                                                                         }
+                                                            },
+                                                            {
+                                                                "name":  "City Count",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "description":  "Number of starting cities"
+                                                            },
+                                                            {
+                                                                "name":  "Cities",
+                                                                "type":  "loop",
+                                                                "description":  "Starting city entries (89 bytes each, extended format)",
+                                                                "loop":  {
+                                                                             "countField":  "cityCount",
+                                                                             "itemSize":  89,
+                                                                             "fields":  [
+                                                                                            {
+                                                                                                "name":  "Index",
+                                                                                                "type":  "byte",
+                                                                                                "size":  1,
+                                                                                                "description":  "City index"
+                                                                                            },
+                                                                                            {
+                                                                                                "name":  "City Name",
+                                                                                                "type":  "ascii",
+                                                                                                "size":  32,
+                                                                                                "description":  "City name (1 byte longer than classic)"
+                                                                                            },
+                                                                                            {
+                                                                                                "name":  "Building Name",
+                                                                                                "type":  "ascii",
+                                                                                                "size":  32,
+                                                                                                "description":  "Building/tavern name (1 byte longer than classic)"
+                                                                                            },
+                                                                                            {
+                                                                                                "name":  "X",
+                                                                                                "type":  "int",
+                                                                                                "size":  4,
+                                                                                                "description":  "X coordinate of starting location"
+                                                                                            },
+                                                                                            {
+                                                                                                "name":  "Y",
+                                                                                                "type":  "int",
+                                                                                                "size":  4,
+                                                                                                "description":  "Y coordinate of starting location"
+                                                                                            },
+                                                                                            {
+                                                                                                "name":  "Z",
+                                                                                                "type":  "int",
+                                                                                                "size":  4,
+                                                                                                "description":  "Z coordinate of starting location"
+                                                                                            },
+                                                                                            {
+                                                                                                "name":  "Map ID",
+                                                                                                "type":  "int",
+                                                                                                "size":  4,
+                                                                                                "description":  "Map ID for starting location"
+                                                                                            },
+                                                                                            {
+                                                                                                "name":  "Cliloc",
+                                                                                                "type":  "int",
+                                                                                                "size":  4,
+                                                                                                "description":  "Cliloc ID for city description"
+                                                                                            },
+                                                                                            {
+                                                                                                "name":  "Unknown",
+                                                                                                "type":  "int",
+                                                                                                "size":  4,
+                                                                                                "value":  "0",
+                                                                                                "description":  "Unknown (always 0)"
+                                                                                            }
+                                                                                        ]
+                                                                         }
+                                                            },
+                                                            {
+                                                                "name":  "Flags",
+                                                                "type":  "bitfield",
+                                                                "size":  4,
+                                                                "description":  "Character list flags (same as classic format)",
+                                                                "flags":  [
+                                                                              {
+                                                                                  "bit":  "2",
+                                                                                  "name":  "One Character Slot",
+                                                                                  "description":  "Limit to 1 character slot"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "3",
+                                                                                  "name":  "Context Menus",
+                                                                                  "description":  "Enable context menus"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "4",
+                                                                                  "name":  "Slot Limit",
+                                                                                  "description":  "Limit character slots"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "5",
+                                                                                  "name":  "AOS",
+                                                                                  "description":  "Age of Shadows features"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "6",
+                                                                                  "name":  "Sixth Character Slot",
+                                                                                  "description":  "Enable 6th character slot"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "7",
+                                                                                  "name":  "SE",
+                                                                                  "description":  "Samurai Empire features"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "8",
+                                                                                  "name":  "ML",
+                                                                                  "description":  "Mondain\u0027s Legacy features"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "11",
+                                                                                  "name":  "SA",
+                                                                                  "description":  "Stygian Abyss features"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "12",
+                                                                                  "name":  "HS",
+                                                                                  "description":  "High Seas features"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "13",
+                                                                                  "name":  "Seventh Character Slot",
+                                                                                  "description":  "Enable 7th character slot"
+                                                                              }
+                                                                          ]
+                                                            },
+                                                            {
+                                                                "name":  "Last Char Slot",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "value":  "-1",
+                                                                "description":  "Last played character slot index (-1 if none)"
+                                                            }
+                                                        ]
+                                         }
+                                     ],
+                        "related":  [
+                                        {
+                                            "id":  "0x91",
+                                            "relationship":  "request",
+                                            "note":  "Game login request"
+                                        }
+                                    ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingAccountPackets.cs",
+                                       "line":  293
+                                   }
+                    },
+                    {
+                        "id":  "0x1B",
+                        "name":  "Login Confirmation",
+                        "description":  "Sent when entering the world. Confirms the player\u0027s mobile serial and initial position.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  37,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x1B",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Player mobile serial"
+                                       },
+                                       {
+                                           "name":  "Unknown",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "value":  "0",
+                                           "description":  "Unknown (always 0)"
+                                       },
+                                       {
+                                           "name":  "Body",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Player body ID"
+                                       },
+                                       {
+                                           "name":  "X",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "X coordinate"
+                                       },
+                                       {
+                                           "name":  "Y",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Y coordinate"
+                                       },
+                                       {
+                                           "name":  "Z",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Z coordinate"
+                                       },
+                                       {
+                                           "name":  "Direction",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Facing direction"
+                                       },
+                                       {
+                                           "name":  "Unknown2",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0",
+                                           "description":  "Unknown"
+                                       },
+                                       {
+                                           "name":  "Unknown3",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "value":  "-1",
+                                           "description":  "Unknown (always -1)"
+                                       },
+                                       {
+                                           "name":  "Unknown4",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "value":  "0",
+                                           "description":  "Unknown"
+                                       },
+                                       {
+                                           "name":  "Map Width",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Map width in tiles"
+                                       },
+                                       {
+                                           "name":  "Map Height",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Map height in tiles"
+                                       },
+                                       {
+                                           "name":  "Unknown5",
+                                           "type":  "byte[6]",
+                                           "size":  6,
+                                           "description":  "Unknown (zeros)"
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0x5D",
+                                            "relationship":  "request",
+                                            "note":  "Play character request"
+                                        }
+                                    ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingAccountPackets.cs",
+                                       "line":  190
+                                   }
+                    },
+                    {
+                        "id":  "0x55",
+                        "name":  "Login Complete",
+                        "description":  "Final packet in the login sequence. Signals that the client can begin normal gameplay.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  1,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x55",
+                                           "description":  "Packet identifier"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingAccountPackets.cs",
+                                       "line":  231
+                                   }
+                    },
+                    {
+                        "id":  "0xBD",
+                        "name":  "Client Version Request",
+                        "description":  "Request for the client to send its version string.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  3,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xBD",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x0003",
+                                           "description":  "Packet length"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingAccountPackets.cs",
+                                       "line":  112
+                                   },
+                        "notes":  "Same packet ID (0xBD) is used for both request (server) and response (client)."
+                    },
+                    {
+                        "id":  "0xB9",
+                        "name":  "Supported Features",
+                        "description":  "Informs the client which features are enabled on the server. Feature flags control T2A, LBR, AOS, SE, ML, SA, HS features and character slot limits.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  "Varies",
+                        "variants":  [
+                                         {
+                                             "version":  "Classic",
+                                             "name":  "16-bit Feature Flags",
+                                             "condition":  "Client without ExtendedSupportedFeatures",
+                                             "size":  3,
+                                             "fields":  [
+                                                            {
+                                                                "name":  "Packet ID",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0xB9",
+                                                                "description":  "Packet identifier"
+                                                            },
+                                                            {
+                                                                "name":  "Features",
+                                                                "type":  "bitfield",
+                                                                "size":  2,
+                                                                "description":  "16-bit feature flags bitmask",
+                                                                "flags":  [
+                                                                              {
+                                                                                  "bit":  "0",
+                                                                                  "name":  "T2A",
+                                                                                  "description":  "The Second Age features"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "1",
+                                                                                  "name":  "Renaissance",
+                                                                                  "description":  "Renaissance features"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "2",
+                                                                                  "name":  "Third Dawn",
+                                                                                  "description":  "Third Dawn (3D client) features"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "3",
+                                                                                  "name":  "LBR",
+                                                                                  "description":  "Lord Blackthorn\u0027s Revenge features"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "4",
+                                                                                  "name":  "AOS",
+                                                                                  "description":  "Age of Shadows features"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "5",
+                                                                                  "name":  "Sixth Character Slot",
+                                                                                  "description":  "Enable 6th character slot"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "6",
+                                                                                  "name":  "SE",
+                                                                                  "description":  "Samurai Empire features"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "7",
+                                                                                  "name":  "ML",
+                                                                                  "description":  "Mondain\u0027s Legacy features"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "8",
+                                                                                  "name":  "Eighth Age",
+                                                                                  "description":  "Eighth Age splash screen"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "9",
+                                                                                  "name":  "Ninth Age",
+                                                                                  "description":  "Ninth Age splash screen"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "10",
+                                                                                  "name":  "Tenth Age",
+                                                                                  "description":  "Tenth Age splash screen"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "11",
+                                                                                  "name":  "Increased Storage",
+                                                                                  "description":  "Increased storage"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "12",
+                                                                                  "name":  "Seventh Character Slot",
+                                                                                  "description":  "Enable 7th character slot"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "13",
+                                                                                  "name":  "Roleplay Faces",
+                                                                                  "description":  "Roleplay face selection"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "14",
+                                                                                  "name":  "Trial Account",
+                                                                                  "description":  "Trial account flag"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "15",
+                                                                                  "name":  "Live Account",
+                                                                                  "description":  "Live (paid) account flag"
+                                                                              }
+                                                                          ]
+                                                            }
+                                                        ]
+                                         },
+                                         {
+                                             "version":  "Extended",
+                                             "name":  "32-bit Feature Flags",
+                                             "condition":  "Client with ExtendedSupportedFeatures",
+                                             "size":  5,
+                                             "fields":  [
+                                                            {
+                                                                "name":  "Packet ID",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0xB9",
+                                                                "description":  "Packet identifier"
+                                                            },
+                                                            {
+                                                                "name":  "Features",
+                                                                "type":  "bitfield",
+                                                                "size":  4,
+                                                                "description":  "32-bit feature flags bitmask (includes all 16-bit flags plus expansion flags)",
+                                                                "flags":  [
+                                                                              {
+                                                                                  "bit":  "0",
+                                                                                  "name":  "T2A",
+                                                                                  "description":  "The Second Age features"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "1",
+                                                                                  "name":  "Renaissance",
+                                                                                  "description":  "Renaissance features"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "2",
+                                                                                  "name":  "Third Dawn",
+                                                                                  "description":  "Third Dawn (3D client) features"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "3",
+                                                                                  "name":  "LBR",
+                                                                                  "description":  "Lord Blackthorn\u0027s Revenge features"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "4",
+                                                                                  "name":  "AOS",
+                                                                                  "description":  "Age of Shadows features"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "5",
+                                                                                  "name":  "Sixth Character Slot",
+                                                                                  "description":  "Enable 6th character slot"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "6",
+                                                                                  "name":  "SE",
+                                                                                  "description":  "Samurai Empire features"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "7",
+                                                                                  "name":  "ML",
+                                                                                  "description":  "Mondain\u0027s Legacy features"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "8",
+                                                                                  "name":  "Eighth Age",
+                                                                                  "description":  "Eighth Age splash screen"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "9",
+                                                                                  "name":  "Ninth Age",
+                                                                                  "description":  "Ninth Age splash screen"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "10",
+                                                                                  "name":  "Tenth Age",
+                                                                                  "description":  "Tenth Age splash screen"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "11",
+                                                                                  "name":  "Increased Storage",
+                                                                                  "description":  "Increased storage"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "12",
+                                                                                  "name":  "Seventh Character Slot",
+                                                                                  "description":  "Enable 7th character slot"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "13",
+                                                                                  "name":  "Roleplay Faces",
+                                                                                  "description":  "Roleplay face selection"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "14",
+                                                                                  "name":  "Trial Account",
+                                                                                  "description":  "Trial account flag"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "15",
+                                                                                  "name":  "Live Account",
+                                                                                  "description":  "Live (paid) account flag"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "16",
+                                                                                  "name":  "SA",
+                                                                                  "description":  "Stygian Abyss features"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "17",
+                                                                                  "name":  "HS",
+                                                                                  "description":  "High Seas features"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "18",
+                                                                                  "name":  "Gothic",
+                                                                                  "description":  "Gothic housing tiles"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "19",
+                                                                                  "name":  "Rustic",
+                                                                                  "description":  "Rustic housing tiles"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "20",
+                                                                                  "name":  "Jungle",
+                                                                                  "description":  "Jungle housing tiles"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "21",
+                                                                                  "name":  "Shadowguard",
+                                                                                  "description":  "Shadowguard content"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "22",
+                                                                                  "name":  "TOL",
+                                                                                  "description":  "Time of Legends features"
+                                                                              },
+                                                                              {
+                                                                                  "bit":  "23",
+                                                                                  "name":  "EJ",
+                                                                                  "description":  "Endless Journey (F2P) features"
+                                                                              }
+                                                                          ]
+                                                            }
+                                                        ]
+                                         }
+                                     ],
+                        "clientVersion":  {
+                                              "feature":  "ExtendedSupportedFeatures determines which variant is sent"
+                                          },
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingAccountPackets.cs",
+                                       "line":  140
+                                   }
+                    },
+                    {
+                        "id":  "0x85",
+                        "name":  "Character Delete Result",
+                        "description":  "Result of a character deletion request.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  2,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x85",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Result",
+                                           "type":  "enum",
+                                           "size":  1,
+                                           "description":  "Deletion result code",
+                                           "values":  [
+                                               { "value":  "0", "name":  "PasswordInvalid", "description":  "Password is invalid" },
+                                               { "value":  "1", "name":  "CharNotExist", "description":  "Character does not exist" },
+                                               { "value":  "2", "name":  "CharBeingPlayed", "description":  "Character is being played" },
+                                               { "value":  "3", "name":  "CharTooYoung", "description":  "Character too young to delete" },
+                                               { "value":  "4", "name":  "CharQueued", "description":  "Character queued for deletion" },
+                                               { "value":  "5", "name":  "BadRequest", "description":  "Invalid request" }
+                                           ]
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0x83",
+                                            "relationship":  "request",
+                                            "note":  "The delete request"
+                                        }
+                                    ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingAccountPackets.cs",
+                                       "line":  121
+                                   }
+                    },
+                    {
+                        "id":  "0x53",
+                        "name":  "Popup Message",
+                        "description":  "Displays a predefined popup message to the client.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  2,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x53",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Message ID",
+                                           "type":  "enum",
+                                           "size":  1,
+                                           "description":  "Predefined message identifier",
+                                           "values":  [
+                                               { "value":  "1", "name":  "CharNoExist", "description":  "Character does not exist" },
+                                               { "value":  "2", "name":  "CharExists", "description":  "Character already exists" },
+                                               { "value":  "5", "name":  "CharInWorld", "description":  "Character is in world" },
+                                               { "value":  "6", "name":  "LoginSyncError", "description":  "Login synchronization error" },
+                                               { "value":  "7", "name":  "IdleWarning", "description":  "Idle timeout warning" }
+                                           ]
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingAccountPackets.cs",
+                                       "line":  131
+                                   }
+                    },
+                    {
+                        "id":  "0x81",
+                        "name":  "Change Character",
+                        "description":  "Updates the character list during reconnection. Currently unused.",
+                        "direction":  "outgoing",
+                        "isDynamic":  true,
+                        "size":  "5 + (60 x charCount)",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x81",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Char Count",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Number of characters"
+                                       },
+                                       {
+                                           "name":  "Characters",
+                                           "type":  "array",
+                                           "description":  "Character list entries",
+                                           "loop":  {
+                                                        "countField":  "charCount",
+                                                        "fields":  [
+                                                                       {
+                                                                           "name":  "Name",
+                                                                           "type":  "ascii",
+                                                                           "size":  30,
+                                                                           "description":  "Character name"
+                                                                       },
+                                                                       {
+                                                                           "name":  "Password",
+                                                                           "type":  "ascii",
+                                                                           "size":  30,
+                                                                           "description":  "Always empty"
+                                                                       }
+                                                                   ]
+                                                    }
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingAccountPackets.cs",
+                                       "line":  63
+                                   },
+                        "notes":  "Currently unused in ModernUO."
+                    },
+                    {
+                        "id":  "0x86",
+                        "name":  "Character List Update",
+                        "description":  "Updates the character list after character creation or deletion.",
+                        "direction":  "outgoing",
+                        "isDynamic":  true,
+                        "size":  "4 + (60 x charCount)",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x86",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Char Count",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Number of character slots"
+                                       },
+                                       {
+                                           "name":  "Characters",
+                                           "type":  "array",
+                                           "description":  "Character list entries",
+                                           "loop":  {
+                                                        "countField":  "charCount",
+                                                        "fields":  [
+                                                                       {
+                                                                           "name":  "Name",
+                                                                           "type":  "ascii",
+                                                                           "size":  30,
+                                                                           "description":  "Character name (empty if slot unused)"
+                                                                       },
+                                                                       {
+                                                                           "name":  "Password",
+                                                                           "type":  "ascii",
+                                                                           "size":  30,
+                                                                           "description":  "Always empty"
+                                                                       }
+                                                                   ]
+                                                    }
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingAccountPackets.cs",
+                                       "line":  242
+                                   }
+                    }
+                ]
+}

@@ -1,0 +1,43 @@
+{
+  "version": 0,
+  "type": "Server.Systems.JailSystem.JailRecord",
+  "properties": [
+    {
+      "name": "JailCount",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "LastJailed",
+      "type": "System.DateTime",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "JailEndTime",
+      "type": "System.DateTime",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "LastJailReason",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "JailedBy",
+      "type": "Server.Mobile",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}

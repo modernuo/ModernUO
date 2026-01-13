@@ -94,7 +94,7 @@ public static class AdhocPersistence
 
             byte* ptr = null;
             accessor.SafeMemoryMappedViewHandle.AcquirePointer(ref ptr);
-            UnmanagedDataReader dataReader = new UnmanagedDataReader(ptr, accessor.Length);
+            var dataReader = new UnmanagedDataReader(ptr, accessor.Length);
             deserializer(dataReader);
 
             error = dataReader.Position != fileLength

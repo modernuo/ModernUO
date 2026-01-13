@@ -20,12 +20,13 @@ public partial class BankCheck : Item
     [Constructible]
     public BankCheck(int worth) : base(0x14F0)
     {
-        Weight = 1.0;
         Hue = 0x34;
         LootType = LootType.Blessed;
 
         _worth = worth;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override bool DisplayLootType => Core.AOS;
 

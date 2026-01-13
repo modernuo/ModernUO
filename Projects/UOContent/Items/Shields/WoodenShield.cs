@@ -6,7 +6,11 @@ namespace Server.Items;
 public partial class WoodenShield : BaseShield
 {
     [Constructible]
-    public WoodenShield() : base(0x1B7A) => Weight = 5.0;
+    public WoodenShield() : base(0x1B7A)
+    {
+    }
+
+    public override double DefaultWeight => 5.0;
 
     public override int BasePhysicalResistance => 0;
     public override int BaseFireResistance => 0;

@@ -9,9 +9,10 @@ public abstract partial class BaseClothMaterial : Item, IDyable
     public BaseClothMaterial(int itemID, int amount = 1) : base(itemID)
     {
         Stackable = true;
-        Weight = 1.0;
         Amount = amount;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public bool Dye(Mobile from, DyeTub sender)
     {
@@ -75,8 +76,10 @@ public abstract partial class BaseClothMaterial : Item, IDyable
                 }
                 else
                 {
-                    Item create = new BoltOfCloth();
-                    create.Hue = m_Material.Hue;
+                    var create = new BoltOfCloth
+                    {
+                        Hue = m_Material.Hue
+                    };
 
                     m_Material.Consume();
                     loom.Phase = 0;

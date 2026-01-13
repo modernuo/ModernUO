@@ -231,8 +231,8 @@ public abstract partial class BaseDoor : Item, ILockable, ITelekinesisable
             return;
         }
 
-        int x = m.X;
-        int y = m.Y;
+        var x = m.X;
+        var y = m.Y;
 
         CalcMoves.Offset(m.Direction, ref x, ref y);
 
@@ -423,6 +423,13 @@ public abstract partial class BaseDoor : Item, ILockable, ITelekinesisable
         }
     }
 
+    public override void OnDelete()
+    {
+        _timer?.Stop();
+        _timer = null;
+        Link = null;
+    }
+
     [AfterDeserialization]
     private void AfterDeserialization()
     {
@@ -442,6 +449,12 @@ public abstract partial class BaseDoor : Item, ILockable, ITelekinesisable
 
         protected override void OnTick()
         {
+            if (_door.Deleted)
+            {
+                Stop();
+                return;
+            }
+
             if (_door.Open && _door.IsFreeToClose())
             {
                 _door.Open = false;

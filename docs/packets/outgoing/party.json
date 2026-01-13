@@ -1,0 +1,281 @@
+﻿{
+    "category":  "Party",
+    "packets":  [
+                    {
+                        "id":  "0xBF",
+                        "subId":  "0x06",
+                        "name":  "Party Message",
+                        "description":  "Party system messages with various subcommands.",
+                        "direction":  "outgoing",
+                        "isDynamic":  true,
+                        "size":  "Varies",
+                        "variants":  [
+                                         {
+                                             "name":  "Member List",
+                                             "version":  "0x01",
+                                             "condition":  "command == 0x01",
+                                             "size":  "7 + (memberCount x 4)",
+                                             "fields":  [
+                                                            {
+                                                                "name":  "Packet ID",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0xBF",
+                                                                "description":  "Packet identifier"
+                                                            },
+                                                            {
+                                                                "name":  "Length",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "description":  "Packet length"
+                                                            },
+                                                            {
+                                                                "name":  "Sub-Command",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "value":  "0x0006",
+                                                                "description":  "Party subcommand"
+                                                            },
+                                                            {
+                                                                "name":  "Command",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0x01",
+                                                                "description":  "Member list command"
+                                                            },
+                                                            {
+                                                                "name":  "Member Count",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "description":  "Number of party members"
+                                                            },
+                                                            {
+                                                                "name":  "Members",
+                                                                "type":  "loop",
+                                                                "description":  "Party members",
+                                                                "loop":  {
+                                                                             "countField":  "memberCount",
+                                                                             "fields":  [
+                                                                                            {
+                                                                                                "name":  "Serial",
+                                                                                                "type":  "uint",
+                                                                                                "size":  4,
+                                                                                                "description":  "Member\u0027s serial"
+                                                                                            }
+                                                                                        ]
+                                                                         }
+                                                            }
+                                                        ]
+                                         },
+                                         {
+                                             "name":  "Remove Member",
+                                             "version":  "0x02",
+                                             "condition":  "command == 0x02",
+                                             "size":  "11 + (memberCount x 4)",
+                                             "fields":  [
+                                                            {
+                                                                "name":  "Packet ID",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0xBF",
+                                                                "description":  "Packet identifier"
+                                                            },
+                                                            {
+                                                                "name":  "Length",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "description":  "Packet length"
+                                                            },
+                                                            {
+                                                                "name":  "Sub-Command",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "value":  "0x0006",
+                                                                "description":  "Party subcommand"
+                                                            },
+                                                            {
+                                                                "name":  "Command",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0x02",
+                                                                "description":  "Remove member command"
+                                                            },
+                                                            {
+                                                                "name":  "Member Count",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "description":  "Number of remaining members"
+                                                            },
+                                                            {
+                                                                "name":  "Removed Serial",
+                                                                "type":  "uint",
+                                                                "size":  4,
+                                                                "description":  "Serial of removed member"
+                                                            },
+                                                            {
+                                                                "name":  "Members",
+                                                                "type":  "loop",
+                                                                "description":  "Remaining party members",
+                                                                "loop":  {
+                                                                             "countField":  "memberCount",
+                                                                             "fields":  [
+                                                                                            {
+                                                                                                "name":  "Serial",
+                                                                                                "type":  "uint",
+                                                                                                "size":  4,
+                                                                                                "description":  "Member\u0027s serial"
+                                                                                            }
+                                                                                        ]
+                                                                         }
+                                                            }
+                                                        ]
+                                         },
+                                         {
+                                             "name":  "Private Message",
+                                             "version":  "0x03",
+                                             "condition":  "command == 0x03",
+                                             "size":  "12 + (text.Length x 2)",
+                                             "fields":  [
+                                                            {
+                                                                "name":  "Packet ID",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0xBF",
+                                                                "description":  "Packet identifier"
+                                                            },
+                                                            {
+                                                                "name":  "Length",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "description":  "Packet length"
+                                                            },
+                                                            {
+                                                                "name":  "Sub-Command",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "value":  "0x0006",
+                                                                "description":  "Party subcommand"
+                                                            },
+                                                            {
+                                                                "name":  "Command",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0x03",
+                                                                "description":  "Private message command"
+                                                            },
+                                                            {
+                                                                "name":  "Sender Serial",
+                                                                "type":  "uint",
+                                                                "size":  4,
+                                                                "description":  "Serial of message sender"
+                                                            },
+                                                            {
+                                                                "name":  "Text",
+                                                                "type":  "utf16be-t",
+                                                                "description":  "Message text"
+                                                            }
+                                                        ]
+                                         },
+                                         {
+                                             "name":  "Public Message",
+                                             "version":  "0x04",
+                                             "condition":  "command == 0x04",
+                                             "size":  "12 + (text.Length x 2)",
+                                             "fields":  [
+                                                            {
+                                                                "name":  "Packet ID",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0xBF",
+                                                                "description":  "Packet identifier"
+                                                            },
+                                                            {
+                                                                "name":  "Length",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "description":  "Packet length"
+                                                            },
+                                                            {
+                                                                "name":  "Sub-Command",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "value":  "0x0006",
+                                                                "description":  "Party subcommand"
+                                                            },
+                                                            {
+                                                                "name":  "Command",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0x04",
+                                                                "description":  "Public message command"
+                                                            },
+                                                            {
+                                                                "name":  "Sender Serial",
+                                                                "type":  "uint",
+                                                                "size":  4,
+                                                                "description":  "Serial of message sender"
+                                                            },
+                                                            {
+                                                                "name":  "Text",
+                                                                "type":  "utf16be-t",
+                                                                "description":  "Message text"
+                                                            }
+                                                        ]
+                                         },
+                                         {
+                                             "name":  "Party Invitation",
+                                             "version":  "0x07",
+                                             "condition":  "command == 0x07",
+                                             "size":  10,
+                                             "fields":  [
+                                                            {
+                                                                "name":  "Packet ID",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0xBF",
+                                                                "description":  "Packet identifier"
+                                                            },
+                                                            {
+                                                                "name":  "Length",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "value":  "10",
+                                                                "description":  "Packet length"
+                                                            },
+                                                            {
+                                                                "name":  "Sub-Command",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "value":  "0x0006",
+                                                                "description":  "Party subcommand"
+                                                            },
+                                                            {
+                                                                "name":  "Command",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0x07",
+                                                                "description":  "Invitation command"
+                                                            },
+                                                            {
+                                                                "name":  "Leader Serial",
+                                                                "type":  "uint",
+                                                                "size":  4,
+                                                                "description":  "Serial of party leader"
+                                                            }
+                                                        ]
+                                         }
+                                     ],
+                        "related":  [
+                                        {
+                                            "id":  "0xBF/0x06",
+                                            "relationship":  "request",
+                                            "note":  "Party Message from client"
+                                        }
+                                    ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Engines/Party/PartyPackets.cs",
+                                       "line":  28
+                                   }
+                    }
+                ]
+}

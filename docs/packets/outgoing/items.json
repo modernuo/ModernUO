@@ -1,0 +1,102 @@
+﻿{
+    "category":  "Items",
+    "packets":  [
+                    {
+                        "id":  "0x1A",
+                        "name":  "World Item",
+                        "description":  "Displays an item in the world (pre-Stygian Abyss clients).",
+                        "direction":  "outgoing",
+                        "isDynamic":  true,
+                        "size":  "14+",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x1A",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length (14-20)"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Item serial (bit 31 set if amount present)"
+                                       },
+                                       {
+                                           "name":  "Item ID",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Item graphic ID (bit 14 set for multi)"
+                                       },
+                                       {
+                                           "name":  "Amount",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Stack amount (if serial bit 31 set)",
+                                           "condition":  "serial \u0026 0x80000000"
+                                       },
+                                       {
+                                           "name":  "X",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "X coordinate (bit 15 set if direction present)"
+                                       },
+                                       {
+                                           "name":  "Y",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Y coordinate (bit 15=hue, bit 14=flags)"
+                                       },
+                                       {
+                                           "name":  "Direction",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Direction (if x bit 15 set)",
+                                           "condition":  "x \u0026 0x8000"
+                                       },
+                                       {
+                                           "name":  "Z",
+                                           "type":  "sbyte",
+                                           "size":  1,
+                                           "description":  "Z coordinate"
+                                       },
+                                       {
+                                           "name":  "Hue",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Item hue (if y bit 15 set)",
+                                           "condition":  "y \u0026 0x8000"
+                                       },
+                                       {
+                                           "name":  "Flags",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Packet flags (if y bit 14 set)",
+                                           "condition":  "y \u0026 0x4000"
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0xF3",
+                                            "relationship":  "variant",
+                                            "note":  "World Entity packet for SA+ clients"
+                                        }
+                                    ],
+                        "notes":  "For Stygian Abyss+ clients, use 0xF3 World Entity instead.",
+                        "clientVersion":  {
+                                              "max":  "6.0.14.2",
+                                              "notes":  "Replaced by 0xF3 for SA+ clients"
+                                          },
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingItemPackets.cs",
+                                       "line":  24
+                                   }
+                    }
+                ]
+}

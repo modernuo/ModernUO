@@ -93,16 +93,16 @@ public static partial class Utility
 
         if (prefixLength < 64)
         {
-            int bitsToFlip = 64 - prefixLength;
-            ulong highMask = isMax ? ~0UL >> bitsToFlip : ~0UL << (bitsToFlip + 1);
+            var bitsToFlip = 64 - prefixLength;
+            var highMask = isMax ? ~0UL >> bitsToFlip : ~0UL << (bitsToFlip + 1);
 
             high = isMax ? high | highMask : high & highMask;
             low = isMax ? ~0UL : 0UL;
         }
         else
         {
-            int bitsToFlip = 128 - prefixLength;
-            ulong lowMask = isMax ? ~0UL >> (64 - bitsToFlip) : ~0UL << bitsToFlip;
+            var bitsToFlip = 128 - prefixLength;
+            var lowMask = isMax ? ~0UL >> (64 - bitsToFlip) : ~0UL << bitsToFlip;
 
             low = isMax ? low | lowMask : low & lowMask;
         }
@@ -125,8 +125,8 @@ public static partial class Utility
             return 0;
         }
 
-        ulong high = BinaryPrimitives.ReadUInt64BigEndian(bytes[..8]);
-        ulong low = BinaryPrimitives.ReadUInt64BigEndian(bytes.Slice(8, 8));
+        var high = BinaryPrimitives.ReadUInt64BigEndian(bytes[..8]);
+        var low = BinaryPrimitives.ReadUInt64BigEndian(bytes.Slice(8, 8));
 
         return new UInt128(high, low);
     }
@@ -150,8 +150,8 @@ public static partial class Utility
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static UInt128 CreateCidrAddress(ReadOnlySpan<byte> bytes, int prefixLength, bool isMax)
     {
-        ulong high = BinaryPrimitives.ReadUInt64BigEndian(bytes[..8]);
-        ulong low = BinaryPrimitives.ReadUInt64BigEndian(bytes.Slice(8, 8));
+        var high = BinaryPrimitives.ReadUInt64BigEndian(bytes[..8]);
+        var low = BinaryPrimitives.ReadUInt64BigEndian(bytes.Slice(8, 8));
 
         if (prefixLength < 128)
         {
@@ -209,7 +209,7 @@ public static partial class Utility
         var span = chars.AsSpan(0, str.Length);
         str.CopyTo(span);
 
-        FixHtml(span);
+        span.FixHtml();
 
         var fixedStr = span.ToString();
         STArrayPool<char>.Shared.Return(chars);
@@ -243,7 +243,7 @@ public static partial class Utility
 
         if (!str.IsNullOrWhiteSpace())
         {
-            FixHtml(span);
+            span.FixHtml();
         }
 
         return formattable;
@@ -588,7 +588,7 @@ public static partial class Utility
         while (amount > 0)
         {
             // Range is 2^amount exclusively, maximum of 62 bits can be used
-            ulong num = amount >= 62
+            var num = amount >= 62
                 ? (ulong)BuiltInRng.NextLong()
                 : (ulong)BuiltInRng.Next(1L << amount);
 
@@ -612,7 +612,7 @@ public static partial class Utility
         while (amount > 0)
         {
             // Range is 2^amount exclusively, maximum of 62 bits can be used
-            ulong num = amount >= 62
+            var num = amount >= 62
                 ? (ulong)BuiltInRng.NextLong()
                 : (ulong)BuiltInRng.Next(1L << amount);
 
@@ -1059,7 +1059,7 @@ public static partial class Utility
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Tidy<T>(this List<T> list) where T : ISerializable
     {
-        for (int i = list.Count - 1; i >= 0; i--)
+        for (var i = list.Count - 1; i >= 0; i--)
         {
             var entry = list[i];
             if (entry?.Deleted != false)
@@ -1127,7 +1127,7 @@ public static partial class Utility
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int Abs(this int value)
     {
-        int mask = value >> 31;
+        var mask = value >> 31;
         return (value + mask) ^ mask;
     }
 
@@ -1467,5 +1467,110 @@ public static partial class Utility
     {
         table.Remove(key);
         table.Add(key, value);
+    }
+
+    public static DateTime LocalToUtc(this DateTime local, TimeZoneInfo tz)
+    {
+        if (tz.IsAmbiguousTime(local))
+        {
+            var offsets = tz.GetAmbiguousTimeOffsets(local);
+            return DateTime.SpecifyKind(local - offsets[1], DateTimeKind.Utc);
+        }
+
+        return DateTime.SpecifyKind(local - tz.GetUtcOffset(local), DateTimeKind.Utc);
+    }
+
+    public static string FormatTimeCompact(this TimeSpan ts, bool showSeconds = false)
+    {
+        using var sb = ValueStringBuilder.Create();
+        if (ts.Days >= 1)
+        {
+            sb.Append($"{ts.Days}d");
+        }
+
+        if (sb.Length > 0)
+        {
+            sb.Append($" {ts.Hours}h");
+        }
+        else if (ts.Hours >= 1)
+        {
+            sb.Append($"{ts.Hours}h");
+        }
+
+        if (sb.Length > 0)
+        {
+            sb.Append($" {ts.Minutes}m");
+        }
+        else if (ts.Minutes >= 1)
+        {
+            sb.Append($"{ts.Minutes}m");
+        }
+
+        if (showSeconds)
+        {
+            if (sb.Length > 0)
+            {
+                sb.Append($" {ts.Seconds}s");
+            }
+            else if (ts.Seconds >= 1)
+            {
+                sb.Append($"{ts.Seconds}s");
+            }
+        }
+        else if (sb.Length == 0)
+        {
+            sb.Append("0m");
+        }
+
+        return sb.ToString();
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static double GetDistanceToSqrt(this IEntity entity, Point2D p) => GetDistanceToSqrt(entity.Location, p);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static double GetDistanceToSqrt(this IEntity entity, Point3D p) => GetDistanceToSqrt(entity.Location, p);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static double GetDistanceToSqrt(this IEntity from, IEntity to) => GetDistanceToSqrt(from.Location, to.Location);
+
+    public static double GetDistanceToSqrt(this IEntity entity, IPoint2D p)
+    {
+        var xDelta = entity.X - p.X;
+        var yDelta = entity.Y - p.Y;
+
+        return Math.Sqrt(xDelta * xDelta + yDelta * yDelta);
+    }
+
+    public static double GetDistanceToSqrt(this Point2D from, Point2D to)
+    {
+        var xDelta = from.m_X - to.m_X;
+        var yDelta = from.m_Y - to.m_Y;
+
+        return Math.Sqrt(xDelta * xDelta + yDelta * yDelta);
+    }
+
+    public static double GetDistanceToSqrt(this Point2D from, Point3D to)
+    {
+        var xDelta = from.m_X - to.m_X;
+        var yDelta = from.m_Y - to.m_Y;
+
+        return Math.Sqrt(xDelta * xDelta + yDelta * yDelta);
+    }
+
+    public static double GetDistanceToSqrt(this Point3D from, Point2D to)
+    {
+        var xDelta = from.m_X - to.m_X;
+        var yDelta = from.m_Y - to.m_Y;
+
+        return Math.Sqrt(xDelta * xDelta + yDelta * yDelta);
+    }
+
+    public static double GetDistanceToSqrt(this Point3D from, Point3D to)
+    {
+        var xDelta = from.m_X - to.m_X;
+        var yDelta = from.m_Y - to.m_Y;
+
+        return Math.Sqrt(xDelta * xDelta + yDelta * yDelta);
     }
 }

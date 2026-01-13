@@ -46,7 +46,7 @@ namespace Server.Engines.CannedEvil
                     return;
                 }
 
-                ChampionSpawn spawn = targ switch
+                var spawn = targ switch
                 {
                     ChampionSpawn championSpawn => championSpawn,
                     IdolOfTheChampion champion  => champion.Spawn,

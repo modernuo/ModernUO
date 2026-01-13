@@ -1,0 +1,275 @@
+﻿{
+    "category":  "Secure Trade",
+    "packets":  [
+                    {
+                        "id":  "0x6F",
+                        "name":  "Secure Trade",
+                        "description":  "Manages secure trade windows between players.",
+                        "direction":  "outgoing",
+                        "isDynamic":  true,
+                        "size":  "Varies",
+                        "variants":  [
+                                         {
+                                             "name":  "Display Trade Window",
+                                             "condition":  "flag == Display (0)",
+                                             "size":  47,
+                                             "fields":  [
+                                                            {
+                                                                "name":  "Packet ID",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0x6F",
+                                                                "description":  "Packet identifier"
+                                                            },
+                                                            {
+                                                                "name":  "Length",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "value":  "47",
+                                                                "description":  "Packet length"
+                                                            },
+                                                            {
+                                                                "name":  "Flag",
+                                                                "type":  "enum",
+                                                                "enumType":  "sequential",
+                                                                "size":  1,
+                                                                "value":  "0",
+                                                                "description":  "Trade action flag",
+                                                                "values":  [
+                                                                               {
+                                                                                   "value":  0,
+                                                                                   "name":  "Display",
+                                                                                   "description":  "Open trade window"
+                                                                               },
+                                                                               {
+                                                                                   "value":  1,
+                                                                                   "name":  "Close",
+                                                                                   "description":  "Close trade window"
+                                                                               },
+                                                                               {
+                                                                                   "value":  2,
+                                                                                   "name":  "Update",
+                                                                                   "description":  "Update accept status"
+                                                                               },
+                                                                               {
+                                                                                   "value":  3,
+                                                                                   "name":  "Update Gold",
+                                                                                   "description":  "Update gold amounts"
+                                                                               },
+                                                                               {
+                                                                                   "value":  4,
+                                                                                   "name":  "Update Ledger",
+                                                                                   "description":  "Update ledger"
+                                                                               }
+                                                                           ]
+                                                            },
+                                                            {
+                                                                "name":  "Partner Serial",
+                                                                "type":  "uint",
+                                                                "size":  4,
+                                                                "description":  "Serial of trading partner"
+                                                            },
+                                                            {
+                                                                "name":  "First Container Serial",
+                                                                "type":  "uint",
+                                                                "size":  4,
+                                                                "description":  "Serial of your trade container"
+                                                            },
+                                                            {
+                                                                "name":  "Second Container Serial",
+                                                                "type":  "uint",
+                                                                "size":  4,
+                                                                "description":  "Serial of partner\u0027s trade container"
+                                                            },
+                                                            {
+                                                                "name":  "Has Name",
+                                                                "type":  "bool",
+                                                                "size":  1,
+                                                                "value":  "true",
+                                                                "description":  "Name field follows"
+                                                            },
+                                                            {
+                                                                "name":  "Partner Name",
+                                                                "type":  "ascii",
+                                                                "size":  30,
+                                                                "description":  "Trading partner\u0027s name"
+                                                            }
+                                                        ]
+                                         },
+                                         {
+                                             "name":  "Close Trade Window",
+                                             "condition":  "flag == Close (1)",
+                                             "size":  17,
+                                             "fields":  [
+                                                            {
+                                                                "name":  "Packet ID",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0x6F",
+                                                                "description":  "Packet identifier"
+                                                            },
+                                                            {
+                                                                "name":  "Length",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "value":  "17",
+                                                                "description":  "Packet length"
+                                                            },
+                                                            {
+                                                                "name":  "Flag",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "1",
+                                                                "description":  "Close flag"
+                                                            },
+                                                            {
+                                                                "name":  "Container Serial",
+                                                                "type":  "uint",
+                                                                "size":  4,
+                                                                "description":  "Trade container serial"
+                                                            },
+                                                            {
+                                                                "name":  "Unused1",
+                                                                "type":  "int",
+                                                                "size":  4,
+                                                                "value":  "0",
+                                                                "description":  "Unused"
+                                                            },
+                                                            {
+                                                                "name":  "Unused2",
+                                                                "type":  "int",
+                                                                "size":  4,
+                                                                "value":  "0",
+                                                                "description":  "Unused"
+                                                            },
+                                                            {
+                                                                "name":  "Has Name",
+                                                                "type":  "bool",
+                                                                "size":  1,
+                                                                "value":  "false",
+                                                                "description":  "No name follows"
+                                                            }
+                                                        ]
+                                         },
+                                         {
+                                             "name":  "Update Accept Status",
+                                             "condition":  "flag == Update (2)",
+                                             "size":  17,
+                                             "fields":  [
+                                                            {
+                                                                "name":  "Packet ID",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0x6F",
+                                                                "description":  "Packet identifier"
+                                                            },
+                                                            {
+                                                                "name":  "Length",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "value":  "17",
+                                                                "description":  "Packet length"
+                                                            },
+                                                            {
+                                                                "name":  "Flag",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "2",
+                                                                "description":  "Update flag"
+                                                            },
+                                                            {
+                                                                "name":  "Container Serial",
+                                                                "type":  "uint",
+                                                                "size":  4,
+                                                                "description":  "Trade container serial"
+                                                            },
+                                                            {
+                                                                "name":  "Your Accept",
+                                                                "type":  "int",
+                                                                "size":  4,
+                                                                "description":  "Your accept status (0 or 1)"
+                                                            },
+                                                            {
+                                                                "name":  "Partner Accept",
+                                                                "type":  "int",
+                                                                "size":  4,
+                                                                "description":  "Partner\u0027s accept status (0 or 1)"
+                                                            },
+                                                            {
+                                                                "name":  "Has Name",
+                                                                "type":  "bool",
+                                                                "size":  1,
+                                                                "value":  "false",
+                                                                "description":  "No name follows"
+                                                            }
+                                                        ]
+                                         },
+                                         {
+                                             "name":  "Update Gold/Platinum",
+                                             "condition":  "flag == UpdateGold (3)",
+                                             "size":  17,
+                                             "fields":  [
+                                                            {
+                                                                "name":  "Packet ID",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0x6F",
+                                                                "description":  "Packet identifier"
+                                                            },
+                                                            {
+                                                                "name":  "Length",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "value":  "17",
+                                                                "description":  "Packet length"
+                                                            },
+                                                            {
+                                                                "name":  "Flag",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "3",
+                                                                "description":  "UpdateGold flag"
+                                                            },
+                                                            {
+                                                                "name":  "Container Serial",
+                                                                "type":  "uint",
+                                                                "size":  4,
+                                                                "description":  "Trade container serial"
+                                                            },
+                                                            {
+                                                                "name":  "Gold",
+                                                                "type":  "int",
+                                                                "size":  4,
+                                                                "description":  "Gold amount"
+                                                            },
+                                                            {
+                                                                "name":  "Platinum",
+                                                                "type":  "int",
+                                                                "size":  4,
+                                                                "description":  "Platinum amount"
+                                                            },
+                                                            {
+                                                                "name":  "Has Name",
+                                                                "type":  "bool",
+                                                                "size":  1,
+                                                                "value":  "false",
+                                                                "description":  "No name follows"
+                                                            }
+                                                        ]
+                                         }
+                                     ],
+                        "related":  [
+                                        {
+                                            "id":  "0x6F",
+                                            "direction":  "incoming",
+                                            "relationship":  "request",
+                                            "note":  "Client trade actions"
+                                        }
+                                    ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingSecureTradePackets.cs",
+                                       "line":  32
+                                   }
+                    }
+                ]
+}

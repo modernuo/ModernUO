@@ -7,7 +7,11 @@ namespace Server.Items
     public partial class GargishStoneLegsType1 : BaseArmor
     {
         [Constructible]
-        public GargishStoneLegsType1() : base(0x28A) => Weight = 15.0;
+        public GargishStoneLegsType1() : base(0x28A)
+        {
+        }
+
+        public override double DefaultWeight => 15.0;
 
         public override int RequiredRaces => Race.AllowGargoylesOnly;
         public override int BasePhysicalResistance => 6;

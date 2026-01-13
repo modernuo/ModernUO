@@ -8,11 +8,12 @@ public partial class GrandGrimoire : Item
     [Constructible]
     public GrandGrimoire() : base(0xEFA)
     {
-        Weight = 1.0;
         Hue = 0x835;
         Layer = Layer.OneHanded;
         LootType = LootType.Blessed;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1060801; // The Grand Grimoire
 }

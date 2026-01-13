@@ -1,0 +1,587 @@
+﻿{
+    "category":  "Container",
+    "packets":  [
+                    {
+                        "id":  "0x24",
+                        "name":  "Display Container",
+                        "description":  "Opens a container gump on the client.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  "Varies",
+                        "variants":  [
+                                         {
+                                             "version":  "pre-HighSeas",
+                                             "name":  "Classic",
+                                             "size":  7,
+                                             "fields":  [
+                                                            {
+                                                                "name":  "Packet ID",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0x24",
+                                                                "description":  "Packet identifier"
+                                                            },
+                                                            {
+                                                                "name":  "Container Serial",
+                                                                "type":  "uint",
+                                                                "size":  4,
+                                                                "description":  "Serial of the container"
+                                                            },
+                                                            {
+                                                                "name":  "Gump ID",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "description":  "Gump graphic ID"
+                                                            }
+                                                        ]
+                                         },
+                                         {
+                                             "version":  "HighSeas+",
+                                             "name":  "High Seas Extended",
+                                             "condition":  "Client version \u003e= 7.0.9.0 (HighSeas)",
+                                             "size":  9,
+                                             "fields":  [
+                                                            {
+                                                                "name":  "Packet ID",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0x24",
+                                                                "description":  "Packet identifier"
+                                                            },
+                                                            {
+                                                                "name":  "Container Serial",
+                                                                "type":  "uint",
+                                                                "size":  4,
+                                                                "description":  "Serial of the container"
+                                                            },
+                                                            {
+                                                                "name":  "Gump ID",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "description":  "Gump graphic ID"
+                                                            },
+                                                            {
+                                                                "name":  "Container Type",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "value":  "0x007D",
+                                                                "description":  "Container type (125)"
+                                                            }
+                                                        ]
+                                         }
+                                     ],
+                        "clientVersion":  {
+                                              "feature":  "HighSeas adds containerType field"
+                                          },
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingContainerPackets.cs",
+                                       "line":  108
+                                   }
+                    },
+                    {
+                        "id":  "0x25",
+                        "name":  "Container Content Update",
+                        "description":  "Updates a single item in a container.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  "Varies",
+                        "variants":  [
+                                         {
+                                             "version":  "pre-6017",
+                                             "name":  "Classic",
+                                             "size":  20,
+                                             "fields":  [
+                                                            {
+                                                                "name":  "Packet ID",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0x25",
+                                                                "description":  "Packet identifier"
+                                                            },
+                                                            {
+                                                                "name":  "Item Serial",
+                                                                "type":  "uint",
+                                                                "size":  4,
+                                                                "description":  "Serial of the item"
+                                                            },
+                                                            {
+                                                                "name":  "Item ID",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "description":  "Item graphic ID"
+                                                            },
+                                                            {
+                                                                "name":  "Item ID Offset",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0x00",
+                                                                "description":  "Item ID offset (signed)"
+                                                            },
+                                                            {
+                                                                "name":  "Amount",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "description":  "Stack amount"
+                                                            },
+                                                            {
+                                                                "name":  "X",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "X position in container"
+                                                            },
+                                                            {
+                                                                "name":  "Y",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Y position in container"
+                                                            },
+                                                            {
+                                                                "name":  "Container Serial",
+                                                                "type":  "uint",
+                                                                "size":  4,
+                                                                "description":  "Serial of parent container"
+                                                            },
+                                                            {
+                                                                "name":  "Hue",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "description":  "Item hue"
+                                                            }
+                                                        ]
+                                         },
+                                         {
+                                             "version":  "6017+",
+                                             "name":  "Container Grid Lines",
+                                             "condition":  "Client version \u003e= 6.0.1.7 (ContainerGridLines)",
+                                             "size":  21,
+                                             "fields":  [
+                                                            {
+                                                                "name":  "Packet ID",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0x25",
+                                                                "description":  "Packet identifier"
+                                                            },
+                                                            {
+                                                                "name":  "Item Serial",
+                                                                "type":  "uint",
+                                                                "size":  4,
+                                                                "description":  "Serial of the item"
+                                                            },
+                                                            {
+                                                                "name":  "Item ID",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "description":  "Item graphic ID"
+                                                            },
+                                                            {
+                                                                "name":  "Item ID Offset",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0x00",
+                                                                "description":  "Item ID offset (signed)"
+                                                            },
+                                                            {
+                                                                "name":  "Amount",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "description":  "Stack amount"
+                                                            },
+                                                            {
+                                                                "name":  "X",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "X position in container"
+                                                            },
+                                                            {
+                                                                "name":  "Y",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "description":  "Y position in container"
+                                                            },
+                                                            {
+                                                                "name":  "Grid Location",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "description":  "Grid slot position"
+                                                            },
+                                                            {
+                                                                "name":  "Container Serial",
+                                                                "type":  "uint",
+                                                                "size":  4,
+                                                                "description":  "Serial of parent container"
+                                                            },
+                                                            {
+                                                                "name":  "Hue",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "description":  "Item hue"
+                                                            }
+                                                        ]
+                                         }
+                                     ],
+                        "clientVersion":  {
+                                              "feature":  "ContainerGridLines adds gridLocation byte"
+                                          },
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingContainerPackets.cs",
+                                       "line":  127
+                                   }
+                    },
+                    {
+                        "id":  "0x3C",
+                        "name":  "Container \u0026 Old Spellbook Content",
+                        "description":  "Sends full contents of a container. Also used for corpse contents and old-style spellbook content (pre-AOS clients). For AOS+ spellbooks, use 0xBF/0x1B instead.",
+                        "direction":  "outgoing",
+                        "isDynamic":  true,
+                        "size":  "Varies",
+                        "tags":  ["Spellbook", "Corpse"],
+                        "variants":  [
+                                         {
+                                             "version":  "pre-6017",
+                                             "name":  "Classic Format",
+                                             "condition":  "Client version \u003c 6.0.1.7",
+                                             "size":  "5 + (itemCount x 19)",
+                                             "fields":  [
+                                                            {
+                                                                "name":  "Packet ID",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0x3C",
+                                                                "description":  "Packet identifier"
+                                                            },
+                                                            {
+                                                                "name":  "Length",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "description":  "Packet length"
+                                                            },
+                                                            {
+                                                                "name":  "Item Count",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "description":  "Number of items"
+                                                            },
+                                                            {
+                                                                "name":  "Items",
+                                                                "type":  "loop",
+                                                                "description":  "Item entries (19 bytes each)",
+                                                                "loop":  {
+                                                                             "countField":  "itemCount",
+                                                                             "itemSize":  19,
+                                                                             "fields":  [
+                                                                                            {
+                                                                                                "name":  "Item Serial",
+                                                                                                "type":  "uint",
+                                                                                                "size":  4,
+                                                                                                "description":  "Serial of the item"
+                                                                                            },
+                                                                                            {
+                                                                                                "name":  "Item ID",
+                                                                                                "type":  "ushort",
+                                                                                                "size":  2,
+                                                                                                "description":  "Item graphic ID"
+                                                                                            },
+                                                                                            {
+                                                                                                "name":  "Item ID Offset",
+                                                                                                "type":  "byte",
+                                                                                                "size":  1,
+                                                                                                "description":  "Item ID offset (signed)"
+                                                                                            },
+                                                                                            {
+                                                                                                "name":  "Amount",
+                                                                                                "type":  "ushort",
+                                                                                                "size":  2,
+                                                                                                "description":  "Stack amount"
+                                                                                            },
+                                                                                            {
+                                                                                                "name":  "X",
+                                                                                                "type":  "short",
+                                                                                                "size":  2,
+                                                                                                "description":  "X position in container"
+                                                                                            },
+                                                                                            {
+                                                                                                "name":  "Y",
+                                                                                                "type":  "short",
+                                                                                                "size":  2,
+                                                                                                "description":  "Y position in container"
+                                                                                            },
+                                                                                            {
+                                                                                                "name":  "Container Serial",
+                                                                                                "type":  "uint",
+                                                                                                "size":  4,
+                                                                                                "description":  "Serial of parent container"
+                                                                                            },
+                                                                                            {
+                                                                                                "name":  "Hue",
+                                                                                                "type":  "ushort",
+                                                                                                "size":  2,
+                                                                                                "description":  "Item hue"
+                                                                                            }
+                                                                                        ]
+                                                                         }
+                                                            }
+                                                        ]
+                                         },
+                                         {
+                                             "version":  "6017+ (ContainerGridLines)",
+                                             "name":  "Grid Location Format",
+                                             "condition":  "Client version \u003e= 6.0.1.7 (ContainerGridLines)",
+                                             "size":  "5 + (itemCount x 20)",
+                                             "fields":  [
+                                                            {
+                                                                "name":  "Packet ID",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0x3C",
+                                                                "description":  "Packet identifier"
+                                                            },
+                                                            {
+                                                                "name":  "Length",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "description":  "Packet length"
+                                                            },
+                                                            {
+                                                                "name":  "Item Count",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "description":  "Number of items"
+                                                            },
+                                                            {
+                                                                "name":  "Items",
+                                                                "type":  "loop",
+                                                                "description":  "Item entries (20 bytes each)",
+                                                                "loop":  {
+                                                                             "countField":  "itemCount",
+                                                                             "itemSize":  20,
+                                                                             "fields":  [
+                                                                                            {
+                                                                                                "name":  "Item Serial",
+                                                                                                "type":  "uint",
+                                                                                                "size":  4,
+                                                                                                "description":  "Serial of the item"
+                                                                                            },
+                                                                                            {
+                                                                                                "name":  "Item ID",
+                                                                                                "type":  "ushort",
+                                                                                                "size":  2,
+                                                                                                "description":  "Item graphic ID"
+                                                                                            },
+                                                                                            {
+                                                                                                "name":  "Item ID Offset",
+                                                                                                "type":  "byte",
+                                                                                                "size":  1,
+                                                                                                "description":  "Item ID offset (signed)"
+                                                                                            },
+                                                                                            {
+                                                                                                "name":  "Amount",
+                                                                                                "type":  "ushort",
+                                                                                                "size":  2,
+                                                                                                "description":  "Stack amount"
+                                                                                            },
+                                                                                            {
+                                                                                                "name":  "X",
+                                                                                                "type":  "short",
+                                                                                                "size":  2,
+                                                                                                "description":  "X position in container"
+                                                                                            },
+                                                                                            {
+                                                                                                "name":  "Y",
+                                                                                                "type":  "short",
+                                                                                                "size":  2,
+                                                                                                "description":  "Y position in container"
+                                                                                            },
+                                                                                            {
+                                                                                                "name":  "Grid Location",
+                                                                                                "type":  "byte",
+                                                                                                "size":  1,
+                                                                                                "description":  "Grid slot position in container"
+                                                                                            },
+                                                                                            {
+                                                                                                "name":  "Container Serial",
+                                                                                                "type":  "uint",
+                                                                                                "size":  4,
+                                                                                                "description":  "Serial of parent container"
+                                                                                            },
+                                                                                            {
+                                                                                                "name":  "Hue",
+                                                                                                "type":  "ushort",
+                                                                                                "size":  2,
+                                                                                                "description":  "Item hue"
+                                                                                            }
+                                                                                        ]
+                                                                         }
+                                                            }
+                                                        ]
+                                         }
+                                     ],
+                        "related":  [
+                                        {
+                                            "id":  "0xBF/0x1B",
+                                            "relationship":  "variant",
+                                            "note":  "New Spellbook Content for AOS+ clients"
+                                        },
+                                        {
+                                            "id":  "0x89",
+                                            "relationship":  "related",
+                                            "note":  "Corpse Equipment (layer mappings for corpse items)"
+                                        }
+                                    ],
+                        "clientVersion":  {
+                                              "feature":  "ContainerGridLines (6.0.1.7+) adds gridLocation byte per item"
+                                          },
+                        "notes":  "Also used for corpse contents. Corpses are special containers that display equipped items on a body graphic. Use with 0x89 Corpse Equipment for full corpse display.",
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingContainerPackets.cs",
+                                       "line":  169
+                                   }
+                    },
+                    {
+                        "id":  "0xBF",
+                        "subId":  "0x1B",
+                        "name":  "New Spellbook Content",
+                        "description":  "Sends spellbook contents using AOS format with a 64-bit bitmask of known spells.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  23,
+                        "tags":  ["Spell", "Spellbook", "Extended Commands (0xBF)"],
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xBF",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x0017",
+                                           "description":  "Packet length (23)"
+                                       },
+                                       {
+                                           "name":  "Sub-Command",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x001B",
+                                           "description":  "Subcommand (New Spellbook Content)"
+                                       },
+                                       {
+                                           "name":  "Command",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "value":  "0x0001",
+                                           "description":  "Command (always 1)"
+                                       },
+                                       {
+                                           "name":  "Book Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the spellbook"
+                                       },
+                                       {
+                                           "name":  "Graphic",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Spellbook graphic ID"
+                                       },
+                                       {
+                                           "name":  "Offset",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Spell offset (circle/school start)"
+                                       },
+                                       {
+                                           "name":  "Spell Bits",
+                                           "type":  "ulong",
+                                           "size":  8,
+                                           "description":  "64-bit mask of known spells (written byte-by-byte, Little Endian)"
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0x3C",
+                                            "relationship":  "variant",
+                                            "note":  "Old Spellbook Content for pre-AOS clients"
+                                        }
+                                    ],
+                        "clientVersion":  {
+                                              "min":  "5.0.0a",
+                                              "feature":  "NewSpellbook (Core.AOS \u0026\u0026 ns.NewSpellbook)"
+                                          },
+                        "notes":  "Used when Core.AOS \u0026\u0026 ns.NewSpellbook. Otherwise, old 0x3C format is used with spells as pseudo-items.",
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingContainerPackets.cs",
+                                       "line":  46
+                                   }
+                    },
+                    {
+                        "id":  "0xF7",
+                        "name":  "Packet Container",
+                        "description":  "Container packet for batching multiple entity packets. Used for sending groups of related entities efficiently, such as all items and mobiles visible on a boat.",
+                        "direction":  "outgoing",
+                        "tags": ["Boat"],
+                        "isDynamic":  true,
+                        "size":  "5+",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xF7",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Total packet length"
+                                       },
+                                       {
+                                           "name":  "Packet Count",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Number of embedded packets"
+                                       },
+                                       {
+                                           "name":  "Packets",
+                                           "type":  "array",
+                                           "description":  "Embedded packets (typically 0xF3 World Entity packets)",
+                                           "loop":  {
+                                                        "countField":  "packetCount",
+                                                        "fields":  [
+                                                                       {
+                                                                           "name":  "Embedded Packet",
+                                                                           "type":  "bytes",
+                                                                           "size":  "var",
+                                                                           "description":  "Complete embedded packet (typically 24-26 byte 0xF3 World Entity)"
+                                                                       }
+                                                                   ]
+                                                    }
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0xF3",
+                                            "relationship":  "contains",
+                                            "note":  "Typically contains World Entity packets"
+                                        },
+                                        {
+                                            "id":  "0xF6",
+                                            "relationship":  "variant",
+                                            "note":  "Used alongside Move Boat HS for boat display"
+                                        }
+                                    ],
+                        "clientVersion":  {
+                                              "feature":  "HighSeas"
+                                          },
+                        "notes":  "Uses PacketContainerBuilder for efficient dynamic growth. Commonly used by boat system to batch all visible entities on deck. Minimum packet length is 5 bytes (header only).",
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/PacketContainerBuilder.cs",
+                                       "line":  23
+                                   }
+                    }
+                ]
+}

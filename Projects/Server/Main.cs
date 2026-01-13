@@ -102,7 +102,8 @@ public static class Core
 
     private static long _tickCount;
 
-    private static DateTime _now;
+    // Make this available to unit tests for mocking
+    internal static DateTime _now;
 
     public static long TickCount => _tickCount;
 
@@ -346,8 +347,20 @@ public static class Core
         }
     }
 
+    private static readonly bool UseFastTimestampMath = Stopwatch.Frequency % 1000 == 0;
+    private static readonly ulong FrequencyInMilliseconds = (ulong)Stopwatch.Frequency / 1000;
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static long GetTimestamp() => 1000L * Stopwatch.GetTimestamp() / Stopwatch.Frequency;
+    public static long GetTimestamp()
+    {
+        if (UseFastTimestampMath)
+        {
+            return (long)((ulong)Stopwatch.GetTimestamp() / FrequencyInMilliseconds);
+        }
+
+        // Fast calculation will be lossy, fallback to slower but accurate calculation
+        return (long)((UInt128)Stopwatch.GetTimestamp() * 1000 / (ulong)Stopwatch.Frequency);
+    }
 
     public static void Setup(Assembly applicationAssembly, Process process)
     {
@@ -442,20 +455,22 @@ public static class Core
 
     public static void RunEventLoop()
     {
-        try
-        {
 #if DEBUG
-            const bool idleCPU = true;
+        const bool isDebugMode = true;
 #else
-            var idleCPU = ServerConfiguration.GetOrUpdateSetting("core.enableIdleCPU", false);
+        const bool isDebugMode = false;
 #endif
 
+        var idleCPU = ServerConfiguration.GetSetting("core.enableIdleCPU", isDebugMode);
+
+        try
+        {
             var cycleCount = _cyclesPerSecond.Length;
-            long last = _tickCount;
+            var last = _tickCount;
             const int interval = 100;
             double frequency = Stopwatch.Frequency * interval;
 
-            int sample = 0;
+            var sample = 0;
 
             while (!Closing)
             {

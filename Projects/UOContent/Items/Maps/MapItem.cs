@@ -42,12 +42,13 @@ public partial class MapItem : Item, ICraftable
     [Constructible]
     public MapItem(Map facet = null) : base(0x14EC)
     {
-        Weight = 1.0;
         _width = 200;
         _height = 200;
         _facet = facet;
         _pins = new List<Point2D>();
     }
+
+    public override double DefaultWeight => 1.0;
 
     public int OnCraft(
         int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool,

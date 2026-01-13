@@ -77,8 +77,6 @@ public partial class SOS : Item
     [Constructible]
     public SOS(Map map, int level) : base(0x14EE)
     {
-        Weight = 1.0;
-
         _level = level;
         MessageIndex = Utility.Random(MessageEntries.Length);
         TargetMap = map ?? Map.Trammel;
@@ -86,6 +84,8 @@ public partial class SOS : Item
 
         UpdateHue();
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber
     {

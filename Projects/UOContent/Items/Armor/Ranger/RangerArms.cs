@@ -9,9 +9,10 @@ namespace Server.Items
         [Constructible]
         public RangerArms() : base(0x13DC)
         {
-            Weight = 4.0;
             Hue = 0x59C;
         }
+
+        public override double DefaultWeight => 4.0;
 
         public override int BasePhysicalResistance => 2;
         public override int BaseFireResistance => 4;

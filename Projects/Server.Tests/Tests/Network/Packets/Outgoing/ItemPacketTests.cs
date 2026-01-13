@@ -3,12 +3,13 @@ using Xunit;
 
 namespace Server.Tests.Network
 {
-    public class ItemPacketTests : IClassFixture<ServerFixture>
+    [Collection("Sequential Server Tests")]
+public class ItemPacketTests
     {
         [Fact]
         public void TestWorldItemPacket()
         {
-            Serial serial = (Serial)0x1024;
+            var serial = (Serial)0x1024;
             var itemId = 1;
 
             // Move to fixture
@@ -44,7 +45,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestWorldItemSAPacket()
         {
-            Serial serial = (Serial)0x1024;
+            var serial = (Serial)0x1024;
             ushort itemId = 1;
 
             // Move to fixture
@@ -80,7 +81,7 @@ namespace Server.Tests.Network
         [Fact]
         public void TestWorldItemHSPacket()
         {
-            Serial serial = (Serial)0x1024;
+            var serial = (Serial)0x1024;
             var itemId = 1;
 
             // Move to fixture

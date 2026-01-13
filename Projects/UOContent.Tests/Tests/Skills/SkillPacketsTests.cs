@@ -6,7 +6,8 @@ using Xunit;
 
 namespace UOContent.Tests;
 
-public class SkillPacketsTests : IClassFixture<ServerFixture>
+[Collection("Sequential UOContent Tests")]
+public class SkillPacketsTests
 {
     [Theory]
     [InlineData(SkillName.Alchemy, 0, 1)]

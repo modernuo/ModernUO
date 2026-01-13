@@ -14,10 +14,11 @@ public partial class GargoylesPickaxe : BaseAxe, IUsesRemaining
     [Constructible]
     public GargoylesPickaxe(int uses) : base(0xE85 + Utility.Random(2))
     {
-        Weight = 11.0;
         UsesRemaining = uses;
         ShowUsesRemaining = true;
     }
+
+    public override double DefaultWeight => 11.0;
 
     public override int LabelNumber => 1041281; // a gargoyle's pickaxe
     public override HarvestSystem HarvestSystem => Mining.System;

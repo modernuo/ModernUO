@@ -165,10 +165,11 @@ public partial class WreathDeed : Item
     [Constructible]
     public WreathDeed(int hue) : base(0x14F0)
     {
-        Weight = 1.0;
         Hue = hue;
         LootType = LootType.Blessed;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1062837; // holiday wreath deed
 
@@ -257,11 +258,12 @@ public partial class WreathDeed : Item
 
         if (itemID > 0)
         {
-            Item addon = new WreathAddon(Hue);
+            var addon = new WreathAddon(Hue)
+            {
+                ItemID = itemID
+            };
 
-            addon.ItemID = itemID;
             addon.MoveToWorld(loc, from.Map);
-
             house.Addons.Add(addon);
             Delete();
         }

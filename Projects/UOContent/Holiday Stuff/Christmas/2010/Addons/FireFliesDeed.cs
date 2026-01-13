@@ -61,11 +61,9 @@ public partial class Fireflies : Item, IAddon
 public partial class FirefliesDeed : Item
 {
     [Constructible]
-    public FirefliesDeed() : base(0x14F0)
-    {
-        LootType = LootType.Blessed;
-        Weight = 1.0;
-    }
+    public FirefliesDeed() : base(0x14F0) => LootType = LootType.Blessed;
+
+    public override double DefaultWeight => 1.0;
 
     public override int LabelNumber => 1150061;
 
@@ -115,7 +113,7 @@ public partial class FirefliesDeed : Item
                 return;
             }
 
-            int itemId = info.ButtonID switch
+            var itemId = info.ButtonID switch
             {
                 (int)Buttons.East  => 0x2332,
                 (int)Buttons.South => 0x2336,
@@ -204,7 +202,7 @@ public partial class FirefliesDeed : Item
                 return;
             }
 
-            foreach (Fireflies fireflies in Map.Malas.GetItemsAt<Fireflies>(p3d))
+            foreach (var fireflies in Map.Malas.GetItemsAt<Fireflies>(p3d))
             {
                 if (fireflies.Z == p3d.Z)
                 {

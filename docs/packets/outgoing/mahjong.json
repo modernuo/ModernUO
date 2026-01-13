@@ -1,0 +1,501 @@
+﻿{
+    "category":  "Mahjong",
+    "packets":  [
+                    {
+                        "id":  "0xDA",
+                        "subId":  "0x19",
+                        "name":  "Mahjong Join Game",
+                        "description":  "Notifies client to open the Mahjong game interface.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  9,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xDA",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x0009",
+                                           "description":  "Packet length (9)"
+                                       },
+                                       {
+                                           "name":  "Game Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the Mahjong game"
+                                       },
+                                       {
+                                           "name":  "Command",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x0019",
+                                           "description":  "Join Game command"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Items/Games/Mahjong/MahjongPackets.cs",
+                                       "line":  288
+                                   }
+                    },
+                    {
+                        "id":  "0xDA",
+                        "subId":  "0x03",
+                        "name":  "Mahjong Tile Info",
+                        "description":  "Sends information about a single Mahjong tile.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  18,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xDA",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x0012",
+                                           "description":  "Packet length (18)"
+                                       },
+                                       {
+                                           "name":  "Game Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the Mahjong game"
+                                       },
+                                       {
+                                           "name":  "Command",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x0003",
+                                           "description":  "Tile Info command"
+                                       },
+                                       {
+                                           "name":  "Tile Number",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Tile index number"
+                                       },
+                                       {
+                                           "name":  "Tile Value",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Tile face value (0 if hidden)"
+                                       },
+                                       {
+                                           "name":  "Y Position",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Tile Y coordinate"
+                                       },
+                                       {
+                                           "name":  "X Position",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Tile X coordinate"
+                                       },
+                                       {
+                                           "name":  "Stack Level",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Stack level for overlapping tiles"
+                                       },
+                                       {
+                                           "name":  "Direction",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Tile direction (0=Up, 1=Left, 2=Down, 3=Right)"
+                                       },
+                                       {
+                                           "name":  "Flipped",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "0x10 if flipped/face-up, 0x00 if face-down"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Items/Games/Mahjong/MahjongPackets.cs",
+                                       "line":  362
+                                   }
+                    },
+                    {
+                        "id":  "0xDA",
+                        "subId":  "0x04",
+                        "name":  "Mahjong Tiles Info",
+                        "description":  "Sends information about all tiles in the Mahjong game.",
+                        "direction":  "outgoing",
+                        "isDynamic":  true,
+                        "size":  "11+",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xDA",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Game Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the Mahjong game"
+                                       },
+                                       {
+                                           "name":  "Command",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x0004",
+                                           "description":  "Tiles Info command"
+                                       },
+                                       {
+                                           "name":  "Tile Count",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Number of tiles"
+                                       },
+                                       {
+                                           "name":  "Tiles",
+                                           "type":  "loop",
+                                           "description":  "Tile data for each tile",
+                                           "loop":  {
+                                                        "countField":  "Tile Count",
+                                                        "fields":  [
+                                                                       {
+                                                                           "name":  "Tile Number",
+                                                                           "type":  "byte",
+                                                                           "size":  1,
+                                                                           "description":  "Tile index number"
+                                                                       },
+                                                                       {
+                                                                           "name":  "Tile Value",
+                                                                           "type":  "byte",
+                                                                           "size":  1,
+                                                                           "description":  "Tile face value (0 if hidden)"
+                                                                       },
+                                                                       {
+                                                                           "name":  "Y Position",
+                                                                           "type":  "short",
+                                                                           "size":  2,
+                                                                           "description":  "Tile Y coordinate"
+                                                                       },
+                                                                       {
+                                                                           "name":  "X Position",
+                                                                           "type":  "short",
+                                                                           "size":  2,
+                                                                           "description":  "Tile X coordinate"
+                                                                       },
+                                                                       {
+                                                                           "name":  "Stack Level",
+                                                                           "type":  "byte",
+                                                                           "size":  1,
+                                                                           "description":  "Stack level"
+                                                                       },
+                                                                       {
+                                                                           "name":  "Direction",
+                                                                           "type":  "byte",
+                                                                           "size":  1,
+                                                                           "description":  "Tile direction"
+                                                                       },
+                                                                       {
+                                                                           "name":  "Flipped",
+                                                                           "type":  "byte",
+                                                                           "size":  1,
+                                                                           "description":  "0x10 if flipped, 0x00 otherwise"
+                                                                       }
+                                                                   ]
+                                                    }
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Items/Games/Mahjong/MahjongPackets.cs",
+                                       "line":  408
+                                   }
+                    },
+                    {
+                        "id":  "0xDA",
+                        "subId":  "0x02",
+                        "name":  "Mahjong Players Info",
+                        "description":  "Sends information about all players in the Mahjong game.",
+                        "direction":  "outgoing",
+                        "isDynamic":  true,
+                        "size":  "11+",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xDA",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Game Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the Mahjong game"
+                                       },
+                                       {
+                                           "name":  "Command",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x0002",
+                                           "description":  "Players Info command"
+                                       },
+                                       {
+                                           "name":  "Seat Count",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Number of seats with data"
+                                       },
+                                       {
+                                           "name":  "Players",
+                                           "type":  "loop",
+                                           "description":  "Player data for each seat",
+                                           "loop":  {
+                                                        "countField":  "Seat Count",
+                                                        "fields":  [
+                                                                       {
+                                                                           "name":  "Player Serial",
+                                                                           "type":  "uint",
+                                                                           "size":  4,
+                                                                           "description":  "Serial of player (0 if empty)"
+                                                                       },
+                                                                       {
+                                                                           "name":  "Dealer Flag",
+                                                                           "type":  "byte",
+                                                                           "size":  1,
+                                                                           "description":  "1=Dealer, 2=Not dealer"
+                                                                       },
+                                                                       {
+                                                                           "name":  "Position",
+                                                                           "type":  "byte",
+                                                                           "size":  1,
+                                                                           "description":  "Seat position index"
+                                                                       },
+                                                                       {
+                                                                           "name":  "Score",
+                                                                           "type":  "int",
+                                                                           "size":  4,
+                                                                           "description":  "Player\u0027s current score"
+                                                                       },
+                                                                       {
+                                                                           "name":  "Reserved",
+                                                                           "type":  "short",
+                                                                           "size":  2,
+                                                                           "value":  "0",
+                                                                           "description":  "Reserved (always 0)"
+                                                                       },
+                                                                       {
+                                                                           "name":  "Reserved 2",
+                                                                           "type":  "byte",
+                                                                           "size":  1,
+                                                                           "value":  "0",
+                                                                           "description":  "Reserved (always 0)"
+                                                                       },
+                                                                       {
+                                                                           "name":  "Public Hand",
+                                                                           "type":  "bool",
+                                                                           "size":  1,
+                                                                           "description":  "True if hand is visible to others"
+                                                                       },
+                                                                       {
+                                                                           "name":  "Name",
+                                                                           "type":  "ascii",
+                                                                           "size":  30,
+                                                                           "description":  "Player name"
+                                                                       },
+                                                                       {
+                                                                           "name":  "Empty Seat",
+                                                                           "type":  "bool",
+                                                                           "size":  1,
+                                                                           "description":  "True if seat is empty or not in game"
+                                                                       }
+                                                                   ]
+                                                    }
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Items/Games/Mahjong/MahjongPackets.cs",
+                                       "line":  304
+                                   }
+                    },
+                    {
+                        "id":  "0xDA",
+                        "subId":  "0x05",
+                        "name":  "Mahjong General Info",
+                        "description":  "Sends general game state including dice values, dealer indicator, and wall break position.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  25,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xDA",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x0019",
+                                           "description":  "Packet length (25)"
+                                       },
+                                       {
+                                           "name":  "Game Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the Mahjong game"
+                                       },
+                                       {
+                                           "name":  "Command",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x0005",
+                                           "description":  "General Info command"
+                                       },
+                                       {
+                                           "name":  "Reserved",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "value":  "0",
+                                           "description":  "Reserved"
+                                       },
+                                       {
+                                           "name":  "Reserved 2",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0",
+                                           "description":  "Reserved"
+                                       },
+                                       {
+                                           "name":  "Options",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Bit 0: Show Scores, Bit 1: Spectator Vision"
+                                       },
+                                       {
+                                           "name":  "Dice 1",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "First dice value"
+                                       },
+                                       {
+                                           "name":  "Dice 2",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Second dice value"
+                                       },
+                                       {
+                                           "name":  "Dealer Wind",
+                                           "type":  "enum",
+                                           "size":  1,
+                                           "description":  "Dealer indicator wind direction",
+                                           "values":  [
+                                               { "value":  "0", "name":  "North", "description":  "North wind" },
+                                               { "value":  "1", "name":  "East", "description":  "East wind" },
+                                               { "value":  "2", "name":  "South", "description":  "South wind" },
+                                               { "value":  "3", "name":  "West", "description":  "West wind" }
+                                           ]
+                                       },
+                                       {
+                                           "name":  "Dealer Y",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Dealer indicator Y position"
+                                       },
+                                       {
+                                           "name":  "Dealer X",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Dealer indicator X position"
+                                       },
+                                       {
+                                           "name":  "Dealer Direction",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Dealer indicator direction"
+                                       },
+                                       {
+                                           "name":  "Wall Break Y",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Wall break indicator Y position"
+                                       },
+                                       {
+                                           "name":  "Wall Break X",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Wall break indicator X position"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Items/Games/Mahjong/MahjongPackets.cs",
+                                       "line":  461
+                                   }
+                    },
+                    {
+                        "id":  "0xDA",
+                        "subId":  "0x1A",
+                        "name":  "Mahjong Relieve",
+                        "description":  "Notifies client to close the Mahjong game interface.",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  9,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xDA",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x0009",
+                                           "description":  "Packet length (9)"
+                                       },
+                                       {
+                                           "name":  "Game Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the Mahjong game"
+                                       },
+                                       {
+                                           "name":  "Command",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x001A",
+                                           "description":  "Relieve command"
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Items/Games/Mahjong/MahjongPackets.cs",
+                                       "line":  504
+                                   }
+                    }
+                ]
+}

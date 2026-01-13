@@ -270,7 +270,8 @@ namespace Server.Items
 
             foreach (var c in Components)
             {
-                c.Delete();
+                // Component can become null if the Addon property is somehow deleted, then the component itself is deleted.
+                c?.Delete();
             }
         }
 
@@ -282,6 +283,13 @@ namespace Server.Items
             {
                 _resource = (CraftResource)reader.ReadEncodedInt();
             }
+        }
+
+        [AfterDeserialization]
+        private void AfterDeserialization()
+        {
+            // We have had issues in the past, so let's tidy it up.
+            _components?.Tidy();
         }
     }
 }

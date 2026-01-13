@@ -1,0 +1,212 @@
+﻿{
+    "category":  "Context Menu",
+    "packets":  [
+                    {
+                        "id":  "0xBF",
+                        "subId":  "0x14",
+                        "name":  "Display Context Menu",
+                        "description":  "Displays a context menu for an entity.",
+                        "direction":  "outgoing",
+                        "isDynamic":  true,
+                        "size":  "Varies",
+                        "variants":  [
+                                         {
+                                             "name":  "Old Format",
+                                             "version":  "0x01",
+                                             "condition":  "command == 0x01 (pre-NewHaven)",
+                                             "fields":  [
+                                                            {
+                                                                "name":  "Packet ID",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0xBF",
+                                                                "description":  "Packet identifier"
+                                                            },
+                                                            {
+                                                                "name":  "Length",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "description":  "Packet length"
+                                                            },
+                                                            {
+                                                                "name":  "Sub-Command",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "value":  "0x0014",
+                                                                "description":  "Context Menu subcommand"
+                                                            },
+                                                            {
+                                                                "name":  "Command",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "value":  "0x0001",
+                                                                "description":  "Old format command"
+                                                            },
+                                                            {
+                                                                "name":  "Target Serial",
+                                                                "type":  "uint",
+                                                                "size":  4,
+                                                                "description":  "Serial of the target entity"
+                                                            },
+                                                            {
+                                                                "name":  "Entry Count",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "description":  "Number of menu entries"
+                                                            },
+                                                            {
+                                                                "name":  "Entries",
+                                                                "type":  "loop",
+                                                                "description":  "Menu entries",
+                                                                "loop":  {
+                                                                             "countField":  "entryCount",
+                                                                             "fields":  [
+                                                                                            {
+                                                                                                "name":  "Index",
+                                                                                                "type":  "short",
+                                                                                                "size":  2,
+                                                                                                "description":  "Entry index"
+                                                                                            },
+                                                                                            {
+                                                                                                "name":  "Cliloc Offset",
+                                                                                                "type":  "ushort",
+                                                                                                "size":  2,
+                                                                                                "description":  "Cliloc number - 3000000"
+                                                                                            },
+                                                                                            {
+                                                                                                "name":  "Flags",
+                                                                                                "type":  "bitfield",
+                                                                                                "size":  2,
+                                                                                                "description":  "Entry flags",
+                                                                                                "flags":  [
+                                                                                                              {
+                                                                                                                  "bit":  "0",
+                                                                                                                  "name":  "Disabled",
+                                                                                                                  "description":  "Entry is disabled"
+                                                                                                              },
+                                                                                                              {
+                                                                                                                  "bit":  "1",
+                                                                                                                  "name":  "Arrow",
+                                                                                                                  "description":  "Show arrow"
+                                                                                                              },
+                                                                                                              {
+                                                                                                                  "bit":  "2",
+                                                                                                                  "name":  "Highlighted",
+                                                                                                                  "description":  "Entry is highlighted"
+                                                                                                              },
+                                                                                                              {
+                                                                                                                  "bit":  "5",
+                                                                                                                  "name":  "Colored",
+                                                                                                                  "description":  "Entry uses custom color"
+                                                                                                              }
+                                                                                                          ]
+                                                                                            },
+                                                                                            {
+                                                                                                "name":  "Hue",
+                                                                                                "type":  "short",
+                                                                                                "size":  2,
+                                                                                                "description":  "Text hue (if Colored flag set)",
+                                                                                                "condition":  "flags \u0026 0x20"
+                                                                                            }
+                                                                                        ]
+                                                                         }
+                                                            }
+                                                        ]
+                                         },
+                                         {
+                                             "name":  "New Format",
+                                             "version":  "0x02",
+                                             "condition":  "command == 0x02 (NewHaven+)",
+                                             "fields":  [
+                                                            {
+                                                                "name":  "Packet ID",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0xBF",
+                                                                "description":  "Packet identifier"
+                                                            },
+                                                            {
+                                                                "name":  "Length",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "description":  "Packet length"
+                                                            },
+                                                            {
+                                                                "name":  "Sub-Command",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "value":  "0x0014",
+                                                                "description":  "Context Menu subcommand"
+                                                            },
+                                                            {
+                                                                "name":  "Command",
+                                                                "type":  "short",
+                                                                "size":  2,
+                                                                "value":  "0x0002",
+                                                                "description":  "New format command"
+                                                            },
+                                                            {
+                                                                "name":  "Target Serial",
+                                                                "type":  "uint",
+                                                                "size":  4,
+                                                                "description":  "Serial of the target entity"
+                                                            },
+                                                            {
+                                                                "name":  "Entry Count",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "description":  "Number of menu entries"
+                                                            },
+                                                            {
+                                                                "name":  "Entries",
+                                                                "type":  "loop",
+                                                                "description":  "Menu entries",
+                                                                "loop":  {
+                                                                             "countField":  "entryCount",
+                                                                             "fields":  [
+                                                                                            {
+                                                                                                "name":  "Cliloc Number",
+                                                                                                "type":  "int",
+                                                                                                "size":  4,
+                                                                                                "description":  "Full cliloc number"
+                                                                                            },
+                                                                                            {
+                                                                                                "name":  "Index",
+                                                                                                "type":  "short",
+                                                                                                "size":  2,
+                                                                                                "description":  "Entry index"
+                                                                                            },
+                                                                                            {
+                                                                                                "name":  "Flags",
+                                                                                                "type":  "short",
+                                                                                                "size":  2,
+                                                                                                "description":  "Entry flags (see Old Format)"
+                                                                                            }
+                                                                                        ]
+                                                                         }
+                                                            }
+                                                        ]
+                                         }
+                                     ],
+                        "related":  [
+                                        {
+                                            "id":  "0xBF/0x13",
+                                            "relationship":  "request",
+                                            "note":  "Context Menu Request from client"
+                                        },
+                                        {
+                                            "id":  "0xBF/0x15",
+                                            "relationship":  "response",
+                                            "note":  "Context Menu Response from client"
+                                        }
+                                    ],
+                        "clientVersion":  {
+                                              "feature":  "NewHaven clients (6.0.0.0+) use command 0x02"
+                                          },
+                        "source":  {
+                                       "file":  "Projects/UOContent/Context Menus/ContextMenuSystem.cs",
+                                       "line":  142
+                                   }
+                    }
+                ]
+}

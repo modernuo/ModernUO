@@ -130,7 +130,7 @@ public static class SacrificeVirtue
             }
             else
             {
-                int toGain = from.Fame switch
+                var toGain = from.Fame switch
                 {
                     < 5000  => 500,
                     < 10000 => 1000,

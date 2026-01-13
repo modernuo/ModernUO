@@ -7,18 +7,12 @@ namespace Server.Items;
 public partial class RunicDovetailSaw : BaseRunicTool
 {
     [Constructible]
-    public RunicDovetailSaw(CraftResource resource) : base(resource, 0x1028)
-    {
-        Weight = 2.0;
-        Hue = CraftResources.GetHue(resource);
-    }
+    public RunicDovetailSaw(CraftResource resource) : base(resource, 0x1028) => Hue = CraftResources.GetHue(resource);
 
     [Constructible]
-    public RunicDovetailSaw(CraftResource resource, int uses) : base(resource, uses, 0x1028)
-    {
-        Weight = 2.0;
-        Hue = CraftResources.GetHue(resource);
-    }
+    public RunicDovetailSaw(CraftResource resource, int uses) : base(resource, uses, 0x1028) => Hue = CraftResources.GetHue(resource);
+
+    public override double DefaultWeight => 2.0;
 
     public override CraftSystem CraftSystem => DefCarpentry.CraftSystem;
 

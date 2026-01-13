@@ -10,7 +10,7 @@ public partial class LampRoomBox : Item
 {
     [SerializableField(0)]
     private LeverPuzzleController _controller;
-    private Mobile _wanderer;
+    private WandererOfTheVoid _wanderer;
 
     public LampRoomBox(LeverPuzzleController controller) : base(0xe80)
     {

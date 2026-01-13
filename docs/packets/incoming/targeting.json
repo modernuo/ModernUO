@@ -1,0 +1,117 @@
+﻿{
+    "category":  "Targeting",
+    "packets":  [
+                    {
+                        "id":  "0x6C",
+                        "name":  "Target Response",
+                        "description":  "Client responds to a target cursor request.",
+                        "direction":  "incoming",
+                        "isDynamic":  false,
+                        "size":  19,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x6C",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Type",
+                                           "type":  "enum",
+                                           "enumType":  "sequential",
+                                           "size":  1,
+                                           "description":  "Target type",
+                                           "values":  [
+                                                          {
+                                                              "value":  0,
+                                                              "name":  "Object",
+                                                              "description":  "Targeting a specific object (mobile/item)"
+                                                          },
+                                                          {
+                                                              "value":  1,
+                                                              "name":  "Location",
+                                                              "description":  "Targeting a location/tile"
+                                                          }
+                                                      ]
+                                       },
+                                       {
+                                           "name":  "Target ID",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Target cursor ID to match request"
+                                       },
+                                       {
+                                           "name":  "Flags",
+                                           "type":  "enum",
+                                           "enumType":  "sequential",
+                                           "size":  1,
+                                           "description":  "Target flags",
+                                           "values":  [
+                                                          {
+                                                              "value":  0,
+                                                              "name":  "Neutral",
+                                                              "description":  "Neutral targeting"
+                                                          },
+                                                          {
+                                                              "value":  1,
+                                                              "name":  "Harmful",
+                                                              "description":  "Harmful action"
+                                                          },
+                                                          {
+                                                              "value":  2,
+                                                              "name":  "Beneficial",
+                                                              "description":  "Beneficial action"
+                                                          },
+                                                          {
+                                                              "value":  3,
+                                                              "name":  "Cancel",
+                                                              "description":  "Targeting canceled"
+                                                          }
+                                                      ]
+                                       },
+                                       {
+                                           "name":  "Target Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of targeted object (0 for ground)"
+                                       },
+                                       {
+                                           "name":  "X",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Target X coordinate (-1 if canceled)"
+                                       },
+                                       {
+                                           "name":  "Y",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Target Y coordinate (-1 if canceled)"
+                                       },
+                                       {
+                                           "name":  "Unknown",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Unknown (typically 0)"
+                                       },
+                                       {
+                                           "name":  "Z",
+                                           "type":  "sbyte",
+                                           "size":  1,
+                                           "description":  "Target Z coordinate"
+                                       },
+                                       {
+                                           "name":  "Graphic",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Graphic ID of targeted tile (0 for land)"
+                                       }
+                                   ],
+                        "notes":  "If x == -1 \u0026\u0026 y == -1 \u0026\u0026 serial is invalid, user pressed Escape to cancel targeting.",
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingTargetingPackets.cs",
+                                       "line":  28
+                                   }
+                    }
+                ]
+}

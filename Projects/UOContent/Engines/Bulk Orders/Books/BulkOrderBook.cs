@@ -40,7 +40,6 @@ public partial class BulkOrderBook : Item, ISecurable
     [Constructible]
     public BulkOrderBook() : base(0x2259)
     {
-        Weight = 1.0;
         LootType = LootType.Blessed;
 
         _entries = [];
@@ -48,6 +47,8 @@ public partial class BulkOrderBook : Item, ISecurable
 
         _level = SecureLevel.CoOwners;
     }
+
+    public override double DefaultWeight => 1.0;
 
     public override void OnAfterDuped(Item newItem)
     {
