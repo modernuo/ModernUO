@@ -269,6 +269,7 @@ public static class ServerConfiguration
         {
             updated = true;
             _settings.Listeners.AddRange(ServerConfigurationPrompts.GetListeners());
+            _settings.Settings["serverListing.realAddress"] = ServerConfigurationPrompts.GetRealAddress();
         }
 
         if (!_settings.Settings.ContainsKey("serverListing.serverName"))
