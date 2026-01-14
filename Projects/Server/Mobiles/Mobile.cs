@@ -293,6 +293,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
     private int m_HueMod = -1;
     private int m_Hunger;
+    private int _thirst;
 
     private bool m_InDeltaQueue;
     private int m_Kills;
@@ -513,7 +514,20 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
-    public int Thirst { get; set; }
+    public int Thirst
+    {
+        get => _thirst;
+        set
+        {
+            var oldValue = _thirst;
+
+            if (oldValue != value)
+            {
+                _thirst = value;
+                OnThirstChanged(oldValue);
+            }
+        }
+    }
 
     [CommandProperty(AccessLevel.GameMaster)]
     public int BAC { get; set; }
@@ -3722,6 +3736,14 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     ///     <seealso cref="Hunger" />
     /// </summary>
     public virtual void OnHungerChanged(int oldValue)
+    {
+    }
+
+    /// <summary>
+    ///     Overridable. Virtual event invoked after the <see cref="Thirst" /> property has changed.
+    ///     <seealso cref="Thirst" />
+    /// </summary>
+    public virtual void OnThirstChanged(int oldValue)
     {
     }
 
