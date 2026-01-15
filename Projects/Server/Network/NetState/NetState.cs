@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2025 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: NetState.cs                                                     *
  *                                                                       *
@@ -25,10 +25,8 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using System.Net.Sockets;
 using System.Network;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
 namespace Server.Network;
 
@@ -40,14 +38,10 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(NetState));
 
     private static readonly TimeSpan ConnectingSocketIdleLimit = TimeSpan.FromMilliseconds(5000); // 5 seconds
-    private const int RecvPipeSize = 1024 * 64;
-    private const int SendPipeSize = 1024 * 256;
     private const int HuePickerCap = 512;
     private const int MenuCap = 512;
     private const int PacketPerSecondThreshold = 3000;
 
-    private static readonly GCHandle[] _polledStates = new GCHandle[2048];
-    private static readonly IPollGroup _pollGroup = PollGroup.Create();
     private static readonly Queue<NetState> _flushPending = new(2048);
     private static readonly Queue<NetState> _flushedPartials = new(256);
     private static readonly ConcurrentQueue<NetState> _disposed = new();
@@ -70,10 +64,16 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
     internal ParserState _parserState = ParserState.AwaitingNextPacket;
     internal ProtocolState _protocolState = ProtocolState.AwaitingSeed;
-    internal GCHandle _handle;
     private bool _packetLogging;
 
-    public GCHandle Handle => _handle;
+    // IORingGroup per-instance fields
+    private nint _socket;
+    private int _connId = -1;
+    private IORingBuffer _recvBuffer;
+    private IORingBuffer _sendBuffer;
+    private int _netStateIndex = -1;
+    private bool _recvPending;
+    private bool _sendPending;
 
     // Speed Hack Prevention
     internal long _movementCredit;
@@ -108,6 +108,9 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     public static void Configure()
     {
         _packetLoggingPath = ServerConfiguration.GetSetting("netstate.packetLoggingPath", Path.Combine(Core.BaseDirectory, "Packets"));
+
+        // Initialize IORingGroup and buffer pools
+        ConfigureNetwork();
     }
 
     public static void Initialize()
@@ -115,45 +118,28 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         Timer.DelayCall(TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(1.5), CheckAllAlive);
     }
 
-    public NetState(Socket connection)
+    // Internal constructor for accepted sockets
+    private NetState(nint socket, IPAddress address, int netStateIndex, int connId, IORingBuffer recvBuffer, IORingBuffer sendBuffer)
     {
-        Connection = connection;
+        _socket = socket;
+        Address = address;
+        _netStateIndex = netStateIndex;
+        _connId = connId;
+        _recvBuffer = recvBuffer;
+        _sendBuffer = sendBuffer;
+
         Seeded = false;
         HuePickers = [];
         Menus = [];
         Trades = [];
-        RecvPipe = new Pipe(RecvPipeSize);
-        SendPipe = new Pipe(SendPipeSize);
         NextActivityCheck = Core.TickCount + 30000;
         ConnectedOn = Core.Now;
-
-        try
-        {
-            Address = Utility.Intern((Connection?.RemoteEndPoint as IPEndPoint)?.Address);
-            _toString = Address?.ToString() ?? "(error)";
-        }
-        catch (Exception ex)
-        {
-            TraceException(ex);
-            Address = IPAddress.None;
-            _toString = "(error)";
-        }
+        _toString = address?.ToString() ?? "(error)";
 
         _instances.Add(this);
         _connecting.Add(this);
-        _handle = GCHandle.Alloc(this);
 
         LogInfo($"Connected. [{_instances.Count} Online]");
-
-        try
-        {
-            _pollGroup.Add(connection, _handle);
-        }
-        catch (Exception ex)
-        {
-            TraceException(ex);
-            Disconnect("Unable to add socket to poll group");
-        }
     }
 
     // Sectors
@@ -210,13 +196,22 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
     public bool Seeded { get; set; }
 
-    public Pipe RecvPipe { get; }
-
-    public Pipe SendPipe { get; }
-
     public bool Running => _running;
 
-    public Socket Connection { get; private set; }
+    /// <summary>
+    /// Gets whether the socket is connected.
+    /// </summary>
+    public bool IsConnected => _socket != 0 && _running;
+
+    /// <summary>
+    /// Gets the socket handle.
+    /// </summary>
+    public nint SocketHandle => _socket;
+
+    /// <summary>
+    /// Gets the local endpoint (address/port) the client connected to.
+    /// </summary>
+    public IPEndPoint LocalEndPoint => SocketHelper.GetLocalEndPoint(_socket);
 
     public bool CompressionEnabled { get; set; }
 
@@ -464,8 +459,14 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
                 return false;
             }
 #endif
-        buffer = SendPipe.Writer.AvailableToWrite();
-        return !(SendPipe.Writer.IsClosed || buffer.Length <= 0);
+        if (!_running || _sendBuffer.BufferId < 0)
+        {
+            buffer = Span<byte>.Empty;
+            return false;
+        }
+
+        buffer = _sendBuffer.GetWriteSpan(out _);
+        return buffer.Length > 0;
     }
 
     public void Send(ReadOnlySpan<byte> span)
@@ -497,7 +498,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
                 LogPacket(span, false);
             }
 
-            SendPipe.Writer.Advance((uint)length);
+            _sendBuffer.CommitWrite(length);
 
             if (!_flushQueued)
             {
@@ -554,6 +555,32 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         }
     }
 
+    private void DecodeRecvBuffer(int bytesReceived)
+    {
+        if (_packetDecoder == null)
+        {
+            return;
+        }
+
+        // Get the portion of the buffer that was just written (the new data)
+        var readSpan = _recvBuffer.GetReadSpan(out _);
+        var newDataStart = readSpan.Length - bytesReceived;
+        if (newDataStart < 0)
+        {
+            newDataStart = 0;
+        }
+
+        // Decode only the new data portion (in-place)
+        var newData = _recvBuffer.GetWriteSpan(out _).Slice(0, bytesReceived);
+        // Actually we need to decode the data that was just committed
+        // The data is at the end of the readable region
+        var mutableSpan = System.Runtime.InteropServices.MemoryMarshal.CreateSpan(
+            ref System.Runtime.InteropServices.MemoryMarshal.GetReference(readSpan.Slice(newDataStart)),
+            bytesReceived
+        );
+        _packetDecoder.Invoke(mutableSpan, ref bytesReceived);
+    }
+
     public void HandleReceive(bool throttled = false)
     {
         if (!_running)
@@ -561,20 +588,17 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
             return;
         }
 
-        if (!throttled)
-        {
-            ReceiveData();
-        }
-
-        var reader = RecvPipe.Reader;
+        // Data already in _recvBuffer from recv completion - no need to call ReceiveData
 
         try
         {
             // Process as many packets as we can synchronously
             while (_running && _parserState != ParserState.Error && _protocolState != ProtocolState.Error)
             {
-                var buffer = reader.AvailableToRead();
+                var buffer = _recvBuffer.GetReadSpan(out _);
                 var length = buffer.Length;
+
+                logger.Information("[DEBUG] HandleReceive: bufferLen={Length}, protocolState={State}", length, _protocolState);
 
                 if (length <= 0)
                 {
@@ -584,6 +608,8 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
                 var packetReader = new SpanReader(buffer);
                 var packetId = packetReader.ReadByte();
                 var packetLength = length;
+
+                logger.Information("[DEBUG] HandleReceive: packetId=0x{PacketId:X2}", packetId);
 
                 // These can arrive at any time and are only informational
                 if (_protocolState != ProtocolState.AwaitingSeed && IncomingPackets.IsInfoPacket(packetId))
@@ -711,7 +737,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
                 if (_parserState is ParserState.AwaitingNextPacket)
                 {
-                    reader.Advance((uint)packetLength);
+                    _recvBuffer.CommitRead(packetLength);
                 }
                 else if (_parserState is ParserState.Throttled)
                 {
@@ -844,222 +870,17 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         return ParserState.AwaitingNextPacket;
     }
 
-    private bool Flush()
-    {
-        _flushQueued = false;
-
-        // We don't have a running check since we need to send the last bits of data even after a disconnect, but before a dispose.
-        if (Connection == null)
-        {
-            return true;
-        }
-
-        var reader = SendPipe.Reader;
-        var buffer = reader.AvailableToRead();
-
-        if (reader.IsClosed || buffer.Length == 0)
-        {
-            return true;
-        }
-
-        var bytesWritten = 0;
-
-        try
-        {
-            bytesWritten = Connection.Send(buffer, SocketFlags.None);
-        }
-        catch (SocketException ex)
-        {
-            if (ex.SocketErrorCode != SocketError.WouldBlock)
-            {
-                logger.Debug(ex, "Disconnected due to a socket exception");
-                Disconnect(string.Empty);
-                return true;
-            }
-        }
-        catch (Exception ex)
-        {
-            Disconnect($"Disconnected with error: {ex}");
-            TraceException(ex);
-            return true;
-        }
-
-        if (bytesWritten > 0)
-        {
-            NextActivityCheck = Core.TickCount + 90000;
-            reader.Advance((uint)bytesWritten);
-        }
-
-        return bytesWritten == buffer.Length;
-    }
-
     private void DecodePacket(Span<byte> buffer, ref int length)
     {
         _packetDecoder?.Invoke(buffer, ref length);
     }
 
-    private void ReceiveData()
-    {
-        var writer = RecvPipe.Writer;
-        var buffer = writer.AvailableToWrite();
-
-        if (writer.IsClosed || buffer.Length == 0)
-        {
-            return;
-        }
-
-        var bytesWritten = 0;
-
-        try
-        {
-            bytesWritten = Connection.Receive(buffer, SocketFlags.None);
-        }
-        catch (SocketException ex)
-        {
-            if (ex.ErrorCode is not 54 and not 89 and not 995)
-            {
-                logger.Debug(ex, "Disconnected due to a socket exception");
-            }
-
-            Disconnect(string.Empty);
-        }
-        catch (Exception ex)
-        {
-            Disconnect($"Disconnected with error: {ex}");
-            TraceException(ex);
-        }
-
-        if (bytesWritten <= 0)
-        {
-            Disconnect(string.Empty);
-            return;
-        }
-
-        DecodePacket(buffer, ref bytesWritten);
-
-        writer.Advance((uint)bytesWritten);
-        NextActivityCheck = Core.TickCount + 90000;
-    }
-
-    private static void DisconnectUnattachedSockets()
-    {
-        var now = Core.Now;
-
-        // Clear out any sockets that have been connecting for too long
-        while (_connecting.Count > 0)
-        {
-            var ns = _connecting.Min;
-            var socketTime = ns.ConnectedOn;
-
-            // If the socket has been connected for less than the limit, we can stop checking
-            if (now - socketTime < ConnectingSocketIdleLimit)
-            {
-                break;
-            }
-
-            // Socket must have finished the entire authentication process or be forcibly disconnected.
-            if (!ns.Running || !ns.SentFirstPacket || !ns.Seeded || ns.Account == null)
-            {
-                // Not sending a message because it will fill up the logs.
-                ns.Disconnect(null);
-            }
-
-            _connecting.Remove(ns);
-        }
-    }
-
-    public static void FlushAll()
-    {
-        while (_flushPending.Count != 0)
-        {
-            _flushPending.Dequeue()?.Flush();
-        }
-    }
-
-    public static void Slice()
-    {
-        DisconnectUnattachedSockets();
-
-        while (_throttled.Count > 0)
-        {
-            var ns = _throttled.Dequeue();
-            if (ns.Running)
-            {
-                ns.HandleReceive(true);
-            }
-        }
-
-        // This is enqueued by HandleReceive if already throttled and still throttled
-        while (_throttledPending.Count > 0)
-        {
-            _throttled.Enqueue(_throttledPending.Dequeue());
-        }
-
-        var count = _pollGroup.Poll(_polledStates);
-
-        if (count > 0)
-        {
-            for (var i = 0; i < count; i++)
-            {
-                (_polledStates[i].Target as NetState)?.HandleReceive();
-                _polledStates[i] = default;
-            }
-        }
-
-        while (_flushPending.TryDequeue(out var ns))
-        {
-            if (!ns.Flush())
-            {
-                // Incomplete data, so we need to requeue
-                _flushedPartials.Enqueue(ns);
-            }
-        }
-
-        var hasDisposes = false;
-        while (_disposed.TryDequeue(out var ns))
-        {
-            hasDisposes = true;
-            ns.Dispose();
-        }
-
-        // If they weren't disconnected, requeue them
-        while (_flushedPartials.TryDequeue(out var ns))
-        {
-            if (ns.Running)
-            {
-                _flushPending.Enqueue(ns);
-            }
-        }
-
-        if (hasDisposes)
-        {
-            _pollGroup.Poll(_polledStates.Length);
-        }
-    }
-
     public void CheckAlive(long curTicks)
     {
-        if (Connection != null && NextActivityCheck - curTicks < 0)
+        if (_socket != 0 && NextActivityCheck - curTicks < 0)
         {
             LogInfo("Disconnecting due to inactivity...");
             Disconnect("Disconnecting due to inactivity.");
-        }
-    }
-
-    public static void CheckAllAlive()
-    {
-        try
-        {
-            var curTicks = Core.TickCount;
-
-            foreach (var ns in Instances)
-            {
-                ns.CheckAlive(curTicks);
-            }
-        }
-        catch (Exception ex)
-        {
-            TraceException(ex);
         }
     }
 
@@ -1145,7 +966,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     private void Dispose()
     {
         // It's possible we could queue for dispose multiple times
-        if (Connection == null)
+        if (_socket == 0)
         {
             return;
         }
@@ -1166,19 +987,43 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         _instances.Remove(this);
         _connecting.Remove(this);
 
-        try
+        // Cleanup IORingGroup resources
+        if (_connId >= 0)
         {
-            _pollGroup.Remove(Connection, _handle);
-        }
-        catch (Exception ex)
-        {
-            TraceException(ex);
+            try
+            {
+                _ring.UnregisterSocket(_connId);
+                _ring.CloseSocket(_socket);
+            }
+            catch (Exception ex)
+            {
+                TraceException(ex);
+            }
+
+            _connId = -1;
         }
 
-        Connection.Close();
-        _handle.Free();
-        RecvPipe.Dispose();
-        SendPipe.Dispose();
+        // Release buffers back to pools
+        if (_recvBuffer.BufferId >= 0)
+        {
+            _recvBufferPool.Release(_recvBuffer);
+            _recvBuffer = default;
+        }
+
+        if (_sendBuffer.BufferId >= 0)
+        {
+            _sendBufferPool.Release(_sendBuffer);
+            _sendBuffer = default;
+        }
+
+        // Clear netstate slot
+        if (_netStateIndex >= 0)
+        {
+            _netStates[_netStateIndex] = null;
+            _netStateIndex = -1;
+        }
+
+        _socket = 0;
 
         Mobile = null;
 
@@ -1189,7 +1034,6 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         Account = null;
         ServerInfo = null;
         CityInfo = null;
-        Connection = null;
 
         var count = _instances.Count;
 
