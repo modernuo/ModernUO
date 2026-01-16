@@ -33,28 +33,27 @@ public partial class NetState
     private const int SendBufferSize = 1024 * 256;  // 256KB send buffers
     private const int MaxConnections = 4096;        // Max concurrent connections
 
-    // IORingGroup I/O
-    private static IIORingGroup _ring;
-    private static IORingBufferPool _recvBufferPool;
-    private static IORingBufferPool _sendBufferPool;
+    // Socket manager handles buffer pools, socket lifecycle, and I/O operations
+    private static RingSocketManager _socketManager;
+
+    // NetState storage indexed by RingSocket.Id
     private static readonly NetState[] _netStates = new NetState[MaxConnections];
-    private static readonly Completion[] _completions = new Completion[MaxConnections];
+
+    // Events buffer for ProcessCompletions
+    private static readonly RingSocketEvent[] _events = new RingSocketEvent[MaxConnections];
+
+    // Completions buffer for accept handling (accepts are handled separately)
+    private static readonly Completion[] _completions = new Completion[64];
 
     // Listener management
     private static nint[] _listeners = Array.Empty<nint>();
     private static int _pendingAcceptCount;
     private const int PendingAcceptsPerListener = 32;
 
-    // UserData operation types
-    private const ulong OpAccept = 1UL << 56;
-    private const ulong OpRecv = 2UL << 56;
-    private const ulong OpSend = 3UL << 56;
-    private const ulong OpMask = 0xFF00_0000_0000_0000UL;
-
     /// <summary>
     /// Gets the IORingGroup instance for socket operations.
     /// </summary>
-    public static IIORingGroup Ring => _ring;
+    public static IIORingGroup Ring => _socketManager?.Ring;
 
     /// <summary>
     /// Gets the listening addresses that the server is bound to.
@@ -64,7 +63,7 @@ public partial class NetState
     private static IPRateLimiter _ipRateLimiter;
 
     /// <summary>
-    /// Configures the IORingGroup and buffer pools.
+    /// Configures the IORingGroup and socket manager.
     /// </summary>
     private static void ConfigureNetwork()
     {
@@ -72,22 +71,16 @@ public partial class NetState
         _ipRateLimiter = new IPRateLimiter(10, 10000, 1000, 2.0, 3_600_000, Core.ClosingTokenSource.Token);
 
         // Initialize IORingGroup
-        _ring = IORingGroup.Create(queueSize: 4096);
+        var ring = IORingGroup.Create(queueSize: 4096);
 
-        _recvBufferPool = new IORingBufferPool(
-            _ring,
-            slabSize: 256,
-            bufferSize: RecvBufferSize,
-            initialSlabs: 8,
-            maxSlabs: 32
-        );
-
-        _sendBufferPool = new IORingBufferPool(
-            _ring,
-            slabSize: 64,
-            bufferSize: SendBufferSize,
-            initialSlabs: 8,
-            maxSlabs: 32
+        // Create socket manager which handles buffer pools and socket lifecycle
+        _socketManager = new RingSocketManager(
+            ring,
+            maxSockets: MaxConnections,
+            recvBufferSize: RecvBufferSize,
+            sendBufferSize: SendBufferSize,
+            initialBufferSlabs: 8,
+            maxBufferSlabs: 32
         );
     }
 
@@ -99,10 +92,11 @@ public partial class NetState
         HashSet<IPEndPoint> listeningAddresses = [];
         List<nint> listeners = [];
 
+        var ring = _socketManager.Ring;
         for (var i = 0; i < ServerConfiguration.Listeners.Count; i++)
         {
             var ipep = ServerConfiguration.Listeners[i];
-            var listener = _ring.CreateListener(ipep.Address.ToString(), (ushort)ipep.Port, 256);
+            var listener = ring.CreateListener(ipep.Address.ToString(), (ushort)ipep.Port, 256);
             if (listener == -1)
             {
                 logger.Warning("Failed to create listener for {Address}", ipep);
@@ -156,20 +150,19 @@ public partial class NetState
     private static void RegisterListeners(nint[] listeners)
     {
         _listeners = listeners;
-        logger.Information("[DEBUG] RegisterListeners: {Count} listeners", _listeners.Length);
+
+        var ring = _socketManager.Ring;
 
         // Queue initial accept operations for each listener
         for (var i = 0; i < _listeners.Length; i++)
         {
             var listener = _listeners[i];
-            logger.Information("[DEBUG] Listener[{Index}] = {Handle}", i, listener);
             for (var j = 0; j < PendingAcceptsPerListener; j++)
             {
-                _ring.PrepareAccept(listener, 0, 0, OpAccept);
+                ring.PrepareAccept(listener, 0, 0, IORingUserData.EncodeAccept());
                 _pendingAcceptCount++;
             }
         }
-        logger.Information("[DEBUG] Initial pending accepts: {Count}", _pendingAcceptCount);
     }
 
     /// <summary>
@@ -177,38 +170,25 @@ public partial class NetState
     /// </summary>
     private static void CloseListeners()
     {
+        var ring = _socketManager?.Ring;
+        if (ring == null)
+        {
+            return;
+        }
+
         foreach (var listener in _listeners)
         {
-            _ring.CloseListener(listener);
+            ring.CloseListener(listener);
         }
 
         _listeners = [];
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static ulong EncodeUserData(ulong opType, int index) => opType | (uint)index;
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static (ulong opType, int index) DecodeUserData(ulong userData) =>
-        (userData & OpMask, (int)(userData & 0xFFFFFFFF));
-
-    private static int FindFreeSlot()
-    {
-        for (int i = 0; i < MaxConnections; i++)
-        {
-            if (_netStates[i] == null)
-            {
-                return i;
-            }
-        }
-        return -1;
     }
 
     private static void HandleAcceptCompletion(int result)
     {
         _pendingAcceptCount--;
 
-        logger.Information("[DEBUG] HandleAcceptCompletion: result={Result}, pendingAccepts={Pending}", result, _pendingAcceptCount);
+        var ring = _socketManager.Ring;
 
         // EAGAIN (-11) means no connection pending - just re-queue
         if (result == -11)
@@ -222,7 +202,6 @@ public partial class NetState
 
             // Get remote IP address
             var remoteIP = SocketHelper.GetRemoteAddress(clientSocket);
-            logger.Information("[DEBUG] Accept got socket={Socket}, remoteIP={RemoteIP}", clientSocket, remoteIP);
 
             if (remoteIP != null)
             {
@@ -238,19 +217,14 @@ public partial class NetState
                 else
                 {
                     // Configure socket and create NetState
-                    logger.Information("[DEBUG] Configuring socket and creating NetState for {RemoteIP}", remoteIP);
-                    _ring.ConfigureSocket(clientSocket);
+                    ring.ConfigureSocket(clientSocket);
                     CreateFromSocket(clientSocket, remoteIP);
                     goto ReplenishAccepts;
                 }
             }
-            else
-            {
-                logger.Warning("[DEBUG] Failed to get remote IP for socket {Socket}", clientSocket);
-            }
 
             // Rejected - close the socket
-            _ring.CloseSocket(clientSocket);
+            ring.CloseSocket(clientSocket);
         }
         else if (result != -4) // EINTR
         {
@@ -260,188 +234,31 @@ public partial class NetState
         ReplenishAccepts:
         // Replenish accepts to maintain pending count
         var targetAccepts = _listeners.Length * PendingAcceptsPerListener;
-        var replenished = 0;
         while (_pendingAcceptCount < targetAccepts && _listeners.Length > 0)
         {
             var listenerIndex = _pendingAcceptCount % _listeners.Length;
-            logger.Information("[DEBUG] PrepareAccept: listener[{Index}]={Handle}, pendingCount={Count}",
-                listenerIndex, _listeners[listenerIndex], _pendingAcceptCount);
-            _ring.PrepareAccept(_listeners[listenerIndex], 0, 0, OpAccept);
+            ring.PrepareAccept(_listeners[listenerIndex], 0, 0, IORingUserData.EncodeAccept());
             _pendingAcceptCount++;
-            replenished++;
-        }
-        if (replenished > 0)
-        {
-            logger.Information("[DEBUG] Replenished {Count} accepts, total pending={Total}", replenished, _pendingAcceptCount);
         }
     }
 
     /// <summary>
     /// Creates a NetState from an accepted socket handle.
     /// </summary>
-    private static void CreateFromSocket(nint socket, IPAddress address)
+    private static void CreateFromSocket(nint socketHandle, IPAddress address)
     {
-        logger.Information("[DEBUG] CreateFromSocket: socket={Socket}, address={Address}", socket, address);
-
-        // Find free slot
-        var netStateIndex = FindFreeSlot();
-        if (netStateIndex < 0)
+        // Use socket manager to create managed socket (handles buffers, registration, recv posting)
+        var socket = _socketManager.CreateSocket(socketHandle);
+        if (socket == null)
         {
-            logger.Debug("No free connection slots, closing socket");
-            _ring.CloseSocket(socket);
+            logger.Debug("Failed to create socket (resources exhausted)");
+            _socketManager.Ring.CloseSocket(socketHandle);
             return;
         }
 
-        logger.Information("[DEBUG] Found free slot: {Index}", netStateIndex);
-
-        // Acquire buffers from pools
-        if (!_recvBufferPool.TryAcquire(out var recvBuffer))
-        {
-            logger.Debug("Recv buffer pool exhausted, closing socket");
-            _ring.CloseSocket(socket);
-            return;
-        }
-
-        if (!_sendBufferPool.TryAcquire(out var sendBuffer))
-        {
-            _recvBufferPool.Release(recvBuffer!);
-            logger.Debug("Send buffer pool exhausted, closing socket");
-            _ring.CloseSocket(socket);
-            return;
-        }
-
-        logger.Information("[DEBUG] Acquired buffers: recv={RecvId}, send={SendId}", recvBuffer.BufferId, sendBuffer.BufferId);
-
-        // Register socket with ring
-        var connId = _ring.RegisterSocket(socket);
-        if (connId < 0)
-        {
-            _recvBufferPool.Release(recvBuffer!);
-            _sendBufferPool.Release(sendBuffer!);
-            logger.Debug("Failed to register socket with ring");
-            _ring.CloseSocket(socket);
-            return;
-        }
-
-        logger.Information("[DEBUG] Registered socket with connId={ConnId}", connId);
-
-        // Create NetState
-        var ns = new NetState(socket, address, netStateIndex, connId, recvBuffer, sendBuffer);
-        _netStates[netStateIndex] = ns;
-
-        logger.Information("[DEBUG] Created NetState, posting initial recv");
-
-        // Post initial recv
-        PostRecv(ns);
-    }
-
-    private static void PostRecv(NetState ns)
-    {
-        if (ns._recvPending || !ns._running)
-        {
-            return;
-        }
-
-        var writeSpan = ns._recvBuffer.GetWriteSpan(out var offset);
-        var available = writeSpan.Length;
-        if (available == 0)
-        {
-            return;
-        }
-
-        _ring.PrepareRecvBuffer(
-            ns._connId,
-            ns._recvBuffer.BufferId,
-            offset,
-            available,
-            EncodeUserData(OpRecv, ns._netStateIndex)
-        );
-        ns._recvPending = true;
-    }
-
-    private static void PostSend(NetState ns)
-    {
-        if (ns._sendPending || !ns._running)
-        {
-            return;
-        }
-
-        var readSpan = ns._sendBuffer.GetReadSpan(out var offset);
-        var available = readSpan.Length;
-        if (available == 0)
-        {
-            return;
-        }
-
-        _ring.PrepareSendBuffer(
-            ns._connId,
-            ns._sendBuffer.BufferId,
-            offset,
-            available,
-            EncodeUserData(OpSend, ns._netStateIndex)
-        );
-        ns._sendPending = true;
-    }
-
-    private static void HandleRecvCompletion(int index, int bytesReceived)
-    {
-        logger.Information("[DEBUG] HandleRecvCompletion: index={Index}, bytesReceived={Bytes}", index, bytesReceived);
-
-        var ns = _netStates[index];
-        if (ns == null || !ns._running)
-        {
-            logger.Information("[DEBUG] HandleRecvCompletion: NetState null or not running");
-            return;
-        }
-
-        ns._recvPending = false;
-
-        if (bytesReceived <= 0)
-        {
-            logger.Information("[DEBUG] HandleRecvCompletion: bytesReceived <= 0, disconnecting");
-            ns.Disconnect(bytesReceived == 0 ? string.Empty : "Recv error");
-            return;
-        }
-
-        // Data already in recv buffer - advance write position
-        ns._recvBuffer.CommitWrite(bytesReceived);
-        ns.DecodeRecvBuffer(bytesReceived);
-
-        logger.Information("[DEBUG] HandleRecvCompletion: calling HandleReceive, protocolState={State}", ns._protocolState);
-        ns.HandleReceive();
-
-        // Queue next recv if there's space
-        if (ns._running && ns._recvBuffer.GetWriteSpan(out _).Length > 0)
-        {
-            PostRecv(ns);
-        }
-    }
-
-    private static void HandleSendCompletion(int index, int bytesSent)
-    {
-        var ns = _netStates[index];
-        if (ns == null)
-        {
-            return;
-        }
-
-        ns._sendPending = false;
-
-        if (bytesSent <= 0)
-        {
-            ns.Disconnect(bytesSent == 0 ? string.Empty : "Send error");
-            return;
-        }
-
-        // Advance read position - data has been sent
-        ns._sendBuffer.CommitRead(bytesSent);
-        ns.NextActivityCheck = Core.TickCount + 90000;
-
-        // If more data to send, queue another send
-        if (ns._running && ns._sendBuffer.GetReadSpan(out _).Length > 0)
-        {
-            PostSend(ns);
-        }
+        // Create NetState and map by socket ID
+        var ns = new NetState(socket, address);
+        _netStates[socket.Id] = ns;
     }
 
     private static void DisconnectUnattachedSockets()
@@ -475,28 +292,27 @@ public partial class NetState
     {
         while (_flushPending.TryDequeue(out var ns))
         {
-            if (ns != null && ns.Running)
+            if (ns == null)
             {
-                PostSend(ns);
+                continue;
+            }
+
+            // Reset flag to allow re-queueing if more data is added later
+            ns._flushQueued = false;
+
+            if (ns.Running)
+            {
+                ns._socket?.QueueSend();
             }
         }
 
         // Submit any pending operations
-        _ring?.Submit();
+        _socketManager?.Submit();
     }
-
-    private static int _sliceCounter;
 
     public static void Slice()
     {
-        // Periodic status log every ~1000 slices
-        if (++_sliceCounter % 1000 == 0)
-        {
-            logger.Information("[DEBUG] Slice #{Count}: pendingAccepts={Pending}, listeners={Listeners}",
-                _sliceCounter, _pendingAcceptCount, _listeners.Length);
-        }
-
-        DisconnectUnattachedSockets();
+        // DisconnectUnattachedSockets();
 
         // Process throttled states
         while (_throttled.Count > 0)
@@ -517,53 +333,102 @@ public partial class NetState
         // Process flush queue - queue send operations for states with pending data
         while (_flushPending.TryDequeue(out var ns))
         {
+            // Reset flag to allow re-queueing if more data is added later
+            ns._flushQueued = false;
+
             if (ns.Running)
             {
-                PostSend(ns);
+                ns._socket?.QueueSend();
+            }
+        }
+
+        var ring = _socketManager.Ring;
+
+        // Process accept completions first (handled separately from socket events)
+        ProcessAcceptCompletions(ring);
+
+        // Process socket events (recv/send/disconnect)
+        var eventCount = _socketManager.ProcessCompletions(_events);
+
+        for (var i = 0; i < eventCount; i++)
+        {
+            ref var evt = ref _events[i];
+            var ns = _netStates[evt.Socket.Id];
+
+            if (ns == null)
+            {
+                continue;
+            }
+
+            switch (evt.Type)
+            {
+                case RingSocketEventType.DataReceived:
+                    HandleDataReceived(ns, evt.BytesTransferred);
+                    break;
+
+                case RingSocketEventType.DataSent:
+                    // Update activity check on successful send
+                    ns.NextActivityCheck = Core.TickCount + 90000;
+                    break;
+
+                case RingSocketEventType.Disconnected:
+                    HandleDisconnected(ns);
+                    break;
             }
         }
 
         // Submit any queued operations
-        _ring.Submit();
-
-        // Get completions (non-blocking)
-        var count = _ring.PeekCompletions(_completions);
-
-        if (count > 0)
-        {
-            logger.Information("[DEBUG] Slice: got {Count} completions", count);
-        }
-
-        for (var i = 0; i < count; i++)
-        {
-            ref var cqe = ref _completions[i];
-            var (opType, index) = DecodeUserData(cqe.UserData);
-
-            logger.Information("[DEBUG] Completion: opType={OpType}, index={Index}, result={Result}",
-                opType == OpAccept ? "Accept" : opType == OpRecv ? "Recv" : opType == OpSend ? "Send" : "Unknown",
-                index, cqe.Result);
-
-            switch (opType)
-            {
-                case OpAccept:
-                    HandleAcceptCompletion(cqe.Result);
-                    break;
-                case OpRecv:
-                    HandleRecvCompletion(index, cqe.Result);
-                    break;
-                case OpSend:
-                    HandleSendCompletion(index, cqe.Result);
-                    break;
-            }
-        }
-
-        _ring.AdvanceCompletionQueue(count);
+        _socketManager.Submit();
 
         // Process disposes
         while (_disposed.TryDequeue(out var ns))
         {
             ns.Dispose();
         }
+    }
+
+    private static void ProcessAcceptCompletions(IIORingGroup ring)
+    {
+        // Peek completions to find accepts
+        // Note: We don't advance here - RingSocketManager.ProcessCompletions will advance ALL completions
+        // including accepts (which it skips processing)
+        var count = ring.PeekCompletions(_completions);
+
+        for (var i = 0; i < count; i++)
+        {
+            ref var cqe = ref _completions[i];
+            var opType = IORingUserData.GetOpType(cqe.UserData);
+
+            if (opType == IORingUserData.OpAccept)
+            {
+                HandleAcceptCompletion(cqe.Result);
+            }
+        }
+    }
+
+    private static void HandleDataReceived(NetState ns, int bytesReceived)
+    {
+        if (!ns._running)
+        {
+            return;
+        }
+
+        // Data is already committed to buffer by RingSocketManager
+        // Decode if encryption is enabled
+        ns.DecodeRecvBuffer(bytesReceived);
+
+        // Process packets
+        ns.HandleReceive();
+    }
+
+    private static void HandleDisconnected(NetState ns)
+    {
+        // Clear the NetState slot
+        _netStates[ns._socket.Id] = null;
+
+        // Mark as not running and queue for dispose
+        ns._running = false;
+        _disposed.Enqueue(ns);
     }
 
     public static void CheckAllAlive()

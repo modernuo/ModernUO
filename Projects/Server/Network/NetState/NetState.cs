@@ -43,7 +43,6 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     private const int PacketPerSecondThreshold = 3000;
 
     private static readonly Queue<NetState> _flushPending = new(2048);
-    private static readonly Queue<NetState> _flushedPartials = new(256);
     private static readonly ConcurrentQueue<NetState> _disposed = new();
     private static readonly Queue<NetState> _throttled = new(256);
     private static readonly Queue<NetState> _throttledPending = new(256);
@@ -66,14 +65,8 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     internal ProtocolState _protocolState = ProtocolState.AwaitingSeed;
     private bool _packetLogging;
 
-    // IORingGroup per-instance fields
-    private nint _socket;
-    private int _connId = -1;
-    private IORingBuffer _recvBuffer;
-    private IORingBuffer _sendBuffer;
-    private int _netStateIndex = -1;
-    private bool _recvPending;
-    private bool _sendPending;
+    // Managed socket with buffers (handles lifecycle automatically)
+    internal RingSocket _socket;
 
     // Speed Hack Prevention
     internal long _movementCredit;
@@ -119,14 +112,10 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     }
 
     // Internal constructor for accepted sockets
-    private NetState(nint socket, IPAddress address, int netStateIndex, int connId, IORingBuffer recvBuffer, IORingBuffer sendBuffer)
+    private NetState(RingSocket socket, IPAddress address)
     {
         _socket = socket;
         Address = address;
-        _netStateIndex = netStateIndex;
-        _connId = connId;
-        _recvBuffer = recvBuffer;
-        _sendBuffer = sendBuffer;
 
         Seeded = false;
         HuePickers = [];
@@ -201,17 +190,17 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     /// <summary>
     /// Gets whether the socket is connected.
     /// </summary>
-    public bool IsConnected => _socket != 0 && _running;
+    public bool IsConnected => _socket?.Connected == true && _running;
 
     /// <summary>
     /// Gets the socket handle.
     /// </summary>
-    public nint SocketHandle => _socket;
+    public nint SocketHandle => _socket?.Handle ?? 0;
 
     /// <summary>
     /// Gets the local endpoint (address/port) the client connected to.
     /// </summary>
-    public IPEndPoint LocalEndPoint => SocketHelper.GetLocalEndPoint(_socket);
+    public IPEndPoint LocalEndPoint => _socket != null ? SocketHelper.GetLocalEndPoint(_socket.Handle) : null;
 
     public bool CompressionEnabled { get; set; }
 
@@ -459,13 +448,13 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
                 return false;
             }
 #endif
-        if (!_running || _sendBuffer.BufferId < 0)
+        if (!_running || _socket == null)
         {
             buffer = Span<byte>.Empty;
             return false;
         }
 
-        buffer = _sendBuffer.GetWriteSpan(out _);
+        buffer = _socket.SendBuffer.GetWriteSpan(out _);
         return buffer.Length > 0;
     }
 
@@ -498,7 +487,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
                 LogPacket(span, false);
             }
 
-            _sendBuffer.CommitWrite(length);
+            _socket.SendBuffer.CommitWrite(length);
 
             if (!_flushQueued)
             {
@@ -557,13 +546,13 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
     private void DecodeRecvBuffer(int bytesReceived)
     {
-        if (_packetDecoder == null)
+        if (_packetDecoder == null || _socket == null)
         {
             return;
         }
 
         // Get the portion of the buffer that was just written (the new data)
-        var readSpan = _recvBuffer.GetReadSpan(out _);
+        var readSpan = _socket.RecvBuffer.GetReadSpan(out _);
         var newDataStart = readSpan.Length - bytesReceived;
         if (newDataStart < 0)
         {
@@ -571,8 +560,6 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         }
 
         // Decode only the new data portion (in-place)
-        var newData = _recvBuffer.GetWriteSpan(out _).Slice(0, bytesReceived);
-        // Actually we need to decode the data that was just committed
         // The data is at the end of the readable region
         var mutableSpan = System.Runtime.InteropServices.MemoryMarshal.CreateSpan(
             ref System.Runtime.InteropServices.MemoryMarshal.GetReference(readSpan.Slice(newDataStart)),
@@ -583,22 +570,20 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
     public void HandleReceive(bool throttled = false)
     {
-        if (!_running)
+        if (!_running || _socket == null)
         {
             return;
         }
 
-        // Data already in _recvBuffer from recv completion - no need to call ReceiveData
+        // Data already in recv buffer from recv completion - no need to call ReceiveData
 
         try
         {
             // Process as many packets as we can synchronously
             while (_running && _parserState != ParserState.Error && _protocolState != ProtocolState.Error)
             {
-                var buffer = _recvBuffer.GetReadSpan(out _);
+                var buffer = _socket.RecvBuffer.GetReadSpan(out _);
                 var length = buffer.Length;
-
-                logger.Information("[DEBUG] HandleReceive: bufferLen={Length}, protocolState={State}", length, _protocolState);
 
                 if (length <= 0)
                 {
@@ -608,8 +593,6 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
                 var packetReader = new SpanReader(buffer);
                 var packetId = packetReader.ReadByte();
                 var packetLength = length;
-
-                logger.Information("[DEBUG] HandleReceive: packetId=0x{PacketId:X2}", packetId);
 
                 // These can arrive at any time and are only informational
                 if (_protocolState != ProtocolState.AwaitingSeed && IncomingPackets.IsInfoPacket(packetId))
@@ -737,7 +720,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
                 if (_parserState is ParserState.AwaitingNextPacket)
                 {
-                    _recvBuffer.CommitRead(packetLength);
+                    _socket.RecvBuffer.CommitRead(packetLength);
                 }
                 else if (_parserState is ParserState.Throttled)
                 {
@@ -877,7 +860,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
     public void CheckAlive(long curTicks)
     {
-        if (_socket != 0 && NextActivityCheck - curTicks < 0)
+        if (_socket != null && NextActivityCheck - curTicks < 0)
         {
             LogInfo("Disconnecting due to inactivity...");
             Disconnect("Disconnecting due to inactivity.");
@@ -926,17 +909,24 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         Console.WriteLine(ex);
     }
 
+    /// <summary>
+    /// Requests a graceful disconnect. RingSocket handles waiting for in-flight I/O operations
+    /// to complete before releasing buffers (zero-copy safety).
+    /// </summary>
     public void Disconnect(string reason)
     {
-        if (!_running)
+        if (!_running || _socket == null)
         {
             return;
         }
 
-        _running = false;
-
         _disconnectReason = reason;
-        _disposed.Enqueue(this);
+
+        // RingSocket.Disconnect() handles graceful disconnect:
+        // - Waits for pending sends to flush
+        // - Waits for in-flight I/O to complete
+        // - Ensures buffers aren't released while kernel is still using them
+        _socket.Disconnect();
     }
 
     public static void TraceDisconnect(string reason, string ip)
@@ -966,7 +956,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     private void Dispose()
     {
         // It's possible we could queue for dispose multiple times
-        if (_socket == 0)
+        if (_socket == null)
         {
             return;
         }
@@ -987,43 +977,9 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         _instances.Remove(this);
         _connecting.Remove(this);
 
-        // Cleanup IORingGroup resources
-        if (_connId >= 0)
-        {
-            try
-            {
-                _ring.UnregisterSocket(_connId);
-                _ring.CloseSocket(_socket);
-            }
-            catch (Exception ex)
-            {
-                TraceException(ex);
-            }
-
-            _connId = -1;
-        }
-
-        // Release buffers back to pools
-        if (_recvBuffer.BufferId >= 0)
-        {
-            _recvBufferPool.Release(_recvBuffer);
-            _recvBuffer = default;
-        }
-
-        if (_sendBuffer.BufferId >= 0)
-        {
-            _sendBufferPool.Release(_sendBuffer);
-            _sendBuffer = default;
-        }
-
-        // Clear netstate slot
-        if (_netStateIndex >= 0)
-        {
-            _netStates[_netStateIndex] = null;
-            _netStateIndex = -1;
-        }
-
-        _socket = 0;
+        // Note: RingSocketManager handles cleanup of ring resources (unregister, close, buffer release)
+        // when it processes the disconnect event. We just clear our reference.
+        _socket = null;
 
         Mobile = null;
 
