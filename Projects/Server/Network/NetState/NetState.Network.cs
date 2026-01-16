@@ -45,11 +45,18 @@ public partial class NetState
     private static int _pendingAcceptCount;
     private const int PendingAcceptsPerListener = 32;
 
-    // UserData operation types
+    // Generation tracking to detect stale completions after slot reuse
+    // Each slot has a generation counter that increments when the slot is reused
+    private static readonly ushort[] _slotGenerations = new ushort[MaxConnections];
+
+    // UserData encoding:
+    // [8 bits: opType][16 bits: generation][8 bits: reserved][32 bits: index]
     private const ulong OpAccept = 1UL << 56;
     private const ulong OpRecv = 2UL << 56;
     private const ulong OpSend = 3UL << 56;
     private const ulong OpMask = 0xFF00_0000_0000_0000UL;
+    private const ulong GenMask = 0x00FF_FF00_0000_0000UL;
+    private const int GenShift = 40;
 
     /// <summary>
     /// Gets the IORingGroup instance for socket operations.
@@ -186,11 +193,12 @@ public partial class NetState
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static ulong EncodeUserData(ulong opType, int index) => opType | (uint)index;
+    private static ulong EncodeUserData(ulong opType, int index, ushort generation) =>
+        opType | ((ulong)generation << GenShift) | (uint)index;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static (ulong opType, int index) DecodeUserData(ulong userData) =>
-        (userData & OpMask, (int)(userData & 0xFFFFFFFF));
+    private static (ulong opType, int index, ushort generation) DecodeUserData(ulong userData) =>
+        (userData & OpMask, (int)(userData & 0xFFFFFFFF), (ushort)((userData & GenMask) >> GenShift));
 
     private static int FindFreeSlot()
     {
@@ -310,7 +318,7 @@ public partial class NetState
             return;
         }
 
-        logger.Information("[DEBUG] Acquired buffers: recv={RecvId}, send={SendId}", recvBuffer.BufferId, sendBuffer.BufferId);
+        logger.Information("[DEBUG] Acquired buffers: recv={RecvId}, send={SendId}", recvBuffer!.BufferId, sendBuffer!.BufferId);
 
         // Register socket with ring
         var connId = _ring.RegisterSocket(socket);
@@ -323,10 +331,12 @@ public partial class NetState
             return;
         }
 
+        // Increment generation for this slot to invalidate any stale completions
+        var generation = ++_slotGenerations[netStateIndex];
         logger.Information("[DEBUG] Registered socket with connId={ConnId}", connId);
 
         // Create NetState
-        var ns = new NetState(socket, address, netStateIndex, connId, recvBuffer, sendBuffer);
+        var ns = new NetState(socket, address, netStateIndex, connId, recvBuffer, sendBuffer, generation);
         _netStates[netStateIndex] = ns;
 
         logger.Information("[DEBUG] Created NetState, posting initial recv");
@@ -354,7 +364,7 @@ public partial class NetState
             ns._recvBuffer.BufferId,
             offset,
             available,
-            EncodeUserData(OpRecv, ns._netStateIndex)
+            EncodeUserData(OpRecv, ns._netStateIndex, ns._generation)
         );
         ns._recvPending = true;
     }
@@ -378,19 +388,26 @@ public partial class NetState
             ns._sendBuffer.BufferId,
             offset,
             available,
-            EncodeUserData(OpSend, ns._netStateIndex)
+            EncodeUserData(OpSend, ns._netStateIndex, ns._generation)
         );
         ns._sendPending = true;
     }
 
-    private static void HandleRecvCompletion(int index, int bytesReceived)
+    private static void HandleRecvCompletion(int index, ushort generation, int bytesReceived)
     {
         logger.Information("[DEBUG] HandleRecvCompletion: index={Index}, bytesReceived={Bytes}", index, bytesReceived);
 
         var ns = _netStates[index];
         if (ns == null || !ns._running)
         {
-            logger.Information("[DEBUG] HandleRecvCompletion: NetState null or not running");
+            logger.Information("[DEBUG] HandleRecvCompletion: NetState null");
+            return;
+        }
+
+        // Check generation to detect stale completions after slot reuse
+        if (ns._generation != generation)
+        {
+            logger.Information("[DEBUG] HandleRecvCompletion: disconnect pending, checking if done");
             return;
         }
 
@@ -400,6 +417,9 @@ public partial class NetState
         {
             logger.Information("[DEBUG] HandleRecvCompletion: bytesReceived <= 0, disconnecting");
             ns.Disconnect(bytesReceived == 0 ? string.Empty : "Recv error");
+            // Check if we were waiting for this recv to complete before disconnecting
+            // (e.g., disconnect was requested while both recv and send were in-flight)
+            ns.CheckPendingDisconnect();
             return;
         }
 
@@ -417,7 +437,7 @@ public partial class NetState
         }
     }
 
-    private static void HandleSendCompletion(int index, int bytesSent)
+    private static void HandleSendCompletion(int index, ushort generation, int bytesSent)
     {
         var ns = _netStates[index];
         if (ns == null)
@@ -425,11 +445,32 @@ public partial class NetState
             return;
         }
 
+        // Check generation to detect stale completions after slot reuse
+        if (ns._generation != generation)
+        {
+            return;
+        }
+
         ns._sendPending = false;
+
+        // Check if this was a pending disconnect - I/O is now complete
+        if (ns._disconnectPending)
+        {
+            logger.Information("[DEBUG] HandleSendCompletion: disconnect pending, checking if done");
+            return;
+        }
+
+        if (!ns._running)
+        {
+            return;
+        }
 
         if (bytesSent <= 0)
         {
             ns.Disconnect(bytesSent == 0 ? string.Empty : "Send error");
+            // Check if we were waiting for this send to complete before disconnecting
+            // (e.g., disconnect was requested while both recv and send were in-flight)
+            ns.CheckPendingDisconnect();
             return;
         }
 
@@ -441,6 +482,11 @@ public partial class NetState
         if (ns._running && ns._sendBuffer.GetReadSpan(out _).Length > 0)
         {
             PostSend(ns);
+        }
+        else
+        {
+            // Check if we're waiting to disconnect after all sends complete
+            ns.CheckPendingDisconnect();
         }
     }
 
@@ -475,7 +521,15 @@ public partial class NetState
     {
         while (_flushPending.TryDequeue(out var ns))
         {
-            if (ns != null && ns.Running)
+            if (ns == null)
+            {
+                continue;
+            }
+
+            // Reset flag to allow re-queueing if more data is added later
+            ns._flushQueued = false;
+
+            if (ns.Running)
             {
                 PostSend(ns);
             }
@@ -490,13 +544,13 @@ public partial class NetState
     public static void Slice()
     {
         // Periodic status log every ~1000 slices
-        if (++_sliceCounter % 1000 == 0)
+        if (++_sliceCounter % 1000000 == 0)
         {
             logger.Information("[DEBUG] Slice #{Count}: pendingAccepts={Pending}, listeners={Listeners}",
                 _sliceCounter, _pendingAcceptCount, _listeners.Length);
         }
 
-        DisconnectUnattachedSockets();
+        // DisconnectUnattachedSockets();
 
         // Process throttled states
         while (_throttled.Count > 0)
@@ -517,6 +571,9 @@ public partial class NetState
         // Process flush queue - queue send operations for states with pending data
         while (_flushPending.TryDequeue(out var ns))
         {
+            // Reset flag to allow re-queueing if more data is added later
+            ns._flushQueued = false;
+
             if (ns.Running)
             {
                 PostSend(ns);
@@ -537,7 +594,7 @@ public partial class NetState
         for (var i = 0; i < count; i++)
         {
             ref var cqe = ref _completions[i];
-            var (opType, index) = DecodeUserData(cqe.UserData);
+            var (opType, index, generation) = DecodeUserData(cqe.UserData);
 
             logger.Information("[DEBUG] Completion: opType={OpType}, index={Index}, result={Result}",
                 opType == OpAccept ? "Accept" : opType == OpRecv ? "Recv" : opType == OpSend ? "Send" : "Unknown",
@@ -549,10 +606,10 @@ public partial class NetState
                     HandleAcceptCompletion(cqe.Result);
                     break;
                 case OpRecv:
-                    HandleRecvCompletion(index, cqe.Result);
+                    HandleRecvCompletion(index, generation, cqe.Result);
                     break;
                 case OpSend:
-                    HandleSendCompletion(index, cqe.Result);
+                    HandleSendCompletion(index, generation, cqe.Result);
                     break;
             }
         }

@@ -72,8 +72,10 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     private IORingBuffer _recvBuffer;
     private IORingBuffer _sendBuffer;
     private int _netStateIndex = -1;
+    private ushort _generation;  // Generation counter to detect stale completions
     private bool _recvPending;
     private bool _sendPending;
+    private bool _disconnectPending;  // Disconnect requested, waiting for sends to flush
 
     // Speed Hack Prevention
     internal long _movementCredit;
@@ -119,7 +121,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     }
 
     // Internal constructor for accepted sockets
-    private NetState(nint socket, IPAddress address, int netStateIndex, int connId, IORingBuffer recvBuffer, IORingBuffer sendBuffer)
+    private NetState(nint socket, IPAddress address, int netStateIndex, int connId, IORingBuffer recvBuffer, IORingBuffer sendBuffer, ushort generation)
     {
         _socket = socket;
         Address = address;
@@ -127,6 +129,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         _connId = connId;
         _recvBuffer = recvBuffer;
         _sendBuffer = sendBuffer;
+        _generation = generation;
 
         Seeded = false;
         HuePickers = [];
@@ -926,16 +929,56 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         Console.WriteLine(ex);
     }
 
+    /// <summary>
+    /// Requests a graceful disconnect. If there are in-flight I/O operations, the disconnect
+    /// is queued until all operations complete. This ensures:
+    /// 1. Outgoing packets are delivered before close
+    /// 2. Buffers are not released while kernel is still reading/writing them (zero-copy safety)
+    /// </summary>
     public void Disconnect(string reason)
     {
-        if (!_running)
+        if (!_running || _disconnectPending)
         {
             return;
         }
 
-        _running = false;
-
         _disconnectReason = reason;
+
+        // Check if there are any in-flight I/O operations
+        // With zero-copy I/O, we MUST wait for all operations to complete before releasing buffers
+        // Otherwise the kernel may still be reading from/writing to our buffer memory
+        if (_recvPending || _sendPending || _sendBuffer.ReadableBytes > 0)
+        {
+            // Queue disconnect - will complete after all I/O operations finish
+            _disconnectPending = true;
+            return;
+        }
+
+        // No in-flight operations, disconnect immediately
+        _running = false;
+        _disposed.Enqueue(this);
+    }
+
+    /// <summary>
+    /// Called when I/O operations complete to check if a disconnect is pending.
+    /// Must be called from both recv and send completion handlers.
+    /// </summary>
+    internal void CheckPendingDisconnect()
+    {
+        if (!_disconnectPending)
+        {
+            return;
+        }
+
+        // Wait for ALL in-flight operations to complete before releasing buffers
+        // This is critical for zero-copy I/O safety
+        if (_recvPending || _sendPending || _sendBuffer.ReadableBytes > 0)
+        {
+            return;
+        }
+
+        // All I/O complete, now safe to disconnect and release buffers
+        _running = false;
         _disposed.Enqueue(this);
     }
 
