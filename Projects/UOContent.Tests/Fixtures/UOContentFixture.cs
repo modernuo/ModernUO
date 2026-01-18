@@ -26,6 +26,9 @@ public class UOContentFixture : ICollectionFixture<UOContentFixture>, IDisposabl
         // Load Skills
         SkillsInfo.Configure();
 
+        // Configure networking (initializes RingSocketManager for tests)
+        Server.Network.NetState.Configure();
+
         // Configure / Initialize
         TestMapDefinitions.ConfigureTestMapDefinitions();
 

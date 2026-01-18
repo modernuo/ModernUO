@@ -24,7 +24,7 @@ public class BuffIconPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendAddBuffPacket((Serial)mob, iconID, titleCliloc, secondaryCliloc, args, (int)timeSpan.TotalMilliseconds);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -38,7 +38,7 @@ public class BuffIconPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendRemoveBuffPacket(m, buffIcon);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 }

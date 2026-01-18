@@ -15,7 +15,7 @@ public class MapPatchesTests
 
         ns.SendMapPatches();
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -27,7 +27,7 @@ public class MapPatchesTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendInvalidMap();
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -42,7 +42,7 @@ public class MapPatchesTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendMapChange(map);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 }

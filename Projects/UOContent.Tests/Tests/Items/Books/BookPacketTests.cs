@@ -50,7 +50,7 @@ public class BookPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendBookCover(m, book);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -87,7 +87,7 @@ public class BookPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendBookContent(book);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 }

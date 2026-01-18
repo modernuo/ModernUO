@@ -14,7 +14,7 @@ public class ArrowPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendCancelArrow(0, 0, Serial.Zero);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -29,7 +29,7 @@ public class ArrowPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendSetArrow(x, y, Serial.Zero);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -47,7 +47,7 @@ public class ArrowPacketTests
         ns.ProtocolChanges = ProtocolChanges.HighSeas;
         ns.SendCancelArrow(x, y, serial);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -65,7 +65,7 @@ public class ArrowPacketTests
         ns.ProtocolChanges = ProtocolChanges.HighSeas;
         ns.SendSetArrow(x, y, serial);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 }

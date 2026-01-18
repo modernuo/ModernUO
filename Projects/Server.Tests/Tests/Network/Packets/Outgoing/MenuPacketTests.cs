@@ -47,7 +47,7 @@ public class MenuPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendDisplayItemListMenu(menu);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -67,7 +67,7 @@ public class MenuPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendDisplayQuestionMenu(menu);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -95,7 +95,7 @@ public class MenuPacketTests
 
         ns.SendDisplayContextMenu(menu);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 }

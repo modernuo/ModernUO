@@ -19,7 +19,7 @@ public class PartyPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendPartyRemoveMember(m);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -40,7 +40,7 @@ public class PartyPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendPartyRemoveMember(member.Serial, p);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -61,7 +61,7 @@ public class PartyPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendPartyMemberList(p);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -78,7 +78,7 @@ public class PartyPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendPartyTextMessage(serial, text, toAll);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -92,7 +92,7 @@ public class PartyPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendPartyInvitation(m);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 }

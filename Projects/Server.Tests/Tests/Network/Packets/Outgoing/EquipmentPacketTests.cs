@@ -42,7 +42,7 @@ public class EquipmentPacketTests
             new List<EquipInfoAttribute>(info.Attributes)
         );
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -59,7 +59,7 @@ public class EquipmentPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendEquipUpdate(item);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 }

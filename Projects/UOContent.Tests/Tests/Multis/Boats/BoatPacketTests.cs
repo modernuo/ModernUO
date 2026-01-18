@@ -59,7 +59,7 @@ public class BoatPacketTests
 
         ns.SendMoveBoatHS(boat, list, d, speed, xOffset, yOffset);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -103,7 +103,7 @@ public class BoatPacketTests
 
         ns.SendDisplayBoatHS(beholder, boat);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 

@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: SocketConnectionEvent.cs                                        *
  *                                                                       *
@@ -14,20 +14,20 @@
  *************************************************************************/
 
 using System;
-using System.Net.Sockets;
+using System.Net;
 using System.Runtime.CompilerServices;
 
 namespace Server;
 
 public class SocketConnectEventArgs
 {
-    public SocketConnectEventArgs(Socket c)
+    public SocketConnectEventArgs(IPAddress address)
     {
-        Connection = c;
+        Address = address;
         AllowConnection = true;
     }
 
-    public Socket Connection { get; }
+    public IPAddress Address { get; }
 
     public bool AllowConnection { get; set; }
 }

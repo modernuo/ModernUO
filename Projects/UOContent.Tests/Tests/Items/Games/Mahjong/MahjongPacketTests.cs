@@ -19,7 +19,7 @@ public class MahjongPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendMahjongJoinGame(game);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -39,7 +39,7 @@ public class MahjongPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendMahjongPlayersInfo(game, m);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -57,7 +57,7 @@ public class MahjongPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendMahjongGeneralInfo(game);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -77,7 +77,7 @@ public class MahjongPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendMahjongTilesInfo(game, m);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -97,7 +97,7 @@ public class MahjongPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendMahjongTileInfo(game.Tiles[0], m);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -111,7 +111,7 @@ public class MahjongPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendMahjongRelieve(game);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 }

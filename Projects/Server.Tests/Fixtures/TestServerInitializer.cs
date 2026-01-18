@@ -78,6 +78,9 @@ public static class TestServerInitializer
             Core.LoopContext = new EventLoopContext();
             Core.Expansion = Expansion.EJ;
 
+            // Configure networking (initializes RingSocketManager for tests)
+            Server.Network.NetState.Configure();
+
             // Configure / Initialize
             TestMapDefinitions.ConfigureTestMapDefinitions();
 

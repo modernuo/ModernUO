@@ -23,7 +23,7 @@ public class PlayerPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendStatLockInfo(m);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -38,7 +38,7 @@ public class PlayerPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendChangeUpdateRange((byte)range);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -50,7 +50,7 @@ public class PlayerPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendDeathStatus();
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -64,7 +64,7 @@ public class PlayerPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendDisplayProfile((Serial)serial, header, body, footer);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -78,7 +78,7 @@ public class PlayerPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendLiftReject(reason);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -90,7 +90,7 @@ public class PlayerPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendLogoutAck();
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -105,7 +105,7 @@ public class PlayerPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendWeather((byte)type, (byte)density, (byte)temp);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -120,7 +120,7 @@ public class PlayerPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendServerChange(p, map);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -135,7 +135,7 @@ public class PlayerPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendSequence(num);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -151,7 +151,7 @@ public class PlayerPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendLaunchBrowser(uri);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -175,7 +175,7 @@ public class PlayerPacketTests
             itemId, hue, amount
         );
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -189,7 +189,7 @@ public class PlayerPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendSeasonChange((byte)season, playSound);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -204,7 +204,7 @@ public class PlayerPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendDisplayPaperdoll((Serial)m, title, warmode, canLift);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -219,7 +219,7 @@ public class PlayerPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendPlayMusic(music);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -233,7 +233,7 @@ public class PlayerPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendScrollMessage(type, tip ,text);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -247,7 +247,7 @@ public class PlayerPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendCurrentTime(date);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -261,7 +261,7 @@ public class PlayerPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendPathfindMessage(p);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -276,7 +276,7 @@ public class PlayerPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendPingAck(ping);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -291,7 +291,7 @@ public class PlayerPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendDisplayHuePicker(huePicker.Serial, huePicker.ItemID);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 }

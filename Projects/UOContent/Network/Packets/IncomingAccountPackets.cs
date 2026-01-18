@@ -384,7 +384,6 @@ public static class IncomingAccountPackets
 
             // Comment out these lines to turn off huffman compression
             state.CompressionEnabled = true;
-            state.PacketEncoder ??= NetworkCompression.Compress;
 
             state.SendSupportedFeature();
             state.SendCharacterList();
