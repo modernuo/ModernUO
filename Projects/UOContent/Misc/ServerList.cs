@@ -79,14 +79,14 @@ namespace Server.Misc
             {
                 var ns = e.State;
 
-                var ipep = (IPEndPoint)ns.Connection?.LocalEndPoint;
-                if (ipep == null)
+                var localEndPoint = ns.LocalEndPoint;
+                if (localEndPoint == null)
                 {
                     return;
                 }
 
-                var localAddress = ipep.Address;
-                var localPort = ipep.Port;
+                var localAddress = localEndPoint.Address;
+                var localPort = localEndPoint.Port;
 
                 if (_useServerListingAddressConfig)
                 {
@@ -94,9 +94,8 @@ namespace Server.Misc
                 }
                 else if (localAddress.IsPrivateNetwork())
                 {
-                    ipep = (IPEndPoint)ns.Connection.RemoteEndPoint;
-
-                    if (ipep == null || !ipep.Address.IsPrivateNetwork() && _publicAddress != null)
+                    // Check if client is from a public network
+                    if (!ns.Address.IsPrivateNetwork() && _publicAddress != null)
                     {
                         localAddress = _publicAddress;
                     }

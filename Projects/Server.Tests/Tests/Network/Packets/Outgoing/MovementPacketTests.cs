@@ -17,7 +17,7 @@ public class MovementPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendSpeedControl((SpeedControlSetting)speedControl);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -30,7 +30,7 @@ public class MovementPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendMovePlayer(d);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -47,7 +47,7 @@ public class MovementPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendMovementRej(seq, m);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -64,7 +64,7 @@ public class MovementPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendMovementAck(seq, m);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 }

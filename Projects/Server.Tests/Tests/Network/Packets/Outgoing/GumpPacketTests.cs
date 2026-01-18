@@ -15,7 +15,7 @@ public class GumpPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendCloseGump(typeId, buttonId);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -32,7 +32,7 @@ public class GumpPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendDisplaySignGump(gumpSerial, gumpId, unknownString, caption);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -46,7 +46,7 @@ public class GumpPacketTests
         var expected = gump.Compile(ns).Compile();
         ns.SendGump(gump);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -65,7 +65,7 @@ public class GumpPacketTests
         var expected = gump.Compile(ns).Compile();
         ns.SendGump(gump);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 }

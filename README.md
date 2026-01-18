@@ -71,13 +71,13 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 dnf upgrade --refresh -y
 # CentOS does not come with EPEL enabled
 dnf install -y epel-release epel-next-release
-dnf install -y findutils libicu libdeflate-devel zstd libargon2-devel
+dnf install -y findutils libicu libdeflate-devel zstd libargon2-devel liburing-devel
 ```
 
 ### Ubuntu, Debian, etc
 ```shell
 apt-get update -y
-apt-get install -y libicu-dev libdeflate-dev zstd libargon2-dev
+apt-get install -y libicu-dev libdeflate-dev zstd libargon2-dev liburing-dev
 ```
 
 ## OSX Requirements

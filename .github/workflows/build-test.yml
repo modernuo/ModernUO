@@ -42,7 +42,9 @@ jobs:
 
   build-linux:
     runs-on: ubuntu-latest
-    container: ${{ matrix.container }}
+    container:
+      image: ${{ matrix.container }}
+      options: --security-opt seccomp=unconfined
     name: Build (${{ matrix.name }})
     strategy:
       fail-fast: false
@@ -68,14 +70,17 @@ jobs:
             packageManager: dnf
 
     steps:
-      - name: Enable EPEL
-        run: dnf upgrade --refresh -y && dnf install -y epel-release epel-next-release
-        if: ${{ startsWith(matrix.name, 'CentOS')  }}
+      - name: Enable EPEL and CRB for CentOS
+        run: |
+          dnf upgrade --refresh -y
+          dnf install -y epel-release epel-next-release
+          dnf config-manager --set-enabled crb
+        if: ${{ startsWith(matrix.name, 'CentOS') }}
       - name: Install Prerequisites using dnf
-        run: dnf makecache --refresh && dnf install -y findutils libicu libdeflate-devel zstd libargon2-devel
+        run: dnf makecache --refresh && dnf install -y findutils libicu libdeflate-devel zstd libargon2-devel liburing-devel
         if: ${{ matrix.packageManager == 'dnf' }}
       - name: Install Prerequisites using apt
-        run: apt-get update -y && apt-get install -y curl libicu-dev libdeflate-dev zstd libargon2-dev tzdata
+        run: apt-get update -y && apt-get install -y curl libicu-dev libdeflate-dev zstd libargon2-dev tzdata liburing-dev
         if: ${{ matrix.packageManager == 'apt' }}
       - uses: actions/checkout@v4
         with:

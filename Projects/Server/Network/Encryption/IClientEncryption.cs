@@ -1,8 +1,8 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2025 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: DumpNetStates.cs                                                *
+ * File: IClientEncryption.cs                                            *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -13,26 +13,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System.IO;
+using System;
 
 namespace Server.Network;
 
-public static class DumpNetStates
+/// <summary>
+/// Interface for client encryption implementations.
+/// Uses Span-based API for zero-allocation in the hot path.
+/// </summary>
+public interface IClientEncryption
 {
-    public static void Configure()
-    {
-        CommandSystem.Register("DumpNetStates", AccessLevel.Developer, DumpNetStatesCommand);
-    }
+    /// <summary>
+    /// Decrypts incoming data from the client (in-place).
+    /// </summary>
+    /// <param name="buffer">The buffer containing encrypted data. Modified in-place.</param>
+    void ClientDecrypt(Span<byte> buffer);
 
-    public static void DumpNetStatesCommand(CommandEventArgs args)
-    {
-        using var file = new StreamWriter($"netstatedump-{Core.Now:yyyy-M-d-HH-mm-ss}_{Core.TickCount}.csv");
-
-        file.WriteLine("NetState, ConnectedOn, NextActivityCheck, SocketConnected, ProtocolState, ParserState");
-
-        foreach (var ns in NetState.Instances)
-        {
-            file.WriteLine($"{ns}, {ns.ConnectedOn}, {ns.NextActivityCheck}, {ns.IsConnected}, {ns._protocolState}, {ns._parserState}");
-        }
-    }
+    /// <summary>
+    /// Encrypts outgoing data to the client (in-place).
+    /// </summary>
+    /// <param name="buffer">The buffer containing plaintext data. Modified in-place.</param>
+    void ServerEncrypt(Span<byte> buffer);
 }

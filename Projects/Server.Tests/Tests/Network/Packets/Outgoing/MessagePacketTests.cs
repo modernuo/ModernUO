@@ -42,7 +42,7 @@ public class MessageTests
             args
         );
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -87,7 +87,7 @@ public class MessageTests
             args
         );
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -125,7 +125,7 @@ public class MessageTests
             text
         );
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -165,7 +165,7 @@ public class MessageTests
             text
         );
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -180,7 +180,7 @@ public class MessageTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendFollowMessage(serial, serial2);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -195,7 +195,7 @@ public class MessageTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendHelpResponse(s, text);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -215,9 +215,8 @@ public class MessageTests
             using var ns = PacketTestUtilities.CreateTestNetState();
             ns.SendPrompt(prompt);
 
-            var result = ns.SendPipe.Reader.AvailableToRead();
+            var result = ns.SendBuffer.GetReadSpan();
             AssertThat.Equal(result, expected);
-
         }
     }
 }

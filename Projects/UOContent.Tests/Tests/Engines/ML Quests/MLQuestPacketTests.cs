@@ -73,7 +73,7 @@ public class MLQuestPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendRaceChanger(female, race);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -85,7 +85,7 @@ public class MLQuestPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendCloseRaceChanger();
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 }

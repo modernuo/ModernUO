@@ -17,7 +17,7 @@ public class MobilePacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendDeathAnimation(killed, corpse);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -32,7 +32,7 @@ public class MobilePacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendBondedStatus(petSerial, bonded);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -52,7 +52,7 @@ public class MobilePacketTests
 
         ns.SendMobileMoving(m, noto);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -70,7 +70,7 @@ public class MobilePacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendMobileName(m);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -102,7 +102,7 @@ public class MobilePacketTests
             delay
         );
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -128,7 +128,7 @@ public class MobilePacketTests
             delay
         );
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -148,7 +148,7 @@ public class MobilePacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendMobileHealthbar(m, Healthbar.Poison);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -169,7 +169,7 @@ public class MobilePacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendMobileHealthbar(m, Healthbar.Yellow);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -192,7 +192,7 @@ public class MobilePacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendMobileStatusCompact(m, canBeRenamed);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -225,7 +225,7 @@ public class MobilePacketTests
         var expected = new MobileStatus(beholder, beheld, ns).Compile();
         ns.SendMobileStatus(beholder, beheld);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -263,7 +263,7 @@ public class MobilePacketTests
         var expected = new MobileStatusExtended(m, ns).Compile();
         ns.SendMobileStatus(m, m);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
         Core.Expansion = oldExpansion;
         expansionInfo.MobileStatusVersion = oldVersion;
@@ -284,7 +284,7 @@ public class MobilePacketTests
         var expected = new MobileUpdate(m, ns.StygianAbyss).Compile();
         ns.SendMobileUpdate(m);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -339,7 +339,7 @@ public class MobilePacketTests
         var expected = new MobileIncoming(ns, beholder, beheld).Compile();
         ns.SendMobileIncoming(beholder, beheld);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -356,7 +356,7 @@ public class MobilePacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendMobileHits(m);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -373,7 +373,7 @@ public class MobilePacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendMobileHits(m, true);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -390,7 +390,7 @@ public class MobilePacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendMobileMana(m);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -407,7 +407,7 @@ public class MobilePacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendMobileMana(m, true);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -424,7 +424,7 @@ public class MobilePacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendMobileStam(m);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -441,7 +441,7 @@ public class MobilePacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendMobileStam(m, true);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -462,7 +462,7 @@ public class MobilePacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendMobileAttributes(m);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -483,7 +483,7 @@ public class MobilePacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendMobileAttributes(m, true);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -496,7 +496,7 @@ public class MobilePacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendRemoveEntity(e);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 }

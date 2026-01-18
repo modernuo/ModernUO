@@ -27,7 +27,7 @@ public class SkillPacketsTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendSkillChange(skill);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -45,7 +45,7 @@ public class SkillPacketsTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendSkillsUpdate(skills);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 }

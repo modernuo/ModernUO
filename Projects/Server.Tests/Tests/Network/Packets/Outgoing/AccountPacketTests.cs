@@ -92,7 +92,7 @@ public class AccountPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendChangeCharacter(account);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -105,7 +105,7 @@ public class AccountPacketTests
 
         ns.SendClientVersionRequest();
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -117,7 +117,7 @@ public class AccountPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendCharacterDeleteResult(DeleteResultType.BadRequest);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -129,7 +129,7 @@ public class AccountPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendPopupMessage(PMMessage.LoginSyncError);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -156,7 +156,7 @@ public class AccountPacketTests
         var expected = new SupportedFeatures(ns).Compile();
         ns.SendSupportedFeature();
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -177,7 +177,7 @@ public class AccountPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendLoginConfirmation(m);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -189,7 +189,7 @@ public class AccountPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendLoginComplete();
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -214,7 +214,7 @@ public class AccountPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendCharacterListUpdate(account);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -248,7 +248,7 @@ public class AccountPacketTests
 
         ns.SendCharacterList();
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -281,7 +281,7 @@ public class AccountPacketTests
 
         ns.SendCharacterList();
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -294,7 +294,7 @@ public class AccountPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendAccountLoginRejected(reason);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -313,7 +313,7 @@ public class AccountPacketTests
 
         ns.SendAccountLoginAck();
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -321,7 +321,7 @@ public class AccountPacketTests
     public void TestPlayServerAck()
     {
         var si = new ServerInfo("Test Server", 0, TimeZoneInfo.Local, IPEndPoint.Parse("127.0.0.1"));
-        var authId = 0x123456;
+        const int authId = 0x123456;
 
         var expected = new PlayServerAck(si, authId).Compile();
 
@@ -329,7 +329,7 @@ public class AccountPacketTests
 
         ns.SendPlayServerAck(si, authId);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 }

@@ -339,7 +339,7 @@ public static class Core
         World.WaitForWriteCompletion();
         World.ExitSerializationThreads();
         PingServer.Shutdown();
-        TcpServer.Shutdown();
+        NetState.Shutdown();
 
         if (!_crashed)
         {
@@ -447,7 +447,7 @@ public static class Core
 
         AssemblyHandler.Invoke("Initialize");
 
-        TcpServer.Start();
+        NetState.Start();
         PingServer.Start();
         EventSink.InvokeServerStarted();
         RunEventLoop();

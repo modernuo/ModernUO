@@ -26,7 +26,7 @@ public class CorpsePacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendCorpseEquip(m, c);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -50,7 +50,7 @@ public class CorpsePacketTests
 
         ns.SendCorpseContent(m, c);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 }

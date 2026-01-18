@@ -1245,7 +1245,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     {
         get
         {
-            if (m_NetState?.Connection == null)
+            if (m_NetState is not { IsConnected: true })
             {
                 m_NetState = null;
             }

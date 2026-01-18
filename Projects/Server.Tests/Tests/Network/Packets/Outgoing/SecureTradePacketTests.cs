@@ -23,7 +23,7 @@ public class SecureTradePacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendDisplaySecureTrade(m, firstCont, secondCont, name);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -37,7 +37,7 @@ public class SecureTradePacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendCloseSecureTrade(cont);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -55,7 +55,7 @@ public class SecureTradePacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendUpdateSecureTrade(cont, first, second);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -70,7 +70,7 @@ public class SecureTradePacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendUpdateSecureTrade(cont, flag, gold, plat);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -88,7 +88,7 @@ public class SecureTradePacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendSecureTradeEquip(itemInCont, m);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -108,7 +108,7 @@ public class SecureTradePacketTests
 
         ns.SendSecureTradeEquip(itemInCont, m);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 }
