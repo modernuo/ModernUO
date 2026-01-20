@@ -24,7 +24,7 @@ public class SkillPacketsTests
 
         var expected = new SkillChange(skill).Compile();
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendSkillChange(skill);
 
         var result = ns.SendPipe.Reader.AvailableToRead();
@@ -42,7 +42,7 @@ public class SkillPacketsTests
 
         var expected = new SkillUpdate(skills).Compile();
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendSkillsUpdate(skills);
 
         var result = ns.SendPipe.Reader.AvailableToRead();

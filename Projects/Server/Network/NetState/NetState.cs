@@ -35,7 +35,7 @@ namespace Server.Network;
 public delegate void DecodePacket(Span<byte> buffer, ref int length);
 public delegate int EncodePacket(ReadOnlySpan<byte> inputBuffer, Span<byte> outputBuffer);
 
-public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetState>
+public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetState>, IDisposable
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(NetState));
 
@@ -1142,8 +1142,11 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         }
     }
 
-    private void Dispose()
+    // Do not run this directly. Use Disconnect instead.
+    // This is available for testing cleanup only.
+    public void Dispose()
     {
+        _running = false;
         // It's possible we could queue for dispose multiple times
         if (Connection == null)
         {

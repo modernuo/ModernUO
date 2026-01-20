@@ -12,7 +12,7 @@ public class GumpPacketTests
     {
         var expected = new CloseGump(typeId, buttonId).Compile();
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendCloseGump(typeId, buttonId);
 
         var result = ns.SendPipe.Reader.AvailableToRead();
@@ -29,7 +29,7 @@ public class GumpPacketTests
 
         var expected = new DisplaySignGump(gumpSerial, gumpId, unknownString, caption).Compile();
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendDisplaySignGump(gumpSerial, gumpId, unknownString, caption);
 
         var result = ns.SendPipe.Reader.AvailableToRead();
@@ -41,7 +41,7 @@ public class GumpPacketTests
     {
         var gump = new NameChangeDeedGump();
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
 
         var expected = gump.Compile(ns).Compile();
         ns.SendGump(gump);
@@ -60,7 +60,7 @@ public class GumpPacketTests
 
         var gump = new AdminGump(m, AdminGumpPage.Clients);
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
 
         var expected = gump.Compile(ns).Compile();
         ns.SendGump(gump);

@@ -17,7 +17,7 @@ public class TestMapItemPackets
     {
         var mapItem = new MapItem(Map.Trammel);
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
         ns.ProtocolChanges = changes;
 
         var expected = (ns.NewCharacterList ?
@@ -39,7 +39,7 @@ public class TestMapItemPackets
 
         var expected = new MapCommand(mapItem, command, number, x, y).Compile();
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendMapCommand(mapItem, command, x, y, number > 0);
 
         var result = ns.SendPipe.Reader.AvailableToRead();

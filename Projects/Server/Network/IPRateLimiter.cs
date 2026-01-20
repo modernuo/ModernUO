@@ -56,6 +56,12 @@ public class IPRateLimiter
 
     public bool Verify(IPAddress ip, out int totalAttempts)
     {
+        if (ip.IsPrivateNetwork())
+        {
+            totalAttempts = 0;
+            return true;
+        }
+
         var nowTicks = Core.TickCount;
         var ipStats = _ipAttempts.GetOrAdd(ip, _ => GetOrCreateIPStats());
         var added = ipStats.AttemptCount == 0;

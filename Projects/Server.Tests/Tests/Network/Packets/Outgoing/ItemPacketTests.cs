@@ -1,117 +1,116 @@
 using Server.Network;
 using Xunit;
 
-namespace Server.Tests.Network
-{
-    [Collection("Sequential Server Tests")]
+namespace Server.Tests.Network;
+
+[Collection("Sequential Server Tests")]
 public class ItemPacketTests
+{
+    [Fact]
+    public void TestWorldItemPacket()
     {
-        [Fact]
-        public void TestWorldItemPacket()
+        var serial = (Serial)0x1024;
+        var itemId = 1;
+
+        // Move to fixture
+        TileData.ItemTable[itemId] = new ItemData(
+            "Test Item Data",
+            TileFlag.Generic,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+        );
+
+        var item = new Item(serial)
         {
-            var serial = (Serial)0x1024;
-            var itemId = 1;
+            ItemID = itemId,
+            Hue = 0x1024,
+            Amount = 10,
+            Location = new Point3D(1000, 100, -10),
+            Direction = Direction.Left
+        };
 
-            // Move to fixture
-            TileData.ItemTable[itemId] = new ItemData(
-                "Test Item Data",
-                TileFlag.Generic,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1
-            );
+        var expected = new WorldItem(item).Compile();
 
-            var item = new Item(serial)
-            {
-                ItemID = itemId,
-                Hue = 0x1024,
-                Amount = 10,
-                Location = new Point3D(1000, 100, -10),
-                Direction = Direction.Left
-            };
+        using var ns = PacketTestUtilities.CreateTestNetState();
+        ns.SendWorldItem(item);
 
-            var expected = new WorldItem(item).Compile();
+        var result = ns.SendPipe.Reader.AvailableToRead();
+        AssertThat.Equal(result, expected);
+    }
 
-            var ns = PacketTestUtilities.CreateTestNetState();
-            ns.SendWorldItem(item);
+    [Fact]
+    public void TestWorldItemSAPacket()
+    {
+        var serial = (Serial)0x1024;
+        ushort itemId = 1;
 
-            var result = ns.SendPipe.Reader.AvailableToRead();
-            AssertThat.Equal(result, expected);
-        }
+        // Move to fixture
+        TileData.ItemTable[itemId] = new ItemData(
+            "Test Item Data",
+            TileFlag.Generic,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+        );
 
-        [Fact]
-        public void TestWorldItemSAPacket()
+        var item = new Item(serial)
         {
-            var serial = (Serial)0x1024;
-            ushort itemId = 1;
+            ItemID = itemId,
+            Hue = 0x1024,
+            Amount = 10,
+            Location = new Point3D(1000, 100, -10)
+        };
 
-            // Move to fixture
-            TileData.ItemTable[itemId] = new ItemData(
-                "Test Item Data",
-                TileFlag.Generic,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1
-            );
+        var expected = new WorldItemSA(item).Compile();
 
-            var item = new Item(serial)
-            {
-                ItemID = itemId,
-                Hue = 0x1024,
-                Amount = 10,
-                Location = new Point3D(1000, 100, -10)
-            };
+        using var ns = PacketTestUtilities.CreateTestNetState();
+        ns.ProtocolChanges = ProtocolChanges.StygianAbyss;
+        ns.SendWorldItem(item);
 
-            var expected = new WorldItemSA(item).Compile();
+        var result = ns.SendPipe.Reader.AvailableToRead();
+        AssertThat.Equal(result, expected);
+    }
 
-            var ns = PacketTestUtilities.CreateTestNetState();
-            ns.ProtocolChanges = ProtocolChanges.StygianAbyss;
-            ns.SendWorldItem(item);
+    [Fact]
+    public void TestWorldItemHSPacket()
+    {
+        var serial = (Serial)0x1024;
+        var itemId = 1;
 
-            var result = ns.SendPipe.Reader.AvailableToRead();
-            AssertThat.Equal(result, expected);
-        }
+        // Move to fixture
+        TileData.ItemTable[itemId] = new ItemData(
+            "Test Item Data",
+            TileFlag.Generic,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+        );
 
-        [Fact]
-        public void TestWorldItemHSPacket()
+        var item = new Item(serial)
         {
-            var serial = (Serial)0x1024;
-            var itemId = 1;
+            ItemID = itemId,
+            Hue = 0x1024,
+            Amount = 10,
+            Location = new Point3D(1000, 100, -10)
+        };
 
-            // Move to fixture
-            TileData.ItemTable[itemId] = new ItemData(
-                "Test Item Data",
-                TileFlag.Generic,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1
-            );
+        var expected = new WorldItemHS(item).Compile();
 
-            var item = new Item(serial)
-            {
-                ItemID = itemId,
-                Hue = 0x1024,
-                Amount = 10,
-                Location = new Point3D(1000, 100, -10)
-            };
+        using var ns = PacketTestUtilities.CreateTestNetState();
+        ns.ProtocolChanges = ProtocolChanges.StygianAbyss | ProtocolChanges.HighSeas;
+        ns.SendWorldItem(item);
 
-            var expected = new WorldItemHS(item).Compile();
-
-            var ns = PacketTestUtilities.CreateTestNetState();
-            ns.ProtocolChanges = ProtocolChanges.StygianAbyss | ProtocolChanges.HighSeas;
-            ns.SendWorldItem(item);
-
-            var result = ns.SendPipe.Reader.AvailableToRead();
-            AssertThat.Equal(result, expected);
-        }
+        var result = ns.SendPipe.Reader.AvailableToRead();
+        AssertThat.Equal(result, expected);
     }
 }

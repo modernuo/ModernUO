@@ -1,7 +1,7 @@
 using Server.Items;
 using Xunit;
 
-namespace Server.Tests.Tests.Maps;
+namespace Server.Tests.Maps;
 
 /// <summary>
 /// Tests for CanFitItem which allows Surface+Impassable tiles (tables, furniture) as valid surfaces.
@@ -9,13 +9,6 @@ namespace Server.Tests.Tests.Maps;
 [Collection("Sequential Server Tests")]
 public class CanFitItemTests
 {
-    private readonly ServerFixture _fixture;
-
-    public CanFitItemTests(ServerFixture fixture)
-    {
-        _fixture = fixture;
-    }
-
     private void SkipIfNoTileData()
     {
         Skip.If(!ServerFixture.TileDataLoaded, "TileData not loaded - client files required");

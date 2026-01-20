@@ -1,7 +1,7 @@
 using Server.Items;
 using Xunit;
 
-namespace Server.Tests.Tests.Maps;
+namespace Server.Tests.Maps;
 
 /// <summary>
 /// Tests for CanSpawnMobile that require TileData (client files) to be loaded.

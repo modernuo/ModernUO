@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Server.Items;
 using Xunit;
 
-namespace Server.Tests.Tests.Maps;
+namespace Server.Tests.Maps;
 
 [Collection("Sequential Server Tests")]
 public class ItemEnumeratorTests
