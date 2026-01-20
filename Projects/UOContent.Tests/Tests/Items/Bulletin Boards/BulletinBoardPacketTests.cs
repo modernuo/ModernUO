@@ -20,7 +20,7 @@ public class BulletinBoardPacketTests
 
         var expected = new BBDisplayBoard(bb).Compile();
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendBBDisplayBoard(bb);
 
         var result = ns.SendPipe.Reader.AvailableToRead();
@@ -47,7 +47,7 @@ public class BulletinBoardPacketTests
         var expected = (content ?
             (Packet)new BBMessageContent(bb, msg) : new BBMessageHeader(bb, msg)).Compile();
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendBBMessage(bb, msg, content);
 
         var result = ns.SendPipe.Reader.AvailableToRead();

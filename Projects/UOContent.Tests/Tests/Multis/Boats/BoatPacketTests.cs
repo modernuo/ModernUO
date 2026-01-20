@@ -53,7 +53,7 @@ public class BoatPacketTests
 
         beholder.CanSeeEntities.Add(boat);
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
         ns.ProtocolChanges = ProtocolChanges.HighSeas;
         var expected = new MoveBoatHS(beholder, boat, d, speed, list, xOffset, yOffset).Compile();
 
@@ -96,7 +96,7 @@ public class BoatPacketTests
 
         beholder.CanSeeEntities.Add(boat);
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
         ns.ProtocolChanges = ProtocolChanges.HighSeas;
 
         var expected = new DisplayBoatHS(beholder, boat).Compile();

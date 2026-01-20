@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Xunit;
 
-namespace Server.Tests.Tests.Maps;
+namespace Server.Tests.Maps;
 
 [Collection("Sequential Server Tests")]
 public class MobileEnumeratorTests

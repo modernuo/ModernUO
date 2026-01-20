@@ -89,7 +89,7 @@ public class AccountPacketTests
         // var account = new MockAccount(new[] { firstMobile, null, secondMobile });
         var expected = new ChangeCharacter(account).Compile();
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendChangeCharacter(account);
 
         var result = ns.SendPipe.Reader.AvailableToRead();
@@ -101,7 +101,7 @@ public class AccountPacketTests
     {
         var expected = new ClientVersionReq().Compile();
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
 
         ns.SendClientVersionRequest();
 
@@ -114,7 +114,7 @@ public class AccountPacketTests
     {
         var expected = new DeleteResult(DeleteResultType.BadRequest).Compile();
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendCharacterDeleteResult(DeleteResultType.BadRequest);
 
         var result = ns.SendPipe.Reader.AvailableToRead();
@@ -126,7 +126,7 @@ public class AccountPacketTests
     {
         var expected = new PopupMessage(PMMessage.LoginSyncError).Compile();
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendPopupMessage(PMMessage.LoginSyncError);
 
         var result = ns.SendPipe.Reader.AvailableToRead();
@@ -149,7 +149,7 @@ public class AccountPacketTests
             [4] = null
         };
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
         ns.Account = account;
         ns.ProtocolChanges = protocolChanges;
 
@@ -174,7 +174,7 @@ public class AccountPacketTests
 
         var expected = new LoginConfirm(m).Compile();
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendLoginConfirmation(m);
 
         var result = ns.SendPipe.Reader.AvailableToRead();
@@ -186,7 +186,7 @@ public class AccountPacketTests
     {
         var expected = new LoginComplete().Compile();
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendLoginComplete();
 
         var result = ns.SendPipe.Reader.AvailableToRead();
@@ -211,7 +211,7 @@ public class AccountPacketTests
 
         var expected = new CharacterListUpdate(account).Compile();
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendCharacterListUpdate(account);
 
         var result = ns.SendPipe.Reader.AvailableToRead();
@@ -241,7 +241,7 @@ public class AccountPacketTests
 
         var expected = new CharacterList(account, info).Compile();
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
         ns.CityInfo = info;
         ns.Account = account;
         ns.ProtocolChanges = ProtocolChanges.Version70130;
@@ -275,7 +275,7 @@ public class AccountPacketTests
 
         var expected = new CharacterListOld(account, info).Compile();
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
         ns.CityInfo = info;
         ns.Account = account;
 
@@ -291,7 +291,7 @@ public class AccountPacketTests
         var reason = ALRReason.BadComm;
         var expected = new AccountLoginRej(reason).Compile();
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendAccountLoginRejected(reason);
 
         var result = ns.SendPipe.Reader.AvailableToRead();
@@ -308,7 +308,7 @@ public class AccountPacketTests
 
         var expected = new AccountLoginAck(info).Compile();
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
         ns.ServerInfo = info;
 
         ns.SendAccountLoginAck();
@@ -325,7 +325,7 @@ public class AccountPacketTests
 
         var expected = new PlayServerAck(si, authId).Compile();
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
 
         ns.SendPlayServerAck(si, authId);
 

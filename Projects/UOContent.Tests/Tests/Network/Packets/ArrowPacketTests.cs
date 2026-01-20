@@ -3,6 +3,7 @@ using Xunit;
 
 namespace Server.Tests.Network;
 
+[Collection("Sequential UOContent Tests")]
 public class ArrowPacketTests
 {
     [Fact]
@@ -10,7 +11,7 @@ public class ArrowPacketTests
     {
         var expected = new CancelArrow().Compile();
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendCancelArrow(0, 0, Serial.Zero);
 
         var result = ns.SendPipe.Reader.AvailableToRead();
@@ -25,7 +26,7 @@ public class ArrowPacketTests
     {
         var expected = new SetArrow(x, y).Compile();
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendSetArrow(x, y, Serial.Zero);
 
         var result = ns.SendPipe.Reader.AvailableToRead();
@@ -42,7 +43,7 @@ public class ArrowPacketTests
 
         var expected = new CancelArrowHS(x, y, serial).Compile();
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
         ns.ProtocolChanges = ProtocolChanges.HighSeas;
         ns.SendCancelArrow(x, y, serial);
 
@@ -60,7 +61,7 @@ public class ArrowPacketTests
 
         var expected = new SetArrowHS(x, y, serial).Compile();
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
         ns.ProtocolChanges = ProtocolChanges.HighSeas;
         ns.SendSetArrow(x, y, serial);
 

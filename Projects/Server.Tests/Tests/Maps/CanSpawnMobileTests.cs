@@ -1,6 +1,6 @@
 using Xunit;
 
-namespace Server.Tests.Tests.Maps;
+namespace Server.Tests.Maps;
 
 /// <summary>
 /// Tests for CanSpawnMobile that don't require TileData (client files).

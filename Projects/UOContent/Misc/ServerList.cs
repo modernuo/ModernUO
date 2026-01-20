@@ -92,11 +92,11 @@ namespace Server.Misc
                 {
                     localAddress = _publicAddress;
                 }
-                else if (IsPrivateNetwork(localAddress))
+                else if (localAddress.IsPrivateNetwork())
                 {
                     ipep = (IPEndPoint)ns.Connection.RemoteEndPoint;
 
-                    if (ipep == null || !IsPrivateNetwork(ipep.Address) && _publicAddress != null)
+                    if (ipep == null || !ipep.Address.IsPrivateNetwork() && _publicAddress != null)
                     {
                         localAddress = _publicAddress;
                     }
@@ -158,7 +158,7 @@ namespace Server.Misc
                 {
                     var ip = unicast.Address;
                     if (!IPAddress.IsLoopback(ip) && ip.AddressFamily != AddressFamily.InterNetworkV6 &&
-                        !IsPrivateNetwork(ip))
+                        !ip.IsPrivateNetwork())
                     {
                         return true;
                     }
@@ -167,40 +167,6 @@ namespace Server.Misc
 
             return false;
         }
-
-        private static bool IsPrivateNetwork(IPAddress ip) =>
-            ip.AddressFamily switch
-            {
-                AddressFamily.InterNetwork => IsPrivateNetworkV4(ip),
-                AddressFamily.InterNetworkV6 => IsPrivateNetworkV6(ip),
-                _ => false
-            };
-
-        private static readonly IFirewallEntry[] _privateNetworkV4 =
-        [
-            new CidrFirewallEntry("192.168.0.0/16"),
-            new CidrFirewallEntry("10.0.0.0/8"),
-            new CidrFirewallEntry("172.16.0.0/12"),
-            new CidrFirewallEntry("169.254.0.0/16"),
-            new CidrFirewallEntry("100.64.0.0/10")
-        ];
-
-        private static readonly IFirewallEntry[] _privateNetworkV6 =
-        [
-            new CidrFirewallEntry("fc00::/7"),
-            new CidrFirewallEntry("fe80::/10")
-        ];
-
-        private static bool IsPrivateNetworkV4(IPAddress ip) =>
-            _privateNetworkV4[0].IsBlocked(ip) ||
-            _privateNetworkV4[1].IsBlocked(ip) ||
-            _privateNetworkV4[2].IsBlocked(ip) ||
-            _privateNetworkV4[3].IsBlocked(ip) ||
-            _privateNetworkV4[4].IsBlocked(ip);
-
-        private static bool IsPrivateNetworkV6(IPAddress ip) =>
-            _privateNetworkV6[0].IsBlocked(ip) ||
-            _privateNetworkV6[1].IsBlocked(ip);
 
         private const string _ipifyUrl = "https://api.ipify.org";
 

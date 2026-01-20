@@ -2,6 +2,7 @@ using System;
 using System.Reflection;
 using Server.Items;
 using Server.Misc;
+using Server.Tests.Maps;
 using Xunit;
 
 namespace Server.Tests;

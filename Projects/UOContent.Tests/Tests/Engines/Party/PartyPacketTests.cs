@@ -16,7 +16,7 @@ public class PartyPacketTests
 
         var expected = new PartyEmptyList(m).Compile();
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendPartyRemoveMember(m);
 
         var result = ns.SendPipe.Reader.AvailableToRead();
@@ -37,7 +37,7 @@ public class PartyPacketTests
 
         var expected = new PartyRemoveMember(member.Serial, p).Compile();
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendPartyRemoveMember(member.Serial, p);
 
         var result = ns.SendPipe.Reader.AvailableToRead();
@@ -58,7 +58,7 @@ public class PartyPacketTests
 
         var expected = new PartyMemberList(p).Compile();
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendPartyMemberList(p);
 
         var result = ns.SendPipe.Reader.AvailableToRead();
@@ -75,7 +75,7 @@ public class PartyPacketTests
 
         var expected = new PartyTextMessage(toAll, serial, text).Compile();
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendPartyTextMessage(serial, text, toAll);
 
         var result = ns.SendPipe.Reader.AvailableToRead();
@@ -89,7 +89,7 @@ public class PartyPacketTests
 
         var expected = new PartyInvitation(m).Compile();
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendPartyInvitation(m);
 
         var result = ns.SendPipe.Reader.AvailableToRead();

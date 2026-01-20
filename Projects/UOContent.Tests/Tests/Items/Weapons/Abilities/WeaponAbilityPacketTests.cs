@@ -5,6 +5,7 @@ using Xunit;
 
 namespace UOContent.Tests;
 
+[Collection("Sequential UOContent Tests")]
 public class WeaponAbilityPacketTests
 {
     [Theory]
@@ -16,7 +17,7 @@ public class WeaponAbilityPacketTests
     {
         var expected = new ToggleSpecialAbility(abilityId, active).Compile();
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendToggleSpecialAbility(abilityId, active);
 
         var result = ns.SendPipe.Reader.AvailableToRead();
@@ -28,7 +29,7 @@ public class WeaponAbilityPacketTests
     {
         var expected = new ClearWeaponAbility().Compile();
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendClearWeaponAbility();
 
         var result = ns.SendPipe.Reader.AvailableToRead();

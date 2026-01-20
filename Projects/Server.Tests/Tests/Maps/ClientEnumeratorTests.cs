@@ -5,7 +5,7 @@ using Server.Accounting;
 using Server.Network;
 using Xunit;
 
-namespace Server.Tests.Tests.Maps;
+namespace Server.Tests.Maps;
 
 [Collection("Sequential Server Tests")]
 public class ClientEnumeratorTests
