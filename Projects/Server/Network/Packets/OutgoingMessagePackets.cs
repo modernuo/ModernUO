@@ -79,7 +79,7 @@ public static class OutgoingMessagePackets
         writer.Write((short)hue);
         writer.Write((short)font);
         writer.Write(number);
-        writer.WriteAscii(name, 30);
+        writer.WriteLatin1(name, 30);
         writer.WriteLittleUniNull(args);
 
         writer.WritePacketLength();
@@ -139,8 +139,8 @@ public static class OutgoingMessagePackets
         writer.Write((short)font);
         writer.Write(number);
         writer.Write((byte)affixType);
-        writer.WriteAscii(name, 30);
-        writer.WriteAsciiNull(affix);
+        writer.WriteLatin1(name, 30);
+        writer.WriteLatin1Null(affix);
         writer.WriteBigUniNull(args);
 
         writer.WritePacketLength();
@@ -214,13 +214,13 @@ public static class OutgoingMessagePackets
         writer.Write((short)font);
         if (ascii)
         {
-            writer.WriteAscii(name, 30);
-            writer.WriteAsciiNull(text);
+            writer.WriteLatin1(name, 30);
+            writer.WriteLatin1Null(text);
         }
         else
         {
             writer.WriteAscii(lang, 4);
-            writer.WriteAscii(name, 30);
+            writer.WriteLatin1(name, 30);
             writer.WriteBigUniNull(text);
         }
 

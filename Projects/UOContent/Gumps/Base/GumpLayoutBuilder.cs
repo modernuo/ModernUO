@@ -577,7 +577,7 @@ public ref struct GumpLayoutBuilder
     {
         if (!value.IsEmpty)
         {
-            _bytesWritten += value.GetBytesAscii(_layoutBuffer.AsSpan(_bytesWritten));
+            _bytesWritten += value.GetBytesLatin1(_layoutBuffer.AsSpan(_bytesWritten));
         }
     }
 

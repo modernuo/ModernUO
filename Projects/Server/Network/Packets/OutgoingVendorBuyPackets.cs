@@ -102,7 +102,7 @@ public static class OutgoingVendorBuyPackets
             var desc = bis.Description ?? "";
 
             writer.Write((byte)(desc.Length + 1));
-            writer.WriteAsciiNull(desc);
+            writer.WriteLatin1Null(desc);
         }
 
         ns.Send(writer.Span);
