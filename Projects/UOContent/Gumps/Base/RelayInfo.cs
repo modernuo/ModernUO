@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2024 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: RelayInfo.cs                                                    *
  *                                                                       *
@@ -48,8 +48,6 @@ public readonly ref struct RelayInfo
     public string GetTextEntry(int entryId)
     {
         var index = _textIds.IndexOf((ushort)entryId);
-        return index == -1
-            ? default
-            : TextEncoding.GetString(_textBlock[_textRanges[index]], TextEncoding.Unicode, true);
+        return index == -1 ? null : TextEncoding.GetStringBigUni(_textBlock[_textRanges[index]], true);
     }
 }

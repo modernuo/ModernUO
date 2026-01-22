@@ -291,7 +291,8 @@ public class SpanReaderTests
         var result = reader.ReadLittleUni();
 
         Assert.Equal("Hi", result);
-        Assert.Equal(5, reader.Position);
+        // Position 6: 4 bytes for "Hi" + 2 bytes for UTF-16 null terminator
+        Assert.Equal(6, reader.Position);
     }
 
     [Fact]
@@ -309,12 +310,14 @@ public class SpanReaderTests
     [Fact]
     public void TestReadLittleUniSafe()
     {
-        ReadOnlySpan<byte> buffer = [(byte)'H', 0, 0xFF, 0xD8, (byte)'i', 0];
+        // Test with C1 control code (0x85 = NEL) which should be filtered
+        ReadOnlySpan<byte> buffer = [(byte)'H', 0, 0x85, 0x00, (byte)'i', 0];
         var reader = new SpanReader(buffer);
 
         var result = reader.ReadLittleUniSafe();
 
-        Assert.Equal("H\uFFFDi", result);
+        // C1 control (0x0085) removed - client renders nothing for invalid chars
+        Assert.Equal("Hi", result);
         Assert.Equal(6, reader.Position);
     }
 
@@ -339,7 +342,8 @@ public class SpanReaderTests
         var result = reader.ReadBigUni();
 
         Assert.Equal("Hi", result);
-        Assert.Equal(5, reader.Position);
+        // Position 6: 4 bytes for "Hi" + 2 bytes for UTF-16 null terminator
+        Assert.Equal(6, reader.Position);
     }
 
     [Fact]
@@ -357,12 +361,14 @@ public class SpanReaderTests
     [Fact]
     public void TestReadBigUniSafe()
     {
-        ReadOnlySpan<byte> buffer = [0, (byte)'H', 0xD8, 0xFF, 0, (byte)'i'];
+        // Test with C1 control code (0x0085 = NEL) which should be filtered
+        ReadOnlySpan<byte> buffer = [0, (byte)'H', 0x00, 0x85, 0, (byte)'i'];
         var reader = new SpanReader(buffer);
 
         var result = reader.ReadBigUniSafe();
 
-        Assert.Equal("H\uFFFDi", result);
+        // C1 control (0x0085) removed - client renders nothing for invalid chars
+        Assert.Equal("Hi", result);
         Assert.Equal(6, reader.Position);
     }
 

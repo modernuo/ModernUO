@@ -34,6 +34,13 @@ public class GumpTooltip : GumpEntry
 
     public override void AppendTo(ref SpanWriter writer, OrderedSet<string> strings, ref int entries, ref int switches)
     {
-        writer.WriteAscii(string.IsNullOrEmpty(Args) ? $"{{ tooltip {Number} }}" : $"{{ tooltip {Number} @{Args}@ }}");
+        if (string.IsNullOrEmpty(Args))
+        {
+            writer.WriteAscii($"{{ tooltip {Number} }}");
+        }
+        else
+        {
+            writer.WriteLatin1($"{{ tooltip {Number} @{Args}@ }}");
+        }
     }
 }
