@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "type": "Server.Items.PuzzleChestSolution",
+  "properties": [
+    {
+      "name": "Cylinders",
+      "type": "Server.Items.PuzzleChestCylinder[]",
+      "rule": "ArrayMigrationRule",
+      "ruleArguments": [
+        "Server.Items.PuzzleChestCylinder",
+        "EnumMigrationRule"
+      ]
+    }
+  ]
+}
