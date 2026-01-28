@@ -14,6 +14,7 @@
  ************************************************************************/
 
 using System;
+using Server.Movement;
 
 namespace Server.Mobiles;
 
@@ -32,20 +33,44 @@ internal sealed class AITimer : Timer
 
     private static double GetBaseInterval(BaseAI owner)
     {
-        double interval;
-
-        if (owner.IsFollowingMaster())
+        // Use client's expected movement delays for timer interval
+        // This must match what DoMoveImpl uses for NextMove
+        var isMounted = owner.Mobile.Mounted;
+        var runDelay = isMounted ? Movement.Movement.RunMountDelay : Movement.Movement.RunFootDelay;
+        var walkDelay = isMounted ? Movement.Movement.WalkMountDelay : Movement.Movement.WalkFootDelay;
+        
+        // Determine if should use running speed
+        var shouldRun = owner.Mobile.Combatant != null || owner.Mobile.Warmode;
+        
+        // Controlled pets - check distance to master
+        if (owner.Mobile is BaseCreature bc && bc.Controlled && bc.ControlMaster != null)
         {
-            interval = owner.Mobile.CurrentSpeed * (Core.AOS ? 100 : 400);
+            var order = bc.ControlOrder;
+            
+            // Stay/Stop - use slow idle interval (pet is stationary)
+            if (order is OrderType.Stay or OrderType.Stop)
+            {
+                return 1000; // 1 second updates for idle pets
+            }
+            
+            if (order is OrderType.Follow or OrderType.Guard or OrderType.Come)
+            {
+                // If within 1 tile and no combatant, use slow idle interval
+                if (bc.Combatant == null && bc.InRange(bc.ControlMaster, 1))
+                {
+                    // Idle near master - use slower updates (1 second)
+                    return 1000;
+                }
+                
+                // Far from master - need to run
+                if (!shouldRun)
+                {
+                    shouldRun = !bc.InRange(bc.ControlMaster, 2);
+                }
+            }
         }
-        else if (owner.Mobile.CurrentSpeed <= 0.4)
-        {
-            interval = owner.Mobile.CurrentSpeed * 1000;
-        }
-        else
-        {
-            interval = owner.Mobile.CurrentSpeed * 3000;
-        }
+        
+        var interval = shouldRun ? runDelay : walkDelay;
 
         return Math.Max(interval, Core.AOS ? 100 : 200);
     }

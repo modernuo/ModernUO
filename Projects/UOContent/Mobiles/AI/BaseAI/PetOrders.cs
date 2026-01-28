@@ -58,13 +58,27 @@ public abstract partial class BaseAI
             return true;
         }
 
-        WalkMobileRange(Mobile.ControlMaster, 1, false, 1, 2);
+        var currentDistance = (int)Mobile.GetDistanceToSqrt(Mobile.ControlMaster);
 
-        if (Mobile.GetDistanceToSqrt(Mobile.ControlMaster) <= 2)
+        // If master is too far away, pet loses track and goes to None
+        if (currentDistance > Mobile.RangePerception)
         {
-            Mobile.ControlOrder = OrderType.Stay;
+            this.DebugSayFormatted($"I have lost my master. Staying here.");
+            Mobile.ControlTarget = null;
+            Mobile.ControlOrder = OrderType.None;
+            return true;
         }
 
+        this.DebugSayFormatted($"My master told me to come.");
+
+        // Run if far away (OSI behavior)
+        var shouldRun = currentDistance > 5;
+
+        // OSI uses tighter range (0-1 tiles)
+        WalkMobileRange(Mobile.ControlMaster, 1, shouldRun, 0, 1);
+
+        // OSI: Pet stays in Come mode, doesn't auto-switch to Stay
+        // This allows pet to keep following if master moves
         return true;
     }
 
@@ -94,9 +108,13 @@ public abstract partial class BaseAI
     {
         var currentDistance = (int)Mobile.GetDistanceToSqrt(Mobile.ControlTarget);
 
-        if (currentDistance > Mobile.RangePerception)
+        // OSI: Pet can follow much farther before giving up (5x perception range)
+        if (currentDistance > Mobile.RangePerception * 5)
         {
-            this.DebugSayFormatted($"Master {Mobile.ControlMaster?.Name ?? "Unknown"} is missing. Staying put.");
+            this.DebugSayFormatted($"I have lost the one to follow. Staying here.");
+
+            // Stay in warmode if we have a valid combatant
+            Mobile.Warmode = IsValidCombatant(Mobile.Combatant);
             return;
         }
 
@@ -104,7 +122,8 @@ public abstract partial class BaseAI
 
         if (currentDistance > 1)
         {
-            WalkMobileRange(Mobile.ControlTarget, 1, currentDistance > 2, 1, 2);
+            // Run if more than 2 tiles away, use tighter range (0-1 tiles)
+            WalkMobileRange(Mobile.ControlTarget, 1, currentDistance > 2, 0, 1);
         }
     }
 
@@ -290,14 +309,12 @@ public abstract partial class BaseAI
 
             var distance = (int)Mobile.GetDistanceToSqrt(guardLocation);
 
-            if (distance > 3)
+            if (distance > 1)
             {
+                // Move toward master if too far
                 DoMove(Mobile.GetDirectionTo(guardLocation));
             }
-            else
-            {
-                WalkRandom(3, 1, 1);
-            }
+            // OSI behavior: Stand still when within 1 tile of master and no combatant
         }
 
         return true;
@@ -436,13 +453,13 @@ public abstract partial class BaseAI
         if (CheckHerding())
         {
             this.DebugSayFormatted($"I am being herded by {Mobile.ControlTarget?.Name ?? "Unknown"}.");
-        }
-        else
-        {
-            this.DebugSayFormatted($"I have been ordered to stay by {Mobile.ControlMaster?.Name ?? "Unknown"}.");
+            return true;
         }
 
-        WalkRandomInHome(3, 2, 1);
+        this.DebugSayFormatted($"I have been ordered to stay by {Mobile.ControlMaster?.Name ?? "Unknown"}.");
+
+        // OSI behavior: Pet stands completely still at current location
+        // Do not wander - just stay put
         return true;
     }
 
@@ -451,17 +468,13 @@ public abstract partial class BaseAI
         if (CheckHerding())
         {
             this.DebugSayFormatted($"I am being herded by {Mobile.ControlTarget?.Name ?? "Unknown"}.");
-        }
-        else
-        {
-            this.DebugSayFormatted($"I have been ordered to stop by {Mobile.ControlMaster?.Name ?? "Unknown"}.");
+            return true;
         }
 
-        if (Core.ML)
-        {
-            WalkRandomInHome(5, 2, 1);
-        }
+        this.DebugSayFormatted($"I have been ordered to stop by {Mobile.ControlMaster?.Name ?? "Unknown"}.");
 
+        // OSI behavior: Pet stands completely still
+        // Do not wander even in ML era
         return true;
     }
 
