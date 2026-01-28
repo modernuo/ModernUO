@@ -20,7 +20,7 @@ public class HousePacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendBeginHouseCustomization((Serial)serial);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -33,7 +33,7 @@ public class HousePacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendEndHouseCustomization((Serial)serial);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -47,7 +47,7 @@ public class HousePacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendDesignStateGeneral((Serial)serial, revision);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 

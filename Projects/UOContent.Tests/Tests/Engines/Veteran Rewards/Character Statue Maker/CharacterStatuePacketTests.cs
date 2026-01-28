@@ -7,7 +7,7 @@ using Xunit;
 
 namespace UOContent.Tests;
 
-[Collection("Sequential Server Tests")]
+[Collection("Sequential UOContent Tests")]
 public class CharacterStatuePacketTests
 {
     [Theory]
@@ -19,7 +19,7 @@ public class CharacterStatuePacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendStatueAnimation((Serial)s, status, anim, frame);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 }

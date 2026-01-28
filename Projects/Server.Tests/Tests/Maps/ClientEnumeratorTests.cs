@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Net.Sockets;
 using Server.Accounting;
 using Server.Network;
+using Server.Tests.Network;
 using Xunit;
 
 namespace Server.Tests.Maps;
@@ -356,7 +356,7 @@ public class ClientEnumeratorTests
     {
         var map = Map.Felucca;
         var center = new Point3D(900, 900, 0);
-        var range = 5;
+        const int range = 5;
 
         var clients = new (NetState, Mobile)[3];
         try
@@ -456,8 +456,8 @@ public class ClientEnumeratorTests
 
     private static (NetState, Mobile) CreateClientWithMobile(Map map, Point3D location)
     {
-        var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        var ns = new NetState(socket);
+        // Create test NetState with real socket and buffers
+        var ns = PacketTestUtilities.CreateTestNetState();
 
         // Assign a mock account to avoid null reference issues
         ns.Account = new MockAccount();
@@ -533,16 +533,16 @@ public class ClientEnumeratorTests
         }
     }
 
-    private static void DeleteAll((NetState, Mobile)[] clients)
+    private static void DeleteAll((NetState state, Mobile m)[] clients)
     {
         for (var i = 0; i < clients.Length; i++)
         {
-            if (clients[i].Item1 != null)
+            if (clients[i].state != null)
             {
-                clients[i].Item1.Mobile = null;
-                clients[i].Item1.Disconnect("Test cleanup");
+                clients[i].state.Mobile = null;
+                clients[i].state.Dispose();
             }
-            clients[i].Item2?.Delete();
+            clients[i].m?.Delete();
         }
     }
 }

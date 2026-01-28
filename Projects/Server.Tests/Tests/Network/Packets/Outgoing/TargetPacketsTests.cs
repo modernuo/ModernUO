@@ -44,7 +44,7 @@ public class TargetPacketsTests
         ns.ProtocolChanges |= ProtocolChanges.HighSeas;
         ns.SendMultiTargetReq(t);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -60,7 +60,7 @@ public class TargetPacketsTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendMultiTargetReq(t);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -71,7 +71,7 @@ public class TargetPacketsTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendCancelTarget();
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -84,7 +84,7 @@ public class TargetPacketsTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendTargetReq(t);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 }

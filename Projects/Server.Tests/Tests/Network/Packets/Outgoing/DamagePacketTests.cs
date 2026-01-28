@@ -16,7 +16,7 @@ public class DamagePacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendDamage(serial, inputAmount);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -32,7 +32,7 @@ public class DamagePacketTests
 
         ns.SendDamage(serial, inputAmount);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 }

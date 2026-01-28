@@ -7,7 +7,6 @@ namespace Server.Tests.Network;
 [Collection("Sequential Server Tests")]
 public class ContainerPacketTests
 {
-
     [Fact]
     public void TestContainerDisplay()
     {
@@ -19,7 +18,7 @@ public class ContainerPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendDisplayContainer(serial, gumpId);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -35,7 +34,7 @@ public class ContainerPacketTests
         ns.ProtocolChanges = ns.ProtocolChanges | ProtocolChanges.ContainerGridLines | ProtocolChanges.HighSeas;
         ns.SendDisplayContainer(serial, gumpId);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -49,7 +48,7 @@ public class ContainerPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendDisplaySpellbook(serial);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -64,7 +63,7 @@ public class ContainerPacketTests
         ns.ProtocolChanges = ns.ProtocolChanges | ProtocolChanges.ContainerGridLines | ProtocolChanges.HighSeas;
         ns.SendDisplaySpellbook(serial);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -85,7 +84,7 @@ public class ContainerPacketTests
         ns.SendSpellbookContent(serial, graphic, offset, content);
         ObjectPropertyList.Enabled = opl;
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -102,7 +101,7 @@ public class ContainerPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendSpellbookContent(serial, graphic, offset, content);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -120,7 +119,7 @@ public class ContainerPacketTests
         ns.ProtocolChanges |= ProtocolChanges.ContainerGridLines;
         ns.SendSpellbookContent(serial, graphic, offset, content);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -135,7 +134,7 @@ public class ContainerPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendContainerContentUpdate(item);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -151,7 +150,7 @@ public class ContainerPacketTests
         ns.ProtocolChanges |= ProtocolChanges.ContainerGridLines;
         ns.SendContainerContentUpdate(item);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -172,7 +171,7 @@ public class ContainerPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendContainerContent(m, cont);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -194,7 +193,7 @@ public class ContainerPacketTests
         ns.ProtocolChanges |= ProtocolChanges.ContainerGridLines;
         ns.SendContainerContent(m, cont);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 }

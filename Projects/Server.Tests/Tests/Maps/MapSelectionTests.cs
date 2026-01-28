@@ -4,7 +4,7 @@ using Server.Json;
 using System.Text.Json.Serialization;
 using System.Text.Json;
 
-namespace Server.Tests.Tests.Maps
+namespace Server.Tests.Maps
 {
     public class MapSelectionTests
     {

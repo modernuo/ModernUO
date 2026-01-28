@@ -69,7 +69,7 @@ namespace Server.Misc
             }
         }
 
-        private static bool HasDisconnected(Mobile m) => m.NetState?.Connection == null;
+        private static bool HasDisconnected(Mobile m) => m.NetState is not { IsConnected: true };
 
         private static LocationInfo GetRandomDestination() => m_Destinations.RandomElement();
 

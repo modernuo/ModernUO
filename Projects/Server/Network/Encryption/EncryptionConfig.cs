@@ -1,8 +1,8 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2025 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: DumpNetStates.cs                                                *
+ * File: EncryptionConfig.cs                                             *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -13,26 +13,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System.IO;
+using System;
 
 namespace Server.Network;
 
-public static class DumpNetStates
+/// <summary>
+/// Specifies which encryption modes the server will accept.
+/// </summary>
+[Flags]
+public enum EncryptionMode
 {
-    public static void Configure()
-    {
-        CommandSystem.Register("DumpNetStates", AccessLevel.Developer, DumpNetStatesCommand);
-    }
+    /// <summary>
+    /// Encryption handling is disabled. Current behavior.
+    /// </summary>
+    None = 0x0,
 
-    public static void DumpNetStatesCommand(CommandEventArgs args)
-    {
-        using var file = new StreamWriter($"netstatedump-{Core.Now:yyyy-M-d-HH-mm-ss}_{Core.TickCount}.csv");
+    /// <summary>
+    /// Accept unencrypted clients (e.g., ClassicUO with encryption disabled).
+    /// </summary>
+    Unencrypted = 0x1,
 
-        file.WriteLine("NetState, ConnectedOn, NextActivityCheck, SocketConnected, ProtocolState, ParserState");
+    /// <summary>
+    /// Accept encrypted clients (original UO client, Enhanced Client).
+    /// </summary>
+    Encrypted = 0x2,
 
-        foreach (var ns in NetState.Instances)
-        {
-            file.WriteLine($"{ns}, {ns.ConnectedOn}, {ns.NextActivityCheck}, {ns.IsConnected}, {ns._protocolState}, {ns._parserState}");
-        }
-    }
+    /// <summary>
+    /// Auto-detect and accept both encrypted and unencrypted clients.
+    /// </summary>
+    Both = Unencrypted | Encrypted
 }

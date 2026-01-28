@@ -17,7 +17,7 @@ public class EffectPackets
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendSoundEffect(soundID, p);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -99,7 +99,7 @@ public class EffectPackets
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendScreenEffect(screenType);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
