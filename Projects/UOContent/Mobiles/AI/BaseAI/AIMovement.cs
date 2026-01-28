@@ -40,15 +40,10 @@ public abstract partial class BaseAI
         return bc.CurrentSpeed;
     }
 
-    // Tolerance buffer (in ms) to account for timer drift and prevent movement jitter
-    private const int MoveTimeTolerance = 20;
-    
     public bool CanMoveNow(out double delay)
     {
         delay = 0.0;
-        // Allow movement if we're within tolerance of NextMove time
-        // This prevents jitter caused by timer firing slightly early
-        return Core.TickCount + MoveTimeTolerance >= NextMove;
+        return Core.TickCount >= NextMove;
     }
 
     public virtual bool CheckMove() => !(Mobile.Deleted || Mobile.DisallowAllMoves);
@@ -65,58 +60,6 @@ public abstract partial class BaseAI
         {
             return MoveResult.BadState;
         }
-        
-        // Determine if creature should be running
-        var shouldRun = Mobile.Combatant != null || Mobile.Warmode;
-        
-        // Handle controlled pets
-        if (Mobile is BaseCreature bc && bc.Controlled && bc.ControlMaster != null)
-        {
-            var order = bc.ControlOrder;
-            
-            // Guard mode - stand still within 1 tile of master when no enemy (OSI behavior)
-            if (order == OrderType.Guard)
-            {
-                if (bc.Combatant == null && bc.InRange(bc.ControlMaster, 1))
-                {
-                    return MoveResult.Success; // Stand still, don't wander
-                }
-                // Run to catch up if far from master
-                if (!shouldRun && !bc.InRange(bc.ControlMaster, 2))
-                {
-                    shouldRun = true;
-                }
-            }
-            // Follow/Come - stand still within 1 tile of master
-            else if (order is OrderType.Follow or OrderType.Come)
-            {
-                if (bc.Combatant == null && bc.InRange(bc.ControlMaster, 1))
-                {
-                    return MoveResult.Success; // Stand still
-                }
-                // Run if more than 2 tiles from master
-                if (!shouldRun)
-                {
-                    shouldRun = !bc.InRange(bc.ControlMaster, 2);
-                }
-            }
-            // Stay/Stop - always stand still (OSI behavior)
-            else if (order is OrderType.Stay or OrderType.Stop)
-            {
-                return MoveResult.Success; // Never move
-            }
-        }
-        
-        // Add or remove Running flag based on run state
-        // This ensures the animation matches the movement speed
-        if (shouldRun)
-        {
-            d |= Direction.Running;
-        }
-        else
-        {
-            d &= ~Direction.Running;
-        }
 
         if ((Mobile.Direction & Direction.Mask) != (d & Direction.Mask))
         {
@@ -128,31 +71,9 @@ public abstract partial class BaseAI
 
         if (TryMove(d))
         {
-            // Use client's expected movement delays for smooth animation
-            // The client expects specific delays for running vs walking
-            int moveDelayMs;
-            
-            if (Mobile.Mounted)
-            {
-                moveDelayMs = shouldRun ? Movement.Movement.RunMountDelay : Movement.Movement.WalkMountDelay;
-            }
-            else
-            {
-                moveDelayMs = shouldRun ? Movement.Movement.RunFootDelay : Movement.Movement.WalkFootDelay;
-            }
-            
-            // Apply badly hurt slowdown if applicable (adds to base delay)
-            if (Mobile is BaseCreature hurtCreature && hurtCreature.Hits < hurtCreature.HitsMax * 0.3 && 
-                (hurtCreature.ReduceSpeedWithDamage || hurtCreature.IsSubdued))
-            {
-                var hitsPercent = (double)hurtCreature.Hits / hurtCreature.HitsMax;
-                if (hitsPercent < 0.1) moveDelayMs += 150;
-                else if (hitsPercent < 0.2) moveDelayMs += 100;
-                else if (hitsPercent < 0.3) moveDelayMs += 50;
-            }
-            
-            Mobile.CurrentSpeed = moveDelayMs / 1000.0;
-            NextMove = Core.TickCount + moveDelayMs;
+            Mobile.CurrentSpeed = Mobile.Hits < Mobile.HitsMax * 0.3
+                ? BadlyHurtMoveDelay(Mobile)
+                : Mobile.Warmode || Mobile.Combatant != null ? Mobile.ActiveSpeed : Mobile.PassiveSpeed;
 
             return MoveResult.Success;
         }
