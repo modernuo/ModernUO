@@ -25,13 +25,15 @@
       "rule": "DictionaryMigrationRule",
       "ruleArguments": [
         "@Tidy",
+        "@CanBeNull",
         "Server.Mobile",
         "SerializableInterfaceMigrationRule",
         "0",
         "Server.Items.PuzzleChestSolutionAndTime",
         "RawSerializableMigrationRule",
-        "1",
-        ""
+        "2",
+        "",
+        "@CanBeNull"
       ]
     }
   ]
