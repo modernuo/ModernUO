@@ -1217,6 +1217,17 @@ function selectPacket(packet) {
     // Show condition/description below header for all variants (not inline)
     const hasCondition = v.condition && !v.subVariants;
 
+    // Build client version info
+    let clientVersionHtml = '';
+    if (v.clientVersion) {
+      const parts = [];
+      if (v.clientVersion.min) parts.push(`Min: ${v.clientVersion.min}`);
+      if (v.clientVersion.max) parts.push(`Max: ${v.clientVersion.max}`);
+      if (parts.length > 0) {
+        clientVersionHtml = `<span class="text-gold-400/70 text-xs ml-3">[${parts.join(', ')}]</span>`;
+      }
+    }
+
     return `
       <div id="${id}" class="bg-modern-black rounded-lg border border-gold-500/20 overflow-hidden">
         <div class="bg-gold-500/10 px-4 py-2 flex items-center justify-between">
@@ -1224,12 +1235,14 @@ function selectPacket(packet) {
             <span class="text-gold-500 font-medium">${v.name || 'Variant'}</span>
             ${directionBadge}
             ${v.version ? `<span class="text-gold-500/70 ml-2 text-sm">(${v.version})</span>` : ''}
+            ${clientVersionHtml}
           </div>
           <div class="flex items-center space-x-3 text-sm flex-shrink-0">
             ${v.size ? `<span class="text-gold-500/70">Size: <span class="text-white font-mono">${typeof v.size === 'number' ? v.size + ' bytes' : v.size}</span></span>` : ''}
           </div>
         </div>
         ${hasCondition ? `<div class="px-4 py-2 text-gold-300/80 text-sm border-b border-gold-500/10">${v.condition}</div>` : ''}
+        ${v.notes ? `<div class="px-4 py-2 text-gold-500/70 text-xs italic border-b border-gold-500/10">${v.notes}</div>` : ''}
         ${content}
       </div>
     `;
@@ -1455,15 +1468,20 @@ function selectPacket(packet) {
               </div>
             ` : '';
 
+            // Build tags HTML if command has tags
+            const tagsHtml = cmd.tags && cmd.tags.length > 0 ?
+              cmd.tags.map(tag => `<span class="px-1.5 py-0.5 rounded text-xs font-medium bg-purple-500/20 text-purple-400 ml-2">${tag}</span>`).join('') : '';
+
             return `
               <div class="py-3 px-4">
                 <div class="flex items-start justify-between gap-4">
                   <div>
-                    <span class="font-mono text-gold-400 font-medium">${cmd.name}</span>
+                    <span class="font-mono text-gold-400 font-medium">${cmd.name}</span>${tagsHtml}
                     <span class="text-gold-300/70 ml-3">${cmd.description || ''}</span>
                   </div>
                 </div>
                 <div class="font-mono text-xs text-gold-500/80 mt-1">${syntax}</div>
+                ${cmd.notes ? `<div class="text-gold-500/60 text-xs mt-1 italic">${cmd.notes}</div>` : ''}
                 ${argsHtml}
               </div>
             `;

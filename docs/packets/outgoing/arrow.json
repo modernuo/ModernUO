@@ -1,4 +1,4 @@
-﻿{
+{
     "category":  "Quest",
     "packets":  [
                     {
@@ -127,7 +127,17 @@
                                         }
                                     ],
                         "clientVersion":  {
-                                              "feature":  "HighSeas (7.0.9.0+) adds target serial"
+                                              "feature":  "HighSeas (7.0.9.0+) adds target serial",
+                                              "variants":  {
+                                                  "pre-HS":  {
+                                                      "max":  "7.0.8.x",
+                                                      "size":  6
+                                                  },
+                                                  "HS+":  {
+                                                      "min":  "7.0.9.0",
+                                                      "size":  10
+                                                  }
+                                              }
                                           },
                         "source":  {
                                        "file":  "Projects/UOContent/Skills/Tracking/OutgoingArrowPackets.cs",

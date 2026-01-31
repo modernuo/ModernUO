@@ -1,4 +1,4 @@
-﻿{
+{
     "category":  "Player",
     "packets":  [
                     {
@@ -993,6 +993,40 @@
                                            "notes":  "Formula: (StrLock \u003c\u003c 4) | (DexLock \u003c\u003c 2) | IntLock. Example: Str=Locked(2), Dex=Up(0), Int=Down(1) = 0b00100001 = 0x21"
                                        }
                                    ],
+                        "variants":  [
+                                         {
+                                             "version":  "Classic Client",
+                                             "clientVersion":  {
+                                                 "max":  "66.x.x.x"
+                                             },
+                                             "fields":  [
+                                                 {
+                                                     "name":  "Type",
+                                                     "type":  "byte",
+                                                     "size":  1,
+                                                     "value":  "0x02",
+                                                     "description":  "Type = 2 for stat locks (Classic Client)"
+                                                 }
+                                             ]
+                                         },
+                                         {
+                                             "version":  "Enhanced Client",
+                                             "clientVersion":  {
+                                                 "min":  "67.0.0.0"
+                                             },
+                                             "fields":  [
+                                                 {
+                                                     "name":  "Type",
+                                                     "type":  "byte",
+                                                     "size":  1,
+                                                     "value":  "0x05",
+                                                     "description":  "Type = 5 for stat locks (Enhanced Client)"
+                                                 }
+                                             ],
+                                             "notes":  "Enhanced Client uses type 5 for different status encoding"
+                                         }
+                                     ],
+                        "notes":  "The Type field differs between Classic Client (0x02) and Enhanced Client (0x05). EC detection: client version >= 67.",
                         "source":  {
                                        "file":  "Projects/Server/Network/Packets/OutgoingPlayerPackets.cs",
                                        "line":  36
