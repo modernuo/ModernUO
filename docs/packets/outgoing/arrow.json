@@ -11,7 +11,6 @@
                         "variants":  [
                                          {
                                              "name":  "Pre-High Seas Set Arrow",
-                                             "version":  "pre-HS",
                                              "condition":  "command == 1 (Set), pre-HighSeas client",
                                              "size":  6,
                                              "fields":  [
@@ -45,7 +44,6 @@
                                          },
                                          {
                                              "name":  "Pre-High Seas Cancel Arrow",
-                                             "version":  "pre-HS",
                                              "condition":  "command == 0 (Cancel), pre-HighSeas client",
                                              "size":  6,
                                              "fields":  [
@@ -81,7 +79,6 @@
                                          },
                                          {
                                              "name":  "High Seas",
-                                             "version":  "HS+",
                                              "condition":  "HighSeas client (7.0.9.0+)",
                                              "size":  10,
                                              "fields":  [
@@ -127,11 +124,9 @@
                                         }
                                     ],
                         "clientVersion":  {
-                                              "classic":  {
-                                                  "min":  "7.0.9.0"
-                                              },
+                                              "classic":  {},
                                               "enhanced":  {},
-                                              "notes":  "HighSeas (7.0.9.0+) adds target serial. Pre-HS clients use 6-byte variant (max 7.0.8.x), HS+ clients use 10-byte variant."
+                                              "notes":  "HighSeas (7.0.9.0+) adds target serial. Pre-HS clients use 6-byte variant, HS+ clients use 10-byte variant."
                                           },
                         "source":  {
                                        "file":  "Projects/UOContent/Skills/Tracking/OutgoingArrowPackets.cs",

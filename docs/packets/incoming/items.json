@@ -50,7 +50,6 @@
                         "size":  "Varies",
                         "variants":  [
                                          {
-                                             "version":  "pre-6017",
                                              "name":  "Classic",
                                              "size":  14,
                                              "fields":  [
@@ -94,7 +93,6 @@
                                                         ]
                                          },
                                          {
-                                             "version":  "6017+",
                                              "name":  "Container Grid Lines",
                                              "condition":  "Client version \u003e= 6.0.1.7 (ContainerGridLines)",
                                              "size":  15,
@@ -146,11 +144,9 @@
                                          }
                                      ],
                         "clientVersion":  {
-                                              "classic":  {
-                                                  "min":  "6.0.1.7"
-                                              },
+                                              "classic":  {},
                                               "enhanced":  {},
-                                              "notes":  "ContainerGridLines adds gridLocation byte"
+                                              "notes":  "ContainerGridLines (6.0.1.7+) adds gridLocation byte"
                                           },
                         "source":  {
                                        "file":  "Projects/UOContent/Network/Packets/IncomingItemPackets.cs",

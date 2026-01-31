@@ -11,7 +11,6 @@
                         "variants":  [
                                          {
                                              "name":  "Display Board",
-                                             "version":  "0x00",
                                              "condition":  "command == 0x00",
                                              "size":  38,
                                              "fields":  [
@@ -52,7 +51,6 @@
                                          },
                                          {
                                              "name":  "Message Header",
-                                             "version":  "0x01",
                                              "condition":  "command == 0x01",
                                              "size":  "22+",
                                              "fields":  [
@@ -131,7 +129,6 @@
                                          },
                                          {
                                              "name":  "Message Content",
-                                             "version":  "0x02",
                                              "condition":  "command == 0x02",
                                              "size":  "22+",
                                              "fields":  [

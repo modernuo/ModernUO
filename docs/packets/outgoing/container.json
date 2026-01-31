@@ -10,7 +10,6 @@
                         "size":  "Varies",
                         "variants":  [
                                          {
-                                             "version":  "pre-HighSeas",
                                              "name":  "Classic",
                                              "size":  7,
                                              "fields":  [
@@ -36,7 +35,6 @@
                                                         ]
                                          },
                                          {
-                                             "version":  "HighSeas+",
                                              "name":  "High Seas Extended",
                                              "condition":  "Client version \u003e= 7.0.9.0 (HighSeas)",
                                              "size":  9,
@@ -71,11 +69,9 @@
                                          }
                                      ],
                         "clientVersion":  {
-                                              "classic":  {
-                                                  "min":  "7.0.9.0"
-                                              },
+                                              "classic":  {},
                                               "enhanced":  {},
-                                              "notes":  "HighSeas adds containerType field"
+                                              "notes":  "HighSeas (7.0.9.0+) adds containerType field"
                                           },
                         "source":  {
                                        "file":  "Projects/Server/Network/Packets/OutgoingContainerPackets.cs",
@@ -91,7 +87,6 @@
                         "size":  "Varies",
                         "variants":  [
                                          {
-                                             "version":  "pre-6017",
                                              "name":  "Classic",
                                              "size":  20,
                                              "fields":  [
@@ -154,7 +149,6 @@
                                                         ]
                                          },
                                          {
-                                             "version":  "6017+",
                                              "name":  "Container Grid Lines",
                                              "condition":  "Client version \u003e= 6.0.1.7 (ContainerGridLines)",
                                              "size":  21,
@@ -225,11 +219,9 @@
                                          }
                                      ],
                         "clientVersion":  {
-                                              "classic":  {
-                                                  "min":  "6.0.1.7"
-                                              },
+                                              "classic":  {},
                                               "enhanced":  {},
-                                              "notes":  "ContainerGridLines adds gridLocation byte"
+                                              "notes":  "ContainerGridLines (6.0.1.7+) adds gridLocation byte"
                                           },
                         "source":  {
                                        "file":  "Projects/Server/Network/Packets/OutgoingContainerPackets.cs",
@@ -246,7 +238,6 @@
                         "tags":  ["Spellbook", "Corpse"],
                         "variants":  [
                                          {
-                                             "version":  "pre-6017",
                                              "name":  "Classic Format",
                                              "condition":  "Client version \u003c 6.0.1.7",
                                              "size":  "5 + (itemCount x 19)",
@@ -332,7 +323,6 @@
                                                         ]
                                          },
                                          {
-                                             "version":  "6017+ (ContainerGridLines)",
                                              "name":  "Grid Location Format",
                                              "condition":  "Client version \u003e= 6.0.1.7 (ContainerGridLines)",
                                              "size":  "5 + (itemCount x 20)",
@@ -437,9 +427,7 @@
                                         }
                                     ],
                         "clientVersion":  {
-                                              "classic":  {
-                                                  "min":  "6.0.1.7"
-                                              },
+                                              "classic":  {},
                                               "enhanced":  {},
                                               "notes":  "ContainerGridLines (6.0.1.7+) adds gridLocation byte per item"
                                           },
