@@ -79,7 +79,7 @@
                         "variants":  [
                                          {
                                              "version":  "pre-HighSeas",
-                                             "name":  "Classic",
+                                             "name":  "Pre-HighSeas (26 bytes)",
                                              "size":  26,
                                              "fields":  [
                                                             {
@@ -141,8 +141,8 @@
                                          },
                                          {
                                              "version":  "HighSeas+",
-                                             "name":  "High Seas Extended",
-                                             "condition":  "Client version \u003e= 7.0.9.0 (HighSeas)",
+                                             "name":  "HighSeas / Enhanced (30 bytes)",
+                                             "condition":  "Classic >= 7.0.9.0, or Enhanced Client (any version)",
                                              "size":  30,
                                              "fields":  [
                                                             {
@@ -214,7 +214,7 @@
                                                   "min":  "7.0.9.0"
                                               },
                                               "enhanced":  {},
-                                              "notes":  "HighSeas adds 4 bytes"
+                                              "notes":  "HighSeas expansion adds 4 bytes. EC always uses 30-byte variant."
                                           },
                         "source":  {
                                        "file":  "Projects/Server/Network/Packets/OutgoingTargetPackets.cs",

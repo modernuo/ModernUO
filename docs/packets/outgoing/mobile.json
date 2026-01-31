@@ -1626,18 +1626,21 @@
                                        },
                                        {
                                            "name":  "Show Bar",
-                                           "type":  "short",
+                                           "type":  "enum",
                                            "size":  2,
-                                           "value":  "0x0001",
-                                           "description":  "Show bar (always 1)"
+                                           "description":  "Show bar flag. If 0, packet ends here (no subsequent fields sent).",
+                                           "values":  [
+                                               { "value":  "0", "name":  "Hide", "description":  "Hide healthbar, packet ends here" },
+                                               { "value":  "1", "name":  "Show", "description":  "Show healthbar, following fields included" }
+                                           ]
                                        },
                                        {
                                            "name":  "Healthbar Type",
                                            "type":  "enum",
                                            "size":  2,
-                                           "description":  "Type of healthbar overlay",
+                                           "description":  "Type of healthbar overlay (only sent if Show Bar = 1)",
                                            "values":  [
-                                               { "value":  "1", "name":  "Poison", "description":  "Poison status bar" },
+                                               { "value":  "1", "name":  "Poison", "description":  "Poison status bar (green)" },
                                                { "value":  "2", "name":  "Yellow", "description":  "Yellow/invulnerable bar" }
                                            ]
                                        },
@@ -1645,7 +1648,7 @@
                                            "name":  "Level",
                                            "type":  "enum",
                                            "size":  1,
-                                           "description":  "Status level",
+                                           "description":  "Status level (only sent if Show Bar = 1)",
                                            "values":  [
                                                { "value":  "0", "name":  "Off", "description":  "Status disabled" },
                                                { "value":  "1", "name":  "Level1/On", "description":  "Poison level 1 or yellow on" },
@@ -1655,10 +1658,97 @@
                                            ]
                                        }
                                    ],
+                        "related":  [
+                                        {
+                                            "id":  "0x16",
+                                            "relationship":  "variant",
+                                            "note":  "Mobile Healthbar (EC) - Enhanced Client version"
+                                        }
+                                    ],
+                        "clientVersion":  {
+                                              "classic":  {},
+                                              "notes":  "Classic Client only. EC uses 0x16 instead."
+                                          },
                         "source":  {
                                        "file":  "Projects/Server/Network/Packets/OutgoingMobilePackets.cs",
                                        "line":  419
-                                   }
+                                   },
+                        "notes":  "When Show Bar is 0, the packet is only 9 bytes (no Healthbar Type or Level fields). Poison (green) overrides yellow coloring."
+                    },
+                    {
+                        "id":  "0x16",
+                        "name":  "Mobile Healthbar (EC)",
+                        "description":  "Updates a mobile's healthbar status for Enhanced Client (poison level, yellow bar for invulnerability).",
+                        "direction":  "outgoing",
+                        "isDynamic":  true,
+                        "implemented":  false,
+                        "size":  "9 or 12",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x16",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length (9 or 12)"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Mobile serial"
+                                       },
+                                       {
+                                           "name":  "Show Bar",
+                                           "type":  "enum",
+                                           "size":  2,
+                                           "description":  "Show bar flag. If 0, packet ends here (no subsequent fields sent).",
+                                           "values":  [
+                                               { "value":  "0", "name":  "Hide", "description":  "Hide healthbar, packet ends here" },
+                                               { "value":  "1", "name":  "Show", "description":  "Show healthbar, following fields included" }
+                                           ]
+                                       },
+                                       {
+                                           "name":  "Healthbar Type",
+                                           "type":  "enum",
+                                           "size":  2,
+                                           "description":  "Type of healthbar overlay (only sent if Show Bar = 1)",
+                                           "values":  [
+                                               { "value":  "1", "name":  "Poison", "description":  "Poison status bar (green)" },
+                                               { "value":  "2", "name":  "Yellow", "description":  "Yellow/invulnerable bar" }
+                                           ]
+                                       },
+                                       {
+                                           "name":  "Level",
+                                           "type":  "enum",
+                                           "size":  1,
+                                           "description":  "Status level (only sent if Show Bar = 1)",
+                                           "values":  [
+                                               { "value":  "0", "name":  "Off", "description":  "Status disabled" },
+                                               { "value":  "1", "name":  "Level1/On", "description":  "Poison level 1 or yellow on" },
+                                               { "value":  "2", "name":  "Level2", "description":  "Poison level 2 (Greater)" },
+                                               { "value":  "3", "name":  "Level3", "description":  "Poison level 3 (Deadly)" },
+                                               { "value":  "4", "name":  "Level4", "description":  "Poison level 4 (Lethal)" }
+                                           ]
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0x17",
+                                            "relationship":  "variant",
+                                            "note":  "Mobile Healthbar (Classic) - Classic Client version"
+                                        }
+                                    ],
+                        "clientVersion":  {
+                                              "enhanced":  {},
+                                              "notes":  "Enhanced Client only. Classic uses 0x17 instead."
+                                          },
+                        "notes":  "When Show Bar is 0, the packet is only 9 bytes (no Healthbar Type or Level fields). Poison (green) overrides yellow coloring. ModernUO currently sends 0x17 to all clients; this EC variant needs implementation."
                     },
                     {
                         "id":  "0xAF",
