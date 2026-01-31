@@ -1698,61 +1698,6 @@
                                        "file":  "Projects/Server/Network/Packets/OutgoingMobilePackets.cs",
                                        "line":  78
                                    }
-                    },
-                    {
-                        "id":  "0xBF",
-                        "subId":  "0x19",
-                        "name":  "Bonded Status",
-                        "description":  "Indicates whether a mobile (pet) is bonded to its owner.",
-                        "direction":  "outgoing",
-                        "isDynamic":  false,
-                        "size":  11,
-                        "fields":  [
-                                       {
-                                           "name":  "Packet ID",
-                                           "type":  "byte",
-                                           "size":  1,
-                                           "value":  "0xBF",
-                                           "description":  "Packet identifier"
-                                       },
-                                       {
-                                           "name":  "Length",
-                                           "type":  "ushort",
-                                           "size":  2,
-                                           "value":  "0x000B",
-                                           "description":  "Packet length (11)"
-                                       },
-                                       {
-                                           "name":  "Sub-Command",
-                                           "type":  "ushort",
-                                           "size":  2,
-                                           "value":  "0x0019",
-                                           "description":  "Sub-command for bonded status"
-                                       },
-                                       {
-                                           "name":  "Command",
-                                           "type":  "byte",
-                                           "size":  1,
-                                           "value":  "0x00",
-                                           "description":  "Command type (0 for bonded)"
-                                       },
-                                       {
-                                           "name":  "Serial",
-                                           "type":  "uint",
-                                           "size":  4,
-                                           "description":  "Mobile serial"
-                                       },
-                                       {
-                                           "name":  "Bonded",
-                                           "type":  "bool",
-                                           "size":  1,
-                                           "description":  "Bonded status"
-                                       }
-                                   ],
-                        "source":  {
-                                       "file":  "Projects/Server/Network/Packets/OutgoingMobilePackets.cs",
-                                       "line":  44
-                                   }
                     }
                 ]
 }
