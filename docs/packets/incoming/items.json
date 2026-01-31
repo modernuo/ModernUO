@@ -239,6 +239,9 @@
                                                     }
                                        }
                                    ],
+                        "clientVersion":  {
+                                              "enhanced":  {}
+                                          },
                         "source":  {
                                        "file":  "Projects/UOContent/Network/Packets/IncomingItemPackets.cs",
                                        "line":  112
@@ -287,6 +290,9 @@
                                                     }
                                        }
                                    ],
+                        "clientVersion":  {
+                                              "enhanced":  {}
+                                          },
                         "source":  {
                                        "file":  "Projects/UOContent/Network/Packets/IncomingItemPackets.cs",
                                        "line":  125

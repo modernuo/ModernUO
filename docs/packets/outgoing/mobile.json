@@ -1104,8 +1104,8 @@
                     },
                     {
                         "id":  "0x78",
-                        "name":  "Mobile Incoming",
-                        "description":  "Full mobile information including equipped items. Sent when a mobile enters view range.",
+                        "name":  "Mobile Incoming (Old)",
+                        "description":  "Full mobile information including equipped items. Sent when a mobile enters view range. Pre-Stygian Abyss version.",
                         "direction":  "outgoing",
                         "isDynamic":  true,
                         "size":  "23+",
@@ -1232,7 +1232,7 @@
                                                                            "name":  "Item ID",
                                                                            "type":  "ushort",
                                                                            "size":  2,
-                                                                           "description":  "Item graphic ID (bit 0x8000 = hue follows for old clients)"
+                                                                           "description":  "Item graphic ID (15-bit, 0x7FFF mask). Bit 0x8000 indicates hue follows."
                                                                        },
                                                                        {
                                                                            "name":  "Layer",
@@ -1244,8 +1244,8 @@
                                                                            "name":  "Hue",
                                                                            "type":  "short",
                                                                            "size":  2,
-                                                                           "description":  "Item hue (only if bit 0x8000 set or NewMobileIncoming)",
-                                                                           "condition":  "hue flag or NewMobileIncoming"
+                                                                           "description":  "Item hue (only present if bit 0x8000 set on Item ID)",
+                                                                           "condition":  "Item ID & 0x8000"
                                                                        }
                                                                    ]
                                                     }
@@ -1259,10 +1259,351 @@
                                        }
                                    ],
                         "clientVersion":  {
-                                              "classic":  {},
-                                              "enhanced":  {},
-                                              "notes":  "NewMobileIncoming clients always include hue field for equipment"
+                                              "classic":  { "max": "6.x.x.x" },
+                                              "notes":  "Pre-Stygian Abyss. Equipment hue only sent when non-zero (indicated by 0x8000 flag on ItemID)."
                                           },
+                        "related":  [
+                                        { "id": "0x78", "relationship": "variant", "note": "Mobile Incoming (SA) for 7.0.0.0+" },
+                                        { "id": "0x78", "relationship": "variant", "note": "Mobile Incoming (New) for 7.0.33.1+" }
+                                    ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingMobilePackets.cs",
+                                       "line":  601
+                                   }
+                    },
+                    {
+                        "id":  "0x78",
+                        "name":  "Mobile Incoming (SA)",
+                        "description":  "Full mobile information including equipped items. Sent when a mobile enters view range. Stygian Abyss version with updated packet flags.",
+                        "direction":  "outgoing",
+                        "isDynamic":  true,
+                        "size":  "23+",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x78",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Mobile serial"
+                                       },
+                                       {
+                                           "name":  "Body",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Body/graphic ID"
+                                       },
+                                       {
+                                           "name":  "X",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "X coordinate"
+                                       },
+                                       {
+                                           "name":  "Y",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Y coordinate"
+                                       },
+                                       {
+                                           "name":  "Z",
+                                           "type":  "sbyte",
+                                           "size":  1,
+                                           "description":  "Z coordinate"
+                                       },
+                                       {
+                                           "name":  "Direction",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Facing direction"
+                                       },
+                                       {
+                                           "name":  "Hue",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Hue/color"
+                                       },
+                                       {
+                                           "name":  "Flags",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Packet flags"
+                                       },
+                                       {
+                                           "name":  "Notoriety",
+                                           "type":  "enum",
+                                           "enumType":  "sequential",
+                                           "size":  1,
+                                           "description":  "Notoriety flag",
+                                           "values":  [
+                                                          {
+                                                              "value":  0,
+                                                              "name":  "Innocent",
+                                                              "description":  "Blue - innocent player"
+                                                          },
+                                                          {
+                                                              "value":  1,
+                                                              "name":  "Friend",
+                                                              "description":  "Green - ally/friend"
+                                                          },
+                                                          {
+                                                              "value":  2,
+                                                              "name":  "Attackable",
+                                                              "description":  "Gray - can be attacked"
+                                                          },
+                                                          {
+                                                              "value":  3,
+                                                              "name":  "Criminal",
+                                                              "description":  "Gray - criminal flag"
+                                                          },
+                                                          {
+                                                              "value":  4,
+                                                              "name":  "Enemy",
+                                                              "description":  "Orange - enemy"
+                                                          },
+                                                          {
+                                                              "value":  5,
+                                                              "name":  "Murderer",
+                                                              "description":  "Red - murderer"
+                                                          },
+                                                          {
+                                                              "value":  6,
+                                                              "name":  "Invulnerable",
+                                                              "description":  "Yellow - invulnerable"
+                                                          }
+                                                      ]
+                                       },
+                                       {
+                                           "name":  "Equipment",
+                                           "type":  "array",
+                                           "description":  "Equipped items (terminated by 0x00000000)",
+                                           "loop":  {
+                                                        "countField":  "variable (until terminator)",
+                                                        "fields":  [
+                                                                       {
+                                                                           "name":  "Item Serial",
+                                                                           "type":  "uint",
+                                                                           "size":  4,
+                                                                           "description":  "Item serial (0 = end of list)"
+                                                                       },
+                                                                       {
+                                                                           "name":  "Item ID",
+                                                                           "type":  "ushort",
+                                                                           "size":  2,
+                                                                           "description":  "Item graphic ID (15-bit, 0x7FFF mask). Bit 0x8000 indicates hue follows."
+                                                                       },
+                                                                       {
+                                                                           "name":  "Layer",
+                                                                           "type":  "byte",
+                                                                           "size":  1,
+                                                                           "description":  "Equipment layer"
+                                                                       },
+                                                                       {
+                                                                           "name":  "Hue",
+                                                                           "type":  "short",
+                                                                           "size":  2,
+                                                                           "description":  "Item hue (only present if bit 0x8000 set on Item ID)",
+                                                                           "condition":  "Item ID & 0x8000"
+                                                                       }
+                                                                   ]
+                                                    }
+                                       },
+                                       {
+                                           "name":  "Terminator",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "value":  "0x00000000",
+                                           "description":  "Equipment list terminator"
+                                       }
+                                   ],
+                        "clientVersion":  {
+                                              "classic":  { "min": "7.0.0.0", "max": "7.0.33.0" },
+                                              "enhanced":  {},
+                                              "notes":  "Stygian Abyss clients. Equipment hue only sent when non-zero (indicated by 0x8000 flag on ItemID)."
+                                          },
+                        "related":  [
+                                        { "id": "0x78", "relationship": "variant", "note": "Mobile Incoming (Old) for pre-7.0.0.0" },
+                                        { "id": "0x78", "relationship": "variant", "note": "Mobile Incoming (New) for 7.0.33.1+" }
+                                    ],
+                        "source":  {
+                                       "file":  "Projects/Server/Network/Packets/OutgoingMobilePackets.cs",
+                                       "line":  601
+                                   }
+                    },
+                    {
+                        "id":  "0x78",
+                        "name":  "Mobile Incoming (New)",
+                        "description":  "Full mobile information including equipped items. Sent when a mobile enters view range. NewMobileIncoming version with full 16-bit ItemID and always-present hue field.",
+                        "direction":  "outgoing",
+                        "isDynamic":  true,
+                        "size":  "23+",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x78",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Mobile serial"
+                                       },
+                                       {
+                                           "name":  "Body",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Body/graphic ID"
+                                       },
+                                       {
+                                           "name":  "X",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "X coordinate"
+                                       },
+                                       {
+                                           "name":  "Y",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Y coordinate"
+                                       },
+                                       {
+                                           "name":  "Z",
+                                           "type":  "sbyte",
+                                           "size":  1,
+                                           "description":  "Z coordinate"
+                                       },
+                                       {
+                                           "name":  "Direction",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Facing direction"
+                                       },
+                                       {
+                                           "name":  "Hue",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "Hue/color"
+                                       },
+                                       {
+                                           "name":  "Flags",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Packet flags"
+                                       },
+                                       {
+                                           "name":  "Notoriety",
+                                           "type":  "enum",
+                                           "enumType":  "sequential",
+                                           "size":  1,
+                                           "description":  "Notoriety flag",
+                                           "values":  [
+                                                          {
+                                                              "value":  0,
+                                                              "name":  "Innocent",
+                                                              "description":  "Blue - innocent player"
+                                                          },
+                                                          {
+                                                              "value":  1,
+                                                              "name":  "Friend",
+                                                              "description":  "Green - ally/friend"
+                                                          },
+                                                          {
+                                                              "value":  2,
+                                                              "name":  "Attackable",
+                                                              "description":  "Gray - can be attacked"
+                                                          },
+                                                          {
+                                                              "value":  3,
+                                                              "name":  "Criminal",
+                                                              "description":  "Gray - criminal flag"
+                                                          },
+                                                          {
+                                                              "value":  4,
+                                                              "name":  "Enemy",
+                                                              "description":  "Orange - enemy"
+                                                          },
+                                                          {
+                                                              "value":  5,
+                                                              "name":  "Murderer",
+                                                              "description":  "Red - murderer"
+                                                          },
+                                                          {
+                                                              "value":  6,
+                                                              "name":  "Invulnerable",
+                                                              "description":  "Yellow - invulnerable"
+                                                          }
+                                                      ]
+                                       },
+                                       {
+                                           "name":  "Equipment",
+                                           "type":  "array",
+                                           "description":  "Equipped items (terminated by 0x00000000)",
+                                           "loop":  {
+                                                        "countField":  "variable (until terminator)",
+                                                        "fields":  [
+                                                                       {
+                                                                           "name":  "Item Serial",
+                                                                           "type":  "uint",
+                                                                           "size":  4,
+                                                                           "description":  "Item serial (0 = end of list)"
+                                                                       },
+                                                                       {
+                                                                           "name":  "Item ID",
+                                                                           "type":  "ushort",
+                                                                           "size":  2,
+                                                                           "description":  "Item graphic ID (full 16-bit, 0xFFFF mask)"
+                                                                       },
+                                                                       {
+                                                                           "name":  "Layer",
+                                                                           "type":  "byte",
+                                                                           "size":  1,
+                                                                           "description":  "Equipment layer"
+                                                                       },
+                                                                       {
+                                                                           "name":  "Hue",
+                                                                           "type":  "short",
+                                                                           "size":  2,
+                                                                           "description":  "Item hue (always present)"
+                                                                       }
+                                                                   ]
+                                                    }
+                                       },
+                                       {
+                                           "name":  "Terminator",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "value":  "0x00000000",
+                                           "description":  "Equipment list terminator"
+                                       }
+                                   ],
+                        "clientVersion":  {
+                                              "classic":  { "min": "7.0.33.1" },
+                                              "notes":  "NewMobileIncoming clients. Equipment always includes hue field (no 0x8000 flag needed). ItemID uses full 16-bit range."
+                                          },
+                        "related":  [
+                                        { "id": "0x78", "relationship": "variant", "note": "Mobile Incoming (Old) for pre-7.0.0.0" },
+                                        { "id": "0x78", "relationship": "variant", "note": "Mobile Incoming (SA) for 7.0.0.0-7.0.33.0" }
+                                    ],
                         "source":  {
                                        "file":  "Projects/Server/Network/Packets/OutgoingMobilePackets.cs",
                                        "line":  601
