@@ -12,7 +12,6 @@
                         "variants":  [
                                          {
                                              "name":  "Member List",
-                                             "version":  "0x01",
                                              "condition":  "command == 0x01",
                                              "size":  "7 + (memberCount x 4)",
                                              "fields":  [
@@ -69,7 +68,6 @@
                                          },
                                          {
                                              "name":  "Remove Member",
-                                             "version":  "0x02",
                                              "condition":  "command == 0x02",
                                              "size":  "11 + (memberCount x 4)",
                                              "fields":  [
@@ -132,7 +130,6 @@
                                          },
                                          {
                                              "name":  "Private Message",
-                                             "version":  "0x03",
                                              "condition":  "command == 0x03",
                                              "size":  "12 + (text.Length x 2)",
                                              "fields":  [
@@ -178,7 +175,6 @@
                                          },
                                          {
                                              "name":  "Public Message",
-                                             "version":  "0x04",
                                              "condition":  "command == 0x04",
                                              "size":  "12 + (text.Length x 2)",
                                              "fields":  [
@@ -224,7 +220,6 @@
                                          },
                                          {
                                              "name":  "Party Invitation",
-                                             "version":  "0x07",
                                              "condition":  "command == 0x07",
                                              "size":  10,
                                              "fields":  [

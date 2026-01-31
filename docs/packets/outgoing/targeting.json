@@ -210,11 +210,9 @@
                                          }
                                      ],
                         "clientVersion":  {
-                                              "classic":  {
-                                                  "min":  "7.0.9.0"
-                                              },
+                                              "classic":  {},
                                               "enhanced":  {},
-                                              "notes":  "HighSeas expansion adds 4 bytes. EC always uses 30-byte variant."
+                                              "notes":  "HighSeas (7.0.9.0+) adds 4 bytes. EC always uses 30-byte variant."
                                           },
                         "source":  {
                                        "file":  "Projects/Server/Network/Packets/OutgoingTargetPackets.cs",
