@@ -857,7 +857,7 @@
                     },
                     {
                         "id":  "0x8D",
-                        "name":  "Create Character (EC)",
+                        "name":  "Create Character",
                         "description":  "Request to create a new character from Enhanced Client (KR/SA 3D clients). Variable length packet with different field layout than Classic client versions.",
                         "direction":  "incoming",
                         "isDynamic":  true,

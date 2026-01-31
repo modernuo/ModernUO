@@ -1677,7 +1677,7 @@
                     },
                     {
                         "id":  "0x16",
-                        "name":  "Mobile Healthbar (EC)",
+                        "name":  "Mobile Healthbar",
                         "description":  "Updates a mobile's healthbar status for Enhanced Client (poison level, yellow bar for invulnerability).",
                         "direction":  "outgoing",
                         "isDynamic":  true,

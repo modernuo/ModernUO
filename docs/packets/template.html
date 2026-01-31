@@ -84,6 +84,14 @@
       background-position: right 0.75rem center;
       padding-right: 2rem;
     }
+    .client-badge {
+      font-size: 0.65rem;
+      padding: 1px 4px;
+      border-radius: 3px;
+      font-weight: 500;
+    }
+    .client-cc { background: rgba(59, 130, 246, 0.3); color: #93c5fd; }
+    .client-ec { background: rgba(168, 85, 247, 0.3); color: #d8b4fe; }
   </style>
 </head>
 
@@ -406,6 +414,16 @@
             <div class="flex"><span class="font-mono text-gold-400 w-20 flex-shrink-0">array</span><span>Array of elements</span></div>
             <div class="flex"><span class="font-mono text-gold-400 w-20 flex-shrink-0">packet</span><span>Embedded packet</span></div>
           </div>
+        </div>
+        <!-- Client Indicators -->
+        <div class="bg-modern-dark-black rounded-lg p-3 border border-gold-500/10">
+          <h4 class="text-gold-400 font-medium mb-2">Client Indicators</h4>
+          <p class="text-gold-500/60 text-xs mb-2">Shown when a packet is client-specific</p>
+          <div class="space-y-1.5 text-gold-300/80">
+            <div class="flex items-center"><span class="client-badge client-cc w-12 text-center flex-shrink-0">CC</span><span class="ml-2">Classic Client only (2D)</span></div>
+            <div class="flex items-center"><span class="client-badge client-ec w-12 text-center flex-shrink-0">EC</span><span class="ml-2">Enhanced Client only (EC/KR)</span></div>
+          </div>
+          <p class="text-gold-500/60 text-xs mt-2">Packets without a badge support both clients.</p>
         </div>
       </div>
       <div class="mt-4 text-xs text-gold-500/60">
@@ -763,6 +781,27 @@ function getDirectionBgClass(direction) {
   }
 }
 
+function getClientSupport(packet) {
+  const cv = packet.clientVersion;
+  if (!cv) return 'both';
+
+  const hasClassic = cv.classic !== undefined;
+  const hasEnhanced = cv.enhanced !== undefined;
+
+  if (hasClassic && hasEnhanced) return 'both';
+  if (hasClassic) return 'classic';
+  if (hasEnhanced) return 'enhanced';
+  return 'both';
+}
+
+function getClientBadge(packet) {
+  const support = getClientSupport(packet);
+  if (support === 'both') return '';
+  if (support === 'classic') return '<span class="client-badge client-cc">CC</span>';
+  if (support === 'enhanced') return '<span class="client-badge client-ec">EC</span>';
+  return '';
+}
+
 // Version parsing helper - handles "7.0.9.0", "5.0.0a", "66.x.x.x" formats
 function parseVersion(v) {
   if (!v) return null;
@@ -910,6 +949,7 @@ function renderPacketList() {
       >
         <div class="flex items-center space-x-2">
           <span class="font-mono text-sm ${getDirectionClass(p.direction)}">${displayId}</span>
+          ${getClientBadge(p)}
           <span class="text-gold-300/90 text-sm truncate">${p.name}</span>
         </div>
         <div class="flex flex-wrap gap-1 mt-0.5">
@@ -1259,10 +1299,14 @@ function selectPacket(packet) {
       const directionBadge = r.direction ?
         `<span class="px-1.5 py-0.5 rounded text-xs font-medium uppercase ${getDirectionBgClass(r.direction)} text-white">${r.direction}</span>` : '';
 
+      const idColorClass = relatedPacket ? getDirectionClass(relatedPacket.direction) : 'text-white';
+      const clientBadge = relatedPacket ? getClientBadge(relatedPacket) : '';
+
       return `
         <div class="flex items-center justify-between bg-modern-black rounded-lg p-3 border border-gold-500/20 cursor-pointer hover:border-gold-500/40 transition-colors related-packet" data-id="${r.id}" data-direction="${r.direction || ''}">
           <div class="flex items-center space-x-3">
-            <span class="font-mono text-white">${r.id}</span>
+            <span class="font-mono ${idColorClass}">${r.id}</span>
+            ${clientBadge}
             ${directionBadge}
             <span class="text-gold-300/90">${relatedPacket?.name || 'Unknown'}</span>
           </div>
