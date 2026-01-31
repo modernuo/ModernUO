@@ -146,7 +146,11 @@
                                          }
                                      ],
                         "clientVersion":  {
-                                              "feature":  "ContainerGridLines adds gridLocation byte"
+                                              "classic":  {
+                                                  "min":  "6.0.1.7"
+                                              },
+                                              "enhanced":  {},
+                                              "notes":  "ContainerGridLines adds gridLocation byte"
                                           },
                         "source":  {
                                        "file":  "Projects/UOContent/Network/Packets/IncomingItemPackets.cs",

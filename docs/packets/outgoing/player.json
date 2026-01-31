@@ -995,9 +995,11 @@
                                    ],
                         "variants":  [
                                          {
-                                             "version":  "Classic Client",
+                                             "name":  "Classic Client",
                                              "clientVersion":  {
-                                                 "max":  "66.x.x.x"
+                                                 "classic":  {
+                                                     "max":  "66.x.x.x"
+                                                 }
                                              },
                                              "fields":  [
                                                  {
@@ -1010,9 +1012,11 @@
                                              ]
                                          },
                                          {
-                                             "version":  "Enhanced Client",
+                                             "name":  "Enhanced Client",
                                              "clientVersion":  {
-                                                 "min":  "67.0.0.0"
+                                                 "enhanced":  {
+                                                     "min":  "67.0.0.0"
+                                                 }
                                              },
                                              "fields":  [
                                                  {

@@ -147,6 +147,26 @@
         <div id="tagFilter" class="hidden md:flex flex-wrap gap-1 max-h-32 overflow-y-auto">
           <!-- Tags will be populated by JavaScript -->
         </div>
+
+        <!-- Client Type Filter -->
+        <div class="flex items-center gap-2 mt-2">
+          <span class="text-gold-500/70 text-xs flex-shrink-0">Client:</span>
+        </div>
+        <div class="flex space-x-1 mt-1">
+          <button data-client="all" class="client-btn flex-1 px-2 py-1 text-xs rounded bg-gold-500 text-modern-black font-medium">All</button>
+          <button data-client="classic" class="client-btn flex-1 px-2 py-1 text-xs rounded bg-modern-dark-black text-blue-400 border border-blue-500/50 hover:bg-blue-500/20">Classic</button>
+          <button data-client="enhanced" class="client-btn flex-1 px-2 py-1 text-xs rounded bg-modern-dark-black text-purple-400 border border-purple-500/50 hover:bg-purple-500/20">Enhanced</button>
+        </div>
+
+        <!-- Version Filter -->
+        <div class="mt-2">
+          <input
+            type="text"
+            id="versionInput"
+            placeholder="Version (e.g., 7.0.9.0)"
+            class="w-full bg-modern-dark-black text-gold-300 placeholder-gold-500/50 px-3 py-1.5 rounded border border-gold-500/30 focus:outline-none focus:border-gold-500 text-xs font-mono"
+          >
+        </div>
       </div>
 
       <!-- Packet List -->
@@ -213,8 +233,11 @@
 
           <!-- Client Version Requirements -->
           <div id="clientVersionSection" class="bg-modern-black rounded-lg p-4 mb-6 border border-gold-500/20 hidden">
-            <h3 class="text-gold-500 font-medium mb-2">Client Version Requirements</h3>
-            <div id="clientVersionContent" class="text-gold-300/80 text-sm"></div>
+            <h3 class="text-gold-500 font-medium mb-3">Client Version Requirements</h3>
+            <div id="clientVersionContent" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <!-- Populated by JavaScript -->
+            </div>
+            <div id="clientVersionNotes" class="mt-3 text-gold-500/70 text-sm italic hidden"></div>
           </div>
 
           <!-- Fields Table -->
@@ -552,6 +575,8 @@ let currentFilter = 'all';
 let selectedTags = new Set();
 let currentSearch = '';
 let selectedPacket = null;
+let currentClientType = 'all';
+let currentVersion = '';
 
 // DOM elements
 const searchInput = document.getElementById('searchInput');
@@ -738,6 +763,60 @@ function getDirectionBgClass(direction) {
   }
 }
 
+// Version parsing helper - handles "7.0.9.0", "5.0.0a", "66.x.x.x" formats
+function parseVersion(v) {
+  if (!v) return null;
+  // Remove any trailing letters (like "5.0.0a" -> "5.0.0")
+  const cleaned = v.replace(/[a-z]$/i, '');
+  const parts = cleaned.split('.').map(part => {
+    if (part === 'x' || part === '*') return -1; // Wildcard marker
+    const num = parseInt(part, 10);
+    return isNaN(num) ? 0 : num;
+  });
+  // Pad to 4 parts
+  while (parts.length < 4) parts.push(0);
+  return parts.slice(0, 4);
+}
+
+// Compare two version arrays: returns -1, 0, or 1
+function compareVersions(a, b) {
+  for (let i = 0; i < 4; i++) {
+    // Wildcards (-1) match anything
+    if (a[i] === -1 || b[i] === -1) continue;
+    if (a[i] < b[i]) return -1;
+    if (a[i] > b[i]) return 1;
+  }
+  return 0;
+}
+
+// Check if a version is within a client version range
+function isVersionInRange(version, clientVersion, clientType) {
+  const v = parseVersion(version);
+  if (!v) return true; // Invalid version input, don't filter
+
+  // Check appropriate client type(s)
+  const typesToCheck = clientType === 'all'
+    ? ['classic', 'enhanced'].filter(t => clientVersion[t])
+    : [clientType];
+
+  if (typesToCheck.length === 0) return true; // No version info for this type
+
+  return typesToCheck.some(type => {
+    const range = clientVersion[type];
+    if (!range) return false;
+
+    const min = range.min ? parseVersion(range.min) : [0, 0, 0, 0];
+    const max = range.max ? parseVersion(range.max) : [Infinity, Infinity, Infinity, Infinity];
+
+    // Handle wildcards in max (e.g., "7.0.8.x" means any 7.0.8.*)
+    for (let i = 0; i < 4; i++) {
+      if (max[i] === -1) max[i] = Infinity;
+    }
+
+    return compareVersions(v, min) >= 0 && compareVersions(v, max) <= 0;
+  });
+}
+
 // Filter packets
 function getFilteredPackets() {
   return packets.filter(p => {
@@ -767,6 +846,21 @@ function getFilteredPackets() {
       const matchDecimal = !isNaN(decimalId) && decimalId.toString() === search;
 
       if (!matchId && !matchName && !matchDesc && !matchFields && !matchDecimal) return false;
+    }
+
+    // Client type filter - packets without clientVersion always pass (work with all versions)
+    if (currentClientType !== 'all' && p.clientVersion) {
+      const hasType = currentClientType === 'classic'
+        ? p.clientVersion.classic
+        : p.clientVersion.enhanced;
+      if (!hasType) return false;
+    }
+
+    // Version filter (range check) - packets without clientVersion always pass
+    if (currentVersion && p.clientVersion) {
+      if (!isVersionInRange(currentVersion, p.clientVersion, currentClientType)) {
+        return false;
+      }
     }
 
     return true;
@@ -1031,14 +1125,54 @@ function selectPacket(packet) {
   // Client version
   const versionSection = document.getElementById('clientVersionSection');
   const versionContent = document.getElementById('clientVersionContent');
+  const versionNotes = document.getElementById('clientVersionNotes');
   if (packet.clientVersion) {
     versionSection.classList.remove('hidden');
-    let versionText = '';
-    if (packet.clientVersion.min) versionText += `Min: ${packet.clientVersion.min} `;
-    if (packet.clientVersion.max) versionText += `Max: ${packet.clientVersion.max} `;
-    if (packet.clientVersion.feature) versionText += `Feature: ${packet.clientVersion.feature} `;
-    if (packet.clientVersion.notes) versionText += `<br>${packet.clientVersion.notes}`;
-    versionContent.innerHTML = versionText || 'Version-specific behavior';
+    let html = '';
+
+    // Classic Client
+    if (packet.clientVersion.classic) {
+      const c = packet.clientVersion.classic;
+      html += `
+        <div class="bg-modern-dark-black rounded p-3 border border-gold-500/10">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="px-2 py-0.5 bg-blue-500/20 text-blue-400 rounded text-xs font-medium">Classic</span>
+          </div>
+          <div class="text-sm space-y-1">
+            ${c.min ? `<div><span class="text-gold-500/70">Min:</span> <span class="font-mono text-gold-300">${c.min}</span></div>` : ''}
+            ${c.max ? `<div><span class="text-gold-500/70">Max:</span> <span class="font-mono text-gold-300">${c.max}</span></div>` : ''}
+            ${!c.min && !c.max ? `<div class="text-gold-500/50">All versions</div>` : ''}
+          </div>
+        </div>
+      `;
+    }
+
+    // Enhanced Client
+    if (packet.clientVersion.enhanced) {
+      const e = packet.clientVersion.enhanced;
+      html += `
+        <div class="bg-modern-dark-black rounded p-3 border border-gold-500/10">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="px-2 py-0.5 bg-purple-500/20 text-purple-400 rounded text-xs font-medium">Enhanced</span>
+          </div>
+          <div class="text-sm space-y-1">
+            ${e.min ? `<div><span class="text-gold-500/70">Min:</span> <span class="font-mono text-gold-300">${e.min}</span></div>` : ''}
+            ${e.max ? `<div><span class="text-gold-500/70">Max:</span> <span class="font-mono text-gold-300">${e.max}</span></div>` : ''}
+            ${!e.min && !e.max ? `<div class="text-gold-500/50">All versions</div>` : ''}
+          </div>
+        </div>
+      `;
+    }
+
+    versionContent.innerHTML = html;
+
+    // Notes
+    if (packet.clientVersion.notes) {
+      versionNotes.classList.remove('hidden');
+      versionNotes.textContent = packet.clientVersion.notes;
+    } else {
+      versionNotes.classList.add('hidden');
+    }
   } else {
     versionSection.classList.add('hidden');
   }
@@ -1582,6 +1716,42 @@ searchInput.addEventListener('input', (e) => {
   }, 150);
 });
 
+// Client type button handlers
+document.querySelectorAll('.client-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    currentClientType = btn.dataset.client;
+
+    // Update button styles
+    document.querySelectorAll('.client-btn').forEach(b => {
+      const isActive = b.dataset.client === currentClientType;
+      if (b.dataset.client === 'all') {
+        b.classList.toggle('bg-gold-500', isActive);
+        b.classList.toggle('text-modern-black', isActive);
+        b.classList.toggle('bg-modern-dark-black', !isActive);
+        b.classList.toggle('text-gold-500', !isActive);
+      } else if (b.dataset.client === 'classic') {
+        b.classList.toggle('bg-blue-500/20', isActive);
+        b.classList.toggle('bg-modern-dark-black', !isActive);
+      } else if (b.dataset.client === 'enhanced') {
+        b.classList.toggle('bg-purple-500/20', isActive);
+        b.classList.toggle('bg-modern-dark-black', !isActive);
+      }
+    });
+
+    renderPacketList();
+  });
+});
+
+// Version input handler
+const versionInput = document.getElementById('versionInput');
+let versionTimeout;
+versionInput.addEventListener('input', (e) => {
+  clearTimeout(versionTimeout);
+  versionTimeout = setTimeout(() => {
+    currentVersion = e.target.value.trim();
+    renderPacketList();
+  }, 300);
+});
 
 // Keyboard navigation
 document.addEventListener('keydown', (e) => {

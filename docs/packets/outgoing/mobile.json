@@ -1259,7 +1259,8 @@
                                        }
                                    ],
                         "clientVersion":  {
-                                              "feature":  "NewMobileIncoming",
+                                              "classic":  {},
+                                              "enhanced":  {},
                                               "notes":  "NewMobileIncoming clients always include hue field for equipment"
                                           },
                         "source":  {

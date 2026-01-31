@@ -1044,8 +1044,11 @@
                                         }
                                     ],
                         "clientVersion":  {
-                                              "min":  "3.0.0",
-                                              "feature":  "Compressed gumps"
+                                              "classic":  {
+                                                  "min":  "3.0.0"
+                                              },
+                                              "enhanced":  {},
+                                              "notes":  "Compressed gumps supported since Classic Client 3.0.0"
                                           },
                         "notes":  "Layout uses ASCII encoding only. The compressed lengths include a +4 offset. Decompression produces: layout as ASCII text, strings as length-prefixed UTF-16 BE entries.",
                         "source":  {

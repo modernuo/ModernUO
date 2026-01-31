@@ -580,7 +580,9 @@
                                         }
                                     ],
                         "clientVersion":  {
-                                              "max":  "7.0.15.x",
+                                              "classic":  {
+                                                  "max":  "7.0.15.x"
+                                              },
                                               "notes":  "Replaced by 0xF8 in client 7.0.16.0+"
                                           },
                         "source":  {
@@ -804,7 +806,10 @@
                                         }
                                     ],
                         "clientVersion":  {
-                                              "min":  "7.0.16.0",
+                                              "classic":  {
+                                                  "min":  "7.0.16.0"
+                                              },
+                                              "enhanced":  {},
                                               "notes":  "Replaces 0x00, adds 4th starting skill"
                                           },
                         "source":  {

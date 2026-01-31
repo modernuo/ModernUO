@@ -210,7 +210,11 @@
                                          }
                                      ],
                         "clientVersion":  {
-                                              "feature":  "HighSeas adds 4 bytes"
+                                              "classic":  {
+                                                  "min":  "7.0.9.0"
+                                              },
+                                              "enhanced":  {},
+                                              "notes":  "HighSeas adds 4 bytes"
                                           },
                         "source":  {
                                        "file":  "Projects/Server/Network/Packets/OutgoingTargetPackets.cs",
