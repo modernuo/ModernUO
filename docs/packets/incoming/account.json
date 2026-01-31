@@ -1,4 +1,4 @@
-﻿{
+{
     "category":  "Account",
     "packets":  [
                     {
@@ -295,6 +295,13 @@
                                            "description":  "Client patch level"
                                        }
                                    ],
+                        "clientVersion":  {
+                                              "classic":  {
+                                                  "min":  "6.0.5.0"
+                                              },
+                                              "enhanced":  {},
+                                              "notes":  "Replaces the legacy 4-byte seed for clients 6.0.5.0+. Pre-6.0.5.0 clients send only a 4-byte seed without version info."
+                                          },
                         "source":  {
                                        "file":  "Projects/UOContent/Network/Packets/IncomingAccountPackets.cs",
                                        "line":  419
@@ -335,7 +342,7 @@
                     {
                         "id":  "0xE1",
                         "name":  "Client Type",
-                        "description":  "Sent by the client to identify the client type and version.",
+                        "description":  "Sent by the client to identify the client type and version. Added during Kingdom Reborn/Stygian Abyss expansion.",
                         "direction":  "incoming",
                         "isDynamic":  true,
                         "size":  "var",
@@ -357,13 +364,20 @@
                                            "name":  "Unknown",
                                            "type":  "ushort",
                                            "size":  2,
-                                           "description":  "Unknown"
+                                           "value":  "0x0001",
+                                           "description":  "Unknown (always 0x0001)"
                                        },
                                        {
                                            "name":  "Client Type",
-                                           "type":  "ushort",
+                                           "type":  "enum",
+                                           "enumType":  "sequential",
                                            "size":  2,
-                                           "description":  "Client type identifier"
+                                           "description":  "Client type identifier",
+                                           "values":  [
+                                               { "value":  "0x00", "name":  "Classic", "description":  "Classic 2D Client" },
+                                               { "value":  "0x02", "name":  "KR", "description":  "Kingdom Reborn Client" },
+                                               { "value":  "0x03", "name":  "EC", "description":  "Enhanced Client (Stygian Abyss)" }
+                                           ]
                                        },
                                        {
                                            "name":  "Version",
@@ -371,6 +385,20 @@
                                            "description":  "Client version string"
                                        }
                                    ],
+                        "related":  [
+                                        {
+                                            "id":  "0xBF/0x0F",
+                                            "relationship":  "related",
+                                            "note":  "Client Info - similar client type information sent at login"
+                                        }
+                                    ],
+                        "clientVersion":  {
+                                              "classic":  {
+                                                  "min":  "6.0.14.3"
+                                              },
+                                              "enhanced":  {},
+                                              "notes":  "Added during Kingdom Reborn/Stygian Abyss expansion"
+                                          },
                         "source":  {
                                        "file":  "Projects/UOContent/Network/Packets/IncomingAccountPackets.cs",
                                        "line":  200
@@ -576,12 +604,19 @@
                                         {
                                             "id":  "0xF8",
                                             "relationship":  "variant",
-                                            "note":  "Create Character (New) for 7.0.16.0+ with 4th skill"
+                                            "note":  "Create Character (New) for Classic 7.0.16.0+ with 4th skill"
+                                        },
+                                        {
+                                            "id":  "0x8D",
+                                            "relationship":  "variant",
+                                            "note":  "Create Character (EC) for Enhanced Client"
                                         }
                                     ],
                         "clientVersion":  {
-                                              "max":  "7.0.15.x",
-                                              "notes":  "Replaced by 0xF8 in client 7.0.16.0+"
+                                              "classic":  {
+                                                  "max":  "7.0.15.x"
+                                              },
+                                              "notes":  "Replaced by 0xF8 in Classic Client 7.0.16.0+. EC uses 0x8D instead."
                                           },
                         "source":  {
                                        "file":  "Projects/UOContent/Network/Packets/IncomingAccountPackets.cs",
@@ -800,18 +835,247 @@
                                         {
                                             "id":  "0x00",
                                             "relationship":  "variant",
-                                            "note":  "Create Character (Old) for pre-7.0.16.0 with 3 skills"
+                                            "note":  "Create Character (Old) for Classic pre-7.0.16.0 with 3 skills"
+                                        },
+                                        {
+                                            "id":  "0x8D",
+                                            "relationship":  "variant",
+                                            "note":  "Create Character (EC) for Enhanced Client"
                                         }
                                     ],
                         "clientVersion":  {
-                                              "min":  "7.0.16.0",
-                                              "notes":  "Replaces 0x00, adds 4th starting skill"
+                                              "classic":  {
+                                                  "min":  "7.0.16.0"
+                                              },
+                                              "notes":  "Classic Client only. Replaces 0x00, adds 4th starting skill. EC uses 0x8D instead."
                                           },
                         "source":  {
                                        "file":  "Projects/UOContent/Network/Packets/IncomingAccountPackets.cs",
                                        "line":  58
                                    },
                         "notes":  "Uses the same handler as 0x00 but with 2 additional bytes for the 4th skill."
+                    },
+                    {
+                        "id":  "0x8D",
+                        "name":  "Create Character",
+                        "description":  "Request to create a new character from Enhanced Client (KR/SA 3D clients). Variable length packet with different field layout than Classic client versions.",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "var",
+                        "implemented":  false,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x8D",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Pattern1",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "value":  "0xEDEDEDED",
+                                           "description":  "Fixed pattern"
+                                       },
+                                       {
+                                           "name":  "Character Index",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Character slot index"
+                                       },
+                                       {
+                                           "name":  "Name",
+                                           "type":  "ascii",
+                                           "size":  30,
+                                           "description":  "Character name"
+                                       },
+                                       {
+                                           "name":  "Unknown",
+                                           "type":  "byte[30]",
+                                           "size":  30,
+                                           "description":  "Unknown (possibly password field)"
+                                       },
+                                       {
+                                           "name":  "Profession",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Starting profession"
+                                       },
+                                       {
+                                           "name":  "Client Flags",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Client flags (0x41 or 0x3F)"
+                                       },
+                                       {
+                                           "name":  "Gender",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "0=male, 1=female"
+                                       },
+                                       {
+                                           "name":  "Race",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "0=human, 1=elf, 2=gargoyle"
+                                       },
+                                       {
+                                           "name":  "Strength",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Starting strength"
+                                       },
+                                       {
+                                           "name":  "Dexterity",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Starting dexterity"
+                                       },
+                                       {
+                                           "name":  "Intelligence",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Starting intelligence"
+                                       },
+                                       {
+                                           "name":  "Skin Color",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Character skin hue"
+                                       },
+                                       {
+                                           "name":  "Unknown2",
+                                           "type":  "byte[8]",
+                                           "size":  8,
+                                           "description":  "Unknown padding"
+                                       },
+                                       {
+                                           "name":  "Skill 1 ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "First skill ID"
+                                       },
+                                       {
+                                           "name":  "Skill 1 Value",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "First skill starting value"
+                                       },
+                                       {
+                                           "name":  "Skill 2 ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Second skill ID"
+                                       },
+                                       {
+                                           "name":  "Skill 2 Value",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Second skill starting value"
+                                       },
+                                       {
+                                           "name":  "Skill 3 ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Third skill ID"
+                                       },
+                                       {
+                                           "name":  "Skill 3 Value",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Third skill starting value"
+                                       },
+                                       {
+                                           "name":  "Skill 4 ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Fourth skill ID"
+                                       },
+                                       {
+                                           "name":  "Skill 4 Value",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Fourth skill starting value"
+                                       },
+                                       {
+                                           "name":  "Unknown3",
+                                           "type":  "byte[26]",
+                                           "size":  26,
+                                           "description":  "Unknown padding and appearance fields"
+                                       },
+                                       {
+                                           "name":  "Hair Color",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Hair hue"
+                                       },
+                                       {
+                                           "name":  "Hair Style",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Hair graphic ID"
+                                       },
+                                       {
+                                           "name":  "Shirt Color",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Shirt hue"
+                                       },
+                                       {
+                                           "name":  "Shirt Style",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Shirt graphic ID"
+                                       },
+                                       {
+                                           "name":  "Face Color",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Face hue"
+                                       },
+                                       {
+                                           "name":  "Face Style",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Face graphic ID"
+                                       },
+                                       {
+                                           "name":  "Beard Color",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Facial hair hue"
+                                       },
+                                       {
+                                           "name":  "Beard Style",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Facial hair graphic ID"
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0x00",
+                                            "relationship":  "variant",
+                                            "note":  "Create Character (Old) for Classic Client pre-7.0.16.0"
+                                        },
+                                        {
+                                            "id":  "0xF8",
+                                            "relationship":  "variant",
+                                            "note":  "Create Character (New) for Classic Client 7.0.16.0+"
+                                        }
+                                    ],
+                        "clientVersion":  {
+                                              "enhanced":  {},
+                                              "notes":  "Enhanced Client only. Uses different field layout with separate gender/race bytes."
+                                          },
+                        "notes":  "EC clients use this packet instead of 0x00/0xF8. The field layout differs significantly from Classic client versions, with separate gender and race bytes instead of combined genderRace field."
                     }
                 ]
 }

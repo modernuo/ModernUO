@@ -1,4 +1,4 @@
-﻿{
+{
     "category":  "Items",
     "packets":  [
                     {
@@ -90,7 +90,9 @@
                                     ],
                         "notes":  "For Stygian Abyss+ clients, use 0xF3 World Entity instead.",
                         "clientVersion":  {
-                                              "max":  "6.0.14.2",
+                                              "classic":  {
+                                                  "max":  "6.0.14.2"
+                                              },
                                               "notes":  "Replaced by 0xF3 for SA+ clients"
                                           },
                         "source":  {

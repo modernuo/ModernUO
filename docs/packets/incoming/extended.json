@@ -1,4 +1,4 @@
-﻿{
+{
     "category":  "Extended Commands (0xBF)",
     "packets":  [
                     {
@@ -604,9 +604,10 @@
                         "id":  "0xBF/0x0F",
                         "subId":  "0x0F",
                         "name":  "Client Info",
-                        "description":  "Client type information (Spy on Client). No data is read from this packet.",
+                        "description":  "Client type information sent once at login. ModernUO currently ignores this packet data.",
                         "direction":  "incoming",
                         "isDynamic":  true,
+                        "implemented":  false,
                         "size":  "var",
                         "fields":  [
                                        {
@@ -626,14 +627,41 @@
                                            "name":  "Sub-Command",
                                            "type":  "ushort",
                                            "size":  2,
-                                           "value":  "0x0F",
+                                           "value":  "0x000F",
                                            "description":  "Client Info subcommand"
+                                       },
+                                       {
+                                           "name":  "Unknown",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x0A",
+                                           "description":  "Unknown (always 0x0A)"
+                                       },
+                                       {
+                                           "name":  "Client Type",
+                                           "type":  "enum",
+                                           "enumType":  "sequential",
+                                           "size":  4,
+                                           "description":  "Client type flag (same as character create/login)",
+                                           "values":  [
+                                               { "value":  "0x00", "name":  "Classic", "description":  "Classic 2D Client" },
+                                               { "value":  "0x02", "name":  "KR", "description":  "Kingdom Reborn Client" },
+                                               { "value":  "0x03", "name":  "EC", "description":  "Enhanced Client (Stygian Abyss)" }
+                                           ]
                                        }
                                    ],
+                        "related":  [
+                                        {
+                                            "id":  "0xE1",
+                                            "relationship":  "related",
+                                            "note":  "Client Type packet - similar client type information"
+                                        }
+                                    ],
                         "source":  {
                                        "file":  "Projects/UOContent/Network/Packets/IncomingExtendedCommandPackets.cs",
                                        "line":  52
-                                   }
+                                   },
+                        "notes":  "ModernUO registers this packet but ignores its data (calls Empty handler). The client type should match the value in 0xE1 Client Type packet."
                     },
                     {
                         "id":  "0xBF/0x10",

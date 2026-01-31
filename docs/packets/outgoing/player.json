@@ -1,4 +1,4 @@
-﻿{
+{
     "category":  "Player",
     "packets":  [
                     {
@@ -904,95 +904,249 @@
                     },
                     {
                         "id":  "0xBF/0x19",
-                        "name":  "Stat Lock Info",
-                        "description":  "Sends stat lock states (STR/DEX/INT) to client.",
+                        "name":  "Extended Status",
+                        "description":  "Multi-purpose status packet. The Type byte determines the payload: Type 0 for pet bonded status, Type 2/5 for player stat locks.",
                         "direction":  "outgoing",
                         "isDynamic":  false,
-                        "size":  12,
-                        "fields":  [
-                                       {
-                                           "name":  "Packet ID",
-                                           "type":  "byte",
-                                           "size":  1,
-                                           "value":  "0xBF",
-                                           "description":  "Packet identifier"
-                                       },
-                                       {
-                                           "name":  "Length",
-                                           "type":  "ushort",
-                                           "size":  2,
-                                           "value":  "12",
-                                           "description":  "Packet length"
-                                       },
-                                       {
-                                           "name":  "Sub-Command",
-                                           "type":  "short",
-                                           "size":  2,
-                                           "value":  "0x19",
-                                           "description":  "Subcommand (Stat Lock Info)"
-                                       },
-                                       {
-                                           "name":  "Type",
-                                           "type":  "byte",
-                                           "size":  1,
-                                           "value":  "0x02",
-                                           "description":  "Type (2 = stat locks)"
-                                       },
-                                       {
-                                           "name":  "Serial",
-                                           "type":  "uint",
-                                           "size":  4,
-                                           "description":  "Mobile serial"
-                                       },
-                                       {
-                                           "name":  "Unknown",
-                                           "type":  "byte",
-                                           "size":  1,
-                                           "value":  "0x00",
-                                           "description":  "Unknown"
-                                       },
-                                       {
-                                           "name":  "Lock Bits",
-                                           "type":  "bitfield",
-                                           "size":  1,
-                                           "description":  "Packed stat lock states. Bit layout: 00SSDDII where SS=Str, DD=Dex, II=Int",
-                                           "flags":  [
+                        "size":  "Varies",
+                        "fields":  [],
+                        "variants":  [
+                                         {
+                                             "name":  "Bonded Status (Type 0)",
+                                             "condition":  "Type = 0: Pet bonding status",
+                                             "size":  11,
+                                             "fields":  [
+                                                 {
+                                                     "name":  "Packet ID",
+                                                     "type":  "byte",
+                                                     "size":  1,
+                                                     "value":  "0xBF",
+                                                     "description":  "Packet identifier"
+                                                 },
+                                                 {
+                                                     "name":  "Length",
+                                                     "type":  "ushort",
+                                                     "size":  2,
+                                                     "value":  "11",
+                                                     "description":  "Packet length"
+                                                 },
+                                                 {
+                                                     "name":  "Sub-Command",
+                                                     "type":  "ushort",
+                                                     "size":  2,
+                                                     "value":  "0x0019",
+                                                     "description":  "Extended Status subcommand"
+                                                 },
+                                                 {
+                                                     "name":  "Type",
+                                                     "type":  "byte",
+                                                     "size":  1,
+                                                     "value":  "0x00",
+                                                     "description":  "Type 0 = Bonded Status"
+                                                 },
+                                                 {
+                                                     "name":  "Serial",
+                                                     "type":  "uint",
+                                                     "size":  4,
+                                                     "description":  "Pet mobile serial"
+                                                 },
+                                                 {
+                                                     "name":  "Bonded",
+                                                     "type":  "bool",
+                                                     "size":  1,
+                                                     "description":  "True if pet is bonded to owner"
+                                                 }
+                                             ],
+                                             "notes":  "Sent when a pet's bonded status changes or when pet info is requested."
+                                         },
+                                         {
+                                             "name":  "Stat Lock Info - Classic (Type 2)",
+                                             "condition":  "Type = 2: Classic Client stat locks",
+                                             "size":  12,
+                                             "clientVersion":  {
+                                                 "classic":  {}
+                                             },
+                                             "fields":  [
+                                                 {
+                                                     "name":  "Packet ID",
+                                                     "type":  "byte",
+                                                     "size":  1,
+                                                     "value":  "0xBF",
+                                                     "description":  "Packet identifier"
+                                                 },
+                                                 {
+                                                     "name":  "Length",
+                                                     "type":  "ushort",
+                                                     "size":  2,
+                                                     "value":  "12",
+                                                     "description":  "Packet length"
+                                                 },
+                                                 {
+                                                     "name":  "Sub-Command",
+                                                     "type":  "ushort",
+                                                     "size":  2,
+                                                     "value":  "0x0019",
+                                                     "description":  "Extended Status subcommand"
+                                                 },
+                                                 {
+                                                     "name":  "Type",
+                                                     "type":  "byte",
+                                                     "size":  1,
+                                                     "value":  "0x02",
+                                                     "description":  "Type 2 = Stat Lock Info (Classic Client)"
+                                                 },
+                                                 {
+                                                     "name":  "Serial",
+                                                     "type":  "uint",
+                                                     "size":  4,
+                                                     "description":  "Player mobile serial"
+                                                 },
+                                                 {
+                                                     "name":  "Unknown",
+                                                     "type":  "byte",
+                                                     "size":  1,
+                                                     "value":  "0x00",
+                                                     "description":  "Unknown (always 0)"
+                                                 },
+                                                 {
+                                                     "name":  "Lock Bits",
+                                                     "type":  "bitfield",
+                                                     "size":  1,
+                                                     "description":  "Packed stat lock states (00SSDDII)",
+                                                     "flags":  [
                                                          {
                                                              "bit":  "5-4",
                                                              "name":  "Str Lock",
-                                                             "description":  "Strength lock (value \u003c\u003c 4)"
+                                                             "description":  "Strength lock (value << 4)"
                                                          },
                                                          {
                                                              "bit":  "3-2",
                                                              "name":  "Dex Lock",
-                                                             "description":  "Dexterity lock (value \u003c\u003c 2)"
+                                                             "description":  "Dexterity lock (value << 2)"
                                                          },
                                                          {
                                                              "bit":  "1-0",
                                                              "name":  "Int Lock",
-                                                             "description":  "Intelligence lock (value \u003c\u003c 0)"
+                                                             "description":  "Intelligence lock (value << 0)"
                                                          }
                                                      ],
-                                           "values":  [
-                                                          {
-                                                              "value":  0,
-                                                              "name":  "Up",
-                                                              "description":  "Stat will increase when gains are available"
-                                                          },
-                                                          {
-                                                              "value":  1,
-                                                              "name":  "Down",
-                                                              "description":  "Stat will decrease to allow other stats to increase"
-                                                          },
-                                                          {
-                                                              "value":  2,
-                                                              "name":  "Locked",
-                                                              "description":  "Stat will not change"
-                                                          }
-                                                      ],
-                                           "notes":  "Formula: (StrLock \u003c\u003c 4) | (DexLock \u003c\u003c 2) | IntLock. Example: Str=Locked(2), Dex=Up(0), Int=Down(1) = 0b00100001 = 0x21"
-                                       }
-                                   ],
+                                                     "values":  [
+                                                         {
+                                                             "value":  0,
+                                                             "name":  "Up",
+                                                             "description":  "Stat gains enabled"
+                                                         },
+                                                         {
+                                                             "value":  1,
+                                                             "name":  "Down",
+                                                             "description":  "Stat decreases enabled"
+                                                         },
+                                                         {
+                                                             "value":  2,
+                                                             "name":  "Locked",
+                                                             "description":  "Stat locked"
+                                                         }
+                                                     ],
+                                                     "notes":  "Formula: (StrLock << 4) | (DexLock << 2) | IntLock"
+                                                 }
+                                             ]
+                                         },
+                                         {
+                                             "name":  "Stat Lock Info - Enhanced (Type 5)",
+                                             "condition":  "Type = 5: Enhanced Client stat locks",
+                                             "size":  12,
+                                             "clientVersion":  {
+                                                 "enhanced":  {}
+                                             },
+                                             "fields":  [
+                                                 {
+                                                     "name":  "Packet ID",
+                                                     "type":  "byte",
+                                                     "size":  1,
+                                                     "value":  "0xBF",
+                                                     "description":  "Packet identifier"
+                                                 },
+                                                 {
+                                                     "name":  "Length",
+                                                     "type":  "ushort",
+                                                     "size":  2,
+                                                     "value":  "12",
+                                                     "description":  "Packet length"
+                                                 },
+                                                 {
+                                                     "name":  "Sub-Command",
+                                                     "type":  "ushort",
+                                                     "size":  2,
+                                                     "value":  "0x0019",
+                                                     "description":  "Extended Status subcommand"
+                                                 },
+                                                 {
+                                                     "name":  "Type",
+                                                     "type":  "byte",
+                                                     "size":  1,
+                                                     "value":  "0x05",
+                                                     "description":  "Type 5 = Stat Lock Info (Enhanced Client)"
+                                                 },
+                                                 {
+                                                     "name":  "Serial",
+                                                     "type":  "uint",
+                                                     "size":  4,
+                                                     "description":  "Player mobile serial"
+                                                 },
+                                                 {
+                                                     "name":  "Unknown",
+                                                     "type":  "byte",
+                                                     "size":  1,
+                                                     "value":  "0x00",
+                                                     "description":  "Unknown (always 0)"
+                                                 },
+                                                 {
+                                                     "name":  "Lock Bits",
+                                                     "type":  "bitfield",
+                                                     "size":  1,
+                                                     "description":  "Packed stat lock states (00SSDDII)",
+                                                     "flags":  [
+                                                         {
+                                                             "bit":  "5-4",
+                                                             "name":  "Str Lock",
+                                                             "description":  "Strength lock (value << 4)"
+                                                         },
+                                                         {
+                                                             "bit":  "3-2",
+                                                             "name":  "Dex Lock",
+                                                             "description":  "Dexterity lock (value << 2)"
+                                                         },
+                                                         {
+                                                             "bit":  "1-0",
+                                                             "name":  "Int Lock",
+                                                             "description":  "Intelligence lock (value << 0)"
+                                                         }
+                                                     ],
+                                                     "values":  [
+                                                         {
+                                                             "value":  0,
+                                                             "name":  "Up",
+                                                             "description":  "Stat gains enabled"
+                                                         },
+                                                         {
+                                                             "value":  1,
+                                                             "name":  "Down",
+                                                             "description":  "Stat decreases enabled"
+                                                         },
+                                                         {
+                                                             "value":  2,
+                                                             "name":  "Locked",
+                                                             "description":  "Stat locked"
+                                                         }
+                                                     ],
+                                                     "notes":  "Formula: (StrLock << 4) | (DexLock << 2) | IntLock"
+                                                 }
+                                             ],
+                                             "notes":  "Enhanced Client uses Type 5 instead of Type 2"
+                                         }
+                                     ],
+                        "tags": ["Player", "Mobile"],
+                        "notes":  "The Type byte after the sub-command determines the packet structure. Type 0 is for pet bonding, Types 2/5 are for player stat locks (Classic/Enhanced Client respectively).",
                         "source":  {
                                        "file":  "Projects/Server/Network/Packets/OutgoingPlayerPackets.cs",
                                        "line":  36

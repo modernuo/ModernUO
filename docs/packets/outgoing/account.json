@@ -1,4 +1,4 @@
-﻿{
+{
     "category":  "Account",
     "packets":  [
                     {
@@ -983,7 +983,9 @@
                                          }
                                      ],
                         "clientVersion":  {
-                                              "feature":  "ExtendedSupportedFeatures determines which variant is sent"
+                                              "classic":  {},
+                                              "enhanced":  {},
+                                              "notes":  "ExtendedSupportedFeatures determines which variant is sent"
                                           },
                         "source":  {
                                        "file":  "Projects/Server/Network/Packets/OutgoingAccountPackets.cs",

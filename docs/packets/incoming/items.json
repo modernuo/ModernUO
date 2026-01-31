@@ -1,4 +1,4 @@
-﻿{
+{
     "category":  "Items",
     "packets":  [
                     {
@@ -146,7 +146,11 @@
                                          }
                                      ],
                         "clientVersion":  {
-                                              "feature":  "ContainerGridLines adds gridLocation byte"
+                                              "classic":  {
+                                                  "min":  "6.0.1.7"
+                                              },
+                                              "enhanced":  {},
+                                              "notes":  "ContainerGridLines adds gridLocation byte"
                                           },
                         "source":  {
                                        "file":  "Projects/UOContent/Network/Packets/IncomingItemPackets.cs",
@@ -235,6 +239,9 @@
                                                     }
                                        }
                                    ],
+                        "clientVersion":  {
+                                              "enhanced":  {}
+                                          },
                         "source":  {
                                        "file":  "Projects/UOContent/Network/Packets/IncomingItemPackets.cs",
                                        "line":  112
@@ -283,6 +290,9 @@
                                                     }
                                        }
                                    ],
+                        "clientVersion":  {
+                                              "enhanced":  {}
+                                          },
                         "source":  {
                                        "file":  "Projects/UOContent/Network/Packets/IncomingItemPackets.cs",
                                        "line":  125

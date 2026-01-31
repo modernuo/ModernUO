@@ -1,4 +1,4 @@
-﻿{
+{
     "category":  "Encoded Commands (0xD7)",
     "packets":  [
                     {
@@ -691,7 +691,10 @@
                                        }
                                    ],
                         "clientVersion":  {
-                                              "min":  "Samurai Empire",
+                                              "classic":  {
+                                                  "min":  "4.0.3a"
+                                              },
+                                              "enhanced":  {},
                                               "notes":  "Added with Samurai Empire expansion"
                                           },
                         "source":  {
@@ -761,7 +764,10 @@
                                        }
                                    ],
                         "clientVersion":  {
-                                              "min":  "Samurai Empire",
+                                              "classic":  {
+                                                  "min":  "4.0.3a"
+                                              },
+                                              "enhanced":  {},
                                               "notes":  "Added with Samurai Empire expansion"
                                           },
                         "source":  {

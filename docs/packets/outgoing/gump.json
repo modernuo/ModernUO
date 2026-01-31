@@ -1,4 +1,4 @@
-﻿{
+{
     "category":  "Gump",
     "packets":  [
                     {
@@ -216,7 +216,9 @@
                                                               },
                                                               {
                                                                   "name":  "Noresize",
-                                                                  "description":  "Prevent resizing (Enhanced Client)"
+                                                                  "description":  "Prevent resizing (Enhanced Client)",
+                                                                  "tags":  ["EC"],
+                                                                  "notes":  "Enhanced Client only"
                                                               },
                                                               {
                                                                   "name":  "Nodispose",
@@ -388,7 +390,9 @@
                                                               },
                                                               {
                                                                   "name":  "Picinpic",
-                                                                  "description":  "Cropped sprite from gump",
+                                                                  "description":  "Cropped sprite from gump (sprite image rendering)",
+                                                                  "tags":  ["EC"],
+                                                                  "notes":  "Also known as GumpSpriteImage. EC-compatible.",
                                                                   "args":  [
                                                                                {
                                                                                    "name":  "X",
@@ -965,7 +969,9 @@
                                                               },
                                                               {
                                                                   "name":  "Tooltip",
-                                                                  "description":  "Tooltip on previous element",
+                                                                  "description":  "Tooltip on previous element (GumpTooltip)",
+                                                                  "tags":  ["EC"],
+                                                                  "notes":  "EC-compatible tooltip display.",
                                                                   "args":  [
                                                                                {
                                                                                    "name":  "Cliloc",
@@ -982,7 +988,9 @@
                                                               },
                                                               {
                                                                   "name":  "Itemproperty",
-                                                                  "description":  "Display item\u0027s OPL tooltip",
+                                                                  "description":  "Display item's OPL tooltip (GumpItemProperty)",
+                                                                  "tags":  ["EC"],
+                                                                  "notes":  "EC-compatible property display for items.",
                                                                   "args":  [
                                                                                {
                                                                                    "name":  "Serial",
@@ -1001,6 +1009,12 @@
                                                                                    "description":  "Master gump identifier"
                                                                                }
                                                                            ]
+                                                              },
+                                                              {
+                                                                  "name":  "Echandleinput",
+                                                                  "description":  "EC-specific input handler",
+                                                                  "tags":  ["EC"],
+                                                                  "notes":  "Enhanced Client only"
                                                               }
                                                           ]
                                          },
@@ -1030,8 +1044,11 @@
                                         }
                                     ],
                         "clientVersion":  {
-                                              "min":  "3.0.0",
-                                              "feature":  "Compressed gumps"
+                                              "classic":  {
+                                                  "min":  "3.0.0"
+                                              },
+                                              "enhanced":  {},
+                                              "notes":  "Compressed gumps supported since Classic Client 3.0.0"
                                           },
                         "notes":  "Layout uses ASCII encoding only. The compressed lengths include a +4 offset. Decompression produces: layout as ASCII text, strings as length-prefixed UTF-16 BE entries.",
                         "source":  {

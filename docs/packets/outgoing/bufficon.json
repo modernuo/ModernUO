@@ -1,4 +1,4 @@
-﻿{
+{
     "category":  "Buff Icon",
     "packets":  [
                     {
@@ -292,8 +292,11 @@
                                          }
                                      ],
                         "clientVersion":  {
-                                              "min":  "5.0.2b",
-                                              "feature":  "BuffIcon"
+                                              "classic":  {
+                                                  "min":  "5.0.2b"
+                                              },
+                                              "enhanced":  {},
+                                              "notes":  "BuffIcon feature supported in Classic Client 5.0.2b+"
                                           },
                         "source":  {
                                        "file":  "Projects/UOContent/Engines/BuffIcons/BuffIconPackets.cs",

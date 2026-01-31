@@ -1,4 +1,4 @@
-﻿{
+{
     "category":  "House",
     "packets":  [
                     {
@@ -153,8 +153,11 @@
                                         }
                                     ],
                         "clientVersion":  {
-                                              "min":  "4.0.0a",
-                                              "feature":  "AOS House Customization"
+                                              "classic":  {
+                                                  "min":  "4.0.0a"
+                                              },
+                                              "enhanced":  {},
+                                              "notes":  "AOS House Customization feature"
                                           },
                         "source":  {
                                        "file":  "Projects/UOContent/Multis/Houses/HousePackets.cs",

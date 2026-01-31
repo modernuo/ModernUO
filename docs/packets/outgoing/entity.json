@@ -1,4 +1,4 @@
-﻿{
+{
     "category":  "Item",
     "tags": ["Mobile"],
     "packets":  [
@@ -86,8 +86,11 @@
                                         }
                                     ],
                         "clientVersion":  {
-                                              "min":  "4.0.0a",
-                                              "feature":  "AOS tooltips"
+                                              "classic":  {
+                                                  "min":  "4.0.0a"
+                                              },
+                                              "enhanced":  {},
+                                              "notes":  "AOS tooltips feature"
                                           },
                         "notes":  "Hash is calculated by XORing each property\u0027s cliloc number with ((hash \u003e\u003e 31) \u0026 1) ^ (hash \u003c\u003c 1). Properties are cliloc entries with optional Unicode LE arguments separated by tabs.",
                         "source":  {
@@ -385,8 +388,11 @@
                                         }
                                     ],
                         "clientVersion":  {
-                                              "min":  "7.0.0.0",
-                                              "feature":  "StygianAbyss"
+                                              "classic":  {
+                                                  "min":  "7.0.0.0"
+                                              },
+                                              "enhanced":  {},
+                                              "notes":  "StygianAbyss expansion feature"
                                           },
                         "source":  {
                                        "file":  "Projects/Server/Network/Packets/OutgoingEntityPackets.cs",

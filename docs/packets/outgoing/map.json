@@ -1,4 +1,4 @@
-﻿{
+{
     "category":  "Map",
     "packets":  [
                     {
@@ -412,8 +412,11 @@
                                         }
                                     ],
                         "clientVersion":  {
-                                              "min":  "7.0.13.0",
-                                              "feature":  "NewCharacterList"
+                                              "classic":  {
+                                                  "min":  "7.0.13.0"
+                                              },
+                                              "enhanced":  {},
+                                              "notes":  "NewCharacterList feature"
                                           },
                         "source":  {
                                        "file":  "Projects/UOContent/Items/Maps/MapItemPackets.cs",

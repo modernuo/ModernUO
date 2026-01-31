@@ -1,4 +1,4 @@
-﻿{
+{
     "category":  "Context Menu",
     "packets":  [
                     {
@@ -201,7 +201,11 @@
                                         }
                                     ],
                         "clientVersion":  {
-                                              "feature":  "NewHaven clients (6.0.0.0+) use command 0x02"
+                                              "classic":  {
+                                                  "min":  "6.0.0.0"
+                                              },
+                                              "enhanced":  {},
+                                              "notes":  "NewHaven clients (6.0.0.0+) use command 0x02"
                                           },
                         "source":  {
                                        "file":  "Projects/UOContent/Context Menus/ContextMenuSystem.cs",

@@ -1,4 +1,4 @@
-﻿{
+{
     "category":  "Combat",
     "packets":  [
                     {
@@ -30,10 +30,13 @@
                                        }
                                    ],
                         "clientVersion":  {
-                                              "min":  "5.0.0a",
-                                              "feature":  "DamagePacket"
+                                              "classic":  {
+                                                  "min":  "5.0.0a"
+                                              },
+                                              "enhanced":  {},
+                                              "notes":  "Used by Enhanced Client (all versions) and Classic Client 5.0.0a+"
                                           },
-                        "notes":  "For pre-5.0.0a clients, use 0xBF/0x22 instead.",
+                        "notes":  "For pre-5.0.0a clients, use 0xBF/0x22 instead. Enhanced Client always uses this packet format (ushort damage allows values up to 65535).",
                         "source":  {
                                        "file":  "Projects/Server/Network/Packets/OutgoingDamagePackets.cs",
                                        "line":  34
@@ -89,10 +92,12 @@
                                        }
                                    ],
                         "clientVersion":  {
-                                              "max":  "5.0.0a",
-                                              "notes":  "For clients before DamagePacket feature"
+                                              "classic":  {
+                                                  "max":  "5.0.0a"
+                                              },
+                                              "notes":  "For Classic Client before DamagePacket feature. Not used by Enhanced Client."
                                           },
-                        "notes":  "Damage is capped at 255 for old clients.",
+                        "notes":  "Damage is capped at 255 for old clients. Classic Client only; Enhanced Client uses 0x0B packet.",
                         "source":  {
                                        "file":  "Projects/Server/Network/Packets/OutgoingDamagePackets.cs",
                                        "line":  40
