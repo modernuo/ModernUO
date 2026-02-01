@@ -360,7 +360,7 @@ public static class IncomingPlayerPackets
 
         from.SendEverything();
 
-        state.Sequence = 0;
+        state.ResetMovementState();
     }
 
     public static void PingReq(NetState state, SpanReader reader)
