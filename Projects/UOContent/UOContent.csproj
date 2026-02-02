@@ -47,8 +47,8 @@
         <PackageReference Include="ModernUO.CodeGeneratedEvents.Generator" Version="1.0.3.2" PrivateAssets="all" />
         <PackageReference Include="Zstd.Binaries" Version="1.6.0" />
 
-        <PackageReference Include="ModernUO.Serialization.Annotations" Version="2.14.0" />
-        <PackageReference Include="ModernUO.Serialization.Generator" Version="2.14.1" />
+        <PackageReference Include="ModernUO.Serialization.Annotations" Version="2.14.2" />
+        <PackageReference Include="ModernUO.Serialization.Generator" Version="2.14.2" />
     </ItemGroup>
     <ItemGroup>
         <AdditionalFiles Include="Migrations/*.v*.json" />
