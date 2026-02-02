@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: SkillMod.cs                                                     *
  *                                                                       *
@@ -21,6 +21,35 @@ namespace Server;
 [SerializationGenerator(0)]
 public abstract partial class SkillMod : MobileMod
 {
+    [SerializableField(0)]
+    private bool _obeyCap;
+
+    [SerializableFieldChanged(0)]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void OnObeCapChanged(bool oldValue, bool newValue) => Owner?.Skills[_skill]?.Update();
+
+    [SerializableField(1)]
+    private SkillName _skill;
+
+    [SerializableFieldChanged(1)]
+    private void OnSkillChanged(SkillName oldValue, SkillName newValue)
+    {
+        Owner?.Skills[newValue]?.Update();
+        Owner?.Skills[oldValue]?.Update();
+    }
+
+    [SerializableField(2)]
+    private bool _relative;
+
+    [SerializableFieldChanged(2)]
+    private void OnRelativeChanged(bool oldValue, bool newValue) => Owner?.Skills[_skill]?.Update();
+
+    [SerializableField(3)]
+    private double _value;
+
+    [SerializableFieldChanged(3)]
+    private void OnValueChanged(double oldValue, double newValue) => Owner?.Skills[_skill]?.Update();
+
     public SkillMod(Mobile owner) : base(owner)
     {
     }
@@ -32,78 +61,10 @@ public abstract partial class SkillMod : MobileMod
         _value = value;
     }
 
-    [SerializableProperty(0)]
-    public bool ObeyCap
-    {
-        get => _obeyCap;
-        set
-        {
-            _obeyCap = value;
-
-            var sk = Owner?.Skills[_skill];
-            sk?.Update();
-            MarkDirty();
-        }
-    }
-
-    [SerializableProperty(1)]
-    public SkillName Skill
-    {
-        get => _skill;
-        set
-        {
-            if (_skill != value)
-            {
-                var oldUpdate = Owner?.Skills[_skill];
-
-                _skill = value;
-
-                var sk = Owner?.Skills[_skill];
-                sk?.Update();
-                oldUpdate?.Update();
-                MarkDirty();
-            }
-        }
-    }
-
-    [SerializableProperty(2)]
-    public bool Relative
-    {
-        get => _relative;
-        set
-        {
-            if (_relative != value)
-            {
-                _relative = value;
-
-                var sk = Owner?.Skills[_skill];
-                sk?.Update();
-                MarkDirty();
-            }
-        }
-    }
-
     public bool Absolute
     {
         get => !Relative;
         set => Relative = !value;
-    }
-
-    [SerializableProperty(3)]
-    public double Value
-    {
-        get => _value;
-        set
-        {
-            if (_value != value)
-            {
-                _value = value;
-
-                var sk = Owner?.Skills[_skill];
-                sk?.Update();
-                MarkDirty();
-            }
-        }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
