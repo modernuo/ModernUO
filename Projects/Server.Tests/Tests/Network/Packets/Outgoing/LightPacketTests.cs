@@ -15,7 +15,7 @@ public class LightPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendGlobalLightLevel(lightLevel);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -29,7 +29,7 @@ public class LightPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendPersonalLightLevel(serial, lightLevel);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 }

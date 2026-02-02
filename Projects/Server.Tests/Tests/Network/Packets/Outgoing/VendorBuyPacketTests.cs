@@ -29,7 +29,7 @@ public class VendorBuyPacketTests
 
         ns.SendVendorBuyContent(buyStates);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -48,7 +48,7 @@ public class VendorBuyPacketTests
 
         ns.SendDisplayBuyList(vendor.Serial);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -72,7 +72,7 @@ public class VendorBuyPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendVendorBuyList(vendor, buyStates);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -87,7 +87,7 @@ public class VendorBuyPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendEndVendorBuy(vendor.Serial);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 }

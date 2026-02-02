@@ -20,7 +20,7 @@ public class WeaponAbilityPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendToggleSpecialAbility(abilityId, active);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -32,7 +32,7 @@ public class WeaponAbilityPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendClearWeaponAbility();
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 }

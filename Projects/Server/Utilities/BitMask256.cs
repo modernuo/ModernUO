@@ -66,10 +66,22 @@ public struct BitMask256
 
         switch (segment)
         {
-            case 0: Bits0 |= mask; break;
-            case 1: Bits1 |= mask; break;
-            case 2: Bits2 |= mask; break;
-            case 3: Bits3 |= mask; break;
+            case 0:
+                {
+                    Bits0 |= mask; break;
+                }
+            case 1:
+                {
+                    Bits1 |= mask; break;
+                }
+            case 2:
+                {
+                    Bits2 |= mask; break;
+                }
+            case 3:
+                {
+                    Bits3 |= mask; break;
+                }
         }
     }
 
@@ -90,10 +102,22 @@ public struct BitMask256
 
         switch (segment)
         {
-            case 0: Bits0 &= ~mask; break;
-            case 1: Bits1 &= ~mask; break;
-            case 2: Bits2 &= ~mask; break;
-            case 3: Bits3 &= ~mask; break;
+            case 0:
+                {
+                    Bits0 &= ~mask; break;
+                }
+            case 1:
+                {
+                    Bits1 &= ~mask; break;
+                }
+            case 2:
+                {
+                    Bits2 &= ~mask; break;
+                }
+            case 3:
+                {
+                    Bits3 &= ~mask; break;
+                }
         }
     }
 

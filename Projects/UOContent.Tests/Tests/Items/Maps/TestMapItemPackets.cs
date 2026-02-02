@@ -24,7 +24,7 @@ public class TestMapItemPackets
             (Packet)new MapDetailsNew(mapItem) : new MapDetails(mapItem)).Compile();
         ns.SendMapDetails(mapItem);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -42,7 +42,7 @@ public class TestMapItemPackets
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendMapCommand(mapItem, command, x, y, number > 0);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 }

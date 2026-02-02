@@ -16,6 +16,13 @@
         <DataFiles Include="$(SolutionDir)\Distribution\Data\**" />
         <ProjectReference Include="..\UOContent\UOContent.csproj" />
     </ItemGroup>
+    <!-- Copy native ioring.dll for tests -->
+    <ItemGroup>
+        <Content Include="C:\Repositories\IORingGroup\IORingGroup\runtimes\win-x64\native\ioring.dll" Condition="Exists('C:\Repositories\IORingGroup\IORingGroup\runtimes\win-x64\native\ioring.dll')">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <Link>ioring.dll</Link>
+        </Content>
+    </ItemGroup>
     <Target Name="CopyData" AfterTargets="AfterBuild">
         <Copy SourceFiles="@(DataFiles)" DestinationFolder="$(OutDir)\Data\%(RecursiveDir)" />
     </Target>

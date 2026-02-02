@@ -17,7 +17,7 @@ public class CombatPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendSwing(attacker, defender);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -29,7 +29,7 @@ public class CombatPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendSetWarMode(warmode);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -43,7 +43,7 @@ public class CombatPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendChangeCombatant(serial);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 }

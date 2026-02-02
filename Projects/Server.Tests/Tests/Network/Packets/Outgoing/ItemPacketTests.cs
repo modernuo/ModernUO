@@ -38,7 +38,7 @@ public class ItemPacketTests
         using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendWorldItem(item);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -74,7 +74,7 @@ public class ItemPacketTests
         ns.ProtocolChanges = ProtocolChanges.StygianAbyss;
         ns.SendWorldItem(item);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -110,7 +110,7 @@ public class ItemPacketTests
         ns.ProtocolChanges = ProtocolChanges.StygianAbyss | ProtocolChanges.HighSeas;
         ns.SendWorldItem(item);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 }
