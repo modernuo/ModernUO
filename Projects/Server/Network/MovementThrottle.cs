@@ -42,9 +42,9 @@ public static class MovementThrottle
             return false;
         }
 
-        long now = Core.TickCount;
-        long credit = ns._movementCredit;
-        long nextMove = ns._nextMovementTime;
+        var now = Core.TickCount;
+        var credit = ns._movementCredit;
+        var nextMove = ns._nextMovementTime;
 
         // Reset system if idle for more than 1 second
         if (now - nextMove + _movementThrottleReset > 0)
@@ -54,7 +54,7 @@ public static class MovementThrottle
             return false;
         }
 
-        long cost = nextMove - now;
+        var cost = nextMove - now;
 
         if (credit < cost)
         {

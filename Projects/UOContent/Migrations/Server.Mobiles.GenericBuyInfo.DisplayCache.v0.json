@@ -1,0 +1,15 @@
+{
+  "version": 0,
+  "type": "Server.Mobiles.GenericBuyInfo.DisplayCache",
+  "properties": [
+    {
+      "name": "Mobiles",
+      "type": "System.Collections.Generic.List\u003CServer.Mobile\u003E",
+      "rule": "ListMigrationRule",
+      "ruleArguments": [
+        "Server.Mobile",
+        "SerializableInterfaceMigrationRule"
+      ]
+    }
+  ]
+}

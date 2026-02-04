@@ -37,11 +37,13 @@ namespace Server.Engines.ConPVP
         {
         }
 
+        public override bool SkipSerialization => true;
+
         public override string DefaultName => "da bomb";
 
         public Mobile Thrower { get; private set; }
 
-        private Mobile FindOwner(IEntity parent)
+        private static Mobile FindOwner(IEntity parent)
         {
             if (parent is Item item)
             {
@@ -61,16 +63,6 @@ namespace Server.Engines.ConPVP
             base.Deserialize(reader);
 
             var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 0:
-                    {
-                        break;
-                    }
-            }
-
-            Timer.StartTimer(Delete); // delete this after the world loads
         }
 
         public override void Serialize(IGenericWriter writer)

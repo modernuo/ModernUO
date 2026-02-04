@@ -283,8 +283,8 @@ public abstract class Faction : IComparable<Faction>
 
     public static bool IsNearType(Mobile mob, Type[] types, int range)
     {
-        bool mobs = false;
-        bool items = false;
+        var mobs = false;
+        var items = false;
         for (var i = 0; !(mobs && items) && i < types.Length; i++)
         {
             var type = types[i];

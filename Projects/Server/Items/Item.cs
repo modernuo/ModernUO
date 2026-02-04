@@ -131,7 +131,7 @@ public class BounceInfo
             var loc = reader.ReadPoint3D();
             var worldLoc = reader.ReadPoint3D();
 
-            IEntity parent = reader.ReadEntity<IEntity>();
+            var parent = reader.ReadEntity<IEntity>();
 
             return new BounceInfo(map, loc, worldLoc, parent);
         }
@@ -353,7 +353,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
                 {
                     var worldLoc = GetWorldLocation();
 
-                    Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength].InitializePacket();
+                    var removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength].InitializePacket();
 
                     foreach (var state in m_Map.GetClientsInRange(worldLoc, GetMaxUpdateRange()))
                     {
@@ -368,6 +368,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
                 }
 
                 Delta(ItemDelta.Update);
+                UpdateDecayRegistration();
             }
         }
     }
@@ -383,6 +384,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
                 SetFlag(ImplFlag.Movable, value);
 
                 Delta(ItemDelta.Update);
+                UpdateDecayRegistration();
             }
         }
     }
@@ -474,25 +476,27 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
         }
         set
         {
-            if (Weight != value)
+            var defaultWeight = DefaultWeight;
+            var info = LookupCompactInfo();
+            var oldWeight = info is { m_Weight: >= 0 } ? info.m_Weight : defaultWeight;
+
+            if (oldWeight == value)
             {
-                var info = AcquireCompactInfo();
-
-                var oldPileWeight = PileWeight;
-
-                info.m_Weight = value;
-
-                if (info.m_Weight < 0)
-                {
-                    VerifyCompactInfo();
-                }
-
-                var newPileWeight = PileWeight;
-
-                UpdateTotal(this, TotalType.Weight, newPileWeight - oldPileWeight);
-
-                InvalidateProperties();
+                return;
             }
+
+            if (value < 0 || defaultWeight == value)
+            {
+                info?.m_Weight = -1;
+                VerifyCompactInfo();
+            }
+            else
+            {
+                (info ?? AcquireCompactInfo()).m_Weight = value;
+            }
+
+            UpdateTotal(this, TotalType.Weight, PileWeight - (int)Math.Ceiling(oldWeight * Amount));
+            InvalidateProperties();
         }
     }
 
@@ -1137,9 +1141,9 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
 
             if (m_Map != null)
             {
-                Span<byte> oldWorldItem = stackalloc byte[OutgoingEntityPackets.MaxWorldEntityPacketLength].InitializePacket();
-                Span<byte> saWorldItem = stackalloc byte[OutgoingEntityPackets.MaxWorldEntityPacketLength].InitializePacket();
-                Span<byte> hsWorldItem = stackalloc byte[OutgoingEntityPackets.MaxWorldEntityPacketLength].InitializePacket();
+                var oldWorldItem = stackalloc byte[OutgoingEntityPackets.MaxWorldEntityPacketLength].InitializePacket();
+                var saWorldItem = stackalloc byte[OutgoingEntityPackets.MaxWorldEntityPacketLength].InitializePacket();
+                var hsWorldItem = stackalloc byte[OutgoingEntityPackets.MaxWorldEntityPacketLength].InitializePacket();
 
                 foreach (var state in m_Map.GetClientsInRange(m_Location, GetMaxUpdateRange()))
                 {
@@ -1192,7 +1196,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
         {
             if (oldLocation.m_X != 0)
             {
-                Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength].InitializePacket();
+                var removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength].InitializePacket();
 
                 foreach (var state in m_Map.GetClientsInRange(oldLocation, GetMaxUpdateRange()))
                 {
@@ -1434,6 +1438,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
         }
 
         OnDelete();
+        DecayScheduler.Unregister(this);
 
         var items = LookupItems();
 
@@ -1476,6 +1481,8 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
         ClearProperties();
     }
 
+    public virtual bool SkipSerialization => false;
+
     [IgnoreDupe]
     public ISpawner Spawner
     {
@@ -1483,12 +1490,18 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
         set
         {
             var info = AcquireCompactInfo();
+            var oldValue = info.m_Spawner;
 
             info.m_Spawner = value;
 
             if (info.m_Spawner == null)
             {
                 VerifyCompactInfo();
+            }
+
+            if (oldValue != value)
+            {
+                UpdateDecayRegistration();
             }
         }
     }
@@ -1520,7 +1533,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
                 {
                     if (m_Location.m_X != 0)
                     {
-                        Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength].InitializePacket();
+                        var removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength].InitializePacket();
 
                         foreach (var state in m_Map.GetClientsInRange(oldLocation, GetMaxUpdateRange()))
                         {
@@ -2266,9 +2279,22 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
     public virtual bool OnDecay() =>
         CanDecay() && Region.Find(Location, Map).OnDecay(this);
 
+    public DateTime ScheduledDecayTime => LastMoved + DecayTime;
+
+    public void UpdateDecayRegistration()
+    {
+        DecayScheduler.Unregister(this);
+
+        if (CanDecay())
+        {
+            DecayScheduler.Register(this);
+        }
+    }
+
     public void SetLastMoved()
     {
         LastMoved = Core.Now;
+        UpdateDecayRegistration();
     }
 
     public virtual bool CanStackWith(Item dropped) =>
@@ -2661,7 +2687,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
 
                     if (GetSaveFlag(flags, SaveFlag.Parent))
                     {
-                        Serial parent = reader.ReadSerial();
+                        var parent = reader.ReadSerial();
 
                         if (parent.IsMobile)
                         {
@@ -2822,7 +2848,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
 
                     if (GetSaveFlag(flags, SaveFlag.Parent))
                     {
-                        Serial parent = reader.ReadSerial();
+                        var parent = reader.ReadSerial();
 
                         if (parent.IsMobile)
                         {
@@ -2940,7 +2966,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
                         AcquireCompactInfo().m_Name = name;
                     }
 
-                    Serial parent = reader.ReadSerial();
+                    var parent = reader.ReadSerial();
 
                     if (parent.IsMobile)
                     {
@@ -3203,6 +3229,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
         }
 
         item.Delta(ItemDelta.Update);
+        item.UpdateDecayRegistration();
 
         item.OnAdded(this);
         OnItemAdded(item);
@@ -3294,7 +3321,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
 
         var worldLoc = GetWorldLocation();
 
-        Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)].InitializePacket();
+        var buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)].InitializePacket();
 
         foreach (var state in m_Map.GetClientsInRange(worldLoc, GetMaxUpdateRange()))
         {
@@ -3325,7 +3352,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
 
         var worldLoc = GetWorldLocation();
 
-        Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedLength(args)].InitializePacket();
+        var buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedLength(args)].InitializePacket();
 
         foreach (var state in m_Map.GetClientsInRange(worldLoc, GetMaxUpdateRange()))
         {
@@ -3372,6 +3399,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
             }
 
             item.Parent = null;
+            item.UpdateDecayRegistration();
 
             item.OnRemoved(this);
             OnItemRemoved(item);
@@ -3818,7 +3846,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
             return;
         }
 
-        Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength].InitializePacket();
+        var removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength].InitializePacket();
 
         foreach (var state in m_Map.GetClientsInRange(worldLoc, GetMaxUpdateRange()))
         {

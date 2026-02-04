@@ -13,7 +13,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
@@ -38,7 +37,7 @@ namespace Server.Network
 
             using var builder = new PacketContainerBuilder(stackalloc byte[minLength]);
 
-            Span<byte> buffer = builder.GetSpan(OutgoingEntityPackets.MaxWorldEntityPacketLength);
+            var buffer = builder.GetSpan(OutgoingEntityPackets.MaxWorldEntityPacketLength);
 
             foreach (var entity in entities)
             {

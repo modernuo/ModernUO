@@ -577,14 +577,14 @@ public ref struct GumpLayoutBuilder
     {
         if (!value.IsEmpty)
         {
-            _bytesWritten += value.GetBytesAscii(_layoutBuffer.AsSpan(_bytesWritten));
+            _bytesWritten += value.GetBytesLatin1(_layoutBuffer.AsSpan(_bytesWritten));
         }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void WriteValue<T>(T value, ReadOnlySpan<char> format = default) where T : IUtf8SpanFormattable
     {
-        if (!value.TryFormat(_layoutBuffer.AsSpan(_bytesWritten), out int bytesWritten, format, null))
+        if (!value.TryFormat(_layoutBuffer.AsSpan(_bytesWritten), out var bytesWritten, format, null))
         {
             throw new InvalidOperationException($"Failed to format '{value}' with the given format '{format}'");
         }
@@ -616,11 +616,11 @@ public ref struct GumpLayoutBuilder
         }
 
         var newSize = Math.Max(_bytesWritten + count, _layoutBuffer.Length * 2);
-        byte[] poolArray = STArrayPool<byte>.Shared.Rent(newSize);
+        var poolArray = STArrayPool<byte>.Shared.Rent(newSize);
 
         _layoutBuffer.AsSpan(0, _bytesWritten).CopyTo(poolArray);
 
-        byte[] toReturn = _layoutBuffer;
+        var toReturn = _layoutBuffer;
         _layoutBuffer = poolArray;
 
         if (toReturn != _staticLayoutBuffer)

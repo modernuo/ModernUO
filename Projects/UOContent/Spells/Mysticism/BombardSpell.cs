@@ -67,7 +67,7 @@ public class BombardSpell : MysticSpell, ITargetingSpell<Mobile>
                 var damageSkill = GetDamageSkill(Caster);
                 var resist = GetResistSkill(m);
 
-                int secs = Math.Max(0, (int)(damageSkill / 10 - resist / 10));
+                var secs = Math.Max(0, (int)(damageSkill / 10 - resist / 10));
 
                 if (secs > 0)
                 {

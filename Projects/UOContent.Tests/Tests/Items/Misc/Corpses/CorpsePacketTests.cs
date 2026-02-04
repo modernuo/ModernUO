@@ -23,10 +23,10 @@ public class CorpsePacketTests
 
         var expected = new CorpseEquip(m, c).Compile();
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendCorpseEquip(m, c);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -43,14 +43,14 @@ public class CorpsePacketTests
 
         var c = new Corpse(m, m.Items);
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
         ns.ProtocolChanges = changes;
 
         var expected = (ns.ContainerGridLines ? (Packet)new CorpseContent6017(m, c) : new CorpseContent(m, c)).Compile();
 
         ns.SendCorpseContent(m, c);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 }

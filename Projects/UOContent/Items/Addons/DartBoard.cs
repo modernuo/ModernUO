@@ -72,7 +72,7 @@ namespace Server.Items
 
             var rand = Utility.RandomDouble();
 
-            int message = rand switch
+            var message = rand switch
             {
                 < 0.05 => 500752,
                 < 0.20 => 500753,

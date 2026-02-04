@@ -855,7 +855,7 @@ namespace Server.Mobiles
 
             if (Core.AOS)
             {
-                foreach (Mobile m in Map.GetMobilesAt(location))
+                foreach (var m in Map.GetMobilesAt(location))
                 {
                     if (m.Z >= location.Z && m.Z < location.Z + 16 && (!m.Hidden || m.AccessLevel == AccessLevel.Player))
                     {
@@ -2731,7 +2731,7 @@ namespace Server.Mobiles
 
         private static void SendToStaffMessage(PlayerMobile from, string text)
         {
-            Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)].InitializePacket();
+            var buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)].InitializePacket();
 
             foreach (var ns in from.GetClientsInRange(8))
             {
@@ -2841,7 +2841,7 @@ namespace Server.Mobiles
             base.Deserialize(reader);
             var version = reader.ReadInt();
 
-            VirtueContext virtues = version < 32 ? Virtues : null;
+            var virtues = version < 32 ? Virtues : null;
 
             switch (version)
             {

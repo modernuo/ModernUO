@@ -200,7 +200,7 @@ public sealed class DesignStateDetailed : Packet
 
             ++planeCount;
 
-            int size = i switch
+            var size = i switch
             {
                 0   => width * height * 2,
                 < 5 => (width - 1) * (height - 2) * 2,

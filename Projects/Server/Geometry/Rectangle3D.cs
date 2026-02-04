@@ -81,6 +81,16 @@ public struct Rectangle3D : IEquatable<Rectangle3D>, ISpanFormattable
     [CommandProperty(AccessLevel.Counselor)]
     public int Depth => _end.Z - _start.Z;
 
+    /// <summary>
+    /// Returns a normalized rectangle where Start contains the minimum coordinates
+    /// and End contains the maximum coordinates in all dimensions.
+    /// Use this when Start/End ordering matters (e.g., Contains checks, Z range calculations).
+    /// </summary>
+    public Rectangle3D Normalized => new(
+        new Point3D(Math.Min(_start.X, _end.X), Math.Min(_start.Y, _end.Y), Math.Min(_start.Z, _end.Z)),
+        new Point3D(Math.Max(_start.X, _end.X), Math.Max(_start.Y, _end.Y), Math.Max(_start.Z, _end.Z))
+    );
+
     public bool Equals(Rectangle3D other) => _start == other._start && _end == other._end;
 
     public override bool Equals(object obj) => obj is Rectangle3D other && Equals(other);

@@ -157,7 +157,7 @@ public class BOBGump : DynamicGump
                 builder.AddHtmlLocalized(576, 64, 200, 32, 1062227, LabelColor); // Set
 
                 builder.AddButton(450, 416, 4005, 4007, 4);
-                builder.AddHtml(485, 416, 120, 20, "<BASEFONT COLOR=#FFFFFF>Price all</FONT>");
+                builder.AddHtml(485, 416, 120, 20, "<BASEFONT COLOR=#FFFFFF>Price all</BASEFONT>");
             }
         }
 

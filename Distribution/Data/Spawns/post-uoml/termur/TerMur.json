@@ -1,4 +1,4 @@
-[
+﻿[
   {
     "type": "Spawner",
     "guid": "910e07be-fd79-4608-9990-5b860c14f95f",
@@ -28,7 +28,9 @@
     "team": 0,
     "homeRange": 5,
     "walkingRange": 5,
-    "entries": [{ "name": "TrapdoorSpider", "maxCount": 2, "probability": 100 }]
+    "entries": [
+      { "name": "TrapdoorSpider", "maxCount": 2, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -42,7 +44,9 @@
     "team": 0,
     "homeRange": 5,
     "walkingRange": 5,
-    "entries": [{ "name": "TrapdoorSpider", "maxCount": 2, "probability": 100 }]
+    "entries": [
+      { "name": "TrapdoorSpider", "maxCount": 2, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -607,7 +611,9 @@
     "team": 0,
     "homeRange": 5,
     "walkingRange": 5,
-    "entries": [{ "name": "TrapdoorSpider", "maxCount": 2, "probability": 100 }]
+    "entries": [
+      { "name": "TrapdoorSpider", "maxCount": 2, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -664,7 +670,9 @@
     "team": 0,
     "homeRange": 5,
     "walkingRange": 5,
-    "entries": [{ "name": "TrapdoorSpider", "maxCount": 2, "probability": 100 }]
+    "entries": [
+      { "name": "TrapdoorSpider", "maxCount": 2, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -741,7 +749,9 @@
     "team": 0,
     "homeRange": 5,
     "walkingRange": 5,
-    "entries": [{ "name": "TrapdoorSpider", "maxCount": 2, "probability": 100 }]
+    "entries": [
+      { "name": "TrapdoorSpider", "maxCount": 2, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -796,7 +806,9 @@
     "team": 0,
     "homeRange": 3,
     "walkingRange": 3,
-    "entries": [{ "name": "ToxicSlith", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      { "name": "ToxicSlith", "maxCount": 1, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -810,7 +822,9 @@
     "team": 0,
     "homeRange": 3,
     "walkingRange": 3,
-    "entries": [{ "name": "ToxicSlith", "maxCount": 2, "probability": 100 }]
+    "entries": [
+      { "name": "ToxicSlith", "maxCount": 2, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -824,7 +838,9 @@
     "team": 0,
     "homeRange": 3,
     "walkingRange": 3,
-    "entries": [{ "name": "ToxicSlith", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      { "name": "ToxicSlith", "maxCount": 1, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -1244,6 +1260,8 @@
     "team": 0,
     "homeRange": 5,
     "walkingRange": 5,
-    "entries": [{ "name": "Niporailem", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      { "name": "Niporailem", "maxCount": 1, "probability": 100 }
+    ]
   }
 ]

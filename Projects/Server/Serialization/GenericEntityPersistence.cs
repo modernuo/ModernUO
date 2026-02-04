@@ -98,10 +98,19 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
         }
 
         idx.Write(3); // Version
-        idx.Write(EntitiesBySerial.Values.Count);
 
+        var countPosition = idx.Position;
+        idx.Write(0);
+
+        var entityCount = EntitiesBySerial.Count;
         foreach (var e in EntitiesBySerial.Values)
         {
+            if (e is Item { SkipSerialization: true } or Mobile { SkipSerialization: true })
+            {
+                entityCount--;
+                continue;
+            }
+
             var thread = e.SerializedThread;
             var heapStart = e.SerializedPosition;
             var heapLength = e.SerializedLength;
@@ -130,6 +139,11 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
 
             binPosition += heapLength;
         }
+
+        var currentPosition = idx.Position;
+        idx.Seek(countPosition, SeekOrigin.Begin);
+        idx.Write(entityCount);
+        idx.Seek(currentPosition, SeekOrigin.Begin);
     }
 
     public override void Serialize()
@@ -178,7 +192,7 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
      */
     private unsafe Dictionary<ulong, ConstructorInfo> ReadTypes(string savePath)
     {
-        string typesPath = Path.Combine(savePath, Name, $"{Name}.tdb");
+        var typesPath = Path.Combine(savePath, Name, $"{Name}.tdb");
         if (!File.Exists(typesPath))
         {
             return [];
@@ -209,7 +223,7 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
 
     public virtual void DeserializeIndexes(string savePath, Dictionary<ulong, string> typesDb)
     {
-        string indexPath = Path.Combine(savePath, Name, $"{Name}.idx");
+        var indexPath = Path.Combine(savePath, Name, $"{Name}.idx");
 
         _entities ??= [];
 
@@ -295,7 +309,7 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
                 ctors[hash] = ctor = GetConstructorFor(typeName, AssemblyHandler.FindTypeByHash(hash), ctorArguments);
             }
 
-            Serial serial = (Serial)dataReader.ReadUInt();
+            var serial = (Serial)dataReader.ReadUInt();
             var created = version == 0 ? now : new DateTime(dataReader.ReadLong(), DateTimeKind.Utc);
             if (version is > 0 and < 3)
             {
@@ -330,7 +344,7 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
 
     public override void Deserialize(string savePath, Dictionary<ulong, string> typesDb)
     {
-        string dataPath = Path.Combine(savePath, Name, $"{Name}.bin");
+        var dataPath = Path.Combine(savePath, Name, $"{Name}.bin");
         var fi = new FileInfo(dataPath);
 
         if (!fi.Exists)
@@ -345,7 +359,20 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
         _entities.Clear();
         _entities.TrimExcess();
         _entities = null;
+
+        if (_toDelete != null)
+        {
+            foreach (var t in _toDelete)
+            {
+                t.Delete();
+            }
+
+            _toDelete.Clear();
+            _toDelete = null;
+        }
     }
+
+    private static List<T> _toDelete;
 
     private unsafe void InternalDeserialize(string filePath, int index, Dictionary<ulong, string> typesDb)
     {
@@ -354,7 +381,7 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
 
         byte* ptr = null;
         accessor.SafeMemoryMappedViewHandle.AcquirePointer(ref ptr);
-        UnmanagedDataReader dataReader = new UnmanagedDataReader(ptr, accessor.Length, typesDb);
+        var dataReader = new UnmanagedDataReader(ptr, accessor.Length, typesDb);
 
         Deserialize(dataReader);
 
@@ -362,7 +389,7 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
 
         foreach (var entry in _entities[index])
         {
-            T t = entry.Entity;
+            var t = entry.Entity;
 
             if (entry.Length == 0)
             {
@@ -415,7 +442,8 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
                     }
                 }
 
-                t.Delete();
+                _toDelete ??= [];
+                _toDelete.Add(t);
             }
         }
 
@@ -527,7 +555,7 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
             case WorldState.PendingSave:
             case WorldState.Running:
                 {
-                    ref var entityEntry = ref CollectionsMarshal.GetValueRefOrAddDefault(EntitiesBySerial, entity.Serial, out bool exists);
+                    ref var entityEntry = ref CollectionsMarshal.GetValueRefOrAddDefault(EntitiesBySerial, entity.Serial, out var exists);
                     if (exists)
                     {
                         if (entityEntry == entity)
