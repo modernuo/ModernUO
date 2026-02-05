@@ -17,6 +17,8 @@ namespace Server.Mobiles;
 
 public abstract partial class BaseAI
 {
+    private OrderType _lastPetOrder = OrderType.None;
+
     public virtual bool Obey() =>
         !Mobile.Deleted && Mobile.ControlOrder switch
         {
@@ -40,6 +42,32 @@ public abstract partial class BaseAI
         DebugSay("I currently have no orders.");
 
         Mobile.Warmode = IsValidCombatant(Mobile.Combatant);
+
+        if (_lastPetOrder == OrderType.Guard)
+        {
+            DebugSay("Target lost, resuming guard duty.");
+
+            Mobile.ControlOrder = OrderType.Guard;
+            _lastPetOrder = OrderType.None;
+            return true;
+        }
+        else if (_lastPetOrder == OrderType.Stay)
+        {
+            DebugSay("Target lost, resuming stay position.");
+
+            Mobile.ControlOrder = OrderType.Stay;
+            _lastPetOrder = OrderType.None;
+            return true;
+        }
+        else if (_lastPetOrder == OrderType.Follow)
+        {
+            DebugSay("Target lost, resuming follow command.");
+
+            Mobile.ControlTarget = Mobile.ControlMaster;
+            Mobile.ControlOrder = OrderType.Follow;
+            _lastPetOrder = OrderType.None;
+            return true;
+        }
 
         WalkRandom(3, 2, 1);
         return true;
@@ -78,6 +106,8 @@ public abstract partial class BaseAI
 
         if (Mobile.ControlTarget?.Deleted == false && Mobile.ControlTarget != Mobile)
         {
+            _lastPetOrder = OrderType.Follow;
+
             FollowTarget();
         }
         else
@@ -266,7 +296,7 @@ public abstract partial class BaseAI
             return true;
         }
 
-        Action = ActionType.Guard;
+        _lastPetOrder = OrderType.Guard;
 
         FindCombatant();
 
@@ -441,6 +471,8 @@ public abstract partial class BaseAI
         {
             this.DebugSayFormatted($"I have been ordered to stay by {Mobile.ControlMaster?.Name ?? "Unknown"}.");
         }
+
+        _lastPetOrder = OrderType.Stay;
 
         WalkRandomInHome(3, 2, 1);
         return true;
