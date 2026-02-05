@@ -182,7 +182,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     /// <summary>
     /// Gets whether the socket is connected.
     /// </summary>
-    public bool IsConnected => _running && _socket != null;
+    public bool IsConnected => _socket != null;
 
     /// <summary>
     /// Gets the socket handle.
