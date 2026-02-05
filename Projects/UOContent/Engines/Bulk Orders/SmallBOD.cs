@@ -139,9 +139,9 @@ public abstract partial class SmallBOD : BaseBOD
             {
                 from.SendLocalizedMessage(1049352); // The item is not made from the requested leather type.
             }
-            else if (RequireExceptional && (armor?.Quality == ArmorQuality.Exceptional ||
-                                            clothing?.Quality == ClothingQuality.Exceptional ||
-                                            weapon?.Quality == WeaponQuality.Exceptional))
+            else if (RequireExceptional && armor?.Quality != ArmorQuality.Exceptional &&
+                     clothing?.Quality != ClothingQuality.Exceptional &&
+                     weapon?.Quality != WeaponQuality.Exceptional)
             {
                 from.SendLocalizedMessage(1045167); // The item must be exceptional.
             }
