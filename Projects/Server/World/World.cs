@@ -136,6 +136,8 @@ public static class World
         NetState.FlushAll();
     }
 
+    public static void BroadcastStaff(string text) => BroadcastStaff(0x35, false, text);
+
     public static void BroadcastStaff(int hue, bool ascii, string text)
     {
         var length = OutgoingMessagePackets.GetMaxMessageLength(text);

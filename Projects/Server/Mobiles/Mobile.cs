@@ -7487,6 +7487,12 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
     public virtual bool OpenTrade(Mobile from, Item offer = null)
     {
+        if (!ServerFeatureFlags.PlayerTrading)
+        {
+            from.SendMessage(0x22, "Player trading is temporarily disabled.");
+            return false;
+        }
+
         if (!from.Player || !Player || !from.Alive || !Alive)
         {
             return false;
@@ -8220,6 +8226,16 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         if (target == this)
         {
             return true;
+        }
+
+        if (!ServerFeatureFlags.PvPCombat && Player && target.Player)
+        {
+            if (message)
+            {
+                SendLocalizedMessage(1001018); // You can not perform negative acts on your target.
+            }
+
+            return false;
         }
 
         // TODO: Pets

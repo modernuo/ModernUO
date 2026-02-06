@@ -34,6 +34,7 @@ using Server.Spells.Necromancy;
 using Server.Spells.Ninjitsu;
 using Server.Spells.Sixth;
 using Server.Spells.Spellweaving;
+using Server.Systems.FeatureFlags;
 using Server.Targeting;
 using BaseQuestGump = Server.Engines.MLQuests.Gumps.BaseQuestGump;
 using CalcMoves = Server.Movement.Movement;
@@ -1764,6 +1765,14 @@ namespace Server.Mobiles
 
         public override bool AllowItemUse(Item item)
         {
+            if (AccessLevel < FeatureFlagSettings.RequiredAccessLevel
+                && FeatureFlagManager.IsUseReqBlocked(item.GetType()))
+            {
+                var entry = FeatureFlagManager.GetUseReqBlockEntry(item.GetType());
+                SendMessage(0x22, entry?.Reason ?? FeatureFlagSettings.DefaultUseReqBlockedMessage);
+                return false;
+            }
+
             if (DuelContext?.AllowItemUse(this, item) == false)
             {
                 return false;
@@ -1774,6 +1783,14 @@ namespace Server.Mobiles
 
         public override bool AllowSkillUse(SkillName skill)
         {
+            if (AccessLevel < FeatureFlagSettings.RequiredAccessLevel
+                && FeatureFlagManager.IsSkillBlocked(skill))
+            {
+                var entry = FeatureFlagManager.GetSkillBlockEntry(skill);
+                SendMessage(0x22, entry?.Reason ?? "This skill is temporarily disabled.");
+                return false;
+            }
+
             if (AnimalForm.UnderTransformation(this))
             {
                 for (var i = 0; i < AnimalFormRestrictedSkills.Length; i++)
