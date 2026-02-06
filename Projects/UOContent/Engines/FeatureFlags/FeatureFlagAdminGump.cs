@@ -19,7 +19,10 @@ public sealed class FeatureFlagAdminGump : DynamicGump
 
     private FeatureFlagPage _currentPage;
     private int _pageIndex;
-    private const int ItemsPerPage = 10;
+    private const int FlagsPerPage = 10;
+    private const int BlocksPerPage = 7;
+    private const int FlagRowHeight = 25;
+    private const int BlockRowHeight = 45;
 
     public FeatureFlagAdminGump(FeatureFlagPage page = FeatureFlagPage.Flags, int pageIndex = 0) : base(50, 50)
     {
@@ -39,7 +42,7 @@ public sealed class FeatureFlagAdminGump : DynamicGump
         builder.AddPage();
 
         // Background
-        builder.AddBackground(0, 0, 820, 450, 9270);
+        builder.AddBackground(0, 0, 820, 500, 9270);
 
         // Title
         builder.AddHtml(0, 15, 820, 25, "Feature Flag Administration".Center("#00FF00"));
@@ -71,7 +74,7 @@ public sealed class FeatureFlagAdminGump : DynamicGump
         builder.AddHtml(665, 45, 110, 20, "Containers".Color(containersColor));
 
         // Content area
-        builder.AddAlphaRegion(15, 75, 790, 330);
+        builder.AddAlphaRegion(15, 75, 790, 380);
 
         switch (_currentPage)
         {
@@ -96,24 +99,24 @@ public sealed class FeatureFlagAdminGump : DynamicGump
         }
 
         // Close button
-        builder.AddButton(770, 415, 4017, 4019, 0);
-        builder.AddHtml(720, 415, 50, 20, "Close".Color(GumpTextColors.White));
+        builder.AddButton(770, 465, 4017, 4019, 0);
+        builder.AddHtml(720, 465, 50, 20, "Close".Color(GumpTextColors.White));
 
         // Save button
-        builder.AddButton(20, 415, 4023, 4025, 100);
-        builder.AddHtml(55, 415, 50, 20, "Save".Color(GumpTextColors.White));
+        builder.AddButton(20, 465, 4023, 4025, 100);
+        builder.AddHtml(55, 465, 50, 20, "Save".Color(GumpTextColors.White));
 
         // Refresh button
-        builder.AddButton(120, 415, 4014, 4016, 101);
-        builder.AddHtml(155, 415, 60, 20, "Refresh".Color(GumpTextColors.White));
+        builder.AddButton(120, 465, 4014, 4016, 101);
+        builder.AddHtml(155, 465, 60, 20, "Refresh".Color(GumpTextColors.White));
     }
 
     private void BuildFlagsPage(ref DynamicGumpBuilder builder)
     {
         builder.AddHtml(20, 80, 150, 20, "Flag Key".Color(GumpTextColors.Blue));
         builder.AddHtml(180, 80, 150, 20, "Category".Color(GumpTextColors.Blue));
-        builder.AddHtml(340, 80, 200, 20, "Description".Color(GumpTextColors.Blue));
-        builder.AddHtml(560, 80, 60, 20, "Status".Color(GumpTextColors.Blue));
+        builder.AddHtml(340, 80, 350, 20, "Description".Color(GumpTextColors.Blue));
+        builder.AddHtml(700, 80, 60, 20, "Status".Color(GumpTextColors.Blue));
 
         var flags = new List<FeatureFlag>(FeatureFlagManager.GetAllFlags());
         flags.Sort((a, b) =>
@@ -122,11 +125,11 @@ public sealed class FeatureFlagAdminGump : DynamicGump
             return cmp != 0 ? cmp : string.Compare(a.Key, b.Key, StringComparison.OrdinalIgnoreCase);
         });
 
-        var startIndex = _pageIndex * ItemsPerPage;
-        var endIndex = Math.Min(startIndex + ItemsPerPage, flags.Count);
-        var totalPages = (int)Math.Ceiling(flags.Count / (double)ItemsPerPage);
+        var startIndex = _pageIndex * FlagsPerPage;
+        var endIndex = Math.Min(startIndex + FlagsPerPage, flags.Count);
+        var totalPages = Math.Max(1, (int)Math.Ceiling(flags.Count / (double)FlagsPerPage));
 
-        var y = 100;
+        var y = 105;
         for (var i = startIndex; i < endIndex; i++)
         {
             var flag = flags[i];
@@ -134,12 +137,12 @@ public sealed class FeatureFlagAdminGump : DynamicGump
             var statusColor = flag.Enabled ? GumpTextColors.Blue : GumpTextColors.Red;
 
             builder.AddButton(20, y, flag.Enabled ? 2154 : 2151, flag.Enabled ? 2151 : 2154, buttonId);
-            builder.AddHtml(45, y, 130, 20, TruncateText(flag.Key, 20).Color(GumpTextColors.White));
-            builder.AddHtml(180, y, 150, 20, TruncateText(flag.Category, 18).Color(GumpTextColors.LightGray));
-            builder.AddHtml(340, y, 200, 20, TruncateText(flag.Description, 30).Color(GumpTextColors.LightGray));
-            builder.AddHtml(560, y, 60, 20, (flag.Enabled ? "ON" : "OFF").Color(statusColor));
+            builder.AddHtml(45, y, 130, 20, flag.Key.Color(GumpTextColors.White));
+            builder.AddHtml(180, y, 150, 20, (flag.Category ?? "").Color(GumpTextColors.LightGray));
+            builder.AddHtml(340, y, 350, 20, (flag.Description ?? "").Color(GumpTextColors.LightGray));
+            builder.AddHtml(700, y, 60, 20, (flag.Enabled ? "ON" : "OFF").Color(statusColor));
 
-            y += 25;
+            y += FlagRowHeight;
         }
 
         AddPagination(ref builder, totalPages, 200);
@@ -147,181 +150,181 @@ public sealed class FeatureFlagAdminGump : DynamicGump
 
     private void BuildGumpBlocksPage(ref DynamicGumpBuilder builder)
     {
-        builder.AddHtml(20, 80, 200, 20, "Gump Type".Color(GumpTextColors.Blue));
-        builder.AddHtml(230, 80, 200, 20, "Reason".Color(GumpTextColors.Blue));
-        builder.AddHtml(440, 80, 80, 20, "Status".Color(GumpTextColors.Blue));
-        builder.AddHtml(530, 80, 60, 20, "Remove".Color(GumpTextColors.Blue));
+        builder.AddHtml(20, 80, 180, 20, "Gump Type".Color(GumpTextColors.Blue));
+        builder.AddHtml(200, 80, 400, 20, "Reason".Color(GumpTextColors.Blue));
+        builder.AddHtml(610, 80, 60, 20, "Status".Color(GumpTextColors.Blue));
+        builder.AddHtml(680, 80, 60, 20, "Remove".Color(GumpTextColors.Blue));
 
         var blocks = new List<GumpBlockEntry>(FeatureFlagManager.GetAllGumpBlocks());
 
-        var startIndex = _pageIndex * ItemsPerPage;
-        var endIndex = Math.Min(startIndex + ItemsPerPage, blocks.Count);
-        var totalPages = (int)Math.Ceiling(blocks.Count / (double)ItemsPerPage);
+        var startIndex = _pageIndex * BlocksPerPage;
+        var endIndex = Math.Min(startIndex + BlocksPerPage, blocks.Count);
+        var totalPages = Math.Max(1, (int)Math.Ceiling(blocks.Count / (double)BlocksPerPage));
 
-        var y = 100;
+        var y = 105;
         for (var i = startIndex; i < endIndex; i++)
         {
             var block = blocks[i];
             var toggleButtonId = 2000 + i;
             var removeButtonId = 3000 + i;
-            var statusColor = block.Active ? GumpTextColors.Blue : GumpTextColors.Red;
+            var statusColor = block.Active ? GumpTextColors.Red : GumpTextColors.Blue;
 
-            builder.AddButton(20, y, block.Active ? 2154 : 2151, block.Active ? 2151 : 2154, toggleButtonId);
+            builder.AddButton(20, y, block.Active ? 2151 : 2154, block.Active ? 2154 : 2151, toggleButtonId);
             var name = block.GumpType?.Name ?? block.GumpTypeName;
-            builder.AddHtml(45, y, 180, 20, TruncateText(name, 25).Color(GumpTextColors.White));
-            builder.AddHtml(230, y, 200, 20, TruncateText(block.Reason, 30).Color(GumpTextColors.LightGray));
-            builder.AddHtml(440, y, 80, 20, (block.Active ? "ACTIVE" : "INACTIVE").Color(statusColor));
+            builder.AddHtml(45, y, 150, 20, name.Color(GumpTextColors.White));
+            builder.AddHtml(200, y, 400, 40, (block.Reason ?? "").Color(GumpTextColors.LightGray));
+            builder.AddHtml(610, y, 60, 20, (block.Active ? "OFF" : "ON").Color(statusColor));
 
-            builder.AddButton(530, y, 4017, 4019, removeButtonId);
+            builder.AddButton(680, y, 4017, 4019, removeButtonId);
 
-            y += 25;
+            y += BlockRowHeight;
         }
 
         AddPagination(ref builder, totalPages, 300);
-        builder.AddHtml(20, 380, 200, 20, "Use [BlockGump to add new blocks".Color(GumpTextColors.LightGray));
+        builder.AddHtml(20, 440, 300, 20, "Use [BlockGump to add new blocks".Color(GumpTextColors.LightGray));
     }
 
     private void BuildUseReqBlocksPage(ref DynamicGumpBuilder builder)
     {
-        builder.AddHtml(20, 80, 200, 20, "Item Type".Color(GumpTextColors.Blue));
-        builder.AddHtml(230, 80, 200, 20, "Reason".Color(GumpTextColors.Blue));
-        builder.AddHtml(440, 80, 80, 20, "Status".Color(GumpTextColors.Blue));
-        builder.AddHtml(530, 80, 60, 20, "Remove".Color(GumpTextColors.Blue));
+        builder.AddHtml(20, 80, 180, 20, "Item Type".Color(GumpTextColors.Blue));
+        builder.AddHtml(200, 80, 400, 20, "Reason".Color(GumpTextColors.Blue));
+        builder.AddHtml(610, 80, 60, 20, "Status".Color(GumpTextColors.Blue));
+        builder.AddHtml(680, 80, 60, 20, "Remove".Color(GumpTextColors.Blue));
 
         var blocks = new List<UseReqBlockEntry>(FeatureFlagManager.GetAllUseReqBlocks());
 
-        var startIndex = _pageIndex * ItemsPerPage;
-        var endIndex = Math.Min(startIndex + ItemsPerPage, blocks.Count);
-        var totalPages = (int)Math.Ceiling(blocks.Count / (double)ItemsPerPage);
+        var startIndex = _pageIndex * BlocksPerPage;
+        var endIndex = Math.Min(startIndex + BlocksPerPage, blocks.Count);
+        var totalPages = Math.Max(1, (int)Math.Ceiling(blocks.Count / (double)BlocksPerPage));
 
-        var y = 100;
+        var y = 105;
         for (var i = startIndex; i < endIndex; i++)
         {
             var block = blocks[i];
             var toggleButtonId = 4000 + i;
             var removeButtonId = 5000 + i;
-            var statusColor = block.Active ? GumpTextColors.Blue : GumpTextColors.Red;
+            var statusColor = block.Active ? GumpTextColors.Red : GumpTextColors.Blue;
 
-            builder.AddButton(20, y, block.Active ? 2154 : 2151, block.Active ? 2151 : 2154, toggleButtonId);
+            builder.AddButton(20, y, block.Active ? 2151 : 2154, block.Active ? 2154 : 2151, toggleButtonId);
             var name = block.ItemType?.Name ?? block.ItemTypeName;
-            builder.AddHtml(45, y, 180, 20, TruncateText(name, 25).Color(GumpTextColors.White));
-            builder.AddHtml(230, y, 200, 20, TruncateText(block.Reason, 30).Color(GumpTextColors.White));
-            builder.AddHtml(440, y, 80, 20, (block.Active ? "ACTIVE" : "INACTIVE").Color(statusColor));
+            builder.AddHtml(45, y, 150, 20, name.Color(GumpTextColors.White));
+            builder.AddHtml(200, y, 400, 40, (block.Reason ?? "").Color(GumpTextColors.LightGray));
+            builder.AddHtml(610, y, 60, 20, (block.Active ? "OFF" : "ON").Color(statusColor));
 
-            builder.AddButton(530, y, 4017, 4019, removeButtonId);
+            builder.AddButton(680, y, 4017, 4019, removeButtonId);
 
-            y += 25;
+            y += BlockRowHeight;
         }
 
         AddPagination(ref builder, totalPages, 400);
-        builder.AddHtml(20, 380, 250, 20, "Use [BlockUse to add new blocks".Color(GumpTextColors.LightGray));
+        builder.AddHtml(20, 440, 300, 20, "Use [BlockUse to add new blocks".Color(GumpTextColors.LightGray));
     }
 
     private void BuildSkillBlocksPage(ref DynamicGumpBuilder builder)
     {
         builder.AddHtml(20, 80, 150, 20, "Skill".Color(GumpTextColors.Blue));
-        builder.AddHtml(180, 80, 200, 20, "Reason".Color(GumpTextColors.Blue));
-        builder.AddHtml(400, 80, 80, 20, "Status".Color(GumpTextColors.Blue));
-        builder.AddHtml(500, 80, 60, 20, "Remove".Color(GumpTextColors.Blue));
+        builder.AddHtml(200, 80, 400, 20, "Reason".Color(GumpTextColors.Blue));
+        builder.AddHtml(610, 80, 60, 20, "Status".Color(GumpTextColors.Blue));
+        builder.AddHtml(680, 80, 60, 20, "Remove".Color(GumpTextColors.Blue));
 
         var blocks = FeatureFlagManager.GetAllSkillBlocks();
 
-        var startIndex = _pageIndex * ItemsPerPage;
-        var endIndex = Math.Min(startIndex + ItemsPerPage, blocks.Count);
-        var totalPages = Math.Max(1, (int)Math.Ceiling(blocks.Count / (double)ItemsPerPage));
+        var startIndex = _pageIndex * BlocksPerPage;
+        var endIndex = Math.Min(startIndex + BlocksPerPage, blocks.Count);
+        var totalPages = Math.Max(1, (int)Math.Ceiling(blocks.Count / (double)BlocksPerPage));
 
-        var y = 100;
+        var y = 105;
         for (var i = startIndex; i < endIndex; i++)
         {
             var block = blocks[i];
             var toggleButtonId = 6000 + i;
             var removeButtonId = 7000 + i;
-            var statusColor = block.Active ? GumpTextColors.Blue : GumpTextColors.Red;
+            var statusColor = block.Active ? GumpTextColors.Red : GumpTextColors.Blue;
 
-            builder.AddButton(20, y, block.Active ? 2154 : 2151, block.Active ? 2151 : 2154, toggleButtonId);
-            builder.AddHtml(45, y, 130, 20, block.SkillName.Color(GumpTextColors.White));
-            builder.AddHtml(180, y, 210, 20, TruncateText(block.Reason, 30).Color(GumpTextColors.LightGray));
-            builder.AddHtml(400, y, 80, 20, (block.Active ? "ACTIVE" : "INACTIVE").Color(statusColor));
+            builder.AddButton(20, y, block.Active ? 2151 : 2154, block.Active ? 2154 : 2151, toggleButtonId);
+            builder.AddHtml(45, y, 150, 20, block.SkillName.Color(GumpTextColors.White));
+            builder.AddHtml(200, y, 400, 40, (block.Reason ?? "").Color(GumpTextColors.LightGray));
+            builder.AddHtml(610, y, 60, 20, (block.Active ? "OFF" : "ON").Color(statusColor));
 
-            builder.AddButton(500, y, 4017, 4019, removeButtonId);
+            builder.AddButton(680, y, 4017, 4019, removeButtonId);
 
-            y += 25;
+            y += BlockRowHeight;
         }
 
         AddPagination(ref builder, totalPages, 500);
-        builder.AddHtml(20, 380, 250, 20, "Use [BlockSkill to add new blocks".Color(GumpTextColors.LightGray));
+        builder.AddHtml(20, 440, 300, 20, "Use [BlockSkill to add new blocks".Color(GumpTextColors.LightGray));
     }
 
     private void BuildSpellBlocksPage(ref DynamicGumpBuilder builder)
     {
-        builder.AddHtml(20, 80, 200, 20, "Spell Type".Color(GumpTextColors.Blue));
-        builder.AddHtml(230, 80, 200, 20, "Reason".Color(GumpTextColors.Blue));
-        builder.AddHtml(440, 80, 80, 20, "Status".Color(GumpTextColors.Blue));
-        builder.AddHtml(530, 80, 60, 20, "Remove".Color(GumpTextColors.Blue));
+        builder.AddHtml(20, 80, 180, 20, "Spell Type".Color(GumpTextColors.Blue));
+        builder.AddHtml(200, 80, 400, 20, "Reason".Color(GumpTextColors.Blue));
+        builder.AddHtml(610, 80, 60, 20, "Status".Color(GumpTextColors.Blue));
+        builder.AddHtml(680, 80, 60, 20, "Remove".Color(GumpTextColors.Blue));
 
         var blocks = FeatureFlagManager.GetAllSpellBlocks();
 
-        var startIndex = _pageIndex * ItemsPerPage;
-        var endIndex = Math.Min(startIndex + ItemsPerPage, blocks.Count);
-        var totalPages = Math.Max(1, (int)Math.Ceiling(blocks.Count / (double)ItemsPerPage));
+        var startIndex = _pageIndex * BlocksPerPage;
+        var endIndex = Math.Min(startIndex + BlocksPerPage, blocks.Count);
+        var totalPages = Math.Max(1, (int)Math.Ceiling(blocks.Count / (double)BlocksPerPage));
 
-        var y = 100;
+        var y = 105;
         for (var i = startIndex; i < endIndex; i++)
         {
             var block = blocks[i];
             var toggleButtonId = 8000 + i;
             var removeButtonId = 9000 + i;
-            var statusColor = block.Active ? GumpTextColors.Blue : GumpTextColors.Red;
+            var statusColor = block.Active ? GumpTextColors.Red : GumpTextColors.Blue;
 
-            builder.AddButton(20, y, block.Active ? 2154 : 2151, block.Active ? 2151 : 2154, toggleButtonId);
+            builder.AddButton(20, y, block.Active ? 2151 : 2154, block.Active ? 2154 : 2151, toggleButtonId);
             var name = block.SpellType?.Name ?? block.SpellTypeName;
-            builder.AddHtml(45, y, 180, 20, TruncateText(name, 25).Color(GumpTextColors.White));
-            builder.AddHtml(230, y, 200, 20, TruncateText(block.Reason, 30).Color(GumpTextColors.LightGray));
-            builder.AddHtml(440, y, 80, 20, (block.Active ? "ACTIVE" : "INACTIVE").Color(statusColor));
+            builder.AddHtml(45, y, 150, 20, name.Color(GumpTextColors.White));
+            builder.AddHtml(200, y, 400, 40, (block.Reason ?? "").Color(GumpTextColors.LightGray));
+            builder.AddHtml(610, y, 60, 20, (block.Active ? "OFF" : "ON").Color(statusColor));
 
-            builder.AddButton(530, y, 4017, 4019, removeButtonId);
+            builder.AddButton(680, y, 4017, 4019, removeButtonId);
 
-            y += 25;
+            y += BlockRowHeight;
         }
 
         AddPagination(ref builder, totalPages, 600);
-        builder.AddHtml(20, 380, 250, 20, "Use [BlockSpell to add new blocks".Color(GumpTextColors.LightGray));
+        builder.AddHtml(20, 440, 300, 20, "Use [BlockSpell to add new blocks".Color(GumpTextColors.LightGray));
     }
 
     private void BuildContainerBlocksPage(ref DynamicGumpBuilder builder)
     {
-        builder.AddHtml(20, 80, 200, 20, "Container Type".Color(GumpTextColors.Blue));
-        builder.AddHtml(230, 80, 200, 20, "Reason".Color(GumpTextColors.Blue));
-        builder.AddHtml(440, 80, 80, 20, "Status".Color(GumpTextColors.Blue));
-        builder.AddHtml(530, 80, 60, 20, "Remove".Color(GumpTextColors.Blue));
+        builder.AddHtml(20, 80, 180, 20, "Container Type".Color(GumpTextColors.Blue));
+        builder.AddHtml(200, 80, 400, 20, "Reason".Color(GumpTextColors.Blue));
+        builder.AddHtml(610, 80, 60, 20, "Status".Color(GumpTextColors.Blue));
+        builder.AddHtml(680, 80, 60, 20, "Remove".Color(GumpTextColors.Blue));
 
         var blocks = new List<ContainerBlockEntry>(FeatureFlagManager.GetAllContainerBlocks());
 
-        var startIndex = _pageIndex * ItemsPerPage;
-        var endIndex = Math.Min(startIndex + ItemsPerPage, blocks.Count);
-        var totalPages = Math.Max(1, (int)Math.Ceiling(blocks.Count / (double)ItemsPerPage));
+        var startIndex = _pageIndex * BlocksPerPage;
+        var endIndex = Math.Min(startIndex + BlocksPerPage, blocks.Count);
+        var totalPages = Math.Max(1, (int)Math.Ceiling(blocks.Count / (double)BlocksPerPage));
 
-        var y = 100;
+        var y = 105;
         for (var i = startIndex; i < endIndex; i++)
         {
             var block = blocks[i];
             var toggleButtonId = 10000 + i;
             var removeButtonId = 11000 + i;
-            var statusColor = block.Active ? GumpTextColors.Blue : GumpTextColors.Red;
+            var statusColor = block.Active ? GumpTextColors.Red : GumpTextColors.Blue;
 
-            builder.AddButton(20, y, block.Active ? 2154 : 2151, block.Active ? 2151 : 2154, toggleButtonId);
+            builder.AddButton(20, y, block.Active ? 2151 : 2154, block.Active ? 2154 : 2151, toggleButtonId);
             var name = block.ContainerType?.Name ?? block.ContainerTypeName;
-            builder.AddHtml(45, y, 180, 20, TruncateText(name, 25).Color(GumpTextColors.White));
-            builder.AddHtml(230, y, 200, 20, TruncateText(block.Reason, 30).Color(GumpTextColors.LightGray));
-            builder.AddHtml(440, y, 80, 20, (block.Active ? "ACTIVE" : "INACTIVE").Color(statusColor));
+            builder.AddHtml(45, y, 150, 20, name.Color(GumpTextColors.White));
+            builder.AddHtml(200, y, 400, 40, (block.Reason ?? "").Color(GumpTextColors.LightGray));
+            builder.AddHtml(610, y, 60, 20, (block.Active ? "OFF" : "ON").Color(statusColor));
 
-            builder.AddButton(530, y, 4017, 4019, removeButtonId);
+            builder.AddButton(680, y, 4017, 4019, removeButtonId);
 
-            y += 25;
+            y += BlockRowHeight;
         }
 
         AddPagination(ref builder, totalPages, 700);
-        builder.AddHtml(20, 380, 300, 20, "Use [BlockContainer to add new blocks".Color(GumpTextColors.LightGray));
+        builder.AddHtml(20, 440, 300, 20, "Use [BlockContainer to add new blocks".Color(GumpTextColors.LightGray));
     }
 
     private void AddPagination(ref DynamicGumpBuilder builder, int totalPages, int baseButtonId)
@@ -333,16 +336,16 @@ public sealed class FeatureFlagAdminGump : DynamicGump
 
         if (_pageIndex > 0)
         {
-            builder.AddButton(300, 375, 4014, 4016, baseButtonId + 1);
-            builder.AddHtml(335, 375, 50, 20, "Prev".Color(GumpTextColors.White));
+            builder.AddButton(300, 425, 4014, 4016, baseButtonId + 1);
+            builder.AddHtml(335, 425, 50, 20, "Prev".Color(GumpTextColors.White));
         }
 
-        builder.AddHtml(370, 375, 60, 20, $"{_pageIndex + 1}/{totalPages}".Color(GumpTextColors.White));
+        builder.AddHtml(370, 425, 60, 20, $"{_pageIndex + 1}/{totalPages}".Color(GumpTextColors.White));
 
         if (_pageIndex < totalPages - 1)
         {
-            builder.AddButton(420, 375, 4005, 4007, baseButtonId + 2);
-            builder.AddHtml(455, 375, 50, 20, "Next".Color(GumpTextColors.White));
+            builder.AddButton(420, 425, 4005, 4007, baseButtonId + 2);
+            builder.AddHtml(455, 425, 50, 20, "Next".Color(GumpTextColors.White));
         }
     }
 
@@ -530,15 +533,5 @@ public sealed class FeatureFlagAdminGump : DynamicGump
             }
             from.SendGump(this);
         }
-    }
-
-    private static string TruncateText(string text, int maxLength)
-    {
-        if (string.IsNullOrEmpty(text))
-        {
-            return string.Empty;
-        }
-
-        return text.Length <= maxLength ? text : text[..(maxLength - 3)] + "...";
     }
 }
