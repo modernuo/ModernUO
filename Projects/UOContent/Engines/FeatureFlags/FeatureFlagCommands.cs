@@ -483,9 +483,8 @@ public static class FeatureFlagCommands
             from.SendMessage(0x35, $"=== Blocked Gumps ({gumpBlocks.Count}) ===");
             foreach (var block in gumpBlocks)
             {
-                var status = block.Active ? "[ACTIVE]" : "[INACTIVE]";
-                var name = block.GumpType?.Name ?? block.GumpTypeName;
-                from.SendMessage($"  {status} {name}: {block.Reason}");
+                var status = block.Active ? "[OFF]" : "[ON]";
+                from.SendMessage($"  {status} {block.DisplayName}: {block.Reason}");
             }
         }
 
@@ -495,9 +494,8 @@ public static class FeatureFlagCommands
             from.SendMessage(0x35, $"=== Blocked Item Usage ({useReqBlocks.Count}) ===");
             foreach (var block in useReqBlocks)
             {
-                var status = block.Active ? "[ACTIVE]" : "[INACTIVE]";
-                var name = block.ItemType?.Name ?? block.ItemTypeName;
-                from.SendMessage($"  {status} {name}: {block.Reason}");
+                var status = block.Active ? "[OFF]" : "[ON]";
+                from.SendMessage($"  {status} {block.DisplayName}: {block.Reason}");
             }
         }
 
@@ -508,8 +506,8 @@ public static class FeatureFlagCommands
             for (var i = 0; i < skillBlocks.Count; i++)
             {
                 var block = skillBlocks[i];
-                var status = block.Active ? "[ACTIVE]" : "[INACTIVE]";
-                from.SendMessage($"  {status} {block.SkillName}: {block.Reason}");
+                var status = block.Active ? "[OFF]" : "[ON]";
+                from.SendMessage($"  {status} {block.DisplayName}: {block.Reason}");
             }
         }
 
@@ -519,9 +517,8 @@ public static class FeatureFlagCommands
             from.SendMessage(0x35, $"=== Blocked Spells ({spellBlocks.Count}) ===");
             foreach (var block in spellBlocks)
             {
-                var status = block.Active ? "[ACTIVE]" : "[INACTIVE]";
-                var name = block.SpellType?.Name ?? block.SpellTypeName;
-                from.SendMessage($"  {status} {name}: {block.Reason}");
+                var status = block.Active ? "[OFF]" : "[ON]";
+                from.SendMessage($"  {status} {block.DisplayName}: {block.Reason}");
             }
         }
 
@@ -531,9 +528,8 @@ public static class FeatureFlagCommands
             from.SendMessage(0x35, $"=== Blocked Containers ({containerBlocks.Count}) ===");
             foreach (var block in containerBlocks)
             {
-                var status = block.Active ? "[ACTIVE]" : "[INACTIVE]";
-                var name = block.ContainerType?.Name ?? block.ContainerTypeName;
-                from.SendMessage($"  {status} {name}: {block.Reason}");
+                var status = block.Active ? "[OFF]" : "[ON]";
+                from.SendMessage($"  {status} {block.DisplayName}: {block.Reason}");
             }
         }
 

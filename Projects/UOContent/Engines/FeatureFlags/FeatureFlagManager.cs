@@ -200,11 +200,9 @@ public static class FeatureFlagManager
 
     public static void BlockGump(Type gumpType, string reason, string blockedBy = "System")
     {
-        var typeName = gumpType.FullName ?? gumpType.Name;
         var entry = new GumpBlockEntry
         {
-            GumpType = gumpType,
-            GumpTypeName = typeName,
+            ResolvedType = gumpType,
             Reason = reason,
             Active = true,
             CreatedAt = Core.Now,
@@ -216,7 +214,7 @@ public static class FeatureFlagManager
 
         if (FeatureFlagSettings.LogChanges)
         {
-            logger.Warning("Gump '{GumpType}' BLOCKED by {BlockedBy}. Reason: {Reason}", typeName, blockedBy, reason);
+            logger.Warning("Gump '{GumpType}' BLOCKED by {BlockedBy}. Reason: {Reason}", gumpType.FullName, blockedBy, reason);
         }
 
         if (FeatureFlagSettings.BroadcastChangesToStaff)
@@ -251,11 +249,9 @@ public static class FeatureFlagManager
 
         UpdateGumpBlocksFlag();
 
-        var typeName = removed.GumpTypeName;
-
         if (FeatureFlagSettings.LogChanges)
         {
-            logger.Information("Gump '{GumpType}' UNBLOCKED by {UnblockedBy}", typeName, unblockedBy);
+            logger.Information("Gump '{GumpType}' UNBLOCKED by {UnblockedBy}", gumpType.FullName, unblockedBy);
         }
 
         if (FeatureFlagSettings.BroadcastChangesToStaff)
@@ -276,26 +272,31 @@ public static class FeatureFlagManager
     public static bool SetGumpBlockActive(string typeName, bool active, string modifiedBy = "System")
     {
         var type = ResolveType(typeName);
-        if (type != null && _gumpBlocks.TryGetValue(type, out var entry))
+        return type != null && SetGumpBlockActive(type, active, modifiedBy);
+    }
+
+    public static bool SetGumpBlockActive(Type gumpType, bool active, string modifiedBy = "System")
+    {
+        if (!_gumpBlocks.TryGetValue(gumpType, out var entry))
         {
-            entry.Active = active;
-            UpdateGumpBlocksFlag();
-
-            if (FeatureFlagSettings.LogChanges)
-            {
-                logger.Information("Gump block '{GumpType}' set to {Active} by {ModifiedBy}", typeName, active ? "ACTIVE" : "INACTIVE", modifiedBy);
-            }
-
-            if (FeatureFlagSettings.BroadcastChangesToStaff)
-            {
-                World.BroadcastStaff($"[Gump Block] '{typeName}' set to {(active ? "ACTIVE" : "INACTIVE")} by {modifiedBy}");
-            }
-
-            SaveGumpBlocks();
-            return true;
+            return false;
         }
 
-        return false;
+        entry.Active = active;
+        UpdateGumpBlocksFlag();
+
+        if (FeatureFlagSettings.LogChanges)
+        {
+            logger.Information("Gump block '{GumpType}' set to {Active} by {ModifiedBy}", gumpType.FullName, active ? "ACTIVE" : "INACTIVE", modifiedBy);
+        }
+
+        if (FeatureFlagSettings.BroadcastChangesToStaff)
+        {
+            World.BroadcastStaff($"[Gump Block] '{gumpType.Name}' set to {(active ? "ACTIVE" : "INACTIVE")} by {modifiedBy}");
+        }
+
+        SaveGumpBlocks();
+        return true;
     }
 
     public static bool IsUseReqBlocked<T>() where T : Item =>
@@ -319,11 +320,9 @@ public static class FeatureFlagManager
 
     public static void BlockUseReq(Type itemType, string reason, string blockedBy = "System")
     {
-        var typeName = itemType.FullName ?? itemType.Name;
         var entry = new UseReqBlockEntry
         {
-            ItemType = itemType,
-            ItemTypeName = typeName,
+            ResolvedType = itemType,
             Reason = reason,
             Active = true,
             CreatedAt = Core.Now,
@@ -335,7 +334,7 @@ public static class FeatureFlagManager
 
         if (FeatureFlagSettings.LogChanges)
         {
-            logger.Warning("Item UseReq '{ItemType}' BLOCKED by {BlockedBy}. Reason: {Reason}", typeName, blockedBy, reason);
+            logger.Warning("Item UseReq '{ItemType}' BLOCKED by {BlockedBy}. Reason: {Reason}", itemType.FullName, blockedBy, reason);
         }
 
         if (FeatureFlagSettings.BroadcastChangesToStaff)
@@ -370,11 +369,9 @@ public static class FeatureFlagManager
 
         UpdateUseReqBlocksFlag();
 
-        var typeName = removed.ItemTypeName;
-
         if (FeatureFlagSettings.LogChanges)
         {
-            logger.Information("Item UseReq '{ItemType}' UNBLOCKED by {UnblockedBy}", typeName, unblockedBy);
+            logger.Information("Item UseReq '{ItemType}' UNBLOCKED by {UnblockedBy}", itemType.FullName, unblockedBy);
         }
 
         if (FeatureFlagSettings.BroadcastChangesToStaff)
@@ -394,27 +391,32 @@ public static class FeatureFlagManager
 
     public static bool SetUseReqBlockActive(string typeName, bool active, string modifiedBy = "System")
     {
-        var type  = ResolveType(typeName);
-        if (type != null && _useReqBlocks.TryGetValue(type, out var entry))
+        var type = ResolveType(typeName);
+        return type != null && SetUseReqBlockActive(type, active, modifiedBy);
+    }
+
+    public static bool SetUseReqBlockActive(Type itemType, bool active, string modifiedBy = "System")
+    {
+        if (!_useReqBlocks.TryGetValue(itemType, out var entry))
         {
-            entry.Active = active;
-            UpdateUseReqBlocksFlag();
-
-            if (FeatureFlagSettings.LogChanges)
-            {
-                logger.Information("UseReq block '{ItemType}' set to {Active} by {ModifiedBy}", typeName, active ? "ACTIVE" : "INACTIVE", modifiedBy);
-            }
-
-            if (FeatureFlagSettings.BroadcastChangesToStaff)
-            {
-                World.BroadcastStaff($"[UseReq Block] '{typeName}' set to {(active ? "ACTIVE" : "INACTIVE")} by {modifiedBy}");
-            }
-
-            SaveUseReqBlocks();
-            return true;
+            return false;
         }
 
-        return false;
+        entry.Active = active;
+        UpdateUseReqBlocksFlag();
+
+        if (FeatureFlagSettings.LogChanges)
+        {
+            logger.Information("UseReq block '{ItemType}' set to {Active} by {ModifiedBy}", itemType.FullName, active ? "ACTIVE" : "INACTIVE", modifiedBy);
+        }
+
+        if (FeatureFlagSettings.BroadcastChangesToStaff)
+        {
+            World.BroadcastStaff($"[UseReq Block] '{itemType.Name}' set to {(active ? "ACTIVE" : "INACTIVE")} by {modifiedBy}");
+        }
+
+        SaveUseReqBlocks();
+        return true;
     }
 
     public static string CheckUseReq(Item item, Mobile from, bool sendMessage = true)
@@ -489,7 +491,6 @@ public static class FeatureFlagManager
         var entry = new SkillBlockEntry
         {
             Skill = skill,
-            SkillName = skill.ToString(),
             Reason = reason,
             Active = true,
             CreatedAt = Core.Now,
@@ -621,12 +622,10 @@ public static class FeatureFlagManager
             return;
         }
 
-        var typeName = spellType.FullName ?? spellType.Name;
         var entry = new SpellBlockEntry
         {
-            SpellType = spellType,
+            ResolvedType = spellType,
             SpellId = spellId,
-            SpellTypeName = typeName,
             Reason = reason,
             Active = true,
             CreatedAt = Core.Now,
@@ -638,7 +637,7 @@ public static class FeatureFlagManager
 
         if (FeatureFlagSettings.LogChanges)
         {
-            logger.Warning("Spell '{SpellType}' BLOCKED by {BlockedBy}. Reason: {Reason}", typeName, blockedBy, reason);
+            logger.Warning("Spell '{SpellType}' BLOCKED by {BlockedBy}. Reason: {Reason}", spellType.FullName, blockedBy, reason);
         }
 
         if (FeatureFlagSettings.BroadcastChangesToStaff)
@@ -709,7 +708,7 @@ public static class FeatureFlagManager
             entry.Active = active;
             UpdateSpellBlocksFlag();
 
-            var typeName = entry.SpellType?.Name ?? entry.SpellTypeName;
+            var typeName = entry.DisplayName;
 
             if (FeatureFlagSettings.LogChanges)
             {
@@ -773,11 +772,9 @@ public static class FeatureFlagManager
 
     public static void BlockContainer(Type containerType, string reason, string blockedBy = "System")
     {
-        var typeName = containerType.FullName ?? containerType.Name;
         var entry = new ContainerBlockEntry
         {
-            ContainerType = containerType,
-            ContainerTypeName = typeName,
+            ResolvedType = containerType,
             Reason = reason,
             Active = true,
             CreatedAt = Core.Now,
@@ -789,7 +786,7 @@ public static class FeatureFlagManager
 
         if (FeatureFlagSettings.LogChanges)
         {
-            logger.Warning("Container '{ContainerType}' BLOCKED by {BlockedBy}. Reason: {Reason}", typeName, blockedBy, reason);
+            logger.Warning("Container '{ContainerType}' BLOCKED by {BlockedBy}. Reason: {Reason}", containerType.FullName, blockedBy, reason);
         }
 
         if (FeatureFlagSettings.BroadcastChangesToStaff)
@@ -818,11 +815,9 @@ public static class FeatureFlagManager
         {
             UpdateContainerBlocksFlag();
 
-            var typeName = removed.ContainerTypeName;
-
             if (FeatureFlagSettings.LogChanges)
             {
-                logger.Information("Container '{ContainerType}' UNBLOCKED by {UnblockedBy}", typeName, unblockedBy);
+                logger.Information("Container '{ContainerType}' UNBLOCKED by {UnblockedBy}", containerType.FullName, unblockedBy);
             }
 
             if (FeatureFlagSettings.BroadcastChangesToStaff)
@@ -849,29 +844,32 @@ public static class FeatureFlagManager
 
     public static bool SetContainerBlockActive(string typeName, bool active, string modifiedBy = "System")
     {
-        foreach (var kvp in _containerBlocks)
+        var type = ResolveType(typeName);
+        return type != null && SetContainerBlockActive(type, active, modifiedBy);
+    }
+
+    public static bool SetContainerBlockActive(Type containerType, bool active, string modifiedBy = "System")
+    {
+        if (!_containerBlocks.TryGetValue(containerType, out var entry))
         {
-            if (string.Equals(kvp.Value.ContainerTypeName, typeName, StringComparison.OrdinalIgnoreCase)
-                || string.Equals(kvp.Key.Name, typeName, StringComparison.OrdinalIgnoreCase))
-            {
-                kvp.Value.Active = active;
-                UpdateContainerBlocksFlag();
-
-                if (FeatureFlagSettings.LogChanges)
-                {
-                    logger.Information("Container block '{ContainerType}' set to {Active} by {ModifiedBy}", typeName, active ? "ACTIVE" : "INACTIVE", modifiedBy);
-                }
-
-                if (FeatureFlagSettings.BroadcastChangesToStaff)
-                {
-                    World.BroadcastStaff($"[Container Block] '{typeName}' set to {(active ? "ACTIVE" : "INACTIVE")} by {modifiedBy}");
-                }
-
-                SaveContainerBlocks();
-                return true;
-            }
+            return false;
         }
-        return false;
+
+        entry.Active = active;
+        UpdateContainerBlocksFlag();
+
+        if (FeatureFlagSettings.LogChanges)
+        {
+            logger.Information("Container block '{ContainerType}' set to {Active} by {ModifiedBy}", containerType.FullName, active ? "ACTIVE" : "INACTIVE", modifiedBy);
+        }
+
+        if (FeatureFlagSettings.BroadcastChangesToStaff)
+        {
+            World.BroadcastStaff($"[Container Block] '{containerType.Name}' set to {(active ? "ACTIVE" : "INACTIVE")} by {modifiedBy}");
+        }
+
+        SaveContainerBlocks();
+        return true;
     }
 
     private static void LoadDefaultFlags()
@@ -1005,21 +1003,15 @@ public static class FeatureFlagManager
                 }
             }
 
-            // Load gump blocks
+            // Load gump blocks (TypeConverter resolves Type from JSON)
             var gumpBlocks = JsonConfig.Deserialize<List<GumpBlockEntry>>(Path.Combine(savePath, "gump-blocks.json"));
             if (gumpBlocks != null)
             {
                 foreach (var entry in gumpBlocks)
                 {
-                    var type = ResolveType(entry.GumpTypeName);
-                    if (type != null)
+                    if (entry.ResolvedType != null)
                     {
-                        entry.GumpType = type;
-                        _gumpBlocks[type] = entry;
-                    }
-                    else
-                    {
-                        logger.Warning("Could not resolve gump type '{GumpType}', skipping", entry.GumpTypeName);
+                        _gumpBlocks[entry.ResolvedType] = entry;
                     }
                 }
             }
@@ -1030,62 +1022,45 @@ public static class FeatureFlagManager
             {
                 foreach (var entry in useReqBlocks)
                 {
-                    var type = ResolveType(entry.ItemTypeName);
-                    if (type != null)
+                    if (entry.ResolvedType != null)
                     {
-                        entry.ItemType = type;
-                        _useReqBlocks[type] = entry;
-                    }
-                    else
-                    {
-                        logger.Warning("Could not resolve item type '{ItemType}', skipping", entry.ItemTypeName);
+                        _useReqBlocks[entry.ResolvedType] = entry;
                     }
                 }
             }
 
-            // Load skill blocks
+            // Load skill blocks (JsonStringEnumConverter deserializes SkillName)
             var skillBlocks = JsonConfig.Deserialize<List<SkillBlockEntry>>(Path.Combine(savePath, "skill-blocks.json"));
             if (skillBlocks != null)
             {
                 foreach (var entry in skillBlocks)
                 {
-                    if (Enum.TryParse<SkillName>(entry.SkillName, true, out var skill))
+                    var index = (int)entry.Skill;
+                    if ((uint)index < (uint)_skillBlocks.Length)
                     {
-                        var index = (int)skill;
-                        if ((uint)index < (uint)_skillBlocks.Length)
-                        {
-                            entry.Skill = skill;
-                            _skillBlocks[index] = entry;
-                        }
-                    }
-                    else
-                    {
-                        logger.Warning("Could not resolve skill '{SkillName}', skipping", entry.SkillName);
+                        _skillBlocks[index] = entry;
                     }
                 }
             }
 
-            // Load spell blocks
+            // Load spell blocks (TypeConverter resolves Type, then look up SpellId)
             var spellBlocks = JsonConfig.Deserialize<List<SpellBlockEntry>>(Path.Combine(savePath, "spell-blocks.json"));
             if (spellBlocks != null)
             {
                 foreach (var entry in spellBlocks)
                 {
-                    var type = ResolveType(entry.SpellTypeName);
-                    if (type == null)
+                    if (entry.ResolvedType == null)
                     {
-                        logger.Warning("Could not resolve spell type '{SpellType}', skipping", entry.SpellTypeName);
                         continue;
                     }
 
-                    var spellId = SpellRegistry.GetRegistryNumber(type);
+                    var spellId = SpellRegistry.GetRegistryNumber(entry.ResolvedType);
                     if (spellId < 0 || (uint)spellId >= (uint)_spellBlocks.Length)
                     {
-                        logger.Warning("Spell type '{SpellType}' has no registered spell ID, skipping", entry.SpellTypeName);
+                        logger.Warning("Spell type '{SpellType}' has no registered spell ID, skipping", entry.ResolvedType.FullName);
                         continue;
                     }
 
-                    entry.SpellType = type;
                     entry.SpellId = spellId;
                     _spellBlocks[spellId] = entry;
                 }
@@ -1097,15 +1072,9 @@ public static class FeatureFlagManager
             {
                 foreach (var entry in containerBlocks)
                 {
-                    var type = ResolveType(entry.ContainerTypeName);
-                    if (type != null)
+                    if (entry.ResolvedType != null)
                     {
-                        entry.ContainerType = type;
-                        _containerBlocks[type] = entry;
-                    }
-                    else
-                    {
-                        logger.Warning("Could not resolve container type '{ContainerType}', skipping", entry.ContainerTypeName);
+                        _containerBlocks[entry.ResolvedType] = entry;
                     }
                 }
             }
@@ -1136,15 +1105,36 @@ public static class FeatureFlagManager
         switch (key.ToLowerInvariant())
         {
             // Server project flags
-            case "player_trading":  ServerFeatureFlags.PlayerTrading = enabled; break;
-            case "pvp_combat":      ServerFeatureFlags.PvPCombat = enabled; break;
+            case "player_trading":
+                {
+                    ServerFeatureFlags.PlayerTrading = enabled; break;
+                }
+            case "pvp_combat":
+                {
+                    ServerFeatureFlags.PvPCombat = enabled; break;
+                }
 
             // UOContent flags
-            case "vendor_purchase": ContentFeatureFlags.VendorPurchase = enabled; break;
-            case "vendor_sell":     ContentFeatureFlags.VendorSell = enabled; break;
-            case "player_vendors":  ContentFeatureFlags.PlayerVendors = enabled; break;
-            case "house_placement": ContentFeatureFlags.HousePlacement = enabled; break;
-            case "bulk_orders":     ContentFeatureFlags.BulkOrders = enabled; break;
+            case "vendor_purchase":
+                {
+                    ContentFeatureFlags.VendorPurchase = enabled; break;
+                }
+            case "vendor_sell":
+                {
+                    ContentFeatureFlags.VendorSell = enabled; break;
+                }
+            case "player_vendors":
+                {
+                    ContentFeatureFlags.PlayerVendors = enabled; break;
+                }
+            case "house_placement":
+                {
+                    ContentFeatureFlags.HousePlacement = enabled; break;
+                }
+            case "bulk_orders":
+                {
+                    ContentFeatureFlags.BulkOrders = enabled; break;
+                }
         }
     }
 

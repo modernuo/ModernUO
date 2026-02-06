@@ -15,62 +15,37 @@ public sealed class FeatureFlag
     public string LastModifiedBy { get; set; }
 }
 
-public sealed class GumpBlockEntry
+public class FeatureFlagBlockEntry
 {
-    [JsonIgnore]
-    public Type GumpType { get; set; }
-    public string GumpTypeName { get; init; }
+    public Type ResolvedType { get; set; }
     public string Reason { get; init; }
     public bool Active { get; set; }
     public DateTime CreatedAt { get; init; }
     public string CreatedBy { get; init; }
+
+    [JsonIgnore]
+    public virtual string DisplayName => ResolvedType?.Name;
 }
 
-public sealed class UseReqBlockEntry
-{
-    [JsonIgnore]
-    public Type ItemType { get; set; }
-    public string ItemTypeName { get; init; }
-    public string Reason { get; init; }
-    public bool Active { get; set; }
-    public DateTime CreatedAt { get; init; }
-    public string CreatedBy { get; init; }
-}
+public sealed class GumpBlockEntry : FeatureFlagBlockEntry;
 
-public sealed class SkillBlockEntry
+public sealed class UseReqBlockEntry : FeatureFlagBlockEntry;
+
+public sealed class SkillBlockEntry : FeatureFlagBlockEntry
 {
-    [JsonIgnore]
     public SkillName Skill { get; set; }
-    public string SkillName { get; init; }
-    public string Reason { get; init; }
-    public bool Active { get; set; }
-    public DateTime CreatedAt { get; init; }
-    public string CreatedBy { get; init; }
+
+    [JsonIgnore]
+    public override string DisplayName => Skill.ToString();
 }
 
-public sealed class SpellBlockEntry
+public sealed class SpellBlockEntry : FeatureFlagBlockEntry
 {
-    [JsonIgnore]
-    public Type SpellType { get; set; }
     [JsonIgnore]
     public int SpellId { get; set; }
-    public string SpellTypeName { get; init; }
-    public string Reason { get; init; }
-    public bool Active { get; set; }
-    public DateTime CreatedAt { get; init; }
-    public string CreatedBy { get; init; }
 }
 
-public sealed class ContainerBlockEntry
-{
-    [JsonIgnore]
-    public Type ContainerType { get; set; }
-    public string ContainerTypeName { get; init; }
-    public string Reason { get; init; }
-    public bool Active { get; set; }
-    public DateTime CreatedAt { get; init; }
-    public string CreatedBy { get; init; }
-}
+public sealed class ContainerBlockEntry : FeatureFlagBlockEntry;
 
 public static class FeatureFlagSettings
 {
