@@ -88,7 +88,7 @@ public sealed class FeatureFlagAdminGump : DynamicGump
                     BuildBlockPage(
                         ref builder, "Gump Type",
                         new List<FeatureFlagBlockEntry>(FeatureFlagManager.GetAllGumpBlocks()),
-                        2000, 3000, 300, "Use [BlockGump to add new blocks");
+                        2000, 3000, "Use [BlockGump to add new blocks");
                     break;
                 }
             case FeatureFlagPage.UseReqBlocks:
@@ -96,7 +96,7 @@ public sealed class FeatureFlagAdminGump : DynamicGump
                     BuildBlockPage(
                         ref builder, "Item Type",
                         new List<FeatureFlagBlockEntry>(FeatureFlagManager.GetAllUseReqBlocks()),
-                        4000, 5000, 400, "Use [BlockUse to add new blocks");
+                        4000, 5000, "Use [BlockUse to add new blocks");
                     break;
                 }
             case FeatureFlagPage.SkillBlocks:
@@ -104,7 +104,7 @@ public sealed class FeatureFlagAdminGump : DynamicGump
                     BuildBlockPage(
                         ref builder, "Skill",
                         new List<FeatureFlagBlockEntry>(FeatureFlagManager.GetAllSkillBlocks()),
-                        6000, 7000, 500, "Use [BlockSkill to add new blocks");
+                        6000, 7000, "Use [BlockSkill to add new blocks");
                     break;
                 }
             case FeatureFlagPage.SpellBlocks:
@@ -112,7 +112,7 @@ public sealed class FeatureFlagAdminGump : DynamicGump
                     BuildBlockPage(
                         ref builder, "Spell Type",
                         new List<FeatureFlagBlockEntry>(FeatureFlagManager.GetAllSpellBlocks()),
-                        8000, 9000, 600, "Use [BlockSpell to add new blocks");
+                        8000, 9000, "Use [BlockSpell to add new blocks");
                     break;
                 }
             case FeatureFlagPage.ContainerBlocks:
@@ -120,7 +120,7 @@ public sealed class FeatureFlagAdminGump : DynamicGump
                     BuildBlockPage(
                         ref builder, "Container Type",
                         new List<FeatureFlagBlockEntry>(FeatureFlagManager.GetAllContainerBlocks()),
-                        10000, 11000, 700, "Use [BlockContainer to add new blocks");
+                        10000, 11000, "Use [BlockContainer to add new blocks");
                     break;
                 }
         }
@@ -148,8 +148,8 @@ public sealed class FeatureFlagAdminGump : DynamicGump
         var flags = new List<FeatureFlag>(FeatureFlagManager.GetAllFlags());
         flags.Sort((a, b) =>
         {
-            var cmp = string.Compare(a.Category, b.Category, StringComparison.OrdinalIgnoreCase);
-            return cmp != 0 ? cmp : string.Compare(a.Key, b.Key, StringComparison.OrdinalIgnoreCase);
+            var cmp = a.Category.InsensitiveCompare(b.Category);
+            return cmp != 0 ? cmp : a.Key.InsensitiveCompare(b.Key);
         });
 
         var startIndex = _pageIndex * FlagsPerPage;
@@ -172,7 +172,7 @@ public sealed class FeatureFlagAdminGump : DynamicGump
             y += FlagRowHeight;
         }
 
-        AddPagination(ref builder, totalPages, 200);
+        AddPagination(ref builder, totalPages);
     }
 
     private void BuildBlockPage(
@@ -181,7 +181,6 @@ public sealed class FeatureFlagAdminGump : DynamicGump
         IReadOnlyList<FeatureFlagBlockEntry> blocks,
         int toggleBaseId,
         int removeBaseId,
-        int paginationBaseId,
         string helpText)
     {
         builder.AddHtml(20, 80, 180, 20, headerLabel.Color(GumpTextColors.Blue));
@@ -211,11 +210,11 @@ public sealed class FeatureFlagAdminGump : DynamicGump
             y += BlockRowHeight;
         }
 
-        AddPagination(ref builder, totalPages, paginationBaseId);
+        AddPagination(ref builder, totalPages);
         builder.AddHtml(20, 430, 400, 20, helpText.Color(GumpTextColors.LightGray));
     }
 
-    private void AddPagination(ref DynamicGumpBuilder builder, int totalPages, int baseButtonId)
+    private void AddPagination(ref DynamicGumpBuilder builder, int totalPages)
     {
         if (totalPages <= 1)
         {
@@ -224,7 +223,7 @@ public sealed class FeatureFlagAdminGump : DynamicGump
 
         if (_pageIndex > 0)
         {
-            builder.AddButton(300, 425, 4014, 4016, baseButtonId + 1);
+            builder.AddButton(300, 425, 4014, 4016, 102);
             builder.AddHtml(335, 425, 50, 20, "Prev".Color(GumpTextColors.White));
         }
 
@@ -232,7 +231,7 @@ public sealed class FeatureFlagAdminGump : DynamicGump
 
         if (_pageIndex < totalPages - 1)
         {
-            builder.AddButton(420, 425, 4005, 4007, baseButtonId + 2);
+            builder.AddButton(420, 425, 4005, 4007, 103);
             builder.AddHtml(455, 425, 50, 20, "Next".Color(GumpTextColors.White));
         }
     }
@@ -248,29 +247,10 @@ public sealed class FeatureFlagAdminGump : DynamicGump
                 {
                     return;
                 }
-            case 1:
+            case >= (int)(FeatureFlagPage.Flags + 1) and <= (int)(FeatureFlagPage.ContainerBlocks + 1):
                 {
-                    Resend(from, FeatureFlagPage.Flags); return;
-                }
-            case 2:
-                {
-                    Resend(from, FeatureFlagPage.GumpBlocks); return;
-                }
-            case 3:
-                {
-                    Resend(from, FeatureFlagPage.UseReqBlocks); return;
-                }
-            case 4:
-                {
-                    Resend(from, FeatureFlagPage.SkillBlocks); return;
-                }
-            case 5:
-                {
-                    Resend(from, FeatureFlagPage.SpellBlocks); return;
-                }
-            case 6:
-                {
-                    Resend(from, FeatureFlagPage.ContainerBlocks); return;
+                    Resend(from, (FeatureFlagPage)buttonId);
+                    return;
                 }
             case 100:
                 {
@@ -284,21 +264,17 @@ public sealed class FeatureFlagAdminGump : DynamicGump
                     from.SendGump(this);
                     return;
                 }
+            case 102:
+                {
+                    Resend(from, _currentPage, _pageIndex - 1);
+                    return;
+                }
+            case 103:
+                {
+                    Resend(from, _currentPage, _pageIndex + 1);
+                    return;
+                }
         }
-
-        // Pagination
-        if (buttonId == 201) { Resend(from, FeatureFlagPage.Flags, _pageIndex - 1); return; }
-        if (buttonId == 202) { Resend(from, FeatureFlagPage.Flags, _pageIndex + 1); return; }
-        if (buttonId == 301) { Resend(from, FeatureFlagPage.GumpBlocks, _pageIndex - 1); return; }
-        if (buttonId == 302) { Resend(from, FeatureFlagPage.GumpBlocks, _pageIndex + 1); return; }
-        if (buttonId == 401) { Resend(from, FeatureFlagPage.UseReqBlocks, _pageIndex - 1); return; }
-        if (buttonId == 402) { Resend(from, FeatureFlagPage.UseReqBlocks, _pageIndex + 1); return; }
-        if (buttonId == 501) { Resend(from, FeatureFlagPage.SkillBlocks, _pageIndex - 1); return; }
-        if (buttonId == 502) { Resend(from, FeatureFlagPage.SkillBlocks, _pageIndex + 1); return; }
-        if (buttonId == 601) { Resend(from, FeatureFlagPage.SpellBlocks, _pageIndex - 1); return; }
-        if (buttonId == 602) { Resend(from, FeatureFlagPage.SpellBlocks, _pageIndex + 1); return; }
-        if (buttonId == 701) { Resend(from, FeatureFlagPage.ContainerBlocks, _pageIndex - 1); return; }
-        if (buttonId == 702) { Resend(from, FeatureFlagPage.ContainerBlocks, _pageIndex + 1); return; }
 
         // Toggle feature flags (1000+)
         if (buttonId is >= 1000 and < 2000)
@@ -306,8 +282,8 @@ public sealed class FeatureFlagAdminGump : DynamicGump
             var flags = new List<FeatureFlag>(FeatureFlagManager.GetAllFlags());
             flags.Sort((a, b) =>
             {
-                var cmp = string.Compare(a.Category, b.Category, StringComparison.OrdinalIgnoreCase);
-                return cmp != 0 ? cmp : string.Compare(a.Key, b.Key, StringComparison.OrdinalIgnoreCase);
+                var cmp = a.Category.InsensitiveCompare(b.Category);
+                return cmp != 0 ? cmp : a.Key.InsensitiveCompare(b.Key);
             });
             var index = buttonId - 1000;
             if (index < flags.Count)
