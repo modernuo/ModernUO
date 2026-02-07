@@ -229,7 +229,7 @@ public sealed class FeatureFlagAdminGump : DynamicGump
 
                 builder.AddButton(20, y, block.Active ? 2151 : 2154, block.Active ? 2154 : 2151, 2000 + _displayedCount);
                 builder.AddHtml(60, y + 3, 150, 20, block.DisplayName.Color(GumpTextColors.White));
-                builder.AddHtml(200, y + 3, 400, 40, (block.Reason ?? "").Color(GumpTextColors.LightGray));
+                builder.AddHtml(200, y + 3, 400, 40, (block.Reason ?? "(default)").Color(GumpTextColors.LightGray));
                 builder.AddHtml(690, y + 3, 60, 20, (block.Active ? "OFF" : "ON").Color(statusColor));
                 builder.AddButton(750, y + 3, 4017, 4019, 3000 + _displayedCount);
 
@@ -280,7 +280,7 @@ public sealed class FeatureFlagAdminGump : DynamicGump
 
             builder.AddButton(20, y, block.Active ? 2151 : 2154, block.Active ? 2154 : 2151, 2000 + _displayedCount);
             builder.AddHtml(60, y + 3, 120, 20, block.DisplayName.Color(GumpTextColors.White));
-            builder.AddHtml(180, y + 3, 280, 40, (block.Reason ?? "").Color(GumpTextColors.LightGray));
+            builder.AddHtml(180, y + 3, 280, 40, (block.Reason ?? "(default)").Color(GumpTextColors.LightGray));
 
             var useColor = block.BlockUse ? GumpTextColors.Red : GumpTextColors.Green;
             var equipColor = block.BlockEquip ? GumpTextColors.Red : GumpTextColors.Green;
@@ -430,7 +430,7 @@ public sealed class FeatureFlagAdminGump : DynamicGump
                                 }
                             case FeatureFlagPage.ItemBlocks:
                                 {
-                                    FeatureFlagManager.UnblockItem(block.ResolvedType, from.Name);
+                                    FeatureFlagManager.RemoveItemBlock(block.ResolvedType, from.Name);
                                     break;
                                 }
                             case FeatureFlagPage.SkillBlocks:

@@ -313,56 +313,126 @@ public static class FeatureFlagManager
 
     public static IReadOnlyCollection<ItemBlockEntry> GetAllItemBlocks() => _itemBlocks.Values;
 
-    public static void BlockItem(Type itemType, string reason, string blockedBy = "System")
+    public static void BlockItemUse(Type itemType, string reason, string blockedBy = "System") =>
+        SetItemBlockFlag(itemType, "Use", reason, blockedBy, (e, v) => e.BlockUse = v);
+
+    public static void BlockItemEquip(Type itemType, string reason, string blockedBy = "System") =>
+        SetItemBlockFlag(itemType, "Equip", reason, blockedBy, (e, v) => e.BlockEquip = v);
+
+    public static void BlockItemContainer(Type itemType, string reason, string blockedBy = "System") =>
+        SetItemBlockFlag(itemType, "Container", reason, blockedBy, (e, v) => e.BlockContainerAccess = v);
+
+    public static bool BlockItemUseByName(string typeName, string reason, string blockedBy = "System") =>
+        ResolveItemType(typeName, out var type) && Apply(() => BlockItemUse(type, reason, blockedBy));
+
+    public static bool BlockItemEquipByName(string typeName, string reason, string blockedBy = "System") =>
+        ResolveItemType(typeName, out var type) && Apply(() => BlockItemEquip(type, reason, blockedBy));
+
+    public static bool BlockItemContainerByName(string typeName, string reason, string blockedBy = "System") =>
+        ResolveItemType(typeName, out var type) && Apply(() => BlockItemContainer(type, reason, blockedBy));
+
+    public static bool UnblockItemUse(Type itemType, string unblockedBy = "System") =>
+        ClearItemBlockFlag(itemType, "Use", unblockedBy, (e, v) => e.BlockUse = v, e => e.BlockUse);
+
+    public static bool UnblockItemEquip(Type itemType, string unblockedBy = "System") =>
+        ClearItemBlockFlag(itemType, "Equip", unblockedBy, (e, v) => e.BlockEquip = v, e => e.BlockEquip);
+
+    public static bool UnblockItemContainer(Type itemType, string unblockedBy = "System") =>
+        ClearItemBlockFlag(itemType, "Container", unblockedBy, (e, v) => e.BlockContainerAccess = v, e => e.BlockContainerAccess);
+
+    public static bool UnblockItemUseByName(string typeName, string unblockedBy = "System") =>
+        ResolveItemType(typeName, out var type) && UnblockItemUse(type, unblockedBy);
+
+    public static bool UnblockItemEquipByName(string typeName, string unblockedBy = "System") =>
+        ResolveItemType(typeName, out var type) && UnblockItemEquip(type, unblockedBy);
+
+    public static bool UnblockItemContainerByName(string typeName, string unblockedBy = "System") =>
+        ResolveItemType(typeName, out var type) && UnblockItemContainer(type, unblockedBy);
+
+    private static bool ResolveItemType(string typeName, out Type type)
     {
-        if (_itemBlocks.TryGetValue(itemType, out var existing))
+        type = ResolveType(typeName);
+        return type != null && typeof(Item).IsAssignableFrom(type);
+    }
+
+    private static bool Apply(Action action)
+    {
+        action();
+        return true;
+    }
+
+    private static void SetItemBlockFlag(
+        Type itemType, string action, string reason, string blockedBy,
+        Action<ItemBlockEntry, bool> setter)
+    {
+        if (!_itemBlocks.TryGetValue(itemType, out var entry))
         {
-            existing.BlockUse = true;
-            existing.Reason = reason;
-        }
-        else
-        {
-            var entry = new ItemBlockEntry
+            entry = new ItemBlockEntry
             {
                 ResolvedType = itemType,
-                Reason = reason,
                 Active = true,
-                BlockUse = true,
                 CreatedAt = Core.Now,
                 CreatedBy = blockedBy
             };
-
             _itemBlocks[itemType] = entry;
+        }
+
+        setter(entry, true);
+
+        if (reason != null)
+        {
+            entry.Reason = reason;
         }
 
         UpdateItemBlocksFlag();
 
         if (FeatureFlagSettings.LogChanges)
         {
-            logger.Warning("Item '{ItemType}' BLOCKED by {BlockedBy}. Reason: {Reason}", itemType.FullName, blockedBy, reason);
+            logger.Warning("Item '{ItemType}' {Action} BLOCKED by {BlockedBy}. Reason: {Reason}", itemType.FullName, action, blockedBy, reason);
         }
 
         if (FeatureFlagSettings.BroadcastChangesToStaff)
         {
-            World.BroadcastStaff($"[Item Block] '{itemType.Name}' BLOCKED by {blockedBy}. Reason: {reason}");
+            World.BroadcastStaff($"[Item Block] '{itemType.Name}' {action} BLOCKED by {blockedBy}. Reason: {reason}");
         }
 
         SaveItemBlocks();
     }
 
-    public static bool BlockItemByName(string typeName, string reason, string blockedBy = "System")
+    private static bool ClearItemBlockFlag(
+        Type itemType, string action, string unblockedBy,
+        Action<ItemBlockEntry, bool> setter, Func<ItemBlockEntry, bool> getter)
     {
-        var type = ResolveType(typeName);
-        if (type == null || !typeof(Item).IsAssignableFrom(type))
+        if (!_itemBlocks.TryGetValue(itemType, out var entry) || !getter(entry))
         {
             return false;
         }
 
-        BlockItem(type, reason, blockedBy);
+        setter(entry, false);
+
+        // Remove entry entirely if no flags remain
+        if (!entry.BlockUse && !entry.BlockEquip && !entry.BlockContainerAccess)
+        {
+            _itemBlocks.Remove(itemType);
+        }
+
+        UpdateItemBlocksFlag();
+
+        if (FeatureFlagSettings.LogChanges)
+        {
+            logger.Information("Item '{ItemType}' {Action} UNBLOCKED by {UnblockedBy}", itemType.FullName, action, unblockedBy);
+        }
+
+        if (FeatureFlagSettings.BroadcastChangesToStaff)
+        {
+            World.BroadcastStaff($"[Item Block] '{itemType.Name}' {action} UNBLOCKED by {unblockedBy}");
+        }
+
+        SaveItemBlocks();
         return true;
     }
 
-    public static bool UnblockItem(Type itemType, string unblockedBy = "System")
+    public static bool RemoveItemBlock(Type itemType, string removedBy = "System")
     {
         if (!_itemBlocks.Remove(itemType))
         {
@@ -373,22 +443,16 @@ public static class FeatureFlagManager
 
         if (FeatureFlagSettings.LogChanges)
         {
-            logger.Information("Item '{ItemType}' UNBLOCKED by {UnblockedBy}", itemType.FullName, unblockedBy);
+            logger.Information("Item '{ItemType}' block REMOVED by {RemovedBy}", itemType.FullName, removedBy);
         }
 
         if (FeatureFlagSettings.BroadcastChangesToStaff)
         {
-            World.BroadcastStaff($"[Item Block] '{itemType.Name}' UNBLOCKED by {unblockedBy}");
+            World.BroadcastStaff($"[Item Block] '{itemType.Name}' REMOVED by {removedBy}");
         }
 
         SaveItemBlocks();
         return true;
-    }
-
-    public static bool UnblockItemByName(string typeName, string unblockedBy = "System")
-    {
-        var type = ResolveType(typeName);
-        return type != null && UnblockItem(type, unblockedBy);
     }
 
     public static bool SetItemBlockActive(Type itemType, bool active, string modifiedBy = "System")
@@ -900,6 +964,7 @@ public static class FeatureFlagManager
             "vendor_sell"     => ContentFeatureFlags.VendorSell = enabled,
             "player_vendors"  => ContentFeatureFlags.PlayerVendors = enabled,
             "house_placement" => ContentFeatureFlags.HousePlacement = enabled,
+            "boat_placement"  => ContentFeatureFlags.BoatPlacement = enabled,
             "bulk_orders"     => ContentFeatureFlags.BulkOrders = enabled,
         };
     }

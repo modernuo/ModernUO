@@ -6,7 +6,6 @@ using Server.Mobiles;
 using Server.Multis;
 using Server.Network;
 using Server.Regions;
-using Server.Systems.FeatureFlags;
 using Server.Targeting;
 
 namespace Server.Items;
@@ -25,12 +24,6 @@ public partial class HousePlacementTool : Item
         if (!IsChildOf(from.Backpack))
         {
             from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
-            return;
-        }
-
-        if (!ContentFeatureFlags.HousePlacement && from.AccessLevel < AccessLevel.Administrator)
-        {
-            from.SendMessage(0x22, "House placement is temporarily disabled.");
             return;
         }
 

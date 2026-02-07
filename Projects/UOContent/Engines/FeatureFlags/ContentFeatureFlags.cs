@@ -10,5 +10,6 @@ public static class ContentFeatureFlags
     public static bool VendorSell { get; set; } = true;
     public static bool PlayerVendors { get; set; } = true;
     public static bool HousePlacement { get; set; } = true;
+    public static bool BoatPlacement { get; set; } = true;
     public static bool BulkOrders { get; set; } = true;
 }
