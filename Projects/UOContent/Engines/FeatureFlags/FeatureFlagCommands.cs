@@ -42,103 +42,82 @@ public static class FeatureFlagCommands
         var flagKey = e.Arguments[0].ToLowerInvariant();
         var action = e.Arguments.Length > 1 ? e.Arguments[1].ToLowerInvariant() : "info";
 
-        switch (action)
+        if (action is "on" or "enable" or "true" or "1")
         {
-            case "on":
-            case "enable":
-            case "true":
-            case "1":
-                {
-                    if (FeatureFlagManager.SetFlag(flagKey, true, from.Name))
-                    {
-                        from.SendMessage(0x35, $"Feature flag '{flagKey}' has been ENABLED.");
-                    }
-                    else
-                    {
-                        from.SendMessage(0x22, $"Feature flag '{flagKey}' not found.");
-                    }
-                    break;
-                }
+            if (FeatureFlagManager.SetFlag(flagKey, true, from.Name))
+            {
+                from.SendMessage(0x35, $"Feature flag '{flagKey}' has been ENABLED.");
+            }
+            else
+            {
+                from.SendMessage(0x22, $"Feature flag '{flagKey}' not found.");
+            }
+        }
+        else if (action is "off" or "disable" or "false" or "0")
+        {
+            if (FeatureFlagManager.SetFlag(flagKey, false, from.Name))
+            {
+                from.SendMessage(0x35, $"Feature flag '{flagKey}' has been DISABLED.");
+            }
+            else
+            {
+                from.SendMessage(0x22, $"Feature flag '{flagKey}' not found.");
+            }
+        }
+        else if (action == "toggle")
+        {
+            var flag = FeatureFlagManager.GetFlag(flagKey);
+            if (flag != null)
+            {
+                FeatureFlagManager.SetFlag(flagKey, !flag.Enabled, from.Name);
+                from.SendMessage(0x35, $"Feature flag '{flagKey}' toggled to {(flag.Enabled ? "DISABLED" : "ENABLED")}.");
+            }
+            else
+            {
+                from.SendMessage(0x22, $"Feature flag '{flagKey}' not found.");
+            }
+        }
+        else if (action == "create")
+        {
+            if (e.Arguments.Length < 4)
+            {
+                from.SendMessage("Usage: [FeatureFlag <key> create <category> <description>");
+                return;
+            }
 
-            case "off":
-            case "disable":
-            case "false":
-            case "0":
-                {
-                    if (FeatureFlagManager.SetFlag(flagKey, false, from.Name))
-                    {
-                        from.SendMessage(0x35, $"Feature flag '{flagKey}' has been DISABLED.");
-                    }
-                    else
-                    {
-                        from.SendMessage(0x22, $"Feature flag '{flagKey}' not found.");
-                    }
-                    break;
-                }
-
-            case "toggle":
-                {
-                    var flag = FeatureFlagManager.GetFlag(flagKey);
-                    if (flag != null)
-                    {
-                        FeatureFlagManager.SetFlag(flagKey, !flag.Enabled, from.Name);
-                        from.SendMessage(0x35, $"Feature flag '{flagKey}' toggled to {(flag.Enabled ? "DISABLED" : "ENABLED")}.");
-                    }
-                    else
-                    {
-                        from.SendMessage(0x22, $"Feature flag '{flagKey}' not found.");
-                    }
-                    break;
-                }
-
-            case "create":
-                {
-                    if (e.Arguments.Length < 4)
-                    {
-                        from.SendMessage("Usage: [FeatureFlag <key> create <category> <description>");
-                        return;
-                    }
-                    var category = e.Arguments[2];
-                    var description = string.Join(" ", e.Arguments, 3, e.Arguments.Length - 3);
-                    FeatureFlagManager.CreateOrUpdateFlag(flagKey, description, category, true, from.Name);
-                    from.SendMessage(0x35, $"Feature flag '{flagKey}' created.");
-                    break;
-                }
-
-            case "delete":
-            case "remove":
-                {
-                    if (FeatureFlagManager.RemoveFlag(flagKey, from.Name))
-                    {
-                        from.SendMessage(0x35, $"Feature flag '{flagKey}' removed.");
-                    }
-                    else
-                    {
-                        from.SendMessage(0x22, $"Feature flag '{flagKey}' not found.");
-                    }
-                    break;
-                }
-
-            case "info":
-            default:
-                {
-                    var infoFlag = FeatureFlagManager.GetFlag(flagKey);
-                    if (infoFlag != null)
-                    {
-                        from.SendMessage(0x35, $"=== Feature Flag: {infoFlag.Key} ===");
-                        from.SendMessage($"Enabled: {(infoFlag.Enabled ? "Yes" : "No")}");
-                        from.SendMessage($"Default: {(infoFlag.DefaultEnabled ? "Yes" : "No")}");
-                        from.SendMessage($"Category: {infoFlag.Category}");
-                        from.SendMessage($"Description: {infoFlag.Description}");
-                        from.SendMessage($"Last Modified: {infoFlag.LastModified:G} by {infoFlag.LastModifiedBy}");
-                    }
-                    else
-                    {
-                        from.SendMessage(0x22, $"Feature flag '{flagKey}' not found.");
-                        from.SendMessage("Use [FeatureList to see all available flags.");
-                    }
-                    break;
-                }
+            var category = e.Arguments[2];
+            var description = string.Join(" ", e.Arguments, 3, e.Arguments.Length - 3);
+            FeatureFlagManager.CreateOrUpdateFlag(flagKey, description, category, true, from.Name);
+            from.SendMessage(0x35, $"Feature flag '{flagKey}' created.");
+        }
+        else if (action is "delete" or "remove")
+        {
+            if (FeatureFlagManager.RemoveFlag(flagKey, from.Name))
+            {
+                from.SendMessage(0x35, $"Feature flag '{flagKey}' removed.");
+            }
+            else
+            {
+                from.SendMessage(0x22, $"Feature flag '{flagKey}' not found.");
+            }
+        }
+        else
+        {
+            var infoFlag = FeatureFlagManager.GetFlag(flagKey);
+            if (infoFlag != null)
+            {
+                from.SendMessage(0x35, $"=== Feature Flag: {infoFlag.Key} ===");
+                from.SendMessage($"Enabled: {(infoFlag.Enabled ? "Yes" : "No")}");
+                from.SendMessage($"Default: {(infoFlag.DefaultEnabled ? "Yes" : "No")}");
+                from.SendMessage($"Category: {infoFlag.Category}");
+                from.SendMessage($"Description: {infoFlag.Description}");
+                from.SendMessage($"Last Modified: {infoFlag.LastModified:G} by {infoFlag.LastModifiedBy}");
+            }
+            else
+            {
+                from.SendMessage(0x22, $"Feature flag '{flagKey}' not found.");
+                from.SendMessage("Use [FeatureList to see all available flags.");
+            }
         }
     }
 
@@ -502,8 +481,8 @@ public static class FeatureFlagCommands
         if (filter is "skills" or "all")
         {
             var skillBlocks = FeatureFlagManager.GetAllSkillBlocks();
-            from.SendMessage(0x35, $"=== Blocked Skills ({skillBlocks.Count}) ===");
-            for (var i = 0; i < skillBlocks.Count; i++)
+            from.SendMessage(0x35, $"=== Blocked Skills ({skillBlocks.Length}) ===");
+            for (var i = 0; i < skillBlocks.Length; i++)
             {
                 var block = skillBlocks[i];
                 var status = block.Active ? "[OFF]" : "[ON]";
@@ -514,7 +493,7 @@ public static class FeatureFlagCommands
         if (filter is "spells" or "all")
         {
             var spellBlocks = FeatureFlagManager.GetAllSpellBlocks();
-            from.SendMessage(0x35, $"=== Blocked Spells ({spellBlocks.Count}) ===");
+            from.SendMessage(0x35, $"=== Blocked Spells ({spellBlocks.Length}) ===");
             foreach (var block in spellBlocks)
             {
                 var status = block.Active ? "[OFF]" : "[ON]";

@@ -5,7 +5,6 @@ using Server.Gumps;
 using Server.Items;
 using Server.Json;
 using Server.Logging;
-using Server.Network;
 using Server.Spells;
 
 namespace Server.Systems.FeatureFlags;
@@ -161,42 +160,19 @@ public static class FeatureFlagManager
         return false;
     }
 
-    public static bool IsGumpBlocked<T>() where T : BaseGump
-    {
-        if (!_hasActiveGumpBlocks)
-        {
-            return false;
-        }
+    public static bool IsGumpBlocked<T>() where T : BaseGump =>
+        _hasActiveGumpBlocks && _gumpBlocks.TryGetValue(typeof(T), out var entry) && entry.Active;
 
-        return _gumpBlocks.TryGetValue(typeof(T), out var entry) && entry.Active;
-    }
+    public static bool IsGumpBlocked(Type gumpType) =>
+        _hasActiveGumpBlocks && _gumpBlocks.TryGetValue(gumpType, out var entry) && entry.Active;
 
-    public static bool IsGumpBlocked(Type gumpType)
-    {
-        if (!_hasActiveGumpBlocks)
-        {
-            return false;
-        }
-
-        return _gumpBlocks.TryGetValue(gumpType, out var entry) && entry.Active;
-    }
-
-    public static GumpBlockEntry GetGumpBlockEntry(Type gumpType)
-    {
-        if (!_hasActiveGumpBlocks)
-        {
-            return null;
-        }
-
-        return _gumpBlocks.TryGetValue(gumpType, out var entry) ? entry : null;
-    }
+    public static GumpBlockEntry GetGumpBlockEntry(Type gumpType) =>
+        _hasActiveGumpBlocks ? _gumpBlocks.GetValueOrDefault(gumpType) : null;
 
     public static IReadOnlyCollection<GumpBlockEntry> GetAllGumpBlocks() => _gumpBlocks.Values;
 
-    public static void BlockGump<T>(string reason, string blockedBy = "System") where T : BaseGump
-    {
+    public static void BlockGump<T>(string reason, string blockedBy = "System") where T : BaseGump =>
         BlockGump(typeof(T), reason, blockedBy);
-    }
 
     public static void BlockGump(Type gumpType, string reason, string blockedBy = "System")
     {
@@ -242,7 +218,7 @@ public static class FeatureFlagManager
 
     public static bool UnblockGump(Type gumpType, string unblockedBy = "System")
     {
-        if (!_gumpBlocks.Remove(gumpType, out var removed))
+        if (!_gumpBlocks.Remove(gumpType))
         {
             return false;
         }
@@ -467,18 +443,8 @@ public static class FeatureFlagManager
         return (uint)index >= (uint)_skillBlocks.Length ? null : _skillBlocks[index];
     }
 
-    public static IReadOnlyList<SkillBlockEntry> GetAllSkillBlocks()
-    {
-        var list = new List<SkillBlockEntry>();
-        for (var i = 0; i < _skillBlocks.Length; i++)
-        {
-            if (_skillBlocks[i] != null)
-            {
-                list.Add(_skillBlocks[i]);
-            }
-        }
-        return list;
-    }
+    // NOTE: Will contain nulls!
+    public static ReadOnlySpan<SkillBlockEntry> GetAllSkillBlocks() => _skillBlocks;
 
     public static void BlockSkill(SkillName skill, string reason, string blockedBy = "System")
     {
@@ -601,18 +567,8 @@ public static class FeatureFlagManager
         return id >= 0 && (uint)id < (uint)_spellBlocks.Length ? _spellBlocks[id] : null;
     }
 
-    public static IReadOnlyList<SpellBlockEntry> GetAllSpellBlocks()
-    {
-        var list = new List<SpellBlockEntry>();
-        for (var i = 0; i < _spellBlocks.Length; i++)
-        {
-            if (_spellBlocks[i] != null)
-            {
-                list.Add(_spellBlocks[i]);
-            }
-        }
-        return list;
-    }
+    // NOTE: Will contain nulls!
+    public static ReadOnlySpan<SpellBlockEntry> GetAllSpellBlocks() => _spellBlocks;
 
     public static void BlockSpell(Type spellType, string reason, string blockedBy = "System")
     {
@@ -1102,39 +1058,36 @@ public static class FeatureFlagManager
 
     private static void SyncStaticFlag(string key, bool enabled)
     {
-        switch (key.ToLowerInvariant())
-        {
+        if (key.ToLowerInvariant() ==
             // Server project flags
-            case "player_trading":
-                {
-                    ServerFeatureFlags.PlayerTrading = enabled; break;
-                }
-            case "pvp_combat":
-                {
-                    ServerFeatureFlags.PvPCombat = enabled; break;
-                }
-
-            // UOContent flags
-            case "vendor_purchase":
-                {
-                    ContentFeatureFlags.VendorPurchase = enabled; break;
-                }
-            case "vendor_sell":
-                {
-                    ContentFeatureFlags.VendorSell = enabled; break;
-                }
-            case "player_vendors":
-                {
-                    ContentFeatureFlags.PlayerVendors = enabled; break;
-                }
-            case "house_placement":
-                {
-                    ContentFeatureFlags.HousePlacement = enabled; break;
-                }
-            case "bulk_orders":
-                {
-                    ContentFeatureFlags.BulkOrders = enabled; break;
-                }
+            "player_trading")
+        {
+            ServerFeatureFlags.PlayerTrading = enabled;
+        }
+        else if (key.ToLowerInvariant() == "pvp_combat")
+        {
+            ServerFeatureFlags.PvPCombat = enabled;
+        }
+        // UOContent flags
+        else if (key.ToLowerInvariant() == "vendor_purchase")
+        {
+            ContentFeatureFlags.VendorPurchase = enabled;
+        }
+        else if (key.ToLowerInvariant() == "vendor_sell")
+        {
+            ContentFeatureFlags.VendorSell = enabled;
+        }
+        else if (key.ToLowerInvariant() == "player_vendors")
+        {
+            ContentFeatureFlags.PlayerVendors = enabled;
+        }
+        else if (key.ToLowerInvariant() == "house_placement")
+        {
+            ContentFeatureFlags.HousePlacement = enabled;
+        }
+        else if (key.ToLowerInvariant() == "bulk_orders")
+        {
+            ContentFeatureFlags.BulkOrders = enabled;
         }
     }
 

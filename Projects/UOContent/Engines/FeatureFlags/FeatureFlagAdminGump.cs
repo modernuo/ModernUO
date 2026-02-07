@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using Server.Collections;
 using Server.Gumps;
 using Server.Network;
 
@@ -19,6 +21,9 @@ public sealed class FeatureFlagAdminGump : DynamicGump
 
     private FeatureFlagPage _currentPage;
     private int _pageIndex;
+    private int _displayedCount;
+    private readonly FeatureFlag[] _displayedFlags = new FeatureFlag[FlagsPerPage];
+    private readonly FeatureFlagBlockEntry[] _displayedBlocks = new FeatureFlagBlockEntry[BlocksPerPage];
     private const int FlagsPerPage = 10;
     private const int BlocksPerPage = 7;
     private const int FlagRowHeight = 25;
@@ -76,53 +81,54 @@ public sealed class FeatureFlagAdminGump : DynamicGump
         // Content area
         builder.AddAlphaRegion(15, 75, 790, 380);
 
-        switch (_currentPage)
+        if (_currentPage == FeatureFlagPage.Flags)
         {
-            case FeatureFlagPage.Flags:
-                {
-                    BuildFlagsPage(ref builder);
-                    break;
-                }
-            case FeatureFlagPage.GumpBlocks:
-                {
-                    BuildBlockPage(
-                        ref builder, "Gump Type",
-                        new List<FeatureFlagBlockEntry>(FeatureFlagManager.GetAllGumpBlocks()),
-                        2000, 3000, "Use [BlockGump to add new blocks");
-                    break;
-                }
-            case FeatureFlagPage.UseReqBlocks:
-                {
-                    BuildBlockPage(
-                        ref builder, "Item Type",
-                        new List<FeatureFlagBlockEntry>(FeatureFlagManager.GetAllUseReqBlocks()),
-                        4000, 5000, "Use [BlockUse to add new blocks");
-                    break;
-                }
-            case FeatureFlagPage.SkillBlocks:
-                {
-                    BuildBlockPage(
-                        ref builder, "Skill",
-                        new List<FeatureFlagBlockEntry>(FeatureFlagManager.GetAllSkillBlocks()),
-                        6000, 7000, "Use [BlockSkill to add new blocks");
-                    break;
-                }
-            case FeatureFlagPage.SpellBlocks:
-                {
-                    BuildBlockPage(
-                        ref builder, "Spell Type",
-                        new List<FeatureFlagBlockEntry>(FeatureFlagManager.GetAllSpellBlocks()),
-                        8000, 9000, "Use [BlockSpell to add new blocks");
-                    break;
-                }
-            case FeatureFlagPage.ContainerBlocks:
-                {
-                    BuildBlockPage(
-                        ref builder, "Container Type",
-                        new List<FeatureFlagBlockEntry>(FeatureFlagManager.GetAllContainerBlocks()),
-                        10000, 11000, "Use [BlockContainer to add new blocks");
-                    break;
-                }
+            BuildFlagsPage(ref builder);
+        }
+        else if (_currentPage == FeatureFlagPage.GumpBlocks)
+        {
+            BuildBlockPage(
+                ref builder,
+                "Gump Type",
+                FeatureFlagManager.GetAllGumpBlocks(),
+                "Use [BlockGump to add new blocks"
+            );
+        }
+        else if (_currentPage == FeatureFlagPage.UseReqBlocks)
+        {
+            BuildBlockPage(
+                ref builder,
+                "Item Type",
+                FeatureFlagManager.GetAllUseReqBlocks(),
+                "Use [BlockUse to add new blocks"
+            );
+        }
+        else if (_currentPage == FeatureFlagPage.SkillBlocks)
+        {
+            BuildBlockPage(
+                ref builder,
+                "Skill",
+                FeatureFlagManager.GetAllSkillBlocks(),
+                "Use [BlockSkill to add new blocks"
+            );
+        }
+        else if (_currentPage == FeatureFlagPage.SpellBlocks)
+        {
+            BuildBlockPage(
+                ref builder,
+                "Spell Type",
+                FeatureFlagManager.GetAllSpellBlocks(),
+                "Use [BlockSpell to add new blocks"
+            );
+        }
+        else if (_currentPage == FeatureFlagPage.ContainerBlocks)
+        {
+            BuildBlockPage(
+                ref builder,
+                "Container Type",
+                FeatureFlagManager.GetAllContainerBlocks(),
+                "Use [BlockContainer to add new blocks"
+            );
         }
 
         // Close button
@@ -156,32 +162,52 @@ public sealed class FeatureFlagAdminGump : DynamicGump
         var endIndex = Math.Min(startIndex + FlagsPerPage, flags.Count);
         var totalPages = Math.Max(1, (int)Math.Ceiling(flags.Count / (double)FlagsPerPage));
 
+        _displayedCount = 0;
         var y = 105;
         for (var i = startIndex; i < endIndex; i++)
         {
             var flag = flags[i];
-            var buttonId = 1000 + i;
+            _displayedFlags[_displayedCount] = flag;
             var statusColor = flag.Enabled ? GumpTextColors.Blue : GumpTextColors.Red;
 
-            builder.AddButton(20, y, flag.Enabled ? 2154 : 2151, flag.Enabled ? 2151 : 2154, buttonId);
+            builder.AddButton(20, y, flag.Enabled ? 2154 : 2151, flag.Enabled ? 2151 : 2154, 1000 + _displayedCount);
             builder.AddHtml(60, y + 3, 130, 20, flag.Key.Color(GumpTextColors.White));
             builder.AddHtml(180, y + 3, 150, 20, (flag.Category ?? "").Color(GumpTextColors.LightGray));
             builder.AddHtml(275, y + 3, 350, 20, (flag.Description ?? "").Color(GumpTextColors.LightGray));
             builder.AddHtml(700, y + 3, 60, 20, (flag.Enabled ? "ON" : "OFF").Color(statusColor));
 
+            _displayedCount++;
             y += FlagRowHeight;
         }
 
         AddPagination(ref builder, totalPages);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void BuildBlockPage(
         ref DynamicGumpBuilder builder,
         string headerLabel,
-        IReadOnlyList<FeatureFlagBlockEntry> blocks,
-        int toggleBaseId,
-        int removeBaseId,
-        string helpText)
+        IReadOnlyCollection<FeatureFlagBlockEntry> blocks,
+        string helpText
+    )
+    {
+        using var list = PooledRefList<FeatureFlagBlockEntry>.Create();
+        foreach (var b in blocks)
+        {
+            if (b != null)
+            {
+                list.Add(b);
+            }
+        }
+        BuildBlockPage(ref builder, headerLabel, list.AsSpan(), helpText);
+    }
+
+    private void BuildBlockPage(
+        ref DynamicGumpBuilder builder,
+        string headerLabel,
+        ReadOnlySpan<FeatureFlagBlockEntry> blocks,
+        string helpText
+    )
     {
         builder.AddHtml(20, 80, 180, 20, headerLabel.Color(GumpTextColors.Blue));
         builder.AddHtml(200, 80, 400, 20, "Reason".Color(GumpTextColors.Blue));
@@ -189,27 +215,46 @@ public sealed class FeatureFlagAdminGump : DynamicGump
         builder.AddHtml(680, 80, 60, 20, "Remove".Color(GumpTextColors.Blue));
 
         var startIndex = _pageIndex * BlocksPerPage;
-        var endIndex = Math.Min(startIndex + BlocksPerPage, blocks.Count);
-        var totalPages = Math.Max(1, (int)Math.Ceiling(blocks.Count / (double)BlocksPerPage));
+        var count = 0;
 
+        _displayedCount = 0;
+        var skipped = 0;
         var y = 105;
-        for (var i = startIndex; i < endIndex; i++)
+
+        for (var i = 0; i < blocks.Length; i++)
         {
             var block = blocks[i];
-            var toggleButtonId = toggleBaseId + i;
-            var removeButtonId = removeBaseId + i;
-            var statusColor = block.Active ? GumpTextColors.Red : GumpTextColors.Blue;
+            if (block == null)
+            {
+                continue;
+            }
 
-            builder.AddButton(20, y, block.Active ? 2151 : 2154, block.Active ? 2154 : 2151, toggleButtonId);
-            builder.AddHtml(60, y + 3, 150, 20, block.DisplayName.Color(GumpTextColors.White));
-            builder.AddHtml(200, y + 3, 400, 40, (block.Reason ?? "").Color(GumpTextColors.LightGray));
-            builder.AddHtml(610, y + 3, 60, 20, (block.Active ? "OFF" : "ON").Color(statusColor));
+            count++;
 
-            builder.AddButton(680, y + 3, 4017, 4019, removeButtonId);
+            if (skipped < startIndex)
+            {
+                skipped++;
+                continue;
+            }
 
-            y += BlockRowHeight;
+            if (_displayedCount < BlocksPerPage)
+            {
+                _displayedBlocks[_displayedCount] = block;
+                var statusColor = block.Active ? GumpTextColors.Red : GumpTextColors.Blue;
+
+                builder.AddButton(20, y, block.Active ? 2151 : 2154, block.Active ? 2154 : 2151, 2000 + _displayedCount);
+                builder.AddHtml(60, y + 3, 150, 20, block.DisplayName.Color(GumpTextColors.White));
+                builder.AddHtml(200, y + 3, 400, 40, (block.Reason ?? "").Color(GumpTextColors.LightGray));
+                builder.AddHtml(610, y + 3, 60, 20, (block.Active ? "OFF" : "ON").Color(statusColor));
+
+                builder.AddButton(680, y + 3, 4017, 4019, 3000 + _displayedCount);
+
+                _displayedCount++;
+                y += BlockRowHeight;
+            }
         }
 
+        var totalPages = Math.Max(1, (int)Math.Ceiling(count / (double)BlocksPerPage));
         AddPagination(ref builder, totalPages);
         builder.AddHtml(20, 430, 400, 20, helpText.Color(GumpTextColors.LightGray));
     }
@@ -241,186 +286,119 @@ public sealed class FeatureFlagAdminGump : DynamicGump
         var from = sender.Mobile;
         var buttonId = info.ButtonID;
 
+        if (buttonId == 0)
+        {
+            return;
+        }
+
+        if (buttonId is >= (int)(FeatureFlagPage.Flags + 1) and <= (int)(FeatureFlagPage.ContainerBlocks + 1))
+        {
+            Resend(from, (FeatureFlagPage)(buttonId - 1));
+            return;
+        }
+
+        if (buttonId == 100)
+        {
+            FeatureFlagManager.Save();
+            from.SendMessage(0x35, "Feature flags saved to disk.");
+            from.SendGump(this);
+            return;
+        }
+
+        if (buttonId == 101)
+        {
+            from.SendGump(this);
+            return;
+        }
+
+        if (buttonId == 102)
+        {
+            Resend(from, _currentPage, _pageIndex - 1);
+            return;
+        }
+
+        if (buttonId == 103)
+        {
+            Resend(from, _currentPage, _pageIndex + 1);
+            return;
+        }
+
         switch (buttonId)
         {
-            case 0:
+            // Toggle feature flags
+            case >= 1000 and < 1000 + FlagsPerPage:
                 {
-                    return;
+                    var index = buttonId - 1000;
+                    if (index < _displayedCount)
+                    {
+                        var flag = _displayedFlags[index];
+                        FeatureFlagManager.SetFlag(flag.Key, !flag.Enabled, from.Name);
+                    }
+                    break;
                 }
-            case >= (int)(FeatureFlagPage.Flags + 1) and <= (int)(FeatureFlagPage.ContainerBlocks + 1):
+            // Toggle block
+            case >= 2000 and < 2000 + BlocksPerPage:
                 {
-                    Resend(from, (FeatureFlagPage)(buttonId - 1));
-                    return;
+                    var index = buttonId - 2000;
+                    if (index < _displayedCount)
+                    {
+                        var block = _displayedBlocks[index];
+                        if (_currentPage == FeatureFlagPage.GumpBlocks)
+                        {
+                            FeatureFlagManager.SetGumpBlockActive(block.ResolvedType, !block.Active, from.Name);
+                        }
+                        else if (_currentPage == FeatureFlagPage.UseReqBlocks)
+                        {
+                            FeatureFlagManager.SetUseReqBlockActive(block.ResolvedType, !block.Active, from.Name);
+                        }
+                        else if (_currentPage == FeatureFlagPage.SkillBlocks)
+                        {
+                            FeatureFlagManager.SetSkillBlockActive(((SkillBlockEntry)block).Skill, !block.Active, from.Name);
+                        }
+                        else if (_currentPage == FeatureFlagPage.SpellBlocks)
+                        {
+                            FeatureFlagManager.SetSpellBlockActive(((SpellBlockEntry)block).SpellId, !block.Active, from.Name);
+                        }
+                        else if (_currentPage == FeatureFlagPage.ContainerBlocks)
+                        {
+                            FeatureFlagManager.SetContainerBlockActive(block.ResolvedType, !block.Active, from.Name);
+                        }
+                    }
+
+                    break;
                 }
-            case 100:
+            // Remove block
+            case >= 3000 and < 3000 + BlocksPerPage:
                 {
-                    FeatureFlagManager.Save();
-                    from.SendMessage(0x35, "Feature flags saved to disk.");
-                    from.SendGump(this);
-                    return;
+                    var index = buttonId - 3000;
+                    if (index < _displayedCount)
+                    {
+                        var block = _displayedBlocks[index];
+                        if (_currentPage == FeatureFlagPage.GumpBlocks)
+                        {
+                            FeatureFlagManager.UnblockGump(block.ResolvedType, from.Name);
+                        }
+                        else if (_currentPage == FeatureFlagPage.UseReqBlocks)
+                        {
+                            FeatureFlagManager.UnblockUseReq(block.ResolvedType, from.Name);
+                        }
+                        else if (_currentPage == FeatureFlagPage.SkillBlocks)
+                        {
+                            FeatureFlagManager.UnblockSkill(((SkillBlockEntry)block).Skill, from.Name);
+                        }
+                        else if (_currentPage == FeatureFlagPage.SpellBlocks)
+                        {
+                            FeatureFlagManager.UnblockSpell(block.ResolvedType, from.Name);
+                        }
+                        else if (_currentPage == FeatureFlagPage.ContainerBlocks)
+                        {
+                            FeatureFlagManager.UnblockContainer(block.ResolvedType, from.Name);
+                        }
+                    }
+                    break;
                 }
-            case 101:
-                {
-                    from.SendGump(this);
-                    return;
-                }
-            case 102:
-                {
-                    Resend(from, _currentPage, _pageIndex - 1);
-                    return;
-                }
-            case 103:
-                {
-                    Resend(from, _currentPage, _pageIndex + 1);
-                    return;
-                }
         }
 
-        // Toggle feature flags (1000+)
-        if (buttonId is >= 1000 and < 2000)
-        {
-            var flags = new List<FeatureFlag>(FeatureFlagManager.GetAllFlags());
-            flags.Sort((a, b) =>
-            {
-                var cmp = a.Category.InsensitiveCompare(b.Category);
-                return cmp != 0 ? cmp : a.Key.InsensitiveCompare(b.Key);
-            });
-            var index = buttonId - 1000;
-            if (index < flags.Count)
-            {
-                FeatureFlagManager.SetFlag(flags[index].Key, !flags[index].Enabled, from.Name);
-            }
-            from.SendGump(this);
-            return;
-        }
-
-        // Toggle gump blocks (2000+)
-        if (buttonId is >= 2000 and < 3000)
-        {
-            var blocks = new List<GumpBlockEntry>(FeatureFlagManager.GetAllGumpBlocks());
-            var index = buttonId - 2000;
-            if (index < blocks.Count)
-            {
-                FeatureFlagManager.SetGumpBlockActive(blocks[index].ResolvedType, !blocks[index].Active, from.Name);
-            }
-            from.SendGump(this);
-            return;
-        }
-
-        // Remove gump blocks (3000+)
-        if (buttonId is >= 3000 and < 4000)
-        {
-            var blocks = new List<GumpBlockEntry>(FeatureFlagManager.GetAllGumpBlocks());
-            var index = buttonId - 3000;
-            if (index < blocks.Count)
-            {
-                FeatureFlagManager.UnblockGump(blocks[index].ResolvedType, from.Name);
-            }
-            from.SendGump(this);
-            return;
-        }
-
-        // Toggle useReq blocks (4000+)
-        if (buttonId is >= 4000 and < 5000)
-        {
-            var blocks = new List<UseReqBlockEntry>(FeatureFlagManager.GetAllUseReqBlocks());
-            var index = buttonId - 4000;
-            if (index < blocks.Count)
-            {
-                FeatureFlagManager.SetUseReqBlockActive(blocks[index].ResolvedType, !blocks[index].Active, from.Name);
-            }
-            from.SendGump(this);
-            return;
-        }
-
-        // Remove useReq blocks (5000+)
-        if (buttonId is >= 5000 and < 6000)
-        {
-            var blocks = new List<UseReqBlockEntry>(FeatureFlagManager.GetAllUseReqBlocks());
-            var index = buttonId - 5000;
-            if (index < blocks.Count)
-            {
-                FeatureFlagManager.UnblockUseReq(blocks[index].ResolvedType, from.Name);
-            }
-            from.SendGump(this);
-            return;
-        }
-
-        // Toggle skill blocks (6000+)
-        if (buttonId is >= 6000 and < 7000)
-        {
-            var blocks = FeatureFlagManager.GetAllSkillBlocks();
-            var index = buttonId - 6000;
-            if (index < blocks.Count)
-            {
-                FeatureFlagManager.SetSkillBlockActive(blocks[index].Skill, !blocks[index].Active, from.Name);
-            }
-            from.SendGump(this);
-            return;
-        }
-
-        // Remove skill blocks (7000+)
-        if (buttonId is >= 7000 and < 8000)
-        {
-            var blocks = FeatureFlagManager.GetAllSkillBlocks();
-            var index = buttonId - 7000;
-            if (index < blocks.Count)
-            {
-                FeatureFlagManager.UnblockSkill(blocks[index].Skill, from.Name);
-            }
-            from.SendGump(this);
-            return;
-        }
-
-        // Toggle spell blocks (8000+)
-        if (buttonId is >= 8000 and < 9000)
-        {
-            var blocks = FeatureFlagManager.GetAllSpellBlocks();
-            var index = buttonId - 8000;
-            if (index < blocks.Count)
-            {
-                FeatureFlagManager.SetSpellBlockActive(blocks[index].SpellId, !blocks[index].Active, from.Name);
-            }
-            from.SendGump(this);
-            return;
-        }
-
-        // Remove spell blocks (9000+)
-        if (buttonId is >= 9000 and < 10000)
-        {
-            var blocks = FeatureFlagManager.GetAllSpellBlocks();
-            var index = buttonId - 9000;
-            if (index < blocks.Count)
-            {
-                FeatureFlagManager.UnblockSpell(blocks[index].ResolvedType, from.Name);
-            }
-            from.SendGump(this);
-            return;
-        }
-
-        // Toggle container blocks (10000+)
-        if (buttonId is >= 10000 and < 11000)
-        {
-            var blocks = new List<ContainerBlockEntry>(FeatureFlagManager.GetAllContainerBlocks());
-            var index = buttonId - 10000;
-            if (index < blocks.Count)
-            {
-                FeatureFlagManager.SetContainerBlockActive(blocks[index].ResolvedType, !blocks[index].Active, from.Name);
-            }
-            from.SendGump(this);
-            return;
-        }
-
-        // Remove container blocks (11000+)
-        if (buttonId is >= 11000 and < 12000)
-        {
-            var blocks = new List<ContainerBlockEntry>(FeatureFlagManager.GetAllContainerBlocks());
-            var index = buttonId - 11000;
-            if (index < blocks.Count)
-            {
-                FeatureFlagManager.UnblockContainer(blocks[index].ResolvedType, from.Name);
-            }
-            from.SendGump(this);
-        }
+        from.SendGump(this);
     }
 }
