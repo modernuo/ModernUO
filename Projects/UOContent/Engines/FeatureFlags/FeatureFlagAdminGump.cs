@@ -140,9 +140,9 @@ public sealed class FeatureFlagAdminGump : DynamicGump
 
     private void BuildFlagsPage(ref DynamicGumpBuilder builder)
     {
-        builder.AddHtml(20, 80, 150, 20, "Flag Key".Color(GumpTextColors.Blue));
+        builder.AddHtml(20, 80, 150, 20, "Flag".Color(GumpTextColors.Blue));
         builder.AddHtml(180, 80, 150, 20, "Category".Color(GumpTextColors.Blue));
-        builder.AddHtml(340, 80, 350, 20, "Description".Color(GumpTextColors.Blue));
+        builder.AddHtml(275, 80, 350, 20, "Description".Color(GumpTextColors.Blue));
         builder.AddHtml(700, 80, 60, 20, "Status".Color(GumpTextColors.Blue));
 
         var flags = new List<FeatureFlag>(FeatureFlagManager.GetAllFlags());
@@ -164,9 +164,9 @@ public sealed class FeatureFlagAdminGump : DynamicGump
             var statusColor = flag.Enabled ? GumpTextColors.Blue : GumpTextColors.Red;
 
             builder.AddButton(20, y, flag.Enabled ? 2154 : 2151, flag.Enabled ? 2151 : 2154, buttonId);
-            builder.AddHtml(45, y + 3, 130, 20, flag.Key.Color(GumpTextColors.White));
+            builder.AddHtml(60, y + 3, 130, 20, flag.Key.Color(GumpTextColors.White));
             builder.AddHtml(180, y + 3, 150, 20, (flag.Category ?? "").Color(GumpTextColors.LightGray));
-            builder.AddHtml(340, y + 3, 350, 20, (flag.Description ?? "").Color(GumpTextColors.LightGray));
+            builder.AddHtml(275, y + 3, 350, 20, (flag.Description ?? "").Color(GumpTextColors.LightGray));
             builder.AddHtml(700, y + 3, 60, 20, (flag.Enabled ? "ON" : "OFF").Color(statusColor));
 
             y += FlagRowHeight;
@@ -201,7 +201,7 @@ public sealed class FeatureFlagAdminGump : DynamicGump
             var statusColor = block.Active ? GumpTextColors.Red : GumpTextColors.Blue;
 
             builder.AddButton(20, y, block.Active ? 2151 : 2154, block.Active ? 2154 : 2151, toggleButtonId);
-            builder.AddHtml(45, y + 3, 150, 20, block.DisplayName.Color(GumpTextColors.White));
+            builder.AddHtml(60, y + 3, 150, 20, block.DisplayName.Color(GumpTextColors.White));
             builder.AddHtml(200, y + 3, 400, 40, (block.Reason ?? "").Color(GumpTextColors.LightGray));
             builder.AddHtml(610, y + 3, 60, 20, (block.Active ? "OFF" : "ON").Color(statusColor));
 
@@ -249,7 +249,7 @@ public sealed class FeatureFlagAdminGump : DynamicGump
                 }
             case >= (int)(FeatureFlagPage.Flags + 1) and <= (int)(FeatureFlagPage.ContainerBlocks + 1):
                 {
-                    Resend(from, (FeatureFlagPage)buttonId);
+                    Resend(from, (FeatureFlagPage)(buttonId - 1));
                     return;
                 }
             case 100:
