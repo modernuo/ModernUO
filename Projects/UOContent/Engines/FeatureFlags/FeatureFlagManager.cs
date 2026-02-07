@@ -870,8 +870,9 @@ public static class FeatureFlagManager
             var gumpBlocks = JsonConfig.Deserialize<List<GumpBlockEntry>>(Path.Combine(savePath, "gump-blocks.json"));
             if (gumpBlocks != null)
             {
-                foreach (var entry in gumpBlocks)
+                for (var i = 0; i < gumpBlocks.Count; i++)
                 {
+                    var entry = gumpBlocks[i];
                     if (entry.ResolvedType != null)
                     {
                         _gumpBlocks[entry.ResolvedType] = entry;
@@ -884,8 +885,9 @@ public static class FeatureFlagManager
             var itemBlocks = JsonConfig.Deserialize<List<ItemBlockEntry>>(itemBlocksPath);
             if (itemBlocks != null)
             {
-                foreach (var entry in itemBlocks)
+                for (var i = 0; i < itemBlocks.Count; i++)
                 {
+                    var entry = itemBlocks[i];
                     if (entry.ResolvedType != null)
                     {
                         _itemBlocks[entry.ResolvedType] = entry;
@@ -897,8 +899,9 @@ public static class FeatureFlagManager
             var skillBlocks = JsonConfig.Deserialize<List<SkillBlockEntry>>(Path.Combine(savePath, "skill-blocks.json"));
             if (skillBlocks != null)
             {
-                foreach (var entry in skillBlocks)
+                for (var i = 0; i < skillBlocks.Count; i++)
                 {
+                    var entry = skillBlocks[i];
                     var index = (int)entry.Skill;
                     if (index >= 0 && index < _skillBlocks.Length)
                     {
@@ -911,8 +914,9 @@ public static class FeatureFlagManager
             var spellBlocks = JsonConfig.Deserialize<List<SpellBlockEntry>>(Path.Combine(savePath, "spell-blocks.json"));
             if (spellBlocks != null)
             {
-                foreach (var entry in spellBlocks)
+                for (var i = 0; i < spellBlocks.Count; i++)
                 {
+                    var entry = spellBlocks[i];
                     if (entry.ResolvedType == null)
                     {
                         continue;
@@ -921,7 +925,10 @@ public static class FeatureFlagManager
                     var spellId = SpellRegistry.GetRegistryNumber(entry.ResolvedType);
                     if (spellId < 0 || spellId >= _spellBlocks.Length)
                     {
-                        logger.Warning("Spell type '{SpellType}' has no registered spell ID, skipping", entry.ResolvedType.FullName);
+                        logger.Warning(
+                            "Spell type '{SpellType}' has no registered spell ID, skipping",
+                            entry.ResolvedType.FullName
+                        );
                         continue;
                     }
 
