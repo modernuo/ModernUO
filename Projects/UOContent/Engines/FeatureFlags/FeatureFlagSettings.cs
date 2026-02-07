@@ -72,6 +72,7 @@ public static class FeatureFlagSettings
     public const string DefaultItemEquipBlockedMessage = "This item cannot be equipped at this time.";
     public const string DefaultContainerBlockedMessage = "This container cannot be opened at this time.";
     public const string DefaultSkillDisabledMessage = "This skill is temporarily disabled.";
+    public const string DefaultSpellDisabledMessage = "This spell is temporarily disabled.";
 
     public static AccessLevel RequiredAccessLevel { get; set; } = AccessLevel.Administrator;
     public static bool LogChanges { get; set; } = true;

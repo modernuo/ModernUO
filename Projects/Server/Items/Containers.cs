@@ -28,6 +28,12 @@ public partial class BankBox : Container
 
     public void Open()
     {
+        if (!ServerFeatureFlags.BankAccess && Owner?.AccessLevel < AccessLevel.Administrator)
+        {
+            Owner.SendMessage(0x22, "Bank access is temporarily disabled.");
+            return;
+        }
+
         Opened = true;
 
         if (Owner != null)

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Server.Gumps;
-using Server.Items;
 using Server.Json;
 using Server.Logging;
 using Server.Spells;
@@ -28,7 +27,7 @@ public static class FeatureFlagManager
 
     private static bool _initialized;
 
-    public static unsafe void Initialize()
+    public static void Initialize()
     {
         if (_initialized)
         {
@@ -44,9 +43,6 @@ public static class FeatureFlagManager
         // Load predefined flags from JSON, then overlay runtime state
         LoadDefaultFlags();
         Load();
-
-        // Wire container display access check
-        Container.DisplayAccessCheck = &CheckContainerAccess;
 
         _initialized = true;
         logger.Information(
@@ -273,14 +269,44 @@ public static class FeatureFlagManager
         return true;
     }
 
-    public static bool IsItemUseBlocked(Type itemType) =>
-        _hasActiveItemBlocks && _itemBlocks.TryGetValue(itemType, out var entry) && entry.Active && entry.BlockUse;
+    public static bool IsItemUseBlocked(Type itemType, out string reason)
+    {
+        if (_hasActiveItemBlocks && _itemBlocks.TryGetValue(itemType, out var entry) && entry.Active &&
+            entry.BlockUse)
+        {
+            reason = entry.Reason ?? FeatureFlagSettings.DefaultItemUseBlockedMessage;
+            return true;
+        }
 
-    public static bool IsItemEquipBlocked(Type itemType) =>
-        _hasActiveItemBlocks && _itemBlocks.TryGetValue(itemType, out var entry) && entry.Active && entry.BlockEquip;
+        reason = null;
+        return false;
+    }
 
-    public static bool IsContainerAccessBlocked(Type containerType) =>
-        _hasActiveItemBlocks && _itemBlocks.TryGetValue(containerType, out var entry) && entry.Active && entry.BlockContainerAccess;
+    public static bool IsItemEquipBlocked(Type itemType, out string reason)
+    {
+        if (_hasActiveItemBlocks && _itemBlocks.TryGetValue(itemType, out var entry) && entry.Active &&
+            entry.BlockEquip)
+        {
+            reason = entry.Reason ?? FeatureFlagSettings.DefaultItemEquipBlockedMessage;
+            return true;
+        }
+
+        reason = null;
+        return false;
+    }
+
+    public static bool IsContainerAccessBlocked(Type containerType, out string reason)
+    {
+        if (_hasActiveItemBlocks && _itemBlocks.TryGetValue(containerType, out var entry) && entry.Active &&
+            entry.BlockContainerAccess)
+        {
+            reason = entry.Reason ?? FeatureFlagSettings.DefaultContainerBlockedMessage;
+            return true;
+        }
+
+        reason = null;
+        return false;
+    }
 
     public static ItemBlockEntry GetItemBlockEntry(Type itemType) =>
         _hasActiveItemBlocks ? _itemBlocks.GetValueOrDefault(itemType) : null;
@@ -389,27 +415,24 @@ public static class FeatureFlagManager
         return true;
     }
 
-    public static bool IsSkillBlocked(SkillName skill)
+    public static bool IsSkillBlocked(SkillName skill, out string reason)
     {
-        if (!_hasActiveSkillBlocks)
-        {
-            return false;
-        }
-
         var index = (int)skill;
-        if ((uint)index >= (uint)_skillBlocks.Length)
+        if (!_hasActiveSkillBlocks || index < 0 || index >= _skillBlocks.Length
+            || _skillBlocks[index] is not { Active: true } entry)
         {
+            reason = null;
             return false;
         }
 
-        var entry = _skillBlocks[index];
+        reason = entry.Reason ?? FeatureFlagSettings.DefaultSkillDisabledMessage;
         return entry is { Active: true };
     }
 
     public static SkillBlockEntry GetSkillBlockEntry(SkillName skill)
     {
         var index = (int)skill;
-        return (uint)index >= (uint)_skillBlocks.Length ? null : _skillBlocks[index];
+        return index >= 0 && index < _skillBlocks.Length ? _skillBlocks[index] : null;
     }
 
     // NOTE: Will contain nulls!
@@ -418,7 +441,7 @@ public static class FeatureFlagManager
     public static void BlockSkill(SkillName skill, string reason, string blockedBy = "System")
     {
         var index = (int)skill;
-        if ((uint)index >= (uint)_skillBlocks.Length)
+        if (index < 0 || index >= _skillBlocks.Length)
         {
             return;
         }
@@ -451,7 +474,7 @@ public static class FeatureFlagManager
     public static bool UnblockSkill(SkillName skill, string unblockedBy = "System")
     {
         var index = (int)skill;
-        if ((uint)index >= (uint)_skillBlocks.Length)
+        if (index < 0 || index >= _skillBlocks.Length)
         {
             return false;
         }
@@ -481,7 +504,7 @@ public static class FeatureFlagManager
     public static bool SetSkillBlockActive(SkillName skill, bool active, string modifiedBy = "System")
     {
         var index = (int)skill;
-        if ((uint)index >= (uint)_skillBlocks.Length)
+        if (index < 0 || index >= _skillBlocks.Length)
         {
             return false;
         }
@@ -508,8 +531,18 @@ public static class FeatureFlagManager
         return false;
     }
 
-    public static bool IsSpellBlocked(int spellId) =>
-        _hasActiveSpellBlocks && (uint)spellId < (uint)_spellBlocks.Length && _spellBlocks[spellId] is { Active: true };
+    public static bool IsSpellBlocked(int spellId, out string reason)
+    {
+        if (!_hasActiveSpellBlocks || spellId < 0 || spellId >= _spellBlocks.Length ||
+            _spellBlocks[spellId] is not { Active: true } entry)
+        {
+            reason = null;
+            return false;
+        }
+
+        reason = entry.Reason ?? FeatureFlagSettings.DefaultSpellDisabledMessage;
+        return true;
+    }
 
     public static bool IsSpellBlocked(Type spellType)
     {
@@ -519,11 +552,11 @@ public static class FeatureFlagManager
         }
 
         var id = SpellRegistry.GetRegistryNumber(spellType);
-        return id >= 0 && (uint)id < (uint)_spellBlocks.Length && _spellBlocks[id] is { Active: true };
+        return id >= 0 && id < _spellBlocks.Length && _spellBlocks[id] is { Active: true };
     }
 
     public static SpellBlockEntry GetSpellBlockEntry(int spellId) =>
-        !_hasActiveSpellBlocks || (uint)spellId >= (uint)_spellBlocks.Length ? null : _spellBlocks[spellId];
+        !_hasActiveSpellBlocks || spellId >= 0 && spellId >= _spellBlocks.Length ? null : _spellBlocks[spellId];
 
     public static SpellBlockEntry GetSpellBlockEntry(Type spellType)
     {
@@ -533,7 +566,7 @@ public static class FeatureFlagManager
         }
 
         var id = SpellRegistry.GetRegistryNumber(spellType);
-        return id >= 0 && (uint)id < (uint)_spellBlocks.Length ? _spellBlocks[id] : null;
+        return id >= 0 && id < _spellBlocks.Length ? _spellBlocks[id] : null;
     }
 
     // NOTE: Will contain nulls!
@@ -542,7 +575,7 @@ public static class FeatureFlagManager
     public static void BlockSpell(Type spellType, string reason, string blockedBy = "System")
     {
         var spellId = SpellRegistry.GetRegistryNumber(spellType);
-        if (spellId < 0 || (uint)spellId >= (uint)_spellBlocks.Length)
+        if (spellId < 0 || spellId >= _spellBlocks.Length)
         {
             return;
         }
@@ -588,7 +621,7 @@ public static class FeatureFlagManager
     public static bool UnblockSpell(Type spellType, string unblockedBy = "System")
     {
         var spellId = SpellRegistry.GetRegistryNumber(spellType);
-        if (spellId < 0 || (uint)spellId >= (uint)_spellBlocks.Length)
+        if (spellId < 0 || spellId >= _spellBlocks.Length)
         {
             return false;
         }
@@ -622,7 +655,7 @@ public static class FeatureFlagManager
 
     public static bool SetSpellBlockActive(int spellId, bool active, string modifiedBy = "System")
     {
-        if ((uint)spellId >= (uint)_spellBlocks.Length)
+        if (spellId < 0 || spellId >= _spellBlocks.Length)
         {
             return false;
         }
@@ -650,27 +683,6 @@ public static class FeatureFlagManager
         }
 
         return false;
-    }
-
-    private static bool CheckContainerAccess(Mobile mobile, Container container)
-    {
-        if (!_hasActiveItemBlocks)
-        {
-            return true;
-        }
-
-        if (mobile.AccessLevel >= FeatureFlagSettings.RequiredAccessLevel)
-        {
-            return true;
-        }
-
-        if (_itemBlocks.TryGetValue(container.GetType(), out var entry) && entry.Active && entry.BlockContainerAccess)
-        {
-            mobile.SendMessage(0x22, entry.Reason ?? FeatureFlagSettings.DefaultContainerBlockedMessage);
-            return false;
-        }
-
-        return true;
     }
 
     private static void LoadDefaultFlags()
@@ -824,7 +836,7 @@ public static class FeatureFlagManager
                 foreach (var entry in skillBlocks)
                 {
                     var index = (int)entry.Skill;
-                    if ((uint)index < (uint)_skillBlocks.Length)
+                    if (index >= 0 && index < _skillBlocks.Length)
                     {
                         _skillBlocks[index] = entry;
                     }
@@ -843,7 +855,7 @@ public static class FeatureFlagManager
                     }
 
                     var spellId = SpellRegistry.GetRegistryNumber(entry.ResolvedType);
-                    if (spellId < 0 || (uint)spellId >= (uint)_spellBlocks.Length)
+                    if (spellId < 0 || spellId >= _spellBlocks.Length)
                     {
                         logger.Warning("Spell type '{SpellType}' has no registered spell ID, skipping", entry.ResolvedType.FullName);
                         continue;
@@ -881,6 +893,7 @@ public static class FeatureFlagManager
             // Server project flags
             "player_trading" => ServerFeatureFlags.PlayerTrading = enabled,
             "pvp_combat"     => ServerFeatureFlags.PvPCombat = enabled,
+            "bank_access"    => ServerFeatureFlags.BankAccess = enabled,
 
             // UOContent flags
             "vendor_purchase" => ContentFeatureFlags.VendorPurchase = enabled,

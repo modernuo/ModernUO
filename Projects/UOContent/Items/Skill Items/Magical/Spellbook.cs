@@ -310,10 +310,9 @@ public partial class Spellbook : Item, ICraftable, ISlayer, IAosItem
 
         // Early rejection by spell ID before instantiation
         if (from is PlayerMobile { AccessLevel: < AccessLevel.Administrator }
-            && FeatureFlagManager.IsSpellBlocked(spellID))
+            && FeatureFlagManager.IsSpellBlocked(spellID, out var reason))
         {
-            var entry = FeatureFlagManager.GetSpellBlockEntry(spellID);
-            from.SendMessage(0x22, entry?.Reason ?? "This spell is temporarily disabled.");
+            from.SendMessage(0x22, reason);
             return;
         }
 

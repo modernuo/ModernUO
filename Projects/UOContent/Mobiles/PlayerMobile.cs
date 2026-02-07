@@ -1766,9 +1766,9 @@ namespace Server.Mobiles
         public override bool AllowItemUse(Item item)
         {
             if (AccessLevel < FeatureFlagSettings.RequiredAccessLevel &&
-                FeatureFlagManager.GetItemBlockEntry(item.GetType()) is { Active: true, BlockUse: true } entry)
+                FeatureFlagManager.IsItemUseBlocked(item.GetType(), out var reason))
             {
-                SendMessage(0x22, entry?.Reason ?? FeatureFlagSettings.DefaultItemUseBlockedMessage);
+                SendMessage(0x22, reason);
                 return false;
             }
 
@@ -1778,9 +1778,9 @@ namespace Server.Mobiles
         public override bool AllowSkillUse(SkillName skill)
         {
             if (AccessLevel < FeatureFlagSettings.RequiredAccessLevel
-                && FeatureFlagManager.GetSkillBlockEntry(skill) is { Active: true } entry)
+                && FeatureFlagManager.IsSkillBlocked(skill, out var reason))
             {
-                SendMessage(0x22, entry?.Reason ?? FeatureFlagSettings.DefaultSkillDisabledMessage);
+                SendMessage(0x22, reason);
                 return false;
             }
 
@@ -2044,9 +2044,9 @@ namespace Server.Mobiles
         public override bool CheckEquip(Item item)
         {
             if (AccessLevel < FeatureFlagSettings.RequiredAccessLevel
-                && FeatureFlagManager.GetItemBlockEntry(item.GetType()) is { Active: true, BlockEquip: true } entry)
+                && FeatureFlagManager.IsItemEquipBlocked(item.GetType(), out var reason))
             {
-                SendMessage(0x22, entry?.Reason ?? FeatureFlagSettings.DefaultItemEquipBlockedMessage);
+                SendMessage(0x22, reason);
                 return false;
             }
 

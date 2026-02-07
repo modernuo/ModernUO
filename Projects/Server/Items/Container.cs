@@ -58,7 +58,6 @@ public partial class Container : Item
 
     public static ContainerSnoopHandler SnoopHandler { get; set; }
 
-    public static unsafe delegate*<Mobile, Container, bool> DisplayAccessCheck { get; set; }
 
     public ContainerData ContainerData
     {
@@ -603,13 +602,8 @@ public partial class Container : Item
         Openers = null;
     }
 
-    public virtual unsafe void DisplayTo(Mobile to)
+    public virtual void DisplayTo(Mobile to)
     {
-        if (DisplayAccessCheck != null && !DisplayAccessCheck(to, this))
-        {
-            return;
-        }
-
         ProcessOpeners(to);
 
         var ns = to.NetState;
