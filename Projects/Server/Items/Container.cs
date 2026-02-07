@@ -58,6 +58,7 @@ public partial class Container : Item
 
     public static ContainerSnoopHandler SnoopHandler { get; set; }
 
+
     public ContainerData ContainerData
     {
         get => m_ContainerData ?? UpdateContainerData();

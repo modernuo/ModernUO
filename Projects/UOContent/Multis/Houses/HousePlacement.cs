@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Server.Collections;
 using Server.Regions;
 using Server.Spells;
+using Server.Systems.FeatureFlags;
 
 namespace Server.Multis
 {
@@ -50,6 +51,11 @@ namespace Server.Multis
             if (map == null || map == Map.Internal)
             {
                 return HousePlacementResult.BadLand; // A house cannot go here
+            }
+
+            if (!ContentFeatureFlags.HousePlacement && from.AccessLevel < FeatureFlagSettings.RequiredAccessLevel)
+            {
+                return HousePlacementResult.BadRegionTemp;
             }
 
             if (from.AccessLevel >= AccessLevel.GameMaster)

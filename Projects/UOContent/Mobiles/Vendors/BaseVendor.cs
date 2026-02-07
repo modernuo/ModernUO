@@ -11,6 +11,7 @@ using Server.Mobiles;
 using Server.Network;
 using Server.Regions;
 using Server.Logging;
+using Server.Systems.FeatureFlags;
 
 namespace Server.Mobiles
 {
@@ -851,6 +852,12 @@ namespace Server.Mobiles
                 return;
             }
 
+            if (!ContentFeatureFlags.VendorPurchase && from.AccessLevel < AccessLevel.Administrator)
+            {
+                from.SendMessage(0x22, "Vendor purchases are temporarily disabled.");
+                return;
+            }
+
             if (!CheckVendorAccess(from))
             {
                 Say(501522); // I shall not treat with scum like thee!
@@ -1019,6 +1026,12 @@ namespace Server.Mobiles
 
             if (!from.CheckAlive())
             {
+                return;
+            }
+
+            if (!ContentFeatureFlags.VendorSell && from.AccessLevel < AccessLevel.Administrator)
+            {
+                from.SendMessage(0x22, "Vendor sales are temporarily disabled.");
                 return;
             }
 

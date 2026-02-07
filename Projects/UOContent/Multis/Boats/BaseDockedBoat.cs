@@ -1,6 +1,7 @@
 using ModernUO.Serialization;
 using Server.Engines.CannedEvil;
 using Server.Regions;
+using Server.Systems.FeatureFlags;
 using Server.Targeting;
 
 namespace Server.Multis;
@@ -83,53 +84,58 @@ public abstract partial class BaseDockedBoat : Item
         if (!IsChildOf(from.Backpack))
         {
             from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
+            return;
+        }
+
+        var map = from.Map;
+
+        if (map == null)
+        {
+            return;
+        }
+
+        var boat = Boat;
+
+        if (boat == null)
+        {
+            return;
+        }
+
+        if (!ContentFeatureFlags.BoatPlacement && from.AccessLevel < FeatureFlagSettings.RequiredAccessLevel)
+        {
+            from.SendMessage(0x22, "Boat placement is temporarily disabled.");
+            return;
+        }
+
+        p = new Point3D(p.X - Offset.X, p.Y - Offset.Y, p.Z - Offset.Z);
+
+        if (BaseBoat.IsValidLocation(p, map) && boat.CanFit(p, map, boat.ItemID) && map != Map.Ilshenar &&
+            map != Map.Malas)
+        {
+            Delete();
+
+            boat.Owner = from;
+            boat.Anchored = true;
+            boat.ShipName = _shipName;
+
+            var keyValue = boat.CreateKeys(from);
+
+            if (boat.PPlank != null)
+            {
+                boat.PPlank.KeyValue = keyValue;
+            }
+
+            if (boat.SPlank != null)
+            {
+                boat.SPlank.KeyValue = keyValue;
+            }
+
+            boat.MoveToWorld(p, map);
         }
         else
         {
-            var map = from.Map;
-
-            if (map == null)
-            {
-                return;
-            }
-
-            var boat = Boat;
-
-            if (boat == null)
-            {
-                return;
-            }
-
-            p = new Point3D(p.X - Offset.X, p.Y - Offset.Y, p.Z - Offset.Z);
-
-            if (BaseBoat.IsValidLocation(p, map) && boat.CanFit(p, map, boat.ItemID) && map != Map.Ilshenar &&
-                map != Map.Malas)
-            {
-                Delete();
-
-                boat.Owner = from;
-                boat.Anchored = true;
-                boat.ShipName = _shipName;
-
-                var keyValue = boat.CreateKeys(from);
-
-                if (boat.PPlank != null)
-                {
-                    boat.PPlank.KeyValue = keyValue;
-                }
-
-                if (boat.SPlank != null)
-                {
-                    boat.SPlank.KeyValue = keyValue;
-                }
-
-                boat.MoveToWorld(p, map);
-            }
-            else
-            {
-                boat.Delete();
-                from.SendLocalizedMessage(1043284); // A ship can not be created here.
-            }
+            boat.Delete();
+            from.SendLocalizedMessage(1043284); // A ship can not be created here.
         }
     }
 
