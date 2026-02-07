@@ -131,10 +131,10 @@ public sealed class FeatureFlagAdminGump : DynamicGump
 
     private void BuildFlagsPage(ref DynamicGumpBuilder builder)
     {
-        builder.AddHtml(20, 80, 150, 20, "Flag".Color(GumpTextColors.Blue));
-        builder.AddHtml(180, 80, 150, 20, "Category".Color(GumpTextColors.Blue));
-        builder.AddHtml(275, 80, 350, 20, "Description".Color(GumpTextColors.Blue));
-        builder.AddHtml(690, 80, 60, 20, "Status".Color(GumpTextColors.Blue));
+        builder.AddHtml(20, 80, 150, 20, "Flag".Color(GumpTextColors.White));
+        builder.AddHtml(180, 80, 150, 20, "Category".Color(GumpTextColors.White));
+        builder.AddHtml(275, 80, 350, 20, "Description".Color(GumpTextColors.White));
+        builder.AddHtml(690, 80, 60, 20, "Status".Color(GumpTextColors.White));
 
         var flags = new List<FeatureFlag>(FeatureFlagManager.GetAllFlags());
         flags.Sort((a, b) =>
@@ -194,10 +194,10 @@ public sealed class FeatureFlagAdminGump : DynamicGump
         string helpText
     )
     {
-        builder.AddHtml(20, 80, 180, 20, headerLabel.Color(GumpTextColors.Blue));
-        builder.AddHtml(200, 80, 400, 20, "Reason".Color(GumpTextColors.Blue));
-        builder.AddHtml(690, 80, 60, 20, "Status".Color(GumpTextColors.Blue));
-        builder.AddHtml(750, 80, 60, 20, "Remove".Color(GumpTextColors.Blue));
+        builder.AddHtml(20, 80, 180, 20, headerLabel.Color(GumpTextColors.White));
+        builder.AddHtml(200, 80, 400, 20, "Reason".Color(GumpTextColors.White));
+        builder.AddHtml(690, 80, 60, 20, "Status".Color(GumpTextColors.White));
+        builder.AddHtml(750, 80, 60, 20, "Remove".Color(GumpTextColors.White));
 
         var startIndex = _pageIndex * BlocksPerPage;
         var count = 0;
@@ -249,13 +249,13 @@ public sealed class FeatureFlagAdminGump : DynamicGump
         string helpText
     )
     {
-        builder.AddHtml(20, 80, 150, 20, "Item Type".Color(GumpTextColors.Blue));
-        builder.AddHtml(180, 80, 280, 20, "Reason".Color(GumpTextColors.Blue));
-        builder.AddHtml(530, 80, 50, 20, "Use".Color(GumpTextColors.Blue));
-        builder.AddHtml(580, 80, 50, 20, "Equip".Color(GumpTextColors.Blue));
-        builder.AddHtml(640, 80, 50, 20, "Open".Color(GumpTextColors.Blue));
-        builder.AddHtml(700, 80, 40, 20, "Edit".Color(GumpTextColors.Blue));
-        builder.AddHtml(750, 80, 60, 20, "Remove".Color(GumpTextColors.Blue));
+        builder.AddHtml(20, 80, 150, 20, "Item Type".Color(GumpTextColors.White));
+        builder.AddHtml(180, 80, 280, 20, "Reason".Color(GumpTextColors.White));
+        builder.AddHtml(530, 80, 50, 20, "Use".Color(GumpTextColors.White));
+        builder.AddHtml(580, 80, 50, 20, "Equip".Color(GumpTextColors.White));
+        builder.AddHtml(640, 80, 50, 20, "Open".Color(GumpTextColors.White));
+        builder.AddHtml(700, 80, 40, 20, "Edit".Color(GumpTextColors.White));
+        builder.AddHtml(750, 80, 60, 20, "Remove".Color(GumpTextColors.White));
 
         var startIndex = _pageIndex * BlocksPerPage;
 
@@ -277,7 +277,6 @@ public sealed class FeatureFlagAdminGump : DynamicGump
             }
 
             _displayedBlocks[_displayedCount] = block;
-            // var statusColor = block.Active ? GumpTextColors.Green : GumpTextColors.Blue;
 
             builder.AddButton(20, y, block.Active ? 2151 : 2154, block.Active ? 2154 : 2151, 2000 + _displayedCount);
             builder.AddHtml(60, y + 3, 120, 20, block.DisplayName.Color(GumpTextColors.White));
