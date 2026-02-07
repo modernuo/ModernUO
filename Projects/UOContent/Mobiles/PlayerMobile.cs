@@ -34,6 +34,7 @@ using Server.Spells.Necromancy;
 using Server.Spells.Ninjitsu;
 using Server.Spells.Sixth;
 using Server.Spells.Spellweaving;
+using Server.Systems.FeatureFlags;
 using Server.Targeting;
 using BaseQuestGump = Server.Engines.MLQuests.Gumps.BaseQuestGump;
 using CalcMoves = Server.Movement.Movement;
@@ -1764,16 +1765,25 @@ namespace Server.Mobiles
 
         public override bool AllowItemUse(Item item)
         {
-            if (DuelContext?.AllowItemUse(this, item) == false)
+            if (AccessLevel < FeatureFlagSettings.RequiredAccessLevel &&
+                FeatureFlagManager.IsItemUseBlocked(item.GetType(), out var reason))
             {
+                SendMessage(0x22, reason);
                 return false;
             }
 
-            return DesignContext.Check(this);
+            return DuelContext?.AllowItemUse(this, item) != false && DesignContext.Check(this);
         }
 
         public override bool AllowSkillUse(SkillName skill)
         {
+            if (AccessLevel < FeatureFlagSettings.RequiredAccessLevel
+                && FeatureFlagManager.IsSkillBlocked(skill, out var reason))
+            {
+                SendMessage(0x22, reason);
+                return false;
+            }
+
             if (AnimalForm.UnderTransformation(this))
             {
                 for (var i = 0; i < AnimalFormRestrictedSkills.Length; i++)
@@ -2033,6 +2043,13 @@ namespace Server.Mobiles
 
         public override bool CheckEquip(Item item)
         {
+            if (AccessLevel < FeatureFlagSettings.RequiredAccessLevel
+                && FeatureFlagManager.IsItemEquipBlocked(item.GetType(), out var reason))
+            {
+                SendMessage(0x22, reason);
+                return false;
+            }
+
             if (!base.CheckEquip(item))
             {
                 return false;

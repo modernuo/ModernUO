@@ -13,6 +13,7 @@ public class GumpTextColors
     public const string BrightRed = "#FF0000";
     public const string LightGreen = "#E6FFC0";
     public const string Yellow = "#FFFFBB";
+    public const string LightGray = "#CCCCCC";
 }
 
 public class GumpHues
