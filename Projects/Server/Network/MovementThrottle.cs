@@ -17,7 +17,6 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Server.Logging;
-using Server.Mobiles;
 
 namespace Server.Network;
 
@@ -112,12 +111,12 @@ public static class MovementThrottle
 
         _suspiciousRateThreshold = (float)ServerConfiguration.GetOrUpdateSetting(
             "movementThrottle.suspiciousRateThreshold",
-            (double)_suspiciousRateThreshold
+            _suspiciousRateThreshold
         );
 
         _definiteRateThreshold = (float)ServerConfiguration.GetOrUpdateSetting(
             "movementThrottle.definiteRateThreshold",
-            (double)_definiteRateThreshold
+            _definiteRateThreshold
         );
 
         _debugLogging = ServerConfiguration.GetOrUpdateSetting(
