@@ -168,7 +168,7 @@ public sealed class FeatureFlagAdminGump : DynamicGump
         {
             var flag = flags[i];
             _displayedFlags[_displayedCount] = flag;
-            var statusColor = flag.Enabled ? GumpTextColors.Blue : GumpTextColors.Red;
+            var statusColor = flag.Enabled ? GumpTextColors.Green : GumpTextColors.Red;
 
             builder.AddButton(20, y, flag.Enabled ? 2154 : 2151, flag.Enabled ? 2151 : 2154, 1000 + _displayedCount);
             builder.AddHtml(60, y + 3, 130, 20, flag.Key.Color(GumpTextColors.White));
@@ -240,7 +240,7 @@ public sealed class FeatureFlagAdminGump : DynamicGump
             if (_displayedCount < BlocksPerPage)
             {
                 _displayedBlocks[_displayedCount] = block;
-                var statusColor = block.Active ? GumpTextColors.Red : GumpTextColors.Blue;
+                var statusColor = block.Active ? GumpTextColors.Green : GumpTextColors.Blue;
 
                 builder.AddButton(20, y, block.Active ? 2151 : 2154, block.Active ? 2154 : 2151, 2000 + _displayedCount);
                 builder.AddHtml(60, y + 3, 150, 20, block.DisplayName.Color(GumpTextColors.White));
