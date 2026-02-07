@@ -13,10 +13,9 @@ public sealed class FeatureFlagAdminGump : DynamicGump
     {
         Flags,
         GumpBlocks,
-        UseReqBlocks,
+        ItemBlocks,
         SkillBlocks,
-        SpellBlocks,
-        ContainerBlocks
+        SpellBlocks
     }
 
     private FeatureFlagPage _currentPage;
@@ -55,10 +54,9 @@ public sealed class FeatureFlagAdminGump : DynamicGump
         // Tab buttons
         var flagsColor = _currentPage == FeatureFlagPage.Flags ? GumpTextColors.Yellow : GumpTextColors.White;
         var gumpsColor = _currentPage == FeatureFlagPage.GumpBlocks ? GumpTextColors.Yellow : GumpTextColors.White;
-        var itemsColor = _currentPage == FeatureFlagPage.UseReqBlocks ? GumpTextColors.Yellow : GumpTextColors.White;
+        var itemsColor = _currentPage == FeatureFlagPage.ItemBlocks ? GumpTextColors.Yellow : GumpTextColors.White;
         var skillsColor = _currentPage == FeatureFlagPage.SkillBlocks ? GumpTextColors.Yellow : GumpTextColors.White;
         var spellsColor = _currentPage == FeatureFlagPage.SpellBlocks ? GumpTextColors.Yellow : GumpTextColors.White;
-        var containersColor = _currentPage == FeatureFlagPage.ContainerBlocks ? GumpTextColors.Yellow : GumpTextColors.White;
 
         builder.AddButton(20, 45, 4005, 4007, 1);
         builder.AddHtml(55, 47, 80, 20, "Flags".Color(flagsColor));
@@ -74,9 +72,6 @@ public sealed class FeatureFlagAdminGump : DynamicGump
 
         builder.AddButton(510, 45, 4005, 4007, 5);
         builder.AddHtml(545, 47, 80, 20, "Spells".Color(spellsColor));
-
-        builder.AddButton(630, 45, 4005, 4007, 6);
-        builder.AddHtml(665, 47, 110, 20, "Containers".Color(containersColor));
 
         // Content area
         builder.AddAlphaRegion(15, 75, 790, 380);
@@ -94,13 +89,12 @@ public sealed class FeatureFlagAdminGump : DynamicGump
                 "Use [BlockGump to add new blocks"
             );
         }
-        else if (_currentPage == FeatureFlagPage.UseReqBlocks)
+        else if (_currentPage == FeatureFlagPage.ItemBlocks)
         {
-            BuildBlockPage(
+            BuildItemBlockPage(
                 ref builder,
-                "Item Type",
-                FeatureFlagManager.GetAllUseReqBlocks(),
-                "Use [BlockUse to add new blocks"
+                FeatureFlagManager.GetAllItemBlocks(),
+                "Use [BlockItem to add new blocks"
             );
         }
         else if (_currentPage == FeatureFlagPage.SkillBlocks)
@@ -119,15 +113,6 @@ public sealed class FeatureFlagAdminGump : DynamicGump
                 "Spell Type",
                 FeatureFlagManager.GetAllSpellBlocks(),
                 "Use [BlockSpell to add new blocks"
-            );
-        }
-        else if (_currentPage == FeatureFlagPage.ContainerBlocks)
-        {
-            BuildBlockPage(
-                ref builder,
-                "Container Type",
-                FeatureFlagManager.GetAllContainerBlocks(),
-                "Use [BlockContainer to add new blocks"
             );
         }
 
@@ -149,7 +134,7 @@ public sealed class FeatureFlagAdminGump : DynamicGump
         builder.AddHtml(20, 80, 150, 20, "Flag".Color(GumpTextColors.Blue));
         builder.AddHtml(180, 80, 150, 20, "Category".Color(GumpTextColors.Blue));
         builder.AddHtml(275, 80, 350, 20, "Description".Color(GumpTextColors.Blue));
-        builder.AddHtml(700, 80, 60, 20, "Status".Color(GumpTextColors.Blue));
+        builder.AddHtml(690, 80, 60, 20, "Status".Color(GumpTextColors.Blue));
 
         var flags = new List<FeatureFlag>(FeatureFlagManager.GetAllFlags());
         flags.Sort((a, b) =>
@@ -174,7 +159,7 @@ public sealed class FeatureFlagAdminGump : DynamicGump
             builder.AddHtml(60, y + 3, 130, 20, flag.Key.Color(GumpTextColors.White));
             builder.AddHtml(180, y + 3, 150, 20, (flag.Category ?? "").Color(GumpTextColors.LightGray));
             builder.AddHtml(275, y + 3, 350, 20, (flag.Description ?? "").Color(GumpTextColors.LightGray));
-            builder.AddHtml(700, y + 3, 60, 20, (flag.Enabled ? "ON" : "OFF").Color(statusColor));
+            builder.AddHtml(690, y + 3, 60, 20, (flag.Enabled ? "ON" : "OFF").Color(statusColor));
 
             _displayedCount++;
             y += FlagRowHeight;
@@ -211,8 +196,8 @@ public sealed class FeatureFlagAdminGump : DynamicGump
     {
         builder.AddHtml(20, 80, 180, 20, headerLabel.Color(GumpTextColors.Blue));
         builder.AddHtml(200, 80, 400, 20, "Reason".Color(GumpTextColors.Blue));
-        builder.AddHtml(610, 80, 60, 20, "Status".Color(GumpTextColors.Blue));
-        builder.AddHtml(680, 80, 60, 20, "Remove".Color(GumpTextColors.Blue));
+        builder.AddHtml(690, 80, 60, 20, "Status".Color(GumpTextColors.Blue));
+        builder.AddHtml(750, 80, 60, 20, "Remove".Color(GumpTextColors.Blue));
 
         var startIndex = _pageIndex * BlocksPerPage;
         var count = 0;
@@ -240,14 +225,13 @@ public sealed class FeatureFlagAdminGump : DynamicGump
             if (_displayedCount < BlocksPerPage)
             {
                 _displayedBlocks[_displayedCount] = block;
-                var statusColor = block.Active ? GumpTextColors.Green : GumpTextColors.Blue;
+                var statusColor = block.Active ? GumpTextColors.Red : GumpTextColors.Green;
 
                 builder.AddButton(20, y, block.Active ? 2151 : 2154, block.Active ? 2154 : 2151, 2000 + _displayedCount);
                 builder.AddHtml(60, y + 3, 150, 20, block.DisplayName.Color(GumpTextColors.White));
                 builder.AddHtml(200, y + 3, 400, 40, (block.Reason ?? "").Color(GumpTextColors.LightGray));
-                builder.AddHtml(610, y + 3, 60, 20, (block.Active ? "OFF" : "ON").Color(statusColor));
-
-                builder.AddButton(680, y + 3, 4017, 4019, 3000 + _displayedCount);
+                builder.AddHtml(690, y + 3, 60, 20, (block.Active ? "OFF" : "ON").Color(statusColor));
+                builder.AddButton(750, y + 3, 4017, 4019, 3000 + _displayedCount);
 
                 _displayedCount++;
                 y += BlockRowHeight;
@@ -255,6 +239,67 @@ public sealed class FeatureFlagAdminGump : DynamicGump
         }
 
         var totalPages = Math.Max(1, (int)Math.Ceiling(count / (double)BlocksPerPage));
+        AddPagination(ref builder, totalPages);
+        builder.AddHtml(20, 430, 400, 20, helpText.Color(GumpTextColors.LightGray));
+    }
+
+    private void BuildItemBlockPage(
+        ref DynamicGumpBuilder builder,
+        IReadOnlyCollection<ItemBlockEntry> blocks,
+        string helpText
+    )
+    {
+        builder.AddHtml(20, 80, 150, 20, "Item Type".Color(GumpTextColors.Blue));
+        builder.AddHtml(180, 80, 280, 20, "Reason".Color(GumpTextColors.Blue));
+        builder.AddHtml(530, 80, 50, 20, "Use".Color(GumpTextColors.Blue));
+        builder.AddHtml(580, 80, 50, 20, "Equip".Color(GumpTextColors.Blue));
+        builder.AddHtml(640, 80, 50, 20, "Open".Color(GumpTextColors.Blue));
+        builder.AddHtml(700, 80, 40, 20, "Edit".Color(GumpTextColors.Blue));
+        builder.AddHtml(750, 80, 60, 20, "Remove".Color(GumpTextColors.Blue));
+
+        var startIndex = _pageIndex * BlocksPerPage;
+
+        _displayedCount = 0;
+        var skipped = 0;
+        var y = 105;
+
+        foreach (var block in blocks)
+        {
+            if (skipped < startIndex)
+            {
+                skipped++;
+                continue;
+            }
+
+            if (_displayedCount >= BlocksPerPage)
+            {
+                break;
+            }
+
+            _displayedBlocks[_displayedCount] = block;
+            // var statusColor = block.Active ? GumpTextColors.Green : GumpTextColors.Blue;
+
+            builder.AddButton(20, y, block.Active ? 2151 : 2154, block.Active ? 2154 : 2151, 2000 + _displayedCount);
+            builder.AddHtml(60, y + 3, 120, 20, block.DisplayName.Color(GumpTextColors.White));
+            builder.AddHtml(180, y + 3, 280, 40, (block.Reason ?? "").Color(GumpTextColors.LightGray));
+
+            var useColor = block.BlockUse ? GumpTextColors.Red : GumpTextColors.Green;
+            var equipColor = block.BlockEquip ? GumpTextColors.Red : GumpTextColors.Green;
+            var containerColor = block.BlockContainerAccess ? GumpTextColors.Red : GumpTextColors.Green;
+
+            builder.AddHtml(530, y + 3, 50, 20, (block.BlockUse ? "X" : "-").Color(useColor));
+            builder.AddHtml(580, y + 3, 50, 20, (block.BlockEquip ? "X" : "-").Color(equipColor));
+            builder.AddHtml(640, y + 3, 50, 20, (block.BlockContainerAccess ? "X" : "-").Color(containerColor));
+
+            builder.AddButton(700, y + 3, 4011, 4013, 4000 + _displayedCount);
+            builder.AddButton(750, y + 3, 4017, 4019, 3000 + _displayedCount);
+
+            _displayedCount++;
+            y += BlockRowHeight;
+        }
+
+        var totalCount = blocks.Count;
+        var totalPages = Math.Max(1, (int)Math.Ceiling(totalCount / (double)BlocksPerPage));
         AddPagination(ref builder, totalPages);
         builder.AddHtml(20, 430, 400, 20, helpText.Color(GumpTextColors.LightGray));
     }
@@ -291,7 +336,7 @@ public sealed class FeatureFlagAdminGump : DynamicGump
             return;
         }
 
-        if (buttonId is >= (int)(FeatureFlagPage.Flags + 1) and <= (int)(FeatureFlagPage.ContainerBlocks + 1))
+        if (buttonId is >= (int)(FeatureFlagPage.Flags + 1) and <= (int)(FeatureFlagPage.SpellBlocks + 1))
         {
             Resend(from, (FeatureFlagPage)(buttonId - 1));
             return;
@@ -343,25 +388,28 @@ public sealed class FeatureFlagAdminGump : DynamicGump
                     if (index < _displayedCount)
                     {
                         var block = _displayedBlocks[index];
-                        if (_currentPage == FeatureFlagPage.GumpBlocks)
+                        switch (_currentPage)
                         {
-                            FeatureFlagManager.SetGumpBlockActive(block.ResolvedType, !block.Active, from.Name);
-                        }
-                        else if (_currentPage == FeatureFlagPage.UseReqBlocks)
-                        {
-                            FeatureFlagManager.SetUseReqBlockActive(block.ResolvedType, !block.Active, from.Name);
-                        }
-                        else if (_currentPage == FeatureFlagPage.SkillBlocks)
-                        {
-                            FeatureFlagManager.SetSkillBlockActive(((SkillBlockEntry)block).Skill, !block.Active, from.Name);
-                        }
-                        else if (_currentPage == FeatureFlagPage.SpellBlocks)
-                        {
-                            FeatureFlagManager.SetSpellBlockActive(((SpellBlockEntry)block).SpellId, !block.Active, from.Name);
-                        }
-                        else if (_currentPage == FeatureFlagPage.ContainerBlocks)
-                        {
-                            FeatureFlagManager.SetContainerBlockActive(block.ResolvedType, !block.Active, from.Name);
+                            case FeatureFlagPage.GumpBlocks:
+                                {
+                                    FeatureFlagManager.SetGumpBlockActive(block.ResolvedType, !block.Active, from.Name);
+                                    break;
+                                }
+                            case FeatureFlagPage.ItemBlocks:
+                                {
+                                    FeatureFlagManager.SetItemBlockActive(block.ResolvedType, !block.Active, from.Name);
+                                    break;
+                                }
+                            case FeatureFlagPage.SkillBlocks:
+                                {
+                                    FeatureFlagManager.SetSkillBlockActive(((SkillBlockEntry)block).Skill, !block.Active, from.Name);
+                                    break;
+                                }
+                            case FeatureFlagPage.SpellBlocks:
+                                {
+                                    FeatureFlagManager.SetSpellBlockActive(((SpellBlockEntry)block).SpellId, !block.Active, from.Name);
+                                    break;
+                                }
                         }
                     }
 
@@ -374,26 +422,39 @@ public sealed class FeatureFlagAdminGump : DynamicGump
                     if (index < _displayedCount)
                     {
                         var block = _displayedBlocks[index];
-                        if (_currentPage == FeatureFlagPage.GumpBlocks)
+                        switch (_currentPage)
                         {
-                            FeatureFlagManager.UnblockGump(block.ResolvedType, from.Name);
+                            case FeatureFlagPage.GumpBlocks:
+                                {
+                                    FeatureFlagManager.UnblockGump(block.ResolvedType, from.Name);
+                                    break;
+                                }
+                            case FeatureFlagPage.ItemBlocks:
+                                {
+                                    FeatureFlagManager.UnblockItem(block.ResolvedType, from.Name);
+                                    break;
+                                }
+                            case FeatureFlagPage.SkillBlocks:
+                                {
+                                    FeatureFlagManager.UnblockSkill(((SkillBlockEntry)block).Skill, from.Name);
+                                    break;
+                                }
+                            case FeatureFlagPage.SpellBlocks:
+                                {
+                                    FeatureFlagManager.UnblockSpell(block.ResolvedType, from.Name);
+                                    break;
+                                }
                         }
-                        else if (_currentPage == FeatureFlagPage.UseReqBlocks)
-                        {
-                            FeatureFlagManager.UnblockUseReq(block.ResolvedType, from.Name);
-                        }
-                        else if (_currentPage == FeatureFlagPage.SkillBlocks)
-                        {
-                            FeatureFlagManager.UnblockSkill(((SkillBlockEntry)block).Skill, from.Name);
-                        }
-                        else if (_currentPage == FeatureFlagPage.SpellBlocks)
-                        {
-                            FeatureFlagManager.UnblockSpell(block.ResolvedType, from.Name);
-                        }
-                        else if (_currentPage == FeatureFlagPage.ContainerBlocks)
-                        {
-                            FeatureFlagManager.UnblockContainer(block.ResolvedType, from.Name);
-                        }
+                    }
+                    break;
+                }
+            // Edit item block (PropertiesGump)
+            case >= 4000 and < 4000 + BlocksPerPage:
+                {
+                    var index = buttonId - 4000;
+                    if (index < _displayedCount && _currentPage == FeatureFlagPage.ItemBlocks)
+                    {
+                        from.SendGump(new PropertiesGump(from, _displayedBlocks[index]));
                     }
                     break;
                 }

@@ -13,14 +13,12 @@ public static class FeatureFlagCommands
         CommandSystem.Register("FF", AccessLevel.Administrator, FeatureFlag_OnCommand);
         CommandSystem.Register("BlockGump", AccessLevel.Administrator, BlockGump_OnCommand);
         CommandSystem.Register("UnblockGump", AccessLevel.Administrator, UnblockGump_OnCommand);
-        CommandSystem.Register("BlockUse", AccessLevel.Administrator, BlockUse_OnCommand);
-        CommandSystem.Register("UnblockUse", AccessLevel.Administrator, UnblockUse_OnCommand);
+        CommandSystem.Register("BlockItem", AccessLevel.Administrator, BlockItem_OnCommand);
+        CommandSystem.Register("UnblockItem", AccessLevel.Administrator, UnblockItem_OnCommand);
         CommandSystem.Register("BlockSkill", AccessLevel.Administrator, BlockSkill_OnCommand);
         CommandSystem.Register("UnblockSkill", AccessLevel.Administrator, UnblockSkill_OnCommand);
         CommandSystem.Register("BlockSpell", AccessLevel.Administrator, BlockSpell_OnCommand);
         CommandSystem.Register("UnblockSpell", AccessLevel.Administrator, UnblockSpell_OnCommand);
-        CommandSystem.Register("BlockContainer", AccessLevel.Administrator, BlockContainer_OnCommand);
-        CommandSystem.Register("UnblockContainer", AccessLevel.Administrator, UnblockContainer_OnCommand);
         CommandSystem.Register("FeatureList", AccessLevel.GameMaster, FeatureList_OnCommand);
         CommandSystem.Register("FeatureAdmin", AccessLevel.Administrator, FeatureAdmin_OnCommand);
         CommandSystem.Register("ListGumps", AccessLevel.GameMaster, ListGumps_OnCommand);
@@ -176,17 +174,18 @@ public static class FeatureFlagCommands
         }
     }
 
-    [Usage("BlockUse <typeName> [reason]")]
-    [Description("Block an item type's double-click usage.")]
-    private static void BlockUse_OnCommand(CommandEventArgs e)
+    [Usage("BlockItem <typeName> [reason]")]
+    [Description("Block an item type (use, equip, container access). Creates entry with use blocked by default.")]
+    private static void BlockItem_OnCommand(CommandEventArgs e)
     {
         var from = e.Mobile;
 
         if (e.Arguments.Length == 0)
         {
-            from.SendMessage("Usage: [BlockUse <typeName> [reason]");
-            from.SendMessage("Example: [BlockUse BankCheck Dupe bug discovered");
-            from.SendMessage("Or target an item: [BlockUse target [reason]");
+            from.SendMessage("Usage: [BlockItem <typeName> [reason]");
+            from.SendMessage("Example: [BlockItem BankCheck Dupe bug discovered");
+            from.SendMessage("Or target an item: [BlockItem target [reason]");
+            from.SendMessage("Use [FeatureAdmin to edit block actions (use/equip/container).");
             return;
         }
 
@@ -196,8 +195,8 @@ public static class FeatureFlagCommands
                 ? string.Join(" ", e.Arguments, 1, e.Arguments.Length - 1)
                 : "This item cannot be used at this time.";
 
-            from.SendMessage("Target the item to block its usage:");
-            from.Target = new BlockUseTarget(reason);
+            from.SendMessage("Target the item to block:");
+            from.Target = new BlockItemTarget(reason);
             return;
         }
 
@@ -206,10 +205,11 @@ public static class FeatureFlagCommands
             ? string.Join(" ", e.Arguments, 1, e.Arguments.Length - 1)
             : "This item cannot be used at this time.";
 
-        if (FeatureFlagManager.BlockUseReqByName(typeName, blockReason, from.Name))
+        if (FeatureFlagManager.BlockItemByName(typeName, blockReason, from.Name))
         {
-            from.SendMessage(0x35, $"Item usage for '{typeName}' has been BLOCKED.");
+            from.SendMessage(0x35, $"Item '{typeName}' has been BLOCKED (use).");
             from.SendMessage($"Reason: {blockReason}");
+            from.SendMessage("Use [FeatureAdmin to edit additional block actions.");
         }
         else
         {
@@ -218,20 +218,21 @@ public static class FeatureFlagCommands
         }
     }
 
-    private sealed class BlockUseTarget : Target
+    private sealed class BlockItemTarget : Target
     {
         private readonly string _reason;
 
-        public BlockUseTarget(string reason) : base(-1, false, TargetFlags.None) => _reason = reason;
+        public BlockItemTarget(string reason) : base(-1, false, TargetFlags.None) => _reason = reason;
 
         protected override void OnTarget(Mobile from, object targeted)
         {
             if (targeted is Item item)
             {
                 var type = item.GetType();
-                FeatureFlagManager.BlockUseReq(type, _reason, from.Name);
-                from.SendMessage(0x35, $"Item usage for '{type.Name}' has been BLOCKED.");
+                FeatureFlagManager.BlockItem(type, _reason, from.Name);
+                from.SendMessage(0x35, $"Item '{type.Name}' has been BLOCKED (use).");
                 from.SendMessage($"Reason: {_reason}");
+                from.SendMessage("Use [FeatureAdmin to edit additional block actions.");
             }
             else
             {
@@ -240,24 +241,24 @@ public static class FeatureFlagCommands
         }
     }
 
-    [Usage("UnblockUse <typeName>")]
-    [Description("Remove an item type's usage block.")]
-    private static void UnblockUse_OnCommand(CommandEventArgs e)
+    [Usage("UnblockItem <typeName>")]
+    [Description("Remove all blocks for an item type.")]
+    private static void UnblockItem_OnCommand(CommandEventArgs e)
     {
         var from = e.Mobile;
 
         if (e.Arguments.Length == 0)
         {
-            from.SendMessage("Usage: [UnblockUse <typeName>");
+            from.SendMessage("Usage: [UnblockItem <typeName>");
             from.SendMessage("Use [FeatureList items to see blocked items.");
             return;
         }
 
         var typeName = e.Arguments[0];
 
-        if (FeatureFlagManager.UnblockUseReqByName(typeName, from.Name))
+        if (FeatureFlagManager.UnblockItemByName(typeName, from.Name))
         {
-            from.SendMessage(0x35, $"Item usage block for '{typeName}' has been REMOVED.");
+            from.SendMessage(0x35, $"Item block for '{typeName}' has been REMOVED.");
         }
         else
         {
@@ -378,62 +379,7 @@ public static class FeatureFlagCommands
         }
     }
 
-    [Usage("BlockContainer <typeName> [reason]")]
-    [Description("Block a container type from being opened by players.")]
-    private static void BlockContainer_OnCommand(CommandEventArgs e)
-    {
-        var from = e.Mobile;
-
-        if (e.Arguments.Length == 0)
-        {
-            from.SendMessage("Usage: [BlockContainer <typeName> [reason]");
-            from.SendMessage("Example: [BlockContainer BankBox Bank access temporarily disabled");
-            return;
-        }
-
-        var typeName = e.Arguments[0];
-        var reason = e.Arguments.Length > 1
-            ? string.Join(" ", e.Arguments, 1, e.Arguments.Length - 1)
-            : FeatureFlagSettings.DefaultContainerBlockedMessage;
-
-        if (FeatureFlagManager.BlockContainerByName(typeName, reason, from.Name))
-        {
-            from.SendMessage(0x35, $"Container '{typeName}' has been BLOCKED.");
-            from.SendMessage($"Reason: {reason}");
-        }
-        else
-        {
-            from.SendMessage(0x22, $"Could not find container type '{typeName}'.");
-            from.SendMessage("Make sure you're using the correct type name (e.g., BankBox, MetalChest, etc.)");
-        }
-    }
-
-    [Usage("UnblockContainer <typeName>")]
-    [Description("Remove a container type block.")]
-    private static void UnblockContainer_OnCommand(CommandEventArgs e)
-    {
-        var from = e.Mobile;
-
-        if (e.Arguments.Length == 0)
-        {
-            from.SendMessage("Usage: [UnblockContainer <typeName>");
-            from.SendMessage("Use [FeatureList containers to see blocked containers.");
-            return;
-        }
-
-        var typeName = e.Arguments[0];
-
-        if (FeatureFlagManager.UnblockContainerByName(typeName, from.Name))
-        {
-            from.SendMessage(0x35, $"Container block for '{typeName}' has been REMOVED.");
-        }
-        else
-        {
-            from.SendMessage(0x22, $"No block found for container '{typeName}'.");
-        }
-    }
-
-    [Usage("FeatureList [flags|gumps|items|skills|spells|containers|all]")]
+    [Usage("FeatureList [flags|gumps|items|skills|spells|all]")]
     [Description("List all feature flags and blocks.")]
     private static void FeatureList_OnCommand(CommandEventArgs e)
     {
@@ -469,22 +415,33 @@ public static class FeatureFlagCommands
 
         if (filter is "items" or "all")
         {
-            var useReqBlocks = FeatureFlagManager.GetAllUseReqBlocks();
-            from.SendMessage(0x35, $"=== Blocked Item Usage ({useReqBlocks.Count}) ===");
-            foreach (var block in useReqBlocks)
+            var itemBlocks = FeatureFlagManager.GetAllItemBlocks();
+            from.SendMessage(0x35, $"=== Blocked Items ({itemBlocks.Count}) ===");
+            foreach (var block in itemBlocks)
             {
+                var actions = new List<string>(3);
+                if (block.BlockUse) actions.Add("Use");
+                if (block.BlockEquip) actions.Add("Equip");
+                if (block.BlockContainerAccess) actions.Add("Container");
+
+                var actionsStr = actions.Count > 0 ? $"[{string.Join("][", actions)}]" : "[none]";
                 var status = block.Active ? "[OFF]" : "[ON]";
-                from.SendMessage($"  {status} {block.DisplayName}: {block.Reason}");
+                from.SendMessage($"  {status} {block.DisplayName} {actionsStr}: {block.Reason}");
             }
         }
 
         if (filter is "skills" or "all")
         {
             var skillBlocks = FeatureFlagManager.GetAllSkillBlocks();
-            from.SendMessage(0x35, $"=== Blocked Skills ({skillBlocks.Length}) ===");
+            from.SendMessage(0x35, "=== Blocked Skills ===");
             for (var i = 0; i < skillBlocks.Length; i++)
             {
                 var block = skillBlocks[i];
+                if (block == null)
+                {
+                    continue;
+                }
+
                 var status = block.Active ? "[OFF]" : "[ON]";
                 from.SendMessage($"  {status} {block.DisplayName}: {block.Reason}");
             }
@@ -493,28 +450,22 @@ public static class FeatureFlagCommands
         if (filter is "spells" or "all")
         {
             var spellBlocks = FeatureFlagManager.GetAllSpellBlocks();
-            from.SendMessage(0x35, $"=== Blocked Spells ({spellBlocks.Length}) ===");
+            from.SendMessage(0x35, "=== Blocked Spells ===");
             foreach (var block in spellBlocks)
             {
+                if (block == null)
+                {
+                    continue;
+                }
+
                 var status = block.Active ? "[OFF]" : "[ON]";
                 from.SendMessage($"  {status} {block.DisplayName}: {block.Reason}");
             }
         }
 
-        if (filter is "containers" or "all")
+        if (filter != "flags" && filter != "gumps" && filter != "items" && filter != "skills" && filter != "spells" && filter != "all")
         {
-            var containerBlocks = FeatureFlagManager.GetAllContainerBlocks();
-            from.SendMessage(0x35, $"=== Blocked Containers ({containerBlocks.Count}) ===");
-            foreach (var block in containerBlocks)
-            {
-                var status = block.Active ? "[OFF]" : "[ON]";
-                from.SendMessage($"  {status} {block.DisplayName}: {block.Reason}");
-            }
-        }
-
-        if (filter != "flags" && filter != "gumps" && filter != "items" && filter != "skills" && filter != "spells" && filter != "containers" && filter != "all")
-        {
-            from.SendMessage("Usage: [FeatureList [flags|gumps|items|skills|spells|containers|all]");
+            from.SendMessage("Usage: [FeatureList [flags|gumps|items|skills|spells|all]");
         }
     }
 

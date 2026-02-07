@@ -68,8 +68,17 @@ public static class FeatureFlagExtensions
             return true;
         }
 
-        var blockReason = FeatureFlagManager.CheckUseReq(item, from, sendMessageIfBlocked);
-        return blockReason == null;
+        if (FeatureFlagManager.IsItemUseBlocked(item.GetType()))
+        {
+            if (sendMessageIfBlocked)
+            {
+                var entry = FeatureFlagManager.GetItemBlockEntry(item.GetType());
+                from.SendMessage(0x22, entry?.Reason ?? FeatureFlagSettings.DefaultItemUseBlockedMessage);
+            }
+            return false;
+        }
+
+        return true;
     }
 
     public static bool IsFeatureEnabled(this Mobile mobile, string flagKey)

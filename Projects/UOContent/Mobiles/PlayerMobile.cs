@@ -1765,29 +1765,22 @@ namespace Server.Mobiles
 
         public override bool AllowItemUse(Item item)
         {
-            if (AccessLevel < FeatureFlagSettings.RequiredAccessLevel
-                && FeatureFlagManager.IsUseReqBlocked(item.GetType()))
+            if (AccessLevel < FeatureFlagSettings.RequiredAccessLevel &&
+                FeatureFlagManager.GetItemBlockEntry(item.GetType()) is { Active: true, BlockUse: true } entry)
             {
-                var entry = FeatureFlagManager.GetUseReqBlockEntry(item.GetType());
-                SendMessage(0x22, entry?.Reason ?? FeatureFlagSettings.DefaultUseReqBlockedMessage);
+                SendMessage(0x22, entry?.Reason ?? FeatureFlagSettings.DefaultItemUseBlockedMessage);
                 return false;
             }
 
-            if (DuelContext?.AllowItemUse(this, item) == false)
-            {
-                return false;
-            }
-
-            return DesignContext.Check(this);
+            return DuelContext?.AllowItemUse(this, item) != false && DesignContext.Check(this);
         }
 
         public override bool AllowSkillUse(SkillName skill)
         {
             if (AccessLevel < FeatureFlagSettings.RequiredAccessLevel
-                && FeatureFlagManager.IsSkillBlocked(skill))
+                && FeatureFlagManager.GetSkillBlockEntry(skill) is { Active: true } entry)
             {
-                var entry = FeatureFlagManager.GetSkillBlockEntry(skill);
-                SendMessage(0x22, entry?.Reason ?? "This skill is temporarily disabled.");
+                SendMessage(0x22, entry?.Reason ?? FeatureFlagSettings.DefaultSkillDisabledMessage);
                 return false;
             }
 
@@ -2050,6 +2043,13 @@ namespace Server.Mobiles
 
         public override bool CheckEquip(Item item)
         {
+            if (AccessLevel < FeatureFlagSettings.RequiredAccessLevel
+                && FeatureFlagManager.GetItemBlockEntry(item.GetType()) is { Active: true, BlockEquip: true } entry)
+            {
+                SendMessage(0x22, entry?.Reason ?? FeatureFlagSettings.DefaultItemEquipBlockedMessage);
+                return false;
+            }
+
             if (!base.CheckEquip(item))
             {
                 return false;
