@@ -197,11 +197,29 @@ public static class MovementThrottle
             // Credit can go negative up to -dynamicCredit (debt limit)
             if (ns._movementCredit - earlyAmount >= -dynamicCredit)
             {
+                var prevCredit = ns._movementCredit;
                 // Use credit to cover early arrival
                 ns._movementCredit -= earlyAmount;
+
+                if (_debugLogging && ns._movementLogging)
+                {
+                    logger.Debug(
+                        "[Credit] {Name}: delta={Delta}ms early={Early}ms credit={PrevCredit}->{Credit}/{MaxCredit} action=execute",
+                        mobile.RawName, delta, earlyAmount, prevCredit, ns._movementCredit, dynamicCredit
+                    );
+                }
+
                 // Execute immediately since credit covers it
                 ExecuteMovement(ns, mobile, dir, seq);
                 return;
+            }
+
+            if (_debugLogging && ns._movementLogging)
+            {
+                logger.Debug(
+                    "[Credit] {Name}: delta={Delta}ms early={Early}ms credit={Credit}/{MaxCredit} EXHAUSTED -> queue",
+                    mobile.RawName, delta, earlyAmount, ns._movementCredit, dynamicCredit
+                );
             }
 
             // Credit exhausted - must queue
@@ -212,7 +230,16 @@ public static class MovementThrottle
         // On-time or late - rebuild credit (capped at dynamic max)
         if (delta > 0)
         {
+            var prevCredit = ns._movementCredit;
             ns._movementCredit = Math.Min(ns._movementCredit + delta, dynamicCredit);
+
+            if (_debugLogging && ns._movementLogging && ns._movementCredit != prevCredit)
+            {
+                logger.Debug(
+                    "[Credit] {Name}: delta=+{Delta}ms credit={PrevCredit}->{Credit}/{MaxCredit} action=execute",
+                    mobile.RawName, delta, prevCredit, ns._movementCredit, dynamicCredit
+                );
+            }
         }
 
         // Execute immediately
@@ -226,9 +253,25 @@ public static class MovementThrottle
     {
         if (!mobile.Move(dir))
         {
+            if (_debugLogging && ns._movementLogging)
+            {
+                logger.Debug(
+                    "[Execute] {Name}: Move FAILED dir={Dir} seq={Seq} -> reject+reset",
+                    mobile.RawName, dir, seq
+                );
+            }
+
             // Movement failed (blocked, paralyzed, frozen, etc.)
             RejectAndReset(ns, mobile, seq);
             return;
+        }
+
+        if (_debugLogging && ns._movementLogging)
+        {
+            logger.Debug(
+                "[Execute] {Name}: Move OK dir={Dir} seq={Seq} nextMove={NextMove}ms",
+                mobile.RawName, dir, seq, ns._nextMovementTime - Core.TickCount
+            );
         }
 
         // Success - Mobile.Move() already updated _nextMovementTime and sent ack
@@ -272,6 +315,14 @@ public static class MovementThrottle
 
         ns._hasQueuedMovements = true;
         _netStatesWithQueuedMovements.Add(ns);
+
+        if (_debugLogging && ns._movementLogging)
+        {
+            logger.Debug(
+                "[Queue] {Name}: enqueued dir={Dir} seq={Seq} (depth={Depth})",
+                ns.Mobile?.RawName, dir, seq, ns._movementQueue.Count
+            );
+        }
     }
 
     /// <summary>
@@ -342,6 +393,7 @@ public static class MovementThrottle
             }
 
             var movement = ns._movementQueue.Dequeue();
+            var remaining = ns._movementQueue.Count;
 
             // Validate sequence
             if (ns.Sequence == 0 && movement.Sequence != 0)
@@ -354,9 +406,26 @@ public static class MovementThrottle
             // Execute the move
             if (!mobile.Move(movement.Direction))
             {
+                if (_debugLogging && ns._movementLogging)
+                {
+                    logger.Debug(
+                        "[Queue] {Name}: dequeued FAILED dir={Dir} (remaining={Remaining})",
+                        mobile.RawName, movement.Direction, remaining
+                    );
+                }
+
                 // Movement failed
                 RejectAndReset(ns, mobile, movement.Sequence);
                 return;
+            }
+
+            if (_debugLogging && ns._movementLogging)
+            {
+                var waited = now - ns._nextMovementTime;
+                logger.Debug(
+                    "[Queue] {Name}: dequeued OK dir={Dir} (remaining={Remaining}, waited={Waited}ms)",
+                    mobile.RawName, movement.Direction, remaining, waited >= 0 ? waited : 0
+                );
             }
 
             // Success - update sequence
@@ -1049,4 +1118,59 @@ public static class MovementThrottle
     /// Server operators can subscribe to broadcast to staff or take other actions.
     /// </summary>
     public static event Action<NetState, Mobile, float, DetectionVerdict, string> OnSpeedHackDetected;
+
+    /// <summary>
+    /// Snapshot of a player's movement throttle state for diagnostic display.
+    /// </summary>
+    public readonly struct MovementStats
+    {
+        public float Rate { get; init; }
+        public int SampleCount { get; init; }
+        public DetectionVerdict Verdict { get; init; }
+        public float Confidence { get; init; }
+        public long AverageRtt { get; init; }
+        public long LastRtt { get; init; }
+        public long RttVariance { get; init; }
+        public bool StableConnection { get; init; }
+        public int RttSampleCount { get; init; }
+        public int QueueDepth { get; init; }
+        public long MovementCredit { get; init; }
+        public int CurrentPacketRate { get; init; }
+        public int PeakPacketRate { get; init; }
+        public int BurstSize { get; init; }
+        public int PrecedingGap { get; init; }
+        public int SustainedSeconds { get; init; }
+        public bool DebugLogging { get; init; }
+    }
+
+    /// <summary>
+    /// Gets a snapshot of the current movement throttle state for a player.
+    /// Safe to call from UOContent (exposes internal state via public struct).
+    /// </summary>
+    public static MovementStats GetMovementStats(NetState ns)
+    {
+        var verdict = AnalyzeMovement(ns, out var rate, out var sampleCount, out var confidence);
+        var (burstSize, precedingGap) = DetectRecentBurst(ns);
+
+        return new MovementStats
+        {
+            Rate = rate,
+            SampleCount = sampleCount,
+            Verdict = verdict,
+            Confidence = confidence,
+            AverageRtt = ns.AverageRtt,
+            LastRtt = ns._lastRtt,
+            RttVariance = ns._rttVariance,
+            StableConnection = ns.HasStableConnection,
+            RttSampleCount = ns._rttSampleCount,
+            QueueDepth = ns._movementQueue?.Count ?? 0,
+            MovementCredit = ns._movementCredit,
+            CurrentPacketRate = ns.CurrentMovementRate,
+            PeakPacketRate = ns.PeakMovementRate,
+            BurstSize = burstSize,
+            PrecedingGap = precedingGap,
+            SustainedSeconds = ns._consecutiveHighRateSeconds,
+            DebugLogging = ns.MovementLogging,
+        };
+    }
 }
