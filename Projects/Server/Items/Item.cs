@@ -599,19 +599,19 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
         get => LookupCompactInfo()?.m_Name ?? DefaultName;
         set
         {
-            if (value == null || value != DefaultName)
+            var info = LookupCompactInfo();
+
+            if (value == null || value == DefaultName)
             {
-                var info = AcquireCompactInfo();
-
-                info.m_Name = value;
-
-                if (info.m_Name == null)
-                {
-                    VerifyCompactInfo();
-                }
-
-                InvalidateProperties();
+                info?.m_Name = null;
+                VerifyCompactInfo();
             }
+            else
+            {
+                (info ?? AcquireCompactInfo()).m_Name = value;
+            }
+
+            InvalidateProperties();
         }
     }
 
