@@ -838,9 +838,13 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
             return;
         }
 
-        if (!Regions.TryAdd(regName, reg))
+        if (Regions.ContainsKey(regName))
         {
             logger.Warning("Duplicate region name '{RegionName}' for map '{MapName}'", regName, Name);
+        }
+        else
+        {
+            Regions[regName] = reg;
         }
     }
 

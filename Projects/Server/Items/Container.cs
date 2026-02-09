@@ -1621,9 +1621,13 @@ public class ContainerData
                             {
                                 var id = Utility.ToInt32(aIDs[i]);
 
-                                if (!m_Table.TryAdd(id, data))
+                                if (m_Table.ContainsKey(id))
                                 {
                                     logger.Warning("double ItemID entry in Data\\containers.cfg");
+                                }
+                                else
+                                {
+                                    m_Table[id] = data;
                                 }
                             }
                         }

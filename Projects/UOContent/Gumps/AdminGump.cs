@@ -1799,9 +1799,9 @@ namespace Server.Gumps
             {
                 var ips = a.LoginIPs;
 
-                if (ips.Length != 0 && Equals(ip, ips[0]) && AccountHandler.IPTable.TryGetValue(ips[0], out var value))
+                if (ips.Length != 0 && Equals(ip, ips[0]) && AccountHandler.IPTable.ContainsKey(ips[0]))
                 {
-                    AccountHandler.IPTable[ip] = value - 1;
+                    --AccountHandler.IPTable[ip];
                 }
 
                 var newList = new List<IPAddress>(ips);
@@ -1831,9 +1831,9 @@ namespace Server.Gumps
             {
                 var ips = a.LoginIPs;
 
-                if (ips.Length != 0 && AccountHandler.IPTable.TryGetValue(ips[0], out int value))
+                if (ips.Length != 0 && AccountHandler.IPTable.ContainsKey(ips[0]))
                 {
-                    AccountHandler.IPTable[ips[0]] = value - 1;
+                    --AccountHandler.IPTable[ips[0]];
                 }
 
                 a.LoginIPs = Array.Empty<IPAddress>();
