@@ -444,7 +444,7 @@ public abstract partial class BaseAI
             DebugSay("No threats found. Going home...");
             Action = ActionType.Wander;
         }
-        
+
         DebugSay("I stopped being on guard.");
         Action = ActionType.Wander;
 
@@ -596,6 +596,11 @@ public abstract partial class BaseAI
     public virtual bool AcquireFocusMob(int iRange, FightMode acqType, bool bPlayerOnly, bool bFacFriend, bool bFacFoe)
     {
         if (Mobile.Deleted || Mobile.Map == null)
+        {
+            return false;
+        }
+
+        if (Mobile.BardPacified)
         {
             return false;
         }

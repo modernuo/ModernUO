@@ -2765,7 +2765,7 @@ namespace Server.Mobiles
 
         public override void OnMovement(Mobile m, Point3D oldLocation)
         {
-            if (AcquireOnApproach && !Controlled && !Summoned && FightMode != FightMode.Aggressor)
+            if (AcquireOnApproach && !Controlled && !Summoned && !BardPacified && FightMode != FightMode.Aggressor)
             {
                 if (InRange(m.Location, AcquireOnApproachRange) && !InRange(oldLocation, AcquireOnApproachRange) &&
                     CanBeHarmful(m) && IsEnemy(m))
@@ -2780,13 +2780,11 @@ namespace Server.Mobiles
                 ForceReacquire();
             }
 
-            var speechType = SpeechType;
-
-            speechType?.OnMovement(this, m, oldLocation);
+            SpeechType?.OnMovement(this, m, oldLocation);
 
             /* Begin notice sound */
             if ((!m.Hidden || m.AccessLevel == AccessLevel.Player) && m.Player && FightMode != FightMode.Aggressor &&
-                FightMode != FightMode.None && Combatant == null && !Controlled && !Summoned &&
+                FightMode != FightMode.None && Combatant == null && !Controlled && !Summoned && !BardPacified &&
                 InRange(m.Location, 18) && !InRange(oldLocation, 18))
             {
                 if (Body.IsMonster)
