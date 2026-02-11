@@ -798,7 +798,7 @@ public abstract partial class BaseAI
                                  || Mobile.GetEthicAllegiance(m) == BaseCreature.Allegiance.Enemy;
 
         // Valid if FightMode is Evil and the target's karma is negative
-        return !valid && acqType != FightMode.Evil || (bc?.GetMaster()?.Karma ?? m.Karma) >= 0;
+        return !valid && (acqType != FightMode.Evil || (bc?.GetMaster()?.Karma ?? m.Karma) >= 0);
     }
 
     private bool IsHostile(Mobile from) => Mobile.Combatant == from || from.Combatant == Mobile || IsAggressor(from) || IsAggressed(from);
