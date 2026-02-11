@@ -436,7 +436,7 @@ public partial class NetState
         // Process disposes
         while (_disposed.TryDequeue(out var ns))
         {
-            ns.Dispose();
+            ns.DisposeInternal();
         }
     }
 

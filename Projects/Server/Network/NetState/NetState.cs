@@ -41,7 +41,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
     private static readonly Queue<NetState> _flushPending = new(2048);
     private static readonly Queue<NetState> _pendingDisconnects = new(256); // Processed AFTER flush
-    private static readonly ConcurrentQueue<NetState> _disposed = new();
+    private static readonly Queue<NetState> _disposed = new();
     private static readonly Queue<NetState> _throttled = new(256);
     private static readonly Queue<NetState> _throttledPending = new(256);
 
@@ -940,6 +940,13 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     {
         if (_socket != null && NextActivityCheck - curTicks < 0)
         {
+            if (_socket.DisconnectPending)
+            {
+                LogInfo("Force disconnecting stuck socket (disconnect was already pending)...");
+                _socketManager.DisconnectImmediate(_socket);
+                return;
+            }
+
             LogInfo("Disconnecting due to inactivity...");
             Disconnect("Disconnecting due to inactivity.");
         }
@@ -1031,10 +1038,14 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         }
     }
 
+    private void DisposeInternal() => Dispose();
+
     // Do not run this directly. Use Disconnect instead.
     // This is available for testing cleanup only.
+    [Obsolete("Use Disconnect instead")]
     public void Dispose()
     {
+        var wasRunning = _running;
         _running = false;
         // It's possible we could queue for dispose multiple times
         if (_socket == null)
@@ -1045,9 +1056,8 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         TraceDisconnect(_disconnectReason, _toString);
 
         // If still running, force immediate disconnect
-        if (_running)
+        if (wasRunning)
         {
-            _running = false;
             _socketManager?.DisconnectImmediate(_socket);
         }
 
