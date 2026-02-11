@@ -293,6 +293,13 @@ public partial class NetState
             if (!ns.SentFirstPacket || !ns.Seeded)
             {
                 ns.Disconnect(null);
+
+                // Force immediate cleanup - these are unauthenticated connections
+                // where graceful disconnect can get stuck with pending sends.
+                if (ns._socket is { DisconnectPending: true })
+                {
+                    _socketManager.DisconnectImmediate(ns._socket);
+                }
             }
         }
     }
