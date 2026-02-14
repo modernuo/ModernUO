@@ -313,7 +313,7 @@ public partial class Banker : BaseVendor
         return true;
     }
 
-    public static int DepositUpTo(Mobile from, int amount, bool useChecks = true)
+    public static int DepositUpTo(Mobile from, int amount, bool useChecks = true, int reserveSlots = 0)
     {
         // If for whatever reason the TOL checks fail, we should still try old methods for depositing currency.
         if (AccountGold.Enabled && from.Account?.DepositGold(amount) == true)
@@ -350,37 +350,72 @@ public partial class Banker : BaseVendor
             }
         }
 
-        // Create new items for the remainder
-        while (remaining > 0)
+        if (remaining == 0)
         {
-            Item item;
-            int amountGiven;
+            return amount;
+        }
 
+        // Calculate how many new item slots can be filled
+        int slotsToFill;
+        var maxItems = box.MaxItems;
+        if (maxItems == 0)
+        {
+            slotsToFill = int.MaxValue;
+        }
+        else
+        {
+            slotsToFill = maxItems - box.TotalItems;
+            if (reserveSlots > 0)
+            {
+                // Count slots needed to determine if the full amount fits.
+                // Only reserve if it doesn't — the caller will delete the reserved item on full deposit.
+                var slots = slotsToFill;
+                var r = remaining;
+                while (r > 0)
+                {
+                    if (!useChecks || r < 5000)
+                    {
+                        r -= Math.Min(r, 60000);
+                    }
+                    else if (r <= 1000000)
+                    {
+                        r = 0;
+                    }
+                    else
+                    {
+                        r -= 1000000;
+                    }
+
+                    if (--slots < 0)
+                    {
+                        slotsToFill -= reserveSlots;
+                        break;
+                    }
+                }
+            }
+        }
+
+        // Create new items for the remainder
+        while (remaining > 0 && slotsToFill > 0)
+        {
             if (!useChecks || remaining < 5000)
             {
-                amountGiven = Math.Min(remaining, 60000);
-                item = new Gold(amountGiven);
+                var pile = Math.Min(remaining, 60000);
+                box.DropItem(new Gold(pile));
+                remaining -= pile;
             }
             else if (remaining <= 1000000)
             {
-                item = new BankCheck(remaining);
-                amountGiven = remaining;
+                box.DropItem(new BankCheck(remaining));
+                remaining = 0;
             }
             else
             {
-                item = new BankCheck(1000000);
-                amountGiven = 1000000;
+                box.DropItem(new BankCheck(1000000));
+                remaining -= 1000000;
             }
 
-            if (box.TryDropItem(from, item, false))
-            {
-                remaining -= amountGiven;
-            }
-            else
-            {
-                item.Delete();
-                break;
-            }
+            slotsToFill--;
         }
 
         return amount - remaining;

@@ -151,27 +151,28 @@ public partial class BankCheck : Item
         }
         else
         {
-            // Remove check from the bank box so it doesn't interfere with deposit stacking
+            // Internalize the check to free its slot for deposit.
+            // reserveSlots: 1 conditionally keeps a slot free for the check to bounce back
+            // only if the full amount won't fit — if it fits, no reservation is needed.
             RecordBounce();
             Internalize();
 
-            var deposited = Banker.DepositUpTo(from, _worth, false);
-
-            if (deposited <= 0)
-            {
-                Bounce(from);
-                from.SendLocalizedMessage(500390); // Your bank box is full.
-                return;
-            }
+            var deposited = Banker.DepositUpTo(from, _worth, false, 1);
 
             if (deposited >= _worth)
             {
                 Delete();
             }
-            else
+            else if (deposited > 0)
             {
                 Worth -= deposited;
                 Bounce(from);
+            }
+            else
+            {
+                Bounce(from);
+                from.SendLocalizedMessage(500390); // Your bank box is full.
+                return;
             }
 
             // Gold was deposited in your account:
