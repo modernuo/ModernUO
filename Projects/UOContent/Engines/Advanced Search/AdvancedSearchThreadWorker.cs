@@ -182,7 +182,7 @@ public class AdvancedSearchThreadWorker
 
     private AdvancedSearchResult DoItemSearch(Item item)
     {
-        if (_filter.FilterName && !string.IsNullOrWhiteSpace(_filter.Name) && !item.Name.InsensitiveEquals(_filter.Name))
+        if (_filter.FilterName && !string.IsNullOrWhiteSpace(_filter.Name) && !(item.Name ?? item.ItemData.Name).InsensitiveContains(_filter.Name))
         {
             return null;
         }
@@ -206,7 +206,7 @@ public class AdvancedSearchThreadWorker
 
     private AdvancedSearchResult DoMobileSearch(Mobile mobile)
     {
-        if (_filter.FilterName && !string.IsNullOrWhiteSpace(_filter.Name) && !mobile.Name.InsensitiveEquals(_filter.Name))
+        if (_filter.FilterName && !string.IsNullOrWhiteSpace(_filter.Name) && !mobile.Name.InsensitiveContains(_filter.Name))
         {
             return null;
         }

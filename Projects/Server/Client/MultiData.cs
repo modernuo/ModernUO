@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: MultiData.cs                                                    *
  *                                                                       *
@@ -25,6 +25,9 @@ namespace Server;
 
 public static class MultiData
 {
+    public static string HousingUOPPath { get; private set; }
+    public static UOPEntry HousingEntry { get; private set; }
+
     public static void Configure()
     {
         var multiUOPPath = Core.FindDataFile("MultiCollection.uop", false);
@@ -53,8 +56,10 @@ public static class MultiData
     {
         using var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
 
-        // TODO: Find out if housing.bin is needed and read that.
-        var uopEntries = UOPFiles.ReadUOPIndexes(stream, ".bin", 0x10000, 4, 6);
+        var housingHash = UOPFiles.HashLittle2("build/multicollection/housing.bin");
+        var additionalHashes = new Dictionary<ulong, UOPEntry> { [housingHash] = default };
+
+        var uopEntries = UOPFiles.ReadUOPIndexes(stream, ".bin", 0x10000, 4, 6, additionalHashes);
 
         var compressionBuffer = STArrayPool<byte>.Shared.Rent(0x10000);
         var buffer = STArrayPool<byte>.Shared.Rent(0x10000);
@@ -120,6 +125,12 @@ public static class MultiData
 
         STArrayPool<byte>.Shared.Return(buffer);
         STArrayPool<byte>.Shared.Return(compressionBuffer);
+
+        if (additionalHashes.TryGetValue(housingHash, out var housingEntry) && housingEntry.Size > 0)
+        {
+            HousingUOPPath = path;
+            HousingEntry = housingEntry;
+        }
     }
 
     private static void LoadMul(bool postHSMulFormat)

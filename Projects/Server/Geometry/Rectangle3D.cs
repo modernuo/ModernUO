@@ -20,7 +20,7 @@ namespace Server;
 
 [NoSort]
 [PropertyObject]
-public struct Rectangle3D : IEquatable<Rectangle3D>, ISpanFormattable
+public struct Rectangle3D : IEquatable<Rectangle3D>, ISpanFormattable, ISpanParsable<Rectangle3D>
 {
     private Point3D _start;
     private Point3D _end;

@@ -32,6 +32,9 @@ public partial class NetState
     private const int SendBufferSize = 1024 * 256;  // 256KB send buffers
     private const int MaxConnections = 4096;        // Max concurrent connections
 
+    private static readonly Queue<NetState> _disposed = [];
+    private static readonly TimeSpan ConnectingSocketIdleLimit = TimeSpan.FromMilliseconds(5000); // 5 seconds
+
     // Socket manager handles buffer pools, socket lifecycle, and I/O operations
     private static RingSocketManager _socketManager;
 
@@ -45,6 +48,9 @@ public partial class NetState
     private static nint[] _listeners = Array.Empty<nint>();
     private static int _pendingAcceptCount;
     private const int PendingAcceptsPerListener = 32;
+
+    private const long AliveCheckIntervalMs = 5000;
+    private static long _nextAliveCheck;
 
     /// <summary>
     /// Gets the IORingGroup instance for socket operations.
@@ -293,6 +299,13 @@ public partial class NetState
             if (!ns.SentFirstPacket || !ns.Seeded)
             {
                 ns.Disconnect(null);
+
+                // Force immediate cleanup - these are unauthenticated connections
+                // where graceful disconnect can get stuck with pending sends.
+                if (ns._socket is { DisconnectPending: true })
+                {
+                    _socketManager.DisconnectImmediate(ns._socket);
+                }
             }
         }
     }
@@ -321,6 +334,7 @@ public partial class NetState
 
     public static void Slice()
     {
+        var curTicks = Core.TickCount;
         DisconnectUnattachedSockets();
 
         // Process throttled states
@@ -366,6 +380,7 @@ public partial class NetState
                         // Verify generation via object identity to avoid stale completion issues
                         if (nsRecv != null && nsRecv._socket == evt.Socket)
                         {
+                            nsRecv.NextActivityCheck = curTicks + 30000;
                             HandleDataReceived(nsRecv, evt.BytesTransferred);
                         }
                         break;
@@ -378,7 +393,7 @@ public partial class NetState
                         if (nsSend != null && nsSend._socket == evt.Socket)
                         {
                             // Update activity check on successful send
-                            nsSend.NextActivityCheck = Core.TickCount + 90000;
+                            nsSend.NextActivityCheck = curTicks + 30000;
                         }
                         break;
                     }
@@ -439,7 +454,16 @@ public partial class NetState
         // Process disposes
         while (_disposed.TryDequeue(out var ns))
         {
-            ns.Dispose();
+            ns.DisposeInternal();
+        }
+
+        // Check for dead connections AFTER processing all completions.
+        // Recv completions reset NextActivityCheck, so after a server stall,
+        // buffered client pings update timestamps before this check fires.
+        if (curTicks - _nextAliveCheck >= 0)
+        {
+            _nextAliveCheck = curTicks + AliveCheckIntervalMs;
+            CheckAllAlive();
         }
     }
 

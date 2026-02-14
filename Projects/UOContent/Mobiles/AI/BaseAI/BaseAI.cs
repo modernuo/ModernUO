@@ -444,7 +444,7 @@ public abstract partial class BaseAI
             DebugSay("No threats found. Going home...");
             Action = ActionType.Wander;
         }
-        
+
         DebugSay("I stopped being on guard.");
         Action = ActionType.Wander;
 
@@ -596,6 +596,11 @@ public abstract partial class BaseAI
     public virtual bool AcquireFocusMob(int iRange, FightMode acqType, bool bPlayerOnly, bool bFacFriend, bool bFacFoe)
     {
         if (Mobile.Deleted || Mobile.Map == null)
+        {
+            return false;
+        }
+
+        if (Mobile.BardPacified)
         {
             return false;
         }
@@ -793,7 +798,7 @@ public abstract partial class BaseAI
                                  || Mobile.GetEthicAllegiance(m) == BaseCreature.Allegiance.Enemy;
 
         // Valid if FightMode is Evil and the target's karma is negative
-        return !valid && acqType != FightMode.Evil || (bc?.GetMaster()?.Karma ?? m.Karma) >= 0;
+        return !valid && (acqType != FightMode.Evil || (bc?.GetMaster()?.Karma ?? m.Karma) >= 0);
     }
 
     private bool IsHostile(Mobile from) => Mobile.Combatant == from || from.Combatant == Mobile || IsAggressor(from) || IsAggressed(from);
