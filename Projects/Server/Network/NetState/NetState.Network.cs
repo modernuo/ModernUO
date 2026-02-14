@@ -32,6 +32,9 @@ public partial class NetState
     private const int SendBufferSize = 1024 * 256;  // 256KB send buffers
     private const int MaxConnections = 4096;        // Max concurrent connections
 
+    private static readonly Queue<NetState> _disposed = [];
+    private static readonly TimeSpan ConnectingSocketIdleLimit = TimeSpan.FromMilliseconds(5000); // 5 seconds
+
     // Socket manager handles buffer pools, socket lifecycle, and I/O operations
     private static RingSocketManager _socketManager;
 

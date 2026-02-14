@@ -33,14 +33,12 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(NetState));
 
-    private static readonly TimeSpan ConnectingSocketIdleLimit = TimeSpan.FromMilliseconds(5000); // 5 seconds
     private const int HuePickerCap = 512;
     private const int MenuCap = 512;
     private const int PacketPerSecondThreshold = 3000;
 
     private static readonly Queue<NetState> _flushPending = new(2048);
     private static readonly Queue<NetState> _pendingDisconnects = new(256); // Processed AFTER flush
-    private static readonly Queue<NetState> _disposed = new();
     private static readonly Queue<NetState> _throttled = new(256);
     private static readonly Queue<NetState> _throttledPending = new(256);
 
