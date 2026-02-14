@@ -137,68 +137,68 @@ public partial class BankCheck : Item
             return;
         }
 
-        var deposited = 0;
-        var toAdd = _worth;
-
-        if (AccountGold.Enabled && from.Account?.DepositGold(toAdd) == true)
+        if (AccountGold.Enabled)
         {
-            deposited = toAdd;
-        }
-
-        while (toAdd > 0)
-        {
-            var amount = Math.Min(toAdd, 60000);
-
-            var gold = new Gold(amount);
-
-            if (box.TryDropItem(from, gold, false))
+            if (from.Account?.DepositGold(_worth) != true)
             {
-                toAdd -= amount;
-                deposited += amount;
+                return;
             }
-            else
-            {
-                gold.Delete();
-                break;
-            }
-        }
 
-        if (deposited >= _worth)
-        {
             Delete();
+
+            // Gold was deposited in your account:
+            from.SendLocalizedMessage(1042672, true, $"{_worth:N0}");
         }
         else
         {
-            Worth -= deposited;
-        }
+            // Remove check from the bank box so it doesn't interfere with deposit stacking
+            RecordBounce();
+            Internalize();
 
-        if (deposited > 0)
-        {
+            var deposited = Banker.DepositUpTo(from, _worth, false);
+
+            if (deposited <= 0)
+            {
+                Bounce(from);
+                from.SendLocalizedMessage(500390); // Your bank box is full.
+                return;
+            }
+
+            if (deposited >= _worth)
+            {
+                Delete();
+            }
+            else
+            {
+                Worth -= deposited;
+                Bounce(from);
+            }
+
             // Gold was deposited in your account:
             from.SendLocalizedMessage(1042672, true, $"{deposited:N0}");
+        }
 
-            if (from is PlayerMobile pm)
+        if (from is PlayerMobile pm)
+        {
+            var qs = pm.Quest;
+
+            if (qs is DarkTidesQuest)
             {
-                var qs = pm.Quest;
+                var obj = qs.FindObjective<CashBankCheckObjective>();
 
-                if (qs is DarkTidesQuest)
+                if (obj?.Completed == false)
                 {
-                    var obj = qs.FindObjective<CashBankCheckObjective>();
-
-                    if (obj?.Completed == false)
-                    {
-                        obj.Complete();
-                    }
+                    obj.Complete();
                 }
+            }
 
-                if (qs is UzeraanTurmoilQuest)
+            if (qs is UzeraanTurmoilQuest)
+            {
+                var obj = qs.FindObjective(typeof(Engines.Quests.Haven.CashBankCheckObjective));
+
+                if (obj?.Completed == false)
                 {
-                    var obj = qs.FindObjective(typeof(Engines.Quests.Haven.CashBankCheckObjective));
-
-                    if (obj?.Completed == false)
-                    {
-                        obj.Complete();
-                    }
+                    obj.Complete();
                 }
             }
         }
