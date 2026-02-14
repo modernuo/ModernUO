@@ -21,7 +21,6 @@ using Server.Logging;
 using Server.Menus;
 using System;
 using System.Buffers;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -34,14 +33,12 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(NetState));
 
-    private static readonly TimeSpan ConnectingSocketIdleLimit = TimeSpan.FromMilliseconds(5000); // 5 seconds
     private const int HuePickerCap = 512;
     private const int MenuCap = 512;
     private const int PacketPerSecondThreshold = 3000;
 
     private static readonly Queue<NetState> _flushPending = new(2048);
     private static readonly Queue<NetState> _pendingDisconnects = new(256); // Processed AFTER flush
-    private static readonly ConcurrentQueue<NetState> _disposed = new();
     private static readonly Queue<NetState> _throttled = new(256);
     private static readonly Queue<NetState> _throttledPending = new(256);
 
@@ -102,11 +99,6 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
         // Initialize IORingGroup and buffer pools
         ConfigureNetwork();
-    }
-
-    public static void Initialize()
-    {
-        Timer.DelayCall(TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(1.5), CheckAllAlive);
     }
 
     // Internal constructor for accepted sockets
@@ -938,7 +930,17 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
     public void CheckAlive(long curTicks)
     {
-        if (_socket != null && NextActivityCheck - curTicks < 0)
+        if (_socket == null || NextActivityCheck - curTicks >= 0)
+        {
+            return;
+        }
+
+        if (_socket.DisconnectPending)
+        {
+            LogInfo("Force disconnecting stuck socket...");
+            _socketManager.DisconnectImmediate(_socket);
+        }
+        else
         {
             LogInfo("Disconnecting due to inactivity...");
             Disconnect("Disconnecting due to inactivity.");
@@ -1031,10 +1033,14 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         }
     }
 
+    private void DisposeInternal() => Dispose();
+
     // Do not run this directly. Use Disconnect instead.
     // This is available for testing cleanup only.
+    [Obsolete("Use Disconnect instead")]
     public void Dispose()
     {
+        var wasRunning = _running;
         _running = false;
         // It's possible we could queue for dispose multiple times
         if (_socket == null)
@@ -1045,9 +1051,8 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         TraceDisconnect(_disconnectReason, _toString);
 
         // If still running, force immediate disconnect
-        if (_running)
+        if (wasRunning)
         {
-            _running = false;
             _socketManager?.DisconnectImmediate(_socket);
         }
 
