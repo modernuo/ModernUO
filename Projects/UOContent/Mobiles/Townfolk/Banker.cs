@@ -358,7 +358,7 @@ public partial class Banker : BaseVendor
         // Calculate how many new item slots can be filled
         int slotsToFill;
         var maxItems = box.MaxItems;
-        if (maxItems == 0)
+        if (maxItems == 0 || from.AccessLevel >= AccessLevel.GameMaster)
         {
             slotsToFill = int.MaxValue;
         }
