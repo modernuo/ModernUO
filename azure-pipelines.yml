@@ -7,10 +7,10 @@ variables:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
 
 jobs:
-- job: BuildWindows
-  displayName: 'Windows Server 2022'
+- job: BuildWindows2025
+  displayName: 'Windows Server 2025'
   pool:
-    vmImage: 'windows-latest'
+    vmImage: 'windows-2025'
 
   steps:
     - task: UseDotNet@2
@@ -22,5 +22,21 @@ jobs:
       displayName: 'Build'
     - powershell: ./.github/porcelain.ps1
       displayName: Migration Changes
+    - script: dotnet test --no-restore
+      displayName: 'Test'
+
+- job: BuildWindows2022
+  displayName: 'Windows Server 2022'
+  pool:
+    vmImage: 'windows-2022'
+
+  steps:
+    - task: UseDotNet@2
+      displayName: 'Install .NET'
+      inputs:
+        useGlobalJson: true
+    - task: NuGetAuthenticate@1
+    - script: ./publish.cmd Release
+      displayName: 'Build'
     - script: dotnet test --no-restore
       displayName: 'Test'
