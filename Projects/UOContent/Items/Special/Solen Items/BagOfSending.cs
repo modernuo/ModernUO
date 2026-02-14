@@ -240,7 +240,7 @@ public partial class BagOfSending : Item, TranslocationItem
 
                 if (item is Gold or BankCheck)
                 {
-                    var amount = item is Gold g ? g.Amount : ((BankCheck)item).Worth;
+                    var amount = (item as Gold)?.Amount ?? ((BankCheck)item).Worth;
                     sent = Banker.Deposit(from, amount);
                     if (sent)
                     {
