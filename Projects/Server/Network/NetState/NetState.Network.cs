@@ -46,6 +46,9 @@ public partial class NetState
     private static int _pendingAcceptCount;
     private const int PendingAcceptsPerListener = 32;
 
+    private const long AliveCheckIntervalMs = 5000;
+    private static long _nextAliveCheck;
+
     /// <summary>
     /// Gets the IORingGroup instance for socket operations.
     /// </summary>
@@ -328,6 +331,7 @@ public partial class NetState
 
     public static void Slice()
     {
+        var curTicks = Core.TickCount;
         DisconnectUnattachedSockets();
 
         // Process throttled states
@@ -370,6 +374,7 @@ public partial class NetState
                         // Verify generation via object identity to avoid stale completion issues
                         if (nsRecv != null && nsRecv._socket == evt.Socket)
                         {
+                            nsRecv.NextActivityCheck = curTicks + 30000;
                             HandleDataReceived(nsRecv, evt.BytesTransferred);
                         }
                         break;
@@ -382,7 +387,7 @@ public partial class NetState
                         if (nsSend != null && nsSend._socket == evt.Socket)
                         {
                             // Update activity check on successful send
-                            nsSend.NextActivityCheck = Core.TickCount + 90000;
+                            nsSend.NextActivityCheck = curTicks + 30000;
                         }
                         break;
                     }
@@ -444,6 +449,15 @@ public partial class NetState
         while (_disposed.TryDequeue(out var ns))
         {
             ns.DisposeInternal();
+        }
+
+        // Check for dead connections AFTER processing all completions.
+        // Recv completions reset NextActivityCheck, so after a server stall,
+        // buffered client pings update timestamps before this check fires.
+        if (curTicks - _nextAliveCheck >= 0)
+        {
+            _nextAliveCheck = curTicks + AliveCheckIntervalMs;
+            CheckAllAlive();
         }
     }
 

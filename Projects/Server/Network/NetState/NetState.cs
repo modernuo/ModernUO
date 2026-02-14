@@ -105,7 +105,9 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
     public static void Initialize()
     {
-        Timer.DelayCall(TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(1.5), CheckAllAlive);
+        // CheckAllAlive is called from Slice() after processing I/O completions.
+        // This ensures recv completions reset NextActivityCheck before the alive check,
+        // preventing false disconnects after server stalls.
     }
 
     // Internal constructor for accepted sockets
@@ -937,15 +939,18 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
     public void CheckAlive(long curTicks)
     {
-        if (_socket != null && NextActivityCheck - curTicks < 0)
+        if (_socket == null || NextActivityCheck - curTicks >= 0)
         {
-            if (_socket.DisconnectPending)
-            {
-                LogInfo("Force disconnecting stuck socket (disconnect was already pending)...");
-                _socketManager.DisconnectImmediate(_socket);
-                return;
-            }
+            return;
+        }
 
+        if (_socket.DisconnectPending)
+        {
+            LogInfo("Force disconnecting stuck socket...");
+            _socketManager.DisconnectImmediate(_socket);
+        }
+        else
+        {
             LogInfo("Disconnecting due to inactivity...");
             Disconnect("Disconnecting due to inactivity.");
         }
