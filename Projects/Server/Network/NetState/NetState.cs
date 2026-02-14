@@ -103,13 +103,6 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         ConfigureNetwork();
     }
 
-    public static void Initialize()
-    {
-        // CheckAllAlive is called from Slice() after processing I/O completions.
-        // This ensures recv completions reset NextActivityCheck before the alive check,
-        // preventing false disconnects after server stalls.
-    }
-
     // Internal constructor for accepted sockets
     private NetState(RingSocket socket, IPAddress address)
     {
