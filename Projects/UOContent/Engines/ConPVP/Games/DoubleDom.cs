@@ -957,7 +957,8 @@ public sealed class DDGame : EventGame
     }
 }
 
-public class DDWayPoint : BaseAddon
+[SerializationGenerator(0, false)]
+public partial class DDWayPoint : BaseAddon
 {
     public const int UncapturableHue = 0x497;
     public const int NonCapturedHue = 0x38A;
@@ -984,10 +985,6 @@ public class DDWayPoint : BaseAddon
         AddComponent(new DDStep(0x7A7), -1, 0, -5);
 
         SetUncapturableHue();
-    }
-
-    public DDWayPoint(Serial serial) : base(serial)
-    {
     }
 
     public override bool ShareHue => false;
@@ -1020,20 +1017,6 @@ public class DDWayPoint : BaseAddon
 
             SetNonCaptureHue();
         }
-    }
-
-    public override void Serialize(IGenericWriter writer)
-    {
-        base.Serialize(writer);
-
-        writer.Write(0);
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadInt();
     }
 
     public void SetUncapturableHue()
@@ -1104,27 +1087,10 @@ public class DDWayPoint : BaseAddon
         return true;
     }
 
-    public class DDStep : AddonComponent
+    [SerializationGenerator(0, false)]
+    public partial class DDStep : AddonComponent
     {
         public DDStep(int itemID) : base(itemID) => Visible = true;
-
-        public DDStep(Serial serial) : base(serial)
-        {
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0); // version
-        }
 
         public override bool OnMoveOver(Mobile m) => Addon.OnMoveOver(m);
     }

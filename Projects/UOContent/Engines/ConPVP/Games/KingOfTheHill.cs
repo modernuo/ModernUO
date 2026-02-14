@@ -248,37 +248,27 @@ public partial class HillOfTheKing : Item
     }
 }
 
-public class KHBoard : Item
+[SerializationGenerator(0, false)]
+public partial class KHBoard : Item
 {
-    private KHController m_Controller;
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    [SerializableField(0)]
+    private KHController _controller;
+
+    [SerializableFieldChanged(0)]
+    private void OnControllerChanged(KHController oldValue, KHController newValue)
+    {
+        oldValue?.RemoveBoard(this);
+        newValue?.AddBoard(this);
+    }
+
     public KHGame m_Game;
 
     [Constructible]
-    public KHBoard()
-        : base(7774)
+    public KHBoard() : base(7774)
     {
         Name = "King of the Hill Scoreboard";
         Movable = false;
-    }
-
-    public KHBoard(Serial serial)
-        : base(serial)
-    {
-    }
-
-    [CommandProperty(AccessLevel.GameMaster)]
-    public KHController Controller
-    {
-        get => m_Controller;
-        set
-        {
-            if (m_Controller != value)
-            {
-                m_Controller?.RemoveBoard(this);
-                m_Controller = value;
-                m_Controller?.AddBoard(this);
-            }
-        }
     }
 
     public override void OnDoubleClick(Mobile from)
@@ -290,31 +280,6 @@ public class KHBoard : Item
         else
         {
             from.SendMessage("There is no King of the Hill game in progress.");
-        }
-    }
-
-    public override void Serialize(IGenericWriter writer)
-    {
-        base.Serialize(writer);
-
-        writer.Write(0);
-
-        writer.Write(m_Controller);
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadInt();
-
-        switch (version)
-        {
-            case 0:
-                {
-                    m_Controller = reader.ReadEntity<KHController>();
-                    break;
-                }
         }
     }
 }

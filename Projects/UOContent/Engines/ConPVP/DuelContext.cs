@@ -2724,7 +2724,8 @@ public partial class DuelContext
         }
     }
 
-    private class ArenaMoongate : ConfirmationMoongate
+    [SerializationGenerator(0, false)]
+    private partial class ArenaMoongate : ConfirmationMoongate
     {
         private readonly ExitTeleporter m_Teleporter;
 
@@ -2745,9 +2746,7 @@ public partial class DuelContext
             Timer.StartTimer(TimeSpan.FromSeconds(10.0), Delete);
         }
 
-        public ArenaMoongate(Serial serial) : base(serial)
-        {
-        }
+        public override bool SkipSerialization => true;
 
         public override string DefaultName => "spectator moongate";
 
@@ -2790,22 +2789,6 @@ public partial class DuelContext
         {
             Effects.PlaySound(loc, map, 0x20E);
             MoveToWorld(loc, map);
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            Delete();
         }
     }
 }

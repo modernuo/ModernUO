@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
 using ModernUO.Serialization;
 using Server.Gumps;
@@ -832,9 +833,15 @@ public partial class BRBomb : Item
     }
 }
 
-public class BRGoal : BaseAddon
+[SerializationGenerator(0, false)]
+public partial class BRGoal : BaseAddon
 {
-    private bool m_North;
+    [SerializableField(0)]
+    private bool _north;
+
+    [SerializableFieldChanged(0)]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void OnNorthChanged(bool oldValue, bool newValue) => Remake();
 
     private BRTeamInfo m_Team;
 
@@ -846,21 +853,6 @@ public class BRGoal : BaseAddon
         Visible = true;
 
         Remake();
-    }
-
-    public BRGoal(Serial serial) : base(serial)
-    {
-    }
-
-    [CommandProperty(AccessLevel.GameMaster)]
-    public bool North
-    {
-        get => m_North;
-        set
-        {
-            m_North = value;
-            Remake();
-        }
     }
 
     public override string DefaultName => "Bombing Run Goal";
@@ -892,8 +884,9 @@ public class BRGoal : BaseAddon
 
     private void Remake()
     {
-        foreach (var ac in Components)
+        for (var i = 0; i < Components.Count; i++)
         {
+            var ac = Components[i];
             ac.Addon = null;
             ac.Delete();
         }
@@ -913,7 +906,7 @@ public class BRGoal : BaseAddon
         // Center Sparkle
         AddComponent(new AddonComponent(0x375A), 0, 0, -1);
 
-        if (!m_North)
+        if (!_north)
         {
             // Pillars
             AddComponent(new AddonComponent(0x0CE), 0, +1, -2);
@@ -951,37 +944,6 @@ public class BRGoal : BaseAddon
         }
     }
 
-    public override void Serialize(IGenericWriter writer)
-    {
-        base.Serialize(writer);
-
-        writer.Write(1); // version
-
-        writer.Write(m_North);
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadInt();
-
-        switch (version)
-        {
-            case 1:
-                {
-                    m_North = reader.ReadBool();
-                    goto case 0;
-                }
-            case 0:
-                {
-                    break;
-                }
-        }
-
-        Hue = 0x84C;
-    }
-
     public override bool OnMoveOver(Mobile m)
     {
         if (!Visible)
@@ -1013,19 +975,13 @@ public class BRGoal : BaseAddon
     }
 }
 
-public sealed class BRBoard : Item
+[SerializationGenerator(0, false)]
+public sealed partial class BRBoard : Item
 {
     public BRTeamInfo m_TeamInfo;
 
     [Constructible]
-    public BRBoard()
-        : base(7774) =>
-        Movable = false;
-
-    public BRBoard(Serial serial)
-        : base(serial)
-    {
-    }
+    public BRBoard() : base(7774) => Movable = false;
 
     public override string DefaultName => "Scoreboard";
 
@@ -1035,20 +991,6 @@ public sealed class BRBoard : Item
         {
             from.SendGump(new BRBoardGump(from, m_TeamInfo.Game));
         }
-    }
-
-    public override void Serialize(IGenericWriter writer)
-    {
-        base.Serialize(writer);
-
-        writer.Write(0);
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadInt();
     }
 }
 

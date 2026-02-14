@@ -191,7 +191,8 @@ public class CTFBoardGump : Gump
     }
 }
 
-public sealed class CTFFlag : Item
+[SerializationGenerator(0, false)]
+public sealed partial class CTFFlag : Item
 {
     public Mobile m_Fragger;
     public DateTime m_FragTime;
@@ -204,14 +205,7 @@ public sealed class CTFFlag : Item
     public CTFTeamInfo m_TeamInfo;
 
     [Constructible]
-    public CTFFlag()
-        : base(5643) =>
-        Movable = false;
-
-    public CTFFlag(Serial serial)
-        : base(serial)
-    {
-    }
+    public CTFFlag() : base(5643) => Movable = false;
 
     public override string DefaultName => "old people cookies";
 
@@ -503,20 +497,6 @@ public sealed class CTFFlag : Item
         {
             mob.SolidHueOverride = m_TeamInfo?.Game.GetColor(mob) ?? -1;
         }
-    }
-
-    public override void Serialize(IGenericWriter writer)
-    {
-        base.Serialize(writer);
-
-        writer.Write(0);
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadInt();
     }
 }
 
