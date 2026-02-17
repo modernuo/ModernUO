@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using ModernUO.Serialization;
 using Server.Items;
 using Server.Network;
@@ -195,18 +194,10 @@ public partial class MovingCrate : Container
             _internalizeTimer = null;
         }
 
-        var toRemove = new List<Item>();
-        foreach (var item in Items)
+        using var queue = EnumerateItems(predicate: item => item is PackingBox && item.Items.Count == 0);
+        while (queue.Count > 0)
         {
-            if (item is PackingBox && item.Items.Count == 0)
-            {
-                toRemove.Add(item);
-            }
-        }
-
-        foreach (var item in toRemove)
-        {
-            item.Delete();
+            queue.Dequeue().Delete();
         }
 
         if (TotalItems == 0)

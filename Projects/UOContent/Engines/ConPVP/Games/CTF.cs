@@ -947,15 +947,19 @@ public sealed class CTFGame : EventGame
 
         var hadFlag = false;
 
-        foreach (var flag in corpse.EnumerateItemsByType<CTFFlag>(false))
+        using (var queue = corpse.EnumerateItemsByType<CTFFlag>(false))
         {
-            hadFlag = true;
-            flag.DropTo(mob, killer);
+            foreach (var flag in queue)
+            {
+                hadFlag = true;
+                flag.DropTo(mob, killer);
+            }
         }
 
         if (mob.Backpack != null)
         {
-            foreach (var flag in mob.Backpack.EnumerateItemsByType<CTFFlag>(false))
+            using var queue = mob.Backpack.EnumerateItemsByType<CTFFlag>(false);
+            foreach (var flag in queue)
             {
                 hadFlag = true;
                 flag.DropTo(mob, killer);
