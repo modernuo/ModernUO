@@ -1599,15 +1599,19 @@ public sealed class BRGame : EventGame
 
         var hadBomb = false;
 
-        foreach (var bomb in corpse.EnumerateItemsByType<BRBomb>(false))
+        using (var queue = corpse.EnumerateItemsByType<BRBomb>(false))
         {
-            hadBomb = true;
-            bomb.DropTo(mob, killer);
+            foreach (var bomb in queue)
+            {
+                hadBomb = true;
+                bomb.DropTo(mob, killer);
+            }
         }
 
         if (mob.Backpack != null)
         {
-            foreach (var bomb in mob.Backpack.EnumerateItemsByType<BRBomb>(false))
+            using var queue = mob.Backpack.EnumerateItemsByType<BRBomb>(false);
+            foreach (var bomb in queue)
             {
                 hadBomb = true;
                 bomb.DropTo(mob, killer);

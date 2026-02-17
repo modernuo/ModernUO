@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using ModernUO.CodeGeneratedEvents;
 using Server.Accounting;
 using Server.Collections;
@@ -2402,9 +2403,9 @@ namespace Server.Mobiles
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool FindItems_Callback(Item item) =>
-            !item.Deleted && (item.LootType == LootType.Blessed || item.Insured) &&
-            Backpack != item.Parent;
+            !item.Deleted && (item.LootType == LootType.Blessed || item.Insured) && Backpack != item.Parent;
 
         public override bool OnBeforeDeath()
         {
@@ -2418,7 +2419,8 @@ namespace Server.Mobiles
             // This fixes a "bug" where players put blessed items in nested bags and they were dropped on death
             if (Core.AOS && Backpack?.Deleted == false)
             {
-                foreach (var item in Backpack.EnumerateItems(true, FindItems_Callback))
+                using var queue = Backpack.EnumerateItems(true, FindItems_Callback);
+                foreach (var item in queue)
                 {
                     Backpack.AddItem(item);
                 }

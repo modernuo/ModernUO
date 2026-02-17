@@ -4868,25 +4868,28 @@ namespace Server.Mobiles
 
         public virtual void DropBackpack()
         {
-            if (Backpack?.Items.Count > 0)
+            var backpack = Backpack;
+            if (!(backpack?.Items.Count > 0))
             {
-                var b = new CreatureBackpack(Name);
+                return;
+            }
 
-                var list = new List<Item>(Backpack.Items);
-                foreach (var item in list)
-                {
-                    b.DropItem(item);
-                }
+            var b = new CreatureBackpack(Name);
+            using var queue = backpack.EnumerateItems();
 
-                var house = BaseHouse.FindHouseAt(this);
-                if (house != null)
-                {
-                    b.MoveToWorld(house.BanLocation, house.Map);
-                }
-                else
-                {
-                    b.MoveToWorld(Location, Map);
-                }
+            while (queue.Count > 0)
+            {
+                b.DropItem(queue.Dequeue());
+            }
+
+            var house = BaseHouse.FindHouseAt(this);
+            if (house != null)
+            {
+                b.MoveToWorld(house.BanLocation, house.Map);
+            }
+            else
+            {
+                b.MoveToWorld(Location, Map);
             }
         }
 

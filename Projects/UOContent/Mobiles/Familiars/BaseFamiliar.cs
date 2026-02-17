@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using ModernUO.Serialization;
 using Server.Collections;
 using Server.ContextMenus;
@@ -151,14 +150,15 @@ public abstract partial class BaseFamiliar : BaseCreature
         var map = Map;
         var pack = Backpack;
 
-        if (map != null && map != Map.Internal && pack != null)
+        if (map == null || map == Map.Internal || pack == null)
         {
-            var list = new List<Item>(pack.Items);
+            return;
+        }
 
-            for (var i = 0; i < list.Count; ++i)
-            {
-                list[i].MoveToWorld(Location, map);
-            }
+        using var queue = pack.EnumerateItems();
+        while (queue.Count > 0)
+        {
+            queue.Dequeue().MoveToWorld(Location, map);
         }
     }
 

@@ -80,7 +80,8 @@ public partial class Item
     /// </remarks>
     /// <example>
     /// <code>
-    ///     foreach (var item in cont.EnumerateItemsByType&lt;Item&gt;())
+    ///     using var queue = cont.EnumerateItemsByType&lt;Item&gt;();
+    ///     foreach (var item in queue)
     ///     {
     ///         if (item.LootType is not LootType.Blessed)
     ///         {
