@@ -1,7 +1,9 @@
 using System;
 using Server.Factions;
+using Server.Items;
 using Server.Mobiles;
 using Server.Multis;
+using Server.Network;
 using Server.Targeting;
 
 namespace Server.SkillHandlers
@@ -19,6 +21,46 @@ namespace Server.SkillHandlers
             src.Target = new InternalTarget();
 
             return TimeSpan.FromSeconds(30.0);
+        }
+
+        // Passive detection: called each time a stealther takes a step.
+        // Scans nearby players with Detect Hidden skill and may reveal the stealther.
+        public static void PassiveDetect(Mobile stealther)
+        {
+            var map = stealther.Map;
+            if (map == null || !stealther.Hidden)
+            {
+                return;
+            }
+
+            foreach (var detector in map.GetMobilesInRange<PlayerMobile>(stealther.Location, 4))
+            {
+                if (detector == stealther || !detector.Alive)
+                {
+                    continue;
+                }
+
+                var detectSkill = detector.Skills.DetectHidden.Value;
+                if (detectSkill <= 0)
+                {
+                    continue;
+                }
+
+                if (detector.AccessLevel < stealther.AccessLevel)
+                {
+                    continue;
+                }
+
+                var ss = detectSkill + Utility.Random(21) - 10;
+                var ts = stealther.Skills.Hiding.Value + Utility.Random(21) - 10;
+
+                if (ss >= ts)
+                {
+                    stealther.RevealingAction();
+                    stealther.SendLocalizedMessage(500814); // You have been revealed!
+                    return;
+                }
+            }
         }
 
         private class InternalTarget : Target
@@ -106,6 +148,46 @@ namespace Server.SkillHandlers
                                 foundAnyone = true;
                             }
                         }
+                    }
+
+                    // Reveal hidden dungeon traps temporarily
+                    foreach (var trap in src.Map.GetItemsInRange<BaseTrap>(p, range))
+                    {
+                        if (trap is BaseFactionTrap || trap.Visible)
+                        {
+                            continue;
+                        }
+
+                        trap.Visible = true;
+                        Timer.StartTimer(TimeSpan.FromSeconds(10.0), () =>
+                        {
+                            if (!trap.Deleted)
+                            {
+                                trap.Visible = false;
+                            }
+                        });
+
+                        foundAnyone = true;
+                    }
+
+                    // Check for trapped containers and notify the detecting player privately
+                    foreach (var container in src.Map.GetItemsInRange<TrappableContainer>(p, range))
+                    {
+                        if (container.TrapType == TrapType.None)
+                        {
+                            continue;
+                        }
+
+                        src.NetState.SendMessageLocalized(
+                            container.Serial,
+                            container.ItemID,
+                            MessageType.Regular,
+                            0x3B2,
+                            3,
+                            500813 // [trapped]
+                        );
+
+                        foundAnyone = true;
                     }
                 }
 

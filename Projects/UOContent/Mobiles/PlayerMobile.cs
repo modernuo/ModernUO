@@ -3499,7 +3499,12 @@ namespace Server.Mobiles
         {
             if (!Core.SE)
             {
-                return base.OnMove(d);
+                var result = base.OnMove(d);
+                if (Hidden && AccessLevel == AccessLevel.Player)
+                {
+                    DetectHidden.PassiveDetect(this);
+                }
+                return result;
             }
 
             if (AccessLevel != AccessLevel.Player)
@@ -3529,6 +3534,11 @@ namespace Server.Mobiles
                 {
                     RevealingAction();
                 }
+            }
+
+            if (Hidden)
+            {
+                DetectHidden.PassiveDetect(this);
             }
 
             return true;
