@@ -212,7 +212,68 @@ namespace Server.Items
                 }
             }
 
-            attacker.MovingEffect(defender, EffectID, 18, 1, false, false);
+            int deltaX = defender.X - attacker.X;
+            int deltaY = defender.Y - attacker.Y;
+            
+            int xOffset = 0, yOffset = 0;
+            int zOffset = attacker.Mount != null ? 0 : 0;
+            
+            if (deltaX == 0 && deltaY < 0)
+            {
+                xOffset = 1;
+                yOffset = 0;
+                zOffset = attacker.Mount != null ? 0 : 0;
+            }
+            else if (deltaX > 0 && deltaY < 0)
+            {
+                xOffset = 1;
+                yOffset = -1;
+                zOffset = attacker.Mount != null ? 0 : 0;
+            }
+            else if (deltaX > 0 && deltaY == 0)
+            {
+                xOffset = 1;
+                yOffset = 0;
+                zOffset = attacker.Mount != null ? 0 : 0;
+            }
+            else if (deltaX > 0 && deltaY > 0)
+            {
+                xOffset = 0;
+                yOffset = 1;
+                zOffset = attacker.Mount != null ? 0 : 0;
+            }
+            else if (deltaX == 0 && deltaY > 0)
+            {
+                xOffset = 0;
+                yOffset = 1;
+                zOffset = attacker.Mount != null ? 16 : 8;
+                
+            }
+            else if (deltaX < 0 && deltaY > 0)
+            {
+                xOffset = -1;
+                yOffset = 1;
+                zOffset = attacker.Mount != null ? 16 : 8;
+            }
+            else if (deltaX < 0 && deltaY == 0)
+            {
+                xOffset = -1;
+                yOffset = 0;
+                zOffset = attacker.Mount != null ? 16 : 8;
+            }
+            else if (deltaX < 0 && deltaY < 0)
+            {
+                xOffset = 1;
+                yOffset = 0;
+                zOffset = attacker.Mount != null ? 16 : 8;
+            }
+            
+            Point3D from = new(attacker.X + xOffset, attacker.Y + yOffset, attacker.Z + zOffset);
+            Point3D to = new(defender.X, defender.Y, defender.Z + zOffset);
+            
+            Effects.SendMovingEffect(new Entity(Serial.Zero, from, attacker.Map),
+                new Entity(Serial.Zero, to, defender.Map), EffectID, 18, 1, false, false);
+
             return true;
         }
 
