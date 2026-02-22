@@ -3544,6 +3544,18 @@ namespace Server.Mobiles
             return true;
         }
 
+        public override void OnMovement(Mobile m, Point3D oldLocation)
+        {
+            base.OnMovement(m, oldLocation);
+
+            // Passive detect hidden: check if we have the skill and if the moving mobile is hidden
+            if (AccessLevel == AccessLevel.Player && m is PlayerMobile && m.Hidden &&
+                this.GetDistanceToSqrt(m) <= 4)
+            {
+                DetectHidden.TryDetectStealther(this, m);
+            }
+        }
+
         public void AddFollower(Mobile m)
         {
             _allFollowers ??= new HashSet<Mobile>();
