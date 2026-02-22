@@ -55,6 +55,12 @@ namespace Server.SkillHandlers
             }
         }
 
+        // For testing: clear the debounce cache to prevent cross-test contamination
+        public static void ClearDebounceCache()
+        {
+            PassiveDetectDebounce.Clear();
+        }
+
         // Passive detection: called each time a stealther takes a step.
         // Scans nearby players with Detect Hidden skill and may reveal the stealther.
         // NOTE: OSI uncertain - The exact chance calculation and distance dropoff is unknown.
