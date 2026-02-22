@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Server.Collections;
 using Server.Regions;
 using Server.Spells;
+using Server.Systems.FeatureFlags;
 
 namespace Server.Multis
 {
@@ -50,6 +51,11 @@ namespace Server.Multis
             if (map == null || map == Map.Internal)
             {
                 return HousePlacementResult.BadLand; // A house cannot go here
+            }
+
+            if (!ContentFeatureFlags.HousePlacement && from.AccessLevel < FeatureFlagSettings.RequiredAccessLevel)
+            {
+                return HousePlacementResult.BadRegionTemp;
             }
 
             if (from.AccessLevel >= AccessLevel.GameMaster)
@@ -377,10 +383,10 @@ namespace Server.Multis
                     var absYOffset = Math.Abs(yOffset);
                     var yardPoint = new Point2D(tileX + xOffset, tileY + yOffset);
 
-                    bool inSouthYard = yOffset > 0 && yOffset <= yardSize && absXOffset <= 1;
-                    bool inEastYard = xOffset > 0 && xOffset <= yardSize && absYOffset <= 1;
-                    bool inNorthYard = yOffset < 0 && yOffset >= -yardSize && absXOffset <= 1;
-                    bool inWestYard = xOffset < 0 && xOffset >= -yardSize && absYOffset <= 1;
+                    var inSouthYard = yOffset > 0 && yOffset <= yardSize && absXOffset <= 1;
+                    var inEastYard = xOffset > 0 && xOffset <= yardSize && absYOffset <= 1;
+                    var inNorthYard = yOffset < 0 && yOffset >= -yardSize && absXOffset <= 1;
+                    var inWestYard = xOffset < 0 && xOffset >= -yardSize && absYOffset <= 1;
 
                     // Check each house at this point
                     foreach (var house in map.GetMultisInSector<BaseHouse>(yardPoint))

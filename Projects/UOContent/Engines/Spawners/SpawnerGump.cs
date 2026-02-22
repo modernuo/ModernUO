@@ -1,3 +1,4 @@
+using System;
 using Server.Collections;
 using Server.Gumps;
 using Server.Network;
@@ -157,18 +158,16 @@ public class SpawnerGump : Gump
         }
 
         var totalSpawned = 0;
-        var totalSpawns = 0;
         var totalWeight = 0;
 
-        foreach (SpawnerEntry spawnerEntry in _spawner.Entries)
+        foreach (var spawnerEntry in _spawner.Entries)
         {
-            totalSpawns += spawnerEntry.SpawnedMaxCount;
             totalSpawned += spawner.CountSpawns(spawnerEntry);
             totalWeight += spawnerEntry.SpawnedProbability;
         }
 
-        AddHtml(270, 308 + offset, 35, 20, totalSpawns.ToString().Center(0xF4F4F4));
-        AddHtml(308, 308 + offset, 35, 20, totalWeight.ToString().Center(0xF4F4F4));
+        AddHtml(232, 308 + offset, 35, 20, Html.Center($"{totalSpawned}", 0xF4F4F4));
+        AddHtml(270, 308 + offset, 35, 20, Html.Center($"{totalWeight}", 0xF4F4F4));
 
         AddHtml(5, 1, 161, 20, $"<BASEFONT COLOR=#FFEA00>{spawner.Name}</BASEFONT><BASEFONT COLOR={GetCountColor(totalSpawned, spawner.Count)}> ({totalSpawned}/{spawner.Count})</BASEFONT>");
 
@@ -235,18 +234,18 @@ public class SpawnerGump : Gump
             var index = i * 5;
             var entryindex = _page * 13 + i;
 
-            var cte = info.GetTextEntry(index);
-            var mte = info.GetTextEntry(index + 1);
-            var poste = info.GetTextEntry(index + 2);
-            var parmte = info.GetTextEntry(index + 3);
-            var propte = info.GetTextEntry(index + 4);
+            var typeEntry = info.GetTextEntry(index);
+            var maxSpawns = info.GetTextEntry(index + 1);
+            var probability = info.GetTextEntry(index + 2);
+            var customParams = info.GetTextEntry(index + 3);
+            var customPrompts = info.GetTextEntry(index + 4);
 
-            if (cte == null)
+            if (typeEntry == null)
             {
                 continue;
             }
 
-            var str = cte.Trim().ToLower();
+            var str = typeEntry.Trim().ToLower();
 
             if (str.Length > 0)
             {
@@ -265,42 +264,32 @@ public class SpawnerGump : Gump
                     entry = spawner.Entries[entryindex];
                     entry.SpawnedName = str;
 
-                    if (mte != null)
+                    if (maxSpawns != null)
                     {
-                        entry.SpawnedMaxCount = Utility.ToInt32(mte.Trim());
+                        entry.SpawnedMaxCount = Utility.ToInt32(maxSpawns.AsSpan().Trim());
                     }
 
-                    if (poste != null)
+                    if (probability != null)
                     {
-                        entry.SpawnedProbability = Utility.ToInt32(poste.Trim());
+                        entry.SpawnedProbability = Utility.ToInt32(probability.AsSpan().Trim());
                     }
                 }
                 else
                 {
-                    var maxcount = 1;
-                    var probcount = 100;
-
-                    if (mte != null)
-                    {
-                        maxcount = Utility.ToInt32(mte.Trim());
-                    }
-
-                    if (poste != null)
-                    {
-                        probcount = Utility.ToInt32(poste.Trim());
-                    }
+                    var maxcount = maxSpawns != null ? Utility.ToInt32(maxSpawns.AsSpan().Trim()) : 1;
+                    var probcount = probability != null ? Utility.ToInt32(probability.AsSpan().Trim()) : 100;
 
                     entry = spawner.AddEntry(str, probcount, maxcount);
                 }
 
-                if (parmte != null)
+                if (customParams != null)
                 {
-                    entry.Parameters = parmte.Trim();
+                    entry.Parameters = customParams.Trim();
                 }
 
-                if (propte != null)
+                if (customPrompts != null)
                 {
-                    entry.Properties = propte.Trim();
+                    entry.Properties = customPrompts.Trim();
                 }
             }
             else if (entryindex < ocount && spawner.Entries[entryindex] != null)

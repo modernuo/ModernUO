@@ -43,8 +43,8 @@ internal static class HashHelpers
     {
         if ((candidate & 1) != 0)
         {
-            int limit = (int)Math.Sqrt(candidate);
-            for (int divisor = 3; divisor <= limit; divisor += 2)
+            var limit = (int)Math.Sqrt(candidate);
+            for (var divisor = 3; divisor <= limit; divisor += 2)
             {
                 if (candidate % divisor == 0)
                 {
@@ -63,9 +63,9 @@ internal static class HashHelpers
             throw new ArgumentException("Hashtable's capacity overflowed and went negative. Check load factor, capacity and the current size of the table.");
         }
 
-        for (int i = 0; i < primes.Length; i++)
+        for (var i = 0; i < primes.Length; i++)
         {
-            int prime = primes[i];
+            var prime = primes[i];
             if (prime >= min)
             {
                 return prime;
@@ -74,7 +74,7 @@ internal static class HashHelpers
 
         //outside of our predefined table.
         //compute the hard way.
-        for (int i = min | 1; i < int.MaxValue; i += 2)
+        for (var i = min | 1; i < int.MaxValue; i += 2)
         {
             if (IsPrime(i) && (i - 1) % HashPrime != 0)
             {
@@ -87,7 +87,7 @@ internal static class HashHelpers
     // Returns size of hashtable to grow to.
     public static int ExpandPrime(int oldSize)
     {
-        int newSize = 2 * oldSize;
+        var newSize = 2 * oldSize;
 
         // Allow the hashtables to grow to maximum possible size (~2G elements) before encountering capacity overflow.
         // Note that this check works even when _items.Length overflowed thanks to the (uint) cast
@@ -116,7 +116,7 @@ internal static class HashHelpers
 
         // This is equivalent of (uint)Math.BigMul(multiplier * value, divisor, out _). This version
         // is faster than BigMul currently because we only need the high bits.
-        uint highbits = (uint)(((((multiplier * value) >> 32) + 1) * divisor) >> 32);
+        var highbits = (uint)(((((multiplier * value) >> 32) + 1) * divisor) >> 32);
 
         Debug.Assert(highbits == value % divisor);
         return highbits;

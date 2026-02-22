@@ -48,7 +48,7 @@ public class ContainerTests
 
         container2.AddItem(static1);
 
-        List<Static> statics = new List<Static>();
+        var statics = new List<Static>();
         foreach (var item in container.FindItemsByType<Static>())
         {
             statics.Add(item);

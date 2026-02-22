@@ -45,9 +45,9 @@ public static class ActivatorExtensions
 
         try
         {
-            for (int i = 0; i < ctors.Length; i++)
+            for (var i = 0; i < ctors.Length; i++)
             {
-                ConstructorInfo info = ctors[i];
+                var info = ctors[i];
 
                 if (predicate?.Invoke(info) == false)
                 {
@@ -62,12 +62,12 @@ public static class ActivatorExtensions
                     continue;
                 }
 
-                bool validated = true;
+                var validated = true;
 
                 // Check that all args match params
                 for (var j = 0; j < parameters.Length; j++)
                 {
-                    ParameterInfo param = parameters[j];
+                    var param = parameters[j];
 
                     // All extra parameters must be optional
                     if (j >= args.Length)
@@ -124,7 +124,7 @@ public static class ActivatorExtensions
         var argLength = args?.Length ?? 0;
 
         var types = argLength > 0 ? new Type[argLength] : [];
-        for (int i = 0; i < types.Length; i++)
+        for (var i = 0; i < types.Length; i++)
         {
             types[i] = args![i]?.GetType();
         }
@@ -148,7 +148,7 @@ public static class ActivatorExtensions
         else
         {
             paramArgs = new object[paramCount];
-            for (int i = 0; i < paramCount; i++)
+            for (var i = 0; i < paramCount; i++)
             {
                 paramArgs[i] = i < argLength ? args![i] : Type.Missing;
             }

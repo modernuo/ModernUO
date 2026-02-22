@@ -24,7 +24,7 @@ public class StaticTestGump : StaticGump<StaticTestGump>
         builder.AddItem(218, 95, 0xCB0);
 
         builder.AddHtml(30, 30, 150, 75, "<div align=center>Wilt thou sanctify the resurrection of:</div>");
-        builder.AddHtml(30, 70, 150, 25, "<CENTER>Test</CENTER>", true);
+        builder.AddHtml(30, 70, 150, 25, "Test", align: TextAlignment.Center, background: true);
 
         builder.AddButton(40, 105, 0x81A, 0x81B, 0x1);  // Okay
         builder.AddButton(110, 105, 0x819, 0x818, 0x2); // Cancel

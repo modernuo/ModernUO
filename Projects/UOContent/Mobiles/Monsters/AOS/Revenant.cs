@@ -57,6 +57,8 @@ namespace Server.Mobiles
             AddItem(new Halberd { Hue = 1, Movable = false });
         }
 
+        public override bool SkipSerialization => true;
+
         public override Mobile ConstantFocus => m_Target;
         public override bool NoHouseRestrictions => true;
 
@@ -171,12 +173,6 @@ namespace Server.Mobiles
 
             Delete();
             return false;
-        }
-
-        [AfterDeserialization(false)]
-        private void AfterDeserialization()
-        {
-            Delete();
         }
     }
 }

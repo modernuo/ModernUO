@@ -42,8 +42,8 @@ public class ExportSpawnersCommand : BaseCommand
 
     public override void ExecuteList(CommandEventArgs e, List<object> list)
     {
-        string path = e.Arguments.Length == 0 ? string.Empty : e.Arguments[0].Trim();
-        string condition = e.Arguments.Length == 2 ? e.Arguments[1].Trim() : string.Empty;
+        var path = e.Arguments.Length == 0 ? string.Empty : e.Arguments[0].Trim();
+        var condition = e.Arguments.Length == 2 ? e.Arguments[1].Trim() : string.Empty;
 
         if (string.IsNullOrEmpty(path))
         {

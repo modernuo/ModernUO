@@ -2,7 +2,7 @@ using System;
 using Server.Buffers;
 using Xunit;
 
-namespace Server.Tests.Tests.Buffers;
+namespace Server.Tests.Buffers;
 
 [Collection("Sequential Server Tests")]
 public class STArrayPoolTests

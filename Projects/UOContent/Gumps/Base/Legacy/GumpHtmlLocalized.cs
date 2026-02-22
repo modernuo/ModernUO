@@ -122,7 +122,7 @@ public class GumpHtmlLocalized : GumpEntry
                 }
             case GumpHtmlLocalizedType.Args:
                 {
-                    writer.WriteAscii(
+                    writer.WriteLatin1(
                         $"{{ xmfhtmltok {X} {Y} {Width} {Height} {(Background ? "1" : "0")} {(Scrollbar ? "1" : "0")} {Color} {Number} @{Args}@ }}"
                     );
                     break;

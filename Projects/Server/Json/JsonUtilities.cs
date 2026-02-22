@@ -26,7 +26,7 @@ public static class JsonUtilities
 {
     public static string SortByPropertyName(string jsonStr)
     {
-        using JsonDocument doc = JsonDocument.Parse(jsonStr);
+        using var doc = JsonDocument.Parse(jsonStr);
         return SortByPropertyName(doc.RootElement);
     }
 
@@ -34,7 +34,7 @@ public static class JsonUtilities
     {
         // TODO: Better way to do this than a stream?
         using var ms = new MemoryStream();
-        JsonWriterOptions opts = new JsonWriterOptions
+        var opts = new JsonWriterOptions
         {
             Indented = true,
             Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
@@ -58,7 +58,7 @@ public static class JsonUtilities
                     writer.WriteStartObject();
 
                     // TODO: This is slow, can make it faster?
-                    foreach (JsonProperty x in je.EnumerateObject().OrderBy(prop => prop.Name))
+                    foreach (var x in je.EnumerateObject().OrderBy(prop => prop.Name))
                     {
                         writer.WritePropertyName(x.Name);
                         WriteJsonElementSorted(x.Value, writer);
@@ -70,7 +70,7 @@ public static class JsonUtilities
             case JsonValueKind.Array:
                 {
                     writer.WriteStartArray();
-                    foreach(JsonElement x in je.EnumerateArray())
+                    foreach(var x in je.EnumerateArray())
                     {
                         WriteJsonElementSorted(x, writer);
                     }

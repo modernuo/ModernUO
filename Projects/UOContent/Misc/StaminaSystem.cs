@@ -358,7 +358,7 @@ public static class StaminaSystem
 
         if (from is PlayerMobile pm)
         {
-            ref StepsTaken stepsTaken = ref GetOrCreateStepsTaken(pm, out var created);
+            ref var stepsTaken = ref GetOrCreateStepsTaken(pm, out var created);
             if (!created)
             {
                 RegenSteps(ref stepsTaken, removeOnInvalidation: false);
@@ -474,7 +474,7 @@ public static class StaminaSystem
             {
                 using var queue = PooledRefQueue<IHasSteps>.Create();
 
-                ref StepsTaken stepsTaken = ref Unsafe.NullRef<StepsTaken>();
+                ref var stepsTaken = ref Unsafe.NullRef<StepsTaken>();
                 foreach (var m in _resetHash)
                 {
                     stepsTaken = ref GetStepsTaken(m, out var exists);

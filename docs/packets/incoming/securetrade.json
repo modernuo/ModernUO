@@ -1,0 +1,144 @@
+{
+    "category":  "Secure Trade",
+    "packets":  [
+                    {
+                        "id":  "0x6F",
+                        "name":  "Secure Trade",
+                        "description":  "Client interacts with a secure trade window.",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "Varies",
+                        "variants":  [
+                                         {
+                                             "name":  "Cancel Trade",
+                                             "condition":  "action == Cancel (1)",
+                                             "size":  8,
+                                             "fields":  [
+                                                            {
+                                                                "name":  "Packet ID",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0x6F",
+                                                                "description":  "Packet identifier"
+                                                            },
+                                                            {
+                                                                "name":  "Length",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "description":  "Packet length"
+                                                            },
+                                                            {
+                                                                "name":  "Action",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "1",
+                                                                "description":  "Cancel action"
+                                                            },
+                                                            {
+                                                                "name":  "Container Serial",
+                                                                "type":  "uint",
+                                                                "size":  4,
+                                                                "description":  "Serial of the trade container"
+                                                            }
+                                                        ]
+                                         },
+                                         {
+                                             "name":  "Toggle Accept",
+                                             "condition":  "action == Check (2)",
+                                             "size":  12,
+                                             "fields":  [
+                                                            {
+                                                                "name":  "Packet ID",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0x6F",
+                                                                "description":  "Packet identifier"
+                                                            },
+                                                            {
+                                                                "name":  "Length",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "description":  "Packet length"
+                                                            },
+                                                            {
+                                                                "name":  "Action",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "2",
+                                                                "description":  "Check/toggle action"
+                                                            },
+                                                            {
+                                                                "name":  "Container Serial",
+                                                                "type":  "uint",
+                                                                "size":  4,
+                                                                "description":  "Serial of the trade container"
+                                                            },
+                                                            {
+                                                                "name":  "Accepted",
+                                                                "type":  "bool",
+                                                                "size":  4,
+                                                                "description":  "True if accepting the trade"
+                                                            }
+                                                        ]
+                                         },
+                                         {
+                                             "name":  "Update Gold/Platinum",
+                                             "condition":  "action == UpdateGold (3)",
+                                             "size":  16,
+                                             "fields":  [
+                                                            {
+                                                                "name":  "Packet ID",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "0x6F",
+                                                                "description":  "Packet identifier"
+                                                            },
+                                                            {
+                                                                "name":  "Length",
+                                                                "type":  "ushort",
+                                                                "size":  2,
+                                                                "description":  "Packet length"
+                                                            },
+                                                            {
+                                                                "name":  "Action",
+                                                                "type":  "byte",
+                                                                "size":  1,
+                                                                "value":  "3",
+                                                                "description":  "Update gold action"
+                                                            },
+                                                            {
+                                                                "name":  "Container Serial",
+                                                                "type":  "uint",
+                                                                "size":  4,
+                                                                "description":  "Serial of the trade container"
+                                                            },
+                                                            {
+                                                                "name":  "Gold",
+                                                                "type":  "int",
+                                                                "size":  4,
+                                                                "description":  "Gold amount to trade"
+                                                            },
+                                                            {
+                                                                "name":  "Platinum",
+                                                                "type":  "int",
+                                                                "size":  4,
+                                                                "description":  "Platinum amount to trade"
+                                                            }
+                                                        ]
+                                         }
+                                     ],
+                        "related":  [
+                                        {
+                                            "id":  "0x6F",
+                                            "direction":  "outgoing",
+                                            "relationship":  "response",
+                                            "note":  "Server sends trade window updates"
+                                        }
+                                    ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingMobilePackets.cs",
+                                       "line":  93
+                                   }
+                    }
+                ]
+}

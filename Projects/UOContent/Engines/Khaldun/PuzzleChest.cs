@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.Gumps;
 using Server.Network;
 
@@ -19,66 +20,61 @@ namespace Server.Items
         Yellow = 0x1870
     }
 
-    public class PuzzleChestSolution
+    [SerializationGenerator(1)]
+    public partial class PuzzleChestSolution
     {
+        [SerializableField(0)]
+        private PuzzleChestCylinder[] _cylinders;
+
         public const int Length = 5;
 
-        public PuzzleChestSolution()
-        {
-            for (var i = 0; i < Cylinders.Length; i++)
-            {
-                Cylinders[i] = RandomCylinder();
-            }
-        }
+        public PuzzleChestSolution() =>
+            _cylinders = [RandomCylinder(), RandomCylinder(), RandomCylinder(), RandomCylinder(), RandomCylinder()];
 
         public PuzzleChestSolution(
             PuzzleChestCylinder first, PuzzleChestCylinder second, PuzzleChestCylinder third,
             PuzzleChestCylinder fourth, PuzzleChestCylinder fifth
-        )
-        {
-            First = first;
-            Second = second;
-            Third = third;
-            Fourth = fourth;
-            Fifth = fifth;
-        }
+        ) => _cylinders = [first, second, third, fourth, fifth];
 
         public PuzzleChestSolution(PuzzleChestSolution solution)
         {
-            for (var i = 0; i < Cylinders.Length; i++)
-            {
-                Cylinders[i] = solution.Cylinders[i];
-            }
+            _cylinders = new PuzzleChestCylinder[Length];
+            solution.Cylinders.AsSpan().CopyTo(Cylinders);
         }
 
-        public PuzzleChestSolution(IGenericReader reader)
+        private void Deserialize(IGenericReader reader, int version)
         {
-            var version = reader.ReadEncodedInt();
-
             var length = reader.ReadEncodedInt();
-            for (var i = 0;; i++)
+            Cylinders = new PuzzleChestCylinder[length];
+            for (var i = 0; i < length; i++)
             {
-                if (i < length)
-                {
-                    var cylinder = (PuzzleChestCylinder)reader.ReadInt();
-
-                    if (i < Cylinders.Length)
-                    {
-                        Cylinders[i] = cylinder;
-                    }
-                }
-                else if (i < Cylinders.Length)
-                {
-                    Cylinders[i] = RandomCylinder();
-                }
-                else
-                {
-                    break;
-                }
+                Cylinders[i] = (PuzzleChestCylinder)reader.ReadInt();
             }
         }
 
-        public PuzzleChestCylinder[] Cylinders { get; } = new PuzzleChestCylinder[Length];
+        [AfterDeserialization]
+        private void AfterDeserialization()
+        {
+            if (Cylinders.Length == Length)
+            {
+                return;
+            }
+
+            var cylinders = Cylinders;
+            Cylinders = new PuzzleChestCylinder[Length];
+
+            if (cylinders.Length > Length)
+            {
+                Cylinders = cylinders[..Length];
+                return;
+            }
+
+            cylinders.CopyTo(Cylinders);
+            for (var i = cylinders.Length; i < Length; i++)
+            {
+                Cylinders[i] = RandomCylinder();
+            }
+        }
 
         public PuzzleChestCylinder First
         {
@@ -130,8 +126,8 @@ namespace Server.Items
             cylinders = 0;
             colors = 0;
 
-            var matchesSrc = new bool[solution.Cylinders.Length];
-            var matchesDst = new bool[solution.Cylinders.Length];
+            Span<bool> matchesSrc = stackalloc bool[solution.Cylinders.Length];
+            Span<bool> matchesDst = stackalloc bool[solution.Cylinders.Length];
 
             for (var i = 0; i < Cylinders.Length; i++)
             {
@@ -146,124 +142,146 @@ namespace Server.Items
 
             for (var i = 0; i < Cylinders.Length; i++)
             {
-                if (!matchesSrc[i])
+                if (matchesSrc[i])
                 {
-                    for (var j = 0; j < solution.Cylinders.Length; j++)
-                    {
-                        if (Cylinders[i] == solution.Cylinders[j] && !matchesDst[j])
-                        {
-                            colors++;
+                    continue;
+                }
 
-                            matchesDst[j] = true;
-                        }
+                for (var j = 0; j < solution.Cylinders.Length; j++)
+                {
+                    if (Cylinders[i] == solution.Cylinders[j] && !matchesDst[j])
+                    {
+                        colors++;
+
+                        matchesDst[j] = true;
                     }
                 }
             }
 
             return cylinders == Cylinders.Length;
         }
-
-        public virtual void Serialize(IGenericWriter writer)
-        {
-            writer.WriteEncodedInt(0); // version
-
-            writer.WriteEncodedInt(Cylinders.Length);
-            for (var i = 0; i < Cylinders.Length; i++)
-            {
-                writer.Write((int)Cylinders[i]);
-            }
-        }
     }
 
-    public class PuzzleChestSolutionAndTime : PuzzleChestSolution
+    [SerializationGenerator(0)]
+    public partial class PuzzleChestSolutionAndTime : PuzzleChestSolution
     {
-        public PuzzleChestSolutionAndTime(DateTime when, PuzzleChestSolution solution) : base(solution) => When = when;
+        [DeltaDateTime]
+        [SerializableField(0)]
+        private DateTime _when;
 
-        public PuzzleChestSolutionAndTime(IGenericReader reader) : base(reader)
+        public PuzzleChestSolutionAndTime(DateTime when, PuzzleChestSolution solution) : base(solution) => _when = when;
+
+        // For serialization
+        public PuzzleChestSolutionAndTime()
         {
-            var version = reader.ReadEncodedInt();
-
-            When = reader.ReadDeltaTime();
-        }
-
-        public DateTime When { get; }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.WriteEncodedInt(0); // version
-
-            writer.WriteDeltaTime(When);
         }
     }
 
-    public abstract class PuzzleChest : BaseTreasureChest
+    [SerializationGenerator(1)]
+    public abstract partial class PuzzleChest : BaseTreasureChest
     {
         public const int HintsCount = 3;
-        public readonly TimeSpan CleanupTime = TimeSpan.FromHours(1.0);
+        public static readonly TimeSpan CleanupTime = TimeSpan.FromHours(1.0);
 
-        private readonly Dictionary<Mobile, PuzzleChestSolutionAndTime> m_Guesses =
-            new();
+        private TimerExecutionToken _cleanupTimerToken;
 
-        private PuzzleChestSolution m_Solution;
+        [SerializableField(1, setter: "private")]
+        private PuzzleChestCylinder[] _hints;
 
-        public PuzzleChest(int itemID) : base(itemID)
+        [CanBeNull]
+        [Tidy]
+        [SerializableField(2)]
+        private Dictionary<Mobile, PuzzleChestSolutionAndTime> _guesses;
+
+        public PuzzleChest(int itemID) : base(itemID) => _hints = new PuzzleChestCylinder[HintsCount];
+
+        [AfterDeserialization]
+        private void AfterDeserialization()
         {
-        }
-
-        public PuzzleChest(Serial serial) : base(serial)
-        {
-        }
-
-        public PuzzleChestSolution Solution
-        {
-            get => m_Solution;
-            set
+            // Validate hints array length - regenerate if mismatched
+            if (_hints.Length != HintsCount)
             {
-                m_Solution = value;
                 InitHints();
+            }
+
+            StartCleanupTimer();
+        }
+
+        private void Deserialize(IGenericReader reader, int version)
+        {
+            _solution = new PuzzleChestSolution();
+            _solution.Deserialize(reader);
+
+            var length = reader.ReadEncodedInt();
+            for (var i = 0; i < length; i++)
+            {
+                var cylinder = (PuzzleChestCylinder)reader.ReadInt();
+
+                if (length == _hints.Length)
+                {
+                    _hints[i] = cylinder;
+                }
+            }
+
+            var guessCount = reader.ReadEncodedInt();
+            if (guessCount <= 0)
+            {
+                return;
+            }
+
+            _guesses = new Dictionary<Mobile, PuzzleChestSolutionAndTime>(guessCount);
+            for (var i = 0; i < guessCount; i++)
+            {
+                var m = reader.ReadEntity<Mobile>();
+                (_guesses[m] = new PuzzleChestSolutionAndTime()).Deserialize(reader);
             }
         }
 
-        public PuzzleChestCylinder[] Hints { get; private set; } = new PuzzleChestCylinder[HintsCount];
+        [SerializableProperty(0)]
+        public PuzzleChestSolution Solution
+        {
+            get => _solution;
+            set
+            {
+                _solution = value;
+                InitHints();
+                this.MarkDirty();
+            }
+        }
 
         public PuzzleChestCylinder FirstHint
         {
-            get => Hints[0];
-            set => Hints[0] = value;
+            get => _hints[0];
+            set => _hints[0] = value;
         }
 
         public PuzzleChestCylinder SecondHint
         {
-            get => Hints[1];
-            set => Hints[1] = value;
+            get => _hints[1];
+            set => _hints[1] = value;
         }
 
         public PuzzleChestCylinder ThirdHint
         {
-            get => Hints[2];
-            set => Hints[2] = value;
+            get => _hints[2];
+            set => _hints[2] = value;
         }
 
         public override string DefaultName => null;
 
         private void InitHints()
         {
-            var list = new List<PuzzleChestCylinder>(Solution.Cylinders.Length - 1);
-            for (var i = 1; i < Solution.Cylinders.Length; i++)
-            {
-                list.Add(Solution.Cylinders[i]);
-            }
+            Span<PuzzleChestCylinder> cylinders = stackalloc PuzzleChestCylinder[Solution.Cylinders.Length - 1];
+            Solution.Cylinders.AsSpan(1).CopyTo(cylinders);
 
-            Hints = new PuzzleChestCylinder[HintsCount];
+            cylinders.Shuffle();
+            _hints = cylinders[..HintsCount].ToArray();
+        }
 
-            for (var i = 0; i < Hints.Length; i++)
-            {
-                var random = list.RandomElement();
-                Hints[i] = random;
-                list.Remove(random);
-            }
+        public override void OnDelete()
+        {
+            StopCleanupTimer();
+            base.OnDelete();
         }
 
         protected override void SetLockLevel()
@@ -291,23 +309,14 @@ namespace Server.Items
                     );
                 }
 
-                var gumps = from.GetGumps();
-
-                gumps.Close<StatusGump>();
-                gumps.Close<PuzzleGump>();
-                gumps.Send(new PuzzleGump(from, this, solution, 0));
-
+                from.SendGump(new PuzzleGump(from, this, solution));
                 return true;
             }
 
             return false;
         }
 
-        public PuzzleChestSolutionAndTime GetLastGuess(Mobile m)
-        {
-            m_Guesses.TryGetValue(m, out var pcst);
-            return pcst;
-        }
+        public PuzzleChestSolutionAndTime GetLastGuess(Mobile m) => _guesses?.GetValueOrDefault(m);
 
         public void SubmitSolution(Mobile m, PuzzleChestSolution solution)
         {
@@ -319,7 +328,8 @@ namespace Server.Items
             }
             else
             {
-                m_Guesses[m] = new PuzzleChestSolutionAndTime(Core.Now, solution);
+                (_guesses ??= []).Add(m, new PuzzleChestSolutionAndTime(Core.Now, solution));
+                StartCleanupTimer();
 
                 m.SendGump(new StatusGump(correctCylinders, correctColors));
 
@@ -327,7 +337,7 @@ namespace Server.Items
             }
         }
 
-        public void DoDamage(Mobile to)
+        public static void DoDamage(Mobile to)
         {
             switch (Utility.Random(4))
             {
@@ -378,7 +388,8 @@ namespace Server.Items
         {
             base.LockPick(from);
 
-            m_Guesses.Clear();
+            StopCleanupTimer();
+            _guesses = null;
         }
 
         private static void GetRandomAOSStats(out int attributeCount, out int min, out int max)
@@ -421,14 +432,15 @@ namespace Server.Items
         {
             DropItem(new Gold(600, 900));
 
-            var gems = new List<Item>();
+            using var gems = PooledRefList<Item>.Create();
             for (var i = 0; i < 9; i++)
             {
                 var gem = Loot.RandomGem();
                 var gemType = gem.GetType();
 
-                foreach (var listGem in gems)
+                for (var j = 0; j < gems.Count; j++)
                 {
+                    var listGem = gems[j];
                     if (listGem.GetType() == gemType)
                     {
                         listGem.Amount++;
@@ -443,8 +455,9 @@ namespace Server.Items
                 }
             }
 
-            foreach (var gem in gems)
+            for (var i = 0; i < gems.Count; i++)
             {
+                var gem = gems[i];
                 DropItem(gem);
             }
 
@@ -455,16 +468,7 @@ namespace Server.Items
 
             for (var i = 0; i < 2; i++)
             {
-                Item item;
-
-                if (Core.AOS)
-                {
-                    item = Loot.RandomArmorOrShieldOrWeaponOrJewelry();
-                }
-                else
-                {
-                    item = Loot.RandomArmorOrShieldOrWeapon();
-                }
+                var item = Core.AOS ? Loot.RandomArmorOrShieldOrWeaponOrJewelry() : Loot.RandomArmorOrShieldOrWeapon();
 
                 if (item is BaseWeapon weapon)
                 {
@@ -523,288 +527,259 @@ namespace Server.Items
             Solution = new PuzzleChestSolution();
         }
 
-        public void CleanupGuesses()
+        private void StartCleanupTimer()
         {
-            var toDelete = new List<Mobile>();
-
-            foreach (var kvp in m_Guesses)
+            if (_cleanupTimerToken.Running || _guesses == null || _guesses.Count == 0)
             {
-                if (Core.Now - kvp.Value.When > CleanupTime)
+                return;
+            }
+
+            Timer.StartTimer(CleanupTime, CleanupTime, CleanupGuesses, out _cleanupTimerToken);
+        }
+
+        private void StopCleanupTimer()
+        {
+            _cleanupTimerToken.Cancel();
+        }
+
+        private void CleanupGuesses()
+        {
+            if (_guesses == null || _guesses.Count == 0)
+            {
+                StopCleanupTimer();
+                return;
+            }
+
+            using var toDelete = PooledRefQueue<Mobile>.Create();
+
+            foreach (var (key, value) in _guesses)
+            {
+                if (Core.Now - value.When > CleanupTime)
                 {
-                    toDelete.Add(kvp.Key);
+                    toDelete.Enqueue(key);
                 }
             }
 
-            foreach (var m in toDelete)
+            while (toDelete.Count > 0)
             {
-                m_Guesses.Remove(m);
+                _guesses.Remove(toDelete.Dequeue());
+            }
+
+            if (_guesses.Count == 0)
+            {
+                _guesses = null;
+                StopCleanupTimer();
             }
         }
 
-        public override void Serialize(IGenericWriter writer)
+        private class PuzzleGump : DynamicGump
         {
-            CleanupGuesses();
+            private int _check;
+            private readonly PuzzleChest _chest;
+            private readonly PuzzleChestSolution _solution;
+            private readonly double _lockpicking;
+            private readonly PuzzleChestSolution _lastGuess;
 
-            base.Serialize(writer);
+            public override bool Singleton => true;
 
-            writer.WriteEncodedInt(0); // version
-
-            m_Solution.Serialize(writer);
-
-            writer.WriteEncodedInt(Hints.Length);
-            for (var i = 0; i < Hints.Length; i++)
+            public PuzzleGump(Mobile from, PuzzleChest chest, PuzzleChestSolution solution) : base(50, 50)
             {
-                writer.Write((int)Hints[i]);
+                _chest = chest;
+                _solution = solution;
+                _lockpicking = from.Skills.Lockpicking.Base;
+                _lastGuess = chest.GetLastGuess(from);
             }
 
-            writer.WriteEncodedInt(m_Guesses.Count);
-            foreach (var kvp in m_Guesses)
+            protected override void BuildLayout(ref DynamicGumpBuilder builder)
             {
-                writer.Write(kvp.Key);
-                kvp.Value.Serialize(writer);
-            }
-        }
+                builder.SetNoDispose();
 
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
+                builder.AddBackground(25, 0, 500, 410, 0x53);
 
-            var version = reader.ReadEncodedInt();
+                builder.AddImage(62, 20, 0x67);
 
-            m_Solution = new PuzzleChestSolution(reader);
-
-            var length = reader.ReadEncodedInt();
-            for (var i = 0; i < length; i++)
-            {
-                var cylinder = (PuzzleChestCylinder)reader.ReadInt();
-
-                if (length == Hints.Length)
-                {
-                    Hints[i] = cylinder;
-                }
-            }
-
-            if (length != Hints.Length)
-            {
-                InitHints();
-            }
-
-            var guesses = reader.ReadEncodedInt();
-            for (var i = 0; i < guesses; i++)
-            {
-                var m = reader.ReadEntity<Mobile>();
-                var sol = new PuzzleChestSolutionAndTime(reader);
-
-                m_Guesses[m] = sol;
-            }
-        }
-
-        private class PuzzleGump : Gump
-        {
-            private readonly PuzzleChest m_Chest;
-            private readonly Mobile m_From;
-            private readonly PuzzleChestSolution m_Solution;
-
-            public PuzzleGump(Mobile from, PuzzleChest chest, PuzzleChestSolution solution, int check) : base(50, 50)
-            {
-                m_From = from;
-                m_Chest = chest;
-                m_Solution = solution;
-
-                Draggable = false;
-
-                AddBackground(25, 0, 500, 410, 0x53);
-
-                AddImage(62, 20, 0x67);
-
-                AddHtmlLocalized(80, 36, 110, 70, 1018309, true); // A Puzzle Lock
+                builder.AddHtmlLocalized(80, 36, 110, 70, 1018309, true); // A Puzzle Lock
 
                 /* Correctly choose the sequence of cylinders needed to open the latch.  Each cylinder
                  * may potentially be used more than once.  Beware!  A false attempt could be deadly!
                  */
-                AddHtmlLocalized(214, 26, 270, 90, 1018310, true, true);
+                builder.AddHtmlLocalized(214, 26, 270, 90, 1018310, true, true);
 
-                AddLeftCylinderButton(62, 130, PuzzleChestCylinder.LightBlue, 10);
-                AddLeftCylinderButton(62, 180, PuzzleChestCylinder.Blue, 11);
-                AddLeftCylinderButton(62, 230, PuzzleChestCylinder.Green, 12);
-                AddLeftCylinderButton(62, 280, PuzzleChestCylinder.Orange, 13);
+                AddLeftCylinderButton(ref builder, 62, 130, PuzzleChestCylinder.LightBlue, 10);
+                AddLeftCylinderButton(ref builder, 62, 180, PuzzleChestCylinder.Blue, 11);
+                AddLeftCylinderButton(ref builder, 62, 230, PuzzleChestCylinder.Green, 12);
+                AddLeftCylinderButton(ref builder, 62, 280, PuzzleChestCylinder.Orange, 13);
 
-                AddRightCylinderButton(451, 130, PuzzleChestCylinder.Purple, 14);
-                AddRightCylinderButton(451, 180, PuzzleChestCylinder.Red, 15);
-                AddRightCylinderButton(451, 230, PuzzleChestCylinder.DarkBlue, 16);
-                AddRightCylinderButton(451, 280, PuzzleChestCylinder.Yellow, 17);
+                AddRightCylinderButton(ref builder, 451, 130, PuzzleChestCylinder.Purple, 14);
+                AddRightCylinderButton(ref builder, 451, 180, PuzzleChestCylinder.Red, 15);
+                AddRightCylinderButton(ref builder, 451, 230, PuzzleChestCylinder.DarkBlue, 16);
+                AddRightCylinderButton(ref builder, 451, 280, PuzzleChestCylinder.Yellow, 17);
 
-                var lockpicking = from.Skills.Lockpicking.Base;
-                if (lockpicking >= 60.0)
+                if (_lockpicking >= 60.0)
                 {
-                    AddHtmlLocalized(160, 125, 230, 24, 1018308); // Lockpicking hint:
+                    builder.AddHtmlLocalized(160, 125, 230, 24, 1018308); // Lockpicking hint:
 
-                    AddBackground(159, 150, 230, 95, 0x13EC);
+                    builder.AddBackground(159, 150, 230, 95, 0x13EC);
 
-                    if (lockpicking >= 80.0)
+                    if (_lockpicking >= 80.0)
                     {
-                        AddHtmlLocalized(165, 157, 200, 40, 1018312); // In the first slot:
-                        AddCylinder(350, 165, chest.Solution.First);
+                        builder.AddHtmlLocalized(165, 157, 200, 40, 1018312); // In the first slot:
+                        AddCylinder(ref builder, 350, 165, _chest.Solution.First);
 
-                        AddHtmlLocalized(165, 197, 200, 40, 1018313); // Used in unknown slot:
-                        AddCylinder(350, 200, chest.FirstHint);
+                        builder.AddHtmlLocalized(165, 197, 200, 40, 1018313); // Used in unknown slot:
+                        AddCylinder(ref builder, 350, 200, _chest.FirstHint);
 
-                        if (lockpicking >= 90.0)
+                        if (_lockpicking >= 90.0)
                         {
-                            AddCylinder(350, 212, chest.SecondHint);
+                            AddCylinder(ref builder, 350, 212, _chest.SecondHint);
                         }
 
-                        if (lockpicking >= 100.0)
+                        if (_lockpicking >= 100.0)
                         {
-                            AddCylinder(350, 224, chest.ThirdHint);
+                            AddCylinder(ref builder, 350, 224, _chest.ThirdHint);
                         }
                     }
                     else
                     {
-                        AddHtmlLocalized(165, 157, 200, 40, 1018313); // Used in unknown slot:
-                        AddCylinder(350, 160, chest.FirstHint);
+                        builder.AddHtmlLocalized(165, 157, 200, 40, 1018313); // Used in unknown slot:
+                        AddCylinder(ref builder, 350, 160, _chest.FirstHint);
 
-                        if (lockpicking >= 70.0)
+                        if (_lockpicking >= 70.0)
                         {
-                            AddCylinder(350, 172, chest.SecondHint);
+                            AddCylinder(ref builder, 350, 172, _chest.SecondHint);
                         }
                     }
                 }
 
-                PuzzleChestSolution lastGuess = chest.GetLastGuess(from);
-                if (lastGuess != null)
+                if (_lastGuess != null)
                 {
-                    AddHtmlLocalized(127, 249, 170, 20, 1018311); // Thy previous guess:
+                    builder.AddHtmlLocalized(127, 249, 170, 20, 1018311); // Thy previous guess:
 
-                    AddBackground(290, 247, 115, 25, 0x13EC);
+                    builder.AddBackground(290, 247, 115, 25, 0x13EC);
 
-                    AddCylinder(281, 254, lastGuess.First);
-                    AddCylinder(303, 254, lastGuess.Second);
-                    AddCylinder(325, 254, lastGuess.Third);
-                    AddCylinder(347, 254, lastGuess.Fourth);
-                    AddCylinder(369, 254, lastGuess.Fifth);
+                    AddCylinder(ref builder, 281, 254, _lastGuess.First);
+                    AddCylinder(ref builder, 303, 254, _lastGuess.Second);
+                    AddCylinder(ref builder, 325, 254, _lastGuess.Third);
+                    AddCylinder(ref builder, 347, 254, _lastGuess.Fourth);
+                    AddCylinder(ref builder, 369, 254, _lastGuess.Fifth);
                 }
 
-                AddPedestal(140, 270, solution.First, 0, check == 0);
-                AddPedestal(195, 270, solution.Second, 1, check == 1);
-                AddPedestal(250, 270, solution.Third, 2, check == 2);
-                AddPedestal(305, 270, solution.Fourth, 3, check == 3);
-                AddPedestal(360, 270, solution.Fifth, 4, check == 4);
+                AddPedestal(ref builder, 140, 270, _solution.First, 0, _check == 0);
+                AddPedestal(ref builder, 195, 270, _solution.Second, 1, _check == 1);
+                AddPedestal(ref builder, 250, 270, _solution.Third, 2, _check == 2);
+                AddPedestal(ref builder, 305, 270, _solution.Fourth, 3, _check == 3);
+                AddPedestal(ref builder, 360, 270, _solution.Fifth, 4, _check == 4);
 
-                AddButton(258, 370, 0xFA5, 0xFA7, 1);
+                builder.AddButton(258, 370, 0xFA5, 0xFA7, 1);
             }
 
-            private void AddLeftCylinderButton(int x, int y, PuzzleChestCylinder cylinder, int buttonID)
+            private static void AddLeftCylinderButton(
+                ref DynamicGumpBuilder builder, int x, int y, PuzzleChestCylinder cylinder, int buttonID
+            )
             {
-                AddBackground(x, y, 30, 30, 0x13EC);
-                AddCylinder(x - 7, y + 10, cylinder);
-                AddButton(x + 38, y + 9, 0x13A8, 0x4B9, buttonID);
+                builder.AddBackground(x, y, 30, 30, 0x13EC);
+                AddCylinder(ref builder, x - 7, y + 10, cylinder);
+                builder.AddButton(x + 38, y + 9, 0x13A8, 0x4B9, buttonID);
             }
 
-            private void AddRightCylinderButton(int x, int y, PuzzleChestCylinder cylinder, int buttonID)
+            private static void AddRightCylinderButton(
+                ref DynamicGumpBuilder builder, int x, int y, PuzzleChestCylinder cylinder, int buttonID
+            )
             {
-                AddBackground(x, y, 30, 30, 0x13EC);
-                AddCylinder(x - 7, y + 10, cylinder);
-                AddButton(x - 26, y + 9, 0x13A8, 0x4B9, buttonID);
+                builder.AddBackground(x, y, 30, 30, 0x13EC);
+                AddCylinder(ref builder, x - 7, y + 10, cylinder);
+                builder.AddButton(x - 26, y + 9, 0x13A8, 0x4B9, buttonID);
             }
 
-            private void AddPedestal(int x, int y, PuzzleChestCylinder cylinder, int switchID, bool initialState)
+            private static void AddPedestal(
+                ref DynamicGumpBuilder builder, int x, int y, PuzzleChestCylinder cylinder, int switchID, bool initialState
+            )
             {
-                AddItem(x, y, 0xB10);
-                AddItem(x - 23, y + 12, 0xB12);
-                AddItem(x + 23, y + 12, 0xB13);
-                AddItem(x, y + 23, 0xB11);
+                builder.AddItem(x, y, 0xB10);
+                builder.AddItem(x - 23, y + 12, 0xB12);
+                builder.AddItem(x + 23, y + 12, 0xB13);
+                builder.AddItem(x, y + 23, 0xB11);
 
                 if (cylinder != PuzzleChestCylinder.None)
                 {
-                    AddItem(x, y + 2, 0x51A);
-                    AddCylinder(x - 1, y + 19, cylinder);
+                    builder.AddItem(x, y + 2, 0x51A);
+                    AddCylinder(ref builder, x - 1, y + 19, cylinder);
                 }
                 else
                 {
-                    AddItem(x, y + 2, 0x521);
+                    builder.AddItem(x, y + 2, 0x521);
                 }
 
-                AddRadio(x + 7, y + 65, 0x867, 0x86A, initialState, switchID);
+                builder.AddRadio(x + 7, y + 65, 0x867, 0x86A, initialState, switchID);
             }
 
-            private void AddCylinder(int x, int y, PuzzleChestCylinder cylinder)
+            private static void AddCylinder(ref DynamicGumpBuilder builder, int x, int y, PuzzleChestCylinder cylinder)
             {
                 if (cylinder != PuzzleChestCylinder.None)
                 {
-                    AddItem(x, y, (int)cylinder);
+                    builder.AddItem(x, y, (int)cylinder);
                 }
                 else
                 {
-                    AddItem(x + 9, y, (int)cylinder);
+                    builder.AddItem(x + 9, y, (int)cylinder);
                 }
             }
 
             public override void OnResponse(NetState sender, in RelayInfo info)
             {
-                if (m_Chest.Deleted || info.ButtonID == 0 || !m_From.CheckAlive())
+                var from = sender.Mobile;
+
+                if (_chest.Deleted || info.ButtonID == 0 || !from.CheckAlive())
                 {
                     return;
                 }
 
-                if (m_From.AccessLevel == AccessLevel.Player &&
-                    (m_From.Map != m_Chest.Map || !m_From.InRange(m_Chest.GetWorldLocation(), 2)))
+                if (from.AccessLevel == AccessLevel.Player &&
+                    (from.Map != _chest.Map || !from.InRange(_chest.GetWorldLocation(), 2)))
                 {
-                    m_From.LocalOverheadMessage(MessageType.Regular, 0x3B2, 500446); // That is too far away.
+                    from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 500446); // That is too far away.
                     return;
                 }
 
                 if (info.ButtonID == 1)
                 {
-                    m_Chest.SubmitSolution(m_From, m_Solution);
+                    _chest.SubmitSolution(from, _solution);
+                    return;
                 }
-                else
+
+                if (info.Switches.Length == 0)
                 {
-                    if (info.Switches.Length == 0)
-                    {
-                        return;
-                    }
-
-                    var pedestal = info.Switches[0];
-                    if (pedestal < 0 || pedestal >= m_Solution.Cylinders.Length)
-                    {
-                        return;
-                    }
-
-                    PuzzleChestCylinder cylinder;
-                    switch (info.ButtonID)
-                    {
-                        case 10:
-                            cylinder = PuzzleChestCylinder.LightBlue;
-                            break;
-                        case 11:
-                            cylinder = PuzzleChestCylinder.Blue;
-                            break;
-                        case 12:
-                            cylinder = PuzzleChestCylinder.Green;
-                            break;
-                        case 13:
-                            cylinder = PuzzleChestCylinder.Orange;
-                            break;
-                        case 14:
-                            cylinder = PuzzleChestCylinder.Purple;
-                            break;
-                        case 15:
-                            cylinder = PuzzleChestCylinder.Red;
-                            break;
-                        case 16:
-                            cylinder = PuzzleChestCylinder.DarkBlue;
-                            break;
-                        case 17:
-                            cylinder = PuzzleChestCylinder.Yellow;
-                            break;
-                        default: return;
-                    }
-
-                    m_Solution.Cylinders[pedestal] = cylinder;
-
-                    m_From.SendGump(new PuzzleGump(m_From, m_Chest, m_Solution, pedestal));
+                    return;
                 }
+
+                var pedestal = info.Switches[0];
+                if (pedestal < 0 || pedestal >= _solution.Cylinders.Length)
+                {
+                    return;
+                }
+
+                PuzzleChestCylinder cylinder = info.ButtonID switch
+                {
+                    10 => PuzzleChestCylinder.LightBlue,
+                    11 => PuzzleChestCylinder.Blue,
+                    12 => PuzzleChestCylinder.Green,
+                    13 => PuzzleChestCylinder.Orange,
+                    14 => PuzzleChestCylinder.Purple,
+                    15 => PuzzleChestCylinder.Red,
+                    16 => PuzzleChestCylinder.DarkBlue,
+                    17 => PuzzleChestCylinder.Yellow,
+                    _  => PuzzleChestCylinder.None
+                };
+
+                if (cylinder == PuzzleChestCylinder.None)
+                {
+                    return;
+                }
+
+                _solution.Cylinders[pedestal] = cylinder;
+
+                _check = pedestal;
+                from.SendGump(this);
             }
         }
 
@@ -812,6 +787,8 @@ namespace Server.Items
         {
             private readonly int _correctCylinders;
             private readonly int _correctColors;
+
+            public override bool Singleton => true;
 
             public StatusGump(int correctCylinders, int correctColors) : base(50, 50)
             {
@@ -832,7 +809,7 @@ namespace Server.Items
                 builder.AddHtmlLocalized(35, 323, 250, 24, 1018316); // Used colors in wrong slots:
                 builder.AddLabelPlaceholder(285, 323, 0x44, "colors");
 
-                builder.AddButton(152, 369, 0xFA5, 0xFA7, 0);
+                builder.AddButton(152, 369, 0xFA5, 0xFA7, 0); // Close
             }
 
             protected override void BuildStrings(ref GumpStringsBuilder builder)

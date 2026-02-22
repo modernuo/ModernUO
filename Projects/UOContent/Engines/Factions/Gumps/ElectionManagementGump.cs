@@ -32,7 +32,7 @@ public class ElectionManagementGump : Gump
             AddHtml(145, 35, 100, 20, (candidate.Mobile == null ? "null" : candidate.Mobile.Name).Color(LabelColor));
 
             AddHtml(45, 55, 100, 20, "Vote Count:".Color(LabelColor));
-            AddHtml(145, 55, 100, 20, candidate.Votes.ToString().Color(LabelColor));
+            AddHtml(145, 55, 100, 20, Html.Color($"{candidate.Votes}", LabelColor));
 
             AddButton(12, 73, 4005, 4007, 1);
             AddHtml(45, 75, 100, 20, "Drop Candidate".Color(LabelColor));
@@ -88,9 +88,9 @@ public class ElectionManagementGump : Gump
                         AddHtml(x + 2, 140 + idx * 20, 150, 20, mobile.Name.Color(LabelColor));
                         x += 150;
                     }
-                    else if (obj is IPAddress)
+                    else if (obj is IPAddress ip)
                     {
-                        AddHtml(x, 140 + idx * 20, 100, 20, obj.ToString().Center(LabelColor));
+                        AddHtml(x, 140 + idx * 20, 100, 20, Html.Center($"{ip}", LabelColor));
                         x += 100;
                     }
                     else if (obj is DateTime time)
@@ -106,7 +106,7 @@ public class ElectionManagementGump : Gump
                     }
                     else if (obj is int i1)
                     {
-                        AddHtml(x, 140 + idx * 20, 60, 20, $"{i1}%".Center(LabelColor));
+                        AddHtml(x, 140 + idx * 20, 60, 20, Html.Center($"{i1}%", LabelColor));
                         x += 60;
                     }
                 }
@@ -120,7 +120,7 @@ public class ElectionManagementGump : Gump
             AddHtml(10, 10, 268, 20, "Election Management".Center(LabelColor));
 
             AddHtml(45, 35, 100, 20, "Current State:".Color(LabelColor));
-            AddHtml(145, 35, 100, 20, election.State.ToString().Color(LabelColor));
+            AddHtml(145, 35, 100, 20, Html.Color($"{election.State}", LabelColor));
 
             AddButton(12, 53, 4005, 4007, 1);
             AddHtml(45, 55, 100, 20, "Transition Time:".Color(LabelColor));
@@ -147,7 +147,7 @@ public class ElectionManagementGump : Gump
 
                 AddButton(13, 118 + i * 20, 4005, 4007, 2 + i);
                 AddHtml(47, 120 + i * 20, 150, 20, mob.Name.Color(LabelColor));
-                AddHtml(195, 120 + i * 20, 80, 20, cd.Votes.ToString().Center(LabelColor));
+                AddHtml(195, 120 + i * 20, 80, 20, Html.Center($"{cd.Votes}", LabelColor));
             }
         }
     }

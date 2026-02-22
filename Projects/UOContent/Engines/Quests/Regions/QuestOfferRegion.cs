@@ -32,7 +32,7 @@ public class QuestOfferRegion : BaseRegion
         {
             try
             {
-                QuestSystem qs = Quest.CreateInstance<QuestSystem>(player);
+                var qs = Quest.CreateInstance<QuestSystem>(player);
                 qs.SendOffer();
             }
             catch (Exception ex)

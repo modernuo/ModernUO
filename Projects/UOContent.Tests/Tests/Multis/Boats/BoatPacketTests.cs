@@ -53,13 +53,13 @@ public class BoatPacketTests
 
         beholder.CanSeeEntities.Add(boat);
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
         ns.ProtocolChanges = ProtocolChanges.HighSeas;
         var expected = new MoveBoatHS(beholder, boat, d, speed, list, xOffset, yOffset).Compile();
 
         ns.SendMoveBoatHS(boat, list, d, speed, xOffset, yOffset);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -96,14 +96,14 @@ public class BoatPacketTests
 
         beholder.CanSeeEntities.Add(boat);
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
         ns.ProtocolChanges = ProtocolChanges.HighSeas;
 
         var expected = new DisplayBoatHS(beholder, boat).Compile();
 
         ns.SendDisplayBoatHS(beholder, boat);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
