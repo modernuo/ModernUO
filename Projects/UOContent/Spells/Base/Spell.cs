@@ -9,6 +9,7 @@ using Server.Spells.Necromancy;
 using Server.Spells.Ninjitsu;
 using Server.Spells.Second;
 using Server.Spells.Spellweaving;
+using Server.Systems.FeatureFlags;
 using Server.Targeting;
 
 namespace Server.Spells
@@ -163,7 +164,7 @@ namespace Server.Spells
             {
                 _contextTable[type] = context = new DelayedDamageContextWrapper();
 
-                for (int i = 0; i < damageStacking.Length; i++)
+                for (var i = 0; i < damageStacking.Length; i++)
                 {
                     _contextTable.Add(damageStacking[i], context);
                 }
@@ -507,6 +508,12 @@ namespace Server.Spells
             }
             else if ((Caster as PlayerMobile)?.DuelContext?.AllowSpellCast(Caster, this) == false)
             {
+            }
+            else if (Caster is PlayerMobile { AccessLevel: < AccessLevel.Administrator } &&
+                     FeatureFlagManager.IsSpellBlocked(GetType()))
+            {
+                var entry = FeatureFlagManager.GetSpellBlockEntry(GetType());
+                Caster.SendMessage(0x22, entry?.Reason ?? "This spell is temporarily disabled.");
             }
             else
             {

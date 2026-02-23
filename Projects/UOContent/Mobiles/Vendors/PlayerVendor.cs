@@ -9,6 +9,7 @@ using Server.Items;
 using Server.Misc;
 using Server.Multis;
 using Server.Prompts;
+using Server.Systems.FeatureFlags;
 using Server.Targeting;
 
 namespace Server.Mobiles;
@@ -727,6 +728,12 @@ public partial class PlayerVendor : Mobile
     {
         if (item.RootParent is not PlayerVendor vendor || !vendor.CanInteractWith(from, false))
         {
+            return;
+        }
+
+        if (!ContentFeatureFlags.PlayerVendors && from.AccessLevel < AccessLevel.Administrator)
+        {
+            from.SendMessage(0x22, "Player vendor transactions are temporarily disabled.");
             return;
         }
 

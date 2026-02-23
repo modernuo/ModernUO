@@ -37,7 +37,7 @@ namespace Server.Items
                 attacker.Skills.Ninjitsu.Value
             ) - 50.0) / 70.0 + 5));
 
-            bool didEffect = false;
+            var didEffect = false;
 
             foreach (var m in attacker.GetMobilesInRange(1))
             {

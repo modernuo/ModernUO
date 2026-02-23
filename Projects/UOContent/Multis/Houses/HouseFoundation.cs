@@ -25,8 +25,6 @@ namespace Server.Multis
 
     public class HouseFoundation : BaseHouse
     {
-        private static ComponentVerification m_Verification;
-
         public static readonly bool AllowStairSectioning = true;
 
         /* Stair block IDs
@@ -200,8 +198,6 @@ namespace Server.Multis
                 return 3;
             }
         }
-
-        public static ComponentVerification Verification => m_Verification ??= new ComponentVerification();
 
         public bool IsFixture(Item item) => Fixtures.Contains(item);
 
@@ -1358,7 +1354,7 @@ namespace Server.Multis
         public static bool ValidPiece(int itemID, bool roof = false)
         {
             itemID &= TileData.MaxItemValue;
-            return roof == TileData.ItemTable[itemID].Roof && Verification.IsItemValid(itemID);
+            return roof == TileData.ItemTable[itemID].Roof && ComponentVerification.IsItemValid(itemID);
         }
 
         public static bool IsStairBlock(int id)
@@ -1638,7 +1634,7 @@ namespace Server.Multis
             // Validate stair multi ID
             var design = context.Foundation.DesignState;
 
-            if (!Verification.IsMultiValid(itemID))
+            if (!ComponentVerification.IsMultiValid(itemID))
             {
                 /* Specified multi ID is not a stair
                    *  - Resend design state

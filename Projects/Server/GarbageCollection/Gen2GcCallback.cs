@@ -53,7 +53,7 @@ internal sealed class Gen2GcCallback : CriticalFinalizerObject
         if (_weakTargetObj.IsAllocated)
         {
             // Check to see if the target object is still alive.
-            object? targetObj = _weakTargetObj.Target;
+            var targetObj = _weakTargetObj.Target;
             if (targetObj == null)
             {
                 // The target object is dead, so this callback object is no longer needed.

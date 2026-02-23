@@ -5,6 +5,7 @@ using Server.ContextMenus;
 using Server.Engines.Quests;
 using Server.Regions;
 using Server.Spells;
+using Server.Mobiles;
 using Server.Targeting;
 
 namespace Server.Items;
@@ -233,16 +234,35 @@ public partial class BagOfSending : Item, TranslocationItem
             {
                 from.SendLocalizedMessage(1079932); // You don't have enough charges to send that much weight
             }
-            else if (!from.BankBox.TryDropItem(from, item, false))
-            {
-                _bag.SendLocalizedMessageTo(from, 1054110, 0x59); // Your bank box is full.
-            }
             else
             {
-                _bag.Charges -= Core.ML ? reqCharges : 1;
+                bool sent;
 
-                // The item was placed in your bank box.
-                _bag.SendLocalizedMessageTo(from, 1054150, 0x59);
+                if (item is Gold or BankCheck)
+                {
+                    var amount = (item as Gold)?.Amount ?? ((BankCheck)item).Worth;
+                    sent = Banker.Deposit(from, amount);
+                    if (sent)
+                    {
+                        item.Delete();
+                    }
+                }
+                else
+                {
+                    sent = from.BankBox.TryDropItem(from, item, false);
+                }
+
+                if (sent)
+                {
+                    _bag.Charges -= Core.ML ? reqCharges : 1;
+
+                    // The item was placed in your bank box.
+                    _bag.SendLocalizedMessageTo(from, 1054150, 0x59);
+                }
+                else
+                {
+                    _bag.SendLocalizedMessageTo(from, 1054110, 0x59); // Your bank box is full.
+                }
             }
         }
     }

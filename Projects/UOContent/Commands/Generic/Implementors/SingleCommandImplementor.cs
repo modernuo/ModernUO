@@ -36,7 +36,7 @@ namespace Server.Commands.Generic
             {
                 e.Mobile.SendMessage("You do not have access to that command.");
             }
-            else if (command.ValidateArgs(this, e))
+            else
             {
                 Process(e.Mobile, command, e.Arguments);
             }

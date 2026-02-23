@@ -375,7 +375,7 @@ public class MoongateGump : Gump
             }
         }
 
-        int mapCount = filteredBySelectedMaps.Count;
+        var mapCount = filteredBySelectedMaps.Count;
         _lists = new PMList[mapCount];
         for (var i = 0; i < mapCount; i++)
         {

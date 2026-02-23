@@ -41,7 +41,7 @@ public static class OutgoingMessagePackets
             return;
         }
 
-        Span<byte> buffer = stackalloc byte[GetMaxMessageLocalizedLength(args)].InitializePacket();
+        var buffer = stackalloc byte[GetMaxMessageLocalizedLength(args)].InitializePacket();
         var length = CreateMessageLocalized(
             buffer, serial, graphic, type, hue, font, number, name, args
         );
@@ -79,7 +79,7 @@ public static class OutgoingMessagePackets
         writer.Write((short)hue);
         writer.Write((short)font);
         writer.Write(number);
-        writer.WriteAscii(name, 30);
+        writer.WriteLatin1(name, 30);
         writer.WriteLittleUniNull(args);
 
         writer.WritePacketLength();
@@ -97,7 +97,7 @@ public static class OutgoingMessagePackets
             return;
         }
 
-        Span<byte> buffer = stackalloc byte[GetMaxMessageLocalizedAffixLength(affix, args)].InitializePacket();
+        var buffer = stackalloc byte[GetMaxMessageLocalizedAffixLength(affix, args)].InitializePacket();
         var length = CreateMessageLocalizedAffix(
             buffer, serial, graphic, type, hue, font, number, name, affixType, affix, args
         );
@@ -139,8 +139,8 @@ public static class OutgoingMessagePackets
         writer.Write((short)font);
         writer.Write(number);
         writer.Write((byte)affixType);
-        writer.WriteAscii(name, 30);
-        writer.WriteAsciiNull(affix);
+        writer.WriteLatin1(name, 30);
+        writer.WriteLatin1Null(affix);
         writer.WriteBigUniNull(args);
 
         writer.WritePacketLength();
@@ -157,7 +157,7 @@ public static class OutgoingMessagePackets
             return;
         }
 
-        Span<byte> buffer = stackalloc byte[GetMaxMessageLength(text)].InitializePacket();
+        var buffer = stackalloc byte[GetMaxMessageLength(text)].InitializePacket();
         var length = CreateMessage(
             buffer,
             serial,
@@ -214,13 +214,13 @@ public static class OutgoingMessagePackets
         writer.Write((short)font);
         if (ascii)
         {
-            writer.WriteAscii(name, 30);
-            writer.WriteAsciiNull(text);
+            writer.WriteLatin1(name, 30);
+            writer.WriteLatin1Null(text);
         }
         else
         {
             writer.WriteAscii(lang, 4);
-            writer.WriteAscii(name, 30);
+            writer.WriteLatin1(name, 30);
             writer.WriteBigUniNull(text);
         }
 

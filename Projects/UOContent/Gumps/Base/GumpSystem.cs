@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using Server.Network;
+using Server.Systems.FeatureFlags;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -45,7 +46,7 @@ public static partial class GumpSystem
     {
         if (_gumps.TryGetValue(ns, out var gumps))
         {
-            for (int i = 0; i < gumps.Count; i++)
+            for (var i = 0; i < gumps.Count; i++)
             {
                 if (gumps[i] == gump)
                 {
@@ -63,7 +64,7 @@ public static partial class GumpSystem
             return new NetStateGumps(null, null);
         }
 
-        ref List<BaseGump> list = ref CollectionsMarshal.GetValueRefOrAddDefault(_gumps, ns, out bool exists);
+        ref var list = ref CollectionsMarshal.GetValueRefOrAddDefault(_gumps, ns, out var exists);
 
         if (!exists)
         {
@@ -104,6 +105,14 @@ public static partial class GumpSystem
     public static void SendGump([DisallowNull] this Mobile m, BaseGump g, bool singleton = false)
     {
         ArgumentNullException.ThrowIfNull(m);
+
+        if (m.AccessLevel < FeatureFlagSettings.RequiredAccessLevel
+            && FeatureFlagManager.IsGumpBlocked(g.GetType()))
+        {
+            var entry = FeatureFlagManager.GetGumpBlockEntry(g.GetType());
+            m.SendMessage(0x22, entry?.Reason ?? FeatureFlagSettings.DefaultGumpBlockedMessage);
+            return;
+        }
 
         var state = m.NetState;
 

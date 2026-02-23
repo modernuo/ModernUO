@@ -70,7 +70,7 @@ public interface IGenericReader
     }
     IPAddress ReadIPAddress()
     {
-        byte length = ReadByte();
+        var length = ReadByte();
         // Either 2 ushorts, or 8 ushorts
         Span<byte> integer = stackalloc byte[length];
         Read(integer);
@@ -120,8 +120,8 @@ public interface IGenericReader
 
     public BitArray ReadBitArray()
     {
-        int bitLength = ReadEncodedInt();
-        int byteLength = (bitLength + 7) / 8;
+        var bitLength = ReadEncodedInt();
+        var byteLength = (bitLength + 7) / 8;
 
         var buffer = ArrayPool<byte>.Shared.Rent(byteLength);
         try

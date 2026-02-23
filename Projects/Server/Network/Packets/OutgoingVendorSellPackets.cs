@@ -55,7 +55,7 @@ public static class OutgoingVendorSellPackets
             var name = (item.Name?.Trim()).DefaultIfNullOrEmpty(sis.Name ?? "");
 
             writer.Write((ushort)name.Length);
-            writer.WriteAscii(name);
+            writer.WriteLatin1(name);
         }
 
         writer.WritePacketLength();

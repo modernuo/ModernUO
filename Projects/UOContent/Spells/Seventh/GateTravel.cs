@@ -170,6 +170,8 @@ public partial class GateTravelMoongate : Moongate
         Timer.StartTimer(TimeSpan.FromSeconds(Core.T2A ? 30.0 : 10.0), Delete);
     }
 
+    public override bool SkipSerialization => true;
+
     [CommandProperty(AccessLevel.GameMaster)]
     public Moongate LinkedGate { get; set; }
 
@@ -199,11 +201,5 @@ public partial class GateTravelMoongate : Moongate
         TargetMap = targetMap;
 
         base.UseGate(m);
-    }
-
-    [AfterDeserialization(false)]
-    private void AfterDeserialization()
-    {
-        Delete();
     }
 }

@@ -873,7 +873,7 @@ public class Skills
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool MoveNext()
         {
-            Skill[] localList = _skills;
+            var localList = _skills;
 
             while ((uint)_index < (uint)localList.Length)
             {

@@ -79,7 +79,7 @@ public static class AssistantHandler
 
     private static void HandshakeResponse(NetState state, SpanReader reader)
     {
-        Mobile m = state.Mobile;
+        var m = state.Mobile;
 
         if (m == null || !_handshakes.TryGetValue(m, out var t))
         {

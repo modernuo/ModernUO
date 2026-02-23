@@ -32,7 +32,7 @@ public static class OutgoingEffectPackets
             return;
         }
 
-        Span<byte> buffer = stackalloc byte[SoundPacketLength].InitializePacket();
+        var buffer = stackalloc byte[SoundPacketLength].InitializePacket();
         CreateSoundEffect(buffer, soundID, target);
 
         ns.Send(buffer);

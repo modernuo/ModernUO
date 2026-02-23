@@ -17,6 +17,8 @@ namespace Server.Mobiles;
 
 public abstract partial class BaseAI
 {
+    private OrderType _lastPetOrder = OrderType.None;
+
     public virtual bool Obey() =>
         !Mobile.Deleted && Mobile.ControlOrder switch
         {
@@ -40,6 +42,32 @@ public abstract partial class BaseAI
         DebugSay("I currently have no orders.");
 
         Mobile.Warmode = IsValidCombatant(Mobile.Combatant);
+
+        if (_lastPetOrder == OrderType.Guard)
+        {
+            DebugSay("Target lost, resuming guard duty.");
+
+            Mobile.ControlOrder = OrderType.Guard;
+            _lastPetOrder = OrderType.None;
+            return true;
+        }
+        else if (_lastPetOrder == OrderType.Stay)
+        {
+            DebugSay("Target lost, resuming stay position.");
+
+            Mobile.ControlOrder = OrderType.Stay;
+            _lastPetOrder = OrderType.None;
+            return true;
+        }
+        else if (_lastPetOrder == OrderType.Follow)
+        {
+            DebugSay("Target lost, resuming follow command.");
+
+            Mobile.ControlTarget = Mobile.ControlMaster;
+            Mobile.ControlOrder = OrderType.Follow;
+            _lastPetOrder = OrderType.None;
+            return true;
+        }
 
         WalkRandom(3, 2, 1);
         return true;
@@ -78,6 +106,8 @@ public abstract partial class BaseAI
 
         if (Mobile.ControlTarget?.Deleted == false && Mobile.ControlTarget != Mobile)
         {
+            _lastPetOrder = OrderType.Follow;
+
             FollowTarget();
         }
         else
@@ -266,6 +296,8 @@ public abstract partial class BaseAI
             return true;
         }
 
+        _lastPetOrder = OrderType.Guard;
+
         FindCombatant();
 
         if (IsValidCombatant(Mobile.Combatant))
@@ -324,7 +356,8 @@ public abstract partial class BaseAI
         return true;
     }
 
-    private bool IsInvalidControlTarget(Mobile target) => target?.Deleted != false || target.Map != Mobile.Map || !target.Alive || target.IsDeadBondedPet;
+    private bool IsInvalidControlTarget(Mobile target) => target?.Deleted != false || target.Map != Mobile.Map
+        || !target.Alive || target.IsDeadBondedPet;
 
     private void HandleInvalidControlTarget()
     {
@@ -340,23 +373,57 @@ public abstract partial class BaseAI
 
     private void FindCombatant()
     {
+        var controlMaster = Mobile.ControlMaster;
+
         foreach (var aggr in Mobile.GetMobilesInRange(Mobile.RangePerception))
         {
-            if (!Mobile.CanSee(aggr) || aggr.Combatant != Mobile || aggr.IsDeadBondedPet || !aggr.Alive)
+            if (!Mobile.CanSee(aggr) || aggr.IsDeadBondedPet || !aggr.Alive)
             {
                 continue;
             }
 
-            if (Mobile.InLOS(aggr))
+            var isAttackingPet = aggr.Combatant == Mobile;
+            var isAttackingMaster = controlMaster != null && aggr.Combatant == controlMaster;
+
+            if (isAttackingPet || isAttackingMaster)
             {
-                Mobile.ControlTarget = aggr;
-                Mobile.ControlOrder = OrderType.Attack;
-                Mobile.Combatant = aggr;
+                if (Mobile.InLOS(aggr))
+                {
+                    Mobile.ControlTarget = aggr;
+                    Mobile.ControlOrder = OrderType.Attack;
+                    Mobile.Combatant = aggr;
 
-                this.DebugSayFormatted($"{aggr.Name} is still alive. Resuming attacks...");
+                    var target = isAttackingMaster ? "master" : "me";
+                    this.DebugSayFormatted($"{aggr.Name} is attacking my {target}! Engaging...");
 
-                Think();
-                break;
+                    Think();
+                    return;
+                }
+            }
+        }
+
+        if (controlMaster?.Aggressors != null)
+        {
+            for (var i = 0; i < controlMaster.Aggressors.Count; i++)
+            {
+                var aggressor = controlMaster.Aggressors[i].Attacker;
+
+                if (aggressor?.Deleted != false || !aggressor.Alive || aggressor.IsDeadBondedPet)
+                {
+                    continue;
+                }
+
+                if (Mobile.InRange(aggressor, Mobile.RangePerception) && Mobile.CanSee(aggressor) && Mobile.InLOS(aggressor))
+                {
+                    Mobile.ControlTarget = aggressor;
+                    Mobile.ControlOrder = OrderType.Attack;
+                    Mobile.Combatant = aggressor;
+
+                    this.DebugSayFormatted($"{aggressor.Name} recently attacked my master! Retaliating...");
+
+                    Think();
+                    return;
+                }
             }
         }
     }
@@ -367,10 +434,10 @@ public abstract partial class BaseAI
 
         var spawner = Mobile.Spawner;
 
-        if (spawner != null && spawner.HomeLocation != Point3D.Zero)
+        if (spawner != null)
         {
-            Mobile.Home = spawner.HomeLocation;
-            Mobile.RangeHome = spawner.HomeRange;
+            Mobile.Home = spawner.GetSpawnPosition(Mobile, spawner.Map);
+            Mobile.RangeHome = spawner.WalkingRange;
         }
         else
         {
@@ -404,6 +471,8 @@ public abstract partial class BaseAI
         {
             this.DebugSayFormatted($"I have been ordered to stay by {Mobile.ControlMaster?.Name ?? "Unknown"}.");
         }
+
+        _lastPetOrder = OrderType.Stay;
 
         WalkRandomInHome(3, 2, 1);
         return true;
@@ -449,6 +518,7 @@ public abstract partial class BaseAI
             {
                 from.SendLocalizedMessage(502040);
                 // As a young player, you may not friend pets to older players.
+                Mobile.ControlOrder = OrderType.None;
                 return true;
             }
 
@@ -456,6 +526,7 @@ public abstract partial class BaseAI
             {
                 from.SendLocalizedMessage(502041);
                 // As an older player, you may not friend pets to young players.
+                Mobile.ControlOrder = OrderType.None;
                 return true;
             }
 
@@ -464,6 +535,7 @@ public abstract partial class BaseAI
                 SendTransferRefusalMessages(from, to, 1043248, 1043249);
                 // 1043248: The pet refuses to be transferred because it will not obey ~1_NAME~.~3_BLANK~
                 // 1043249: The pet will not accept you as a master because it does not trust you.~3_BLANK~
+                Mobile.ControlOrder = OrderType.None;
                 return false;
             }
 
@@ -472,6 +544,7 @@ public abstract partial class BaseAI
                 SendTransferRefusalMessages(from, to, 1043250, 1043251);
                 // 1043250: The pet refuses to be transferred because it will not obey you sufficiently.~3_BLANK~
                 // 1043251: The pet will not accept you as a master because it does not trust ~2_NAME~.~3_BLANK~
+                Mobile.ControlOrder = OrderType.None;
                 return false;
             }
 
@@ -480,6 +553,7 @@ public abstract partial class BaseAI
             {
                 from.SendMessage("You can not transfer a pet while in combat.");
                 to.SendMessage("You can not transfer a pet while in combat.");
+                Mobile.ControlOrder = OrderType.None;
                 return false;
             }
 
@@ -488,6 +562,7 @@ public abstract partial class BaseAI
 
             if (fromState == null || toState == null)
             {
+                Mobile.ControlOrder = OrderType.None;
                 return false;
             }
 
@@ -497,6 +572,7 @@ public abstract partial class BaseAI
                 // You cannot transfer a pet with a trade pending
                 to.SendLocalizedMessage(1010507);
                 // You cannot transfer a pet with a trade pending
+                Mobile.ControlOrder = OrderType.None;
                 return false;
             }
 

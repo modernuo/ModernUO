@@ -189,7 +189,7 @@ public abstract partial class BaseWeapon
 
     [SerializableFieldSaveFlag(30)]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private bool ShouldSerializeEngravedText() => string.IsNullOrEmpty(_engravedText);
+    private bool ShouldSerializeEngravedText() => !string.IsNullOrEmpty(_engravedText);
 
     private FactionItem m_FactionState;
     private SkillMod m_SkillMod, m_MageMod;
@@ -1633,7 +1633,7 @@ public abstract partial class BaseWeapon
         {
             var positionChance = Utility.RandomDouble();
 
-            Item armorItem = positionChance switch
+            var armorItem = positionChance switch
             {
                 < 0.07 => defender.NeckArmor,
                 < 0.14 => defender.HandArmor,
@@ -1666,7 +1666,7 @@ public abstract partial class BaseWeapon
 
         var chance = Utility.RandomDouble();
 
-        Item armorItem = chance switch
+        var armorItem = chance switch
         {
             < 0.07 => defender.NeckArmor,
             < 0.14 => defender.HandArmor,
@@ -1685,7 +1685,7 @@ public abstract partial class BaseWeapon
 
         if (virtualArmor > 0)
         {
-            double scalar = chance switch
+            var scalar = chance switch
             {
                 < 0.14 => 0.07,
                 < 0.28 => 0.14,

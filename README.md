@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/3953314/92417551-a00d7600-f117-11ea-9c28-bb03bbdb1954.png" width=128px />
+  <a href="https://muo.gg"><img alt="ModernUO - Ultima Online Server Emulator for the modern era!" src="https://cdn.muo.gg/gh/muo-logo.svg" width=128px /></a>
 </p>
 
 ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=discord&style=social)](https://muo.gg/discord) [![Subreddit subscribers](https://img.shields.io/reddit/subreddit-subscribers/modernuo?style=social&label=/r/modernuo)](https://muo.gg/reddit/) [![Twitter Follow](https://img.shields.io/twitter/follow/modernuo?label=@modernuo&style=social)](https://muo.gg/twitter)
@@ -17,8 +17,8 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 #### Supported Operating Systems
 [![Windows 10/11/2012/2016/2019/2022/2025](https://img.shields.io/badge/-server%202025-3c78d5?labelColor=222222&logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHJvbGU9ImltZyIgdmlld0JveD0iMCAwIDI0IDI0Ij48dGl0bGU+V2luZG93czwvdGl0bGU+PHBhdGggZD0iTTAsMEgxMS4zNzdWMTEuMzcySDBaTTEyLjYyMywwSDI0VjExLjM3MkgxMi42MjNaTTAsMTIuNjIzSDExLjM3N1YyNEgwWm0xMi42MjMsMEgyNFYyNEgxMi42MjMiIGZpbGw9IiMzYzc4ZDUiLz48L3N2Zz4=)](https://www.microsoft.com/en-US/evalcenter/evaluate-windows-server-2022)
 ![MacOS 14+](https://img.shields.io/badge/-sonoma-222222?logo=apple&logoColor=white&labelColor=222222)
-[![Debian 12+](https://img.shields.io/badge/-bookworm-A81D33?logo=debian&logoColor=A81D33&labelColor=222222)](https://www.debian.org/distrib/)
-[![Ubuntu 22+ LTS](https://img.shields.io/badge/-22LTS-E95420?logo=ubuntu&logoColor=E95420&labelColor=222222)](https://ubuntu.com/download/server)
+[![Debian 12+](https://img.shields.io/badge/-trixie-A81D33?logo=debian&logoColor=A81D33&labelColor=222222)](https://www.debian.org/distrib/)
+[![Ubuntu 22+ LTS](https://img.shields.io/badge/-24LTS-E95420?logo=ubuntu&logoColor=E95420&labelColor=222222)](https://ubuntu.com/download/server)
 <br/>
 [![Alpine 3.22+](https://img.shields.io/badge/-3.22-0D597F?logo=alpinelinux&logoColor=0D597F&labelColor=222222)](https://alpinelinux.org/downloads/)
 [![Fedora 42+](https://img.shields.io/badge/-42-51a2da?logo=fedora&logoColor=51a2da&labelColor=222222)](https://getfedora.org/en/server/download/)
@@ -42,11 +42,11 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 
 #### Supported IDEs
 <p align="left">
-  <a href="https://www.jetbrains.com/rider/download"><img height="64" title="Jetbrains Rider 2025.3+" alt="Jetbrains Rider 2025.3+" src="https://github.com/user-attachments/assets/456dc87e-a7e7-467b-81b6-ba9c8e227f86"></a>
-  <img alt="space" width="32" src="https://user-images.githubusercontent.com/3953314/200151935-3c1521ec-16cb-487b-85a2-7454d347c585.png">
-  <a href="https://code.visualstudio.com/download"><img height="64" title="VSCode" alt="VSCode" src="https://user-images.githubusercontent.com/3953314/200161017-7697171f-8f13-4829-95d0-8a25b59ee4c9.png"></a>
-  <img alt="space" width="32" src="https://user-images.githubusercontent.com/3953314/200151935-3c1521ec-16cb-487b-85a2-7454d347c585.png">
-  <a href="https://visualstudio.microsoft.com/vs/community/"><img height="64" title="Visual Studio 2026" alt="Visual Studio 2026" src="https://github.com/user-attachments/assets/4cb26751-56bb-4ea1-97e6-afe31d2dc9d7"></a>
+  <a href="https://www.jetbrains.com/rider/download"><img height="64" title="Jetbrains Rider 2025.3+" alt="Jetbrains Rider 2025.3+" src="https://cdn.muo.gg/gh/jetbrains-rider.svg"></a>
+  <a href="#"><img alt="space" width="32" src="https://cdn.muo.gg/gh/space.png"></a>
+  <a href="https://code.visualstudio.com/download"><img height="64" title="VSCode" alt="VSCode" src="https://cdn.muo.gg/gh/vscode.svg"></a>
+  <a href="#"><img alt="space" width="32" src="https://cdn.muo.gg/gh/space.png"></a>
+  <a href="https://visualstudio.microsoft.com/vs/community/"><img height="64" title="Visual Studio 2026" alt="Visual Studio 2026" src="https://cdn.muo.gg/gh/vs2026.svg"></a>
 </p>
 
 ## Getting Started
@@ -71,13 +71,13 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 dnf upgrade --refresh -y
 # CentOS does not come with EPEL enabled
 dnf install -y epel-release epel-next-release
-dnf install -y findutils libicu libdeflate-devel zstd libargon2-devel
+dnf install -y findutils libicu libdeflate-devel zstd libargon2-devel liburing-devel
 ```
 
 ### Ubuntu, Debian, etc
 ```shell
 apt-get update -y
-apt-get install -y libicu-dev libdeflate-dev zstd libargon2-dev
+apt-get install -y libicu-dev libdeflate-dev zstd libargon2-dev liburing-dev
 ```
 
 ## OSX Requirements
@@ -105,6 +105,5 @@ Thank you for supporting us! You can find out how by visiting the [sponsors](./S
 - [Karasho](https://github.com/andreakarasho), [Jaedan](https://github.com/jaedan) and the ClassicUO Community
 
 <br/><br/>
-<p align=center>Development Tools & Plugins provided with &hearts; by<br/><br/><a href="https://www.jetbrains.com/?from=ModernUO"><img align=middle src="https://github.com/user-attachments/assets/13752e36-87a4-4faf-8359-122c5f39d6e7" height="64px" alt="JetBrains" title="JetBrains" /></a><br/>
-<a href="https://material-theme.com/"><img align=center src="https://material-theme.com/img/logo/material-oceanic.svg" width="64px" alt="Material Theme" title="Material Theme"></a>
-</p>
+<p align=center>Development Tools & Plugins provided with &hearts; by<br/><br/><a href="https://www.jetbrains.com/?from=ModernUO"><img src="https://cdn.muo.gg/gh/jetbrains.svg" height="64px" alt="JetBrains" title="JetBrains" /></a><br/>
+<a href="https://material-theme.com/"><img src="https://github.com/AtomMaterialUI/material-theme-issues/raw/master/logo.svg" width="64px" alt="Material Theme" title="Material Theme"></a></p>

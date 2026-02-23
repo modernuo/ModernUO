@@ -74,7 +74,7 @@ public static class BoatPackets
             return;
         }
 
-        Span<byte> moveBoatPacket = stackalloc byte[GetMoveBoatHSPacketLength(entities.Count)]
+        var moveBoatPacket = stackalloc byte[GetMoveBoatHSPacketLength(entities.Count)]
             .InitializePacket();
 
         CreateMoveBoatHS(moveBoatPacket, boat, entities, d, speed, xOffset, yOffset);
@@ -113,7 +113,7 @@ public static class BoatPackets
                 continue;
             }
 
-            Span<byte> buffer = builder.GetSpan(OutgoingEntityPackets.MaxWorldEntityPacketLength).InitializePacket();
+            var buffer = builder.GetSpan(OutgoingEntityPackets.MaxWorldEntityPacketLength).InitializePacket();
             var bytesWritten = OutgoingEntityPackets.CreateWorldEntity(buffer, entity, true);
             builder.Advance(bytesWritten);
         }
