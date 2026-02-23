@@ -227,7 +227,7 @@ namespace Server.Items
             {
                 xOffset = 1;
                 yOffset = -1;
-                zOffset = attacker.Mount != null ? 0 : 0;
+                zOffset = attacker.Mount != null ? 10 : 6;
             }
             else if (deltaX > 0 && deltaY == 0)
             {
