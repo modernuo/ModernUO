@@ -269,6 +269,8 @@ namespace Server.Items
             
             Point3D from = new(attacker.X + xOffset, attacker.Y + yOffset, attacker.Z + zOffset);
             Point3D to = new(defender.X + xOffset, defender.Y + yOffset, defender.Z + zOffset);
+
+            attacker.Direction = attacker.GetDirectionTo(defender);
             
             Effects.SendMovingEffect(new Entity(Serial.Zero, from, attacker.Map),
                 new Entity(Serial.Zero, to, defender.Map), EffectID, 18, 1, false, false);
