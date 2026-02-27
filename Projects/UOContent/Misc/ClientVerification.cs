@@ -128,8 +128,8 @@ namespace Server.Misc
                                     state.Mobile is PlayerMobile mobile &&
                                     mobile.GameTime > _gameTimeLeniency;
 
-            bool shouldKick = false;
-            bool isKRClient = version.Type == ClientType.KR;
+            var shouldKick = false;
+            var isKRClient = version.Type == ClientType.KR;
 
             if (!isKRClient && UOClient.MinRequired != null && version < UOClient.MinRequired)
             {

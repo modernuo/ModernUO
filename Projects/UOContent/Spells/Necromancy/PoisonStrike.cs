@@ -80,7 +80,7 @@ public class PoisonStrikeSpell : NecromancerSpell, ITargetingSpell<Mobile>
                 var cbc = Caster as BaseCreature;
                 var isMonster = cbc?.Controlled == false && (cbc.IsAnimatedDead || !cbc.Summoned);
 
-                foreach (Mobile targ in m.GetMobilesInRange(2))
+                foreach (var targ in m.GetMobilesInRange(2))
                 {
                     if (targ == Caster || m == targ || !SpellHelper.ValidIndirectTarget(Caster, targ)
                         || !Caster.CanBeHarmful(targ, false))

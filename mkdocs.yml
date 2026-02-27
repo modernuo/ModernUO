@@ -1,3 +1,8 @@
+# Exclude non-documentation files from build output
+exclude_docs: |
+  commands/
+  packets/
+  tools/
 
 # Project
 site_name: ModernUO
@@ -9,7 +14,7 @@ edit_uri: edit/main/docs/
 repo_name: modernuo/modernuo
 repo_url: https://github.com/modernuo/modernuo
 site_description: The Ultima Online Server Emulator for the modern era!
-copyright: Copyright 2019-2023 ModernUO Development Team
+copyright: Copyright 2019-2025 ModernUO Development Team
 theme:
   name: material
   favicon: branding/favicon.png
@@ -17,8 +22,8 @@ theme:
     logo: modernuo/logo
   custom_dir: docs/overrides/
   features:
-    - tabs
-    - instant
+    - navigation.tabs
+    - navigation.instant
 extra_css:
   - assets/stylesheets/extra.css
 extra:
@@ -60,8 +65,8 @@ markdown_extensions:
   - pymdownx.betterem:
       smart_enable: all
   - pymdownx.emoji:
-      emoji_index: !!python/name:materialx.emoji.twemoji
-      emoji_generator: !!python/name:materialx.emoji.to_svg
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
       options:
         custom_icons:
           - docs/overrides/.icons

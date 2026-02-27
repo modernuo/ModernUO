@@ -1,0 +1,14 @@
+{
+  "version": 0,
+  "type": "Server.Engines.ConPVP.HillOfTheKing",
+  "properties": [
+    {
+      "name": "ScoreInterval",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        "EncodedInt"
+      ]
+    }
+  ]
+}

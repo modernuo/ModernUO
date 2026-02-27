@@ -11,6 +11,7 @@ using Server.Mobiles;
 using Server.Network;
 using Server.Regions;
 using Server.Logging;
+using Server.Systems.FeatureFlags;
 
 namespace Server.Mobiles
 {
@@ -44,7 +45,7 @@ namespace Server.Mobiles
             // See SBAnimalTrainer for an example
             _enableVendorBuyOPL = ServerConfiguration.GetSetting("opl.enableForVendorBuy", true);
 
-            _vendorInvulnerable = ServerConfiguration.GetSetting("vendor.isInvulnerable", false);
+            _vendorInvulnerable = ServerConfiguration.GetSetting("vendor.isInvulnerable", Core.LBR);
         }
 
         public static void Initialize()
@@ -96,7 +97,7 @@ namespace Server.Mobiles
 
         public virtual NpcGuild NpcGuild => NpcGuild.None;
 
-        public override bool IsInvulnerable => Core.LBR || _vendorInvulnerable;
+        public override bool IsInvulnerable => _vendorInvulnerable;
 
         public virtual DateTime NextTrickOrTreat { get; set; }
 
@@ -851,6 +852,12 @@ namespace Server.Mobiles
                 return;
             }
 
+            if (!ContentFeatureFlags.VendorPurchase && from.AccessLevel < AccessLevel.Administrator)
+            {
+                from.SendMessage(0x22, "Vendor purchases are temporarily disabled.");
+                return;
+            }
+
             if (!CheckVendorAccess(from))
             {
                 Say(501522); // I shall not treat with scum like thee!
@@ -1019,6 +1026,12 @@ namespace Server.Mobiles
 
             if (!from.CheckAlive())
             {
+                return;
+            }
+
+            if (!ContentFeatureFlags.VendorSell && from.AccessLevel < AccessLevel.Administrator)
+            {
+                from.SendMessage(0x22, "Vendor sales are temporarily disabled.");
                 return;
             }
 
@@ -1191,7 +1204,7 @@ namespace Server.Mobiles
                 return false;
             }
 
-            long totalCostLong = (long)totalCost + bii.Price * amount;
+            var totalCostLong = (long)totalCost + bii.Price * amount;
 
             if (totalCostLong > int.MaxValue)
             {

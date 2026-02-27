@@ -163,7 +163,8 @@ namespace Server.Engines.MLQuests.Objectives
 
             var left = Objective.DesiredAmount;
 
-            foreach (var item in pack.EnumerateItemsByType<Item>(false, ClaimTypePredicate))
+            using var queue = pack.EnumerateItemsByType<Item>(false, ClaimTypePredicate);
+            foreach (var item in queue)
             {
                 if (item.QuestItem && Objective.CheckItem(item))
                 {

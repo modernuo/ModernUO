@@ -52,7 +52,7 @@ namespace Server.Engines.VeteranRewards
                 return;
             }
 
-            Span<byte> buffer = stackalloc byte[StatueAnimationPacketLength].InitializePacket();
+            var buffer = stackalloc byte[StatueAnimationPacketLength].InitializePacket();
             CreateStatueAnimation(buffer, serial, status, anim, frame);
             ns.Send(buffer);
         }

@@ -30,7 +30,7 @@ public class HashAlgorithmPasswordProtection : IPasswordProtection
 
     public string EncryptPassword(string plainPassword)
     {
-        byte[] bytes = plainPassword.AsSpan(0, Math.Min(256, plainPassword.Length)).GetBytesAscii();
+        var bytes = plainPassword.AsSpan(0, Math.Min(256, plainPassword.Length)).GetBytesAscii();
         return _hashAlgorithm.ComputeHash(bytes).ToHexString();
     }
 

@@ -35,11 +35,11 @@ namespace Server.Commands
 
                 if (enabled)
                 {
-                    e.Mobile.SendMessage($"Saves have been enabled.");
+                    e.Mobile.SendMessage("Saves have been enabled.");
                 }
                 else
                 {
-                    e.Mobile.SendMessage($"Saves have been disabled.");
+                    e.Mobile.SendMessage("Saves have been disabled.");
                 }
             }
             else

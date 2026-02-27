@@ -5,6 +5,7 @@ using Xunit;
 
 namespace Server.Engines.MLQuests;
 
+[Collection("Sequential UOContent Tests")]
 public class MLQuestPacketTests
 {
     private class MockedRace : Race
@@ -69,10 +70,10 @@ public class MLQuestPacketTests
 
         var expected = new RaceChanger(female, race).Compile();
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendRaceChanger(female, race);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -81,10 +82,10 @@ public class MLQuestPacketTests
     {
         var expected = new CloseRaceChanger().Compile();
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendCloseRaceChanger();
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 }

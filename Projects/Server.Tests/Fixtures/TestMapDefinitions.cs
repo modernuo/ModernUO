@@ -1,4 +1,4 @@
-namespace Server.Tests;
+namespace Server.Tests.Maps;
 
 public static class TestMapDefinitions
 {

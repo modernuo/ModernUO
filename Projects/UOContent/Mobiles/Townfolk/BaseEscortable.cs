@@ -857,7 +857,7 @@ public class EscortDestinationInfo
 
         _table = new Dictionary<string, EDI>();
 
-        foreach (Region r in list)
+        foreach (var r in list)
         {
             if (r is DungeonRegion or TownRegion && r.Name != null)
             {

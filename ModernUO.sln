@@ -1,7 +1,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.6.33927.249
-MinimumVisualStudioVersion = 10.0.40219.1
+# Visual Studio Version 18
+VisualStudioVersion = 18.0.11222.15 d18.0
+MinimumVisualStudioVersion = 18.0.11222.15
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server", "Projects\Server\Server.csproj", "{5E93BB35-3661-4822-9A8A-859726BAD87F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UOContent", "Projects\UOContent\UOContent.csproj", "{83CF2484-BCCB-4B7C-9C5F-7AB43AEA5E8F}"

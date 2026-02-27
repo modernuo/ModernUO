@@ -17,14 +17,14 @@ public class TestMapItemPackets
     {
         var mapItem = new MapItem(Map.Trammel);
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
         ns.ProtocolChanges = changes;
 
         var expected = (ns.NewCharacterList ?
             (Packet)new MapDetailsNew(mapItem) : new MapDetails(mapItem)).Compile();
         ns.SendMapDetails(mapItem);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -39,10 +39,10 @@ public class TestMapItemPackets
 
         var expected = new MapCommand(mapItem, command, number, x, y).Compile();
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendMapCommand(mapItem, command, x, y, number > 0);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 }

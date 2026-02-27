@@ -10,7 +10,7 @@ public class TryParseTests
     [InlineData("Alakazam", "Not a valid boolean string.", true)]
     public void TestTryParseBool(string value, string returned, bool parsedAs)
     {
-        string actualReturned = Server.Types.TryParse(typeof(bool), value, out object constructed);
+        var actualReturned = Server.Types.TryParse(typeof(bool), value, out var constructed);
         Assert.Equal(returned, actualReturned);
 
         if (returned == null)

@@ -27,7 +27,7 @@ public abstract class SummonUndeadCounter : MonsterAbility
         var amount = AmountToSummon - source.Followers;
         var distance = SummonRange;
 
-        int willTransform = !source.Paralyzed && ChanceToPolymorph > 0 && ChanceToPolymorph > Utility.RandomDouble()
+        var willTransform = !source.Paralyzed && ChanceToPolymorph > 0 && ChanceToPolymorph > Utility.RandomDouble()
             ? Utility.Random(amount)
             : -1;
 

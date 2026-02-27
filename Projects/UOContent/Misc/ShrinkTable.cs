@@ -37,7 +37,7 @@ namespace Server
                 throw new JsonException($"Failed to deserialize {path}.");
             }
 
-            int length = 0;
+            var length = 0;
 
             foreach (var key in table.Keys)
             {

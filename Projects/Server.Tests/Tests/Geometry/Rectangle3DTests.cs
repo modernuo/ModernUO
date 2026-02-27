@@ -21,7 +21,7 @@ public class Rectangle3DTests
     {
         const int max = int.MaxValue;
         const int min = int.MinValue;
-        char[] array = new char[128];
+        var array = new char[128];
 
         var p1 = new Rectangle3D(0, 0, 0, 0, 0, 0);
         Assert.True(p1.TryFormat(array, out var cp1, null, null));
@@ -48,7 +48,7 @@ public class Rectangle3DTests
     {
         const int max = int.MaxValue;
         const int min = int.MinValue;
-        char[] array = new char[1];
+        var array = new char[1];
 
         var p1 = new Rectangle3D(0, 0, 0, 0, 0, 0);
         Assert.False(p1.TryFormat(array, out var cp1, null, null));

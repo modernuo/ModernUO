@@ -825,7 +825,7 @@ namespace Server.Items
 
         public int ComputeStatReq(StatType type)
         {
-            int v = type switch
+            var v = type switch
             {
                 StatType.Str => StrRequirement,
                 StatType.Dex => DexRequirement,

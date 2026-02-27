@@ -23,7 +23,7 @@ public class TimerTests
 
         var tickCount = expectedTicks / 8;
 
-        for (int i = 1; i <= tickCount; i++)
+        for (var i = 1; i <= tickCount; i++)
         {
             timerTicks.Ticks = i * 8;
 
@@ -52,7 +52,7 @@ public class TimerTests
 
         var tickCount = (expectedDelayTicks + (expectedIntervalTicks * count - 1)) / 8;
 
-        for (int i = 1; i <= tickCount; i++)
+        for (var i = 1; i <= tickCount; i++)
         {
             timerTicks.Ticks = i * 8;
 

@@ -99,7 +99,7 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
 
     public void Terminate()
     {
-        int length = _bufferPos + 4;
+        var length = _bufferPos + 4;
         if (length != _buffer.Length)
         {
             Resize(length);
@@ -135,7 +135,7 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
 
         AddHash(number);
 
-        int length = _bufferPos + 6;
+        var length = _bufferPos + 6;
         while (length > _buffer.Length)
         {
             Flush();
@@ -188,8 +188,8 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
         AddHash(number);
         AddHash(string.GetHashCode(chars, StringComparison.Ordinal));
 
-        int strLength = chars.Length * 2;
-        int length = _bufferPos + 6 + strLength;
+        var strLength = chars.Length * 2;
+        var length = _bufferPos + 6 + strLength;
         while (length > _buffer.Length)
         {
             Flush();
@@ -219,8 +219,8 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
     {
         if (value.Length == 1)
         {
-            Span<char> chars = _arrayToReturnToPool.AsSpan();
-            int pos = _pos;
+            var chars = _arrayToReturnToPool.AsSpan();
+            var pos = _pos;
             if ((uint)pos < (uint)chars.Length)
             {
                 chars[pos] = value[0];
@@ -318,7 +318,7 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
 
     public void AppendFormatted<T>(T value, int alignment)
     {
-        int startingPos = _pos;
+        var startingPos = _pos;
         AppendFormatted(value);
         if (alignment != 0)
         {
@@ -328,7 +328,7 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
 
     public void AppendFormatted<T>(T value, int alignment, string? format)
     {
-        int startingPos = _pos;
+        var startingPos = _pos;
         AppendFormatted(value, format);
         if (alignment != 0)
         {
@@ -350,14 +350,14 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
 
     public void AppendFormatted(ReadOnlySpan<char> value, int alignment = 0, string? format = null)
     {
-        bool leftAlign = false;
+        var leftAlign = false;
         if (alignment < 0)
         {
             leftAlign = true;
             alignment = -alignment;
         }
 
-        int paddingRequired = alignment - value.Length;
+        var paddingRequired = alignment - value.Length;
         if (paddingRequired <= 0)
         {
             AppendFormatted(value);
@@ -416,16 +416,16 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
         Debug.Assert(startingPos >= 0 && startingPos <= _pos);
         Debug.Assert(alignment != 0);
 
-        int charsWritten = _pos - startingPos;
+        var charsWritten = _pos - startingPos;
 
-        bool leftAlign = false;
+        var leftAlign = false;
         if (alignment < 0)
         {
             leftAlign = true;
             alignment = -alignment;
         }
 
-        int paddingNeeded = alignment - charsWritten;
+        var paddingNeeded = alignment - charsWritten;
         if (paddingNeeded > 0)
         {
             EnsureCapacityForAdditionalChars(paddingNeeded);
@@ -486,13 +486,13 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void GrowCore(uint requiredMinCapacity)
     {
-        uint newCapacity = Math.Max(requiredMinCapacity, Math.Min((uint)_arrayToReturnToPool.Length * 2, 0x3FFFFFDF));
-        int arraySize = (int)Math.Clamp(newCapacity, 256, int.MaxValue);
+        var newCapacity = Math.Max(requiredMinCapacity, Math.Min((uint)_arrayToReturnToPool.Length * 2, 0x3FFFFFDF));
+        var arraySize = (int)Math.Clamp(newCapacity, 256, int.MaxValue);
 
-        char[] newArray = STArrayPool<char>.Shared.Rent(arraySize);
+        var newArray = STArrayPool<char>.Shared.Rent(arraySize);
         _arrayToReturnToPool.AsSpan(.._pos).CopyTo(newArray);
 
-        char[] toReturn = _arrayToReturnToPool;
+        var toReturn = _arrayToReturnToPool;
         _arrayToReturnToPool = newArray;
 
         STArrayPool<char>.Shared.Return(toReturn);

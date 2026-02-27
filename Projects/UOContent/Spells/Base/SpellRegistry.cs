@@ -66,7 +66,7 @@ namespace Server.Spells
 
         public static int GetRegistryNumber(SpecialMove s) => GetRegistryNumber(s.GetType());
 
-        public static int GetRegistryNumber(Type type) => m_IDsFromTypes.TryGetValue(type, out var value) ? value : -1;
+        public static int GetRegistryNumber(Type type) => m_IDsFromTypes.GetValueOrDefault(type, -1);
 
         public static void Register(int spellID, Type type)
         {
