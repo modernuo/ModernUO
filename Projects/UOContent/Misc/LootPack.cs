@@ -764,8 +764,7 @@ namespace Server
                         {
                             weapon.Slayer = SlayerName.Silver;
                         }
-
-                        if (from != null && weapon.AccuracyLevel == 0 && weapon.DamageLevel == 0 &&
+                        else if (from != null && weapon.AccuracyLevel == 0 && weapon.DamageLevel == 0 &&
                             weapon.DurabilityLevel == 0 && weapon.Slayer == SlayerName.None && Utility.Random(100) < 5)
                         {
                             weapon.Slayer = SlayerGroup.GetLootSlayerType(from.GetType());
