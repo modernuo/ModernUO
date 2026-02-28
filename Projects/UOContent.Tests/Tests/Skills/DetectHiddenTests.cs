@@ -1,6 +1,7 @@
 using Server;
 using Server.Mobiles;
 using Server.SkillHandlers;
+using Server.Tests;
 using Xunit;
 
 namespace UOContent.Tests;
@@ -13,27 +14,28 @@ public class DetectHiddenTests
     // with the Tracking tests that use coordinates around (1000-4000, 1000-4000).
 
     /// <summary>
-    /// A stealther with very low Hiding that steps within 4 tiles of a player
-    /// with max Detect Hidden should always be revealed.
-    /// Skill bounds make this deterministic:
-    ///   ss ∈ [90, 110], ts ∈ [-10, 10]  →  ss >= ts always.
+    /// A detector with higher Detect Hidden than the stealther's Hiding should reveal them.
+    /// With PredictableRandom both rolls get the same offset, so detection succeeds
+    /// when detectSkill >= hiding.
     /// </summary>
     [Fact]
-    public void PassiveDetect_RevealsStealther_WhenWithinRangeAndHighSkillDifferential()
+    public void TryDetectStealther_Reveals_WhenDetectSkillExceedsHiding()
     {
+        using var rng = new PredictableRandom(10);
         DetectHidden.ClearDebounceCache();
         var map = Map.Felucca;
         var detector = CreatePlayerMobile(map, new Point3D(1000, 500, 0));
-        var stealther = CreatePlayerMobile(map, new Point3D(1001, 500, 0)); // 1 tile away
+        var stealther = CreatePlayerMobile(map, new Point3D(1001, 500, 0));
 
         try
         {
-            detector.Skills.DetectHidden.BaseFixedPoint = 1000; // 100.0
-            stealther.Skills.Hiding.BaseFixedPoint = 0;         // 0.0
+            detector.Skills.DetectHidden.BaseFixedPoint = 600; // 60.0
+            stealther.Skills.Hiding.BaseFixedPoint = 500;      // 50.0
             stealther.Hidden = true;
 
-            DetectHidden.PassiveDetect(stealther);
+            var result = DetectHidden.TryDetectStealther(detector, stealther);
 
+            Assert.True(result);
             Assert.False(stealther.Hidden);
         }
         finally
@@ -45,26 +47,27 @@ public class DetectHiddenTests
     }
 
     /// <summary>
-    /// A stealther 5 tiles away is outside the passive detection radius of 4 tiles
-    /// and must not be revealed regardless of skill.
+    /// When detect skill exactly equals hiding, detection succeeds (ss >= ts).
     /// </summary>
     [Fact]
-    public void PassiveDetect_DoesNotReveal_WhenOutsidePassiveRange()
+    public void TryDetectStealther_Reveals_WhenSkillsAreEqual()
     {
+        using var rng = new PredictableRandom(10);
         DetectHidden.ClearDebounceCache();
         var map = Map.Felucca;
         var detector = CreatePlayerMobile(map, new Point3D(1200, 500, 0));
-        var stealther = CreatePlayerMobile(map, new Point3D(1205, 500, 0)); // 5 tiles away
+        var stealther = CreatePlayerMobile(map, new Point3D(1201, 500, 0));
 
         try
         {
-            detector.Skills.DetectHidden.BaseFixedPoint = 1000;
-            stealther.Skills.Hiding.BaseFixedPoint = 0;
+            detector.Skills.DetectHidden.BaseFixedPoint = 500; // 50.0
+            stealther.Skills.Hiding.BaseFixedPoint = 500;      // 50.0
             stealther.Hidden = true;
 
-            DetectHidden.PassiveDetect(stealther);
+            var result = DetectHidden.TryDetectStealther(detector, stealther);
 
-            Assert.True(stealther.Hidden);
+            Assert.True(result);
+            Assert.False(stealther.Hidden);
         }
         finally
         {
@@ -75,16 +78,12 @@ public class DetectHiddenTests
     }
 
     /// <summary>
-    /// A player with zero Detect Hidden skill should never passively detect any hidden mobile.
-    ///
-    /// SKIPPED: This test has an xUnit test isolation issue where it passes when run in isolation
-    /// but receives stale state when run after other tests in the sequence. The implementation
-    /// logic is correct and verified to work properly in isolation. This is a test harness issue,
-    /// not a code defect. The test can be run alone with:
-    ///   dotnet test --filter "PassiveDetect_DoesNotReveal_WhenDetectorHasNoSkill"
+    /// When hiding skill exceeds detect skill, detection fails.
     /// </summary>
-    private void PassiveDetect_DoesNotReveal_WhenDetectorHasNoSkill()
+    [Fact]
+    public void TryDetectStealther_DoesNotReveal_WhenHidingExceedsDetectSkill()
     {
+        using var rng = new PredictableRandom(10);
         DetectHidden.ClearDebounceCache();
         var map = Map.Felucca;
         var detector = CreatePlayerMobile(map, new Point3D(1400, 500, 0));
@@ -92,12 +91,13 @@ public class DetectHiddenTests
 
         try
         {
-            detector.Skills.DetectHidden.BaseFixedPoint = 0;
-            stealther.Skills.Hiding.BaseFixedPoint = 0;
+            detector.Skills.DetectHidden.BaseFixedPoint = 500; // 50.0
+            stealther.Skills.Hiding.BaseFixedPoint = 600;      // 60.0
             stealther.Hidden = true;
 
-            DetectHidden.PassiveDetect(stealther);
+            var result = DetectHidden.TryDetectStealther(detector, stealther);
 
+            Assert.False(result);
             Assert.True(stealther.Hidden);
         }
         finally
@@ -109,14 +109,13 @@ public class DetectHiddenTests
     }
 
     /// <summary>
-    /// A stealther with very high Hiding skill that faces a detector with zero
-    /// Detect Hidden should never be revealed.
-    /// Skill bounds make this deterministic:
-    ///   ss ∈ [-10, 10], ts ∈ [90, 110]  →  ss >= ts never.
+    /// A detector with zero Detect Hidden skill should never passively detect anyone.
+    /// Uses Elf race since Humans get a 20.0 racial bonus (Jack of All Trades).
     /// </summary>
     [Fact]
-    public void PassiveDetect_DoesNotReveal_WhenStealtherHasMuchHigherHiding()
+    public void TryDetectStealther_DoesNotReveal_WhenDetectorHasNoSkill()
     {
+        using var rng = new PredictableRandom(10);
         DetectHidden.ClearDebounceCache();
         var map = Map.Felucca;
         var detector = CreatePlayerMobile(map, new Point3D(1600, 500, 0));
@@ -124,12 +123,14 @@ public class DetectHiddenTests
 
         try
         {
-            detector.Skills.DetectHidden.BaseFixedPoint = 0;    // 0.0
-            stealther.Skills.Hiding.BaseFixedPoint = 1000;      // 100.0
+            detector.Race = Race.Elf;
+            detector.Skills.DetectHidden.BaseFixedPoint = 0; // 0.0
+            stealther.Skills.Hiding.BaseFixedPoint = 0;      // 0.0
             stealther.Hidden = true;
 
-            DetectHidden.PassiveDetect(stealther);
+            var result = DetectHidden.TryDetectStealther(detector, stealther);
 
+            Assert.False(result);
             Assert.True(stealther.Hidden);
         }
         finally
@@ -141,11 +142,12 @@ public class DetectHiddenTests
     }
 
     /// <summary>
-    /// PassiveDetect is a no-op when the target is not actually hidden.
+    /// TryDetectStealther is a no-op when the target is not actually hidden.
     /// </summary>
     [Fact]
-    public void PassiveDetect_DoesNothing_WhenStealtherIsNotHidden()
+    public void TryDetectStealther_DoesNothing_WhenStealtherIsNotHidden()
     {
+        using var rng = new PredictableRandom(10);
         DetectHidden.ClearDebounceCache();
         var map = Map.Felucca;
         var detector = CreatePlayerMobile(map, new Point3D(1800, 500, 0));
@@ -156,8 +158,9 @@ public class DetectHiddenTests
             detector.Skills.DetectHidden.BaseFixedPoint = 1000;
             stealther.Hidden = false;
 
-            DetectHidden.PassiveDetect(stealther);
+            var result = DetectHidden.TryDetectStealther(detector, stealther);
 
+            Assert.False(result);
             Assert.False(stealther.Hidden);
         }
         finally
@@ -169,57 +172,32 @@ public class DetectHiddenTests
     }
 
     /// <summary>
-    /// A stealther exactly 4 tiles away is at the edge of the passive detection
-    /// radius and can still be revealed by a skilled detector.
+    /// Passive detection only works on Felucca. A stealther on Trammel
+    /// should never be revealed by passive detection.
     /// </summary>
     [Fact]
-    public void PassiveDetect_RevealsStealther_AtEdgeOfRange()
+    public void TryDetectStealther_DoesNotReveal_WhenNotOnFelucca()
     {
+        using var rng = new PredictableRandom(10);
         DetectHidden.ClearDebounceCache();
-        var map = Map.Felucca;
+        var map = Map.Trammel;
         var detector = CreatePlayerMobile(map, new Point3D(2000, 500, 0));
-        var stealther = CreatePlayerMobile(map, new Point3D(2004, 500, 0)); // exactly 4 tiles
+        var stealther = CreatePlayerMobile(map, new Point3D(2001, 500, 0));
 
         try
         {
-            detector.Skills.DetectHidden.BaseFixedPoint = 1000;
-            stealther.Skills.Hiding.BaseFixedPoint = 0;
+            detector.Skills.DetectHidden.BaseFixedPoint = 1000; // 100.0
+            stealther.Skills.Hiding.BaseFixedPoint = 0;         // 0.0
             stealther.Hidden = true;
 
-            DetectHidden.PassiveDetect(stealther);
+            var result = DetectHidden.TryDetectStealther(detector, stealther);
 
-            Assert.False(stealther.Hidden);
-        }
-        finally
-        {
-            detector.Delete();
-            stealther.Delete();
-            DetectHidden.ClearDebounceCache();
-        }
-    }
-
-    /// <summary>
-    /// When there is no detector on the map near the stealther, PassiveDetect
-    /// should be a no-op and leave the stealther hidden.
-    /// </summary>
-    [Fact]
-    public void PassiveDetect_DoesNotReveal_WhenNoDetectorsNearby()
-    {
-        DetectHidden.ClearDebounceCache();
-        var map = Map.Felucca;
-        var stealther = CreatePlayerMobile(map, new Point3D(2200, 500, 0));
-
-        try
-        {
-            stealther.Skills.Hiding.BaseFixedPoint = 0;
-            stealther.Hidden = true;
-
-            DetectHidden.PassiveDetect(stealther);
-
+            Assert.False(result);
             Assert.True(stealther.Hidden);
         }
         finally
         {
+            detector.Delete();
             stealther.Delete();
             DetectHidden.ClearDebounceCache();
         }

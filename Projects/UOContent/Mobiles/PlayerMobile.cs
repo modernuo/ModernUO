@@ -3499,12 +3499,7 @@ namespace Server.Mobiles
         {
             if (!Core.SE)
             {
-                var result = base.OnMove(d);
-                if (Hidden && AccessLevel == AccessLevel.Player)
-                {
-                    DetectHidden.PassiveDetect(this);
-                }
-                return result;
+                return base.OnMove(d);
             }
 
             if (AccessLevel != AccessLevel.Player)
@@ -3536,11 +3531,6 @@ namespace Server.Mobiles
                 }
             }
 
-            if (Hidden)
-            {
-                DetectHidden.PassiveDetect(this);
-            }
-
             return true;
         }
 
@@ -3548,11 +3538,19 @@ namespace Server.Mobiles
         {
             base.OnMovement(m, oldLocation);
 
-            // Passive detect hidden: check if we have the skill and if the moving mobile is hidden
-            if (AccessLevel == AccessLevel.Player && m is PlayerMobile && m.Hidden &&
-                this.GetDistanceToSqrt(m) <= 4)
+            // Passive detect hidden: either party moving within range can trigger detection
+            if (m is PlayerMobile && this.GetDistanceToSqrt(m) <= 4)
             {
-                DetectHidden.TryDetectStealther(this, m);
+                if (m.Hidden && AccessLevel == AccessLevel.Player)
+                {
+                    // A hidden mobile (stealther) moved near us — we try to detect them
+                    DetectHidden.TryDetectStealther(this, m);
+                }
+                else if (Hidden && m.AccessLevel == AccessLevel.Player)
+                {
+                    // We're hidden and a potential detector moved near us — they try to detect us
+                    DetectHidden.TryDetectStealther(m, this);
+                }
             }
         }
 

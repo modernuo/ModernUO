@@ -60,40 +60,26 @@ public static class DetectHidden
         PassiveDetectDebounce.Clear();
     }
 
-    // Passive detection: called each time a stealther takes a step.
-    // Scans nearby players with Detect Hidden skill and may reveal the stealther.
+    // Passive detection: check if a detector can passively detect a stealther.
+    // Called via OnMovement when either party moves within range.
+    // Returns true if detection was successful (and the stealther was revealed).
     // NOTE: OSI uncertain - The exact chance calculation and distance dropoff is unknown.
     // We use a ±10 variance on both skills, matching active detection mechanics.
-    public static void PassiveDetect(Mobile stealther)
-    {
-        if (!ContentFeatureFlags.PassiveDetectHidden)
-        {
-            return;
-        }
-
-        var map = stealther.Map;
-        if (map == null || !stealther.Hidden || map != Map.Felucca)
-        {
-            return;
-        }
-
-        // Periodically clean up old debounce entries
-        CleanupDebounceCache();
-
-        foreach (var detector in map.GetMobilesInRange<PlayerMobile>(stealther.Location, 4))
-        {
-            TryDetectStealther(detector, stealther);
-        }
-    }
-
-    // Check if a detector can passively detect a stealther.
-    // Returns true if detection was successful (and the stealther was revealed).
     public static bool TryDetectStealther(Mobile detector, Mobile stealther)
     {
         if (!ContentFeatureFlags.PassiveDetectHidden || stealther == detector || !stealther.Hidden || !detector.Alive)
         {
             return false;
         }
+
+        // Felucca PvP only
+        if (stealther.Map != Map.Felucca)
+        {
+            return false;
+        }
+
+        // Periodically clean up old debounce entries
+        CleanupDebounceCache();
 
         var detectSkill = detector.Skills.DetectHidden.Value;
         if (detectSkill <= 0)
