@@ -222,50 +222,50 @@ namespace Server.Items
 
             if (!isTooClose)
             {
-                if (deltaX == 0 && deltaY < 0) // south west
+                if (deltaX == 0 && deltaY < 0)
                 {
                     xOffset = 0;
                     yOffset = 0;
                     zOffset = attacker.Mount != null ? 0 : 0;
                 }
-                else if (deltaX > 0 && deltaY < 0) // west
+                else if (deltaX > 0 && deltaY < 0)
                 {
                     xOffset = 1;
                     yOffset = -1;
                     zOffset = attacker.Mount != null ? 5 : 2;
                 }
-                else if (deltaX > 0 && deltaY == 0) // north west
+                else if (deltaX > 0 && deltaY == 0)
                 {
                     xOffset = 1;
                     yOffset = 0;
                     zOffset = attacker.Mount != null ? 0 : 0;
                 }
-                else if (deltaX > 0 && deltaY > 0) // north
+                else if (deltaX > 0 && deltaY > 0)
                 {
                     xOffset = 0;
                     yOffset = 1;
                     zOffset = attacker.Mount != null ? 0 : 0;
                 }
-                else if (deltaX == 0 && deltaY > 0) // north east
+                else if (deltaX == 0 && deltaY > 0)
                 {
                     xOffset = 0;
                     yOffset = 1;
                     zOffset = attacker.Mount != null ? 16 : 8;
                     
                 }
-                else if (deltaX < 0 && deltaY > 0) // east
+                else if (deltaX < 0 && deltaY > 0)
                 {
                     xOffset = -1;
                     yOffset = 1;
                     zOffset = attacker.Mount != null ? 16 : 8;
                 }
-                else if (deltaX < 0 && deltaY == 0) // south east
+                else if (deltaX < 0 && deltaY == 0)
                 {
                     xOffset = -1;
                     yOffset = 0;
                     zOffset = attacker.Mount != null ? 16 : 8;
                 }
-                else if (deltaX < 0 && deltaY < 0) // south
+                else if (deltaX < 0 && deltaY < 0)
                 {
                     xOffset = 1;
                     yOffset = 0;
