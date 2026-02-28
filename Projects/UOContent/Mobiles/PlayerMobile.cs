@@ -3539,7 +3539,7 @@ namespace Server.Mobiles
             base.OnMovement(m, oldLocation);
 
             // Passive detect hidden: either party moving within range can trigger detection
-            if (m is PlayerMobile && this.GetDistanceToSqrt(m) <= 4)
+            if (m is PlayerMobile && Utility.InRange(Location, m.Location, 4))
             {
                 if (m.Hidden && AccessLevel == AccessLevel.Player)
                 {
