@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using ModernUO.CodeGeneratedEvents;
+using ModernUO.Serialization;
 using Server.Accounting;
 using Server.Collections;
 using Server.ContextMenus;
+using Server.Engines.Spawners;
 using Server.Ethics;
 using Server.Guilds;
 using Server.Gumps;
@@ -16,7 +18,7 @@ using Server.Targeting;
 
 namespace Server.Multis
 {
-    public abstract class BaseHouse : BaseMulti
+    public abstract partial class BaseHouse : BaseMulti
     {
         public static bool DecayEnabled { get; set; }
 
@@ -793,8 +795,8 @@ namespace Server.Multis
 
         public List<Mobile> AvailableVendorsFor(Mobile m)
         {
-            List<Mobile> list = new List<Mobile>();
-            foreach (PlayerVendor vendor in PlayerVendors)
+            var list = new List<Mobile>();
+            foreach (var vendor in PlayerVendors)
             {
                 if (vendor.CanInteractWith(m, false))
                 {
@@ -1560,6 +1562,19 @@ namespace Server.Multis
             }
 
             UpdateRegion();
+
+            // Invalidate spawn position cache for affected sectors
+            if (Map != null && Map != Map.Internal)
+            {
+                var mcl = Components;
+                var bounds = new Rectangle2D(
+                    X + mcl.Min.X,
+                    Y + mcl.Min.Y,
+                    mcl.Width,
+                    mcl.Height
+                );
+                SectorSpawnCacheManager.InvalidateSectors(Map, bounds);
+            }
 
             if (Sign?.Deleted == false)
             {
@@ -3329,6 +3344,19 @@ namespace Server.Multis
         {
             RestoreRelocatedEntities();
 
+            // Invalidate spawn position cache for affected sectors before deletion
+            if (Map != null && Map != Map.Internal)
+            {
+                var mcl = Components;
+                var bounds = new Rectangle2D(
+                    X + mcl.Min.X,
+                    Y + mcl.Min.Y,
+                    mcl.Width,
+                    mcl.Height
+                );
+                SectorSpawnCacheManager.InvalidateSectors(Map, bounds);
+            }
+
             new FixColumnTimer(this).Start();
 
             base.OnDelete();
@@ -3698,21 +3726,20 @@ namespace Server.Multis
             }
         }
 
-        private class TransferItem : Item
+        [SerializationGenerator(0)]
+        private partial class TransferItem : Item
         {
-            private readonly BaseHouse m_House;
+            private readonly BaseHouse _house;
 
             public TransferItem(BaseHouse house) : base(0x14F0)
             {
-                m_House = house;
+                _house = house;
 
                 Hue = 0x480;
                 Movable = false;
             }
 
-            public TransferItem(Serial serial) : base(serial)
-            {
-            }
+            public override bool SkipSerialization => true;
 
             public override string DefaultName => "a house transfer contract";
 
@@ -3720,15 +3747,15 @@ namespace Server.Multis
             {
                 base.GetProperties(list);
 
-                var houseName = m_House == null ? "an unnamed house" : m_House.Sign.GetName();
-                var owner = m_House?.Owner?.Name ?? "nobody";
+                var houseName = _house == null ? "an unnamed house" : _house.Sign.GetName();
+                var owner = _house?.Owner?.Name ?? "nobody";
 
                 int xLong = 0, yLat = 0, xMins = 0, yMins = 0;
                 bool xEast = false, ySouth = false;
 
-                var valid = m_House != null && Sextant.Format(
-                    m_House.Location,
-                    m_House.Map,
+                var valid = _house != null && Sextant.Format(
+                    _house.Location,
+                    _house.Map,
                     ref xLong,
                     ref yLat,
                     ref xMins,
@@ -3750,22 +3777,6 @@ namespace Server.Multis
                 }
             }
 
-            public override void Serialize(IGenericWriter writer)
-            {
-                base.Serialize(writer);
-
-                writer.Write(0); // version
-            }
-
-            public override void Deserialize(IGenericReader reader)
-            {
-                base.Deserialize(reader);
-
-                var version = reader.ReadInt();
-
-                Timer.DelayCall(Delete);
-            }
-
             public override bool AllowSecureTrade(Mobile from, Mobile to, Mobile newOwner, bool accepted)
             {
                 if (!base.AllowSecureTrade(from, to, newOwner, accepted))
@@ -3778,7 +3789,7 @@ namespace Server.Multis
                     return true;
                 }
 
-                if (Deleted || m_House?.Deleted != false || !m_House.IsOwner(from) || !from.CheckAlive() ||
+                if (Deleted || _house?.Deleted != false || !_house.IsOwner(from) || !from.CheckAlive() ||
                     !to.CheckAlive())
                 {
                     return false;
@@ -3790,7 +3801,7 @@ namespace Server.Multis
                     return false;
                 }
 
-                return m_House.CheckTransferPosition(from, to);
+                return _house.CheckTransferPosition(from, to);
             }
 
             public override void OnSecureTrade(Mobile from, Mobile to, Mobile newOwner, bool accepted)
@@ -3802,7 +3813,7 @@ namespace Server.Multis
 
                 Delete();
 
-                if (m_House?.Deleted != false || !m_House.IsOwner(from) || !from.CheckAlive() || !to.CheckAlive())
+                if (_house?.Deleted != false || !_house.IsOwner(from) || !from.CheckAlive() || !to.CheckAlive())
                 {
                     return;
                 }
@@ -3820,13 +3831,13 @@ namespace Server.Multis
                  */
                 to.SendLocalizedMessage(501339);
 
-                m_House.RemoveKeys(from);
-                m_House.Owner = to;
-                m_House.Bans.Clear();
-                m_House.Friends.Clear();
-                m_House.CoOwners.Clear();
-                m_House.ChangeLocks(to);
-                m_House.LastTraded = Core.Now;
+                _house.RemoveKeys(from);
+                _house.Owner = to;
+                _house.Bans.Clear();
+                _house.Friends.Clear();
+                _house.CoOwners.Clear();
+                _house.ChangeLocks(to);
+                _house.LastTraded = Core.Now;
             }
         }
 

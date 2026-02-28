@@ -106,15 +106,15 @@ public class ArtData : IDisposable
 
     public static Rectangle2D GetBoundsFromRGBA1555Bitmap(int width, int height, ReadOnlySpan<ushort> data)
     {
-        ReadOnlySpan<ushort> lookups = data[..height];
+        var lookups = data[..height];
         data = data[height..];
 
-        int xMin = width;
-        int yMin = height;
-        int xMax = -1;
-        int yMax = -1;
+        var xMin = width;
+        var yMin = height;
+        var xMax = -1;
+        var yMax = -1;
 
-        for (int y = 0; y < height; y++)
+        for (var y = 0; y < height; y++)
         {
             var i = lookups[y];
             var x = 0;
@@ -133,7 +133,7 @@ public class ArtData : IDisposable
                 for (var end = x + pixelCount; x < end; x++)
                 {
                     // Get the pixel value from the bitmap data
-                    ushort pixel = data[i++];
+                    var pixel = data[i++];
 
                     // Check if the pixel is non-black (0 in 555 RGB is completely black)
                     if (pixel == 0)

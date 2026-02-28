@@ -71,7 +71,7 @@ public abstract partial class BaseBoard : Container, ISecurable
             }
             else
             {
-                Span<byte> buffer = stackalloc byte[OutgoingEffectPackets.SoundPacketLength].InitializePacket();
+                var buffer = stackalloc byte[OutgoingEffectPackets.SoundPacketLength].InitializePacket();
 
                 foreach (var state in GetClientsInRange(2))
                 {

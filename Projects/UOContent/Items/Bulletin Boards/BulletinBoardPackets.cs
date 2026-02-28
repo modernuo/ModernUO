@@ -224,7 +224,7 @@ namespace Server.Network
             if (content)
             {
                 maxLength += 2 + equipLength * 4; // We have an extra 4 from the thread serial
-                for (int i = 0; i < linesLength; i++)
+                for (var i = 0; i < linesLength; i++)
                 {
                     msg.Lines[i].UpdateLengthCounters(ref maxLength, ref longestTextLine, true);
                 }

@@ -206,7 +206,7 @@ public partial class Banker : BaseVendor
         return true;
     }
 
-    public static bool Deposit(Mobile from, int amount)
+    public static bool Deposit(Mobile from, int amount, bool useChecks = true)
     {
         // If for whatever reason the TOL checks fail, we should still try old methods for depositing currency.
         if (amount <= 0 || AccountGold.Enabled && from.Account?.DepositGold(amount) == true)
@@ -221,47 +221,99 @@ public partial class Banker : BaseVendor
             return false;
         }
 
-        using var items = PooledRefQueue<Item>.Create();
+        using var items = box.ListItemsByType([typeof(Gold), typeof(BankCheck)], false);
 
-        while (amount > 0)
+        // Pre-calculate available capacity without modifying anything
+        var remaining = amount;
+
+        for (var i = 0; i < items.Count && remaining > 0; i++)
         {
-            Item item;
-            if (amount < 5000)
+            var item = items[i];
+            if (item is Gold g)
             {
-                item = new Gold(amount);
-                amount = 0;
+                remaining -= Math.Min(60000 - g.Amount, remaining);
             }
-            else if (amount <= 1000000)
+            else if (useChecks && item is BankCheck c)
             {
-                item = new BankCheck(amount);
-                amount = 0;
+                remaining -= Math.Min(1000000 - c.Worth, remaining);
             }
-            else
-            {
-                item = new BankCheck(1000000);
-                amount -= 1000000;
-            }
+        }
 
-            if (box.TryDropItem(from, item, false))
+        // Calculate new item slots needed for the remainder
+        if (remaining > 0)
+        {
+            var slotsNeeded = 0;
+            var r = remaining;
+            while (r > 0)
             {
-                items.Enqueue(item);
-            }
-            else
-            {
-                item.Delete();
-                while (items.Count > 0)
+                if (!useChecks || r < 5000)
                 {
-                    items.Dequeue().Delete();
+                    r -= Math.Min(r, 60000);
+                }
+                else if (r <= 1000000)
+                {
+                    r = 0;
+                }
+                else
+                {
+                    r -= 1000000;
                 }
 
+                slotsNeeded++;
+            }
+
+            var maxItems = box.MaxItems;
+            if (maxItems != 0 && slotsNeeded > maxItems - box.TotalItems)
+            {
                 return false;
+            }
+        }
+
+        // Capacity verified — execute deposit
+        remaining = amount;
+
+        for (var i = 0; i < items.Count && remaining > 0; i++)
+        {
+            var item = items[i];
+            if (item is Gold g && g.Amount < 60000)
+            {
+                var add = Math.Min(60000 - g.Amount, remaining);
+                g.Amount += add;
+                remaining -= add;
+            }
+            else if (useChecks && item is BankCheck c && c.Worth < 1000000)
+            {
+                var add = Math.Min(1000000 - c.Worth, remaining);
+                c.Worth += add;
+                remaining -= add;
+            }
+        }
+
+        // Create new items for the remainder
+        while (remaining > 0)
+        {
+            if (!useChecks || remaining < 5000)
+            {
+                var pile = Math.Min(remaining, 60000);
+                box.DropItem(new Gold(pile));
+                remaining -= pile;
+            }
+            else if (remaining <= 1000000)
+            {
+                box.DropItem(new BankCheck(remaining));
+                remaining = 0;
+            }
+            else
+            {
+                box.DropItem(new BankCheck(1000000));
+                remaining -= 1000000;
             }
         }
 
         return true;
     }
 
-    public static int DepositUpTo(Mobile from, int amount)
+    public static int DepositUpTo(Mobile from, int amount, bool useChecks = true, int reserveSlots = 0)
     {
         // If for whatever reason the TOL checks fail, we should still try old methods for depositing currency.
         if (AccountGold.Enabled && from.Account?.DepositGold(amount) == true)
@@ -276,40 +328,97 @@ public partial class Banker : BaseVendor
             return 0;
         }
 
-        var amountLeft = amount;
-        while (amountLeft > 0)
+        var remaining = amount;
+
+        // Top off existing gold piles and checks
+        using var items = box.ListItemsByType([typeof(Gold), typeof(BankCheck)], false);
+
+        for (var i = 0; i < items.Count && remaining > 0; i++)
         {
-            Item item;
-            int amountGiven;
-
-            if (amountLeft < 5000)
+            var item = items[i];
+            if (item is Gold g && g.Amount < 60000)
             {
-                item = new Gold(amountLeft);
-                amountGiven = amountLeft;
+                var add = Math.Min(60000 - g.Amount, remaining);
+                g.Amount += add;
+                remaining -= add;
             }
-            else if (amountLeft <= 1000000)
+            else if (useChecks && item is BankCheck c && c.Worth < 1000000)
             {
-                item = new BankCheck(amountLeft);
-                amountGiven = amountLeft;
-            }
-            else
-            {
-                item = new BankCheck(1000000);
-                amountGiven = 1000000;
-            }
-
-            if (box.TryDropItem(from, item, false))
-            {
-                amountLeft -= amountGiven;
-            }
-            else
-            {
-                item.Delete();
-                break;
+                var add = Math.Min(1000000 - c.Worth, remaining);
+                c.Worth += add;
+                remaining -= add;
             }
         }
 
-        return amount - amountLeft;
+        if (remaining == 0)
+        {
+            return amount;
+        }
+
+        // Calculate how many new item slots can be filled
+        int slotsToFill;
+        var maxItems = box.MaxItems;
+        if (maxItems == 0 || from.AccessLevel >= AccessLevel.GameMaster)
+        {
+            slotsToFill = int.MaxValue;
+        }
+        else
+        {
+            slotsToFill = maxItems - box.TotalItems;
+            if (reserveSlots > 0)
+            {
+                // Count slots needed to determine if the full amount fits.
+                // Only reserve if it doesn't — the caller will delete the reserved item on full deposit.
+                var slots = slotsToFill;
+                var r = remaining;
+                while (r > 0)
+                {
+                    if (!useChecks || r < 5000)
+                    {
+                        r -= Math.Min(r, 60000);
+                    }
+                    else if (r <= 1000000)
+                    {
+                        r = 0;
+                    }
+                    else
+                    {
+                        r -= 1000000;
+                    }
+
+                    if (--slots < 0)
+                    {
+                        slotsToFill -= reserveSlots;
+                        break;
+                    }
+                }
+            }
+        }
+
+        // Create new items for the remainder
+        while (remaining > 0 && slotsToFill > 0)
+        {
+            if (!useChecks || remaining < 5000)
+            {
+                var pile = Math.Min(remaining, 60000);
+                box.DropItem(new Gold(pile));
+                remaining -= pile;
+            }
+            else if (remaining <= 1000000)
+            {
+                box.DropItem(new BankCheck(remaining));
+                remaining = 0;
+            }
+            else
+            {
+                box.DropItem(new BankCheck(1000000));
+                remaining -= 1000000;
+            }
+
+            slotsToFill--;
+        }
+
+        return amount - remaining;
     }
 
     public static void Deposit(Container cont, int amount)

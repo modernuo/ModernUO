@@ -97,13 +97,13 @@ public ref struct PooledRefQueue<T>
             throw new ArgumentException(CollectionThrowStrings.Argument_InvalidOffLen);
         }
 
-        int numToCopy = _size;
+        var numToCopy = _size;
         if (numToCopy == 0)
         {
             return;
         }
 
-        int firstPart = Math.Min(_array.Length - _head, numToCopy);
+        var firstPart = Math.Min(_array.Length - _head, numToCopy);
         Array.Copy(_array, _head, array, arrayIndex, firstPart);
         numToCopy -= firstPart;
         if (numToCopy > 0)
@@ -135,15 +135,15 @@ public ref struct PooledRefQueue<T>
     // InvalidOperationException.
     public T Dequeue()
     {
-        int head = _head;
-        T[] array = _array;
+        var head = _head;
+        var array = _array;
 
         if (_size == 0)
         {
             ThrowForEmptyQueue();
         }
 
-        T removed = array[head];
+        var removed = array[head];
         if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
         {
             array[head] = default!;
@@ -156,8 +156,8 @@ public ref struct PooledRefQueue<T>
 
     public bool TryDequeue([MaybeNullWhen(false)] out T result)
     {
-        int head = _head;
-        T[] array = _array;
+        var head = _head;
+        var array = _array;
 
         if (_size == 0)
         {
@@ -248,7 +248,7 @@ public ref struct PooledRefQueue<T>
             return s_emptyArray;
         }
 
-        T[] arr = new T[_size];
+        var arr = new T[_size];
 
         if (_head < _tail)
         {
@@ -270,7 +270,7 @@ public ref struct PooledRefQueue<T>
             return s_emptyArray;
         }
 
-        T[] arr = (mt ? ArrayPool<T>.Shared : STArrayPool<T>.Shared).Rent(_size);
+        var arr = (mt ? ArrayPool<T>.Shared : STArrayPool<T>.Shared).Rent(_size);
 
         if (_head < _tail)
         {
@@ -289,7 +289,7 @@ public ref struct PooledRefQueue<T>
     // must be >= _size.
     private void SetCapacity(int capacity)
     {
-        T[] newarray = (_mt ? ArrayPool<T>.Shared : STArrayPool<T>.Shared).Rent(capacity);
+        var newarray = (_mt ? ArrayPool<T>.Shared : STArrayPool<T>.Shared).Rent(capacity);
         if (_size > 0)
         {
             if (_head < _tail)
@@ -321,7 +321,7 @@ public ref struct PooledRefQueue<T>
         // It is tempting to use the remainder operator here but it is actually much slower
         // than a simple comparison and a rarely taken branch.
         // JIT produces better code than with ternary operator ?:
-        int tmp = index + 1;
+        var tmp = index + 1;
         if (tmp == _array.Length)
         {
             tmp = 0;
@@ -359,7 +359,7 @@ public ref struct PooledRefQueue<T>
         const int GrowFactor = 2;
         const int MinimumGrow = 4;
 
-        int newcapacity = GrowFactor * _array.Length;
+        var newcapacity = GrowFactor * _array.Length;
 
         // Allow the list to grow to maximum possible capacity (~2G elements) before encountering overflow.
         // Note that this check works even when _items.Length overflowed thanks to the (uint) cast
@@ -441,13 +441,13 @@ public ref struct PooledRefQueue<T>
             }
 
             // Cache some fields in locals to decrease code size
-            T[] array = _q._array;
-            int capacity = array.Length;
+            var array = _q._array;
+            var capacity = array.Length;
 
             // _index represents the 0-based index into the queue, however the queue
             // doesn't have to start from 0 and it may not even be stored contiguously in memory.
 
-            int arrayIndex = _q._head + _index; // this is the actual index into the queue's backing array
+            var arrayIndex = _q._head + _index; // this is the actual index into the queue's backing array
             if (arrayIndex >= capacity)
             {
                 // NOTE: Originally we were using the modulo operator here, however

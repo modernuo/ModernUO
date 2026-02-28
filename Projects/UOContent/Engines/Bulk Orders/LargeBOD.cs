@@ -1,6 +1,7 @@
 using ModernUO.Serialization;
 using Server.Gumps;
 using Server.Mobiles;
+using Server.Systems.FeatureFlags;
 
 namespace Server.Engines.BulkOrders
 {
@@ -13,8 +14,7 @@ namespace Server.Engines.BulkOrders
 
         public LargeBOD(
             int hue, int amountMax, bool requireExeptional, BulkMaterialType material, LargeBulkEntry[] entries
-        ) : base(hue, amountMax, requireExeptional, material) =>
-            _entries = entries;
+        ) : base(hue, amountMax, requireExeptional, material) => _entries = entries;
 
         public LargeBOD()
         {
@@ -76,14 +76,19 @@ namespace Server.Engines.BulkOrders
 
         public override void OnDoubleClick(Mobile from)
         {
-            if (IsChildOf(from.Backpack) || InSecureTrade || RootParent is PlayerVendor)
-            {
-                from.SendGump(new LargeBODGump(this));
-            }
-            else
+            if (!(IsChildOf(from.Backpack) || InSecureTrade || RootParent is PlayerVendor))
             {
                 from.SendLocalizedMessage(1045156); // You must have the deed in your backpack to use it.
+                return;
             }
+
+            if (!ContentFeatureFlags.BulkOrders && from.AccessLevel < AccessLevel.Administrator)
+            {
+                from.SendMessage(0x22, "Bulk orders are temporarily disabled.");
+                return;
+            }
+
+            from.SendGump(new LargeBODGump(this));
         }
 
         public override void EndCombine(Mobile from, Item item)

@@ -104,15 +104,11 @@ public class GuileIrkAndSpite : MLQuest
     }
 }
 
-public class Lissbet : BaseEscortable
+[SerializationGenerator(0, false)]
+public partial class Lissbet : BaseEscortable
 {
     [Constructible]
     public Lissbet()
-    {
-    }
-
-    public Lissbet(Serial serial)
-        : base(serial)
     {
     }
 
@@ -155,20 +151,6 @@ public class Lissbet : BaseEscortable
         AddItem(new Kilt(Utility.RandomYellowHue()));
         AddItem(new FancyShirt(Utility.RandomYellowHue()));
         AddItem(new Sandals());
-    }
-
-    public override void Serialize(IGenericWriter writer)
-    {
-        base.Serialize(writer);
-
-        writer.Write(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadInt();
     }
 }
 

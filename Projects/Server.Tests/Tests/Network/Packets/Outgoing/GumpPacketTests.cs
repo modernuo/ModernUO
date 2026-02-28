@@ -12,27 +12,27 @@ public class GumpPacketTests
     {
         var expected = new CloseGump(typeId, buttonId).Compile();
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendCloseGump(typeId, buttonId);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
     [Fact]
     public void TestDisplaySignGump()
     {
-        Serial gumpSerial = (Serial)0x1000;
+        var gumpSerial = (Serial)0x1000;
         const int gumpId = 100;
         const string unknownString = "This is an unknown string";
         const string caption = "This is a caption";
 
         var expected = new DisplaySignGump(gumpSerial, gumpId, unknownString, caption).Compile();
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendDisplaySignGump(gumpSerial, gumpId, unknownString, caption);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -41,12 +41,12 @@ public class GumpPacketTests
     {
         var gump = new NameChangeDeedGump();
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
 
         var expected = gump.Compile(ns).Compile();
         ns.SendGump(gump);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -60,12 +60,12 @@ public class GumpPacketTests
 
         var gump = new AdminGump(m, AdminGumpPage.Clients);
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
 
         var expected = gump.Compile(ns).Compile();
         ns.SendGump(gump);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 }

@@ -1,0 +1,35 @@
+{
+  "version": 0,
+  "type": "Server.Engines.BulkOrders.SmallBOD",
+  "properties": [
+    {
+      "name": "AmountCur",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Type",
+      "type": "System.Type",
+      "rule": "PrimitiveTypeMigrationRule"
+    },
+    {
+      "name": "Number",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Graphic",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

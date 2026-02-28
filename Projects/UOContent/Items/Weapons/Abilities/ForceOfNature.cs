@@ -73,7 +73,7 @@ public class ForceOfNature : WeaponAbility
 
         if (t.Hits % 12 == 0)
         {
-            int duration = target.Skills[SkillName.MagicResist].Value >= 90.0 ? 1 : 2;
+            var duration = target.Skills[SkillName.MagicResist].Value >= 90.0 ? 1 : 2;
             target.Paralyze(TimeSpan.FromSeconds(duration));
 
             target.FixedEffect(0x376A, 9, 32);

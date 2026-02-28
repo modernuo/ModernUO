@@ -151,7 +151,7 @@ public static class AdvancedSearchUtilities
         ReadOnlySpan<char> operatorSpan
     )
     {
-        double epsilon = CalculateEpsilon(originalValue);
+        var epsilon = CalculateEpsilon(originalValue);
 
         return operatorSpan switch
         {
@@ -167,7 +167,7 @@ public static class AdvancedSearchUtilities
 
     public static double CalculateEpsilon(ReadOnlySpan<char> value)
     {
-        int decimalPlace = value.IndexOf('.');
+        var decimalPlace = value.IndexOf('.');
 
         if (decimalPlace == -1)
         {
@@ -253,7 +253,7 @@ public static class AdvancedSearchUtilities
         // Special handling for boolean and hexadecimal values
         if (typeof(T) == typeof(bool))
         {
-            string val = valuePart.ToString().ToLower();
+            var val = valuePart.ToString().ToLower();
             if (val is "true" or "1" or "enabled" or "on")
             {
                 return (T)(object)true;

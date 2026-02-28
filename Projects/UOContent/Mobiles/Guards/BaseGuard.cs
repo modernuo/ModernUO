@@ -203,7 +203,7 @@ public class GuardIdleTimer : Timer
             }
             else
             {
-                BaseGuard.TeleportTo(_owner, _owner.Spawner.HomeLocation);
+                BaseGuard.TeleportTo(_owner, _owner.Spawner.Location);
             }
 
             Stop();

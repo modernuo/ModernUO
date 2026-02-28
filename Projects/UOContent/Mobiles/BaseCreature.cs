@@ -2765,7 +2765,7 @@ namespace Server.Mobiles
 
         public override void OnMovement(Mobile m, Point3D oldLocation)
         {
-            if (AcquireOnApproach && !Controlled && !Summoned && FightMode != FightMode.Aggressor)
+            if (AcquireOnApproach && !Controlled && !Summoned && !BardPacified && FightMode != FightMode.Aggressor)
             {
                 if (InRange(m.Location, AcquireOnApproachRange) && !InRange(oldLocation, AcquireOnApproachRange) &&
                     CanBeHarmful(m) && IsEnemy(m))
@@ -2780,13 +2780,11 @@ namespace Server.Mobiles
                 ForceReacquire();
             }
 
-            var speechType = SpeechType;
-
-            speechType?.OnMovement(this, m, oldLocation);
+            SpeechType?.OnMovement(this, m, oldLocation);
 
             /* Begin notice sound */
             if ((!m.Hidden || m.AccessLevel == AccessLevel.Player) && m.Player && FightMode != FightMode.Aggressor &&
-                FightMode != FightMode.None && Combatant == null && !Controlled && !Summoned &&
+                FightMode != FightMode.None && Combatant == null && !Controlled && !Summoned && !BardPacified &&
                 InRange(m.Location, 18) && !InRange(oldLocation, 18))
             {
                 if (Body.IsMonster)
@@ -3161,7 +3159,7 @@ namespace Server.Mobiles
 
                 var topDamage = rights[0].m_Damage;
 
-                int minDamage = hitsMax switch
+                var minDamage = hitsMax switch
                 {
                     >= 3000 => topDamage / 16,
                     >= 1000 => topDamage / 8,
@@ -3610,7 +3608,7 @@ namespace Server.Mobiles
 
             if (ReturnsToHome && IsSpawnerBound() && !InRange(Home, RangeHome))
             {
-                if (Combatant == null && Warmode == false && Utility.RandomDouble() < .10) /* some throttling */
+                if (Combatant == null && !Warmode && Utility.RandomDouble() < .10) /* some throttling */
                 {
                     m_FailedReturnHome = !Move(GetDirectionTo(Home.X, Home.Y)) ? m_FailedReturnHome + 1 : 0;
 
@@ -3840,7 +3838,7 @@ namespace Server.Mobiles
 
             IsDeadPet = false;
 
-            Span<byte> buffer = stackalloc byte[OutgoingMobilePackets.BondedStatusPacketLength].InitializePacket();
+            var buffer = stackalloc byte[OutgoingMobilePackets.BondedStatusPacketLength].InitializePacket();
             OutgoingMobilePackets.CreateBondedStatus(buffer, Serial, false);
             Effects.SendPacket(Location, Map, buffer);
 
@@ -4233,7 +4231,7 @@ namespace Server.Mobiles
 
             if (amount > 0)
             {
-                int stamGain = dropped switch
+                var stamGain = dropped switch
                 {
                     Gold => amount - 50,
                     _    => amount * 15 - 50
@@ -4254,7 +4252,7 @@ namespace Server.Mobiles
                 else if (m_Loyalty < MaxLoyalty)
                 {
                     // Calculate the loyalty increase
-                    int loyaltyIncrease = Utility.CoinFlips(amount, MaxLoyaltyIncrease) * 10;
+                    var loyaltyIncrease = Utility.CoinFlips(amount, MaxLoyaltyIncrease) * 10;
 
                     if (loyaltyIncrease > 0)  // Only update if there's an actual increase
                     {
@@ -4870,25 +4868,28 @@ namespace Server.Mobiles
 
         public virtual void DropBackpack()
         {
-            if (Backpack?.Items.Count > 0)
+            var backpack = Backpack;
+            if (!(backpack?.Items.Count > 0))
             {
-                var b = new CreatureBackpack(Name);
+                return;
+            }
 
-                var list = new List<Item>(Backpack.Items);
-                foreach (var item in list)
-                {
-                    b.DropItem(item);
-                }
+            var b = new CreatureBackpack(Name);
+            using var queue = backpack.EnumerateItems();
 
-                var house = BaseHouse.FindHouseAt(this);
-                if (house != null)
-                {
-                    b.MoveToWorld(house.BanLocation, house.Map);
-                }
-                else
-                {
-                    b.MoveToWorld(Location, Map);
-                }
+            while (queue.Count > 0)
+            {
+                b.DropItem(queue.Dequeue());
+            }
+
+            var house = BaseHouse.FindHouseAt(this);
+            if (house != null)
+            {
+                b.MoveToWorld(house.BanLocation, house.Map);
+            }
+            else
+            {
+                b.MoveToWorld(Location, Map);
             }
         }
 

@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -41,7 +42,11 @@ public class DynamicJson
         Data[key] = doc.RootElement.Clone();
     }
 
-    public bool GetProperty<T>(string key, JsonSerializerOptions options, out T t)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool GetProperty<T>(string key, JsonSerializerOptions options, out T t) =>
+        GetProperty(key, options, default, out t);
+
+    public bool GetProperty<T>(string key, JsonSerializerOptions options, T defaultT, out T t)
     {
         if (Data.TryGetValue(key, out var el))
         {
@@ -49,7 +54,7 @@ public class DynamicJson
             return true;
         }
 
-        t = default;
+        t = defaultT;
         return false;
     }
 

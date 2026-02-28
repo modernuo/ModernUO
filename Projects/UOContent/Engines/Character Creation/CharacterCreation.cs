@@ -348,7 +348,7 @@ public static partial class CharacterCreation
                     }
                 case "samurai":
                     {
-                        bool haotisAndTokunoAccessible =
+                        var haotisAndTokunoAccessible =
                             (flags & ClientFlags.Tokuno) == ClientFlags.Tokuno &&
                             (flags & ClientFlags.Malas) == ClientFlags.Malas &&
                             availableMaps.Includes(MapSelectionFlags.Malas | MapSelectionFlags.Tokuno);
@@ -370,7 +370,7 @@ public static partial class CharacterCreation
                     }
                 case "ninja":
                     {
-                        bool enimosAndTokunoAccessible =
+                        var enimosAndTokunoAccessible =
                             (flags & ClientFlags.Tokuno) == ClientFlags.Tokuno &&
                             (flags & ClientFlags.Malas) == ClientFlags.Malas &&
                             availableMaps.Includes(MapSelectionFlags.Malas | MapSelectionFlags.Tokuno);
@@ -993,7 +993,7 @@ public static partial class CharacterCreation
                 }
             case SkillName.ArmsLore:
                 {
-                    Item item = Utility.Random(3) switch
+                    var item = Utility.Random(3) switch
                     {
                         0 => FencingWeapon(raceFlag),
                         1 => MacingWeapon(raceFlag),

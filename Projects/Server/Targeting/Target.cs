@@ -161,7 +161,7 @@ public abstract class Target
         Mobile mobile = null;
         var isValidTargetType = true;
 
-        bool valid = targeted switch
+        var valid = targeted switch
         {
             LandTarget landTarget     => CanTarget(from, landTarget, ref loc, ref map),
             StaticTarget staticTarget => CanTarget(from, staticTarget, ref loc, ref map),

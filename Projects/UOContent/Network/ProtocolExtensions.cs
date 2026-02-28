@@ -39,7 +39,7 @@ namespace Server.Network
         {
             int cmd = reader.ReadByte();
 
-            PacketHandler ph = packetHandlers[cmd];
+            var ph = packetHandlers[cmd];
 
             if (ph == null)
             {

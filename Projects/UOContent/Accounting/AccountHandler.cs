@@ -247,15 +247,10 @@ public static class AccountHandler
         username.Length > 0 &&
         // Usernames must not start with a space, end with a space, or end with a period
         !username.StartsWith(' ') && !username.EndsWith(' ') && !username.EndsWith('.') &&
-        // Usernames must only contain characters [0x20 -> 0x7E], and not contain any forbidden characters
-        !username.ContainsAnyExceptInRange((char)0x20, (char)0x7E) &&
         !username.ContainsAny(ForbiddenChars);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsValidPassword(ReadOnlySpan<char> password) =>
-        password.Length > 0 &&
-        // Passwords must have characters [0x20 -> 0x7E]
-        !password.ContainsAnyExceptInRange((char)0x20, (char)0x7E);
+    public static bool IsValidPassword(ReadOnlySpan<char> password) => password.Length > 0;
 
     private static Account CreateAccount(NetState state, string username, string password)
     {

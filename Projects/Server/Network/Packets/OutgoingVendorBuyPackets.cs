@@ -82,7 +82,7 @@ public static class OutgoingVendorBuyPackets
         }
 
         var length = 8;
-        for (int i = 0; i < list.Count; i++)
+        for (var i = 0; i < list.Count; i++)
         {
             length += 6 + list[i].Description?.Length ?? 0;
         }
@@ -102,7 +102,7 @@ public static class OutgoingVendorBuyPackets
             var desc = bis.Description ?? "";
 
             writer.Write((byte)(desc.Length + 1));
-            writer.WriteAsciiNull(desc);
+            writer.WriteLatin1Null(desc);
         }
 
         ns.Send(writer.Span);

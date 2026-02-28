@@ -1,0 +1,22 @@
+﻿[
+  {
+    "type": "Spawner",
+    "guid": "6bbb82e4-b0d1-4a23-a9da-5d35911ce762",
+    "name": "Spawner (404)",
+    "location": [2231, 1605, -95],
+    "map": "Malas",
+    "count": 33,
+    "minDelay": "00:05:00",
+    "maxDelay": "00:10:00",
+    "team": 0,
+    "homeRange": 160,
+    "walkingRange": 160,
+    "entries": [
+      { "name": "Mongbat", "maxCount": 7, "probability": 100 },
+      { "name": "SandVortex", "maxCount": 6, "probability": 100 },
+      { "name": "Scorpion", "maxCount": 7, "probability": 100 },
+      { "name": "Snake", "maxCount": 6, "probability": 100 },
+      { "name": "Spectre", "maxCount": 7, "probability": 100 }
+    ]
+  }
+]

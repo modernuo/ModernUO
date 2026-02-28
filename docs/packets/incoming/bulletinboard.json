@@ -1,0 +1,250 @@
+{
+    "category":  "Bulletin Board",
+    "packets":  [
+                    {
+                        "id":  "0x71",
+                        "subId":  "0x03",
+                        "name":  "Bulletin Board Request Content",
+                        "description":  "Client requests the full content of a bulletin board message.",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "12",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x71",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Command",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x03",
+                                           "description":  "Request Content command"
+                                       },
+                                       {
+                                           "name":  "Board Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the bulletin board"
+                                       },
+                                       {
+                                           "name":  "Message Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the message to read"
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0x71",
+                                            "subId":  "0x02",
+                                            "direction":  "outgoing",
+                                            "relationship":  "response",
+                                            "note":  "Message Content response"
+                                        }
+                                    ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Items/Bulletin Boards/BulletinBoardPackets.cs",
+                                       "line":  78
+                                   }
+                    },
+                    {
+                        "id":  "0x71",
+                        "subId":  "0x04",
+                        "name":  "Bulletin Board Request Header",
+                        "description":  "Client requests the header (poster, subject, time) of a bulletin board message.",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "12",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x71",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Command",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x04",
+                                           "description":  "Request Header command"
+                                       },
+                                       {
+                                           "name":  "Board Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the bulletin board"
+                                       },
+                                       {
+                                           "name":  "Message Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the message"
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0x71",
+                                            "subId":  "0x01",
+                                            "direction":  "outgoing",
+                                            "relationship":  "response",
+                                            "note":  "Message Header response"
+                                        }
+                                    ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Items/Bulletin Boards/BulletinBoardPackets.cs",
+                                       "line":  88
+                                   }
+                    },
+                    {
+                        "id":  "0x71",
+                        "subId":  "0x05",
+                        "name":  "Bulletin Board Post Message",
+                        "description":  "Client posts a new message or reply to the bulletin board.",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "12+",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x71",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Command",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x05",
+                                           "description":  "Post Message command"
+                                       },
+                                       {
+                                           "name":  "Board Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the bulletin board"
+                                       },
+                                       {
+                                           "name":  "Thread Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of parent message (0 for new thread)"
+                                       },
+                                       {
+                                           "name":  "Subject Length",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Length of subject string"
+                                       },
+                                       {
+                                           "name":  "Subject",
+                                           "type":  "utf8",
+                                           "description":  "Message subject"
+                                       },
+                                       {
+                                           "name":  "Line Count",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Number of message lines"
+                                       },
+                                       {
+                                           "name":  "Lines",
+                                           "type":  "loop",
+                                           "description":  "Message body lines",
+                                           "loop":  {
+                                                        "countField":  "Line Count",
+                                                        "fields":  [
+                                                                       {
+                                                                           "name":  "Line Length",
+                                                                           "type":  "byte",
+                                                                           "size":  1,
+                                                                           "description":  "Length of this line"
+                                                                       },
+                                                                       {
+                                                                           "name":  "Line",
+                                                                           "type":  "utf8",
+                                                                           "description":  "Line text"
+                                                                       }
+                                                                   ]
+                                                    }
+                                       }
+                                   ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Items/Bulletin Boards/BulletinBoardPackets.cs",
+                                       "line":  98
+                                   }
+                    },
+                    {
+                        "id":  "0x71",
+                        "subId":  "0x06",
+                        "name":  "Bulletin Board Remove Message",
+                        "description":  "Client requests to delete a bulletin board message.",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "12",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x71",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Command",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x06",
+                                           "description":  "Remove Message command"
+                                       },
+                                       {
+                                           "name":  "Board Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the bulletin board"
+                                       },
+                                       {
+                                           "name":  "Message Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the message to delete"
+                                       }
+                                   ],
+                        "notes":  "Only the message poster or GameMaster+ can delete messages.",
+                        "source":  {
+                                       "file":  "Projects/UOContent/Items/Bulletin Boards/BulletinBoardPackets.cs",
+                                       "line":  153
+                                   }
+                    }
+                ]
+}
