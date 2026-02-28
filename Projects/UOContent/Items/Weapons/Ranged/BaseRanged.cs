@@ -213,69 +213,77 @@ namespace Server.Items
 
             int deltaX = defender.X - attacker.X;
             int deltaY = defender.Y - attacker.Y;
-            
+
+            int distance = Math.Max(Math.Abs(deltaX), Math.Abs(deltaY));
+            bool isTooClose = distance <= 1;
+
             int xOffset = 0, yOffset = 0;
             int zOffset = attacker.Mount != null ? 0 : 0;
-            
-            if (deltaX == 0 && deltaY < 0)
+
+            if (!isTooClose)
             {
-                xOffset = 0;
-                yOffset = 0;
-                zOffset = attacker.Mount != null ? 0 : 0;
-            }
-            else if (deltaX > 0 && deltaY < 0)
-            {
-                xOffset = 1;
-                yOffset = -1;
-                zOffset = attacker.Mount != null ? 5 : 2;
-            }
-            else if (deltaX > 0 && deltaY == 0)
-            {
-                xOffset = 1;
-                yOffset = 0;
-                zOffset = attacker.Mount != null ? 0 : 0;
-            }
-            else if (deltaX > 0 && deltaY > 0)
-            {
-                xOffset = 0;
-                yOffset = 1;
-                zOffset = attacker.Mount != null ? 0 : 0;
-            }
-            else if (deltaX == 0 && deltaY > 0)
-            {
-                xOffset = 0;
-                yOffset = 1;
-                zOffset = attacker.Mount != null ? 16 : 8;
+                if (deltaX == 0 && deltaY < 0) // south west
+                {
+                    xOffset = 0;
+                    yOffset = 0;
+                    zOffset = attacker.Mount != null ? 0 : 0;
+                }
+                else if (deltaX > 0 && deltaY < 0) // west
+                {
+                    xOffset = 1;
+                    yOffset = -1;
+                    zOffset = attacker.Mount != null ? 5 : 2;
+                }
+                else if (deltaX > 0 && deltaY == 0) // north west
+                {
+                    xOffset = 1;
+                    yOffset = 0;
+                    zOffset = attacker.Mount != null ? 0 : 0;
+                }
+                else if (deltaX > 0 && deltaY > 0) // north
+                {
+                    xOffset = 0;
+                    yOffset = 1;
+                    zOffset = attacker.Mount != null ? 0 : 0;
+                }
+                else if (deltaX == 0 && deltaY > 0) // north east
+                {
+                    xOffset = 0;
+                    yOffset = 1;
+                    zOffset = attacker.Mount != null ? 16 : 8;
+                    
+                }
+                else if (deltaX < 0 && deltaY > 0) // east
+                {
+                    xOffset = -1;
+                    yOffset = 1;
+                    zOffset = attacker.Mount != null ? 16 : 8;
+                }
+                else if (deltaX < 0 && deltaY == 0) // south east
+                {
+                    xOffset = -1;
+                    yOffset = 0;
+                    zOffset = attacker.Mount != null ? 16 : 8;
+                }
+                else if (deltaX < 0 && deltaY < 0) // south
+                {
+                    xOffset = 1;
+                    yOffset = 0;
+                    zOffset = attacker.Mount != null ? 16 : 8;
+                }
                 
-            }
-            else if (deltaX < 0 && deltaY > 0)
-            {
-                xOffset = -1;
-                yOffset = 1;
-                zOffset = attacker.Mount != null ? 16 : 8;
-            }
-            else if (deltaX < 0 && deltaY == 0)
-            {
-                xOffset = -1;
-                yOffset = 0;
-                zOffset = attacker.Mount != null ? 16 : 8;
-            }
-            else if (deltaX < 0 && deltaY < 0)
-            {
-                xOffset = 1;
-                yOffset = 0;
-                zOffset = attacker.Mount != null ? 16 : 8;
-            }
-            
-            Point3D from = new(attacker.X + xOffset, attacker.Y + yOffset, attacker.Z + zOffset);
-            Point3D to = new(defender.X + xOffset, defender.Y + yOffset, defender.Z + zOffset);
+                Point3D from = new(attacker.X + xOffset, attacker.Y + yOffset, attacker.Z + zOffset);
+                Point3D to = new(defender.X + xOffset, defender.Y + yOffset, defender.Z + zOffset);
 
-            attacker.Direction = attacker.GetDirectionTo(defender);
-            
-            Effects.SendMovingEffect(new Entity(Serial.Zero, from, attacker.Map),
-                new Entity(Serial.Zero, to, defender.Map), EffectID, 18, 1, false, false);
+                attacker.Direction = attacker.GetDirectionTo(defender);
+                
+                Effects.SendMovingEffect(new Entity(Serial.Zero, from, attacker.Map),
+                    new Entity(Serial.Zero, to, defender.Map), EffectID, 18, 1, false, false);
+                
+                return true;
+            }
 
-            return true;
+            return false;
         }
 
         public override int OnCraft(
