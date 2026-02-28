@@ -3534,6 +3534,26 @@ namespace Server.Mobiles
             return true;
         }
 
+        public override void OnMovement(Mobile m, Point3D oldLocation)
+        {
+            base.OnMovement(m, oldLocation);
+
+            // Passive detect hidden: either party moving within range can trigger detection
+            if (m is PlayerMobile && Utility.InRange(Location, m.Location, 4))
+            {
+                if (m.Hidden && AccessLevel == AccessLevel.Player)
+                {
+                    // A hidden mobile (stealther) moved near us — we try to detect them
+                    DetectHidden.TryDetectStealther(this, m);
+                }
+                else if (Hidden && m.AccessLevel == AccessLevel.Player)
+                {
+                    // We're hidden and a potential detector moved near us — they try to detect us
+                    DetectHidden.TryDetectStealther(m, this);
+                }
+            }
+        }
+
         public void AddFollower(Mobile m)
         {
             _allFollowers ??= new HashSet<Mobile>();
