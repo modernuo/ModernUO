@@ -304,6 +304,7 @@ public static class World
 
             Persistence.SerializeAll();
             PauseSerializationThreads();
+
             EventSink.InvokeWorldSave();
         }
         catch (Exception ex)
@@ -384,6 +385,7 @@ public static class World
     {
         WorldState = WorldState.Running;
         Persistence.PostWorldSaveAll(); // Process decay and safety queues
+        MovementThrottle.ResetAllMovementTiming(); // Prevent post-save movement rejection bursts
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
