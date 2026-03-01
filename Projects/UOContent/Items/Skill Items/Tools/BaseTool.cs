@@ -161,7 +161,14 @@ public abstract partial class BaseTool : Item, IUsesRemaining, ICraftable
             }
             else
             {
-                from.SendGump(new CraftGump(from, system, this, null));
+                if (!Core.UOTD)
+                {
+                    Server.Engines.Craft.T2A.T2ACraftSystem.ShowMenu(from, system, this);
+                }
+                else
+                {
+                    Server.Engines.Craft.CraftItem.ShowCraftMenu(from, system, this, null);
+                }
             }
         }
         else

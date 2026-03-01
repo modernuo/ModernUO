@@ -4,11 +4,12 @@ namespace Server.Menus.ItemLists;
 
 public class ItemListEntry
 {
-    public ItemListEntry(string name, int itemID, int hue = 0)
+    public ItemListEntry(string name, int itemID, int hue = 0, int craftIndex = 0)
     {
         Name = name?.Trim() ?? "";
         ItemID = itemID;
         Hue = hue;
+        CraftIndex = craftIndex;
     }
 
     public string Name { get; }
@@ -16,24 +17,23 @@ public class ItemListEntry
     public int ItemID { get; }
 
     public int Hue { get; }
+
+    public int CraftIndex { get; }
 }
 
 public class ItemListMenu : IMenu
 {
-    private static int m_NextSerial;
+    private static int m_NextSerial = 1;
 
     public ItemListMenu(string question, ItemListEntry[] entries)
     {
         Question = question.Trim();
         Entries = entries;
 
-        do
-        {
+        Serial = m_NextSerial++;
+        if (Serial == 0)
             Serial = m_NextSerial++;
-            Serial &= 0x7FFFFFFF;
-        } while (Serial == 0);
-
-        Serial = (int)((uint)Serial | 0x80000000);
+        System.Console.WriteLine($"[DEBUG] Created ItemListMenu with serial={Serial}");
     }
 
     public string Question { get; }
