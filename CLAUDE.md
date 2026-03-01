@@ -34,6 +34,7 @@ Apply these when writing or reviewing `.cs` files under `Projects/`.
 | Content patterns (Items, Mobiles, Creatures) | `dev-docs/content-patterns.md` |
 | Era & expansion handling | `dev-docs/era-expansion.md` |
 | Timer system | `dev-docs/timers.md` |
+| Event scheduler (wall-clock/calendar) | `dev-docs/event-scheduler.md` |
 | Object property lists (tooltips) | `dev-docs/property-lists.md` |
 | Gump (UI dialog) system | `dev-docs/gump-system.md` |
 | Commands & targeting | `dev-docs/commands-targeting.md` |
@@ -41,6 +42,7 @@ Apply these when writing or reviewing `.cs` files under `Projects/`.
 | Threading model | `dev-docs/threading-model.md` |
 | Configuration system | `dev-docs/configuration.md` |
 | Networking & packets | `dev-docs/networking-packets.md` |
+| Region system | `dev-docs/regions.md` |
 
 ## Claude Skills (Opt-In)
 
@@ -60,6 +62,8 @@ Then copy only the relevant skill files based on the task:
 | Spell or ability | `modernuo-content-patterns`, `modernuo-serialization`, `modernuo-timers`, `modernuo-era-expansion` |
 | Gump / UI dialog | `modernuo-gump-system`, `modernuo-commands-targeting` |
 | Quest or event system | `modernuo-events`, `modernuo-content-patterns`, `modernuo-configuration` |
+| Scheduled / seasonal / holiday events | `modernuo-event-scheduler`, `modernuo-timers` |
+| Custom regions / dynamic areas | `modernuo-regions`, `modernuo-content-patterns` |
 | Packet / networking | `modernuo-networking`, `modernuo-threading` |
 | Commands | `modernuo-commands-targeting` |
 | Timer work | `modernuo-timers`, `modernuo-serialization` |

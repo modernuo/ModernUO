@@ -6,6 +6,8 @@ This document covers ModernUO's timer system: the timer wheel scheduler, delay c
 
 ModernUO uses a 3-layer hierarchical timer wheel for scheduling delayed and recurring actions. The system is single-threaded and processes timers during each game loop tick.
 
+> **Timer vs EventScheduler**: The timer wheel is for **game-tick** delays and repeats (8ms precision, sub-second to ~16 days). For **wall-clock/calendar** scheduling — daily resets, weekly events, holiday seasons — use `EventScheduler` instead (1-second granularity, timezone-aware, calendar recurrence patterns). See `dev-docs/event-scheduler.md`.
+
 ## Architecture
 
 ### Timer Wheel

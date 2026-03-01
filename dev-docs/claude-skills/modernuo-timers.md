@@ -212,6 +212,8 @@ _decayTimer = null;
 
 ## See Also
 - `dev-docs/timers.md` - Complete timer documentation
+- `dev-docs/event-scheduler.md` - Wall-clock/calendar scheduling (EventScheduler) — use for daily resets, weekly events, holiday seasons instead of Timer
+- `dev-docs/claude-skills/modernuo-event-scheduler.md` - EventScheduler skill for calendar-based events
 - `dev-docs/claude-skills/modernuo-serialization.md` - Timer fields not serialized
 - `dev-docs/claude-skills/modernuo-content-patterns.md` - Deletion patterns
 - `dev-docs/claude-skills/modernuo-threading.md` - Single-threaded model
