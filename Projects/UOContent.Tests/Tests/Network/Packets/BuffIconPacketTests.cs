@@ -8,6 +8,7 @@ using Xunit;
 
 namespace UOContent.Tests;
 
+[Collection("Sequential UOContent Tests")]
 public class BuffIconPacketTests
 {
     [Theory]
@@ -20,24 +21,24 @@ public class BuffIconPacketTests
             (Serial)mob, iconID, titleCliloc, secondaryCliloc, args, timeSpan
         ).Compile();
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendAddBuffPacket((Serial)mob, iconID, titleCliloc, secondaryCliloc, args, (int)timeSpan.TotalMilliseconds);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
     [Fact]
     public void TestRemoveBuffIcon()
     {
-        Serial m = (Serial)0x1024;
+        var m = (Serial)0x1024;
         var buffIcon = BuffIcon.Disguised;
         var expected = new RemoveBuffPacket(m, buffIcon).Compile();
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendRemoveBuffPacket(m, buffIcon);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 }

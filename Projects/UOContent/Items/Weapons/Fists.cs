@@ -14,6 +14,8 @@ namespace Server.Items
             Quality = WeaponQuality.Regular;
         }
 
+        public override bool SkipSerialization => true;
+
         public override WeaponAbility PrimaryAbility => WeaponAbility.Disarm;
         public override WeaponAbility SecondaryAbility => WeaponAbility.ParalyzingBlow;
 
@@ -168,12 +170,6 @@ namespace Server.Items
         {
           base.PlaySwingAnimation( attacker );
         }*/
-
-        [AfterDeserialization(false)]
-        private void OnAfterDeserialization()
-        {
-            Delete();
-        }
 
         /* Wrestling moves */
 

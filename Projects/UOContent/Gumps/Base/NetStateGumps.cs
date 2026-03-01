@@ -43,7 +43,7 @@ public readonly ref struct NetStateGumps
             return false;
         }
 
-        for (int i = 0; i < _gumps.Count; i++)
+        for (var i = 0; i < _gumps.Count; i++)
         {
             if (_gumps[i] is T tGump)
             {
@@ -65,7 +65,7 @@ public readonly ref struct NetStateGumps
             return null;
         }
 
-        for (int i = 0; i < _gumps.Count; i++)
+        for (var i = 0; i < _gumps.Count; i++)
         {
             if (_gumps[i] is T tGump)
             {
@@ -87,9 +87,9 @@ public readonly ref struct NetStateGumps
 
         if (singleton || gump.Singleton)
         {
-            for (int i = 0; i < _gumps.Count; i++)
+            for (var i = 0; i < _gumps.Count; i++)
             {
-                BaseGump old = _gumps[i];
+                var old = _gumps[i];
 
                 if (old.TypeID == gump.TypeID)
                 {

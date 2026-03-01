@@ -1,4 +1,4 @@
-[
+﻿[
   {
     "type": "Spawner",
     "guid": "27bdb175-d7c0-49c9-b389-b26fe028e58a",
@@ -231,7 +231,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 4,
+    "spawnBounds": { "start": { "x": 1819, "y": 1795, "z": -90 }, "end": { "x": 1827, "y": 1803, "z": -75 } },
     "walkingRange": 15,
     "entries": [
       { "name": "SkeletalKnight", "maxCount": 2, "probability": 100 },
@@ -252,33 +252,13 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 4,
+    "spawnBounds": { "start": { "x": 1817, "y": 1794, "z": -110 }, "end": { "x": 1825, "y": 1802, "z": -95 } },
     "walkingRange": 15,
     "entries": [
       { "name": "GiantRat", "maxCount": 4, "probability": 100 },
       { "name": "Mummy", "maxCount": 2, "probability": 100 },
       { "name": "Zombie", "maxCount": 3, "probability": 100 },
       { "name": "Skeleton", "maxCount": 3, "probability": 100 }
-    ]
-  },
-  {
-    "type": "Spawner",
-    "guid": "6bbb82e4-b0d1-4a23-a9da-5d35911ce762",
-    "name": "Spawner (404)",
-    "location": [2231, 1605, -95],
-    "map": "Malas",
-    "count": 33,
-    "minDelay": "00:05:00",
-    "maxDelay": "00:10:00",
-    "team": 0,
-    "homeRange": 160,
-    "walkingRange": 160,
-    "entries": [
-      { "name": "Mongbat", "maxCount": 7, "probability": 100 },
-      { "name": "SandVortex", "maxCount": 6, "probability": 100 },
-      { "name": "Scorpion", "maxCount": 7, "probability": 100 },
-      { "name": "Snake", "maxCount": 6, "probability": 100 },
-      { "name": "Spectre", "maxCount": 7, "probability": 100 }
     ]
   },
   {
@@ -410,7 +390,9 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 20,
-    "entries": [{ "name": "Brigand", "maxCount": 6, "probability": 100 }]
+    "entries": [
+      { "name": "Brigand", "maxCount": 6, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -500,7 +482,9 @@
     "team": 0,
     "homeRange": 15,
     "walkingRange": 30,
-    "entries": [{ "name": "Pixie", "maxCount": 6, "probability": 100 }]
+    "entries": [
+      { "name": "Pixie", "maxCount": 6, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -514,7 +498,9 @@
     "team": 0,
     "homeRange": 15,
     "walkingRange": 40,
-    "entries": [{ "name": "Pixie", "maxCount": 6, "probability": 100 }]
+    "entries": [
+      { "name": "Pixie", "maxCount": 6, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -528,7 +514,9 @@
     "team": 0,
     "homeRange": 15,
     "walkingRange": 40,
-    "entries": [{ "name": "Pixie", "maxCount": 6, "probability": 100 }]
+    "entries": [
+      { "name": "Pixie", "maxCount": 6, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -542,7 +530,9 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 30,
-    "entries": [{ "name": "Pixie", "maxCount": 6, "probability": 100 }]
+    "entries": [
+      { "name": "Pixie", "maxCount": 6, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -556,7 +546,9 @@
     "team": 0,
     "homeRange": 15,
     "walkingRange": 25,
-    "entries": [{ "name": "Pixie", "maxCount": 6, "probability": 100 }]
+    "entries": [
+      { "name": "Pixie", "maxCount": 6, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -570,7 +562,9 @@
     "team": 0,
     "homeRange": 15,
     "walkingRange": 30,
-    "entries": [{ "name": "Pixie", "maxCount": 6, "probability": 100 }]
+    "entries": [
+      { "name": "Pixie", "maxCount": 6, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",

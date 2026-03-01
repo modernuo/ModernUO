@@ -96,7 +96,7 @@ public class SpawnPropsGump : PropertiesGump
             case 3: // Apply
                 {
                     using var propsBuilder = ValueStringBuilder.Create();
-                    bool first = true;
+                    var first = true;
                     foreach (var attr in MobileAttributes)
                     {
                         var prop = GetPropValue(m_Object, attr);

@@ -1,4 +1,4 @@
-[
+﻿[
   {
     "type": "Spawner",
     "guid": "35fb2ebe-b2e6-4a64-af3a-ce1eaacd9a54",
@@ -11,7 +11,9 @@
     "team": 0,
     "homeRange": 15,
     "walkingRange": 15,
-    "entries": [{ "name": "Hydra", "maxCount": 8, "probability": 100 }]
+    "entries": [
+      { "name": "Hydra", "maxCount": 8, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -25,7 +27,9 @@
     "team": 0,
     "homeRange": 5,
     "walkingRange": 5,
-    "entries": [{ "name": "MaddeningHorror", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      { "name": "MaddeningHorror", "maxCount": 1, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -39,7 +43,9 @@
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
-    "entries": [{ "name": "SlasherOfVeils", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      { "name": "SlasherOfVeils", "maxCount": 1, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -53,7 +59,9 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 10,
-    "entries": [{ "name": "StygianDragon", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      { "name": "StygianDragon", "maxCount": 1, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -125,7 +133,9 @@
     "team": 0,
     "homeRange": 18,
     "walkingRange": 18,
-    "entries": [{ "name": "ClockworkScorpion", "maxCount": 16, "probability": 100 }]
+    "entries": [
+      { "name": "ClockworkScorpion", "maxCount": 16, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -157,7 +167,9 @@
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
-    "entries": [{ "name": "ClanRibbonPlagueRat", "maxCount": 15, "probability": 100 }]
+    "entries": [
+      { "name": "ClanRibbonPlagueRat", "maxCount": 15, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -189,7 +201,9 @@
     "team": 0,
     "homeRange": 20,
     "walkingRange": 20,
-    "entries": [{ "name": "ClanScratchSavageWolf", "maxCount": 18, "probability": 100 }]
+    "entries": [
+      { "name": "ClanScratchSavageWolf", "maxCount": 18, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -318,7 +332,9 @@
     "team": 0,
     "homeRange": 15,
     "walkingRange": 15,
-    "entries": [{ "name": "Medusa", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      { "name": "Medusa", "maxCount": 1, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",

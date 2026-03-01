@@ -36,6 +36,8 @@ public partial class NatureFury : BaseCreature
         ControlSlots = 1;
     }
 
+    public override bool SkipSerialization => true;
+
     public override bool DeleteCorpseOnDeath => Core.AOS;
     public override bool IsHouseSummonable => true;
 
@@ -64,11 +66,5 @@ public partial class NatureFury : BaseCreature
         {
             Timer.StartTimer(TimeSpan.FromSeconds(7.0), DoEffects);
         }
-    }
-
-    [AfterDeserialization(false)]
-    private void AfterDeserialization()
-    {
-        Delete();
     }
 }

@@ -39,6 +39,8 @@ public partial class Acid : Item
 
     public override string DefaultName => "a pool of acid";
 
+    public override bool SkipSerialization => true;
+
     public override void OnDelete()
     {
         _timerToken.Cancel();
@@ -88,11 +90,5 @@ public partial class Acid : Item
     public void Damage(Mobile m)
     {
         m.Damage(Utility.RandomMinMax(_minDamage, _maxDamage));
-    }
-
-    [AfterDeserialization(false)]
-    private void AfterDeserialization()
-    {
-        Delete();
     }
 }

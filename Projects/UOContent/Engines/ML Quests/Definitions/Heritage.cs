@@ -202,7 +202,8 @@ public class TheJoysOfLife : MLQuest
 }
 
 [QuesterName("Maul")]
-public class MaulTheBear : GrizzlyBear
+[SerializationGenerator(0, false)]
+public partial class MaulTheBear : GrizzlyBear
 {
     [Constructible]
     public MaulTheBear()
@@ -212,30 +213,12 @@ public class MaulTheBear : GrizzlyBear
         Tamable = false;
     }
 
-    public MaulTheBear(Serial serial)
-        : base(serial)
-    {
-    }
-
     public override bool IsInvulnerable => true;
     public override string DefaultName => "Maul";
-
-    public override void Serialize(IGenericWriter writer)
-    {
-        base.Serialize(writer);
-
-        writer.Write(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadInt();
-    }
 }
 
-public class Strongroot : Treefellow
+[SerializationGenerator(0, false)]
+public partial class Strongroot : Treefellow
 {
     [Constructible]
     public Strongroot()
@@ -244,27 +227,8 @@ public class Strongroot : Treefellow
         FightMode = FightMode.None;
     }
 
-    public Strongroot(Serial serial)
-        : base(serial)
-    {
-    }
-
     public override bool IsInvulnerable => true;
     public override string DefaultName => "Strongroot";
-
-    public override void Serialize(IGenericWriter writer)
-    {
-        base.Serialize(writer);
-
-        writer.Write(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadInt();
-    }
 }
 
 [SerializationGenerator(0, false)]

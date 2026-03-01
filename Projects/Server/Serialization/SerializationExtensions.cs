@@ -31,7 +31,7 @@ public static class SerializationExtensions
 
     public static T ReadEntity<T>(this IGenericReader reader) where T : class, ISerializable
     {
-        Serial serial = reader.ReadSerial();
+        var serial = reader.ReadSerial();
         var typeT = typeof(T);
 
         T entity;

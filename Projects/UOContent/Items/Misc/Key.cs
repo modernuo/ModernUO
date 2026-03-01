@@ -74,7 +74,8 @@ public partial class Key : Item
             return;
         }
 
-        foreach (var item in cont.EnumerateItems())
+        using var queue = cont.EnumerateItems();
+        foreach (var item in queue)
         {
             if (item is Key key)
             {

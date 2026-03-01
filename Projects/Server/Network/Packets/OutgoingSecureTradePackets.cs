@@ -29,9 +29,7 @@ public enum TradeFlag : byte
 
 public static class OutgoingSecureTradePackets
 {
-    public static void SendDisplaySecureTrade(
-        this NetState ns, Mobile them, Container first, Container second, string name
-    )
+    public static void SendDisplaySecureTrade(this NetState ns, Mobile them, Container first, Container second, string name)
     {
         if (ns.CannotSendPackets())
         {
@@ -47,7 +45,7 @@ public static class OutgoingSecureTradePackets
         writer.Write(second.Serial);
         writer.Write(true);
 
-        writer.WriteAscii(name ?? "", 30);
+        writer.WriteLatin1(name ?? "", 30);
 
         ns.Send(writer.Span);
     }

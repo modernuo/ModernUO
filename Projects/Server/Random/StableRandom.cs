@@ -38,11 +38,11 @@ public static class StableRandom
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static ulong NextUInt64(Span<ulong> state, ulong maxValue)
     {
-        ulong randomProduct = Math.BigMul(maxValue, NextUInt64(ref state), out ulong lowPart);
+        var randomProduct = Math.BigMul(maxValue, NextUInt64(ref state), out var lowPart);
 
         if (lowPart < maxValue)
         {
-            ulong remainder = (0ul - maxValue) % maxValue;
+            var remainder = (0ul - maxValue) % maxValue;
 
             while (lowPart < remainder)
             {
@@ -56,8 +56,8 @@ public static class StableRandom
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static ulong NextUInt64(ref Span<ulong> state)
     {
-        ulong result = BitOperations.RotateLeft(state[1] * 5, 7) * 9;
-        ulong t = state[1] << 17;
+        var result = BitOperations.RotateLeft(state[1] * 5, 7) * 9;
+        var t = state[1] << 17;
 
         state[2] ^= state[0];
         state[3] ^= state[1];

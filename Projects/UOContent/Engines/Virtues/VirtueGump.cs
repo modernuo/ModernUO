@@ -112,7 +112,7 @@ public class VirtueGump : Gump
 
     private int GetHueFor(int index)
     {
-        var value = VirtueSystem.GetVirtues((_beheld))?.GetValue(index) ?? 0;
+        var value = VirtueSystem.GetVirtues(_beheld)?.GetValue(index) ?? 0;
 
         if (value < 4000)
         {
@@ -124,7 +124,7 @@ public class VirtueGump : Gump
             value = 20000;
         }
 
-        int vl = value switch
+        var vl = value switch
         {
             < 10000                  => 0,
             >= 20000 when index == 5 => 2,

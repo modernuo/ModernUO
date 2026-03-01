@@ -65,19 +65,19 @@ namespace Server.Misc
         private static void DirectoryCopy(string sourceDirName, string destDirName)
         {
             // Get the subdirectories for the specified directory.
-            DirectoryInfo dir = new DirectoryInfo(sourceDirName);
-            DirectoryInfo[] dirs = dir.GetDirectories();
+            var dir = new DirectoryInfo(sourceDirName);
+            var dirs = dir.GetDirectories();
 
-            FileInfo[] files = dir.GetFiles();
-            foreach (FileInfo file in files)
+            var files = dir.GetFiles();
+            foreach (var file in files)
             {
-                string tempPath = Path.Combine(destDirName, file.Name);
+                var tempPath = Path.Combine(destDirName, file.Name);
                 file.CopyTo(tempPath, false);
             }
 
-            foreach (DirectoryInfo subdir in dirs)
+            foreach (var subdir in dirs)
             {
-                string tempPath = Path.Combine(destDirName, subdir.Name);
+                var tempPath = Path.Combine(destDirName, subdir.Name);
                 DirectoryCopy(subdir.FullName, tempPath);
             }
         }

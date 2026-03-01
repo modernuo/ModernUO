@@ -106,7 +106,7 @@ public ref struct DebugInterpolatedStringHandler
     [MethodImpl(MethodImplOptions.AggressiveInlining)] // used only on a few hot paths
     public void Clear()
     {
-        char[]? toReturn = _arrayToReturnToPool;
+        var toReturn = _arrayToReturnToPool;
         this = default; // defensive clear
         if (toReturn is not null)
         {
@@ -129,8 +129,8 @@ public ref struct DebugInterpolatedStringHandler
 
         if (value.Length == 1)
         {
-            Span<char> chars = _chars;
-            int pos = _pos;
+            var chars = _chars;
+            var pos = _pos;
             if ((uint)pos < (uint)chars.Length)
             {
                 chars[pos] = value[0];
@@ -354,7 +354,7 @@ public ref struct DebugInterpolatedStringHandler
             return;
         }
 
-        int startingPos = _pos;
+        var startingPos = _pos;
         AppendFormatted(value);
         if (alignment != 0)
         {
@@ -373,7 +373,7 @@ public ref struct DebugInterpolatedStringHandler
             return;
         }
 
-        int startingPos = _pos;
+        var startingPos = _pos;
         AppendFormatted(value, format);
         if (alignment != 0)
         {
@@ -414,14 +414,14 @@ public ref struct DebugInterpolatedStringHandler
             return;
         }
 
-        bool leftAlign = false;
+        var leftAlign = false;
         if (alignment < 0)
         {
             leftAlign = true;
             alignment = -alignment;
         }
 
-        int paddingRequired = alignment - value.Length;
+        var paddingRequired = alignment - value.Length;
         if (paddingRequired <= 0)
         {
             // The value is as large or larger than the required amount of padding,
@@ -539,7 +539,7 @@ public ref struct DebugInterpolatedStringHandler
         Debug.Assert(_hasCustomFormatter);
         Debug.Assert(_provider != null);
 
-        ICustomFormatter? formatter = (ICustomFormatter?)_provider.GetFormat(typeof(ICustomFormatter));
+        var formatter = (ICustomFormatter?)_provider.GetFormat(typeof(ICustomFormatter));
         Debug.Assert(formatter != null, "An incorrectly written provider said it implemented ICustomFormatter, and then didn't");
 
         if (formatter?.Format(format, value, _provider) is string customFormatted)
@@ -556,16 +556,16 @@ public ref struct DebugInterpolatedStringHandler
         Debug.Assert(startingPos >= 0 && startingPos <= _pos);
         Debug.Assert(alignment != 0);
 
-        int charsWritten = _pos - startingPos;
+        var charsWritten = _pos - startingPos;
 
-        bool leftAlign = false;
+        var leftAlign = false;
         if (alignment < 0)
         {
             leftAlign = true;
             alignment = -alignment;
         }
 
-        int paddingNeeded = alignment - charsWritten;
+        var paddingNeeded = alignment - charsWritten;
         if (paddingNeeded > 0)
         {
             EnsureCapacityForAdditionalChars(paddingNeeded);
@@ -645,13 +645,13 @@ public ref struct DebugInterpolatedStringHandler
         // ints that could technically overflow if someone tried to, for example, append a huge string to a huge string, we also clamp to int.MaxValue.
         // Even if the array creation fails in such a case, we may later fail in ToStringAndClear.
 
-        uint newCapacity = Math.Max(requiredMinCapacity, Math.Min((uint)_chars.Length * 2, 0x3FFFFFDF));
-        int arraySize = (int)Math.Clamp(newCapacity, MinimumArrayPoolLength, int.MaxValue);
+        var newCapacity = Math.Max(requiredMinCapacity, Math.Min((uint)_chars.Length * 2, 0x3FFFFFDF));
+        var arraySize = (int)Math.Clamp(newCapacity, MinimumArrayPoolLength, int.MaxValue);
 
-        char[] newArray = STArrayPool<char>.Shared.Rent(arraySize);
+        var newArray = STArrayPool<char>.Shared.Rent(arraySize);
         _chars[.._pos].CopyTo(newArray);
 
-        char[]? toReturn = _arrayToReturnToPool;
+        var toReturn = _arrayToReturnToPool;
         _chars = _arrayToReturnToPool = newArray;
 
         if (toReturn is not null)
