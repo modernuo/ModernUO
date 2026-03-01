@@ -30,7 +30,8 @@ public static class StaminaSystem
     public static DFAlgorithm DFA { get; set; }
 
     public static int StonesOverweightAllowance { get; set; }
-    public static bool CannotMoveWhenFatigued { get; set; }
+    public static bool CannotRunWhenFatigued { get; set; }
+    public static bool CannotWalkWhenFatigued { get; set; }
     public static int StonesPerOverweightLoss { get; set; }
     public static int BaseOverweightLoss { get; set; }
     public static double AdditionalLossWhenBelow { get; set; }
@@ -42,7 +43,8 @@ public static class StaminaSystem
 
     public static void Configure()
     {
-        CannotMoveWhenFatigued = ServerConfiguration.GetOrUpdateSetting("stamina.cannotMoveWhenFatigued", !Core.AOS);
+        CannotRunWhenFatigued = ServerConfiguration.GetOrUpdateSetting("stamina.cannotRunWhenFatigued", !Core.AOS);
+        CannotWalkWhenFatigued = ServerConfiguration.GetOrUpdateSetting("stamina.cannotWalkWhenFatigued", false);
         StonesPerOverweightLoss = ServerConfiguration.GetOrUpdateSetting("stamina.stonesPerOverweightLoss", 25);
         StonesOverweightAllowance = ServerConfiguration.GetOrUpdateSetting("stamina.stonesOverweightAllowance", 4);
         BaseOverweightLoss = ServerConfiguration.GetOrUpdateSetting("stamina.baseOverweightLoss", 5);
@@ -323,6 +325,13 @@ public static class StaminaSystem
     {
         var from = e.Mobile;
         var running = (e.Direction & Direction.Running) != 0;
+        
+        if (CannotWalkWhenFatigued && from.Stam <= 0)
+        {
+            from.SendLocalizedMessage(500110); // You are too fatigued to move.
+            e.Blocked = true;
+            return;
+        }
 
         if (overweight > 0)
         {
@@ -349,7 +358,7 @@ public static class StaminaSystem
             --from.Stam;
         }
 
-        if (CannotMoveWhenFatigued && from.Stam <= 0)
+        if (CannotRunWhenFatigued && from.Stam <= 0)
         {
             from.SendLocalizedMessage(500110); // You are too fatigued to move.
             e.Blocked = true;

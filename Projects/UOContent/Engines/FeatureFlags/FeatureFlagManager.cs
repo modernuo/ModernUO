@@ -967,12 +967,13 @@ public static class FeatureFlagManager
             "bank_access"    => ServerFeatureFlags.BankAccess = enabled,
 
             // UOContent flags
-            "vendor_purchase" => ContentFeatureFlags.VendorPurchase = enabled,
-            "vendor_sell"     => ContentFeatureFlags.VendorSell = enabled,
-            "player_vendors"  => ContentFeatureFlags.PlayerVendors = enabled,
-            "house_placement" => ContentFeatureFlags.HousePlacement = enabled,
-            "boat_placement"  => ContentFeatureFlags.BoatPlacement = enabled,
-            "bulk_orders"     => ContentFeatureFlags.BulkOrders = enabled,
+            "vendor_purchase"        => ContentFeatureFlags.VendorPurchase = enabled,
+            "vendor_sell"            => ContentFeatureFlags.VendorSell = enabled,
+            "player_vendors"         => ContentFeatureFlags.PlayerVendors = enabled,
+            "house_placement"        => ContentFeatureFlags.HousePlacement = enabled,
+            "boat_placement"         => ContentFeatureFlags.BoatPlacement = enabled,
+            "bulk_orders"            => ContentFeatureFlags.BulkOrders = enabled,
+            "passive_detect_hidden"  => ContentFeatureFlags.PassiveDetectHidden = enabled,
         };
     }
 
