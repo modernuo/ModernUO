@@ -283,7 +283,7 @@ namespace Server.Items
                 return true;
             }
 
-            return false;
+            return true;
         }
 
         public override int OnCraft(
