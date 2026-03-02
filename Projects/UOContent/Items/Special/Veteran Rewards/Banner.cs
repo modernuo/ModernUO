@@ -328,7 +328,7 @@ public partial class BannerDeed : Item, IRewardItem
                     return;
                 }
 
-                Banner banner = new Banner(_itemId + (info.ButtonID == (int)Buttons.East ? 1 : 0));
+                var banner = new Banner(_itemId + (info.ButtonID == (int)Buttons.East ? 1 : 0));
                 _house.Addons.Add(banner);
 
                 banner.IsRewardItem = _banner.IsRewardItem;

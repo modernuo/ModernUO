@@ -1,4 +1,4 @@
-[
+﻿[
   {
     "type": "Spawner",
     "guid": "7bd2b3c7-3c39-40c5-9c3b-98b73d060c65",
@@ -11,7 +11,9 @@
     "team": 0,
     "homeRange": 0,
     "walkingRange": 5,
-    "entries": [{ "name": "Baker", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      { "name": "Baker", "maxCount": 1, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -76,7 +78,9 @@
     "team": 0,
     "homeRange": 0,
     "walkingRange": 5,
-    "entries": [{ "name": "InnKeeper", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      { "name": "InnKeeper", "maxCount": 1, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -107,7 +111,9 @@
     "team": 0,
     "homeRange": 0,
     "walkingRange": 5,
-    "entries": [{ "name": "InnKeeper", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      { "name": "InnKeeper", "maxCount": 1, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -121,7 +127,9 @@
     "team": 0,
     "homeRange": 0,
     "walkingRange": 5,
-    "entries": [{ "name": "Scribe", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      { "name": "Scribe", "maxCount": 1, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -205,7 +213,9 @@
     "team": 0,
     "homeRange": 0,
     "walkingRange": 5,
-    "entries": [{ "name": "Baker", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      { "name": "Baker", "maxCount": 1, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -219,7 +229,9 @@
     "team": 0,
     "homeRange": 0,
     "walkingRange": 5,
-    "entries": [{ "name": "Butcher", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      { "name": "Butcher", "maxCount": 1, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -320,7 +332,9 @@
     "team": 0,
     "homeRange": 0,
     "walkingRange": 5,
-    "entries": [{ "name": "AnimalTrainer", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      { "name": "AnimalTrainer", "maxCount": 1, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -454,7 +468,9 @@
     "team": 0,
     "homeRange": 0,
     "walkingRange": 5,
-    "entries": [{ "name": "Jeweler", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      { "name": "Jeweler", "maxCount": 1, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -468,6 +484,8 @@
     "team": 0,
     "homeRange": 0,
     "walkingRange": 4,
-    "entries": [{ "name": "TownCrier", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      { "name": "TownCrier", "maxCount": 1, "probability": 100 }
+    ]
   }
 ]

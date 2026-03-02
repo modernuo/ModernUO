@@ -1,19 +1,17 @@
+using ModernUO.Serialization;
 using Server.Accounting;
 using Server.Network;
 
 namespace Server.Items;
 
-public class SecureTradeContainer : Container
+[SerializationGenerator(0, false)]
+public partial class SecureTradeContainer : Container
 {
     public SecureTradeContainer(SecureTrade trade) : base(0x1E5E)
     {
         Trade = trade;
 
         Movable = false;
-    }
-
-    public SecureTradeContainer(Serial serial) : base(serial)
-    {
     }
 
     public SecureTrade Trade { get; }
@@ -95,18 +93,4 @@ public class SecureTradeContainer : Container
         child is VirtualCheck
             ? AccountGold.Enabled && m.NetState is not { NewSecureTrading: true }
             : base.IsChildVisibleTo(m, child);
-
-    public override void Serialize(IGenericWriter writer)
-    {
-        base.Serialize(writer);
-
-        writer.Write(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadInt();
-    }
 }

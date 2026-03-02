@@ -56,12 +56,10 @@ public static class OutgoingPlayerPackets
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void SendChangeUpdateRange(this NetState ns, byte range) =>
-        ns?.Send(stackalloc byte[] { 0xC8, range });
+    public static void SendChangeUpdateRange(this NetState ns, byte range) => ns?.Send(stackalloc byte[] { 0xC8, range });
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void SendDeathStatus(this NetState ns) =>
-        ns?.Send(stackalloc byte[] { 0x2C, 2 });
+    public static void SendDeathStatus(this NetState ns) => ns?.Send(stackalloc byte[] { 0x2C, 2 });
 
     public static void SendDisplayProfile(this NetState ns, Serial m, string header, string body, string footer)
     {
@@ -79,7 +77,7 @@ public static class OutgoingPlayerPackets
         writer.Write((byte)0xB8); // Packet ID
         writer.Write((ushort)length);
         writer.Write(m);
-        writer.WriteAsciiNull(header);
+        writer.WriteLatin1Null(header);
         writer.WriteBigUniNull(footer);
         writer.WriteBigUniNull(body);
 
@@ -235,7 +233,7 @@ public static class OutgoingPlayerPackets
             return;
         }
 
-        Span<byte> buffer = stackalloc byte[DragEffectPacketLength].InitializePacket();
+        var buffer = stackalloc byte[DragEffectPacketLength].InitializePacket();
         CreateDragEffect(buffer, srcSerial, srcLocation, trgSerial, trgLocation, itemID, hue, amount);
         ns.Send(buffer);
     }
@@ -266,7 +264,7 @@ public static class OutgoingPlayerPackets
         var writer = new SpanWriter(stackalloc byte[66]);
         writer.Write((byte)0x88); // Packet ID
         writer.Write(m);
-        writer.WriteAscii(title, 60);
+        writer.WriteLatin1(title, 60);
         writer.Write(flags);
 
         ns.Send(writer.Span);
@@ -304,7 +302,7 @@ public static class OutgoingPlayerPackets
         writer.Write((byte)type);
         writer.Write(tip);
         writer.Write((ushort)text.Length);
-        writer.WriteAscii(text);
+        writer.WriteLatin1(text);
 
         ns.Send(writer.Span);
     }

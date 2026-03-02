@@ -36,7 +36,7 @@ public static class IncomingMobilePackets
 
         if (targ != null)
         {
-            RenameRequests.RenameRequest(from, targ, reader.ReadAsciiSafe());
+            RenameRequests.RenameRequest(from, targ, reader.ReadLatin1Safe());
         }
     }
 

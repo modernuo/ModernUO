@@ -63,7 +63,7 @@ namespace Server.Spells.Seventh
                         ? GetNewAosDamage(51, 1, 5, playerVsPlayer)
                         : Utility.Random(27, 22);
 
-                    int count = queue.Count;
+                    var count = queue.Count;
 
                     if (count > 0)
                     {

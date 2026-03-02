@@ -9,10 +9,10 @@ public class VirtualSerialTests
     public void TestNewVirtualGetsAndRollover()
     {
         // Acquire virtual serials until we hit the max
-        Serial lastSerial = World.NewVirtual;
+        var lastSerial = World.NewVirtual;
         do
         {
-            Serial virtualSerial = World.NewVirtual;
+            var virtualSerial = World.NewVirtual;
             Assert.Equal(lastSerial + 1, virtualSerial);
             lastSerial = (Serial) (uint) virtualSerial;
         } while (lastSerial != World.MaxVirtualSerial);

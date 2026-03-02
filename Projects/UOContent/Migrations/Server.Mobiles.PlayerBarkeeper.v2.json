@@ -1,0 +1,34 @@
+{
+  "version": 2,
+  "type": "Server.Mobiles.PlayerBarkeeper",
+  "properties": [
+    {
+      "name": "House",
+      "type": "Server.Multis.BaseHouse",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "Owner",
+      "type": "Server.Mobile",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "Rumors",
+      "type": "Server.Mobiles.BarkeeperRumor[]",
+      "rule": "ArrayMigrationRule",
+      "ruleArguments": [
+        "Server.Mobiles.BarkeeperRumor",
+        "RawSerializableMigrationRule",
+        "DeserializationRequiresParent"
+      ]
+    },
+    {
+      "name": "TipMessage",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

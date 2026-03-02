@@ -69,7 +69,7 @@ public partial class FillableContent
 
     public static FillableContentType Acquire(Point3D loc, Map map)
     {
-        FillableContentType content = FillableContentType.None;
+        var content = FillableContentType.None;
 
         if (map == null || map == Map.Internal)
         {

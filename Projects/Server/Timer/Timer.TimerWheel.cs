@@ -44,7 +44,7 @@ public partial class Timer
     {
         _lastTickTurned = tickCount;
 
-        for (int i = 0; i < _rings.Length; i++)
+        for (var i = 0; i < _rings.Length; i++)
         {
             _rings[i] = new Timer[_ringSize];
             _ringIndexes[i] = 0;

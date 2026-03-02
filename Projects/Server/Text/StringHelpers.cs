@@ -83,7 +83,7 @@ public static class StringHelpers
             return "";
         }
 
-        char[] chrs = STArrayPool<char>.Shared.Rent(a.Length);
+        var chrs = STArrayPool<char>.Shared.Rent(a.Length);
         var span = chrs.AsSpan(0, a.Length);
 
         a.Remove(b, comparison, span, out var size);
@@ -102,7 +102,7 @@ public static class StringHelpers
             return value;
         }
 
-        char[] chrs = STArrayPool<char>.Shared.Rent(value.Length);
+        var chrs = STArrayPool<char>.Shared.Rent(value.Length);
         var span = chrs.AsSpan(0, value.Length);
 
         var sliced = value.AsSpan();

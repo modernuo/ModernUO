@@ -901,6 +901,8 @@ public partial class TreasureChestDirt : Item
         Timer.StartTimer(TimeSpan.FromMinutes(2.0), Delete);
     }
 
+    public override bool SkipSerialization => true;
+
     public void Turn1()
     {
         ItemID = 0x913;
@@ -909,11 +911,5 @@ public partial class TreasureChestDirt : Item
     public void Turn2()
     {
         ItemID = 0x914;
-    }
-
-    [AfterDeserialization(false)]
-    private void AfterDeserialization()
-    {
-        Delete();
     }
 }

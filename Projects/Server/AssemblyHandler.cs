@@ -152,7 +152,7 @@ public static class AssemblyHandler
     {
         var types = assembly.GetTypes();
 
-        for (int i = 0; i < types.Length; i++)
+        for (var i = 0; i < types.Length; i++)
         {
             var m = types[i].GetMethod(method, BindingFlags.Static | BindingFlags.Public);
             if (m?.GetParameters().Length == 0)

@@ -57,8 +57,8 @@ public interface ISpawner : IEntity
 {
     Guid Guid { get; }
     bool UnlinkOnTaming { get; }
-    Point3D HomeLocation { get; }
-    int HomeRange { get; }
+    int WalkingRange { get; }
+    Rectangle3D SpawnBounds { get; }
     Region Region { get; }
     bool ReturnOnDeactivate { get; }
     bool Running { get; }
@@ -66,6 +66,11 @@ public interface ISpawner : IEntity
     void Remove(ISpawnable spawn);
     Point3D GetSpawnPosition(ISpawnable spawned, Map map);
     void Respawn();
+
+    /// <summary>
+    /// Checks if the given location is within the spawn bounds.
+    /// </summary>
+    bool IsInSpawnBounds(Point3D location);
 }
 
 public interface ISpawnable : IEntity

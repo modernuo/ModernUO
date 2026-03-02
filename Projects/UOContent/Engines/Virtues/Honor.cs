@@ -75,7 +75,7 @@ public static class HonorVirtue
         var duration = GetHonorDuration(pm);
         var virtues = VirtueSystem.GetOrCreateVirtues(pm);
 
-        int usedPoints = virtues.Honor switch
+        var usedPoints = virtues.Honor switch
         {
             < 4399  => 400,
             < 10599 => 600,

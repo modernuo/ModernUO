@@ -240,11 +240,11 @@ public abstract class WeaponAbility
         }
 
         var reqSecondarySkill = GetRequiredSecondarySkill(from);
-        SkillName secondarySkill = GetSecondarySkillName(from);
+        var secondarySkill = GetSecondarySkillName(from);
 
         if (RequiresSecondarySkill(from) && from.Skills[secondarySkill].Base < reqSecondarySkill)
         {
-            int loc = GetSkillLocalization(secondarySkill);
+            var loc = GetSkillLocalization(secondarySkill);
 
             if (loc == 1060184)
             {
@@ -359,7 +359,7 @@ public abstract class WeaponAbility
             return false;
         }
 
-        string option = this switch
+        var option = this switch
         {
             ArmorIgnore _       => "Armor Ignore",
             ArmorPierce _       => "Armor Pierce",

@@ -231,8 +231,8 @@ public abstract partial class BaseDoor : Item, ILockable, ITelekinesisable
             return;
         }
 
-        int x = m.X;
-        int y = m.Y;
+        var x = m.X;
+        var y = m.Y;
 
         CalcMoves.Offset(m.Direction, ref x, ref y);
 

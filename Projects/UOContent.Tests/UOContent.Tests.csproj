@@ -10,6 +10,7 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        <PackageReference Include="xunit.SkippableFact" Version="1.5.61" />
         <ProjectReference Include="..\Server\Server.csproj" />
         <ProjectReference Include="..\UOContent\UOContent.csproj" />
         <ProjectReference Include="..\Server.Tests\Server.Tests.csproj" />

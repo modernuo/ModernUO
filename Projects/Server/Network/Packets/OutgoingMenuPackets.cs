@@ -47,7 +47,7 @@ public static class OutgoingMenuPackets
         int entriesLength = (byte)entries.Length;
 
         var maxLength = 11 + questionLength;
-        for (int i = 0; i < entriesLength; i++)
+        for (var i = 0; i < entriesLength; i++)
         {
             maxLength += 5 + entries[i].Name?.Length ?? 0; // could be trimmed
         }
@@ -62,7 +62,7 @@ public static class OutgoingMenuPackets
 
         if (question != null)
         {
-            writer.WriteAscii(question);
+            writer.WriteLatin1(question);
         }
 
         writer.Write((byte)entriesLength);
@@ -84,7 +84,7 @@ public static class OutgoingMenuPackets
             {
                 var nameLength = name.Length;
                 writer.Write((byte)nameLength);
-                writer.WriteAscii(name);
+                writer.WriteLatin1(name);
             }
         }
 
@@ -106,7 +106,7 @@ public static class OutgoingMenuPackets
         int answersLength = (byte)answers.Length;
 
         var maxLength = 11 + questionLength;
-        for (int i = 0; i < answersLength; i++)
+        for (var i = 0; i < answersLength; i++)
         {
             maxLength += 5 + answers[i]?.Length ?? 0; // could be trimmed
         }
@@ -120,7 +120,7 @@ public static class OutgoingMenuPackets
 
         if (question != null)
         {
-            writer.WriteAscii(question);
+            writer.WriteLatin1(question);
         }
 
         writer.Write((byte)answersLength);
@@ -139,7 +139,7 @@ public static class OutgoingMenuPackets
             {
                 var nameLength = answer.Length;
                 writer.Write((byte)nameLength);
-                writer.WriteAscii(answer);
+                writer.WriteLatin1(answer);
             }
         }
 

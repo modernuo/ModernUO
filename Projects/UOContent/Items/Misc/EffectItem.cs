@@ -15,6 +15,8 @@ public partial class EffectItem : Item
 
     public override bool Decays => true;
 
+    public override bool SkipSerialization => true;
+
     public static EffectItem Create(Point3D p, Map map, TimeSpan duration)
     {
         EffectItem item = null;
@@ -45,12 +47,6 @@ public partial class EffectItem : Item
     }
 
     public void BeginFree(TimeSpan duration) => new FreeTimer(this, duration).Start();
-
-    [AfterDeserialization(false)]
-    private void AfterDeserialization()
-    {
-        Delete();
-    }
 
     private class FreeTimer : Timer
     {

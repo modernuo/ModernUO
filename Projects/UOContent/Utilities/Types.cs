@@ -190,7 +190,7 @@ namespace Server
 
             if (IsType(type, OfBool))
             {
-                if (bool.TryParse(value, out bool parsed))
+                if (bool.TryParse(value, out var parsed))
                 {
                     constructed = parsed;
                     return null;

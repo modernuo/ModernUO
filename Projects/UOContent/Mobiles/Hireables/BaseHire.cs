@@ -111,7 +111,7 @@ public partial class BaseHire : BaseCreature
 
     public virtual bool AddHire(Mobile m)
     {
-        Mobile owner = GetOwner();
+        var owner = GetOwner();
 
         if (owner != null)
         {
@@ -259,7 +259,7 @@ public partial class BaseHire : BaseCreature
 
                 hire.NextPay = Core.Now + GetInterval();
 
-                int pay = hire.Pay;
+                var pay = hire.Pay;
 
                 if (hire.HoldGold <= pay)
                 {

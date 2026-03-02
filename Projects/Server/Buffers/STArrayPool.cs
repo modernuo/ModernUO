@@ -245,7 +245,7 @@ public class STArrayPool<T> : ArrayPool<T>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static int GetMaxSizeForBucket(int binIndex)
     {
-        int maxSize = 16 << binIndex;
+        var maxSize = 16 << binIndex;
         Debug.Assert(maxSize >= 0);
         return maxSize;
     }
@@ -259,7 +259,7 @@ public class STArrayPool<T> : ArrayPool<T>
 
     internal static MemoryPressure GetMemoryPressure()
     {
-        GCMemoryInfo memoryInfo = GC.GetGCMemoryInfo();
+        var memoryInfo = GC.GetGCMemoryInfo();
 
         if (memoryInfo.MemoryLoadBytes >= memoryInfo.HighMemoryLoadThresholdBytes * 0.90)
         {
@@ -333,7 +333,7 @@ public class STArrayPool<T> : ArrayPool<T>
                 return;
             }
 
-            int trimCount = 1;
+            var trimCount = 1;
             switch (pressure)
             {
                 case MemoryPressure.Medium:

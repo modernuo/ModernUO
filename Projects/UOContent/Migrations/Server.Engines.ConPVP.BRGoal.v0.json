@@ -1,0 +1,14 @@
+{
+  "version": 0,
+  "type": "Server.Engines.ConPVP.BRGoal",
+  "properties": [
+    {
+      "name": "North",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

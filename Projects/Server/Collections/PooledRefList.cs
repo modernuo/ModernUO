@@ -70,7 +70,7 @@ public ref struct PooledRefList<T>
         _version = 0;
         _mt = mt;
 
-        int count = collection.Count;
+        var count = collection.Count;
         if (count == 0)
         {
             _items = s_emptyArray;
@@ -100,7 +100,7 @@ public ref struct PooledRefList<T>
 
         if (collection is ICollection<T> c)
         {
-            int count = c.Count;
+            var count = c.Count;
             if (count == 0)
             {
                 _items = s_emptyArray;
@@ -117,7 +117,7 @@ public ref struct PooledRefList<T>
         {
             _size = 0;
             _items = s_emptyArray;
-            using IEnumerator<T> en = collection!.GetEnumerator();
+            using var en = collection!.GetEnumerator();
             while (en.MoveNext())
             {
                 Add(en.Current);
@@ -143,7 +143,7 @@ public ref struct PooledRefList<T>
             {
                 if (value > 0)
                 {
-                    T[] newItems = ArrayPool.Rent(value);
+                    var newItems = ArrayPool.Rent(value);
                     if (_size > 0)
                     {
                         Array.Copy(_items, newItems, _size);
@@ -211,8 +211,8 @@ public ref struct PooledRefList<T>
     public void Add(T item)
     {
         _version++;
-        T[] array = _items;
-        int size = _size;
+        var array = _items;
+        var size = _size;
         if ((uint)size < (uint)array.Length)
         {
             _size = size + 1;
@@ -229,7 +229,7 @@ public ref struct PooledRefList<T>
     private void AddWithResize(T item)
     {
         Debug.Assert(_size == _items.Length);
-        int size = _size;
+        var size = _size;
         Grow(size + 1);
         _size = size + 1;
         _items[size] = item;
@@ -292,7 +292,7 @@ public ref struct PooledRefList<T>
         _version++;
         if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
         {
-            int size = _size;
+            var size = _size;
             _size = 0;
             if (size > 0)
             {
@@ -329,8 +329,8 @@ public ref struct PooledRefList<T>
             throw new ArgumentNullException(nameof(converter));
         }
 
-        PooledRefList<TOutput> list = new PooledRefList<TOutput>(_size);
-        for (int i = 0; i < _size; i++)
+        var list = new PooledRefList<TOutput>(_size);
+        for (var i = 0; i < _size; i++)
         {
             list._items[i] = converter(_items[i]);
         }
@@ -393,7 +393,7 @@ public ref struct PooledRefList<T>
     {
         Debug.Assert(_items.Length < capacity);
 
-        int newcapacity = _items.Length == 0 ? DefaultCapacity : 2 * _items.Length;
+        var newcapacity = _items.Length == 0 ? DefaultCapacity : 2 * _items.Length;
 
         // Allow the list to grow to maximum possible capacity (~2G elements) before encountering overflow.
         // Note that this check works even when _items.Length overflowed thanks to the (uint) cast
@@ -421,7 +421,7 @@ public ref struct PooledRefList<T>
             throw new ArgumentNullException(nameof(match));
         }
 
-        for (int i = 0; i < _size; i++)
+        for (var i = 0; i < _size; i++)
         {
             if (match(_items[i]))
             {
@@ -438,8 +438,8 @@ public ref struct PooledRefList<T>
             throw new ArgumentNullException(nameof(match));
         }
 
-        PooledRefList<T> list = new PooledRefList<T>();
-        for (int i = 0; i < _size; i++)
+        var list = new PooledRefList<T>();
+        for (var i = 0; i < _size; i++)
         {
             if (match(_items[i]))
             {
@@ -470,8 +470,8 @@ public ref struct PooledRefList<T>
             throw new ArgumentNullException(nameof(match));
         }
 
-        int endIndex = startIndex + count;
-        for (int i = startIndex; i < endIndex; i++)
+        var endIndex = startIndex + count;
+        for (var i = startIndex; i < endIndex; i++)
         {
             if (match(_items[i]))
             {
@@ -488,7 +488,7 @@ public ref struct PooledRefList<T>
             throw new ArgumentNullException(nameof(match));
         }
 
-        for (int i = _size - 1; i >= 0; i--)
+        for (var i = _size - 1; i >= 0; i--)
         {
             if (match(_items[i]))
             {
@@ -532,8 +532,8 @@ public ref struct PooledRefList<T>
             throw new ArgumentOutOfRangeException(nameof(count));
         }
 
-        int endIndex = startIndex - count;
-        for (int i = startIndex; i > endIndex; i--)
+        var endIndex = startIndex - count;
+        for (var i = startIndex; i > endIndex; i--)
         {
             if (match(_items[i]))
             {
@@ -550,9 +550,9 @@ public ref struct PooledRefList<T>
             throw new ArgumentNullException(nameof(action));
         }
 
-        int version = _version;
+        var version = _version;
 
-        for (int i = 0; i < _size; i++)
+        for (var i = 0; i < _size; i++)
         {
             if (version != _version)
             {
@@ -591,7 +591,7 @@ public ref struct PooledRefList<T>
             throw new ArgumentException("Length must be greater than zero");
         }
 
-        PooledRefList<T> list = new PooledRefList<T>(count);
+        var list = new PooledRefList<T>(count);
         Array.Copy(_items, index, list._items, 0, count);
         list._size = count;
         return list;
@@ -694,7 +694,7 @@ public ref struct PooledRefList<T>
 
         if (collection is ICollection<T> c)
         {
-            int count = c.Count;
+            var count = c.Count;
             if (count > 0)
             {
                 if (_items.Length - _size < count)
@@ -712,7 +712,7 @@ public ref struct PooledRefList<T>
         }
         else
         {
-            using IEnumerator<T> en = collection.GetEnumerator();
+            using var en = collection.GetEnumerator();
             while (en.MoveNext())
             {
                 Insert(index++, en.Current);
@@ -801,7 +801,7 @@ public ref struct PooledRefList<T>
     // decreased by one.
     public bool Remove(T item)
     {
-        int index = IndexOf(item);
+        var index = IndexOf(item);
         if (index >= 0)
         {
             RemoveAt(index);
@@ -820,7 +820,7 @@ public ref struct PooledRefList<T>
             throw new ArgumentNullException(nameof(match));
         }
 
-        int freeIndex = 0; // the first free slot in items array
+        var freeIndex = 0; // the first free slot in items array
 
         // Find the first item which needs to be removed.
         while (freeIndex < _size && !match(_items[freeIndex]))
@@ -833,7 +833,7 @@ public ref struct PooledRefList<T>
             return 0;
         }
 
-        int current = freeIndex + 1;
+        var current = freeIndex + 1;
         while (current < _size)
         {
             // Find the first item which needs to be kept.
@@ -854,7 +854,7 @@ public ref struct PooledRefList<T>
             Array.Clear(_items, freeIndex, _size - freeIndex); // Clear the elements so that the gc can reclaim the references.
         }
 
-        int result = _size - freeIndex;
+        var result = _size - freeIndex;
         _size = freeIndex;
         _version++;
         return result;
@@ -1002,7 +1002,7 @@ public ref struct PooledRefList<T>
             return s_emptyArray;
         }
 
-        T[] array = new T[_size];
+        var array = new T[_size];
         Array.Copy(_items, array, _size);
         return array;
     }
@@ -1014,10 +1014,12 @@ public ref struct PooledRefList<T>
             return s_emptyArray;
         }
 
-        T[] array = ArrayPool.Rent(_size);
+        var array = ArrayPool.Rent(_size);
         Array.Copy(_items, array, _size);
         return array;
     }
+
+    public ReadOnlySpan<T> AsSpan() => _items.AsSpan(0, _size);
 
     // Sets the capacity of this list to the size of the list. This method can
     // be used to minimize a list's memory overhead once it is known that no
@@ -1030,7 +1032,7 @@ public ref struct PooledRefList<T>
     //
     public void TrimExcess()
     {
-        int threshold = (int)(_items.Length * 0.9);
+        var threshold = (int)(_items.Length * 0.9);
         if (_size < threshold)
         {
             Capacity = _size;
@@ -1044,7 +1046,7 @@ public ref struct PooledRefList<T>
             throw new ArgumentNullException(nameof(match));
         }
 
-        for (int i = 0; i < _size; i++)
+        for (var i = 0; i < _size; i++)
         {
             if (!match(_items[i]))
             {
@@ -1077,7 +1079,7 @@ public ref struct PooledRefList<T>
 
         public bool MoveNext()
         {
-            PooledRefList<T> localList = _list;
+            var localList = _list;
 
             if (_version == localList._version && (uint)_index < (uint)localList._size)
             {

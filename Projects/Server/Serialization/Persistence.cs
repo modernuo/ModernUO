@@ -56,7 +56,7 @@ public abstract class Persistence
     {
         var db = new Dictionary<ulong, string>();
 
-        string typesPath = Path.Combine(path, "SerializedTypes.db");
+        var typesPath = Path.Combine(path, "SerializedTypes.db");
         if (!File.Exists(typesPath))
         {
             return db;
@@ -96,7 +96,7 @@ public abstract class Persistence
 
     public static void WriteSerializedTypesSnapshot(string path, HashSet<Type> types)
     {
-        string typesPath = Path.Combine(path, "SerializedTypes.db");
+        var typesPath = Path.Combine(path, "SerializedTypes.db");
         using var fs = new FileStream(typesPath, FileMode.Create);
         using var writer = new MemoryMapFileWriter(fs, 1024 * 1024 * 4);
 

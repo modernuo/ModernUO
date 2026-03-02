@@ -44,7 +44,7 @@ public struct ArrayEnumerator<T> : IEnumerator<T>
 
     public bool MoveNext()
     {
-        T[] localList = _array;
+        var localList = _array;
 
         if ((uint)_index < (uint)localList.Length)
         {

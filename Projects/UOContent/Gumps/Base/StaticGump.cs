@@ -112,7 +112,7 @@ public abstract class StaticGump<TSelf> : BaseGump where TSelf : StaticGump<TSel
         }
         else
         {
-            StaticGumpBuilder gumpBuilder = new StaticGumpBuilder();
+            var gumpBuilder = new StaticGumpBuilder();
             BuildLayout(ref gumpBuilder);
             gumpBuilder.FinalizeLayout();
 

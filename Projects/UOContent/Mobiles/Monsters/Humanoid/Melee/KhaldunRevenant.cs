@@ -56,6 +56,8 @@ namespace Server.Mobiles
             AddItem(weapon);
         }
 
+        public override bool SkipSerialization => true;
+
         public override bool DeleteCorpseOnDeath => true;
 
         public override Mobile ConstantFocus => m_Target;
@@ -148,12 +150,6 @@ namespace Server.Mobiles
             }
 
             base.OnDelete();
-        }
-
-        [AfterDeserialization(false)]
-        private void AfterDeserialization()
-        {
-            Delete();
         }
     }
 }

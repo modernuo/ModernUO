@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2025 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: NetState.cs                                                     *
  *                                                                       *
@@ -21,59 +21,47 @@ using Server.Logging;
 using Server.Menus;
 using System;
 using System.Buffers;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using System.Net.Sockets;
 using System.Network;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
 namespace Server.Network;
 
-public delegate void DecodePacket(Span<byte> buffer, ref int length);
-public delegate int EncodePacket(ReadOnlySpan<byte> inputBuffer, Span<byte> outputBuffer);
-
-public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetState>
+public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetState>, IDisposable
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(NetState));
 
-    private static readonly TimeSpan ConnectingSocketIdleLimit = TimeSpan.FromMilliseconds(5000); // 5 seconds
-    private const int RecvPipeSize = 1024 * 64;
-    private const int SendPipeSize = 1024 * 256;
     private const int HuePickerCap = 512;
     private const int MenuCap = 512;
     private const int PacketPerSecondThreshold = 3000;
 
-    private static readonly GCHandle[] _polledStates = new GCHandle[2048];
-    private static readonly IPollGroup _pollGroup = PollGroup.Create();
     private static readonly Queue<NetState> _flushPending = new(2048);
-    private static readonly Queue<NetState> _flushedPartials = new(256);
-    private static readonly ConcurrentQueue<NetState> _disposed = new();
+    private static readonly Queue<NetState> _pendingDisconnects = new(256); // Processed AFTER flush
     private static readonly Queue<NetState> _throttled = new(256);
     private static readonly Queue<NetState> _throttledPending = new(256);
 
-    private static readonly SortedSet<NetState> _connecting = new(NetStateConnectingComparer.Instance);
+    private static readonly Queue<NetState> _connectingQueue = new(2048);
     private static readonly HashSet<NetState> _instances = new(2048);
     public static IReadOnlySet<NetState> Instances => _instances;
 
     private readonly string _toString;
     private ClientVersion _version;
     private bool _running = true;
-    private volatile DecodePacket _packetDecoder;
-    private volatile EncodePacket _packetEncoder;
+    private IClientEncryption _encryption;
     private bool _flushQueued;
+    private bool _disconnectQueued; // Queued for disconnect processing (after flush)
     private long[] _packetThrottles;
     private long[] _packetCounts;
     private string _disconnectReason = string.Empty;
 
     internal ParserState _parserState = ParserState.AwaitingNextPacket;
     internal ProtocolState _protocolState = ProtocolState.AwaitingSeed;
-    internal GCHandle _handle;
     private bool _packetLogging;
 
-    public GCHandle Handle => _handle;
+    // Managed socket with buffers (handles lifecycle automatically)
+    internal RingSocket _socket;
 
     // Speed Hack Prevention
     internal long _movementCredit;
@@ -108,52 +96,29 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     public static void Configure()
     {
         _packetLoggingPath = ServerConfiguration.GetSetting("netstate.packetLoggingPath", Path.Combine(Core.BaseDirectory, "Packets"));
+
+        // Initialize IORingGroup and buffer pools
+        ConfigureNetwork();
     }
 
-    public static void Initialize()
+    // Internal constructor for accepted sockets
+    private NetState(RingSocket socket, IPAddress address)
     {
-        Timer.DelayCall(TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(1.5), CheckAllAlive);
-    }
+        _socket = socket;
+        Address = address;
 
-    public NetState(Socket connection)
-    {
-        Connection = connection;
         Seeded = false;
         HuePickers = [];
         Menus = [];
         Trades = [];
-        RecvPipe = new Pipe(RecvPipeSize);
-        SendPipe = new Pipe(SendPipeSize);
         NextActivityCheck = Core.TickCount + 30000;
         ConnectedOn = Core.Now;
-
-        try
-        {
-            Address = Utility.Intern((Connection?.RemoteEndPoint as IPEndPoint)?.Address);
-            _toString = Address?.ToString() ?? "(error)";
-        }
-        catch (Exception ex)
-        {
-            TraceException(ex);
-            Address = IPAddress.None;
-            _toString = "(error)";
-        }
+        _toString = address?.ToString() ?? "(error)";
 
         _instances.Add(this);
-        _connecting.Add(this);
-        _handle = GCHandle.Alloc(this);
+        _connectingQueue.Enqueue(this);
 
         LogInfo($"Connected. [{_instances.Count} Online]");
-
-        try
-        {
-            _pollGroup.Add(connection, _handle);
-        }
-        catch (Exception ex)
-        {
-            TraceException(ex);
-            Disconnect("Unable to add socket to poll group");
-        }
     }
 
     // Sectors
@@ -188,16 +153,10 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
     public IPAddress Address { get; }
 
-    public DecodePacket PacketDecoder
+    public IClientEncryption Encryption
     {
-        get => _packetDecoder;
-        set => _packetDecoder = value;
-    }
-
-    public EncodePacket PacketEncoder
-    {
-        get => _packetEncoder;
-        set => _packetEncoder = value;
+        get => _encryption;
+        set => _encryption = value;
     }
 
     public int CurrentPacket { get; internal set; }
@@ -210,13 +169,27 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
     public bool Seeded { get; set; }
 
-    public Pipe RecvPipe { get; }
-
-    public Pipe SendPipe { get; }
-
     public bool Running => _running;
 
-    public Socket Connection { get; private set; }
+    /// <summary>
+    /// Gets whether the socket is connected.
+    /// </summary>
+    public bool IsConnected => _socket != null;
+
+    /// <summary>
+    /// Gets the socket handle.
+    /// </summary>
+    public nint SocketHandle => _socket?.Handle ?? 0;
+
+    /// <summary>
+    /// Gets the local endpoint (address/port) the client connected to.
+    /// </summary>
+    public IPEndPoint LocalEndPoint => _socket != null ? SocketHelper.GetLocalEndPoint(_socket.Handle) : null;
+
+    /// <summary>
+    /// Gets the send buffer for this connection.
+    /// </summary>
+    internal IORingBuffer SendBuffer => _socket?.SendBuffer;
 
     public bool CompressionEnabled { get; set; }
 
@@ -235,15 +208,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     public IAccount Account
     {
         get => _account;
-        set
-        {
-            if (_account != null)
-            {
-                _connecting.Remove(this);
-            }
-
-            _account = value;
-        }
+        set => _account = value;
     }
 
     public string Assistant { get; set; }
@@ -278,9 +243,9 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
             return 0;
         }
 
-        for (int i = 0; i < _packetCounts.Length; i++)
+        for (var i = 0; i < _packetCounts.Length; i++)
         {
-            long count = _packetCounts[i];
+            var count = _packetCounts[i];
             _packetCounts[i] = 0;
 
             if (count > PacketPerSecondThreshold)
@@ -464,8 +429,14 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
                 return false;
             }
 #endif
-        buffer = SendPipe.Writer.AvailableToWrite();
-        return !(SendPipe.Writer.IsClosed || buffer.Length <= 0);
+        if (!_running || _socket == null)
+        {
+            buffer = Span<byte>.Empty;
+            return false;
+        }
+
+        buffer = _socket.SendBuffer.GetWriteSpan();
+        return buffer.Length > 0;
     }
 
     public void Send(ReadOnlySpan<byte> span)
@@ -483,21 +454,25 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
         try
         {
-            if (_packetEncoder != null)
+            // Apply encoding first (e.g., compression from UOContent)
+            if (CompressionEnabled)
             {
-                length = _packetEncoder(span, buffer);
+                length = NetworkCompression.Compress(span, buffer);
             }
             else
             {
                 span.CopyTo(buffer);
             }
 
+            // Then encrypt (if encryption is enabled)
+            _encryption?.ServerEncrypt(buffer[..length]);
+
             if (PacketLogging)
             {
                 LogPacket(span, false);
             }
 
-            SendPipe.Writer.Advance((uint)length);
+            _socket.SendBuffer.CommitWrite(length);
 
             if (!_flushQueued)
             {
@@ -554,26 +529,34 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         }
     }
 
-    public void HandleReceive(bool throttled = false)
+    private void DecryptRecvBuffer(int bytesReceived)
     {
-        if (!_running)
+        if (_socket == null || _encryption == null)
         {
             return;
         }
 
-        if (!throttled)
+        // Get the portion of the buffer that was just written (the new data)
+        var readSpan = _socket.RecvBuffer.GetReadSpan();
+        var newDataStart = Math.Max(0, readSpan.Length - bytesReceived);
+
+        _encryption?.ClientDecrypt(readSpan.Slice(newDataStart, bytesReceived));
+    }
+
+    public void HandleReceive(bool throttled = false)
+    {
+        if (!_running || _socket == null)
         {
-            ReceiveData();
+            return;
         }
 
-        var reader = RecvPipe.Reader;
-
+        // Data already in recv buffer from recv completion - no need to call ReceiveData
         try
         {
             // Process as many packets as we can synchronously
             while (_running && _parserState != ParserState.Error && _protocolState != ProtocolState.Error)
             {
-                var buffer = reader.AvailableToRead();
+                var buffer = _socket.RecvBuffer.GetReadSpan();
                 var length = buffer.Length;
 
                 if (length <= 0)
@@ -583,7 +566,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
                 var packetReader = new SpanReader(buffer);
                 var packetId = packetReader.ReadByte();
-                int packetLength = length;
+                var packetLength = length;
 
                 // These can arrive at any time and are only informational
                 if (_protocolState != ProtocolState.AwaitingSeed && IncomingPackets.IsInfoPacket(packetId))
@@ -608,7 +591,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
                                 }
                                 else if (length >= 4)
                                 {
-                                    int newSeed = (packetId << 24) | (packetReader.ReadByte() << 16) | (packetReader.ReadByte() << 8) | packetReader.ReadByte();
+                                    var newSeed = (packetId << 24) | (packetReader.ReadByte() << 16) | (packetReader.ReadByte() << 8) | packetReader.ReadByte();
 
                                     if (newSeed == 0)
                                     {
@@ -632,12 +615,62 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
                         case ProtocolState.LoginServer_AwaitingLogin:
                             {
-                                if (packetId != 0x80)
+                                // Check for unencrypted login packet
+                                if (packetId == 0x80)
+                                {
+                                    // Unencrypted - check if allowed
+                                    if (EncryptionManager.Enabled && !EncryptionManager.Mode.HasFlag(EncryptionMode.Unencrypted))
+                                    {
+                                        LogInfo("Unencrypted client rejected by encryption policy.");
+                                        HandleError(packetId, packetLength);
+                                        return;
+                                    }
+
+                                    _parserState = ParserState.ProcessingPacket;
+                                    _parserState = HandlePacket(packetReader, packetId, out packetLength);
+                                    if (_parserState == ParserState.AwaitingNextPacket)
+                                    {
+                                        _protocolState = ProtocolState.LoginServer_AwaitingServerSelect;
+                                    }
+                                    break;
+                                }
+
+                                // First byte isn't 0x80 - might be encrypted
+                                if (!EncryptionManager.Enabled)
                                 {
                                     LogInfo("Possible encrypted client detected, disconnecting...");
                                     HandleError(packetId, packetLength);
                                     return;
                                 }
+
+                                // Need 62 bytes for login packet to attempt decryption
+                                if (length < 62)
+                                {
+                                    _parserState = ParserState.AwaitingPartialPacket;
+                                    break;
+                                }
+
+                                // Try to detect and decrypt encrypted login
+                                if (!this.DetectLoginEncryption(buffer[..62], out var loginEncryption))
+                                {
+                                    LogInfo("Encrypted client detection failed, disconnecting...");
+                                    HandleError(packetId, packetLength);
+                                    return;
+                                }
+
+                                // Decryption succeeded - set up encryption and process
+                                if (loginEncryption != null)
+                                {
+                                    _encryption = loginEncryption;
+
+                                    // Decrypt the buffer in place for processing
+                                    var mutableBuffer = _socket.RecvBuffer.GetReadSpan();
+                                    loginEncryption.ClientDecrypt(mutableBuffer[..62]);
+                                }
+
+                                // Now process as normal (first byte should now be 0x80)
+                                packetReader = new SpanReader(buffer);
+                                packetId = packetReader.ReadByte();
 
                                 _parserState = ParserState.ProcessingPacket;
                                 _parserState = HandlePacket(packetReader, packetId, out packetLength);
@@ -680,16 +713,67 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
                         case ProtocolState.GameServer_AwaitingGameServerLogin:
                             {
+                                // Some clients send 0x80 on game server connection
                                 if (packetId == 0x80)
                                 {
                                     goto case ProtocolState.LoginServer_AwaitingLogin;
                                 }
 
-                                if (packetId != 0x91)
+                                // Check for unencrypted game login packet
+                                if (packetId == 0x91)
+                                {
+                                    // Unencrypted - check if allowed
+                                    if (EncryptionManager.Enabled && !EncryptionManager.Mode.HasFlag(EncryptionMode.Unencrypted))
+                                    {
+                                        LogInfo("Unencrypted game client rejected by encryption policy.");
+                                        HandleError(packetId, packetLength);
+                                        return;
+                                    }
+
+                                    _parserState = ParserState.ProcessingPacket;
+                                    _parserState = HandlePacket(packetReader, packetId, out packetLength);
+                                    if (_parserState == ParserState.AwaitingNextPacket)
+                                    {
+                                        _protocolState = ProtocolState.GameServer_LoggedIn;
+                                    }
+                                    break;
+                                }
+
+                                // First byte isn't 0x91 - might be encrypted
+                                if (!EncryptionManager.Enabled)
                                 {
                                     HandleError(packetId, packetLength);
                                     return;
                                 }
+
+                                // Need 65 bytes for game login packet to attempt decryption
+                                if (length < 65)
+                                {
+                                    _parserState = ParserState.AwaitingPartialPacket;
+                                    break;
+                                }
+
+                                // Try to detect and decrypt encrypted game login
+                                if (!this.DetectGameEncryption(buffer[..65], out var gameEncryption))
+                                {
+                                    LogInfo("Encrypted game client detection failed, disconnecting...");
+                                    HandleError(packetId, packetLength);
+                                    return;
+                                }
+
+                                // Decryption succeeded - set up encryption and process
+                                if (gameEncryption != null)
+                                {
+                                    _encryption = gameEncryption;
+
+                                    // Decrypt the buffer in place for processing
+                                    var mutableBuffer = _socket.RecvBuffer.GetReadSpan();
+                                    gameEncryption.ClientDecrypt(mutableBuffer[..65]);
+                                }
+
+                                // Now process as normal (first byte should now be 0x91)
+                                packetReader = new SpanReader(buffer);
+                                packetId = packetReader.ReadByte();
 
                                 _parserState = ParserState.ProcessingPacket;
                                 _parserState = HandlePacket(packetReader, packetId, out packetLength);
@@ -711,7 +795,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
                 if (_parserState is ParserState.AwaitingNextPacket)
                 {
-                    reader.Advance((uint)packetLength);
+                    _socket.RecvBuffer.CommitRead(packetLength);
                 }
                 else if (_parserState is ParserState.Throttled)
                 {
@@ -763,8 +847,8 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
      */
     private unsafe ParserState HandlePacket(SpanReader packetReader, byte packetId, out int packetLength)
     {
-        PacketHandler handler = IncomingPackets.GetHandler(packetId);
-        int length = packetReader.Length;
+        var handler = IncomingPackets.GetHandler(packetId);
+        var length = packetReader.Length;
 
         if (handler == null)
         {
@@ -844,222 +928,22 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         return ParserState.AwaitingNextPacket;
     }
 
-    private bool Flush()
-    {
-        _flushQueued = false;
-
-        // We don't have a running check since we need to send the last bits of data even after a disconnect, but before a dispose.
-        if (Connection == null)
-        {
-            return true;
-        }
-
-        var reader = SendPipe.Reader;
-        var buffer = reader.AvailableToRead();
-
-        if (reader.IsClosed || buffer.Length == 0)
-        {
-            return true;
-        }
-
-        var bytesWritten = 0;
-
-        try
-        {
-            bytesWritten = Connection.Send(buffer, SocketFlags.None);
-        }
-        catch (SocketException ex)
-        {
-            if (ex.SocketErrorCode != SocketError.WouldBlock)
-            {
-                logger.Debug(ex, "Disconnected due to a socket exception");
-                Disconnect(string.Empty);
-                return true;
-            }
-        }
-        catch (Exception ex)
-        {
-            Disconnect($"Disconnected with error: {ex}");
-            TraceException(ex);
-            return true;
-        }
-
-        if (bytesWritten > 0)
-        {
-            NextActivityCheck = Core.TickCount + 90000;
-            reader.Advance((uint)bytesWritten);
-        }
-
-        return bytesWritten == buffer.Length;
-    }
-
-    private void DecodePacket(Span<byte> buffer, ref int length)
-    {
-        _packetDecoder?.Invoke(buffer, ref length);
-    }
-
-    private void ReceiveData()
-    {
-        var writer = RecvPipe.Writer;
-        var buffer = writer.AvailableToWrite();
-
-        if (writer.IsClosed || buffer.Length == 0)
-        {
-            return;
-        }
-
-        var bytesWritten = 0;
-
-        try
-        {
-            bytesWritten = Connection.Receive(buffer, SocketFlags.None);
-        }
-        catch (SocketException ex)
-        {
-            if (ex.ErrorCode is not 54 and not 89 and not 995)
-            {
-                logger.Debug(ex, "Disconnected due to a socket exception");
-            }
-
-            Disconnect(string.Empty);
-        }
-        catch (Exception ex)
-        {
-            Disconnect($"Disconnected with error: {ex}");
-            TraceException(ex);
-        }
-
-        if (bytesWritten <= 0)
-        {
-            Disconnect(string.Empty);
-            return;
-        }
-
-        DecodePacket(buffer, ref bytesWritten);
-
-        writer.Advance((uint)bytesWritten);
-        NextActivityCheck = Core.TickCount + 90000;
-    }
-
-    private static void DisconnectUnattachedSockets()
-    {
-        var now = Core.Now;
-
-        // Clear out any sockets that have been connecting for too long
-        while (_connecting.Count > 0)
-        {
-            var ns = _connecting.Min;
-            var socketTime = ns.ConnectedOn;
-
-            // If the socket has been connected for less than the limit, we can stop checking
-            if (now - socketTime < ConnectingSocketIdleLimit)
-            {
-                break;
-            }
-
-            // Socket must have finished the entire authentication process or be forcibly disconnected.
-            if (!ns.Running || !ns.SentFirstPacket || !ns.Seeded || ns.Account == null)
-            {
-                // Not sending a message because it will fill up the logs.
-                ns.Disconnect(null);
-            }
-
-            _connecting.Remove(ns);
-        }
-    }
-
-    public static void FlushAll()
-    {
-        while (_flushPending.Count != 0)
-        {
-            _flushPending.Dequeue()?.Flush();
-        }
-    }
-
-    public static void Slice()
-    {
-        DisconnectUnattachedSockets();
-
-        while (_throttled.Count > 0)
-        {
-            var ns = _throttled.Dequeue();
-            if (ns.Running)
-            {
-                ns.HandleReceive(true);
-            }
-        }
-
-        // This is enqueued by HandleReceive if already throttled and still throttled
-        while (_throttledPending.Count > 0)
-        {
-            _throttled.Enqueue(_throttledPending.Dequeue());
-        }
-
-        var count = _pollGroup.Poll(_polledStates);
-
-        if (count > 0)
-        {
-            for (int i = 0; i < count; i++)
-            {
-                (_polledStates[i].Target as NetState)?.HandleReceive();
-                _polledStates[i] = default;
-            }
-        }
-
-        while (_flushPending.TryDequeue(out var ns))
-        {
-            if (!ns.Flush())
-            {
-                // Incomplete data, so we need to requeue
-                _flushedPartials.Enqueue(ns);
-            }
-        }
-
-        var hasDisposes = false;
-        while (_disposed.TryDequeue(out var ns))
-        {
-            hasDisposes = true;
-            ns.Dispose();
-        }
-
-        // If they weren't disconnected, requeue them
-        while (_flushedPartials.TryDequeue(out var ns))
-        {
-            if (ns.Running)
-            {
-                _flushPending.Enqueue(ns);
-            }
-        }
-
-        if (hasDisposes)
-        {
-            _pollGroup.Poll(_polledStates.Length);
-        }
-    }
-
     public void CheckAlive(long curTicks)
     {
-        if (Connection != null && NextActivityCheck - curTicks < 0)
+        if (_socket == null || NextActivityCheck - curTicks >= 0)
+        {
+            return;
+        }
+
+        if (_socket.DisconnectPending)
+        {
+            LogInfo("Force disconnecting stuck socket...");
+            _socketManager.DisconnectImmediate(_socket);
+        }
+        else
         {
             LogInfo("Disconnecting due to inactivity...");
             Disconnect("Disconnecting due to inactivity.");
-        }
-    }
-
-    public static void CheckAllAlive()
-    {
-        try
-        {
-            long curTicks = Core.TickCount;
-
-            foreach (var ns in Instances)
-            {
-                ns.CheckAlive(curTicks);
-            }
-        }
-        catch (Exception ex)
-        {
-            TraceException(ex);
         }
     }
 
@@ -1105,17 +989,24 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         Console.WriteLine(ex);
     }
 
+    /// <summary>
+    /// Requests a graceful disconnect. The disconnect is queued and processed after the flush
+    /// queue in Slice(), ensuring Send() calls made in the same tick are processed first.
+    /// </summary>
     public void Disconnect(string reason)
     {
-        if (!_running)
+        if (!_running || _socket == null)
         {
             return;
         }
 
-        _running = false;
-
         _disconnectReason = reason;
-        _disposed.Enqueue(this);
+
+        if (!_disconnectQueued)
+        {
+            _disconnectQueued = true;
+            _pendingDisconnects.Enqueue(this);
+        }
     }
 
     public static void TraceDisconnect(string reason, string ip)
@@ -1142,19 +1033,27 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         }
     }
 
-    private void Dispose()
+    private void DisposeInternal() => Dispose();
+
+    // Do not run this directly. Use Disconnect instead.
+    // This is available for testing cleanup only.
+    [Obsolete("Use Disconnect instead")]
+    public void Dispose()
     {
+        var wasRunning = _running;
+        _running = false;
         // It's possible we could queue for dispose multiple times
-        if (Connection == null)
+        if (_socket == null)
         {
             return;
         }
 
         TraceDisconnect(_disconnectReason, _toString);
 
-        if (_running)
+        // If still running, force immediate disconnect
+        if (wasRunning)
         {
-            throw new Exception("Disconnected a NetState that is still running.");
+            _socketManager?.DisconnectImmediate(_socket);
         }
 
         var m = Mobile;
@@ -1164,21 +1063,17 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         }
 
         _instances.Remove(this);
-        _connecting.Remove(this);
 
-        try
+        // Clear the NetState slot
+        var slotId = _socket.Id;
+        if (slotId >= 0 && slotId < _netStates.Length && _netStates[slotId] == this)
         {
-            _pollGroup.Remove(Connection, _handle);
-        }
-        catch (Exception ex)
-        {
-            TraceException(ex);
+            _netStates[slotId] = null;
         }
 
-        Connection.Close();
-        _handle.Free();
-        RecvPipe.Dispose();
-        SendPipe.Dispose();
+        // Note: RingSocketManager handles cleanup of ring resources (unregister, close, buffer release)
+        // when it processes the disconnect event. We just clear our reference.
+        _socket = null;
 
         Mobile = null;
 
@@ -1189,46 +1084,9 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         Account = null;
         ServerInfo = null;
         CityInfo = null;
-        Connection = null;
 
         var count = _instances.Count;
 
         LogInfo(a != null ? $"Disconnected. [{count} Online] [{a}]" : $"Disconnected. [{count} Online]");
-    }
-
-    private class NetStateConnectingComparer : IComparer<NetState>
-    {
-        public static readonly IComparer<NetState> Instance = new NetStateConnectingComparer();
-
-        public int Compare(NetState x, NetState y)
-        {
-            if (x == null && y == null)
-            {
-                return 0;
-            }
-
-            if (x == null)
-            {
-                return -1;
-            }
-
-            if (y == null)
-            {
-                return 1;
-            }
-
-            if (ReferenceEquals(x, y))
-            {
-                return 0;
-            }
-
-            var connectedOn = x.ConnectedOn.CompareTo(y.ConnectedOn);
-            if (connectedOn != 0)
-            {
-                return connectedOn;
-            }
-
-            return x.CompareTo(y);
-        }
     }
 }

@@ -17,10 +17,10 @@ public class VirtualHairPacketTests
 
         var expected = new HairEquipUpdate(m).Compile();
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendHairEquipUpdatePacket(m, (uint)m.Hair.VirtualSerial, m.Hair.ItemId, m.Hair.Hue, Layer.Hair);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -32,10 +32,10 @@ public class VirtualHairPacketTests
 
         var expected = new RemoveHair(m).Compile();
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendRemoveHairPacket((uint) m.Hair.VirtualSerial);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 }

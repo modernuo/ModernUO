@@ -54,7 +54,7 @@ namespace Server.Engines.PartySystem
                 return;
             }
 
-            Span<byte> buffer = stackalloc byte[GetPartyMemberListPacketLength(p.Count)].InitializePacket();
+            var buffer = stackalloc byte[GetPartyMemberListPacketLength(p.Count)].InitializePacket();
             CreatePartyMemberList(buffer, p);
 
             ns.Send(buffer);
@@ -70,7 +70,7 @@ namespace Server.Engines.PartySystem
                 return;
             }
 
-            Span<byte> buffer = stackalloc byte[GetPartyRemoveMemberPacketLength(p?.Count ?? 0)].InitializePacket();
+            var buffer = stackalloc byte[GetPartyRemoveMemberPacketLength(p?.Count ?? 0)].InitializePacket();
             CreatePartyRemoveMember(buffer, m, p);
 
             ns.Send(buffer);
@@ -110,7 +110,7 @@ namespace Server.Engines.PartySystem
                 return;
             }
 
-            Span<byte> buffer = stackalloc byte[GetPartyTextMessagePacketLength(text)].InitializePacket();
+            var buffer = stackalloc byte[GetPartyTextMessagePacketLength(text)].InitializePacket();
             CreatePartyTextMessage(buffer, m, text, toAll);
 
             ns.Send(buffer);

@@ -223,7 +223,7 @@ public static class IncomingPlayerPackets
         var serial = reader.ReadUInt32();
         var prompt = reader.ReadInt32();
         var type = reader.ReadInt32();
-        var text = reader.ReadAsciiSafe();
+        var text = reader.ReadLatin1Safe();
 
         if (text.Length > 128)
         {

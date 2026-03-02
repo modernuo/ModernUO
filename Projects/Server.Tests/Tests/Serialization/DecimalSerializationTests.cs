@@ -35,7 +35,7 @@ public class DecimalSerializationTests
     public void TestSerializeDecimal(decimal value)
     {
         // Arrange
-        byte[] buffer = new byte[sizeof(decimal)];
+        var buffer = new byte[sizeof(decimal)];
 
         // Act
         Write(buffer, value);

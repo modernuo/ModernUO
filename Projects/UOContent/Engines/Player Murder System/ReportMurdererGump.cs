@@ -36,7 +36,7 @@ public class ReportMurdererGump : StaticGump<ReportMurdererGump>
         HashSet<Mobile> toGive = null;
 
         // Guards won't take reports of the death of a thief!
-        bool notInThievesGuild = m.NpcGuild != NpcGuild.ThievesGuild;
+        var notInThievesGuild = m.NpcGuild != NpcGuild.ThievesGuild;
 
         foreach (var ai in m.Aggressors)
         {

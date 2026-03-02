@@ -72,7 +72,7 @@ public static class Effects
 
         if (map != null)
         {
-            Span<byte> buffer = stackalloc byte[OutgoingEffectPackets.SoundPacketLength].InitializePacket();
+            var buffer = stackalloc byte[OutgoingEffectPackets.SoundPacketLength].InitializePacket();
 
             foreach (var state in map.GetClientsInRange(p))
             {
@@ -94,9 +94,9 @@ public static class Effects
 
         e.ProcessDelta();
 
-        Span<byte> preEffect = stackalloc byte[OutgoingEffectPackets.ParticleEffectLength].InitializePacket();
-        Span<byte> boltEffect = stackalloc byte[OutgoingEffectPackets.BoltEffectLength].InitializePacket();
-        Span<byte> soundEffect = sound ? stackalloc byte[OutgoingEffectPackets.SoundPacketLength].InitializePacket() : null;
+        var preEffect = stackalloc byte[OutgoingEffectPackets.ParticleEffectLength].InitializePacket();
+        var boltEffect = stackalloc byte[OutgoingEffectPackets.BoltEffectLength].InitializePacket();
+        var soundEffect = sound ? stackalloc byte[OutgoingEffectPackets.SoundPacketLength].InitializePacket() : null;
 
         foreach (var state in map.GetClientsInRange(e.Location))
         {
@@ -131,7 +131,7 @@ public static class Effects
         Point3D p, Map map, int itemID, int duration, int speed = 10, int hue = 0, int renderMode = 0
     )
     {
-        Span<byte> effect = stackalloc byte[OutgoingEffectPackets.HuedEffectLength].InitializePacket();
+        var effect = stackalloc byte[OutgoingEffectPackets.HuedEffectLength].InitializePacket();
         OutgoingEffectPackets.CreateLocationHuedEffect(
             effect,
             p, itemID, speed, duration, hue, renderMode
@@ -161,9 +161,9 @@ public static class Effects
             return;
         }
 
-        Span<byte> particles = stackalloc byte[OutgoingEffectPackets.ParticleEffectLength].InitializePacket();
+        var particles = stackalloc byte[OutgoingEffectPackets.ParticleEffectLength].InitializePacket();
 
-        Span<byte> regular = itemID != 0 ? stackalloc byte[OutgoingEffectPackets.HuedEffectLength].InitializePacket() : null;
+        var regular = itemID != 0 ? stackalloc byte[OutgoingEffectPackets.HuedEffectLength].InitializePacket() : null;
 
         foreach (var state in map.GetClientsInRange(e.Location))
         {
@@ -192,7 +192,7 @@ public static class Effects
     {
         (target as Mobile)?.ProcessDelta();
 
-        Span<byte> effect = stackalloc byte[OutgoingEffectPackets.HuedEffectLength].InitializePacket();
+        var effect = stackalloc byte[OutgoingEffectPackets.HuedEffectLength].InitializePacket();
         OutgoingEffectPackets.CreateTargetHuedEffect(
             effect,
             target, itemID, speed, duration, hue, renderMode
@@ -223,8 +223,8 @@ public static class Effects
             return;
         }
 
-        Span<byte> particles = stackalloc byte[OutgoingEffectPackets.ParticleEffectLength].InitializePacket();
-        Span<byte> regular = itemID != 0 ? stackalloc byte[OutgoingEffectPackets.HuedEffectLength].InitializePacket() : null;
+        var particles = stackalloc byte[OutgoingEffectPackets.ParticleEffectLength].InitializePacket();
+        var regular = itemID != 0 ? stackalloc byte[OutgoingEffectPackets.HuedEffectLength].InitializePacket() : null;
 
         foreach (var state in map.GetClientsInRange(target.Location))
         {
@@ -363,7 +363,7 @@ public static class Effects
         int speed, int duration, bool fixedDirection = false, bool explodes = false, int hue = 0, int renderMode = 0
     )
     {
-        Span<byte> effect = stackalloc byte[OutgoingEffectPackets.HuedEffectLength].InitializePacket();
+        var effect = stackalloc byte[OutgoingEffectPackets.HuedEffectLength].InitializePacket();
         OutgoingEffectPackets.CreateMovingHuedEffect(
             effect,
             from, to, itemID, fromLocation, toLocation, speed, duration, fixedDirection,
@@ -435,8 +435,8 @@ public static class Effects
             return;
         }
 
-        Span<byte> particles = stackalloc byte[OutgoingEffectPackets.ParticleEffectLength].InitializePacket();
-        Span<byte> regular = itemID != 0 ? stackalloc byte[OutgoingEffectPackets.HuedEffectLength].InitializePacket() : null;
+        var particles = stackalloc byte[OutgoingEffectPackets.ParticleEffectLength].InitializePacket();
+        var regular = itemID != 0 ? stackalloc byte[OutgoingEffectPackets.HuedEffectLength].InitializePacket() : null;
 
         foreach (var state in map.GetClientsInRange(from.Location))
         {

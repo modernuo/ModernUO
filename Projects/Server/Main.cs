@@ -339,7 +339,7 @@ public static class Core
         World.WaitForWriteCompletion();
         World.ExitSerializationThreads();
         PingServer.Shutdown();
-        TcpServer.Shutdown();
+        NetState.Shutdown();
 
         if (!_crashed)
         {
@@ -447,7 +447,7 @@ public static class Core
 
         AssemblyHandler.Invoke("Initialize");
 
-        TcpServer.Start();
+        NetState.Start();
         PingServer.Start();
         EventSink.InvokeServerStarted();
         RunEventLoop();
@@ -455,20 +455,22 @@ public static class Core
 
     public static void RunEventLoop()
     {
-        try
-        {
 #if DEBUG
-            const bool idleCPU = true;
+        const bool isDebugMode = true;
 #else
-            var idleCPU = ServerConfiguration.GetOrUpdateSetting("core.enableIdleCPU", false);
+        const bool isDebugMode = false;
 #endif
 
+        var idleCPU = ServerConfiguration.GetSetting("core.enableIdleCPU", isDebugMode);
+
+        try
+        {
             var cycleCount = _cyclesPerSecond.Length;
-            long last = _tickCount;
+            var last = _tickCount;
             const int interval = 100;
             double frequency = Stopwatch.Frequency * interval;
 
-            int sample = 0;
+            var sample = 0;
 
             while (!Closing)
             {

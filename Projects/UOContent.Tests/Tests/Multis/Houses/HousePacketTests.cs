@@ -8,6 +8,7 @@ using Xunit;
 
 namespace UOContent.Tests;
 
+[Collection("Sequential UOContent Tests")]
 public class HousePacketTests
 {
     [Theory]
@@ -16,10 +17,10 @@ public class HousePacketTests
     {
         var expected = new BeginHouseCustomization((Serial)serial).Compile();
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendBeginHouseCustomization((Serial)serial);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -29,10 +30,10 @@ public class HousePacketTests
     {
         var expected = new EndHouseCustomization((Serial)serial).Compile();
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendEndHouseCustomization((Serial)serial);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
@@ -43,17 +44,17 @@ public class HousePacketTests
     {
         var expected = new DesignStateGeneral((Serial)serial, revision).Compile();
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendDesignStateGeneral((Serial)serial, revision);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 
     [Fact]
     public void TestHouseDesignStateDetailed()
     {
-        Serial serial = (Serial)0x40000001;
+        var serial = (Serial)0x40000001;
         var revision = 10;
         var tiles = new MultiTileEntry[250];
         for (var i = 0; i < tiles.Length; i++)

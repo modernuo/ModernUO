@@ -1,0 +1,19 @@
+{
+  "version": 0,
+  "type": "Server.Items.BankBox",
+  "properties": [
+    {
+      "name": "Owner",
+      "type": "Server.Mobile",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "Opened",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

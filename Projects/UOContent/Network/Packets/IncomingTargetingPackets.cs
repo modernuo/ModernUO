@@ -86,7 +86,7 @@ public static class IncomingTargetingPackets
                             }
                         }
 
-                        int hue = 0;
+                        var hue = 0;
                         var valid = false;
 
                         var eable = t.DisallowMultis

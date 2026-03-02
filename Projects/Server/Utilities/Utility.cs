@@ -93,16 +93,16 @@ public static partial class Utility
 
         if (prefixLength < 64)
         {
-            int bitsToFlip = 64 - prefixLength;
-            ulong highMask = isMax ? ~0UL >> bitsToFlip : ~0UL << (bitsToFlip + 1);
+            var bitsToFlip = 64 - prefixLength;
+            var highMask = isMax ? ~0UL >> bitsToFlip : ~0UL << (bitsToFlip + 1);
 
             high = isMax ? high | highMask : high & highMask;
             low = isMax ? ~0UL : 0UL;
         }
         else
         {
-            int bitsToFlip = 128 - prefixLength;
-            ulong lowMask = isMax ? ~0UL >> (64 - bitsToFlip) : ~0UL << bitsToFlip;
+            var bitsToFlip = 128 - prefixLength;
+            var lowMask = isMax ? ~0UL >> (64 - bitsToFlip) : ~0UL << bitsToFlip;
 
             low = isMax ? low | lowMask : low & lowMask;
         }
@@ -125,8 +125,8 @@ public static partial class Utility
             return 0;
         }
 
-        ulong high = BinaryPrimitives.ReadUInt64BigEndian(bytes[..8]);
-        ulong low = BinaryPrimitives.ReadUInt64BigEndian(bytes.Slice(8, 8));
+        var high = BinaryPrimitives.ReadUInt64BigEndian(bytes[..8]);
+        var low = BinaryPrimitives.ReadUInt64BigEndian(bytes.Slice(8, 8));
 
         return new UInt128(high, low);
     }
@@ -150,8 +150,8 @@ public static partial class Utility
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static UInt128 CreateCidrAddress(ReadOnlySpan<byte> bytes, int prefixLength, bool isMax)
     {
-        ulong high = BinaryPrimitives.ReadUInt64BigEndian(bytes[..8]);
-        ulong low = BinaryPrimitives.ReadUInt64BigEndian(bytes.Slice(8, 8));
+        var high = BinaryPrimitives.ReadUInt64BigEndian(bytes[..8]);
+        var low = BinaryPrimitives.ReadUInt64BigEndian(bytes.Slice(8, 8));
 
         if (prefixLength < 128)
         {
@@ -209,7 +209,7 @@ public static partial class Utility
         var span = chars.AsSpan(0, str.Length);
         str.CopyTo(span);
 
-        FixHtml(span);
+        span.FixHtml();
 
         var fixedStr = span.ToString();
         STArrayPool<char>.Shared.Return(chars);
@@ -243,7 +243,7 @@ public static partial class Utility
 
         if (!str.IsNullOrWhiteSpace())
         {
-            FixHtml(span);
+            span.FixHtml();
         }
 
         return formattable;
@@ -588,7 +588,7 @@ public static partial class Utility
         while (amount > 0)
         {
             // Range is 2^amount exclusively, maximum of 62 bits can be used
-            ulong num = amount >= 62
+            var num = amount >= 62
                 ? (ulong)BuiltInRng.NextLong()
                 : (ulong)BuiltInRng.Next(1L << amount);
 
@@ -612,7 +612,7 @@ public static partial class Utility
         while (amount > 0)
         {
             // Range is 2^amount exclusively, maximum of 62 bits can be used
-            ulong num = amount >= 62
+            var num = amount >= 62
                 ? (ulong)BuiltInRng.NextLong()
                 : (ulong)BuiltInRng.Next(1L << amount);
 
@@ -1059,7 +1059,7 @@ public static partial class Utility
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Tidy<T>(this List<T> list) where T : ISerializable
     {
-        for (int i = list.Count - 1; i >= 0; i--)
+        for (var i = list.Count - 1; i >= 0; i--)
         {
             var entry = list[i];
             if (entry?.Deleted != false)
@@ -1127,7 +1127,7 @@ public static partial class Utility
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int Abs(this int value)
     {
-        int mask = value >> 31;
+        var mask = value >> 31;
         return (value + mask) ^ mask;
     }
 

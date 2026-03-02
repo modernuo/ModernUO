@@ -118,7 +118,7 @@ public static class CAGLoader
 
                             if (cagObj.Hue == null)
                             {
-                                int hue = item.Hue & 0x7FFF;
+                                var hue = item.Hue & 0x7FFF;
                                 hue = (hue & 0x4000) != 0 ? 0 : hue;
                                 cagObj.Hue = hue == 0 ? null : hue;
                             }
@@ -133,7 +133,7 @@ public static class CAGLoader
 
                             if (cagObj.Hue == null)
                             {
-                                int hue = m.Hue & 0x7FFF;
+                                var hue = m.Hue & 0x7FFF;
                                 hue = (hue & 0x4000) != 0 ? 0 : hue;
                                 cagObj.Hue = hue == 0 ? null : hue;
                             }

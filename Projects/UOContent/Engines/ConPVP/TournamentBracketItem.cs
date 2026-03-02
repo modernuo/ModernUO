@@ -1,60 +1,33 @@
+using ModernUO.Serialization;
 using Server.Gumps;
 
-namespace Server.Engines.ConPVP
+namespace Server.Engines.ConPVP;
+
+[SerializationGenerator(0, false)]
+public partial class TournamentBracketItem : Item
 {
-    public class TournamentBracketItem : Item
+    [SerializableField(0)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private TournamentController _tournament;
+
+    [Constructible]
+    public TournamentBracketItem() : base(3774) => Movable = false;
+
+    public override string DefaultName => "tournament bracket";
+
+    public override void OnDoubleClick(Mobile from)
     {
-        [Constructible]
-        public TournamentBracketItem() : base(3774) => Movable = false;
-
-        public TournamentBracketItem(Serial serial) : base(serial)
+        if (!from.InRange(GetWorldLocation(), 2))
         {
+            from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that
         }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public TournamentController Tournament { get; set; }
-
-        public override string DefaultName => "tournament bracket";
-
-        public override void OnDoubleClick(Mobile from)
+        else
         {
-            if (!from.InRange(GetWorldLocation(), 2))
+            var tourney = Tournament?.Tournament;
+
+            if (tourney != null)
             {
-                from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that
-            }
-            else
-            {
-                var tourney = Tournament?.Tournament;
-
-                if (tourney != null)
-                {
-                    from.SendGump(new TournamentBracketGump(from, tourney, TourneyBracketGumpType.Index), true);
-                }
-            }
-        }
-
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
-
-            writer.Write(0);
-
-            writer.Write(Tournament);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 0:
-                    {
-                        Tournament = reader.ReadEntity<TournamentController>();
-                        break;
-                    }
+                from.SendGump(new TournamentBracketGump(from, tourney, TourneyBracketGumpType.Index), true);
             }
         }
     }

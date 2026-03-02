@@ -65,7 +65,7 @@ public class AdvancedSearchThreadWorker
 
     private static void Execute(object obj)
     {
-        AdvancedSearchThreadWorker worker = (AdvancedSearchThreadWorker)obj;
+        var worker = (AdvancedSearchThreadWorker)obj;
 
         var reader = worker._entities;
 
@@ -73,7 +73,7 @@ public class AdvancedSearchThreadWorker
         {
             while (true)
             {
-                bool pauseRequested = Volatile.Read(ref worker._pause);
+                var pauseRequested = Volatile.Read(ref worker._pause);
                 if (reader.TryDequeue(out var entity))
                 {
                     var result = worker.DoEntitySearch(entity);
@@ -182,7 +182,7 @@ public class AdvancedSearchThreadWorker
 
     private AdvancedSearchResult DoItemSearch(Item item)
     {
-        if (_filter.FilterName && !string.IsNullOrWhiteSpace(_filter.Name) && !item.Name.InsensitiveEquals(_filter.Name))
+        if (_filter.FilterName && !string.IsNullOrWhiteSpace(_filter.Name) && !(item.Name ?? item.ItemData.Name).InsensitiveContains(_filter.Name))
         {
             return null;
         }
@@ -206,7 +206,7 @@ public class AdvancedSearchThreadWorker
 
     private AdvancedSearchResult DoMobileSearch(Mobile mobile)
     {
-        if (_filter.FilterName && !string.IsNullOrWhiteSpace(_filter.Name) && !mobile.Name.InsensitiveEquals(_filter.Name))
+        if (_filter.FilterName && !string.IsNullOrWhiteSpace(_filter.Name) && !mobile.Name.InsensitiveContains(_filter.Name))
         {
             return null;
         }
@@ -268,7 +268,7 @@ public class AdvancedSearchThreadWorker
         // Keys don't have a backreference, so we just ignore them for now
         if (entity is KeyRing keyring && keyring.Keys?.Count > 0)
         {
-            foreach (Key k in keyring.Keys)
+            foreach (var k in keyring.Keys)
             {
                 _ignoreQueue.Enqueue(k);
             }
@@ -278,7 +278,7 @@ public class AdvancedSearchThreadWorker
 
         if (entity is BaseHouse house)
         {
-            foreach (RelocatedEntity relEntity in house.RelocatedEntities)
+            foreach (var relEntity in house.RelocatedEntities)
             {
                 if (relEntity.Entity is Item)
                 {
@@ -286,9 +286,9 @@ public class AdvancedSearchThreadWorker
                 }
             }
 
-            foreach (VendorInventory inventory in house.VendorInventories)
+            foreach (var inventory in house.VendorInventories)
             {
-                foreach (Item subItem in inventory.Items)
+                foreach (var subItem in inventory.Items)
                 {
                     _ignoreQueue.Enqueue(subItem);
                 }
@@ -298,16 +298,16 @@ public class AdvancedSearchThreadWorker
 
     private static bool EvaluateRecursive(IEntity entity, ReadOnlySpan<char> span)
     {
-        int atIndex = span.IndexOf('@');
-        int orIndex = span.IndexOf('|');
+        var atIndex = span.IndexOf('@');
+        var orIndex = span.IndexOf('|');
 
         if (atIndex == -1 && orIndex == -1)
         {
             return EvaluateSingleExpression(entity, span);
         }
 
-        bool result = atIndex != -1;
-        int splitIndex = result ? atIndex : orIndex;
+        var result = atIndex != -1;
+        var splitIndex = result ? atIndex : orIndex;
 
         var left = EvaluateRecursive(entity, span.Slice(0, splitIndex));
         var right = EvaluateRecursive(entity, span.Slice(splitIndex + 1));
@@ -356,7 +356,7 @@ public class AdvancedSearchThreadWorker
         }
 
         var propertyValue = property.GetValue(entity);
-        bool result = AdvancedSearchUtilities.CompareValues(property.PropertyType, propertyValue, valuePart, operatorSpan);
+        var result = AdvancedSearchUtilities.CompareValues(property.PropertyType, propertyValue, valuePart, operatorSpan);
 
         return negate ? !result : result;
     }

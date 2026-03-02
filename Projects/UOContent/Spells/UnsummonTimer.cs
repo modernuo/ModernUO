@@ -25,7 +25,7 @@ public class UnsummonTimer : Timer
         _onUnsummon = onUnsummon;
         _creature = creature;
 
-        ref var timer = ref CollectionsMarshal.GetValueRefOrAddDefault(_timers, creature, out bool exists);
+        ref var timer = ref CollectionsMarshal.GetValueRefOrAddDefault(_timers, creature, out var exists);
         if (exists)
         {
             timer.Stop();

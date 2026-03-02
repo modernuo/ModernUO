@@ -1,0 +1,14 @@
+{
+  "version": 0,
+  "type": "Server.Items.PuzzleChestSolutionAndTime",
+  "properties": [
+    {
+      "name": "When",
+      "type": "System.DateTime",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        "DeltaTime"
+      ]
+    }
+  ]
+}

@@ -64,7 +64,7 @@ public partial class ClockworkAssembly : Item
             return;
         }
 
-        double scalar = tinkerSkill switch
+        var scalar = tinkerSkill switch
         {
             >= 100.0 => 1.0,
             >= 90.0  => 0.9,

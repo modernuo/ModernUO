@@ -154,7 +154,7 @@ public partial class EnchantedSextant : Item
             }
         }
 
-        int moonMsg = moongateDistance switch
+        var moonMsg = moongateDistance switch
         {
             double.MaxValue => 1048021, // The sextant fails to find a Moongate nearby.
             > LongDistance  => 1046449 + (int)from.GetDirectionTo(closestMoongate), // A moongate is * from here
@@ -164,7 +164,7 @@ public partial class EnchantedSextant : Item
 
         from.NetState.SendMessageLocalized(Serial, ItemID, MessageType.Label, 0x482, 3, moonMsg);
 
-        int bankMsg = bankDistance switch
+        var bankMsg = bankDistance switch
         {
             double.MaxValue => 1048020,                                         // The sextant fails to find a Bank nearby.
             > LongDistance  => 1046462 + (int)from.GetDirectionTo(closestBank), // A town is * from here

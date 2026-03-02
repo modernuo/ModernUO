@@ -1,0 +1,11 @@
+{
+  "version": 0,
+  "type": "Server.Engines.ConPVP.LadderItem",
+  "properties": [
+    {
+      "name": "Ladder",
+      "type": "Server.Engines.ConPVP.LadderController",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}

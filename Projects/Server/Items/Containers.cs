@@ -1,13 +1,17 @@
+using ModernUO.Serialization;
 using Server.Accounting;
 using Server.Network;
 
 namespace Server.Items;
 
-public class BankBox : Container
+[SerializationGenerator(0, false)]
+public partial class BankBox : Container
 {
-    public BankBox(Serial serial) : base(serial)
-    {
-    }
+    [SerializableField(0, setter: "private")]
+    private Mobile _owner;
+
+    [SerializableField(1, setter: "private")]
+    private bool _opened;
 
     public BankBox(Mobile owner) : base(0xE7C)
     {
@@ -20,14 +24,16 @@ public class BankBox : Container
 
     public override bool IsVirtualItem => true;
 
-    public Mobile Owner { get; private set; }
-
-    public bool Opened { get; private set; }
-
     public static bool SendDeleteOnClose { get; set; }
 
     public void Open()
     {
+        if (!ServerFeatureFlags.BankAccess && Owner?.AccessLevel < AccessLevel.Administrator)
+        {
+            Owner.SendMessage(0x22, "Bank access is temporarily disabled.");
+            return;
+        }
+
         Opened = true;
 
         if (Owner != null)
@@ -45,38 +51,9 @@ public class BankBox : Container
         }
     }
 
-    public override void Serialize(IGenericWriter writer)
+    [AfterDeserialization]
+    private void AfterDeserialization()
     {
-        base.Serialize(writer);
-
-        writer.Write(0); // version
-
-        writer.Write(Owner);
-        writer.Write(Opened);
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadInt();
-
-        switch (version)
-        {
-            case 0:
-                {
-                    Owner = reader.ReadEntity<Mobile>();
-                    Opened = reader.ReadBool();
-
-                    break;
-                }
-        }
-
-        if (ItemID == 0xE41)
-        {
-            ItemID = 0xE7C;
-        }
-
         if (Owner == null)
         {
             Timer.DelayCall(Delete);
