@@ -211,6 +211,8 @@ namespace Server.Items
                 }
             }
 
+            Point3D targetLocation = new Point3D(defender.X, defender.Y, defender.Z);
+
             int deltaX = defender.X - attacker.X;
             int deltaY = defender.Y - attacker.Y;
 
@@ -273,7 +275,7 @@ namespace Server.Items
                 }
                 
                 Point3D from = new(attacker.X + xOffset, attacker.Y + yOffset, attacker.Z + zOffset);
-                Point3D to = new(defender.X + xOffset, defender.Y + yOffset, defender.Z + zOffset);
+                Point3D to = new(targetLocation.X + xOffset, targetLocation.Y + yOffset, targetLocation.Z + zOffset);
                 
                 Effects.SendMovingEffect(new Entity(Serial.Zero, from, attacker.Map),
                     new Entity(Serial.Zero, to, defender.Map), EffectID, 18, 1, false, false);
