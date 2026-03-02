@@ -5299,6 +5299,8 @@ namespace Server.Mobiles
 
         public virtual void HealStart(Mobile patient)
         {
+            StopHeal();
+
             var onSelf = patient == this;
 
             // DoBeneficial( patient );
