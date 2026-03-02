@@ -5327,12 +5327,13 @@ namespace Server.Mobiles
                 return;
             }
 
-            var onSelf = patient == this;
-
-            if (!patient.Alive)
+            if (!InRange(patient, HealStartRange))
             {
+                return;
             }
-            else if (patient.Poisoned)
+
+            var onSelf = patient == this;
+            if (patient.Poisoned)
             {
                 var poisonLevel = patient.Poison.Level;
 
