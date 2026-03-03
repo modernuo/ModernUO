@@ -9,9 +9,7 @@ namespace Server.Engines.Chat
             m_Handlers = new ChatActionHandler[0x100];
 
             Register(0x41, true, true, ChangeChannelPassword);
-
             Register(0x58, false, false, LeaveChat);
-
             Register(0x61, false, true, ChannelMessage);
             Register(0x62, false, false, JoinChannel);
             Register(0x63, false, false, JoinNewChannel);
@@ -63,6 +61,8 @@ namespace Server.Engines.Chat
             if (channel.CanTalk(from))
             {
                 channel.SendIgnorableMessage(57, from, from.GetColorCharacter() + from.Username, param); // %1: %2
+                
+                _ = Discord.SendChannelMessageAsync(channel.Name, from.Username, param);
             }
             else
             {
@@ -75,6 +75,8 @@ namespace Server.Engines.Chat
             if (channel.CanTalk(from))
             {
                 channel.SendIgnorableMessage(58, from, from.GetColorCharacter() + from.Username, param); // %1 %2
+                
+                _ = Discord.SendChannelMessageAsync(channel.Name, from.Username, param);
             }
             else
             {

@@ -20,25 +20,16 @@ namespace Server.Engines.Chat
         }
 
         public Mobile Mobile { get; }
-
         public List<ChatUser> Ignored { get; }
-
         public List<ChatUser> Ignoring { get; }
-
         public string Username { get; }
-
         public Channel CurrentChannel { get; set; }
-
         public bool IsOnline => Mobile.NetState != null;
-
         public bool Anonymous { get; set; }
-
         public bool IgnorePrivateMessage { get; set; }
-
         public bool IsModerator => CurrentChannel?.IsModerator(this) == true;
 
-        public char GetColorCharacter() =>
-            IsModerator ? ModeratorColorCharacter :
+        public char GetColorCharacter() => IsModerator ? ModeratorColorCharacter :
             CurrentChannel?.IsVoiced(this) == true ? VoicedColorCharacter : NormalColorCharacter;
 
         public bool CheckOnline()
