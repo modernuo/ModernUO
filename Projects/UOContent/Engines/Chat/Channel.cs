@@ -361,8 +361,9 @@ namespace Server.Engines.Chat
                 {
                     user.SendMessage(number, from.Mobile, param1, param2);
                 }
-                else if (!Contains(user))
+                else
                 {
+                    RemoveUser(user);
                     --i;
                 }
             }
@@ -388,8 +389,9 @@ namespace Server.Engines.Chat
                 {
                     ChatSystem.SendCommandTo(user.Mobile, command, param1, param2);
                 }
-                else if (!Contains(user))
+                else
                 {
+                    RemoveUser(user);
                     --i;
                 }
             }
