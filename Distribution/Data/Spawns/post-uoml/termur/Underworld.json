@@ -1,4 +1,4 @@
-[
+﻿[
   {
     "type": "Spawner",
     "guid": "1cd4979b-aac9-4287-b8af-9a31bb5526bc",
@@ -11,7 +11,9 @@
     "team": 0,
     "homeRange": 0,
     "walkingRange": -1,
-    "entries": [{ "name": "genericguard", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      { "name": "genericguard", "maxCount": 1, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -25,7 +27,9 @@
     "team": 0,
     "homeRange": 0,
     "walkingRange": -1,
-    "entries": [{ "name": "genericguard", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      { "name": "genericguard", "maxCount": 1, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -39,7 +43,9 @@
     "team": 0,
     "homeRange": 4,
     "walkingRange": -1,
-    "entries": [{ "name": "Garamon", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      { "name": "Garamon", "maxCount": 1, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -53,7 +59,9 @@
     "team": 0,
     "homeRange": 4,
     "walkingRange": -1,
-    "entries": [{ "name": "gremlin", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      { "name": "gremlin", "maxCount": 1, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -67,7 +75,9 @@
     "team": 0,
     "homeRange": 7,
     "walkingRange": 10,
-    "entries": [{ "name": "Slime", "maxCount": 10, "probability": 100 }]
+    "entries": [
+      { "name": "Slime", "maxCount": 10, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -81,7 +91,9 @@
     "team": 0,
     "homeRange": 7,
     "walkingRange": 10,
-    "entries": [{ "name": "acidslug", "maxCount": 25, "probability": 100 }]
+    "entries": [
+      { "name": "acidslug", "maxCount": 25, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -112,7 +124,9 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 15,
-    "entries": [{ "name": "rotworm", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      { "name": "rotworm", "maxCount": 1, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -126,7 +140,9 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 25,
-    "entries": [{ "name": "Kraken", "maxCount": 2, "probability": 100 }]
+    "entries": [
+      { "name": "Kraken", "maxCount": 2, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -140,7 +156,9 @@
     "team": 0,
     "homeRange": 14,
     "walkingRange": 20,
-    "entries": [{ "name": "rotworm", "maxCount": 3, "probability": 100 }]
+    "entries": [
+      { "name": "rotworm", "maxCount": 3, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -154,7 +172,9 @@
     "team": 0,
     "homeRange": 7,
     "walkingRange": 20,
-    "entries": [{ "name": "WaterElemental", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      { "name": "WaterElemental", "maxCount": 1, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -186,7 +206,9 @@
     "team": 0,
     "homeRange": 12,
     "walkingRange": 20,
-    "entries": [{ "name": "rotworm", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      { "name": "rotworm", "maxCount": 1, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -200,7 +222,9 @@
     "team": 0,
     "homeRange": 4,
     "walkingRange": -1,
-    "entries": [{ "name": "FiddlingTobin", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      { "name": "FiddlingTobin", "maxCount": 1, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -214,7 +238,9 @@
     "team": 0,
     "homeRange": 4,
     "walkingRange": -1,
-    "entries": [{ "name": "NevilleBrightwhistle", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      { "name": "NevilleBrightwhistle", "maxCount": 1, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -228,7 +254,9 @@
     "team": 0,
     "homeRange": 4,
     "walkingRange": -1,
-    "entries": [{ "name": "tanglingroots", "maxCount": 2, "probability": 100 }]
+    "entries": [
+      { "name": "tanglingroots", "maxCount": 2, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -242,7 +270,9 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": -1,
-    "entries": [{ "name": "tanglingroots", "maxCount": 3, "probability": 100 }]
+    "entries": [
+      { "name": "tanglingroots", "maxCount": 3, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -256,7 +286,9 @@
     "team": 0,
     "homeRange": 4,
     "walkingRange": -1,
-    "entries": [{ "name": "Gretchen", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      { "name": "Gretchen", "maxCount": 1, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -270,7 +302,9 @@
     "team": 0,
     "homeRange": 4,
     "walkingRange": -1,
-    "entries": [{ "name": "ElderDugan", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      { "name": "ElderDugan", "maxCount": 1, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -284,7 +318,9 @@
     "team": 0,
     "homeRange": 4,
     "walkingRange": -1,
-    "entries": [{ "name": "QuartermasterFlint", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      { "name": "QuartermasterFlint", "maxCount": 1, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -348,7 +384,9 @@
     "team": 0,
     "homeRange": 5,
     "walkingRange": 10,
-    "entries": [{ "name": "GreaterPoisonElemental", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      { "name": "GreaterPoisonElemental", "maxCount": 1, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -413,7 +451,9 @@
     "team": 0,
     "homeRange": 10,
     "walkingRange": 15,
-    "entries": [{ "name": "GrayGoblin", "maxCount": 2, "probability": 100 }]
+    "entries": [
+      { "name": "GrayGoblin", "maxCount": 2, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -427,7 +467,9 @@
     "team": 0,
     "homeRange": 5,
     "walkingRange": 15,
-    "entries": [{ "name": "GrayGoblin", "maxCount": 2, "probability": 100 }]
+    "entries": [
+      { "name": "GrayGoblin", "maxCount": 2, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -458,7 +500,9 @@
     "team": 0,
     "homeRange": 4,
     "walkingRange": -1,
-    "entries": [{ "name": "Jaacar", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      { "name": "Jaacar", "maxCount": 1, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -472,7 +516,9 @@
     "team": 0,
     "homeRange": 4,
     "walkingRange": -1,
-    "entries": [{ "name": "Barreraak", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      { "name": "Barreraak", "maxCount": 1, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -525,7 +571,9 @@
     "team": 0,
     "homeRange": 15,
     "walkingRange": 20,
-    "entries": [{ "name": "NavreyNightEyes", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      { "name": "NavreyNightEyes", "maxCount": 1, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -573,7 +621,9 @@
     "team": 0,
     "homeRange": 7,
     "walkingRange": 7,
-    "entries": [{ "name": "IronBeetle", "maxCount": 1, "probability": 100 }]
+    "entries": [
+      { "name": "IronBeetle", "maxCount": 1, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -605,7 +655,9 @@
     "team": 0,
     "homeRange": 3,
     "walkingRange": 10,
-    "entries": [{ "name": "GreenGoblinAlchemist", "maxCount": 2, "probability": 100 }]
+    "entries": [
+      { "name": "GreenGoblinAlchemist", "maxCount": 2, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",
@@ -653,7 +705,9 @@
     "team": 0,
     "homeRange": 4,
     "walkingRange": 10,
-    "entries": [{ "name": "rotworm", "maxCount": 4, "probability": 100 }]
+    "entries": [
+      { "name": "rotworm", "maxCount": 4, "probability": 100 }
+    ]
   },
   {
     "type": "Spawner",

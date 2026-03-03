@@ -31,7 +31,7 @@ public partial class Blocker : Item
     private void SendGMItem(NetState ns)
     {
         // GM Packet
-        Span<byte> buffer = stackalloc byte[OutgoingEntityPackets.MaxWorldEntityPacketLength].InitializePacket();
+        var buffer = stackalloc byte[OutgoingEntityPackets.MaxWorldEntityPacketLength].InitializePacket();
 
         int length;
 

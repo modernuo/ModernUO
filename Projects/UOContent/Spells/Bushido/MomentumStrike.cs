@@ -41,7 +41,7 @@ namespace Server.Spells.Bushido
                 return;
             }
 
-            Mobile target = queue.PeekRandom();
+            var target = queue.PeekRandom();
 
             var damageBonus = attacker.Skills.Bushido.Value / 100.0;
 

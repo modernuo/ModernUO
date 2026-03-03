@@ -201,7 +201,8 @@ public partial class SalvageBag : Bag
         var salvaged = 0;
         var notSalvaged = 0;
 
-        foreach (var item in EnumerateItems())
+        using var queue = EnumerateItems();
+        foreach (var item in queue)
         {
             if (item?.Deleted != false)
             {
@@ -250,31 +251,37 @@ public partial class SalvageBag : Bag
         var salvaged = 0;
         var notSalvaged = 0;
 
-        foreach (var item in EnumerateItems())
+        using (var queue = EnumerateItems())
         {
-            if (item is not IScissorable scissorable)
+            foreach (var item in queue)
             {
-                continue;
-            }
+                if (item is not IScissorable scissorable)
+                {
+                    continue;
+                }
 
-            if (Scissors.CanScissor(from, scissorable) && scissorable.Scissor(from, scissors))
-            {
-                ++salvaged;
-            }
-            else
-            {
-                ++notSalvaged;
+                if (Scissors.CanScissor(from, scissorable) && scissorable.Scissor(from, scissors))
+                {
+                    ++salvaged;
+                }
+                else
+                {
+                    ++notSalvaged;
+                }
             }
         }
 
         // Salvaged: ~1_COUNT~/~2_NUM~ tailored items
         from.SendLocalizedMessage(1079974, $"{salvaged}\t{salvaged + notSalvaged}");
 
-        foreach (var item in EnumerateItems())
+        using (var queue = EnumerateItems())
         {
-            if (item.InTypeList(_clothTypes))
+            foreach (var item in queue)
             {
-                from.AddToBackpack(item);
+                if (item.InTypeList(_clothTypes))
+                {
+                    from.AddToBackpack(item);
+                }
             }
         }
     }

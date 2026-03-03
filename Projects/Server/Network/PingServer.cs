@@ -61,7 +61,7 @@ public static class PingServer
 
             if (ipep.Address.Equals(IPAddress.Any) || ipep.Address.Equals(IPAddress.IPv6Any))
             {
-                listeningAddresses.UnionWith(TcpServer.GetListeningAddresses(ipep));
+                listeningAddresses.UnionWith(NetState.GetListeningAddresses(ipep));
             }
             else
             {

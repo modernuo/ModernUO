@@ -1,6 +1,7 @@
 using ModernUO.Serialization;
 using Server.Engines.CannedEvil;
 using Server.Regions;
+using Server.Systems.FeatureFlags;
 using Server.Targeting;
 
 namespace Server.Multis;
@@ -66,64 +67,68 @@ public abstract partial class BaseBoatDeed : Item
         if (!IsChildOf(from.Backpack))
         {
             from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
+            return;
+        }
+
+        var map = from.Map;
+
+        if (map == null)
+        {
+            return;
+        }
+
+        if (!ContentFeatureFlags.BoatPlacement && from.AccessLevel < FeatureFlagSettings.RequiredAccessLevel)
+        {
+            from.SendMessage(0x22, "Boat placement is temporarily disabled.");
+        }
+
+        if (from.AccessLevel < AccessLevel.GameMaster && (map == Map.Ilshenar || map == Map.Malas))
+        {
+            from.SendLocalizedMessage(1043284); // A ship can not be created here.
+            return;
+        }
+
+        if (from.Region.IsPartOf<HouseRegion>() || BaseBoat.FindBoatAt(from.Location, from.Map) != null)
+        {
+            // You may not place a ship while on another ship or inside a house.
+            from.SendLocalizedMessage(1010568, null, 0x25);
+            return;
+        }
+
+        var boat = Boat;
+
+        if (boat == null)
+        {
+            return;
+        }
+
+        p = new Point3D(p.X - Offset.X, p.Y - Offset.Y, p.Z - Offset.Z);
+
+        if (BaseBoat.IsValidLocation(p, map) && boat.CanFit(p, map, boat.ItemID))
+        {
+            Delete();
+
+            boat.Owner = from;
+            boat.Anchored = true;
+
+            var keyValue = boat.CreateKeys(from);
+
+            if (boat.PPlank != null)
+            {
+                boat.PPlank.KeyValue = keyValue;
+            }
+
+            if (boat.SPlank != null)
+            {
+                boat.SPlank.KeyValue = keyValue;
+            }
+
+            boat.MoveToWorld(p, map);
         }
         else
         {
-            var map = from.Map;
-
-            if (map == null)
-            {
-                return;
-            }
-
-            if (from.AccessLevel < AccessLevel.GameMaster && (map == Map.Ilshenar || map == Map.Malas))
-            {
-                from.SendLocalizedMessage(1043284); // A ship can not be created here.
-                return;
-            }
-
-            if (from.Region.IsPartOf<HouseRegion>() || BaseBoat.FindBoatAt(from.Location, from.Map) != null)
-            {
-                // You may not place a ship while on another ship or inside a house.
-                from.SendLocalizedMessage(1010568, null, 0x25);
-                return;
-            }
-
-            var boat = Boat;
-
-            if (boat == null)
-            {
-                return;
-            }
-
-            p = new Point3D(p.X - Offset.X, p.Y - Offset.Y, p.Z - Offset.Z);
-
-            if (BaseBoat.IsValidLocation(p, map) && boat.CanFit(p, map, boat.ItemID))
-            {
-                Delete();
-
-                boat.Owner = from;
-                boat.Anchored = true;
-
-                var keyValue = boat.CreateKeys(from);
-
-                if (boat.PPlank != null)
-                {
-                    boat.PPlank.KeyValue = keyValue;
-                }
-
-                if (boat.SPlank != null)
-                {
-                    boat.SPlank.KeyValue = keyValue;
-                }
-
-                boat.MoveToWorld(p, map);
-            }
-            else
-            {
-                boat.Delete();
-                from.SendLocalizedMessage(1043284); // A ship can not be created here.
-            }
+            boat.Delete();
+            from.SendLocalizedMessage(1043284); // A ship can not be created here.
         }
     }
 

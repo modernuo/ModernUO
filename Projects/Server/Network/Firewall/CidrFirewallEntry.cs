@@ -52,7 +52,7 @@ public class CidrFirewallEntry : BaseFirewallEntry
 
     private static IPAddress ParseIPAddress(ReadOnlySpan<char> ipString, out int prefixLength)
     {
-        int slashIndex = ipString.IndexOf('/');
+        var slashIndex = ipString.IndexOf('/');
         var ipAddress = IPAddress.Parse(slashIndex > -1 ? ipString[..slashIndex] : ipString);
         var maxPrefixLength = ipAddress.AddressFamily == AddressFamily.InterNetworkV6 ? 128 : 32;
 

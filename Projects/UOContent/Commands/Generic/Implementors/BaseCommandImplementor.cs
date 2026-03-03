@@ -213,8 +213,6 @@ namespace Server.Commands.Generic
 
         public void RunCommand(Mobile from, object obj, BaseCommand command, string[] args)
         {
-            // try
-            // {
             var e = new CommandEventArgs(from, command.Commands[0], GenerateArgString(args), args);
 
             if (!command.ValidateArgs(this, e))
@@ -256,11 +254,6 @@ namespace Server.Commands.Generic
             }
 
             command.Flush(from, flushToLog);
-            // }
-            // catch ( Exception ex )
-            // {
-            // from.SendMessage( ex.Message );
-            // }
         }
 
         public virtual void Process(Mobile from, BaseCommand command, string[] args)

@@ -95,7 +95,7 @@ public static class UOClient
 
         if (File.Exists(path))
         {
-            using FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+            using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
             var buffer = GC.AllocateUninitializedArray<byte>((int)fs.Length, true);
             _ = fs.Read(buffer);
             // VS_VERSION_INFO (unicode)

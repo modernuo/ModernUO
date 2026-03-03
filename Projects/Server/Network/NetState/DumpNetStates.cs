@@ -32,7 +32,7 @@ public static class DumpNetStates
 
         foreach (var ns in NetState.Instances)
         {
-            file.WriteLine($"{ns}, {ns.ConnectedOn}, {ns.NextActivityCheck}, {ns.Connection.Connected}, {ns._protocolState}, {ns._parserState}");
+            file.WriteLine($"{ns}, {ns.ConnectedOn}, {ns.NextActivityCheck}, {ns.IsConnected}, {ns._protocolState}, {ns._parserState}");
         }
     }
 }

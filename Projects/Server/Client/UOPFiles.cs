@@ -22,7 +22,8 @@ namespace Server;
 public static class UOPFiles
 {
     public static Dictionary<int, UOPEntry> ReadUOPIndexes(
-        FileStream stream, string fileExt, int entryCount = 0x14000, int expectedVersion = -1, int precision = 8
+        FileStream stream, string fileExt, int entryCount = 0x14000, int expectedVersion = -1, int precision = 8,
+        Dictionary<ulong, UOPEntry> additionalHashes = null
     )
     {
         var reader = new BinaryReader(stream);
@@ -70,10 +71,22 @@ public static class UOPFiles
 
                 var compressed = reader.ReadInt16() == 1;
 
-                if (offset != 0 && hashes.TryGetValue(fileNameHash, out var fileIndex) && compressedLength > 0 &&
-                    decompressedLength > 0)
+                if (offset == 0 || compressedLength <= 0 || decompressedLength <= 0)
+                {
+                    continue;
+                }
+
+                if (hashes.TryGetValue(fileNameHash, out var fileIndex))
                 {
                     entries[fileIndex] = new UOPEntry(offset + headerLength, decompressedLength)
+                    {
+                        Compressed = compressed,
+                        CompressedSize = compressedLength
+                    };
+                }
+                else if (additionalHashes != null && additionalHashes.ContainsKey(fileNameHash))
+                {
+                    additionalHashes[fileNameHash] = new UOPEntry(offset + headerLength, decompressedLength)
                     {
                         Compressed = compressed,
                         CompressedSize = compressedLength

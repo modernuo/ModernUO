@@ -95,10 +95,10 @@ public static partial class GumpSystem
                 return;
             }
 
-            int switchByteCount = switchCount * 4;
+            var switchByteCount = switchCount * 4;
 
             // Read all the integers
-            ReadOnlySpan<int> switchBlock =
+            var switchBlock =
                 MemoryMarshal.Cast<byte, int>(reader.Buffer.Slice(reader.Position, switchByteCount));
 
             reader.Seek(switchByteCount, SeekOrigin.Current);

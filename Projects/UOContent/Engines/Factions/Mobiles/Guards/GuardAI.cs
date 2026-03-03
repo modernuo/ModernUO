@@ -778,7 +778,7 @@ namespace Server.Factions
 
                 if (spell != null && m_Guard.HitsMax - m_Guard.Hits + 10 > Utility.Random(100))
                 {
-                    Type type = spell switch
+                    var type = spell switch
                     {
                         GreaterHealSpell _ => typeof(BaseHealPotion),
                         CureSpell _        => typeof(BaseCurePotion),

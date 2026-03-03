@@ -1,0 +1,16 @@
+{
+  "version": 0,
+  "type": "Server.Engines.ConPVP.TournamentSignupItem",
+  "properties": [
+    {
+      "name": "Tournament",
+      "type": "Server.Engines.ConPVP.TournamentController",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "Registrar",
+      "type": "Server.Mobile",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}

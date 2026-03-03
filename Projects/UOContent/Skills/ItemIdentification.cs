@@ -37,7 +37,7 @@ public static class ItemIdentification
                 return;
             }
 
-            bool identified = false;
+            var identified = false;
 
             if (o is Item item)
             {

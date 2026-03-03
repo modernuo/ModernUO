@@ -91,7 +91,7 @@ namespace Server.Items
 
         public override void SendWorldPacketTo(NetState ns, ReadOnlySpan<byte> world = default)
         {
-            Span<byte> buffer = stackalloc byte[OutgoingEntityPackets.MaxWorldEntityPacketLength].InitializePacket();
+            var buffer = stackalloc byte[OutgoingEntityPackets.MaxWorldEntityPacketLength].InitializePacket();
             var length = OutgoingItemPackets.CreateWorldItem(buffer, this);
             // Use an itemid of a real container
             BinaryPrimitives.WriteUInt16BigEndian(buffer[7..9], (ushort)(_addon?.ItemID ?? 0x9AB));

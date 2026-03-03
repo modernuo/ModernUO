@@ -5,9 +5,36 @@ using Server.Json;
 
 namespace Server.Engines.Spawners;
 
-[SerializationGenerator(0)]
+[SerializationGenerator(1)]
 public partial class Spawner : BaseSpawner
 {
+    /// <summary>
+    /// When true, enables proactive spiral scanning to find valid spawn positions.
+    /// Only relevant when SpawnPositionMode is Automatic or Enabled.
+    /// </summary>
+    [SerializableFieldSaveFlag(0)]
+    private bool ShouldSerializeUseSpiralScan() => _useSpiralScan;
+
+    [SerializableField(0)]
+    [SerializedCommandProperty(AccessLevel.Developer)]
+    private bool _useSpiralScan;
+
+    [SerializableFieldSaveFlag(1)]
+    private bool ShouldSerializeSpawnBounds() => _spawnBounds != default;
+
+    [SerializableProperty(1)]
+    [CommandProperty(AccessLevel.Developer)]
+    public override Rectangle3D SpawnBounds
+    {
+        get => _spawnBounds;
+        set
+        {
+            _spawnBounds = value;
+            InvalidateProperties();
+            this.MarkDirty();
+        }
+    }
+
     [Constructible(AccessLevel.Developer)]
     public Spawner()
     {
@@ -20,126 +47,45 @@ public partial class Spawner : BaseSpawner
 
     [Constructible(AccessLevel.Developer)]
     public Spawner(
-        int amount, int minDelay, int maxDelay, int team, int homeRange,
+        int amount,
+        TimeSpan minDelay,
+        TimeSpan maxDelay,
+        int team = 0,
+        Rectangle3D spawnBounds = default,
         params ReadOnlySpan<string> spawnedNames
-    ) : this(
-        amount,
-        TimeSpan.FromMinutes(minDelay),
-        TimeSpan.FromMinutes(maxDelay),
-        team,
-        homeRange,
-        spawnedNames
-    )
-    {
-    }
-
-    [Constructible(AccessLevel.Developer)]
-    public Spawner(
-        int amount, TimeSpan minDelay, TimeSpan maxDelay, int team, int homeRange,
-        params ReadOnlySpan<string> spawnedNames
-    ) : base(amount, minDelay, maxDelay, team, homeRange, spawnedNames)
+    ) : base(amount, minDelay, maxDelay, team, spawnBounds, spawnedNames)
     {
     }
 
     public Spawner(DynamicJson json, JsonSerializerOptions options) : base(json, options)
     {
+        // Read spawnBounds (not in BaseSpawner to allow RegionSpawner to skip it)
+        if (json.GetProperty("spawnBounds", options, out Rectangle3D spawnBounds))
+        {
+            SpawnBounds = spawnBounds;
+        }
     }
 
-    public static bool IsValidWater(Map map, int x, int y, int z)
+    public override void ToJson(DynamicJson json, JsonSerializerOptions options)
     {
-        if (!Region.Find(new Point3D(x, y, z), map).AllowSpawn() || !map.CanFit(x, y, z, 16, false, true, false))
+        base.ToJson(json, options);
+
+        if (SpawnBounds != default)
         {
-            return false;
+            json.SetProperty("spawnBounds", options, SpawnBounds);
         }
-
-        var landTile = map.Tiles.GetLandTile(x, y);
-
-        if (landTile.Z == z && (TileData.LandTable[landTile.ID & TileData.MaxLandValue].Flags & TileFlag.Wet) != 0)
-        {
-            return true;
-        }
-
-        foreach (var staticTile in map.Tiles.GetStaticAndMultiTiles(x, y))
-        {
-            if (staticTile.Z == z && TileData.ItemTable[staticTile.ID & TileData.MaxItemValue].Wet)
-            {
-                return true;
-            }
-        }
-
-        return false;
     }
 
-    /*
-    public override bool OnDefragSpawn(ISpawnable spawned, bool remove)
+    public override Region Region => Region.Find(Location, Map);
+
+    protected override bool SupportsSpiralScan => _useSpiralScan;
+
+    protected override Rectangle3D GetBoundsForSpawnAttempt() => SpawnBounds;
+
+    protected override ReadOnlySpan<Rectangle3D> GetAllSpawnBounds() => new(ref _spawnBounds);
+
+    private void MigrateFrom(V0Content content)
     {
-      // To despawn a mob that was lured 4x away from its spawner
-      // TODO: Move this to a config
-      if (spawned is BaseCreature c && c.Combatant == null && c.GetDistanceToSqrt( Location ) > c.RangeHome * 4)
-      {
-        c.Delete();
-        remove = true;
-      }
-
-      return base.OnDefragSpawn(entry, spawned, remove);
-    }
-    */
-
-    public override Point3D GetSpawnPosition(ISpawnable spawned, Map map)
-    {
-        if (map == null || map == Map.Internal)
-        {
-            return Location;
-        }
-
-        bool waterMob, waterOnlyMob;
-
-        if (spawned is Mobile mob)
-        {
-            waterMob = mob.CanSwim;
-            waterOnlyMob = mob.CanSwim && mob.CantWalk;
-        }
-        else
-        {
-            waterMob = false;
-            waterOnlyMob = false;
-        }
-
-        // Try 10 times to find a valid location.
-        for (var i = 0; i < 10; i++)
-        {
-            var x = Location.X + (Utility.Random(HomeRange * 2 + 1) - HomeRange);
-            var y = Location.Y + (Utility.Random(HomeRange * 2 + 1) - HomeRange);
-
-            var mapZ = map.GetAverageZ(x, y);
-
-            if (waterMob)
-            {
-                if (IsValidWater(map, x, y, Z))
-                {
-                    return new Point3D(x, y, Z);
-                }
-
-                if (IsValidWater(map, x, y, mapZ))
-                {
-                    return new Point3D(x, y, mapZ);
-                }
-            }
-
-            if (!waterOnlyMob)
-            {
-                if (map.CanSpawnMobile(x, y, Z))
-                {
-                    return new Point3D(x, y, Z);
-                }
-
-                if (map.CanSpawnMobile(x, y, mapZ))
-                {
-                    return new Point3D(x, y, mapZ);
-                }
-            }
-        }
-
-        return HomeLocation;
+        // V0 had no fields in Spawner, new v1 field _useSpiralScan defaults to false
     }
 }

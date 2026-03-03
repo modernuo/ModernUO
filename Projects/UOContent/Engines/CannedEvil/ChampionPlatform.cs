@@ -61,7 +61,7 @@ public partial class ChampionPlatform : BaseAddon
 
     public void AddComponent(int id, int x, int y, int z)
     {
-        AddonComponent ac = new AddonComponent(id) { Hue = 0x497 };
+        var ac = new AddonComponent(id) { Hue = 0x497 };
         AddComponent(ac, x, y, z);
     }
 

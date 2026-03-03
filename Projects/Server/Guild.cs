@@ -97,7 +97,7 @@ public abstract class BaseGuild : ISerializable
         {
             var name = g.Name;
 
-            bool all = true;
+            var all = true;
             foreach (var t in words)
             {
                 if (name.InsensitiveIndexOf(t) == -1)

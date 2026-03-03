@@ -198,7 +198,7 @@ public partial class CannonAddon : BaseAddon
 
         for (var count = Utility.Random(3); count > 0; count--)
         {
-            Point3D location = new Point3D(
+            var location = new Point3D(
                 target.X + Utility.RandomMinMax(-1, 1),
                 target.Y + Utility.RandomMinMax(-1, 1),
                 target.Z

@@ -15,11 +15,11 @@ namespace Server.Commands
             {
                 if (Mobile.DragEffects)
                 {
-                    e.Mobile.SendMessage($"Drag effects are currently enabled.");
+                    e.Mobile.SendMessage("Drag effects are currently enabled.");
                 }
                 else
                 {
-                    e.Mobile.SendMessage($"Drag effects are currently disabled.");
+                    e.Mobile.SendMessage("Drag effects are currently disabled.");
                 }
             }
             else
@@ -28,11 +28,11 @@ namespace Server.Commands
 
                 if (Mobile.DragEffects)
                 {
-                    e.Mobile.SendMessage($"Drag effects have been enabled.");
+                    e.Mobile.SendMessage("Drag effects have been enabled.");
                 }
                 else
                 {
-                    e.Mobile.SendMessage($"Drag effects have been disabled.");
+                    e.Mobile.SendMessage("Drag effects have been disabled.");
                 }
             }
         }

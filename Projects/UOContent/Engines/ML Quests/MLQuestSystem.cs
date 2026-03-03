@@ -263,11 +263,11 @@ namespace Server.Engines.MLQuests
 
             if (enable)
             {
-                m.SendMessage($"Serialization for all quests is now enabled.");
+                m.SendMessage("Serialization for all quests is now enabled.");
             }
             else
             {
-                m.SendMessage($"Serialization for all quests is now disabled.");
+                m.SendMessage("Serialization for all quests is now disabled.");
             }
 
             if (AutoGenerateNew && !enable)

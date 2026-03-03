@@ -21,14 +21,13 @@ public partial class HousePlacementTool : Item
 
     public override void OnDoubleClick(Mobile from)
     {
-        if (IsChildOf(from.Backpack))
-        {
-            from.SendGump(new HousePlacementCategoryGump());
-        }
-        else
+        if (!IsChildOf(from.Backpack))
         {
             from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
+            return;
         }
+
+        from.SendGump(new HousePlacementCategoryGump());
     }
 }
 
@@ -234,7 +233,7 @@ public class NewHousePlacementTarget : MultiTarget
             return;
         }
 
-        Point3D p = ip switch
+        var p = ip switch
         {
             Item item => item.GetWorldTop(),
             Mobile m  => m.Location,

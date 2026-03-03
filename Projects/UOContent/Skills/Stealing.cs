@@ -414,8 +414,8 @@ public static class Stealing
             const int SkillCooldown = 10000;    // 10s
 
             // Calculate how much time has passed since the targeter was opened
-            int ticksSinceTargeter = (int)(Core.TickCount - (from.NextSkillTime - TargeterCooldown));
-            int remainingCooldown = Math.Max(0, SkillCooldown - ticksSinceTargeter);
+            var ticksSinceTargeter = (int)(Core.TickCount - (from.NextSkillTime - TargeterCooldown));
+            var remainingCooldown = Math.Max(0, SkillCooldown - ticksSinceTargeter);
             from.NextSkillTime = Core.TickCount + remainingCooldown;
         }
     }

@@ -41,6 +41,8 @@ public class CommandEventArgs
 
     public string[] Arguments { get; }
 
+    private Dictionary<string, object> _context;
+
     public int Length => Arguments.Length;
 
     public string GetString(int index) => index < 0 || index >= Arguments.Length ? "" : Arguments[index];
@@ -57,6 +59,25 @@ public class CommandEventArgs
 
     public TimeSpan GetTimeSpan(int index) =>
         index < 0 || index >= Arguments.Length ? TimeSpan.Zero : Utility.ToTimeSpan(Arguments[index]);
+
+    public bool GetContext<T>(string key, out T t)
+    {
+        if (_context != null && _context.TryGetValue(key, out var value) && value is T tValue)
+        {
+            t = tValue;
+            return true;
+        }
+
+        t = default;
+        return false;
+    }
+
+    public T SetContext<T>(string key, T value)
+    {
+        _context ??= new Dictionary<string, object>();
+        _context[key] = value;
+        return value;
+    }
 }
 
 public static partial class EventSink

@@ -67,7 +67,8 @@ namespace Server.Commands.Generic
 
                 var list = new List<object>();
 
-                foreach (var item in cont.EnumerateItems(true, ext.IsValid))
+                using var queue = cont.EnumerateItems(true, ext.IsValid);
+                foreach (var item in queue)
                 {
                     list.Add(item);
                 }

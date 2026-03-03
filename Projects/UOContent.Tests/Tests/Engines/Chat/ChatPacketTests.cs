@@ -5,6 +5,7 @@ using Xunit;
 
 namespace UOContent.Tests;
 
+[Collection("Sequential UOContent Tests")]
 public class ChatPacketTests
 {
     [Theory]
@@ -14,10 +15,10 @@ public class ChatPacketTests
     {
         var expected = new ChatMessagePacket(lang, number, param1, param2).Compile();
 
-        var ns = PacketTestUtilities.CreateTestNetState();
+        using var ns = PacketTestUtilities.CreateTestNetState();
         ns.SendChatMessage(lang, number, param1, param2);
 
-        var result = ns.SendPipe.Reader.AvailableToRead();
+        var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
     }
 }

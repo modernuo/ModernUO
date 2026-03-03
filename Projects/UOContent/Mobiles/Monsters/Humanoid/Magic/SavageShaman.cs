@@ -235,7 +235,7 @@ namespace Server.Mobiles
                 total -= (dist - 3.0) * 10.0;
             }
 
-            int level = total switch
+            var level = total switch
             {
                 >= 200.0 => Utility.Random(10) == 0 ? 3 : 2,
                 > 170.0  => 2,

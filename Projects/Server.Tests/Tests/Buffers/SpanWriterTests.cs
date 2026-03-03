@@ -3,7 +3,7 @@ using System.Buffers;
 using System.IO;
 using Xunit;
 
-namespace Server.Tests;
+namespace Server.Tests.Buffers;
 
 public class SpanWriterTests
 {

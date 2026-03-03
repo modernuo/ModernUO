@@ -64,7 +64,7 @@ public static class HexStringConverter
         var charsWritten = 0;
         fixed (char* resultP = result)
         {
-            for (int i = 0; i < bytes.Length; i++)
+            for (var i = 0; i < bytes.Length; i++)
             {
                 var resultP2 = (uint*)(resultP + charsWritten);
                 *resultP2 = m_Lookup32Chars[bytes[i]];

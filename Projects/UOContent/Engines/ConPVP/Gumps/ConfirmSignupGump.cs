@@ -1,12 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 using Server.Factions;
 using Server.Gumps;
 using Server.Mobiles;
 using Server.Network;
 using Server.Targeting;
+using Server.Text;
 
 namespace Server.Engines.ConPVP
 {
@@ -92,7 +92,7 @@ namespace Server.Engines.ConPVP
             AddImage(215, -43, 0xEE40);
             // AddImage( 330, 141, 0x8BA );
 
-            var sb = new StringBuilder();
+            using var sb = ValueStringBuilder.Create(128);
 
             if (tourney.TourneyType == TourneyType.FreeForAll)
             {
@@ -127,12 +127,13 @@ namespace Server.Engines.ConPVP
 
             if (tourney.EventController != null)
             {
-                sb.Append(' ').Append(tourney.EventController.Title);
+                sb.Append(' ');
+                sb.Append(tourney.EventController.Title);
             }
 
             sb.Append(" Tournament Signup");
 
-            AddBorderedText(22, 22, 294, 20, sb.ToString().Center(), LabelColor32, BlackColor32);
+            AddBorderedText(22, 22, 294, 20, sb.AsSpan().Center(), LabelColor32, BlackColor32);
             AddBorderedText(
                 22,
                 50,

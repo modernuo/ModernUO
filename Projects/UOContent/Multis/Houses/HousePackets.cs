@@ -119,7 +119,7 @@ public static class HousePackets
             int z = mte.OffsetZ;
             var floor = TileData.ItemTable[mte.ItemId & TileData.MaxItemValue].Height <= 0;
 
-            int plane = z switch
+            var plane = z switch
             {
                 0  => 0,
                 7  => 1,
@@ -195,7 +195,7 @@ public static class HousePackets
                 continue;
             }
 
-            int size = i switch
+            var size = i switch
             {
                 0   => planeLength,
                 < 5 => (width - 1) * (height - 2) * 2,
@@ -208,7 +208,7 @@ public static class HousePackets
 
             writer.Write((byte)(0x20 | i));
             writer.Write((byte)size);
-            WritePacked(source, ref writer, out int destLength);
+            WritePacked(source, ref writer, out var destLength);
 
             totalLength += 4 + destLength;
         }
@@ -224,7 +224,7 @@ public static class HousePackets
 
             writer.Write((byte)(9 + index++));
             writer.Write((byte)size);
-            WritePacked(source, ref writer, out int destLength);
+            WritePacked(source, ref writer, out var destLength);
             totalLength += 4 + destLength;
             totalPlanes++;
         }

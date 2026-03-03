@@ -31,14 +31,14 @@ public static class MapUO
 
     public static void QueryGuildMemberLocations(NetState state, SpanReader reader)
     {
-        Mobile from = state.Mobile;
+        var from = state.Mobile;
 
         state.SendGuildMemberLocations(from, from.Guild as Guild, reader.ReadBoolean());
     }
 
     public static void QueryPartyMemberLocations(NetState state, SpanReader reader)
     {
-        Mobile from = state.Mobile;
+        var from = state.Mobile;
         var party = Party.Get(from);
 
         if (party != null)
@@ -62,7 +62,7 @@ public static class MapUO
         writer.Write((byte)0x02); // Command
         writer.Write(count > 0 && sendLocations);
 
-        bool sendPacket = false;
+        var sendPacket = false;
         for (var i = 0; i < count; i++)
         {
             var m = guild!.Members[i];
@@ -121,11 +121,11 @@ public static class MapUO
         writer.Seek(2, SeekOrigin.Current);
         writer.Write((byte)0x01); // Command
 
-        bool sendPacket = false;
+        var sendPacket = false;
         for (var i = 0; i < count; i++)
         {
             var pmi = party!.Members[i];
-            Mobile mob = pmi?.Mobile;
+            var mob = pmi?.Mobile;
 
             if (mob?.NetState == null || mob == from)
             {

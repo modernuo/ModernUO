@@ -37,7 +37,7 @@ public static class OutgoingMapPackets
             writer.Write((ushort)0x18); // Subpacket
             writer.Write(4);
 
-            for (int i = 0; i < 4; i++)
+            for (var i = 0; i < 4; i++)
             {
                 var map = Map.Maps[i];
 

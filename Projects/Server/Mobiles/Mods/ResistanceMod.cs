@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: ResistanceMod.cs                                                *
  *                                                                       *
@@ -13,6 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System.Runtime.CompilerServices;
 using ModernUO.Serialization;
 
 namespace Server;
@@ -20,6 +21,20 @@ namespace Server;
 [SerializationGenerator(0)]
 public partial class ResistanceMod : MobileMod
 {
+    [SerializableField(0)]
+    private ResistanceType _type;
+
+    [SerializableFieldChanged(0)]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void OnTypeChanged(ResistanceType oldValue, ResistanceType newValue) => Owner?.UpdateResistances();
+
+    [SerializableField(1)]
+    private int _offset;
+
+    [SerializableFieldChanged(1)]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void OnOffsetChanged(int oldValue, int newValue) => Owner?.UpdateResistances();
+
     public ResistanceMod(Mobile owner) : base(owner)
     {
     }
@@ -28,37 +43,5 @@ public partial class ResistanceMod : MobileMod
     {
         _type = type;
         _offset = offset;
-    }
-
-    [SerializableProperty(0)]
-    public ResistanceType Type
-    {
-        get => _type;
-        set
-        {
-            if (_type != value)
-            {
-                _type = value;
-
-                Owner?.UpdateResistances();
-                MarkDirty();
-            }
-        }
-    }
-
-    [SerializableProperty(1)]
-    public int Offset
-    {
-        get => _offset;
-        set
-        {
-            if (_offset != value)
-            {
-                _offset = value;
-
-                Owner?.UpdateResistances();
-                MarkDirty();
-            }
-        }
     }
 }

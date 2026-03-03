@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Text;
 using Server.Commands.Generic;
@@ -300,7 +299,7 @@ namespace Server.Commands
                 $"{m.AccessLevel} {CommandLogging.Format(m)} playing sound {index} (toAll={toAll})"
             );
 
-            Span<byte> buffer = stackalloc byte[OutgoingEffectPackets.SoundPacketLength].InitializePacket();
+            var buffer = stackalloc byte[OutgoingEffectPackets.SoundPacketLength].InitializePacket();
 
             foreach (var state in m.GetClientsInRange(12))
             {
@@ -666,11 +665,11 @@ namespace Server.Commands
 
             if (m.AutoPageNotify)
             {
-                m.SendMessage($"Your auto-page-notify has been turned on.");
+                m.SendMessage("Your auto-page-notify has been turned on.");
             }
             else
             {
-                m.SendMessage($"Your auto-page-notify has been turned off.");
+                m.SendMessage("Your auto-page-notify has been turned off.");
             }
         }
 

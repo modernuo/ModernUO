@@ -76,10 +76,10 @@ public static class HashUtility
         fixed (char* src = &str.GetPinnableReference())
         {
             uint hash1 = (5381 << 16) + 5381;
-            uint hash2 = hash1;
+            var hash2 = hash1;
 
-            uint* ptr = (uint*)src;
-            int length = str.Length;
+            var ptr = (uint*)src;
+            var length = str.Length;
 
             while (length > 2)
             {

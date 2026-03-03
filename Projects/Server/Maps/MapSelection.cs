@@ -88,7 +88,7 @@ public static class MapSelection
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool MoveNext()
         {
-            MapSelectionFlags[] localList = _allMaps;
+            var localList = _allMaps;
 
             while ((uint)_index < (uint)localList.Length)
             {

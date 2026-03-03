@@ -370,7 +370,7 @@ public partial class CharacterStatue : Mobile, IRewardItem
         }
 
         ProcessDelta();
-        Span<byte> animPacket = stackalloc byte[CharacterStatuePackets.StatueAnimationPacketLength].InitializePacket();
+        var animPacket = stackalloc byte[CharacterStatuePackets.StatueAnimationPacketLength].InitializePacket();
 
         foreach (var state in Map.GetClientsInRange(Location))
         {

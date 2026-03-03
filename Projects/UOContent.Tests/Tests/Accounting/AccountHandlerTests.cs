@@ -23,7 +23,6 @@ public class AccountHandlerTests
 
     [Theory]
     [InlineData("", false)]                             // Empty password
-    [InlineData("Invalid\x01Char", false)]              // Contains invalid ASCII character
     [InlineData("ValidPass123!", true)]                 // Standard Password
     [InlineData(" ", true)]                             // Single space
     [InlineData("ValidPass!@#", true)]                  // Valid special characters

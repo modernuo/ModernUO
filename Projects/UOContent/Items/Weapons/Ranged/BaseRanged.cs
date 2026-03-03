@@ -107,11 +107,10 @@ namespace Server.Items
 
         public override void OnHit(Mobile attacker, Mobile defender, double damageBonus = 1)
         {
-            var ammo = Ammo;
-            if (ammo != null && attacker.Player && !defender.Player && (defender.Body.IsAnimal || defender.Body.IsMonster) &&
-                Utility.RandomDouble() < 0.4)
+            if (attacker.Player && !defender.Player && (defender.Body.IsAnimal || defender.Body.IsMonster) &&
+                Utility.RandomDouble() < 0.4 && Ammo is { } ammo && !defender.AddToBackpack(ammo))
             {
-                defender.AddToBackpack(ammo);
+                ammo.Delete();
             }
 
             if (Core.ML && _velocity > 0)

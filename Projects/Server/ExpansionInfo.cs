@@ -193,7 +193,7 @@ public class ExpansionInfo
 
     public static void StoreMapSelection(MapSelectionFlags mapSelectionFlags, Expansion expansion)
     {
-        int expansionIndex = (int)expansion;
+        var expansionIndex = (int)expansion;
         Table[expansionIndex].MapSelectionFlags = mapSelectionFlags;
     }
 
@@ -207,14 +207,14 @@ public class ExpansionInfo
     {
         var pathToExpansionFile = Path.Combine(Core.BaseDirectory, ExpansionConfigurationPath);
 
-        ExpansionInfo expansionConfig = JsonConfig.Deserialize<ExpansionInfo>(pathToExpansionFile);
+        var expansionConfig = JsonConfig.Deserialize<ExpansionInfo>(pathToExpansionFile);
         if (expansionConfig == null)
         {
             expansion = Expansion.None;
             return false;
         }
 
-        int currentExpansionIndex = expansionConfig.Id;
+        var currentExpansionIndex = expansionConfig.Id;
         Table[currentExpansionIndex] = expansionConfig;
         expansion = (Expansion)currentExpansionIndex;
         return true;

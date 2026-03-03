@@ -52,7 +52,7 @@ namespace Server.Engines.PartySystem
 
         public void OnStamChanged(Mobile m)
         {
-            Span<byte> p = stackalloc byte[OutgoingMobilePackets.MobileAttributePacketLength].InitializePacket();
+            var p = stackalloc byte[OutgoingMobilePackets.MobileAttributePacketLength].InitializePacket();
             OutgoingMobilePackets.CreateMobileStam(p, m, true);
 
             for (var i = 0; i < Members.Count; ++i)
@@ -69,7 +69,7 @@ namespace Server.Engines.PartySystem
 
         public void OnManaChanged(Mobile m)
         {
-            Span<byte> p = stackalloc byte[OutgoingMobilePackets.MobileAttributePacketLength].InitializePacket();
+            var p = stackalloc byte[OutgoingMobilePackets.MobileAttributePacketLength].InitializePacket();
             OutgoingMobilePackets.CreateMobileMana(p, m, true);
 
             for (var i = 0; i < Members.Count; ++i)
@@ -198,9 +198,9 @@ namespace Server.Engines.PartySystem
             Members.Add(new PartyMemberInfo(m));
             m.Party = this;
 
-            Span<byte> memberList =
+            var memberList =
                 stackalloc byte[PartyPackets.GetPartyMemberListPacketLength(Count)].InitializePacket();
-            Span<byte> attrsPacket = stackalloc byte[OutgoingMobilePackets.MobileAttributesPacketLength].InitializePacket();
+            var attrsPacket = stackalloc byte[OutgoingMobilePackets.MobileAttributesPacketLength].InitializePacket();
 
             for (var i = 0; i < Members.Count; ++i)
             {
@@ -230,7 +230,7 @@ namespace Server.Engines.PartySystem
                 return;
             }
 
-            Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedAffixLength(from.Name, "")]
+            var buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedAffixLength(from.Name, "")]
                 .InitializePacket();
             var length = OutgoingMessagePackets.CreateMessageLocalizedAffix(
                 buffer,
@@ -302,7 +302,7 @@ namespace Server.Engines.PartySystem
 
             if (removed)
             {
-                Span<byte> removeMember =
+                var removeMember =
                     stackalloc byte[PartyPackets.GetPartyRemoveMemberPacketLength(Count)].InitializePacket();
 
                 // Send empty party to the player removed
@@ -386,7 +386,7 @@ namespace Server.Engines.PartySystem
 
         public void SendToAll(int number, string args = "", int hue = 0x3B2)
         {
-            Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedLength(args)].InitializePacket();
+            var buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedLength(args)].InitializePacket();
 
             var length = OutgoingMessagePackets.CreateMessageLocalized(
                 buffer,
@@ -401,7 +401,7 @@ namespace Server.Engines.PartySystem
 
         public void SendPublicMessage(Mobile from, string text)
         {
-            Span<byte> textMessagePacket =
+            var textMessagePacket =
                 stackalloc byte[PartyPackets.GetPartyTextMessagePacketLength(text)].InitializePacket();
             PartyPackets.CreatePartyTextMessage(textMessagePacket, from.Serial, text, true);
             SendToAll(textMessagePacket);
@@ -419,7 +419,7 @@ namespace Server.Engines.PartySystem
 
         private void SendToStaffMessage(Mobile from, string text)
         {
-            Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)].InitializePacket();
+            var buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)].InitializePacket();
 
             foreach (var ns in from.GetClientsInRange(8))
             {
@@ -458,7 +458,7 @@ namespace Server.Engines.PartySystem
                 return;
             }
 
-            Span<byte> buffer =
+            var buffer =
                 stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)].InitializePacket();
             OutgoingMessagePackets.CreateMessage(
                 buffer, Serial.MinusOne, -1, MessageType.Regular, 0x3B2,
@@ -504,9 +504,9 @@ namespace Server.Engines.PartySystem
                 m_Mobile.SendLocalizedMessage(1005437); // You have rejoined the party.
                 m_Mobile.NetState.SendPartyMemberList(p);
 
-                Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedAffixLength(m_Mobile.Name, "")]
+                var buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedAffixLength(m_Mobile.Name, "")]
                     .InitializePacket();
-                Span<byte> attrsPacket = stackalloc byte[OutgoingMobilePackets.MobileAttributesPacketLength].InitializePacket();
+                var attrsPacket = stackalloc byte[OutgoingMobilePackets.MobileAttributesPacketLength].InitializePacket();
 
                 var ns = m_Mobile.NetState;
 

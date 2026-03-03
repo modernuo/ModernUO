@@ -311,7 +311,7 @@ namespace Server.Guilds
 
         public void AllianceChat(Mobile from, int hue, string text)
         {
-            Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)].InitializePacket();
+            var buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)].InitializePacket();
 
             for (var i = 0; i < m_Members.Count; i++)
             {
@@ -1115,7 +1115,7 @@ namespace Server.Guilds
 
         public static void Tidy(List<Guild> list)
         {
-            for (int i = list.Count - 1; i >= 0; i--)
+            for (var i = list.Count - 1; i >= 0; i--)
             {
                 var entry = list[i];
                 if (entry?.Disbanded != false)
@@ -1468,7 +1468,7 @@ namespace Server.Guilds
 
         public void GuildChat(Mobile from, int hue, string text)
         {
-            Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)].InitializePacket();
+            var buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)].InitializePacket();
 
             for (var i = 0; i < Members.Count; i++)
             {

@@ -23,7 +23,7 @@ namespace Server.Targets
                 return;
             }
 
-            Point3D p = ip switch
+            var p = ip switch
             {
                 Item i => i.GetWorldTop(),
                 Mobile m  => m.Location,

@@ -39,6 +39,7 @@
 /.idea
 /.vs
 /.vscode
+/.claude
 
 .DS_Store
 

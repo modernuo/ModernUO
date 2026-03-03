@@ -267,7 +267,7 @@ namespace Server.Commands.Generic
         {
             var inverse = false;
 
-            Type type = m_IgnoreCase ? typeof(InsensitiveStringHelpers) : typeof(OrdinalStringHelpers);
+            var type = m_IgnoreCase ? typeof(InsensitiveStringHelpers) : typeof(OrdinalStringHelpers);
             string methodName;
 
             switch (m_Operator)

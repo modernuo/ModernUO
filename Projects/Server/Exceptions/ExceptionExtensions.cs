@@ -28,14 +28,14 @@ public static class ExceptionExtensions
 
     private static Func<Exception, StackTrace, Exception> _createStackTraceMethod()
     {
-        ParameterExpression target = Expression.Parameter(typeof(Exception));
-        ParameterExpression stack = Expression.Parameter(typeof(StackTrace));
-        Type traceFormatType = typeof(StackTrace).GetNestedType("TraceFormat", BindingFlags.NonPublic);
-        MethodInfo toString = typeof(StackTrace).GetMethod("ToString", BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { traceFormatType }, null);
-        object normalTraceFormat = Enum.GetValues(traceFormatType!).GetValue(0);
-        MethodCallExpression stackTraceString = Expression.Call(stack, toString!, Expression.Constant(normalTraceFormat, traceFormatType));
-        FieldInfo stackTraceStringField = typeof(Exception).GetField("_stackTraceString", BindingFlags.NonPublic | BindingFlags.Instance);
-        BinaryExpression assign = Expression.Assign(Expression.Field(target, stackTraceStringField!), stackTraceString);
+        var target = Expression.Parameter(typeof(Exception));
+        var stack = Expression.Parameter(typeof(StackTrace));
+        var traceFormatType = typeof(StackTrace).GetNestedType("TraceFormat", BindingFlags.NonPublic);
+        var toString = typeof(StackTrace).GetMethod("ToString", BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { traceFormatType }, null);
+        var normalTraceFormat = Enum.GetValues(traceFormatType!).GetValue(0);
+        var stackTraceString = Expression.Call(stack, toString!, Expression.Constant(normalTraceFormat, traceFormatType));
+        var stackTraceStringField = typeof(Exception).GetField("_stackTraceString", BindingFlags.NonPublic | BindingFlags.Instance);
+        var assign = Expression.Assign(Expression.Field(target, stackTraceStringField!), stackTraceString);
         return Expression.Lambda<Func<Exception, StackTrace, Exception>>(Expression.Block(assign, target), target, stack).Compile();
     }
 }

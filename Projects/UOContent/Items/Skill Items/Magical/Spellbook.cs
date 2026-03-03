@@ -4,9 +4,11 @@ using ModernUO.Serialization;
 using Server.Commands;
 using Server.Engines.Craft;
 using Server.Ethics;
+using Server.Mobiles;
 using Server.Multis;
 using Server.Network;
 using Server.Spells;
+using Server.Systems.FeatureFlags;
 using Server.Targeting;
 
 namespace Server.Items;
@@ -304,6 +306,14 @@ public partial class Spellbook : Item, ICraftable, ISlayer, IAosItem
         if (!DesignContext.Check(from))
         {
             return; // They are customizing
+        }
+
+        // Early rejection by spell ID before instantiation
+        if (from is PlayerMobile { AccessLevel: < AccessLevel.Administrator }
+            && FeatureFlagManager.IsSpellBlocked(spellID, out var reason))
+        {
+            from.SendMessage(0x22, reason);
+            return;
         }
 
         var book = item as Spellbook;

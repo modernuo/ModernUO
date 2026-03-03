@@ -10,18 +10,31 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
           python-version: 3.x
-      - run: pip install mkdocs-material
-      - run: mkdocs gh-deploy --force
-      - name: Extract commands web file
+
+      - name: Install mkdocs-material
+        run: pip install mkdocs-material
+
+      - name: Build mkdocs site
+        run: mkdocs build --strict
+
+      - name: Build packets documentation
+        shell: pwsh
+        run: ./docs/tools/build-packets.ps1
+
+      - name: Copy commands and packets to site
         run: |
-          7z x ./docs/commands/commands.7z -o./docs/commands
-          rm ./docs/commands/commands.7z
-      - name: Deploy commands file
+          cp ./docs/commands/commands.html ./site/
+          cp ./docs/packets/packets.html ./site/
+
+      - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: ./docs/commands
-          clean: false
-          force: false
+          folder: ./site
+          branch: gh-pages
+          clean: true
+          clean-exclude: |
+            .nojekyll

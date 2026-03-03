@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.Serialization;
 using Server.Items;
 
 namespace Server.Mobiles
 {
-    public class GenericBuyInfo : IBuyItemInfo
+    public partial class GenericBuyInfo : IBuyItemInfo
     {
         private int m_Amount;
         private IEntity m_DisplayEntity;
@@ -164,33 +165,32 @@ namespace Server.Mobiles
             return m_DisplayEntity;
         }
 
-        private class DisplayCache : Container
+        [SerializationGenerator(0, false)]
+        private partial class DisplayCache : Container
         {
-            private static DisplayCache m_Cache;
-            private List<Mobile> m_Mobiles;
+            private static DisplayCache _cache;
+
+            [SerializableField(0)]
+            private List<Mobile> _mobiles;
 
             private Dictionary<Type, IEntity> m_Table;
 
             private DisplayCache() : base(0)
             {
                 m_Table = new Dictionary<Type, IEntity>();
-                m_Mobiles = new List<Mobile>();
-            }
-
-            public DisplayCache(Serial serial) : base(serial)
-            {
+                _mobiles = new List<Mobile>();
             }
 
             public static DisplayCache Cache
             {
                 get
                 {
-                    if (m_Cache?.Deleted != false)
+                    if (_cache?.Deleted != false)
                     {
-                        m_Cache = new DisplayCache();
+                        _cache = new DisplayCache();
                     }
 
-                    return m_Cache;
+                    return _cache;
                 }
             }
 
@@ -213,20 +213,18 @@ namespace Server.Mobiles
                 }
                 else if (obj is Mobile mobile)
                 {
-                    m_Mobiles.Add(mobile);
+                    _mobiles.Add(mobile);
                 }
             }
 
-            public override void OnAfterDelete()
+            private void ClearContents()
             {
-                base.OnAfterDelete();
-
-                for (var i = 0; i < m_Mobiles.Count; ++i)
+                for (var i = 0; i < _mobiles.Count; ++i)
                 {
-                    m_Mobiles[i].Delete();
+                    _mobiles[i].Delete();
                 }
 
-                m_Mobiles.Clear();
+                _mobiles.Clear();
 
                 for (var i = Items.Count - 1; i >= 0; --i)
                 {
@@ -235,44 +233,36 @@ namespace Server.Mobiles
                         Items[i].Delete();
                     }
                 }
+            }
 
-                if (m_Cache == this)
+            public override void OnAfterDelete()
+            {
+                base.OnAfterDelete();
+
+                ClearContents();
+
+                if (_cache == this)
                 {
-                    m_Cache = null;
+                    _cache = null;
                 }
             }
 
-            public override void Serialize(IGenericWriter writer)
+            [AfterDeserialization]
+            private void AfterDeserialization()
             {
-                base.Serialize(writer);
-
-                writer.Write(0); // version
-
-                writer.Write(m_Mobiles);
-            }
-
-            public override void Deserialize(IGenericReader reader)
-            {
-                base.Deserialize(reader);
-
-                var version = reader.ReadInt();
-
-                List<IEntity> entities = [..Items];
-                entities.AddRange(reader.ReadEntityList<Mobile>());
-
-                m_Mobiles = new List<Mobile>(); // This cannot be null in case it is referenced before disposing
-                m_Table = new Dictionary<Type, IEntity>();
+                if (_cache == this && Items.Count <= 0 && _mobiles.Count <= 0)
+                {
+                    return;
+                }
 
                 Timer.StartTimer(() =>
                     {
-                        foreach (var entity in entities)
-                        {
-                            entity.Delete();
-                        }
+                        ClearContents();
 
-                        if (m_Cache == null)
+                        if (_cache == null)
                         {
-                            m_Cache = this;
+                            _cache = this;
+                            m_Table = [];
                         }
                         else
                         {

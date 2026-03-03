@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Server.Commands.Generic;
@@ -11,6 +12,7 @@ public static class HelpInfo
 {
     private static List<CommandInfo> _sortedHelpInfo;
     private static Dictionary<string, CommandInfo> _helpInfos;
+    private static Dictionary<AccessLevel, List<CommandInfo>> _accessLevelCache;
 
     public static Dictionary<string, CommandInfo> HelpInfos
     {
@@ -36,6 +38,28 @@ public static class HelpInfo
 
             return _sortedHelpInfo;
         }
+    }
+
+    public static List<CommandInfo> GetCommandsForAccessLevel(AccessLevel accessLevel)
+    {
+        _accessLevelCache ??= [];
+
+        if (_accessLevelCache.TryGetValue(accessLevel, out var cached))
+        {
+            return cached;
+        }
+
+        var list = new List<CommandInfo>();
+        foreach (var c in SortedHelpInfo)
+        {
+            if (accessLevel >= c.AccessLevel)
+            {
+                list.Add(c);
+            }
+        }
+
+        _accessLevelCache[accessLevel] = list;
+        return list;
     }
 
     public static void Configure()
@@ -74,7 +98,7 @@ public static class HelpInfo
             e.Mobile.SendMessage($"Command '{arg}' not found!");
         }
 
-        e.Mobile.SendGump(new CommandListGump(0, e.Mobile, null));
+        e.Mobile.SendGump(new CommandListGump(0, e.Mobile));
     }
 
     public static void FillTable()
@@ -88,23 +112,30 @@ public static class HelpInfo
 
             var mi = e.Handler.Method;
 
-            var usageAttr = mi.GetCustomAttribute(typeof(UsageAttribute), false) as UsageAttribute;
+            var usageAttr = mi.GetCustomAttribute<UsageAttribute>(false);
             var usage = usageAttr?.Usage;
 
-            var descAttr = mi.GetCustomAttribute(typeof(DescriptionAttribute), false) as DescriptionAttribute;
-            var desc = descAttr?.Description
-                .ReplaceOrdinal("<", "(")
-                .ReplaceOrdinal(">", ")");
+            var descAttr = mi.GetCustomAttribute<DescriptionAttribute>(false);
+            var desc = descAttr?.Description.FixHtml();
 
             if (e.Handler.Target != null && usage == null && desc == null)
             {
                 continue;
             }
 
-            var aliasesAttr = mi.GetCustomAttribute(typeof(AliasesAttribute), false) as AliasesAttribute;
+            var aliasesAttr = mi.GetCustomAttribute<AliasesAttribute>(false);
             var aliases = aliasesAttr?.Aliases;
 
-            list.Add(new CommandInfo(e.AccessLevel, e.Command, aliases, usage ?? e.Command, null, desc ?? "No description available."));
+            list.Add(
+                new CommandInfo(
+                    e.AccessLevel,
+                    e.Command,
+                    aliases,
+                    usage ?? e.Command,
+                    null,
+                    desc ?? "No description available."
+                )
+            );
         }
 
         for (var i = 0; i < TargetCommands.AllCommands.Count; ++i)
@@ -128,10 +159,6 @@ public static class HelpInfo
                 aliases[j] = cmds[j + 1];
             }
 
-            desc = desc
-                .ReplaceOrdinal("<", "(")
-                .ReplaceOrdinal(">", ")") ?? "No description available.";
-
             List<string> modsList = [];
 
             foreach (var baseImpl in BaseCommandImplementor.Implementors)
@@ -144,7 +171,16 @@ public static class HelpInfo
 
             var modifiers = modsList.ToArray();
 
-            list.Add(new CommandInfo(command.AccessLevel, cmd, aliases, usage, modifiers, desc));
+            list.Add(
+                new CommandInfo(
+                    command.AccessLevel,
+                    cmd,
+                    aliases,
+                    usage,
+                    modifiers,
+                    desc.FixHtml() ?? "No description available."
+                )
+            );
         }
 
         var commandImpls = BaseCommandImplementor.Implementors;
@@ -165,10 +201,7 @@ public static class HelpInfo
                 aliases[j] = cmds[j + 1];
             }
 
-            desc = desc
-                .ReplaceOrdinal("<", ")")
-                .ReplaceOrdinal(">", ")");
-
+            desc = desc.FixHtml();
             list.Add(new CommandInfo(command.AccessLevel, cmd, aliases, usage, null, desc));
         }
 
@@ -183,163 +216,196 @@ public static class HelpInfo
         }
     }
 
-    public class CommandListGump : BaseGridGump
+    public class CommandListGump : DynamicGump
     {
         private const int EntriesPerPage = 15;
-        private readonly List<CommandInfo> _list;
 
-        private readonly int _page;
+        // Layout constants matching BaseGridGump defaults
+        private const int ContentWidth = 360;  // 20 + 320 + 20
+        private const int MaxRows = 16;        // 1 header + 15 entries
+        private const string ColumnSpec = "20 320 20";
 
-        public CommandListGump(int page, Mobile from, List<CommandInfo> list) : base(30, 30)
+        private static readonly GridEntryStyle Style = GridEntryStyle.Default;
+
+        private AccessLevel _accessLevel;
+        private int _page;
+
+        public override bool Singleton => true;
+
+        public CommandListGump(int page, Mobile from) : base(30, 30)
         {
             _page = page;
+            _accessLevel = from.AccessLevel;
+        }
 
-            if (list == null)
-            {
-                _list = [];
+        protected override void BuildLayout(ref DynamicGumpBuilder builder)
+        {
+            var list = GetCommandsForAccessLevel(_accessLevel);
+            var totalWidth = Style.GetTotalWidth(ContentWidth);
+            var totalHeight = Style.GetTotalHeight(MaxRows);
 
-                foreach (var c in SortedHelpInfo)
-                {
-                    if (from.AccessLevel >= c.AccessLevel)
-                    {
-                        _list.Add(c);
-                    }
-                }
-            }
-            else
-            {
-                _list = list;
-            }
+            // Calculate column positions with gaps
+            Span<int> colPos = stackalloc int[3];
+            Span<int> colWidths = stackalloc int[3];
+            GridCalculator.ComputeFromSpec(
+                ColumnSpec,
+                ContentWidth,
+                Style.ContentOriginX,
+                Style.OffsetSize,
+                colPos,
+                colWidths
+            );
 
-            AddNewPage();
+            // Background
+            builder.AddGridBackground(totalWidth, totalHeight, Style);
+
+            var rowY = Style.ContentOriginY;
+            var totalPages = (list.Count + EntriesPerPage - 1) / EntriesPerPage;
+
+            // Header row
+            var headerCell0 = new GridCell(colPos[0], rowY, colWidths[0], Style.EntryHeight);
+            var headerCell1 = new GridCell(colPos[1], rowY, colWidths[1], Style.EntryHeight);
+            var headerCell2 = new GridCell(colPos[2], rowY, colWidths[2], Style.EntryHeight);
 
             if (_page > 0)
             {
-                AddEntryButton(20, ArrowLeftID1, ArrowLeftID2, 1, ArrowLeftWidth, ArrowLeftHeight);
+                builder.AddEntryArrowLeft(headerCell0, Style, 1);
             }
             else
             {
-                AddEntryHeader(20);
+                builder.AddEntryHeader(headerCell0, Style);
             }
 
-            AddEntryHtml(
-                320,
-                Center(
-                    $"Page {_page + 1} of {(_list.Count + EntriesPerPage - 1) / EntriesPerPage}"
-                )
-            );
+            builder.AddImageTiled(headerCell1, Style.EntryGumpID);
+            builder.AddHtml(headerCell1, $"Page {_page + 1} of {totalPages}", Style.TextOffsetX, 0, align: TextAlignment.Center);
 
-            if ((_page + 1) * EntriesPerPage < _list.Count)
+            if ((_page + 1) * EntriesPerPage < list.Count)
             {
-                AddEntryButton(20, ArrowRightID1, ArrowRightID2, 2, ArrowRightWidth, ArrowRightHeight);
+                builder.AddEntryArrowRight(headerCell2, Style, 2);
             }
             else
             {
-                AddEntryHeader(20);
+                builder.AddEntryHeader(headerCell2, Style);
             }
 
+            // Data rows
             var last = (int)AccessLevel.Player - 1;
+            var dataContentWidth = colWidths[0] + Style.OffsetSize + colWidths[1];
 
-            for (int i = _page * EntriesPerPage, line = 0; line < EntriesPerPage && i < _list.Count; ++i, ++line)
+            // Extract the StringBuilder to avoid repeated allocations
+            using var sb = ValueStringBuilder.Create();
+
+            for (int i = _page * EntriesPerPage, line = 0; line < EntriesPerPage && i < list.Count; ++i, ++line)
             {
-                var c = _list[i];
-                if (from.AccessLevel >= c.AccessLevel)
+                var c = list[i];
+
+                // Access level separator
+                if ((int)c.AccessLevel != last)
                 {
-                    if ((int)c.AccessLevel != last)
-                    {
-                        AddNewLine();
-                        AddEntryHtml(20 + OffsetSize + 320, Color(c.AccessLevel.ToString(), 0xFF0000));
-                        AddEntryHeader(20);
-                        line++;
-                    }
+                    rowY += Style.EntryHeight + Style.OffsetSize;
+                    var sepContentCell = new GridCell(colPos[0], rowY, dataContentWidth, Style.EntryHeight);
+                    var sepButtonCell = new GridCell(colPos[2], rowY, colWidths[2], Style.EntryHeight);
 
-                    last = (int)c.AccessLevel;
-
-                    AddNewLine();
-                    string name;
-                    if (c.Aliases?.Length > 0)
-                    {
-                        using var sb = ValueStringBuilder.Create();
-                        sb.Append($"{c.Name} <i>(");
-                        for (var j = 0; j < c.Aliases.Length; ++j)
-                        {
-                            if (j != 0)
-                            {
-                                sb.Append(", ");
-                            }
-
-                            sb.Append(c.Aliases[j]);
-                        }
-
-                        sb.Append(")</i>");
-                        name = sb.ToString();
-                    }
-                    else
-                    {
-                        name = c.Name;
-                    }
-
-                    AddEntryHtml(20 + OffsetSize + 320, name);
-                    AddEntryButton(20, ArrowRightID1, ArrowRightID2, 3 + i, ArrowRightWidth, ArrowRightHeight);
+                    builder.AddImageTiled(sepContentCell, Style.EntryGumpID);
+                    builder.AddHtml(sepContentCell, $"{c.AccessLevel}", Style.TextOffsetX, 0, GumpTextColors.BrightRed);
+                    builder.AddEntryHeader(sepButtonCell, Style);
+                    line++;
                 }
-            }
 
-            FinishPage();
+                last = (int)c.AccessLevel;
+
+                // Entry row
+                rowY += Style.EntryHeight + Style.OffsetSize;
+                var contentCell = new GridCell(colPos[0], rowY, dataContentWidth, Style.EntryHeight);
+                var buttonCell = new GridCell(colPos[2], rowY, colWidths[2], Style.EntryHeight);
+
+                builder.AddImageTiled(contentCell, Style.EntryGumpID);
+
+                if (c.Aliases?.Length > 0)
+                {
+                    sb.Append($"{c.Name} <i>(");
+                    for (var j = 0; j < c.Aliases.Length; ++j)
+                    {
+                        if (j != 0)
+                        {
+                            sb.Append(", ");
+                        }
+                        sb.Append(c.Aliases[j]);
+                    }
+                    sb.Append(")</i>");
+                    builder.AddHtml(contentCell, sb.RawChars[..sb.Length], Style.TextOffsetX, 0);
+
+                    // Reset the SB for the next loop.
+                    sb.Reset();
+                }
+                else
+                {
+                    builder.AddHtml(contentCell, c.Name, Style.TextOffsetX, 0);
+                }
+
+                builder.AddEntryArrowRight(buttonCell, Style, 3 + i);
+            }
         }
 
         public override void OnResponse(NetState sender, in RelayInfo info)
         {
             var m = sender.Mobile;
             var gumps = m.GetGumps();
+            var list = GetCommandsForAccessLevel(_accessLevel);
 
             switch (info.ButtonID)
             {
                 case 0:
                     {
                         gumps.Close<CommandInfoGump>();
-                        break;
+                        return;
                     }
                 case 1:
                     {
-                        if (_page > 0)
+                        if (_page <= 0)
                         {
-                            gumps.Send(new CommandListGump(_page - 1, m, _list));
+                            return;
                         }
 
+                        _page--;
                         break;
                     }
                 case 2:
                     {
-                        if ((_page + 1) * EntriesPerPage < SortedHelpInfo.Count)
+                        if ((_page + 1) * EntriesPerPage >= list.Count)
                         {
-                            gumps.Send(new CommandListGump(_page + 1, m, _list));
+                            return;
                         }
 
+                        _page++;
                         break;
                     }
                 default:
                     {
                         var v = info.ButtonID - 3;
 
-                        if (v >= 0 && v < _list.Count)
+                        if (v < 0 || v >= list.Count)
                         {
-                            var c = _list[v];
+                            return;
+                        }
 
-                            if (m.AccessLevel >= c.AccessLevel)
-                            {
-                                gumps.Send(new CommandInfoGump(c));
-                                gumps.Send(new CommandListGump(_page, m, _list));
-                            }
-                            else
-                            {
-                                m.SendMessage("You no longer have access to that command.");
-                                gumps.Send(new CommandListGump(_page, m, null));
-                            }
+                        var c = list[v];
+
+                        if (m.AccessLevel >= c.AccessLevel)
+                        {
+                            gumps.Send(new CommandInfoGump(c));
+                        }
+                        else
+                        {
+                            m.SendMessage("You no longer have access to that command.");
+                            _accessLevel = m.AccessLevel;
                         }
 
                         break;
                     }
             }
+
+            m.SendGump(this);
         }
     }
 
@@ -361,15 +427,15 @@ public static class HelpInfo
             builder.AddPage();
 
             builder.AddBackground(0, 0, _width, _height, 5054);
-            builder.AddHtml(10, 10, _width - 20, 20, _info.Name.Center(0xFF0000));
+            builder.AddHtml(10, 10, _width - 20, 20, _info.Name, color: "#FF0000", align: TextAlignment.Center);
 
             using var sb = ValueStringBuilder.Create();
 
             sb.Append("Usage: ");
-            var usage = _info.Usage
-                .ReplaceOrdinal("<", "(")
-                .ReplaceOrdinal(">", ")");
-            sb.Append(usage);
+            // Extends the StringBuilder and returns the Span for custom writing
+            var usage = sb.AppendSpan(_info.Usage.Length);
+            _info.Usage.CopyTo(usage);
+            usage.FixHtml();
             sb.Append("<BR>");
 
             var aliases = _info.Aliases;
@@ -392,7 +458,7 @@ public static class HelpInfo
             }
 
             sb.Append("AccessLevel: ");
-            sb.Append(_info.AccessLevel.ToString());
+            sb.Append($"{_info.AccessLevel}");
             sb.Append("<BR>");
 
             if (_info.Modifiers?.Length > 0)
@@ -407,12 +473,14 @@ public static class HelpInfo
 
                     sb.Append(_info.Modifiers[i]);
                 }
+
                 sb.Append("<BR>");
                 sb.Append("<BR>");
             }
+
             sb.Append(_info.Description);
 
-            builder.AddHtml(10, 40, _width - 20, _height - 80, sb.ToString(), false, true);
+            builder.AddHtml(10, 40, _width - 20, _height - 80, sb.AsSpan(true), background: false, scrollbar: true);
         }
     }
 }

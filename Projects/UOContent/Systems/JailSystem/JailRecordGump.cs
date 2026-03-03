@@ -38,7 +38,7 @@ public class JailRecordGump : StaticGump<JailRecordGump>
         builder.AddBackground(0, 0, 330, 300, 9200);
         builder.AddAlphaRegion(10, 10, 310, 280);
 
-        builder.AddHtml(20, 20, 360, 30, "<size=6 color=#FF6600>JAIL RECORD</basefont>");
+        builder.AddHtml(20, 20, 360, 30, "<BASEFONT size=6 color=#FF6600>JAIL RECORD</BASEFONT>");
         builder.AddHtmlPlaceholder(20, 60, 360, 25, "playerName");
         builder.AddHtmlPlaceholder(20, 80, 360, 25, "jailCount");
         builder.AddHtmlPlaceholder(20, 100, 360, 25, "lastJailed");
@@ -47,43 +47,43 @@ public class JailRecordGump : StaticGump<JailRecordGump>
         builder.AddHtmlPlaceholder(20, 150, 360, 25, "jailStatus");
         builder.AddHtmlPlaceholder(20, 170, 360, 25, "jailTime");
 
-        builder.AddHtml(20, 200, 360, 25, "<size=4 color=#CCCCCC>If you believe you were jailed in error,</basefont>");
-        builder.AddHtml(20, 220, 360, 25, "<size=4 color=#CCCCCC>please contact staff through normal channels.</basefont>");
-        builder.AddHtml(20, 240, 360, 25, "<size=4 color=#CCCCCC>Each time you are jailed, the wait increases.</basefont>");
-        builder.AddHtml(20, 260, 360, 25, "<size=4 color=#CCCCCC>Follow all shard rules to avoid future jail time.</basefont>");
+        builder.AddHtml(20, 200, 360, 25, "<BASEFONT size=4 color=#CCCCCC>If you believe you were jailed in error,</BASEFONT>");
+        builder.AddHtml(20, 220, 360, 25, "<BASEFONT size=4 color=#CCCCCC>please contact staff through normal channels.</BASEFONT>");
+        builder.AddHtml(20, 240, 360, 25, "<BASEFONT size=4 color=#CCCCCC>Each time you are jailed, the wait increases.</BASEFONT>");
+        builder.AddHtml(20, 260, 360, 25, "<BASEFONT size=4 color=#CCCCCC>Follow all shard rules to avoid future jail time.</BASEFONT>");
     }
 
     protected override void BuildStrings(ref GumpStringsBuilder builder)
     {
-        builder.SetHtmlText("playerName", $"Player: {_player.Name}", 0xFFFF00, 5);
-        builder.SetHtmlText("jailCount", $"Jail Count: {_record.JailCount}", 0xFFFFFF, 5);
+        builder.SetHtmlText("playerName", $"Player: {_player.Name}", "#FFFF00", 5);
+        builder.SetHtmlText("jailCount", $"Jail Count: {_record.JailCount}", "#FFFFFF", 5);
 
         if (_record.LastJailed > DateTime.MinValue)
         {
-            builder.SetHtmlText("lastJailed", $"Last Jailed: {_record.LastJailed:yyyy/MM/dd HH:mm}", 0xFFFFFF, 5);
+            builder.SetHtmlText("lastJailed", $"Last Jailed: {_record.LastJailed:yyyy/MM/dd HH:mm}", "#FFFFFF", 5);
         }
         else
         {
-            builder.SetHtmlText("lastJailed", "Last Jailed: Never", 0xFFFFFF, 5);
+            builder.SetHtmlText("lastJailed", "Last Jailed: Never", "#FFFFFF", 5);
         }
 
         if (string.IsNullOrWhiteSpace(_record.LastJailReason))
         {
-            builder.SetHtmlText("jailReason", "Jail Reason: None given.", 0xFFFFFF, 4);
+            builder.SetHtmlText("jailReason", "Jail Reason: None given.", "#FFFFFF", 4);
         }
         else
         {
-            builder.SetHtmlText("jailReason", $"Jail Reason: {_record.LastJailReason}", 0xFFFFFF, 4);
+            builder.SetHtmlText("jailReason", $"Jail Reason: {_record.LastJailReason}", "#FFFFFF", 4);
         }
 
         if (_record.IsCurrentlyJailed)
         {
-            builder.SetHtmlText("jailStatus", "Status: Currently Jailed", 0xFF6666, 5);
-            builder.SetHtmlText("jailTime", $"Jail Time: {(_record.JailEndTime - Core.Now).FormatTimeCompact()}", 0xFF6666, 5);
+            builder.SetHtmlText("jailStatus", "Status: Currently Jailed", "#FF6666", 5);
+            builder.SetHtmlText("jailTime", $"Jail Time: {(_record.JailEndTime - Core.Now).FormatTimeCompact()}", "#FF6666", 5);
         }
         else
         {
-            builder.SetHtmlText("jailStatus", "Status: Not Jailed", 0x00FF00, 5);
+            builder.SetHtmlText("jailStatus", "Status: Not Jailed", "#00FF00", 5);
             builder.SetStringSlot("jailTime", "");
         }
     }

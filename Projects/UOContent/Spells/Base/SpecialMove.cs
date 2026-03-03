@@ -153,7 +153,7 @@ namespace Server.Spells
                 return false;
             }
 
-            string option = this switch
+            var option = this switch
             {
                 Backstab           => "Backstab",
                 DeathStrike        => "Death Strike",

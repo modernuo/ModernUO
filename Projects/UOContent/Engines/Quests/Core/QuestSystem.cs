@@ -693,7 +693,7 @@ namespace Server.Engines.Quests
             }
             else
             {
-                AddHtml(x, y, width, height, message.ToString().Color(color.C16216()), back, scroll);
+                AddHtml(x, y, width, height, Html.Color($"{message}", color.C16216()), back, scroll);
             }
         }
     }

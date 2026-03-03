@@ -283,8 +283,8 @@ public abstract class Faction : IComparable<Faction>
 
     public static bool IsNearType(Mobile mob, Type[] types, int range)
     {
-        bool mobs = false;
-        bool items = false;
+        var mobs = false;
+        var items = false;
         for (var i = 0; !(mobs && items) && i < types.Length; i++)
         {
             var type = types[i];
@@ -410,7 +410,8 @@ public abstract class Faction : IComparable<Faction>
 
         if (mob.Backpack != null)
         {
-            foreach (var sigil in mob.Backpack.EnumerateItemsByType<Sigil>())
+            using var queue = mob.Backpack.EnumerateItemsByType<Sigil>();
+            foreach (var sigil in queue)
             {
                 sigil.ReturnHome();
             }
@@ -1073,7 +1074,8 @@ public abstract class Faction : IComparable<Faction>
 
         if (victim.Backpack != null)
         {
-            foreach (var sigil in victim.Backpack.EnumerateItemsByType<Sigil>())
+            using var queue = victim.Backpack.EnumerateItemsByType<Sigil>();
+            foreach (var sigil in queue)
             {
                 if (killerState == null || killerPack == null)
                 {
@@ -1254,7 +1256,8 @@ public abstract class Faction : IComparable<Faction>
     {
         if (m.Backpack != null)
         {
-            foreach (var sigil in m.Backpack.EnumerateItemsByType<Sigil>())
+            using var queue = m.Backpack.EnumerateItemsByType<Sigil>();
+            foreach (var sigil in queue)
             {
                 sigil.ReturnHome();
             }

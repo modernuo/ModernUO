@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using ModernUO.CodeGeneratedEvents;
 using Server.Accounting;
 using Server.Collections;
@@ -34,6 +35,7 @@ using Server.Spells.Necromancy;
 using Server.Spells.Ninjitsu;
 using Server.Spells.Sixth;
 using Server.Spells.Spellweaving;
+using Server.Systems.FeatureFlags;
 using Server.Targeting;
 using BaseQuestGump = Server.Engines.MLQuests.Gumps.BaseQuestGump;
 using CalcMoves = Server.Movement.Movement;
@@ -855,7 +857,7 @@ namespace Server.Mobiles
 
             if (Core.AOS)
             {
-                foreach (Mobile m in Map.GetMobilesAt(location))
+                foreach (var m in Map.GetMobilesAt(location))
                 {
                     if (m.Z >= location.Z && m.Z < location.Z + 16 && (!m.Hidden || m.AccessLevel == AccessLevel.Player))
                     {
@@ -1764,16 +1766,25 @@ namespace Server.Mobiles
 
         public override bool AllowItemUse(Item item)
         {
-            if (DuelContext?.AllowItemUse(this, item) == false)
+            if (AccessLevel < FeatureFlagSettings.RequiredAccessLevel &&
+                FeatureFlagManager.IsItemUseBlocked(item.GetType(), out var reason))
             {
+                SendMessage(0x22, reason);
                 return false;
             }
 
-            return DesignContext.Check(this);
+            return DuelContext?.AllowItemUse(this, item) != false && DesignContext.Check(this);
         }
 
         public override bool AllowSkillUse(SkillName skill)
         {
+            if (AccessLevel < FeatureFlagSettings.RequiredAccessLevel
+                && FeatureFlagManager.IsSkillBlocked(skill, out var reason))
+            {
+                SendMessage(0x22, reason);
+                return false;
+            }
+
             if (AnimalForm.UnderTransformation(this))
             {
                 for (var i = 0; i < AnimalFormRestrictedSkills.Length; i++)
@@ -2033,6 +2044,13 @@ namespace Server.Mobiles
 
         public override bool CheckEquip(Item item)
         {
+            if (AccessLevel < FeatureFlagSettings.RequiredAccessLevel
+                && FeatureFlagManager.IsItemEquipBlocked(item.GetType(), out var reason))
+            {
+                SendMessage(0x22, reason);
+                return false;
+            }
+
             if (!base.CheckEquip(item))
             {
                 return false;
@@ -2385,9 +2403,9 @@ namespace Server.Mobiles
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool FindItems_Callback(Item item) =>
-            !item.Deleted && (item.LootType == LootType.Blessed || item.Insured) &&
-            Backpack != item.Parent;
+            !item.Deleted && (item.LootType == LootType.Blessed || item.Insured) && Backpack != item.Parent;
 
         public override bool OnBeforeDeath()
         {
@@ -2401,7 +2419,8 @@ namespace Server.Mobiles
             // This fixes a "bug" where players put blessed items in nested bags and they were dropped on death
             if (Core.AOS && Backpack?.Deleted == false)
             {
-                foreach (var item in Backpack.EnumerateItems(true, FindItems_Callback))
+                using var queue = Backpack.EnumerateItems(true, FindItems_Callback);
+                foreach (var item in queue)
                 {
                     Backpack.AddItem(item);
                 }
@@ -2731,7 +2750,7 @@ namespace Server.Mobiles
 
         private static void SendToStaffMessage(PlayerMobile from, string text)
         {
-            Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)].InitializePacket();
+            var buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)].InitializePacket();
 
             foreach (var ns in from.GetClientsInRange(8))
             {
@@ -2841,7 +2860,7 @@ namespace Server.Mobiles
             base.Deserialize(reader);
             var version = reader.ReadInt();
 
-            VirtueContext virtues = version < 32 ? Virtues : null;
+            var virtues = version < 32 ? Virtues : null;
 
             switch (version)
             {
@@ -3513,6 +3532,26 @@ namespace Server.Mobiles
             }
 
             return true;
+        }
+
+        public override void OnMovement(Mobile m, Point3D oldLocation)
+        {
+            base.OnMovement(m, oldLocation);
+
+            // Passive detect hidden: either party moving within range can trigger detection
+            if (m is PlayerMobile && Utility.InRange(Location, m.Location, 4))
+            {
+                if (m.Hidden && AccessLevel == AccessLevel.Player)
+                {
+                    // A hidden mobile (stealther) moved near us — we try to detect them
+                    DetectHidden.TryDetectStealther(this, m);
+                }
+                else if (Hidden && m.AccessLevel == AccessLevel.Player)
+                {
+                    // We're hidden and a potential detector moved near us — they try to detect us
+                    DetectHidden.TryDetectStealther(m, this);
+                }
+            }
         }
 
         public void AddFollower(Mobile m)

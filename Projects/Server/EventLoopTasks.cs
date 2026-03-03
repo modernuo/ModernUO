@@ -55,7 +55,7 @@ public sealed class EventLoopContext : SynchronizationContext
             return;
         }
 
-        AutoResetEvent evt = new AutoResetEvent(false);
+        var evt = new AutoResetEvent(false);
 
         _queue.Enqueue(() =>
         {
@@ -75,7 +75,7 @@ public sealed class EventLoopContext : SynchronizationContext
 
         var count = _priorityQueue.Count;
 
-        for (int i = 0; i < count; i++)
+        for (var i = 0; i < count; i++)
         {
             if (_priorityQueue.TryDequeue(out var a))
             {
@@ -85,7 +85,7 @@ public sealed class EventLoopContext : SynchronizationContext
 
         count = Math.Min(_queue.Count, _maxPerFrame);
 
-        for (int i = 0; i < count; i++)
+        for (var i = 0; i < count; i++)
         {
             if (_queue.TryDequeue(out var a))
             {

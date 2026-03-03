@@ -444,7 +444,7 @@ public abstract partial class BaseAI
             DebugSay("No threats found. Going home...");
             Action = ActionType.Wander;
         }
-        
+
         DebugSay("I stopped being on guard.");
         Action = ActionType.Wander;
 
@@ -596,6 +596,11 @@ public abstract partial class BaseAI
     public virtual bool AcquireFocusMob(int iRange, FightMode acqType, bool bPlayerOnly, bool bFacFriend, bool bFacFoe)
     {
         if (Mobile.Deleted || Mobile.Map == null)
+        {
+            return false;
+        }
+
+        if (Mobile.BardPacified)
         {
             return false;
         }
@@ -793,7 +798,7 @@ public abstract partial class BaseAI
                                  || Mobile.GetEthicAllegiance(m) == BaseCreature.Allegiance.Enemy;
 
         // Valid if FightMode is Evil and the target's karma is negative
-        return !valid && acqType != FightMode.Evil || (bc?.GetMaster()?.Karma ?? m.Karma) >= 0;
+        return !valid && (acqType != FightMode.Evil || (bc?.GetMaster()?.Karma ?? m.Karma) >= 0);
     }
 
     private bool IsHostile(Mobile from) => Mobile.Combatant == from || from.Combatant == Mobile || IsAggressor(from) || IsAggressed(from);
@@ -879,15 +884,15 @@ public abstract partial class BaseAI
             _timer.Stop();
         }
 
-        if (ShouldReturnToHome(Mobile.Spawner as Spawner))
+        if (ShouldReturnToHome(Mobile.Spawner))
         {
             Timer.StartTimer(ReturnToHome);
         }
     }
 
-    private bool ShouldReturnToHome(Spawner spawner) =>
+    private bool ShouldReturnToHome(ISpawner spawner) =>
         spawner?.ReturnOnDeactivate == true && !Mobile.Controlled &&
-        (spawner.HomeLocation == Point3D.Zero || !Mobile.InRange(spawner.HomeLocation, spawner.HomeRange));
+        !spawner.IsInSpawnBounds(Mobile.Location);
 
     private void ReturnToHome()
     {

@@ -44,7 +44,7 @@ public static class ServerConfiguration
         _settings.Settings.TryGetValue(key, out var value) ? new ClientVersion(value) : defaultValue;
 
     public static string GetSetting(string key, string defaultValue) =>
-        _settings.Settings.TryGetValue(key, out var value) ? value : defaultValue;
+        _settings.Settings.GetValueOrDefault(key, defaultValue);
 
     public static int GetSetting(string key, int defaultValue)
     {
@@ -269,6 +269,12 @@ public static class ServerConfiguration
         {
             updated = true;
             _settings.Listeners.AddRange(ServerConfigurationPrompts.GetListeners());
+        }
+
+        if (!_settings.Settings.ContainsKey("serverListing.serverName"))
+        {
+            updated = true;
+            _settings.Settings["serverListing.serverName"] = ServerConfigurationPrompts.GetServerName();
         }
 
         // We have a known, current expansion, so we can deserialize it from Configuration

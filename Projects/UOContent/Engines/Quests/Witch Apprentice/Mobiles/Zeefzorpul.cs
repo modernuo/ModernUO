@@ -12,6 +12,8 @@ public partial class Zeefzorpul : BaseQuester
 
     public override string DefaultName => "Zeefzorpul";
 
+    public override bool SkipSerialization => true;
+
     public override void InitBody()
     {
         Body = 0x4A;
@@ -21,11 +23,5 @@ public partial class Zeefzorpul : BaseQuester
 
     public override void OnTalk(PlayerMobile player, bool contextMenu)
     {
-    }
-
-    [AfterDeserialization(false)]
-    private void AfterDeserialization()
-    {
-        Delete();
     }
 }
