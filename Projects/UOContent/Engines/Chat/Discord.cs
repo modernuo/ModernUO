@@ -13,7 +13,7 @@ namespace Server.Engines.Chat
         
         public static void Configure()
         {
-            _webhookUrl = ServerConfiguration.GetOrUpdateSetting("chatiscord.webhookUrl", "DISCORD_CHANNEL_WEBHOOK_HERE");
+            _webhookUrl = ServerConfiguration.GetOrUpdateSetting("chatdiscord.webhookUrl", "DISCORD_CHANNEL_WEBHOOK_HERE");
         }
         
         public static bool IsEnabled => !string.IsNullOrEmpty(_webhookUrl);
