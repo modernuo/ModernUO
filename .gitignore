@@ -44,3 +44,13 @@
 
 /packages/*
 /Distribution/Configuration/server-access.json
+
+# Local deployment / personal files
+/.github/copilot-instructions.md
+/SCRIPT_UPDATE_MIN_DOWNTIME.md
+/build docker.txt
+/docker-compose.yml
+/Dockerfile
+/f1stats.ps1
+/config/
+/modernuo_latest_*.tar

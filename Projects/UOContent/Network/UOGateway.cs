@@ -15,6 +15,7 @@
 
 using System;
 using System.Buffers;
+using System.Globalization;
 using System.Text;
 using Server.Misc;
 
@@ -22,6 +23,9 @@ namespace Server.Network
 {
     public static class UOGateway
     {
+        private static readonly bool _sendJsonExtendedStats =
+            ServerConfiguration.GetOrUpdateSetting("ClassicUO.FreeshardStats.SendRawUtf8", true);
+
         public static unsafe void Configure()
         {
             var enabled = ServerConfiguration.GetOrUpdateSetting("uogateway.enabled", true);
@@ -35,9 +39,16 @@ namespace Server.Network
 
         public static void QueryCompactShardStats(NetState state, SpanReader reader)
         {
+            var clients = NetState.Instances.Count - 1;
+
+            if (clients < 0)
+            {
+                clients = 0;
+            }
+
             state.SendCompactShardStats(
                 (uint)(Core.Uptime / 1000),
-                NetState.Instances.Count - 1, // Shame if you modify this!
+                clients,
                 World.Items.Count,
                 World.Mobiles.Count,
                 GC.GetTotalMemory(false)
@@ -46,15 +57,35 @@ namespace Server.Network
 
         public static void QueryExtendedShardStats(NetState state, SpanReader reader)
         {
-            const long ticksInHour = 1000 * 60 * 60;
-            state.SendExtendedShardStats(
-                ServerList.ServerName,
-                (int)(Core.Uptime / ticksInHour),
-                NetState.Instances.Count - 1, // Shame if you modify this!
-                World.Items.Count,
-                World.Mobiles.Count,
-                (int)(GC.GetTotalMemory(false) / 1024)
-            );
+            var clients = NetState.Instances.Count - 1;
+
+            if (clients < 0)
+            {
+                clients = 0;
+            }
+
+            if (_sendJsonExtendedStats)
+            {
+                state.SendExtendedShardStatsJson(
+                    clients,
+                    World.Items.Count,
+                    World.Mobiles.Count,
+                    (int)(Core.Uptime / 1000),
+                    GC.GetTotalMemory(false)
+                );
+            }
+            else
+            {
+                const long ticksInHour = 1000 * 60 * 60;
+                state.SendExtendedShardStats(
+                    ServerList.ServerName,
+                    (int)(Core.Uptime / ticksInHour),
+                    clients,
+                    World.Items.Count,
+                    World.Mobiles.Count,
+                    (int)(GC.GetTotalMemory(false) / 1024)
+                );
+            }
         }
 
         public static void SendCompactShardStats(
@@ -89,6 +120,38 @@ namespace Server.Network
 
             var str =
                 $"ModernUO, Name={name}, Age={age}, Clients={clients}, Items={items}, Chars={mobiles}, Mem={mem}K, Ver=2\0";
+
+            var length = Encoding.UTF8.GetByteCount(str);
+
+            Span<byte> span = stackalloc byte[length];
+            Encoding.UTF8.GetBytes(str, span);
+
+            ns.Send(span);
+        }
+
+        public static void SendExtendedShardStatsJson(
+            this NetState ns,
+            int clients,
+            int items,
+            int mobiles,
+            int age,
+            long mem
+        )
+        {
+            if (ns.CannotSendPackets())
+            {
+                return;
+            }
+
+            var str = string.Format(
+                CultureInfo.InvariantCulture,
+                "{{\"clients\":{0},\"items\":{1},\"chars\":{2},\"age\":{3},\"memory\":{4}}}",
+                clients,
+                items,
+                mobiles,
+                age,
+                mem
+            );
 
             var length = Encoding.UTF8.GetByteCount(str);
 
