@@ -348,7 +348,7 @@ namespace Server.Engines.Chat
 
         public void SendIgnorableMessage(int number, ChatUser from, string param1, string param2)
         {
-            for (var i = 0; i < m_Users.Count; ++i)
+            for (var i = m_Users.Count - 1; i >= 0; --i)
             {
                 var user = m_Users[i];
 
@@ -364,7 +364,6 @@ namespace Server.Engines.Chat
                 else
                 {
                     RemoveUser(user);
-                    --i;
                 }
             }
         }
@@ -376,7 +375,7 @@ namespace Server.Engines.Chat
 
         public void SendCommand(ChatCommand command, ChatUser initiator, string param1 = null, string param2 = null)
         {
-            for (var i = 0; i < m_Users.Count; ++i)
+            for (var i = m_Users.Count - 1; i >= 0; --i)
             {
                 var user = m_Users[i];
 
@@ -392,7 +391,6 @@ namespace Server.Engines.Chat
                 else
                 {
                     RemoveUser(user);
-                    --i;
                 }
             }
         }
