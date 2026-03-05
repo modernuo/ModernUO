@@ -13,7 +13,7 @@ namespace Server.Engines.Chat
         
         public static void Configure()
         {
-            _webhookUrl = ServerConfiguration.GetOrUpdateSetting("chatdiscord.webhookUrl", "DISCORD_CHANNEL_WEBHOOK_HERE");
+            _webhookUrl = ServerConfiguration.GetOrUpdateSetting("chatdiscord.webhookUrl", "DISCORD_CHANNEL_WEBHOOK");
         }
         
         public static bool IsEnabled => !string.IsNullOrEmpty(_webhookUrl);
@@ -40,7 +40,7 @@ namespace Server.Engines.Chat
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Discord webhook error: {ex.Message}");
+                Console.WriteLine($"Discord webhook error for channel [{channelName}] {username}: {ex.Message}");
             }
         }
     }
