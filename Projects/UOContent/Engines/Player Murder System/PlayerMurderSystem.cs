@@ -253,7 +253,7 @@ public class PlayerMurderSystem : GenericPersistence
             player.SendMessage($"Long Term Murders : {player.Kills}");
             if (PingPongEnabled)
             {
-                player.SendLocalizedMessage(1114369, $"Ping Pongs: {player.PingPong}");
+                player.SendMessage($"Ping Pongs: {player.PingPong}");
             }
         }
         else
