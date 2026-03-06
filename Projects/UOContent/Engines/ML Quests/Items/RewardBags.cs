@@ -25,7 +25,7 @@ public static class RewardBag
                 1 => Loot.RandomArmor(false, true),
                 2 => Loot.RandomRangedWeapon(false, true),
                 3 => Loot.RandomJewelry(),
-                _ => Loot.RandomHat(false) // 4
+                _ => Loot.RandomHat() // 4
             };
 
             if (loot == null)

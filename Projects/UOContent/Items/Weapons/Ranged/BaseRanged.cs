@@ -90,7 +90,7 @@ namespace Server.Items
                     else if (WeaponAbility.GetCurrentAbility(attacker) is LightningArrow lightningArrow)
                     {
                         // Lightning Arrow doesn't require ammunition
-                        attacker.MovingEffect(defender, EffectID, 18, 1, false, false);
+                        attacker.MovingParticles(defender, EffectID, 18, 1, false, false, 0, 0, 0, 0, 0, EffectLayer.RightHand, 0);
                         lightningArrow.OnHit(attacker, defender, 0, new WorldLocation(defender));
                     }
                 }
@@ -211,77 +211,7 @@ namespace Server.Items
                 }
             }
 
-            Point3D targetLocation = new Point3D(defender.X, defender.Y, defender.Z);
-
-            int deltaX = defender.X - attacker.X;
-            int deltaY = defender.Y - attacker.Y;
-
-            int distance = Math.Max(Math.Abs(deltaX), Math.Abs(deltaY));
-            bool isTooClose = distance <= 1;
-
-            int xOffset = 0, yOffset = 0;
-            int zOffset = attacker.Mount != null ? 0 : 0;
-
-            if (!isTooClose)
-            {
-                if (deltaX == 0 && deltaY < 0)
-                {
-                    xOffset = 0;
-                    yOffset = 0;
-                    zOffset = attacker.Mount != null ? 0 : 0;
-                }
-                else if (deltaX > 0 && deltaY < 0)
-                {
-                    xOffset = 1;
-                    yOffset = -1;
-                    zOffset = attacker.Mount != null ? 5 : 2;
-                }
-                else if (deltaX > 0 && deltaY == 0)
-                {
-                    xOffset = 1;
-                    yOffset = 0;
-                    zOffset = attacker.Mount != null ? 0 : 0;
-                }
-                else if (deltaX > 0 && deltaY > 0)
-                {
-                    xOffset = 0;
-                    yOffset = 1;
-                    zOffset = attacker.Mount != null ? 0 : 0;
-                }
-                else if (deltaX == 0 && deltaY > 0)
-                {
-                    xOffset = 0;
-                    yOffset = 1;
-                    zOffset = attacker.Mount != null ? 16 : 8;
-                    
-                }
-                else if (deltaX < 0 && deltaY > 0)
-                {
-                    xOffset = -1;
-                    yOffset = 1;
-                    zOffset = attacker.Mount != null ? 16 : 8;
-                }
-                else if (deltaX < 0 && deltaY == 0)
-                {
-                    xOffset = -1;
-                    yOffset = 0;
-                    zOffset = attacker.Mount != null ? 16 : 8;
-                }
-                else if (deltaX < 0 && deltaY < 0)
-                {
-                    xOffset = 1;
-                    yOffset = 0;
-                    zOffset = attacker.Mount != null ? 16 : 8;
-                }
-                
-                Point3D from = new(attacker.X + xOffset, attacker.Y + yOffset, attacker.Z + zOffset);
-                Point3D to = new(targetLocation.X + xOffset, targetLocation.Y + yOffset, targetLocation.Z + zOffset);
-                
-                Effects.SendMovingEffect(new Entity(Serial.Zero, from, attacker.Map),
-                    new Entity(Serial.Zero, to, defender.Map), EffectID, 18, 1, false, false);
-                
-                return true;
-            }
+            attacker.MovingParticles(defender, EffectID, 18, 1, false, false, 0, 0, 0, 0, 0, EffectLayer.RightHand, 0);
 
             return true;
         }
@@ -313,41 +243,41 @@ namespace Server.Items
             switch (craftResource)
             {
                 case CraftResource.OakWood:
-                {
-                    Attributes.Luck += 40;
-                    Attributes.WeaponDamage += 5;
-                    break;
-                }
+                    {
+                        Attributes.Luck += 40;
+                        Attributes.WeaponDamage += 5;
+                        break;
+                    }
                 case CraftResource.AshWood:
-                {
-                    Attributes.WeaponSpeed += 10;
-                    WeaponAttributes.LowerStatReq += 20;
-                    break;
-                }
+                    {
+                        Attributes.WeaponSpeed += 10;
+                        WeaponAttributes.LowerStatReq += 20;
+                        break;
+                    }
                 case CraftResource.YewWood:
-                {
-                    Attributes.AttackChance += 5;
-                    Attributes.WeaponDamage += 10;
-                    break;
-                }
+                    {
+                        Attributes.AttackChance += 5;
+                        Attributes.WeaponDamage += 10;
+                        break;
+                    }
                 case CraftResource.Bloodwood:
-                {
-                    Attributes.RegenHits += 2;
-                    WeaponAttributes.HitLeechHits += 16;
-                    break;
-                }
+                    {
+                        Attributes.RegenHits += 2;
+                        WeaponAttributes.HitLeechHits += 16;
+                        break;
+                    }
                 case CraftResource.Heartwood:
-                {
-                    ApplyHeartwoodBonus();
-                    break;
-                }
+                    {
+                        ApplyHeartwoodBonus();
+                        break;
+                    }
                 case CraftResource.Frostwood:
-                {
-                    AosElementDamages.Physical = 60;
-                    AosElementDamages.Cold = 40;
-                    Attributes.WeaponDamage += 12;
-                    break;
-                }
+                    {
+                        AosElementDamages.Physical = 60;
+                        AosElementDamages.Cold = 40;
+                        Attributes.WeaponDamage += 12;
+                        break;
+                    }
             }
         }
 

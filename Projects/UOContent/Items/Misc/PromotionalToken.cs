@@ -82,7 +82,7 @@ public abstract partial class PromotionalToken : Item
             AddBackground(0, 0, 240, 135, 0x2422);
             // Click "OKAY" to redeem the following promotional item:
             AddHtmlLocalized(15, 15, 210, 75, 1070972, 0x0, true);
-            m_Token.ItemGumpName.AddHtmlText(this, 15, 60, 210, 75, false, false);
+            m_Token.ItemGumpName.AddHtmlText(this, 15, 60, 210, 75);
 
             AddButton(160, 95, 0xF7, 0xF8, 1); // Okay
             AddButton(90, 95, 0xF2, 0xF1, 0);  // Cancel

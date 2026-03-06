@@ -454,7 +454,7 @@ namespace Server.Engines.Craft
 
                     if (from.Skills[skill].Value >= 50.0)
                     {
-                        scroll.Consume(1);
+                        scroll.Consume();
                         var deed = new RepairDeed(
                             RepairDeed.GetTypeFor(m_CraftSystem),
                             from.Skills[skill].Value,
