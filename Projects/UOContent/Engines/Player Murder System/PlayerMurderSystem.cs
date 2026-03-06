@@ -29,6 +29,8 @@ public class PlayerMurderSystem : GenericPersistence
 
     public static TimeSpan LongTermMurderDuration => _longTermMurderDuration;
 
+    public static bool PingPongEnabled => Core.T2A && !Core.LBR;
+
     public static void Configure()
     {
         _shortTermMurderDuration = ServerConfiguration.GetOrUpdateSetting("murderSystem.shortTermMurderDuration", TimeSpan.FromHours(8));
@@ -193,7 +195,7 @@ public class PlayerMurderSystem : GenericPersistence
         context.ShortTermMurders++;
         player.Kills++;
 
-        if (Core.T2A && !Core.LBR && player.Kills == 5)
+        if (PingPongEnabled && player.Kills == 5)
         {
             context.PingPong++;
         }
@@ -217,6 +219,46 @@ public class PlayerMurderSystem : GenericPersistence
         else if (player.NetState != null)
         {
             _contextTerms.Add(context);
+        }
+    }
+
+    internal static void ReportKillsToSelf(PlayerMobile player)
+    {
+        if (Core.T2A && !Core.UOR)
+        {
+            if (player.ShortTermMurders >= 5)
+            {
+                player.SendLocalizedMessage(502126); // If thou should return to the land of the living, the innocent shall wreak havoc upon thy soul
+            }
+            else if (player.ShortTermMurders > 0)
+            {
+                player.SendLocalizedMessage(502125); // Although thou hast slain the innocent, thy deeds shall not bring retribution upon thy return to the living
+            }
+            else if (PingPongEnabled && player.Murderer)
+            {
+                player.SendLocalizedMessage(502123);  // Thou art known throughout the land as a murderous brigand.
+            }
+            else if (player.Kills > 0)
+            {
+                player.SendLocalizedMessage(502124);  // Fear not, thou hast not slain the innocent in some time...
+            }
+            else  // no kills
+            {
+                player.SendLocalizedMessage(502122);  // Fear not, thou hast not slain the innocent.
+            }
+        }
+        else if (!Core.SE)
+        {
+            player.SendMessage($"Short Term Murders : {player.ShortTermMurders}");
+            player.SendMessage($"Long Term Murders : {player.Kills}");
+            if (PingPongEnabled)
+            {
+                player.SendLocalizedMessage(1114369, $"Ping Pongs: {player.PingPong}");
+            }
+        }
+        else
+        {
+            player.SendLocalizedMessage(1114370, $"{player.ShortTermMurders}\t{player.Kills}");
         }
     }
 

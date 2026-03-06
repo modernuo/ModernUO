@@ -1,3 +1,4 @@
+using Server.Engines.PlayerMurderSystem;
 using Server.Guilds;
 using Server.Gumps;
 using Server.Mobiles;
@@ -31,15 +32,7 @@ namespace Server.Misc
                         {
                             if (from is PlayerMobile player)
                             {
-                                if (!Core.SE)
-                                {
-                                    from.SendMessage($"Short Term Murders : {player.ShortTermMurders}");
-                                    from.SendMessage($"Long Term Murders : {from.Kills}");
-                                }
-                                else
-                                {
-                                    from.SendLocalizedMessage(1114370, $"{player.ShortTermMurders}\t{from.Kills}");
-                                }
+                                PlayerMurderSystem.ReportKillsToSelf(player);
                             }
 
                             break;
