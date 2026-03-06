@@ -33,7 +33,6 @@ public static class MovementThrottle
     // Configuration values
     private static int _maxCredit = 200;           // Max credit buffer (ms)
     private static int _maxRttBonus = 150;         // Max extra credit for high-latency players (ms)
-    private static int _softQueueLimit = 6;        // Start logging when reached
     private static int _hardQueueLimit = 10;       // Reject and clear at this limit
 
     // Movement history configuration
@@ -89,11 +88,6 @@ public static class MovementThrottle
             _maxCredit
         );
 
-        _softQueueLimit = ServerConfiguration.GetOrUpdateSetting(
-            "movementThrottle.softQueueLimit",
-            _softQueueLimit
-        );
-
         _hardQueueLimit = ServerConfiguration.GetOrUpdateSetting(
             "movementThrottle.hardQueueLimit",
             _hardQueueLimit
@@ -136,8 +130,8 @@ public static class MovementThrottle
             return;
         }
 
-        // Staff bypass all throttling
-        if (mobile.AccessLevel > AccessLevel.Player)
+        // Staff bypass all throttling; also bypass when speedhack detection is disabled
+        if (mobile.AccessLevel > AccessLevel.Player || !ServerFeatureFlags.SpeedhackDetection)
         {
             ExecuteMovement(ns, mobile, dir, seq);
             return;
@@ -298,12 +292,6 @@ public static class MovementThrottle
             LogQueueOverflow(ns);
             RejectAndReset(ns, ns.Mobile, seq);
             return;
-        }
-
-        // Check soft limit for abuse tracking
-        if (ns._movementQueue.Count >= _softQueueLimit)
-        {
-            TrackSustainedQueueDepth(ns);
         }
 
         // Enqueue
@@ -486,17 +474,6 @@ public static class MovementThrottle
 
     // Maximum expected packets per second (mounted running = 100ms = 10/sec, plus tolerance)
     private const int MaxExpectedPacketRate = 12;
-
-    /// <summary>
-    /// Tracks sustained queue depth for speed hack detection.
-    /// Now a no-op since rate checking happens inline in ValidateAndQueueMovement.
-    /// Kept for future use if additional queue-specific checks are needed.
-    /// </summary>
-    private static void TrackSustainedQueueDepth(NetState ns)
-    {
-        // Rate-based detection now happens inline in ValidateAndQueueMovement
-        // This method is called when queue >= soft limit but detection no longer depends on that
-    }
 
     /// <summary>
     /// Logs when a queue overflow occurs (hard limit reached).
@@ -822,7 +799,8 @@ public static class MovementThrottle
         NetState ns,
         out float rate,
         out int sampleCount,
-        out float confidence)
+        out float confidence
+    )
     {
         rate = CalculateMovementRate(ns, out sampleCount);
         confidence = 0f;
@@ -1070,7 +1048,8 @@ public static class MovementThrottle
         int sampleCount,
         float confidence,
         DetectionVerdict verdict,
-        string urgency)
+        string urgency
+    )
     {
         var now = Core.TickCount;
 
