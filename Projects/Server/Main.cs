@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2024 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: Main.cs                                                         *
  *                                                                       *
@@ -396,7 +396,7 @@ public static class Core
         Utility.PopColor();
 
         Utility.PushColor(ConsoleColor.DarkGray);
-        Console.WriteLine(@"Copyright 2019-2023 ModernUO Development Team
+        Console.WriteLine(@"Copyright 2019-2026 ModernUO Development Team
                 This program comes with ABSOLUTELY NO WARRANTY;
                 This is free software, and you are welcome to redistribute it under certain conditions.
 
