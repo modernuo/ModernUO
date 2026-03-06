@@ -94,8 +94,11 @@ public class PlayerMurderSystem : GenericPersistence
         }
         else
         {
-            _murderContexts.Remove(pm);
             _contextTerms.Remove(context);
+            if (context.CanRemove())
+            {
+                _murderContexts.Remove(pm);
+            }
         }
     }
 
@@ -109,7 +112,7 @@ public class PlayerMurderSystem : GenericPersistence
         context.DecayKills();
         _contextTerms.Remove(context);
 
-        if (pm.Kills <= 0 && context.ShortTermMurders <= 0)
+        if (context.CanRemove())
         {
             _murderContexts.Remove(pm);
         }
@@ -183,6 +186,11 @@ public class PlayerMurderSystem : GenericPersistence
         context.ShortTermMurders++;
         player.Kills++;
 
+        if (Core.T2A && !Core.LBR && player.Kills == 5)
+        {
+            context.PingPong++;
+        }
+
         context.ResetKillTime();
         UpdateMurderContext(context);
     }
@@ -193,7 +201,10 @@ public class PlayerMurderSystem : GenericPersistence
 
         if (!context.CheckStart())
         {
-            _murderContexts.Remove(player);
+            if (context.CanRemove())
+            {
+                _murderContexts.Remove(player);
+            }
             _contextTerms.Remove(context);
         }
         else if (player.NetState != null)
@@ -233,9 +244,14 @@ public class PlayerMurderSystem : GenericPersistence
 
             while (queue.Count > 0)
             {
-                if (_murderContexts.Remove((PlayerMobile)queue.Dequeue(), out var context))
+                var pm = (PlayerMobile)queue.Dequeue();
+                if (_murderContexts.TryGetValue(pm, out var ctx))
                 {
-                    _contextTerms.Remove(context);
+                    if (ctx.CanRemove())
+                    {
+                        _murderContexts.Remove(pm);
+                    }
+                    _contextTerms.Remove(ctx);
                 }
             }
         }
