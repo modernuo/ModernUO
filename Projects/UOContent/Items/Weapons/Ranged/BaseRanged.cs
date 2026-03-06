@@ -90,7 +90,7 @@ namespace Server.Items
                     else if (WeaponAbility.GetCurrentAbility(attacker) is LightningArrow lightningArrow)
                     {
                         // Lightning Arrow doesn't require ammunition
-                        attacker.MovingEffect(defender, EffectID, 18, 1, false, false);
+                        attacker.MovingParticles(defender, EffectID, 18, 1, false, false, 0, 0, 0, 0, 0, EffectLayer.RightHand, 0);
                         lightningArrow.OnHit(attacker, defender, 0, new WorldLocation(defender));
                     }
                 }
@@ -211,7 +211,8 @@ namespace Server.Items
                 }
             }
 
-            attacker.MovingEffect(defender, EffectID, 18, 1, false, false);
+            attacker.MovingParticles(defender, EffectID, 18, 1, false, false, 0, 0, 0, 0, 0, EffectLayer.RightHand, 0);
+
             return true;
         }
 
@@ -242,41 +243,41 @@ namespace Server.Items
             switch (craftResource)
             {
                 case CraftResource.OakWood:
-                {
-                    Attributes.Luck += 40;
-                    Attributes.WeaponDamage += 5;
-                    break;
-                }
+                    {
+                        Attributes.Luck += 40;
+                        Attributes.WeaponDamage += 5;
+                        break;
+                    }
                 case CraftResource.AshWood:
-                {
-                    Attributes.WeaponSpeed += 10;
-                    WeaponAttributes.LowerStatReq += 20;
-                    break;
-                }
+                    {
+                        Attributes.WeaponSpeed += 10;
+                        WeaponAttributes.LowerStatReq += 20;
+                        break;
+                    }
                 case CraftResource.YewWood:
-                {
-                    Attributes.AttackChance += 5;
-                    Attributes.WeaponDamage += 10;
-                    break;
-                }
+                    {
+                        Attributes.AttackChance += 5;
+                        Attributes.WeaponDamage += 10;
+                        break;
+                    }
                 case CraftResource.Bloodwood:
-                {
-                    Attributes.RegenHits += 2;
-                    WeaponAttributes.HitLeechHits += 16;
-                    break;
-                }
+                    {
+                        Attributes.RegenHits += 2;
+                        WeaponAttributes.HitLeechHits += 16;
+                        break;
+                    }
                 case CraftResource.Heartwood:
-                {
-                    ApplyHeartwoodBonus();
-                    break;
-                }
+                    {
+                        ApplyHeartwoodBonus();
+                        break;
+                    }
                 case CraftResource.Frostwood:
-                {
-                    AosElementDamages.Physical = 60;
-                    AosElementDamages.Cold = 40;
-                    Attributes.WeaponDamage += 12;
-                    break;
-                }
+                    {
+                        AosElementDamages.Physical = 60;
+                        AosElementDamages.Cold = 40;
+                        Attributes.WeaponDamage += 12;
+                        break;
+                    }
             }
         }
 
