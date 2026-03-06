@@ -311,7 +311,7 @@ namespace Server.Misc
 
                 var actual = Notoriety.CanBeAttacked;
 
-                if (target.Kills >= 5 || body.IsMonster && IsSummoned(creature) || creature.AlwaysMurderer ||
+                if (target.Murderer || body.IsMonster && IsSummoned(creature) ||
                     creature.IsAnimatedDead)
                 {
                     actual = Notoriety.Murderer;
@@ -335,7 +335,7 @@ namespace Server.Misc
                 return Notoriety.Innocent;
             }
 
-            if (target.Kills >= 5 || body.IsMonster)
+            if (target.Murderer || body.IsMonster)
             {
                 return Notoriety.Murderer;
             }
@@ -438,7 +438,7 @@ namespace Server.Misc
                 }
             }
 
-            if (target.Kills >= 5 ||
+            if (target.Murderer ||
                 target.Body.IsMonster && IsSummoned(bcTarg) && target is not BaseFamiliar && target is not ArcaneFey &&
                 target is not Golem || bcTarg?.IsAnimatedDead == true)
             {

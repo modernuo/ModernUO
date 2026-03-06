@@ -1642,7 +1642,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             {
                 m_Kills = Math.Max(value, 0);
 
-                if (oldValue >= 5 != m_Kills >= 5)
+                if (oldValue >= 5 != Murderer)
                 {
                     Delta(MobileDelta.Noto);
                     InvalidateProperties();
@@ -1652,6 +1652,8 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             }
         }
     }
+
+    public virtual bool Murderer => Kills >= 5;
 
     [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
     public virtual bool Criminal

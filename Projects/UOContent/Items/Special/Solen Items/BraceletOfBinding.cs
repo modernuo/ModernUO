@@ -226,7 +226,7 @@ public partial class BraceletOfBinding : BaseBracelet, TranslocationItem
             return false;
         }
 
-        if (from.Kills >= 5 && boundRoot.Map != Map.Felucca)
+        if (from.Murderer && boundRoot.Map != Map.Felucca)
         {
             from.SendLocalizedMessage(1019004); // You are not allowed to travel there.
             return false;

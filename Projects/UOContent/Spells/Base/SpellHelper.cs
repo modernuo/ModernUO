@@ -502,7 +502,7 @@ namespace Server.Spells
             }
 
             return bcTarg?.Controlled == false && bcTarg.InitialInnocent ||
-                   Notoriety.Compute(from, to) != Notoriety.Innocent || from.Kills >= 5;
+                   Notoriety.Compute(from, to) != Notoriety.Innocent || from.Murderer;
         }
 
         public static void Summon(

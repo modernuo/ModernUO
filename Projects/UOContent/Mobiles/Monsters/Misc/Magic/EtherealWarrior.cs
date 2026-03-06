@@ -70,7 +70,7 @@ namespace Server.Mobiles
                     InLOS(from))
                 {
                     m_NextResurrect = Core.Now + ResurrectDelay;
-                    if (!from.Criminal && from.Kills < 5 && from.Karma > 0)
+                    if (!from.Criminal && !from.Murderer && from.Karma > 0)
                     {
                         if (from.Map?.CanFit(from.Location, 16, false, false) == true)
                         {

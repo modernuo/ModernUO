@@ -25,7 +25,7 @@ public partial class MoonstoneGate : Moongate
 
     public override void CheckGate(Mobile m, int range)
     {
-        if (m.Kills >= 5)
+        if (m.Murderer)
         {
             return;
         }
@@ -41,7 +41,7 @@ public partial class MoonstoneGate : Moongate
 
     public override void UseGate(Mobile m)
     {
-        if (m.Kills >= 5)
+        if (m.Murderer)
         {
             return;
         }

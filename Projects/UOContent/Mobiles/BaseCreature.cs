@@ -557,6 +557,8 @@ namespace Server.Mobiles
 
         public virtual bool AlwaysMurderer => false;
 
+        public override bool Murderer => AlwaysMurderer || base.Murderer;
+
         public virtual bool AlwaysAttackable => false;
 
         [CommandProperty(AccessLevel.GameMaster)]
@@ -2806,7 +2808,7 @@ namespace Server.Mobiles
                 return;
             }
 
-            if (!Body.IsHuman || Kills >= 5 || AlwaysMurderer || AlwaysAttackable || m.Kills < 5 ||
+            if (!Body.IsHuman || Murderer || AlwaysAttackable || !m.Murderer ||
                 !m.InRange(Location, 12) || !m.Alive)
             {
                 return;

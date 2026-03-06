@@ -165,7 +165,7 @@ public abstract partial class BaseChampion : BaseCreature
 
         var prot = JusticeVirtue.GetProtector(pm);
 
-        if (prot == null || prot.Map != pm.Map || prot.Kills >= 5 || prot.Criminal ||
+        if (prot == null || prot.Map != pm.Map || prot.Murderer || prot.Criminal ||
             !JusticeVirtue.CheckMapRegion(pm, prot))
         {
             return;
