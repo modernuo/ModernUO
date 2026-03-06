@@ -35,7 +35,7 @@ public partial class DisguiseKit : Item
         {
             from.SendLocalizedMessage(501702);
         }
-        else if (Stealing.SuspendOnMurder && pm.Kills > 0)
+        else if (Stealing.SuspendOnMurder && pm.Kills > 0)  // could be perma-red: intentional
         {
             from.SendLocalizedMessage(501703);
         }
