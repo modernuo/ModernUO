@@ -171,6 +171,13 @@ public class PlayerMurderSystem : GenericPersistence
         return context;
     }
 
+    public static void ManuallySetPingPong(PlayerMobile player, int pingPong)
+    {
+        var context = GetOrCreateMurderContext(player);
+        context.PingPong = Math.Max(pingPong, 0);
+        UpdateMurderContext(context);
+    }
+
     public static void ManuallySetShortTermMurders(PlayerMobile player, int shortTermMurders)
     {
         var context = GetOrCreateMurderContext(player);

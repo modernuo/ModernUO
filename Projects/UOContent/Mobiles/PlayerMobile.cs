@@ -707,6 +707,13 @@ namespace Server.Mobiles
         public ChampionTitleContext ChampionTitles => ChampionTitleSystem.GetOrCreateChampionTitleContext(this);
 
         [CommandProperty(AccessLevel.GameMaster)]
+        public int PingPong
+        {
+            get => PlayerMurderSystem.GetMurderContext(this, out var context) ? context.PingPong : 0;
+            set => PlayerMurderSystem.ManuallySetPingPong(this, value);
+        }
+
+        [CommandProperty(AccessLevel.GameMaster)]
         public int ShortTermMurders
         {
             get => PlayerMurderSystem.GetMurderContext(this, out var context) ? context.ShortTermMurders : 0;
