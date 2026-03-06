@@ -2192,7 +2192,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
             return DeathMoveResult.MoveToBackpack;
         }
 
-        if (CheckNewbied() && parent.Kills < 5)
+        if (CheckNewbied() && !parent.Murderer)
         {
             return DeathMoveResult.MoveToBackpack;
         }
@@ -2222,7 +2222,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
             return DeathMoveResult.MoveToBackpack;
         }
 
-        if (CheckNewbied() && parent.Kills < 5)
+        if (CheckNewbied() && !parent.Murderer)
         {
             return DeathMoveResult.MoveToBackpack;
         }

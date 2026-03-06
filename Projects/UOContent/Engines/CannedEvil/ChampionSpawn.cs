@@ -454,7 +454,7 @@ public partial class ChampionSpawn : Item
         // Justice reward
         var pm = (PlayerMobile)killer;
         var prot = JusticeVirtue.GetProtector(pm);
-        if (prot == null || prot.Map != killer.Map || prot.Kills >= 5 || prot.Criminal ||
+        if (prot == null || prot.Map != killer.Map || prot.Murderer || prot.Criminal ||
             !JusticeVirtue.CheckMapRegion(killer, prot))
         {
             return;

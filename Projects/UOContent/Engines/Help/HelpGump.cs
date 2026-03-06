@@ -307,7 +307,7 @@ public sealed class HelpGump : DynamicGump
                     }
                     else if (from is PlayerMobile mobile && mobile.CanUseStuckMenu() &&
                              mobile.Region.CanUseStuckMenu(mobile) && !CheckCombat(mobile) && !mobile.Frozen &&
-                             !mobile.Criminal && (Core.AOS || mobile.Kills < 5))
+                             !mobile.Criminal && (Core.AOS || !mobile.Murderer))
                     {
                         var menu = new StuckMenu(mobile, mobile, true);
 

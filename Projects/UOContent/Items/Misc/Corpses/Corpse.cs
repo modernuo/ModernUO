@@ -64,7 +64,7 @@ public enum CorpseFlag
     SelfLooted = 0x00000080
 }
 
-[SerializationGenerator(14, false)]
+[SerializationGenerator(15, false)]
 public partial class Corpse : Container, ICarvable
 {
     public static readonly TimeSpan MonsterLootRightSacrifice = TimeSpan.FromMinutes(2.0);
@@ -126,7 +126,7 @@ public partial class Corpse : Container, ICarvable
 
     [SerializableField(12)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
-    private int _kills;
+    private bool _murderer;
 
     [SerializableField(13, setter: "private")]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
@@ -170,7 +170,7 @@ public partial class Corpse : Container, ICarvable
 
         _accessLevel = owner.AccessLevel;
         _guild = owner.Guild as Guild;
-        _kills = owner.Kills;
+        _murderer = owner.Murderer;
         SetFlag(CorpseFlag.Criminal, owner.Criminal);
 
         if (hair?.ItemId > 0)
@@ -254,6 +254,28 @@ public partial class Corpse : Container, ICarvable
         DevourCorpse();
     }
 
+    // Replaced int Kills snapshot with bool Murderer snapshot
+    private void MigrateFrom(V14Content content)
+    {
+        _restoreEquip = content.RestoreEquip;
+        _flags = content.Flags;
+        _timeOfDeath = content.TimeOfDeath;
+        _restoreTable = content.RestoreTable;
+        _decayTimer = new InternalTimer(this, content.DecayTimerDelay);
+        _decayTimer.Start();
+        _looters = content.Looters;
+        _killer = content.Killer;
+        _aggressors = content.Aggressors;
+        _owner = content.Owner;
+        _corpseName = content.CorpseName;
+        _accessLevel = content.AccessLevel;
+        _guild = content.Guild;
+        _murderer = content.Kills >= 5;
+        _equipItems = content.EquipItems;
+        _hair = content.Hair;
+        _facialHair = content.FacialHair;
+    }
+
     // Added corpse hair and corpse facial hair
     private void MigrateFrom(V13Content content)
     {
@@ -270,7 +292,7 @@ public partial class Corpse : Container, ICarvable
         _corpseName = content.CorpseName;
         _accessLevel = content.AccessLevel;
         _guild = content.Guild;
-        _kills = content.Kills;
+        _murderer = content.Kills >= 5;
         _equipItems = content.EquipItems;
     }
 
@@ -631,7 +653,7 @@ public partial class Corpse : Container, ICarvable
 
         _accessLevel = (AccessLevel)reader.ReadInt();
         reader.ReadInt(); // guild reserve
-        _kills = reader.ReadInt();
+        _murderer = reader.ReadInt() >= 5;
 
         _equipItems = reader.ReadEntityList<Item>();
     }
