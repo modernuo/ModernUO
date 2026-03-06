@@ -52,11 +52,9 @@ namespace Server.Spells.Sixth
                     damage *= GetDamageScalar(m);
                 }
 
-                // Do the effects
-                source.MovingParticles(m, 0x379F, 7, 0, false, true, 3043, 4043, 0x211);
+                source.MovingParticles(m, 0x379F, 7, 0, false, true, 0, 0, 3043, 4043, 0x211, EffectLayer.RightHand, 0);
                 source.PlaySound(0x20A);
 
-                // Deal the damage
                 SpellHelper.Damage(this, m, damage, 0, 0, 0, 0, 100);
             }
         }
