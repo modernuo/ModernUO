@@ -21,106 +21,41 @@ namespace Server.Spells.Sixth
 
         public override bool DelayedDamage => true;
 
-        public void Target(Mobile defender)
+        public void Target(Mobile m)
         {
-            if (CheckHSequence(defender))
+            if (CheckHSequence(m))
             {
-                var attacker = Caster;
+                var source = Caster;
 
-                SpellHelper.Turn(Caster, defender);
+                SpellHelper.Turn(Caster, m);
 
-                SpellHelper.CheckReflect((int)Circle, ref attacker, ref defender);
+                SpellHelper.CheckReflect((int)Circle, ref source, ref m);
 
                 double damage;
 
                 if (Core.AOS)
                 {
-                    damage = GetNewAosDamage(40, 1, 5, defender);
+                    damage = GetNewAosDamage(40, 1, 5, m);
                 }
                 else
                 {
                     damage = Utility.Random(24, 18);
 
-                    if (CheckResisted(defender))
+                    if (CheckResisted(m))
                     {
                         damage *= 0.75;
 
-                        defender.SendLocalizedMessage(501783); // You feel yourself resisting magical energy.
+                        m.SendLocalizedMessage(501783); // You feel yourself resisting magical energy.
                     }
 
                     // Scale damage based on evalint and resist
-                    damage *= GetDamageScalar(defender);
+                    damage *= GetDamageScalar(m);
                 }
 
-                Point3D targetLocation = new Point3D(defender.X, defender.Y, defender.Z);
+                source.MovingParticles(m, 0x379F, 7, 0, false, true, 0, 0, 3043, 4043, 0x211, EffectLayer.RightHand, 0);
+                source.PlaySound(0x20A);
 
-                int deltaX = defender.X - attacker.X;
-                int deltaY = defender.Y - attacker.Y;
-            
-                int xOffset = 0, yOffset = 0;
-                int zOffset = attacker.Mount != null ? 0 : 0;
-            
-                if (deltaX == 0 && deltaY < 0)
-                {
-                    xOffset = 0;
-                    yOffset = 0;
-                    zOffset = attacker.Mount != null ? 12 : 8;
-                }
-                else if (deltaX > 0 && deltaY < 0)
-                {
-                    xOffset = 0;
-                    yOffset = 0;
-                    zOffset = attacker.Mount != null ? 12 : 6;
-                }
-                else if (deltaX > 0 && deltaY == 0)
-                {
-
-                    xOffset = 0;
-                    yOffset = 0;
-                    zOffset = attacker.Mount != null ? 9 : 5;
-                }
-                else if (deltaX > 0 && deltaY > 0)
-                {
-                    xOffset = 0;
-                    yOffset = 1;
-                    zOffset = attacker.Mount != null ? 16 : 8;
-                }
-                else if (deltaX == 0 && deltaY > 0)
-                {
-                    xOffset = 0;
-                    yOffset = 1;
-                    zOffset = attacker.Mount != null ? 25 : 17;
-                
-                }
-                else if (deltaX < 0 && deltaY > 0)
-                {
-                    xOffset = -1;
-                    yOffset = 1;
-                    zOffset = attacker.Mount != null ? 16 : 8;
-                }
-                else if (deltaX < 0 && deltaY == 0)
-
-                {
-                    xOffset = -1;
-                    yOffset = 0;
-                    zOffset = attacker.Mount != null ? 15 : 9;
-                }
-                else if (deltaX < 0 && deltaY < 0)
-                {
-                    xOffset = 0;
-                    yOffset = 0;
-                    zOffset = attacker.Mount != null ? 16 : 8;
-                }
-            
-                Point3D from = new(attacker.X + xOffset, attacker.Y + yOffset, attacker.Z + zOffset);
-                Point3D to = new(targetLocation.X + xOffset, targetLocation.Y + yOffset, targetLocation.Z + zOffset);
-            
-                Effects.SendMovingEffect(new Entity(Serial.Zero, from, attacker.Map),
-                    new Entity(Serial.Zero, to, defender.Map), 0x379F, 7, 0, false, true);
-
-                attacker.PlaySound(0x20A);
-
-                SpellHelper.Damage(this, defender, damage, 0, 0, 0, 0, 100);
+                SpellHelper.Damage(this, m, damage, 0, 0, 0, 0, 100);
             }
         }
 
