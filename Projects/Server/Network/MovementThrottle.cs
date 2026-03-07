@@ -51,7 +51,7 @@ public static class MovementThrottle
     private const int MaxQueueWithUnmodifiedClient = ClientMaxUnackedMovements - 1;  // 4
 
     // Debug logging - enable for testing speed hack detection
-    private static bool _debugLogging = true;
+    private static bool _debugLogging = false;
 
     // Track NetStates with queued movements for efficient processing
     private static readonly HashSet<NetState> _netStatesWithQueuedMovements = new(256);
