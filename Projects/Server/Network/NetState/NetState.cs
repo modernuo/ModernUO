@@ -63,9 +63,9 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     // Managed socket with buffers (handles lifecycle automatically)
     internal RingSocket _socket;
 
-    // Speed Hack Prevention
-    internal long _movementCredit;
-    internal long _nextMovementTime;
+    // General packet throttle state (used for other throttled packets)
+    internal bool _isThrottled;
+
     private IAccount _account;
 
     internal enum ParserState
@@ -942,6 +942,14 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         }
         else
         {
+            // Authenticated pre-game clients (login screens): send keep-alive instead of disconnecting.
+            // The 0xBD ClientVersionRequest resets NextActivityCheck via DataSent.
+            if (_account != null && Mobile == null)
+            {
+                this.SendClientVersionRequest();
+                return;
+            }
+
             LogInfo("Disconnecting due to inactivity...");
             Disconnect("Disconnecting due to inactivity.");
         }

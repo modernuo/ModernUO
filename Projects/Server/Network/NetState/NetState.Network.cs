@@ -353,6 +353,9 @@ public partial class NetState
             _throttled.Enqueue(_throttledPending.Dequeue());
         }
 
+        // Process queued movements at proper intervals
+        MovementThrottle.ProcessAllQueues();
+
         // Process all completions through the manager FIRST
         // This ensures DataReceived events are processed and HandleReceive runs,
         // which may call Send() and add to _flushPending
