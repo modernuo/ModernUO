@@ -56,6 +56,7 @@ public static class StaminaSystem
     {
         EventSink.Movement += EventSink_Movement;
         EventSink.Logout += Logout;
+        EventSink.Shutdown += Cleanup;
 
         // Credit idle time
         using var queue = PooledRefQueue<IHasSteps>.Create();
@@ -74,6 +75,13 @@ public static class StaminaSystem
         {
             _stepsTaken.Remove(queue.Dequeue());
         }
+    }
+
+    private static void Cleanup()
+    {
+        EventSink.Movement -= EventSink_Movement;
+        EventSink.Logout -= Logout;
+        EventSink.Shutdown -= Cleanup;
     }
 
     [OnEvent(nameof(PlayerMobile.PlayerDeletedEvent))]
