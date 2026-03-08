@@ -2595,7 +2595,7 @@ namespace Server.Mobiles
                 }
             }
 
-            if (Kills >= 5 && Core.Now >= m_NextJustAward)
+            if (Murderer && Core.Now >= m_NextJustAward)
             {
                 var m = FindMostRecentDamager(false);
 

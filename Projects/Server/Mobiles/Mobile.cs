@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2024 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: Mobile.cs                                                       *
  *                                                                       *
@@ -1642,7 +1642,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             {
                 m_Kills = Math.Max(value, 0);
 
-                if (oldValue >= 5 != m_Kills >= 5)
+                if (oldValue >= 5 != Murderer)
                 {
                     Delta(MobileDelta.Noto);
                     InvalidateProperties();
@@ -1652,6 +1652,8 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             }
         }
     }
+
+    public virtual bool Murderer => Kills >= 5;
 
     [CommandProperty(AccessLevel.Counselor, AccessLevel.GameMaster)]
     public virtual bool Criminal
@@ -2520,7 +2522,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
         if (ns != null)
         {
-            ns.Sequence = 0;
+            ns.ResetMovementState();
 
             if (m_Map != null)
             {
@@ -2756,7 +2758,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         {
             if (sendUpdate)
             {
-                ourState.Sequence = 0;
+                ourState.ResetMovementState();
                 ourState.SendMobileUpdate(this);
             }
 
@@ -4307,7 +4309,32 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
         if (m_NetState != null)
         {
-            m_NetState._nextMovementTime += ComputeMovementSpeed(d);
+            var cost = ComputeMovementSpeed(d);
+            var now = Core.TickCount;
+            var delta = now - m_NetState._nextMovementTime;
+
+            // Cap drift to prevent banking "lateness" for speed hacking later.
+            // maxDrift should match the credit buffer so the systems are symmetric.
+            const int maxDrift = 200;
+
+            if (cost == 0)
+            {
+                // Direction-only turn: reset to now to prevent turn accumulation
+                m_NetState._nextMovementTime = now;
+            }
+            else
+            {
+                // Clamp _nextMovementTime so it's never more than maxDrift behind now.
+                // This limits how much "lateness" can be banked.
+                if (delta > maxDrift)
+                {
+                    m_NetState._nextMovementTime = now - maxDrift;
+                }
+
+                // Accumulative timing: add cost to current baseline
+                m_NetState._nextMovementTime += cost;
+            }
+
             m_NetState.SendMovementAck(m_NetState.Sequence, this);
         }
 
@@ -7247,7 +7274,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
             if (isTeleport && (!m_NetState.HighSeas || !NoMoveHS))
             {
-                m_NetState.Sequence = 0;
+                m_NetState.ResetMovementState();
                 m_NetState.SendMobileUpdate(this);
             }
         }

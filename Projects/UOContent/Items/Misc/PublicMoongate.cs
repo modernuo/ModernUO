@@ -339,7 +339,7 @@ public class MoongateGump : Gump
         {
             checkLists = PMList.SigilLists;
         }
-        else if (mobile.Kills >= 5)
+        else if (mobile.Murderer)
         {
             checkLists = PMList.RedLists;
         }
@@ -474,7 +474,7 @@ public class MoongateGump : Gump
         {
             _mobile.SendLocalizedMessage(1019002); // You are too far away to use the gate.
         }
-        else if (_mobile.Player && _mobile.Kills >= 5 && list.Map != Map.Felucca)
+        else if (_mobile.Player && _mobile.Murderer && list.Map != Map.Felucca)
         {
             _mobile.SendLocalizedMessage(1019004); // You are not allowed to travel there.
         }

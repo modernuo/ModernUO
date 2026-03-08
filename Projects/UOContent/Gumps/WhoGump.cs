@@ -196,7 +196,7 @@ public class WhoGump : DynamicGump
             AccessLevel.Seer                                                        => 0x144,
             AccessLevel.GameMaster                                                  => 0x21,
             AccessLevel.Counselor                                                   => 0x2,
-            _ when m.Kills >= 5                                                     => 0x21,
+            _ when m.Murderer                                                       => 0x21,
             _ when m.Criminal                                                       => 0x3B1,
             _                                                                       => 0x58
         };

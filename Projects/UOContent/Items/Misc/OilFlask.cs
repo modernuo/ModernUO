@@ -65,7 +65,7 @@ public partial class OilFlask : Item
                 }
             }
 
-            Consume(1);
+            Consume();
         }
         else
         {

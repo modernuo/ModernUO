@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: OutgoingAccountPackets.cs                                       *
  *                                                                       *
@@ -109,7 +109,7 @@ public static class OutgoingAccountPackets
      * Sends a requests for the client version
      */
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void SendClientVersionRequest(this NetState ns) => ns?.Send(stackalloc byte[] { 0xBD, 0x00, 0x03 });
+    public static void SendClientVersionRequest(this NetState ns) => ns?.Send([0xBD, 0x00, 0x03]);
 
     /**
      * Packet: 0x85

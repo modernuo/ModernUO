@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2025 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: Item.cs                                                         *
  *                                                                       *
@@ -2192,7 +2192,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
             return DeathMoveResult.MoveToBackpack;
         }
 
-        if (CheckNewbied() && parent.Kills < 5)
+        if (CheckNewbied() && !parent.Murderer)
         {
             return DeathMoveResult.MoveToBackpack;
         }
@@ -2222,7 +2222,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
             return DeathMoveResult.MoveToBackpack;
         }
 
-        if (CheckNewbied() && parent.Kills < 5)
+        if (CheckNewbied() && !parent.Murderer)
         {
             return DeathMoveResult.MoveToBackpack;
         }

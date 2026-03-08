@@ -30,7 +30,7 @@ public class VirtueGump : Gump
 
     public static void RequestVirtueGump(PlayerMobile beholder, PlayerMobile beheld)
     {
-        if (beholder == beheld && beholder.Kills >= 5)
+        if (beholder == beheld && beholder.Murderer)
         {
             beholder.SendLocalizedMessage(1049609); // Murderers cannot invoke this virtue.
         }
@@ -49,7 +49,7 @@ public class VirtueGump : Gump
 
         beholder.CloseGump<VirtueGump>();
 
-        if (beholder.Kills >= 5)
+        if (beholder.Murderer)
         {
             beholder.SendLocalizedMessage(1049609); // Murderers cannot invoke this virtue.
             return;

@@ -31,7 +31,7 @@ public sealed partial class HeroEthic : Ethic
         }
     }
 
-    public override bool IsEligible(Mobile mob) => mob.Kills < 5 && Faction.Find(mob) is TrueBritannians or CouncilOfMages;
+    public override bool IsEligible(Mobile mob) => !mob.Murderer && Faction.Find(mob) is TrueBritannians or CouncilOfMages;
 
     [AfterDeserialization]
     private void AfterDeserialization()
