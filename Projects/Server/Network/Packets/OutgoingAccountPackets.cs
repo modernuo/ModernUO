@@ -109,7 +109,7 @@ public static class OutgoingAccountPackets
      * Sends a requests for the client version
      */
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void SendClientVersionRequest(this NetState ns) => ns?.Send(stackalloc byte[] { 0xBD, 0x00, 0x03 });
+    public static void SendClientVersionRequest(this NetState ns) => ns?.Send([0xBD, 0x00, 0x03]);
 
     /**
      * Packet: 0x85
