@@ -224,7 +224,11 @@ public class PlayerMurderSystem : GenericPersistence
 
     internal static void ReportKillsToSelf(PlayerMobile player)
     {
-        if (Core.T2A && !Core.UOR)
+        if(Core.Expansion == Expansion.None)
+        {
+            return;  // no consider sins in pre-t2a
+        }
+        else if (Core.Expansion is Expansion.T2A)
         {
             if (player.ShortTermMurders >= 5)
             {

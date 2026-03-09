@@ -78,7 +78,7 @@ public partial class MurderContext
         }
     }
 
-    public bool CanRemove() => _pingPong == 0 && _shortTermMurders <= 0 && _player.Kills <= 0;
+    public bool CanRemove() => _pingPong <= 0 && _shortTermMurders <= 0 && _player.Kills <= 0;
 
     public bool CheckStart()
     {
