@@ -964,7 +964,8 @@ public static class FeatureFlagManager
             // Server project flags
             "player_trading" => ServerFeatureFlags.PlayerTrading = enabled,
             "pvp_combat"     => ServerFeatureFlags.PvPCombat = enabled,
-            "bank_access"    => ServerFeatureFlags.BankAccess = enabled,
+            "bank_access"          => ServerFeatureFlags.BankAccess = enabled,
+            "speedhack_detection"  => ServerFeatureFlags.SpeedhackDetection = enabled,
 
             // UOContent flags
             "vendor_purchase"        => ContentFeatureFlags.VendorPurchase = enabled,
