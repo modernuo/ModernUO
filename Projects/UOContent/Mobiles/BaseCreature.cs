@@ -557,6 +557,8 @@ namespace Server.Mobiles
 
         public virtual bool AlwaysMurderer => false;
 
+        public override bool Murderer => AlwaysMurderer || base.Murderer;
+
         public virtual bool AlwaysAttackable => false;
 
         [CommandProperty(AccessLevel.GameMaster)]
@@ -2806,7 +2808,7 @@ namespace Server.Mobiles
                 return;
             }
 
-            if (!Body.IsHuman || Kills >= 5 || AlwaysMurderer || AlwaysAttackable || m.Kills < 5 ||
+            if (!Body.IsHuman || Murderer || AlwaysAttackable || !m.Murderer ||
                 !m.InRange(Location, 12) || !m.Alive)
             {
                 return;
@@ -5300,6 +5302,8 @@ namespace Server.Mobiles
 
         public virtual void HealStart(Mobile patient)
         {
+            StopHeal();
+
             var onSelf = patient == this;
 
             // DoBeneficial( patient );
@@ -5326,12 +5330,13 @@ namespace Server.Mobiles
                 return;
             }
 
-            var onSelf = patient == this;
-
-            if (!patient.Alive)
+            if (!InRange(patient, HealStartRange))
             {
+                return;
             }
-            else if (patient.Poisoned)
+
+            var onSelf = patient == this;
+            if (patient.Poisoned)
             {
                 var poisonLevel = patient.Poison.Level;
 

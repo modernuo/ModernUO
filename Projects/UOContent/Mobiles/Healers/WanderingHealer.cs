@@ -40,7 +40,7 @@ public partial class WanderingHealer : BaseHealer
             return false;
         }
 
-        if (m.Kills >= 5)
+        if (m.Murderer)
         {
             Say(501223); // Thou'rt not a decent and good person. I shall not resurrect thee.
             return false;

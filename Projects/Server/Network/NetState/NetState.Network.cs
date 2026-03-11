@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2025 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: NetState.Network.cs                                             *
  *                                                                       *
@@ -352,6 +352,9 @@ public partial class NetState
         {
             _throttled.Enqueue(_throttledPending.Dequeue());
         }
+
+        // Process queued movements at proper intervals
+        MovementThrottle.ProcessAllQueues();
 
         // Process all completions through the manager FIRST
         // This ensures DataReceived events are processed and HandleReceive runs,

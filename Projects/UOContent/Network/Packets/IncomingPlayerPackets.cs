@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: IncomingPlayerPackets.cs                                        *
  *                                                                       *
@@ -360,7 +360,7 @@ public static class IncomingPlayerPackets
 
         from.SendEverything();
 
-        state.Sequence = 0;
+        state.ResetMovementState();
     }
 
     public static void PingReq(NetState state, SpanReader reader)

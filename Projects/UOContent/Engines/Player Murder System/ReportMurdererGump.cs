@@ -42,7 +42,7 @@ public class ReportMurdererGump : StaticGump<ReportMurdererGump>
         {
             if (ai.Attacker.Player && ai.CanReportMurder && !ai.Reported)
             {
-                if (!Core.SE || !_recentlyReported.Contains((m, ai.Attacker)))
+                if (!_recentlyReported.Contains((m, ai.Attacker)))
                 {
                     if (notInThievesGuild)
                     {
@@ -150,31 +150,30 @@ public class ReportMurdererGump : StaticGump<ReportMurdererGump>
                     var killer = _killers[_idx];
                     if (killer?.Deleted == false)
                     {
-                        if (Core.SE)
+                        if (_recentlyReported.Add((from, killer)))
                         {
-                            if (_recentlyReported.Add((from, killer)))
-                            {
-                                Timer.DelayCall(
-                                    _recentlyReportedDelay,
-                                    static (f, k) => _recentlyReported.Remove((f, k)),
-                                    from,
-                                    killer
-                                );
-                            }
+                            Timer.DelayCall(
+                                _recentlyReportedDelay,
+                                static (f, k) => _recentlyReported.Remove((f, k)),
+                                from,
+                                killer
+                            );
                         }
 
                         if (killer is PlayerMobile pk)
                         {
                             // Increment their short term murders, their kills, and reset the murder decay time
+                            var wasMurderer = killer.Murderer;
                             PlayerMurderSystem.OnPlayerMurder(pk);
 
                             pk.SendLocalizedMessage(1049067); // You have been reported for murder!
 
-                            if (pk.Kills == 5)
+                            if (!wasMurderer && killer.Murderer)
                             {
                                 pk.SendLocalizedMessage(502134); // You are now known as a murderer!
                             }
-                            else if (Stealing.SuspendOnMurder && pk.Kills == 1 && pk.NpcGuild == NpcGuild.ThievesGuild)
+                            // with the introduction of PingPongs, a red can technically have 1 kill.
+                            if (Stealing.SuspendOnMurder && pk.Kills == 1 && pk.NpcGuild == NpcGuild.ThievesGuild)
                             {
                                 pk.SendLocalizedMessage(501562); // You have been suspended by the Thieves Guild.
                             }

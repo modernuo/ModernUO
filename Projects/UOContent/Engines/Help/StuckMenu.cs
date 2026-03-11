@@ -300,7 +300,7 @@ namespace Server.Menus.Questions
                     }
                     else
                     {
-                        destMap = m_Mobile.Kills >= 5 ? Map.Felucca : Map.Trammel;
+                        destMap = m_Mobile.Murderer ? Map.Felucca : Map.Trammel;
                     }
 
                     BaseCreature.TeleportPets(m_Mobile, dest, destMap);

@@ -29,6 +29,8 @@ public class PlayerMurderSystem : GenericPersistence
 
     public static TimeSpan LongTermMurderDuration => _longTermMurderDuration;
 
+    public static bool PingPongEnabled => Core.T2A && !Core.LBR;
+
     public static void Configure()
     {
         _shortTermMurderDuration = ServerConfiguration.GetOrUpdateSetting("murderSystem.shortTermMurderDuration", TimeSpan.FromHours(8));
@@ -94,8 +96,11 @@ public class PlayerMurderSystem : GenericPersistence
         }
         else
         {
-            _murderContexts.Remove(pm);
             _contextTerms.Remove(context);
+            if (context.CanRemove())
+            {
+                _murderContexts.Remove(pm);
+            }
         }
     }
 
@@ -109,7 +114,7 @@ public class PlayerMurderSystem : GenericPersistence
         context.DecayKills();
         _contextTerms.Remove(context);
 
-        if (pm.Kills <= 0 && context.ShortTermMurders <= 0)
+        if (context.CanRemove())
         {
             _murderContexts.Remove(pm);
         }
@@ -168,6 +173,13 @@ public class PlayerMurderSystem : GenericPersistence
         return context;
     }
 
+    public static void ManuallySetPingPong(PlayerMobile player, int pingPong)
+    {
+        var context = GetOrCreateMurderContext(player);
+        context.PingPong = Math.Max(pingPong, 0);
+        UpdateMurderContext(context);
+    }
+
     public static void ManuallySetShortTermMurders(PlayerMobile player, int shortTermMurders)
     {
         var context = GetOrCreateMurderContext(player);
@@ -183,6 +195,11 @@ public class PlayerMurderSystem : GenericPersistence
         context.ShortTermMurders++;
         player.Kills++;
 
+        if (PingPongEnabled && player.Kills == 5)
+        {
+            context.PingPong++;
+        }
+
         context.ResetKillTime();
         UpdateMurderContext(context);
     }
@@ -193,12 +210,59 @@ public class PlayerMurderSystem : GenericPersistence
 
         if (!context.CheckStart())
         {
-            _murderContexts.Remove(player);
+            if (context.CanRemove())
+            {
+                _murderContexts.Remove(player);
+            }
             _contextTerms.Remove(context);
         }
         else if (player.NetState != null)
         {
             _contextTerms.Add(context);
+        }
+    }
+
+    internal static void ReportKillsToSelf(PlayerMobile player)
+    {
+        if (Core.Expansion == Expansion.None)
+        {
+            return;  // no consider sins in pre-t2a
+        }
+        else if (Core.Expansion is Expansion.T2A)
+        {
+            if (player.ShortTermMurders >= 5)
+            {
+                player.SendLocalizedMessage(502126, "", 0x022); // If thou should return to the land of the living, the innocent shall wreak havoc upon thy soul
+            }
+            else if (PingPongEnabled && player.Murderer)
+            {
+                player.SendLocalizedMessage(502123, "", 0x022);  // Thou art known throughout the land as a murderous brigand.
+            }
+            else if (player.ShortTermMurders > 0)
+            {
+                player.SendLocalizedMessage(502125, "", 0x59); // Although thou hast slain the innocent, thy deeds shall not bring retribution upon thy return to the living
+            }
+            else if (player.Kills > 0)
+            {
+                player.SendLocalizedMessage(502124, "", 0x59);  // Fear not, thou hast not slain the innocent in some time...
+            }
+            else  // no kills
+            {
+                player.SendLocalizedMessage(502122, "", 0x59);  // Fear not, thou hast not slain the innocent.
+            }
+        }
+        else if (!Core.SE)
+        {
+            player.SendMessage($"Short Term Murders : {player.ShortTermMurders}");
+            player.SendMessage($"Long Term Murders : {player.Kills}");
+            if (PingPongEnabled)
+            {
+                player.SendMessage($"Ping Pongs: {player.PingPong}");
+            }
+        }
+        else
+        {
+            player.SendLocalizedMessage(1114370, $"{player.ShortTermMurders}\t{player.Kills}");
         }
     }
 
@@ -233,9 +297,14 @@ public class PlayerMurderSystem : GenericPersistence
 
             while (queue.Count > 0)
             {
-                if (_murderContexts.Remove((PlayerMobile)queue.Dequeue(), out var context))
+                var pm = (PlayerMobile)queue.Dequeue();
+                if (_murderContexts.TryGetValue(pm, out var ctx))
                 {
-                    _contextTerms.Remove(context);
+                    if (ctx.CanRemove())
+                    {
+                        _murderContexts.Remove(pm);
+                    }
+                    _contextTerms.Remove(ctx);
                 }
             }
         }

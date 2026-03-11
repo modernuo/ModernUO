@@ -179,7 +179,7 @@ public class JusticeVirtue
         {
             protector.SendLocalizedMessage(1049372); // You cannot use this ability here.
         }
-        else if (pm == protector || pm.Criminal || pm.Kills >= 5)
+        else if (pm == protector || pm.Criminal || pm.Murderer)
         {
             protector.SendLocalizedMessage(1049436); // That player cannot be protected.
         }
@@ -219,7 +219,7 @@ public class JusticeVirtue
         {
             protector.SendLocalizedMessage(1049372); // You cannot use this ability here.
         }
-        else if (protectee == protector || protectee.Criminal || protectee.Kills >= 5)
+        else if (protectee == protector || protectee.Criminal || protectee.Murderer)
         {
             protector.SendLocalizedMessage(1049436); // That player cannot be protected.
         }
