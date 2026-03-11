@@ -29,7 +29,7 @@ namespace Server.Engines.Help
                 return;
             }
             
-            try // TODO: should also accept emojis
+            try
             {
                 var pageTypeName = PageQueue.GetPageTypeName(entry.Type);
                 var locationInfo = $"{entry.PageLocation} ({entry.PageMap?.Name ?? "Unknown"})";
@@ -106,17 +106,17 @@ namespace Server.Engines.Help
                 
                 if (oldHandler == null && newHandler != null)
                 {
-                    actionText = $"**{newHandler.Name}** is now handling the page";
+                    actionText = $"🙋 **{newHandler.Name}** is now handling the page";
                     color = 0x00FF00; // green
                 }
                 else if (oldHandler != null && newHandler == null)
                 {
-                    actionText = $"**{oldHandler.Name}** stopped handling the page";
+                    actionText = $"❌ **{oldHandler.Name}** stopped handling the page";
                     color = 0xFF0000; // red
                 }
                 else if (oldHandler != null && newHandler != null)
                 {
-                    actionText = $"Page transferred from **{oldHandler.Name}** to **{newHandler.Name}**";
+                    actionText = $"🔄 Page transferred from **{oldHandler.Name}** to **{newHandler.Name}**";
                     color = 0xFFFF00; // yellow
                 }
                 else
