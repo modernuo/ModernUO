@@ -224,7 +224,7 @@ public class PlayerMurderSystem : GenericPersistence
 
     internal static void ReportKillsToSelf(PlayerMobile player)
     {
-        if(Core.Expansion == Expansion.None)
+        if (Core.Expansion == Expansion.None)
         {
             return;  // no consider sins in pre-t2a
         }
