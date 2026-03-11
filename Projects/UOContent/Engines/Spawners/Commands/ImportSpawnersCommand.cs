@@ -198,17 +198,17 @@ public static class ImportSpawnersCommand
         ref int totalFailures
     )
     {
-        var fileContent = File.ReadAllText(file.FullName).Trim();
-        if (string.IsNullOrWhiteSpace(fileContent))
-        {
-            from.SendMessage($"GenerateSpawners: Skipping empty spawner file {file.Name}");
-            return;
-        }
-        
         var options = JsonConfig.GetOptions();
         try
         {
             var spawners = JsonConfig.Deserialize<List<DynamicJson>>(file.FullName);
+            if (spawners == null || spawners.Count == 0)
+            {
+                from.SendMessage($"GenerateSpawners: Skipping empty spawner file {file.Name}");
+                logger.Information("{User} is skipping empty spawner file {File}", from, file.FullName);
+                return;
+            }
+            
             using var queue = PooledRefQueue<Item>.Create();
             for (var i = 0; i < spawners.Count; i++)
             {
