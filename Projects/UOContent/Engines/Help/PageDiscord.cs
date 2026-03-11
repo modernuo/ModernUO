@@ -92,6 +92,11 @@ namespace Server.Engines.Help
             {
                 return;
             }
+
+            if (oldHandler != null && newHandler == null && PageQueue.IndexOf(entry) == -1)
+            {
+                return;
+            }
             
             try
             {
