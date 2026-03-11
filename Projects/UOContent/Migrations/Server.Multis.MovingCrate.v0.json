@@ -1,0 +1,11 @@
+{
+  "version": 0,
+  "type": "Server.Multis.MovingCrate",
+  "properties": [
+    {
+      "name": "House",
+      "type": "Server.Multis.BaseHouse",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}

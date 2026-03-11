@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: IncomingEntityPackets.cs                                        *
  *                                                                       *
@@ -72,7 +72,7 @@ public static class IncomingEntityPackets
             }
             else
             {
-                Serial s = (Serial)value;
+                var s = (Serial)value;
 
                 if (s.IsMobile)
                 {
@@ -106,7 +106,7 @@ public static class IncomingEntityPackets
     {
         var from = state.Mobile;
 
-        Serial s = (Serial)reader.ReadUInt32();
+        var s = (Serial)reader.ReadUInt32();
 
         if (s.IsMobile)
         {
@@ -169,7 +169,7 @@ public static class IncomingEntityPackets
 
         while (reader.Remaining > 0)
         {
-            Serial s = (Serial)reader.ReadUInt32();
+            var s = (Serial)reader.ReadUInt32();
 
             if (s.IsMobile)
             {

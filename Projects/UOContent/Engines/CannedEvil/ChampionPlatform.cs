@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: ChampionPlatform.cs                                             *
  *                                                                       *
@@ -61,7 +61,7 @@ public partial class ChampionPlatform : BaseAddon
 
     public void AddComponent(int id, int x, int y, int z)
     {
-        AddonComponent ac = new AddonComponent(id) { Hue = 0x497 };
+        var ac = new AddonComponent(id) { Hue = 0x497 };
         AddComponent(ac, x, y, z);
     }
 

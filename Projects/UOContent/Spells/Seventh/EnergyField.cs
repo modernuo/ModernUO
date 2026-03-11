@@ -41,7 +41,7 @@ public class EnergyFieldSpell : MagerySpell, ITargetingSpell<IPoint3D>
 
             Effects.PlaySound(loc, Caster.Map, 0x20B);
 
-            TimeSpan duration = Core.AOS
+            var duration = Core.AOS
                 ? TimeSpan.FromSeconds((15 + Caster.Skills.Magery.Value * 2) / 7.0)
                 : TimeSpan.FromSeconds(Caster.Skills.Magery.Value * 0.28 + 2.0);
 

@@ -40,7 +40,7 @@ namespace Server.Engines.Quests.Naturalist
         {
             get
             {
-                int count = 0;
+                var count = 0;
                 foreach (var area in m_Areas)
                 {
                     if (!area.Special)

@@ -1,0 +1,11 @@
+{
+  "version": 0,
+  "type": "Server.Engines.ConPVP.KHBoard",
+  "properties": [
+    {
+      "name": "Controller",
+      "type": "Server.Engines.ConPVP.KHController",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}

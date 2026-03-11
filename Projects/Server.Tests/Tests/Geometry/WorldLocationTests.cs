@@ -50,7 +50,7 @@ public sealed class WorldLocationTests
 
         const int max = int.MaxValue;
         const int min = int.MinValue;
-        char[] array = new char[128];
+        var array = new char[128];
 
         var p1 = new WorldLocation(0, 0, 0, map);
         Assert.True(p1.TryFormat(array, out var cp1, null, null));
@@ -82,7 +82,7 @@ public sealed class WorldLocationTests
 
         const int max = int.MaxValue;
         const int min = int.MinValue;
-        char[] array = new char[1];
+        var array = new char[1];
 
         var p1 = new WorldLocation(0, 0, 0, map);
         Assert.False(p1.TryFormat(array, out var cp1, null, null));

@@ -86,28 +86,28 @@ public partial class Account
 
         var length = reader.ReadInt();
         _mobiles = new Mobile[length];
-        for (int i = 0; i < length; i++)
+        for (var i = 0; i < length; i++)
         {
             _mobiles[i] = reader.ReadEntity<Mobile>();
         }
 
         length = reader.ReadInt();
         _comments = length > 0 ? new List<AccountComment>(length) : null;
-        for (int i = 0; i < length; i++)
+        for (var i = 0; i < length; i++)
         {
             _comments!.Add(new AccountComment(reader));
         }
 
         length = reader.ReadInt();
         _tags = length > 0 ? new List<AccountTag>(length) : null;
-        for (int i = 0; i < length; i++)
+        for (var i = 0; i < length; i++)
         {
             _tags!.Add(new AccountTag(reader));
         }
 
         length = reader.ReadInt();
         _loginIPs = new IPAddress[length];
-        for (int i = 0; i < length; i++)
+        for (var i = 0; i < length; i++)
         {
             if (version < 2)
             {
@@ -123,7 +123,7 @@ public partial class Account
         }
 
         length = reader.ReadInt();
-        for (int i = 0; i < length; i++)
+        for (var i = 0; i < length; i++)
         {
             reader.ReadString(); // IP Restrictions
         }

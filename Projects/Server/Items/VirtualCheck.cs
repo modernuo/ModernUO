@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: VirtualCheck.cs                                                 *
  *                                                                       *
@@ -47,6 +47,7 @@ public sealed partial class VirtualCheck : Item
         Movable = false;
     }
 
+    public override bool SkipSerialization => true;
     public override bool IsVirtualItem => true;
     public override bool DisplayWeight => false;
     public override bool DisplayLootType => false;
@@ -157,11 +158,5 @@ public sealed partial class VirtualCheck : Item
             Editor.Close();
             Editor = null;
         }
-    }
-
-    [AfterDeserialization(false)]
-    private void AfterDeserialization()
-    {
-        Delete();
     }
 }

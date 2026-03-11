@@ -134,7 +134,7 @@ public class AnimateDeadSpell : NecromancerSpell, ITargetingSpell<Item>
         }
         else
         {
-            Type type = c.Owner?.GetType();
+            var type = c.Owner?.GetType();
 
             if (c.ItemID != 0x2006 || c.Animated || type == typeof(PlayerMobile) || type == null ||
                 c.Owner?.Fame < 100 ||

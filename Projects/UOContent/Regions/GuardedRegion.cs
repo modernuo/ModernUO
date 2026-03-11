@@ -135,7 +135,7 @@ public class GuardedRegion : BaseRegion
     }
 
     public virtual bool CheckVendorAccess(BaseVendor vendor, Mobile from) =>
-        from.AccessLevel >= AccessLevel.GameMaster || IsDisabled() || from.Kills < 5;
+        from.AccessLevel >= AccessLevel.GameMaster || IsDisabled() || !from.Murderer;
 
     public override bool OnBeginSpellCast(Mobile m, ISpell s)
     {
@@ -171,7 +171,7 @@ public class GuardedRegion : BaseRegion
             return;
         }
 
-        if (!AllowReds && (m.Kills >= 5 || m is BaseCreature { AlwaysMurderer: true }))
+        if (!AllowReds && m.Murderer)
         {
             CheckGuardCandidate(m);
         }
@@ -334,7 +334,7 @@ public class GuardedRegion : BaseRegion
             return false;
         }
 
-        return !AllowReds && (m.Kills >= 5 || bc?.AlwaysMurderer == true) || m.Criminal;
+        return !AllowReds && m.Murderer || m.Criminal;
     }
 
     private class GuardTimer : Timer

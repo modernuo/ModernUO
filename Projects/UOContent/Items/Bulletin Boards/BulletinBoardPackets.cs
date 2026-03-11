@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: BulletinBoardPackets.cs                                         *
  *                                                                       *
@@ -224,7 +224,7 @@ namespace Server.Network
             if (content)
             {
                 maxLength += 2 + equipLength * 4; // We have an extra 4 from the thread serial
-                for (int i = 0; i < linesLength; i++)
+                for (var i = 0; i < linesLength; i++)
                 {
                     msg.Lines[i].UpdateLengthCounters(ref maxLength, ref longestTextLine, true);
                 }

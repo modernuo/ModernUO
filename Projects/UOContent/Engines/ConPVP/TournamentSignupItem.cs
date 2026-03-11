@@ -1,193 +1,162 @@
 using System.Collections.Generic;
+using ModernUO.Serialization;
 using Server.Factions;
 using Server.Gumps;
 using Server.Mobiles;
 
-namespace Server.Engines.ConPVP
+namespace Server.Engines.ConPVP;
+
+[SerializationGenerator(0, false)]
+public partial class TournamentSignupItem : Item
 {
-    public class TournamentSignupItem : Item
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    [SerializableField(0)]
+    private TournamentController _tournament;
+
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    [SerializableField(1)]
+    private Mobile _registrar;
+
+    [Constructible]
+    public TournamentSignupItem() : base(4029) => Movable = false;
+
+    public override string DefaultName => "tournament signup book";
+
+    public override void OnDoubleClick(Mobile from)
     {
-        [Constructible]
-        public TournamentSignupItem() : base(4029) => Movable = false;
-
-        public TournamentSignupItem(Serial serial) : base(serial)
+        if (!from.InRange(GetWorldLocation(), 2))
         {
+            from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that
         }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public TournamentController Tournament { get; set; }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public Mobile Registrar { get; set; }
-
-        public override string DefaultName => "tournament signup book";
-
-        public override void OnDoubleClick(Mobile from)
+        else
         {
-            if (!from.InRange(GetWorldLocation(), 2))
+            var tourney = Tournament?.Tournament;
+
+            if (tourney == null)
             {
-                from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that
+                return;
             }
-            else
+
+            Registrar?.Direction = Registrar.GetDirectionTo(this);
+
+            switch (tourney.Stage)
             {
-                var tourney = Tournament?.Tournament;
-
-                if (tourney == null)
-                {
-                    return;
-                }
-
-                if (Registrar != null)
-                {
-                    Registrar.Direction = Registrar.GetDirectionTo(this);
-                }
-
-                switch (tourney.Stage)
-                {
-                    case TournamentStage.Fighting:
+                case TournamentStage.Fighting:
+                    {
+                        if (Registrar != null)
                         {
-                            if (Registrar != null)
+                            if (tourney.HasParticipant(from))
                             {
-                                if (tourney.HasParticipant(from))
-                                {
-                                    Registrar.PrivateOverheadMessage(
-                                        MessageType.Regular,
-                                        0x35,
-                                        false,
-                                        "Excuse me? You are already signed up.",
-                                        from.NetState
-                                    );
-                                }
-                                else
-                                {
-                                    Registrar.PrivateOverheadMessage(
-                                        MessageType.Regular,
-                                        0x22,
-                                        false,
-                                        "The tournament has already begun. You are too late to signup now.",
-                                        from.NetState
-                                    );
-                                }
+                                Registrar.PrivateOverheadMessage(
+                                    MessageType.Regular,
+                                    0x35,
+                                    false,
+                                    "Excuse me? You are already signed up.",
+                                    from.NetState
+                                );
                             }
-
-                            break;
+                            else
+                            {
+                                Registrar.PrivateOverheadMessage(
+                                    MessageType.Regular,
+                                    0x22,
+                                    false,
+                                    "The tournament has already begun. You are too late to signup now.",
+                                    from.NetState
+                                );
+                            }
                         }
-                    case TournamentStage.Inactive:
+
+                        break;
+                    }
+                case TournamentStage.Inactive:
+                    {
+                        Registrar?.PrivateOverheadMessage(
+                            MessageType.Regular,
+                            0x35,
+                            false,
+                            "The tournament is closed.",
+                            from.NetState
+                        );
+
+                        break;
+                    }
+                case TournamentStage.Signup:
+                    {
+                        var ladder = Ladder.Instance;
+                        var entry = ladder?.Find(from);
+
+                        if (entry != null && Ladder.GetLevel(entry.Experience) < tourney.LevelRequirement)
                         {
                             Registrar?.PrivateOverheadMessage(
                                 MessageType.Regular,
                                 0x35,
                                 false,
-                                "The tournament is closed.",
+                                "You have not yet proven yourself a worthy dueler.",
                                 from.NetState
                             );
 
                             break;
                         }
-                    case TournamentStage.Signup:
+
+                        if (tourney.IsFactionRestricted && Faction.Find(from) == null)
                         {
-                            var ladder = Ladder.Instance;
-                            var entry = ladder?.Find(from);
-
-                            if (entry != null && Ladder.GetLevel(entry.Experience) < tourney.LevelRequirement)
-                            {
-                                Registrar?.PrivateOverheadMessage(
-                                    MessageType.Regular,
-                                    0x35,
-                                    false,
-                                    "You have not yet proven yourself a worthy dueler.",
-                                    from.NetState
-                                );
-
-                                break;
-                            }
-
-                            if (tourney.IsFactionRestricted && Faction.Find(from) == null)
-                            {
-                                Registrar?.PrivateOverheadMessage(
-                                    MessageType.Regular,
-                                    0x35,
-                                    false,
-                                    "Only those who have declared their faction allegiance may participate.",
-                                    from.NetState
-                                );
-
-                                break;
-                            }
-
-                            if (from.HasGump<AcceptTeamGump>())
-                            {
-                                Registrar?.PrivateOverheadMessage(
-                                    MessageType.Regular,
-                                    0x22,
-                                    false,
-                                    "You must first respond to the offer I've given you.",
-                                    from.NetState
-                                );
-                            }
-                            else if (from.HasGump<AcceptDuelGump>())
-                            {
-                                Registrar?.PrivateOverheadMessage(
-                                    MessageType.Regular,
-                                    0x22,
-                                    false,
-                                    "You must first cancel your duel offer.",
-                                    from.NetState
-                                );
-                            }
-                            else if (from is PlayerMobile mobile && mobile.DuelContext != null)
-                            {
-                                Registrar?.PrivateOverheadMessage(
-                                    MessageType.Regular,
-                                    0x22,
-                                    false,
-                                    "You are already participating in a duel.",
-                                    mobile.NetState
-                                );
-                            }
-                            else if (!tourney.HasParticipant(from))
-                            {
-                                from.SendGump(new ConfirmSignupGump(from, Registrar, tourney, new List<Mobile> { from }));
-                            }
-                            else
-                            {
-                                Registrar?.PrivateOverheadMessage(
-                                    MessageType.Regular,
-                                    0x35,
-                                    false,
-                                    "You have already entered this tournament.",
-                                    from.NetState
-                                );
-                            }
+                            Registrar?.PrivateOverheadMessage(
+                                MessageType.Regular,
+                                0x35,
+                                false,
+                                "Only those who have declared their faction allegiance may participate.",
+                                from.NetState
+                            );
 
                             break;
                         }
-                }
-            }
-        }
 
-        public override void Serialize(IGenericWriter writer)
-        {
-            base.Serialize(writer);
+                        if (from.HasGump<AcceptTeamGump>())
+                        {
+                            Registrar?.PrivateOverheadMessage(
+                                MessageType.Regular,
+                                0x22,
+                                false,
+                                "You must first respond to the offer I've given you.",
+                                from.NetState
+                            );
+                        }
+                        else if (from.HasGump<AcceptDuelGump>())
+                        {
+                            Registrar?.PrivateOverheadMessage(
+                                MessageType.Regular,
+                                0x22,
+                                false,
+                                "You must first cancel your duel offer.",
+                                from.NetState
+                            );
+                        }
+                        else if (from is PlayerMobile mobile && mobile.DuelContext != null)
+                        {
+                            Registrar?.PrivateOverheadMessage(
+                                MessageType.Regular,
+                                0x22,
+                                false,
+                                "You are already participating in a duel.",
+                                mobile.NetState
+                            );
+                        }
+                        else if (!tourney.HasParticipant(from))
+                        {
+                            from.SendGump(new ConfirmSignupGump(from, Registrar, tourney, new List<Mobile> { from }));
+                        }
+                        else
+                        {
+                            Registrar?.PrivateOverheadMessage(
+                                MessageType.Regular,
+                                0x35,
+                                false,
+                                "You have already entered this tournament.",
+                                from.NetState
+                            );
+                        }
 
-            writer.Write(0);
-
-            writer.Write(Tournament);
-            writer.Write(Registrar);
-        }
-
-        public override void Deserialize(IGenericReader reader)
-        {
-            base.Deserialize(reader);
-
-            var version = reader.ReadInt();
-
-            switch (version)
-            {
-                case 0:
-                    {
-                        Tournament = reader.ReadEntity<TournamentController>();
-                        Registrar = reader.ReadEntity<Mobile>();
                         break;
                     }
             }

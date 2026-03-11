@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2024 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: GumpTooltip.cs                                                  *
  *                                                                       *
@@ -34,6 +34,13 @@ public class GumpTooltip : GumpEntry
 
     public override void AppendTo(ref SpanWriter writer, OrderedSet<string> strings, ref int entries, ref int switches)
     {
-        writer.WriteAscii(string.IsNullOrEmpty(Args) ? $"{{ tooltip {Number} }}" : $"{{ tooltip {Number} @{Args}@ }}");
+        if (string.IsNullOrEmpty(Args))
+        {
+            writer.WriteAscii($"{{ tooltip {Number} }}");
+        }
+        else
+        {
+            writer.WriteLatin1($"{{ tooltip {Number} @{Args}@ }}");
+        }
     }
 }

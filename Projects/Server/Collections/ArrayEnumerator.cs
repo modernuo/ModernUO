@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: ArrayEnumerator.cs                                              *
  *                                                                       *
@@ -44,7 +44,7 @@ public struct ArrayEnumerator<T> : IEnumerator<T>
 
     public bool MoveNext()
     {
-        T[] localList = _array;
+        var localList = _array;
 
         if ((uint)_index < (uint)localList.Length)
         {

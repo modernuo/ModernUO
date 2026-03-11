@@ -96,7 +96,7 @@ public partial class Moongate : Item
         {
             mobile.SendLocalizedMessage(1049543); // You decide against traveling to Felucca while you are still young.
         }
-        else if (m.Kills >= 5 && TargetMap != Map.Felucca ||
+        else if (m.Murderer && TargetMap != Map.Felucca ||
                  TargetMap == Map.Tokuno && (flags & ClientFlags.Tokuno) == 0 ||
                  TargetMap == Map.Malas && (flags & ClientFlags.Malas) == 0 ||
                  TargetMap == Map.Ilshenar && (flags & ClientFlags.Ilshenar) == 0 ||

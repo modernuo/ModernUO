@@ -1,0 +1,22 @@
+{
+  "version": 0,
+  "type": "Server.Multis.Deeds.HouseDeed",
+  "properties": [
+    {
+      "name": "Offset",
+      "type": "Server.Point3D",
+      "rule": "PrimitiveUOTypeMigrationRule",
+      "ruleArguments": [
+        "Point3D"
+      ]
+    },
+    {
+      "name": "MultiID",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

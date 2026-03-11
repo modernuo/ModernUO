@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: IncomingMovementPackets.cs                                      *
  *                                                                       *
@@ -37,7 +37,7 @@ public static class IncomingMovementPackets
         }
 
         var steps = reader.ReadByte();
-        for (int i = 0; i < steps; i++)
+        for (var i = 0; i < steps; i++)
         {
             var t1 = reader.ReadUInt64(); // start time?
             var t2 = reader.ReadUInt64(); // end time?
@@ -91,23 +91,9 @@ public static class IncomingMovementPackets
 
         var dir = (Direction)reader.ReadByte();
         int seq = reader.ReadByte();
-        var key = reader.ReadUInt32();
+        var key = reader.ReadUInt32(); // FastWalkStack key - not used (not on EA servers)
 
-        if (state.Sequence == 0 && seq != 0 || !from.Move(dir))
-        {
-            state.SendMovementRej(seq, from);
-            state.Sequence = 0;
-        }
-        else
-        {
-            ++seq;
-
-            if (seq == 256)
-            {
-                seq = 1;
-            }
-
-            state.Sequence = seq;
-        }
+        // Delegate to MovementThrottle which has full context for timing validation
+        MovementThrottle.ValidateAndQueueMovement(state, from, dir, seq);
     }
 }

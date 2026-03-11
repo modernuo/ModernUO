@@ -21,9 +21,11 @@ public partial class MoonstoneGate : Moongate
         Effects.PlaySound(loc, map, 0x20E);
     }
 
+    public override bool SkipSerialization => true;
+
     public override void CheckGate(Mobile m, int range)
     {
-        if (m.Kills >= 5)
+        if (m.Murderer)
         {
             return;
         }
@@ -39,7 +41,7 @@ public partial class MoonstoneGate : Moongate
 
     public override void UseGate(Mobile m)
     {
-        if (m.Kills >= 5)
+        if (m.Murderer)
         {
             return;
         }
@@ -51,12 +53,6 @@ public partial class MoonstoneGate : Moongate
         {
             base.UseGate(m);
         }
-    }
-
-    [AfterDeserialization(false)]
-    private void AfterDeserialization()
-    {
-        Delete();
     }
 
     private class InternalTimer : Timer

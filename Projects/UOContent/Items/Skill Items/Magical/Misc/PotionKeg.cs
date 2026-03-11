@@ -31,7 +31,10 @@ public partial class PotionKeg : Item
         {
             if (_held != value)
             {
+                var oldPileWeight = PileWeight;
                 _held = value;
+                var newPileWeight = PileWeight;
+                UpdateTotal(this, TotalType.Weight, newPileWeight - oldPileWeight);
                 InvalidateProperties();
                 this.MarkDirty();
             }

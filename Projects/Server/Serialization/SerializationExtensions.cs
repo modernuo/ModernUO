@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: SerializationExtensions.cs                                      *
  *                                                                       *
@@ -31,7 +31,7 @@ public static class SerializationExtensions
 
     public static T ReadEntity<T>(this IGenericReader reader) where T : class, ISerializable
     {
-        Serial serial = reader.ReadSerial();
+        var serial = reader.ReadSerial();
         var typeT = typeof(T);
 
         T entity;

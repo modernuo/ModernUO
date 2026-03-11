@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2024 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: CidrFirewallEntry.cs                                            *
  *                                                                       *
@@ -52,7 +52,7 @@ public class CidrFirewallEntry : BaseFirewallEntry
 
     private static IPAddress ParseIPAddress(ReadOnlySpan<char> ipString, out int prefixLength)
     {
-        int slashIndex = ipString.IndexOf('/');
+        var slashIndex = ipString.IndexOf('/');
         var ipAddress = IPAddress.Parse(slashIndex > -1 ? ipString[..slashIndex] : ipString);
         var maxPrefixLength = ipAddress.AddressFamily == AddressFamily.InterNetworkV6 ? 128 : 32;
 

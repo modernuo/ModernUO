@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: BoatPackets.cs                                                  *
  *                                                                       *
@@ -74,7 +74,7 @@ public static class BoatPackets
             return;
         }
 
-        Span<byte> moveBoatPacket = stackalloc byte[GetMoveBoatHSPacketLength(entities.Count)]
+        var moveBoatPacket = stackalloc byte[GetMoveBoatHSPacketLength(entities.Count)]
             .InitializePacket();
 
         CreateMoveBoatHS(moveBoatPacket, boat, entities, d, speed, xOffset, yOffset);
@@ -113,7 +113,7 @@ public static class BoatPackets
                 continue;
             }
 
-            Span<byte> buffer = builder.GetSpan(OutgoingEntityPackets.MaxWorldEntityPacketLength).InitializePacket();
+            var buffer = builder.GetSpan(OutgoingEntityPackets.MaxWorldEntityPacketLength).InitializePacket();
             var bytesWritten = OutgoingEntityPackets.CreateWorldEntity(buffer, entity, true);
             builder.Advance(bytesWritten);
         }

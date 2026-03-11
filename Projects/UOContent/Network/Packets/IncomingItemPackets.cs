@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: IncomingItemPackets.cs                                          *
  *                                                                       *
@@ -78,7 +78,7 @@ public static class IncomingItemPackets
             reader.ReadByte(); // Grid Location?
         }
 
-        Serial dest = (Serial)reader.ReadUInt32();
+        var dest = (Serial)reader.ReadUInt32();
 
         var loc = new Point3D(x, y, z);
 

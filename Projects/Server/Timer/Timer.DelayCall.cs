@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: Timer.DelayCall.cs                                              *
  *                                                                       *
@@ -44,7 +44,7 @@ public partial class Timer
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static DelayCallTimer DelayCall(TimeSpan delay, TimeSpan interval, int count, Action callback)
     {
-        DelayCallTimer t = new DelayCallTimer(delay, interval, count, callback);
+        var t = new DelayCallTimer(delay, interval, count, callback);
         t.Start();
 #if DEBUG_TIMERS
         t._allowFinalization = true;
@@ -70,7 +70,7 @@ public partial class Timer
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void StartTimer(TimeSpan delay, TimeSpan interval, int count, Action callback)
     {
-        DelayCallTimer t = DelayCallTimer.GetTimer(delay, interval, count, callback);
+        var t = DelayCallTimer.GetTimer(delay, interval, count, callback);
         t._returnOnDetach = true;
         t.Start();
 
@@ -98,7 +98,7 @@ public partial class Timer
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void StartTimer(TimeSpan delay, TimeSpan interval, int count, Action callback, out TimerExecutionToken token)
     {
-        DelayCallTimer t = DelayCallTimer.GetTimer(delay, interval, count, callback);
+        var t = DelayCallTimer.GetTimer(delay, interval, count, callback);
         t.Start();
 
 #if DEBUG_TIMERS

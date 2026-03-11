@@ -85,13 +85,13 @@ namespace Server.Guilds
             }
             else if (PendingWar)
             {
-                kills = $"{war.Kills}/{war.MaxKills}".Color(0x990000);
-                time = $"{war.WarLength.Hours:D2}:{DateTime.MinValue + war.WarLength:mm}".Color(0x990000);
+                kills = Html.Color($"{war.Kills}/{war.MaxKills}", 0x990000);
+                time = Html.Color($"{war.WarLength.Hours:D2}:{DateTime.MinValue + war.WarLength:mm}", 0x990000);
 
                 otherWar = m_Other.FindPendingWar(guild);
                 if (otherWar != null)
                 {
-                    otherKills = $"{otherWar.Kills}/{otherWar.MaxKills}".Color(0x990000);
+                    otherKills = Html.Color($"{otherWar.Kills}/{otherWar.MaxKills}", 0x990000);
                 }
             }
 

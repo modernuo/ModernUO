@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: IncomingMobilePackets.cs                                        *
  *                                                                       *
@@ -36,7 +36,7 @@ public static class IncomingMobilePackets
 
         if (targ != null)
         {
-            RenameRequests.RenameRequest(from, targ, reader.ReadAsciiSafe());
+            RenameRequests.RenameRequest(from, targ, reader.ReadLatin1Safe());
         }
     }
 

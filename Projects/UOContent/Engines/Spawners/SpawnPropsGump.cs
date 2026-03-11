@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: GlobalPropsGump.cs                                              *
  *                                                                       *
@@ -96,7 +96,7 @@ public class SpawnPropsGump : PropertiesGump
             case 3: // Apply
                 {
                     using var propsBuilder = ValueStringBuilder.Create();
-                    bool first = true;
+                    var first = true;
                     foreach (var attr in MobileAttributes)
                     {
                         var prop = GetPropValue(m_Object, attr);

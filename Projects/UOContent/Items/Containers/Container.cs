@@ -3,6 +3,7 @@ using Server.Collections;
 using Server.ContextMenus;
 using Server.Mobiles;
 using Server.Multis;
+using Server.Systems.FeatureFlags;
 
 namespace Server.Items;
 
@@ -18,6 +19,18 @@ public abstract class BaseContainer : Container
     }
 
     public override int DefaultMaxWeight => IsSecure ? 0 : base.DefaultMaxWeight;
+
+    public override void DisplayTo(Mobile to)
+    {
+        if (to.AccessLevel < FeatureFlagSettings.RequiredAccessLevel
+            && FeatureFlagManager.IsItemUseBlocked(GetType(), out var reason))
+        {
+            to.SendMessage(0x22, reason);
+            return;
+        }
+
+        base.DisplayTo(to);
+    }
 
     public override bool IsAccessibleTo(Mobile m) => BaseHouse.CheckAccessible(m, this) && base.IsAccessibleTo(m);
 

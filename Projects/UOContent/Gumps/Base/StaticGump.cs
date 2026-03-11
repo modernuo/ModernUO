@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2024 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: StaticGump.cs                                                   *
  *                                                                       *
@@ -112,7 +112,7 @@ public abstract class StaticGump<TSelf> : BaseGump where TSelf : StaticGump<TSel
         }
         else
         {
-            StaticGumpBuilder gumpBuilder = new StaticGumpBuilder();
+            var gumpBuilder = new StaticGumpBuilder();
             BuildLayout(ref gumpBuilder);
             gumpBuilder.FinalizeLayout();
 

@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2024 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: AdhocPersistence.cs                                             *
  *                                                                       *
@@ -94,7 +94,7 @@ public static class AdhocPersistence
 
             byte* ptr = null;
             accessor.SafeMemoryMappedViewHandle.AcquirePointer(ref ptr);
-            UnmanagedDataReader dataReader = new UnmanagedDataReader(ptr, accessor.Length);
+            var dataReader = new UnmanagedDataReader(ptr, accessor.Length);
             deserializer(dataReader);
 
             error = dataReader.Position != fileLength

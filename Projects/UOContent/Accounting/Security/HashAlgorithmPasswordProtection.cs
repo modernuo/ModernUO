@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2025 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: HashAlgorithmPasswordProtection.cs                              *
  *                                                                       *
@@ -30,7 +30,7 @@ public class HashAlgorithmPasswordProtection : IPasswordProtection
 
     public string EncryptPassword(string plainPassword)
     {
-        byte[] bytes = plainPassword.AsSpan(0, Math.Min(256, plainPassword.Length)).GetBytesAscii();
+        var bytes = plainPassword.AsSpan(0, Math.Min(256, plainPassword.Length)).GetBytesAscii();
         return _hashAlgorithm.ComputeHash(bytes).ToHexString();
     }
 

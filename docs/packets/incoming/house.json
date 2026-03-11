@@ -1,0 +1,37 @@
+{
+    "category":  "House",
+    "packets":  [
+                    {
+                        "id":  "0xFB",
+                        "name":  "Public House Content",
+                        "description":  "Client toggles whether to receive content updates for public houses. When enabled, the server sends container contents for publicly accessible houses.",
+                        "direction":  "incoming",
+                        "isDynamic":  false,
+                        "size":  2,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xFB",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Show Contents",
+                                           "type":  "bool",
+                                           "size":  1,
+                                           "description":  "0 = hide public house contents, 1 = show public house contents"
+                                       }
+                                   ],
+                        "clientVersion":  {
+                                              "classic":  {},
+                                              "enhanced":  {}
+                                          },
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/Packets/IncomingHousePackets.cs",
+                                       "line":  24
+                                   },
+                        "notes":  "This packet allows clients to opt-in or opt-out of receiving container content data for publicly accessible houses, which can reduce bandwidth for players who don't need to see inside public houses."
+                    }
+                ]
+}

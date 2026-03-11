@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: BuiltInRng.cs                                                   *
  *                                                                       *
@@ -20,7 +20,7 @@ namespace Server.Random;
 
 public static class BuiltInRng
 {
-    public static System.Random Generator { get; private set; } = new();
+    public static System.Random Generator { get; internal set; } = new();
 
     public static void Reset() => Generator = new System.Random();
 

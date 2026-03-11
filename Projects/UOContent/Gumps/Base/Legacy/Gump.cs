@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2024 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: Gump.cs                                                         *
  *                                                                       *
@@ -169,7 +169,7 @@ public class Gump : BaseGump
 
     public void AddLabelHtml(int x, int y, int width, int height, string text, string hue, int size = 4, bool center = true)
     {
-        AddHtml(x, y, width, height, center ? text.Center(hue, size) : text.Color(hue, size));
+        AddHtml(x, y, width, height, Html.Build(text, hue, size, align: center ? TextAlignment.Center : TextAlignment.Left));
     }
 
     public void AddLabelCropped(int x, int y, int width, int height, int hue, string text)

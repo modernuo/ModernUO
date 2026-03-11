@@ -124,7 +124,7 @@ public partial class TaxidermyKit : Item
                     from.SendLocalizedMessage(1042278);
                     from.SendLocalizedMessage(1042602); // You use your kit up making the trophy.
 
-                    Mobile hunter = fish?.Fisher;
+                    var hunter = fish?.Fisher;
                     var weight = (int)(fish?.Weight ?? 0);
                     fish?.Consume();
 

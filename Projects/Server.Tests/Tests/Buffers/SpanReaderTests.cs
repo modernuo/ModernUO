@@ -3,7 +3,7 @@ using System.Buffers;
 using System.IO;
 using Xunit;
 
-namespace Server.Tests;
+namespace Server.Tests.Buffers;
 
 public class SpanReaderTests
 {
@@ -188,7 +188,7 @@ public class SpanReaderTests
     [Fact]
     public void TestReadAsciiString()
     {
-        ReadOnlySpan<byte> buffer = "Hello"u8;
+        var buffer = "Hello"u8;
         var reader = new SpanReader(buffer);
 
         var result = reader.ReadAscii();
@@ -200,7 +200,7 @@ public class SpanReaderTests
     [Fact]
     public void TestReadAsciiStringWithNull()
     {
-        ReadOnlySpan<byte> buffer = "Hel\0o"u8;
+        var buffer = "Hel\0o"u8;
         var reader = new SpanReader(buffer);
 
         var result = reader.ReadAscii();
@@ -212,7 +212,7 @@ public class SpanReaderTests
     [Fact]
     public void TestReadAsciiStringFixedLength()
     {
-        ReadOnlySpan<byte> buffer = "Hello\0\0\0\0\0"u8;
+        var buffer = "Hello\0\0\0\0\0"u8;
         var reader = new SpanReader(buffer);
 
         var result = reader.ReadAscii(10);
@@ -227,7 +227,7 @@ public class SpanReaderTests
         Assert.Throws<EndOfStreamException>(
             () =>
             {
-                ReadOnlySpan<byte> buffer = "Hel"u8;
+                var buffer = "Hel"u8;
                 var reader = new SpanReader(buffer);
                 reader.ReadAscii(10);
             }
@@ -249,7 +249,7 @@ public class SpanReaderTests
     [Fact]
     public void TestReadUTF8String()
     {
-        ReadOnlySpan<byte> buffer = "Hello"u8;
+        var buffer = "Hello"u8;
         var reader = new SpanReader(buffer);
 
         var result = reader.ReadUTF8();
@@ -261,7 +261,7 @@ public class SpanReaderTests
     [Fact]
     public void TestReadUTF8StringWithNull()
     {
-        ReadOnlySpan<byte> buffer = "Hi\0Bye"u8;
+        var buffer = "Hi\0Bye"u8;
         var reader = new SpanReader(buffer);
 
         var result = reader.ReadUTF8();
@@ -273,7 +273,7 @@ public class SpanReaderTests
     [Fact]
     public void TestReadLittleUniString()
     {
-        ReadOnlySpan<byte> buffer = "H\0i\0"u8;
+        var buffer = "H\0i\0"u8;
         var reader = new SpanReader(buffer);
 
         var result = reader.ReadLittleUni();
@@ -285,19 +285,20 @@ public class SpanReaderTests
     [Fact]
     public void TestReadLittleUniStringWithNull()
     {
-        ReadOnlySpan<byte> buffer = "H\0i\0\0\0X\0"u8;
+        var buffer = "H\0i\0\0\0X\0"u8;
         var reader = new SpanReader(buffer);
 
         var result = reader.ReadLittleUni();
 
         Assert.Equal("Hi", result);
-        Assert.Equal(5, reader.Position);
+        // Position 6: 4 bytes for "Hi" + 2 bytes for UTF-16 null terminator
+        Assert.Equal(6, reader.Position);
     }
 
     [Fact]
     public void TestReadLittleUniStringFixedLength()
     {
-        ReadOnlySpan<byte> buffer = "H\0i\0\0\0\0\0"u8;
+        var buffer = "H\0i\0\0\0\0\0"u8;
         var reader = new SpanReader(buffer);
 
         var result = reader.ReadLittleUni(4);
@@ -309,19 +310,21 @@ public class SpanReaderTests
     [Fact]
     public void TestReadLittleUniSafe()
     {
-        ReadOnlySpan<byte> buffer = [(byte)'H', 0, 0xFF, 0xD8, (byte)'i', 0];
+        // Test with C1 control code (0x85 = NEL) which should be filtered
+        ReadOnlySpan<byte> buffer = [(byte)'H', 0, 0x85, 0x00, (byte)'i', 0];
         var reader = new SpanReader(buffer);
 
         var result = reader.ReadLittleUniSafe();
 
-        Assert.Equal("H\uFFFDi", result);
+        // C1 control (0x0085) removed - client renders nothing for invalid chars
+        Assert.Equal("Hi", result);
         Assert.Equal(6, reader.Position);
     }
 
     [Fact]
     public void TestReadBigUniString()
     {
-        ReadOnlySpan<byte> buffer = "\0H\0i"u8;
+        var buffer = "\0H\0i"u8;
         var reader = new SpanReader(buffer);
 
         var result = reader.ReadBigUni();
@@ -333,19 +336,20 @@ public class SpanReaderTests
     [Fact]
     public void TestReadBigUniStringWithNull()
     {
-        ReadOnlySpan<byte> buffer = "\0H\0i\0\0\0X"u8;
+        var buffer = "\0H\0i\0\0\0X"u8;
         var reader = new SpanReader(buffer);
 
         var result = reader.ReadBigUni();
 
         Assert.Equal("Hi", result);
-        Assert.Equal(5, reader.Position);
+        // Position 6: 4 bytes for "Hi" + 2 bytes for UTF-16 null terminator
+        Assert.Equal(6, reader.Position);
     }
 
     [Fact]
     public void TestReadBigUniStringFixedLength()
     {
-        ReadOnlySpan<byte> buffer = "\0H\0i\0\0\0\0"u8;
+        var buffer = "\0H\0i\0\0\0\0"u8;
         var reader = new SpanReader(buffer);
 
         var result = reader.ReadBigUni(4);
@@ -357,12 +361,14 @@ public class SpanReaderTests
     [Fact]
     public void TestReadBigUniSafe()
     {
-        ReadOnlySpan<byte> buffer = [0, (byte)'H', 0xD8, 0xFF, 0, (byte)'i'];
+        // Test with C1 control code (0x0085 = NEL) which should be filtered
+        ReadOnlySpan<byte> buffer = [0, (byte)'H', 0x00, 0x85, 0, (byte)'i'];
         var reader = new SpanReader(buffer);
 
         var result = reader.ReadBigUniSafe();
 
-        Assert.Equal("H\uFFFDi", result);
+        // C1 control (0x0085) removed - client renders nothing for invalid chars
+        Assert.Equal("Hi", result);
         Assert.Equal(6, reader.Position);
     }
 
@@ -560,7 +566,7 @@ public class SpanReaderTests
     [Fact]
     public void TestReadMultipleStringsWithNullTerminators()
     {
-        ReadOnlySpan<byte> buffer = "AB\0CD\0EF"u8;
+        var buffer = "AB\0CD\0EF"u8;
         var reader = new SpanReader(buffer);
 
         Assert.Equal("AB", reader.ReadAscii());

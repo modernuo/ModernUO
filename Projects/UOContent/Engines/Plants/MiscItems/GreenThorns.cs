@@ -703,6 +703,8 @@ public partial class GreenThornsSHTeleporter : Item
 
     public override string DefaultName => "a hole";
 
+    public override bool SkipSerialization => true;
+
     public static void Create(Point3D location, Map map)
     {
         var tele = new GreenThornsSHTeleporter();
@@ -724,12 +726,6 @@ public partial class GreenThornsSHTeleporter : Item
         {
             from.SendLocalizedMessage(1019045); // I can't reach that.
         }
-    }
-
-    [AfterDeserialization(false)]
-    private void AfterDeserialization()
-    {
-        Delete();
     }
 
     private class InternalTimer : Timer

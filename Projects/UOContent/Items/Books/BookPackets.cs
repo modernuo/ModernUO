@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: BookPackets.cs                                                  *
  *                                                                       *
@@ -41,8 +41,8 @@ namespace Server.Items
 
             reader.Seek(4, SeekOrigin.Current); // Skip flags and page count
 
-            var title = reader.ReadAsciiSafe(60);
-            var author = reader.ReadAsciiSafe(30);
+            var title = reader.ReadLatin1Safe(60);
+            var author = reader.ReadLatin1Safe(30);
 
             book.Title = title.FixHtml();
             book.Author = author.FixHtml();

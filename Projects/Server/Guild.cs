@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2024 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: Guild.cs                                                        *
  *                                                                       *
@@ -97,7 +97,7 @@ public abstract class BaseGuild : ISerializable
         {
             var name = g.Name;
 
-            bool all = true;
+            var all = true;
             foreach (var t in words)
             {
                 if (name.InsensitiveIndexOf(t) == -1)

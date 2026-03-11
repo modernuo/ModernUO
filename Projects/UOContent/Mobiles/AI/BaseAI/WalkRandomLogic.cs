@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2025 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: WalkRandomLogic.cs                                              *
  *                                                                       *
@@ -86,9 +86,13 @@ public abstract partial class BaseAI
 
     private void WalkRandomWithHome(int chanceToNotMove, int chanceToDir, int steps)
     {
-        if (Mobile.RangeHome == 0 && Mobile.Location != Mobile.Home)
+        if (Mobile.RangeHome == 0)
         {
-            DoMove(Mobile.GetDirectionTo(Mobile.Home));
+            if (Mobile.Location != Mobile.Home)
+            {
+                DoMove(Mobile.GetDirectionTo(Mobile.Home));
+            }
+
             return;
         }
 

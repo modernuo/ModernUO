@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2024 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: PingServer.cs                                                   *
  *                                                                       *
@@ -61,7 +61,7 @@ public static class PingServer
 
             if (ipep.Address.Equals(IPAddress.Any) || ipep.Address.Equals(IPAddress.IPv6Any))
             {
-                listeningAddresses.UnionWith(TcpServer.GetListeningAddresses(ipep));
+                listeningAddresses.UnionWith(NetState.GetListeningAddresses(ipep));
             }
             else
             {

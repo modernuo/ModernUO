@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: MahjongPackets.cs                                               *
  *                                                                       *
@@ -346,7 +346,7 @@ namespace Server.Engines.Mahjong
                 writer.Write((byte)0);
 
                 writer.Write(players.IsPublic(i));
-                writer.WriteAscii(m?.Name ?? "", 30);
+                writer.WriteLatin1(m?.Name ?? "", 30);
 
                 writer.Write(m == null || !players.IsInGamePlayer(i));
                 count++;
@@ -465,7 +465,7 @@ namespace Server.Engines.Mahjong
                 return;
             }
 
-            Span<byte> buffer = stackalloc byte[MahjongGeneralInfoPacketLength].InitializePacket();
+            var buffer = stackalloc byte[MahjongGeneralInfoPacketLength].InitializePacket();
             CreateMahjongGeneralInfo(buffer, game);
 
             ns.Send(buffer);
@@ -508,7 +508,7 @@ namespace Server.Engines.Mahjong
                 return;
             }
 
-            Span<byte> buffer = stackalloc byte[MahjongRelievePacketLength].InitializePacket();
+            var buffer = stackalloc byte[MahjongRelievePacketLength].InitializePacket();
             CreateMahjongRelieve(buffer, game);
 
             ns.Send(buffer);

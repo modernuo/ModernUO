@@ -30,7 +30,7 @@ public class VirtueGump : Gump
 
     public static void RequestVirtueGump(PlayerMobile beholder, PlayerMobile beheld)
     {
-        if (beholder == beheld && beholder.Kills >= 5)
+        if (beholder == beheld && beholder.Murderer)
         {
             beholder.SendLocalizedMessage(1049609); // Murderers cannot invoke this virtue.
         }
@@ -49,7 +49,7 @@ public class VirtueGump : Gump
 
         beholder.CloseGump<VirtueGump>();
 
-        if (beholder.Kills >= 5)
+        if (beholder.Murderer)
         {
             beholder.SendLocalizedMessage(1049609); // Murderers cannot invoke this virtue.
             return;
@@ -112,7 +112,7 @@ public class VirtueGump : Gump
 
     private int GetHueFor(int index)
     {
-        var value = VirtueSystem.GetVirtues((_beheld))?.GetValue(index) ?? 0;
+        var value = VirtueSystem.GetVirtues(_beheld)?.GetValue(index) ?? 0;
 
         if (value < 4000)
         {
@@ -124,7 +124,7 @@ public class VirtueGump : Gump
             value = 20000;
         }
 
-        int vl = value switch
+        var vl = value switch
         {
             < 10000                  => 0,
             >= 20000 when index == 5 => 2,

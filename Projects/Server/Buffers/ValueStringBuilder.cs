@@ -151,7 +151,7 @@ public ref struct ValueStringBuilder
             Grow(count);
         }
 
-        int remaining = _length - index;
+        var remaining = _length - index;
         _chars.Slice(index, remaining).CopyTo(_chars[(index + count)..]);
         _chars.Slice(index, count).Fill(value);
         _length += count;
@@ -165,14 +165,14 @@ public ref struct ValueStringBuilder
             return;
         }
 
-        int count = s.Length;
+        var count = s.Length;
 
         if (_length > _chars.Length - count)
         {
             Grow(count);
         }
 
-        int remaining = _length - index;
+        var remaining = _length - index;
         _chars.Slice(index, remaining).CopyTo(_chars[(index + count)..]);
         s.AsSpan().CopyTo(_chars[index..]);
         _length += count;
@@ -184,7 +184,7 @@ public ref struct ValueStringBuilder
         {
             if (value is ISpanFormattable)
             {
-                Span<char> destination = _chars[_length..];
+                var destination = _chars[_length..];
                 int charsWritten;
                 while (!((ISpanFormattable)value).TryFormat(destination, out charsWritten, format, default))
                 {
@@ -229,7 +229,7 @@ public ref struct ValueStringBuilder
             return;
         }
 
-        int pos = _length;
+        var pos = _length;
         if (s.Length == 1 && (uint)pos < (uint)_chars.Length) // very common case, e.g. appending strings from NumberFormatInfo like separators, percent symbols, etc.
         {
             _chars[pos] = s[0];
@@ -265,7 +265,7 @@ public ref struct ValueStringBuilder
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void AppendSlow(string? s)
     {
-        int pos = _length;
+        var pos = _length;
         if (pos > _chars.Length - s.Length)
         {
             Grow(s.Length);
@@ -283,8 +283,8 @@ public ref struct ValueStringBuilder
             Grow(count);
         }
 
-        Span<char> dst = _chars.Slice(_length, count);
-        for (int i = 0; i < dst.Length; i++)
+        var dst = _chars.Slice(_length, count);
+        for (var i = 0; i < dst.Length; i++)
         {
             dst[i] = c;
         }
@@ -294,14 +294,14 @@ public ref struct ValueStringBuilder
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public unsafe void Append(char* value, int length)
     {
-        int pos = _length;
+        var pos = _length;
         if (pos > _chars.Length - length)
         {
             Grow(length);
         }
 
-        Span<char> dst = _chars.Slice(_length, length);
-        for (int i = 0; i < dst.Length; i++)
+        var dst = _chars.Slice(_length, length);
+        for (var i = 0; i < dst.Length; i++)
         {
             dst[i] = *value++;
         }
@@ -311,7 +311,7 @@ public ref struct ValueStringBuilder
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Append(scoped ReadOnlySpan<char> value)
     {
-        int pos = _length;
+        var pos = _length;
         if (pos > _chars.Length - value.Length)
         {
             Grow(value.Length);
@@ -324,7 +324,7 @@ public ref struct ValueStringBuilder
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Span<char> AppendSpan(int length)
     {
-        int origPos = _length;
+        var origPos = _length;
         if (origPos > _chars.Length - length)
         {
             Grow(length);
@@ -345,11 +345,11 @@ public ref struct ValueStringBuilder
     [MethodImpl(MethodImplOptions.NoInlining)]
     private void Grow(int additionalCapacityBeyondPos)
     {
-        char[] poolArray = ArrayPool.Rent(Math.Max(_length + additionalCapacityBeyondPos, _chars.Length * 2));
+        var poolArray = ArrayPool.Rent(Math.Max(_length + additionalCapacityBeyondPos, _chars.Length * 2));
 
         _chars[.._length].CopyTo(poolArray);
 
-        char[] toReturn = _arrayToReturnToPool;
+        var toReturn = _arrayToReturnToPool;
         _chars = _arrayToReturnToPool = poolArray;
         if (toReturn != null)
         {
@@ -372,7 +372,7 @@ public ref struct ValueStringBuilder
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void ReplaceAny(ReadOnlySpan<char> oldChars, ReadOnlySpan<char> newChars, int startIndex, int count)
     {
-        int currentLength = _length;
+        var currentLength = _length;
         if ((uint)startIndex > (uint)currentLength)
         {
             throw new ArgumentOutOfRangeException(nameof(startIndex));
@@ -403,7 +403,7 @@ public ref struct ValueStringBuilder
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Replace(char oldChar, char newChar, int startIndex, int count)
     {
-        int currentLength = _length;
+        var currentLength = _length;
         if ((uint)startIndex > (uint)currentLength)
         {
             throw new ArgumentOutOfRangeException(nameof(startIndex));

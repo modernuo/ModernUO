@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using ModernUO.Serialization;
 
 namespace Server.Items
@@ -51,6 +52,16 @@ namespace Server.Items
     [SerializationGenerator(2, false)]
     public partial class ThighBoots : BaseShoes, IArcaneEquip
     {
+        [EncodedInt]
+        [InvalidateProperties]
+        [SerializableField(0)]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private int _curArcaneCharges;
+
+        [SerializableFieldChanged(0)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void OnCurArcaneChargesChanged(int oldValue, int newValue) => Update();
+
         [Constructible]
         public ThighBoots(int hue = 0) : base(0x1711, hue)
         {
@@ -59,21 +70,6 @@ namespace Server.Items
         public override double DefaultWeight => 4.0;
 
         public override CraftResource DefaultResource => CraftResource.RegularLeather;
-
-        [EncodedInt]
-        [SerializableProperty(0)]
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int CurArcaneCharges
-        {
-            get => _curArcaneCharges;
-            set
-            {
-                _curArcaneCharges = value;
-                InvalidateProperties();
-                Update();
-                this.MarkDirty();
-            }
-        }
 
         [EncodedInt]
         [SerializableProperty(1)]

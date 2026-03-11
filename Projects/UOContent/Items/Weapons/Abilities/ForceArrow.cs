@@ -30,7 +30,7 @@ namespace Server.Items
                 defender.Warmode = false;
             }
 
-            ForceArrowInfo info = GetInfo(attacker, defender);
+            var info = GetInfo(attacker, defender);
 
             if (info == null)
             {
@@ -55,7 +55,7 @@ namespace Server.Items
 
         public static void BeginForceArrow(Mobile attacker, Mobile defender)
         {
-            ForceArrowInfo info = new ForceArrowInfo(attacker, defender);
+            var info = new ForceArrowInfo(attacker, defender);
             info.Timer = new ForceArrowTimer(info);
 
             if (_table.TryGetValue(attacker, out var list))
@@ -79,7 +79,7 @@ namespace Server.Items
                 return;
             }
 
-            Mobile attacker = info.Attacker;
+            var attacker = info.Attacker;
 
             if (_table.TryGetValue(attacker, out var list) && list.Remove(info) && list.Count == 0)
             {
@@ -93,7 +93,7 @@ namespace Server.Items
         {
             if (_table.TryGetValue(attacker, out var list))
             {
-                foreach (ForceArrowInfo info in list)
+                foreach (var info in list)
                 {
                     if (info.Defender == defender)
                     {
@@ -109,7 +109,7 @@ namespace Server.Items
         {
             if (_table.TryGetValue(attacker, out var list))
             {
-                foreach (ForceArrowInfo info in list)
+                foreach (var info in list)
                 {
                     if (info.Defender == defender)
                     {

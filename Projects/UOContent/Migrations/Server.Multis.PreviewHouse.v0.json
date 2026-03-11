@@ -1,0 +1,15 @@
+{
+  "version": 0,
+  "type": "Server.Multis.PreviewHouse",
+  "properties": [
+    {
+      "name": "PreviewComponents",
+      "type": "System.Collections.Generic.List\u003CServer.Item\u003E",
+      "rule": "ListMigrationRule",
+      "ruleArguments": [
+        "Server.Item",
+        "SerializableInterfaceMigrationRule"
+      ]
+    }
+  ]
+}

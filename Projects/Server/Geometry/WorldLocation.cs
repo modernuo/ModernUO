@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: WorldLocation.cs                                                *
  *                                                                       *
@@ -167,8 +167,8 @@ public struct WorldLocation : IPoint3D, IComparable<WorldLocation>, IEquatable<W
         {
 
             int charsWritten;
-            char[] array = ArrayPool<char>.Shared.Rent(128);
-            Span<char> span = array.AsSpan();
+            var array = ArrayPool<char>.Shared.Rent(128);
+            var span = array.AsSpan();
             while (!TryFormat(span, out charsWritten, null, null))
             {
                 array = ArrayPool<char>.Shared.Rent(array.Length * 2);

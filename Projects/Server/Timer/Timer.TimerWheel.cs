@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2024 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: Timer.TimerWheel.cs                                             *
  *                                                                       *
@@ -44,7 +44,7 @@ public partial class Timer
     {
         _lastTickTurned = tickCount;
 
-        for (int i = 0; i < _rings.Length; i++)
+        for (var i = 0; i < _rings.Length; i++)
         {
             _rings[i] = new Timer[_ringSize];
             _ringIndexes[i] = 0;

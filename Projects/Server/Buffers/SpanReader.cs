@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2025 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: SpanReader.cs                                                   *
  *                                                                       *
@@ -207,49 +207,241 @@ public ref struct SpanReader
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ReadLittleUniSafe(int fixedLength) => ReadString(TextEncoding.UnicodeLE, true, fixedLength);
+    public string ReadLittleUniSafe(int fixedLength) => ReadStringLittleUni(true, fixedLength);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ReadLittleUniSafe() => ReadString(TextEncoding.UnicodeLE, true);
+    public string ReadLittleUniSafe() => ReadStringLittleUni(true);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ReadLittleUni(int fixedLength) => ReadString(TextEncoding.UnicodeLE, false, fixedLength);
+    public string ReadLittleUni(int fixedLength) => ReadStringLittleUni(false, fixedLength);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ReadLittleUni() => ReadString(TextEncoding.UnicodeLE);
+    public string ReadLittleUni() => ReadStringLittleUni(false);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ReadBigUniSafe(int fixedLength) => ReadString(TextEncoding.Unicode, true, fixedLength);
+    public string ReadBigUniSafe(int fixedLength) => ReadStringBigUni(true, fixedLength);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ReadBigUniSafe() => ReadString(TextEncoding.Unicode, true);
+    public string ReadBigUniSafe() => ReadStringBigUni(true);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ReadBigUni(int fixedLength) => ReadString(TextEncoding.Unicode, false, fixedLength);
+    public string ReadBigUni(int fixedLength) => ReadStringBigUni(false, fixedLength);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ReadBigUni() => ReadString(TextEncoding.Unicode);
+    public string ReadBigUni() => ReadStringBigUni(false);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ReadUTF8Safe(int fixedLength) => ReadString(TextEncoding.UTF8, true, fixedLength);
+    public string ReadUTF8Safe(int fixedLength) => ReadStringUtf8(true, fixedLength);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ReadUTF8Safe() => ReadString(TextEncoding.UTF8, true);
+    public string ReadUTF8Safe() => ReadStringUtf8(true);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ReadUTF8() => ReadString(TextEncoding.UTF8);
+    public string ReadUTF8(int fixedLength) => ReadStringUtf8(false, fixedLength);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ReadAsciiSafe(int fixedLength) => ReadString(Encoding.ASCII, true, fixedLength);
+    public string ReadUTF8() => ReadStringUtf8(false);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ReadAsciiSafe() => ReadString(Encoding.ASCII, true);
+    public string ReadAsciiSafe(int fixedLength) => ReadStringAscii(true, fixedLength);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ReadAscii(int fixedLength) => ReadString(Encoding.ASCII, false, fixedLength);
+    public string ReadAsciiSafe() => ReadStringAscii(true);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ReadAscii() => ReadString(Encoding.ASCII);
+    public string ReadAscii(int fixedLength) => ReadStringAscii(false, fixedLength);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string ReadAscii() => ReadStringAscii(false);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string ReadLatin1Safe(int fixedLength) => ReadStringLatin1(true, fixedLength);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string ReadLatin1Safe() => ReadStringLatin1(true);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string ReadLatin1(int fixedLength) => ReadStringLatin1(false, fixedLength);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string ReadLatin1() => ReadStringLatin1(false);
+
+    /// <summary>
+    /// Reads a big-endian UTF-16 string, filtering control codes and non-characters in safe mode.
+    /// </summary>
+    private string ReadStringBigUni(bool safeString, int fixedLength = -1)
+    {
+        if (fixedLength == 0)
+        {
+            return "";
+        }
+
+        const int byteLength = 2;
+        var isFixedLength = fixedLength > -1;
+
+        var remaining = Remaining;
+        int size;
+        if (isFixedLength)
+        {
+            size = fixedLength * byteLength;
+            if (size > remaining)
+            {
+                throw new EndOfStreamException("Cannot read past the end of the buffer.");
+            }
+        }
+        else
+        {
+            // Ensure even number of bytes
+            size = remaining - (remaining & 1);
+        }
+
+        var span = _buffer.Slice(Position, size);
+        var index = span.IndexOfTerminator(byteLength);
+
+        if (index > -1)
+        {
+            span = _buffer.Slice(Position, index);
+        }
+
+        Position += isFixedLength || index < 0 ? size : index + byteLength;
+
+        return TextEncoding.GetStringBigUni(span, safeString);
+    }
+
+    /// <summary>
+    /// Reads a little-endian UTF-16 string, filtering control codes and non-characters in safe mode.
+    /// </summary>
+    private string ReadStringLittleUni(bool safeString, int fixedLength = -1)
+    {
+        if (fixedLength == 0)
+        {
+            return "";
+        }
+
+        const int byteLength = 2;
+        var isFixedLength = fixedLength > -1;
+
+        var remaining = Remaining;
+        int size;
+        if (isFixedLength)
+        {
+            size = fixedLength * byteLength;
+            if (size > remaining)
+            {
+                throw new EndOfStreamException("Cannot read past the end of the buffer.");
+            }
+        }
+        else
+        {
+            // Ensure even number of bytes
+            size = remaining - (remaining & 1);
+        }
+
+        var span = _buffer.Slice(Position, size);
+        var index = span.IndexOfTerminator(byteLength);
+
+        if (index > -1)
+        {
+            span = _buffer.Slice(Position, index);
+        }
+
+        Position += isFixedLength || index < 0 ? size : index + byteLength;
+
+        return TextEncoding.GetStringLittleUni(span, safeString);
+    }
+
+    /// <summary>
+    /// Reads an ASCII string, filtering C0 control codes and DEL in safe mode.
+    /// </summary>
+    private string ReadStringAscii(bool safeString, int fixedLength = -1)
+    {
+        if (fixedLength == 0)
+        {
+            return "";
+        }
+
+        var isFixedLength = fixedLength > -1;
+
+        int size = isFixedLength ? fixedLength : Remaining;
+        if (size > Remaining)
+        {
+            throw new EndOfStreamException("Cannot read past the end of the buffer.");
+        }
+
+        var span = _buffer.Slice(Position, size);
+        var index = span.IndexOf((byte)0);
+
+        if (index > -1)
+        {
+            span = _buffer.Slice(Position, index);
+        }
+
+        Position += isFixedLength || index < 0 ? size : index + 1;
+
+        return TextEncoding.GetStringAscii(span, safeString);
+    }
+
+    /// <summary>
+    /// Reads a UTF-8 string, filtering control codes and non-characters in safe mode.
+    /// </summary>
+    private string ReadStringUtf8(bool safeString, int fixedLength = -1)
+    {
+        if (fixedLength == 0)
+        {
+            return "";
+        }
+
+        var isFixedLength = fixedLength > -1;
+
+        int size = isFixedLength ? fixedLength : Remaining;
+        if (size > Remaining)
+        {
+            throw new EndOfStreamException("Cannot read past the end of the buffer.");
+        }
+
+        var span = _buffer.Slice(Position, size);
+        var index = span.IndexOf((byte)0);
+
+        if (index > -1)
+        {
+            span = _buffer.Slice(Position, index);
+        }
+
+        Position += isFixedLength || index < 0 ? size : index + 1;
+
+        return TextEncoding.GetStringUtf8(span, safeString);
+    }
+
+    /// <summary>
+    /// Reads a Latin1 string, filtering C0/C1 control codes in safe mode.
+    /// </summary>
+    private string ReadStringLatin1(bool safeString, int fixedLength = -1)
+    {
+        if (fixedLength == 0)
+        {
+            return "";
+        }
+
+        var isFixedLength = fixedLength > -1;
+
+        int size = isFixedLength ? fixedLength : Remaining;
+        if (size > Remaining)
+        {
+            throw new EndOfStreamException("Cannot read past the end of the buffer.");
+        }
+
+        var span = _buffer.Slice(Position, size);
+        var index = span.IndexOf((byte)0);
+
+        if (index > -1)
+        {
+            span = _buffer.Slice(Position, index);
+        }
+
+        Position += isFixedLength || index < 0 ? size : index + 1;
+
+        return TextEncoding.GetStringLatin1(span, safeString);
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int Seek(int offset, SeekOrigin origin)

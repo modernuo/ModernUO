@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2024 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: GumpHtmlLocalized.cs                                            *
  *                                                                       *
@@ -122,7 +122,7 @@ public class GumpHtmlLocalized : GumpEntry
                 }
             case GumpHtmlLocalizedType.Args:
                 {
-                    writer.WriteAscii(
+                    writer.WriteLatin1(
                         $"{{ xmfhtmltok {X} {Y} {Width} {Height} {(Background ? "1" : "0")} {(Scrollbar ? "1" : "0")} {Color} {Number} @{Args}@ }}"
                     );
                     break;

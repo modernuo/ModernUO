@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2024 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: Localization.cs                                                 *
  *                                                                       *
@@ -88,7 +88,7 @@ public static class Localization
     private static Dictionary<int, LocalizationEntry> LoadClilocs(string lang, string file)
     {
         lang = lang?.ToLower() ?? FallbackLanguage;
-        Dictionary<int, LocalizationEntry> entries = _localizations[lang] = new Dictionary<int, LocalizationEntry>();
+        var entries = _localizations[lang] = new Dictionary<int, LocalizationEntry>();
         if (lang == FallbackLanguage)
         {
             _fallbackEntries = entries;

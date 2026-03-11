@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: IncomingAccountPackets.cs                                       *
  *                                                                       *
@@ -63,7 +63,7 @@ public static class IncomingAccountPackets
         var unk2 = reader.ReadInt32();
         int unk3 = reader.ReadByte();
         */
-        var name = reader.ReadAscii(30);
+        var name = reader.ReadLatin1Safe(30);
 
         reader.Seek(2, SeekOrigin.Current);
         var flags = reader.ReadInt32();
@@ -116,7 +116,7 @@ public static class IncomingAccountPackets
         var female = genderRace % 2 != 0;
 
         var raceID = state.StygianAbyss ? (byte)(genderRace < 4 ? 0 : genderRace / 2 - 1) : (byte)(genderRace / 2);
-        Race race = Race.Races[raceID] ?? Race.DefaultRace;
+        var race = Race.Races[raceID] ?? Race.DefaultRace;
 
         var info = state.CityInfo;
         var a = state.Account;
@@ -194,6 +194,9 @@ public static class IncomingAccountPackets
     {
         var version = state.Version = new ClientVersion(reader.ReadAscii());
 
+        // Record RTT if this is a response to our probe
+        state.RecordRttMeasurement();
+
         ClientVerification.ClientVersionReceived(state, version);
     }
 
@@ -203,6 +206,9 @@ public static class IncomingAccountPackets
 
         int type = reader.ReadUInt16();
         var version = state.Version = new ClientVersion(reader.ReadAscii());
+
+        // Record RTT if this is a response to our probe
+        state.RecordRttMeasurement();
 
         ClientVerification.ClientVersionReceived(state, version);
     }
@@ -270,7 +276,7 @@ public static class IncomingAccountPackets
 
         state.SendSupportedFeature();
 
-        state.Sequence = 0;
+        state.ResetMovementState();
 
         state.SendMobileUpdate(m);
         state.SendMobileUpdate(m);
@@ -371,8 +377,8 @@ public static class IncomingAccountPackets
         state.Version = ap.Version;
         state.Seeded = true;
 
-        var username = reader.ReadAscii(30);
-        var password = reader.ReadAscii(30);
+        var username = reader.ReadLatin1Safe(30);
+        var password = reader.ReadLatin1Safe(30);
 
         var e = new GameServer.GameLoginEventArgs(state, username, password);
 
@@ -384,7 +390,6 @@ public static class IncomingAccountPackets
 
             // Comment out these lines to turn off huffman compression
             state.CompressionEnabled = true;
-            state.PacketEncoder ??= NetworkCompression.Compress;
 
             state.SendSupportedFeature();
             state.SendCharacterList();
@@ -446,8 +451,8 @@ public static class IncomingAccountPackets
 
         state.SentFirstPacket = true;
 
-        var username = reader.ReadAscii(30);
-        var password = reader.ReadAscii(30);
+        var username = reader.ReadLatin1Safe(30);
+        var password = reader.ReadLatin1Safe(30);
 
         var accountLoginEventArgs = new AccountLoginEventArgs(state, username, password);
 

@@ -1134,7 +1134,7 @@ public partial class Account : IAccount, IComparable<Account>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool MoveNext()
         {
-            Mobile[] localList = _mobiles;
+            var localList = _mobiles;
 
             while ((uint)_index < (uint)localList.Length)
             {

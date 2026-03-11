@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: Map.StaticTileEnumerator.cs                                     *
  *                                                                       *
@@ -92,8 +92,8 @@ public partial class Map
                 var components = multi!.Components;
                 var location = multi!.Location;
 
-                int offsetX = p.X - location.X - components.Min.X;
-                int offsetY = p.Y - location.Y - components.Min.Y;
+                var offsetX = p.X - location.X - components.Min.X;
+                var offsetY = p.Y - location.Y - components.Min.Y;
 
                 if (offsetX >= 0 && offsetY >= 0 && offsetX < components.Width && offsetY < components.Height)
                 {

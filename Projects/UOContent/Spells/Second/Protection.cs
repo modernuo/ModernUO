@@ -137,9 +137,9 @@ namespace Server.Spells.Second
                 {
                     if (Caster.BeginAction<DefensiveSpell>())
                     {
-                        double value = (Caster.Skills.EvalInt.Value +
-                                        Caster.Skills.Meditation.Value +
-                                        Caster.Skills.Inscribe.Value) * 10 / 4;
+                        var value = (Caster.Skills.EvalInt.Value +
+                                     Caster.Skills.Meditation.Value +
+                                     Caster.Skills.Inscribe.Value) * 10 / 4;
 
                         Registry.Add(Caster, Math.Clamp((int)value, 0, 750)); // 75.0% protection from disruption
                         new InternalTimer(Caster).Start();

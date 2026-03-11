@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: OutgoingGumpPackets.cs                                            *
  *                                                                       *
@@ -73,9 +73,9 @@ public static class OutgoingGumpPackets
         writer.Write(serial);
         writer.Write((short)gumpId);
         writer.Write((short)(unknown.Length + 1));
-        writer.WriteAsciiNull(unknown);
+        writer.WriteLatin1Null(unknown);
         writer.Write((short)(caption.Length + 1));
-        writer.WriteAsciiNull(caption);
+        writer.WriteLatin1Null(caption);
 
         ns.Send(writer.Span);
     }

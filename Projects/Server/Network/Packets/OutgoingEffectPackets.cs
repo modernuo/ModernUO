@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: OutgoingEffectPackets.cs                                        *
  *                                                                       *
@@ -32,7 +32,7 @@ public static class OutgoingEffectPackets
             return;
         }
 
-        Span<byte> buffer = stackalloc byte[SoundPacketLength].InitializePacket();
+        var buffer = stackalloc byte[SoundPacketLength].InitializePacket();
         CreateSoundEffect(buffer, soundID, target);
 
         ns.Send(buffer);

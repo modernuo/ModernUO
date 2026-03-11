@@ -85,8 +85,8 @@ namespace Server.Engines.Craft
                 return EnhanceResult.BadResource;
             }
 
-            int resHue = 0;
-            int maxAmount = 0;
+            var resHue = 0;
+            var maxAmount = 0;
 
             var consumeRes = craftItem.ConsumeRes(
                 from,

@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: ChampionCommands.cs                                             *
  *                                                                       *
@@ -46,7 +46,7 @@ namespace Server.Engines.CannedEvil
                     return;
                 }
 
-                ChampionSpawn spawn = targ switch
+                var spawn = targ switch
                 {
                     ChampionSpawn championSpawn => championSpawn,
                     IdolOfTheChampion champion  => champion.Spawn,

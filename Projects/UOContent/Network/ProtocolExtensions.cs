@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: ProtocolExtension.cs                                            *
  *                                                                       *
@@ -39,7 +39,7 @@ namespace Server.Network
         {
             int cmd = reader.ReadByte();
 
-            PacketHandler ph = packetHandlers[cmd];
+            var ph = packetHandlers[cmd];
 
             if (ph == null)
             {

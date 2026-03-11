@@ -1,4 +1,5 @@
 using System;
+using ModernUO.Serialization;
 using Server.Spells;
 
 namespace Server.Items;
@@ -11,31 +12,25 @@ public enum SawTrapType
     NorthFloor
 }
 
-public class SawTrap : BaseTrap
+[SerializationGenerator(0, false)]
+public partial class SawTrap : BaseTrap
 {
     [Constructible]
     public SawTrap(SawTrapType type = SawTrapType.NorthFloor) : base(GetBaseID(type))
     {
     }
 
-    public SawTrap(Serial serial) : base(serial)
-    {
-    }
-
     [CommandProperty(AccessLevel.GameMaster)]
     public SawTrapType Type
     {
-        get
+        get => ItemID switch
         {
-            return ItemID switch
-            {
-                0x1103 => SawTrapType.NorthWall,
-                0x1116 => SawTrapType.WestWall,
-                0x11AC => SawTrapType.NorthFloor,
-                0x11B1 => SawTrapType.WestFloor,
-                _      => SawTrapType.NorthWall
-            };
-        }
+            0x1103 => SawTrapType.NorthWall,
+            0x1116 => SawTrapType.WestWall,
+            0x11AC => SawTrapType.NorthFloor,
+            0x11B1 => SawTrapType.WestFloor,
+            _      => SawTrapType.NorthWall
+        };
         set => ItemID = GetBaseID(value);
     }
 
@@ -44,9 +39,8 @@ public class SawTrap : BaseTrap
     public override int PassiveTriggerRange => 0;
     public override TimeSpan ResetDelay => TimeSpan.FromSeconds(0.0);
 
-    public static int GetBaseID(SawTrapType type)
-    {
-        return type switch
+    public static int GetBaseID(SawTrapType type) =>
+        type switch
         {
             SawTrapType.NorthWall  => 0x1103,
             SawTrapType.WestWall   => 0x1116,
@@ -54,7 +48,6 @@ public class SawTrap : BaseTrap
             SawTrapType.WestFloor  => 0x11B1,
             _                      => 0
         };
-    }
 
     public override void OnTrigger(Mobile from)
     {
@@ -69,19 +62,5 @@ public class SawTrap : BaseTrap
         SpellHelper.Damage(TimeSpan.FromTicks(1), from, from, Utility.RandomMinMax(5, 15));
 
         from.LocalOverheadMessage(MessageType.Regular, 0x22, 500853); // You stepped onto a blade trap!
-    }
-
-    public override void Serialize(IGenericWriter writer)
-    {
-        base.Serialize(writer);
-
-        writer.Write(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-
-        var version = reader.ReadInt();
     }
 }

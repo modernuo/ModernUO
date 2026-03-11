@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2025 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: TransferItem.cs                                                 *
  *                                                                       *
@@ -15,10 +15,12 @@
 
 using System;
 using System.Runtime.CompilerServices;
+using ModernUO.Serialization;
 
 namespace Server.Mobiles;
 
-internal sealed class TransferItem : Item
+[SerializationGenerator(0, false)]
+internal sealed partial class TransferItem : Item
 {
     private readonly BaseCreature _creature;
 
@@ -32,24 +34,9 @@ internal sealed class TransferItem : Item
         Hue = creature.Hue & 0x0FFF;
     }
 
-    public TransferItem(Serial serial) : base(serial)
-    {
-    }
+    public override bool SkipSerialization => true;
 
     public static bool IsInCombat(BaseCreature creature) => creature?.Aggressors.Count > 0 || creature?.Aggressed.Count > 0;
-
-    public override void Serialize(IGenericWriter writer)
-    {
-        base.Serialize(writer);
-        writer.Write(0); // version
-    }
-
-    public override void Deserialize(IGenericReader reader)
-    {
-        base.Deserialize(reader);
-        reader.ReadInt(); // version
-        Delete();
-    }
 
     public override void GetProperties(IPropertyList list)
     {

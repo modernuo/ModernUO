@@ -1,0 +1,76 @@
+{
+    "category":  "Corpse",
+    "packets":  [
+                    {
+                        "id":  "0x89",
+                        "name":  "Corpse Equipment",
+                        "description":  "Sends the equipment layer mapping for items on a corpse, including virtual hair and facial hair items.",
+                        "direction":  "outgoing",
+                        "isDynamic":  true,
+                        "size":  "8+",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x89",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Corpse Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial of the corpse"
+                                       },
+                                       {
+                                           "name":  "Equipment",
+                                           "type":  "loop",
+                                           "description":  "Equipment layer mappings (5 bytes each, until terminator)",
+                                           "loop":  {
+                                                        "terminator":  "Layer == 0",
+                                                        "fields":  [
+                                                                       {
+                                                                           "name":  "Layer",
+                                                                           "type":  "byte",
+                                                                           "size":  1,
+                                                                           "description":  "Equipment layer + 1 (0 = terminator)"
+                                                                       },
+                                                                       {
+                                                                           "name":  "Item Serial",
+                                                                           "type":  "uint",
+                                                                           "size":  4,
+                                                                           "description":  "Serial of item in this layer"
+                                                                       }
+                                                                   ]
+                                                    }
+                                       },
+                                       {
+                                           "name":  "Terminator",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x00",
+                                           "description":  "Layer.Invalid (0) marks end of list"
+                                       }
+                                   ],
+                        "notes":  "Layer values are offset by +1 (e.g., Layer.Hair (0x0B) is sent as 0x0C). Hair and facial hair use virtual serials.",
+                        "related":  [
+                                        {
+                                            "id":  "0x3C",
+                                            "direction":  "outgoing",
+                                            "relationship":  "related",
+                                            "note":  "Container Content (also used for corpse items)"
+                                        }
+                                    ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Items/Misc/Corpses/CorpsePackets.cs",
+                                       "line":  24
+                                   }
+                    }
+                ]
+}

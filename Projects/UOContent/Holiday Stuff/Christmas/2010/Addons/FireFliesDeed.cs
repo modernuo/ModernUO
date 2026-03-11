@@ -113,7 +113,7 @@ public partial class FirefliesDeed : Item
                 return;
             }
 
-            int itemId = info.ButtonID switch
+            var itemId = info.ButtonID switch
             {
                 (int)Buttons.East  => 0x2332,
                 (int)Buttons.South => 0x2336,
@@ -202,7 +202,7 @@ public partial class FirefliesDeed : Item
                 return;
             }
 
-            foreach (Fireflies fireflies in Map.Malas.GetItemsAt<Fireflies>(p3d))
+            foreach (var fireflies in Map.Malas.GetItemsAt<Fireflies>(p3d))
             {
                 if (fireflies.Z == p3d.Z)
                 {

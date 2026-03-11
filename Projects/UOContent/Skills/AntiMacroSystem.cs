@@ -203,7 +203,7 @@ public static class AntiMacroSystem
         _antiMacroTable ??= new Dictionary<Mobile, PlayerAntiMacro>();
 
         // Hot path so use optimized code
-        ref PlayerAntiMacro antiMacro = ref CollectionsMarshal.GetValueRefOrAddDefault(_antiMacroTable, pm, out var exists);
+        ref var antiMacro = ref CollectionsMarshal.GetValueRefOrAddDefault(_antiMacroTable, pm, out var exists);
         if (!exists)
         {
             antiMacro = new PlayerAntiMacro();
@@ -241,8 +241,8 @@ public static class AntiMacroSystem
             var now = Core.Now;
 
             // Potential hot path, so use optimized code
-            ref CountAndTimeStamp _countTimeStamp =
-                ref CollectionsMarshal.GetValueRefOrAddDefault(_antiMacroTracking, (skill, obj), out bool exists);
+            ref var _countTimeStamp =
+                ref CollectionsMarshal.GetValueRefOrAddDefault(_antiMacroTracking, (skill, obj), out var exists);
 
             _countTimeStamp._count++;
 

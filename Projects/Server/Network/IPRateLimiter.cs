@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2025 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: IPRateLimiter.cs                                                *
  *                                                                       *
@@ -56,6 +56,12 @@ public class IPRateLimiter
 
     public bool Verify(IPAddress ip, out int totalAttempts)
     {
+        if (ip.IsPrivateNetwork())
+        {
+            totalAttempts = 0;
+            return true;
+        }
+
         var nowTicks = Core.TickCount;
         var ipStats = _ipAttempts.GetOrAdd(ip, _ => GetOrCreateIPStats());
         var added = ipStats.AttemptCount == 0;
@@ -136,10 +142,10 @@ public class IPRateLimiter
         {
             await _cleanupSignal.WaitAsync(_cts.Token);
 
-            int maxToProcess = Math.Min(_cleanupQueue.Count, 500);
+            var maxToProcess = Math.Min(_cleanupQueue.Count, 500);
             var nowTicks = Core.TickCount;
 
-            for (int i = 0; i < maxToProcess; i++)
+            for (var i = 0; i < maxToProcess; i++)
             {
                 if (!_cts.IsCancellationRequested)
                 {

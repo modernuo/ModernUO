@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: IncomingGumpPackets.cs                                            *
  *                                                                       *
@@ -95,10 +95,10 @@ public static partial class GumpSystem
                 return;
             }
 
-            int switchByteCount = switchCount * 4;
+            var switchByteCount = switchCount * 4;
 
             // Read all the integers
-            ReadOnlySpan<int> switchBlock =
+            var switchBlock =
                 MemoryMarshal.Cast<byte, int>(reader.Buffer.Slice(reader.Position, switchByteCount));
 
             reader.Seek(switchByteCount, SeekOrigin.Current);

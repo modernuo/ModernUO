@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using ModernUO.CodeGeneratedEvents;
 using Server.Mobiles;
@@ -74,7 +73,7 @@ namespace Server.Commands
 
                 if (list.Count > 0)
                 {
-                    Span<byte> removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength].InitializePacket();
+                    var removeEntity = stackalloc byte[OutgoingEntityPackets.RemoveEntityLength].InitializePacket();
 
                     for (var i = 0; i < list.Count; ++i)
                     {

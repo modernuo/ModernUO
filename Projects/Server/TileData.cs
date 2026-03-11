@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: TileData.cs                                                     *
  *                                                                       *
@@ -300,7 +300,7 @@ public static class TileData
         Load();
     }
 
-    private static unsafe void Load()
+    internal static unsafe void Load()
     {
         var filePath = Core.FindDataFile("tiledata.mul");
 

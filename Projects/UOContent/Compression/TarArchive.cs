@@ -53,11 +53,11 @@ namespace Server.Compression
 
             var libarchiveFile = Path.Combine(tempDir, "libarchive.zip");
             // This isn't called often so we don't need to optimize
-            using (HttpClient hc = new HttpClient())
+            using (var hc = new HttpClient())
             {
                 var result = hc.Send(new HttpRequestMessage(HttpMethod.Get, new Uri(_libArchiveWindowsUrl)));
                 using var stream = result.Content.ReadAsStream();
-                using FileStream fs = new FileStream(libarchiveFile, FileMode.Create, FileAccess.Write, FileShare.None);
+                using var fs = new FileStream(libarchiveFile, FileMode.Create, FileAccess.Write, FileShare.None);
                 stream.CopyTo(fs);
             }
 

@@ -72,7 +72,7 @@ namespace Server.SkillHandlers
                         if (c.Looters.Count > 0)
                         {
                             var sb = ValueStringBuilder.Create(128);
-                            int i = 0;
+                            var i = 0;
                             foreach (var looter in c.Looters)
                             {
                                 if (i == c.Looters.Count - 1)

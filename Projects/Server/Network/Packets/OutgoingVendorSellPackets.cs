@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: OutgoingVendorSellPackets.cs                                    *
  *                                                                       *
@@ -55,7 +55,7 @@ public static class OutgoingVendorSellPackets
             var name = (item.Name?.Trim()).DefaultIfNullOrEmpty(sis.Name ?? "");
 
             writer.Write((ushort)name.Length);
-            writer.WriteAscii(name);
+            writer.WriteLatin1(name);
         }
 
         writer.WritePacketLength();

@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2024 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: IncomingExtendedCommandPackets.cs                               *
  *                                                                       *
@@ -263,7 +263,7 @@ public static partial class IncomingExtendedCommandPackets
             return;
         }
 
-        Item spellbook = reader.ReadInt16() == 1 ? World.FindItem((Serial)reader.ReadUInt32()) : null;
+        var spellbook = reader.ReadInt16() == 1 ? World.FindItem((Serial)reader.ReadUInt32()) : null;
 
         var spellID = reader.ReadInt16() - 1;
         Spellbook.CastSpellRequest(from, spellID, spellbook);
@@ -361,7 +361,7 @@ public static partial class IncomingExtendedCommandPackets
 
         var from = state.Mobile;
 
-        Serial s = (Serial)reader.ReadUInt32();
+        var s = (Serial)reader.ReadUInt32();
 
         if (s.IsMobile)
         {

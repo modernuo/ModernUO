@@ -502,7 +502,7 @@ public partial class LeverPuzzleController : Item
     /* I cant find any better way to send "speech" using fonts other than default */
     public static void POHMessage(Mobile from, int index)
     {
-        Span<byte> buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(Msgs[index])].InitializePacket();
+        var buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(Msgs[index])].InitializePacket();
 
         foreach (var state in from.Map.GetClientsInRange(from.Location))
         {

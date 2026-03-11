@@ -119,7 +119,7 @@ public class VirtueSystem : GenericPersistence
             return null;
         }
 
-        ref VirtueContext context = ref CollectionsMarshal.GetValueRefOrAddDefault(_playerVirtues, from, out bool exists);
+        ref var context = ref CollectionsMarshal.GetValueRefOrAddDefault(_playerVirtues, from, out var exists);
         if (!exists)
         {
             context = new VirtueContext();

@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2024 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: IGenericWriter.cs                                               *
  *                                                                       *
@@ -163,8 +163,8 @@ public interface IGenericWriter
 
     public void Write(BitArray bitArray)
     {
-        int bitLength = bitArray.Length;
-        int byteLength = (bitLength + 7) / 8;
+        var bitLength = bitArray.Length;
+        var byteLength = (bitLength + 7) / 8;
 
         WriteEncodedInt(bitLength);
 

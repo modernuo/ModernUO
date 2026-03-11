@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "type": "Server.Items.PuzzleChest",
+  "properties": [
+    {
+      "name": "Solution",
+      "type": "Server.Items.PuzzleChestSolution",
+      "rule": "RawSerializableMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Hints",
+      "type": "Server.Items.PuzzleChestCylinder[]",
+      "rule": "ArrayMigrationRule",
+      "ruleArguments": [
+        "Server.Items.PuzzleChestCylinder",
+        "EnumMigrationRule"
+      ]
+    },
+    {
+      "name": "Guesses",
+      "type": "System.Collections.Generic.Dictionary\u003CServer.Mobile, Server.Items.PuzzleChestSolutionAndTime\u003E",
+      "rule": "DictionaryMigrationRule",
+      "ruleArguments": [
+        "@Tidy",
+        "@CanBeNull",
+        "Server.Mobile",
+        "SerializableInterfaceMigrationRule",
+        "0",
+        "Server.Items.PuzzleChestSolutionAndTime",
+        "RawSerializableMigrationRule",
+        "2",
+        "",
+        "@CanBeNull"
+      ]
+    }
+  ]
+}

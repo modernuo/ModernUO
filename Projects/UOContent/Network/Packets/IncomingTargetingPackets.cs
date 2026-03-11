@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: IncomingTargetingPackets.cs                                     *
  *                                                                       *
@@ -86,7 +86,7 @@ public static class IncomingTargetingPackets
                             }
                         }
 
-                        int hue = 0;
+                        var hue = 0;
                         var valid = false;
 
                         var eable = t.DisallowMultis

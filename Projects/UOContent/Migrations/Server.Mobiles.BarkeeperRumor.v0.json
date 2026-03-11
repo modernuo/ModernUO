@@ -1,0 +1,22 @@
+{
+  "version": 0,
+  "type": "Server.Mobiles.BarkeeperRumor",
+  "properties": [
+    {
+      "name": "Message",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Keyword",
+      "type": "string",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

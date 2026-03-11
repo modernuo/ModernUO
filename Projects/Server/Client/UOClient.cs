@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: UOClient.cs                                                     *
  *                                                                       *
@@ -95,7 +95,7 @@ public static class UOClient
 
         if (File.Exists(path))
         {
-            using FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+            using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
             var buffer = GC.AllocateUninitializedArray<byte>((int)fs.Length, true);
             _ = fs.Read(buffer);
             // VS_VERSION_INFO (unicode)

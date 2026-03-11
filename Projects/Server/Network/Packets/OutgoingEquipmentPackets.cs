@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: OutgoingEquipmentPackets.cs                                     *
  *                                                                       *
@@ -63,7 +63,7 @@ public static class OutgoingEquipmentPackets
             writer.Write(-3); // crafted by
 
             writer.Write((ushort)crafterName.Length);
-            writer.WriteAscii(crafterName);
+            writer.WriteLatin1(crafterName);
         }
 
         if (unidentified)

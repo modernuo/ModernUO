@@ -502,7 +502,7 @@ namespace Server.Spells
             }
 
             return bcTarg?.Controlled == false && bcTarg.InitialInnocent ||
-                   Notoriety.Compute(from, to) != Notoriety.Innocent || from.Kills >= 5;
+                   Notoriety.Compute(from, to) != Notoriety.Innocent || from.Murderer;
         }
 
         public static void Summon(
@@ -1017,7 +1017,7 @@ namespace Server.Spells
 
                 bcTarget?.AlterSpellDamageFrom(from, ref dmg);
 
-                if (Feint.GetDamageReduction(from, target, out int feintReduction))
+                if (Feint.GetDamageReduction(from, target, out var feintReduction))
                 {
                     // example: 35 damage * 50 / 100 = 17 damage
                     dmg -= dmg * feintReduction / 100;

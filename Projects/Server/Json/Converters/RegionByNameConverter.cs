@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: RegionByNameConverter.cs                                        *
  *                                                                       *
@@ -44,7 +44,7 @@ public class RegionByNameConverter : JsonConverter<Region>
                 throw new JsonException("Invalid json for RegionByName");
             }
 
-            string property = reader.GetString()?.ToLower();
+            var property = reader.GetString()?.ToLower();
 
             if (property != "name" && property != "map")
             {

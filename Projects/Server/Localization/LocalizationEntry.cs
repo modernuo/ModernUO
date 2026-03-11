@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: LocalizationEntry.cs                                            *
  *                                                                       *
@@ -54,7 +54,7 @@ public class LocalizationEntry
         var sb = ValueStringBuilder.Create(256);
         using var queue = PooledRefQueue<string>.Create();
 
-        bool hasMatch = false;
+        var hasMatch = false;
         var prevIndex = 0;
         foreach (Match match in _textRegex.Matches(text))
         {

@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: HexStringConverter.cs                                           *
  *                                                                       *
@@ -64,7 +64,7 @@ public static class HexStringConverter
         var charsWritten = 0;
         fixed (char* resultP = result)
         {
-            for (int i = 0; i < bytes.Length; i++)
+            for (var i = 0; i < bytes.Length; i++)
             {
                 var resultP2 = (uint*)(resultP + charsWritten);
                 *resultP2 = m_Lookup32Chars[bytes[i]];

@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: PacketContainerBuilder.cs                                       *
  *                                                                       *
@@ -89,11 +89,11 @@ public ref struct PacketContainerBuilder
     private void Grow(int additionalCapacityBeyondPos)
     {
         var newLength = Math.Max(Length + additionalCapacityBeyondPos, _bytes.Length * 2);
-        byte[] poolArray = STArrayPool<byte>.Shared.Rent(newLength);
+        var poolArray = STArrayPool<byte>.Shared.Rent(newLength);
 
         _bytes[..Length].CopyTo(poolArray);
 
-        byte[] toReturn = _arrayToReturnToPool;
+        var toReturn = _arrayToReturnToPool;
         _bytes = _arrayToReturnToPool = poolArray;
         if (toReturn != null)
         {
@@ -104,7 +104,7 @@ public ref struct PacketContainerBuilder
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Dispose()
     {
-        byte[] toReturn = _arrayToReturnToPool;
+        var toReturn = _arrayToReturnToPool;
         this = default; // for safety, to avoid using pooled array if this instance is erroneously appended to again
         if (toReturn != null)
         {

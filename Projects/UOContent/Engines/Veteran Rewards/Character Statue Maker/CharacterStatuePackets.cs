@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: CharacterStatuePackets.cs                                       *
  *                                                                       *
@@ -52,7 +52,7 @@ namespace Server.Engines.VeteranRewards
                 return;
             }
 
-            Span<byte> buffer = stackalloc byte[StatueAnimationPacketLength].InitializePacket();
+            var buffer = stackalloc byte[StatueAnimationPacketLength].InitializePacket();
             CreateStatueAnimation(buffer, serial, status, anim, frame);
             ns.Send(buffer);
         }

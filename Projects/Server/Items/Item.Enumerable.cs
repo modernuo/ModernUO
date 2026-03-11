@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2025 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: Item.Enumerable.cs                                              *
  *                                                                       *
@@ -80,7 +80,8 @@ public partial class Item
     /// </remarks>
     /// <example>
     /// <code>
-    ///     foreach (var item in cont.EnumerateItemsByType&lt;Item&gt;())
+    ///     using var queue = cont.EnumerateItemsByType&lt;Item&gt;();
+    ///     foreach (var item in queue)
     ///     {
     ///         if (item.LootType is not LootType.Blessed)
     ///         {
@@ -268,7 +269,7 @@ public partial class Item
 
             while (_index < _items.Length)
             {
-                Item item = _items[_index++];
+                var item = _items[_index++];
                 if (_recurse && item.LookupItems() is { Count: > 0 } items)
                 {
                     _containers.Enqueue(item);

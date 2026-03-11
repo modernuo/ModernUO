@@ -1,0 +1,11 @@
+{
+  "version": 0,
+  "type": "Server.Engines.ConPVP.TournamentRegistrar",
+  "properties": [
+    {
+      "name": "Tournament",
+      "type": "Server.Engines.ConPVP.TournamentController",
+      "rule": "SerializableInterfaceMigrationRule"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "version": 0,
+  "type": "Server.Items.ProjectedItem",
+  "properties": [
+    {
+      "name": "EffectItemId",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "MinimumVisible",
+      "type": "Server.AccessLevel",
+      "rule": "EnumMigrationRule"
+    }
+  ]
+}

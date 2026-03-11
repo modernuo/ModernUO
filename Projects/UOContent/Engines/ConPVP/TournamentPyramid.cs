@@ -42,7 +42,7 @@ namespace Server.Engines.ConPVP
                             {
                                 var mob = players[j];
 
-                                if (mob.Kills >= 5)
+                                if (mob.Murderer)
                                 {
                                     parts[0].Players.Add(mob);
                                 }

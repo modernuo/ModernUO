@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2023 - ModernUO Development Team                       *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: OutgoingItemPackets.cs                                          *
  *                                                                       *
@@ -88,7 +88,7 @@ public static class OutgoingItemPackets
             return;
         }
 
-        Span<byte> buffer = stackalloc byte[OutgoingEntityPackets.MaxWorldEntityPacketLength].InitializePacket();
+        var buffer = stackalloc byte[OutgoingEntityPackets.MaxWorldEntityPacketLength].InitializePacket();
 
         var length = ns.StygianAbyss ?
             OutgoingEntityPackets.CreateWorldEntity(buffer, item, ns.HighSeas) :
