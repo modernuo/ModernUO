@@ -163,15 +163,17 @@ public class ReportMurdererGump : StaticGump<ReportMurdererGump>
                         if (killer is PlayerMobile pk)
                         {
                             // Increment their short term murders, their kills, and reset the murder decay time
+                            var wasMurderer = killer.Murderer;
                             PlayerMurderSystem.OnPlayerMurder(pk);
 
                             pk.SendLocalizedMessage(1049067); // You have been reported for murder!
 
-                            if (pk.Kills == 5)
+                            if (!wasMurderer && killer.Murderer)
                             {
                                 pk.SendLocalizedMessage(502134); // You are now known as a murderer!
                             }
-                            else if (Stealing.SuspendOnMurder && pk.Kills == 1 && pk.NpcGuild == NpcGuild.ThievesGuild)
+                            // with the introduction of PingPongs, a red can technically have 1 kill.
+                            if (Stealing.SuspendOnMurder && pk.Kills == 1 && pk.NpcGuild == NpcGuild.ThievesGuild)
                             {
                                 pk.SendLocalizedMessage(501562); // You have been suspended by the Thieves Guild.
                             }

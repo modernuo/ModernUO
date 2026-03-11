@@ -354,6 +354,12 @@ namespace Server.Mobiles
 
         public override bool NewGuildDisplay => Guilds.Guild.NewGuildSystem;
 
+        public override bool Murderer =>
+            (Core.T2A && !Core.LBR
+                && PlayerMurderSystem.GetMurderContext(this, out var context)
+                && context.PingPong >= 5)
+            || base.Murderer;
+
         public bool BedrollLogout { get; set; }
 
         [CommandProperty(AccessLevel.GameMaster)]
@@ -699,6 +705,13 @@ namespace Server.Mobiles
 
         [CommandProperty(AccessLevel.GameMaster, canModify: true)]
         public ChampionTitleContext ChampionTitles => ChampionTitleSystem.GetOrCreateChampionTitleContext(this);
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        public int PingPong
+        {
+            get => PlayerMurderSystem.GetMurderContext(this, out var context) ? context.PingPong : 0;
+            set => PlayerMurderSystem.ManuallySetPingPong(this, value);
+        }
 
         [CommandProperty(AccessLevel.GameMaster)]
         public int ShortTermMurders
