@@ -42,7 +42,7 @@ public class ReportMurdererGump : StaticGump<ReportMurdererGump>
         {
             if (ai.Attacker.Player && ai.CanReportMurder && !ai.Reported)
             {
-                if (!Core.SE || !_recentlyReported.Contains((m, ai.Attacker)))
+                if (!_recentlyReported.Contains((m, ai.Attacker)))
                 {
                     if (notInThievesGuild)
                     {
@@ -150,17 +150,14 @@ public class ReportMurdererGump : StaticGump<ReportMurdererGump>
                     var killer = _killers[_idx];
                     if (killer?.Deleted == false)
                     {
-                        if (Core.SE)
+                        if (_recentlyReported.Add((from, killer)))
                         {
-                            if (_recentlyReported.Add((from, killer)))
-                            {
-                                Timer.DelayCall(
-                                    _recentlyReportedDelay,
-                                    static (f, k) => _recentlyReported.Remove((f, k)),
-                                    from,
-                                    killer
-                                );
-                            }
+                            Timer.DelayCall(
+                                _recentlyReportedDelay,
+                                static (f, k) => _recentlyReported.Remove((f, k)),
+                                from,
+                                killer
+                            );
                         }
 
                         if (killer is PlayerMobile pk)
