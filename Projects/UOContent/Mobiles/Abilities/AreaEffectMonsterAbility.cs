@@ -17,7 +17,7 @@ public abstract class AreaEffectMonsterAbility : MonsterAbility
             }
         }
 
-        while (queue.Count > 0)
+        for (int x = 0; x < queue.Count; x++)
         {
             DoEffectTarget(source, queue.Dequeue());
         }
