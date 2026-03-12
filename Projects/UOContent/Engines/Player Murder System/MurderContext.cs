@@ -5,7 +5,7 @@ using Server.Mobiles;
 
 namespace Server.Engines.PlayerMurderSystem;
 
-[SerializationGenerator(2)]
+[SerializationGenerator(3)]
 public partial class MurderContext
 {
     [SerializableField(0)]
@@ -32,6 +32,10 @@ public partial class MurderContext
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private int _bounty;
 
+    [SerializableField(5)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private DateTime _lastMurderTime;
+
     private void MigrateFrom(V0Content content)
     {
         _shortTermElapse = content.ShortTermElapse;
@@ -48,6 +52,16 @@ public partial class MurderContext
         _shortTermMurders = content.ShortTermMurders;
         _pingPong = content.PingPong;
         // _bounty defaults to 0
+    }
+
+    private void MigrateFrom(V2Content content)
+    {
+        _shortTermElapse = content.ShortTermElapse;
+        _longTermElapse = content.LongTermElapse;
+        _shortTermMurders = content.ShortTermMurders;
+        _pingPong = content.PingPong;
+        _bounty = content.Bounty;
+        // _lastMurderTime defaults to DateTime.MinValue — treated as expired
     }
 
     public PlayerMobile _player;

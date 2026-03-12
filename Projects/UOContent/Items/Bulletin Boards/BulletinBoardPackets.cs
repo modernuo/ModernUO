@@ -58,6 +58,11 @@ namespace Server.Network
                 return;
             }
 
+            if (board.HandleBBRequest(packetID, from, reader))
+            {
+                return;
+            }
+
             switch (packetID)
             {
                 case 3:

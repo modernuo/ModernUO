@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using System.Runtime.CompilerServices;
 using ModernUO.Serialization;
 using Server.Collections;
@@ -162,6 +163,8 @@ namespace Server.Items
 
         public virtual bool CheckRange(Mobile from) =>
             from.AccessLevel >= AccessLevel.GameMaster || from.Map == Map && from.InRange(GetWorldLocation(), 2);
+
+        public virtual bool HandleBBRequest(int packetID, Mobile from, SpanReader reader) => false;
 
         public virtual void PostMessage(Mobile from, BulletinMessage thread, string subject, string[] lines)
         {

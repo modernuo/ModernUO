@@ -37,12 +37,15 @@ public class PlayerMurderSystem : GenericPersistence
 
     public static bool BountiesEnabled { get; private set; }
 
+    private static TimeSpan _bountyExpiry;
+
     public static void Configure()
     {
         _shortTermMurderDuration = ServerConfiguration.GetOrUpdateSetting("murderSystem.shortTermMurderDuration", TimeSpan.FromHours(8));
         _longTermMurderDuration = ServerConfiguration.GetOrUpdateSetting("murderSystem.longTermMurderDuration", TimeSpan.FromHours(40));
         BountiesEnabled = ServerConfiguration.GetOrUpdateSetting("murderSystem.bountiesEnabled", !Core.LBR);
         _recentlyReportedDelay = ServerConfiguration.GetOrUpdateSetting("murderSystem.recentlyReportedDelay", TimeSpan.FromMinutes(10));
+        _bountyExpiry = ServerConfiguration.GetOrUpdateSetting("murderSystem.bountyExpiry", TimeSpan.FromDays(14));
 
         _playerMurderPersistence = new PlayerMurderSystem();
     }
@@ -203,9 +206,12 @@ public class PlayerMurderSystem : GenericPersistence
     public static List<(PlayerMobile Player, int Bounty)> GetActiveBounties()
     {
         var result = new List<(PlayerMobile Player, int Bounty)>();
+        var neverExpire = _bountyExpiry == TimeSpan.Zero;
+        var cutoff = neverExpire ? DateTime.MinValue : Core.Now - _bountyExpiry;
+
         foreach (var (player, context) in _murderContexts)
         {
-            if (context.Bounty > 0)
+            if (context.Bounty > 0 && (neverExpire || context.LastMurderTime >= cutoff))
             {
                 result.Add((player, context.Bounty));
             }
@@ -242,6 +248,7 @@ public class PlayerMurderSystem : GenericPersistence
             context.PingPongs++;
         }
 
+        context.LastMurderTime = Core.Now;
         context.ResetKillTime();
         UpdateMurderContext(context);
     }

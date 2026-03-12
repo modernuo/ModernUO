@@ -1,8 +1,14 @@
+using System;
+using System.Buffers;
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.CompilerServices;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.Engines.PlayerMurderSystem;
 using Server.Mobiles;
 using Server.Network;
+using Server.Text;
 
 namespace Server.Items;
 
@@ -41,24 +47,206 @@ public partial class BountyBoard : BaseBulletinBoard
             return;
         }
 
-        SyncBounties();
-
         var state = from.NetState;
         state.SendBBDisplayBoard(this);
-        state.SendContainerContent(from, this);
+        SendBountyContainerContent(state);
     }
 
-    private void SyncBounties()
+    public override bool HandleBBRequest(int packetID, Mobile from, SpanReader reader)
     {
-        for (var i = Items.Count - 1; i >= 0; i--)
+        switch (packetID)
         {
-            Items[i].Delete();
+            case 3: // Request content
+            case 4: // Request header
+            {
+                var serial = (Serial)reader.ReadUInt32();
+                if (World.FindMobile(serial) is PlayerMobile player)
+                {
+                    var bounty = PlayerMurderSystem.GetBounty(player);
+                    if (bounty > 0)
+                    {
+                        SendBountyMessage(from.NetState, this, player, bounty, packetID == 3);
+                    }
+                }
+
+                return true;
+            }
+            case 5: // Post - blocked
+                from.SendLocalizedMessage(1062398); // You are not allowed to post to this bulletin board.
+                return true;
+            case 6: // Remove - blocked
+                return true;
         }
 
-        foreach (var (player, bounty) in PlayerMurderSystem.GetActiveBounties())
+        return false;
+    }
+
+    /// <summary>
+    /// Sends a synthetic container content packet (0x3C) using player serials as message serials.
+    /// The client displays these as bulletin board message entries. When the client clicks one,
+    /// it sends back the player serial which HandleBBRequest intercepts — World.FindItem returns
+    /// null for mobile serials, so the default BB handlers harmlessly no-op.
+    /// </summary>
+    private void SendBountyContainerContent(NetState ns)
+    {
+        if (ns.CannotSendPackets())
         {
-            var subject = $"{player.Name}:  {bounty} gold.";
-            AddItem(new BulletinMessage(player, null, subject, CreateLines(player, bounty)));
+            return;
+        }
+
+        var bounties = PlayerMurderSystem.GetActiveBounties();
+        var entrySize = ns.ContainerGridLines ? 20 : 19;
+
+        var writer = new SpanWriter(stackalloc byte[5 + bounties.Count * entrySize]);
+        writer.Write((byte)0x3C); // Packet ID
+        writer.Seek(4, SeekOrigin.Current); // Length & count placeholder
+
+        var written = 0;
+
+        foreach (var (player, _) in bounties)
+        {
+            writer.Write(player.Serial);
+            writer.Write((ushort)0xEB0); // BulletinMessage ItemID
+            writer.Write((byte)0);       // signed, itemID offset
+            writer.Write((ushort)1);     // Amount
+            writer.Write((short)0);      // X
+            writer.Write((short)0);      // Y
+            if (ns.ContainerGridLines)
+            {
+                writer.Write((byte)0); // Grid location
+            }
+            writer.Write(Serial);        // Container = this board
+            writer.Write((ushort)0);     // Hue
+            written++;
+        }
+
+        writer.Seek(1, SeekOrigin.Begin);
+        writer.Write((ushort)writer.BytesWritten);
+        writer.Write((ushort)written);
+        writer.Seek(0, SeekOrigin.End);
+
+        ns.Send(writer.Span);
+    }
+
+    /// <summary>
+    /// Sends a synthetic BB message packet (header or content) for a bounty entry,
+    /// built entirely from live MurderSystem data — no real BulletinMessage item required.
+    /// </summary>
+    private static void SendBountyMessage(
+        NetState ns, BaseBulletinBoard board, PlayerMobile player, int bounty, bool content)
+    {
+        if (ns.CannotSendPackets())
+        {
+            return;
+        }
+
+        var posterName = player.Name ?? "";
+        var subject = $"{bounty} gold";
+        var time = Core.Now.ToString("MMM dd, yyyy");
+
+        var lines = content ? CreateLines(player, bounty) : null;
+
+        BulletinEquip[] equip = null;
+        if (content)
+        {
+            using var list = PooledRefQueue<BulletinEquip>.Create(player.Items.Count);
+            for (var i = 0; i < player.Items.Count; ++i)
+            {
+                var item = player.Items[i];
+                if (item.Layer >= Layer.OneHanded && item.Layer <= Layer.Mount)
+                {
+                    list.Enqueue(new BulletinEquip(item.ItemID, item.Hue));
+                }
+            }
+
+            equip = list.ToArray();
+        }
+
+        // Calculate packet size
+        var longestTextLine = 0;
+        var maxLength = 22;
+        CalcStringSize(posterName, ref maxLength, ref longestTextLine);
+        CalcStringSize(subject, ref maxLength, ref longestTextLine);
+        CalcStringSize(time, ref maxLength, ref longestTextLine);
+
+        if (content)
+        {
+            var equipLength = Math.Min(255, equip!.Length);
+            var linesLength = Math.Min(255, lines!.Length);
+            maxLength += 2 + equipLength * 4;
+            for (var i = 0; i < linesLength; i++)
+            {
+                CalcStringSize(lines[i], ref maxLength, ref longestTextLine, true);
+            }
+        }
+
+        Span<byte> textBuffer = stackalloc byte[TextEncoding.UTF8.GetMaxByteCount(longestTextLine)];
+
+        var writer = maxLength > 1024 ? new SpanWriter(maxLength) : new SpanWriter(stackalloc byte[maxLength]);
+        writer.Write((byte)0x71); // Packet ID
+        writer.Seek(2, SeekOrigin.Current);
+        writer.Write((byte)(content ? 0x02 : 0x01)); // Command
+        writer.Write(board.Serial);
+        writer.Write(player.Serial); // Message serial = player serial
+        if (!content)
+        {
+            writer.Write(Serial.Zero); // Thread serial (all root-level)
+        }
+
+        WriteBBString(ref writer, posterName, textBuffer);
+        WriteBBString(ref writer, subject, textBuffer);
+        WriteBBString(ref writer, time, textBuffer);
+
+        if (content)
+        {
+            writer.Write((short)player.Body);
+            writer.Write((short)player.Hue);
+
+            var equipLength = Math.Min(255, equip!.Length);
+            writer.Write((byte)equipLength);
+            for (var i = 0; i < equipLength; i++)
+            {
+                writer.Write((short)equip[i]._itemID);
+                writer.Write((short)equip[i]._hue);
+            }
+
+            var linesLength = Math.Min(255, lines!.Length);
+            writer.Write((byte)linesLength);
+            for (var i = 0; i < linesLength; i++)
+            {
+                WriteBBString(ref writer, lines[i], textBuffer, true);
+            }
+        }
+
+        writer.WritePacketLength();
+        ns.Send(writer.Span);
+
+        writer.Dispose();
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static void CalcStringSize(string text, ref int maxLength, ref int longestTextLine, bool pad = false)
+    {
+        var line = Math.Min(255, text.Length);
+        var byteCount = TextEncoding.UTF8.GetMaxByteCount(line) + (pad ? 3 : 2);
+        maxLength += byteCount;
+        longestTextLine = Math.Max(byteCount, longestTextLine);
+    }
+
+    private static void WriteBBString(ref SpanWriter writer, string text, Span<byte> buffer, bool pad = false)
+    {
+        var tail = pad ? 2 : 1;
+        var length = Math.Min(pad ? 253 : 254, text.GetBytesUtf8(buffer));
+        writer.Write((byte)(length + tail));
+        writer.Write(buffer[..length]);
+
+        if (pad)
+        {
+            writer.Write((ushort)0); // Compensating for an old client bug
+        }
+        else
+        {
+            writer.Write((byte)0); // Terminator
         }
     }
 
