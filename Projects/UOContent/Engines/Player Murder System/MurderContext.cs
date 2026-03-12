@@ -5,7 +5,7 @@ using Server.Mobiles;
 
 namespace Server.Engines.PlayerMurderSystem;
 
-[SerializationGenerator(1)]
+[SerializationGenerator(2)]
 public partial class MurderContext
 {
     [SerializableField(0)]
@@ -28,6 +28,10 @@ public partial class MurderContext
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private int _pingPongs;
 
+    [SerializableField(4)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private int _bounty;
+
     private void MigrateFrom(V0Content content)
     {
         _shortTermElapse = content.ShortTermElapse;
@@ -35,6 +39,15 @@ public partial class MurderContext
         _shortTermMurders = content.ShortTermMurders;
         // Players already at >= 5 kills have crossed the threshold at least once
         _pingPongs = _player.Kills >= 5 ? 1 : 0;
+    }
+
+    private void MigrateFrom(V1Content content)
+    {
+        _shortTermElapse = content.ShortTermElapse;
+        _longTermElapse = content.LongTermElapse;
+        _shortTermMurders = content.ShortTermMurders;
+        _pingPong = content.PingPong;
+        // _bounty defaults to 0
     }
 
     public PlayerMobile _player;

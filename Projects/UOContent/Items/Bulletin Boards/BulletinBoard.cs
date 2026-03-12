@@ -163,7 +163,7 @@ namespace Server.Items
         public virtual bool CheckRange(Mobile from) =>
             from.AccessLevel >= AccessLevel.GameMaster || from.Map == Map && from.InRange(GetWorldLocation(), 2);
 
-        public void PostMessage(Mobile from, BulletinMessage thread, string subject, string[] lines)
+        public virtual void PostMessage(Mobile from, BulletinMessage thread, string subject, string[] lines)
         {
             if (thread != null)
             {
