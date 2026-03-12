@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using CommunityToolkit.HighPerformance;
 using Server.Collections;
+using Server.Engines.PlayerMurderSystem;
 using Server.Engines.Quests.Haven;
 using Server.Engines.Quests.Necro;
 using Server.Engines.Spawners;
@@ -39,6 +40,11 @@ namespace Server.Commands
             Generate("Data/Decoration/Ilshenar", Map.Ilshenar);
             Generate("Data/Decoration/Malas", Map.Malas);
             Generate("Data/Decoration/Tokuno", Map.Tokuno);
+
+            if (PlayerMurderSystem.BountiesEnabled)
+            {
+                Generate("Data/Decoration/BountyBoards", Map.Felucca);
+            }
 
             m_Mobile.SendMessage($"World generating complete. {m_Count} items were generated.");
         }
