@@ -34,15 +34,13 @@ public static class PageDiscord
 
         var pageTypeName = PageQueue.GetPageTypeName(entry.Type);
         var locationInfo = $"{entry.PageLocation} ({entry.PageMap?.Name ?? "Unknown"})";
-        var timeSent = entry.Sent.ToString("yyyy-MM-dd HH:mm:ss UTC");
-
         var fieldsList = new List<object>
         {
             new { name = "Player", value = entry.Sender?.Name ?? "Unknown", inline = true },
             new { name = "Account", value = entry.Sender?.Account?.Username ?? "Unknown", inline = true },
             new { name = "Page Type", value = pageTypeName, inline = true },
             new { name = "Location", value = locationInfo, inline = true },
-            new { name = "Time Sent", value = timeSent, inline = true },
+            new { name = "Time Sent", value = FormatDiscordTimestamp(entry.Sent), inline = true },
             new { name = "Queue Position", value = $"#{PageQueue.List.Count}", inline = true },
             new { name = "Message", value = TruncateMessage(entry.Message), inline = false }
         };
@@ -207,6 +205,9 @@ public static class PageDiscord
         PageType.PhysicalHarassment => 0x800080, // purple
         _                           => 0x888888  // gray for other
     };
+
+    private static string FormatDiscordTimestamp(DateTime utcTime, char style = 'f') =>
+        $"<t:{new DateTimeOffset(utcTime, TimeSpan.Zero).ToUnixTimeSeconds()}:{style}>";
 
     private static string TruncateMessage(string message)
     {
