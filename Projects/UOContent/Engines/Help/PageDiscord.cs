@@ -25,60 +25,59 @@ public static class PageDiscord
 
     public static bool IsEnabled => !string.IsNullOrEmpty(_webhookUrl);
 
-    public static async Task SendPageNotificationAsync(PageEntry entry)
+    public static async ValueTask SendPageNotificationAsync(PageEntry entry)
     {
         if (!IsEnabled)
         {
             return;
         }
 
+        var pageTypeName = PageQueue.GetPageTypeName(entry.Type);
+        var locationInfo = $"{entry.PageLocation} ({entry.PageMap?.Name ?? "Unknown"})";
+        var timeSent = entry.Sent.ToString("yyyy-MM-dd HH:mm:ss UTC");
+
+        var fieldsList = new List<object>
+        {
+            new { name = "Player", value = entry.Sender?.Name ?? "Unknown", inline = true },
+            new { name = "Account", value = entry.Sender?.Account?.Username ?? "Unknown", inline = true },
+            new { name = "Page Type", value = pageTypeName, inline = true },
+            new { name = "Location", value = locationInfo, inline = true },
+            new { name = "Time Sent", value = timeSent, inline = true },
+            new { name = "Queue Position", value = $"#{PageQueue.List.Count}", inline = true },
+            new { name = "Message", value = TruncateMessage(entry.Message), inline = false }
+        };
+
+        if (entry.SpeechLog != null && entry.SpeechLog.Count > 0)
+        {
+            fieldsList.Add(new
+            {
+                name = "Speech Log Available",
+                value = $"Contains {entry.SpeechLog.Count} speech entries",
+                inline = false
+            });
+        }
+
+        var embed = new
+        {
+            title = $"New {pageTypeName} Page",
+            color = GetPageTypeColor(entry.Type),
+            fields = fieldsList.ToArray(),
+            footer = new { text = "UO Page System" },
+            timestamp = entry.Sent.ToString("o")
+        };
+
+        var payload = new
+        {
+            username = "UO Pages",
+            embeds = new[] { embed }
+        };
+
         try
         {
-            var pageTypeName = PageQueue.GetPageTypeName(entry.Type);
-            var locationInfo = $"{entry.PageLocation} ({entry.PageMap?.Name ?? "Unknown"})";
-            var timeSent = entry.Sent.ToString("yyyy-MM-dd HH:mm:ss UTC");
-
-            var fieldsList = new List<object>
-            {
-                new { name = "Player", value = entry.Sender?.Name ?? "Unknown", inline = true },
-                new { name = "Account", value = entry.Sender?.Account?.Username ?? "Unknown", inline = true },
-                new { name = "Page Type", value = pageTypeName, inline = true },
-                new { name = "Location", value = locationInfo, inline = true },
-                new { name = "Time Sent", value = timeSent, inline = true },
-                new { name = "Queue Position", value = $"#{PageQueue.List.Count}", inline = true },
-                new { name = "Message", value = TruncateMessage(entry.Message), inline = false }
-            };
-
-            if (entry.SpeechLog != null && entry.SpeechLog.Count > 0)
-            {
-                fieldsList.Add(new
-                {
-                    name = "Speech Log Available",
-                    value = $"Contains {entry.SpeechLog.Count} speech entries",
-                    inline = false
-                });
-            }
-
-            var embed = new
-            {
-                title = $"New {pageTypeName} Page",
-                color = GetPageTypeColor(entry.Type),
-                fields = fieldsList.ToArray(),
-                footer = new { text = "UO Page System" },
-                timestamp = entry.Sent.ToString("o")
-            };
-
-            var payload = new
-            {
-                username = "UO Pages",
-                embeds = new[] { embed }
-            };
-
             _httpClient ??= new HttpClient();
             await _httpClient.PostAsJsonAsync(_webhookUrl, payload);
 
-            _logger.Debug("Discord page notification sent for {Player} - {PageType}",
-                entry.Sender?.Name, pageTypeName);
+            _logger.Debug("Discord page notification sent for {Player} - {PageType}", entry.Sender?.Name, pageTypeName);
         }
         catch (Exception ex)
         {
@@ -87,60 +86,55 @@ public static class PageDiscord
         }
     }
 
-    public static async Task SendPageHandlerUpdateAsync(PageEntry entry, Mobile oldHandler, Mobile newHandler)
+    public static async ValueTask SendPageHandlerUpdateAsync(PageEntry entry, Mobile oldHandler, Mobile newHandler)
     {
-        if (!IsEnabled)
+        if (!IsEnabled || oldHandler != null && newHandler == null && PageQueue.IndexOf(entry) == -1)
         {
             return;
         }
 
-        if (oldHandler != null && newHandler == null && PageQueue.IndexOf(entry) == -1)
+        var pageTypeName = PageQueue.GetPageTypeName(entry.Type);
+        string actionText;
+        int color;
+
+        if (oldHandler == null && newHandler != null)
+        {
+            actionText = $"🛠️ **{newHandler.Name}** is now handling the page";
+            color = 0x00FF00; // green
+        }
+        else if (oldHandler != null && newHandler == null)
+        {
+            actionText = $"❌ **{oldHandler.Name}** stopped handling the page";
+            color = 0xFF0000; // red
+        }
+        else
         {
             return;
         }
+
+        var embed = new
+        {
+            title = $"{pageTypeName} Page Update",
+            description = actionText,
+            color,
+            fields = new[]
+            {
+                new { name = "Player", value = entry.Sender?.Name ?? "Unknown", inline = true },
+                new { name = "Page Type", value = pageTypeName, inline = true },
+                new { name = "Queue Position", value = $"#{PageQueue.IndexOf(entry) + 1}", inline = true }
+            },
+            footer = new { text = "UO Page System" },
+            timestamp = Core.Now.ToString("o")
+        };
+
+        var payload = new
+        {
+            username = "UO Pages",
+            embeds = new[] { embed }
+        };
 
         try
         {
-            var pageTypeName = PageQueue.GetPageTypeName(entry.Type);
-            string actionText;
-            int color;
-
-            if (oldHandler == null && newHandler != null)
-            {
-                actionText = $"🛠️ **{newHandler.Name}** is now handling the page";
-                color = 0x00FF00; // green
-            }
-            else if (oldHandler != null && newHandler == null)
-            {
-                actionText = $"❌ **{oldHandler.Name}** stopped handling the page";
-                color = 0xFF0000; // red
-            }
-            else
-            {
-                return;
-            }
-
-            var embed = new
-            {
-                title = $"{pageTypeName} Page Update",
-                description = actionText,
-                color,
-                fields = new[]
-                {
-                    new { name = "Player", value = entry.Sender?.Name ?? "Unknown", inline = true },
-                    new { name = "Page Type", value = pageTypeName, inline = true },
-                    new { name = "Queue Position", value = $"#{PageQueue.IndexOf(entry) + 1}", inline = true }
-                },
-                footer = new { text = "UO Page System" },
-                timestamp = Core.Now.ToString("o")
-            };
-
-            var payload = new
-            {
-                username = "UO Pages",
-                embeds = new[] { embed }
-            };
-
             _httpClient ??= new HttpClient();
             await _httpClient.PostAsJsonAsync(_webhookUrl, payload);
 
@@ -153,42 +147,42 @@ public static class PageDiscord
         }
     }
 
-    public static async Task SendPageCompletedAsync(PageEntry entry)
+    public static async ValueTask SendPageCompletedAsync(PageEntry entry)
     {
         if (!IsEnabled)
         {
             return;
         }
 
+        var pageTypeName = PageQueue.GetPageTypeName(entry.Type);
+        var handlerName = entry.Handler?.Name ?? "Staff";
+        var elapsed = Core.Now - entry.Sent;
+        var elapsedText = elapsed.TotalMinutes < 1
+            ? "< 1 minute"
+            : $"{elapsed.TotalMinutes:F0} minutes";
+
+        var embed = new
+        {
+            title = $"✅ {pageTypeName} Page Completed",
+            color = 0x00AA00, // dark green
+            fields = new[]
+            {
+                new { name = "Player", value = entry.Sender?.Name ?? "Unknown", inline = true },
+                new { name = "Handled By", value = handlerName, inline = true },
+                new { name = "Response Time", value = elapsedText, inline = true }
+            },
+            footer = new { text = "UO Page System" },
+            timestamp = Core.Now.ToString("yyyy-MM-ddTHH:mm:ssZ")
+        };
+
+        var payload = new
+        {
+            username = "UO Pages",
+            embeds = new[] { embed }
+        };
+
         try
         {
-            var pageTypeName = PageQueue.GetPageTypeName(entry.Type);
-            var handlerName = entry.Handler?.Name ?? "Staff";
-            var elapsed = Core.Now - entry.Sent;
-            var elapsedText = elapsed.TotalMinutes < 1
-                ? "< 1 minute"
-                : $"{elapsed.TotalMinutes:F0} minutes";
-
-            var embed = new
-            {
-                title = $"✅ {pageTypeName} Page Completed",
-                color = 0x00AA00, // dark green
-                fields = new[]
-                {
-                    new { name = "Player", value = entry.Sender?.Name ?? "Unknown", inline = true },
-                    new { name = "Handled By", value = handlerName, inline = true },
-                    new { name = "Response Time", value = elapsedText, inline = true }
-                },
-                footer = new { text = "UO Page System" },
-                timestamp = Core.Now.ToString("yyyy-MM-ddTHH:mm:ssZ")
-            };
-
-            var payload = new
-            {
-                username = "UO Pages",
-                embeds = new[] { embed }
-            };
-
             _httpClient ??= new HttpClient();
             await _httpClient.PostAsJsonAsync(_webhookUrl, payload);
 
