@@ -664,7 +664,6 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
                                     _encryption = loginEncryption;
 
                                     // Decrypt the buffer in place for processing
-                                    // var mutableBuffer = _socket.RecvBuffer.GetReadSpan();
                                     loginEncryption.ClientDecrypt(buffer[..62]);
                                 }
 
@@ -767,7 +766,6 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
                                     _encryption = gameEncryption;
 
                                     // Decrypt the buffer in place for processing
-                                    // var mutableBuffer = _socket.RecvBuffer.GetReadSpan();
                                     gameEncryption.ClientDecrypt(buffer[..65]);
                                 }
 
