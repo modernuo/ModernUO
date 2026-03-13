@@ -127,6 +127,7 @@ namespace Server.Engines.Help
         public static void Configure()
         {
             CommandSystem.Register("Pages", AccessLevel.Counselor, Pages_OnCommand);
+            PageDiscord.Configure();
         }
 
         public static bool CheckAllowedToPage(Mobile from)
@@ -174,6 +175,8 @@ namespace Server.Engines.Help
                 m_KeyedByHandler[value] = entry;
             }
 
+            _ = PageDiscord.SendPageHandlerUpdateAsync(entry, old, value);
+
             if (old == null || value == null)
             {
                 return;
@@ -213,6 +216,11 @@ namespace Server.Engines.Help
             }
 
             e.Stop();
+
+            if (e.Handler != null)
+            {
+                _ = PageDiscord.SendPageCompletedAsync(e);
+            }
 
             List.Remove(e);
             m_KeyedBySender.Remove(e.Sender);
@@ -261,7 +269,7 @@ namespace Server.Engines.Help
             if (!isStaffOnline)
             {
                 entry.Sender.SendMessage(
-                    "We are sorry, but no staff members are currently available to assist you.  Your page will remain in the queue until one becomes available, or until you cancel it manually."
+                    "We are sorry, but no staff members are currently available to assist you. Your page will remain in the queue until one becomes available, or until you cancel it manually."
                 );
             }
 
@@ -269,6 +277,8 @@ namespace Server.Engines.Help
             {
                 Email.SendQueueEmail(entry, GetPageTypeName(entry.Type));
             }
+
+            _ = PageDiscord.SendPageNotificationAsync(entry);
 
             HelpEvents.InvokePageEnqueued(entry);
         }
