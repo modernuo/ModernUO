@@ -552,7 +552,9 @@ public static partial class CharacterCreation
                     }
 
                     // animate dead, evil omen, pain spike, summon familiar, wraith form
-                    m.PackItem(new NecromancerSpellbook(0x8981ul) { LootType = LootType.Blessed });
+                    var necroBook = new NecromancerSpellbook(0x8981ul);
+                    m.PackItem(necroBook);
+                    necroBook.LootType = LootType.Blessed;
                     return;
                 }
             case "paladin":
@@ -590,7 +592,9 @@ public static partial class CharacterCreation
                         EquipItem(m, new BodySash(0xCF));
                     }
 
-                    m.PackItem(new BookOfChivalry { LootType = LootType.Blessed });
+                    var chivBook = new BookOfChivalry();
+                    m.PackItem(chivBook);
+                    chivBook.LootType = LootType.Blessed;
                     return;
                 }
             case "samurai":
@@ -1192,7 +1196,9 @@ public static partial class CharacterCreation
                     m.PackScroll(1);
                     m.PackScroll(2);
 
-                    EquipItem(m, new Spellbook(0x382A8C38ul) { LootType = LootType.Blessed });
+                    var mageBook = new Spellbook(0x382A8C38ul);
+                    EquipItem(m, mageBook);
+                    mageBook.LootType = LootType.Blessed;
                     EquipItem(m, Robe(raceFlag, female, Utility.RandomBlueHue()));
 
                     if (elf)
