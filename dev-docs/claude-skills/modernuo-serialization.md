@@ -221,10 +221,52 @@ public partial class BagOfSending : Item
 }
 ```
 
+## Custom Serialize/Deserialize (Purity Rules)
+
+When writing custom `Serialize(IGenericWriter)` or `Deserialize(IGenericReader)` methods (e.g. for `GenericPersistence` subclasses), the following rules apply:
+
+### Serialize() MUST remain pure
+`Serialize()` is called from **background serialization threads** during world saves (see `SerializationThreadWorker`). Multiple entities are serialized in parallel across threads. This means `Serialize()` must NOT:
+
+- **Create or destroy Items/Mobiles** -- mutates shared world state
+- **Move, equip, or unequip Items/Mobiles** -- mutates shared world state
+- **Start or stop timers** (`Timer.StartTimer`, `Timer.DelayCall`, `_token.Cancel()`) -- timers are NOT thread-safe
+- **Send packets or modify NetState** -- networking is game-thread-only
+- **Access or modify other entities' mutable state** -- data race
+- **Call `Delete()`** on anything -- triggers deletion cascades on wrong thread
+
+`Serialize()` should ONLY read fields and write them to the `IGenericWriter`. Treat it as a read-only snapshot.
+
+```csharp
+// CORRECT -- pure reads and writes only
+public override void Serialize(IGenericWriter writer)
+{
+    writer.WriteEncodedInt(0); // version
+    writer.WriteEncodedInt(_records.Count);
+    foreach (var (key, value) in _records)
+    {
+        writer.Write(key);
+        writer.Write(value);
+    }
+}
+
+// WRONG -- side effects in Serialize
+public override void Serialize(IGenericWriter writer)
+{
+    CleanupExpiredEntries();     // BAD: mutates state
+    Timer.StartTimer(Recheck);  // BAD: not thread-safe
+    writer.Write(_data);
+}
+```
+
+### Deserialize() runs on the game thread
+`Deserialize()` runs during world load on the main thread, so it CAN create entities and start timers. However, prefer `[AfterDeserialization]` for timer setup to keep deserialization clean.
+
 ## Anti-Patterns
 
 - **Missing `partial`**: `[SerializationGenerator]` requires `partial class`
 - **Serializing timers**: `TimerExecutionToken` cannot be serialized
+- **Side effects in `Serialize()`**: Serialize runs on background threads -- must be pure (no creating/destroying entities, no timer start/stop, no packets)
 - **Missing `MarkDirty()`**: Custom property setters must call `this.MarkDirty()`
 - **Wrong field prefix**: Use `_camelCase`, not `m_camelCase` for new fields
 - **Forgetting `[Constructible]`**: Items/Mobiles need this for `[add` command
