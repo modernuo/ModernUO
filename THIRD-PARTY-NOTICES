@@ -115,3 +115,25 @@ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
 THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+Attribution notice for RunUO-Encryption
+---------------------------
+The client encryption support in ModernUO (Projects/Server/Network/Encryption/)
+is based on protocol research and reverse engineering originally performed by
+Sebastian Hartte (DarkStorm) for the RunUO-Encryption project.
+
+His work identified:
+- The login packet XOR cipher algorithm used by the Ultima Online client
+- The Twofish + MD5 game packet encryption scheme
+- The login key values for client versions prior to 6.0.5
+
+The Twofish block cipher implementation used in RunUO-Encryption was a C# port
+by Shaun Wilde, originally published at:
+http://www.codetools.com/csharp/twofish_csharp.asp
+
+ModernUO's implementation is a clean rewrite using modern C# (Span<T>, SIMD,
+BitOperations) but the underlying protocol knowledge originates from
+Sebastian Hartte's reverse engineering effort.
+
+RunUO-Encryption was licensed under the GNU General Public License v2:
+https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
