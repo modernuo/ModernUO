@@ -2,7 +2,6 @@ using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.CompilerServices;
 using ModernUO.Serialization;
 using Server.Collections;
 using Server.Engines.PlayerMurderSystem;
@@ -15,6 +14,10 @@ namespace Server.Items;
 [SerializationGenerator(0, false)]
 public partial class BountyBoard : BaseBulletinBoard
 {
+    // Offset added to player serials (max 0x3FFFFFFF) to produce synthetic serials
+    // in the unused range (0x80000001–0xBFFFFFFF) for BB packets. Reversible by subtraction.
+    private const uint SyntheticSerialBase = 0x80000000;
+
     [Constructible]
     public BountyBoard() : base(0x1E5E)
     {
@@ -59,14 +62,14 @@ public partial class BountyBoard : BaseBulletinBoard
             case 3: // Request content
             case 4: // Request header
             {
-                var serial = (Serial)reader.ReadUInt32();
-                if (World.FindMobile(serial) is PlayerMobile player)
+                var syntheticSerial = reader.ReadUInt32();
+                var playerSerial = (Serial)(syntheticSerial - SyntheticSerialBase);
+
+                if (World.FindMobile(playerSerial) is PlayerMobile player &&
+                    PlayerMurderSystem.GetMurderContext(player, out var context) &&
+                    context.Bounty > 0)
                 {
-                    var bounty = PlayerMurderSystem.GetBounty(player);
-                    if (bounty > 0)
-                    {
-                        SendBountyMessage(from.NetState, this, player, bounty, packetID == 3);
-                    }
+                    SendBountyMessage(from.NetState, this, (Serial)syntheticSerial, player, context.Bounty, context.LastMurderTime, packetID == 3);
                 }
 
                 return true;
@@ -82,10 +85,9 @@ public partial class BountyBoard : BaseBulletinBoard
     }
 
     /// <summary>
-    /// Sends a synthetic container content packet (0x3C) using player serials as message serials.
-    /// The client displays these as bulletin board message entries. When the client clicks one,
-    /// it sends back the player serial which HandleBBRequest intercepts — World.FindItem returns
-    /// null for mobile serials, so the default BB handlers harmlessly no-op.
+    /// Sends a synthetic container content packet (0x3C) using offset player serials.
+    /// The client displays these as bulletin board message entries. When clicked,
+    /// HandleBBRequest reverses the offset to recover the real player serial.
     /// </summary>
     private void SendBountyContainerContent(NetState ns)
     {
@@ -105,7 +107,7 @@ public partial class BountyBoard : BaseBulletinBoard
 
         foreach (var (player, _) in bounties)
         {
-            writer.Write(player.Serial);
+            writer.Write((Serial)(SyntheticSerialBase + (uint)player.Serial));
             writer.Write((ushort)0xEB0); // BulletinMessage ItemID
             writer.Write((byte)0);       // signed, itemID offset
             writer.Write((ushort)1);     // Amount
@@ -133,7 +135,7 @@ public partial class BountyBoard : BaseBulletinBoard
     /// built entirely from live MurderSystem data — no real BulletinMessage item required.
     /// </summary>
     private static void SendBountyMessage(
-        NetState ns, BaseBulletinBoard board, PlayerMobile player, int bounty, bool content)
+        NetState ns, BaseBulletinBoard board, Serial messageSerial, PlayerMobile player, int bounty, DateTime lastMurderTime, bool content)
     {
         if (ns.CannotSendPackets())
         {
@@ -142,7 +144,7 @@ public partial class BountyBoard : BaseBulletinBoard
 
         var posterName = player.Name ?? "";
         var subject = $"{bounty} gold";
-        var time = Core.Now.ToString("MMM dd, yyyy");
+        var time = lastMurderTime.ToString("MMM dd, yyyy");
 
         var lines = content ? CreateLines(player, bounty) : null;
 
@@ -165,9 +167,9 @@ public partial class BountyBoard : BaseBulletinBoard
         // Calculate packet size
         var longestTextLine = 0;
         var maxLength = 22;
-        CalcStringSize(posterName, ref maxLength, ref longestTextLine);
-        CalcStringSize(subject, ref maxLength, ref longestTextLine);
-        CalcStringSize(time, ref maxLength, ref longestTextLine);
+        posterName.UpdateLengthCounters(ref maxLength, ref longestTextLine);
+        subject.UpdateLengthCounters(ref maxLength, ref longestTextLine);
+        time.UpdateLengthCounters(ref maxLength, ref longestTextLine);
 
         if (content)
         {
@@ -176,7 +178,7 @@ public partial class BountyBoard : BaseBulletinBoard
             maxLength += 2 + equipLength * 4;
             for (var i = 0; i < linesLength; i++)
             {
-                CalcStringSize(lines[i], ref maxLength, ref longestTextLine, true);
+                lines[i].UpdateLengthCounters(ref maxLength, ref longestTextLine, true);
             }
         }
 
@@ -187,15 +189,15 @@ public partial class BountyBoard : BaseBulletinBoard
         writer.Seek(2, SeekOrigin.Current);
         writer.Write((byte)(content ? 0x02 : 0x01)); // Command
         writer.Write(board.Serial);
-        writer.Write(player.Serial); // Message serial = player serial
+        writer.Write(messageSerial); // Synthetic serial — must match the 0x3C entry
         if (!content)
         {
             writer.Write(Serial.Zero); // Thread serial (all root-level)
         }
 
-        WriteBBString(ref writer, posterName, textBuffer);
-        WriteBBString(ref writer, subject, textBuffer);
-        WriteBBString(ref writer, time, textBuffer);
+        writer.WriteString(posterName, textBuffer);
+        writer.WriteString(subject, textBuffer);
+        writer.WriteString(time, textBuffer);
 
         if (content)
         {
@@ -214,7 +216,7 @@ public partial class BountyBoard : BaseBulletinBoard
             writer.Write((byte)linesLength);
             for (var i = 0; i < linesLength; i++)
             {
-                WriteBBString(ref writer, lines[i], textBuffer, true);
+                writer.WriteString(lines[i], textBuffer, true);
             }
         }
 
@@ -222,32 +224,6 @@ public partial class BountyBoard : BaseBulletinBoard
         ns.Send(writer.Span);
 
         writer.Dispose();
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static void CalcStringSize(string text, ref int maxLength, ref int longestTextLine, bool pad = false)
-    {
-        var line = Math.Min(255, text.Length);
-        var byteCount = TextEncoding.UTF8.GetMaxByteCount(line) + (pad ? 3 : 2);
-        maxLength += byteCount;
-        longestTextLine = Math.Max(byteCount, longestTextLine);
-    }
-
-    private static void WriteBBString(ref SpanWriter writer, string text, Span<byte> buffer, bool pad = false)
-    {
-        var tail = pad ? 2 : 1;
-        var length = Math.Min(pad ? 253 : 254, text.GetBytesUtf8(buffer));
-        writer.Write((byte)(length + tail));
-        writer.Write(buffer[..length]);
-
-        if (pad)
-        {
-            writer.Write((ushort)0); // Compensating for an old client bug
-        }
-        else
-        {
-            writer.Write((byte)0); // Terminator
-        }
     }
 
     private static string[] CreateLines(PlayerMobile player, int bounty)

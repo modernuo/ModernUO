@@ -594,6 +594,15 @@ namespace Server.Commands
                             sp.HomeRange = Utility.ToInt32(m_Params[i].AsSpan()[++indexOf..]);
                         }
                     }
+                    else if (m_Params[i].StartsWithOrdinal("WalkingRange"))
+                    {
+                        var indexOf = m_Params[i].IndexOfOrdinal('=');
+
+                        if (indexOf >= 0)
+                        {
+                            sp.WalkingRange = Utility.ToInt32(m_Params[i].AsSpan()[++indexOf..]);
+                        }
+                    }
                     else if (m_Params[i].StartsWithOrdinal("Running"))
                     {
                         var indexOf = m_Params[i].IndexOfOrdinal('=');

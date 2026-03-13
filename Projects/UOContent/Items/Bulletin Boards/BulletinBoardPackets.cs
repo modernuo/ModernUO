@@ -197,7 +197,7 @@ namespace Server.Network
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void UpdateLengthCounters(this string text, ref int maxLength, ref int longestTextLine, bool pad = false)
+        internal static void UpdateLengthCounters(this string text, ref int maxLength, ref int longestTextLine, bool pad = false)
         {
             var line = Math.Min(255, text.Length);
             var byteCount = TextEncoding.UTF8.GetMaxByteCount(line) + (pad ? 3 : 2); // 1 + length + terminator
@@ -278,7 +278,7 @@ namespace Server.Network
             writer.Dispose();
         }
 
-        private static void WriteString(this ref SpanWriter writer, string text, Span<byte> buffer, bool pad = false)
+        internal static void WriteString(this ref SpanWriter writer, string text, Span<byte> buffer, bool pad = false)
         {
             var tail = pad ? 2 : 1;
             var length = Math.Min(pad ? 253 : 254, text.GetBytesUtf8(buffer));

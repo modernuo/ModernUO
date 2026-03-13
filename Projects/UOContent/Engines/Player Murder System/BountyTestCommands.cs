@@ -1,6 +1,7 @@
 using System;
 using Server.Commands;
 using Server.Mobiles;
+using Server.Targeting;
 
 namespace Server.Engines.PlayerMurderSystem;
 
@@ -31,6 +32,7 @@ public static class BountyTestCommands
     {
         CommandSystem.Register("GenBounties", AccessLevel.Administrator, GenBounties_OnCommand);
         CommandSystem.Register("ClearBounties", AccessLevel.Administrator, ClearBounties_OnCommand);
+        CommandSystem.Register("SetBounty", AccessLevel.Administrator, SetBounty_OnCommand);
     }
 
     [Usage("GenBounties [count]")]
@@ -57,7 +59,7 @@ public static class BountyTestCommands
                 HairHue = Race.Human.RandomHairHue()
             };
 
-            pm.MoveToWorld(from.Location, Map.Internal);
+            pm.MoveToWorld(from.Location, from.Map);
 
             var kills = Utility.RandomMinMax(5, 50);
             pm.Kills = kills;
@@ -72,6 +74,34 @@ public static class BountyTestCommands
         }
 
         from.SendMessage($"Generated {count} test bounty targets.");
+    }
+
+    [Usage("SetBounty")]
+    [Description("Target a player to give them a random kill count (20-50) and bounty (20k-60k).")]
+    public static void SetBounty_OnCommand(CommandEventArgs e)
+    {
+        e.Mobile.BeginTarget(-1, false, TargetFlags.None, SetBounty_OnTarget);
+        e.Mobile.SendMessage("Target a player to apply a bounty.");
+    }
+
+    private static void SetBounty_OnTarget(Mobile from, object obj)
+    {
+        if (obj is not PlayerMobile pm)
+        {
+            from.SendMessage("That is not a player.");
+            return;
+        }
+
+        var kills = Utility.RandomMinMax(20, 50);
+        pm.Kills = kills;
+
+        var context = PlayerMurderSystem.GetOrCreateMurderContext(pm);
+        context.LastMurderTime = Core.Now;
+
+        var bounty = Utility.RandomMinMax(20000, 60000);
+        PlayerMurderSystem.AddBounty(pm, bounty);
+
+        from.SendMessage($"{pm.Name}: {kills} kills, {bounty}gp bounty applied.");
     }
 
     [Usage("ClearBounties")]
