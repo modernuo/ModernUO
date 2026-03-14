@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "type": "Server.Mobiles.WaterElemental",
+  "properties": [
+    {
+      "name": "DecanterUsed",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}
