@@ -6,7 +6,7 @@ using Server.Targeting;
 
 namespace Server.Items;
 
-[SerializationGenerator(0, false)]
+[SerializationGenerator(0)]
 public partial class EndlessDecanter : Pitcher
 {
     [InvalidateProperties]
