@@ -260,9 +260,13 @@ public partial class Pitcher : BaseBeverage
         }
 
         if (Content == BeverageType.Water)
+        {
             EndlessDecanter.HandleThrow(this, elemental, from);
+        }
         else
+        {
             from.SendLocalizedMessage(500846); // Can't pour it there.
+        }
     }
 }
 
