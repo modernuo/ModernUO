@@ -21,39 +21,21 @@ public class ItemListEntry
     public int CraftIndex { get; }
 }
 
-public class ItemListMenu : IMenu
+public class ItemListMenu : BaseMenu
 {
-    private static int m_NextSerial = 1;
-
     public ItemListMenu(string question, ItemListEntry[] entries)
     {
         Question = question.Trim();
         Entries = entries;
-
-        Serial = m_NextSerial++;
-        if (Serial == 0)
-        {
-            Serial = m_NextSerial++;
-        }
     }
 
     public string Question { get; }
 
     public ItemListEntry[] Entries { get; set; }
 
-    public int Serial { get; }
+    public override int EntryLength => Entries.Length;
 
-    public int EntryLength => Entries.Length;
-
-    public virtual void OnCancel(NetState state)
-    {
-    }
-
-    public virtual void OnResponse(NetState state, int index)
-    {
-    }
-
-    public void SendTo(NetState state)
+    public override void SendTo(NetState state)
     {
         state.AddMenu(this);
         state.SendDisplayItemListMenu(this);
