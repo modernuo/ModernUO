@@ -3,9 +3,17 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-    [SerializationGenerator(0, false)]
+    [SerializationGenerator(1, false)]
     public partial class WaterElemental : BaseCreature
     {
+        // False (default) = elemental still has a decanter to give; true = already given out.
+        [SerializableField(0)]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private bool _decanterUsed;
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        public bool HasDecanter => !_decanterUsed;
+
         [Constructible]
         public WaterElemental() : base(AIType.AI_Mage)
         {
@@ -55,6 +63,10 @@ namespace Server.Mobiles
             AddLoot(LootPack.Average);
             AddLoot(LootPack.Meager);
             AddLoot(LootPack.Potions);
+        }
+
+        private void MigrateFrom(V0Content content)
+        {
         }
     }
 }
