@@ -63,19 +63,12 @@ namespace Server.Engines.Chat
         }
 
         public bool AlwaysAvailable { get; set; }
-
         public static List<Channel> Channels { get; } = new();
-
         public bool Contains(ChatUser user) => m_Users.Contains(user);
-
         public bool IsBanned(ChatUser user) => m_Banned.Contains(user);
-
         public bool CanTalk(ChatUser user) => !m_VoiceRestricted || m_Voices.Contains(user) || m_Moderators.Contains(user);
-
         public bool IsModerator(ChatUser user) => m_Moderators.Contains(user);
-
         public bool IsVoiced(ChatUser user) => m_Voices.Contains(user);
-
         public bool ValidatePassword(string password) => m_Password?.InsensitiveEquals(password) != false;
 
         public bool ValidateModerator(ChatUser user)
@@ -159,7 +152,7 @@ namespace Server.Engines.Chat
                 SendCommand(ChatCommand.RemoveUserFromChannel, user, user.Username);
                 ChatSystem.SendCommandTo(user.Mobile, ChatCommand.LeaveChannel);
 
-                if (m_Users.Count == 0 && !AlwaysAvailable)
+                if (!AlwaysAvailable && m_Users.Count == 0)
                 {
                     RemoveChannel(this);
                 }
@@ -355,7 +348,7 @@ namespace Server.Engines.Chat
 
         public void SendIgnorableMessage(int number, ChatUser from, string param1, string param2)
         {
-            for (var i = 0; i < m_Users.Count; ++i)
+            for (var i = m_Users.Count - 1; i >= 0; --i)
             {
                 var user = m_Users[i];
 
@@ -368,9 +361,9 @@ namespace Server.Engines.Chat
                 {
                     user.SendMessage(number, from.Mobile, param1, param2);
                 }
-                else if (!Contains(user))
+                else
                 {
-                    --i;
+                    RemoveUser(user);
                 }
             }
         }
@@ -382,7 +375,7 @@ namespace Server.Engines.Chat
 
         public void SendCommand(ChatCommand command, ChatUser initiator, string param1 = null, string param2 = null)
         {
-            for (var i = 0; i < m_Users.Count; ++i)
+            for (var i = m_Users.Count - 1; i >= 0; --i)
             {
                 var user = m_Users[i];
 
@@ -395,9 +388,9 @@ namespace Server.Engines.Chat
                 {
                     ChatSystem.SendCommandTo(user.Mobile, command, param1, param2);
                 }
-                else if (!Contains(user))
+                else
                 {
-                    --i;
+                    RemoveUser(user);
                 }
             }
         }
@@ -478,6 +471,9 @@ namespace Server.Engines.Chat
             return null;
         }
 
+        // currently, all chat is combined to a single webhook
+        // all static channels will be captured
+        // also captures player created channels
         public static void Initialize()
         {
             AddStaticChannel("Newbie Help");
