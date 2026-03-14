@@ -92,13 +92,6 @@ public partial class EndlessDecanter : Pitcher
         }
     }
 
-    public override void OnAfterDelete()
-    {
-        _linked = false;
-        _linkMap = null;
-        base.OnAfterDelete();
-    }
-
     public static void HandleThrow(Pitcher pitcher, WaterElemental elemental, Mobile thrower)
     {
         if (!pitcher.IsFull)
@@ -124,7 +117,7 @@ public partial class EndlessDecanter : Pitcher
 
         if (0.1 > Utility.RandomDouble())
         {
-            elemental.DecanterUsed = true;
+            elemental.HasDecanter = false;
             pitcher.Delete();
             thrower.AddToBackpack(new EndlessDecanter());
             thrower.SendLocalizedMessage(1115897); // The water elemental has thrown a magical decanter back to you!
@@ -159,7 +152,7 @@ public partial class EndlessDecanter : Pitcher
     {
         var decanter = (EndlessDecanter)state;
 
-        if (decanter?.Deleted != false || !decanter.Movable || !from.CheckAlive())
+        if (decanter?.Deleted != false || !decanter.Movable || !from.CheckAlive() || !decanter.CheckItemUse(from))
         {
             return;
         }

@@ -6,17 +6,14 @@ namespace Server.Mobiles
     [SerializationGenerator(1, false)]
     public partial class WaterElemental : BaseCreature
     {
-        // False (default) = elemental still has a decanter to give; true = already given out.
         [SerializableField(0)]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
-        private bool _decanterUsed;
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public bool HasDecanter => !_decanterUsed;
+        private bool _hasDecanter;
 
         [Constructible]
         public WaterElemental() : base(AIType.AI_Mage)
         {
+            _hasDecanter = true;
             Body = 16;
             BaseSoundID = 278;
 

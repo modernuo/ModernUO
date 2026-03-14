@@ -3,7 +3,7 @@
   "type": "Server.Mobiles.WaterElemental",
   "properties": [
     {
-      "name": "DecanterUsed",
+      "name": "HasDecanter",
       "type": "bool",
       "rule": "PrimitiveTypeMigrationRule",
       "ruleArguments": [
