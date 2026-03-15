@@ -171,7 +171,7 @@ using Server.Gumps;
 
 namespace Server.Custom.BountySystem;
 
-[SerializationGenerator(0, false)]
+[SerializationGenerator(0)]
 public partial class BountyBoard : Item
 {
     [Constructible]
