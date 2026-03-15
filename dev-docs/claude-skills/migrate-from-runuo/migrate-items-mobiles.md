@@ -14,7 +14,7 @@ description: >
 
 ## Item Conversion Checklist
 1. [ ] Foundation: file-scoped namespace, `using ModernUO.Serialization;`
-2. [ ] Class: add `[SerializationGenerator(0, false)]`, add `partial`
+2. [ ] Class: add `[SerializationGenerator(N, false)]` (N = old version + 1, `false` if old `Deserialize` used `ReadInt()`), add `partial`
 3. [ ] Fields: `m_X` -> `[SerializableField(N)] _x` with `[SerializedCommandProperty]`
 4. [ ] Add `[InvalidateProperties]` where RunUO setter called `InvalidateProperties()`
 5. [ ] Delete: Serial constructor, Serialize, Deserialize

@@ -79,7 +79,7 @@ using ModernUO.Serialization;
 
 namespace Server.Items;
 
-[SerializationGenerator(0, false)]
+[SerializationGenerator(2, false)]  // Old version was 1 → bump to 2; false because old saves used ReadInt()
 public partial class ChargedGem : Item
 {
     [SerializableField(0)]
@@ -96,6 +96,24 @@ public partial class ChargedGem : Item
     {
         _charges = 10;
         Weight = 1.0;
+    }
+
+    // Handles loading saves from BEFORE the SerializationGenerator conversion
+    private void Deserialize(IGenericReader reader, int version)
+    {
+        switch (version)
+        {
+            case 1:
+            {
+                _owner = reader.ReadEntity<Mobile>();
+                goto case 0;
+            }
+            case 0:
+            {
+                _charges = reader.ReadInt();
+                break;
+            }
+        }
     }
 
     public override void GetProperties(IPropertyList list)
@@ -124,7 +142,7 @@ public partial class ChargedGem : Item
 | `reader.ReadInt()` | `reader.ReadInt()` | Same for manual cases |
 | `reader.ReadMobile()` | `reader.ReadEntity<Mobile>()` | Generic method |
 | `reader.ReadItem()` | `reader.ReadEntity<Item>()` | Generic method |
-| `writer.Write((int)0)` version | `[SerializationGenerator(0, false)]` | In attribute |
+| `writer.Write((int)0)` version | `[SerializationGenerator(N, false)]` | Version bumped +1; `false` because old saves used `ReadInt()` |
 
 ## Step-by-Step Conversion
 
@@ -134,15 +152,16 @@ using ModernUO.Serialization;
 ```
 
 ### Step 2: Add Class Attributes and `partial`
+
+Read the old `Serialize()` to find the version number it writes. Bump it by 1 for the `[SerializationGenerator]` first parameter. If the old `Deserialize()` used `reader.ReadInt()` (not `ReadEncodedInt()`), pass `false` as the second parameter.
+
 ```csharp
 // Change:
 public class MyItem : Item
-// To:
-[SerializationGenerator(0, false)]
+// To (old Serialize wrote version 0, old Deserialize used ReadInt()):
+[SerializationGenerator(1, false)]
 public partial class MyItem : Item
 ```
-
-The version number should be `0` for a fresh migration (you're defining a new serialization schema). Use `false` as the second argument for Item/Mobile subclasses.
 
 ### Step 3: Delete Serial Constructor
 Remove `public MyItem(Serial serial) : base(serial) { }` entirely.
@@ -171,8 +190,29 @@ Add `[InvalidateProperties]` if the RunUO setter called `InvalidateProperties()`
 private int _charges;
 ```
 
-### Step 5: Delete Serialize and Deserialize Methods
-Remove both override methods entirely. The source generator creates them.
+### Step 5: Migrate Serialize and Deserialize Methods
+
+Delete the `Serialize()` override entirely — the source generator creates it.
+
+For `Deserialize()`: if there are existing saves to support, convert it to `private void Deserialize(IGenericReader reader, int version)` (remove the `override`, change the signature). This method handles loading saves from before the SerializationGenerator conversion. Remove the `base.Deserialize(reader)` call and the version reading line — the generator handles those.
+
+```csharp
+// Old RunUO:
+public override void Deserialize(GenericReader reader)
+{
+    base.Deserialize(reader);
+    int version = reader.ReadInt();
+    m_Charges = reader.ReadInt();
+}
+
+// Converted — keeps backward compat with old saves:
+private void Deserialize(IGenericReader reader, int version)
+{
+    _charges = reader.ReadInt();
+}
+```
+
+If there are no existing saves to worry about (fresh world), you can delete `Deserialize()` entirely.
 
 ### Step 6: Change [Constructable] to [Constructible]
 ```csharp
@@ -266,7 +306,7 @@ using ModernUO.Serialization;
 
 namespace Server.Items;
 
-[SerializationGenerator(0, false)]
+[SerializationGenerator(1, false)]  // Old version was 0 → bump to 1; false because old saves used ReadInt()
 public partial class SimpleGem : Item
 {
     [Constructible]
@@ -276,6 +316,12 @@ public partial class SimpleGem : Item
     }
 
     public override string DefaultName => "a simple gem";
+
+    // Handles loading saves from BEFORE the SerializationGenerator conversion
+    private void Deserialize(IGenericReader reader, int version)
+    {
+        // Version 0 had no custom fields — nothing to read
+    }
 }
 ```
 
@@ -337,7 +383,7 @@ using ModernUO.Serialization;
 
 namespace Server.Items;
 
-[SerializationGenerator(0, false)]  // Version 0 — new schema
+[SerializationGenerator(3, false)]  // Old version was 2 → bump to 3; false because old saves used ReadInt()
 public partial class MagicGem : Item
 {
     [SerializableField(0)]
@@ -360,10 +406,37 @@ public partial class MagicGem : Item
         _charges = 10;
         _quality = GemQuality.Rough;
     }
+
+    // Handles loading saves from BEFORE the SerializationGenerator conversion
+    private void Deserialize(IGenericReader reader, int version)
+    {
+        switch (version)
+        {
+            case 2:
+            {
+                _quality = (GemQuality)reader.ReadInt();
+                goto case 1;
+            }
+            case 1:
+            {
+                _owner = reader.ReadEntity<Mobile>();
+                goto case 0;
+            }
+            case 0:
+            {
+                _charges = reader.ReadInt();
+                break;
+            }
+        }
+    }
 }
 ```
 
-**Important**: When migrating RunUO code, the ModernUO version starts at 0 because you're defining a new serialization schema. The old version numbers from RunUO are irrelevant — the source generator doesn't read the old format. The old saves must be re-saved or a migration schema must be created.
+**Important**: When migrating RunUO code:
+- Read the old `Serialize()` to find the version it writes, then bump it by 1 for the `[SerializationGenerator]` first parameter
+- Pass `false` as the second parameter if the old `Deserialize()` used `reader.ReadInt()` (not `ReadEncodedInt()`) — this tells the generator how old saves encoded the version number
+- Keep the old deserialization logic as `private void Deserialize(IGenericReader reader, int version)` to handle loading pre-codegen saves
+- This `Deserialize` method is called automatically for old saves; the generator handles new saves
 
 ## Edge Cases & Gotchas
 

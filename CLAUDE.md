@@ -18,12 +18,14 @@ Apply these when writing or reviewing `.cs` files under `Projects/`.
 6. **Cancel timers in `OnDelete()`/`OnAfterDelete()`** — call `_token.Cancel()` or `_timer?.Stop()`
 7. **`STArrayPool<T>.Shared`** not `ArrayPool<T>.Shared` — single-threaded optimized, no locks
 8. **`PooledRefList<T>`** not `new List<T>()` on hot paths — zero GC pressure, stack-allocated ref struct
-9. **Serialization** — class must be `partial`, constructor needs `[Constructible]`, `TimerExecutionToken` must NOT have `[SerializableField]`
+9. **Serialization** — class must be `partial`, constructor needs `[Constructible]`, `TimerExecutionToken` must NOT have `[SerializableField]`. New classes: use `[SerializationGenerator(version)]` (omit `encoded`). When bumping versions, add `MigrateFrom(VXContent)` (X = previous version). Never modify `Deserialize(reader, version)` for version bumps — that method is only for pre-codegen legacy saves. When migrating from pre-codegen Serialize/Deserialize: pass `false` if old code used `reader.ReadInt()`, bump version +1, and keep old logic as `private void Deserialize(IGenericReader reader, int version)` → `dev-docs/runuo-migration-docs/02-serialization.md`
 10. **No `Task.Run`/`new Thread()`** in game code — game logic is single-threaded event loop
 11. **Never assume era** — if code uses `Core.AOS`/`Core.SE`/etc., ask which expansion to target
 12. **Naming** — `_camelCase` private fields, `PascalCase` properties/methods/classes; don't flag legacy `m_` but use `_` for new code
 13. **No empty gumps** — every gump must produce visual elements. An empty gump leaks on client+server (no way to close it). Use static `DisplayTo()` to validate before constructing → `dev-docs/gump-system.md`
 14. **PropertyList string literals must be holes** — `$"{"Map"}\t{value}"` not `$"Map\t{value}"`. The handler treats bare text as delimiters, `{}` holes as arguments. Only `\t` should be a bare literal → `dev-docs/property-lists.md`
+15. **Braces required on all control flow** — `if`, `else`, `for`, `foreach`, `while`, `do`, `switch` must always have braces, even for single-line bodies → `dev-docs/code-standards.md`
+16. **Prefer switch expressions and switch-when** — use switch expressions for value mapping and switch-when for pattern matching where they improve readability. Exception: skip if unreadable or cold path → `dev-docs/code-standards.md`
 
 ## Dev-Docs Reference
 

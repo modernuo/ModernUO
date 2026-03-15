@@ -82,7 +82,7 @@ using ModernUO.Serialization;
 
 namespace Server.Items;
 
-[SerializationGenerator(0, false)]
+[SerializationGenerator(0)]
 public partial class MyItem : Item
 {
     private TimerExecutionToken _timerToken;
