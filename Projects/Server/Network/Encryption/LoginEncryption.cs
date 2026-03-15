@@ -41,6 +41,7 @@ public sealed class LoginEncryption : IClientEncryption
     /// <summary>
     /// Attempts to initialize login encryption and validate the packet.
     /// Returns true if the packet appears to be validly encrypted with this scheme.
+    /// When version is null (pre-6.0.5 clients that don't send 0xEF), tries all known legacy keys.
     /// </summary>
     public static bool TryDecrypt(
         ClientVersion version,
@@ -52,16 +53,40 @@ public sealed class LoginEncryption : IClientEncryption
 
         encryption = null;
 
-        var keys = LoginKeys.GetKeys(version);
-        if (keys is { Key1: 0, Key2: 0 })
-        {
-            return false;
-        }
-
         if (encryptedPacket.Length < LoginPacketSize)
         {
             return false;
         }
+
+        if (version != null)
+        {
+            var keys = LoginKeys.GetKeys(version);
+            return keys is not { Key1: 0, Key2: 0 } && TryDecryptWithKeys(keys, seed, encryptedPacket, out encryption);
+        }
+
+        // No version available (pre-6.0.5 client) - try all known legacy keys
+        for (var i = 0; i < LoginKeys.LegacyKeys.Length; i++)
+        {
+            var legacyKeys = LoginKeys.LegacyKeys[i];
+            if (TryDecryptWithKeys(legacyKeys, seed, encryptedPacket, out encryption))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Attempts decryption with a specific key pair and validates the result.
+    /// </summary>
+    private static bool TryDecryptWithKeys(
+        LoginKeys keys,
+        uint seed,
+        ReadOnlySpan<byte> encryptedPacket,
+        out LoginEncryption encryption)
+    {
+        const int LoginPacketSize = 62;
 
         // Copy and decrypt
         Span<byte> decrypted = stackalloc byte[LoginPacketSize];
@@ -75,6 +100,7 @@ public sealed class LoginEncryption : IClientEncryption
         // - Byte 60 must be 0x00 (null terminator for password)
         if (decrypted[0] != 0x80 || decrypted[30] != 0x00 || decrypted[60] != 0x00)
         {
+            encryption = null;
             return false;
         }
 

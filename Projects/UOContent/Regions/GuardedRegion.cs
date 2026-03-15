@@ -282,7 +282,11 @@ public class GuardedRegion : BaseRegion
                 BaseGuard.Spawn(fakeCall, m);
                 timer.Stop();
                 m_GuardCandidates.Remove(m);
-                m.SendLocalizedMessage(502276); // Guards can no longer be called on you.
+
+                if (!IsAlwaysGuardCandidate(m))
+                {
+                    m.SendLocalizedMessage(502276); // Guards can no longer be called on you.
+                }
             }
         }
         else
@@ -298,27 +302,37 @@ public class GuardedRegion : BaseRegion
 
         foreach (var m in Map.GetMobilesInRange(p, 14))
         {
-            if (!IsGuardCandidate(m) || !m.Region.IsPartOf(this) && !m_GuardCandidates.ContainsKey(m))
+            if (!IsGuardCandidate(m))
             {
                 continue;
             }
 
-            if (m_GuardCandidates.Remove(m, out var timer))
+            // Dictionary members can be targeted regardless of region (guards reach outside).
+            // Non-dictionary permanent candidates (reds) must be in the region.
+            if (m_GuardCandidates.ContainsKey(m) || m.Region.IsPartOf(this) && IsAlwaysGuardCandidate(m))
             {
-                timer.Stop();
-            }
+                if (m_GuardCandidates.Remove(m, out var timer))
+                {
+                    timer.Stop();
+                }
 
-            queue.Enqueue(m);
-            break;
+                queue.Enqueue(m);
+            }
         }
 
         while (queue.Count > 0)
         {
             var m = queue.Dequeue();
             BaseGuard.Spawn(this, m);
-            m.SendLocalizedMessage(502276); // Guards can no longer be called on you.
+
+            if (!IsAlwaysGuardCandidate(m))
+            {
+                m.SendLocalizedMessage(502276); // Guards can no longer be called on you.
+            }
         }
     }
+
+    private bool IsAlwaysGuardCandidate(Mobile m) => !AllowReds && m.Murderer;
 
     public bool IsGuardCandidate(Mobile m)
     {
@@ -327,14 +341,7 @@ public class GuardedRegion : BaseRegion
             return false;
         }
 
-        var bc = m as BaseCreature;
-
-        if (bc?.IsInvulnerable == true)
-        {
-            return false;
-        }
-
-        return !AllowReds && m.Murderer || m.Criminal;
+        return (m as BaseCreature)?.IsInvulnerable != true && (IsAlwaysGuardCandidate(m) || m.Criminal);
     }
 
     private class GuardTimer : Timer

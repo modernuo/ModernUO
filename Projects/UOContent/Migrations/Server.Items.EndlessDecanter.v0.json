@@ -1,0 +1,30 @@
+{
+  "version": 0,
+  "type": "Server.Items.EndlessDecanter",
+  "properties": [
+    {
+      "name": "Linked",
+      "type": "bool",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "LinkLocation",
+      "type": "Server.Point3D",
+      "rule": "PrimitiveUOTypeMigrationRule",
+      "ruleArguments": [
+        "Point3D"
+      ]
+    },
+    {
+      "name": "LinkMap",
+      "type": "Server.Map",
+      "rule": "PrimitiveUOTypeMigrationRule",
+      "ruleArguments": [
+        "Map"
+      ]
+    }
+  ]
+}

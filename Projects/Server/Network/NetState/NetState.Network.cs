@@ -58,6 +58,16 @@ public partial class NetState
     public static IIORingGroup Ring => _socketManager?.Ring;
 
     /// <summary>
+    /// Waits for network I/O completions or until the specified timeout expires.
+    /// Used by the game loop to sleep efficiently while remaining responsive to network events.
+    /// </summary>
+    /// <param name="timeoutMs">Maximum time to wait in milliseconds.</param>
+    public static void WaitForCompletion(int timeoutMs)
+    {
+        _socketManager?.WaitForCompletion(timeoutMs);
+    }
+
+    /// <summary>
     /// Gets the listening addresses that the server is bound to.
     /// </summary>
     public static IPEndPoint[] ListeningAddresses { get; private set; }

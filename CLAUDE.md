@@ -43,6 +43,8 @@ Apply these when writing or reviewing `.cs` files under `Projects/`.
 | Configuration system | `dev-docs/configuration.md` |
 | Networking & packets | `dev-docs/networking-packets.md` |
 | Region system | `dev-docs/regions.md` |
+| RunUO migration (overview) | `dev-docs/runuo-migration-docs/00-overview.md` |
+| RunUO migration (all docs) | `dev-docs/runuo-migration-docs/` |
 
 ## Claude Skills (Opt-In)
 
@@ -71,7 +73,20 @@ Then copy only the relevant skill files based on the task:
 | Era-conditional code | `modernuo-era-expansion` |
 | Code review / audit | `modernuo-code-audit` |
 | Any `.cs` file edit | `modernuo-code-audit` (always offer for code changes) |
+| **RunUO Migration** | |
+| Migrate any RunUO script | `migrate-from-runuo/migrate-foundation` (always), plus system-specific skills below |
+| Migrate Item/Mobile/Creature | `migrate-from-runuo/migrate-foundation`, `migrate-from-runuo/migrate-serialization`, `migrate-from-runuo/migrate-items-mobiles` |
+| Migrate serialization | `migrate-from-runuo/migrate-serialization` |
+| Migrate timers | `migrate-from-runuo/migrate-timers` |
+| Migrate gumps | `migrate-from-runuo/migrate-gumps` |
+| Migrate packets | `migrate-from-runuo/migrate-packets` |
+| Migrate property lists | `migrate-from-runuo/migrate-property-lists` |
+| Migrate events/commands | `migrate-from-runuo/migrate-commands-events` |
+| Migrate persistence (WorldSave) | `migrate-from-runuo/migrate-persistence` |
+| Migrate multi-file system | `migrate-from-runuo/migrate-systems` |
 
 To enable a skill: `cp dev-docs/claude-skills/<name>.md .claude/skills/`
+
+Migration skills reference the deep docs in `dev-docs/runuo-migration-docs/` and point to existing ModernUO skills for best practices.
 
 The `modernuo-code-audit` skill auto-triggers on `.cs` file edits and flags convention violations (warnings only, asks before fixing).

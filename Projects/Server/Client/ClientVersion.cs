@@ -23,8 +23,6 @@ namespace Server;
 
 public class ClientVersion : IComparable<ClientVersion>, IComparer<ClientVersion>, IEquatable<ClientVersion>
 {
-    public static readonly ClientVersion Version400a = new("4.0.0a");
-    public static readonly ClientVersion Version407a = new("4.0.7a");
     public static readonly ClientVersion Version500a = new("5.0.0a");
     public static readonly ClientVersion Version502b = new("5.0.2b");
     public static readonly ClientVersion Version6000 = new("6.0.0.0");
