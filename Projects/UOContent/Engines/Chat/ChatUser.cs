@@ -92,6 +92,7 @@ namespace Server.Engines.Chat
 
             if (user != null)
             {
+                Channel.SendChannelsTo(user);
                 return user;
             }
 
