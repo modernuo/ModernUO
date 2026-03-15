@@ -13,6 +13,7 @@ public class StrongholdRegion : BaseRegion
     )
     {
         Faction = faction;
+        GoLocation = faction.Definition.Stronghold.FactionStone;
 
         Register();
     }
