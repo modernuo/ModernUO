@@ -176,7 +176,7 @@ public class PlayerMurderSystem : GenericPersistence
     public static void ManuallySetPingPong(PlayerMobile player, int pingPong)
     {
         var context = GetOrCreateMurderContext(player);
-        context.PingPong = Math.Max(pingPong, 0);
+        context.PingPongs = Math.Max(pingPong, 0);
         UpdateMurderContext(context);
     }
 
@@ -197,7 +197,7 @@ public class PlayerMurderSystem : GenericPersistence
 
         if (PingPongEnabled && player.Kills == 5)
         {
-            context.PingPong++;
+            context.PingPongs++;
         }
 
         context.ResetKillTime();
@@ -238,14 +238,14 @@ public class PlayerMurderSystem : GenericPersistence
             player.SendMessage($"Long Term Murders: {player.Kills}");
             if (PingPongEnabled)
             {
-                player.SendMessage($"Ping Pongs: {player.PingPong}");
+                player.SendMessage($"Ping Pongs: {player.PingPongs}");
             }
         }
         else if (!Core.T2A)
         {
             // No "i must consider my sins" before t2a
         }
-        else if (PingPongEnabled && player.Murderer)
+        else if (PingPongEnabled && player.PingPongs >= 5)
         {
             // Thou art known throughout the land as a murderous brigand.
             player.SendLocalizedMessage(502123, "", player.ShortTermMurders >= 5 ? 0x22 : 0x59);
