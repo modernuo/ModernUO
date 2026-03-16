@@ -21,7 +21,7 @@
       ]
     },
     {
-      "name": "PingPong",
+      "name": "PingPongs",
       "type": "int",
       "rule": "PrimitiveTypeMigrationRule",
       "ruleArguments": [
@@ -31,6 +31,14 @@
     {
       "name": "Bounty",
       "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "LastMurderTime",
+      "type": "System.DateTime",
       "rule": "PrimitiveTypeMigrationRule",
       "ruleArguments": [
         ""
