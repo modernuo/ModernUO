@@ -170,7 +170,10 @@ public class StealableArtifacts : GenericPersistence
         new(Map.Malas, new Point3D(157, 608, -1), 18432, 27648, typeof(SwordDisplay5WestArtifact)),
         new(Map.Malas, new Point3D(187, 643, 1), 18432, 27648, typeof(Painting6NorthArtifact)),
         new(Map.Malas, new Point3D(146, 623, 1), 18432, 27648, typeof(Painting6WestArtifact)),
-        new(Map.Malas, new Point3D(178, 629, -1), 18432, 27648, typeof(ManStatuetteEastArtifact))
+        new(Map.Malas, new Point3D(178, 629, -1), 18432, 27648, typeof(ManStatuetteEastArtifact)),
+
+        // Stygian Abyss (Ter Mur) - Artifact rarity 5
+        new(Map.TerMur, new Point3D(843, 665, 27), 1152, 1728, typeof(ValkyriesGlaive))
     };
 
     public static Type[] TypesOfEntries
