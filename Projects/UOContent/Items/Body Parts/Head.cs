@@ -63,11 +63,12 @@ namespace Server.Items
             }
         }
 
+        // Pre-codegen legacy data (v1 only — playerName + headType)
         private void Deserialize(IGenericReader reader, int version)
         {
             _playerName = reader.ReadString();
             _headType = (HeadType)reader.ReadEncodedInt();
-            // _bountyTarget defaults to null
+            // _bountyTarget and _carvedTime default to null / DateTime.MinValue
         }
 
         private void MigrateFrom(V1Content content)

@@ -49,7 +49,7 @@ public partial class BountyGuard : BaseCreature
                 {
                     0 => new Doublet(Utility.RandomNondyedHue()),
                     1 => new Tunic(Utility.RandomNondyedHue()),
-                    _ => new BodySash(Utility.RandomNondyedHue()) // 3
+                    _ => new BodySash(Utility.RandomNondyedHue()) // 2
                 }
             );
         }

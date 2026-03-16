@@ -203,9 +203,29 @@ public class PlayerMurderSystem : GenericPersistence
         }
     }
 
+    public static int GetActiveBountyCount()
+    {
+        var neverExpire = _bountyExpiry == TimeSpan.Zero;
+        var cutoff = neverExpire ? DateTime.MinValue : Core.Now - _bountyExpiry;
+        var count = 0;
+
+        foreach (var (_, context) in _murderContexts)
+        {
+            if (context.Bounty > 0 && (neverExpire || context.LastMurderTime >= cutoff))
+            {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    // Reused across calls — safe because the server is single-threaded.
+    private static readonly List<(PlayerMobile Player, int Bounty)> _activeBountyCache = [];
+
     public static List<(PlayerMobile Player, int Bounty)> GetActiveBounties()
     {
-        var result = new List<(PlayerMobile Player, int Bounty)>();
+        _activeBountyCache.Clear();
         var neverExpire = _bountyExpiry == TimeSpan.Zero;
         var cutoff = neverExpire ? DateTime.MinValue : Core.Now - _bountyExpiry;
 
@@ -213,12 +233,12 @@ public class PlayerMurderSystem : GenericPersistence
         {
             if (context.Bounty > 0 && (neverExpire || context.LastMurderTime >= cutoff))
             {
-                result.Add((player, context.Bounty));
+                _activeBountyCache.Add((player, context.Bounty));
             }
         }
 
-        result.Sort(static (a, b) => b.Bounty.CompareTo(a.Bounty));
-        return result;
+        _activeBountyCache.Sort(static (a, b) => b.Bounty.CompareTo(a.Bounty));
+        return _activeBountyCache;
     }
 
     public static void ManuallySetPingPong(PlayerMobile player, int pingPong)
@@ -263,20 +283,17 @@ public class PlayerMurderSystem : GenericPersistence
             return false;
         }
 
-        if (Core.SE)
+        if (!_recentlyReported.Add((reporter, killer)))
         {
-            if (!_recentlyReported.Add((reporter, killer)))
-            {
-                return false;
-            }
-
-            Timer.DelayCall(
-                _recentlyReportedDelay,
-                static (f, k) => _recentlyReported.Remove((f, k)),
-                reporter,
-                killer
-            );
+            return false;
         }
+
+        Timer.DelayCall(
+            _recentlyReportedDelay,
+            static (f, k) => _recentlyReported.Remove((f, k)),
+            reporter,
+            killer
+        );
 
         var wasMurderer = killer.Murderer;
         OnPlayerMurder(pk);

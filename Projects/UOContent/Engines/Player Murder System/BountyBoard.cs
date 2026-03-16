@@ -21,7 +21,7 @@ public partial class BountyBoard : BaseBulletinBoard
 
     public override void OnSingleClick(Mobile from)
     {
-        var count = PlayerMurderSystem.GetActiveBounties().Count;
+        var count = PlayerMurderSystem.GetActiveBountyCount();
         if (count > 0)
         {
             LabelTo(from, $"a bounty board with {count} posted {(count == 1 ? "bounty" : "bounties")}");

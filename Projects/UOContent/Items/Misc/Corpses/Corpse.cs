@@ -390,10 +390,12 @@ public partial class Corpse : Container, ICarvable
             new RightLeg().MoveToWorld(Location, Map);
             new RightArm().MoveToWorld(Location, Map);
             var head = new Head(dead.Name);
+
             if (PlayerMurderSystem.BountiesEnabled && dead is PlayerMobile bountyTarget)
             {
                 head.BountyTarget = bountyTarget;
             }
+
             head.MoveToWorld(Location, Map);
 
             SetFlag(CorpseFlag.Carved, true);

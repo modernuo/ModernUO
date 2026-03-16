@@ -7,7 +7,7 @@ using Server.Network;
 
 namespace Server.Engines.PlayerMurderSystem;
 
-public class BountyReportMurdererGump : Gump
+public class BountyReportMurdererGump : StaticGump<BountyReportMurdererGump>
 {
     private readonly List<Mobile> _killers;
     private readonly PlayerMobile _victim;
@@ -18,34 +18,42 @@ public class BountyReportMurdererGump : Gump
         _victim = victim;
         _killers = killers;
         _idx = idx;
-
-        Closable = false;
-        Resizable = false;
-
-        BuildGump();
     }
 
-    private void BuildGump()
+    protected override void BuildLayout(ref StaticGumpBuilder builder)
     {
-        AddBackground(265, 205, 393, 270, 70000);
-        AddImage(265, 205, 1140);
+        builder.SetNoClose();
+        builder.SetNoResize();
 
-        AddPage(0);
+        builder.AddBackground(265, 205, 393, 270, 70000);
+        builder.AddImage(265, 205, 1140);
 
-        AddHtml(325, 255, 300, 60,
-            "<BIG>Would you like to report " + _killers[_idx].Name + " as a murderer?</BIG>");
+        builder.AddPage();
+
+        builder.AddHtmlPlaceholder(325, 255, 300, 60, "killerReport");
+        builder.AddHtmlPlaceholder(325, 325, 300, 60, "bountyLabel");
+        builder.AddImage(323, 343, 0x475);
+        builder.AddTextEntry(329, 346, 311, 16, 0, 1, "");
+
+        builder.AddButton(385, 395, 0x47B, 0x47D, 1, GumpButtonType.Reply, 0);
+        builder.AddButton(465, 395, 0x478, 0x47A, 2, GumpButtonType.Reply, 0);
+    }
+
+    protected override void BuildStrings(ref GumpStringsBuilder builder)
+    {
+        builder.SetStringSlot("killerReport",
+            $"<BIG>Would you like to report {_killers[_idx].Name} as a murderer?</BIG>");
 
         var bountyMax = Banker.GetBalance(_victim);
-
         if (_killers[_idx].Kills >= 4 && bountyMax > 0)
         {
-            AddHtml(325, 325, 300, 60, "<BIG>Optional Bounty: [" + bountyMax + " max] </BIG>");
-            AddImage(323, 343, 0x475);
-            AddTextEntry(329, 346, 311, 16, 0, 1, "");
+            builder.SetStringSlot("bountyLabel",
+                $"<BIG>Optional Bounty: [{bountyMax} max] </BIG>");
         }
-
-        AddButton(385, 395, 0x47B, 0x47D, 1, GumpButtonType.Reply, 0);
-        AddButton(465, 395, 0x478, 0x47A, 2, GumpButtonType.Reply, 0);
+        else
+        {
+            builder.SetStringSlot("bountyLabel", "");
+        }
     }
 
     public override void OnResponse(NetState state, in RelayInfo info)

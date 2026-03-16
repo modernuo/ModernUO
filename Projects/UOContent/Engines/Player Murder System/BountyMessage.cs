@@ -26,8 +26,9 @@ public static class BountyMessage
 
         var bounties = PlayerMurderSystem.GetActiveBounties();
         var entrySize = ns.ContainerGridLines ? 20 : 19;
+        var totalSize = 5 + bounties.Count * entrySize;
 
-        var writer = new SpanWriter(stackalloc byte[5 + bounties.Count * entrySize]);
+        var writer = totalSize > 1024 ? new SpanWriter(totalSize) : new SpanWriter(stackalloc byte[totalSize]);
         writer.Write((byte)0x3C); // Packet ID
         writer.Seek(4, SeekOrigin.Current); // Length & count placeholder
 
@@ -56,6 +57,8 @@ public static class BountyMessage
         writer.Seek(0, SeekOrigin.End);
 
         ns.Send(writer.Span);
+
+        writer.Dispose();
     }
 
     /// <summary>

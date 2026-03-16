@@ -32,7 +32,7 @@ public class ReportMurdererGump : StaticGump<ReportMurdererGump>
         {
             if (ai.Attacker.Player && ai.CanReportMurder && !ai.Reported)
             {
-                if (!Core.SE || !PlayerMurderSystem.IsRecentlyReported(m, ai.Attacker))
+                if (!PlayerMurderSystem.IsRecentlyReported(m, ai.Attacker))
                 {
                     if (notInThievesGuild)
                     {
