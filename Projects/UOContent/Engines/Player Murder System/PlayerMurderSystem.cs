@@ -209,9 +209,9 @@ public class PlayerMurderSystem : GenericPersistence
         var cutoff = neverExpire ? DateTime.MinValue : Core.Now - _bountyExpiry;
         var count = 0;
 
-        foreach (var (_, context) in _murderContexts)
+        foreach (var (player, context) in _murderContexts)
         {
-            if (context.Bounty > 0 && (neverExpire || context.LastMurderTime >= cutoff))
+            if (player.Murderer && context.Bounty > 0 && (neverExpire || context.LastMurderTime >= cutoff))
             {
                 count++;
             }
@@ -231,7 +231,7 @@ public class PlayerMurderSystem : GenericPersistence
 
         foreach (var (player, context) in _murderContexts)
         {
-            if (context.Bounty > 0 && (neverExpire || context.LastMurderTime >= cutoff))
+            if (player.Murderer && context.Bounty > 0 && (neverExpire || context.LastMurderTime >= cutoff))
             {
                 _activeBountyCache.Add((player, context.Bounty));
             }
