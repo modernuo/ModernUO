@@ -20,4 +20,6 @@ public partial class SoulGlaive : BaseThrown
 
     public override int InitMinHits => 31;
     public override int InitMaxHits => 65;
+
+    public override int RequiredRaces => Race.AllowGargoylesOnly;
 }

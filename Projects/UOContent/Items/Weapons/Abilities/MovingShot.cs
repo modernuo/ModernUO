@@ -6,8 +6,8 @@ namespace Server.Items
     /// </summary>
     public class MovingShot : WeaponAbility
     {
-        public override int BaseMana => 15;
-        public override int AccuracyBonus => -25;
+        public override int BaseMana => 20;
+        public override int AccuracyBonus => Core.TOL ? -35 : -25;
 
         public override bool ValidatesDuringHit => false;
 

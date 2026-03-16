@@ -667,6 +667,18 @@ public class DefBlacksmithy : CraftSystem
         index = AddCraft(typeof(DragonChest), 1053114, 1029793, 85.0, 135.0, typeof(RedScales), 1060883, 36, 1060884);
         SetUseSubRes2(index, true);
 
+        if (Core.SA)
+        {
+            index = AddCraft(typeof(Boomerang), 1079508, 1095359, 75.0, 125.0, typeof(IronIngot), 1044036, 5, 1044037);
+            SetNeededExpansion(index, Expansion.SA);
+
+            index = AddCraft(typeof(Cyclone), 1079508, 1095364, 75.0, 125.0, typeof(IronIngot), 1044036, 9, 1044037);
+            SetNeededExpansion(index, Expansion.SA);
+
+            index = AddCraft(typeof(SoulGlaive), 1079508, 1095363, 75.0, 125.0, typeof(IronIngot), 1044036, 9, 1044037);
+            SetNeededExpansion(index, Expansion.SA);
+        }
+
         // Set the overridable material
         SetSubRes(typeof(IronIngot), 1044022);
 
