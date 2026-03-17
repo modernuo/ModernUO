@@ -214,7 +214,7 @@ public static class BountyMessage
             $"The foul scum known as {player.RawName} {verb}  For {pronoun} is responsible for " +
             $"{player.Kills} murders.  {intro} of {bounty} gold pieces for {possessive} head!";
 
-        var lines = new List<string> { title };
+        var lines = new List<string> { title, "" };
 
         // Word-wrap the main paragraph at 28 chars (matching uo98 bountyboard.m CONST:28)
         WordWrap(lines, paragraph, 28);
@@ -292,40 +292,46 @@ public static class BountyMessage
     };
 
     // Maps hair hues to color descriptions (from uo98 bountyboard.m lookup table)
+    // Human hair hues: 0x44E–0x47D. Index 0 (hue 0) = indeterminate, index 1+ maps to 0x44E+
     private static string GetHairColor(int hue) => hue switch
     {
-        0                    => "indeterminate color",
-        1 or 2 or 3          => "white",
-        4 or 5 or 6          => "graying",
-        7 or 8               => "black",
-        9 or 10 or 11        => "copper",
-        12 or 13 or 14 or 15 => "brown",
-        16                   => "reddish brown",
-        17 or 18 or 19       => "blonde",
-        20 or 21 or 22       => "light brown",
-        23 or 24             => "golden brown",
-        25 or 26 or 27       => "golden",
-        28 or 29 or 30       => "bronze",
-        31 or 32             => "dark brown",
-        33 or 34             => "sandy",
-        35 or 36 or 37       => "honey-colored",
-        38 or 39 or 40       => "red",
-        41 or 42 or 43       => "nut brown",
-        44 or 45 or 46       => "rich brown",
-        47 or 48             => "very dark brown",
-        _                    => "outlandishly colored"
+        0                                        => "indeterminate color",
+        0x44E or 0x44F or 0x450                  => "white",
+        0x451 or 0x452 or 0x453                  => "graying",
+        0x454 or 0x455                           => "black",
+        0x456 or 0x457 or 0x458                  => "copper",
+        0x459 or 0x45A or 0x45B or 0x45C         => "brown",
+        0x45D                                    => "reddish brown",
+        0x45E or 0x45F or 0x460                  => "blonde",
+        0x461 or 0x462 or 0x463                  => "light brown",
+        0x464 or 0x465                           => "golden brown",
+        0x466 or 0x467 or 0x468                  => "golden",
+        0x469 or 0x46A or 0x46B                  => "bronze",
+        0x46C or 0x46D                           => "dark brown",
+        0x46E or 0x46F                           => "sandy",
+        0x470 or 0x471 or 0x472                  => "honey-colored",
+        0x473 or 0x474 or 0x475                  => "red",
+        0x476 or 0x477 or 0x478                  => "nut brown",
+        0x479 or 0x47A or 0x47B                  => "rich brown",
+        0x47C or 0x47D                           => "very dark brown",
+        _                                        => "outlandishly colored"
     };
 
     // Maps body hues to skin tone descriptions (from uo98 bountyboard.m lookup table)
-    private static string GetSkinTone(int hue) => hue switch
+    // Human skin hues: 0x3EA–0x422 (may have 0x8000 flag). Index 1 = 0x3EA.
+    private static string GetSkinTone(int hue) => (hue & 0x7FFF) switch
     {
-        8 or 9 or 15 or 22 or 23 or 29 or 30 or 31 or 36 or 37 or 44 or 45 => "pale",
-        1 or 2 or 16 or 17 or 18 or 46                                       => "fair",
-        10 or 11 or 19 or 24 or 25 or 32 or 38 or 39 or 40 or 47            => "tanned",
-        3 or 4 or 5 or 12 or 26 or 41 or 42 or 48 or 56                     => "copper",
-        6 or 7 or 13 or 14 or 20 or 21 or 27 or 28 or 33 or 34 or 35
-            or 43 or 49 or 50 or 57                                          => "dark",
-        51 or 52 or 53                                                        => "yellow",
+        0x3F1 or 0x3F2 or 0x3F8 or 0x3FF or 0x400 or 0x406 or 0x407 or 0x408
+            or 0x40D or 0x40E or 0x415 or 0x416                              => "pale",
+        0x3EA or 0x3EB or 0x3F9 or 0x3FA or 0x3FB or 0x417                   => "fair",
+        0x3F3 or 0x3F4 or 0x3FC or 0x401 or 0x402 or 0x409 or 0x40F
+            or 0x410 or 0x411 or 0x418                                        => "tanned",
+        0x3EC or 0x3ED or 0x3EE or 0x3F5 or 0x403 or 0x412 or 0x413
+            or 0x419 or 0x421                                                 => "copper",
+        0x3EF or 0x3F0 or 0x3F6 or 0x3F7 or 0x3FD or 0x3FE or 0x404
+            or 0x405 or 0x40A or 0x40B or 0x40C or 0x414 or 0x41A
+            or 0x41B or 0x420                                                 => "dark",
+        0x41C or 0x41D or 0x41E                                               => "yellow",
         _                                                                     => "deathly"
     };
 }
