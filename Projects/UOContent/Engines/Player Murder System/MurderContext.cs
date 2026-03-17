@@ -51,7 +51,9 @@ public partial class MurderContext
         _longTermElapse = content.LongTermElapse;
         _shortTermMurders = content.ShortTermMurders;
         _pingPongs = content.PingPongs;
-        // _bounty and _lastMurderTime default to 0 / DateTime.MinValue
+        // _bounty defaults to 0
+        // Default to now so the bounty board date display is sensible for migrated contexts
+        _lastMurderTime = Core.Now;
     }
 
     public PlayerMobile _player;
