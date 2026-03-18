@@ -8,8 +8,8 @@ namespace Server.Engines.Chat
         public const char ModeratorColorCharacter = '1';
         public const char VoicedColorCharacter = '2';
 
-        private static readonly List<ChatUser> m_Users = new();
-        private static readonly Dictionary<Mobile, ChatUser> m_Table = new();
+        private static readonly List<ChatUser> _Users = new();
+        private static readonly Dictionary<Mobile, ChatUser> _Table = new();
 
         public ChatUser(Mobile m, string username)
         {
@@ -98,8 +98,8 @@ namespace Server.Engines.Chat
 
             user = new ChatUser(from, username);
 
-            m_Users.Add(user);
-            m_Table[from] = user;
+            _Users.Add(user);
+            _Table[from] = user;
 
             Channel.SendChannelsTo(user);
 
@@ -115,7 +115,7 @@ namespace Server.Engines.Chat
                 }
             }
 
-            // ChatSystem.SendCommandTo( user.m_Mobile, ChatCommand.AddUserToChannel, user.GetColorCharacter() + user.Username );
+            // ChatSystem.SendCommandTo( user._Mobile, ChatCommand.AddUserToChannel, user.GetColorCharacter() + user.Username );
 
             return user;
         }
@@ -132,27 +132,27 @@ namespace Server.Engines.Chat
                 user.Ignoring[i].RemoveIgnored(user);
             }
 
-            if (m_Users.Remove(user))
+            if (_Users.Remove(user))
             {
                 ChatSystem.SendCommandTo(user.Mobile, ChatCommand.CloseChatWindow);
 
                 user.CurrentChannel?.RemoveUser(user);
 
-                m_Table.Remove(user.Mobile);
+                _Table.Remove(user.Mobile);
             }
         }
 
         public static ChatUser GetChatUser(Mobile from)
         {
-            m_Table.TryGetValue(from, out var c);
+            _Table.TryGetValue(from, out var c);
             return c;
         }
 
         public static ChatUser GetChatUser(string username)
         {
-            for (var i = 0; i < m_Users.Count; ++i)
+            for (var i = 0; i < _Users.Count; ++i)
             {
-                var user = m_Users[i];
+                var user = _Users[i];
 
                 if (user.Username == username)
                 {
@@ -172,9 +172,9 @@ namespace Server.Engines.Chat
             ChatCommand command, ChatUser initiator = null, string param1 = null, string param2 = null
         )
         {
-            for (var i = 0; i < m_Users.Count; ++i)
+            for (var i = 0; i < _Users.Count; ++i)
             {
-                var user = m_Users[i];
+                var user = _Users[i];
 
                 if (user == initiator)
                 {
