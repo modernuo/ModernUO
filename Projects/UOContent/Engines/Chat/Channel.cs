@@ -326,23 +326,23 @@ namespace Server.Engines.Chat
 
         public void SendMessage(int number, ChatUser initiator, string param1 = null, string param2 = null)
         {
-            for (var i = 0; i < _Users.Count; ++i)
+            for (var i = _Users.Count - 1; i >= 0; --i)
             {
-                var user = _Users[i];
+            var user = _Users[i];
 
-                if (user == initiator)
-                {
-                    continue;
-                }
+            if (user == initiator)
+            {
+                continue;
+            }
 
-                if (user.CheckOnline())
-                {
-                    user.SendMessage(number, param1, param2);
-                }
-                else if (!Contains(user))
-                {
-                    --i;
-                }
+            if (user.CheckOnline())
+            {
+                user.SendMessage(number, param1, param2);
+            }
+            else
+            {
+                RemoveUser(user);
+            }
             }
         }
 
