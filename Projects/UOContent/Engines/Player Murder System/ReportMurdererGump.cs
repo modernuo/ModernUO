@@ -30,19 +30,16 @@ public class ReportMurdererGump : StaticGump<ReportMurdererGump>
 
         foreach (var ai in m.Aggressors)
         {
-            if (ai.Attacker.Player && ai.CanReportMurder && !ai.Reported)
+            if (ai.Attacker.Player && ai.CanReportMurder && !ai.Reported && !PlayerMurderSystem.IsRecentlyReported(m, ai.Attacker))
             {
-                if (!PlayerMurderSystem.IsRecentlyReported(m, ai.Attacker))
+                if (notInThievesGuild)
                 {
-                    if (notInThievesGuild)
-                    {
-                        killers ??= new List<Mobile>();
-                        killers.Add(ai.Attacker);
-                    }
-
-                    ai.Reported = true;
-                    ai.CanReportMurder = false;
+                    killers ??= new List<Mobile>();
+                    killers.Add(ai.Attacker);
                 }
+
+                ai.Reported = true;
+                ai.CanReportMurder = false;
             }
 
             if (ai.Attacker.Player && Core.Now - ai.LastCombatTime < TimeSpan.FromSeconds(30.0))
