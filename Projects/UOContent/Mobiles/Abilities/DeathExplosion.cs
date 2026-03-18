@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
 
 namespace Server.Mobiles;
 
 public class DeathExplosion : AreaEffectMonsterAbility
 {
-    private static HashSet<Mobile> _exploding = new();
+    private static int _chainDepth;
 
     public override MonsterAbilityTrigger AbilityTrigger => MonsterAbilityTrigger.Death;
     public override MonsterAbilityType AbilityType => MonsterAbilityType.DeathExplosion;
@@ -18,21 +17,24 @@ public class DeathExplosion : AreaEffectMonsterAbility
 
     public override void Trigger(MonsterAbilityTrigger trigger, BaseCreature source, Mobile target)
     {
-        if (trigger != MonsterAbilityTrigger.Death)
+        if (trigger != MonsterAbilityTrigger.Death || _chainDepth > 0)
         {
             return;
         }
-        
-        _exploding.Add(source);
+
         source.FixedParticles(0x36BD, 20, 10, 5044, EffectLayer.Head);
         source.PlaySound(0x307);
 
-        base.Trigger(trigger, source, target);
-        _exploding.Remove(source);
+        _chainDepth++;
+        try
+        {
+            base.Trigger(trigger, source, target);
+        }
+        finally
+        {
+            _chainDepth--;
+        }
     }
-
-    protected override bool CanEffectTarget(BaseCreature source, Mobile defender) =>
-        !_exploding.Contains(defender) && base.CanEffectTarget(source, defender);
 
     protected override void DoEffectTarget(BaseCreature source, Mobile defender)
     {
