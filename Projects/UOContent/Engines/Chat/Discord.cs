@@ -29,11 +29,6 @@ namespace Server.Engines.Chat
                 return;
             }
             
-            if (!IsEnabled)
-            {
-                return;
-            }
-            
             try
             {
                 var payload = new
