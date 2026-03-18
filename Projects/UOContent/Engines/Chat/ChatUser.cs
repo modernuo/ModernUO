@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Server.Collections;
 
 namespace Server.Engines.Chat
 {
@@ -127,9 +128,16 @@ namespace Server.Engines.Chat
                 return;
             }
 
+            using var ignoringUsers = new PooledRefList<ChatUser>();
+
             for (var i = 0; i < user.Ignoring.Count; ++i)
             {
-                user.Ignoring[i].RemoveIgnored(user);
+                ignoringUsers.Add(user.Ignoring[i]);
+            }
+            
+            for (var i = 0; i < ignoringUsers.Count; i++)
+            {
+                ignoringUsers[i].RemoveIgnored(user);
             }
 
             if (_Users.Remove(user))
@@ -172,6 +180,8 @@ namespace Server.Engines.Chat
             ChatCommand command, ChatUser initiator = null, string param1 = null, string param2 = null
         )
         {
+            using var usersToProcess = new PooledRefList<ChatUser>();
+            
             for (var i = 0; i < _Users.Count; ++i)
             {
                 var user = _Users[i];
@@ -183,8 +193,13 @@ namespace Server.Engines.Chat
 
                 if (user.CheckOnline())
                 {
-                    ChatSystem.SendCommandTo(user.Mobile, command, param1, param2);
+                    usersToProcess.Add(user);
                 }
+            }
+            
+            for (var i = 0; i < usersToProcess.Count; i++)
+            {
+                ChatSystem.SendCommandTo(usersToProcess[i].Mobile, command, param1, param2);
             }
         }
     }
