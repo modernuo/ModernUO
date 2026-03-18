@@ -23,6 +23,12 @@ namespace Server.Engines.Chat
         
         public static async Task SendChannelMessageAsync(string channelName, string username, string message)
         {
+            var webhookUrl = _webhookUrl;
+            if (string.IsNullOrEmpty(webhookUrl))
+            {
+                return;
+            }
+            
             if (!IsEnabled)
             {
                 return;
