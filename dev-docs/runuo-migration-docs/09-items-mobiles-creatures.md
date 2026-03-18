@@ -16,7 +16,7 @@ Most RunUO migration work involves converting Item, Mobile, and BaseCreature sub
 
 ### 2. Add Serialization Attributes
 ```csharp
-[SerializationGenerator(0, false)]  // Version 0, Item subclass
+[SerializationGenerator(N, false)]  // N = old version + 1; false if old Deserialize used ReadInt()
 public partial class MyItem : Item  // Add partial
 ```
 
@@ -223,7 +223,7 @@ using ModernUO.Serialization;
 
 namespace Server.Items;
 
-[SerializationGenerator(0, false)]
+[SerializationGenerator(0)]
 public partial class MagicLantern : Item
 {
     [SerializableField(0)]
@@ -296,7 +296,7 @@ public partial class MagicLantern : Item
 
 **What changed:**
 - File-scoped namespace
-- `partial class` + `[SerializationGenerator(0, false)]`
+- `partial class` + `[SerializationGenerator(0)]` (omit `encoded` parameter)
 - `[Constructable]` → `[Constructible]`
 - `m_Charges`/`m_Owner` → `_charges`/`_owner` with `[SerializableField]`
 - Manual properties → auto-generated with `[SerializedCommandProperty]`
@@ -396,7 +396,7 @@ using ModernUO.Serialization;
 
 namespace Server.Mobiles;
 
-[SerializationGenerator(0, false)]
+[SerializationGenerator(0)]
 public partial class ForestWolf : BaseCreature
 {
     [Constructible]
@@ -492,7 +492,7 @@ Weapons and armor follow the same item pattern but inherit from specialized base
 
 ```csharp
 // ModernUO weapon example
-[SerializationGenerator(0, false)]
+[SerializationGenerator(0)]
 public partial class MySpecialSword : BaseSword
 {
     [Constructible]
@@ -530,7 +530,7 @@ public partial class MySpecialSword : BaseSword
 If a class changed namespace or name, use `[TypeAlias]`:
 ```csharp
 [TypeAlias("Server.Items.OldName")]
-[SerializationGenerator(0, false)]
+[SerializationGenerator(0)]
 public partial class NewName : Item { }
 ```
 

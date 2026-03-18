@@ -176,7 +176,7 @@ public class PlayerMurderSystem : GenericPersistence
     public static void ManuallySetPingPong(PlayerMobile player, int pingPong)
     {
         var context = GetOrCreateMurderContext(player);
-        context.PingPong = Math.Max(pingPong, 0);
+        context.PingPongs = Math.Max(pingPong, 0);
         UpdateMurderContext(context);
     }
 
@@ -197,7 +197,7 @@ public class PlayerMurderSystem : GenericPersistence
 
         if (PingPongEnabled && player.Kills == 5)
         {
-            context.PingPong++;
+            context.PingPongs++;
         }
 
         context.ResetKillTime();
@@ -222,47 +222,53 @@ public class PlayerMurderSystem : GenericPersistence
         }
     }
 
-    internal static void ReportKillsToSelf(PlayerMobile player)
+    public static void ReportKillsToSelf(PlayerMobile player)
     {
-        if (Core.Expansion == Expansion.None)
-        {
-            return;  // no consider sins in pre-t2a
-        }
-        else if (Core.Expansion is Expansion.T2A)
-        {
-            if (player.ShortTermMurders >= 5)
-            {
-                player.SendLocalizedMessage(502126, "", 0x022); // If thou should return to the land of the living, the innocent shall wreak havoc upon thy soul
-            }
-            else if (PingPongEnabled && player.Murderer)
-            {
-                player.SendLocalizedMessage(502123, "", 0x022);  // Thou art known throughout the land as a murderous brigand.
-            }
-            else if (player.ShortTermMurders > 0)
-            {
-                player.SendLocalizedMessage(502125, "", 0x59); // Although thou hast slain the innocent, thy deeds shall not bring retribution upon thy return to the living
-            }
-            else if (player.Kills > 0)
-            {
-                player.SendLocalizedMessage(502124, "", 0x59);  // Fear not, thou hast not slain the innocent in some time...
-            }
-            else  // no kills
-            {
-                player.SendLocalizedMessage(502122, "", 0x59);  // Fear not, thou hast not slain the innocent.
-            }
-        }
-        else if (!Core.SE)
-        {
-            player.SendMessage($"Short Term Murders : {player.ShortTermMurders}");
-            player.SendMessage($"Long Term Murders : {player.Kills}");
-            if (PingPongEnabled)
-            {
-                player.SendMessage($"Ping Pongs: {player.PingPong}");
-            }
-        }
-        else
+        if (Core.SA)
         {
             player.SendLocalizedMessage(1114370, $"{player.ShortTermMurders}\t{player.Kills}");
+        }
+        else if (Core.SE)
+        {
+            player.SendMessage($"Short Term Murders: {player.ShortTermMurders} Long Term Murders: {player.Kills}");
+        }
+        else if (Core.AOS)
+        {
+            player.SendMessage($"Short Term Murders: {player.ShortTermMurders}");
+            player.SendMessage($"Long Term Murders: {player.Kills}");
+            if (PingPongEnabled)
+            {
+                player.SendMessage($"Ping Pongs: {player.PingPongs}");
+            }
+        }
+        else if (!Core.T2A)
+        {
+            // No "i must consider my sins" before t2a
+        }
+        else if (PingPongEnabled && player.PingPongs >= 5)
+        {
+            // Thou art known throughout the land as a murderous brigand.
+            player.SendLocalizedMessage(502123, "", player.ShortTermMurders >= 5 ? 0x22 : 0x59);
+        }
+        else if (player.ShortTermMurders >= 5)
+        {
+            // If thou should return to the land of the living, the innocent shall wreak havoc upon thy soul
+            player.SendLocalizedMessage(502126, "", 0x22);
+        }
+        else if (player.ShortTermMurders > 0)
+        {
+            // Although thou hast slain the innocent, thy deeds shall not bring retribution upon thy return to the living
+            player.SendLocalizedMessage(502125, "", 0x59);
+        }
+        else if (player.Kills > 0)
+        {
+            // Fear not, thou hast not slain the innocent in some time...
+            player.SendLocalizedMessage(502124, "", 0x59);
+        }
+        else  // no kills
+        {
+            // Fear not, thou hast not slain the innocent.
+            player.SendLocalizedMessage(502122, "", 0x59);
         }
     }
 

@@ -15,25 +15,27 @@ description: >
 
 ## Conversion Steps
 1. Add `using ModernUO.Serialization;`
-2. Add `[SerializationGenerator(0, false)]` to class (version 0, false for Item/Mobile)
-3. Add `partial` to class declaration
-4. Convert each serialized field: `private int m_X` -> `[SerializableField(N)] private int _x`
-5. Add `[SerializedCommandProperty(AccessLevel.X)]` if RunUO had `[CommandProperty]`
-6. Add `[InvalidateProperties]` if setter called `InvalidateProperties()`
-7. DELETE the `Serial` constructor
-8. DELETE `Serialize()` and `Deserialize()` overrides
-9. Change `[Constructable]` to `[Constructible]`
-10. Timer fields: leave unserialized, add `[AfterDeserialization]` method
+2. Read the old `Serialize()` to find the version number it writes. Bump it by 1 for `[SerializationGenerator]`
+3. If old `Deserialize()` used `reader.ReadInt()` (not `ReadEncodedInt()`), pass `false` as second parameter: `[SerializationGenerator(N, false)]`
+4. Add `partial` to class declaration
+5. Convert each serialized field: `private int m_X` -> `[SerializableField(N)] private int _x`
+6. Add `[SerializedCommandProperty(AccessLevel.X)]` if RunUO had `[CommandProperty]`
+7. Add `[InvalidateProperties]` if setter called `InvalidateProperties()`
+8. DELETE the `Serial` constructor
+9. DELETE the `Serialize()` override
+10. Convert `Deserialize()` to `private void Deserialize(IGenericReader reader, int version)` to handle pre-codegen saves (remove `override`, `base.Deserialize()`, and version read line). Delete entirely if no existing saves.
+11. Change `[Constructable]` to `[Constructible]`
+12. Timer fields: leave unserialized, add `[AfterDeserialization]` method
 
 ## Quick Mapping
 | RunUO | ModernUO |
 |---|---|
-| `public class Foo : Item` | `[SerializationGenerator(0, false)] public partial class Foo : Item` |
+| `public class Foo : Item` | `[SerializationGenerator(N, false)] public partial class Foo : Item` (N = old version + 1) |
 | `private int m_X` + manual Serialize | `[SerializableField(0)] private int _x` |
 | `[CommandProperty(GM)]` on property | `[SerializedCommandProperty(GM)]` on field |
 | `Foo(Serial serial) : base(serial)` | DELETE |
 | `Serialize(GenericWriter)` | DELETE -- auto-generated |
-| `Deserialize(GenericReader)` | DELETE -- auto-generated |
+| `Deserialize(GenericReader)` | Convert to `private void Deserialize(IGenericReader reader, int version)` for old saves |
 | Custom setter with InvalidateProperties() | `[InvalidateProperties]` attribute |
 | Custom setter logic | `[SerializableProperty(N)]` with `this.MarkDirty()` |
 | `reader.ReadMobile()` | `reader.ReadEntity<Mobile>()` |

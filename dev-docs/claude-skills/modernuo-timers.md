@@ -111,7 +111,7 @@ public override void OnAfterDelete()
 
 ### Timer Restoration After Deserialization
 ```csharp
-[SerializationGenerator(0, false)]
+[SerializationGenerator(0)]
 public partial class DecayingItem : Item
 {
     private TimerExecutionToken _decayTimer;  // NOT serialized

@@ -22,7 +22,7 @@ using ModernUO.Serialization;
 
 namespace Server.Items;
 
-[SerializationGenerator(0, false)]
+[SerializationGenerator(0)]
 public partial class SimpleItem : Item
 {
     [Constructible]
@@ -42,7 +42,7 @@ using ModernUO.Serialization;
 
 namespace Server.Items;
 
-[SerializationGenerator(0, false)]
+[SerializationGenerator(0)]
 public partial class MagicLantern : Item
 {
     [SerializableField(0)]
@@ -154,7 +154,7 @@ using Server.Items;
 
 namespace Server.Mobiles;
 
-[SerializationGenerator(0, false)]
+[SerializationGenerator(0)]
 public partial class ForestWolf : BaseCreature
 {
     [Constructible]

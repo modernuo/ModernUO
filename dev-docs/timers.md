@@ -155,7 +155,7 @@ private void CheckExpiry()
 
 ### Pattern 3: Timer Restoration After Deserialization
 ```csharp
-[SerializationGenerator(0, false)]
+[SerializationGenerator(0)]
 public partial class TimedItem : Item
 {
     private TimerExecutionToken _timer;  // NOT serialized

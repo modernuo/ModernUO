@@ -204,8 +204,9 @@ public static class Stealing
                     if (sig.LastMonolith?.Sigil != null)
                     {
                         sig.LastMonolith.Sigil = null;
-                        sig.LastStolen = Core.Now;
                     }
+
+                    sig.LastStolen = Core.Now;
 
                     return sig;
                 }

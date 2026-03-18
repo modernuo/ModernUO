@@ -127,10 +127,46 @@ public override void OnAfterDelete()
 **Why**: The handler treats bare text as delimiters and `{}` contents as arguments. The property list system is used beyond the game client (e.g., web rendering) which must distinguish arguments from delimiters. Only `\t` should be a bare literal.
 **Also**: If you don't know the text for a cliloc number, see `Projects/Server/Localization/Localization.cs` `LoadClilocs()` to learn the binary format, and ask the user where their `cliloc.enu` file is.
 
+### 15. Braces Required on All Control Flow
+**Check**: ALL `if`, `else`, `for`, `foreach`, `while`, `do`, `switch` statements must have braces, even for single-line bodies.
+**Bad**:
+```csharp
+if (condition)
+    DoSomething();
+```
+**Good**:
+```csharp
+if (condition)
+{
+    DoSomething();
+}
+```
+**Why**: Reduces merge conflicts and diff sizes.
+
+### 16. Prefer Switch Expressions and Switch-When Patterns
+**Check**: Where a chain of `if`/`else if` maps inputs to outputs, prefer a switch expression. Where pattern matching with guards improves clarity, prefer `switch`-`when`.
+**Bad**:
+```csharp
+if (type == GemType.StarSapphire) return "star sapphire";
+else if (type == GemType.Emerald) return "emerald";
+else return "gem";
+```
+**Good**:
+```csharp
+return type switch
+{
+    GemType.StarSapphire => "star sapphire",
+    GemType.Emerald      => "emerald",
+    _                    => "gem"
+};
+```
+**Why**: Switch expressions enable JIT/PGO optimization and improve readability.
+**Exception**: Skip if the switch would be unreadable or the code is on a cold path.
+
 ## Severity Levels
 - **ERROR**: Rules 3, 9, 10, 13 (will cause bugs, build failures, or client-side leaks)
-- **WARNING**: Rules 1 (Tier 3 LINQ), 2, 4, 5, 6, 7, 8, 12, 14 (performance/convention issues)
-- **INFO**: Rule 1 (Tier 2 LINQ on warm paths — note it but don't flag as violation)
+- **WARNING**: Rules 1 (Tier 3 LINQ), 2, 4, 5, 6, 7, 8, 12, 14, 15 (performance/convention issues)
+- **INFO**: Rules 1 (Tier 2 LINQ on warm paths — note it but don't flag as violation), 16 (switch patterns — suggest but don't flag)
 - **ASK**: Rule 11 (need user input)
 
 ## How to Report
