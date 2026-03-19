@@ -46,8 +46,9 @@ public class T2ACraftToolTarget : Target
         }
         else
         {
-            // Normal flow: show craft menu
-            T2ACraftSystem.ShowMenu(from, _system, _tool);
+            // Normal flow: pass the targeted object through so resource selection
+            // can use it directly instead of requiring a second target.
+            T2ACraftSystem.ShowMenu(from, _system, _tool, targeted as Item);
         }
     }
 }

@@ -473,7 +473,9 @@ public class BlacksmithMenu : ItemListMenu
         context?.LastResourceIndex = -1;
     }
 
-    public static void ResourceSelection(Mobile from, BaseTool tool, Action<Mobile, BaseTool> afterSelect)
+    public static void ResourceSelection(
+        Mobile from, BaseTool tool, Action<Mobile, BaseTool> afterSelect, Item preTarget = null
+    )
     {
         var res = DefBlacksmithy.CraftSystem.CraftSubRes;
         var availableCount = 0;
@@ -499,11 +501,37 @@ public class BlacksmithMenu : ItemListMenu
 
             afterSelect(from, tool);
         }
+        else if (preTarget != null && TrySelectResource(from, preTarget, res, afterSelect, tool))
+        {
+            // Pre-targeted item was a valid resource — already handled
+        }
         else
         {
             from.SendMessage("Target the ingots you wish to use.");
             from.Target = new BlacksmithResourceTarget(tool, afterSelect);
         }
+    }
+
+    private static bool TrySelectResource(
+        Mobile from, Item item, CraftSubResCol res, Action<Mobile, BaseTool> afterSelect, BaseTool tool
+    )
+    {
+        for (var i = 0; i < res.Count; ++i)
+        {
+            if (item.GetType() == res[i].ItemType)
+            {
+                var context = DefBlacksmithy.CraftSystem.GetContext(from);
+                if (context != null)
+                {
+                    context.LastResourceIndex = i;
+                }
+
+                afterSelect(from, tool);
+                return true;
+            }
+        }
+
+        return false;
     }
 }
 

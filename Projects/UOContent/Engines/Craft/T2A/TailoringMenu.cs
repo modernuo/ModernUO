@@ -1,5 +1,4 @@
 using System;
-using System.Runtime.CompilerServices;
 using Server.Items;
 using Server.Menus.ItemLists;
 using Server.Network;
@@ -293,8 +292,47 @@ public class TailoringMenu : ItemListMenu
         }
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ResourceSelection(Mobile from, BaseTool tool) => from.Target = new ResourceSelectTarget(from, tool);
+    public static void ResourceSelection(Mobile from, BaseTool tool, Item preTarget = null)
+    {
+        if (preTarget != null && TrySelectResource(from, tool, preTarget))
+        {
+            return;
+        }
+
+        from.SendAsciiMessage("Select the resource you wish to use (cloth, leather, or hides).");
+        from.Target = new ResourceSelectTarget(from, tool);
+    }
+
+    private static bool TrySelectResource(Mobile from, BaseTool tool, Item targeted)
+    {
+        if (targeted is Cloth or UncutCloth)
+        {
+            var menu = new TailoringMenu(from, tool, Category.Main, targeted.Hue);
+            if (menu.Entries.Length == 0)
+            {
+                from.SendAsciiMessage("You lack the skill and materials to craft anything.");
+                return true;
+            }
+
+            from.SendMenu(menu);
+            return true;
+        }
+
+        if (targeted is Items.Leather or Hides)
+        {
+            var menu = new TailoringMenu(from, tool, Category.LeatherMain);
+            if (menu.Entries.Length == 0)
+            {
+                from.SendAsciiMessage("You lack the skill and materials to craft anything.");
+                return true;
+            }
+
+            from.SendMenu(menu);
+            return true;
+        }
+
+        return false;
+    }
 
     private class ResourceSelectTarget : Target
     {
@@ -305,40 +343,17 @@ public class TailoringMenu : ItemListMenu
         {
             _from = from;
             _tool = tool;
-            from.SendAsciiMessage("Select the resource you wish to use (cloth, leather, or hides).");
         }
 
         protected override void OnTarget(Mobile from, object targeted)
         {
-            if (targeted is Cloth or UncutCloth)
+            if (targeted is Item item && TrySelectResource(from, _tool, item))
             {
-                var hue = ((Item)targeted).Hue;
-                var menu = new TailoringMenu(from, _tool, Category.Main, hue);
-                if (menu.Entries.Length == 0)
-                {
-                    from.SendAsciiMessage("You lack the skill and materials to craft anything.");
-                    return;
-                }
+                return;
+            }
 
-                from.SendMenu(menu);
-            }
-            else if (targeted is Items.Leather or Hides)
-            {
-                var hue = ((Item)targeted).Hue;
-                var menu = new TailoringMenu(from, _tool, Category.LeatherMain, hue);
-                if (menu.Entries.Length == 0)
-                {
-                    from.SendAsciiMessage("You lack the skill and materials to craft anything.");
-                    return;
-                }
-
-                from.SendMenu(menu);
-            }
-            else
-            {
-                from.SendAsciiMessage("That is not a valid resource. Please select cloth, leather, or hides.");
-                from.Target = new ResourceSelectTarget(_from, _tool);
-            }
+            from.SendAsciiMessage("That is not a valid resource. Please select cloth, leather, or hides.");
+            from.Target = new ResourceSelectTarget(_from, _tool);
         }
     }
 }

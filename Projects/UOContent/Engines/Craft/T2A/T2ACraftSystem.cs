@@ -8,7 +8,7 @@ namespace Server.Engines.Craft.T2A;
 
 public static class T2ACraftSystem
 {
-    public static void ShowMenu(Mobile from, CraftSystem craftSystem, BaseTool tool)
+    public static void ShowMenu(Mobile from, CraftSystem craftSystem, BaseTool tool, Item preTarget = null)
     {
         if (Core.UOTD)
         {
@@ -28,7 +28,7 @@ public static class T2ACraftSystem
                 }
 
                 mob.SendMenu(menu);
-            });
+            }, preTarget);
         }
         else if (craftSystem == DefAlchemy.CraftSystem)
         {
@@ -87,11 +87,11 @@ public static class T2ACraftSystem
         }
         else if (craftSystem == DefTailoring.CraftSystem)
         {
-            TailoringMenu.ResourceSelection(from, tool);
+            TailoringMenu.ResourceSelection(from, tool, preTarget);
         }
         else if (craftSystem == DefTinkering.CraftSystem)
         {
-            TinkeringMenu.ResourceSelection(from, tool);
+            TinkeringMenu.ResourceSelection(from, tool, preTarget);
         }
     }
 

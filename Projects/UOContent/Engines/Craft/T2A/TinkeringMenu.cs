@@ -1,5 +1,4 @@
 using System;
-using System.Runtime.CompilerServices;
 using Server.Items;
 using Server.Menus.ItemLists;
 using Server.Network;
@@ -370,8 +369,60 @@ public class TinkeringMenu : ItemListMenu
         itemDef.Craft(from, DefTinkering.CraftSystem, _selectedResourceType, _tool);
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ResourceSelection(Mobile from, BaseTool tool) => from.Target = new ResourceSelectTarget(from, tool);
+    public static void ResourceSelection(Mobile from, BaseTool tool, Item preTarget = null)
+    {
+        if (preTarget != null && TrySelectResource(from, tool, preTarget))
+        {
+            return;
+        }
+
+        from.SendAsciiMessage("Select the resource you wish to use (wood or ingots).");
+        from.Target = new ResourceSelectTarget(from, tool);
+    }
+
+    private static bool TrySelectResource(Mobile from, BaseTool tool, Item targeted)
+    {
+        if (targeted is Log or Board)
+        {
+            var menu = new TinkeringMenu(from, tool, Category.Wood, typeof(Log));
+            if (menu.Entries.Length == 0)
+            {
+                from.SendAsciiMessage("You lack the skill and materials to craft anything.");
+                return true;
+            }
+
+            from.SendMenu(menu);
+            return true;
+        }
+
+        if (targeted is BaseIngot)
+        {
+            var menu = new TinkeringMenu(from, tool, Category.Main, typeof(IronIngot));
+            if (menu.Entries.Length == 0)
+            {
+                from.SendAsciiMessage("You lack the skill and materials to craft anything.");
+                return true;
+            }
+
+            from.SendMenu(menu);
+            return true;
+        }
+
+        if (targeted is Keg)
+        {
+            var menu = new TinkeringMenu(from, tool, Category.Keg, typeof(Keg));
+            if (menu.Entries.Length == 0)
+            {
+                from.SendAsciiMessage("You lack the skill and materials to craft anything.");
+                return true;
+            }
+
+            from.SendMenu(menu);
+            return true;
+        }
+
+        return false;
+    }
 
     private class ResourceSelectTarget : Target
     {
@@ -382,50 +433,17 @@ public class TinkeringMenu : ItemListMenu
         {
             _from = from;
             _tool = tool;
-            from.SendAsciiMessage("Select the resource you wish to use (log or iron ingot).");
         }
 
         protected override void OnTarget(Mobile from, object targeted)
         {
-            if (targeted is Log)
+            if (targeted is Item item && TrySelectResource(from, _tool, item))
             {
-                var menu = new TinkeringMenu(from, _tool, Category.Wood, typeof(Log));
-                if (menu.Entries.Length == 0)
-                {
-                    from.SendAsciiMessage("You lack the skill and materials to craft anything.");
-                    return;
-                }
+                return;
+            }
 
-                from.SendMenu(menu);
-            }
-            else if (targeted is IronIngot)
-            {
-                // Show main menu for ingot selection (includes metal categories + Jewelry)
-                var menu = new TinkeringMenu(from, _tool, Category.Main, typeof(IronIngot));
-                if (menu.Entries.Length == 0)
-                {
-                    from.SendAsciiMessage("You lack the skill and materials to craft anything.");
-                    return;
-                }
-
-                from.SendMenu(menu);
-            }
-            else if (targeted is Keg)
-            {
-                var menu = new TinkeringMenu(from, _tool, Category.Keg, typeof(Keg));
-                if (menu.Entries.Length == 0)
-                {
-                    from.SendAsciiMessage("You lack the skill and materials to craft anything.");
-                    return;
-                }
-
-                from.SendMenu(menu);
-            }
-            else
-            {
-                from.SendAsciiMessage("That is not a valid resource. Please select log or iron ingot.");
-                from.Target = new ResourceSelectTarget(_from, _tool);
-            }
+            from.SendAsciiMessage("That is not a valid resource. Please select wood or ingots.");
+            from.Target = new ResourceSelectTarget(_from, _tool);
         }
     }
 
