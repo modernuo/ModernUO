@@ -18,31 +18,12 @@ namespace Server.Spells.Fifth
         );
 
         private static readonly Dictionary<Mobile, ResistanceMod[]> _table = new();
-        private static readonly HashSet<Mobile> _t2aTable = new();
 
         public MagicReflectSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
 
         public override SpellCircle Circle => SpellCircle.Fifth;
-
-        public static bool HasReflect(Mobile m) => _t2aTable.Contains(m);
-
-        public static bool ConsumeReflect(Mobile m)
-        {
-            if (!_t2aTable.Remove(m))
-            {
-                return false;
-            }
-
-            m.FixedEffect(0x37B9, 10, 5);
-            return true;
-        }
-
-        public static void RemoveReflect(Mobile m)
-        {
-            _t2aTable.Remove(m);
-        }
 
         public override bool CheckCast()
         {
@@ -51,21 +32,15 @@ namespace Server.Spells.Fifth
                 return true;
             }
 
-            if (!Core.UOR)
-            {
-                if (_t2aTable.Contains(Caster))
-                {
-                    Caster.SendLocalizedMessage(1005559); // This spell is already in effect.
-                    return false;
-                }
-
-                return true;
-            }
-
             if (Caster.MagicDamageAbsorb > 0)
             {
                 Caster.SendLocalizedMessage(1005559); // This spell is already in effect.
                 return false;
+            }
+
+            if (!Core.UOR)
+            {
+                return true;
             }
 
             if (!Caster.CanBeginAction<DefensiveSpell>())
@@ -137,13 +112,13 @@ namespace Server.Spells.Fifth
             }
             else if (!Core.UOR)
             {
-                if (_t2aTable.Contains(Caster))
+                if (Caster.MagicDamageAbsorb > 0)
                 {
                     Caster.SendLocalizedMessage(1005559); // This spell is already in effect.
                 }
                 else if (CheckSequence())
                 {
-                    _t2aTable.Add(Caster);
+                    Caster.MagicDamageAbsorb = 1;
 
                     Caster.FixedParticles(0x375A, 10, 15, 5037, EffectLayer.Waist);
                     Caster.PlaySound(0x1E9);
@@ -184,8 +159,6 @@ namespace Server.Spells.Fifth
         [OnEvent(nameof(PlayerMobile.PlayerDeletedEvent))]
         public static void EndReflect(Mobile m)
         {
-            _t2aTable.Remove(m);
-
             if (!_table.Remove(m, out var mods))
             {
                 return;

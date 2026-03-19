@@ -48,18 +48,24 @@ namespace Server.Spells.First
                     return;
                 }
 
-                if (defender.GetDistanceToSqrt(attacker) > 1)
+                // Only reflect adjacent melee hits; guards are exempt
+                if (!defender.InRange(attacker, 1) || attacker is BaseGuard)
                 {
                     return;
                 }
 
                 var magery = defender.Skills.Magery.Value;
                 var reflectPct = (int)(10 + magery / 4); // 10–35%
-                var reflected = Math.Max(1, damage * reflectPct / 100);
+                var reflected = damage * reflectPct / 100;
 
-                damage -= reflected;
+                if (reflected > 0)
+                {
+                    damage -= reflected;
 
-                attacker.Damage(reflected, defender);
+                    // Sourceless damage — does not trigger attacker's own combat events
+                    attacker.Damage(reflected);
+                }
+
                 attacker.PlaySound(0x1F1);
                 attacker.FixedEffect(0x374A, 10, 16);
             }
@@ -160,10 +166,7 @@ namespace Server.Spells.First
 
         private static void ExpireT2AEffect(Mobile m)
         {
-            if (_t2aTable.Remove(m))
-            {
-                Effects.PlaySound(m.Location, m.Map, 0x5C);
-            }
+            _t2aTable.Remove(m);
         }
 
         public override void OnCast()

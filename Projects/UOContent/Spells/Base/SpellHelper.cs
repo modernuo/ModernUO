@@ -891,25 +891,27 @@ namespace Server.Spells
         {
             var reflect = false;
 
-            if (!Core.UOR)
+            if (target.MagicDamageAbsorb > 0)
             {
-                if (MagicReflectSpell.ConsumeReflect(target))
+                if (!Core.UOR)
                 {
+                    // T2A: single-use reflection, consumed immediately
+                    target.MagicDamageAbsorb = 0;
                     reflect = true;
                 }
-            }
-            else if (target.MagicDamageAbsorb > 0)
-            {
-                ++circle;
-
-                target.MagicDamageAbsorb -= circle;
-
-                // This order isn't very intuitive, but you have to nullify reflect before target gets switched
-                reflect = target.MagicDamageAbsorb >= 0;
-                if (target.MagicDamageAbsorb <= 0)
+                else
                 {
-                    target.MagicDamageAbsorb = 0;
-                    DefensiveSpell.Nullify(target);
+                    ++circle;
+
+                    target.MagicDamageAbsorb -= circle;
+
+                    // This order isn't very intuitive, but you have to nullify reflect before target gets switched
+                    reflect = target.MagicDamageAbsorb >= 0;
+                    if (target.MagicDamageAbsorb <= 0)
+                    {
+                        target.MagicDamageAbsorb = 0;
+                        DefensiveSpell.Nullify(target);
+                    }
                 }
             }
 
