@@ -96,6 +96,12 @@ namespace Server.Spells.Second
                 return;
             }
 
+            if (_t2aTable.ContainsKey(m))
+            {
+                Caster.SendLocalizedMessage(1005559); // This spell is already in effect.
+                return;
+            }
+
             if (CheckBSequence(m))
             {
                 Caster.DoBeneficial(m);
