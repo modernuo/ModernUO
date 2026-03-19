@@ -668,6 +668,10 @@ namespace Server.Engines.Craft
                 {
                     amounts[i] = 0;
                 }
+                else if (isFailure && !Core.UOTD)
+                {
+                    amounts[i] -= amounts[i] / 2;
+                }
             }
 
             // We adjust the amount of each resource to consume the max possible
