@@ -320,8 +320,7 @@ public class TinkeringMenu : ItemListMenu
         if (_category is Category.Main or Category.Jewelry)
         {
             var childCategory = (Category)craftIndex;
-            var resourceType = childCategory == Category.Wood ? typeof(Log) : typeof(IronIngot);
-            var menu = new TinkeringMenu(from, _tool, childCategory, resourceType);
+            var menu = new TinkeringMenu(from, _tool, childCategory, _selectedResourceType);
             if (menu.Entries.Length == 0)
             {
                 from.SendAsciiMessage("You lack the skill and materials to craft anything in that category.");
@@ -397,7 +396,7 @@ public class TinkeringMenu : ItemListMenu
 
         if (targeted is BaseIngot)
         {
-            var menu = new TinkeringMenu(from, tool, Category.Main, typeof(IronIngot));
+            var menu = new TinkeringMenu(from, tool, Category.Main, targeted.GetType());
             if (menu.Entries.Length == 0)
             {
                 from.SendAsciiMessage("You lack the skill and materials to craft anything.");

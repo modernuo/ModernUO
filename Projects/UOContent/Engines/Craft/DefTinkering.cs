@@ -71,7 +71,7 @@ public class DefTinkering : CraftSystem
 
     public override bool RetainsColorFrom(CraftItem item, Type type)
     {
-        if (!type.IsSubclassOf(typeof(BaseIngot)))
+        if (!Core.UOTD || !type.IsSubclassOf(typeof(BaseIngot)))
         {
             return false;
         }
