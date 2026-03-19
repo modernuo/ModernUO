@@ -1104,8 +1104,8 @@ namespace Server.Engines.Craft
                     baseType = typeRes;
                 }
 
-                // For the base resource type, count only items matching the target hue
-                if (targetHue >= 0 && baseType == (typeRes ?? resCol.ResType))
+                // For the primary resource, count only items matching the target hue
+                if (targetHue >= 0 && i == 0)
                 {
                     var amount = GetHuedAmount(ourPack, baseType, targetHue);
                     if (amount < craftRes.Amount)
@@ -1180,8 +1180,8 @@ namespace Server.Engines.Craft
                     amount = Math.Max(1, amount / 2);
                 }
 
-                // For the primary resource matching the targeted type, filter by hue
-                if (targetHue >= 0 && baseType == (typeRes ?? resCol.ResType))
+                // For the primary resource, filter by hue
+                if (targetHue >= 0 && i == 0)
                 {
                     if (consumeType == ConsumeType.None)
                     {
