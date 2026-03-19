@@ -801,7 +801,52 @@ public abstract partial class BaseAI
         return !valid && (acqType != FightMode.Evil || (bc?.GetMaster()?.Karma ?? m.Karma) >= 0);
     }
 
-    private bool IsHostile(Mobile from) => Mobile.Combatant == from || from.Combatant == Mobile || IsAggressor(from) || IsAggressed(from);
+    // how would guild wars be added here?
+    private bool IsHostile(Mobile from)
+    {
+        if (Mobile.Combatant == from || from.Combatant == Mobile || IsAggressor(from) || IsAggressed(from))
+        {
+            return true;
+        }
+
+        if (from.Criminal || from.Kills >= 5)
+        {
+            return true;
+        }
+
+        if (Mobile.GetFactionAllegiance(from) == BaseCreature.Allegiance.Enemy)
+        {
+            return true;
+        }
+
+        if (Mobile.GetEthicAllegiance(from) == BaseCreature.Allegiance.Enemy)
+        {
+            return true;
+        }
+
+        if (!Mobile.CanBeHarmful(from, false))
+        {
+            return false;
+        }
+
+        if (Mobile.Controlled && Mobile.ControlMaster != null)
+        {
+            if (from.CanBeHarmful(Mobile.ControlMaster, false) && Mobile.ControlMaster.CanBeHarmful(from, false))
+            {
+                return true;
+            }
+        }
+
+        if (Mobile.Summoned && Mobile.SummonMaster != null)
+        {
+            if (from.CanBeHarmful(Mobile.SummonMaster, false) && Mobile.SummonMaster.CanBeHarmful(from, false))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     private bool IsAggressor(Mobile from)
     {
