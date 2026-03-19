@@ -143,7 +143,6 @@ namespace Server.Spells.First
             {
                 // This target already has Reactive Armor
                 Caster.SendLocalizedMessage(1005559); // This spell is already in effect.
-                FinishSequence();
                 return;
             }
 
@@ -160,8 +159,6 @@ namespace Server.Spells.First
                 Timer.StartTimer(duration, () => ExpireT2AEffect(m), out var token);
                 _t2aTable[m] = token;
             }
-
-            FinishSequence();
         }
 
         private static void ExpireT2AEffect(Mobile m)

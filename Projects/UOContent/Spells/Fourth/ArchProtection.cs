@@ -78,6 +78,7 @@ namespace Server.Spells.Fourth
                         {
                             Caster.DoBeneficial(m);
                             ProtectionSpell.ApplyT2AProtection(Caster, m);
+                            m.PlaySound(0x1F7);
                         }
                     }
                 }

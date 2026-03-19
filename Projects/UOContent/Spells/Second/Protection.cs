@@ -58,7 +58,6 @@ namespace Server.Spells.Second
             target.VirtualArmorMod += bonus;
 
             target.FixedParticles(0x375A, 9, 20, 5016, EffectLayer.Waist);
-            target.PlaySound(0x1ED);
 
             new InternalTimer(target, duration).Start();
         }
@@ -72,12 +71,6 @@ namespace Server.Spells.Second
 
             if (!Core.UOR)
             {
-                if (_t2aTable.ContainsKey(Caster))
-                {
-                    Caster.SendLocalizedMessage(1005559); // This spell is already in effect.
-                    return false;
-                }
-
                 return true;
             }
 
@@ -108,9 +101,8 @@ namespace Server.Spells.Second
                 Caster.DoBeneficial(m);
                 SpellHelper.Turn(Caster, m);
                 ApplyT2AProtection(Caster, m);
+                m.PlaySound(0x1ED);
             }
-
-            FinishSequence();
         }
 
         // AOS+ only
