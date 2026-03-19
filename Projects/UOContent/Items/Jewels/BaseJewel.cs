@@ -192,7 +192,9 @@ public abstract partial class BaseJewel : Item, ICraftable, IAosItem
         if (context is { PendingGemType: not GemType.None, PendingGemCount: > 0 })
         {
             var gemItemType = GetGemItemType(context.PendingGemType);
-            if (gemItemType != null && from.Backpack?.ConsumeTotal(gemItemType, context.PendingGemCount) == true)
+            // Only 1 gem is consumed per craft, even if the targeted stack was larger.
+            // GemCount records the original stack size for the item description.
+            if (gemItemType != null && from.Backpack?.ConsumeTotal(gemItemType, 1) == true)
             {
                 GemType = context.PendingGemType;
                 GemCount = context.PendingGemCount;
