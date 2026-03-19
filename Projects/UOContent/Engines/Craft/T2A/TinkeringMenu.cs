@@ -44,7 +44,7 @@ public class TinkeringMenu : ItemListMenu
     [
         typeof(Gears), typeof(Springs), typeof(Hinge),
         typeof(ClockParts), typeof(SextantParts),
-        typeof(BarrelTap), typeof(BarrelHoops)
+        typeof(BarrelTap), typeof(BarrelHoops), typeof(AxleGears)
     ];
 
     private static readonly Type[] UtensilTypes =
@@ -65,7 +65,8 @@ public class TinkeringMenu : ItemListMenu
     [
         typeof(KeyRing), typeof(Key),
         typeof(Scales), typeof(Spyglass), typeof(Lantern), typeof(HeatingStand),
-        typeof(Globe), typeof(Candelabra)
+        typeof(Globe), typeof(Candelabra), typeof(Sextant),
+        typeof(ClockRight), typeof(ClockLeft)
     ];
 
     private static readonly Type[] NecklaceTypes = [typeof(GoldNecklace), typeof(SilverNecklace)];
@@ -359,13 +360,17 @@ public class TinkeringMenu : ItemListMenu
         }
 
         var leafItemType = leafTypes[craftIndex];
-        var itemDef = DefTinkering.CraftSystem.CraftItems.SearchFor(leafItemType);
+        var system = DefTinkering.CraftSystem;
+        var itemDef = system.CraftItems.SearchFor(leafItemType);
         if (itemDef == null || _selectedResourceType == null)
         {
             return;
         }
 
-        itemDef.Craft(from, DefTinkering.CraftSystem, _selectedResourceType, _tool);
+        // Persist selected resource index so make-last remembers it
+        T2ACraftSystem.SetLastResourceIndex(from, system, _selectedResourceType);
+
+        itemDef.Craft(from, system, _selectedResourceType, _tool);
     }
 
     public static void ResourceSelection(Mobile from, BaseTool tool, Item preTarget = null)
@@ -501,6 +506,7 @@ public class TinkeringMenu : ItemListMenu
             ctx.PendingGemType = gemType;
             ctx.PendingGemCount = amount;
 
+            T2ACraftSystem.SetLastResourceIndex(from, system, _selectedResourceType);
             itemDef.Craft(from, system, _selectedResourceType, _tool);
         }
 

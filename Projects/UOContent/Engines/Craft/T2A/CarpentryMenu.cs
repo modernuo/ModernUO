@@ -13,7 +13,9 @@ public class CarpentryMenu : ItemListMenu
         Furniture,
         Containers,
         Weapons,
-        Misc
+        Instruments,
+        Misc,
+        Addons
     }
 
     private static readonly Type[] FurnitureTypes =
@@ -36,16 +38,44 @@ public class CarpentryMenu : ItemListMenu
         typeof(ShepherdsCrook), typeof(QuarterStaff), typeof(GnarledStaff), typeof(WoodenShield)
     ];
 
+    private static readonly Type[] InstrumentTypes =
+    [
+        typeof(LapHarp), typeof(Harp), typeof(Drums), typeof(Lute),
+        typeof(Tambourine), typeof(TambourineTassel)
+    ];
+
     private static readonly Type[] MiscItemTypes =
     [
-        typeof(FishingPole)
+        typeof(FishingPole), typeof(BarrelStaves), typeof(BarrelLid),
+        typeof(ShortMusicStand), typeof(TallMusicStand), typeof(Easel)
+    ];
+
+    private static readonly Type[] AddonTypes =
+    [
+        typeof(SmallBedSouthDeed), typeof(SmallBedEastDeed),
+        typeof(LargeBedSouthDeed), typeof(LargeBedEastDeed),
+        typeof(DartBoardSouthDeed), typeof(DartBoardEastDeed),
+        typeof(BallotBoxDeed),
+        typeof(PentagramDeed), typeof(AbbatoirDeed),
+        typeof(SmallForgeDeed), typeof(LargeForgeEastDeed), typeof(LargeForgeSouthDeed),
+        typeof(AnvilEastDeed), typeof(AnvilSouthDeed),
+        typeof(TrainingDummyEastDeed), typeof(TrainingDummySouthDeed),
+        typeof(PickpocketDipEastDeed), typeof(PickpocketDipSouthDeed),
+        typeof(Dressform),
+        typeof(SpinningWheelEastDeed), typeof(SpinningWheelSouthDeed),
+        typeof(LoomEastDeed), typeof(LoomSouthDeed),
+        typeof(StoneOvenEastDeed), typeof(StoneOvenSouthDeed),
+        typeof(FlourMillEastDeed), typeof(FlourMillSouthDeed),
+        typeof(WaterTroughEastDeed), typeof(WaterTroughSouthDeed)
     ];
 
     private static ItemListEntry[] _mainEntries;
     private static ItemListEntry[] _furnitureEntries;
     private static ItemListEntry[] _containerEntries;
     private static ItemListEntry[] _weaponEntries;
+    private static ItemListEntry[] _instrumentEntries;
     private static ItemListEntry[] _miscEntries;
+    private static ItemListEntry[] _addonEntries;
 
     private readonly Category _category;
     private readonly BaseTool _tool;
@@ -56,11 +86,13 @@ public class CarpentryMenu : ItemListMenu
 
     private static string GetQuestion(Category category) => category switch
     {
-        Category.Main       => "What would you like to make?",
-        Category.Furniture  => "What kind of furniture?",
-        Category.Containers => "What kind of container?",
-        Category.Weapons    => "What kind of weapon?",
-        _                   => "What would you like to make?"
+        Category.Main        => "What would you like to make?",
+        Category.Furniture   => "What kind of furniture?",
+        Category.Containers  => "What kind of container?",
+        Category.Weapons     => "What kind of weapon?",
+        Category.Instruments => "What kind of instrument?",
+        Category.Addons      => "What kind of add-on?",
+        _                    => "What would you like to make?"
     };
 
     private CarpentryMenu(Mobile from, BaseTool tool, Category category)
@@ -106,9 +138,16 @@ public class CarpentryMenu : ItemListMenu
             var name = FormatItemName(types[i]);
             var res = itemDef.Resources;
 
-            var label = res.Count > 1
-                ? $"{name} ({res[0].Amount} {resourceName}, {res[1].Amount} cloth)"
-                : $"{name} ({res[0].Amount} {resourceName})";
+            string label;
+            if (res.Count > 1)
+            {
+                var secondName = res[1].ItemType == typeof(IronIngot) ? "ingots" : "cloth";
+                label = $"{name} ({res[0].Amount} {resourceName}, {res[1].Amount} {secondName})";
+            }
+            else
+            {
+                label = $"{name} ({res[0].Amount} {resourceName})";
+            }
 
             entries[count++] = new ItemListEntry(label, itemDef.ItemId, 0, i);
         }
@@ -123,21 +162,25 @@ public class CarpentryMenu : ItemListMenu
 
     private static ItemListEntry[] GetStaticEntries(Category category) => category switch
     {
-        Category.Main       => Main(),
-        Category.Furniture  => Furniture(),
-        Category.Containers => Containers(),
-        Category.Weapons    => Weapons(),
-        Category.Misc       => Misc(),
-        _                   => null
+        Category.Main        => Main(),
+        Category.Furniture   => Furniture(),
+        Category.Containers  => Containers(),
+        Category.Weapons     => Weapons(),
+        Category.Instruments => Instruments(),
+        Category.Misc        => Misc(),
+        Category.Addons      => Addons(),
+        _                    => null
     };
 
     private static Type[] GetTypes(Category category) => category switch
     {
-        Category.Furniture  => FurnitureTypes,
-        Category.Containers => ContainerTypes,
-        Category.Weapons    => WeaponTypes,
-        Category.Misc       => MiscItemTypes,
-        _                   => null
+        Category.Furniture   => FurnitureTypes,
+        Category.Containers  => ContainerTypes,
+        Category.Weapons     => WeaponTypes,
+        Category.Instruments => InstrumentTypes,
+        Category.Misc        => MiscItemTypes,
+        Category.Addons      => AddonTypes,
+        _                    => null
     };
 
     public static ItemListEntry[] Main() => _mainEntries ??=
@@ -145,13 +188,17 @@ public class CarpentryMenu : ItemListMenu
         new ItemListEntry("Furniture", 0xB57, 0, (int)Category.Furniture),
         new ItemListEntry("Containers", 0x9AA, 0, (int)Category.Containers),
         new ItemListEntry("Weapons", 0xE89, 0, (int)Category.Weapons),
-        new ItemListEntry("Miscellaneous", 0xDC0, 0, (int)Category.Misc)
+        new ItemListEntry("Instruments", 0xEB3, 0, (int)Category.Instruments),
+        new ItemListEntry("Miscellaneous", 0xDC0, 0, (int)Category.Misc),
+        new ItemListEntry("Add-Ons", 0x14F0, 0, (int)Category.Addons)
     ];
 
     public static ItemListEntry[] Furniture() => _furnitureEntries ??= BuildStaticEntries(FurnitureTypes, "wood");
     public static ItemListEntry[] Containers() => _containerEntries ??= BuildStaticEntries(ContainerTypes, "wood");
     public static ItemListEntry[] Weapons() => _weaponEntries ??= BuildStaticEntries(WeaponTypes, "wood");
+    public static ItemListEntry[] Instruments() => _instrumentEntries ??= BuildStaticEntries(InstrumentTypes, "wood");
     public static ItemListEntry[] Misc() => _miscEntries ??= BuildStaticEntries(MiscItemTypes, "wood");
+    public static ItemListEntry[] Addons() => _addonEntries ??= BuildStaticEntries(AddonTypes, "wood");
 
     private static ItemListEntry[] BuildFilteredEntries(Mobile from, Category category)
     {

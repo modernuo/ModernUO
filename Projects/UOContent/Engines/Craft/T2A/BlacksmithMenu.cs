@@ -61,7 +61,7 @@ public class BlacksmithMenu : ItemListMenu
 
     private static readonly Type[] PolearmTypes =
     [
-        typeof(Bardiche), typeof(Halberd), typeof(ShortSpear), typeof(Spear)
+        typeof(Bardiche), typeof(Halberd), typeof(WarFork), typeof(ShortSpear), typeof(Spear)
     ];
 
     private static readonly Type[] MaceTypes =
@@ -469,8 +469,6 @@ public class BlacksmithMenu : ItemListMenu
     public override void OnCancel(NetState state)
     {
         base.OnCancel(state);
-        var context = DefBlacksmithy.CraftSystem.GetContext(state.Mobile);
-        context?.LastResourceIndex = -1;
     }
 
     public static void ResourceSelection(
@@ -478,13 +476,38 @@ public class BlacksmithMenu : ItemListMenu
     )
     {
         var res = DefBlacksmithy.CraftSystem.CraftSubRes;
+
+        // Validate preTarget first — reject invalid targets before any auto-selection
+        if (preTarget != null)
+        {
+            if (TrySelectResource(from, preTarget, res, afterSelect, tool))
+            {
+                // Valid ingot — resource selected, menu will open
+                return;
+            }
+
+            if (preTarget is BaseArmor or BaseWeapon
+                && DefBlacksmithy.CraftSystem.CraftItems.SearchForSubclass(preTarget.GetType()) != null)
+            {
+                // Repairable/smeltable item — auto-select default resource and open menu
+                SelectDefaultResource(from, res);
+                afterSelect(from, tool);
+                return;
+            }
+
+            // Invalid target — prompt for ingots
+            from.SendMessage("Target the ingots you wish to use.");
+            from.Target = new BlacksmithResourceTarget(tool, afterSelect);
+            return;
+        }
+
+        // No target (make-last failure path) — auto-select if only one ingot type available
         var availableCount = 0;
         var lastAvailable = -1;
 
         for (var i = 0; i < res.Count; ++i)
         {
-            var amount = from.Backpack?.GetAmount(res[i].ItemType) ?? 0;
-            if (amount > 0)
+            if ((from.Backpack?.GetAmount(res[i].ItemType) ?? 0) > 0)
             {
                 availableCount++;
                 lastAvailable = i;
@@ -501,14 +524,44 @@ public class BlacksmithMenu : ItemListMenu
 
             afterSelect(from, tool);
         }
-        else if (preTarget != null && TrySelectResource(from, preTarget, res, afterSelect, tool))
-        {
-            // Pre-targeted item was a valid resource — already handled
-        }
         else
         {
             from.SendMessage("Target the ingots you wish to use.");
             from.Target = new BlacksmithResourceTarget(tool, afterSelect);
+        }
+    }
+
+    private static void SelectDefaultResource(Mobile from, CraftSubResCol res)
+    {
+        var context = DefBlacksmithy.CraftSystem.GetContext(from);
+        if (context == null)
+        {
+            return;
+        }
+
+        var pack = from.Backpack;
+        var firstAvailable = -1;
+
+        for (var i = 0; i < res.Count; ++i)
+        {
+            if ((pack?.GetAmount(res[i].ItemType) ?? 0) > 0)
+            {
+                if (res[i].ItemType == typeof(IronIngot))
+                {
+                    context.LastResourceIndex = i;
+                    return;
+                }
+
+                if (firstAvailable == -1)
+                {
+                    firstAvailable = i;
+                }
+            }
+        }
+
+        if (firstAvailable != -1)
+        {
+            context.LastResourceIndex = firstAvailable;
         }
     }
 
