@@ -347,6 +347,14 @@ public class TinkeringMenu : ItemListMenu
                 return;
             }
 
+            // Clear stale gem state from any previous craft attempt (e.g. failed skill check)
+            var ctx = DefTinkering.CraftSystem.GetContext(from);
+            if (ctx != null)
+            {
+                ctx.PendingGemType = GemType.None;
+                ctx.PendingGemCount = 0;
+            }
+
             from.SendAsciiMessage("Target the gemstone you wish to use.");
             from.Target = new GemSelectTarget(from, _tool, itemType, _selectedResourceType);
             return;
@@ -451,7 +459,7 @@ public class TinkeringMenu : ItemListMenu
         }
     }
 
-    private class GemSelectTarget : Target
+    internal class GemSelectTarget : Target
     {
         private readonly Mobile _from;
         private readonly BaseTool _tool;
