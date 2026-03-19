@@ -81,14 +81,14 @@ public static class T2ACraftSystem
         }
         else if (craftSystem == DefInscription.CraftSystem)
         {
-            if (preTarget is BlankScroll or BaseReagent || preTarget == null)
+            if (preTarget is BlankScroll or BaseReagent or RecallRune || preTarget == null)
             {
                 ShowMenuDirect<InscriptionMenu>(from, tool);
             }
             else
             {
                 PromptForResource(from, tool, craftSystem, "Target the blank scrolls you wish to use.",
-                    item => item is BlankScroll or BaseReagent);
+                    item => item is BlankScroll or BaseReagent or RecallRune);
             }
         }
         else if (craftSystem == DefTailoring.CraftSystem)

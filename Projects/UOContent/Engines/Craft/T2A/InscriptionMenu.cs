@@ -19,7 +19,8 @@ public class InscriptionMenu : ItemListMenu
         Circle5,
         Circle6,
         Circle7,
-        Circle8
+        Circle8,
+        Runebook
     }
 
     private static readonly ItemListEntry[][] _circleEntries = new ItemListEntry[8][];
@@ -71,6 +72,7 @@ public class InscriptionMenu : ItemListMenu
 
     public static ItemListEntry[] Main() => _mainEntries ??=
     [
+        new ItemListEntry("Runebook", 0xEFA, 0, (int)Category.Runebook),
         new ItemListEntry("First Circle", 8384, 0, (int)Category.Circle1),
         new ItemListEntry("Second Circle", 8385, 0, (int)Category.Circle2),
         new ItemListEntry("Third Circle", 8386, 0, (int)Category.Circle3),
@@ -204,6 +206,7 @@ public class InscriptionMenu : ItemListMenu
     private static ItemListEntry[] BuildFilteredMainEntries(Mobile from)
     {
         var craftItems = DefInscription.CraftSystem.CraftItems;
+        var system = DefInscription.CraftSystem;
         var mainStatic = Main();
         var filtered = new ItemListEntry[mainStatic.Length];
         var count = 0;
@@ -211,7 +214,19 @@ public class InscriptionMenu : ItemListMenu
         for (var i = 0; i < mainStatic.Length; i++)
         {
             var entry = mainStatic[i];
-            var circleIndex = (int)(Category)entry.CraftIndex - 1;
+            var category = (Category)entry.CraftIndex;
+
+            if (category == Category.Runebook)
+            {
+                if (T2ACraftSystem.CanCraftItem(from, typeof(Runebook), system))
+                {
+                    filtered[count++] = entry;
+                }
+
+                continue;
+            }
+
+            var circleIndex = (int)category - 1;
             var offset = circleIndex * 8;
 
             var hasAny = false;
@@ -276,7 +291,15 @@ public class InscriptionMenu : ItemListMenu
         var craftIndex = Entries[index].CraftIndex;
         if (_category == Category.Main)
         {
-            var menu = new InscriptionMenu(from, _tool, (Category)craftIndex);
+            var category = (Category)craftIndex;
+
+            if (category == Category.Runebook)
+            {
+                CraftRunebook(from);
+                return;
+            }
+
+            var menu = new InscriptionMenu(from, _tool, category);
             if (menu.Entries.Length == 0)
             {
                 from.SendAsciiMessage("You lack the skill and materials to scribe anything in that circle.");
@@ -288,5 +311,24 @@ public class InscriptionMenu : ItemListMenu
         }
 
         CraftScroll(from, _category, craftIndex);
+    }
+
+    private void CraftRunebook(Mobile from)
+    {
+        var system = DefInscription.CraftSystem;
+        var itemDef = system.CraftItems.SearchFor(typeof(Runebook));
+        if (itemDef == null)
+        {
+            return;
+        }
+
+        var num = system.CanCraft(from, _tool, itemDef.ItemType);
+        if (num > 0)
+        {
+            from.SendLocalizedMessage(num);
+            return;
+        }
+
+        system.CreateItem(from, itemDef.ItemType, null, _tool, itemDef);
     }
 }
