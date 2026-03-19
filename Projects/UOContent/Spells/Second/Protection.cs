@@ -60,7 +60,7 @@ namespace Server.Spells.Second
             target.FixedParticles(0x375A, 9, 20, 5016, EffectLayer.Waist);
             target.PlaySound(0x1ED);
 
-            new T2AInternalTimer(target, duration).Start();
+            new InternalTimer(target, duration).Start();
         }
 
         public override bool CheckCast()
@@ -210,7 +210,8 @@ namespace Server.Spells.Second
                                      Caster.Skills.Inscribe.Value) * 10 / 4;
 
                         Registry.Add(Caster, Math.Clamp((int)value, 0, 750)); // 75.0% protection from disruption
-                        new InternalTimer(Caster).Start();
+                        var duration = TimeSpan.FromSeconds(Math.Clamp(Caster.Skills.Magery.Value * 2.0, 15, 240));
+                        new InternalTimer(Caster, duration).Start();
 
                         Caster.FixedParticles(0x375A, 9, 20, 5016, EffectLayer.Waist);
                         Caster.PlaySound(0x1ED);
@@ -225,34 +226,23 @@ namespace Server.Spells.Second
             }
         }
 
-        private class T2AInternalTimer : Timer
-        {
-            private readonly Mobile _target;
-
-            public T2AInternalTimer(Mobile target, TimeSpan duration) : base(duration) => _target = target;
-
-            protected override void OnTick()
-            {
-                RemoveT2AProtection(_target);
-            }
-        }
-
         private class InternalTimer : Timer
         {
-            private readonly Mobile m_Caster;
+            private readonly Mobile _mobile;
 
-            public InternalTimer(Mobile caster) : base(TimeSpan.FromSeconds(0))
-            {
-                var val = Math.Clamp(caster.Skills.Magery.Value * 2.0, 15, 240);
-
-                m_Caster = caster;
-                Delay = TimeSpan.FromSeconds(val);
-            }
+            public InternalTimer(Mobile mobile, TimeSpan duration) : base(duration) => _mobile = mobile;
 
             protected override void OnTick()
             {
-                Registry.Remove(m_Caster);
-                DefensiveSpell.Nullify(m_Caster);
+                if (!Core.UOR)
+                {
+                    RemoveT2AProtection(_mobile);
+                }
+                else
+                {
+                    Registry.Remove(_mobile);
+                    DefensiveSpell.Nullify(_mobile);
+                }
             }
         }
     }
