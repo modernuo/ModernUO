@@ -12,6 +12,7 @@ public class TailoringMenu : ItemListMenu
     {
         Main,
         LeatherMain,
+        Hats,
         Shirts,
         Pants,
         Misc,
@@ -20,6 +21,13 @@ public class TailoringMenu : ItemListMenu
         Studded,
         Female
     }
+
+    private static readonly Type[] HatsTypes =
+    [
+        typeof(SkullCap), typeof(Bandana), typeof(FloppyHat), typeof(Cap), typeof(WideBrimHat),
+        typeof(StrawHat), typeof(TallStrawHat), typeof(WizardsHat), typeof(Bonnet),
+        typeof(FeatheredHat), typeof(TricorneHat), typeof(JesterHat)
+    ];
 
     private static readonly Type[] ShirtsTypes =
     [
@@ -30,7 +38,8 @@ public class TailoringMenu : ItemListMenu
 
     private static readonly Type[] MiscTypes =
     [
-        typeof(Skirt), typeof(Cloak), typeof(Robe), typeof(JesterSuit), typeof(FancyDress)
+        typeof(Skirt), typeof(Cloak), typeof(Robe), typeof(JesterSuit), typeof(FancyDress),
+        typeof(BodySash), typeof(HalfApron), typeof(FullApron)
     ];
 
     private static readonly Type[] FootwearTypes = [typeof(Sandals), typeof(Shoes), typeof(Boots), typeof(ThighBoots)];
@@ -54,6 +63,7 @@ public class TailoringMenu : ItemListMenu
 
     private static ItemListEntry[] _mainEntries;
     private static ItemListEntry[] _leatherMainEntries;
+    private static ItemListEntry[] _hatsEntries;
     private static ItemListEntry[] _shirtsEntries;
     private static ItemListEntry[] _pantsEntries;
     private static ItemListEntry[] _miscEntries;
@@ -70,6 +80,7 @@ public class TailoringMenu : ItemListMenu
     {
         Category.Main        => "What would you like to make?",
         Category.LeatherMain => "What would you like to make?",
+        Category.Hats        => "What kind of hat?",
         Category.Shirts      => "What kind of shirt?",
         Category.Pants       => "What kind of pants?",
         Category.Misc        => "What would you like to make?",
@@ -138,6 +149,7 @@ public class TailoringMenu : ItemListMenu
     {
         Category.Main        => Main(),
         Category.LeatherMain => LeatherMain(),
+        Category.Hats        => Hats(),
         Category.Shirts      => Shirts(),
         Category.Pants       => Pants(),
         Category.Misc        => Misc(),
@@ -150,6 +162,7 @@ public class TailoringMenu : ItemListMenu
 
     private static Type[] GetTypes(Category category) => category switch
     {
+        Category.Hats        => HatsTypes,
         Category.Shirts      => ShirtsTypes,
         Category.Pants       => PantsTypes,
         Category.Misc        => MiscTypes,
@@ -162,6 +175,7 @@ public class TailoringMenu : ItemListMenu
 
     public static ItemListEntry[] Main() => _mainEntries ??=
     [
+        new ItemListEntry("Build Hats", 0x1718, 0, (int)Category.Hats),
         new ItemListEntry("Build Shirts", 0x1517, 0, (int)Category.Shirts),
         new ItemListEntry("Build Pants", 0x1539, 0, (int)Category.Pants),
         new ItemListEntry("Build Misc", 0x153D, 0, (int)Category.Misc)
@@ -175,6 +189,7 @@ public class TailoringMenu : ItemListMenu
         new ItemListEntry("Build Female Armor", 0x1c06, 0, (int)Category.Female)
     ];
 
+    public static ItemListEntry[] Hats() => _hatsEntries ??= BuildStaticEntries(HatsTypes, "cloth");
     public static ItemListEntry[] Shirts() => _shirtsEntries ??= BuildStaticEntries(ShirtsTypes, "cloth");
     public static ItemListEntry[] Pants() => _pantsEntries ??= BuildStaticEntries(PantsTypes, "cloth");
     public static ItemListEntry[] Misc() => _miscEntries ??= BuildStaticEntries(MiscTypes, "cloth");
@@ -258,6 +273,7 @@ public class TailoringMenu : ItemListMenu
         if (_hue >= 0)
         {
             // Pipeline B: hue-aware crafting — only consumes resources matching this hue
+            context.LastHue = _hue;
             DefTailoring.CraftSystem.CreateItem(from, itemDef.ItemType, resourceType, _tool, itemDef, _hue);
         }
         else

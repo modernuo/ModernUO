@@ -3,6 +3,7 @@
 using System;
 using Server.Items;
 using Server.Menus.ItemLists;
+using Server.Targeting;
 
 namespace Server.Engines.Craft.T2A;
 
@@ -32,58 +33,63 @@ public static class T2ACraftSystem
         }
         else if (craftSystem == DefAlchemy.CraftSystem)
         {
-            var menu = new AlchemyMenu(from, tool);
-            if (menu.Entries.Length == 0)
+            if (preTarget is BaseReagent or Bottle || preTarget == null)
             {
-                from.SendAsciiMessage("You lack the skill and materials to craft anything.");
-                return;
+                ShowMenuDirect<AlchemyMenu>(from, tool);
             }
-
-            from.SendMenu(menu);
+            else
+            {
+                PromptForResource(from, tool, craftSystem, "Target a reagent or empty bottle.",
+                    item => item is BaseReagent or Bottle);
+            }
         }
         else if (craftSystem == DefBowFletching.CraftSystem)
         {
-            var menu = new BowFletchingMenu(from, tool);
-            if (menu.Entries.Length == 0)
+            if (preTarget is Log or Board or Feather or Shaft || preTarget == null)
             {
-                from.SendAsciiMessage("You lack the skill and materials to craft anything.");
-                return;
+                ShowMenuDirect<BowFletchingMenu>(from, tool);
             }
-
-            from.SendMenu(menu);
+            else
+            {
+                PromptForResource(from, tool, craftSystem, "Target the wood or feathers you wish to use.",
+                    item => item is Log or Board or Feather or Shaft);
+            }
         }
         else if (craftSystem == DefCarpentry.CraftSystem)
         {
-            var menu = new CarpentryMenu(from, tool);
-            if (menu.Entries.Length == 0)
+            if (preTarget is Log or Board || preTarget == null)
             {
-                from.SendAsciiMessage("You lack the skill and materials to craft anything.");
-                return;
+                ShowMenuDirect<CarpentryMenu>(from, tool);
             }
-
-            from.SendMenu(menu);
+            else
+            {
+                PromptForResource(from, tool, craftSystem, "Target the wood you wish to use.",
+                    item => item is Log or Board);
+            }
         }
         else if (craftSystem == DefCartography.CraftSystem)
         {
-            var menu = new CartographyMenu(from, tool);
-            if (menu.Entries.Length == 0)
+            if (preTarget is BlankMap || preTarget == null)
             {
-                from.SendAsciiMessage("You lack the skill and materials to craft anything.");
-                return;
+                ShowMenuDirect<CartographyMenu>(from, tool);
             }
-
-            from.SendMenu(menu);
+            else
+            {
+                PromptForResource(from, tool, craftSystem, "Target a blank map.",
+                    item => item is BlankMap);
+            }
         }
         else if (craftSystem == DefInscription.CraftSystem)
         {
-            var menu = new InscriptionMenu(from, tool);
-            if (menu.Entries.Length == 0)
+            if (preTarget is BlankScroll or BaseReagent || preTarget == null)
             {
-                from.SendAsciiMessage("You lack the skill and materials to craft anything.");
-                return;
+                ShowMenuDirect<InscriptionMenu>(from, tool);
             }
-
-            from.SendMenu(menu);
+            else
+            {
+                PromptForResource(from, tool, craftSystem, "Target the blank scrolls you wish to use.",
+                    item => item is BlankScroll or BaseReagent);
+            }
         }
         else if (craftSystem == DefTailoring.CraftSystem)
         {
@@ -92,6 +98,85 @@ public static class T2ACraftSystem
         else if (craftSystem == DefTinkering.CraftSystem)
         {
             TinkeringMenu.ResourceSelection(from, tool, preTarget);
+        }
+    }
+
+    private static void ShowMenuDirect<T>(Mobile from, BaseTool tool) where T : ItemListMenu
+    {
+        var menu = (T)Activator.CreateInstance(typeof(T), from, tool);
+        if (menu.Entries.Length == 0)
+        {
+            from.SendAsciiMessage("You lack the skill and materials to craft anything.");
+            return;
+        }
+
+        from.SendMenu(menu);
+    }
+
+    private static void PromptForResource(
+        Mobile from, BaseTool tool, CraftSystem system, string message, Func<Item, bool> isValid
+    )
+    {
+        from.SendAsciiMessage(message);
+        from.Target = new CraftResourceTarget(tool, system, message, isValid);
+    }
+
+    private class CraftResourceTarget : Target
+    {
+        private readonly BaseTool _tool;
+        private readonly CraftSystem _system;
+        private readonly string _message;
+        private readonly Func<Item, bool> _isValid;
+
+        public CraftResourceTarget(
+            BaseTool tool, CraftSystem system, string message, Func<Item, bool> isValid
+        ) : base(12, false, TargetFlags.None)
+        {
+            _tool = tool;
+            _system = system;
+            _message = message;
+            _isValid = isValid;
+        }
+
+        protected override void OnTarget(Mobile from, object targeted)
+        {
+            if (targeted is Item item && _isValid(item))
+            {
+                ShowMenu(from, _system, _tool, item);
+                return;
+            }
+
+            from.SendAsciiMessage(_message);
+            from.Target = new CraftResourceTarget(_tool, _system, _message, _isValid);
+        }
+    }
+
+    /// <summary>
+    /// Persists the selected resource type as a LastResourceIndex on the craft context,
+    /// so that make-last can recall which resource was used.
+    /// </summary>
+    public static void SetLastResourceIndex(Mobile from, CraftSystem system, Type selectedResourceType)
+    {
+        if (selectedResourceType == null)
+        {
+            return;
+        }
+
+        var context = system.GetContext(from);
+        var resCol = system.CraftSubRes;
+
+        if (context == null || !resCol.Init)
+        {
+            return;
+        }
+
+        for (var i = 0; i < resCol.Count; i++)
+        {
+            if (resCol[i].ItemType == selectedResourceType)
+            {
+                context.LastResourceIndex = i;
+                return;
+            }
         }
     }
 
@@ -137,7 +222,7 @@ public static class T2ACraftSystem
                     }
 
                     // Check if player has enough of the selected resource
-                    if (pack.GetAmount(selectedResourceType) < res.Amount)
+                    if (GetResourceAmount(pack, selectedResourceType) < res.Amount)
                     {
                         return false;
                     }
@@ -147,7 +232,7 @@ public static class T2ACraftSystem
                     return false;
                 }
             }
-            else if (pack.GetAmount(resType) < res.Amount)
+            else if (GetResourceAmount(pack, resType) < res.Amount)
             {
                 return false;
             }
@@ -217,6 +302,30 @@ public static class T2ACraftSystem
         return false;
     }
 
+    /// <summary>
+    /// Equivalent type pairs mirroring CraftItem.m_TypesTable — used so that menu filtering
+    /// counts boards when checking for logs, hides when checking for leather, etc.
+    /// </summary>
+    private static readonly Type[][] _equivalentTypes =
+    [
+        [typeof(Log), typeof(Board)],
+        [typeof(Cloth), typeof(UncutCloth)],
+        [typeof(Items.Leather), typeof(Hides)]
+    ];
+
+    private static int GetResourceAmount(Container pack, Type type)
+    {
+        for (var i = 0; i < _equivalentTypes.Length; i++)
+        {
+            if (_equivalentTypes[i][0] == type)
+            {
+                return pack.GetAmount(_equivalentTypes[i]);
+            }
+        }
+
+        return pack.GetAmount(type);
+    }
+
     private static bool HasAnySufficientSubResource(
         Mobile from, Container pack, int amountNeeded, CraftSystem system, CraftSubResCol resCol
     )
@@ -225,7 +334,7 @@ public static class T2ACraftSystem
         {
             var subRes = resCol[j];
             if (from.Skills[system.MainSkill].Value >= subRes.RequiredSkill &&
-                pack.GetAmount(subRes.ItemType) >= amountNeeded)
+                GetResourceAmount(pack, subRes.ItemType) >= amountNeeded)
             {
                 return true;
             }

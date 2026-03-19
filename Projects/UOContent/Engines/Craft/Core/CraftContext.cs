@@ -32,6 +32,9 @@ namespace Server.Engines.Craft
 
         public CraftMarkOption MarkOption { get; set; }
 
+        // T2A: last hue used for hue-aware crafting (tailoring cloth)
+        public int LastHue { get; set; } = -1;
+
         // T2A jewelry: transient gem info set by GemSelectTarget, consumed by BaseJewel.OnCraft
         public GemType PendingGemType { get; set; }
         public int PendingGemCount { get; set; }

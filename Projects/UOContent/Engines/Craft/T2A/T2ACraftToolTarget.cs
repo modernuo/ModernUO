@@ -36,7 +36,14 @@ public class T2ACraftToolTarget : Target
                 var resIndex = lastMade.UseSubRes2 ? context.LastResourceIndex2 : context.LastResourceIndex;
                 var type = resIndex > -1 ? res[resIndex].ItemType : null;
 
-                _system.CreateItem(from, lastMade.ItemType, type, _tool, lastMade);
+                if (context.LastHue >= 0)
+                {
+                    _system.CreateItem(from, lastMade.ItemType, type, _tool, lastMade, context.LastHue);
+                }
+                else
+                {
+                    _system.CreateItem(from, lastMade.ItemType, type, _tool, lastMade);
+                }
             }
             else
             {
