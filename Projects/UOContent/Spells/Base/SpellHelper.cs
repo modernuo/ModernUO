@@ -891,7 +891,14 @@ namespace Server.Spells
         {
             var reflect = false;
 
-            if (target.MagicDamageAbsorb > 0)
+            if (!Core.UOR)
+            {
+                if (MagicReflectSpell.ConsumeReflect(target))
+                {
+                    reflect = true;
+                }
+            }
+            else if (target.MagicDamageAbsorb > 0)
             {
                 ++circle;
 

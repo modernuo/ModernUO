@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using ModernUO.CodeGeneratedEvents;
 using Server.Engines.BuffIcons;
 using Server.Mobiles;
+using Server.Targeting;
 
 namespace Server.Spells.First
 {
-    public class ReactiveArmorSpell : MagerySpell
+    public class ReactiveArmorSpell : MagerySpell, ITargetingSpell<Mobile>
     {
         private static readonly SpellInfo _info = new(
             "Reactive Armor",
@@ -19,6 +20,7 @@ namespace Server.Spells.First
         );
 
         private static readonly Dictionary<Mobile, ResistanceMod[]> _table = new();
+        private static readonly Dictionary<Mobile, TimerExecutionToken> _t2aTable = new();
 
         public ReactiveArmorSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
@@ -26,9 +28,85 @@ namespace Server.Spells.First
 
         public override SpellCircle Circle => SpellCircle.First;
 
+        public static bool HasEffect(Mobile m) => _t2aTable.ContainsKey(m);
+
+        public static void RemoveEffect(Mobile m)
+        {
+            if (_t2aTable.Remove(m, out var token))
+            {
+                token.Cancel();
+            }
+        }
+
+        public static void HandleMeleeHit(Mobile attacker, Mobile defender, ref int damage)
+        {
+            if (!Core.UOR)
+            {
+                // T2A: percentage-based melee reflection
+                if (!_t2aTable.ContainsKey(defender))
+                {
+                    return;
+                }
+
+                if (defender.GetDistanceToSqrt(attacker) > 1)
+                {
+                    return;
+                }
+
+                var magery = defender.Skills.Magery.Value;
+                var reflectPct = (int)(10 + magery / 4); // 10–35%
+                var reflected = Math.Max(1, damage * reflectPct / 100);
+
+                damage -= reflected;
+
+                attacker.Damage(reflected, defender);
+                attacker.PlaySound(0x1F1);
+                attacker.FixedEffect(0x374A, 10, 16);
+            }
+            else
+            {
+                // UOR: damage absorption pool
+                var absorb = defender.MeleeDamageAbsorb;
+
+                if (absorb <= 0)
+                {
+                    return;
+                }
+
+                if (absorb > damage)
+                {
+                    var react = damage / 5;
+
+                    if (react <= 0)
+                    {
+                        react = 1;
+                    }
+
+                    defender.MeleeDamageAbsorb -= damage;
+                    damage = 0;
+
+                    attacker.Damage(react, defender);
+
+                    attacker.PlaySound(0x1F1);
+                    attacker.FixedEffect(0x374A, 10, 16);
+                }
+                else
+                {
+                    defender.MeleeDamageAbsorb = 0;
+                    defender.SendLocalizedMessage(1005556); // Your reactive armor spell has been nullified.
+                    DefensiveSpell.Nullify(defender);
+                }
+            }
+        }
+
         public override bool CheckCast()
         {
             if (Core.AOS)
+            {
+                return true;
+            }
+
+            if (!Core.UOR)
             {
                 return true;
             }
@@ -46,6 +124,46 @@ namespace Server.Spells.First
             }
 
             return true;
+        }
+
+        public void Target(Mobile m)
+        {
+            if (!Caster.CanBeBeneficial(m))
+            {
+                return;
+            }
+
+            if (_t2aTable.ContainsKey(m))
+            {
+                // This target already has Reactive Armor
+                Caster.SendLocalizedMessage(1005559); // This spell is already in effect.
+                FinishSequence();
+                return;
+            }
+
+            if (CheckBSequence(m))
+            {
+                Caster.DoBeneficial(m);
+                SpellHelper.Turn(Caster, m);
+
+                m.FixedParticles(0x376A, 9, 32, 5008, EffectLayer.Waist);
+                m.PlaySound(0x1F2);
+
+                var duration = TimeSpan.FromSeconds(25 + Caster.Skills.Magery.Value / 2); // 25–75s
+
+                Timer.StartTimer(duration, () => ExpireT2AEffect(m), out var token);
+                _t2aTable[m] = token;
+            }
+
+            FinishSequence();
+        }
+
+        private static void ExpireT2AEffect(Mobile m)
+        {
+            if (_t2aTable.Remove(m))
+            {
+                Effects.PlaySound(m.Location, m.Map, 0x5C);
+            }
         }
 
         public override void OnCast()
@@ -109,6 +227,10 @@ namespace Server.Spells.First
 
                 FinishSequence();
             }
+            else if (!Core.UOR)
+            {
+                Caster.Target = new SpellTarget<Mobile>(this, TargetFlags.Beneficial);
+            }
             else
             {
                 if (Caster.MeleeDamageAbsorb > 0)
@@ -148,6 +270,8 @@ namespace Server.Spells.First
         [OnEvent(nameof(PlayerMobile.PlayerDeletedEvent))]
         public static void EndArmor(Mobile m)
         {
+            RemoveEffect(m);
+
             if (!_table.Remove(m, out var mods))
             {
                 return;

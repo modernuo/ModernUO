@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using ModernUO.CodeGeneratedEvents;
 using Server.Engines.BuffIcons;
 using Server.Mobiles;
+using Server.Targeting;
 
 namespace Server.Spells.Second
 {
-    public class ProtectionSpell : MagerySpell
+    public class ProtectionSpell : MagerySpell, ITargetingSpell<Mobile>
     {
         private static readonly SpellInfo _info = new(
             "Protection",
@@ -21,6 +22,9 @@ namespace Server.Spells.Second
         // TODO: Cleanup periodically if players have logged out for a while
         private static readonly Dictionary<Mobile, Tuple<ResistanceMod, DefaultSkillMod>> _table = new();
 
+        // T2A: stores the AR bonus per mobile (shared with ArchProtection)
+        private static readonly Dictionary<Mobile, int> _t2aTable = new();
+
         public ProtectionSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
         }
@@ -29,10 +33,51 @@ namespace Server.Spells.Second
 
         public override SpellCircle Circle => SpellCircle.Second;
 
+        public static bool HasT2AProtection(Mobile m) => _t2aTable.ContainsKey(m);
+
+        public static void RemoveT2AProtection(Mobile m)
+        {
+            if (_t2aTable.Remove(m, out var bonus))
+            {
+                m.VirtualArmorMod -= Math.Min(bonus, m.VirtualArmorMod);
+            }
+        }
+
+        public static void ApplyT2AProtection(Mobile caster, Mobile target)
+        {
+            if (_t2aTable.ContainsKey(target))
+            {
+                return;
+            }
+
+            var magery = caster.Skills.Magery.Value;
+            var bonus = (int)(magery / 10);
+            var duration = TimeSpan.FromSeconds(6 * magery / 5);
+
+            _t2aTable[target] = bonus;
+            target.VirtualArmorMod += bonus;
+
+            target.FixedParticles(0x375A, 9, 20, 5016, EffectLayer.Waist);
+            target.PlaySound(0x1ED);
+
+            new T2AInternalTimer(target, duration).Start();
+        }
+
         public override bool CheckCast()
         {
             if (Core.AOS)
             {
+                return true;
+            }
+
+            if (!Core.UOR)
+            {
+                if (_t2aTable.ContainsKey(Caster))
+                {
+                    Caster.SendLocalizedMessage(1005559); // This spell is already in effect.
+                    return false;
+                }
+
                 return true;
             }
 
@@ -49,6 +94,23 @@ namespace Server.Spells.Second
 
             Caster.SendLocalizedMessage(1005385); // The spell will not adhere to you at this time.
             return false;
+        }
+
+        public void Target(Mobile m)
+        {
+            if (!Caster.CanBeBeneficial(m))
+            {
+                return;
+            }
+
+            if (CheckBSequence(m))
+            {
+                Caster.DoBeneficial(m);
+                SpellHelper.Turn(Caster, m);
+                ApplyT2AProtection(Caster, m);
+            }
+
+            FinishSequence();
         }
 
         // AOS+ only
@@ -99,6 +161,8 @@ namespace Server.Spells.Second
         [OnEvent(nameof(PlayerMobile.PlayerDeletedEvent))]
         public static void EndProtection(Mobile m)
         {
+            RemoveT2AProtection(m);
+
             if (!_table.Remove(m, out var mods))
             {
                 return;
@@ -122,6 +186,10 @@ namespace Server.Spells.Second
                 }
 
                 FinishSequence();
+            }
+            else if (!Core.UOR)
+            {
+                Caster.Target = new SpellTarget<Mobile>(this, TargetFlags.Beneficial);
             }
             else
             {
@@ -154,6 +222,18 @@ namespace Server.Spells.Second
                 }
 
                 FinishSequence();
+            }
+        }
+
+        private class T2AInternalTimer : Timer
+        {
+            private readonly Mobile _target;
+
+            public T2AInternalTimer(Mobile target, TimeSpan duration) : base(duration) => _target = target;
+
+            protected override void OnTick()
+            {
+                RemoveT2AProtection(_target);
             }
         }
 
