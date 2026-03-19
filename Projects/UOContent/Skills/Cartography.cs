@@ -13,7 +13,7 @@ public static class Cartography
 
     public static TimeSpan OnUse(Mobile m)
     {
-        if (Core.UOR)
+        if (Core.UOTD)
         {
             m.SendLocalizedMessage(1046444); // Use a mapmaker's pen to draw maps.
             return TimeSpan.Zero;

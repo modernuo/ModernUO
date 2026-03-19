@@ -18,7 +18,7 @@ namespace Server.SkillHandlers
 
         public static TimeSpan OnUse(Mobile m)
         {
-            if (!Core.UOR)
+            if (!Core.UOTD)
             {
                 T2ACraftSystem.ShowMenu(m, DefInscription.CraftSystem, null);
                 return TimeSpan.FromSeconds(1.0);
