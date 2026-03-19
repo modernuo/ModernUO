@@ -27,7 +27,7 @@ public abstract class AreaEffectMonsterAbility : MonsterAbility
 
     protected virtual bool CanEffectTarget(BaseCreature source, Mobile defender) =>
         source != defender && defender.Alive && source.CanBeHarmful(defender)
-            && (defender.Player || defender is BaseCreature bc && (bc.Team == source.Team || bc.Controlled || bc.Summoned))
+            && (defender.Player || defender is BaseCreature bc && (bc.Team != source.Team || bc.Controlled || bc.Summoned))
             && (!Core.AOS || source.InLOS(defender));
 
     protected abstract void DoEffectTarget(BaseCreature source, Mobile defender);

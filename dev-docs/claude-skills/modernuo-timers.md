@@ -19,6 +19,7 @@ description: >
 3. **Never serialize `TimerExecutionToken`** -- restore in `[AfterDeserialization]`
 4. **Always cancel timers in `OnDelete()`/`OnAfterDelete()`**
 5. **8ms minimum precision** -- timer wheel uses 8ms tick rate
+6. **Timers are NOT thread-safe** -- never Start/Stop timers or call `Timer.DelayCall`/`Timer.StartTimer` from any thread other than the game thread. This includes `Serialize()` which runs on background serialization threads during world saves.
 
 ## Preferred APIs (In Order)
 
@@ -110,7 +111,7 @@ public override void OnAfterDelete()
 
 ### Timer Restoration After Deserialization
 ```csharp
-[SerializationGenerator(0, false)]
+[SerializationGenerator(0)]
 public partial class DecayingItem : Item
 {
     private TimerExecutionToken _decayTimer;  // NOT serialized
@@ -193,6 +194,7 @@ _decayTimer = null;
 - **Forgetting cleanup**: Timers keep running if not cancelled on deletion
 - **Using `Thread.Sleep`**: Blocks the game loop. Use `Timer.StartTimer` or `await Timer.Pause` instead
 - **Creating timers in constructors called during deserialization**: Use `[AfterDeserialization]` instead
+- **Starting/stopping timers in `Serialize()`**: `Serialize()` runs on background threads during world saves -- timer APIs are game-thread-only and will corrupt state or crash
 
 ## Real Examples
 - Token cleanup: `Projects/UOContent/Spells/Third/WallOfStone.cs`

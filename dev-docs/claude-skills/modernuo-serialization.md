@@ -25,14 +25,19 @@ description: >
 
 ## Core Attributes
 
-### [SerializationGenerator(version, encodedVersion)]
+### [SerializationGenerator(version, encoded)]
 Applied to class. Generates Serialize/Deserialize methods.
 - `version`: Current serialization version (0+)
-- `encodedVersion`: Use `false` for Items/Mobiles (default `true` for other types)
+- `encoded`: Omit for new classes. When migrating from pre-codegen Serialize/Deserialize, pass `false` if old code used `reader.ReadInt()` (not `ReadEncodedInt()`)
 
 ```csharp
-[SerializationGenerator(0, false)]
+// New class — omit encoded
+[SerializationGenerator(0)]
 public partial class MyItem : Item { }
+
+// Migration from pre-codegen — old version was 2, used ReadInt()
+[SerializationGenerator(3, false)]
+public partial class MigratedItem : Item { }
 ```
 
 ### [SerializableField(index, setter, saveIf)]
@@ -96,14 +101,30 @@ Auto-removes null/deleted entries from collections after deserialization.
 ### [CanBeNull]
 Marks field as nullable during deserialization.
 
-### [AfterDeserialization]
-Method called after all fields are deserialized. Use for initialization, timer restoration, relationship setup.
+### [AfterDeserialization(synchronous)]
+Method called after fields are deserialized. The `synchronous` parameter controls timing:
+- `true` (default): runs immediately after this entity's deserialization
+- `false`: runs after ALL entities in the world are deserialized
+
+Use `true` (default) for: restarting timers, setting up derived values from own fields.
+Use `false` for: logic that calls `Delete()`, depends on other entities, or affects game state.
 
 ```csharp
+// Sync (default) — only touches own fields
 [AfterDeserialization]
 private void AfterDeserialization()
 {
     Timer.StartTimer(TimeSpan.FromSeconds(5), CheckExpiry, out _timerToken);
+}
+
+// Deferred — calls Delete() which affects game state
+[AfterDeserialization(false)]
+private void AfterDeserialization()
+{
+    if (_expireTimer == null)
+    {
+        Delete();
+    }
 }
 ```
 
@@ -137,7 +158,7 @@ Maps old type names for backward-compatible deserialization.
 
 ```csharp
 [TypeAlias("Server.Mobiles.Bear")]
-[SerializationGenerator(0, false)]
+[SerializationGenerator(0)]
 public partial class BlackBear : BaseCreature { }
 ```
 
@@ -149,7 +170,7 @@ using ModernUO.Serialization;
 
 namespace Server.Items;
 
-[SerializationGenerator(0, false)]
+[SerializationGenerator(0)]
 public partial class MyItem : Item
 {
     [Constructible]
@@ -164,7 +185,7 @@ public partial class MyItem : Item
 
 ### Item with Fields
 ```csharp
-[SerializationGenerator(0, false)]
+[SerializationGenerator(0)]
 public partial class ChargedItem : Item
 {
     [SerializableField(0)]
@@ -197,7 +218,7 @@ public partial class ChargedItem : Item
 
 ### Item with Custom Properties
 ```csharp
-[SerializationGenerator(2, false)]
+[SerializationGenerator(2)]
 public partial class BagOfSending : Item
 {
     [SerializableProperty(0)]
@@ -221,13 +242,88 @@ public partial class BagOfSending : Item
 }
 ```
 
+## Custom Serialize/Deserialize (Purity Rules)
+
+When writing custom `Serialize(IGenericWriter)` or `Deserialize(IGenericReader)` methods (e.g. for `GenericPersistence` subclasses), the following rules apply:
+
+### Serialize() MUST remain pure
+`Serialize()` is called from **background serialization threads** during world saves (see `SerializationThreadWorker`). Multiple entities are serialized in parallel across threads. This means `Serialize()` must NOT:
+
+- **Create or destroy Items/Mobiles** -- mutates shared world state
+- **Move, equip, or unequip Items/Mobiles** -- mutates shared world state
+- **Start or stop timers** (`Timer.StartTimer`, `Timer.DelayCall`, `_token.Cancel()`) -- timers are NOT thread-safe
+- **Send packets or modify NetState** -- networking is game-thread-only
+- **Access or modify other entities' mutable state** -- data race
+- **Call `Delete()`** on anything -- triggers deletion cascades on wrong thread
+
+`Serialize()` should ONLY read fields and write them to the `IGenericWriter`. Treat it as a read-only snapshot.
+
+```csharp
+// CORRECT -- pure reads and writes only
+public override void Serialize(IGenericWriter writer)
+{
+    writer.WriteEncodedInt(0); // version
+    writer.WriteEncodedInt(_records.Count);
+    foreach (var (key, value) in _records)
+    {
+        writer.Write(key);
+        writer.Write(value);
+    }
+}
+
+// WRONG -- side effects in Serialize
+public override void Serialize(IGenericWriter writer)
+{
+    CleanupExpiredEntries();     // BAD: mutates state
+    Timer.StartTimer(Recheck);  // BAD: not thread-safe
+    writer.Write(_data);
+}
+```
+
+### Deserialize() runs on the game thread
+`Deserialize()` runs during world load on the main thread, so it CAN create entities and start timers. However, prefer `[AfterDeserialization]` for timer setup to keep deserialization clean.
+
+## MigrateFrom Pattern
+
+When bumping the `[SerializationGenerator]` version, you **must** add a `MigrateFrom` method:
+
+```csharp
+// Version bumped from 0 to 1 (added _quality field)
+[SerializationGenerator(1)]
+public partial class MagicGem : Item
+{
+    [SerializableField(0)]
+    private int _charges;
+
+    [SerializableField(1)]  // New in v1
+    private GemQuality _quality;
+}
+
+// In MagicGem.Migrations.cs:
+public partial class MagicGem
+{
+    private void MigrateFrom(V0Content content)
+    {
+        _charges = content.Charges;
+        // _quality defaults to GemQuality.Rough (default enum value)
+    }
+}
+```
+
+- Signature: `private void MigrateFrom(VXContent content)` where X is the **previous** version
+- `VXContent` is auto-generated with PascalCase properties matching the old fields
+- New fields not in the old version get their default values
+- Use `.Migrations.cs` partial files for organization
+
 ## Anti-Patterns
 
 - **Missing `partial`**: `[SerializationGenerator]` requires `partial class`
 - **Serializing timers**: `TimerExecutionToken` cannot be serialized
+- **Side effects in `Serialize()`**: Serialize runs on background threads -- must be pure (no creating/destroying entities, no timer start/stop, no packets)
 - **Missing `MarkDirty()`**: Custom property setters must call `this.MarkDirty()`
 - **Wrong field prefix**: Use `_camelCase`, not `m_camelCase` for new fields
 - **Forgetting `[Constructible]`**: Items/Mobiles need this for `[add` command
+- **Modifying `Deserialize(reader, version)` for version bumps**: `Deserialize` exists ONLY for pre-codegen legacy saves. Use `MigrateFrom(VXContent)` for all post-codegen version transitions.
 
 ## Real Examples
 - Simple creature: `Projects/UOContent/Mobiles/Animals/Bears/BlackBear.cs`

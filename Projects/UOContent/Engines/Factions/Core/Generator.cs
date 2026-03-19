@@ -46,7 +46,11 @@ public static class Generator
         {
             var mono = new TownMonolith(town);
             mono.MoveToWorld(def.Monolith, facet);
-            mono.Sigil = new Sigil(town);
+
+            if (!SigilExistsForTown(town))
+            {
+                mono.Sigil = new Sigil(town);
+            }
         }
 
         if (!CheckExistence(def.TownStone, facet, typeof(TownStone)))
@@ -89,6 +93,21 @@ public static class Generator
         foreach (var item in facet.GetItemsAt(loc))
         {
             if (type.IsInstanceOfType(item))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool SigilExistsForTown(Town town)
+    {
+        var sigils = Sigil.Sigils;
+
+        for (var i = 0; i < sigils.Count; i++)
+        {
+            if (!sigils[i].Deleted && sigils[i].Town == town)
             {
                 return true;
             }
