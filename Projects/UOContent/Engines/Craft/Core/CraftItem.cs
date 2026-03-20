@@ -60,25 +60,37 @@ namespace Server.Engines.Craft
             0x192C, 0x192D, 0x192E, 0x129F, 0x1930, 0x1931, 0x1932, 0x1934
         };
 
-        private static readonly Type[][] m_TypesTable =
+        private static readonly Type[][] m_TypesTable = InitTypesTable();
+
+        private static Type[][] InitTypesTable()
         {
-            new[] { typeof(Log), typeof(Board) },
-            new[] { typeof(HeartwoodLog), typeof(HeartwoodBoard) },
-            new[] { typeof(BloodwoodLog), typeof(BloodwoodBoard) },
-            new[] { typeof(FrostwoodLog), typeof(FrostwoodBoard) },
-            new[] { typeof(OakLog), typeof(OakBoard) },
-            new[] { typeof(AshLog), typeof(AshBoard) },
-            new[] { typeof(YewLog), typeof(YewBoard) },
-            new[] { typeof(Leather), typeof(Hides) },
-            new[] { typeof(SpinedLeather), typeof(SpinedHides) },
-            new[] { typeof(HornedLeather), typeof(HornedHides) },
-            new[] { typeof(BarbedLeather), typeof(BarbedHides) },
-            new[] { typeof(BlankMap), typeof(BlankScroll) },
-            new[] { typeof(Cloth), typeof(UncutCloth) },
-            new[] { typeof(CheeseWheel), typeof(CheeseWedge) },
-            new[] { typeof(Pumpkin), typeof(SmallPumpkin) },
-            new[] { typeof(WoodenBowlOfPeas), typeof(PewterBowlOfPeas) }
-        };
+            List<Type[]> types =
+            [
+                [typeof(Log), typeof(Board)],
+                [typeof(HeartwoodLog), typeof(HeartwoodBoard)],
+                [typeof(BloodwoodLog), typeof(BloodwoodBoard)],
+                [typeof(FrostwoodLog), typeof(FrostwoodBoard)],
+                [typeof(OakLog), typeof(OakBoard)],
+                [typeof(AshLog), typeof(AshBoard)],
+                [typeof(YewLog), typeof(YewBoard)],
+                [typeof(Leather), typeof(Hides)],
+                [typeof(SpinedLeather), typeof(SpinedHides)],
+                [typeof(HornedLeather), typeof(HornedHides)],
+                [typeof(BarbedLeather), typeof(BarbedHides)],
+                [typeof(Cloth), typeof(UncutCloth)],
+                [typeof(CheeseWheel), typeof(CheeseWedge)],
+                [typeof(Pumpkin), typeof(SmallPumpkin)],
+                [typeof(WoodenBowlOfPeas), typeof(PewterBowlOfPeas)]
+            ];
+
+            // Gump-based crafting allows blank scrolls as a substitute for blank maps in cartography
+            if (!ContentFeatureFlags.T2ACraftMenus)
+            {
+                types.Add([typeof(BlankMap), typeof(BlankScroll)]);
+            }
+
+            return types.ToArray();
+        }
 
         private static readonly Type[] m_ColoredItemTable =
         {
