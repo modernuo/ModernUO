@@ -39,18 +39,23 @@ public class DefInscription : CraftSystem
 
     public static CraftSystem CraftSystem { get; private set; }
 
+    public override bool RequiresTool => Core.UOTD;
+
     public override double GetChanceAtMin(CraftItem item) => 0.0;
 
     public override int CanCraft(Mobile from, BaseTool tool, Type typeItem)
     {
-        if (tool?.Deleted != false || tool.UsesRemaining < 0)
+        if (RequiresTool)
         {
-            return 1044038; // You have worn out your tool!
-        }
+            if (tool?.Deleted != false || tool.UsesRemaining < 0)
+            {
+                return 1044038; // You have worn out your tool!
+            }
 
-        if (!BaseTool.CheckAccessible(tool, from))
-        {
-            return 1044263; // The tool must be on your person to use.
+            if (!BaseTool.CheckAccessible(tool, from))
+            {
+                return 1044263; // The tool must be on your person to use.
+            }
         }
 
         var scroll = typeItem?.CreateEntityInstance<SpellScroll>();

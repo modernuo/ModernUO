@@ -20,14 +20,17 @@ namespace Server.SkillHandlers
         {
             if (!Core.UOTD)
             {
-                T2ACraftSystem.ShowMenu(m, DefInscription.CraftSystem, null);
+                var target = new T2AInscribeTarget();
+                m.Target = target;
+                m.SendAsciiMessage("Target the book you wish to copy or scroll you want to use.");
+                target.BeginTimeout(m, 60000); // 1 minute
                 return TimeSpan.FromSeconds(1.0);
             }
 
-            Target target = new InternalTargetSrc();
-            m.Target = target;
+            Target uotdTarget = new InternalTargetSrc();
+            m.Target = uotdTarget;
             m.SendLocalizedMessage(1046295); // Target the book you wish to copy.
-            target.BeginTimeout(m, 60000); // 1 minute
+            uotdTarget.BeginTimeout(m, 60000); // 1 minute
 
             return TimeSpan.FromSeconds(1.0);
         }
@@ -84,6 +87,76 @@ namespace Server.SkillHandlers
                 for (var j = 0; j < length; j++)
                 {
                     pageDst.Lines[j] = pageSrc.Lines[j];
+                }
+            }
+        }
+
+        private class T2AInscribeTarget : Target
+        {
+            public T2AInscribeTarget() : base(3, false, TargetFlags.None)
+            {
+            }
+
+            protected override void OnTarget(Mobile from, object targeted)
+            {
+                if (targeted is BlankScroll scroll)
+                {
+                    if (!scroll.IsChildOf(from.Backpack))
+                    {
+                        from.SendAsciiMessage("That must be in your pack for you to use it.");
+                    }
+                    else
+                    {
+                        T2ACraftSystem.ShowMenu(from, DefInscription.CraftSystem, null);
+                    }
+                }
+                else if (targeted is RecallRune)
+                {
+                    var system = DefInscription.CraftSystem;
+                    var itemDef = system.CraftItems.SearchFor(typeof(Runebook));
+                    if (itemDef != null)
+                    {
+                        var num = system.CanCraft(from, null, itemDef.ItemType);
+                        if (num > 0)
+                        {
+                            from.SendLocalizedMessage(num);
+                        }
+                        else
+                        {
+                            system.CreateItem(from, itemDef.ItemType, null, null, itemDef);
+                        }
+                    }
+                }
+                else if (targeted is BaseBook book)
+                {
+                    if (IsEmpty(book))
+                    {
+                        from.SendLocalizedMessage(501611); // Can't copy an empty book.
+                    }
+                    else if (GetUser(book) != null)
+                    {
+                        from.SendLocalizedMessage(501621); // Someone else is inscribing that item.
+                    }
+                    else
+                    {
+                        Target target = new InternalTargetDst(book);
+                        from.Target = target;
+                        from.SendLocalizedMessage(501612); // Select a book to copy this to.
+                        target.BeginTimeout(from, 60000);
+                        SetUser(book, from);
+                    }
+                }
+                else
+                {
+                    from.SendLocalizedMessage(1046296); // That is not a book
+                }
+            }
+
+            protected override void OnTargetCancel(Mobile from, TargetCancelType cancelType)
+            {
+                if (cancelType == TargetCancelType.Timeout)
+                {
+                    from.SendLocalizedMessage(501619);
                 }
             }
         }
