@@ -411,13 +411,13 @@ public abstract partial class BaseAI
         var combatant = Mobile.Combatant;
         if (!IsValidCombatant(combatant))
         {
-            DebugSay("My combatant is missing. Returning home...");
+            DebugSay("My combatant is missing. Wandering...");
 
             Mobile.FocusMob = null;
             Mobile.Warmode = false;
             Mobile.Combatant = null;
 
-            WalkRandomInHome(3, 2, 1);
+            Action = ActionType.Wander;
             return true;
         }
 
