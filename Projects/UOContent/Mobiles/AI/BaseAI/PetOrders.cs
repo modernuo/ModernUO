@@ -357,7 +357,7 @@ public abstract partial class BaseAI
     }
 
     private bool IsInvalidControlTarget(Mobile target) => target?.Deleted != false || target.Map != Mobile.Map
-        || !target.Alive || target.IsDeadBondedPet;
+        || !target.Alive || target.IsDeadBondedPet || target.Hidden;
 
     private void HandleInvalidControlTarget()
     {
