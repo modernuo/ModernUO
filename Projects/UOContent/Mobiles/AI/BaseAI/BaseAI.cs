@@ -470,16 +470,16 @@ public abstract partial class BaseAI
 
     public virtual bool DoActionFlee()
     {
-        var from = Mobile.FocusMob;
-
-        if (!IsValidFocusMob(from))
+        var from = Mobile.Combatant;
+        
+        if (!IsValidCombatant(from))
         {
-            DebugSay("Focus target is missing.");
+            DebugSay("Combatant is missing.");
 
             WalkRandomInHome(3, 2, 1);
             return true;
         }
-
+    
         DebugSay("I am fleeing!");
 
         DoMove(from.GetDirectionTo(Mobile));
