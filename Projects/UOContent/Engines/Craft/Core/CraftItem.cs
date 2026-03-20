@@ -1392,29 +1392,32 @@ namespace Server.Engines.Craft
                     return;
                 }
 
-                tool.UsesRemaining--;
-
-                if (craftSystem is DefBlacksmithy)
+                if (tool != null)
                 {
-                    var hammer = from.FindItemOnLayer<AncientSmithyHammer>(Layer.OneHanded);
-                    if (hammer != null && hammer != tool)
+                    tool.UsesRemaining--;
+
+                    if (craftSystem is DefBlacksmithy)
                     {
-                        hammer.UsesRemaining--;
-                        if (hammer.UsesRemaining < 1)
+                        var hammer = from.FindItemOnLayer<AncientSmithyHammer>(Layer.OneHanded);
+                        if (hammer != null && hammer != tool)
                         {
-                            hammer.Delete();
+                            hammer.UsesRemaining--;
+                            if (hammer.UsesRemaining < 1)
+                            {
+                                hammer.Delete();
+                            }
                         }
                     }
-                }
 
-                if (tool.UsesRemaining < 1 && tool.BreakOnDepletion)
-                {
-                    toolBroken = true;
-                }
+                    if (tool.UsesRemaining < 1 && tool.BreakOnDepletion)
+                    {
+                        toolBroken = true;
+                    }
 
-                if (toolBroken)
-                {
-                    tool.Delete();
+                    if (toolBroken)
+                    {
+                        tool.Delete();
+                    }
                 }
 
                 Item item;
@@ -1587,22 +1590,25 @@ namespace Server.Engines.Craft
                 return;
             }
 
-            tool.UsesRemaining--;
-
-            if (tool.UsesRemaining < 1 && tool.BreakOnDepletion)
+            if (tool != null)
             {
-                toolBroken = true;
-            }
+                tool.UsesRemaining--;
 
-            if (toolBroken)
-            {
-                tool.Delete();
+                if (tool.UsesRemaining < 1 && tool.BreakOnDepletion)
+                {
+                    toolBroken = true;
+                }
+
+                if (toolBroken)
+                {
+                    tool.Delete();
+                }
             }
 
             // SkillCheck failed.
             num = craftSystem.PlayEndingEffect(from, true, true, toolBroken, endquality, false, this);
 
-            if (!tool.Deleted && tool.UsesRemaining > 0)
+            if (tool?.Deleted == false && tool.UsesRemaining > 0)
             {
                 ShowCraftMenu(from, craftSystem, tool, num);
             }
@@ -1683,29 +1689,32 @@ namespace Server.Engines.Craft
                     return;
                 }
 
-                tool.UsesRemaining--;
-
-                if (craftSystem is DefBlacksmithy)
+                if (tool != null)
                 {
-                    var hammer = from.FindItemOnLayer<AncientSmithyHammer>(Layer.OneHanded);
-                    if (hammer != null && hammer != tool)
+                    tool.UsesRemaining--;
+
+                    if (craftSystem is DefBlacksmithy)
                     {
-                        hammer.UsesRemaining--;
-                        if (hammer.UsesRemaining < 1)
+                        var hammer = from.FindItemOnLayer<AncientSmithyHammer>(Layer.OneHanded);
+                        if (hammer != null && hammer != tool)
                         {
-                            hammer.Delete();
+                            hammer.UsesRemaining--;
+                            if (hammer.UsesRemaining < 1)
+                            {
+                                hammer.Delete();
+                            }
                         }
                     }
-                }
 
-                if (tool.UsesRemaining < 1 && tool.BreakOnDepletion)
-                {
-                    toolBroken = true;
-                }
+                    if (tool.UsesRemaining < 1 && tool.BreakOnDepletion)
+                    {
+                        toolBroken = true;
+                    }
 
-                if (toolBroken)
-                {
-                    tool.Delete();
+                    if (toolBroken)
+                    {
+                        tool.Delete();
+                    }
                 }
 
                 Item item;
@@ -1781,21 +1790,24 @@ namespace Server.Engines.Craft
             // Failure: consume resources (half on failure)
             ConsumeHuedRes(from, typeRes, craftSystem, targetHue, ref resHue, failConsumeType);
 
-            tool.UsesRemaining--;
-
-            if (tool.UsesRemaining < 1 && tool.BreakOnDepletion)
+            if (tool != null)
             {
-                toolBroken = true;
-            }
+                tool.UsesRemaining--;
 
-            if (toolBroken)
-            {
-                tool.Delete();
+                if (tool.UsesRemaining < 1 && tool.BreakOnDepletion)
+                {
+                    toolBroken = true;
+                }
+
+                if (toolBroken)
+                {
+                    tool.Delete();
+                }
             }
 
             num = craftSystem.PlayEndingEffect(from, true, true, toolBroken, endquality, false, this);
 
-            if (!tool.Deleted && tool.UsesRemaining > 0)
+            if (tool?.Deleted == false && tool.UsesRemaining > 0)
             {
                 ShowCraftMenu(from, craftSystem, tool, num);
             }

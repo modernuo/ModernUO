@@ -54,6 +54,8 @@ namespace Server.Engines.Craft
 
         public virtual CraftECA ECA => CraftECA.ChanceMinusSixty;
 
+        public virtual bool RequiresTool => true;
+
         public bool Resmelt { get; set; }
 
         public bool Repair { get; set; }
