@@ -589,21 +589,51 @@ public abstract partial class BaseAI
         || Mobile.BardTarget.Map != Mobile.Map
         || Mobile.GetDistanceToSqrt(Mobile.BardTarget) > Mobile.RangePerception;
 
+    public virtual double FleeHealthThreshold => 0.0;
+    public virtual double FleeChance => 0.0;
+
     public virtual bool CheckFlee()
     {
-        if (!Mobile.CheckFlee())
+        if (Mobile.CheckFlee())
         {
-            return false;
+            if (Mobile.Combatant == null)
+            {
+                Action = ActionType.Wander;
+                return false;
+            }
+            
+            Action = ActionType.Flee;
+            return true;
         }
 
-        if (Mobile.Combatant == null)
+        if (StartFlee())
         {
-            Action = ActionType.Wander;
+            var duration = TimeSpan.FromSeconds(Utility.Random(10, 30));
+            Mobile.BeginFlee(duration);
+
+            Action = ActionType.Flee;
+
+            return true;
+        }
+
+        return false;
+    }
+
+    protected virtual bool StartFlee()
+    {
+        if (!Mobile.CanFlee)
+        {
             return false;
         }
+            
+        var hitPercent = (double)Mobile.Hits / Mobile.HitsMax;
         
-        Action = ActionType.Flee;
-        return true;
+        if (hitPercent > FleeHealthThreshold)
+        {
+            return false;
+        }
+            
+        return Utility.RandomDouble() < FleeChance;
     }
 
     public virtual void OnTeleported()
