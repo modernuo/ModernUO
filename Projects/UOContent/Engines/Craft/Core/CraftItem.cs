@@ -6,6 +6,7 @@ using Server.Gumps;
 using Server.Items;
 using Server.Logging;
 using Server.Mobiles;
+using Server.Systems.FeatureFlags;
 
 namespace Server.Engines.Craft
 {
@@ -925,7 +926,7 @@ namespace Server.Engines.Craft
             if (!allRequiredSkills || chance <= 0.0)
             {
                 from.EndAction<CraftSystem>();
-                if (!Core.UOTD)
+                if (ContentFeatureFlags.T2ACraftMenus)
                 {
                     from.SendAsciiMessage("You lack the required skill to craft this item.");
                 }
@@ -1531,7 +1532,7 @@ namespace Server.Engines.Craft
                 }
                 else if (tool?.Deleted == false && tool.UsesRemaining > 0)
                 {
-                    if (!Core.UOTD)
+                    if (ContentFeatureFlags.T2ACraftMenus)
                     {
                         if (num > 0)
                         {
@@ -1742,7 +1743,7 @@ namespace Server.Engines.Craft
 
                     num = craftSystem.PlayEndingEffect(from, false, true, toolBroken, endquality, false, this);
 
-                    if (!Core.UOTD)
+                    if (ContentFeatureFlags.T2ACraftMenus)
                     {
                         if (tool?.Deleted == false && tool.UsesRemaining > 0)
                         {
@@ -1914,7 +1915,7 @@ namespace Server.Engines.Craft
 
                 if (makersMark && context.MarkOption == CraftMarkOption.PromptForMark)
                 {
-                    if (!Core.UOTD)
+                    if (ContentFeatureFlags.T2ACraftMenus)
                     {
                         m_From.SendMenu(
                             new T2A.QueryMakersMarkMenu(
@@ -1963,7 +1964,7 @@ namespace Server.Engines.Craft
 
         public static void ShowCraftMenu(Mobile from, CraftSystem system, BaseTool tool, TextDefinition message = null)
         {
-            if (!Core.UOTD)
+            if (ContentFeatureFlags.T2ACraftMenus)
             {
                 // T2A: Don't reopen menu. Player double-clicks tool to restart.
                 if (message != null)

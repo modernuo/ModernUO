@@ -1,6 +1,7 @@
 using System;
 using ModernUO.Serialization;
 using Server.Engines.Craft;
+using Server.Systems.FeatureFlags;
 
 namespace Server.Items;
 
@@ -209,7 +210,7 @@ public abstract partial class BaseJewel : Item, ICraftable, IAosItem
 
     public override void OnSingleClick(Mobile from)
     {
-        if (!Core.UOTD)
+        if (ContentFeatureFlags.T2ACraftMenus)
         {
             OnSingleClickPreUOTD(from);
             return;

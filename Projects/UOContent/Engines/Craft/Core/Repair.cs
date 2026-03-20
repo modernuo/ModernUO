@@ -2,6 +2,7 @@ using System;
 using Server.Gumps;
 using Server.Items;
 using Server.Mobiles;
+using Server.Systems.FeatureFlags;
 using Server.Targeting;
 
 namespace Server.Engines.Craft
@@ -483,7 +484,7 @@ namespace Server.Engines.Craft
                 if (!usingDeed)
                 {
                     m_CraftSystem.GetContext(from);
-                    if (!Core.UOTD)
+                    if (ContentFeatureFlags.T2ACraftMenus)
                     {
                         from.SendLocalizedMessage(number);
                         CraftItem.ShowCraftMenu(from, m_CraftSystem, m_Tool);

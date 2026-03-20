@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Server.Engines.Craft;
 using Server.Engines.Craft.T2A;
 using Server.Items;
+using Server.Systems.FeatureFlags;
 using Server.Targeting;
 
 namespace Server.SkillHandlers
@@ -18,7 +19,7 @@ namespace Server.SkillHandlers
 
         public static TimeSpan OnUse(Mobile m)
         {
-            if (!Core.UOTD)
+            if (ContentFeatureFlags.T2ACraftMenus)
             {
                 var target = new T2AInscribeTarget();
                 m.Target = target;
