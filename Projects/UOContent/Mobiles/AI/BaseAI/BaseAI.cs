@@ -597,9 +597,11 @@ public abstract partial class BaseAI
 
         if (Mobile.Combatant == null)
         {
-            WalkRandomInHome(3, 2, 1);
+            Action = ActionType.Wander;
+            return false;
         }
-
+        
+        Action = ActionType.Flee;
         return true;
     }
 
