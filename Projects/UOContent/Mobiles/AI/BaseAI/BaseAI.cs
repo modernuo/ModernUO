@@ -359,6 +359,10 @@ public abstract partial class BaseAI
                 WalkRandomInHome(3, 2, 1);
             }
         }
+        else if (CheckMove() && CanMoveNow(out _) && !Mobile.CheckIdle())
+        {
+            WalkRandomInHome(3, 2, 1);
+        }
 
         return true;
     }
@@ -468,7 +472,7 @@ public abstract partial class BaseAI
     public virtual bool DoActionFlee()
     {
         var from = Mobile.Combatant;
-        
+
         if (!IsValidCombatant(from))
         {
             DebugSay("Combatant is missing.");
@@ -476,7 +480,7 @@ public abstract partial class BaseAI
             WalkRandomInHome(3, 2, 1);
             return true;
         }
-    
+
         DebugSay("I am fleeing!");
 
         DoMove(from.GetDirectionTo(Mobile));
