@@ -346,6 +346,13 @@ public abstract partial class BaseAI
         {
             this.DebugSayFormatted($"I am being herded by {Mobile.ControlTarget?.Name ?? "Unknown"}.");
         }
+        else if (ShouldBackoff())
+        {
+            DebugSay("Detected threat, backing off!");
+
+            Action = ActionType.Backoff;
+            return true;
+        }
         else if (Mobile.CurrentWayPoint != null)
         {
             HandleWayPoint();
@@ -488,8 +495,6 @@ public abstract partial class BaseAI
     }
 
     public virtual bool DoActionInteract() => true;
-
-    public virtual bool DoActionBackoff() => true;
 
     public virtual bool CheckHerding()
     {
@@ -634,6 +639,44 @@ public abstract partial class BaseAI
         }
             
         return Utility.RandomDouble() < FleeChance;
+    }
+
+    public virtual double BackoffChance => 0.0;
+
+    protected virtual bool ShouldBackoff()
+    {
+        if (Mobile.Combatant != null || BackoffChance <= 0.0)
+        {
+            return false;
+        }
+    
+        if (AcquireFocusMob(Mobile.RangePerception, Mobile.FightMode, false, false, true))
+        {
+            return Utility.RandomDouble() < BackoffChance;
+        }
+    
+        return false;
+    }
+
+    public virtual bool DoActionBackoff()
+    {
+        if (AcquireFocusMob(Mobile.RangePerception * 2, FightMode.Closest, true, false, true))
+        {
+            if (WalkMobileRange(Mobile.FocusMob, 1, false, Mobile.RangePerception, Mobile.RangePerception * 2))
+            {
+                DebugSay("I backed off to safety. Wandering...");
+
+                Action = ActionType.Wander;
+            }
+        }
+        else
+        {
+            DebugSay("Focus target missing. Wandering...");
+            
+            Action = ActionType.Wander;
+        }
+
+        return true;
     }
 
     public virtual void OnTeleported()
