@@ -363,7 +363,8 @@ public abstract partial class BaseAI
     {
         DebugSay("Target is either dead, hidden, or out of range.");
 
-        Mobile.ControlOrder = Mobile.IsBonded ? OrderType.Follow : OrderType.None;
+        Mobile.ControlTarget = Mobile.ControlMaster;
+        Mobile.ControlOrder = OrderType.None;
 
         if (Mobile.FightMode is FightMode.Closest or FightMode.Aggressor)
         {
