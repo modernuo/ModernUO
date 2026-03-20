@@ -353,10 +353,11 @@ public abstract partial class BaseAI
         else if (Mobile.IsAnimatedDead)
         {
             FollowMaster();
-        }
-        else if (CheckMove() && CanMoveNow(out _) && !Mobile.CheckIdle())
-        {
-            WalkRandomInHome(3, 2, 1);
+    
+            if (CheckMove() && CanMoveNow(out _) && !Mobile.CheckIdle())
+            {
+                WalkRandomInHome(3, 2, 1);
+            }
         }
 
         return true;
@@ -393,10 +394,6 @@ public abstract partial class BaseAI
         if (master != null && master.Map == Mobile.Map && master.InRange(Mobile, Mobile.RangePerception))
         {
             MoveTo(master, false, 1);
-        }
-        else
-        {
-            WalkRandomInHome(3, 2, 1);
         }
     }
 
