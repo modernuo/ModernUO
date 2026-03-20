@@ -975,6 +975,7 @@ public static class FeatureFlagManager
             "boat_placement"         => ContentFeatureFlags.BoatPlacement = enabled,
             "bulk_orders"            => ContentFeatureFlags.BulkOrders = enabled,
             "passive_detect_hidden"  => ContentFeatureFlags.PassiveDetectHidden = enabled,
+            "t2a_craft_menus"        => ContentFeatureFlags.T2ACraftMenus = enabled,
         };
     }
 

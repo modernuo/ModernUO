@@ -1,5 +1,6 @@
 using System;
 using Server.Items;
+using Server.Systems.FeatureFlags;
 
 namespace Server.Engines.Craft;
 
@@ -20,7 +21,7 @@ public class DefCartography : CraftSystem
 
     public static CraftSystem CraftSystem { get; private set; }
 
-    public override bool RequiresTool => Core.UOTD;
+    public override bool RequiresTool => !ContentFeatureFlags.T2ACraftMenus;
 
     public override double GetChanceAtMin(CraftItem item) => 0.0;
 

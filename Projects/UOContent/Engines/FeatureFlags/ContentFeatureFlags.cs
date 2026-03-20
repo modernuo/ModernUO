@@ -13,4 +13,5 @@ public static class ContentFeatureFlags
     public static bool BoatPlacement { get; set; } = true;
     public static bool BulkOrders { get; set; } = true;
     public static bool PassiveDetectHidden { get; set; } = true;
+    public static bool T2ACraftMenus { get; set; }
 }

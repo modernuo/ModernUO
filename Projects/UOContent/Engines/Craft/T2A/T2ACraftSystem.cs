@@ -3,6 +3,7 @@
 using System;
 using Server.Items;
 using Server.Menus.ItemLists;
+using Server.Systems.FeatureFlags;
 using Server.Targeting;
 
 namespace Server.Engines.Craft.T2A;
@@ -11,7 +12,7 @@ public static class T2ACraftSystem
 {
     public static void ShowMenu(Mobile from, CraftSystem craftSystem, BaseTool tool, Item preTarget = null)
     {
-        if (Core.UOTD)
+        if (!ContentFeatureFlags.T2ACraftMenus)
         {
             return;
         }
