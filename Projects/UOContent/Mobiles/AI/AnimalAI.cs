@@ -8,6 +8,7 @@ public class AnimalAI : BaseAI
 
     public override double FleeHealthThreshold => 0.1; // 10% is default
     public override double FleeChance => 0.1; // 10% is default
+    public override double BackoffChance => 0.5; // 50% is default
 
     public override bool DoActionWander()
     {
@@ -58,25 +59,6 @@ public class AnimalAI : BaseAI
             this.DebugSayFormatted($"I used my abilities on {combatant.Name}!");
         }
 
-        return true;
-    }
-
-    public override bool DoActionBackoff()
-    {
-        if (AcquireFocusMob(Mobile.RangePerception * 2, FightMode.Closest, true, false, true))
-        {
-            if (WalkMobileRange(Mobile.FocusMob, 1, false, Mobile.RangePerception, Mobile.RangePerception * 2))
-            {
-                DebugSay("I backed off to safety. Wandering...");
-                Action = ActionType.Wander;
-            }
-        }
-        else
-        {
-            DebugSay("Focus target missing. Wandering...");
-            Action = ActionType.Wander;
-        }
-    
         return true;
     }
 
