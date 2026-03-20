@@ -181,6 +181,11 @@ public abstract partial class BaseAI
 
     private bool CanAttackTarget(Mobile from, Mobile target)
     {
+        if (target.Hidden)
+        {
+            return false;
+        }
+
         if (target is BaseCreature creature && creature.IsScaryToPets && Mobile.IsScaredOfScaryThings)
         {
             Mobile.SayTo(from, "Your pet refuses to attack this creature!");
