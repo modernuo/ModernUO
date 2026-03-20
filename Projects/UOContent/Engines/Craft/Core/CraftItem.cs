@@ -1925,33 +1925,20 @@ namespace Server.Engines.Craft
                     makersMark = m_CraftItem.IsMarkable(m_CraftItem.ItemType);
                 }
 
-                if (makersMark && context.MarkOption == CraftMarkOption.PromptForMark)
+                // T2A menus always prompt for maker's mark (no auto-mark/don't-mark options)
+                if (makersMark &&
+                    (ContentFeatureFlags.T2ACraftMenus || context.MarkOption == CraftMarkOption.PromptForMark))
                 {
-                    if (ContentFeatureFlags.T2ACraftMenus)
-                    {
-                        m_From.SendMenu(
-                            new T2A.QueryMakersMarkMenu(
-                                quality,
-                                m_CraftItem,
-                                m_CraftSystem,
-                                m_TypeRes,
-                                m_Tool,
-                                m_ResHue
-                            )
-                        );
-                    }
-                    else
-                    {
-                        m_From.SendGump(
-                            new QueryMakersMarkGump(
-                                quality,
-                                m_CraftItem,
-                                m_CraftSystem,
-                                m_TypeRes,
-                                m_Tool
-                            )
-                        );
-                    }
+                    m_From.SendGump(
+                        new QueryMakersMarkGump(
+                            quality,
+                            m_CraftItem,
+                            m_CraftSystem,
+                            m_TypeRes,
+                            m_Tool,
+                            m_ResHue
+                        )
+                    );
                 }
                 else
                 {

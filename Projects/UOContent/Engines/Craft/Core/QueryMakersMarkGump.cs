@@ -12,17 +12,20 @@ public class QueryMakersMarkGump : StaticGump<QueryMakersMarkGump>
     private readonly int _quality;
     private readonly BaseTool _tool;
     private readonly Type _typeRes;
+    private readonly int _resHue;
 
     public override bool Singleton => true;
 
-    public QueryMakersMarkGump(int quality, CraftItem craftItem, CraftSystem craftSystem, Type typeRes, BaseTool tool)
-        : base(100, 200)
+    public QueryMakersMarkGump(
+        int quality, CraftItem craftItem, CraftSystem craftSystem, Type typeRes, BaseTool tool, int resHue = -1
+    ) : base(100, 200)
     {
         _quality = quality;
         _craftItem = craftItem;
         _craftSystem = craftSystem;
         _typeRes = typeRes;
         _tool = tool;
+        _resHue = resHue;
     }
 
     protected override void BuildLayout(ref StaticGumpBuilder builder)
@@ -55,6 +58,13 @@ public class QueryMakersMarkGump : StaticGump<QueryMakersMarkGump>
             from.SendLocalizedMessage(501809); // Cancelled mark.
         }
 
-        _craftItem.CompleteCraft(_quality, makersMark, from, _craftSystem, _typeRes, _tool, null);
+        if (_resHue >= 0)
+        {
+            _craftItem.CompleteCraft(_quality, makersMark, from, _craftSystem, _typeRes, _tool, null, _resHue);
+        }
+        else
+        {
+            _craftItem.CompleteCraft(_quality, makersMark, from, _craftSystem, _typeRes, _tool, null);
+        }
     }
 }
