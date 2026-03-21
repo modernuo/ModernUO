@@ -2648,7 +2648,7 @@ public abstract partial class BaseWeapon
 
         /* Compute lumberjacking bonus (UOR+)
          * : 1% bonus for every 5 points of lumberjacking
-         * : +10% bonus at Grandmaster or higher
+         * : +10% bonus at Grandmaster or higher (UOTD+)
          */
         if (Core.UOR && Type == WeaponType.Axe)
         {
@@ -2656,7 +2656,7 @@ public abstract partial class BaseWeapon
 
             modifiers += lumberValue / 5.0 / 100.0;
 
-            if (lumberValue >= 100.0)
+            if (Core.UOTD && lumberValue >= 100.0)
             {
                 modifiers += 0.1;
             }
