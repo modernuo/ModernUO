@@ -36,7 +36,7 @@ public abstract partial class BaseHealPotion : BasePotion
             return false;
         }
 
-        if ((Core.T2A && from.Poisoned) || MortalStrike.IsWounded(from))
+        if ((Core.UOR && from.Poisoned) || MortalStrike.IsWounded(from))
         {
             // You can not heal yourself in your current state.
             from.LocalOverheadMessage(MessageType.Regular, 0x22, 1005000);

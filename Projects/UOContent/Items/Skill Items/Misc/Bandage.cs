@@ -311,7 +311,7 @@ public class BandageContext : Timer
                 Patient.SendGump(new ResurrectGump(Healer));
             }
         }
-        else if (Core.T2A && Patient.Poisoned)
+        else if (Core.UOR && Patient.Poisoned)
         {
             Healer.SendLocalizedMessage(500969); // You finish applying the bandages.
 
