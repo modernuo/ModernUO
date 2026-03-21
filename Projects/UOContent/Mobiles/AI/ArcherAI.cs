@@ -8,6 +8,9 @@ public class ArcherAI : BaseAI
     {
     }
 
+    public override double FleeHealthThreshold => 0.2; // 20% is default
+    public override double FleeChance => 0.1; // 10% is default
+
     public override bool DoActionWander()
     {
         DebugSay("I have no combatant");
