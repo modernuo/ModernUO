@@ -47,7 +47,17 @@ namespace Server
         [CallPriority(10)]
         public static void Configure()
         {
-            if (Core.AOS)
+            if (!Core.UOR)
+            {
+                // UO98: HP-percentage damage, long intervals, long durations
+                //                          name       lvl min  max  scalar  delay  interval count msgInterval
+                Register(new PoisonImpl("Lesser",   0, 0, 999, 5.000,  15.0, 15.0, 15, 3));
+                Register(new PoisonImpl("Regular",  1, 0, 999, 6.670,  10.0, 10.0, 30, 3));
+                Register(new PoisonImpl("Greater",  2, 0, 999, 12.500, 10.0, 10.0, 45, 3));
+                Register(new PoisonImpl("Deadly",   3, 0, 999, 25.000, 5.0,  5.0,  60, 3));
+                Register(new PoisonImpl("Lethal",   4, 0, 999, 50.000, 5.0,  5.0,  75, 3));
+            }
+            else if (Core.AOS)
             {
                 Register(new PoisonImpl("Lesser", 0, 4, 16, 7.5, 3.0, 2.25, 10, 4));
                 Register(new PoisonImpl("Regular", 1, 8, 18, 10.0, 3.0, 3.25, 10, 3));
@@ -92,21 +102,24 @@ namespace Server
 
             protected override void OnTick()
             {
-                if (Core.AOS && m_Poison.Level < 4 &&
-                    TransformationSpellHelper.UnderTransformation(m_Mobile, typeof(VampiricEmbraceSpell)) ||
-                    m_Poison.Level < 3 && OrangePetals.UnderEffect(m_Mobile) ||
-                    AnimalForm.UnderTransformation(m_Mobile, typeof(Unicorn)))
+                if (Core.UOR)
                 {
-                    if (m_Mobile.CurePoison(m_Mobile))
+                    if (Core.AOS && m_Poison.Level < 4 &&
+                        TransformationSpellHelper.UnderTransformation(m_Mobile, typeof(VampiricEmbraceSpell)) ||
+                        m_Poison.Level < 3 && OrangePetals.UnderEffect(m_Mobile) ||
+                        AnimalForm.UnderTransformation(m_Mobile, typeof(Unicorn)))
                     {
-                        // * You feel yourself resisting the effects of the poison *
-                        m_Mobile.LocalOverheadMessage(MessageType.Emote, 0x3F, 1114441);
+                        if (m_Mobile.CurePoison(m_Mobile))
+                        {
+                            // * You feel yourself resisting the effects of the poison *
+                            m_Mobile.LocalOverheadMessage(MessageType.Emote, 0x3F, 1114441);
 
-                        // * ~1_NAME~ seems resistant to the poison *
-                        m_Mobile.NonlocalOverheadMessage(MessageType.Emote, 0x3F, 1114442, m_Mobile.Name);
+                            // * ~1_NAME~ seems resistant to the poison *
+                            m_Mobile.NonlocalOverheadMessage(MessageType.Emote, 0x3F, 1114442, m_Mobile.Name);
 
-                        Stop();
-                        return;
+                            Stop();
+                            return;
+                        }
                     }
                 }
 
@@ -127,7 +140,7 @@ namespace Server
                 }
                 else
                 {
-                    damage = 1 + (int)(m_Mobile.Hits * m_Poison.m_Scalar);
+                    damage = (Core.UOR ? 1 : 2) + (int)(m_Mobile.Hits * m_Poison.m_Scalar);
 
                     if (damage < m_Poison.m_Minimum)
                     {
@@ -141,11 +154,14 @@ namespace Server
                     m_LastDamage = damage;
                 }
 
-                From?.DoHarmful(m_Mobile, true);
+                if (Core.UOR)
+                {
+                    From?.DoHarmful(m_Mobile, true);
+                }
 
                 (m_Mobile as IHonorTarget)?.ReceivedHonorContext?.OnTargetPoisoned();
 
-                AOS.Damage(m_Mobile, From, damage, 0, 0, 0, 100, 0);
+                AOS.Damage(m_Mobile, Core.UOR ? From : null, damage, 0, 0, 0, 100, 0);
 
                 // OSI: randomly revealed between first and third damage tick, guessing 60% chance
                 if (Utility.RandomDouble() < 0.40)
@@ -155,7 +171,19 @@ namespace Server
 
                 if (m_Index % m_Poison.m_MessageInterval == 0)
                 {
-                    m_Mobile.OnPoisoned(From, m_Poison, m_Poison);
+                    if (!Core.UOR)
+                    {
+                        // UO98: level-specific bark messages
+                        var level = m_Poison.Level;
+                        m_Mobile.LocalOverheadMessage(MessageType.Emote, 0x3F, 1042857 + level * 2);
+                        m_Mobile.NonlocalOverheadMessage(
+                            MessageType.Emote, 0x3F, 1042858 + level * 2, m_Mobile.Name
+                        );
+                    }
+                    else
+                    {
+                        m_Mobile.OnPoisoned(From, m_Poison, m_Poison);
+                    }
                 }
             }
         }

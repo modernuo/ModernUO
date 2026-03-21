@@ -38,52 +38,61 @@ namespace Server.Spells.Third
                 }
                 else
                 {
-                    var total = Caster.Skills.Magery.Value;
-
-                    if (Caster is PlayerMobile pm)
-                    {
-                        if (pm.DuelContext?.Started != true || pm.DuelContext.Finished ||
-                            pm.DuelContext.Ruleset.GetOption("Skills", "Poisoning"))
-                        {
-                            total += pm.Skills.Poisoning.Value;
-                        }
-                    }
-                    else
-                    {
-                        total += Caster.Skills.Poisoning.Value;
-                    }
-
-                    var dist = Caster.GetDistanceToSqrt(m);
                     int level;
 
-                    if (Core.AOS && dist >= 3)
+                    if (!Core.UOR)
                     {
-                        level = 0;
+                        // UO98: binary choice based on magery roll
+                        level = Utility.Random(1, 100) < (int)Caster.Skills.Magery.Value ? 1 : 0;
                     }
                     else
                     {
-                        if (!Core.AOS && dist >= 3.0)
+                        var total = Caster.Skills.Magery.Value;
+
+                        if (Caster is PlayerMobile pm)
                         {
-                            total -= (dist - 3.0) * 10.0;
+                            if (pm.DuelContext?.Started != true || pm.DuelContext.Finished ||
+                                pm.DuelContext.Ruleset.GetOption("Skills", "Poisoning"))
+                            {
+                                total += pm.Skills.Poisoning.Value;
+                            }
+                        }
+                        else
+                        {
+                            total += Caster.Skills.Poisoning.Value;
                         }
 
-                        if (Core.SA && dist >= 2.0)
+                        var dist = Caster.GetDistanceToSqrt(m);
+
+                        if (Core.AOS && dist >= 3)
                         {
-                            total -= (dist - 2) * 31; // 240 -
+                            level = 0;
                         }
-
-                        level = total switch
+                        else
                         {
-                            > 200.0 when Core.SA && dist <= 2.0 => Utility.Random(10) == 0 ? 4 : 3,
-                            > 199.8                            => Core.AOS || Utility.Random(10) == 0 ? 3 : 2,
-                            > 170.2                             => 2,
-                            > 130.2                             => 1,
-                            _                                   => 0
-                        };
+                            if (!Core.AOS && dist >= 3.0)
+                            {
+                                total -= (dist - 3.0) * 10.0;
+                            }
 
-                        if (Core.SA && dist > 2.0)
-                        {
-                            level -= (int)dist / 3;
+                            if (Core.SA && dist >= 2.0)
+                            {
+                                total -= (dist - 2) * 31; // 240 -
+                            }
+
+                            level = total switch
+                            {
+                                > 200.0 when Core.SA && dist <= 2.0 => Utility.Random(10) == 0 ? 4 : 3,
+                                > 199.8                            => Core.AOS || Utility.Random(10) == 0 ? 3 : 2,
+                                > 170.2                             => 2,
+                                > 130.2                             => 1,
+                                _                                   => 0
+                            };
+
+                            if (Core.SA && dist > 2.0)
+                            {
+                                level -= (int)dist / 3;
+                            }
                         }
                     }
 
