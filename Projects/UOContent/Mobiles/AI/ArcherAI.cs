@@ -1,4 +1,3 @@
-using System;
 using Server.Items;
 
 namespace Server.Mobiles;
@@ -73,18 +72,6 @@ public class ArcherAI : BaseAI
         {
             Action = ActionType.Flee;
             return true;
-        }
-
-        // At 20% we should check if we must leave
-        if (Mobile.Combatant != null && Mobile.Hits < Mobile.HitsMax * 20 / 100 && Mobile.CanFlee)
-        {
-            // 10% to flee + the diff of hits
-            var fleeChance = 10 + Math.Max(0, Mobile.Combatant.Hits - Mobile.Hits);
-
-            if (Utility.Random(0, 100) > fleeChance)
-            {
-                Action = ActionType.Flee;
-            }
         }
 
         return true;
