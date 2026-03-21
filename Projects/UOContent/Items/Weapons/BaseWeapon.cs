@@ -2615,7 +2615,7 @@ public abstract partial class BaseWeapon
             // Passively check Anatomy for gain
             attacker.CheckSkill(SkillName.Anatomy, 0.0, attacker.Skills.Anatomy.Cap);
 
-            if (Type == WeaponType.Axe)
+            if (Core.UOR && Type == WeaponType.Axe)
             {
                 // Passively check Lumberjacking for gain
                 attacker.CheckSkill(SkillName.Lumberjacking, 0.0, 100.0);
@@ -2636,21 +2636,21 @@ public abstract partial class BaseWeapon
 
         /* Compute anatomy modifier
          * : 1% bonus for every 5 points of anatomy
-         * : +10% bonus at Grandmaster or higher
+         * : +10% bonus at Grandmaster or higher (UOTD+)
          */
         var anatomyValue = attacker.Skills.Anatomy.Value;
         modifiers += anatomyValue / 5.0 / 100.0;
 
-        if (anatomyValue >= 100.0)
+        if (Core.UOTD && anatomyValue >= 100.0)
         {
             modifiers += 0.1;
         }
 
-        /* Compute lumberjacking bonus
+        /* Compute lumberjacking bonus (UOR+)
          * : 1% bonus for every 5 points of lumberjacking
          * : +10% bonus at Grandmaster or higher
          */
-        if (Type == WeaponType.Axe)
+        if (Core.UOR && Type == WeaponType.Axe)
         {
             var lumberValue = attacker.Skills.Lumberjacking.Value;
 
