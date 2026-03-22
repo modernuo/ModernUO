@@ -96,7 +96,7 @@ namespace Server.Compression
 
             new FileInfo(destinationArchiveFileName).EnsureDirectory();
 
-            var sb = ValueStringBuilder.Create();
+            using var sb = ValueStringBuilder.Create();
             var i = 0;
             foreach (var path in paths)
             {
@@ -111,7 +111,6 @@ namespace Server.Compression
                 }
             }
             var pathsToCompress = sb.ToString();
-            sb.Dispose();
 
             var tarFlags = compressCommand == null ? "-acf" : "-cf";
             var useExternalCompression = compressCommand != null ? $"--use-compress-program \"{compressCommand}\" " : "";

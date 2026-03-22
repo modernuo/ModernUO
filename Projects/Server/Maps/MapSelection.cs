@@ -42,7 +42,7 @@ public static class MapSelection
 
     public static string ToCommaDelimitedString(this MapSelectionFlags flags)
     {
-        using var builder = ValueStringBuilder.Create();
+        using var builder = new ValueStringBuilder(stackalloc char[160]);
 
         foreach (var flag in flags.GetEnumerable())
         {

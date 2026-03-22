@@ -1,6 +1,6 @@
 using System;
-using System.Text;
 using Server.Mobiles;
+using Server.Text;
 
 namespace Server.Engines.ConPVP
 {
@@ -74,7 +74,7 @@ namespace Server.Engines.ConPVP
         {
             get
             {
-                var sb = new StringBuilder();
+                using var sb = ValueStringBuilder.Create(256);
 
                 for (var i = 0; i < Players.Length; ++i)
                 {

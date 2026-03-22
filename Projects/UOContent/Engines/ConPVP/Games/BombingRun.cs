@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using System.Text;
 using ModernUO.Serialization;
 using Server.Gumps;
 using Server.Items;
 using Server.Mobiles;
 using Server.Targeting;
+using Server.Text;
 
 namespace Server.Engines.ConPVP;
 
@@ -1692,7 +1692,7 @@ public sealed class BRGame : EventGame
 
         var tourney = m_Context.m_Tournament;
 
-        var sb = new StringBuilder();
+        using var sb = ValueStringBuilder.Create(256);
 
         if (tourney != null)
         {
@@ -1731,7 +1731,8 @@ public sealed class BRGame : EventGame
 
         if (Controller != null)
         {
-            sb.Append(' ').Append(Controller.Title);
+            sb.Append(' ');
+            sb.Append(Controller.Title);
         }
 
         var title = sb.ToString();
@@ -1758,7 +1759,7 @@ public sealed class BRGame : EventGame
                     continue;
                 }
 
-                sb = new StringBuilder();
+                sb.Reset();
 
                 sb.Append(title);
 

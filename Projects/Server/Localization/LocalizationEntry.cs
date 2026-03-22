@@ -51,7 +51,7 @@ public class LocalizationEntry
 
     private static void ParseText(string text, out string[] textSlices, out string stringFormatter)
     {
-        var sb = ValueStringBuilder.Create(256);
+        using var sb = ValueStringBuilder.Create(256);
         using var queue = PooledRefQueue<string>.Create();
 
         var hasMatch = false;
@@ -81,8 +81,6 @@ public class LocalizationEntry
 
         textSlices = queue.ToArray();
         stringFormatter = hasMatch ? sb.ToString() : null;
-
-        sb.Dispose();
     }
 
     /// <summary>
