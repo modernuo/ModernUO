@@ -15,6 +15,8 @@
 
 using System;
 using System.IO;
+using System.Threading;
+using Server.Logging;
 using Server.Text;
 
 namespace Server;
@@ -120,9 +122,33 @@ public static class PathUtility
         {
             dir.Delete(true);
         }
-        catch
+        catch (Exception ex)
         {
-            // ignored
+            _logger.Warning(ex, "Failed to delete source directory after move: {Path}", sourceDir);
         }
     }
+
+    /// <summary>
+    /// Attempts to move a file with retry logic for transient I/O failures (antivirus, file locks).
+    /// Safe to call from ThreadPool threads.
+    /// </summary>
+    public static bool TryMoveFile(string source, string dest, int maxRetries = 3, int delayMs = 200)
+    {
+        for (var i = 0; i < maxRetries; i++)
+        {
+            try
+            {
+                File.Move(source, dest);
+                return true;
+            }
+            catch (Exception ex) when (i < maxRetries - 1 && ex is IOException or UnauthorizedAccessException)
+            {
+                Thread.Sleep(delayMs * (i + 1));
+            }
+        }
+
+        return false;
+    }
+
+    private static readonly ILogger _logger = LogFactory.GetLogger(typeof(PathUtility));
 }
