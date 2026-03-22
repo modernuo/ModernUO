@@ -14,10 +14,7 @@ public partial class BountyBoard : BaseBulletinBoard
     private const uint SyntheticSerialBase = 0x80000000;
 
     [Constructible]
-    public BountyBoard() : base(0x1E5E)
-    {
-        BoardName = "bounty board";
-    }
+    public BountyBoard() : base(0x1E5E) => BoardName = "bounty board";
 
     public override void OnSingleClick(Mobile from)
     {
@@ -56,24 +53,36 @@ public partial class BountyBoard : BaseBulletinBoard
         {
             case 3: // Request content
             case 4: // Request header
-            {
-                var syntheticSerial = reader.ReadUInt32();
-                var playerSerial = (Serial)(syntheticSerial - SyntheticSerialBase);
-
-                if (World.FindMobile(playerSerial) is PlayerMobile player &&
-                    PlayerMurderSystem.GetMurderContext(player, out var context) &&
-                    context.Bounty > 0)
                 {
-                    BountyMessage.SendBountyBBMessage(from.NetState, this, (Serial)syntheticSerial, player, context.Bounty, context.LastMurderTime, packetID == 3);
-                }
+                    var syntheticSerial = reader.ReadUInt32();
+                    var playerSerial = (Serial)(syntheticSerial - SyntheticSerialBase);
 
-                return true;
-            }
+                    if (World.FindMobile(playerSerial) is PlayerMobile player &&
+                        PlayerMurderSystem.GetMurderContext(player, out var context) &&
+                        context.Bounty > 0)
+                    {
+                        BountyMessage.SendBountyBBMessage(
+                            from.NetState,
+                            this,
+                            (Serial)syntheticSerial,
+                            player,
+                            context.Bounty,
+                            context.LastMurderTime,
+                            packetID == 3
+                        );
+                    }
+
+                    return true;
+                }
             case 5: // Post - blocked
-                from.SendLocalizedMessage(1062398); // You are not allowed to post to this bulletin board.
-                return true;
+                {
+                    from.SendLocalizedMessage(1062398); // You are not allowed to post to this bulletin board.
+                    return true;
+                }
             case 6: // Remove - blocked
-                return true;
+                {
+                    return true;
+                }
         }
 
         return false;
