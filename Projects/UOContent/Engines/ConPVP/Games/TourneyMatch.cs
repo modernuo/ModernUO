@@ -11,12 +11,13 @@ namespace Server.Engines.ConPVP
         {
             Participants = participants;
 
+            using var sb = new ValueStringBuilder(stackalloc char[256]);
+
             for (var i = 0; i < participants.Count; ++i)
             {
                 var part = participants[i];
 
-                using var sb = ValueStringBuilder.Create(256);
-
+                sb.Reset();
                 sb.Append("Matched in a duel against ");
 
                 if (participants.Count > 2)

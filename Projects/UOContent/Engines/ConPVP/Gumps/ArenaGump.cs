@@ -97,6 +97,8 @@ public class ArenaGump : Gump
         AddButton(499 + 40 - 12 - 63 - 4 - 63, height - 12 - 24, 247, 248, 1);
         AddButton(499 + 40 - 12 - 63, height - 12 - 24, 241, 242, 2);
 
+        var sb = new ValueStringBuilder(stackalloc char[256]);
+
         for (var i = 0; i < list.Count; ++i)
         {
             var ar = list[i];
@@ -112,7 +114,7 @@ public class ArenaGump : Gump
             AddBorderedText(x + 5, y + 5, 115 - 5, ar.Name ?? "(no name)", color, 0);
             x += 115;
 
-            var sb = ValueStringBuilder.Create(256);
+            sb.Reset();
 
             if (ar.Players.Count > 0)
             {
@@ -120,7 +122,6 @@ public class ArenaGump : Gump
 
                 if (ladder == null)
                 {
-                    sb.Dispose();
                     continue;
                 }
 
@@ -171,11 +172,12 @@ public class ArenaGump : Gump
             }
 
             AddBorderedText(x + 5, y + 5, 325 - 5, sb.ToString(), color, 0);
-            sb.Dispose();
             x += 325;
 
             AddBorderedText(x, y + 5, 40, Html.Center($"{ar.Spectators}"), color, 0);
         }
+
+        sb.Dispose();
     }
 
     private void Append(ref ValueStringBuilder sb, LadderEntry le)
