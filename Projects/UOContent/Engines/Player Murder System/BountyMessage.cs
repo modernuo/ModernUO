@@ -161,12 +161,30 @@ public static class BountyMessage
         // Title line (random, 6 variants matching uo98 bountyboard.m)
         switch (Utility.Random(6))
         {
-            case 0:  lineBuilder.Append($"Bounty for {player.RawName}!"); break;
-            case 1:  lineBuilder.Append($"{player.RawName} must die!"); break;
-            case 2:  lineBuilder.Append($"A price on {player.RawName}!"); break;
-            case 3:  lineBuilder.Append($"{player.RawName} outlawed!"); break;
-            case 4:  lineBuilder.Append($"Execute {player.RawName}!"); break;
-            default: lineBuilder.Append($"WANTED: {player.RawName}!"); break;
+            case 0:
+                {
+                    lineBuilder.Append($"Bounty for {player.RawName}!"); break;
+                }
+            case 1:
+                {
+                    lineBuilder.Append($"{player.RawName} must die!"); break;
+                }
+            case 2:
+                {
+                    lineBuilder.Append($"A price on {player.RawName}!"); break;
+                }
+            case 3:
+                {
+                    lineBuilder.Append($"{player.RawName} outlawed!"); break;
+                }
+            case 4:
+                {
+                    lineBuilder.Append($"Execute {player.RawName}!"); break;
+                }
+            default:
+                {
+                    lineBuilder.Append($"WANTED: {player.RawName}!"); break;
+                }
         }
 
         writer.WriteString(lineBuilder.AsSpan(), textBuffer, true);
