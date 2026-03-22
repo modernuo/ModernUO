@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Server.Factions;
 using Server.Items;
 using Server.Regions;
+using Server.Text;
 
 namespace Server.Engines.ConPVP
 {
@@ -237,7 +237,7 @@ namespace Server.Engines.ConPVP
                 return;
             }
 
-            var sb = new StringBuilder();
+            using var sb = ValueStringBuilder.Create(512);
 
             sb.Append("The match has ended in a tie ");
 
@@ -284,7 +284,7 @@ namespace Server.Engines.ConPVP
             {
                 case TieType.FullAdvancement:
                     {
-                        sb.AppendFormat("In accordance with the rules, {0} parties are advanced.", whole);
+                        sb.Append($"In accordance with the rules, {whole} parties are advanced.");
                         break;
                     }
                 case TieType.FullElimination:
@@ -294,7 +294,7 @@ namespace Server.Engines.ConPVP
                             Undefeated.Remove(remaining[j]);
                         }
 
-                        sb.AppendFormat("In accordance with the rules, {0} parties are eliminated.", whole);
+                        sb.Append($"In accordance with the rules, {whole} parties are eliminated.");
                         break;
                     }
                 case TieType.Random:
@@ -311,11 +311,7 @@ namespace Server.Engines.ConPVP
 
                         if (advanced != null)
                         {
-                            sb.AppendFormat(
-                                "In accordance with the rules, {0} {1} advanced.",
-                                advanced.NameList,
-                                advanced.Players.Count == 1 ? "is" : "are"
-                            );
+                            sb.Append($"In accordance with the rules, {advanced.NameList} {(advanced.Players.Count == 1 ? "is" : "are")} advanced.");
                         }
 
                         break;
@@ -344,11 +340,7 @@ namespace Server.Engines.ConPVP
 
                         if (advanced != null)
                         {
-                            sb.AppendFormat(
-                                "In accordance with the rules, {0} {1} advanced.",
-                                advanced.NameList,
-                                advanced.Players.Count == 1 ? "is" : "are"
-                            );
+                            sb.Append($"In accordance with the rules, {advanced.NameList} {(advanced.Players.Count == 1 ? "is" : "are")} advanced.");
                         }
 
                         break;
@@ -377,11 +369,7 @@ namespace Server.Engines.ConPVP
 
                         if (advanced != null)
                         {
-                            sb.AppendFormat(
-                                "In accordance with the rules, {0} {1} advanced.",
-                                advanced.NameList,
-                                advanced.Players.Count == 1 ? "is" : "are"
-                            );
+                            sb.Append($"In accordance with the rules, {advanced.NameList} {(advanced.Players.Count == 1 ? "is" : "are")} advanced.");
                         }
 
                         break;
@@ -432,7 +420,7 @@ namespace Server.Engines.ConPVP
 
         public void HandleWon(Arena arena, TourneyMatch match, TourneyParticipant winner)
         {
-            var sb = new StringBuilder();
+            using var sb = ValueStringBuilder.Create(512);
 
             sb.Append("The match is complete. ");
             sb.Append(winner.NameList);
@@ -448,11 +436,7 @@ namespace Server.Engines.ConPVP
 
             if (match.Participants.Count > 2)
             {
-                sb.AppendFormat(
-                    "{0} other {1}: ",
-                    match.Participants.Count - 1,
-                    winner.Players.Count == 1 ? "players" : "teams"
-                );
+                sb.Append($"{match.Participants.Count - 1} other {(winner.Players.Count == 1 ? "players" : "teams")}: ");
             }
 
             var hasAppended = false;
@@ -592,7 +576,7 @@ namespace Server.Engines.ConPVP
             cash /= 1000;
             cash *= 1000;
 
-            var sb = new StringBuilder();
+            using var sb = ValueStringBuilder.Create(256);
 
             if (TourneyType == TourneyType.FreeForAll)
             {
@@ -628,7 +612,8 @@ namespace Server.Engines.ConPVP
 
             if (EventController != null)
             {
-                sb.Append(' ').Append(EventController.Title);
+                sb.Append(' ');
+                sb.Append(EventController.Title);
             }
 
             sb.Append(" Champion");

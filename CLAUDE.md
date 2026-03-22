@@ -26,6 +26,7 @@ Apply these when writing or reviewing `.cs` files under `Projects/`.
 14. **PropertyList string literals must be holes** — `$"{"Map"}\t{value}"` not `$"Map\t{value}"`. The handler treats bare text as delimiters, `{}` holes as arguments. Only `\t` should be a bare literal → `dev-docs/property-lists.md`
 15. **Braces required on all control flow** — `if`, `else`, `for`, `foreach`, `while`, `do`, `switch` must always have braces, even for single-line bodies → `dev-docs/code-standards.md`
 16. **Prefer switch expressions and switch-when** — use switch expressions for value mapping and switch-when for pattern matching where they improve readability. Exception: skip if unreadable or cold path → `dev-docs/code-standards.md`
+17. **No `System.Text.StringBuilder`** — use `ValueStringBuilder` with `stackalloc` (bounded output) or `ValueStringBuilder.Create()` (unbounded). Supports `$"..."` interpolation directly. Always use `using var` for disposal. Use `Reset()` instead of reassigning → `dev-docs/string-handling.md`
 
 ## Dev-Docs Reference
 
@@ -45,6 +46,7 @@ Apply these when writing or reviewing `.cs` files under `Projects/`.
 | Configuration system | `dev-docs/configuration.md` |
 | Networking & packets | `dev-docs/networking-packets.md` |
 | Region system | `dev-docs/regions.md` |
+| String handling & ValueStringBuilder | `dev-docs/string-handling.md` |
 | RunUO migration (overview) | `dev-docs/runuo-migration-docs/00-overview.md` |
 | RunUO migration (all docs) | `dev-docs/runuo-migration-docs/` |
 
@@ -73,6 +75,7 @@ Then copy only the relevant skill files based on the task:
 | Timer work | `modernuo-timers`, `modernuo-serialization` |
 | Config system | `modernuo-configuration` |
 | Era-conditional code | `modernuo-era-expansion` |
+| String building / formatting | `modernuo-string-handling` |
 | Code review / audit | `modernuo-code-audit` |
 | Any `.cs` file edit | `modernuo-code-audit` (always offer for code changes) |
 | **RunUO Migration** | |

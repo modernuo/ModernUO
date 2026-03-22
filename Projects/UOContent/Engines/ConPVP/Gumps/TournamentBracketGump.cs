@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 using Server.Gumps;
 using Server.Mobiles;
 using Server.Network;
@@ -458,7 +457,7 @@ namespace Server.Engines.ConPVP
                                 color = 0x666666;
                             }
 
-                            var sb = new StringBuilder();
+                            using var sb = ValueStringBuilder.Create(512);
 
                             if (m_Tournament.TourneyType == TourneyType.Standard)
                             {

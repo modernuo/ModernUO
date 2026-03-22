@@ -486,7 +486,7 @@ finally
 - Use `PooledRefList<T>` instead of `new List<T>()`
 - Use `stackalloc` for small fixed-size buffers
 - Use `STArrayPool<T>` for larger buffers
-- Avoid string concatenation in loops (use `StringBuilder` or string interpolation in `IPropertyList`)
+- Use `ValueStringBuilder` with `stackalloc` for string building (never `System.Text.StringBuilder`) → `dev-docs/string-handling.md`
 
 ---
 

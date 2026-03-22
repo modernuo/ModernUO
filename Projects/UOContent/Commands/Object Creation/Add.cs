@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
-using System.Text;
 using Server.Gumps;
 using Server.Items;
 using Server.Text;
@@ -355,7 +354,7 @@ public static class Add
 
             var sendError = true;
 
-            var sb = new StringBuilder();
+            using var sb = ValueStringBuilder.Create();
             sb.Append("Serials: ");
 
             if (packs != null)

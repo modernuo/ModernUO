@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Server.Network;
+using Server.Text;
 
 namespace Server.Engines.ConPVP
 {
@@ -15,17 +15,13 @@ namespace Server.Engines.ConPVP
             {
                 var part = participants[i];
 
-                var sb = new StringBuilder();
+                using var sb = ValueStringBuilder.Create(256);
 
                 sb.Append("Matched in a duel against ");
 
                 if (participants.Count > 2)
                 {
-                    sb.AppendFormat(
-                        "{0} other {1}: ",
-                        participants.Count - 1,
-                        part.Players.Count == 1 ? "players" : "teams"
-                    );
+                    sb.Append($"{participants.Count - 1} other {(part.Players.Count == 1 ? "players" : "teams")}: ");
                 }
 
                 var hasAppended = false;
