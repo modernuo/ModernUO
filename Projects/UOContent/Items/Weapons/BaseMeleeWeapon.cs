@@ -1,3 +1,4 @@
+using Server.Spells.First;
 using Server.Spells.Spellweaving;
 
 namespace Server.Items
@@ -23,34 +24,7 @@ namespace Server.Items
                 return damage;
             }
 
-            var absorb = defender.MeleeDamageAbsorb;
-
-            if (absorb > 0)
-            {
-                if (absorb > damage)
-                {
-                    var react = damage / 5;
-
-                    if (react <= 0)
-                    {
-                        react = 1;
-                    }
-
-                    defender.MeleeDamageAbsorb -= damage;
-                    damage = 0;
-
-                    attacker.Damage(react, defender);
-
-                    attacker.PlaySound(0x1F1);
-                    attacker.FixedEffect(0x374A, 10, 16);
-                }
-                else
-                {
-                    defender.MeleeDamageAbsorb = 0;
-                    defender.SendLocalizedMessage(1005556); // Your reactive armor spell has been nullified.
-                    DefensiveSpell.Nullify(defender);
-                }
-            }
+            ReactiveArmorSpell.HandleMeleeHit(attacker, defender, ref damage);
 
             return damage;
         }

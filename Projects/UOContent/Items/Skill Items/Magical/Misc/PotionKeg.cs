@@ -12,7 +12,9 @@ public partial class PotionKeg : Item
         TileData.ItemTable[0x1940].Height = 4;
     }
 
-    [InvalidateProperties] [SerializableField(0)] [SerializedCommandProperty(AccessLevel.GameMaster)]
+    [InvalidateProperties]
+    [SerializableField(0)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private PotionEffect _type;
 
     [Constructible]
@@ -45,12 +47,20 @@ public partial class PotionKeg : Item
     {
         get
         {
-            if (_held > 0 && (int)_type >= (int)PotionEffect.Conflagration)
+            if (_held <= 0)
             {
-                return 1072658 + (int)_type - (int)PotionEffect.Conflagration;
+                return 1041641;
             }
 
-            return _held > 0 ? 1041620 + (int)_type : 1041641;
+            return _type switch
+            {
+                < PotionEffect.Nightsight or > PotionEffect.FlintsPungentBrew => 1041619,
+                PotionEffect.FlintsPungentBrew => 1113608,
+                >= PotionEffect.Parasitic => 1080069 + (int)_type - (int)PotionEffect.Parasitic,
+                PotionEffect.Invisibility => 1080071,
+                >= PotionEffect.Conflagration => 1072658 + (int)_type - (int)PotionEffect.Conflagration,
+                _ => 1041620 + (int)_type
+            };
         }
     }
 
@@ -249,6 +259,9 @@ public partial class PotionKeg : Item
             PotionEffect.ConflagrationGreater  => new GreaterConflagrationPotion(),
             PotionEffect.ConfusionBlast        => new ConfusionBlastPotion(),
             PotionEffect.ConfusionBlastGreater => new GreaterConfusionBlastPotion(),
+            PotionEffect.Invisibility          => new InvisibilityPotion(),
+            PotionEffect.Parasitic             => new ParasiticPotion(),
+            PotionEffect.Darkglow              => new DarkglowPotion(),
             _                                  => new NightSightPotion()
         };
 
@@ -279,6 +292,9 @@ public partial class PotionKeg : Item
             _ when type == typeof(GreaterConflagrationPotion)  => PotionEffect.ConflagrationGreater,
             _ when type == typeof(ConfusionBlastPotion)        => PotionEffect.ConfusionBlast,
             _ when type == typeof(GreaterConfusionBlastPotion) => PotionEffect.ConfusionBlastGreater,
-            _ /* when type == typeof(NightSightPotion) */      => PotionEffect.Nightsight
+            _ when type == typeof(InvisibilityPotion)          => PotionEffect.Invisibility,
+            _ when type ==  typeof(ParasiticPotion)            => PotionEffect.Parasitic,
+            _ when type ==  typeof(DarkglowPotion)             => PotionEffect.Darkglow,
+            _                                                  => PotionEffect.Nightsight
         };
 }

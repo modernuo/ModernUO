@@ -1,0 +1,48 @@
+{
+  "version": 2,
+  "type": "Server.Engines.PlayerMurderSystem.MurderContext",
+  "properties": [
+    {
+      "name": "ShortTermElapse",
+      "type": "System.TimeSpan",
+      "rule": "PrimitiveTypeMigrationRule"
+    },
+    {
+      "name": "LongTermElapse",
+      "type": "System.TimeSpan",
+      "rule": "PrimitiveTypeMigrationRule"
+    },
+    {
+      "name": "ShortTermMurders",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "PingPongs",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "Bounty",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "LastMurderTime",
+      "type": "System.DateTime",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

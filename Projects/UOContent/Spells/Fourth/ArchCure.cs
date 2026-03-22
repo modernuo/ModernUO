@@ -70,8 +70,8 @@ namespace Server.Spells.Fourth
 
                         if (poison != null)
                         {
-                            var chanceToCure = 10000 + (int)(Caster.Skills.Magery.Value * 75) -
-                                               (poison.Level + 1) * 1750;
+                            var poisonLevel = Poison.IncreaseLevel(poison).Level;
+                            var chanceToCure = 10000 + (int)(Caster.Skills.Magery.Value * 75) - poisonLevel * 1750;
                             chanceToCure /= 100;
                             chanceToCure -= 1;
 

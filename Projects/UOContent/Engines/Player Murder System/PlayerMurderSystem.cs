@@ -6,6 +6,7 @@ using ModernUO.CodeGeneratedEvents;
 using Server.Collections;
 using Server.Logging;
 using Server.Mobiles;
+using Server.SkillHandlers;
 
 namespace Server.Engines.PlayerMurderSystem;
 
@@ -21,6 +22,9 @@ public class PlayerMurderSystem : GenericPersistence
     // Only the players that are online
     private static readonly HashSet<MurderContext> _contextTerms = new(MurderContext.EqualityComparer.Default);
 
+    private static readonly HashSet<(Mobile, Mobile)> _recentlyReported = new();
+    private static TimeSpan _recentlyReportedDelay;
+
     private static TimeSpan _shortTermMurderDuration;
 
     private static TimeSpan _longTermMurderDuration;
@@ -31,10 +35,17 @@ public class PlayerMurderSystem : GenericPersistence
 
     public static bool PingPongEnabled => Core.T2A && !Core.LBR;
 
+    public static bool BountiesEnabled { get; private set; }
+
+    private static TimeSpan _bountyExpiry;
+
     public static void Configure()
     {
         _shortTermMurderDuration = ServerConfiguration.GetOrUpdateSetting("murderSystem.shortTermMurderDuration", TimeSpan.FromHours(8));
         _longTermMurderDuration = ServerConfiguration.GetOrUpdateSetting("murderSystem.longTermMurderDuration", TimeSpan.FromHours(40));
+        BountiesEnabled = ServerConfiguration.GetOrUpdateSetting("murderSystem.bountiesEnabled", !Core.LBR);
+        _recentlyReportedDelay = ServerConfiguration.GetOrUpdateSetting("murderSystem.recentlyReportedDelay", TimeSpan.FromMinutes(10));
+        _bountyExpiry = ServerConfiguration.GetOrUpdateSetting("murderSystem.bountyExpiry", TimeSpan.FromDays(14));
 
         _playerMurderPersistence = new PlayerMurderSystem();
     }
@@ -173,6 +184,63 @@ public class PlayerMurderSystem : GenericPersistence
         return context;
     }
 
+    public static int GetBounty(PlayerMobile player) =>
+        GetMurderContext(player, out var context) ? context.Bounty : 0;
+
+    public static void AddBounty(PlayerMobile player, int amount)
+    {
+        if (GetMurderContext(player, out var context))
+        {
+            context.Bounty += amount;
+        }
+    }
+
+    public static void ClearBounty(PlayerMobile player)
+    {
+        if (GetMurderContext(player, out var context))
+        {
+            context.Bounty = 0;
+        }
+    }
+
+    public static int GetActiveBountyCount()
+    {
+        var neverExpire = _bountyExpiry == TimeSpan.Zero;
+        var cutoff = neverExpire ? DateTime.MinValue : Core.Now - _bountyExpiry;
+        var count = 0;
+
+        foreach (var (player, context) in _murderContexts)
+        {
+            if (player.Murderer && context.Bounty > 0 && (neverExpire || context.LastMurderTime >= cutoff))
+            {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    // Reused across calls — safe because the server is single-threaded.
+    private static readonly List<(PlayerMobile Player, int Bounty)> _activeBountyCache = [];
+
+    public static List<(PlayerMobile Player, int Bounty)> GetActiveBounties()
+    {
+        _activeBountyCache.Clear();
+        var neverExpire = _bountyExpiry == TimeSpan.Zero;
+        var cutoff = neverExpire ? DateTime.MinValue : Core.Now - _bountyExpiry;
+
+        foreach (var (player, context) in _murderContexts)
+        {
+            if (player.Murderer && context.Bounty > 0 && (neverExpire || context.LastMurderTime >= cutoff))
+            {
+                _activeBountyCache.Add((player, context.Bounty));
+            }
+        }
+
+        _activeBountyCache.Sort(static (a, b) => b.Bounty.CompareTo(a.Bounty));
+        return _activeBountyCache;
+    }
+
     public static void ManuallySetPingPong(PlayerMobile player, int pingPong)
     {
         var context = GetOrCreateMurderContext(player);
@@ -200,8 +268,50 @@ public class PlayerMurderSystem : GenericPersistence
             context.PingPongs++;
         }
 
+        context.LastMurderTime = Core.Now;
         context.ResetKillTime();
         UpdateMurderContext(context);
+    }
+
+    public static bool IsRecentlyReported(Mobile reporter, Mobile killer) =>
+        _recentlyReported.Contains((reporter, killer));
+
+    public static bool ReportMurder(PlayerMobile reporter, Mobile killer)
+    {
+        if (killer?.Deleted != false || killer is not PlayerMobile pk)
+        {
+            return false;
+        }
+
+        if (!_recentlyReported.Add((reporter, killer)))
+        {
+            return false;
+        }
+
+        Timer.DelayCall(
+            _recentlyReportedDelay,
+            static (f, k) => _recentlyReported.Remove((f, k)),
+            reporter,
+            killer
+        );
+
+        var wasMurderer = killer.Murderer;
+        OnPlayerMurder(pk);
+
+        pk.SendLocalizedMessage(1049067); // You have been reported for murder!
+
+        if (!wasMurderer && killer.Murderer)
+        {
+            pk.SendLocalizedMessage(502134); // You are now known as a murderer!
+        }
+
+        // with the introduction of PingPongs, a red can technically have 1 kill.
+        if (Stealing.SuspendOnMurder && pk.Kills == 1 && pk.NpcGuild == NpcGuild.ThievesGuild)
+        {
+            pk.SendLocalizedMessage(501562); // You have been suspended by the Thieves Guild.
+        }
+
+        return true;
     }
 
     private static void UpdateMurderContext(MurderContext context)

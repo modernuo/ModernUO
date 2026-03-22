@@ -182,10 +182,10 @@ public static class SerializationExtensions
         else
         {
             writer.Write(true);
-            writer.Write((byte)p.Level);
+            writer.Write((byte)p.Index);
         }
     }
 
     public static Poison ReadPoison(this IGenericReader reader) =>
-        reader.ReadBool() ? Poison.GetPoison(reader.ReadByte()) : null;
+        reader.ReadBool() ? Poison.GetPoisonByIndex(reader.ReadByte()) : null;
 }
