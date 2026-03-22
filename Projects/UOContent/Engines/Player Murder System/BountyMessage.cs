@@ -1,8 +1,6 @@
 using System;
 using System.Buffers;
-using System.Collections.Generic;
 using System.IO;
-using Server.Collections;
 using Server.Items;
 using Server.Mobiles;
 using Server.Network;
@@ -64,6 +62,7 @@ public static class BountyMessage
     /// <summary>
     /// Sends a synthetic BB message packet (header or content) for a bounty entry,
     /// built entirely from live MurderSystem data — no real BulletinMessage item required.
+    /// Uses a resizable SpanWriter for single-pass writing with zero intermediate allocations.
     /// </summary>
     public static void SendBountyBBMessage(
         NetState ns, BaseBulletinBoard board, Serial messageSerial, PlayerMobile player, int bounty, DateTime lastMurderTime, bool content)
@@ -73,49 +72,19 @@ public static class BountyMessage
             return;
         }
 
-        var posterName = player.Name ?? "";
-        var subject = $"{bounty} gold";
-        var time = lastMurderTime.ToString("MMM dd, yyyy");
+        // Build subject and time without heap allocation
+        var subjectBuilder = new ValueStringBuilder(stackalloc char[32]);
+        subjectBuilder.Append(bounty);
+        subjectBuilder.Append(" gold");
 
-        var lines = content ? CreateLines(player, bounty) : null;
+        var timeBuilder = new ValueStringBuilder(stackalloc char[16]);
+        timeBuilder.Append(lastMurderTime, "MMM dd, yyyy");
 
-        BulletinEquip[] equip = null;
-        if (content)
-        {
-            using var list = PooledRefQueue<BulletinEquip>.Create(player.Items.Count);
-            for (var i = 0; i < player.Items.Count; ++i)
-            {
-                var item = player.Items[i];
-                if (item.Layer >= Layer.OneHanded && item.Layer <= Layer.Mount)
-                {
-                    list.Enqueue(new BulletinEquip(item.ItemID, item.Hue));
-                }
-            }
+        // Reusable UTF-8 encoding buffer (768 = GetMaxByteCount(255), covers any WriteString call)
+        Span<byte> textBuffer = stackalloc byte[768];
 
-            equip = list.ToArray();
-        }
-
-        // Calculate packet size
-        var longestTextLine = 0;
-        var maxLength = 22;
-        posterName.UpdateLengthCounters(ref maxLength, ref longestTextLine);
-        subject.UpdateLengthCounters(ref maxLength, ref longestTextLine);
-        time.UpdateLengthCounters(ref maxLength, ref longestTextLine);
-
-        if (content)
-        {
-            var equipLength = Math.Min(255, equip!.Length);
-            var linesLength = Math.Min(255, lines!.Length);
-            maxLength += 2 + equipLength * 4;
-            for (var i = 0; i < linesLength; i++)
-            {
-                lines[i].UpdateLengthCounters(ref maxLength, ref longestTextLine, true);
-            }
-        }
-
-        Span<byte> textBuffer = stackalloc byte[TextEncoding.UTF8.GetMaxByteCount(longestTextLine)];
-
-        var writer = maxLength > 1024 ? new SpanWriter(maxLength) : new SpanWriter(stackalloc byte[maxLength]);
+        // Single-pass writing with resizable SpanWriter — auto-grows if needed
+        var writer = new SpanWriter(stackalloc byte[1024], resize: true);
         writer.Write((byte)0x71); // Packet ID
         writer.Seek(2, SeekOrigin.Current);
         writer.Write((byte)(content ? 0x02 : 0x01)); // Command
@@ -126,29 +95,44 @@ public static class BountyMessage
             writer.Write(Serial.Zero); // Thread serial (all root-level)
         }
 
-        writer.WriteString(posterName, textBuffer);
-        writer.WriteString(subject, textBuffer);
-        writer.WriteString(time, textBuffer);
+        writer.WriteString(player.Name.AsSpan(), textBuffer);
+        writer.WriteString(subjectBuilder.AsSpan(), textBuffer);
+        writer.WriteString(timeBuilder.AsSpan(), textBuffer);
+
+        subjectBuilder.Dispose();
+        timeBuilder.Dispose();
 
         if (content)
         {
             writer.Write((short)player.Body);
             writer.Write((short)player.Hue);
 
-            var equipLength = Math.Min(255, equip!.Length);
-            writer.Write((byte)equipLength);
-            for (var i = 0; i < equipLength; i++)
+            // Write equipment directly from player items (no intermediate array)
+            var equipCount = 0;
+            for (var i = 0; i < player.Items.Count; i++)
             {
-                writer.Write((short)equip[i]._itemID);
-                writer.Write((short)equip[i]._hue);
+                if (player.Items[i].Layer >= Layer.OneHanded && player.Items[i].Layer <= Layer.Mount)
+                {
+                    equipCount++;
+                }
             }
 
-            var linesLength = Math.Min(255, lines!.Length);
-            writer.Write((byte)linesLength);
-            for (var i = 0; i < linesLength; i++)
+            var equipLength = Math.Min(255, equipCount);
+            writer.Write((byte)equipLength);
+
+            var equipWritten = 0;
+            for (var i = 0; i < player.Items.Count && equipWritten < equipLength; i++)
             {
-                writer.WriteString(lines[i], textBuffer, true);
+                var item = player.Items[i];
+                if (item.Layer >= Layer.OneHanded && item.Layer <= Layer.Mount)
+                {
+                    writer.Write((short)item.ItemID);
+                    writer.Write((short)item.Hue);
+                    equipWritten++;
+                }
             }
+
+            WriteContentLines(ref writer, textBuffer, player, bounty);
         }
 
         writer.WritePacketLength();
@@ -157,25 +141,83 @@ public static class BountyMessage
         writer.Dispose();
     }
 
-    private static string[] CreateLines(PlayerMobile player, int bounty)
+    /// <summary>
+    /// Writes all content lines directly to the packet writer, avoiding intermediate
+    /// string/list allocations. Uses ValueStringBuilder for line construction and
+    /// span slicing for word wrapping.
+    /// </summary>
+    private static void WriteContentLines(
+        ref SpanWriter writer, Span<byte> textBuffer, PlayerMobile player, int bounty)
     {
-        var isFemale  = player.Body.IsFemale;
-        var pronoun   = isFemale ? "she"  : "he";
+        var isFemale   = player.Body.IsFemale;
+        var pronoun    = isFemale ? "she"  : "he";
         var possessive = isFemale ? "her"  : "his";
         var objective  = isFemale ? "her"  : "him";
 
-        // Random title prefix/suffix (6 variants, matching uo98 bountyboard.m)
-        var title = Utility.Random(6) switch
-        {
-            0 => $"Bounty for {player.RawName}!",
-            1 => $"{player.RawName} must die!",
-            2 => $"A price on {player.RawName}!",
-            3 => $"{player.RawName} outlawed!",
-            4 => $"Execute {player.RawName}!",
-            _ => $"WANTED: {player.RawName}!"
-        };
+        // Placeholder for line count — patched after all lines are written
+        var lineCountPos = writer.Position;
+        writer.Write((byte)0);
+        var lineCount = 0;
 
-        // Random verb phrase (18 variants, matching uo98 bountyboard.m)
+        // Reusable builder for constructing each line
+        var lineBuilder = new ValueStringBuilder(stackalloc char[64]);
+
+        // Title line (random, 6 variants matching uo98 bountyboard.m)
+        switch (Utility.Random(6))
+        {
+            case 0:
+                {
+                    lineBuilder.Append("Bounty for ");
+                    lineBuilder.Append(player.RawName);
+                    lineBuilder.Append('!');
+                    break;
+                }
+            case 1:
+                {
+                    lineBuilder.Append(player.RawName);
+                    lineBuilder.Append(" must die!");
+                    break;
+                }
+            case 2:
+                {
+                    lineBuilder.Append("A price on ");
+                    lineBuilder.Append(player.RawName);
+                    lineBuilder.Append('!');
+                    break;
+                }
+            case 3:
+                {
+                    lineBuilder.Append(player.RawName);
+                    lineBuilder.Append(" outlawed!");
+                    break;
+                }
+            case 4:
+                {
+                    lineBuilder.Append("Execute ");
+                    lineBuilder.Append(player.RawName);
+                    lineBuilder.Append('!');
+                    break;
+                }
+            default:
+                {
+                    lineBuilder.Append("WANTED: ");
+                    lineBuilder.Append(player.RawName);
+                    lineBuilder.Append('!');
+                    break;
+                }
+        }
+
+        writer.WriteString(lineBuilder.AsSpan(), textBuffer, true);
+        lineCount++;
+
+        // Blank line
+        writer.WriteString(ReadOnlySpan<char>.Empty, textBuffer, true);
+        lineCount++;
+
+        // Build main paragraph with ValueStringBuilder
+        var paraBuilder = new ValueStringBuilder(stackalloc char[256]);
+
+        // Random verb phrase (18 variants matching uo98 bountyboard.m)
         var verb = Utility.Random(18) switch
         {
             0  => "hath murdered one too many!",
@@ -198,7 +240,7 @@ public static class BountyMessage
             _  => "is a cruel, casual killer."
         };
 
-        // Random bounty intro phrase (7 variants, matching uo98 bountyboard.m)
+        // Random bounty intro phrase (7 variants matching uo98 bountyboard.m)
         var intro = Utility.Random(7) switch
         {
             0 => "  A bounty is hereby offered",
@@ -210,45 +252,98 @@ public static class BountyMessage
             _ => "  Lord British's bounty "
         };
 
-        var paragraph =
-            $"The foul scum known as {player.RawName} {verb}  For {pronoun} is responsible for " +
-            $"{player.Kills} murders.  {intro} of {bounty} gold pieces for {possessive} head!";
+        paraBuilder.Append("The foul scum known as ");
+        paraBuilder.Append(player.RawName);
+        paraBuilder.Append(' ');
+        paraBuilder.Append(verb);
+        paraBuilder.Append("  For ");
+        paraBuilder.Append(pronoun);
+        paraBuilder.Append(" is responsible for ");
+        paraBuilder.Append(player.Kills);
+        paraBuilder.Append(" murders.  ");
+        paraBuilder.Append(intro);
+        paraBuilder.Append(" of ");
+        paraBuilder.Append(bounty);
+        paraBuilder.Append(" gold pieces for ");
+        paraBuilder.Append(possessive);
+        paraBuilder.Append(" head!");
 
-        var lines = new List<string> { title, "" };
-
-        // Word-wrap the main paragraph at 28 chars (matching uo98 bountyboard.m CONST:28)
-        WordWrap(lines, paragraph, 28);
+        // Word-wrap at 28 chars and write each line directly (matching uo98 bountyboard.m CONST:28)
+        WriteWordWrappedLines(ref writer, paraBuilder.AsSpan(), 28, textBuffer, ref lineCount);
+        paraBuilder.Dispose();
 
         // Physical description
-        var hairStyle = GetHairStyle(player.HairItemID);
-        var hairColor = GetHairColor(player.HairHue);
-        var skinTone  = GetSkinTone(player.Hue);
+        writer.WriteString(ReadOnlySpan<char>.Empty, textBuffer, true);
+        lineCount++;
 
-        lines.Add("");
-        lines.Add("  A description:");
-        lines.Add($"    - {hairStyle}");
-        lines.Add($"    - {hairColor} hair");
-        lines.Add($"    - {skinTone} skin");
+        writer.WriteString("  A description:", textBuffer, true);
+        lineCount++;
 
-        lines.Add("");
-        lines.Add($"If you kill {objective}, remove the");
-        lines.Add("head, and give it to a guard");
-        lines.Add("to claim your reward.");
+        lineBuilder.Reset();
+        lineBuilder.Append("    - ");
+        lineBuilder.Append(GetHairStyle(player.HairItemID));
+        writer.WriteString(lineBuilder.AsSpan(), textBuffer, true);
+        lineCount++;
 
-        return lines.ToArray();
+        lineBuilder.Reset();
+        lineBuilder.Append("    - ");
+        lineBuilder.Append(GetHairColor(player.HairHue));
+        lineBuilder.Append(" hair");
+        writer.WriteString(lineBuilder.AsSpan(), textBuffer, true);
+        lineCount++;
+
+        lineBuilder.Reset();
+        lineBuilder.Append("    - ");
+        lineBuilder.Append(GetSkinTone(player.Hue));
+        lineBuilder.Append(" skin");
+        writer.WriteString(lineBuilder.AsSpan(), textBuffer, true);
+        lineCount++;
+
+        // Closing instructions
+        writer.WriteString(ReadOnlySpan<char>.Empty, textBuffer, true);
+        lineCount++;
+
+        lineBuilder.Reset();
+        lineBuilder.Append("If you kill ");
+        lineBuilder.Append(objective);
+        lineBuilder.Append(", remove the");
+        writer.WriteString(lineBuilder.AsSpan(), textBuffer, true);
+        lineCount++;
+
+        writer.WriteString("head, and give it to a guard", textBuffer, true);
+        lineCount++;
+
+        writer.WriteString("to claim your reward.", textBuffer, true);
+        lineCount++;
+
+        lineBuilder.Dispose();
+
+        // Patch line count
+        var endPos = writer.Position;
+        writer.Seek(lineCountPos, SeekOrigin.Begin);
+        writer.Write((byte)Math.Min(255, lineCount));
+        writer.Seek(endPos, SeekOrigin.Begin);
     }
 
-    private static void WordWrap(List<string> lines, string text, int maxWidth)
+    /// <summary>
+    /// Word-wraps text at maxWidth characters and writes each line directly to the packet.
+    /// Uses span slicing instead of Substring to avoid allocations.
+    /// </summary>
+    private static void WriteWordWrappedLines(
+        ref SpanWriter writer, scoped ReadOnlySpan<char> text, int maxWidth,
+        Span<byte> textBuffer, ref int lineCount)
     {
+        // Pre-allocate buffer for last segment (needs trailing space)
+        Span<char> lastSegmentBuf = stackalloc char[maxWidth + 2];
         var current = 0;
 
         while (current < text.Length)
         {
-            var length = text.Length - current;
+            var remaining = text.Length - current;
 
-            if (length > maxWidth)
+            if (remaining > maxWidth)
             {
-                length = maxWidth;
+                var length = maxWidth;
 
                 while (length > 0 && text[current + length] != ' ')
                 {
@@ -264,14 +359,19 @@ public static class BountyMessage
                     length++; // include the space
                 }
 
-                lines.Add(text.Substring(current, length));
+                writer.WriteString(text.Slice(current, length), textBuffer, true);
+                current += length;
             }
             else
             {
-                lines.Add(text.Substring(current, length) + " ");
+                // Last segment — append trailing space (matching original behavior)
+                text.Slice(current, remaining).CopyTo(lastSegmentBuf);
+                lastSegmentBuf[remaining] = ' ';
+                writer.WriteString(lastSegmentBuf[..(remaining + 1)], textBuffer, true);
+                current += remaining;
             }
 
-            current += length;
+            lineCount++;
         }
     }
 
