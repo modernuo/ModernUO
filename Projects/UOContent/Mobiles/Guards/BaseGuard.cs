@@ -1,7 +1,9 @@
 using System;
 using System.Runtime.CompilerServices;
 using ModernUO.Serialization;
+using Server.Engines.PlayerMurderSystem;
 using Server.Items;
+using Server.Misc;
 
 namespace Server.Mobiles;
 
@@ -140,6 +142,58 @@ public abstract partial class BaseGuard : Mobile
     }
 
     public abstract void NonLethalAttack(Mobile target);
+
+    public override bool OnDragDrop(Mobile from, Item dropped)
+    {
+        if (PlayerMurderSystem.BountiesEnabled && dropped is Head head && head.PlayerName != null)
+        {
+            var target = head.BountyTarget;
+
+            if (target == null || Core.Now - head.CarvedTime > TimeSpan.FromHours(24))
+            {
+                SayNonBountyHeadResponse();
+                head.Delete();
+                return true;
+            }
+
+            Say(500670); // Ah, a head!  Let me check to see if there is a bounty on this.
+            head.Delete();
+            ClaimBounty(from, target);
+            return true;
+        }
+
+        return base.OnDragDrop(from, dropped);
+    }
+
+    private void ClaimBounty(Mobile from, PlayerMobile target)
+    {
+        var bounty = PlayerMurderSystem.GetBounty(target);
+
+        if (bounty > 0)
+        {
+            PlayerMurderSystem.ClearBounty(target);
+            Banker.Deposit(from, bounty);
+            Titles.AwardKarma(from, 2000, true);
+
+            Say(1042855, $"{target.Name}\t{bounty}"); // The bounty on ~1_PLAYER_NAME~ was ~2_AMOUNT~ gold, and has been credited to your account.
+        }
+        else
+        {
+            Say(1042854, target.Name); // There was no bounty on ~1_PLAYER_NAME~.
+        }
+    }
+
+    private void SayNonBountyHeadResponse()
+    {
+        if (Utility.Random(5) == 0)
+        {
+            Say(500661 + Utility.Random(9)); // 500661–500669: silly guard responses
+        }
+        else
+        {
+            Say(500654 + Utility.Random(7)); // 500654–500660: normal guard responses
+        }
+    }
 
     [AfterDeserialization]
     private void AfterDeserialization()
