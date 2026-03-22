@@ -12,7 +12,9 @@ public partial class PotionKeg : Item
         TileData.ItemTable[0x1940].Height = 4;
     }
 
-    [InvalidateProperties] [SerializableField(0)] [SerializedCommandProperty(AccessLevel.GameMaster)]
+    [InvalidateProperties]
+    [SerializableField(0)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
     private PotionEffect _type;
 
     [Constructible]
@@ -257,6 +259,9 @@ public partial class PotionKeg : Item
             PotionEffect.ConflagrationGreater  => new GreaterConflagrationPotion(),
             PotionEffect.ConfusionBlast        => new ConfusionBlastPotion(),
             PotionEffect.ConfusionBlastGreater => new GreaterConfusionBlastPotion(),
+            PotionEffect.Invisibility          => new InvisibilityPotion(),
+            PotionEffect.Parasitic             => new ParasiticPotion(),
+            PotionEffect.Darkglow              => new DarkglowPotion(),
             _                                  => new NightSightPotion()
         };
 
@@ -287,6 +292,9 @@ public partial class PotionKeg : Item
             _ when type == typeof(GreaterConflagrationPotion)  => PotionEffect.ConflagrationGreater,
             _ when type == typeof(ConfusionBlastPotion)        => PotionEffect.ConfusionBlast,
             _ when type == typeof(GreaterConfusionBlastPotion) => PotionEffect.ConfusionBlastGreater,
-            _ /* when type == typeof(NightSightPotion) */      => PotionEffect.Nightsight
+            _ when type == typeof(InvisibilityPotion)          => PotionEffect.Invisibility,
+            _ when type ==  typeof(ParasiticPotion)            => PotionEffect.Parasitic,
+            _ when type ==  typeof(DarkglowPotion)             => PotionEffect.Darkglow,
+            _                                                  => PotionEffect.Nightsight
         };
 }
