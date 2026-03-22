@@ -48,22 +48,13 @@ namespace Server.Items
 
             // Infectious strike special move now uses poisoning skill to help determine potency
             var family = p.Family;
-            int maxLevel;
 
-            if (family == PoisonFamily.Darkglow)
+            int maxLevel = family switch
             {
-                // Darkglow: Poisoning.Fixed / 333, cap at Deadly (level 3)
-                maxLevel = Math.Min(attacker.Skills.Poisoning.Fixed / 333, 3);
-            }
-            else if (family == PoisonFamily.Parasitic)
-            {
-                // Parasitic: Poisoning.Fixed / 250, cap at Lethal (level 4)
-                maxLevel = Math.Min(attacker.Skills.Poisoning.Fixed / 250, 4);
-            }
-            else
-            {
-                maxLevel = Math.Max((int)(attacker.Skills.Poisoning.Value / 20), 0);
-            }
+                PoisonFamily.Darkglow  => Math.Min(attacker.Skills.Poisoning.Fixed / 333, 3),
+                PoisonFamily.Parasitic => Math.Min(attacker.Skills.Poisoning.Fixed / 250, 4),
+                _                      => Math.Max((int)(attacker.Skills.Poisoning.Value / 20), 0)
+            };
 
             if (p.Level > maxLevel)
             {
@@ -72,9 +63,9 @@ namespace Server.Items
 
             if (attacker.Skills.Poisoning.Value / 100.0 > Utility.RandomDouble())
             {
-                var newPoison = Poison.GetPoisonByIndex(p.Index + 1);
+                var newPoison = Poison.IncreaseLevel(p);
 
-                if (newPoison != null && newPoison.Family == family)
+                if (newPoison != p)
                 {
                     p = newPoison;
 
