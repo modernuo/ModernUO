@@ -8,9 +8,10 @@ public partial class ParasiticPotion : BasePoisonPotion
     [Constructible]
     public ParasiticPotion() : base(PotionEffect.Parasitic) => Hue = 0x17C;
 
-    /* public override Poison Poison => Poison.Parasitic;  // MUST be restored when prerequisites are done */
-    public override Poison Poison => Poison.Greater;
+    public override Poison Poison => Poison.DeadlyParasitic;
 
     public override double MinPoisoningSkill => 95.0;
     public override double MaxPoisoningSkill => 100.0;
+
+    public override int LabelNumber => 1072848; // Parasitic Poison
 }
