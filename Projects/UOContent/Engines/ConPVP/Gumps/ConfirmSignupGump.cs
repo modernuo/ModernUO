@@ -100,13 +100,11 @@ namespace Server.Engines.ConPVP
             }
             else if (tourney.TourneyType == TourneyType.RandomTeam)
             {
-                sb.Append(tourney.ParticipantsPerMatch);
-                sb.Append("-Team");
+                sb.Append($"{tourney.ParticipantsPerMatch}-Team");
             }
             else if (tourney.TourneyType == TourneyType.Faction)
             {
-                sb.Append(tourney.ParticipantsPerMatch);
-                sb.Append("-Team Faction");
+                sb.Append($"{tourney.ParticipantsPerMatch}-Team Faction");
             }
             else if (tourney.TourneyType == TourneyType.RedVsBlue)
             {
@@ -127,8 +125,7 @@ namespace Server.Engines.ConPVP
 
             if (tourney.EventController != null)
             {
-                sb.Append(' ');
-                sb.Append(tourney.EventController.Title);
+                sb.Append($" {tourney.EventController.Title}");
             }
 
             sb.Append(" Tournament Signup");

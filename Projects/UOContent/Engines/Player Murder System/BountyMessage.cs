@@ -161,46 +161,12 @@ public static class BountyMessage
         // Title line (random, 6 variants matching uo98 bountyboard.m)
         switch (Utility.Random(6))
         {
-            case 0:
-                {
-                    lineBuilder.Append("Bounty for");
-                    lineBuilder.Append(player.RawName);
-                    lineBuilder.Append("!");
-                    break;
-                }
-            case 1:
-                {
-                    lineBuilder.Append(player.RawName);
-                    lineBuilder.Append(" must die!");
-                    break;
-                }
-            case 2:
-                {
-                    lineBuilder.Append("A price on ");
-                    lineBuilder.Append(player.RawName);
-                    lineBuilder.Append('!');
-                    break;
-                }
-            case 3:
-                {
-                    lineBuilder.Append(player.RawName);
-                    lineBuilder.Append(" outlawed!");
-                    break;
-                }
-            case 4:
-                {
-                    lineBuilder.Append("Execute ");
-                    lineBuilder.Append(player.RawName);
-                    lineBuilder.Append('!');
-                    break;
-                }
-            default:
-                {
-                    lineBuilder.Append("WANTED: ");
-                    lineBuilder.Append(player.RawName);
-                    lineBuilder.Append('!');
-                    break;
-                }
+            case 0:  lineBuilder.Append($"Bounty for {player.RawName}!"); break;
+            case 1:  lineBuilder.Append($"{player.RawName} must die!"); break;
+            case 2:  lineBuilder.Append($"A price on {player.RawName}!"); break;
+            case 3:  lineBuilder.Append($"{player.RawName} outlawed!"); break;
+            case 4:  lineBuilder.Append($"Execute {player.RawName}!"); break;
+            default: lineBuilder.Append($"WANTED: {player.RawName}!"); break;
         }
 
         writer.WriteString(lineBuilder.AsSpan(), textBuffer, true);
@@ -248,21 +214,7 @@ public static class BountyMessage
             _ => "  Lord British's bounty "
         };
 
-        paraBuilder.Append("The foul scum known as ");
-        paraBuilder.Append(player.RawName);
-        paraBuilder.Append(' ');
-        paraBuilder.Append(verb);
-        paraBuilder.Append("  For ");
-        paraBuilder.Append(pronoun);
-        paraBuilder.Append(" is responsible for ");
-        paraBuilder.Append(player.Kills);
-        paraBuilder.Append(" murders.  ");
-        paraBuilder.Append(intro);
-        paraBuilder.Append(" of ");
-        paraBuilder.Append(bounty);
-        paraBuilder.Append(" gold pieces for ");
-        paraBuilder.Append(possessive);
-        paraBuilder.Append(" head!");
+        paraBuilder.Append($"The foul scum known as {player.RawName} {verb}  For {pronoun} is responsible for {player.Kills} murders.  {intro} of {bounty} gold pieces for {possessive} head!");
 
         // Word-wrap at 28 chars and write each line directly (matching uo98 bountyboard.m CONST:28)
         WriteWordWrappedLines(ref writer, paraBuilder.AsSpan(), 28, textBuffer, ref lineCount);
@@ -276,22 +228,17 @@ public static class BountyMessage
         lineCount++;
 
         lineBuilder.Reset();
-        lineBuilder.Append("    - ");
-        lineBuilder.Append(GetHairStyle(player.HairItemID));
+        lineBuilder.Append($"    - {GetHairStyle(player.HairItemID)}");
         writer.WriteString(lineBuilder.AsSpan(), textBuffer, true);
         lineCount++;
 
         lineBuilder.Reset();
-        lineBuilder.Append("    - ");
-        lineBuilder.Append(GetHairColor(player.HairHue));
-        lineBuilder.Append(" hair");
+        lineBuilder.Append($"    - {GetHairColor(player.HairHue)} hair");
         writer.WriteString(lineBuilder.AsSpan(), textBuffer, true);
         lineCount++;
 
         lineBuilder.Reset();
-        lineBuilder.Append("    - ");
-        lineBuilder.Append(GetSkinTone(player.Hue));
-        lineBuilder.Append(" skin");
+        lineBuilder.Append($"    - {GetSkinTone(player.Hue)} skin");
         writer.WriteString(lineBuilder.AsSpan(), textBuffer, true);
         lineCount++;
 
@@ -300,9 +247,7 @@ public static class BountyMessage
         lineCount++;
 
         lineBuilder.Reset();
-        lineBuilder.Append("If you kill ");
-        lineBuilder.Append(objective);
-        lineBuilder.Append(", remove the");
+        lineBuilder.Append($"If you kill {objective}, remove the");
         writer.WriteString(lineBuilder.AsSpan(), textBuffer, true);
         lineCount++;
 
