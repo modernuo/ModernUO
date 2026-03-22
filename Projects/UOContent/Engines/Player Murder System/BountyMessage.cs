@@ -64,8 +64,8 @@ public static class BountyMessage
     /// built entirely from live MurderSystem data — no real BulletinMessage item required.
     /// Uses a resizable SpanWriter for single-pass writing with zero intermediate allocations.
     /// </summary>
-    public static void SendBountyBBMessage(
-        NetState ns, BaseBulletinBoard board, Serial messageSerial, PlayerMobile player, int bounty, DateTime lastMurderTime, bool content)
+    public static void SendBountyBBMessage(NetState ns, BaseBulletinBoard board, Serial messageSerial, PlayerMobile player,
+        int bounty, DateTime lastMurderTime, bool content)
     {
         if (ns.CannotSendPackets())
         {
@@ -73,11 +73,11 @@ public static class BountyMessage
         }
 
         // Build subject and time without heap allocation
-        var subjectBuilder = new ValueStringBuilder(stackalloc char[32]);
+        using var subjectBuilder = new ValueStringBuilder(stackalloc char[32]);
         subjectBuilder.Append(bounty);
         subjectBuilder.Append(" gold");
 
-        var timeBuilder = new ValueStringBuilder(stackalloc char[16]);
+        using var timeBuilder = new ValueStringBuilder(stackalloc char[16]);
         timeBuilder.Append(lastMurderTime, "MMM dd, yyyy");
 
         // Reusable UTF-8 encoding buffer (768 = GetMaxByteCount(255), covers any WriteString call)
@@ -98,9 +98,6 @@ public static class BountyMessage
         writer.WriteString(player.Name.AsSpan(), textBuffer);
         writer.WriteString(subjectBuilder.AsSpan(), textBuffer);
         writer.WriteString(timeBuilder.AsSpan(), textBuffer);
-
-        subjectBuilder.Dispose();
-        timeBuilder.Dispose();
 
         if (content)
         {
@@ -146,8 +143,7 @@ public static class BountyMessage
     /// string/list allocations. Uses ValueStringBuilder for line construction and
     /// span slicing for word wrapping.
     /// </summary>
-    private static void WriteContentLines(
-        ref SpanWriter writer, Span<byte> textBuffer, PlayerMobile player, int bounty)
+    private static void WriteContentLines(ref SpanWriter writer, Span<byte> textBuffer, PlayerMobile player, int bounty)
     {
         var isFemale   = player.Body.IsFemale;
         var pronoun    = isFemale ? "she"  : "he";
@@ -160,16 +156,16 @@ public static class BountyMessage
         var lineCount = 0;
 
         // Reusable builder for constructing each line
-        var lineBuilder = new ValueStringBuilder(stackalloc char[64]);
+        using var lineBuilder = new ValueStringBuilder(stackalloc char[64]);
 
         // Title line (random, 6 variants matching uo98 bountyboard.m)
         switch (Utility.Random(6))
         {
             case 0:
                 {
-                    lineBuilder.Append("Bounty for ");
+                    lineBuilder.Append("Bounty for");
                     lineBuilder.Append(player.RawName);
-                    lineBuilder.Append('!');
+                    lineBuilder.Append("!");
                     break;
                 }
             case 1:
@@ -316,8 +312,6 @@ public static class BountyMessage
         writer.WriteString("to claim your reward.", textBuffer, true);
         lineCount++;
 
-        lineBuilder.Dispose();
-
         // Patch line count
         var endPos = writer.Position;
         writer.Seek(lineCountPos, SeekOrigin.Begin);
@@ -329,8 +323,7 @@ public static class BountyMessage
     /// Word-wraps text at maxWidth characters and writes each line directly to the packet.
     /// Uses span slicing instead of Substring to avoid allocations.
     /// </summary>
-    private static void WriteWordWrappedLines(
-        ref SpanWriter writer, scoped ReadOnlySpan<char> text, int maxWidth,
+    private static void WriteWordWrappedLines(ref SpanWriter writer, scoped ReadOnlySpan<char> text, int maxWidth,
         Span<byte> textBuffer, ref int lineCount)
     {
         // Pre-allocate buffer for last segment (needs trailing space)
