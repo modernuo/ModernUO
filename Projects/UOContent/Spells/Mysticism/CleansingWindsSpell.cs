@@ -99,7 +99,7 @@ public class CleansingWindsSpell : MysticSpell, ITargetingSpell<Mobile>
 
                 if (target.Poisoned)
                 {
-                    var poisonLevel = target.Poison.Level + 1;
+                    var poisonLevel = Poison.IncreaseLevel(target.Poison).Level;
                     var chanceToCure = cureChance - poisonLevel * 1750;
 
                     if (chanceToCure > 10000 || chanceToCure > Utility.Random(10000) && target.CurePoison(Caster))
