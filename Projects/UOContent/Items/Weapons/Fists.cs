@@ -45,6 +45,12 @@ namespace Server.Items
         public override double GetDefendSkillValue(Mobile attacker, Mobile defender)
         {
             var wresValue = defender.Skills.Wrestling.Value;
+
+            if (!Core.LBR)
+            {
+                return wresValue;
+            }
+
             var anatValue = defender.Skills.Anatomy.Value;
             var evalValue = defender.Skills.EvalInt.Value;
             var incrValue = Math.Min((anatValue + evalValue + 20.0) * 0.5, 120.0);
@@ -54,7 +60,7 @@ namespace Server.Items
 
         private static void CheckPreAOSMoves(Mobile attacker, Mobile defender)
         {
-            if (!attacker.CanBeginAction<Fists>())
+            if (!Core.UOR || !attacker.CanBeginAction<Fists>())
             {
                 return;
             }
@@ -197,7 +203,7 @@ namespace Server.Items
 
         public static void DisarmRequest(Mobile m)
         {
-            if (Core.AOS)
+            if (Core.AOS || !Core.UOR)
             {
                 return;
             }
@@ -230,7 +236,7 @@ namespace Server.Items
 
         public static void StunRequest(Mobile m)
         {
-            if (Core.AOS || !DuelContext.AllowSpecialAbility(m, "Stun", true))
+            if (Core.AOS || !Core.UOR || !DuelContext.AllowSpecialAbility(m, "Stun", true))
             {
                 return;
             }

@@ -46,25 +46,30 @@ namespace Server.Items
 
             --weapon.PoisonCharges;
 
+            var poisoningSkill = attacker.Skills.Poisoning.Value;
+
             // Infectious strike special move now uses poisoning skill to help determine potency
-            var maxLevel = Math.Max((int)(attacker.Skills.Poisoning.Value / 20), 0);
+            var family = p.Family;
+
+            int maxLevel = family switch
+            {
+                PoisonFamily.Darkglow  => Math.Min((int)(poisoningSkill / 33.3), 3),
+                PoisonFamily.Parasitic => Math.Min((int)(poisoningSkill / 25), 4),
+                _                      => Math.Max((int)(poisoningSkill / 20), 0)
+            };
+
             if (p.Level > maxLevel)
             {
-                p = Poison.GetPoison(maxLevel);
+                p = Poison.GetPoisonByFamilyAndLevel(family, maxLevel);
             }
 
-            if (attacker.Skills.Poisoning.Value / 100.0 > Utility.RandomDouble())
+            // Check if the poison can be increased.
+            var newPoison = Poison.IncreaseLevel(p);
+            if (newPoison != p && poisoningSkill / 100.0 > Utility.RandomDouble())
             {
-                var level = p.Level + 1;
-                var newPoison = Poison.GetPoison(level);
-
-                if (newPoison != null)
-                {
-                    p = newPoison;
-
-                    attacker.SendLocalizedMessage(1060080); // Your precise strike has increased the level of the poison by 1
-                    defender.SendLocalizedMessage(1060081); // The poison seems extra effective!
-                }
+                p = newPoison;
+                attacker.SendLocalizedMessage(1060080); // Your precise strike has increased the level of the poison by 1
+                defender.SendLocalizedMessage(1060081); // The poison seems extra effective!
             }
 
             defender.PlaySound(0xDD);

@@ -8,6 +8,7 @@ namespace Server.Tests;
 /// Tests for the Html.EscapeHtml extension methods.
 /// These tests verify correct HTML entity escaping and edge cases.
 /// </summary>
+[Collection("Sequential Server Tests")]
 public class HtmlEscapeTests
 {
     [Theory(DisplayName = "No escaping needed")]

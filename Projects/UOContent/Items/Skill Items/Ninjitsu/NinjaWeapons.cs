@@ -289,7 +289,7 @@ public static class NinjaWeapon
         {
             if (EvilOmenSpell.EndEffect(target))
             {
-                target.ApplyPoison(from, Poison.GetPoison(weapon.Poison.Level + 1));
+                target.ApplyPoison(from, Poison.IncreaseLevel(weapon.Poison));
             }
             else
             {
