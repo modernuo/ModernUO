@@ -41,6 +41,9 @@ public static class AutoArchive
     private static int _retryDelayMs;
     private static int _backupMaxAgeDays;
 
+    public static event Action<ArchiveCompletedEventArgs> ArchiveCompleted;
+    public static event Action<ArchiveFailedEventArgs> ArchiveFailed;
+
     public static Action Archive { get; set; }
     public static Action Prune { get; set; }
     public static string ArchivePath { get; private set; }
@@ -459,7 +462,7 @@ public static class AutoArchive
                         );
                         ArchiveJournal.RecordFailure(journalEntry, $"Verification failed: expected {entryCount}, got {verifiedCount}");
 
-                        EventSink.InvokeArchiveFailed(new ArchiveFailedEventArgs(
+                        ArchiveFailed?.Invoke(new ArchiveFailedEventArgs(
                             archivePeriod, rangeStart, new InvalidOperationException("Archive verification failed")
                         ));
                         continue;
@@ -509,7 +512,7 @@ public static class AutoArchive
                     );
                 }
 
-                EventSink.InvokeArchiveCompleted(new ArchiveCompletedEventArgs(
+                ArchiveCompleted?.Invoke(new ArchiveCompletedEventArgs(
                     archiveFilePath, archivePeriod, rangeStart, archiveSize, stopWatch.Elapsed.TotalSeconds
                 ));
             }
@@ -519,7 +522,7 @@ public static class AutoArchive
                 logger.Warning("Failed to create {Period} archive", archivePeriodStrLower);
                 ArchiveJournal.RecordFailure(journalEntry, "Archive creation failed");
 
-                EventSink.InvokeArchiveFailed(new ArchiveFailedEventArgs(
+                ArchiveFailed?.Invoke(new ArchiveFailedEventArgs(
                     archivePeriod, rangeStart, new InvalidOperationException("Archive creation failed")
                 ));
             }
