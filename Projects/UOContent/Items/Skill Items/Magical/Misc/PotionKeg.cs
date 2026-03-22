@@ -45,12 +45,20 @@ public partial class PotionKeg : Item
     {
         get
         {
-            if (_held > 0 && (int)_type >= (int)PotionEffect.Conflagration)
+            if (_held <= 0)
             {
-                return 1072658 + (int)_type - (int)PotionEffect.Conflagration;
+                return 1041641;
             }
 
-            return _held > 0 ? 1041620 + (int)_type : 1041641;
+            return _type switch
+            {
+                < PotionEffect.Nightsight or > PotionEffect.FlintsPungentBrew => 1041619,
+                PotionEffect.FlintsPungentBrew => 1113608,
+                >= PotionEffect.Parasitic => 1080069 + (int)_type - (int)PotionEffect.Parasitic,
+                PotionEffect.Invisibility => 1080071,
+                >= PotionEffect.Conflagration => 1072658 + (int)_type - (int)PotionEffect.Conflagration,
+                _ => 1041620 + (int)_type
+            };
         }
     }
 

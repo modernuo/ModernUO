@@ -20,11 +20,12 @@ public class PoisonImpl : Poison
 
     public PoisonImpl(
         string name, int index, int level, int min, int max, double percent, double delay, double interval, int count,
-        int messageInterval
+        int messageInterval, PoisonFamily family = PoisonFamily.Standard
     ) : base(index)
     {
         Name = name;
         Level = level;
+        Family = family;
         _minimum = min;
         _maximum = max;
         _scalar = percent * 0.01;
@@ -37,6 +38,8 @@ public class PoisonImpl : Poison
     public override string Name { get; }
 
     public override int Level { get; }
+
+    public override PoisonFamily Family { get; }
 
     public override Timer ConstructTimer(Mobile m) => new PoisonTimer(m, this);
 
@@ -120,11 +123,29 @@ public class PoisonImpl : Poison
                 _lastDamage = damage;
             }
 
+            // Darkglow: 10% damage boost when attacker is more than 1 tile away
+            if (_poison.Family == PoisonFamily.Darkglow && From != null && From.Map == _mobile.Map &&
+                !From.InRange(_mobile, 1))
+            {
+                damage = (int)(damage * 1.1);
+                // Darkglow poison increases your damage!
+                From.SendLocalizedMessage(1072850);
+            }
+
             From?.DoHarmful(_mobile, true);
 
             (_mobile as IHonorTarget)?.ReceivedHonorContext?.OnTargetPoisoned();
 
             AOS.Damage(_mobile, From, damage, 0, 0, 0, 100, 0);
+
+            // Parasitic: heals attacker for damage dealt when within 1 tile
+            if (_poison.Family == PoisonFamily.Parasitic && From != null && From.Map == _mobile.Map &&
+                From.InRange(_mobile, 1))
+            {
+                From.Heal(damage);
+                // You have had ~1_HEALED_AMOUNT~ hit points healed.
+                From.SendLocalizedMessage(1060203, damage.ToString());
+            }
 
             // OSI: randomly revealed between first and third damage tick, guessing 60% chance
             if (Utility.RandomDouble() < 0.40)

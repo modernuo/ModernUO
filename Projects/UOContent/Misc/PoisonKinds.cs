@@ -38,13 +38,31 @@ public static class PoisonKinds
         public static Poison DeadlyParasitic => _deadlyParasitic ??= Poison.GetPoison("DeadlyParasitic");
         public static Poison LethalParasitic => _lethalParasitic ??= Poison.GetPoison("LethalParasitic");
 
+        public bool IsDarkglow => poison.Family == PoisonFamily.Darkglow;
+        public bool IsParasitic => poison.Family == PoisonFamily.Parasitic;
+
         public static Poison GetPoison(int level)
         {
             for (var i = 0; i < Poison.Poisons.Count; ++i)
             {
                 var p = Poison.Poisons[i];
 
-                if (p.Level == level)
+                if (p.Family == PoisonFamily.Standard && p.Level == level)
+                {
+                    return p;
+                }
+            }
+
+            return null;
+        }
+
+        public static Poison GetPoisonByFamilyAndLevel(PoisonFamily family, int level)
+        {
+            for (var i = 0; i < Poison.Poisons.Count; ++i)
+            {
+                var p = Poison.Poisons[i];
+
+                if (p.Family == family && p.Level == level)
                 {
                     return p;
                 }
@@ -76,16 +94,16 @@ public static class PoisonKinds
 
         if (Core.ML)
         {
-            Poison.Register(new PoisonImpl("LesserDarkglow", 10, 0, 4, 16, 7.5, 3.0, 2.25, 10, 4));
-            Poison.Register(new PoisonImpl("RegularDarkglow", 11, 1, 8, 18, 10.0, 3.0, 3.25, 10, 3));
-            Poison.Register(new PoisonImpl("GreaterDarkglow", 12, 2, 12, 20, 15.0, 3.0, 4.25, 10, 2));
-            Poison.Register(new PoisonImpl("DeadlyDarkglow", 13, 3, 16 , 30, 30.0, 3.0, 5.25, 15, 2));
+            Poison.Register(new PoisonImpl("LesserDarkglow", 10, 0, 4, 16, 7.5, 3.0, 2.25, 10, 4, PoisonFamily.Darkglow));
+            Poison.Register(new PoisonImpl("RegularDarkglow", 11, 1, 8, 18, 10.0, 3.0, 3.25, 10, 3, PoisonFamily.Darkglow));
+            Poison.Register(new PoisonImpl("GreaterDarkglow", 12, 2, 12, 20, 15.0, 3.0, 4.25, 10, 2, PoisonFamily.Darkglow));
+            Poison.Register(new PoisonImpl("DeadlyDarkglow", 13, 3, 16, 30, 30.0, 3.0, 5.25, 15, 2, PoisonFamily.Darkglow));
 
-            Poison.Register(new PoisonImpl("LesserParasitic", 20, 0, 4, 16, 7.5, 3.0, 2.25, 10, 4));
-            Poison.Register(new PoisonImpl("RegularParasitic", 21, 1, 8, 18, 10.0, 3.0, 3.25, 10, 3));
-            Poison.Register(new PoisonImpl("GreaterParasitic", 22, 2, 12, 20, 15.0, 3.0, 4.25, 10, 2));
-            Poison.Register(new PoisonImpl("DeadlyParasitic", 23, 3, 16, 30, 30.0, 3.0, 5.25, 15, 2));
-            Poison.Register(new PoisonImpl("LethalParasitic", 24, 4, 20, 50, 35.0, 3.0, 5.25, 20, 2));
+            Poison.Register(new PoisonImpl("LesserParasitic", 20, 0, 4, 16, 7.5, 3.0, 2.25, 10, 4, PoisonFamily.Parasitic));
+            Poison.Register(new PoisonImpl("RegularParasitic", 21, 1, 8, 18, 10.0, 3.0, 3.25, 10, 3, PoisonFamily.Parasitic));
+            Poison.Register(new PoisonImpl("GreaterParasitic", 22, 2, 12, 20, 15.0, 3.0, 4.25, 10, 2, PoisonFamily.Parasitic));
+            Poison.Register(new PoisonImpl("DeadlyParasitic", 23, 3, 16, 30, 30.0, 3.0, 5.25, 15, 2, PoisonFamily.Parasitic));
+            Poison.Register(new PoisonImpl("LethalParasitic", 24, 4, 20, 50, 35.0, 3.0, 5.25, 20, 2, PoisonFamily.Parasitic));
         }
     }
 }

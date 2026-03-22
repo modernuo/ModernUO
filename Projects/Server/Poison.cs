@@ -4,6 +4,8 @@ using System.Runtime.CompilerServices;
 
 namespace Server;
 
+public enum PoisonFamily { Standard, Darkglow, Parasitic }
+
 public abstract class Poison : ISpanParsable<Poison>
 {
     public static List<Poison> Poisons { get; } = [];
@@ -14,6 +16,7 @@ public abstract class Poison : ISpanParsable<Poison>
     public int Index { get; }
     public abstract string Name { get; }
     public abstract int Level { get; }
+    public abstract PoisonFamily Family { get; }
 
     public abstract Timer ConstructTimer(Mobile m);
 
@@ -26,12 +29,12 @@ public abstract class Poison : ISpanParsable<Poison>
         for (var i = 0; i < Poisons.Count; i++)
         {
             var poison = Poisons[i];
-            if (reg.Level == poison.Level)
+            if (reg.Index == poison.Index)
             {
-                throw new Exception("A poison with that level already exists.");
+                throw new Exception("A poison with that index already exists.");
             }
 
-            if (GetPoison(poison.Name) != null)
+            if (GetPoison(regName) != null)
             {
                 throw new Exception("A poison with that name already exists.");
             }
@@ -57,7 +60,7 @@ public abstract class Poison : ISpanParsable<Poison>
     }
 
     public static Poison IncreaseLevel(Poison oldPoison) =>
-        oldPoison == null ? null : GetPoisonByIndex(oldPoison.Level + 1) ?? oldPoison;
+        oldPoison == null ? null : GetPoisonByIndex(oldPoison.Index + 1) ?? oldPoison;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Poison GetPoison(ReadOnlySpan<char> name) =>
