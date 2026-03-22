@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using ModernUO.CodeGeneratedEvents;
 using Server.Engines.BuffIcons;
 using Server.Mobiles;
+using Server.Targeting;
 
 namespace Server.Spells.First
 {
-    public class ReactiveArmorSpell : MagerySpell
+    public class ReactiveArmorSpell : MagerySpell, ITargetingSpell<Mobile>
     {
         private static readonly SpellInfo _info = new(
             "Reactive Armor",
@@ -18,7 +19,8 @@ namespace Server.Spells.First
             Reagent.SulfurousAsh
         );
 
-        private static readonly Dictionary<Mobile, ResistanceMod[]> _table = new();
+        private static Dictionary<Mobile, ResistanceMod[]> _table;
+        private static Dictionary<Mobile, TimerExecutionToken> _t2aTable;
 
         public ReactiveArmorSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
@@ -26,9 +28,81 @@ namespace Server.Spells.First
 
         public override SpellCircle Circle => SpellCircle.First;
 
+        public static bool HasEffect(Mobile m) => _t2aTable?.ContainsKey(m) == true;
+
+        public static void RemoveEffect(Mobile m)
+        {
+            if (_t2aTable?.Remove(m, out var token) == true)
+            {
+                token.Cancel();
+            }
+        }
+
+        public static void HandleMeleeHit(Mobile attacker, Mobile defender, ref int damage)
+        {
+            if (!Core.UOR)
+            {
+                // T2A: percentage-based melee reflection
+                if (!HasEffect(defender))
+                {
+                    return;
+                }
+
+                // Only reflect adjacent melee hits; guards are exempt
+                if (!defender.InRange(attacker, 1) || attacker is BaseGuard)
+                {
+                    return;
+                }
+
+                var magery = defender.Skills.Magery.Value;
+                var reflectPct = (int)(10 + magery / 4); // 10–35%
+                var reflected = damage * reflectPct / 100;
+
+                if (reflected > 0)
+                {
+                    damage -= reflected;
+
+                    // Sourceless damage — does not trigger attacker's own combat events
+                    attacker.Damage(reflected);
+                }
+
+                attacker.PlaySound(0x1F1);
+                attacker.FixedEffect(0x374A, 10, 16);
+            }
+            else
+            {
+                // UOR: damage absorption pool
+                var absorb = defender.MeleeDamageAbsorb;
+
+                if (absorb <= 0)
+                {
+                    return;
+                }
+
+                if (absorb > damage)
+                {
+                    var react = Math.Max(damage / 5, 1);
+
+                    defender.MeleeDamageAbsorb -= damage;
+                    damage = 0;
+
+                    attacker.Damage(react, defender);
+
+                    attacker.PlaySound(0x1F1);
+                    attacker.FixedEffect(0x374A, 10, 16);
+                }
+                else
+                {
+                    defender.MeleeDamageAbsorb = 0;
+                    defender.SendLocalizedMessage(1005556); // Your reactive armor spell has been nullified.
+                    DefensiveSpell.Nullify(defender);
+                }
+            }
+        }
+
         public override bool CheckCast()
         {
-            if (Core.AOS)
+            if (Core.AOS || !Core.UOR)
             {
                 return true;
             }
@@ -48,6 +122,38 @@ namespace Server.Spells.First
             return true;
         }
 
+        public void Target(Mobile m)
+        {
+            if (!Caster.CanBeBeneficial(m))
+            {
+                return;
+            }
+
+            if (HasEffect(m))
+            {
+                // This target already has Reactive Armor
+                Caster.SendLocalizedMessage(1005559); // This spell is already in effect.
+                return;
+            }
+
+            if (CheckBSequence(m))
+            {
+                Caster.DoBeneficial(m);
+                SpellHelper.Turn(Caster, m);
+
+                m.FixedParticles(0x376A, 9, 32, 5008, EffectLayer.Waist);
+                m.PlaySound(0x1F2);
+
+                var duration = TimeSpan.FromSeconds(25 + Caster.Skills.Magery.Value / 2); // 25–75s
+
+                Timer.StartTimer(duration, () => ExpireT2AEffect(m), out var token);
+                _t2aTable ??= [];
+                _t2aTable[m] = token;
+            }
+        }
+
+        private static void ExpireT2AEffect(Mobile m) => _t2aTable?.Remove(m);
+
         public override void OnCast()
         {
             if (Core.AOS)
@@ -63,7 +169,7 @@ namespace Server.Spells.First
 
                 if (CheckSequence())
                 {
-                    if (_table.Remove(Caster, out var mods))
+                    if (_table?.Remove(Caster, out var mods) == true)
                     {
                         Caster.PlaySound(0x1ED);
                         Caster.FixedParticles(0x376A, 9, 32, 5008, EffectLayer.Waist);
@@ -93,6 +199,7 @@ namespace Server.Spells.First
                             new ResistanceMod(ResistanceType.Energy, "EnergyResistReactiveArmorSpell", -5)
                         ];
 
+                        _table ??= [];
                         _table[Caster] = mods;
 
                         for (var i = 0; i < mods.Length; ++i)
@@ -100,14 +207,17 @@ namespace Server.Spells.First
                             Caster.AddResistanceMod(mods[i]);
                         }
 
-                        var physresist = 15 + (int)(Caster.Skills.Inscribe.Value / 20);
-                        var args = $"{physresist}\t{5}\t{5}\t{5}\t{5}";
+                        var args = $"{15 + (int)(Caster.Skills.Inscribe.Value / 20)}\t{5}\t{5}\t{5}\t{5}";
 
                         (Caster as PlayerMobile)?.AddBuff(new BuffInfo(BuffIcon.ReactiveArmor, 1075812, 1075813, args: args));
                     }
                 }
 
                 FinishSequence();
+            }
+            else if (!Core.UOR)
+            {
+                Caster.Target = new SpellTarget<Mobile>(this, TargetFlags.Beneficial);
             }
             else
             {
@@ -148,7 +258,9 @@ namespace Server.Spells.First
         [OnEvent(nameof(PlayerMobile.PlayerDeletedEvent))]
         public static void EndArmor(Mobile m)
         {
-            if (!_table.Remove(m, out var mods))
+            RemoveEffect(m);
+
+            if (_table?.Remove(m, out var mods) != true)
             {
                 return;
             }

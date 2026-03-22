@@ -893,16 +893,25 @@ namespace Server.Spells
 
             if (target.MagicDamageAbsorb > 0)
             {
-                ++circle;
-
-                target.MagicDamageAbsorb -= circle;
-
-                // This order isn't very intuitive, but you have to nullify reflect before target gets switched
-                reflect = target.MagicDamageAbsorb >= 0;
-                if (target.MagicDamageAbsorb <= 0)
+                if (!Core.UOR)
                 {
+                    // T2A: single-use reflection, consumed immediately
                     target.MagicDamageAbsorb = 0;
-                    DefensiveSpell.Nullify(target);
+                    reflect = true;
+                }
+                else
+                {
+                    ++circle;
+
+                    target.MagicDamageAbsorb -= circle;
+
+                    // This order isn't very intuitive, but you have to nullify reflect before target gets switched
+                    reflect = target.MagicDamageAbsorb >= 0;
+                    if (target.MagicDamageAbsorb <= 0)
+                    {
+                        target.MagicDamageAbsorb = 0;
+                        DefensiveSpell.Nullify(target);
+                    }
                 }
             }
 

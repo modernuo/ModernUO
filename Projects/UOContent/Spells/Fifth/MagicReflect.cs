@@ -38,6 +38,11 @@ namespace Server.Spells.Fifth
                 return false;
             }
 
+            if (!Core.UOR)
+            {
+                return true;
+            }
+
             if (!Caster.CanBeginAction<DefensiveSpell>())
             {
                 Caster.SendLocalizedMessage(1005385); // The spell will not adhere to you at this time.
@@ -103,6 +108,20 @@ namespace Server.Spells.Fifth
                             new BuffInfo(BuffIcon.MagicReflection, 1075817, args: buffFormat, retainThroughDeath: true)
                         );
                     }
+                }
+            }
+            else if (!Core.UOR)
+            {
+                if (Caster.MagicDamageAbsorb > 0)
+                {
+                    Caster.SendLocalizedMessage(1005559); // This spell is already in effect.
+                }
+                else if (CheckSequence())
+                {
+                    Caster.MagicDamageAbsorb = 1;
+
+                    Caster.FixedParticles(0x375A, 10, 15, 5037, EffectLayer.Waist);
+                    Caster.PlaySound(0x1E9);
                 }
             }
             else

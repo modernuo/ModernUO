@@ -69,6 +69,19 @@ namespace Server.Spells.Fourth
                         }
                     }
                 }
+                else if (!Core.UOR)
+                {
+                    while (targets.Count > 0)
+                    {
+                        var m = targets.Dequeue();
+                        if (!ProtectionSpell.HasT2AProtection(m))
+                        {
+                            Caster.DoBeneficial(m);
+                            ProtectionSpell.ApplyT2AProtection(Caster, m);
+                            m.PlaySound(0x1F7);
+                        }
+                    }
+                }
                 else
                 {
                     var val = (int)(Caster.Skills.Magery.Value / 10.0 + 1);
