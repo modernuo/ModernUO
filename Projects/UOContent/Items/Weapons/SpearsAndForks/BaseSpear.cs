@@ -22,7 +22,7 @@ namespace Server.Items
         {
             base.OnHit(attacker, defender, damageBonus);
 
-            if (!Core.AOS && Layer == Layer.TwoHanded &&
+            if (!Core.AOS && Core.UOR && Layer == Layer.TwoHanded &&
                 attacker.Skills.Anatomy.Value / 400.0 >= Utility.RandomDouble() &&
                 DuelContext.AllowSpecialAbility(attacker, "Paralyzing Blow", false))
             {
