@@ -82,7 +82,7 @@ namespace Server.Engines.ConPVP
 
             AddImage(215, -43, 0xEE40);
 
-            using var sb = ValueStringBuilder.Create(128);
+            using var sb = new ValueStringBuilder(stackalloc char[64]);
 
             if (tourney.TourneyType == TourneyType.FreeForAll)
             {
