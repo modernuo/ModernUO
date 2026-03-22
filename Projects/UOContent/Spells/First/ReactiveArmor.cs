@@ -19,8 +19,8 @@ namespace Server.Spells.First
             Reagent.SulfurousAsh
         );
 
-        private static readonly Dictionary<Mobile, ResistanceMod[]> _table = new();
-        private static readonly Dictionary<Mobile, TimerExecutionToken> _t2aTable = new();
+        private static Dictionary<Mobile, ResistanceMod[]> _table;
+        private static Dictionary<Mobile, TimerExecutionToken> _t2aTable;
 
         public ReactiveArmorSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
@@ -28,11 +28,11 @@ namespace Server.Spells.First
 
         public override SpellCircle Circle => SpellCircle.First;
 
-        public static bool HasEffect(Mobile m) => _t2aTable.ContainsKey(m);
+        public static bool HasEffect(Mobile m) => _t2aTable?.ContainsKey(m) == true;
 
         public static void RemoveEffect(Mobile m)
         {
-            if (_t2aTable.Remove(m, out var token))
+            if (_t2aTable?.Remove(m, out var token) == true)
             {
                 token.Cancel();
             }
@@ -43,7 +43,7 @@ namespace Server.Spells.First
             if (!Core.UOR)
             {
                 // T2A: percentage-based melee reflection
-                if (!_t2aTable.ContainsKey(defender))
+                if (!HasEffect(defender))
                 {
                     return;
                 }
@@ -81,12 +81,7 @@ namespace Server.Spells.First
 
                 if (absorb > damage)
                 {
-                    var react = damage / 5;
-
-                    if (react <= 0)
-                    {
-                        react = 1;
-                    }
+                    var react = Math.Max(damage / 5, 1);
 
                     defender.MeleeDamageAbsorb -= damage;
                     damage = 0;
@@ -107,12 +102,7 @@ namespace Server.Spells.First
 
         public override bool CheckCast()
         {
-            if (Core.AOS)
-            {
-                return true;
-            }
-
-            if (!Core.UOR)
+            if (Core.AOS || !Core.UOR)
             {
                 return true;
             }
@@ -139,7 +129,7 @@ namespace Server.Spells.First
                 return;
             }
 
-            if (_t2aTable.ContainsKey(m))
+            if (HasEffect(m))
             {
                 // This target already has Reactive Armor
                 Caster.SendLocalizedMessage(1005559); // This spell is already in effect.
@@ -157,14 +147,12 @@ namespace Server.Spells.First
                 var duration = TimeSpan.FromSeconds(25 + Caster.Skills.Magery.Value / 2); // 25–75s
 
                 Timer.StartTimer(duration, () => ExpireT2AEffect(m), out var token);
+                _t2aTable ??= [];
                 _t2aTable[m] = token;
             }
         }
 
-        private static void ExpireT2AEffect(Mobile m)
-        {
-            _t2aTable.Remove(m);
-        }
+        private static void ExpireT2AEffect(Mobile m) => _t2aTable?.Remove(m);
 
         public override void OnCast()
         {
@@ -181,7 +169,7 @@ namespace Server.Spells.First
 
                 if (CheckSequence())
                 {
-                    if (_table.Remove(Caster, out var mods))
+                    if (_table?.Remove(Caster, out var mods) == true)
                     {
                         Caster.PlaySound(0x1ED);
                         Caster.FixedParticles(0x376A, 9, 32, 5008, EffectLayer.Waist);
@@ -211,6 +199,7 @@ namespace Server.Spells.First
                             new ResistanceMod(ResistanceType.Energy, "EnergyResistReactiveArmorSpell", -5)
                         ];
 
+                        _table ??= [];
                         _table[Caster] = mods;
 
                         for (var i = 0; i < mods.Length; ++i)
@@ -218,8 +207,7 @@ namespace Server.Spells.First
                             Caster.AddResistanceMod(mods[i]);
                         }
 
-                        var physresist = 15 + (int)(Caster.Skills.Inscribe.Value / 20);
-                        var args = $"{physresist}\t{5}\t{5}\t{5}\t{5}";
+                        var args = $"{15 + (int)(Caster.Skills.Inscribe.Value / 20)}\t{5}\t{5}\t{5}\t{5}";
 
                         (Caster as PlayerMobile)?.AddBuff(new BuffInfo(BuffIcon.ReactiveArmor, 1075812, 1075813, args: args));
                     }
@@ -272,7 +260,7 @@ namespace Server.Spells.First
         {
             RemoveEffect(m);
 
-            if (!_table.Remove(m, out var mods))
+            if (_table?.Remove(m, out var mods) != true)
             {
                 return;
             }

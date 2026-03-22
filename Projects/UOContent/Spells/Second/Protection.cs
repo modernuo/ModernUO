@@ -19,11 +19,10 @@ namespace Server.Spells.Second
             Reagent.SulfurousAsh
         );
 
-        // TODO: Cleanup periodically if players have logged out for a while
-        private static readonly Dictionary<Mobile, Tuple<ResistanceMod, DefaultSkillMod>> _table = new();
+        private static Dictionary<Mobile, Tuple<ResistanceMod, DefaultSkillMod>> _table;
 
         // T2A: stores the AR bonus per mobile (shared with ArchProtection)
-        private static readonly Dictionary<Mobile, int> _t2aTable = new();
+        private static Dictionary<Mobile, int> _t2aTable;
 
         public ProtectionSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
@@ -33,11 +32,11 @@ namespace Server.Spells.Second
 
         public override SpellCircle Circle => SpellCircle.Second;
 
-        public static bool HasT2AProtection(Mobile m) => _t2aTable.ContainsKey(m);
+        public static bool HasT2AProtection(Mobile m) => _t2aTable?.ContainsKey(m) ?? false;
 
         public static void RemoveT2AProtection(Mobile m)
         {
-            if (_t2aTable.Remove(m, out var bonus))
+            if (_t2aTable?.Remove(m, out var bonus) == true)
             {
                 m.VirtualArmorMod -= Math.Min(bonus, m.VirtualArmorMod);
             }
@@ -45,7 +44,7 @@ namespace Server.Spells.Second
 
         public static void ApplyT2AProtection(Mobile caster, Mobile target)
         {
-            if (_t2aTable.ContainsKey(target))
+            if (HasT2AProtection(target))
             {
                 return;
             }
@@ -54,6 +53,7 @@ namespace Server.Spells.Second
             var bonus = (int)(magery / 10);
             var duration = TimeSpan.FromSeconds(6 * magery / 5);
 
+            _t2aTable ??= [];
             _t2aTable[target] = bonus;
             target.VirtualArmorMod += bonus;
 
@@ -64,12 +64,7 @@ namespace Server.Spells.Second
 
         public override bool CheckCast()
         {
-            if (Core.AOS)
-            {
-                return true;
-            }
-
-            if (!Core.UOR)
+            if (Core.AOS || !Core.UOR)
             {
                 return true;
             }
@@ -96,7 +91,7 @@ namespace Server.Spells.Second
                 return;
             }
 
-            if (_t2aTable.ContainsKey(m))
+            if (HasT2AProtection(m))
             {
                 Caster.SendLocalizedMessage(1005559); // This spell is already in effect.
                 return;
@@ -123,7 +118,7 @@ namespace Server.Spells.Second
              * even after dying, until you turn them off by casting them again.
              */
 
-            if (_table.Remove(target, out var mods))
+            if (_table?.Remove(target, out var mods) == true)
             {
                 target.PlaySound(0x1ED);
                 target.FixedParticles(0x375A, 9, 20, 5016, EffectLayer.Waist);
@@ -145,6 +140,7 @@ namespace Server.Spells.Second
                 var physMod = new ResistanceMod(ResistanceType.Physical, "PhysicalResistProtectionSpell", physLoss);
                 var resistMod = new DefaultSkillMod(SkillName.MagicResist, "MagicResistProtectionSpell", true, resistLoss);
 
+                _table ??= [];
                 _table[target] = Tuple.Create(physMod, resistMod);
                 Registry[target] = 1000; // 100.0% protection from disruption
 
@@ -161,7 +157,7 @@ namespace Server.Spells.Second
         {
             RemoveT2AProtection(m);
 
-            if (!_table.Remove(m, out var mods))
+            if (_table?.Remove(m, out var mods) != true)
             {
                 return;
             }
