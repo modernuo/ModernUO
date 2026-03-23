@@ -1,4 +1,5 @@
 using System;
+using Server.Misc;
 using Server.Mobiles;
 
 namespace Server.Spells.Eighth
@@ -51,6 +52,8 @@ namespace Server.Spells.Eighth
                 };
 
                 SpellHelper.Summon(new SummonedDaemon(), Caster, 0x216, duration, false, false);
+
+                Titles.AwardKarma(Caster, -70, true);
             }
 
             FinishSequence();
