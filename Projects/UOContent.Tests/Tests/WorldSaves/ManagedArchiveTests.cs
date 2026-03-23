@@ -1,5 +1,7 @@
 using System;
+using System.Formats.Tar;
 using System.IO;
+using System.IO.Compression;
 using Server.Compression;
 using Xunit;
 
@@ -244,5 +246,80 @@ public class ManagedArchiveTests : IDisposable
         // Verify we can extract it back
         var extractDir = Path.Combine(_testDir, $"extract-level-{level}");
         Assert.True(ManagedArchive.ExtractTarZstd(archivePath, extractDir));
+    }
+
+    [Fact]
+    public void ExtractTarGz_RoundTrips()
+    {
+        // Arrange — create a .tar.gz using built-in .NET APIs
+        var sourceDir = CreateTestDirectory("gz-source",
+            ("data.txt", "GZip test data"),
+            ("sub/nested.txt", "Nested content")
+        );
+
+        var archivePath = Path.Combine(_testDir, "test.tar.gz");
+
+        using (var fileStream = new FileStream(archivePath, FileMode.Create))
+        using (var gzStream = new GZipStream(fileStream, System.IO.Compression.CompressionLevel.Fastest))
+        using (var tarWriter = new TarWriter(gzStream, TarEntryFormat.Pax, leaveOpen: true))
+        {
+            foreach (var file in new DirectoryInfo(sourceDir).EnumerateFiles("*", SearchOption.AllDirectories))
+            {
+                var entryName = Path.GetRelativePath(sourceDir, file.FullName).Replace('\\', '/');
+                tarWriter.WriteEntry(file.FullName, entryName);
+            }
+        }
+
+        var extractDir = Path.Combine(_testDir, "gz-extracted");
+
+        // Act
+        var success = ManagedArchive.ExtractTarGz(archivePath, extractDir);
+
+        // Assert
+        Assert.True(success);
+        Assert.Equal("GZip test data", File.ReadAllText(Path.Combine(extractDir, "data.txt")));
+        Assert.Equal("Nested content", File.ReadAllText(Path.Combine(extractDir, "sub", "nested.txt")));
+    }
+
+    [Fact]
+    public void ExtractTar_PlainTarRoundTrips()
+    {
+        // Arrange — create a plain .tar using built-in .NET APIs
+        var sourceDir = CreateTestDirectory("tar-source",
+            ("plain.txt", "Plain tar test data")
+        );
+
+        var archivePath = Path.Combine(_testDir, "test.tar");
+
+        using (var fileStream = new FileStream(archivePath, FileMode.Create))
+        using (var tarWriter = new TarWriter(fileStream, TarEntryFormat.Pax, leaveOpen: true))
+        {
+            foreach (var file in new DirectoryInfo(sourceDir).EnumerateFiles("*", SearchOption.AllDirectories))
+            {
+                var entryName = Path.GetRelativePath(sourceDir, file.FullName).Replace('\\', '/');
+                tarWriter.WriteEntry(file.FullName, entryName);
+            }
+        }
+
+        var extractDir = Path.Combine(_testDir, "tar-extracted");
+
+        // Act
+        var success = ManagedArchive.ExtractTar(archivePath, extractDir);
+
+        // Assert
+        Assert.True(success);
+        Assert.Equal("Plain tar test data", File.ReadAllText(Path.Combine(extractDir, "plain.txt")));
+    }
+
+    [Fact]
+    public void ExtractTarGz_InvalidFile_ReturnsFalse()
+    {
+        // Arrange
+        var badFile = Path.Combine(_testDir, "bad.tar.gz");
+        File.WriteAllText(badFile, "not a valid gzip archive");
+        var extractDir = Path.Combine(_testDir, "extract-bad-gz");
+
+        // Act & Assert
+        Assert.False(ManagedArchive.ExtractTarGz(badFile, extractDir));
     }
 }

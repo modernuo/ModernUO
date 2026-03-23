@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Formats.Tar;
 using System.IO;
+using System.IO.Compression;
 using Server.Logging;
 using ZstdNet;
 
@@ -157,32 +158,89 @@ public static class ManagedArchive
             );
 
             using var zstdStream = new DecompressionStream(fileStream);
-            using var tarReader = new TarReader(zstdStream);
-
-            while (tarReader.GetNextEntry() is { } entry)
-            {
-                var destPath = Path.Combine(outputDirectory, entry.Name);
-
-                // Ensure parent directory exists
-                var destDir = Path.GetDirectoryName(destPath);
-                if (destDir != null)
-                {
-                    Directory.CreateDirectory(destDir);
-                }
-
-                if (entry.EntryType is TarEntryType.RegularFile or TarEntryType.V7RegularFile)
-                {
-                    entry.ExtractToFile(destPath, overwrite: true);
-                }
-            }
-
-            return true;
+            return ExtractTarFromStream(zstdStream, outputDirectory);
         }
         catch (Exception ex)
         {
             logger.Error(ex, "Failed to extract archive {File}", archiveFile);
             return false;
         }
+    }
+
+    /// <summary>
+    /// Extracts a .tar.gz archive to a directory.
+    /// </summary>
+    public static bool ExtractTarGz(string archiveFile, string outputDirectory)
+    {
+        try
+        {
+            Directory.CreateDirectory(outputDirectory);
+
+            using var fileStream = new FileStream(
+                archiveFile,
+                FileMode.Open,
+                FileAccess.Read,
+                FileShare.Read,
+                bufferSize: 81920
+            );
+
+            using var gzStream = new GZipStream(fileStream, CompressionMode.Decompress);
+            return ExtractTarFromStream(gzStream, outputDirectory);
+        }
+        catch (Exception ex)
+        {
+            logger.Error(ex, "Failed to extract archive {File}", archiveFile);
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Extracts a plain .tar archive to a directory.
+    /// </summary>
+    public static bool ExtractTar(string archiveFile, string outputDirectory)
+    {
+        try
+        {
+            Directory.CreateDirectory(outputDirectory);
+
+            using var fileStream = new FileStream(
+                archiveFile,
+                FileMode.Open,
+                FileAccess.Read,
+                FileShare.Read,
+                bufferSize: 81920
+            );
+
+            return ExtractTarFromStream(fileStream, outputDirectory);
+        }
+        catch (Exception ex)
+        {
+            logger.Error(ex, "Failed to extract archive {File}", archiveFile);
+            return false;
+        }
+    }
+
+    private static bool ExtractTarFromStream(Stream stream, string outputDirectory)
+    {
+        using var tarReader = new TarReader(stream);
+
+        while (tarReader.GetNextEntry() is { } entry)
+        {
+            var destPath = Path.Combine(outputDirectory, entry.Name);
+
+            var destDir = Path.GetDirectoryName(destPath);
+            if (destDir != null)
+            {
+                Directory.CreateDirectory(destDir);
+            }
+
+            if (entry.EntryType is TarEntryType.RegularFile or TarEntryType.V7RegularFile)
+            {
+                entry.ExtractToFile(destPath, overwrite: true);
+            }
+        }
+
+        return true;
     }
 
     /// <summary>

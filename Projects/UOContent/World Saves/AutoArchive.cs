@@ -167,16 +167,28 @@ public static class AutoArchive
             return false;
         }
 
-        if (!fileName.EndsWithOrdinal(".tar.zst"))
-        {
-            logger.Warning("Unsupported archive format: {File}. Only .tar.zst is supported.", fileName);
-            return false;
-        }
-
         logger.Information("Restoring latest world save from archive {File}", fileName);
 
         var tempPath = PathUtility.EnsureRandomPath(_tempArchivePath);
-        var successful = ManagedArchive.ExtractTarZstd(fi.FullName, tempPath);
+
+        bool successful;
+        if (fileName.EndsWithOrdinal(".tar.zst"))
+        {
+            successful = ManagedArchive.ExtractTarZstd(fi.FullName, tempPath);
+        }
+        else if (fileName.EndsWithOrdinal(".tar.gz"))
+        {
+            successful = ManagedArchive.ExtractTarGz(fi.FullName, tempPath);
+        }
+        else if (fileName.EndsWithOrdinal(".tar"))
+        {
+            successful = ManagedArchive.ExtractTar(fi.FullName, tempPath);
+        }
+        else
+        {
+            logger.Warning("Unsupported archive format: {File}", fileName);
+            return false;
+        }
 
         if (!successful)
         {
