@@ -99,6 +99,6 @@ public class AutoArchiveHelperTests
         Assert.NotNull(entry.DestinationResults);
         Assert.Empty(entry.DestinationResults);
         Assert.Null(entry.FailureReason);
-        Assert.Null(entry.CompletedAt);
+        Assert.Equal(DateTime.MaxValue, entry.CompletedAt);
     }
 }

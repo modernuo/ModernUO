@@ -22,6 +22,7 @@ using System.Threading;
 using CommunityToolkit.HighPerformance;
 using Server.Compression;
 using Server.Logging;
+using Server.Text;
 
 namespace Server.Saves;
 
@@ -101,6 +102,12 @@ public static class AutoArchive
         // Restores an archive file placed in the Saves folder
         RestoreFromArchive();
 
+        // If no valid save data exists, offer to restore from backups/archives
+        if (!HasValidSaveData())
+        {
+            PromptRestoreFromBackup();
+        }
+
         DateTimeOffset now = Core.Now;
         var date = now.Date;
         _nextHourlyArchive = date.AddHours(now.Hour);
@@ -166,58 +173,372 @@ public static class AutoArchive
             return false;
         }
 
-        logger.Information("Restoring latest world save from archive {File}", fileName);
+        logger.Information("Restoring world save from archive {File}", fileName);
 
         var tempPath = PathUtility.EnsureRandomPath(_tempArchivePath);
+        try
+        {
+            if (!ExtractArchive(fi.FullName, tempPath))
+            {
+                return false;
+            }
 
-        bool successful;
+            return PromptAndRestoreFromExtractedArchive(tempPath, savePath);
+        }
+        finally
+        {
+            CleanupTempDirectory(tempPath);
+        }
+    }
+
+    /// <summary>
+    /// Checks if the Saves directory contains valid world save data.
+    /// </summary>
+    private static bool HasValidSaveData()
+    {
+        var savePath = Path.Combine(Core.BaseDirectory, ServerConfiguration.GetSetting("world.savePath", "Saves"));
+        if (!Directory.Exists(savePath))
+        {
+            return false;
+        }
+
+        // A valid save has SerializedTypes.db or at least one .bin/.idx file
+        if (File.Exists(Path.Combine(savePath, "SerializedTypes.db")))
+        {
+            return true;
+        }
+
+        foreach (var dir in Directory.EnumerateDirectories(savePath))
+        {
+            foreach (var file in Directory.EnumerateFiles(dir))
+            {
+                if (file.EndsWithOrdinal(".bin") || file.EndsWithOrdinal(".idx"))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Presents an interactive console menu to restore from a backup directory or archive file.
+    /// Only called during Configure() when no valid save data exists.
+    /// At this point, Console.ReadLine() works directly (ConsoleInputHandler not yet initialized).
+    /// </summary>
+    private static void PromptRestoreFromBackup()
+    {
+        // Collect available restore points: backup directories and archive files
+        var restorePoints = new SortedDictionary<DateTime, (string path, string label, bool isArchive)>(
+            new DescendingComparer<DateTime>()
+        );
+
+        // Scan backup directories
+        if (Directory.Exists(AutomaticBackupPath))
+        {
+            foreach (var dir in Directory.EnumerateDirectories(AutomaticBackupPath))
+            {
+                if (!File.Exists(Path.Combine(dir, BackupCompleteMarker)))
+                {
+                    continue;
+                }
+
+                var dirName = new DirectoryInfo(dir).Name;
+                if (TryGetDate(dirName, out var date))
+                {
+                    restorePoints[date] = (dir, $"Backup: {dirName}", false);
+                }
+            }
+        }
+
+        // Scan archive files (hourly, daily, monthly)
+        if (Directory.Exists(ArchivePath))
+        {
+            foreach (var periodDir in Directory.EnumerateDirectories(ArchivePath))
+            {
+                var periodName = new DirectoryInfo(periodDir).Name;
+                foreach (var file in Directory.EnumerateFiles(periodDir))
+                {
+                    var fi = new FileInfo(file);
+                    var nameWithoutExt = fi.Name;
+                    var dotIndex = nameWithoutExt.IndexOfOrdinal('.');
+                    if (dotIndex > 0)
+                    {
+                        nameWithoutExt = nameWithoutExt[..dotIndex];
+                    }
+
+                    if (TryGetDate(nameWithoutExt, out var date))
+                    {
+                        restorePoints[date] = (file, $"{periodName} archive: {fi.Name}", true);
+                    }
+                }
+            }
+        }
+
+        if (restorePoints.Count == 0)
+        {
+            return;
+        }
+
+        // Build flat list from sorted dictionary
+        var entries = new List<(string path, string label, bool isArchive, DateTime date)>();
+        foreach (var (date, (path, label, isArchive)) in restorePoints)
+        {
+            entries.Add((path, label, isArchive, date));
+        }
+
+        // Interactive paginated menu
+        const int pageSize = 20;
+        var page = 0;
+        var totalPages = (entries.Count + pageSize - 1) / pageSize;
+        using var sb = ValueStringBuilder.Create();
+
+        while (true)
+        {
+            Console.WriteLine();
+            Utility.PushColor(ConsoleColor.Yellow);
+            Console.WriteLine("No world save data found.");
+            Utility.PopColor();
+            Console.Write($"Available backups and archives ({entries.Count} total");
+            if (totalPages > 1)
+            {
+                Console.Write($", page {page + 1}/{totalPages}");
+            }
+
+            Console.WriteLine("):");
+            Console.WriteLine();
+
+            var start = page * pageSize;
+            var end = Math.Min(start + pageSize, entries.Count);
+
+            for (var i = start; i < end; i++)
+            {
+                var (_, label, _, date) = entries[i];
+                Console.Write($"  {i + 1,3}) ");
+                Utility.PushColor(ConsoleColor.Cyan);
+                Console.Write($"{date:yyyy-MM-dd HH:mm:ss}");
+                Utility.PopColor();
+                Console.WriteLine($"  {label}");
+            }
+
+            Console.WriteLine();
+            sb.Reset();
+            sb.Append("Enter number to restore");
+            if (page < totalPages - 1)
+            {
+                sb.Append(", [n]ext page");
+            }
+
+            if (page > 0)
+            {
+                sb.Append(", [p]rev page");
+            }
+
+            sb.Append(", or Enter to start fresh: ");
+            Console.Write(sb.ToString());
+
+            var input = Console.ReadLine();
+
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                Console.WriteLine("Starting with no world save data.");
+                return;
+            }
+
+            if (input.InsensitiveEquals("n") && page < totalPages - 1)
+            {
+                page++;
+                continue;
+            }
+
+            if (input.InsensitiveEquals("p") && page > 0)
+            {
+                page--;
+                continue;
+            }
+
+            if (int.TryParse(input, out var choice) && choice >= 1 && choice <= entries.Count)
+            {
+                var selected = entries[choice - 1];
+                Console.Write("Restoring ");
+                Utility.PushColor(ConsoleColor.Green);
+                Console.Write(selected.label);
+                Utility.PopColor();
+                Console.WriteLine("...");
+
+                var savePath = Path.Combine(
+                    Core.BaseDirectory,
+                    ServerConfiguration.GetSetting("world.savePath", "Saves")
+                );
+
+                if (selected.isArchive)
+                {
+                    RestoreFromArchiveFile(selected.path, savePath);
+                }
+                else
+                {
+                    RestoreFromBackupDirectory(selected.path, savePath);
+                }
+
+                return;
+            }
+
+            Console.WriteLine("Invalid selection. Try again.");
+        }
+    }
+
+    private static void RestoreFromArchiveFile(string archiveFile, string savePath)
+    {
+        var tempPath = PathUtility.EnsureRandomPath(_tempArchivePath);
+        try
+        {
+            if (!ExtractArchive(archiveFile, tempPath))
+            {
+                Utility.PushColor(ConsoleColor.Red);
+                Console.WriteLine($"Failed to extract {new FileInfo(archiveFile).Name}.");
+                Utility.PopColor();
+                return;
+            }
+
+            PromptAndRestoreFromExtractedArchive(tempPath, savePath);
+        }
+        finally
+        {
+            CleanupTempDirectory(tempPath);
+        }
+    }
+
+    private static void RestoreFromBackupDirectory(string backupDir, string savePath)
+    {
+        if (Directory.Exists(savePath))
+        {
+            Directory.Delete(savePath, true);
+        }
+
+        Directory.CreateDirectory(savePath);
+        PathUtility.CopyDirectoryContents(backupDir, savePath);
+        logger.Information("Restored world save from backup {Directory}", new DirectoryInfo(backupDir).Name);
+    }
+
+    /// <summary>
+    /// Extracts an archive file (.tar.zst, .tar.gz, .tar) to a directory.
+    /// </summary>
+    private static bool ExtractArchive(string archiveFile, string outputDirectory)
+    {
+        var fileName = new FileInfo(archiveFile).Name;
+
         if (fileName.EndsWithOrdinal(".tar.zst"))
         {
-            successful = ManagedArchive.ExtractTarZstd(fi.FullName, tempPath);
+            return ManagedArchive.ExtractTarZstd(archiveFile, outputDirectory);
         }
-        else if (fileName.EndsWithOrdinal(".tar.gz"))
+
+        if (fileName.EndsWithOrdinal(".tar.gz"))
         {
-            successful = ManagedArchive.ExtractTarGz(fi.FullName, tempPath);
+            return ManagedArchive.ExtractTarGz(archiveFile, outputDirectory);
         }
-        else if (fileName.EndsWithOrdinal(".tar"))
+
+        if (fileName.EndsWithOrdinal(".tar"))
         {
-            successful = ManagedArchive.ExtractTar(fi.FullName, tempPath);
+            return ManagedArchive.ExtractTar(archiveFile, outputDirectory);
+        }
+
+        logger.Warning("Unsupported archive format: {File}", fileName);
+        return false;
+    }
+
+    /// <summary>
+    /// Lists backup directories inside an extracted archive and lets the user choose which to restore.
+    /// If only one backup exists, restores it directly.
+    /// </summary>
+    private static bool PromptAndRestoreFromExtractedArchive(string extractedPath, string savePath)
+    {
+        var backups = new List<(DateTime date, string path, string name)>();
+        foreach (var dir in Directory.EnumerateDirectories(extractedPath))
+        {
+            var dirName = new DirectoryInfo(dir).Name;
+            if (TryGetDate(dirName, out var date))
+            {
+                backups.Add((date, dir, dirName));
+            }
+        }
+
+        if (backups.Count == 0)
+        {
+            Utility.PushColor(ConsoleColor.Red);
+            Console.WriteLine("No valid backup directories found inside the archive.");
+            Utility.PopColor();
+            return false;
+        }
+
+        // Sort newest first
+        backups.Sort((a, b) => b.date.CompareTo(a.date));
+
+        string selectedPath;
+
+        if (backups.Count == 1)
+        {
+            selectedPath = backups[0].path;
+            logger.Information("Restoring backup {Directory}", backups[0].name);
         }
         else
         {
-            logger.Warning("Unsupported archive format: {File}", fileName);
-            return false;
-        }
+            // Multiple backups — let the user choose
+            Console.WriteLine();
+            Console.WriteLine($"Archive contains {backups.Count} backups:");
+            Console.WriteLine();
 
-        if (!successful)
-        {
-            logger.Warning("Failed to extract {File}", fi.Name);
-            return false;
-        }
-
-        foreach (var folder in PathsByTimestampName(tempPath))
-        {
-            if (Directory.Exists(savePath))
+            for (var i = 0; i < backups.Count; i++)
             {
-                Directory.Delete(savePath, true);
+                Console.Write($"  {i + 1,3}) ");
+                Utility.PushColor(ConsoleColor.Cyan);
+                Console.Write($"{backups[i].date:yyyy-MM-dd HH:mm:ss}");
+                Utility.PopColor();
+                Console.WriteLine($"  {backups[i].name}");
             }
 
-            var dirInfo = new DirectoryInfo(folder);
-            logger.Information("Restoring backup {Directory}", dirInfo.Name);
-            PathUtility.MoveDirectoryContents(folder, savePath);
-            break;
+            Console.WriteLine();
+            Console.Write("[1]> ");
+            var input = Console.ReadLine();
+
+            int choice;
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                choice = 1; // Default to most recent
+            }
+            else if (!int.TryParse(input, out choice) || choice < 1 || choice > backups.Count)
+            {
+                Console.WriteLine("Invalid selection, using most recent.");
+                choice = 1;
+            }
+
+            selectedPath = backups[choice - 1].path;
+            logger.Information("Restoring backup {Directory}", backups[choice - 1].name);
         }
 
+        if (Directory.Exists(savePath))
+        {
+            Directory.Delete(savePath, true);
+        }
+
+        Directory.CreateDirectory(savePath);
+        PathUtility.MoveDirectoryContents(selectedPath, savePath);
+        return true;
+    }
+
+    private static void CleanupTempDirectory(string tempPath)
+    {
         try
         {
-            Directory.Delete(tempPath, true);
+            if (Directory.Exists(tempPath))
+            {
+                Directory.Delete(tempPath, true);
+            }
         }
         catch (Exception ex)
         {
             logger.Warning(ex, "Failed to clean up temp directory {Path}", tempPath);
         }
-
-        return true;
     }
 
     public static void PruneBackups()

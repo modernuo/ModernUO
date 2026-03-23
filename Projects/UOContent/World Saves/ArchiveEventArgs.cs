@@ -17,39 +17,24 @@ using System;
 
 namespace Server.Saves;
 
-public class ArchiveCompletedEventArgs
+public class ArchiveCompletedEventArgs(
+    string archiveFilePath,
+    ArchivePeriod period,
+    DateTime rangeStart,
+    long fileSizeBytes,
+    double elapsedSeconds
+)
 {
-    public string ArchiveFilePath { get; }
-    public ArchivePeriod Period { get; }
-    public DateTime RangeStart { get; }
-    public long FileSizeBytes { get; }
-    public double ElapsedSeconds { get; }
-
-    public ArchiveCompletedEventArgs(
-        string archiveFilePath,
-        ArchivePeriod period,
-        DateTime rangeStart,
-        long fileSizeBytes,
-        double elapsedSeconds)
-    {
-        ArchiveFilePath = archiveFilePath;
-        Period = period;
-        RangeStart = rangeStart;
-        FileSizeBytes = fileSizeBytes;
-        ElapsedSeconds = elapsedSeconds;
-    }
+    public string ArchiveFilePath { get; } = archiveFilePath;
+    public ArchivePeriod Period { get; } = period;
+    public DateTime RangeStart { get; } = rangeStart;
+    public long FileSizeBytes { get; } = fileSizeBytes;
+    public double ElapsedSeconds { get; } = elapsedSeconds;
 }
 
-public class ArchiveFailedEventArgs
+public class ArchiveFailedEventArgs(ArchivePeriod period, DateTime rangeStart, Exception exception)
 {
-    public ArchivePeriod Period { get; }
-    public DateTime RangeStart { get; }
-    public Exception Exception { get; }
-
-    public ArchiveFailedEventArgs(ArchivePeriod period, DateTime rangeStart, Exception exception)
-    {
-        Period = period;
-        RangeStart = rangeStart;
-        Exception = exception;
-    }
+    public ArchivePeriod Period { get; } = period;
+    public DateTime RangeStart { get; } = rangeStart;
+    public Exception Exception { get; } = exception;
 }

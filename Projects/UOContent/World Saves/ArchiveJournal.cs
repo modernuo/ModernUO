@@ -43,7 +43,7 @@ public class ArchiveJournalEntry
     public long TotalSourceBytes { get; set; }
     public long ArchiveBytes { get; set; }
     public DateTime StartedAt { get; set; }
-    public DateTime? CompletedAt { get; set; }
+    public DateTime CompletedAt { get; set; } = DateTime.MaxValue;
     public string FailureReason { get; set; }
     public Dictionary<string, bool> DestinationResults { get; set; } = new();
 }
