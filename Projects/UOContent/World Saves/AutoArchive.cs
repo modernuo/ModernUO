@@ -101,13 +101,6 @@ public static class AutoArchive
         // Restores an archive file placed in the Saves folder
         RestoreFromArchive();
 
-        // Check for legacy bsdtar directory
-        var bsdtarPath = Path.Combine(Core.BaseDirectory, "bsdtar");
-        if (Directory.Exists(bsdtarPath))
-        {
-            logger.Information("Legacy bsdtar directory found. No longer needed and can be safely deleted.");
-        }
-
         DateTimeOffset now = Core.Now;
         var date = now.Date;
         _nextHourlyArchive = date.AddHours(now.Hour);

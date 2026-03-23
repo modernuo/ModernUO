@@ -193,71 +193,71 @@ public static class ArchiveJournal
             switch (entry.State)
             {
                 case ArchiveOperationState.Started:
-                {
-                    // Archive creation was interrupted. Clean up temp file if it exists.
-                    if (entry.TempFile != null)
                     {
-                        try
+                        // Archive creation was interrupted. Clean up temp file if it exists.
+                        if (entry.TempFile != null)
                         {
-                            if (File.Exists(entry.TempFile))
+                            try
                             {
-                                File.Delete(entry.TempFile);
+                                if (File.Exists(entry.TempFile))
+                                {
+                                    File.Delete(entry.TempFile);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                logger.Warning(ex, "Failed to clean up temp file {File}", entry.TempFile);
                             }
                         }
-                        catch (Exception ex)
-                        {
-                            logger.Warning(ex, "Failed to clean up temp file {File}", entry.TempFile);
-                        }
-                    }
 
-                    logger.Warning(
-                        "Recovered interrupted archive operation {Id} (was in Started state)",
-                        entry.Id
-                    );
-                    entry.State = ArchiveOperationState.Failed;
-                    entry.FailureReason = "Interrupted during archive creation";
-                    entry.CompletedAt = Core.Now;
-                    recovered = true;
-                    break;
-                }
-                case ArchiveOperationState.Archived:
-                {
-                    // Archive was created but not distributed.
-                    // If the archive file was deleted (admin cleanup), mark as failed.
-                    if (entry.ArchiveFile != null && !File.Exists(entry.ArchiveFile))
-                    {
                         logger.Warning(
-                            "Archive file for operation {Id} no longer exists (manually deleted?). Marking failed.",
+                            "Recovered interrupted archive operation {Id} (was in Started state)",
                             entry.Id
                         );
                         entry.State = ArchiveOperationState.Failed;
-                        entry.FailureReason = "Archive file missing on recovery";
+                        entry.FailureReason = "Interrupted during archive creation";
                         entry.CompletedAt = Core.Now;
                         recovered = true;
+                        break;
                     }
-                    else
+                case ArchiveOperationState.Archived:
                     {
-                        logger.Warning(
-                            "Found unfinished archive operation {Id} (Archived but not distributed). " +
-                            "Will re-attempt distribution on next cycle.",
+                        // Archive was created but not distributed.
+                        // If the archive file was deleted (admin cleanup), mark as failed.
+                        if (entry.ArchiveFile != null && !File.Exists(entry.ArchiveFile))
+                        {
+                            logger.Warning(
+                                "Archive file for operation {Id} no longer exists (manually deleted?). Marking failed.",
+                                entry.Id
+                            );
+                            entry.State = ArchiveOperationState.Failed;
+                            entry.FailureReason = "Archive file missing on recovery";
+                            entry.CompletedAt = Core.Now;
+                            recovered = true;
+                        }
+                        else
+                        {
+                            logger.Warning(
+                                "Found unfinished archive operation {Id} (Archived but not distributed). " +
+                                "Will re-attempt distribution on next cycle.",
+                                entry.Id
+                            );
+                        }
+
+                        break;
+                    }
+                case ArchiveOperationState.Distributed:
+                    {
+                        // Sources should have been pruned but weren't.
+                        logger.Information(
+                            "Completing interrupted operation {Id} (was Distributed, pruning sources)",
                             entry.Id
                         );
+                        entry.State = ArchiveOperationState.Completed;
+                        entry.CompletedAt = Core.Now;
+                        recovered = true;
+                        break;
                     }
-
-                    break;
-                }
-                case ArchiveOperationState.Distributed:
-                {
-                    // Sources should have been pruned but weren't.
-                    logger.Information(
-                        "Completing interrupted operation {Id} (was Distributed, pruning sources)",
-                        entry.Id
-                    );
-                    entry.State = ArchiveOperationState.Completed;
-                    entry.CompletedAt = Core.Now;
-                    recovered = true;
-                    break;
-                }
             }
         }
 
