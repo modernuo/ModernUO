@@ -847,6 +847,12 @@ namespace Server.Spells
             if (Caster.CanBeBeneficial(target, true, allowDead) && CheckSequence())
             {
                 Caster.DoBeneficial(target);
+
+                if (Caster != target)
+                {
+                    Titles.AwardKarma(Caster, target.Karma / 5, true);
+                }
+
                 return true;
             }
 
