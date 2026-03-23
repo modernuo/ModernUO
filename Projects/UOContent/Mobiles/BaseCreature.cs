@@ -3308,7 +3308,11 @@ namespace Server.Mobiles
 
                     if (!Core.UOR)
                     {
-                        if (ds.m_Mobile == LastKiller)
+                        var killer = LastKiller is BaseCreature bc
+                            ? bc.GetDamageMaster(this)
+                            : LastKiller;
+
+                        if (ds.m_Mobile == killer)
                         {
                             // If the titles system gets feature flagged, it will be supported
                             titles.Add(ds.m_Mobile);
