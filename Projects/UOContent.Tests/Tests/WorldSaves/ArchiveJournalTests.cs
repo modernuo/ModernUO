@@ -132,7 +132,7 @@ public class ArchiveJournalTests : IDisposable
 
         // Assert
         Assert.Equal(ArchiveOperationState.Completed, entry.State);
-        Assert.NotNull(entry.CompletedAt);
+        Assert.NotEqual(DateTime.MaxValue, entry.CompletedAt);
     }
 
     [Fact]
@@ -154,7 +154,7 @@ public class ArchiveJournalTests : IDisposable
         // Assert
         Assert.Equal(ArchiveOperationState.Failed, entry.State);
         Assert.Equal("Disk full", entry.FailureReason);
-        Assert.NotNull(entry.CompletedAt);
+        Assert.NotEqual(DateTime.MaxValue, entry.CompletedAt);
     }
 
     [Fact]
