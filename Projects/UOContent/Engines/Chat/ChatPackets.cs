@@ -1,6 +1,6 @@
 /*************************************************************************
  * ModernUO                                                              *
- * Copyright 2019-2026 - ModernUO Development Team                       *
+ * Copyright 2019-2023 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
  * File: ChatPackets.cs                                                  *
  *                                                                       *
@@ -15,12 +15,15 @@
 
 using System;
 using System.Buffers;
+using Server.Logging;
 using Server.Network;
 
 namespace Server.Engines.Chat
 {
     public static class ChatPackets
     {
+        private static readonly ILogger logger = LogFactory.GetLogger(typeof(ChatPackets));
+
         public static unsafe void Configure()
         {
             IncomingPackets.Register(0xB5, 0x40, true, &OpenChatWindowRequest);
@@ -97,7 +100,7 @@ namespace Server.Engines.Chat
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                logger.Error(e, "Exception in chat action handler");
             }
         }
 
