@@ -123,6 +123,8 @@ public static class AutoArchive
         EventSink.WorldSavePostSnapshot += Backup;
     }
 
+    private const string BackupCompleteMarker = ".backup-complete";
+
     private static void Backup(WorldSavePostSnapshotEventArgs args)
     {
         if (!Directory.Exists(args.OldSavePath))
@@ -133,6 +135,10 @@ public static class AutoArchive
         Directory.CreateDirectory(AutomaticBackupPath);
         var backupPath = Path.Combine(AutomaticBackupPath, Utility.GetTimeStamp());
         PathUtility.MoveDirectoryContents(args.OldSavePath, backupPath);
+
+        // Write a marker file so Rollup knows this backup is complete and not mid-write.
+        // This prevents archiving a partially-moved directory if Rollup runs concurrently.
+        File.WriteAllBytes(Path.Combine(backupPath, BackupCompleteMarker), []);
 
         logger.Information("Created backup at {Path}", backupPath);
 
@@ -245,6 +251,12 @@ public static class AutoArchive
 
         foreach (var folder in allFolders)
         {
+            // Skip backup directories that are still being written
+            if (!File.Exists(Path.Combine(folder, BackupCompleteMarker)))
+            {
+                continue;
+            }
+
             var dirName = new DirectoryInfo(folder).Name;
 
             if (!TryGetDate(dirName, out var date))
@@ -312,30 +324,35 @@ public static class AutoArchive
         // Fixed: was CompareExchange(ref _isArchiving, 0, 1) which never guarded
         if (Interlocked.CompareExchange(ref _isArchiving, 1, 0) == 1)
         {
+            logger.Debug("Archive operation already in progress, skipping this cycle");
             return;
         }
 
         ThreadPool.QueueUserWorkItem(
-            now =>
+            _ =>
             {
                 try
                 {
+                    // Use current time for schedule checks (not the captured time from the caller)
+                    // to avoid re-processing periods that elapsed during a long archive operation.
+                    var now = Core.Now;
+
                     if (now >= _nextHourlyArchive)
                     {
                         Rollup(ArchivePeriod.Hourly);
-                        _nextHourlyArchive = _nextHourlyArchive.AddHours(1);
+                        AdvanceSchedule(ref _nextHourlyArchive, now, static dt => dt.AddHours(1));
                     }
 
                     if (now >= _nextDailyArchive)
                     {
                         Rollup(ArchivePeriod.Daily);
-                        _nextDailyArchive = _nextDailyArchive.AddDays(1);
+                        AdvanceSchedule(ref _nextDailyArchive, now, static dt => dt.AddDays(1));
                     }
 
                     if (now >= _nextMonthlyArchive)
                     {
                         Rollup(ArchivePeriod.Monthly);
-                        _nextMonthlyArchive = _nextMonthlyArchive.AddMonths(1);
+                        AdvanceSchedule(ref _nextMonthlyArchive, now, static dt => dt.AddMonths(1));
                     }
 
                     Prune?.Invoke();
@@ -348,9 +365,7 @@ public static class AutoArchive
                 {
                     _isArchiving = 0;
                 }
-            },
-            date,
-            false
+            }
         );
     }
 
@@ -387,6 +402,18 @@ public static class AutoArchive
         );
     }
 
+    /// <summary>
+    /// Advances a schedule marker past the current time to prevent redundant catchup cycles
+    /// after a long-running archive operation.
+    /// </summary>
+    private static void AdvanceSchedule(ref DateTime schedule, DateTime now, Func<DateTime, DateTime> advance)
+    {
+        while (schedule <= now)
+        {
+            schedule = advance(schedule);
+        }
+    }
+
     private static void Rollup(ArchivePeriod archivePeriod)
     {
         if (!Directory.Exists(AutomaticBackupPath))
@@ -395,11 +422,16 @@ public static class AutoArchive
         }
 
         var currentRangeStart = Core.Now.ArchivePeriodStart(archivePeriod);
-        var allFolders = Directory.EnumerateDirectories(AutomaticBackupPath);
 
         var items = new Dictionary<DateTime, SortedDictionary<DateTime, string>>();
-        foreach (var path in allFolders)
+        foreach (var path in Directory.EnumerateDirectories(AutomaticBackupPath))
         {
+            // Skip backup directories that are still being written (no completion marker)
+            if (!File.Exists(Path.Combine(path, BackupCompleteMarker)))
+            {
+                continue;
+            }
+
             var dirName = new DirectoryInfo(path).Name;
 
             if (!TryGetDate(dirName, out var date))
