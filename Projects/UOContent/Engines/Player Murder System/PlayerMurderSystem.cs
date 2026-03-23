@@ -299,7 +299,7 @@ public class PlayerMurderSystem : GenericPersistence
         var wasMurderer = killer.Murderer;
         OnPlayerMurder(pk);
 
-        Titles.SetKarma(pk, pk.Kills * -1000, true);
+        Titles.SetKarma(pk, pk.Kills * (Core.AOS ? -2000 : -1000), true);
 
         pk.SendLocalizedMessage(1049067); // You have been reported for murder!
 
