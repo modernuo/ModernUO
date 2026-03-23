@@ -28,13 +28,7 @@ public static class ArchiveDestinationRegistry
 
     public static IReadOnlyList<IArchiveDestination> Destinations => _destinations;
 
-    public static void Register(IArchiveDestination destination)
-    {
-        _destinations.Add(destination);
-    }
+    public static void Register(IArchiveDestination destination) => _destinations.Add(destination);
 
-    public static void Unregister(IArchiveDestination destination)
-    {
-        _destinations.Remove(destination);
-    }
+    public static void Unregister(IArchiveDestination destination) => _destinations.Remove(destination);
 }

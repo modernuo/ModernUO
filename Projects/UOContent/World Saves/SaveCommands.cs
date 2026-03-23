@@ -16,33 +16,19 @@ public static class SaveCommands
     }
 
     [Usage("PruneArchives"), Description("Prunes archives folder.")]
-    private static void PruneArchives_OnCommand(CommandEventArgs e)
-    {
-        AutoArchive.PruneBackups();
-    }
+    private static void PruneArchives_OnCommand(CommandEventArgs e) => AutoArchive.PruneBackups();
 
     [Usage("Save"), Description("Saves the world.")]
-    private static void Save_OnCommand(CommandEventArgs e)
-    {
-        AutoSave.Save();
-    }
+    private static void Save_OnCommand(CommandEventArgs e) => AutoSave.Save();
 
     [Usage("AutoSave <on | off>"), Description("Enables or disables automatic shard saving.")]
     public static void SetAutoSaves_OnCommand(CommandEventArgs e)
     {
         if (e.Length == 1)
         {
-
             var enabled = AutoSave.SavesEnabled = e.GetBoolean(0);
 
-            if (enabled)
-            {
-                e.Mobile.SendMessage("Saves have been enabled.");
-            }
-            else
-            {
-                e.Mobile.SendMessage("Saves have been disabled.");
-            }
+            e.Mobile.SendMessage(enabled ? "Saves have been enabled." : "Saves have been disabled.");
         }
         else
         {
@@ -67,7 +53,8 @@ public static class SaveCommands
         e.Mobile.SendMessage("Save frequency has been updated.");
     }
 
-    [Usage("ArchiveStatus"), Description("Shows archive system status, journal state, and registered destinations.")]
+    [Usage("ArchiveStatus")]
+    [Description("Shows archive system status, journal state, and registered destinations.")]
     private static void ArchiveStatus_OnCommand(CommandEventArgs e)
     {
         var mobile = e.Mobile;
@@ -91,9 +78,11 @@ public static class SaveCommands
         var operations = ArchiveJournal.Operations;
         var pending = 0;
         var failed = 0;
-        foreach (var op in operations)
+        for (var i = 0; i < operations.Count; i++)
         {
-            if (op.State is ArchiveOperationState.Started or ArchiveOperationState.Archived or ArchiveOperationState.Distributed)
+            var op = operations[i];
+            if (op.State is ArchiveOperationState.Started or ArchiveOperationState.Archived
+                or ArchiveOperationState.Distributed)
             {
                 pending++;
             }

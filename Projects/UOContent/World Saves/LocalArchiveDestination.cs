@@ -37,11 +37,8 @@ public class LocalArchiveDestination : IArchiveDestination
         _monthlyRetention = monthlyRetention;
     }
 
-    public bool SendArchive(string archiveFilePath, ArchivePeriod period, DateTime rangeStart)
-    {
-        // Archive is already on local filesystem — nothing to do.
-        return true;
-    }
+    // Archive is already on local filesystem — nothing to do.
+    public bool SendArchive(string archiveFilePath, ArchivePeriod period, DateTime rangeStart) => true;
 
     public int GetRetentionCount(ArchivePeriod period) => period switch
     {

@@ -263,8 +263,9 @@ public static class AutoArchive
     private static int GetMaxRetention(ArchivePeriod period)
     {
         var max = 0;
-        foreach (var dest in ArchiveDestinationRegistry.Destinations)
+        for (var i = 0; i < ArchiveDestinationRegistry.Destinations.Count; i++)
         {
+            var dest = ArchiveDestinationRegistry.Destinations[i];
             var count = dest.GetRetentionCount(period);
             if (count > max)
             {
@@ -665,7 +666,7 @@ public static class AutoArchive
 
     private static bool TryGetDate(string value, out DateTime date)
     {
-        Span<int> parts = stackalloc int[] { 0, 1, 1, 0, 0, 0 };
+        Span<int> parts = [0, 1, 1, 0, 0, 0];
 
         try
         {
