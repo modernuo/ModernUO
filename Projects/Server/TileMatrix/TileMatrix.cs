@@ -52,10 +52,10 @@ public class TileMatrix
 
     public static void Configure()
     {
-        // Derive from expansion setting — anything up to and including ML (Mondain's Legacy) is pre-6.0.0,
-        // meaning map0.mul serves as both Felucca and Trammel with no separate map1.mul needed.
-        // Falls back to client version detection if expansion is not configured, or can be overridden manually.
-        var isPre6000Trammel = Core.Expansion <= Expansion.ML;
+        // Derive from expansion setting — T2A and Renaissance (UOR) share map0.mul for both Felucca and Trammel.
+        // From Third Dawn (UOTD) onward, Trammel has its own distinct map1.mul (Haven appears, terrain diverges).
+        // Can be overridden manually via maps.enablePre6000Trammel in server configuration.
+        var isPre6000Trammel = Core.Expansion <= Expansion.UOR;
         Pre6000ClientSupport = ServerConfiguration.GetSetting("maps.enablePre6000Trammel", isPre6000Trammel);
     }
 
