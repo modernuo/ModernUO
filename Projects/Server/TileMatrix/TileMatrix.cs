@@ -52,8 +52,10 @@ public class TileMatrix
 
     public static void Configure()
     {
-        // Set to true to support < 6.0.0 clients where map0.mul is both Felucca & Trammel
-        var isPre6000Trammel = UOClient.ServerClientVersion != null && UOClient.ServerClientVersion < ClientVersion.Version6000;
+        // Derive from expansion setting — anything up to and including ML (Mondain's Legacy) is pre-6.0.0,
+        // meaning map0.mul serves as both Felucca and Trammel with no separate map1.mul needed.
+        // Falls back to client version detection if expansion is not configured, or can be overridden manually.
+        var isPre6000Trammel = Core.Expansion <= Expansion.ML;
         Pre6000ClientSupport = ServerConfiguration.GetSetting("maps.enablePre6000Trammel", isPre6000Trammel);
     }
 
