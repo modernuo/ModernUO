@@ -1,6 +1,6 @@
 using System.IO;
-using System.Text;
 using Server.Accounting;
+using Server.Text;
 
 namespace Server.Commands
 {
@@ -110,11 +110,12 @@ namespace Server.Commands
                 return ip;
             }
 
-            var sb = new StringBuilder(ip);
+            using var sb = ValueStringBuilder.Create(ip.Length);
+            sb.Append(ip);
 
             for (var i = 0; i < m_NotSafe.Length; ++i)
             {
-                sb.Replace(m_NotSafe[i], '_');
+                sb.Replace(m_NotSafe[i], '_', 0, sb.Length);
             }
 
             return sb.ToString();

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using ModernUO.Serialization;
+using Server.Text;
 using Server.Gumps;
 using Server.Items;
 using Server.Network;
@@ -231,7 +231,7 @@ public class TownCrierGump : Gump
 
                 var toExpire = Utility.Max(tce.ExpireTime - Core.Now, TimeSpan.Zero);
 
-                var sb = new StringBuilder();
+                using var sb = ValueStringBuilder.Create(512);
 
                 sb.Append("[Expires: ");
 
