@@ -437,20 +437,8 @@ public abstract partial class BaseAI
         return true;
     }
 
-    public bool IsValidCombatant(Mobile combatant)
-    {
-        if (!IsValidFocusMob(combatant))
-        {
-            return false;
-        }
-
-        if (Mobile.InLOS(combatant))
-        {
-            return true;
-        }
-
-        return IsHostile(combatant);
-    }
+    public bool IsValidCombatant(Mobile combatant) => IsValidFocusMob(combatant) 
+        && (Mobile.InLOS(combatant) || IsHostile(combatant));
 
     public bool IsValidFocusMob(Mobile focusMob) =>
         focusMob != null
