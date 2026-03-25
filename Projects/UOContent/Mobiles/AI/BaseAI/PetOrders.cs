@@ -357,13 +357,14 @@ public abstract partial class BaseAI
     }
 
     private bool IsInvalidControlTarget(Mobile target) => target?.Deleted != false || target.Map != Mobile.Map
-        || !target.Alive || target.IsDeadBondedPet;
+        || !target.Alive || target.IsDeadBondedPet || target.Hidden;
 
     private void HandleInvalidControlTarget()
     {
         DebugSay("Target is either dead, hidden, or out of range.");
 
-        Mobile.ControlOrder = Core.AOS || Mobile.IsBonded ? OrderType.Follow : OrderType.None;
+        Mobile.ControlTarget = Mobile.ControlMaster;
+        Mobile.ControlOrder = OrderType.None;
 
         if (Mobile.FightMode is FightMode.Closest or FightMode.Aggressor)
         {
