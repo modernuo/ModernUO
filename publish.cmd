@@ -1,12 +1,5 @@
-:<<"::SHELLSCRIPT"
 @ECHO OFF
 GOTO :CMDSCRIPT
-
-::SHELLSCRIPT
-path=$(dirname "$0")
-cd $path
-./publish.sh
-exit $?
 
 :CMDSCRIPT
 IF "%~1" == "" (
@@ -31,16 +24,38 @@ IF "%~3" == "" (
   SET arch=%~3
 )
 
+:START
 echo dotnet tool restore
 dotnet tool restore
+IF ERRORLEVEL 1 (
+  pause
+  GOTO :START
+)
 
 echo dotnet clean --verbosity quiet
 dotnet clean --verbosity quiet
+IF ERRORLEVEL 1 (
+  pause
+  GOTO :START
+)
+
 echo dotnet restore --force-evaluate --source https://api.nuget.org/v3/index.json
 dotnet restore --force-evaluate --source https://api.nuget.org/v3/index.json
+IF ERRORLEVEL 1 (
+  pause
+  GOTO :START
+)
 
 echo dotnet publish %config% %os%-%arch% --no-restore --self-contained=false
 dotnet publish %config% %os%-%arch% --no-restore --self-contained=false
+IF ERRORLEVEL 1 (
+  pause
+  GOTO :START
+)
 
 echo Generating serialization migration schema...
 dotnet tool run ModernUOSchemaGenerator -- ModernUO.sln
+IF ERRORLEVEL 1 (
+  pause
+  GOTO :START
+)
