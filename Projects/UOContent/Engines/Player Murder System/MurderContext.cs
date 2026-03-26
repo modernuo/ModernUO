@@ -5,7 +5,7 @@ using Server.Mobiles;
 
 namespace Server.Engines.PlayerMurderSystem;
 
-[SerializationGenerator(1)]
+[SerializationGenerator(2)]
 public partial class MurderContext
 {
     [SerializableField(0)]
@@ -26,7 +26,15 @@ public partial class MurderContext
 
     [SerializableField(3)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
-    private int _pingPong;
+    private int _pingPongs;
+
+    [SerializableField(4)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private int _bounty;
+
+    [SerializableField(5)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private DateTime _lastMurderTime;
 
     private void MigrateFrom(V0Content content)
     {
@@ -34,7 +42,18 @@ public partial class MurderContext
         _longTermElapse = content.LongTermElapse;
         _shortTermMurders = content.ShortTermMurders;
         // Players already at >= 5 kills have crossed the threshold at least once
-        _pingPong = _player.Kills >= 5 ? 1 : 0;
+        _pingPongs = _player.Kills >= 5 ? 1 : 0;
+    }
+
+    private void MigrateFrom(V1Content content)
+    {
+        _shortTermElapse = content.ShortTermElapse;
+        _longTermElapse = content.LongTermElapse;
+        _shortTermMurders = content.ShortTermMurders;
+        _pingPongs = content.PingPongs;
+        // _bounty defaults to 0
+        // Default to now so the bounty board date display is sensible for migrated contexts
+        _lastMurderTime = Core.Now;
     }
 
     public PlayerMobile _player;
@@ -78,7 +97,7 @@ public partial class MurderContext
         }
     }
 
-    public bool CanRemove() => _pingPong <= 0 && _shortTermMurders <= 0 && _player.Kills <= 0;
+    public bool CanRemove() => _pingPongs <= 0 && _shortTermMurders <= 0 && _player.Kills <= 0;
 
     public bool CheckStart()
     {

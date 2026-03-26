@@ -43,6 +43,44 @@ This document defines the coding conventions and standards for ModernUO content 
   var damage = Utility.RandomMinMax(10, 20);
   ```
 
+### Brace Style
+ALL control flow statements (`if`, `else`, `for`, `foreach`, `while`, `do`, `switch`) **must** have braces, even for single-line bodies. This reduces merge conflicts and diff sizes.
+
+```csharp
+// BAD
+if (condition)
+    DoSomething();
+
+// GOOD
+if (condition)
+{
+    DoSomething();
+}
+```
+
+### Switch Patterns
+Prefer switch expressions and switch-when pattern matching where they improve readability and enable JIT/PGO optimization. Skip if code becomes unreadable or is on a cold path.
+
+```csharp
+// Prefer switch expression for value mapping
+private static string GetName(GemType type) => type switch
+{
+    GemType.StarSapphire => "star sapphire",
+    GemType.Emerald      => "emerald",
+    _                    => "gem"
+};
+
+// Prefer switch-when for performance (compiler hints to JIT/PGO)
+switch (item)
+{
+    case Sword { Quality: >= ItemQuality.Exceptional } when Core.AOS:
+    {
+        bonus = 10;
+        break;
+    }
+}
+```
+
 ### Legacy Code
 Older code uses `m_` prefix for private fields (e.g., `m_Amount`). Do not change existing `m_` fields, but always use `_` prefix for new code.
 
@@ -332,7 +370,7 @@ Available spatial queries (on `Map`):
 ### Partial Classes
 Any class with `[SerializationGenerator]` **must** be declared `partial`:
 ```csharp
-[SerializationGenerator(0, false)]
+[SerializationGenerator(0)]
 public partial class MyItem : Item  // MUST be partial
 {
 }
@@ -448,7 +486,7 @@ finally
 - Use `PooledRefList<T>` instead of `new List<T>()`
 - Use `stackalloc` for small fixed-size buffers
 - Use `STArrayPool<T>` for larger buffers
-- Avoid string concatenation in loops (use `StringBuilder` or string interpolation in `IPropertyList`)
+- Use `ValueStringBuilder` with `stackalloc` for string building (never `System.Text.StringBuilder`) → `dev-docs/string-handling.md`
 
 ---
 

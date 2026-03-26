@@ -62,6 +62,9 @@ public partial class Timer
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static long MillisecondsUntilNextTick(long tickCount) => Math.Max(0, _tickRate - (tickCount - _lastTickTurned));
+
     private static void Turn()
     {
         var turnNextWheel = false;

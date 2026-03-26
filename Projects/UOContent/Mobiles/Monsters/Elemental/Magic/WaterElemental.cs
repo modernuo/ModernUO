@@ -3,12 +3,17 @@ using Server.Items;
 
 namespace Server.Mobiles
 {
-    [SerializationGenerator(0, false)]
+    [SerializationGenerator(1, false)]
     public partial class WaterElemental : BaseCreature
     {
+        [SerializableField(0)]
+        [SerializedCommandProperty(AccessLevel.GameMaster)]
+        private bool _hasDecanter;
+
         [Constructible]
         public WaterElemental() : base(AIType.AI_Mage)
         {
+            _hasDecanter = true;
             Body = 16;
             BaseSoundID = 278;
 
@@ -55,6 +60,10 @@ namespace Server.Mobiles
             AddLoot(LootPack.Average);
             AddLoot(LootPack.Meager);
             AddLoot(LootPack.Potions);
+        }
+
+        private void MigrateFrom(V0Content content)
+        {
         }
     }
 }

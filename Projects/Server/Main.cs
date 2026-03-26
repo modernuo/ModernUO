@@ -110,12 +110,13 @@ public static class Core
 
     public static long Uptime => TickCount - _firstTick;
 
-    private static long _cycleIndex;
-    private static readonly double[] _cyclesPerSecond = new double[128];
+    private static double _currentCPS;
+    private static double _averageCPS;
+    private static bool _cpsInitialized;
 
-    public static double CyclesPerSecond => _cyclesPerSecond[_cycleIndex];
+    public static double CyclesPerSecond => _currentCPS;
 
-    public static double AverageCPS => _cyclesPerSecond.Average();
+    public static double AverageCPS => _averageCPS;
 
     public static string BaseDirectory
     {
@@ -454,20 +455,12 @@ public static class Core
 
     public static void RunEventLoop()
     {
-#if DEBUG
-        const bool isDebugMode = true;
-#else
-        const bool isDebugMode = false;
-#endif
-
-        var idleCPU = ServerConfiguration.GetSetting("core.enableIdleCPU", isDebugMode);
-
         try
         {
-            var cycleCount = _cyclesPerSecond.Length;
-            var last = _tickCount;
+            var lastRaw = Stopwatch.GetTimestamp();
             const int interval = 100;
             double frequency = Stopwatch.Frequency * interval;
+            const double alpha = 2.0 / 129; // EMA smoothing (≈128-sample window)
 
             var sample = 0;
 
@@ -504,20 +497,26 @@ public static class Core
                 if (sample++ == interval)
                 {
                     sample = 0;
-                    var now = GetTimestamp();
+                    var nowRaw = Stopwatch.GetTimestamp();
 
-                    var cyclesPerSecond = frequency / (now - last);
-                    _cyclesPerSecond[_cycleIndex++] = cyclesPerSecond;
-                    if (_cycleIndex == cycleCount)
+                    _currentCPS = frequency / (nowRaw - lastRaw);
+
+                    if (!_cpsInitialized)
                     {
-                        _cycleIndex = 0;
+                        _averageCPS = _currentCPS;
+                        _cpsInitialized = true;
+                    }
+                    else
+                    {
+                        _averageCPS += alpha * (_currentCPS - _averageCPS);
                     }
 
-                    last = now;
+                    lastRaw = nowRaw;
 
-                    if (idleCPU && cyclesPerSecond > 125)
+                    var sleepMs = (int)Timer.MillisecondsUntilNextTick(_tickCount);
+                    if (sleepMs >= 2)
                     {
-                        Thread.Sleep(2);
+                        NetState.WaitForCompletion(sleepMs - 1);
                     }
                 }
             }

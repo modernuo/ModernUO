@@ -201,8 +201,10 @@ public partial class LargePatioHouse : BaseHouse
         SetSign(1, 8, 16);
 
         AddEastDoor(1, 4, 7);
-        AddEastDoor(1, -4, 7);
-        AddSouthDoor(4, -1, 7);
+
+        // Patio doors are external to prevent res-looting
+        AddEastDoor(1, -4, 7, keyValue);
+        AddSouthDoor(4, -1, 7, keyValue);
     }
 
     public override int DefaultPrice => 152800;
@@ -278,7 +280,8 @@ public partial class LogCabin : BaseHouse
 
         SetSign(5, 8, 20);
 
-        AddSouthDoor(1, 0, 29);
+        // Balcony door is external to prevent res-looting
+        AddSouthDoor(1, 0, 29, keyValue);
     }
 
     public override int DefaultPrice => 97800;
@@ -329,7 +332,8 @@ public partial class TwoStoryVilla : BaseHouse
 
         SetSign(3, 8, 24);
 
-        AddEastDoor(1, 0, 25);
+        // Balcony door is external to prevent res-looting
+        AddEastDoor(1, 0, 25, keyValue);
         AddSouthDoor(-3, -1, 25);
     }
 
@@ -364,8 +368,6 @@ public partial class SmallShop : BaseHouse
         }
 
         AddDoor(door, -2, 0, id == 0xA2 ? 24 : 27);
-
-        // AddSouthDoor( false, -2, 0, 27 - (id == 0xA2 ? 3 : 0), keyValue );
 
         SetSign(3, 4, 7 - (id == 0xA2 ? 2 : 0));
     }

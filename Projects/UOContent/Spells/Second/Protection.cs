@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using ModernUO.CodeGeneratedEvents;
 using Server.Engines.BuffIcons;
 using Server.Mobiles;
+using Server.Targeting;
 
 namespace Server.Spells.Second
 {
-    public class ProtectionSpell : MagerySpell
+    public class ProtectionSpell : MagerySpell, ITargetingSpell<Mobile>
     {
         private static readonly SpellInfo _info = new(
             "Protection",
@@ -18,8 +19,10 @@ namespace Server.Spells.Second
             Reagent.SulfurousAsh
         );
 
-        // TODO: Cleanup periodically if players have logged out for a while
-        private static readonly Dictionary<Mobile, Tuple<ResistanceMod, DefaultSkillMod>> _table = new();
+        private static Dictionary<Mobile, Tuple<ResistanceMod, DefaultSkillMod>> _table;
+
+        // T2A: stores the AR bonus per mobile (shared with ArchProtection)
+        private static Dictionary<Mobile, int> _t2aTable;
 
         public ProtectionSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
         {
@@ -29,9 +32,39 @@ namespace Server.Spells.Second
 
         public override SpellCircle Circle => SpellCircle.Second;
 
+        public static bool HasT2AProtection(Mobile m) => _t2aTable?.ContainsKey(m) ?? false;
+
+        public static void RemoveT2AProtection(Mobile m)
+        {
+            if (_t2aTable?.Remove(m, out var bonus) == true)
+            {
+                m.VirtualArmorMod -= Math.Min(bonus, m.VirtualArmorMod);
+            }
+        }
+
+        public static void ApplyT2AProtection(Mobile caster, Mobile target)
+        {
+            if (HasT2AProtection(target))
+            {
+                return;
+            }
+
+            var magery = caster.Skills.Magery.Value;
+            var bonus = (int)(magery / 10);
+            var duration = TimeSpan.FromSeconds(6 * magery / 5);
+
+            _t2aTable ??= [];
+            _t2aTable[target] = bonus;
+            target.VirtualArmorMod += bonus;
+
+            target.FixedParticles(0x375A, 9, 20, 5016, EffectLayer.Waist);
+
+            new InternalTimer(target, duration).Start();
+        }
+
         public override bool CheckCast()
         {
-            if (Core.AOS)
+            if (Core.AOS || !Core.UOR)
             {
                 return true;
             }
@@ -51,6 +84,28 @@ namespace Server.Spells.Second
             return false;
         }
 
+        public void Target(Mobile m)
+        {
+            if (!Caster.CanBeBeneficial(m))
+            {
+                return;
+            }
+
+            if (HasT2AProtection(m))
+            {
+                Caster.SendLocalizedMessage(1005559); // This spell is already in effect.
+                return;
+            }
+
+            if (CheckBSequence(m))
+            {
+                Caster.DoBeneficial(m);
+                SpellHelper.Turn(Caster, m);
+                ApplyT2AProtection(Caster, m);
+                m.PlaySound(0x1ED);
+            }
+        }
+
         // AOS+ only
         public static void Toggle(Mobile caster, Mobile target)
         {
@@ -63,7 +118,7 @@ namespace Server.Spells.Second
              * even after dying, until you turn them off by casting them again.
              */
 
-            if (_table.Remove(target, out var mods))
+            if (_table?.Remove(target, out var mods) == true)
             {
                 target.PlaySound(0x1ED);
                 target.FixedParticles(0x375A, 9, 20, 5016, EffectLayer.Waist);
@@ -85,6 +140,7 @@ namespace Server.Spells.Second
                 var physMod = new ResistanceMod(ResistanceType.Physical, "PhysicalResistProtectionSpell", physLoss);
                 var resistMod = new DefaultSkillMod(SkillName.MagicResist, "MagicResistProtectionSpell", true, resistLoss);
 
+                _table ??= [];
                 _table[target] = Tuple.Create(physMod, resistMod);
                 Registry[target] = 1000; // 100.0% protection from disruption
 
@@ -99,7 +155,9 @@ namespace Server.Spells.Second
         [OnEvent(nameof(PlayerMobile.PlayerDeletedEvent))]
         public static void EndProtection(Mobile m)
         {
-            if (!_table.Remove(m, out var mods))
+            RemoveT2AProtection(m);
+
+            if (_table?.Remove(m, out var mods) != true)
             {
                 return;
             }
@@ -123,6 +181,10 @@ namespace Server.Spells.Second
 
                 FinishSequence();
             }
+            else if (!Core.UOR)
+            {
+                Caster.Target = new SpellTarget<Mobile>(this, TargetFlags.Beneficial);
+            }
             else
             {
                 if (Registry.ContainsKey(Caster))
@@ -142,7 +204,8 @@ namespace Server.Spells.Second
                                      Caster.Skills.Inscribe.Value) * 10 / 4;
 
                         Registry.Add(Caster, Math.Clamp((int)value, 0, 750)); // 75.0% protection from disruption
-                        new InternalTimer(Caster).Start();
+                        var duration = TimeSpan.FromSeconds(Math.Clamp(Caster.Skills.Magery.Value * 2.0, 15, 240));
+                        new InternalTimer(Caster, duration).Start();
 
                         Caster.FixedParticles(0x375A, 9, 20, 5016, EffectLayer.Waist);
                         Caster.PlaySound(0x1ED);
@@ -159,20 +222,21 @@ namespace Server.Spells.Second
 
         private class InternalTimer : Timer
         {
-            private readonly Mobile m_Caster;
+            private readonly Mobile _mobile;
 
-            public InternalTimer(Mobile caster) : base(TimeSpan.FromSeconds(0))
-            {
-                var val = Math.Clamp(caster.Skills.Magery.Value * 2.0, 15, 240);
-
-                m_Caster = caster;
-                Delay = TimeSpan.FromSeconds(val);
-            }
+            public InternalTimer(Mobile mobile, TimeSpan duration) : base(duration) => _mobile = mobile;
 
             protected override void OnTick()
             {
-                Registry.Remove(m_Caster);
-                DefensiveSpell.Nullify(m_Caster);
+                if (!Core.UOR)
+                {
+                    RemoveT2AProtection(_mobile);
+                }
+                else
+                {
+                    Registry.Remove(_mobile);
+                    DefensiveSpell.Nullify(_mobile);
+                }
             }
         }
     }

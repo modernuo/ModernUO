@@ -31,7 +31,7 @@ using ModernUO.Serialization;
 
 namespace Server.Items;
 
-[SerializationGenerator(0, false)]
+[SerializationGenerator(0)]
 public partial class MyItem : Item
 {
     [Constructible]
@@ -72,7 +72,7 @@ using Server.Items;
 
 namespace Server.Mobiles;
 
-[SerializationGenerator(0, false)]
+[SerializationGenerator(0)]
 public partial class MyCreature : BaseCreature
 {
     [Constructible]

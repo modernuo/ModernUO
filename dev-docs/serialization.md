@@ -18,7 +18,7 @@ using ModernUO.Serialization;
 
 namespace Server.Items;
 
-[SerializationGenerator(0, false)]
+[SerializationGenerator(0)]
 public partial class SimpleItem : Item
 {
     [Constructible]
@@ -33,13 +33,13 @@ public partial class SimpleItem : Item
 
 Key requirements:
 1. `using ModernUO.Serialization;` for the attributes
-2. `[SerializationGenerator(0, false)]` on the class
+2. `[SerializationGenerator(0)]` on the class
 3. `partial` class declaration
 4. `[Constructible]` on the parameterless constructor
 
 ### Item with Serialized Fields
 ```csharp
-[SerializationGenerator(0, false)]
+[SerializationGenerator(0)]
 public partial class ChargedGem : Item
 {
     [SerializableField(0)]
@@ -91,7 +91,7 @@ public partial class ChargedGem : Item
 
 ## Attribute Reference
 
-### [SerializationGenerator(version, encodedVersion)]
+### [SerializationGenerator(version, encoded)]
 
 **Target**: Class declaration
 **Required**: Yes, for any serializable type
@@ -99,17 +99,23 @@ public partial class ChargedGem : Item
 | Parameter | Type | Default | Description |
 |---|---|---|---|
 | `version` | `int` | Required | Current serialization version number |
-| `encodedVersion` | `bool` | `true` | `false` for Item/Mobile subclasses; `true` for standalone serializable types |
+| `encoded` | `bool` | `true` | How the version was written in old saves. Only needed when migrating from pre-codegen Serialize/Deserialize — pass `false` if old code used `reader.ReadInt()` |
 
 The version number determines which `Deserialize` overload is called. When you add, remove, or reorder fields, increment the version.
 
+For **new classes**, omit the `encoded` parameter:
 ```csharp
-[SerializationGenerator(3, false)]  // Version 3, Item/Mobile subclass
+[SerializationGenerator(0)]  // New class — omit encoded
 public partial class MyItem : Item { }
-
-[SerializationGenerator(0)]  // Version 0, standalone type (encodedVersion=true)
-public partial class MyData { }
 ```
+
+When **migrating from RunUO/pre-codegen** classes that used `reader.ReadInt()` for version, pass `false` and bump the version:
+```csharp
+[SerializationGenerator(3, false)]  // Old version was 2 → bump to 3; false because old saves used ReadInt()
+public partial class MyItem : Item { }
+```
+
+See `dev-docs/runuo-migration-docs/02-serialization.md` for complete migration guidance.
 
 ### [SerializableField(index, setter, saveIf)]
 
@@ -245,35 +251,41 @@ private List<Mobile> _followers;
 private Mobile _target;
 ```
 
-### [AfterDeserialization(skipOnDelete)]
+### [AfterDeserialization(synchronous)]
 
 **Target**: Parameterless private method
-**Effect**: Called after all fields are deserialized.
+**Effect**: Called after fields are deserialized. The `synchronous` parameter controls execution timing.
 
 | Parameter | Type | Default | Description |
 |---|---|---|---|
-| `skipOnDelete` | `bool` | `true` | Skip if entity is being deleted |
+| `synchronous` | `bool` | `true` | `true` = runs immediately after this entity's deserialization. `false` = runs after ALL entities in the world are deserialized. |
 
-Common uses:
-- Restart timers
-- Set up object relationships
-- Calculate derived values
-- Clean up empty collections
+**When to use `true` (default):**
+- Restarting timers for this entity
+- Setting up derived values from this entity's own fields
+- Cleaning up this entity's own collections
+
+**When to use `false` (deferred):**
+- Logic that adds or deletes entities (e.g., `Delete()`)
+- Logic that depends on other entities being fully loaded (cross-entity references)
+- Logic that affects game state
 
 ```csharp
+// Sync (default) — only touches own fields
 [AfterDeserialization]
 private void AfterDeserialization()
 {
-    // Restart timers
-    Timer.StartTimer(TimeSpan.FromMinutes(1), CheckExpiry, out _timerToken);
+    Timer.StartTimer(TimeSpan.FromSeconds(5), CheckExpiry, out _timerToken);
+}
 
-    // Set up relationships
-    if (_owner != null)
-        _owner.OwnedItems.Add(this);
-
-    // Clean up
-    if (_entries?.Count == 0)
-        _entries = null;
+// Deferred — calls Delete() which affects game state
+[AfterDeserialization(false)]
+private void AfterDeserialization()
+{
+    if (_expireTimer == null)
+    {
+        Delete();
+    }
 }
 ```
 
@@ -321,7 +333,7 @@ private int MaxItemsDefaultValue() => -1;
 
 ```csharp
 [TypeAlias("Server.Mobiles.Bear")]
-[SerializationGenerator(0, false)]
+[SerializationGenerator(0)]
 public partial class BlackBear : BaseCreature { }
 ```
 
@@ -388,6 +400,52 @@ Example: `Server.Accounting.Account.v6.json`
 | `SerializableInterfaceMigrationRule` | Objects implementing ISerializable |
 | `SerializationMethodSignatureMigrationRule` | Objects with custom Deserialize methods |
 
+### MigrateFrom Pattern
+
+When you bump the `[SerializationGenerator]` version number, you **must** add a `MigrateFrom` method to handle the transition from the previous version. The serialization generator creates a `VXContent` struct (where X is the previous version number) containing PascalCase properties matching the old serialized fields.
+
+```csharp
+// Version bumped from 0 to 1 (added _quality field)
+[SerializationGenerator(1)]
+public partial class MagicGem : Item
+{
+    [SerializableField(0)]
+    private int _charges;
+
+    [SerializableField(1)]  // New in v1
+    private GemQuality _quality;
+}
+
+// In MagicGem.Migrations.cs:
+public partial class MagicGem
+{
+    private void MigrateFrom(V0Content content)
+    {
+        _charges = content.Charges;
+        // _quality defaults to GemQuality.Rough (default enum value)
+    }
+}
+```
+
+**Key rules:**
+- The method signature is `private void MigrateFrom(VXContent content)` where X is the **previous** version
+- `VXContent` is auto-generated with PascalCase properties matching the old fields
+- New fields not present in the old version get their default values
+- Organize migrations in a separate `.Migrations.cs` partial file for clarity
+
+### Deserialize vs MigrateFrom — Know the Difference
+
+> **WARNING**: Do NOT modify `Deserialize(IGenericReader reader, int version)` when bumping SerializationGenerator versions.
+
+The two mechanisms serve different purposes:
+
+| Method | When It Runs | Purpose |
+|---|---|---|
+| `Deserialize(IGenericReader reader, int version)` | Loading saves from **before** the class was converted to the SerializationGenerator | One-time legacy migration only |
+| `MigrateFrom(VXContent content)` | Transitioning between SerializationGenerator versions | All post-codegen version bumps |
+
+The `Deserialize` function exists **only** to handle deserialization of entities saved before they used `[SerializationGenerator]`. Once a class uses the generator, all future version transitions must use `MigrateFrom`.
+
 ---
 
 ## Extension Methods
@@ -428,7 +486,7 @@ public enum GemQuality
     Flawless
 }
 
-[SerializationGenerator(1, false)]  // Version 1 (added Quality in v1)
+[SerializationGenerator(1)]  // Version 1 (added Quality in v1)
 public partial class MagicGem : Item
 {
     [SerializableField(0)]

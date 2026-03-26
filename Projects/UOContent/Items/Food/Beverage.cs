@@ -240,6 +240,34 @@ public partial class Pitcher : BaseBeverage
             _                   => 0
         };
     }
+
+    /// <summary>
+    /// Intercepts pour actions targeting a <c>WaterElemental</c> to implement the Endless Decanter
+    /// acquisition mechanic (throw a full pitcher at the elemental for a 10% chance to receive the Endless Decanter).
+    /// <para>
+    /// <b>Coupling note:</b> This override introduces a direct dependency from the generic <c>Pitcher</c>
+    /// class to a specific creature type. This is unavoidable because it is the regular <c>Pitcher</c>
+    /// and not the <c>EndlessDecanter</c> that the player throws. If a future creature ever uses a
+    /// similar pour interaction, this pattern should be revisited (e.g. an interface or event).
+    /// </para>
+    /// </summary>
+    public override void Pour_OnTarget(Mobile from, object targ)
+    {
+        if (targ is not WaterElemental elemental)
+        {
+            base.Pour_OnTarget(from, targ);
+            return;
+        }
+
+        if (Content == BeverageType.Water)
+        {
+            EndlessDecanter.HandleThrow(this, elemental, from);
+        }
+        else
+        {
+            from.SendLocalizedMessage(500846); // Can't pour it there.
+        }
+    }
 }
 
 [SerializationGenerator(2, false)]
@@ -336,12 +364,28 @@ public abstract partial class BaseBeverage : Item, IHasQuantity
             if (itemID > 0)
             {
                 ItemID = itemID;
+                OnQuantityChanged();
             }
             else
             {
                 Delete();
             }
         }
+    }
+
+    /// <summary>
+    /// Called after <see cref="Quantity"/> is assigned a new value and the item ID has been updated,
+    /// but only when <c>ComputeItemID</c> returns a non-zero ID. If <c>ComputeItemID</c>
+    /// returns <c>0</c> (e.g. an empty <c>Pitcher<c>), the item is deleted and this method is
+    /// never called.
+    /// <para>
+    /// <b>Contract for subclasses:</b> If you override this hook and need it to fire when the
+    /// beverage becomes empty, you must also override <c>ComputeItemID"</c> to return a
+    /// non-zero ID for the empty state (as <c>EndlessDecanter"</c> does).
+    /// </para>
+    /// </summary>
+    protected virtual void OnQuantityChanged()
+    {
     }
 
     public abstract int ComputeItemID();

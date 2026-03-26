@@ -94,7 +94,7 @@ namespace Server.Misc
                 return "There are no clients supported at this time.";
             }
 
-            using var builder = ValueStringBuilder.Create();
+            using var builder = new ValueStringBuilder(stackalloc char[192]);
             builder.Append("Please connect with a ");
             uint flags = 0;
             var i = 0;
@@ -115,7 +115,7 @@ namespace Server.Misc
 
         public static void ClientVersionReceived(NetState state, ClientVersion version)
         {
-            var sb = ValueStringBuilder.Create();
+            using var sb = ValueStringBuilder.Create();
 
             if (!_enable || state.Mobile?.AccessLevel != AccessLevel.Player)
             {
@@ -202,8 +202,6 @@ namespace Server.Misc
                         }
                 }
             }
-
-            sb.Dispose();
         }
 
         private static void OnKick(NetState ns)

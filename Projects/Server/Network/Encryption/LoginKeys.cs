@@ -13,6 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
@@ -28,6 +29,8 @@ public readonly struct LoginKeys
 
     private static readonly Dictionary<ClientVersion, LoginKeys> _cache = [];
 
+    private static LoginKeys[] _legacyKeys;
+
     public uint Key1 { get; }
     public uint Key2 { get; }
 
@@ -36,6 +39,12 @@ public readonly struct LoginKeys
         Key1 = key1;
         Key2 = key2;
     }
+
+    /// <summary>
+    /// Gets pre-computed login keys for all known client versions before 6.0.5
+    /// that do not send the 0xEF packet (and thus have no version available at login time).
+    /// </summary>
+    public static ReadOnlySpan<LoginKeys> LegacyKeys => _legacyKeys ??= BuildLegacyKeys();
 
     /// <summary>
     /// Gets or computes encryption keys for the specified client version.
@@ -54,20 +63,16 @@ public readonly struct LoginKeys
             return keys;
         }
 
-        keys = ComputeKeys(version);
+        keys = ComputeKeys((uint)version.Major, (uint)version.Minor, (uint)version.Revision);
         _cache[version] = keys;
         return keys;
     }
 
     /// <summary>
-    /// Computes encryption keys from client version using the UO key derivation algorithm.
+    /// Computes encryption keys from version components using the UO key derivation algorithm.
     /// </summary>
-    private static LoginKeys ComputeKeys(ClientVersion version)
+    private static LoginKeys ComputeKeys(uint major, uint minor, uint revision)
     {
-        uint major = (uint)version.Major;
-        uint minor = (uint)version.Minor;
-        uint revision = (uint)version.Revision;
-
         // Key1 derivation
         uint key1 = (major << 23) | (minor << 14) | (revision << 4);
         key1 ^= (revision * revision) << 9;
@@ -85,5 +90,29 @@ public readonly struct LoginKeys
         key2 ^= 0xA31D527F;
 
         return new LoginKeys(key1, key2);
+    }
+
+    /// <summary>
+    /// Builds the static array of pre-computed keys for pre-6.0.5 client versions.
+    /// These versions don't send 0xEF, so login encryption must be detected by trying known keys.
+    /// </summary>
+    private static LoginKeys[] BuildLegacyKeys()
+    {
+        // All unique (Major, Minor, Revision) tuples from 4.0.11 through 6.0.4
+        ReadOnlySpan<(uint Major, uint Minor, uint Revision)> versions =
+        [
+            (4, 0, 11),
+            (5, 0, 0), (5, 0, 1), (5, 0, 2), (5, 0, 3), (5, 0, 4),
+            (5, 0, 5), (5, 0, 6), (5, 0, 7), (5, 0, 8), (5, 0, 9),
+            (6, 0, 0), (6, 0, 1), (6, 0, 2), (6, 0, 3), (6, 0, 4),
+        ];
+
+        var keys = new LoginKeys[versions.Length];
+        for (var i = 0; i < versions.Length; i++)
+        {
+            keys[i] = ComputeKeys(versions[i].Major, versions[i].Minor, versions[i].Revision);
+        }
+
+        return keys;
     }
 }

@@ -28,7 +28,7 @@ namespace Server.Items
         {
             var damage = base.GetBaseDamage(attacker);
 
-            if (!Core.AOS && (attacker.Player || attacker.Body.IsHuman) && Layer == Layer.TwoHanded &&
+            if (!Core.AOS && Core.UOR && (attacker.Player || attacker.Body.IsHuman) && Layer == Layer.TwoHanded &&
                 attacker.Skills.Anatomy.Value >= 80 &&
                 attacker.Skills.Anatomy.Value / 400.0 >= Utility.RandomDouble() &&
                 DuelContext.AllowSpecialAbility(attacker, "Crushing Blow", false))

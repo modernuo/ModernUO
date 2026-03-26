@@ -21,7 +21,7 @@
       ]
     },
     {
-      "name": "PingPong",
+      "name": "PingPongs",
       "type": "int",
       "rule": "PrimitiveTypeMigrationRule",
       "ruleArguments": [

@@ -1130,6 +1130,8 @@ namespace Server.Mobiles
 
         public virtual MonsterAbility[] GetMonsterAbilities() => null;
 
+        private MonsterAbilityTrigger _activeTriggers;
+
         public virtual MonsterAbility GetAbility(MonsterAbilityType type)
         {
             var abilities = GetMonsterAbilities();
@@ -1186,6 +1188,11 @@ namespace Server.Mobiles
 
         public virtual bool TriggerAbility(MonsterAbilityTrigger trigger, Mobile defender)
         {
+            if ((_activeTriggers & trigger) != 0)
+            {
+                return false;
+            }
+
             var abilities = GetMonsterAbilities();
 
             if (abilities == null)
@@ -1193,18 +1200,26 @@ namespace Server.Mobiles
                 return false;
             }
 
-            var triggered = false;
-            for (var i = 0; i < abilities.Length; i++)
+            _activeTriggers |= trigger;
+            try
             {
-                var ability = abilities[i];
-                if (ability.CanTrigger(this, trigger))
+                var triggered = false;
+                for (var i = 0; i < abilities.Length; i++)
                 {
-                    ability.Trigger(trigger, this, defender);
-                    triggered = true;
+                    var ability = abilities[i];
+                    if (ability.CanTrigger(this, trigger))
+                    {
+                        ability.Trigger(trigger, this, defender);
+                        triggered = true;
+                    }
                 }
-            }
 
-            return triggered;
+                return triggered;
+            }
+            finally
+            {
+                _activeTriggers &= ~trigger;
+            }
         }
 
         public virtual void TriggerAbilityMove(MonsterAbilityTrigger trigger, Mobile defender, Direction d)

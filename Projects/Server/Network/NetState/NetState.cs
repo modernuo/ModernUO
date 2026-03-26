@@ -63,9 +63,6 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     // Managed socket with buffers (handles lifecycle automatically)
     internal RingSocket _socket;
 
-    // General packet throttle state (used for other throttled packets)
-    internal bool _isThrottled;
-
     private IAccount _account;
 
     internal enum ParserState
@@ -664,8 +661,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
                                     _encryption = loginEncryption;
 
                                     // Decrypt the buffer in place for processing
-                                    var mutableBuffer = _socket.RecvBuffer.GetReadSpan();
-                                    loginEncryption.ClientDecrypt(mutableBuffer[..62]);
+                                    loginEncryption.ClientDecrypt(buffer[..62]);
                                 }
 
                                 // Now process as normal (first byte should now be 0x80)
@@ -714,7 +710,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
                         case ProtocolState.GameServer_AwaitingGameServerLogin:
                             {
                                 // Some clients send 0x80 on game server connection
-                                if (packetId == 0x80)
+                                if (packetId == 0x80 || length == 62)
                                 {
                                     goto case ProtocolState.LoginServer_AwaitingLogin;
                                 }
@@ -767,8 +763,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
                                     _encryption = gameEncryption;
 
                                     // Decrypt the buffer in place for processing
-                                    var mutableBuffer = _socket.RecvBuffer.GetReadSpan();
-                                    gameEncryption.ClientDecrypt(mutableBuffer[..65]);
+                                    gameEncryption.ClientDecrypt(buffer[..65]);
                                 }
 
                                 // Now process as normal (first byte should now be 0x91)

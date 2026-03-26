@@ -6,6 +6,7 @@ using Server.ContextMenus;
 using Server.Engines.PartySystem;
 using Server.Engines.Quests.Doom;
 using Server.Engines.Quests.Haven;
+using Server.Engines.PlayerMurderSystem;
 using Server.Guilds;
 using Server.Misc;
 using Server.Mobiles;
@@ -388,7 +389,14 @@ public partial class Corpse : Container, ICarvable
             new LeftArm().MoveToWorld(Location, Map);
             new RightLeg().MoveToWorld(Location, Map);
             new RightArm().MoveToWorld(Location, Map);
-            new Head(dead.Name).MoveToWorld(Location, Map);
+            var head = new Head(dead.Name);
+
+            if (PlayerMurderSystem.BountiesEnabled && dead is PlayerMobile bountyTarget)
+            {
+                head.BountyTarget = bountyTarget;
+            }
+
+            head.MoveToWorld(Location, Map);
 
             SetFlag(CorpseFlag.Carved, true);
 

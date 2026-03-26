@@ -116,18 +116,31 @@ using var list = PooledRefList<Mobile>.CreateMT();
 
 ## World Saves
 
-World saves DO involve background work, but this is handled by server infrastructure:
-1. **Serialization** happens on the main thread (safe access to game state)
-2. **Disk I/O** may happen on background threads (no game state access)
-3. Main thread blocks briefly during serialization snapshot
+World saves use **parallel serialization threads**. This is critical to understand:
+
+1. **Preserialize**: Allocates heaps and wakes serialization thread workers (background)
+2. **Snapshot**: Main thread calls `Persistence.SerializeAll()` which pushes entities into `SerializationThreadWorker` queues (round-robin). Workers call `Serialize(writer)` on **their own background threads** in parallel.
+3. **Write snapshot**: Disk I/O on background threads after serialization completes
 
 ```csharp
 // From World.cs -- save flow:
 World.Save();
-→ Preserialize() on thread pool (allocate heaps)
-→ Snapshot() on main thread (serialize game state)
-→ WriteFiles() on thread pool (disk I/O only)
+→ Preserialize() on thread pool (allocate heaps, wake serialization workers)
+→ Snapshot() on main thread (queues entities to workers, workers serialize in parallel)
+  → SerializationThreadWorker.Execute() calls e.Serialize(writer) on background thread
+→ PauseSerializationThreads() (wait for workers to finish)
+→ WriteSnapshot() on thread pool (disk I/O only)
 ```
+
+### Serialize() runs on background threads
+Because `SerializationThreadWorker` calls `Serialize()` on its own thread, **`Serialize()` must be pure**:
+- **NO** creating/destroying Items or Mobiles
+- **NO** starting/stopping timers (not thread-safe)
+- **NO** sending packets or modifying NetState
+- **NO** mutating shared game state
+- **ONLY** read fields and write to `IGenericWriter`
+
+See `modernuo-serialization.md` for full purity rules.
 
 ## Exceptions: Server Infrastructure
 

@@ -32,7 +32,13 @@ public abstract class BaseMonolith : BaseSystemController
                 return;
             }
 
+            var oldSigil = m_Sigil;
             m_Sigil = value;
+
+            if (oldSigil != null)
+            {
+                oldSigil.Light = LightType.Empty;
+            }
 
             if (m_Sigil?.LastMonolith != null && m_Sigil.LastMonolith != this && m_Sigil.LastMonolith.Sigil == m_Sigil)
             {
@@ -91,6 +97,7 @@ public abstract class BaseMonolith : BaseSystemController
             return;
         }
 
+        m_Sigil.Light = LightType.Circle225;
         m_Sigil.MoveToWorld(new Point3D(X, Y, Z + 18), Map);
     }
 
