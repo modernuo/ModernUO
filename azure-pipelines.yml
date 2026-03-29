@@ -1,7 +1,17 @@
 name: 'Build'
 
 trigger:
-- main
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - Projects/**
+      - Directory.Build.props
+      - global.json
+      - version.json
+      - '*.slnx'
+      - '*.sln'
 
 variables:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
@@ -13,6 +23,8 @@ jobs:
     vmImage: 'windows-latest'
 
   steps:
+    - checkout: self
+      fetchDepth: 0 # avoid shallow clone so nbgv can do its work.
     - task: UseDotNet@2
       displayName: 'Install .NET'
       inputs:
