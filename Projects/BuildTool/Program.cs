@@ -75,33 +75,45 @@ static BuildOptions ParseArguments(string[] args)
         switch (args[i])
         {
             case "--config" when i + 1 < args.Length:
-                options.Config = NormalizeConfig(args[++i]);
-                hasNamedArgs = true;
-                break;
-            case "--os" when i + 1 < args.Length:
-                options.Os = args[++i].ToLowerInvariant();
-                hasNamedArgs = true;
-                break;
-            case "--arch" when i + 1 < args.Length:
-                options.Arch = args[++i].ToLowerInvariant();
-                hasNamedArgs = true;
-                break;
-            case "--action" when i + 1 < args.Length:
-                options.Action = args[++i].ToLowerInvariant() switch
                 {
-                    "migrate" => BuildAction.Migrate,
-                    _ => BuildAction.Publish
-                };
-                hasNamedArgs = true;
-                break;
+                    options.Config = NormalizeConfig(args[++i]);
+                    hasNamedArgs = true;
+                    break;
+                }
+            case "--os" when i + 1 < args.Length:
+                {
+                    options.Os = args[++i].ToLowerInvariant();
+                    hasNamedArgs = true;
+                    break;
+                }
+            case "--arch" when i + 1 < args.Length:
+                {
+                    options.Arch = args[++i].ToLowerInvariant();
+                    hasNamedArgs = true;
+                    break;
+                }
+            case "--action" when i + 1 < args.Length:
+                {
+                    options.Action = args[++i].ToLowerInvariant() switch
+                    {
+                        "migrate" => BuildAction.Migrate,
+                        _         => BuildAction.Publish
+                    };
+                    hasNamedArgs = true;
+                    break;
+                }
             case "--skip-prereqs":
-                options.SkipPrereqs = true;
-                hasNamedArgs = true;
-                break;
+                {
+                    options.SkipPrereqs = true;
+                    hasNamedArgs = true;
+                    break;
+                }
             case "--interactive":
-                options.Interactive = true;
-                hasNamedArgs = true;
-                break;
+                {
+                    options.Interactive = true;
+                    hasNamedArgs = true;
+                    break;
+                }
         }
     }
 

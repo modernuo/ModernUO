@@ -9,7 +9,7 @@ namespace BuildTool.Prerequisites;
 
 public static partial class DotNetSdkManager
 {
-    private const string DotNetDownloadUrl = "https://dotnet.microsoft.com/download/dotnet/10.0";
+    private const string DotNetDownloadUrl = "https://dotnet.microsoft.com/download";
     private const string InstallScriptUrlWindows = "https://dot.net/v1/dotnet-install.ps1";
     private const string InstallScriptUrlUnix = "https://dot.net/v1/dotnet-install.sh";
 

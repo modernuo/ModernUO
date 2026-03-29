@@ -178,18 +178,20 @@ public static class GuidedMode
     /// Returns null if user navigated Back to main menu, 0 on success, non-zero on error.
     /// Uses a step loop so Back goes to the previous step, not the main menu.
     /// </summary>
+    /// <summary>
+    /// Returns null if user navigated Back to main menu, 0 on success, non-zero on error.
+    /// Uses a step loop so Back goes to the previous step, not the main menu.
+    /// </summary>
     private static int? RunPublish(PlatformInfo platform, string repoRoot)
     {
-        // Step 0: Prerequisites (auto-runs, no back)
-        var prereqsPassed = PrerequisiteChecker.CheckAll(platform, repoRoot, interactive: true);
-        if (!prereqsPassed)
+        // Step 0: SDK check (always needed for building)
+        if (!PrerequisiteChecker.CheckSdk(platform, repoRoot, interactive: true))
         {
             return 1;
         }
 
         var config = "Release";
         var rid = platform.Rid;
-        var customPlatform = false;
         var os = platform.OsRid;
         var arch = platform.ArchRid;
 
@@ -200,94 +202,140 @@ public static class GuidedMode
             switch (step)
             {
                 case 1: // Configuration
-                {
-                    var choice = ShowPrompt("Configuration:", "Release (Recommended)", "Debug");
-                    if (choice is null)
                     {
-                        return null; // Back from first prompt = back to main menu
-                    }
+                        var choice = ShowPrompt("Configuration:", "Release (Recommended)", "Debug");
+                        if (choice is null)
+                        {
+                            return null; // Back from first prompt = back to main menu
+                        }
 
-                    config = choice.Contains("Release") ? "Release" : "Debug";
-                    step++;
-                    break;
-                }
-                case 2: // Platform confirmation
-                {
-                    var choice = ShowPrompt(
-                        $"Target platform: [{GoldLightMarkup}]{platform.Rid}[/] [grey](auto-detected)[/]",
-                        $":check_mark: Use {platform.Rid}",
-                        ":wrench: Choose different platform"
-                    );
-
-                    if (choice is null)
-                    {
-                        step--;
-                        break;
-                    }
-
-                    customPlatform = choice.Contains("Choose");
-                    if (!customPlatform)
-                    {
-                        rid = platform.Rid;
-                        step = 5; // Skip OS/arch selection, go to publish
-                    }
-                    else
-                    {
+                        config = choice.Contains("Release") ? "Release" : "Debug";
                         step++;
+                        break;
                     }
-                    break;
-                }
+                case 2: // Platform confirmation
+                    {
+                        var choice = ShowPrompt(
+                            $"Target platform: [{GoldLightMarkup}]{platform.Rid}[/] [grey](auto-detected)[/]",
+                            $":check_mark: Use {platform.Rid}",
+                            ":wrench: Choose different platform"
+                        );
+
+                        if (choice is null)
+                        {
+                            step--;
+                            break;
+                        }
+
+                        if (choice.Contains("Choose"))
+                        {
+                            step++;
+                        }
+                        else
+                        {
+                            rid = platform.Rid;
+                            os = platform.OsRid;
+                            step = 5; // Skip OS/arch selection, go to publish
+                        }
+                        break;
+                    }
                 case 3: // OS selection (only if custom platform)
-                {
-                    var choice = ShowPrompt(
-                        "Operating System:",
-                        "win   (Windows)",
-                        "osx   (macOS)",
-                        "linux (Linux)"
-                    );
-
-                    if (choice is null)
                     {
-                        step--;
+                        var choice = ShowPrompt(
+                            "Operating System:",
+                            "win   (Windows)",
+                            "osx   (macOS)",
+                            "linux (Linux)"
+                        );
+
+                        if (choice is null)
+                        {
+                            step--;
+                            break;
+                        }
+
+                        os = choice.Split(' ')[0].Trim();
+                        step++;
                         break;
                     }
-
-                    os = choice.Split(' ')[0].Trim();
-                    step++;
-                    break;
-                }
                 case 4: // Architecture selection (only if custom platform)
-                {
-                    var choice = ShowPrompt(
-                        "Architecture:",
-                        "x64   (Intel/AMD 64-bit)",
-                        "arm64 (ARM 64-bit)"
-                    );
-
-                    if (choice is null)
                     {
-                        step--;
+                        var choice = ShowPrompt(
+                            "Architecture:",
+                            "x64   (Intel/AMD 64-bit)",
+                            "arm64 (ARM 64-bit)"
+                        );
+
+                        if (choice is null)
+                        {
+                            step--;
+                            break;
+                        }
+
+                        arch = choice.Split(' ')[0].Trim();
+                        rid = $"{os}-{arch}";
+                        step++;
                         break;
                     }
+            }
+        }
 
-                    arch = choice.Split(' ')[0].Trim();
-                    rid = $"{os}-{arch}";
-                    step++;
-                    break;
-                }
+        var isCrossCompile = os != platform.OsRid;
+
+        // Native library checks — only relevant when targeting the current OS
+        if (!isCrossCompile)
+        {
+            if (!PrerequisiteChecker.CheckNativeLibraries(platform, interactive: true))
+            {
+                return 1;
             }
         }
 
         // Run publish
-        AnsiConsole.WriteLine();
-        var exitCode = PublishOrchestrator.Run(config, rid, interactive: true);
+        var exitCode = PublishOrchestrator.Run(config, rid, interactive: true, isCrossCompile);
 
         if (exitCode == 0)
         {
             CheckFirstTimeSetup(repoRoot);
+
+            if (isCrossCompile)
+            {
+                DisplayTargetRequirements(os, rid);
+            }
         }
 
         return exitCode;
+    }
+
+    private static void DisplayTargetRequirements(string targetOs, string rid)
+    {
+        var (osName, commands) = NativeLibraryChecker.GetRequirementsForTarget(targetOs);
+
+        var rows = new List<Spectre.Console.Rendering.IRenderable>
+        {
+            new Markup($"[bold {GoldMarkup}]:clipboard: Prerequisites for {Markup.Escape(osName)} target ({rid})[/]"),
+            new Markup("")
+        };
+
+        for (var i = 0; i < commands.Length; i++)
+        {
+            var cmd = commands[i];
+            if (i > 0)
+            {
+                rows.Add(new Markup(""));
+            }
+            rows.Add(new Markup($"  [grey]\u2022[/] {Markup.Escape(cmd)}"));
+        }
+
+        rows.Add(new Markup(""));
+        rows.Add(new Markup(""));
+        rows.Add(new Markup("[grey]Install these on the target machine, then copy the [/][rgb(213,191,116)]Distribution[/] [grey]folder to the server and run it.[/]"));
+
+        AnsiConsole.Write(new Panel(new Rows(rows))
+            .Border(BoxBorder.Rounded)
+            .BorderColor(Branding.GoldDim)
+            .Padding(1, 0));
+        AnsiConsole.WriteLine();
     }
 
     private static void CheckFirstTimeSetup(string repoRoot)

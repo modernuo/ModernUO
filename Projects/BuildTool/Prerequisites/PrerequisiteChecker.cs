@@ -6,7 +6,7 @@ namespace BuildTool.Prerequisites;
 public static class PrerequisiteChecker
 {
     /// <summary>
-    /// Runs all prerequisite checks and displays results.
+    /// Runs all prerequisite checks (SDK + native libraries) and displays results.
     /// Returns true if all critical prerequisites pass.
     /// </summary>
     public static bool CheckAll(PlatformInfo platform, string repoRoot, bool interactive)
@@ -18,9 +18,52 @@ public static class PrerequisiteChecker
         AnsiConsole.Write(panel);
         AnsiConsole.WriteLine();
 
-        var allPassed = true;
+        if (!CheckSdkInternal(platform, repoRoot, interactive))
+        {
+            return false;
+        }
 
-        // 1. Check .NET SDK
+        return CheckNativeLibrariesInternal(platform, interactive);
+    }
+
+    /// <summary>
+    /// Checks only the .NET SDK (sufficient for cross-compilation).
+    /// Returns true if the SDK is available.
+    /// </summary>
+    public static bool CheckSdk(PlatformInfo platform, string repoRoot, bool interactive)
+    {
+        var panel = new Panel("[bold]Checking .NET SDK[/]")
+            .Border(BoxBorder.Rounded)
+            .BorderColor(Branding.Gold)
+            .Padding(1, 0);
+        AnsiConsole.Write(panel);
+        AnsiConsole.WriteLine();
+
+        var passed = CheckSdkInternal(platform, repoRoot, interactive);
+        AnsiConsole.WriteLine();
+        return passed;
+    }
+
+    /// <summary>
+    /// Checks native libraries for the current platform.
+    /// Call this only when the publish target matches the current OS.
+    /// Returns true if all pass or the user chose to continue.
+    /// </summary>
+    public static bool CheckNativeLibraries(PlatformInfo platform, bool interactive)
+    {
+        AnsiConsole.Write(new Panel("[bold]Checking native libraries[/]")
+            .Border(BoxBorder.Rounded)
+            .BorderColor(Branding.Gold)
+            .Padding(1, 0));
+        AnsiConsole.WriteLine();
+
+        var passed = CheckNativeLibrariesInternal(platform, interactive);
+        AnsiConsole.WriteLine();
+        return passed;
+    }
+
+    private static bool CheckSdkInternal(PlatformInfo platform, string repoRoot, bool interactive)
+    {
         var sdkResult = DotNetSdkManager.CheckSdk(repoRoot);
         DisplayResult(sdkResult);
 
@@ -32,7 +75,6 @@ public static class PrerequisiteChecker
                 return false;
             }
 
-            // Re-check after install
             sdkResult = DotNetSdkManager.CheckSdk(repoRoot);
             if (!sdkResult.Passed)
             {
@@ -43,7 +85,11 @@ public static class PrerequisiteChecker
             DisplayResult(sdkResult);
         }
 
-        // 2. Check native libraries
+        return true;
+    }
+
+    private static bool CheckNativeLibrariesInternal(PlatformInfo platform, bool interactive)
+    {
         var nativeResults = NativeLibraryChecker.Check(platform);
         var hasMissing = false;
 
@@ -61,10 +107,8 @@ public static class PrerequisiteChecker
             }
         }
 
-        // Display aggregate install commands
         if (hasMissing)
         {
-            allPassed = false;
             AnsiConsole.WriteLine();
 
             foreach (var result in nativeResults)
@@ -94,15 +138,12 @@ public static class PrerequisiteChecker
                     return false;
                 }
             }
-        }
-        else
-        {
-            AnsiConsole.WriteLine();
-            AnsiConsole.MarkupLine("[green]:check_mark_button: All prerequisites satisfied.[/]");
+
+            return interactive; // In interactive mode, user chose to continue
         }
 
-        AnsiConsole.WriteLine();
-        return allPassed || interactive;
+        AnsiConsole.MarkupLine("[green]:check_mark_button: All prerequisites satisfied.[/]");
+        return true;
     }
 
     private static void DisplayResult(PrerequisiteResult result)

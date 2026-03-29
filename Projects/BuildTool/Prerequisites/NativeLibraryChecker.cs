@@ -5,6 +5,41 @@ namespace BuildTool.Prerequisites;
 
 public static class NativeLibraryChecker
 {
+    /// <summary>
+    /// Returns the required prerequisites for a target OS (without checking the local machine).
+    /// Used to inform users what they need to install on the deployment target after cross-compiling.
+    /// </summary>
+    public static (string Description, string[] InstallCommands) GetRequirementsForTarget(string targetOs)
+    {
+        return targetOs switch
+        {
+            "win" => (
+                "Windows",
+                [
+                    ".NET 10 Runtime — https://dotnet.microsoft.com/download/dotnet/10.0",
+                    "VC++ Redistributable v14 — https://aka.ms/vs/17/release/vc_redist.x64.exe"
+                ]
+            ),
+            "osx" => (
+                "macOS",
+                [
+                    ".NET 10 Runtime — https://dotnet.microsoft.com/download/dotnet/10.0",
+                    "brew install icu4c libdeflate zstd argon2"
+                ]
+            ),
+            "linux" => (
+                "Linux",
+                [
+                    ".NET 10 Runtime — https://dotnet.microsoft.com/download/dotnet/10.0",
+                    "Debian/Ubuntu:  sudo apt-get install -y libicu-dev libdeflate-dev zstd libargon2-dev liburing-dev",
+                    "Fedora/RHEL:    sudo dnf install -y libicu libdeflate-devel zstd libargon2-devel liburing-devel",
+                    "CentOS:         Also requires epel-release and CRB enabled"
+                ]
+            ),
+            _ => ("Unknown", [".NET 10 Runtime — https://dotnet.microsoft.com/download/dotnet/10.0"])
+        };
+    }
+
     public static List<PrerequisiteResult> Check(PlatformInfo platform)
     {
         if (platform.IsWindows)

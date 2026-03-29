@@ -5,11 +5,14 @@ namespace BuildTool.Publishing;
 
 public static class PublishOrchestrator
 {
+    // Target the Application project (not the solution) to avoid building BuildTool and test projects
+    private const string AppProject = "Projects/Application/Application.csproj";
+
     private static readonly (string Description, string Command, string Arguments)[] BuildSteps =
     [
         ("Restoring tools", "dotnet", "tool restore"),
-        ("Cleaning solution", "dotnet", "clean --verbosity quiet"),
-        ("Restoring packages", "dotnet", "restore --force-evaluate --source https://api.nuget.org/v3/index.json"),
+        ("Cleaning project", "dotnet", $"clean {AppProject} --verbosity quiet"),
+        ("Restoring packages", "dotnet", $"restore {AppProject} --force-evaluate --source https://api.nuget.org/v3/index.json"),
     ];
 
     public static int Run(string config, PlatformInfo platform, bool interactive)
@@ -17,17 +20,17 @@ public static class PublishOrchestrator
         return Run(config, platform.Rid, interactive);
     }
 
-    public static int Run(string config, string rid, bool interactive)
+    public static int Run(string config, string rid, bool interactive, bool isCrossCompile = false)
     {
         if (interactive)
         {
-            return RunInteractive(config, rid);
+            return RunInteractive(config, rid, isCrossCompile);
         }
 
         return RunNonInteractive(config, rid);
     }
 
-    private static int RunInteractive(string config, string rid)
+    private static int RunInteractive(string config, string rid, bool isCrossCompile)
     {
         var panel = new Panel($"[bold]Publishing[/] [rgb(223,198,136)]{config}[/] for [rgb(223,198,136)]{rid}[/]")
             .Border(BoxBorder.Rounded)
@@ -38,7 +41,7 @@ public static class PublishOrchestrator
 
         var allSteps = new List<(string Description, string Command, string Arguments)>(BuildSteps)
         {
-            ($"Publishing ({config}, {rid})", "dotnet", $"publish -c {config} -r {rid} --no-restore --self-contained=false"),
+            ($"Publishing ({config}, {rid})", "dotnet", $"publish {AppProject} -c {config} -r {rid} --no-restore --self-contained=false"),
             ("Generating serialization schema", "dotnet", "tool run ModernUOSchemaGenerator -- ModernUO.sln")
         };
 
@@ -61,7 +64,7 @@ public static class PublishOrchestrator
         }
 
         AnsiConsole.WriteLine();
-        DisplaySuccess(rid);
+        DisplaySuccess(rid, isCrossCompile);
         return 0;
     }
 
@@ -121,7 +124,7 @@ public static class PublishOrchestrator
 
         // Publish step
         {
-            var publishArgs = $"publish -c {config} -r {rid} --no-restore --self-contained=false";
+            var publishArgs = $"publish {AppProject} -c {config} -r {rid} --no-restore --self-contained=false";
             Console.WriteLine($"dotnet {publishArgs}");
             var exitCode = ProcessRunner.RunPassthrough("dotnet", publishArgs);
             if (exitCode != 0)
@@ -146,21 +149,31 @@ public static class PublishOrchestrator
         return 0;
     }
 
-    private static void DisplaySuccess(string rid)
+    internal static void DisplaySuccess(string rid, bool isCrossCompile = false)
     {
         var isWindows = rid.StartsWith("win", StringComparison.OrdinalIgnoreCase);
         var runCommand = isWindows ? "ModernUO.exe" : "dotnet ModernUO.dll";
 
-        var content = new Rows(
+        var rows = new List<Spectre.Console.Rendering.IRenderable>
+        {
             new Markup("[green bold]:check_mark_button: Build complete![/]"),
-            new Markup(""),
-            new Markup("Run the server from the [rgb(213,191,116)]Distribution[/] directory:"),
-            new Markup(""),
-            new Markup("  [white on grey23] cd Distribution [/]"),
-            new Markup($"  [white on grey23] {runCommand} [/]")
-        );
+            new Markup("")
+        };
 
-        AnsiConsole.Write(new Panel(content)
+        if (isCrossCompile)
+        {
+            rows.Add(new Markup($"Copy the [rgb(213,191,116)]Distribution[/] folder to your [rgb(213,191,116)]{rid}[/] server, then run:"));
+        }
+        else
+        {
+            rows.Add(new Markup("Run the server from the [rgb(213,191,116)]Distribution[/] directory:"));
+        }
+
+        rows.Add(new Markup(""));
+        rows.Add(new Markup("  [white on grey23] cd Distribution [/]"));
+        rows.Add(new Markup($"  [white on grey23] {runCommand} [/]"));
+
+        AnsiConsole.Write(new Panel(new Rows(rows))
             .Border(BoxBorder.Rounded)
             .BorderColor(Color.Green)
             .Padding(1, 0));
