@@ -6,7 +6,7 @@ trigger:
       - main
   paths:
     include:
-      - config/dotnet-tools.json
+      - .config/dotnet-tools.json
       - Projects/**
       - Directory.Build.props
       - global.json

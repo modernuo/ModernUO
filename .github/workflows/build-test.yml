@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'config/dotnet-tools.json'
+      - '.config/dotnet-tools.json'
       - 'Projects/**'
       - 'Directory.Build.props'
       - 'global.json'
@@ -13,7 +13,7 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - 'config/dotnet-tools.json'
+      - '.config/dotnet-tools.json'
       - 'Projects/**'
       - 'Directory.Build.props'
       - 'global.json'
