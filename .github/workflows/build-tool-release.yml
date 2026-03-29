@@ -67,6 +67,13 @@ jobs:
       contents: write
 
     steps:
+      - uses: actions/checkout@v6
+
+      - name: Move tag to current commit
+        run: |
+          git tag -f build-tool-latest
+          git push origin build-tool-latest --force
+
       - name: Download all artifacts
         uses: actions/download-artifact@v8
         with:
