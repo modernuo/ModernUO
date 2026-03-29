@@ -16,9 +16,70 @@ public static class GuidedMode
     private const string GoldMarkup = "rgb(213,191,116)";
     private const string GoldLightMarkup = "rgb(223,198,136)";
 
+    /// <summary>
+    /// Tracks menu depth. 0 = root menu, >0 = submenu.
+    /// Used by ShowPrompt to automatically add Back option in submenus.
+    /// </summary>
+    private static int _menuDepth;
+
     public static int Run(PlatformInfo platform, string repoRoot)
     {
         return ShowMainMenu(platform, repoRoot);
+    }
+
+    /// <summary>
+    /// Shows a selection prompt with automatic Back support.
+    /// When _menuDepth > 0, appends a ":left_arrow: Back" choice.
+    /// Returns null if the user chose Back or pressed Ctrl+C in a submenu.
+    /// At the root menu, Ctrl+C requires double-press to exit (returns null on double-press).
+    /// </summary>
+    private static string? ShowPrompt(string title, params string[] choices)
+    {
+        var allChoices = choices.Where(c => !string.IsNullOrEmpty(c)).ToList();
+
+        if (_menuDepth > 0)
+        {
+            allChoices.Add(":left_arrow: Back");
+        }
+
+        var prompt = new SelectionPrompt<string>()
+            .Title($"[{GoldMarkup}]{title}[/]")
+            .PageSize(10)
+            .HighlightStyle(Branding.HighlightStyle)
+            .AddChoices(allChoices);
+
+        string selection;
+        try
+        {
+            selection = prompt.Show(AnsiConsole.Console);
+        }
+        catch (OperationCanceledException)
+        {
+            InteractiveCancellation.Instance.Reset();
+
+            if (_menuDepth > 0)
+            {
+                return null; // Back
+            }
+
+            // Root menu: require double-press to exit
+            if (CancellationTracker.Instance.IsDoublePress())
+            {
+                AnsiConsole.MarkupLine("\n[grey]Exiting...[/]");
+                return ":cross_mark: Exit";
+            }
+
+            AnsiConsole.Write(new Text("\nPress Ctrl+C again to exit\n", Branding.DimGoldStyle));
+            Thread.Sleep(100);
+            return ""; // Signal to redraw menu
+        }
+
+        if (selection.Contains("Back"))
+        {
+            return null;
+        }
+
+        return selection;
     }
 
     private static int ShowMainMenu(PlatformInfo platform, string repoRoot)
@@ -26,10 +87,9 @@ public static class GuidedMode
         while (true)
         {
             AnsiConsole.Clear();
-            AnsiConsole.Write(new Panel(new Text(Branding.Logo, Branding.GoldStyle))
-                .Border(BoxBorder.Rounded)
-                .BorderColor(Branding.Gold)
-                .Padding(0, 0));
+
+            // Write the true-color ANSI logo directly (bypasses Spectre markup parsing)
+            Console.Write(Branding.UOLogoAnsi);
             AnsiConsole.Write(new Text($"  {Branding.Subtitle}\n", Branding.DimGoldStyle));
             AnsiConsole.WriteLine();
 
@@ -72,56 +132,39 @@ public static class GuidedMode
             AnsiConsole.Write(table);
             AnsiConsole.WriteLine();
 
-            var choices = new[]
-            {
+            var selection = ShowPrompt(
+                "What would you like to do?",
                 ":hammer: Publish Server",
                 ":stethoscope: Check Prerequisites",
                 "",
                 ":cross_mark: Exit"
-            };
+            );
 
-            string selection;
-            try
+            if (string.IsNullOrEmpty(selection))
             {
-                var prompt = new SelectionPrompt<string>()
-                    .Title($"[{GoldMarkup}]What would you like to do?[/]")
-                    .PageSize(10)
-                    .HighlightStyle(Branding.HighlightStyle)
-                    .AddChoices(choices.Where(c => !string.IsNullOrEmpty(c)));
-
-                selection = prompt.Show(AnsiConsole.Console);
-            }
-            catch (OperationCanceledException)
-            {
-                InteractiveCancellation.Instance.Reset();
-
-                if (CancellationTracker.Instance.IsDoublePress())
-                {
-                    AnsiConsole.MarkupLine("\n[grey]Exiting...[/]");
-                    return 0;
-                }
-
-                AnsiConsole.Write(new Text("\nPress Ctrl+C again to exit\n", Branding.DimGoldStyle));
-                Thread.Sleep(100);
-                continue;
+                continue; // Redraw (single Ctrl+C)
             }
 
             if (selection.Contains("Publish"))
             {
+                _menuDepth++;
                 AnsiConsole.Clear();
                 AnsiConsole.MarkupLine($"[bold {GoldMarkup}]:hammer: PUBLISH SERVER[/]\n");
-                var exitCode = RunPublish(platform, repoRoot);
-                if (exitCode != 0)
+                var result = RunPublish(platform, repoRoot);
+                _menuDepth--;
+
+                if (result is not null) // null = Back, skip WaitForKey
                 {
-                    return exitCode;
+                    WaitForKey();
                 }
-                WaitForKey();
             }
             else if (selection.Contains("Prerequisites"))
             {
+                _menuDepth++;
                 AnsiConsole.Clear();
                 AnsiConsole.MarkupLine($"[bold {GoldMarkup}]:stethoscope: PREREQUISITE CHECK[/]\n");
                 PrerequisiteChecker.CheckAll(platform, repoRoot, interactive: true);
+                _menuDepth--;
                 WaitForKey();
             }
             else if (selection.Contains("Exit"))
@@ -131,83 +174,111 @@ public static class GuidedMode
         }
     }
 
-    private static int RunPublish(PlatformInfo platform, string repoRoot)
+    /// <summary>
+    /// Returns null if user navigated Back to main menu, 0 on success, non-zero on error.
+    /// Uses a step loop so Back goes to the previous step, not the main menu.
+    /// </summary>
+    private static int? RunPublish(PlatformInfo platform, string repoRoot)
     {
-        // 1. Prerequisite checks
+        // Step 0: Prerequisites (auto-runs, no back)
         var prereqsPassed = PrerequisiteChecker.CheckAll(platform, repoRoot, interactive: true);
         if (!prereqsPassed)
         {
             return 1;
         }
 
-        // 2. Select configuration
-        string config;
-        try
-        {
-            config = new SelectionPrompt<string>()
-                .Title($"[{GoldMarkup}]Configuration:[/]")
-                .HighlightStyle(Branding.HighlightStyle)
-                .AddChoices("Release (Recommended)", "Debug")
-                .Show(AnsiConsole.Console);
-
-            config = config.Contains("Release") ? "Release" : "Debug";
-        }
-        catch (OperationCanceledException)
-        {
-            InteractiveCancellation.Instance.Reset();
-            return 0; // Back to main menu
-        }
-
-        // 3. Confirm platform
+        var config = "Release";
         var rid = platform.Rid;
-        string platformChoice;
-        try
-        {
-            platformChoice = new SelectionPrompt<string>()
-                .Title($"[{GoldMarkup}]Target platform:[/] [{GoldLightMarkup}]{rid}[/] [grey](auto-detected)[/]")
-                .HighlightStyle(Branding.HighlightStyle)
-                .AddChoices(
-                    $":check_mark: Use {rid}",
-                    ":wrench: Choose different platform"
-                )
-                .Show(AnsiConsole.Console);
-        }
-        catch (OperationCanceledException)
-        {
-            InteractiveCancellation.Instance.Reset();
-            return 0;
-        }
+        var customPlatform = false;
+        var os = platform.OsRid;
+        var arch = platform.ArchRid;
 
-        if (platformChoice.Contains("Choose"))
+        // Steps 1+: interactive prompts with back navigation
+        var step = 1;
+        while (step <= 4)
         {
-            try
+            switch (step)
             {
-                var os = new SelectionPrompt<string>()
-                    .Title($"[{GoldMarkup}]Operating System:[/]")
-                    .HighlightStyle(Branding.HighlightStyle)
-                    .AddChoices("win   (Windows)", "osx   (macOS)", "linux (Linux)")
-                    .Show(AnsiConsole.Console);
+                case 1: // Configuration
+                {
+                    var choice = ShowPrompt("Configuration:", "Release (Recommended)", "Debug");
+                    if (choice is null)
+                    {
+                        return null; // Back from first prompt = back to main menu
+                    }
 
-                os = os.Split(' ')[0].Trim();
+                    config = choice.Contains("Release") ? "Release" : "Debug";
+                    step++;
+                    break;
+                }
+                case 2: // Platform confirmation
+                {
+                    var choice = ShowPrompt(
+                        $"Target platform: [{GoldLightMarkup}]{platform.Rid}[/] [grey](auto-detected)[/]",
+                        $":check_mark: Use {platform.Rid}",
+                        ":wrench: Choose different platform"
+                    );
 
-                var arch = new SelectionPrompt<string>()
-                    .Title($"[{GoldMarkup}]Architecture:[/]")
-                    .HighlightStyle(Branding.HighlightStyle)
-                    .AddChoices("x64   (Intel/AMD 64-bit)", "arm64 (ARM 64-bit)")
-                    .Show(AnsiConsole.Console);
+                    if (choice is null)
+                    {
+                        step--;
+                        break;
+                    }
 
-                arch = arch.Split(' ')[0].Trim();
+                    customPlatform = choice.Contains("Choose");
+                    if (!customPlatform)
+                    {
+                        rid = platform.Rid;
+                        step = 5; // Skip OS/arch selection, go to publish
+                    }
+                    else
+                    {
+                        step++;
+                    }
+                    break;
+                }
+                case 3: // OS selection (only if custom platform)
+                {
+                    var choice = ShowPrompt(
+                        "Operating System:",
+                        "win   (Windows)",
+                        "osx   (macOS)",
+                        "linux (Linux)"
+                    );
 
-                rid = $"{os}-{arch}";
-            }
-            catch (OperationCanceledException)
-            {
-                InteractiveCancellation.Instance.Reset();
-                return 0;
+                    if (choice is null)
+                    {
+                        step--;
+                        break;
+                    }
+
+                    os = choice.Split(' ')[0].Trim();
+                    step++;
+                    break;
+                }
+                case 4: // Architecture selection (only if custom platform)
+                {
+                    var choice = ShowPrompt(
+                        "Architecture:",
+                        "x64   (Intel/AMD 64-bit)",
+                        "arm64 (ARM 64-bit)"
+                    );
+
+                    if (choice is null)
+                    {
+                        step--;
+                        break;
+                    }
+
+                    arch = choice.Split(' ')[0].Trim();
+                    rid = $"{os}-{arch}";
+                    step++;
+                    break;
+                }
             }
         }
 
-        // 4. Run publish
+        // Run publish
         AnsiConsole.WriteLine();
         var exitCode = PublishOrchestrator.Run(config, rid, interactive: true);
 
