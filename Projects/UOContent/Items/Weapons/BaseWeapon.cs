@@ -3460,7 +3460,7 @@ public abstract partial class BaseWeapon
 
         if (isMagicItem)
         {
-            var builder = ValueStringBuilder.Create(128);
+            var builder = new ValueStringBuilder(stackalloc char[160]);
 
             var durabilityText = DurabilityText(out var articleAnDurability);
             if (durabilityText != null)

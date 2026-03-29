@@ -9,12 +9,8 @@ jobs:
   post-release-discord:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
-          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
       - name: Post Release on Discord
-        uses: SethCohen/github-releases-to-discord@v1.15.0
+        uses: SethCohen/github-releases-to-discord@v1.19.0
         with:
           webhook_url: ${{ secrets.WEBHOOK_URL }}
           username: "Release Changelog"

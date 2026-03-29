@@ -1,5 +1,4 @@
 using System;
-using System.Text;
 using CommunityToolkit.HighPerformance;
 using Server.Commands;
 using Server.Factions;
@@ -7,6 +6,7 @@ using Server.Gumps;
 using Server.Items;
 using Server.Mobiles;
 using Server.Network;
+using Server.Text;
 
 namespace Server.Misc
 {
@@ -703,7 +703,7 @@ namespace Server.Misc
 
                             Array.Sort(strings);
 
-                            var sb = new StringBuilder();
+                            using var sb = ValueStringBuilder.Create(256);
 
                             if (strings.Length > 0)
                             {
@@ -728,7 +728,7 @@ namespace Server.Misc
                                         sb.ToString()
                                     );
 
-                                    sb = new StringBuilder();
+                                    sb.Reset();
                                     sb.Append(v);
                                 }
                                 else
