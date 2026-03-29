@@ -21,10 +21,7 @@ jobs:
           - os: windows-latest
             rid: win-arm64
             artifact: build-tool-win-arm64.exe
-          - os: macos-13
-            rid: osx-x64
-            artifact: build-tool-osx-x64
-          - os: macos-14
+          - os: macos-15
             rid: osx-arm64
             artifact: build-tool-osx-arm64
           - os: ubuntu-latest
