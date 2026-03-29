@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net10.0</TargetFramework>
+        <LangVersion>Preview</LangVersion>
+        <ImportDirectoryBuildProps>false</ImportDirectoryBuildProps>
+        <RootNamespace>BuildTool</RootNamespace>
+        <AssemblyName>build-tool</AssemblyName>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <PublishAot>true</PublishAot>
+        <InvariantGlobalization>true</InvariantGlobalization>
+        <TrimMode>link</TrimMode>
+        <IsAotCompatible>true</IsAotCompatible>
+        <RuntimeIdentifiers>win-x64;win-arm64;osx-x64;osx-arm64;linux-x64;linux-arm64</RuntimeIdentifiers>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="Spectre.Console" Version="0.54.0" />
+    </ItemGroup>
+</Project>
