@@ -3,8 +3,22 @@ name: Build
 on:
   push:
     branches: [main]
+    paths:
+      - '.config/dotnet-tools.json'
+      - 'Projects/**'
+      - 'Directory.Build.props'
+      - 'global.json'
+      - 'version.json'
+      - '*.slnx'
   pull_request:
     branches: [main]
+    paths:
+      - '.config/dotnet-tools.json'
+      - 'Projects/**'
+      - 'Directory.Build.props'
+      - 'global.json'
+      - 'version.json'
+      - '*.slnx'
 
 jobs:
   build-macos:
@@ -20,11 +34,11 @@ jobs:
             name: MacOS 26
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
     - name: Install .NET
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v5
       with:
         global-json-file: global.json
     - name: Install Prerequisites
@@ -32,7 +46,7 @@ jobs:
         brew update
         brew install icu4c libdeflate zstd argon2
     - name: Set Library Path
-      run: echo "DYLD_LIBRARY_PATH=/opt/homebrew/lib:\$DYLD_LIBRARY_PATH" >> $GITHUB_ENV
+      run: echo "DYLD_LIBRARY_PATH=/opt/homebrew/lib:$DYLD_LIBRARY_PATH" >> $GITHUB_ENV
     - name: Build
       run: dotnet run --project Projects/BuildTool -- --config Release --skip-prereqs
     - name: Migration Changes
@@ -82,11 +96,11 @@ jobs:
       - name: Install Prerequisites using apt
         run: apt-get update -y && apt-get install -y curl libicu-dev libdeflate-dev zstd libargon2-dev tzdata liburing-dev
         if: ${{ matrix.packageManager == 'apt' }}
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
       - name: Install .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           global-json-file: global.json
       - name: Build
