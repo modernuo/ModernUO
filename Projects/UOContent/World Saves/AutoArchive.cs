@@ -1,3 +1,18 @@
+/*************************************************************************
+ * ModernUO                                                              *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
+ * Email: hi@modernuo.com                                                *
+ * File: AutoArchive.cs                                                  *
+ *                                                                       *
+ * This program is free software: you can redistribute it and/or modify  *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ *                                                                       *
+ * You should have received a copy of the GNU General Public License     *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
+ *************************************************************************/
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,336 +22,833 @@ using System.Threading;
 using CommunityToolkit.HighPerformance;
 using Server.Compression;
 using Server.Logging;
+using Server.Text;
 
-namespace Server.Saves
+namespace Server.Saves;
+
+public static class AutoArchive
 {
-    public enum ArchivePeriod
+    private static readonly ILogger logger = LogFactory.GetLogger(typeof(AutoArchive));
+
+    private static string _tempArchivePath;
+    private static int _isArchiving;
+    private static DateTime _nextHourlyArchive;
+    private static DateTime _nextDailyArchive;
+    private static DateTime _nextMonthlyArchive;
+    private static bool _enablePruning;
+    private static int _compressionLevel;
+    private static bool _verifyArchives;
+    private static int _retryCount;
+    private static int _retryDelayMs;
+    private static int _backupMaxAgeDays;
+
+    public static event Action<ArchiveCompletedEventArgs> ArchiveCompleted;
+    public static event Action<ArchiveFailedEventArgs> ArchiveFailed;
+
+    public static Action Archive { get; set; }
+    public static Action Prune { get; set; }
+    public static string ArchivePath { get; private set; }
+    public static string BackupPath { get; private set; }
+    public static string AutomaticBackupPath { get; private set; }
+
+    public static DateTime NextHourlyArchive => _nextHourlyArchive;
+    public static DateTime NextDailyArchive => _nextDailyArchive;
+    public static DateTime NextMonthlyArchive => _nextMonthlyArchive;
+
+    public static void Configure()
     {
-        Hourly,
-        Daily,
-        Monthly
+        var tempArchivePath = ServerConfiguration.GetSetting("autoArchive.tempArchivePath", "temp");
+        _tempArchivePath = PathUtility.GetFullPath(tempArchivePath);
+
+        var backupPath = ServerConfiguration.GetOrUpdateSetting("autoArchive.backupPath", "Backups");
+        BackupPath = PathUtility.GetFullPath(backupPath);
+        AutomaticBackupPath = Path.Combine(BackupPath, "Automatic");
+
+        var archivePath = ServerConfiguration.GetOrUpdateSetting("autoArchive.archivePath", "Archives");
+        ArchivePath = PathUtility.GetFullPath(archivePath);
+
+        var useLocalArchives = ServerConfiguration.GetOrUpdateSetting("autoArchive.archiveLocally", true);
+        _enablePruning = ServerConfiguration.GetOrUpdateSetting("autoArchive.enableArchivePruning", true);
+
+        _compressionLevel = ServerConfiguration.GetOrUpdateSetting("autoArchive.compressionLevel", 3);
+        _verifyArchives = ServerConfiguration.GetOrUpdateSetting("autoArchive.verifyArchives", true);
+        _retryCount = ServerConfiguration.GetOrUpdateSetting("autoArchive.retryCount", 3);
+        _retryDelayMs = ServerConfiguration.GetOrUpdateSetting("autoArchive.retryDelayMs", 500);
+        _backupMaxAgeDays = ServerConfiguration.GetOrUpdateSetting("autoArchive.backupMaxAge", 30);
+
+        // Configurable retention
+        var hourlyRetention = ServerConfiguration.GetOrUpdateSetting("autoArchive.hourlyRetention", 24);
+        var dailyRetention = ServerConfiguration.GetOrUpdateSetting("autoArchive.dailyRetention", 30);
+        var monthlyRetention = ServerConfiguration.GetOrUpdateSetting("autoArchive.monthlyRetention", 12);
+
+        // Register local filesystem destination
+        if (useLocalArchives)
+        {
+            ArchiveDestinationRegistry.Register(
+                new LocalArchiveDestination(hourlyRetention, dailyRetention, monthlyRetention)
+            );
+            Archive = AutoArchiveLocally;
+        }
+
+        if (_enablePruning)
+        {
+            Prune = PruneBackups;
+        }
+
+        // Initialize journal and recover interrupted operations
+        ArchiveJournal.Configure(ArchivePath);
+        ArchiveJournal.RecoverInterrupted();
+
+        // Restores an archive file placed in the Saves folder
+        RestoreFromArchive();
+
+        // If no valid save data exists, offer to restore from backups/archives
+        if (!HasValidSaveData())
+        {
+            PromptRestoreFromBackup();
+        }
+
+        DateTimeOffset now = Core.Now;
+        var date = now.Date;
+        _nextHourlyArchive = date.AddHours(now.Hour);
+        _nextDailyArchive = date;
+        _nextMonthlyArchive = date.AddDays(1 - now.Day);
+
+        // Do a local archive rollup & prune
+        AutoArchiveLocally();
     }
 
-    public enum CompressionFormat
+    public static void Initialize()
     {
-        None,
-        Zip,
-        GZip,
-        Zstd,
+        EventSink.WorldSavePostSnapshot += Backup;
     }
 
-    public static class AutoArchive
+    private const string BackupCompleteMarker = ".backup-complete";
+
+    private static void Backup(WorldSavePostSnapshotEventArgs args)
     {
-        private static readonly ILogger logger = LogFactory.GetLogger(typeof(AutoArchive));
-
-        private static string _tempArchivePath;
-        private static int _isArchiving;
-        private static DateTime _nextHourlyArchive;
-        private static DateTime _nextDailyArchive;
-        private static DateTime _nextMonthlyArchive;
-        private static CompressionFormat _compressionFormat;
-        private static bool _enablePruning;
-
-        public static Action Archive { get; set; }
-        public static Action Prune { get; set; }
-        public static string ArchivePath { get; private set; }
-        public static string BackupPath { get; private set; }
-        public static string AutomaticBackupPath { get; private set; }
-
-        public static void Configure()
+        if (!Directory.Exists(args.OldSavePath))
         {
-            var tempArchivePath = ServerConfiguration.GetSetting("autoArchive.tempArchivePath", "temp");
-            _tempArchivePath = PathUtility.GetFullPath(tempArchivePath);
-
-            var backupPath = ServerConfiguration.GetOrUpdateSetting("autoArchive.backupPath", "Backups");
-            BackupPath = PathUtility.GetFullPath(backupPath);
-            AutomaticBackupPath = Path.Combine(BackupPath, "Automatic");
-
-            var archivePath = ServerConfiguration.GetOrUpdateSetting("autoArchive.archivePath", "Archives");
-            ArchivePath = PathUtility.GetFullPath(archivePath);
-
-            var useLocalArchives = ServerConfiguration.GetOrUpdateSetting("autoArchive.archiveLocally", true);
-            _enablePruning = ServerConfiguration.GetOrUpdateSetting("autoArchive.enableArchivePruning", true);
-
-            _compressionFormat = ServerConfiguration.GetOrUpdateSetting("autoArchive.compressionFormat", CompressionFormat.Zstd);
-
-            if (useLocalArchives)
-            {
-                Archive = AutoArchiveLocally;
-            }
-
-            if (_enablePruning)
-            {
-                Prune = PruneBackups;
-            }
-
-            // Restores an archive file placed in the Saves folder. Supports all compression formats.
-            RestoreFromArchive();
-
-            DateTimeOffset now = Core.Now;
-            var date = now.Date;
-            _nextHourlyArchive = date.AddHours(now.Hour);
-            _nextDailyArchive = date;
-            _nextMonthlyArchive = date.AddDays(1 - now.Day);
-
-            // Do a local archive rollup & prune
-            AutoArchiveLocally();
+            return;
         }
 
-        public static void Initialize()
+        Directory.CreateDirectory(AutomaticBackupPath);
+        var backupPath = Path.Combine(AutomaticBackupPath, Utility.GetTimeStamp());
+        PathUtility.MoveDirectoryContents(args.OldSavePath, backupPath);
+
+        // Write a marker file so Rollup knows this backup is complete and not mid-write.
+        // This prevents archiving a partially-moved directory if Rollup runs concurrently.
+        File.WriteAllBytes(Path.Combine(backupPath, BackupCompleteMarker), []);
+
+        logger.Information("Created backup at {Path}", backupPath);
+
+        Archive?.Invoke();
+    }
+
+    private static void RestoreFromArchive()
+    {
+        var savePath = Path.Combine(Core.BaseDirectory, ServerConfiguration.GetSetting("world.savePath", "Saves"));
+        if (!Directory.Exists(savePath))
         {
-            EventSink.WorldSavePostSnapshot += Backup;
+            return;
         }
 
-        private static void Backup(WorldSavePostSnapshotEventArgs args)
+        foreach (var file in PathsByTimestampName(savePath, true))
         {
-            if (!Directory.Exists(args.OldSavePath))
+            if (RestoreFromFile(file, savePath))
             {
-                return;
-            }
-
-            Directory.CreateDirectory(AutomaticBackupPath);
-            var backupPath = Path.Combine(AutomaticBackupPath, Utility.GetTimeStamp());
-            PathUtility.MoveDirectoryContents(args.OldSavePath, backupPath);
-
-            logger.Information("Created backup at {Path}", backupPath);
-
-            Archive?.Invoke();
-        }
-
-        private static void RestoreFromArchive()
-        {
-            var savePath = Path.Combine(Core.BaseDirectory, ServerConfiguration.GetSetting("world.savePath", "Saves"));
-            if (!Directory.Exists(savePath))
-            {
-                return;
-            }
-
-            foreach (var file in PathsByTimestampName(savePath, true))
-            {
-                if (RestoreFromFile(file, savePath))
-                {
-                    File.Delete(file);
-                    break;
-                }
-            }
-        }
-
-        private static bool RestoreFromFile(string file, string savePath)
-        {
-            var fi = new FileInfo(file);
-            var fileName = fi.Name;
-
-            if (!TryGetDate(fileName[..fileName.IndexOfOrdinal(".")], out _))
-            {
-                return false;
-            }
-
-            logger.Information("Restoring latest world save from archive {File}", fileName);
-
-            var tempPath = PathUtility.EnsureRandomPath(_tempArchivePath);
-            var successful = fileName.EndsWithOrdinal(".tar.zst")
-                ? ZstdArchive.ExtractToDirectory(fi.FullName, tempPath)
-                : TarArchive.ExtractToDirectory(fi.FullName, tempPath);
-
-            if (!successful)
-            {
-                logger.Information("Failed to extract {File}", fi.Name);
-                return false;
-            }
-
-            foreach (var folder in PathsByTimestampName(tempPath))
-            {
-                Directory.Delete(savePath, true);
-                var dirInfo = new DirectoryInfo(folder);
-                logger.Information("Restoring backup {Directory}", dirInfo.Name);
-                PathUtility.MoveDirectoryContents(folder, savePath);
+                File.Delete(file);
                 break;
             }
+        }
+    }
 
-            Directory.Delete(tempPath, true);
+    private static bool RestoreFromFile(string file, string savePath)
+    {
+        var fi = new FileInfo(file);
+        var fileName = fi.Name;
 
+        if (!TryGetDate(fileName[..fileName.IndexOfOrdinal(".")], out _))
+        {
+            return false;
+        }
+
+        logger.Information("Restoring world save from archive {File}", fileName);
+
+        var tempPath = PathUtility.EnsureRandomPath(_tempArchivePath);
+        try
+        {
+            if (!ExtractArchive(fi.FullName, tempPath))
+            {
+                return false;
+            }
+
+            return PromptAndRestoreFromExtractedArchive(tempPath, savePath);
+        }
+        finally
+        {
+            CleanupTempDirectory(tempPath);
+        }
+    }
+
+    /// <summary>
+    /// Checks if the Saves directory contains valid world save data.
+    /// </summary>
+    private static bool HasValidSaveData()
+    {
+        var savePath = Path.Combine(Core.BaseDirectory, ServerConfiguration.GetSetting("world.savePath", "Saves"));
+        if (!Directory.Exists(savePath))
+        {
+            return false;
+        }
+
+        // A valid save has SerializedTypes.db or at least one .bin/.idx file
+        if (File.Exists(Path.Combine(savePath, "SerializedTypes.db")))
+        {
             return true;
         }
 
-        public static void PruneBackups()
+        foreach (var dir in Directory.EnumerateDirectories(savePath))
         {
-            if (Directory.Exists(ArchivePath))
+            foreach (var file in Directory.EnumerateFiles(dir))
             {
-                // Maintain a total of 66 of the most recent archives
-                PruneLocalArchives(ArchivePeriod.Hourly, 24);
-                PruneLocalArchives(ArchivePeriod.Daily, 30);
-                PruneLocalArchives(ArchivePeriod.Monthly, 12);
-            }
-
-            if (!Directory.Exists(AutomaticBackupPath))
-            {
-                return;
-            }
-
-            var allFolders = Directory.EnumerateDirectories(AutomaticBackupPath);
-            var threshold = Core.Now.AddMonths(-1);
-
-            foreach (var folder in allFolders)
-            {
-                var dirName = new DirectoryInfo(folder).Name;
-
-                if (!TryGetDate(dirName, out var date))
+                if (file.EndsWithOrdinal(".bin") || file.EndsWithOrdinal(".idx"))
                 {
-                    continue;
-                }
-
-                if (date < threshold)
-                {
-                    logger.Information("Pruning old backup {Directory}", folder);
-                    Directory.Delete(folder, true);
+                    return true;
                 }
             }
         }
 
-        private static void PruneLocalArchives(ArchivePeriod period, int minRetained)
-        {
-            var periodStr = period.ToString();
-            var archivePath = Path.Combine(ArchivePath, periodStr);
-            if (!Directory.Exists(archivePath))
-            {
-                return;
-            }
+        return false;
+    }
 
-            var periodLowerStr = periodStr.ToLowerInvariant();
-            foreach (var archive in PathsByTimestampName(archivePath, true))
+    /// <summary>
+    /// Presents an interactive console menu to restore from a backup directory or archive file.
+    /// Only called during Configure() when no valid save data exists.
+    /// At this point, Console.ReadLine() works directly (ConsoleInputHandler not yet initialized).
+    /// </summary>
+    private static void PromptRestoreFromBackup()
+    {
+        // Collect available restore points: backup directories and archive files
+        var restorePoints = new SortedDictionary<DateTime, (string path, string label, bool isArchive)>(
+            new DescendingComparer<DateTime>()
+        );
+
+        // Scan backup directories
+        if (Directory.Exists(AutomaticBackupPath))
+        {
+            foreach (var dir in Directory.EnumerateDirectories(AutomaticBackupPath))
             {
-                if (minRetained > 0)
+                if (!File.Exists(Path.Combine(dir, BackupCompleteMarker)))
                 {
-                    minRetained--;
                     continue;
                 }
 
-                var fi = new FileInfo(archive);
-                logger.Information("Pruning {Period} archive {File}", periodLowerStr, fi.Name);
-                File.Delete(archive);
+                var dirName = new DirectoryInfo(dir).Name;
+                if (TryGetDate(dirName, out var date))
+                {
+                    restorePoints[date] = (dir, $"Backup: {dirName}", false);
+                }
             }
         }
 
-        public static void AutoArchiveLocally()
+        // Scan archive files (hourly, daily, monthly)
+        if (Directory.Exists(ArchivePath))
         {
-            var date = Core.Now;
-
-            if (date < _nextHourlyArchive && date < _nextDailyArchive && date < _nextMonthlyArchive)
+            foreach (var periodDir in Directory.EnumerateDirectories(ArchivePath))
             {
-                return;
-            }
-
-            if (Interlocked.CompareExchange(ref _isArchiving, 0, 1) == 1)
-            {
-                return;
-            }
-
-            ThreadPool.QueueUserWorkItem(
-                now =>
+                var periodName = new DirectoryInfo(periodDir).Name;
+                foreach (var file in Directory.EnumerateFiles(periodDir))
                 {
+                    var fi = new FileInfo(file);
+                    var nameWithoutExt = fi.Name;
+                    var dotIndex = nameWithoutExt.IndexOfOrdinal('.');
+                    if (dotIndex > 0)
+                    {
+                        nameWithoutExt = nameWithoutExt[..dotIndex];
+                    }
+
+                    if (TryGetDate(nameWithoutExt, out var date))
+                    {
+                        restorePoints[date] = (file, $"{periodName} archive: {fi.Name}", true);
+                    }
+                }
+            }
+        }
+
+        if (restorePoints.Count == 0)
+        {
+            return;
+        }
+
+        // Build flat list from sorted dictionary
+        var entries = new List<(string path, string label, bool isArchive, DateTime date)>();
+        foreach (var (date, (path, label, isArchive)) in restorePoints)
+        {
+            entries.Add((path, label, isArchive, date));
+        }
+
+        // Interactive paginated menu
+        const int pageSize = 20;
+        var page = 0;
+        var totalPages = (entries.Count + pageSize - 1) / pageSize;
+        using var sb = ValueStringBuilder.Create();
+
+        while (true)
+        {
+            Console.WriteLine();
+            Utility.PushColor(ConsoleColor.Yellow);
+            Console.WriteLine("No world save data found.");
+            Utility.PopColor();
+            Console.Write($"Available backups and archives ({entries.Count} total");
+            if (totalPages > 1)
+            {
+                Console.Write($", page {page + 1}/{totalPages}");
+            }
+
+            Console.WriteLine("):");
+            Console.WriteLine();
+
+            var start = page * pageSize;
+            var end = Math.Min(start + pageSize, entries.Count);
+
+            for (var i = start; i < end; i++)
+            {
+                var (_, label, _, date) = entries[i];
+                Console.Write($"  {i + 1,3}) ");
+                Utility.PushColor(ConsoleColor.Cyan);
+                Console.Write($"{date:yyyy-MM-dd HH:mm:ss}");
+                Utility.PopColor();
+                Console.WriteLine($"  {label}");
+            }
+
+            Console.WriteLine();
+            sb.Reset();
+            sb.Append("Enter number to restore");
+            if (page < totalPages - 1)
+            {
+                sb.Append(", [n]ext page");
+            }
+
+            if (page > 0)
+            {
+                sb.Append(", [p]rev page");
+            }
+
+            sb.Append(", or Enter to start fresh: ");
+            Console.Write(sb.ToString());
+
+            var input = Console.ReadLine();
+
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                Console.WriteLine("Starting with no world save data.");
+                return;
+            }
+
+            if (input.InsensitiveEquals("n") && page < totalPages - 1)
+            {
+                page++;
+                continue;
+            }
+
+            if (input.InsensitiveEquals("p") && page > 0)
+            {
+                page--;
+                continue;
+            }
+
+            if (int.TryParse(input, out var choice) && choice >= 1 && choice <= entries.Count)
+            {
+                var selected = entries[choice - 1];
+                Console.Write("Restoring ");
+                Utility.PushColor(ConsoleColor.Green);
+                Console.Write(selected.label);
+                Utility.PopColor();
+                Console.WriteLine("...");
+
+                var savePath = Path.Combine(
+                    Core.BaseDirectory,
+                    ServerConfiguration.GetSetting("world.savePath", "Saves")
+                );
+
+                if (selected.isArchive)
+                {
+                    RestoreFromArchiveFile(selected.path, savePath);
+                }
+                else
+                {
+                    RestoreFromBackupDirectory(selected.path, savePath);
+                }
+
+                return;
+            }
+
+            Console.WriteLine("Invalid selection. Try again.");
+        }
+    }
+
+    private static void RestoreFromArchiveFile(string archiveFile, string savePath)
+    {
+        var tempPath = PathUtility.EnsureRandomPath(_tempArchivePath);
+        try
+        {
+            if (!ExtractArchive(archiveFile, tempPath))
+            {
+                Utility.PushColor(ConsoleColor.Red);
+                Console.WriteLine($"Failed to extract {new FileInfo(archiveFile).Name}.");
+                Utility.PopColor();
+                return;
+            }
+
+            PromptAndRestoreFromExtractedArchive(tempPath, savePath);
+        }
+        finally
+        {
+            CleanupTempDirectory(tempPath);
+        }
+    }
+
+    private static void RestoreFromBackupDirectory(string backupDir, string savePath)
+    {
+        if (Directory.Exists(savePath))
+        {
+            Directory.Delete(savePath, true);
+        }
+
+        Directory.CreateDirectory(savePath);
+        PathUtility.CopyDirectoryContents(backupDir, savePath);
+        logger.Information("Restored world save from backup {Directory}", new DirectoryInfo(backupDir).Name);
+    }
+
+    /// <summary>
+    /// Extracts an archive file (.tar.zst, .tar.gz, .tar) to a directory.
+    /// </summary>
+    private static bool ExtractArchive(string archiveFile, string outputDirectory)
+    {
+        var fileName = new FileInfo(archiveFile).Name;
+
+        if (fileName.EndsWithOrdinal(".tar.zst"))
+        {
+            return ManagedArchive.ExtractTarZstd(archiveFile, outputDirectory);
+        }
+
+        if (fileName.EndsWithOrdinal(".tar.gz"))
+        {
+            return ManagedArchive.ExtractTarGz(archiveFile, outputDirectory);
+        }
+
+        if (fileName.EndsWithOrdinal(".tar"))
+        {
+            return ManagedArchive.ExtractTar(archiveFile, outputDirectory);
+        }
+
+        logger.Warning("Unsupported archive format: {File}", fileName);
+        return false;
+    }
+
+    /// <summary>
+    /// Lists backup directories inside an extracted archive and lets the user choose which to restore.
+    /// If only one backup exists, restores it directly.
+    /// </summary>
+    private static bool PromptAndRestoreFromExtractedArchive(string extractedPath, string savePath)
+    {
+        var backups = new List<(DateTime date, string path, string name)>();
+        foreach (var dir in Directory.EnumerateDirectories(extractedPath))
+        {
+            var dirName = new DirectoryInfo(dir).Name;
+            if (TryGetDate(dirName, out var date))
+            {
+                backups.Add((date, dir, dirName));
+            }
+        }
+
+        if (backups.Count == 0)
+        {
+            Utility.PushColor(ConsoleColor.Red);
+            Console.WriteLine("No valid backup directories found inside the archive.");
+            Utility.PopColor();
+            return false;
+        }
+
+        // Sort newest first
+        backups.Sort((a, b) => b.date.CompareTo(a.date));
+
+        string selectedPath;
+
+        if (backups.Count == 1)
+        {
+            selectedPath = backups[0].path;
+            logger.Information("Restoring backup {Directory}", backups[0].name);
+        }
+        else
+        {
+            // Multiple backups — let the user choose
+            Console.WriteLine();
+            Console.WriteLine($"Archive contains {backups.Count} backups:");
+            Console.WriteLine();
+
+            for (var i = 0; i < backups.Count; i++)
+            {
+                Console.Write($"  {i + 1,3}) ");
+                Utility.PushColor(ConsoleColor.Cyan);
+                Console.Write($"{backups[i].date:yyyy-MM-dd HH:mm:ss}");
+                Utility.PopColor();
+                Console.WriteLine($"  {backups[i].name}");
+            }
+
+            Console.WriteLine();
+            Console.Write("[1]> ");
+            var input = Console.ReadLine();
+
+            int choice;
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                choice = 1; // Default to most recent
+            }
+            else if (!int.TryParse(input, out choice) || choice < 1 || choice > backups.Count)
+            {
+                Console.WriteLine("Invalid selection, using most recent.");
+                choice = 1;
+            }
+
+            selectedPath = backups[choice - 1].path;
+            logger.Information("Restoring backup {Directory}", backups[choice - 1].name);
+        }
+
+        if (Directory.Exists(savePath))
+        {
+            Directory.Delete(savePath, true);
+        }
+
+        Directory.CreateDirectory(savePath);
+        PathUtility.MoveDirectoryContents(selectedPath, savePath);
+        return true;
+    }
+
+    private static void CleanupTempDirectory(string tempPath)
+    {
+        try
+        {
+            if (Directory.Exists(tempPath))
+            {
+                Directory.Delete(tempPath, true);
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.Warning(ex, "Failed to clean up temp directory {Path}", tempPath);
+        }
+    }
+
+    public static void PruneBackups()
+    {
+        if (Directory.Exists(ArchivePath))
+        {
+            // Get retention counts from registered destinations
+            var hourlyRetention = GetMaxRetention(ArchivePeriod.Hourly);
+            var dailyRetention = GetMaxRetention(ArchivePeriod.Daily);
+            var monthlyRetention = GetMaxRetention(ArchivePeriod.Monthly);
+
+            PruneLocalArchives(ArchivePeriod.Hourly, hourlyRetention);
+            PruneLocalArchives(ArchivePeriod.Daily, dailyRetention);
+            PruneLocalArchives(ArchivePeriod.Monthly, monthlyRetention);
+        }
+
+        if (!Directory.Exists(AutomaticBackupPath))
+        {
+            return;
+        }
+
+        var allFolders = Directory.EnumerateDirectories(AutomaticBackupPath);
+        var threshold = Core.Now.AddDays(-_backupMaxAgeDays);
+
+        foreach (var folder in allFolders)
+        {
+            // Skip backup directories that are still being written
+            if (!File.Exists(Path.Combine(folder, BackupCompleteMarker)))
+            {
+                continue;
+            }
+
+            var dirName = new DirectoryInfo(folder).Name;
+
+            if (!TryGetDate(dirName, out var date))
+            {
+                continue;
+            }
+
+            if (date < threshold)
+            {
+                logger.Information("Pruning old backup {Directory}", folder);
+                RetryFileOperation(() => Directory.Delete(folder, true));
+            }
+        }
+    }
+
+    private static int GetMaxRetention(ArchivePeriod period)
+    {
+        var max = 0;
+        for (var i = 0; i < ArchiveDestinationRegistry.Destinations.Count; i++)
+        {
+            var dest = ArchiveDestinationRegistry.Destinations[i];
+            var count = dest.GetRetentionCount(period);
+            if (count > max)
+            {
+                max = count;
+            }
+        }
+
+        return max;
+    }
+
+    private static void PruneLocalArchives(ArchivePeriod period, int minRetained)
+    {
+        var periodStr = period.ToString();
+        var archivePath = Path.Combine(ArchivePath, periodStr);
+        if (!Directory.Exists(archivePath))
+        {
+            return;
+        }
+
+        var periodLowerStr = periodStr.ToLowerInvariant();
+        foreach (var archive in PathsByTimestampName(archivePath, true))
+        {
+            if (minRetained > 0)
+            {
+                minRetained--;
+                continue;
+            }
+
+            var fi = new FileInfo(archive);
+            logger.Information("Pruning {Period} archive {File}", periodLowerStr, fi.Name);
+            RetryFileOperation(() => File.Delete(archive));
+        }
+    }
+
+    public static void AutoArchiveLocally()
+    {
+        var date = Core.Now;
+
+        if (date < _nextHourlyArchive && date < _nextDailyArchive && date < _nextMonthlyArchive)
+        {
+            return;
+        }
+
+        // Fixed: was CompareExchange(ref _isArchiving, 0, 1) which never guarded
+        if (Interlocked.CompareExchange(ref _isArchiving, 1, 0) == 1)
+        {
+            logger.Debug("Archive operation already in progress, skipping this cycle");
+            return;
+        }
+
+        ThreadPool.QueueUserWorkItem(
+            _ =>
+            {
+                try
+                {
+                    // Use current time for schedule checks (not the captured time from the caller)
+                    // to avoid re-processing periods that elapsed during a long archive operation.
+                    var now = Core.Now;
+
                     if (now >= _nextHourlyArchive)
                     {
                         Rollup(ArchivePeriod.Hourly);
-                        _nextHourlyArchive = _nextHourlyArchive.AddHours(1);
+                        AdvanceSchedule(ref _nextHourlyArchive, now, static dt => dt.AddHours(1));
                     }
 
                     if (now >= _nextDailyArchive)
                     {
                         Rollup(ArchivePeriod.Daily);
-                        _nextDailyArchive = _nextDailyArchive.AddDays(1);
+                        AdvanceSchedule(ref _nextDailyArchive, now, static dt => dt.AddDays(1));
                     }
 
                     if (now >= _nextMonthlyArchive)
                     {
                         Rollup(ArchivePeriod.Monthly);
-                        _nextMonthlyArchive = _nextMonthlyArchive.AddMonths(1);
+                        AdvanceSchedule(ref _nextMonthlyArchive, now, static dt => dt.AddMonths(1));
                     }
 
                     Prune?.Invoke();
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex, "Archive operation failed");
+                }
+                finally
+                {
                     _isArchiving = 0;
-                },
-                date,
-                false
-            );
+                }
+            }
+        );
+    }
+
+    /// <summary>
+    /// Forces an immediate rollup regardless of schedule.
+    /// </summary>
+    public static void ForceRollup()
+    {
+        if (Interlocked.CompareExchange(ref _isArchiving, 1, 0) == 1)
+        {
+            logger.Warning("Cannot force rollup — an archive operation is already in progress");
+            return;
         }
 
-        private static void Rollup(ArchivePeriod archivePeriod)
+        ThreadPool.QueueUserWorkItem(
+            _ =>
+            {
+                try
+                {
+                    Rollup(ArchivePeriod.Hourly);
+                    Rollup(ArchivePeriod.Daily);
+                    Rollup(ArchivePeriod.Monthly);
+                    Prune?.Invoke();
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex, "Forced archive operation failed");
+                }
+                finally
+                {
+                    _isArchiving = 0;
+                }
+            }
+        );
+    }
+
+    /// <summary>
+    /// Advances a schedule marker past the current time to prevent redundant catchup cycles
+    /// after a long-running archive operation.
+    /// </summary>
+    private static void AdvanceSchedule(ref DateTime schedule, DateTime now, Func<DateTime, DateTime> advance)
+    {
+        while (schedule <= now)
         {
-            if (!Directory.Exists(AutomaticBackupPath))
+            schedule = advance(schedule);
+        }
+    }
+
+    private static void Rollup(ArchivePeriod archivePeriod)
+    {
+        if (!Directory.Exists(AutomaticBackupPath))
+        {
+            return;
+        }
+
+        var currentRangeStart = Core.Now.ArchivePeriodStart(archivePeriod);
+
+        var items = new Dictionary<DateTime, SortedDictionary<DateTime, string>>();
+        foreach (var path in Directory.EnumerateDirectories(AutomaticBackupPath))
+        {
+            // Skip backup directories that are still being written (no completion marker)
+            if (!File.Exists(Path.Combine(path, BackupCompleteMarker)))
             {
-                return;
+                continue;
             }
 
-            var currentRangeStart = Core.Now.ArchivePeriodStart(archivePeriod);
-            var allFolders = Directory.EnumerateDirectories(AutomaticBackupPath);
+            var dirName = new DirectoryInfo(path).Name;
 
-            var items = new Dictionary<DateTime, SortedDictionary<DateTime, string>>();
-            foreach (var path in allFolders)
+            if (!TryGetDate(dirName, out var date))
             {
-                var dirName = new DirectoryInfo(path).Name;
+                continue;
+            }
 
-                if (!TryGetDate(dirName, out var date))
-                {
-                    continue;
-                }
+            var rangeStart = date.ArchivePeriodStart(archivePeriod);
 
-                var rangeStart = date.ArchivePeriodStart(archivePeriod);
+            // Only archive the past
+            if (rangeStart >= currentRangeStart)
+            {
+                continue;
+            }
 
-                // Only archive the past
-                if (rangeStart >= currentRangeStart)
+            if (items.TryGetValue(rangeStart, out var value))
+            {
+                value.Add(date, path);
+            }
+            else
+            {
+                value = new SortedDictionary<DateTime, string>(new DescendingComparer<DateTime>())
                 {
-                    continue;
-                }
+                    { date, path }
+                };
 
-                if (items.TryGetValue(rangeStart, out var value))
+                items.Add(rangeStart, value);
+            }
+        }
+
+        var archivePeriodStr = archivePeriod.ToString();
+        var archivePath = PathUtility.EnsureDirectory(Path.Combine(ArchivePath, archivePeriodStr));
+        var archivePeriodStrLower = archivePeriodStr.ToLowerInvariant();
+
+        // Leave behind 1 hourly for daily, 1 daily for monthly.
+        var minimum = archivePeriod != ArchivePeriod.Monthly ? 1 : 0;
+
+        foreach (var (rangeStart, sortedBackups) in items)
+        {
+            var backups = sortedBackups.Values;
+            if (backups.Count <= minimum)
+            {
+                continue;
+            }
+
+            var stopWatch = Stopwatch.StartNew();
+
+            var fileName = $"{rangeStart.ToTimeStamp(archivePeriod)}.tar.zst";
+            var archiveFilePath = Path.Combine(archivePath, fileName);
+
+            // Journal: record start
+            var sourceList = new List<string>(backups);
+            var journalEntry = ArchiveJournal.BeginOperation(
+                archivePeriod, rangeStart, archiveFilePath + ".tmp", archiveFilePath, sourceList
+            );
+
+            // Create archive using managed streaming compression
+            var entryCount = ManagedArchive.CreateTarZstd(
+                backups, archiveFilePath, AutomaticBackupPath, _compressionLevel
+            );
+
+            if (entryCount >= 0)
+            {
+                // Verify if enabled
+                if (_verifyArchives)
                 {
-                    value.Add(date, path);
-                }
-                else
-                {
-                    value = new SortedDictionary<DateTime, string>(new DescendingComparer<DateTime>())
+                    var verifiedCount = ManagedArchive.CountEntries(archiveFilePath);
+                    if (verifiedCount != entryCount)
                     {
-                        { date, path }
-                    };
+                        logger.Warning(
+                            "Archive verification failed for {Path}: expected {Expected} entries, got {Actual}",
+                            archiveFilePath, entryCount, verifiedCount
+                        );
+                        ArchiveJournal.RecordFailure(journalEntry, $"Verification failed: expected {entryCount}, got {verifiedCount}");
 
-                    items.Add(rangeStart, value);
-                }
-            }
-
-            var archivePeriodStr = archivePeriod.ToString();
-            var archivePath = PathUtility.EnsureDirectory(Path.Combine(ArchivePath, archivePeriodStr));
-            var archivePeriodStrLower = archivePeriodStr.ToLowerInvariant();
-            var extension = _compressionFormat.GetFileExtension();
-
-            // Leave behind 1 hourly for daily, 1 daily for monthly.
-            var minimum = archivePeriod != ArchivePeriod.Monthly ? 1 : 0;
-
-            foreach (var (rangeStart, sortedBackups) in items)
-            {
-                var backups = sortedBackups.Values;
-                if (backups.Count <= minimum)
-                {
-                    continue;
+                        ArchiveFailed?.Invoke(new ArchiveFailedEventArgs(
+                            archivePeriod, rangeStart, new InvalidOperationException("Archive verification failed")
+                        ));
+                        continue;
+                    }
                 }
 
-                var stopWatch = new Stopwatch();
-                stopWatch.Start();
+                var archiveSize = new FileInfo(archiveFilePath).Length;
+                ArchiveJournal.RecordArchived(journalEntry, entryCount, archiveSize);
 
-                var fileName = $"{rangeStart.ToTimeStamp(archivePeriod)}{extension}";
-                var archiveFilePath = Path.Combine(archivePath, fileName);
+                stopWatch.Stop();
+                logger.Information(
+                    "Created {Period} archive at {Path} ({EntryCount} entries, {Size:F1} MB, {Elapsed:F2}s)",
+                    archivePeriodStrLower,
+                    archiveFilePath,
+                    entryCount,
+                    archiveSize / 1048576.0,
+                    stopWatch.Elapsed.TotalSeconds
+                );
 
-                var archiveCreated = CreateArchive(archiveFilePath, AutomaticBackupPath, backups);
+                // Distribute to registered destinations
+                var allDestinationsSucceeded = DistributeToDestinations(
+                    archiveFilePath, archivePeriod, rangeStart, journalEntry
+                );
 
-                if (archiveCreated)
+                // Only delete source backups if all destinations with retention succeeded
+                if (allDestinationsSucceeded)
                 {
-                    logger.Information(
-                        "Created {Period} archive at {Path} ({Elapsed:F2} seconds)",
-                        archivePeriodStrLower,
-                        archiveFilePath,
-                        stopWatch.Elapsed.TotalSeconds
-                    );
-
                     var i = minimum;
                     foreach (var backup in backups)
                     {
@@ -346,120 +858,196 @@ namespace Server.Saves
                             continue;
                         }
 
-                        Directory.Delete(backup, true);
+                        RetryFileOperation(() => Directory.Delete(backup, true));
                     }
+
+                    ArchiveJournal.RecordCompleted(journalEntry);
                 }
                 else
                 {
-                    logger.Warning($"Failed to create {archivePeriodStrLower} archive");
+                    logger.Warning(
+                        "Not pruning source backups for {Period} archive — some destinations failed",
+                        archivePeriodStrLower
+                    );
                 }
 
+                ArchiveCompleted?.Invoke(new ArchiveCompletedEventArgs(
+                    archiveFilePath, archivePeriod, rangeStart, archiveSize, stopWatch.Elapsed.TotalSeconds
+                ));
+            }
+            else
+            {
                 stopWatch.Stop();
+                logger.Warning("Failed to create {Period} archive", archivePeriodStrLower);
+                ArchiveJournal.RecordFailure(journalEntry, "Archive creation failed");
+
+                ArchiveFailed?.Invoke(new ArchiveFailedEventArgs(
+                    archivePeriod, rangeStart, new InvalidOperationException("Archive creation failed")
+                ));
             }
         }
+    }
 
-        private static bool CreateArchive(string archiveFilePath, string relativeTo, IEnumerable<string> backups) =>
-            _compressionFormat == CompressionFormat.Zstd
-                ? ZstdArchive.CreateFromPaths(backups, archiveFilePath, relativeTo)
-                : TarArchive.CreateFromPaths(backups, archiveFilePath, relativeTo);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static string ToTimeStamp(this DateTime date, ArchivePeriod archivePeriod) =>
-            archivePeriod switch
-            {
-                ArchivePeriod.Monthly => date.ToString("yyyy-MM"),
-                ArchivePeriod.Daily   => date.ToString("yyyy-MM-dd"),
-                ArchivePeriod.Hourly  => date.ToString("yyyy-MM-dd-HH"),
-                _                     => date.ToTimeStamp()
-            };
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static DateTime ArchivePeriodStart(this DateTime date, ArchivePeriod archivePeriod) =>
-            archivePeriod switch
-            {
-                ArchivePeriod.Monthly => date.Date.AddDays(-(date.Day - 1)),
-                ArchivePeriod.Daily   => date.Date,
-                ArchivePeriod.Hourly  => date.Date.AddHours(date.Hour),
-                _                     => date
-            };
-
-        private static SortedDictionary<DateTime, string>.ValueCollection PathsByTimestampName(string path, bool files = false)
+    private static bool DistributeToDestinations(
+        string archiveFilePath,
+        ArchivePeriod period,
+        DateTime rangeStart,
+        ArchiveJournalEntry journalEntry)
+    {
+        var destinations = ArchiveDestinationRegistry.Destinations;
+        if (destinations.Count == 0)
         {
-            var allItems = files ? Directory.EnumerateFiles(path) : Directory.GetDirectories(path);
-            var items = new SortedDictionary<DateTime, string>(new DescendingComparer<DateTime>());
-            foreach (var item in allItems)
-            {
-                string name;
-                if (files)
-                {
-                    var fileName = new FileInfo(item).Name;
-                    name = fileName[..fileName.IndexOfOrdinal('.')];
-                }
-                else
-                {
-                    name = new DirectoryInfo(item).Name;
-                }
-
-                if (TryGetDate(name, out var date))
-                {
-                    // Might give wrong results if there is a file that matches:
-                    // Example: 2021-09-01, and 2021-09-01-00
-                    items[date] = item;
-                }
-            }
-
-            return items.Values;
+            ArchiveJournal.RecordDistributed(journalEntry, new Dictionary<string, bool>());
+            return true;
         }
 
-        private static bool TryGetDate(string value, out DateTime date)
-        {
-            Span<int> parts = stackalloc int[] { 0, 1, 1, 0, 0, 0 };
+        var results = new Dictionary<string, bool>(destinations.Count);
+        var allSucceeded = true;
 
+        foreach (var dest in destinations)
+        {
             try
             {
-                var i = 0;
-                foreach (var part in value.Tokenize('-'))
+                var success = dest.SendArchive(archiveFilePath, period, rangeStart);
+                results[dest.Name] = success;
+
+                if (success)
                 {
-                    if (!int.TryParse(part, out var partValue))
+                    logger.Debug("Archive sent to destination {Destination}", dest.Name);
+                }
+                else
+                {
+                    logger.Warning("Destination {Destination} rejected archive", dest.Name);
+                    if (dest.GetRetentionCount(period) > 0)
                     {
-                        break;
+                        allSucceeded = false;
                     }
-
-                    parts[i++] = partValue;
                 }
-
-                if (i == 0)
-                {
-                    date = DateTime.MinValue;
-                    return false;
-                }
-
-                date = new DateTime(
-                    parts[0],
-                    parts[1],
-                    parts[2],
-                    parts[3],
-                    parts[4],
-                    parts[5],
-                    DateTimeKind.Utc
-                );
-                return true;
             }
-            catch
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Failed to send archive to destination {Destination}", dest.Name);
+                results[dest.Name] = false;
+                if (dest.GetRetentionCount(period) > 0)
+                {
+                    allSucceeded = false;
+                }
+            }
+        }
+
+        ArchiveJournal.RecordDistributed(journalEntry, results);
+        return allSucceeded;
+    }
+
+    private static void RetryFileOperation(Action operation)
+    {
+        for (var attempt = 0; attempt < _retryCount; attempt++)
+        {
+            try
+            {
+                operation();
+                return;
+            }
+            catch (Exception ex) when (attempt < _retryCount - 1 && ex is IOException or UnauthorizedAccessException)
+            {
+                logger.Debug(
+                    ex,
+                    "File operation failed on attempt {Attempt}/{Max}, retrying",
+                    attempt + 1,
+                    _retryCount
+                );
+                Thread.Sleep(_retryDelayMs * (attempt + 1));
+            }
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static string ToTimeStamp(this DateTime date, ArchivePeriod archivePeriod) =>
+        archivePeriod switch
+        {
+            ArchivePeriod.Monthly => date.ToString("yyyy-MM"),
+            ArchivePeriod.Daily   => date.ToString("yyyy-MM-dd"),
+            ArchivePeriod.Hourly  => date.ToString("yyyy-MM-dd-HH"),
+            _                     => date.ToTimeStamp()
+        };
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static DateTime ArchivePeriodStart(this DateTime date, ArchivePeriod archivePeriod) =>
+        archivePeriod switch
+        {
+            ArchivePeriod.Monthly => date.Date.AddDays(-(date.Day - 1)),
+            ArchivePeriod.Daily   => date.Date,
+            ArchivePeriod.Hourly  => date.Date.AddHours(date.Hour),
+            _                     => date
+        };
+
+    internal static SortedDictionary<DateTime, string>.ValueCollection PathsByTimestampName(
+        string path, bool files = false)
+    {
+        var allItems = files ? Directory.EnumerateFiles(path) : Directory.GetDirectories(path);
+        var items = new SortedDictionary<DateTime, string>(new DescendingComparer<DateTime>());
+        foreach (var item in allItems)
+        {
+            string name;
+            if (files)
+            {
+                var fileName = new FileInfo(item).Name;
+                name = fileName[..fileName.IndexOfOrdinal('.')];
+            }
+            else
+            {
+                name = new DirectoryInfo(item).Name;
+            }
+
+            if (TryGetDate(name, out var date))
+            {
+                // Might give wrong results if there is a file that matches:
+                // Example: 2021-09-01, and 2021-09-01-00
+                items[date] = item;
+            }
+        }
+
+        return items.Values;
+    }
+
+    private static bool TryGetDate(string value, out DateTime date)
+    {
+        Span<int> parts = [0, 1, 1, 0, 0, 0];
+
+        try
+        {
+            var i = 0;
+            foreach (var part in value.Tokenize('-'))
+            {
+                if (!int.TryParse(part, out var partValue))
+                {
+                    break;
+                }
+
+                parts[i++] = partValue;
+            }
+
+            if (i == 0)
             {
                 date = DateTime.MinValue;
                 return false;
             }
-        }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static string GetFileExtension(this CompressionFormat compressionFormat) =>
-            compressionFormat switch
-            {
-                CompressionFormat.Zip  => ".zip",
-                CompressionFormat.GZip => ".tar.gz",
-                CompressionFormat.Zstd => ".tar.zst",
-                _                      => ".tar"
-            };
+            date = new DateTime(
+                parts[0],
+                parts[1],
+                parts[2],
+                parts[3],
+                parts[4],
+                parts[5],
+                DateTimeKind.Utc
+            );
+            return true;
+        }
+        catch
+        {
+            date = DateTime.MinValue;
+            return false;
+        }
     }
 }

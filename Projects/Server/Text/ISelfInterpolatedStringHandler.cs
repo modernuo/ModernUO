@@ -20,21 +20,21 @@ namespace Server.Text;
 
 public interface ISelfInterpolatedStringHandler
 {
-    public void Add([InterpolatedStringHandlerArgument("")] ref InterpolatedStringHandler handler);
-    public void InitializeInterpolation(int literalLength, int formattedCount);
-    public void AppendLiteral(string value);
-    public void AppendFormatted<T>(T value);
-    public void AppendFormatted<T>(T value, string? format);
-    public void AppendFormatted<T>(T value, int alignment);
-    public void AppendFormatted<T>(T value, int alignment, string? format);
-    public void AppendFormatted(ReadOnlySpan<char> value);
-    public void AppendFormatted(ReadOnlySpan<char> value, int alignment, string? format = null);
-    public void AppendFormatted(object? value, int alignment = 0, string? format = null);
-    public void AppendFormatted(string? value);
-    public void AppendFormatted(string? value, int alignment, string? format = null);
+    void Add([InterpolatedStringHandlerArgument("")] ref InterpolatedStringHandler handler);
+    void InitializeInterpolation(int literalLength, int formattedCount);
+    void AppendLiteral(string value);
+    void AppendFormatted<T>(T value);
+    void AppendFormatted<T>(T value, string? format);
+    void AppendFormatted<T>(T value, int alignment);
+    void AppendFormatted<T>(T value, int alignment, string? format);
+    void AppendFormatted(ReadOnlySpan<char> value);
+    void AppendFormatted(ReadOnlySpan<char> value, int alignment, string? format = null);
+    void AppendFormatted(object? value, int alignment = 0, string? format = null);
+    void AppendFormatted(string? value);
+    void AppendFormatted(string? value, int alignment, string? format = null);
 
     [InterpolatedStringHandler]
-    public ref struct InterpolatedStringHandler
+    ref struct InterpolatedStringHandler
     {
         private ISelfInterpolatedStringHandler _parent;
 

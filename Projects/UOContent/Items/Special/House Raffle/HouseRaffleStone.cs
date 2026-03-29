@@ -305,7 +305,7 @@ public partial class HouseRaffleStone : Item
 
     public static string FormatLocation(Point3D loc, Map map, bool displayMap)
     {
-        using var result = ValueStringBuilder.Create();
+        using var result = new ValueStringBuilder(stackalloc char[48]);
 
         var xLong = 0;
         var yLat = 0;

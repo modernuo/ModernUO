@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using System.Text;
 using Server.Commands.Generic;
+using Server.Text;
 using Server.Engines.Help;
 using Server.Gumps;
 using Server.Items;
@@ -88,7 +88,7 @@ namespace Server.Commands
 
                 if (!reg.IsDefault)
                 {
-                    var builder = new StringBuilder();
+                    using var builder = ValueStringBuilder.Create(256);
 
                     builder.Append(reg);
                     reg = reg.Parent;
@@ -99,7 +99,7 @@ namespace Server.Commands
                         reg = reg.Parent;
                     }
 
-                    from.SendMessage($"Your region is {builder}.");
+                    from.SendMessage($"Your region is {builder.ToString()}.");
                 }
             }
         }
@@ -594,7 +594,7 @@ namespace Server.Commands
 
             list.Sort();
 
-            var sb = new StringBuilder();
+            using var sb = ValueStringBuilder.Create(256);
 
             if (list.Count > 0)
             {
@@ -608,7 +608,7 @@ namespace Server.Commands
                 if (sb.Length + 1 + v.Length >= 256)
                 {
                     m.SendAsciiMessage(0x482, sb.ToString());
-                    sb = new StringBuilder();
+                    sb.Reset();
                     sb.Append(v);
                 }
                 else

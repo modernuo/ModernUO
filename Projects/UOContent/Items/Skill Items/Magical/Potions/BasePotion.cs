@@ -35,7 +35,8 @@ public enum PotionEffect
     ConfusionBlastGreater,
     Invisibility,
     Parasitic,
-    Darkglow
+    Darkglow,
+    FlintsPungentBrew
 }
 
 [SerializationGenerator(2, false)]
