@@ -9,18 +9,25 @@ namespace BuildTool.Prerequisites;
 
 public static partial class DotNetSdkManager
 {
-    private const string DotNetDownloadUrl = "https://dotnet.microsoft.com/download";
-    private const string InstallScriptUrlWindows = "https://dot.net/v1/dotnet-install.ps1";
-    private const string InstallScriptUrlUnix = "https://dot.net/v1/dotnet-install.sh";
+    private const string DotNetLinuxInstallUrl = "https://learn.microsoft.com/en-us/dotnet/core/install/linux";
+
+    /// <summary>
+    /// Returns the .NET download page URL for the required SDK's major.minor channel.
+    /// </summary>
+    private static string GetDownloadUrl(Version version) =>
+        $"https://dotnet.microsoft.com/download/dotnet/{version.Major}.{version.Minor}";
+
+    /// <summary>
+    /// Returns the direct installer download URL for a specific SDK version + platform.
+    /// Windows uses .exe, macOS uses .pkg.
+    /// </summary>
+    private static string GetInstallerUrl(Version version, string rid, string extension) =>
+        $"https://builds.dotnet.microsoft.com/dotnet/Sdk/{version}/dotnet-sdk-{version}-{rid}.{extension}";
 
     public static PrerequisiteResult CheckSdk(string repoRoot)
     {
-        var requiredVersionStr = ReadRequiredVersion(repoRoot) ?? "10.0.201";
-
-        if (!Version.TryParse(requiredVersionStr, out var requiredVersion))
-        {
-            requiredVersion = new Version(10, 0, 201);
-        }
+        var requiredVersion = ReadRequiredVersion(repoRoot);
+        var downloadUrl = GetDownloadUrl(requiredVersion);
 
         // Check if dotnet is on PATH
         var result = ProcessRunner.RunCaptured("dotnet", "--list-sdks");
@@ -30,8 +37,8 @@ public static partial class DotNetSdkManager
             {
                 Name = ".NET SDK",
                 Passed = false,
-                Details = $".NET SDK {requiredVersionStr}+ is not installed",
-                DownloadUrl = DotNetDownloadUrl
+                Details = $".NET SDK {requiredVersion}+ is not installed",
+                DownloadUrl = downloadUrl
             };
         }
 
@@ -67,9 +74,9 @@ public static partial class DotNetSdkManager
                 Name = ".NET SDK",
                 Passed = false,
                 Details = bestVersionStr is not null
-                    ? $".NET SDK {bestVersionStr} found, but {requiredVersionStr}+ is required"
-                    : $".NET SDK {requiredVersionStr}+ is required but no SDK was found",
-                DownloadUrl = DotNetDownloadUrl
+                    ? $".NET SDK {bestVersionStr} found, but {requiredVersion}+ is required"
+                    : $".NET SDK {requiredVersion}+ is required but no SDK was found",
+                DownloadUrl = downloadUrl
             };
         }
 
@@ -81,108 +88,113 @@ public static partial class DotNetSdkManager
         };
     }
 
-    public static bool OfferInstall(PlatformInfo platform, bool interactive)
+    public static bool OfferInstall(PlatformInfo platform, string repoRoot, bool interactive)
     {
+        var requiredVersion = ReadRequiredVersion(repoRoot);
+        var downloadUrl = GetDownloadUrl(requiredVersion);
+
         if (!interactive)
         {
-            AnsiConsole.MarkupLine("[red]Error:[/] .NET SDK is not installed. Download from:");
-            AnsiConsole.MarkupLine($"[link]{DotNetDownloadUrl}[/]");
+            AnsiConsole.MarkupLine("[red]Error:[/] .NET SDK is not installed.");
+            AnsiConsole.MarkupLine($"  Download from: [link]{downloadUrl}[/]");
             return false;
         }
 
+        if (platform.IsWindows)
+        {
+            return OfferWindowsInstall(platform, requiredVersion, downloadUrl);
+        }
+
+        if (platform.IsMacOS)
+        {
+            return OfferMacOsInstall(platform, requiredVersion, downloadUrl);
+        }
+
+        // Linux — just show instructions
+        AnsiConsole.MarkupLine($"\n[yellow]Install the .NET SDK using your package manager:[/]");
+        AnsiConsole.MarkupLine($"  [link]{DotNetLinuxInstallUrl}[/]");
+        AnsiConsole.WriteLine();
+        return false;
+    }
+
+    private static bool OfferWindowsInstall(PlatformInfo platform, Version requiredVersion, string downloadUrl)
+    {
+        var rid = $"win-{platform.ArchRid}";
+        var installerUrl = GetInstallerUrl(requiredVersion, rid, "exe");
+
         var install = AnsiConsole.Confirm(
-            "[yellow].NET SDK is required but not found.[/] Would you like to install it now?",
+            "[yellow].NET SDK is required. Download and run the installer?[/]",
             defaultValue: true
         );
 
         if (!install)
         {
-            AnsiConsole.MarkupLine($"\nDownload the .NET SDK from: [link]{DotNetDownloadUrl}[/]");
+            AnsiConsole.MarkupLine($"\n  Download manually from: [link]{downloadUrl}[/]");
             return false;
         }
 
-        return RunInstallScript(platform);
-    }
+        AnsiConsole.MarkupLine("\n[blue]Opening .NET SDK installer...[/]");
 
-    private static bool RunInstallScript(PlatformInfo platform)
-    {
-        AnsiConsole.MarkupLine("\n[blue]Installing .NET SDK...[/]");
-
-        if (platform.IsWindows)
-        {
-            return RunWindowsInstall();
-        }
-
-        return RunUnixInstall();
-    }
-
-    private static bool RunWindowsInstall()
-    {
-        // Download and run the official Microsoft install script
-        var result = ProcessRunner.RunPassthrough(
-            "powershell",
-            $"-NoProfile -ExecutionPolicy Bypass -Command \"& {{ " +
-            $"[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; " +
-            $"$script = Invoke-WebRequest -Uri '{InstallScriptUrlWindows}' -UseBasicParsing; " +
-            $"$scriptBlock = [scriptblock]::Create($script.Content); " +
-            $"& $scriptBlock -Channel 10.0 }}\""
-        );
-
+        var result = ProcessRunner.RunPassthrough("cmd", $"/c start \"\" \"{installerUrl}\"");
         if (result != 0)
         {
-            AnsiConsole.MarkupLine("[red]Failed to install .NET SDK.[/]");
-            AnsiConsole.MarkupLine($"Please install manually from: [link]{DotNetDownloadUrl}[/]");
+            AnsiConsole.MarkupLine("[red]Failed to open installer.[/]");
+            AnsiConsole.MarkupLine($"  Download manually from: [link]{downloadUrl}[/]");
             return false;
         }
 
-        AnsiConsole.MarkupLine("[green]Successfully installed .NET SDK.[/]");
-        AnsiConsole.MarkupLine("[yellow]Note:[/] You may need to restart your terminal for the PATH to update.");
-        return true;
+        AnsiConsole.MarkupLine("[yellow]Install the SDK, then restart your terminal and run this tool again.[/]");
+        return false; // User needs to restart after installing
     }
 
-    private static bool RunUnixInstall()
+    private static bool OfferMacOsInstall(PlatformInfo platform, Version requiredVersion, string downloadUrl)
     {
-        // Download and run the official Microsoft install script
-        var result = ProcessRunner.RunPassthrough(
-            "bash",
-            $"-c \"curl -fsSL {InstallScriptUrlUnix} | bash -s -- --channel 10.0\""
+        var rid = $"osx-{platform.ArchRid}";
+        var installerUrl = GetInstallerUrl(requiredVersion, rid, "pkg");
+
+        var install = AnsiConsole.Confirm(
+            "[yellow].NET SDK is required. Download and run the installer?[/]",
+            defaultValue: true
         );
 
-        if (result != 0)
+        if (!install)
         {
-            AnsiConsole.MarkupLine("[red]Failed to install .NET SDK.[/]");
-            AnsiConsole.MarkupLine($"Please install manually from: [link]{DotNetDownloadUrl}[/]");
+            AnsiConsole.MarkupLine($"\n  Download manually from: [link]{downloadUrl}[/]");
             return false;
         }
 
-        AnsiConsole.MarkupLine("[green]Successfully installed .NET SDK.[/]");
-        AnsiConsole.MarkupLine("[yellow]Note:[/] You may need to add ~/.dotnet to your PATH or restart your terminal.");
-        return true;
+        AnsiConsole.MarkupLine("\n[blue]Opening .NET SDK installer...[/]");
+
+        var result = ProcessRunner.RunPassthrough("open", installerUrl);
+        if (result != 0)
+        {
+            AnsiConsole.MarkupLine("[red]Failed to open installer.[/]");
+            AnsiConsole.MarkupLine($"  Download manually from: [link]{downloadUrl}[/]");
+            return false;
+        }
+
+        AnsiConsole.MarkupLine("[yellow]Install the SDK, then restart your terminal and run this tool again.[/]");
+        return false; // User needs to restart after installing
     }
 
-    private static string? ReadRequiredVersion(string repoRoot)
+    /// <summary>
+    /// Reads the required SDK version from global.json.
+    /// Falls back to 10.0 if global.json is missing or unparseable.
+    /// </summary>
+    private static Version ReadRequiredVersion(string repoRoot)
     {
         var globalJsonPath = Path.Combine(repoRoot, "global.json");
-        if (!File.Exists(globalJsonPath))
+        if (File.Exists(globalJsonPath))
         {
-            return null;
+            var json = File.ReadAllText(globalJsonPath);
+            var globalJson = JsonSerializer.Deserialize(json, GlobalJsonContext.Default.GlobalJson);
+            if (globalJson?.Sdk?.Version is { } versionStr && Version.TryParse(versionStr, out var version))
+            {
+                return version;
+            }
         }
 
-        var json = File.ReadAllText(globalJsonPath);
-        var globalJson = JsonSerializer.Deserialize(json, GlobalJsonContext.Default.GlobalJson);
-        return globalJson?.Sdk?.Version;
-    }
-
-    // Kept for reference but no longer used — Version.TryParse handles comparison now
-    private static int ParseMajorVersion(string version)
-    {
-        var dotIndex = version.IndexOf('.');
-        if (dotIndex <= 0)
-        {
-            return 0;
-        }
-
-        return int.TryParse(version.AsSpan(0, dotIndex), out var major) ? major : 0;
+        return new Version(10, 0);
     }
 
     [GeneratedRegex(@"^(\d+\.\d+\.\d+\S*)")]
