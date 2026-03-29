@@ -15,7 +15,6 @@ public class AnimalAI : BaseAI
         if (AcquireFocusMob(Mobile.RangePerception, Mobile.FightMode, false, false, true))
         {
             this.DebugSayFormatted($"I have detected {Mobile.FocusMob.Name}, attacking");
-            
             Mobile.Combatant = Mobile.FocusMob;
             Action = ActionType.Combat;
         }
