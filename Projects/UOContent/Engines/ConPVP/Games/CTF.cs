@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using ModernUO.Serialization;
 using Server.Gumps;
 using Server.Items;
 using Server.Mobiles;
 using Server.Network;
 using Server.Targeting;
+using Server.Text;
 
 namespace Server.Engines.ConPVP;
 
@@ -1072,7 +1072,7 @@ public sealed class CTFGame : EventGame
 
         var tourney = m_Context.m_Tournament;
 
-        var sb = new StringBuilder();
+        using var sb = ValueStringBuilder.Create(256);
 
         if (tourney != null)
         {
@@ -1111,7 +1111,8 @@ public sealed class CTFGame : EventGame
 
         if (Controller != null)
         {
-            sb.Append(' ').Append(Controller.Title);
+            sb.Append(' ');
+            sb.Append(Controller.Title);
         }
 
         var title = sb.ToString();
@@ -1144,7 +1145,7 @@ public sealed class CTFGame : EventGame
 
                 // "Red v Blue CTF Champion"
 
-                sb = new StringBuilder();
+                sb.Reset();
 
                 sb.Append(title);
 

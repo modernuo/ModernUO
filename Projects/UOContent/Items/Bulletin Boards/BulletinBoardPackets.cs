@@ -58,6 +58,11 @@ namespace Server.Network
                 return;
             }
 
+            if (board.HandleBBRequest(packetID, from, reader))
+            {
+                return;
+            }
+
             switch (packetID)
             {
                 case 3:
@@ -192,7 +197,16 @@ namespace Server.Network
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void UpdateLengthCounters(this string text, ref int maxLength, ref int longestTextLine, bool pad = false)
+        internal static void UpdateLengthCounters(this string text, ref int maxLength, ref int longestTextLine, bool pad = false)
+        {
+            var line = Math.Min(255, text.Length);
+            var byteCount = TextEncoding.UTF8.GetMaxByteCount(line) + (pad ? 3 : 2); // 1 + length + terminator
+            maxLength += byteCount;
+            longestTextLine = Math.Max(byteCount, longestTextLine);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static void UpdateLengthCounters(this ReadOnlySpan<char> text, ref int maxLength, ref int longestTextLine, bool pad = false)
         {
             var line = Math.Min(255, text.Length);
             var byteCount = TextEncoding.UTF8.GetMaxByteCount(line) + (pad ? 3 : 2); // 1 + length + terminator
@@ -273,7 +287,24 @@ namespace Server.Network
             writer.Dispose();
         }
 
-        private static void WriteString(this ref SpanWriter writer, string text, Span<byte> buffer, bool pad = false)
+        internal static void WriteString(this ref SpanWriter writer, string text, Span<byte> buffer, bool pad = false)
+        {
+            var tail = pad ? 2 : 1;
+            var length = Math.Min(pad ? 253 : 254, text.GetBytesUtf8(buffer));
+            writer.Write((byte)(length + tail));
+            writer.Write(buffer[..length]);
+
+            if (pad)
+            {
+                writer.Write((ushort)0); // Compensating for an old client bug
+            }
+            else
+            {
+                writer.Write((byte)0); // Terminator
+            }
+        }
+
+        internal static void WriteString(this ref SpanWriter writer, scoped ReadOnlySpan<char> text, Span<byte> buffer, bool pad = false)
         {
             var tail = pad ? 2 : 1;
             var length = Math.Min(pad ? 253 : 254, text.GetBytesUtf8(buffer));

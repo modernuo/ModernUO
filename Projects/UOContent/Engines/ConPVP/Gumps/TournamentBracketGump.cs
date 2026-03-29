@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 using Server.Gumps;
 using Server.Mobiles;
 using Server.Network;
@@ -60,8 +59,7 @@ namespace Server.Engines.ConPVP
                         }
                         else if (tourney.TourneyType == TourneyType.RandomTeam)
                         {
-                            sb.Append(tourney.ParticipantsPerMatch);
-                            sb.Append("-Team");
+                            sb.Append($"{tourney.ParticipantsPerMatch}-Team");
                         }
                         else if (tourney.TourneyType == TourneyType.RedVsBlue)
                         {
@@ -69,8 +67,7 @@ namespace Server.Engines.ConPVP
                         }
                         else if (tourney.TourneyType == TourneyType.Faction)
                         {
-                            sb.Append(tourney.ParticipantsPerMatch);
-                            sb.Append("-Team Faction");
+                            sb.Append($"{tourney.ParticipantsPerMatch}-Team Faction");
                         }
                         else
                         {
@@ -87,8 +84,7 @@ namespace Server.Engines.ConPVP
 
                         if (tourney.EventController != null)
                         {
-                            sb.Append(' ');
-                            sb.Append(tourney.EventController.Title);
+                            sb.Append($" {tourney.EventController.Title}");
                         }
 
                         sb.Append(" Tournament Bracket");
@@ -461,7 +457,7 @@ namespace Server.Engines.ConPVP
                                 color = 0x666666;
                             }
 
-                            var sb = new StringBuilder();
+                            using var sb = ValueStringBuilder.Create(512);
 
                             if (m_Tournament.TourneyType == TourneyType.Standard)
                             {

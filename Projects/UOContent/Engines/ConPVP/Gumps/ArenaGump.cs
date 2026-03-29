@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using System.Text;
 using ModernUO.Serialization;
 using Server.Gumps;
 using Server.Mobiles;
 using Server.Network;
+using Server.Text;
 
 namespace Server.Engines.ConPVP;
 
@@ -97,6 +97,8 @@ public class ArenaGump : Gump
         AddButton(499 + 40 - 12 - 63 - 4 - 63, height - 12 - 24, 247, 248, 1);
         AddButton(499 + 40 - 12 - 63, height - 12 - 24, 241, 242, 2);
 
+        var sb = new ValueStringBuilder(stackalloc char[256]);
+
         for (var i = 0; i < list.Count; ++i)
         {
             var ar = list[i];
@@ -112,7 +114,7 @@ public class ArenaGump : Gump
             AddBorderedText(x + 5, y + 5, 115 - 5, ar.Name ?? "(no name)", color, 0);
             x += 115;
 
-            var sb = new StringBuilder();
+            sb.Reset();
 
             if (ar.Players.Count > 0)
             {
@@ -154,10 +156,10 @@ public class ArenaGump : Gump
                     }
                 }
 
-                Append(sb, p1);
-                Append(sb, p2);
-                Append(sb, p3);
-                Append(sb, p4);
+                Append(ref sb, p1);
+                Append(ref sb, p2);
+                Append(ref sb, p3);
+                Append(ref sb, p4);
 
                 if (ar.Players.Count > 4)
                 {
@@ -174,9 +176,11 @@ public class ArenaGump : Gump
 
             AddBorderedText(x, y + 5, 40, Html.Center($"{ar.Spectators}"), color, 0);
         }
+
+        sb.Dispose();
     }
 
-    private void Append(StringBuilder sb, LadderEntry le)
+    private void Append(ref ValueStringBuilder sb, LadderEntry le)
     {
         if (le == null)
         {

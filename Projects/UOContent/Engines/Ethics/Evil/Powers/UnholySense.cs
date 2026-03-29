@@ -45,7 +45,7 @@ public sealed class UnholySense : Power
             ++enemyCount;
         }
 
-        using var sb = ValueStringBuilder.Create();
+        using var sb = new ValueStringBuilder(stackalloc char[96]);
         sb.Append($"You sense {(enemyCount == 0 ? "no" : enemyCount.ToString())} {(enemyCount == 1 ? "enemy" : "enemies")}");
 
         if (primary != null)

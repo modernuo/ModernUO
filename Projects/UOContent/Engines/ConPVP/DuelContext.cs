@@ -12,6 +12,7 @@ using Server.Regions;
 using Server.Spells;
 using Server.Spells.Bushido;
 using Server.Spells.Chivalry;
+using Server.Spells.First;
 using Server.Spells.Fourth;
 using Server.Spells.Necromancy;
 using Server.Spells.Ninjitsu;
@@ -1834,6 +1835,12 @@ public partial class DuelContext
 
         if (!Core.AOS)
         {
+            if (!Core.UOR)
+            {
+                ReactiveArmorSpell.RemoveEffect(mob);
+                ProtectionSpell.RemoveT2AProtection(mob);
+            }
+
             mob.MagicDamageAbsorb = 0;
             mob.MeleeDamageAbsorb = 0;
             ProtectionSpell.Registry.Remove(mob);

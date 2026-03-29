@@ -1,0 +1,21 @@
+<Solution>
+  <Configurations>
+    <BuildType Name="Analyze" />
+    <BuildType Name="Debug" />
+    <BuildType Name="Release" />
+  </Configurations>
+  <Project Path="Projects/Application/Application.csproj" />
+  <Project Path="Projects/BuildTool/BuildTool.csproj">
+    <BuildType Solution="Analyze|*" Project="Release" />
+    <Build Solution="Analyze|*" Project="false" />
+    <Build Solution="Debug|*" Project="false" />
+  </Project>
+  <Project Path="Projects/Logger/Logger.csproj" />
+  <Project Path="Projects/Server.Tests/Server.Tests.csproj" />
+  <Project Path="Projects/Server/Server.csproj" />
+  <Project Path="Projects/UOContent.Tests/UOContent.Tests.csproj" />
+  <Project Path="Projects/UOContent/UOContent.csproj" />
+  <Properties Name="Visual Studio">
+    <Property Name="MinimumVersion" Value="18.0.11222.15" />
+  </Properties>
+</Solution>

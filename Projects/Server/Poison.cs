@@ -4,75 +4,56 @@ using System.Runtime.CompilerServices;
 
 namespace Server;
 
+public enum PoisonFamily { Standard, Darkglow, Parasitic }
+
 public abstract class Poison : ISpanParsable<Poison>
 {
-    /*public abstract TimeSpan Interval{ get; }
-      public abstract TimeSpan Duration{ get; }*/
+    public static List<Poison> Poisons { get; } = [];
+    public static Dictionary<string, Poison> PoisonsByName { get; } = new(StringComparer.OrdinalIgnoreCase);
+
+    public Poison(int index) => Index = index;
+
+    public int Index { get; }
     public abstract string Name { get; }
     public abstract int Level { get; }
-
-    public static Poison Lesser => GetPoison("Lesser");
-    public static Poison Regular => GetPoison("Regular");
-    public static Poison Greater => GetPoison("Greater");
-    public static Poison Deadly => GetPoison("Deadly");
-    public static Poison Lethal => GetPoison("Lethal");
-
-    public static List<Poison> Poisons { get; } = new();
+    public abstract PoisonFamily Family { get; }
 
     public abstract Timer ConstructTimer(Mobile m);
-    /*public abstract void OnDamage( Mobile m, ref object state );*/
 
     public override string ToString() => Name;
 
     public static void Register(Poison reg)
     {
-        var regName = reg.Name.ToLower();
+        var regName = reg.Name;
 
         for (var i = 0; i < Poisons.Count; i++)
         {
-            if (reg.Level == Poisons[i].Level)
+            var poison = Poisons[i];
+            if (reg.Index == poison.Index)
             {
-                throw new Exception("A poison with that level already exists.");
+                throw new Exception("A poison with that index already exists.");
             }
 
-            if (regName == Poisons[i].Name.ToLower())
+            if (GetPoison(regName) != null)
             {
                 throw new Exception("A poison with that name already exists.");
             }
         }
 
         Poisons.Add(reg);
+        PoisonsByName.Add(regName, reg);
     }
 
-    public static Poison GetPoison(int level)
-    {
-        for (var i = 0; i < Poisons.Count; ++i)
-        {
-            var p = Poisons[i];
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Poison GetPoisonByIndex(int index) => index >= 0 && index < Poisons.Count ? Poisons[index] : null;
 
-            if (p.Level == level)
-            {
-                return p;
-            }
-        }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Poison IncreaseLevel(Poison oldPoison) =>
+        oldPoison == null ? null : GetPoisonByIndex(oldPoison.Index + 1) ?? oldPoison;
 
-        return null;
-    }
-
-    public static Poison GetPoison(ReadOnlySpan<char> name)
-    {
-        for (var i = 0; i < Poisons.Count; ++i)
-        {
-            var p = Poisons[i];
-
-            if (name.InsensitiveEquals(p.Name))
-            {
-                return p;
-            }
-        }
-
-        return null;
-    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Poison GetPoison(ReadOnlySpan<char> name) =>
+        PoisonsByName.GetAlternateLookup<ReadOnlySpan<char>>().TryGetValue(name, out var poison) ? poison : null;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Poison Parse(string s) => Parse(s, null);
@@ -86,9 +67,9 @@ public abstract class Poison : ISpanParsable<Poison>
 
     public static Poison Parse(ReadOnlySpan<char> s, IFormatProvider provider)
     {
-        if (int.TryParse(s, provider, out var pLevel))
+        if (int.TryParse(s, provider, out var index))
         {
-            var result = GetPoison(pLevel);
+            var result = GetPoisonByIndex(index);
             if (result != null)
             {
                 return result;
@@ -106,9 +87,9 @@ public abstract class Poison : ISpanParsable<Poison>
 
     public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider provider, out Poison result)
     {
-        if (int.TryParse(s, provider, out var pLevel))
+        if (int.TryParse(s, provider, out var index))
         {
-            result = GetPoison(pLevel);
+            result = GetPoisonByIndex(index);
             if (result != null)
             {
                 return true;

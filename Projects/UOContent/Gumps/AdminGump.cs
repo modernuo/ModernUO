@@ -1119,12 +1119,7 @@ namespace Server.Gumps
                             }
 
                             var c = a.Comments[i];
-                            sb.Append('[');
-                            sb.Append(c.AddedBy);
-                            sb.Append(" on ");
-                            sb.Append(c.LastModified.ToString());
-                            sb.Append("]<BR>");
-                            sb.Append(c.Content);
+                            sb.Append($"[{c.AddedBy} on {c.LastModified}]<BR>{c.Content}");
                         }
 
                         AddHtml(20, 180, 380, 190, sb.ToString(), true, true);
@@ -1159,9 +1154,7 @@ namespace Server.Gumps
 
                             var tag = a.Tags[i];
 
-                            sb.Append(tag.Name);
-                            sb.Append(" = ");
-                            sb.Append(tag.Value);
+                            sb.Append($"{tag.Name} = {tag.Value}");
                         }
 
                         AddHtml(20, 180, 380, 190, sb.ToString(), true, true);

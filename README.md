@@ -56,14 +56,25 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 - Open `ModernUO.sln` to start developing
 
 ## Building/Publishing
-- Run `./publish.cmd [release|debug (default: release)] [os] [arch (default: x64)]`
-  - `os` - [Supported operating systems](https://github.com/dotnet/core/blob/main/release-notes/10.0/supported-os.md)
-    - `win` - [Windows](https://learn.microsoft.com/en-us/dotnet/core/install/windows)
-    - `osx` - [MacOS](https://learn.microsoft.com/en-us/dotnet/core/install/macos)
-    - `linux` - [Linux](https://learn.microsoft.com/en-us/dotnet/core/install/linux)
-  - `arch`
-    - `x64` - Intel/AMD 64-bit
-    - `arm64` - ARM 64-bit (Windows not supported)
+
+#### Interactive Mode (Recommended for new users)
+Run `./publish.cmd` (Windows) or `./publish.sh` (Linux/macOS) with no arguments to launch the guided build tool. It will:
+- Check prerequisites (.NET SDK, native libraries)
+- Walk you through configuration and platform selection
+- Build and publish the server to the `Distribution` directory
+- Show deployment instructions for cross-compiled builds
+
+#### Command Line
+```shell
+./publish.cmd [release|debug] [os] [arch]
+```
+- `os` - [Supported operating systems](https://github.com/dotnet/core/blob/main/release-notes/10.0/supported-os.md)
+  - `win` - [Windows](https://learn.microsoft.com/en-us/dotnet/core/install/windows)
+  - `osx` - [macOS](https://learn.microsoft.com/en-us/dotnet/core/install/macos)
+  - `linux` - [Linux](https://learn.microsoft.com/en-us/dotnet/core/install/linux)
+- `arch`
+  - `x64` - Intel/AMD 64-bit
+  - `arm64` - ARM 64-bit
 
 ## Linux Prerequisites
 ### Fedora, CentOS, RHEL, etc
@@ -87,7 +98,9 @@ brew install icu4c libdeflate zstd argon2
 
 ## Running the Server
 - Follow the [publish](https://github.com/modernuo/ModernUO#buildingpublishing) instructions
+- The `Distribution` directory is portable — copy it to your production server for deployment
 - Run `ModernUO.exe` or `dotnet ModernUO.dll` from the `Distribution` directory
+- On first run, the server will prompt you to configure game data file locations
 
 ## Troubleshooting / FAQ
 - See [FAQ](./FAQ.md)

@@ -49,13 +49,16 @@ namespace Server.Spells.Second
                     damage *= GetDamageScalar(m);
                 }
 
-                if (!m.InRange(Caster, 2))
+                if (Core.UOTD)
                 {
-                    damage *= 0.25; // 1/4 damage at > 2 tile range
-                }
-                else if (!m.InRange(Caster, 1))
-                {
-                    damage *= 0.50; // 1/2 damage at 2 tile range
+                    if (!m.InRange(Caster, 2))
+                    {
+                        damage *= 0.25; // 1/4 damage at > 2 tile range
+                    }
+                    else if (!m.InRange(Caster, 1))
+                    {
+                        damage *= 0.50; // 1/2 damage at 2 tile range
+                    }
                 }
 
                 if (Core.AOS)
