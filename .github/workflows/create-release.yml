@@ -10,27 +10,26 @@ jobs:
     name: Create Release
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
         token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
     - name: Install .NET
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v5
       with:
         global-json-file: global.json
-    - name: Install NGBV
-      uses: dotnet/nbgv@master
+    - name: Compute version
+      uses: dotnet/nbgv@v0.5.1
       id: nbgv
-    - name: Push git changes
-      uses: ad-m/github-push-action@master
-      with:
-        github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-        tags: true
+    - name: Push version tag
+      run: |
+        git tag ${{ steps.nbgv.outputs.Version }}
+        git push origin ${{ steps.nbgv.outputs.Version }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
     - name: Create Release
-      id: create_release
       uses: softprops/action-gh-release@v2
       with:
-        body: ${{ steps.changelog.outputs.clean_changelog }}
         tag_name: ${{ steps.nbgv.outputs.Version }}
         name: ${{ steps.nbgv.outputs.Version }}
         draft: false
