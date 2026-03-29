@@ -12,7 +12,7 @@ function Get-BuildToolFromRelease {
 
         Write-Host "Downloading build tool..." -ForegroundColor Blue
 
-        $releaseUrl = 'https://api.github.com/repos/modernuo/ModernUO/releases/latest'
+        $releaseUrl = 'https://api.github.com/repos/modernuo/ModernUO/releases/tags/build-tool-latest'
         $headers = @{ 'User-Agent' = 'ModernUO-BuildTool' }
         $release = Invoke-RestMethod -Uri $releaseUrl -Headers $headers -TimeoutSec 10
 

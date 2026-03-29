@@ -31,7 +31,7 @@ download_build_tool() {
     echo -e "\033[34mDownloading build tool...\033[0m"
 
     # Get latest release asset URL
-    local release_url="https://api.github.com/repos/modernuo/ModernUO/releases/latest"
+    local release_url="https://api.github.com/repos/modernuo/ModernUO/releases/tags/build-tool-latest"
     local release_json
     release_json=$(curl -fsSL --connect-timeout 10 -H "User-Agent: ModernUO-BuildTool" "$release_url" 2>/dev/null) || return 1
 
