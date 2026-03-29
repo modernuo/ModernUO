@@ -10,7 +10,7 @@ Console.OutputEncoding = Encoding.UTF8;
 var repoRoot = FindRepoRoot();
 if (repoRoot is null)
 {
-    Console.Error.WriteLine("Error: Could not find ModernUO.sln. Run this tool from the repository root.");
+    Console.Error.WriteLine("Error: Could not find ModernUO.slnx. Run this tool from the repository root.");
     return 1;
 }
 
@@ -153,7 +153,7 @@ static string? FindRepoRoot()
 {
     // Check current directory first
     var current = Directory.GetCurrentDirectory();
-    if (File.Exists(Path.Combine(current, "ModernUO.sln")))
+    if (File.Exists(Path.Combine(current, "ModernUO.slnx")))
     {
         return current;
     }
@@ -163,7 +163,7 @@ static string? FindRepoRoot()
     while (dir?.Parent is not null)
     {
         dir = dir.Parent;
-        if (File.Exists(Path.Combine(dir.FullName, "ModernUO.sln")))
+        if (File.Exists(Path.Combine(dir.FullName, "ModernUO.slnx")))
         {
             return dir.FullName;
         }

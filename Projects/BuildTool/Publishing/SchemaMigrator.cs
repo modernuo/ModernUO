@@ -69,7 +69,7 @@ public static class SchemaMigrator
                 {
                     var result = ProcessRunner.RunCaptured(
                         "dotnet",
-                        "tool run ModernUOSchemaGenerator -- ModernUO.sln"
+                        "tool run ModernUOSchemaGenerator -- ModernUO.slnx"
                     );
                     exitCode = result.ExitCode;
                     errorOutput = result.StandardError;
@@ -114,7 +114,7 @@ public static class SchemaMigrator
         }
 
         Console.WriteLine("Generating serialization migration schema...");
-        exitCode = ProcessRunner.RunPassthrough("dotnet", "tool run ModernUOSchemaGenerator -- ModernUO.sln");
+        exitCode = ProcessRunner.RunPassthrough("dotnet", "tool run ModernUOSchemaGenerator -- ModernUO.slnx");
         if (exitCode != 0)
         {
             Console.Error.WriteLine($"Error: schema generation failed with exit code {exitCode}");

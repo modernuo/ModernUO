@@ -42,7 +42,7 @@ public static class PublishOrchestrator
         var allSteps = new List<(string Description, string Command, string Arguments)>(BuildSteps)
         {
             ($"Publishing ({config}, {rid})", "dotnet", $"publish {AppProject} -c {config} -r {rid} --no-restore --self-contained=false"),
-            ("Generating serialization schema", "dotnet", "tool run ModernUOSchemaGenerator -- ModernUO.sln")
+            ("Generating serialization schema", "dotnet", "tool run ModernUOSchemaGenerator -- ModernUO.slnx")
         };
 
         var completed = 0;
@@ -137,7 +137,7 @@ public static class PublishOrchestrator
         // Schema generation
         {
             Console.WriteLine("Generating serialization migration schema...");
-            const string schemaArgs = "tool run ModernUOSchemaGenerator -- ModernUO.sln";
+            const string schemaArgs = "tool run ModernUOSchemaGenerator -- ModernUO.slnx";
             var exitCode = ProcessRunner.RunPassthrough("dotnet", schemaArgs);
             if (exitCode != 0)
             {
