@@ -6,6 +6,7 @@ trigger:
       - main
   paths:
     include:
+      - config/dotnet-tools.json
       - Projects/**
       - Directory.Build.props
       - global.json
@@ -18,7 +19,7 @@ variables:
 
 jobs:
 - job: BuildWindows
-  displayName: 'Windows Server 2022'
+  displayName: 'Windows Server 2025'
   pool:
     vmImage: 'windows-latest'
 
