@@ -15,8 +15,12 @@ public static partial class DotNetSdkManager
 
     public static PrerequisiteResult CheckSdk(string repoRoot)
     {
-        var requiredVersion = ReadRequiredVersion(repoRoot);
-        var requiredMajor = requiredVersion is not null ? ParseMajorVersion(requiredVersion) : 10;
+        var requiredVersionStr = ReadRequiredVersion(repoRoot) ?? "10.0.201";
+
+        if (!Version.TryParse(requiredVersionStr, out var requiredVersion))
+        {
+            requiredVersion = new Version(10, 0, 201);
+        }
 
         // Check if dotnet is on PATH
         var result = ProcessRunner.RunCaptured("dotnet", "--list-sdks");
@@ -26,14 +30,15 @@ public static partial class DotNetSdkManager
             {
                 Name = ".NET SDK",
                 Passed = false,
-                Details = $".NET {requiredMajor} SDK is not installed",
+                Details = $".NET SDK {requiredVersionStr}+ is not installed",
                 DownloadUrl = DotNetDownloadUrl
             };
         }
 
-        // Parse installed SDK versions
-        var installedMajor = 0;
-        string? installedVersion = null;
+        // Parse installed SDK versions — find the best match
+        Version? bestVersion = null;
+        string? bestVersionStr = null;
+
         foreach (var line in result.StandardOutput.Split('\n', StringSplitOptions.RemoveEmptyEntries))
         {
             var match = SdkVersionRegex().Match(line);
@@ -42,24 +47,28 @@ public static partial class DotNetSdkManager
                 continue;
             }
 
-            var version = match.Groups[1].Value;
-            var major = ParseMajorVersion(version);
-            if (major > installedMajor)
+            var versionStr = match.Groups[1].Value;
+            if (!Version.TryParse(versionStr, out var version))
             {
-                installedMajor = major;
-                installedVersion = version;
+                continue;
+            }
+
+            if (bestVersion is null || version > bestVersion)
+            {
+                bestVersion = version;
+                bestVersionStr = versionStr;
             }
         }
 
-        if (installedMajor < requiredMajor)
+        if (bestVersion is null || bestVersion < requiredVersion)
         {
             return new PrerequisiteResult
             {
                 Name = ".NET SDK",
                 Passed = false,
-                Details = installedVersion is not null
-                    ? $".NET SDK {installedVersion} found, but {requiredMajor}.0+ is required"
-                    : $".NET {requiredMajor} SDK is required but no SDK was found",
+                Details = bestVersionStr is not null
+                    ? $".NET SDK {bestVersionStr} found, but {requiredVersionStr}+ is required"
+                    : $".NET SDK {requiredVersionStr}+ is required but no SDK was found",
                 DownloadUrl = DotNetDownloadUrl
             };
         }
@@ -68,7 +77,7 @@ public static partial class DotNetSdkManager
         {
             Name = ".NET SDK",
             Passed = true,
-            Details = $".NET SDK {installedVersion}"
+            Details = $".NET SDK {bestVersionStr}"
         };
     }
 
@@ -164,6 +173,7 @@ public static partial class DotNetSdkManager
         return globalJson?.Sdk?.Version;
     }
 
+    // Kept for reference but no longer used — Version.TryParse handles comparison now
     private static int ParseMajorVersion(string version)
     {
         var dotIndex = version.IndexOf('.');
