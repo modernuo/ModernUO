@@ -18,7 +18,7 @@ jobs:
       inputs:
         useGlobalJson: true
     - task: NuGetAuthenticate@1
-    - script: ./publish.cmd Release
+    - script: dotnet run --project Projects\BuildTool -- --config Release --skip-prereqs
       displayName: 'Build'
     - powershell: ./.github/porcelain.ps1
       displayName: Migration Changes
