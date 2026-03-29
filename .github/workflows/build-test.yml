@@ -34,7 +34,7 @@ jobs:
     - name: Set Library Path
       run: echo "DYLD_LIBRARY_PATH=/opt/homebrew/lib:\$DYLD_LIBRARY_PATH" >> $GITHUB_ENV
     - name: Build
-      run: ./publish.cmd Release
+      run: dotnet run --project Projects/BuildTool -- --config Release --skip-prereqs
     - name: Migration Changes
       run: git diff --exit-code ./**/Migrations/*.v*.json
     - name: Test
@@ -90,6 +90,6 @@ jobs:
         with:
           global-json-file: global.json
       - name: Build
-        run: ./publish.cmd Release
+        run: dotnet run --project Projects/BuildTool -- --config Release --skip-prereqs
       - name: Test
         run: dotnet test --no-restore

@@ -1,0 +1,94 @@
+name: Build Tool Release
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'Projects/BuildTool/**'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    name: Build (${{ matrix.rid }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            rid: win-x64
+            artifact: build-tool-win-x64.exe
+          - os: windows-latest
+            rid: win-arm64
+            artifact: build-tool-win-arm64.exe
+          - os: macos-13
+            rid: osx-x64
+            artifact: build-tool-osx-x64
+          - os: macos-14
+            rid: osx-arm64
+            artifact: build-tool-osx-arm64
+          - os: ubuntu-latest
+            rid: linux-x64
+            artifact: build-tool-linux-x64
+          - os: ubuntu-24.04-arm
+            rid: linux-arm64
+            artifact: build-tool-linux-arm64
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Publish NativeAOT
+        run: dotnet publish Projects/BuildTool/BuildTool.csproj -c Release -r ${{ matrix.rid }} -o publish/
+
+      - name: Rename artifact (Unix)
+        if: runner.os != 'Windows'
+        run: mv publish/build-tool publish/${{ matrix.artifact }}
+
+      - name: Rename artifact (Windows)
+        if: runner.os == 'Windows'
+        run: mv publish/build-tool.exe publish/${{ matrix.artifact }}
+        shell: bash
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: publish/${{ matrix.artifact }}
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts/
+          merge-multiple: true
+
+      - name: Generate checksums
+        run: |
+          cd artifacts
+          sha256sum build-tool-* > checksums-sha256.txt
+
+      - name: Create or update release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: build-tool-latest
+          name: Build Tool (Latest)
+          body: |
+            Latest NativeAOT-compiled build tool binaries.
+            These are automatically downloaded by `publish.cmd` / `publish.sh`.
+          prerelease: true
+          files: |
+            artifacts/build-tool-*
+            artifacts/checksums-sha256.txt
+          make_latest: false

@@ -1,45 +1,93 @@
 #!/bin/bash
-config=$1
-os=$2
-arch=${3:-$(uname -m)}
+set -e
 
-if [[ -n $os ]]; then
-  os="-r $os"
-elif [[ $(uname) = "Darwin" ]]; then
-  os="-r osx"
-else
-  os="-r linux"
+REPO_ROOT="$(cd "$(dirname "$0")" && pwd)"
+
+# Determine platform for native binary
+detect_platform() {
+    local os arch
+    case "$(uname -s)" in
+        Darwin) os="osx" ;;
+        *)      os="linux" ;;
+    esac
+
+    case "$(uname -m)" in
+        aarch64|arm64) arch="arm64" ;;
+        *)             arch="x64" ;;
+    esac
+
+    echo "${os}-${arch}"
+}
+
+PLATFORM="$(detect_platform)"
+TOOL_BINARY="$REPO_ROOT/tools/build-tool"
+BUILD_TOOL_PROJECT="$REPO_ROOT/Projects/BuildTool/BuildTool.csproj"
+
+# Try to download native binary from GitHub Release
+download_build_tool() {
+    local asset_name="build-tool-${PLATFORM}"
+    local tools_dir="$REPO_ROOT/tools"
+
+    echo -e "\033[34mDownloading build tool...\033[0m"
+
+    # Get latest release asset URL
+    local release_url="https://api.github.com/repos/modernuo/ModernUO/releases/latest"
+    local release_json
+    release_json=$(curl -fsSL --connect-timeout 10 -H "User-Agent: ModernUO-BuildTool" "$release_url" 2>/dev/null) || return 1
+
+    local download_url
+    download_url=$(echo "$release_json" | grep -o "\"browser_download_url\"[[:space:]]*:[[:space:]]*\"[^\"]*${asset_name}[^\"]*\"" | head -1 | grep -o 'https://[^"]*') || return 1
+
+    if [ -z "$download_url" ]; then
+        return 1
+    fi
+
+    mkdir -p "$tools_dir"
+    curl -fsSL --connect-timeout 10 -o "$TOOL_BINARY" "$download_url" || return 1
+    chmod +x "$TOOL_BINARY"
+    return 0
+}
+
+has_dotnet() {
+    command -v dotnet >/dev/null 2>&1
+}
+
+# CentOS/RHEL globalization workaround
+if [ -f /etc/os-release ]; then
+    . /etc/os-release
+    case "$ID" in
+        centos|rhel)
+            export DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
+            ;;
+    esac
 fi
 
-if [[ $config ]]; then
-  config="$(tr '[:lower:]' '[:upper:]' <<< ${1:0:1})${1:1}"
-  config="-c $config"
-else
-  config="-c Release"
+# Try native binary first
+if [ -x "$TOOL_BINARY" ]; then
+    exec "$TOOL_BINARY" "$@"
 fi
 
-if [[ $arch == *'aarch'* || $arch == *'arm'* ]]; then
-  arch="arm64"
-else
-  arch="x64"
+# Try to download native binary
+if download_build_tool 2>/dev/null; then
+    exec "$TOOL_BINARY" "$@"
 fi
 
-if [[ $os == *'centos'* || $os == *'rhel'* ]]; then
-  export DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
+# Fall back to dotnet run
+if has_dotnet; then
+    if [ -f "$BUILD_TOOL_PROJECT" ]; then
+        echo -e "\033[33mUsing dotnet run fallback...\033[0m"
+        exec dotnet run --project "$BUILD_TOOL_PROJECT" -- "$@"
+    else
+        echo "Error: BuildTool project not found at: $BUILD_TOOL_PROJECT" >&2
+        exit 1
+    fi
 fi
 
-echo dotnet tool restore
-dotnet tool restore
-
-echo dotnet clean --verbosity quiet
-dotnet clean --verbosity quiet
-echo dotnet restore --force-evaluate --source https://api.nuget.org/v3/index.json
-dotnet restore --force-evaluate --source https://api.nuget.org/v3/index.json
-
-echo dotnet publish ${config} ${os}-${arch} --no-restore --self-contained=false
-dotnet publish ${config} ${os}-${arch} --no-restore --self-contained=false
-
-echo Generating serialization migration schema...
-dotnet tool run ModernUOSchemaGenerator -- ModernUO.sln
-
-exit $?
+# Nothing works
+echo ""
+echo -e "\033[31mError: Could not run the build tool.\033[0m"
+echo ""
+echo -e "\033[33mThe .NET 10 SDK is required. Download it from:\033[0m"
+echo -e "\033[36m  https://dotnet.microsoft.com/download/dotnet/10.0\033[0m"
+echo ""
+exit 1
