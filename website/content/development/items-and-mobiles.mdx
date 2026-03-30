@@ -1,0 +1,418 @@
+---
+sidebar_position: 1
+title: Items & Mobiles
+---
+
+# Items & Mobiles
+
+This guide covers the most common content creation tasks: building items and creatures for your shard.
+
+---
+
+## Creating an Item
+
+### Minimal Item
+
+Every item needs `[SerializationGenerator]`, a `partial` class, and a `[Constructible]` constructor:
+
+```csharp
+using ModernUO.Serialization;
+
+namespace Server.Items;
+
+[SerializationGenerator(0)]
+public partial class SimpleItem : Item
+{
+    [Constructible]
+    public SimpleItem() : base(0x1234)
+    {
+        Weight = 1.0;
+    }
+
+    public override string DefaultName => "a simple item";
+}
+```
+
+- `0x1234` is the item graphic ID from UO art files.
+- `DefaultName` sets the tooltip name. Use `LabelNumber` for cliloc-based names instead.
+
+### Full Item Example
+
+A complete item with serialized fields, a timer, property list, and double-click behavior:
+
+```csharp
+using ModernUO.Serialization;
+
+namespace Server.Items;
+
+[SerializationGenerator(0)]
+public partial class MagicLantern : Item
+{
+    [SerializableField(0)]
+    [InvalidateProperties]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private int _charges;
+
+    [SerializableField(1)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private Mobile _owner;
+
+    private TimerExecutionToken _glowTimer;
+
+    [Constructible]
+    public MagicLantern() : base(0xA25)
+    {
+        _charges = Utility.RandomMinMax(5, 15);
+        Weight = 2.0;
+        Light = LightType.Circle300;
+        StartGlow();
+    }
+
+    public override string DefaultName => "a magic lantern";
+
+    private void StartGlow()
+    {
+        Timer.StartTimer(TimeSpan.FromSeconds(3), TimeSpan.FromSeconds(3), Glow, out _glowTimer);
+    }
+
+    [AfterDeserialization]
+    private void AfterDeserialization() => StartGlow();
+
+    public override void OnAfterDelete()
+    {
+        _glowTimer.Cancel();
+        base.OnAfterDelete();
+    }
+
+    private void Glow()
+    {
+        if (_charges > 0)
+        {
+            Effects.SendLocationParticles(this, 0x376A, 9, 10, 5042);
+        }
+    }
+
+    public override void OnDoubleClick(Mobile from)
+    {
+        if (!IsChildOf(from.Backpack))
+        {
+            from.SendLocalizedMessage(1042001); // Must be in your backpack
+            return;
+        }
+
+        if (_charges <= 0)
+        {
+            from.SendMessage("The lantern is depleted.");
+            return;
+        }
+
+        Charges--;
+        from.SendMessage("The lantern flares brightly!");
+        from.FixedParticles(0x376A, 9, 32, 5042, EffectLayer.Waist);
+    }
+
+    public override void GetProperties(IPropertyList list)
+    {
+        base.GetProperties(list);
+        list.Add(1060741, $"{_charges}"); // "charges: ~1_val~"
+    }
+}
+```
+
+Key patterns:
+- **`TimerExecutionToken`** is never serialized -- restart it in `[AfterDeserialization]`.
+- **`[InvalidateProperties]`** auto-refreshes the tooltip when `Charges` changes.
+- **`[SerializedCommandProperty]`** exposes the field to the `[Props` gump for GMs.
+- **`OnAfterDelete`** cancels the timer to prevent it firing on a deleted entity.
+
+---
+
+## Common Base Classes
+
+| Base Class | Use For |
+|:-----------|:--------|
+| `Item` | Generic items |
+| `BaseWeapon` | Melee weapons |
+| `BaseRanged` | Ranged weapons (bows, crossbows) |
+| `BaseArmor` | Armor pieces |
+| `BaseShield` | Shields |
+| `BaseClothing` | Wearable clothing |
+| `BaseJewel` | Rings, bracelets, necklaces |
+| `BaseContainer` | Containers (bags, boxes, chests) |
+| `BasePotion` | Potions |
+| `Food` | Edible items |
+| `SpellScroll` | Spell scrolls |
+
+---
+
+## Key Item Properties
+
+Set these in the constructor:
+
+```csharp
+Weight = 1.0;                    // Weight in stones
+Stackable = true;                // Can stack with same type
+Amount = 1;                      // Stack amount
+Movable = true;                  // Can be picked up
+Hue = 0;                         // Color (0 = default)
+LootType = LootType.Regular;     // Regular, Newbied, Blessed, Cursed
+Layer = Layer.OneHanded;         // Equipment layer
+Light = LightType.Circle300;     // Light emission
+```
+
+---
+
+## Creating a Creature
+
+### Basic Creature
+
+Creatures extend `BaseCreature` and define stats, resistances, skills, and loot:
+
+```csharp
+using ModernUO.Serialization;
+using Server.Items;
+
+namespace Server.Mobiles;
+
+[SerializationGenerator(0)]
+public partial class ForestWolf : BaseCreature
+{
+    [Constructible]
+    public ForestWolf() : base(AIType.AI_Melee, FightMode.Closest)
+    {
+        Body = 225;
+        BaseSoundID = 0xE5;
+
+        SetStr(80, 120);
+        SetDex(90, 110);
+        SetInt(20, 40);
+
+        SetHits(60, 80);
+        SetMana(0);
+
+        SetDamage(8, 14);
+
+        SetDamageType(ResistanceType.Physical, 100);
+
+        SetResistance(ResistanceType.Physical, 25, 35);
+        SetResistance(ResistanceType.Fire, 5, 10);
+        SetResistance(ResistanceType.Cold, 15, 25);
+        SetResistance(ResistanceType.Poison, 10, 15);
+        SetResistance(ResistanceType.Energy, 5, 10);
+
+        SetSkill(SkillName.MagicResist, 30.0, 50.0);
+        SetSkill(SkillName.Tactics, 50.0, 70.0);
+        SetSkill(SkillName.Wrestling, 50.0, 70.0);
+
+        Fame = 600;
+        Karma = 0;
+
+        VirtualArmor = 28;
+
+        Tamable = true;
+        ControlSlots = 1;
+        MinTameSkill = 50.1;
+    }
+
+    public override string CorpseName => "a wolf corpse";
+    public override string DefaultName => "a forest wolf";
+    public override int Meat => 1;
+    public override int Hides => 6;
+    public override HideType HideType => HideType.Regular;
+    public override FoodType FavoriteFood => FoodType.Meat;
+    public override PackInstinct PackInstinct => PackInstinct.Canine;
+
+    public override void GenerateLoot()
+    {
+        AddLoot(LootPack.Meager);
+    }
+}
+```
+
+### Optional Creature Overrides
+
+```csharp
+public override Poison PoisonImmune => Poison.Regular;
+public override Poison HitPoison => Poison.Lesser;
+public override double HitPoisonChance => 0.2;
+public override bool CanRummageCorpses => true;
+public override bool BardImmune => true;
+public override bool Unprovokable => true;
+public override bool CanFly => true;
+public override int TreasureMapLevel => 3;
+public override double WeaponAbilityChance => 0.4;
+```
+
+---
+
+## AI Types
+
+| AIType | Use For |
+|:-------|:--------|
+| `AI_Melee` | Warriors, melee fighters |
+| `AI_Mage` | Spellcasters |
+| `AI_Archer` | Ranged attackers |
+| `AI_Animal` | Passive animals (flee when hurt) |
+| `AI_Predator` | Hunting animals |
+| `AI_Healer` | Healing NPCs |
+| `AI_Vendor` | Shop NPCs |
+
+---
+
+## Fight Modes
+
+| FightMode | Behavior |
+|:----------|:---------|
+| `None` | Never attacks |
+| `Aggressor` | Only retaliates when attacked |
+| `Strongest` | Targets highest-stat enemy |
+| `Weakest` | Targets lowest-stat enemy |
+| `Closest` | Targets nearest enemy |
+| `Evil` | Attacks aggressors or evil-karma targets |
+
+---
+
+## Creature Stats Guide
+
+Use these ranges as a baseline when creating creatures:
+
+| Level | Str | Dex | Int | Hits | Damage | Fame |
+|:------|:----|:----|:----|:-----|:-------|:-----|
+| Weak | 30--60 | 30--50 | 10--20 | 20--40 | 2--6 | 100--300 |
+| Average | 80--120 | 60--90 | 20--40 | 60--100 | 6--14 | 500--1,500 |
+| Strong | 150--250 | 80--120 | 50--100 | 120--200 | 12--22 | 2,000--5,000 |
+| Elite | 300--500 | 100--150 | 100--200 | 250--500 | 18--30 | 5,000--15,000 |
+| Boss | 500--1,000 | 150--250 | 200--400 | 500--2,000 | 25--40 | 15,000+ |
+
+---
+
+## Loot System
+
+### Predefined Loot Packs
+
+Use `AddLoot` in `GenerateLoot()` to assign standard loot tiers:
+
+```csharp
+public override void GenerateLoot()
+{
+    AddLoot(LootPack.Poor);         // ~50 gold equivalent
+    AddLoot(LootPack.Meager);       // ~100 gold equivalent
+    AddLoot(LootPack.Average);      // ~250 gold equivalent
+    AddLoot(LootPack.Rich);         // ~500 gold equivalent
+    AddLoot(LootPack.FilthyRich);   // ~1,000 gold equivalent
+    AddLoot(LootPack.UltraRich);    // ~2,000 gold equivalent
+    AddLoot(LootPack.SuperBoss);    // Boss-level loot
+
+    // Auxiliary packs
+    AddLoot(LootPack.Gems, 2);      // 2 random gems
+    AddLoot(LootPack.Potions);      // Random potion
+    AddLoot(LootPack.LowScrolls);   // Circle 1--4 scroll
+    AddLoot(LootPack.MedScrolls);   // Circle 5--6 scroll
+    AddLoot(LootPack.HighScrolls);  // Circle 7--8 scroll
+}
+```
+
+Packs automatically select era-appropriate loot based on the server expansion.
+
+### Specific Items
+
+For items that always drop, add them directly:
+
+```csharp
+PackItem(new Arrow(Utility.RandomMinMax(20, 40)));
+PackGold(100, 200);
+PackItem(new Bandage(Utility.RandomMinMax(5, 10)));
+```
+
+---
+
+## Property Lists (Tooltips)
+
+Override `GetProperties` to customize what players see when hovering over your item:
+
+```csharp
+public override void GetProperties(IPropertyList list)
+{
+    base.GetProperties(list); // Always call base first
+
+    // Cliloc with a value argument
+    list.Add(1060741, $"{_charges}");             // "charges: ~1_val~"
+
+    // Key-value pair (string constants must be holes)
+    list.Add(1060658, $"{"Quality"}\t{_quality}"); // "~1_val~: ~2_val~"
+
+    // Raw string line
+    list.Add($"{"Crafted with care"}");
+}
+```
+
+:::warning
+String literals in interpolated property list arguments **must** be wrapped as holes: `$"{"Map"}\t{value}"` not `$"Map\t{value}"`. The handler treats bare text as delimiters and `{}` holes as arguments. Only `\t` should be a bare literal.
+:::
+
+Use `[InvalidateProperties]` on serialized fields to auto-refresh tooltips when values change.
+
+---
+
+## Entity Lifecycle
+
+Entities go through a two-phase deletion process:
+
+```csharp
+// Phase 1: Pre-removal -- cancel timers, unregister from systems
+public override void OnDelete()
+{
+    _timerToken.Cancel();
+    base.OnDelete();
+}
+
+// Phase 2: Post-removal -- null out references
+public override void OnAfterDelete()
+{
+    _timer?.Stop();
+    _timer = null;
+    _owner = null;
+    base.OnAfterDelete();
+}
+```
+
+| Phase | Method | What to Do |
+|:------|:-------|:-----------|
+| Pre-removal | `OnDelete()` | Cancel `TimerExecutionToken`, unregister from tracking systems |
+| Post-removal | `OnAfterDelete()` | Stop and null `Timer` references, null `Item`/`Mobile` references |
+
+---
+
+## File Organization
+
+Place new content files under `Projects/UOContent/` following this structure:
+
+```
+Projects/UOContent/
+  Items/
+    Weapons/Swords/          # Swords
+    Weapons/Maces/           # Maces
+    Weapons/Ranged/          # Bows, crossbows
+    Armor/Plate/             # Plate armor
+    Armor/Leather/           # Leather armor
+    Clothing/                # Wearable clothing
+    Containers/              # Bags, boxes, chests
+    Misc/                    # General items
+    Special/                 # Unique or quest items
+    Resources/               # Crafting materials
+  Mobiles/
+    Animals/Bears/           # Bears
+    Animals/Birds/           # Birds
+    Monsters/AOS/            # AOS-era monsters
+    Monsters/SE/             # SE-era monsters
+    Monsters/ML/             # ML-era monsters
+    Special/                 # Champions, bosses
+    Vendors/                 # NPC vendors
+    Townfolk/                # NPCs
+```
+
+**Naming rules:**
+- File name matches the primary class name.
+- One primary class per file.
+- Group related items in subdirectories.
+- Era-specific content goes in era-named subdirectories.

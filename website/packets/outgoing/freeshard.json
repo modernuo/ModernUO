@@ -1,0 +1,70 @@
+{
+    "category":  "FreeShard Protocol",
+    "packets":  [
+                    {
+                        "id":  "0x51",
+                        "name":  "Compact Shard Stats",
+                        "description":  "Server response to compact shard stats query (0xF1/0xFE).",
+                        "direction":  "outgoing",
+                        "isDynamic":  false,
+                        "size":  27,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0x51",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "value":  "0x001B",
+                                           "description":  "Packet length (27)"
+                                       },
+                                       {
+                                           "name":  "Clients",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Current client count"
+                                       },
+                                       {
+                                           "name":  "Items",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Total item count"
+                                       },
+                                       {
+                                           "name":  "Mobiles",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Total mobile count"
+                                       },
+                                       {
+                                           "name":  "Age",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Server uptime in seconds"
+                                       },
+                                       {
+                                           "name":  "Memory",
+                                           "type":  "long",
+                                           "size":  8,
+                                           "description":  "Memory usage in bytes"
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0xF1/0xFE",
+                                            "relationship":  "request",
+                                            "note":  "Query Compact Shard Stats request"
+                                        }
+                                    ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/UOGateway.cs",
+                                       "line":  60
+                                   }
+                    }
+                ]
+}

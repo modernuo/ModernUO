@@ -1,0 +1,206 @@
+---
+sidebar_position: 4
+title: Commands & Targeting
+---
+
+# Commands & Targeting
+
+## Overview
+
+ModernUO uses a command system where all player/staff commands are prefixed with `[` by default (this is configurable). Commands are registered in static `Configure()` methods that the server discovers automatically at startup. Each command is bound to a minimum access level, so only authorized players can execute it.
+
+---
+
+## Registering a Command
+
+Commands are registered by calling `CommandSystem.Register` inside a static `Configure()` method. The server calls all `Configure()` methods during initialization -- no manual wiring is needed.
+
+```csharp
+public static class MyCommands
+{
+    public static void Configure()
+    {
+        CommandSystem.Register("MyCommand", AccessLevel.GameMaster, MyCommand_OnCommand);
+    }
+
+    [Usage("MyCommand <name>")]
+    [Description("Does something with a name")]
+    public static void MyCommand_OnCommand(CommandEventArgs e)
+    {
+        var from = e.Mobile;
+        if (e.Length < 1)
+        {
+            from.SendMessage("Usage: [MyCommand <name>");
+            return;
+        }
+
+        var name = e.GetString(0);
+        from.SendMessage($"Processing {name}");
+    }
+}
+```
+
+The `[Usage]` and `[Description]` attributes provide help text that appears in the in-game help system.
+
+---
+
+## CommandEventArgs API
+
+When a command handler fires, it receives a `CommandEventArgs` object with the following members:
+
+| Member | Type | Description |
+|:-------|:-----|:------------|
+| `Mobile` | `Mobile` | The mobile that issued the command |
+| `Command` | `string` | The command name that was typed |
+| `ArgString` | `string` | The full argument string after the command name |
+| `Arguments` | `string[]` | Arguments split by spaces |
+| `Length` | `int` | Number of arguments (`Arguments.Length`) |
+| `GetString(i)` | `string` | Get argument at index `i` as a string |
+| `GetInt32(i)` | `int` | Get argument at index `i` as an integer |
+| `GetBoolean(i)` | `bool` | Get argument at index `i` as a boolean |
+| `GetDouble(i)` | `double` | Get argument at index `i` as a double |
+
+---
+
+## Access Levels
+
+Each command requires a minimum access level. Players below that level cannot execute the command.
+
+| Level | Value | Description |
+|:------|:------|:------------|
+| `Player` | 0 | Normal player (default) |
+| `Counselor` | 1 | Support staff with limited powers |
+| `GameMaster` | 2 | GM with full world interaction |
+| `Seer` | 3 | Event coordinator with extra tools |
+| `Administrator` | 4 | Server administrator |
+| `Developer` | 5 | Developer with access to debug commands |
+| `Owner` | 6 | Server owner with unrestricted access |
+
+---
+
+## Targeting System
+
+The targeting system lets a command (or any code) ask a player to click on something in the game world. The flow is:
+
+1. Code sets `mobile.Target = new MyTarget()`.
+2. The client displays a targeting cursor.
+3. The player clicks on a mobile, item, land tile, or static object.
+4. The `OnTarget` method fires with what was clicked.
+
+---
+
+## Target Implementation
+
+A target class inherits from `Target` and overrides `OnTarget`. The `targeted` parameter can be a `Mobile`, `Item`, `LandTarget`, or `StaticTarget` -- use a `switch` to handle each case.
+
+```csharp
+public class IdentifyTarget : Target
+{
+    public IdentifyTarget() : base(12, false, TargetFlags.None)
+    {
+    }
+
+    protected override void OnTarget(Mobile from, object targeted)
+    {
+        switch (targeted)
+        {
+            case Mobile m:
+            {
+                from.SendMessage($"That is a mobile named {m.Name}.");
+                break;
+            }
+            case Item item:
+            {
+                from.SendMessage($"That is an item: {item.GetType().Name} (0x{item.ItemID:X4}).");
+                break;
+            }
+            case LandTarget land:
+            {
+                from.SendMessage($"That is land tile at {land.Location}.");
+                break;
+            }
+            case StaticTarget st:
+            {
+                from.SendMessage($"That is a static: 0x{st.ItemID:X4}.");
+                break;
+            }
+        }
+    }
+}
+```
+
+The `Target` constructor takes three parameters:
+- **range** -- Maximum distance the target can be from the player.
+- **allowGround** -- Whether clicking the ground is valid.
+- **flags** -- `TargetFlags` value controlling criminal/beneficial checks.
+
+---
+
+## Command + Targeting Pattern
+
+A common pattern is for a command to initiate targeting, then the target handler performs the actual work. This cleanly separates input from logic.
+
+```csharp
+public static class HealCommands
+{
+    public static void Configure()
+    {
+        CommandSystem.Register("Heal", AccessLevel.GameMaster, Heal_OnCommand);
+    }
+
+    [Usage("Heal")]
+    [Description("Fully heals the targeted mobile")]
+    public static void Heal_OnCommand(CommandEventArgs e)
+    {
+        e.Mobile.SendMessage("Who do you want to heal?");
+        e.Mobile.Target = new HealTarget();
+    }
+
+    private class HealTarget : Target
+    {
+        public HealTarget() : base(12, false, TargetFlags.Beneficial)
+        {
+        }
+
+        protected override void OnTarget(Mobile from, object targeted)
+        {
+            if (targeted is Mobile m)
+            {
+                m.Hits = m.HitsMax;
+                m.SendMessage("You have been fully healed.");
+                from.SendMessage($"You healed {m.Name}.");
+            }
+            else
+            {
+                from.SendMessage("That is not a mobile.");
+            }
+        }
+    }
+}
+```
+
+---
+
+## TargetFlags
+
+Target flags tell the server what kind of action the player is performing, which affects criminal checks and other systems.
+
+| Flag | Description |
+|:-----|:------------|
+| `None` | Neutral action -- no criminal or beneficial checks |
+| `Harmful` | Hostile action -- triggers criminal flagging if targeting innocents |
+| `Beneficial` | Helpful action -- triggers beneficial checks (healing, buffing) |
+
+:::tip
+Always set the correct flag. Using `Harmful` on a healing target (or `None` on an attack) bypasses important game mechanics like the criminal system.
+:::
+
+---
+
+## Best Practices
+
+- **Register in `Configure()`** -- The server discovers these methods automatically. Do not register commands in constructors or other lifecycle methods.
+- **Validate argument count** -- Always check `e.Length` before accessing arguments to avoid index-out-of-range errors.
+- **Use appropriate access levels** -- Do not default to `Owner`. Choose the lowest level that makes sense for the command.
+- **Use `Harmful`/`Beneficial` flags correctly** -- This ensures the criminal and notoriety systems work as intended.
+- **Keep target handlers focused** -- Let the command set up the target, and let the target handler do the work.

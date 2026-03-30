@@ -1,0 +1,27 @@
+.quickStart {
+  padding: 4rem 0;
+  border-top: 1px solid rgba(213, 191, 116, 0.1);
+}
+
+.content {
+  text-align: center;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.heading {
+  color: var(--ifm-color-primary);
+  font-size: 1.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.subheading {
+  font-size: 1.1rem;
+  opacity: 0.8;
+  margin-bottom: 1.5rem;
+}
+
+.codeWrapper {
+  text-align: left;
+  margin-bottom: 1.5rem;
+}

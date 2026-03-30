@@ -1,0 +1,2619 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="In-game commands for the Ultima Online Server Emulator ModernUO">
+  <meta name="author" content="Kamron Batman">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="https://modernuo.com/branding/favicon.png">
+  <title>ModernUO Commands</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com/3.4.1?plugins=typography@0.5.10"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        colors: {
+          inherit: "inherit",
+          current: "currentColor",
+          transparent: "transparent",
+          black: "#000",
+          white: "#fff",
+          counselor: "rgb(80, 80, 200)",
+          gamemaster: "rgb(200, 128, 112)",
+          seer: "rgb(128, 168, 128)",
+          administrator: "rgb(0, 152, 136)",
+          developer: "rgb(112, 88, 160)",
+          owner: "rgb(208, 144, 0)",
+          "modern-black": "#212121",
+          "modern-black-hover": "#2F2F2F",
+          "modern-dark-black": "#1A1A1A",
+          gold: {
+            50: "#fbf3ee",
+            100: "#f8e9dd",
+            200: "#f0d9bd",
+            300: "#e8cea1",
+            400: "#dfc688",
+            500: "#d5bf74",
+            600: "#cab664",
+            700: "#bdab58",
+            800: "#b09f4f",
+            900: "#a29147",
+          },
+          slate: {
+            50: "#f8fafc",
+            100: "#f1f5f9",
+            200: "#e2e8f0",
+            300: "#cbd5e1",
+            400: "#94a3b8",
+            500: "#64748b",
+            600: "#475569",
+            700: "#334155",
+            800: "#1e293b",
+            900: "#0f172a",
+            950: "#020617"
+          },
+          gray: {
+            50: "#f9fafb",
+            100: "#f3f4f6",
+            200: "#e5e7eb",
+            300: "#d1d5db",
+            400: "#9ca3af",
+            500: "#6b7280",
+            600: "#4b5563",
+            700: "#374151",
+            800: "#1f2937",
+            900: "#111827",
+            950: "#030712"
+          },
+          zinc: {
+            50: "#fafafa",
+            100: "#f4f4f5",
+            200: "#e4e4e7",
+            300: "#d4d4d8",
+            400: "#a1a1aa",
+            500: "#71717a",
+            600: "#52525b",
+            700: "#3f3f46",
+            800: "#27272a",
+            900: "#18181b",
+            950: "#09090b"
+          },
+          neutral: {
+            50: "#fafafa",
+            100: "#f5f5f5",
+            200: "#e5e5e5",
+            300: "#d4d4d4",
+            400: "#a3a3a3",
+            500: "#737373",
+            600: "#525252",
+            700: "#404040",
+            800: "#262626",
+            900: "#171717",
+            950: "#0a0a0a"
+          },
+          stone: {
+            50: "#fafaf9",
+            100: "#f5f5f4",
+            200: "#e7e5e4",
+            300: "#d6d3d1",
+            400: "#a8a29e",
+            500: "#78716c",
+            600: "#57534e",
+            700: "#44403c",
+            800: "#292524",
+            900: "#1c1917",
+            950: "#0c0a09"
+          },
+          red: {
+            50: "#fef2f2",
+            100: "#fee2e2",
+            200: "#fecaca",
+            300: "#fca5a5",
+            400: "#f87171",
+            500: "#ef4444",
+            600: "#dc2626",
+            700: "#b91c1c",
+            800: "#991b1b",
+            900: "#7f1d1d",
+            950: "#450a0a"
+          },
+          orange: {
+            50: "#fff7ed",
+            100: "#ffedd5",
+            200: "#fed7aa",
+            300: "#fdba74",
+            400: "#fb923c",
+            500: "#f97316",
+            600: "#ea580c",
+            700: "#c2410c",
+            800: "#9a3412",
+            900: "#7c2d12",
+            950: "#431407"
+          },
+          amber: {
+            50: "#fffbeb",
+            100: "#fef3c7",
+            200: "#fde68a",
+            300: "#fcd34d",
+            400: "#fbbf24",
+            500: "#f59e0b",
+            600: "#d97706",
+            700: "#b45309",
+            800: "#92400e",
+            900: "#78350f",
+            950: "#451a03"
+          },
+          yellow: {
+            50: "#fefce8",
+            100: "#fef9c3",
+            200: "#fef08a",
+            300: "#fde047",
+            400: "#facc15",
+            500: "#eab308",
+            600: "#ca8a04",
+            700: "#a16207",
+            800: "#854d0e",
+            900: "#713f12",
+            950: "#422006"
+          },
+          lime: {
+            50: "#f7fee7",
+            100: "#ecfccb",
+            200: "#d9f99d",
+            300: "#bef264",
+            400: "#a3e635",
+            500: "#84cc16",
+            600: "#65a30d",
+            700: "#4d7c0f",
+            800: "#3f6212",
+            900: "#365314",
+            950: "#1a2e05"
+          },
+          green: {
+            50: "#f0fdf4",
+            100: "#dcfce7",
+            200: "#bbf7d0",
+            300: "#86efac",
+            400: "#4ade80",
+            500: "#22c55e",
+            600: "#16a34a",
+            700: "#15803d",
+            800: "#166534",
+            900: "#14532d",
+            950: "#052e16"
+          },
+          emerald: {
+            50: "#ecfdf5",
+            100: "#d1fae5",
+            200: "#a7f3d0",
+            300: "#6ee7b7",
+            400: "#34d399",
+            500: "#10b981",
+            600: "#059669",
+            700: "#047857",
+            800: "#065f46",
+            900: "#064e3b",
+            950: "#022c22"
+          },
+          teal: {
+            50: "#f0fdfa",
+            100: "#ccfbf1",
+            200: "#99f6e4",
+            300: "#5eead4",
+            400: "#2dd4bf",
+            500: "#14b8a6",
+            600: "#0d9488",
+            700: "#0f766e",
+            800: "#115e59",
+            900: "#134e4a",
+            950: "#042f2e"
+          },
+          cyan: {
+            50: "#ecfeff",
+            100: "#cffafe",
+            200: "#a5f3fc",
+            300: "#67e8f9",
+            400: "#22d3ee",
+            500: "#06b6d4",
+            600: "#0891b2",
+            700: "#0e7490",
+            800: "#155e75",
+            900: "#164e63",
+            950: "#083344"
+          },
+          sky: {
+            50: "#f0f9ff",
+            100: "#e0f2fe",
+            200: "#bae6fd",
+            300: "#7dd3fc",
+            400: "#38bdf8",
+            500: "#0ea5e9",
+            600: "#0284c7",
+            700: "#0369a1",
+            800: "#075985",
+            900: "#0c4a6e",
+            950: "#082f49"
+          },
+          blue: {
+            50: "#eff6ff",
+            100: "#dbeafe",
+            200: "#bfdbfe",
+            300: "#93c5fd",
+            400: "#60a5fa",
+            500: "#3b82f6",
+            600: "#2563eb",
+            700: "#1d4ed8",
+            800: "#1e40af",
+            900: "#1e3a8a",
+            950: "#172554"
+          },
+          indigo: {
+            50: "#eef2ff",
+            100: "#e0e7ff",
+            200: "#c7d2fe",
+            300: "#a5b4fc",
+            400: "#818cf8",
+            500: "#6366f1",
+            600: "#4f46e5",
+            700: "#4338ca",
+            800: "#3730a3",
+            900: "#312e81",
+            950: "#1e1b4b"
+          },
+          violet: {
+            50: "#f5f3ff",
+            100: "#ede9fe",
+            200: "#ddd6fe",
+            300: "#c4b5fd",
+            400: "#a78bfa",
+            500: "#8b5cf6",
+            600: "#7c3aed",
+            700: "#6d28d9",
+            800: "#5b21b6",
+            900: "#4c1d95",
+            950: "#2e1065"
+          },
+          purple: {
+            50: "#faf5ff",
+            100: "#f3e8ff",
+            200: "#e9d5ff",
+            300: "#d8b4fe",
+            400: "#c084fc",
+            500: "#a855f7",
+            600: "#9333ea",
+            700: "#7e22ce",
+            800: "#6b21a8",
+            900: "#581c87",
+            950: "#3b0764"
+          },
+          fuchsia: {
+            50: "#fdf4ff",
+            100: "#fae8ff",
+            200: "#f5d0fe",
+            300: "#f0abfc",
+            400: "#e879f9",
+            500: "#d946ef",
+            600: "#c026d3",
+            700: "#a21caf",
+            800: "#86198f",
+            900: "#701a75",
+            950: "#4a044e"
+          },
+          pink: {
+            50: "#fdf2f8",
+            100: "#fce7f3",
+            200: "#fbcfe8",
+            300: "#f9a8d4",
+            400: "#f472b6",
+            500: "#ec4899",
+            600: "#db2777",
+            700: "#be185d",
+            800: "#9d174d",
+            900: "#831843",
+            950: "#500724"
+          },
+          rose: {
+            50: "#fff1f2",
+            100: "#ffe4e6",
+            200: "#fecdd3",
+            300: "#fda4af",
+            400: "#fb7185",
+            500: "#f43f5e",
+            600: "#e11d48",
+            700: "#be123c",
+            800: "#9f1239",
+            900: "#881337",
+            950: "#4c0519"
+          }
+        },
+      },
+    }
+  </script>
+</head>
+
+<body class="bg-modern-dark-black text-gold-300 max-w-4xl">
+<div id="app" class="min-h-screen p-2">
+  <div class="max-w-4xl mx-auto">
+    <div class="bg-modern-black p-6 rounded-lg shadow-lg">
+      <!-- Logo -->
+      <div class="flex justify-center">
+        <img src="https://modernuo.com/branding/logo.svg" class="h-24 w-24">
+      </div>
+      <!-- Title -->
+      <h1 class="text-center text-white text-3xl opacity-70 p-2 pb-12 font-light">ModernUO Commands</h1>
+      <!-- Tabs -->
+      <ul id="tabs" class="flex mb-0 list-none flex-wrap pt-3 pb-4 flex-row place-content-center">
+        <!-- JavaScript will populate tabs here -->
+      </ul>
+      <!-- Tab Content -->
+      <div id="tabContent" class="border-t border-gold-500">
+        <!-- JavaScript will populate tab content here -->
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Toolip -->
+<div id="tooltip" class="absolute p-2 bg-modern-black text-white rounded-md shadow-lg max-w-xs md:max-w-sm lg:max-w-md xl:max-w-lg hidden"></div>
+<span id="commands" style="display:none; visibility: hidden">
+  {
+  &quot;Owner&quot;: [
+    {
+      &quot;accessLevel&quot;: &quot;Owner&quot;,
+      &quot;name&quot;: &quot;ClearAll&quot;,
+      &quot;usage&quot;: &quot;ClearAll&quot;,
+      &quot;description&quot;: &quot;Deletes all items and mobiles in all facets. Players and their inventory will not be deleted.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Owner&quot;,
+      &quot;name&quot;: &quot;ClearFacet&quot;,
+      &quot;usage&quot;: &quot;ClearFacet&quot;,
+      &quot;description&quot;: &quot;Deletes all items and mobiles in your facet. Players and their inventory will not be deleted.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Owner&quot;,
+      &quot;name&quot;: &quot;ClearXY&quot;,
+      &quot;usage&quot;: &quot;ClearXY x1 y1 x2 y2&quot;,
+      &quot;description&quot;: &quot;Deletes all items and mobiles in the specified rectangular area on your facet. Players and their inventory will not be deleted.&quot;
+    }
+  ],
+  &quot;Developer&quot;: [
+    {
+      &quot;accessLevel&quot;: &quot;Developer&quot;,
+      &quot;name&quot;: &quot;Decorate&quot;,
+      &quot;usage&quot;: &quot;Decorate&quot;,
+      &quot;description&quot;: &quot;Generates world decoration.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Developer&quot;,
+      &quot;name&quot;: &quot;DecorateMag&quot;,
+      &quot;usage&quot;: &quot;DecorateMag&quot;,
+      &quot;description&quot;: &quot;Generates world decoration for Magincia after it was ruined.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Developer&quot;,
+      &quot;name&quot;: &quot;DoorGen&quot;,
+      &quot;usage&quot;: &quot;DoorGen&quot;,
+      &quot;description&quot;: &quot;Generates doors by analyzing the map. Slow.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Developer&quot;,
+      &quot;name&quot;: &quot;DragEffects&quot;,
+      &quot;usage&quot;: &quot;DragEffects [enable=false]&quot;,
+      &quot;description&quot;: &quot;Enables or disables the item drag and drop effects.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Developer&quot;,
+      &quot;name&quot;: &quot;DumpNetStates&quot;,
+      &quot;usage&quot;: &quot;DumpNetStates&quot;,
+      &quot;description&quot;: &quot;No description available.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Developer&quot;,
+      &quot;name&quot;: &quot;ExportWSC&quot;,
+      &quot;usage&quot;: &quot;ExportWSC &amp;lt;file-path&amp;gt;&quot;,
+      &quot;description&quot;: &quot;Exports all static items to a WSC file.  This will delete all static items in the world.  Please make a backup.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Developer&quot;,
+      &quot;name&quot;: &quot;GenBounds&quot;,
+      &quot;usage&quot;: &quot;GenBounds&quot;,
+      &quot;description&quot;: &quot;Asynchronously generates the ItemBounds.bin file from art.mul/artidx.mul or artLegacyMUL.uop to determine graphic sizes and boundaries.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Developer&quot;,
+      &quot;name&quot;: &quot;GenChamps&quot;,
+      &quot;usage&quot;: &quot;GenChamps&quot;,
+      &quot;description&quot;: &quot;Generates champions for Felucca Dungeons &amp; Lost Lands.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Developer&quot;,
+      &quot;name&quot;: &quot;GenCommands&quot;,
+      &quot;aliases&quot;: [
+        &quot;GenCmdWeb&quot;
+      ],
+      &quot;usage&quot;: &quot;GenCommands&quot;,
+      &quot;description&quot;: &quot;Generates a webpage to the web folder with a list of all commands.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Developer&quot;,
+      &quot;name&quot;: &quot;GenGauntlet&quot;,
+      &quot;usage&quot;: &quot;GenGauntlet&quot;,
+      &quot;description&quot;: &quot;Generates the Gauntlet in Dungeon Doom.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Developer&quot;,
+      &quot;name&quot;: &quot;GenKhaldun&quot;,
+      &quot;usage&quot;: &quot;GenKhaldun&quot;,
+      &quot;description&quot;: &quot;Generates Khaldun Puzzles&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Developer&quot;,
+      &quot;name&quot;: &quot;GenLeverPuzzle&quot;,
+      &quot;usage&quot;: &quot;GenLeverPuzzle&quot;,
+      &quot;description&quot;: &quot;Generates lamp room and lever puzzle in doom.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Developer&quot;,
+      &quot;name&quot;: &quot;GenStealArties&quot;,
+      &quot;usage&quot;: &quot;GenStealArties&quot;,
+      &quot;description&quot;: &quot;Generates the stealable artifacts spawner.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Developer&quot;,
+      &quot;name&quot;: &quot;GenerateFactions&quot;,
+      &quot;aliases&quot;: [
+        &quot;FactionGen&quot;,
+        &quot;GenFactions&quot;
+      ],
+      &quot;usage&quot;: &quot;GenerateFactions&quot;,
+      &quot;description&quot;: &quot;Enables and generates factions.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Developer&quot;,
+      &quot;name&quot;: &quot;ImportSpawners&quot;,
+      &quot;aliases&quot;: [
+        &quot;ImportSpawner&quot;,
+        &quot;GenerateSpawners&quot;,
+        &quot;GenSpawners&quot;
+      ],
+      &quot;usage&quot;: &quot;ImportSpawners &amp;lt;relative search pattern to distribution&amp;gt;&quot;,
+      &quot;description&quot;: &quot;Imports JSON, Nerun Premium, and RunUO spawner files. Supports basic globbing.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Developer&quot;,
+      &quot;name&quot;: &quot;MoonGen&quot;,
+      &quot;usage&quot;: &quot;MoonGen&quot;,
+      &quot;description&quot;: &quot;Generates public moongates. Removes all old moongates.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Developer&quot;,
+      &quot;name&quot;: &quot;PacketLogging&quot;,
+      &quot;aliases&quot;: [],
+      &quot;usage&quot;: &quot;PacketLogging &amp;lt;on|off&amp;gt;&quot;,
+      &quot;modifiers&quot;: [
+        &quot;Region&quot;,
+        &quot;Global&quot;,
+        &quot;Online&quot;,
+        &quot;Single&quot;,
+        &quot;Serial&quot;,
+        &quot;Multi&quot;,
+        &quot;Area&quot;,
+        &quot;Self&quot;,
+        &quot;IPAddress&quot;,
+        &quot;Range&quot;,
+        &quot;Screen&quot;,
+        &quot;Facet&quot;
+      ],
+      &quot;description&quot;: &quot;Enables or disables packet logging for a particular user until they disconnect.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Developer&quot;,
+      &quot;name&quot;: &quot;RemGauntlet&quot;,
+      &quot;usage&quot;: &quot;RemGauntlet&quot;,
+      &quot;description&quot;: &quot;Removes the Gauntlet from Dungeon Doom.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Developer&quot;,
+      &quot;name&quot;: &quot;RemoveStealArties&quot;,
+      &quot;usage&quot;: &quot;RemoveStealArties&quot;,
+      &quot;description&quot;: &quot;Removes the stealable artifacts spawner and every not yet stolen stealable artifacts.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Developer&quot;,
+      &quot;name&quot;: &quot;ResetLocalization&quot;,
+      &quot;aliases&quot;: [
+        &quot;ResetLoc&quot;
+      ],
+      &quot;usage&quot;: &quot;ResetLocalization [&amp;lt;command&amp;gt;]&quot;,
+      &quot;description&quot;: &quot;Clears the localization table. Cliloc will be reloaded the next time they are used for that language.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Developer&quot;,
+      &quot;name&quot;: &quot;SHTelGen&quot;,
+      &quot;usage&quot;: &quot;SHTelGen&quot;,
+      &quot;description&quot;: &quot;Generates solen hives teleporters.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Developer&quot;,
+      &quot;name&quot;: &quot;SecretLocGen&quot;,
+      &quot;usage&quot;: &quot;SecretLocGen&quot;,
+      &quot;description&quot;: &quot;Generates mark containers to Malas secret locations.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Developer&quot;,
+      &quot;name&quot;: &quot;SignGen&quot;,
+      &quot;usage&quot;: &quot;SignGen&quot;,
+      &quot;description&quot;: &quot;Generates world/shop signs on all facets.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Developer&quot;,
+      &quot;name&quot;: &quot;TelGen&quot;,
+      &quot;usage&quot;: &quot;TelGen&quot;,
+      &quot;description&quot;: &quot;Generates world/dungeon teleporters for all facets.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Developer&quot;,
+      &quot;name&quot;: &quot;TelGenDelete&quot;,
+      &quot;usage&quot;: &quot;TelGenDelete&quot;,
+      &quot;description&quot;: &quot;Destroys world/dungeon teleporters for all facets.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Developer&quot;,
+      &quot;name&quot;: &quot;TrackLeaks&quot;,
+      &quot;usage&quot;: &quot;TrackLeaks &amp;lt;on|off&amp;gt;&quot;,
+      &quot;description&quot;: &quot;Enables or disables entity leak tracking. May impact performance and should be used only when necessary!&quot;
+    }
+  ],
+  &quot;Administrator&quot;: [
+    {
+      &quot;accessLevel&quot;: &quot;Administrator&quot;,
+      &quot;name&quot;: &quot;AddonGen&quot;,
+      &quot;usage&quot;: &quot;AddonGen [&amp;lt;name&amp;gt; [namespace]]&quot;,
+      &quot;description&quot;: &quot;Brings up the addon script generator gump. Specify a name to skip the gump and go directly to picking an area.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Administrator&quot;,
+      &quot;name&quot;: &quot;Admin&quot;,
+      &quot;usage&quot;: &quot;Admin&quot;,
+      &quot;description&quot;: &quot;Opens an interface providing server information and administration features including client, account, and firewall management.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Administrator&quot;,
+      &quot;name&quot;: &quot;Ban&quot;,
+      &quot;aliases&quot;: [],
+      &quot;usage&quot;: &quot;Ban&quot;,
+      &quot;modifiers&quot;: [
+        &quot;Region&quot;,
+        &quot;Global&quot;,
+        &quot;Online&quot;,
+        &quot;Single&quot;,
+        &quot;Serial&quot;,
+        &quot;Multi&quot;,
+        &quot;Area&quot;,
+        &quot;Self&quot;,
+        &quot;IPAddress&quot;,
+        &quot;Range&quot;,
+        &quot;Screen&quot;,
+        &quot;Facet&quot;
+      ],
+      &quot;description&quot;: &quot;Bans the account of a targeted player.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Administrator&quot;,
+      &quot;name&quot;: &quot;ClearChampByRegion&quot;,
+      &quot;usage&quot;: &quot;ClearChampByRegion&quot;,
+      &quot;description&quot;: &quot;Kills all minions of a champion spawn.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Administrator&quot;,
+      &quot;name&quot;: &quot;ClearChampByTarget&quot;,
+      &quot;usage&quot;: &quot;ClearChampByTarget&quot;,
+      &quot;description&quot;: &quot;Kills all minions of a champion spawn.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Administrator&quot;,
+      &quot;name&quot;: &quot;FactionCommander&quot;,
+      &quot;usage&quot;: &quot;FactionCommander&quot;,
+      &quot;description&quot;: &quot;Sets the targeted player as the faction commander.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Administrator&quot;,
+      &quot;name&quot;: &quot;FactionItemReset&quot;,
+      &quot;usage&quot;: &quot;FactionItemReset&quot;,
+      &quot;description&quot;: &quot;Resets all faction items in the world.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Administrator&quot;,
+      &quot;name&quot;: &quot;FactionReset&quot;,
+      &quot;usage&quot;: &quot;FactionReset&quot;,
+      &quot;description&quot;: &quot;Resets all faction data in the world.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Administrator&quot;,
+      &quot;name&quot;: &quot;FactionTownReset&quot;,
+      &quot;usage&quot;: &quot;FactionTownReset&quot;,
+      &quot;description&quot;: &quot;Resets all faction town data in the world.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Administrator&quot;,
+      &quot;name&quot;: &quot;Firewall&quot;,
+      &quot;aliases&quot;: [],
+      &quot;usage&quot;: &quot;Firewall&quot;,
+      &quot;modifiers&quot;: [
+        &quot;Region&quot;,
+        &quot;Global&quot;,
+        &quot;Online&quot;,
+        &quot;Single&quot;,
+        &quot;Serial&quot;,
+        &quot;Multi&quot;,
+        &quot;Area&quot;,
+        &quot;Self&quot;,
+        &quot;IPAddress&quot;,
+        &quot;Range&quot;,
+        &quot;Screen&quot;,
+        &quot;Facet&quot;
+      ],
+      &quot;description&quot;: &quot;Adds a targeted player to the firewall (list of blocked IP addresses). This command does not ban or kick.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Administrator&quot;,
+      &quot;name&quot;: &quot;GetThrottle&quot;,
+      &quot;usage&quot;: &quot;GetThrottle &amp;lt;packetID&amp;gt;&quot;,
+      &quot;description&quot;: &quot;Gets throttle for the given packet.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Administrator&quot;,
+      &quot;name&quot;: &quot;Global&quot;,
+      &quot;aliases&quot;: [],
+      &quot;usage&quot;: &quot;Global &amp;lt;command&amp;gt; [condition]&quot;,
+      &quot;description&quot;: &quot;Invokes the command on all appropriate objects in the world. Optional condition arguments can further restrict the set of objects.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Administrator&quot;,
+      &quot;name&quot;: &quot;GrantTownSilver&quot;,
+      &quot;usage&quot;: &quot;GrantTownSilver &amp;lt;amount&amp;gt;&quot;,
+      &quot;description&quot;: &quot;Grants silver to the town of the current region.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Administrator&quot;,
+      &quot;name&quot;: &quot;IPAddress&quot;,
+      &quot;aliases&quot;: [],
+      &quot;usage&quot;: &quot;IPAddress &amp;lt;command&amp;gt; [condition]&quot;,
+      &quot;description&quot;: &quot;Invokes the command on one mobile from each IP address that is logged in. Optional condition arguments can further restrict the set of objects.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Administrator&quot;,
+      &quot;name&quot;: &quot;InvalidQuestItems&quot;,
+      &quot;usage&quot;: &quot;InvalidQuestItems&quot;,
+      &quot;description&quot;: &quot;Provides an overview of all quest items not located in the top-level of a player&#39;s backpack.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Administrator&quot;,
+      &quot;name&quot;: &quot;LanguageStatistics&quot;,
+      &quot;usage&quot;: &quot;LanguageStatistics&quot;,
+      &quot;description&quot;: &quot;Generate a file containing the list of languages for each PlayerMobile.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Administrator&quot;,
+      &quot;name&quot;: &quot;MLQuestsInfo&quot;,
+      &quot;usage&quot;: &quot;MLQuestsInfo&quot;,
+      &quot;description&quot;: &quot;Displays general information about the ML quest system, or a quest by type name.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Administrator&quot;,
+      &quot;name&quot;: &quot;PruneArchives&quot;,
+      &quot;usage&quot;: &quot;PruneArchives&quot;,
+      &quot;description&quot;: &quot;Prunes archives folder.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Administrator&quot;,
+      &quot;name&quot;: &quot;ResetRng&quot;,
+      &quot;usage&quot;: &quot;ResetRng&quot;,
+      &quot;description&quot;: &quot;Resets the global RNG. Use with care! Do not reset often as this will affect the over-all distribution.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Administrator&quot;,
+      &quot;name&quot;: &quot;Restart&quot;,
+      &quot;usage&quot;: &quot;Restart&quot;,
+      &quot;description&quot;: &quot;Initiates a server restart. The world is not saved before the restart.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Administrator&quot;,
+      &quot;name&quot;: &quot;Save&quot;,
+      &quot;usage&quot;: &quot;Save&quot;,
+      &quot;description&quot;: &quot;Saves the world.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Administrator&quot;,
+      &quot;name&quot;: &quot;SaveAllQuests&quot;,
+      &quot;usage&quot;: &quot;SaveAllQuests [saveEnabled=true]&quot;,
+      &quot;description&quot;: &quot;Allows serialization for all quests to be turned on or off.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Administrator&quot;,
+      &quot;name&quot;: &quot;SaveFrequency&quot;,
+      &quot;usage&quot;: &quot;SaveFrequency &amp;lt;duration&amp;gt; [warning duration]&quot;,
+      &quot;description&quot;: &quot;Sets the save frequency starting at midnight local to the server.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Administrator&quot;,
+      &quot;name&quot;: &quot;SaveQuest&quot;,
+      &quot;usage&quot;: &quot;SaveQuest &amp;lt;type&amp;gt; [saveEnabled=true]&quot;,
+      &quot;description&quot;: &quot;Allows serialization for a specific quest to be turned on or off.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Administrator&quot;,
+      &quot;name&quot;: &quot;SetGuarded&quot;,
+      &quot;usage&quot;: &quot;SetGuarded &amp;lt;true|false&amp;gt;&quot;,
+      &quot;description&quot;: &quot;Enables or disables guards for the current region.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Administrator&quot;,
+      &quot;name&quot;: &quot;SetSaves&quot;,
+      &quot;usage&quot;: &quot;AutoSave &amp;lt;on | off&amp;gt;&quot;,
+      &quot;description&quot;: &quot;Enables or disables automatic shard saving.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Administrator&quot;,
+      &quot;name&quot;: &quot;SetThrottle&quot;,
+      &quot;usage&quot;: &quot;SetThrottle &amp;lt;packetID&amp;gt; &amp;lt;timeInMilliseconds&amp;gt;&quot;,
+      &quot;description&quot;: &quot;Sets a throttle for the given packet.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Administrator&quot;,
+      &quot;name&quot;: &quot;ToTAdmin&quot;,
+      &quot;usage&quot;: &quot;ToTAdmin&quot;,
+      &quot;description&quot;: &quot;Displays a menu to configure Treasures of Tokuno.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Administrator&quot;,
+      &quot;name&quot;: &quot;ToggleGuarded&quot;,
+      &quot;usage&quot;: &quot;ToggleGuarded&quot;,
+      &quot;description&quot;: &quot;Toggles the state of guards for the current region.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Administrator&quot;,
+      &quot;name&quot;: &quot;TraceLockdown&quot;,
+      &quot;aliases&quot;: [],
+      &quot;usage&quot;: &quot;TraceLockdown&quot;,
+      &quot;modifiers&quot;: [
+        &quot;Single&quot;,
+        &quot;Serial&quot;,
+        &quot;Multi&quot;
+      ],
+      &quot;description&quot;: &quot;Finds the BaseHouse for which a targeted item is locked down or secured.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Administrator&quot;,
+      &quot;name&quot;: &quot;ValidateName&quot;,
+      &quot;usage&quot;: &quot;ValidateName&quot;,
+      &quot;description&quot;: &quot;Checks the result of NameValidation on the specified name.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Administrator&quot;,
+      &quot;name&quot;: &quot;XmlFind&quot;,
+      &quot;aliases&quot;: [
+        &quot;AdvSrch&quot;,
+        &quot;AS&quot;,
+        &quot;XmlFind&quot;
+      ],
+      &quot;usage&quot;: &quot;AdvancedSearch&quot;,
+      &quot;description&quot;: &quot;Opens the advanced search gump.&quot;
+    }
+  ],
+  &quot;GameMaster&quot;: [
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;Add&quot;,
+      &quot;aliases&quot;: [],
+      &quot;usage&quot;: &quot;Add [&amp;lt;name&amp;gt; [params] [set {&amp;lt;propertyName&amp;gt; &amp;lt;value&amp;gt; ...}]]&quot;,
+      &quot;modifiers&quot;: [
+        &quot;Single&quot;,
+        &quot;Serial&quot;,
+        &quot;Multi&quot;,
+        &quot;Self&quot;
+      ],
+      &quot;description&quot;: &quot;Adds an item or npc by name to a targeted location. Optional constructor parameters. Optional set property list. If no arguments are specified, this brings up a categorized add menu.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;AddDoor&quot;,
+      &quot;usage&quot;: &quot;AddDoor&quot;,
+      &quot;description&quot;: &quot;Displays a menu from which you can interactively add doors.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;AddMenu&quot;,
+      &quot;usage&quot;: &quot;AddMenu [searchString]&quot;,
+      &quot;description&quot;: &quot;Opens an add menu, with an optional initial search string. This menu allows you to search for Items or Mobiles and add them interactively.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;AddToPack&quot;,
+      &quot;aliases&quot;: [
+        &quot;AddToCont&quot;
+      ],
+      &quot;usage&quot;: &quot;AddToPack &amp;lt;name&amp;gt; [params] [set {&amp;lt;propertyName&amp;gt; &amp;lt;value&amp;gt; ...}]&quot;,
+      &quot;modifiers&quot;: [
+        &quot;Region&quot;,
+        &quot;Global&quot;,
+        &quot;Online&quot;,
+        &quot;Single&quot;,
+        &quot;Serial&quot;,
+        &quot;Multi&quot;,
+        &quot;Area&quot;,
+        &quot;Self&quot;,
+        &quot;Contained&quot;,
+        &quot;IPAddress&quot;,
+        &quot;Range&quot;,
+        &quot;Screen&quot;,
+        &quot;Facet&quot;
+      ],
+      &quot;description&quot;: &quot;Adds an item by name to the backpack of a targeted player or npc, or a targeted container. Optional constructor parameters. Optional set property list.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;AllSpells&quot;,
+      &quot;usage&quot;: &quot;AllSpells&quot;,
+      &quot;description&quot;: &quot;Completely fills a targeted spellbook with scrolls.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;Animate&quot;,
+      &quot;usage&quot;: &quot;Animate &amp;lt;action&amp;gt; &amp;lt;frameCount&amp;gt; &amp;lt;repeatCount&amp;gt; &amp;lt;forward&amp;gt; &amp;lt;repeat&amp;gt; &amp;lt;delay&amp;gt;&quot;,
+      &quot;description&quot;: &quot;Makes your character do a specified animation.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;Area&quot;,
+      &quot;aliases&quot;: [
+        &quot;Group&quot;
+      ],
+      &quot;usage&quot;: &quot;Area &amp;lt;command&amp;gt; [condition]&quot;,
+      &quot;description&quot;: &quot;Invokes the command on all appropriate objects in a targeted area. Optional condition arguments can further restrict the set of objects.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;BCast&quot;,
+      &quot;aliases&quot;: [
+        &quot;B&quot;,
+        &quot;BC&quot;
+      ],
+      &quot;usage&quot;: &quot;BCast &amp;lt;text&amp;gt;&quot;,
+      &quot;description&quot;: &quot;Broadcasts a message to everyone online.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;Bank&quot;,
+      &quot;usage&quot;: &quot;Bank&quot;,
+      &quot;description&quot;: &quot;Opens the bank box of a given target.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;BringToPack&quot;,
+      &quot;aliases&quot;: [],
+      &quot;usage&quot;: &quot;BringToPack&quot;,
+      &quot;modifiers&quot;: [
+        &quot;Region&quot;,
+        &quot;Global&quot;,
+        &quot;Single&quot;,
+        &quot;Serial&quot;,
+        &quot;Multi&quot;,
+        &quot;Area&quot;,
+        &quot;Contained&quot;,
+        &quot;Range&quot;,
+        &quot;Screen&quot;,
+        &quot;Facet&quot;
+      ],
+      &quot;description&quot;: &quot;Brings a targeted item to your backpack.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;ChainLink&quot;,
+      &quot;usage&quot;: &quot;ChainLink&quot;,
+      &quot;description&quot;: &quot;Chain-links two or more targeted doors together.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;CheckGuarded&quot;,
+      &quot;usage&quot;: &quot;CheckGuarded&quot;,
+      &quot;description&quot;: &quot;Returns a value indicating if the current region is guarded or not.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;Condition&quot;,
+      &quot;aliases&quot;: [],
+      &quot;usage&quot;: &quot;Condition &amp;lt;condition&amp;gt;&quot;,
+      &quot;modifiers&quot;: [
+        &quot;Region&quot;,
+        &quot;Global&quot;,
+        &quot;Online&quot;,
+        &quot;Single&quot;,
+        &quot;Serial&quot;,
+        &quot;Multi&quot;,
+        &quot;Area&quot;,
+        &quot;Self&quot;,
+        &quot;Contained&quot;,
+        &quot;IPAddress&quot;,
+        &quot;Range&quot;,
+        &quot;Screen&quot;,
+        &quot;Facet&quot;
+      ],
+      &quot;description&quot;: &quot;Checks that the given condition matches a targeted object.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;Contained&quot;,
+      &quot;aliases&quot;: [],
+      &quot;usage&quot;: &quot;Contained &amp;lt;command&amp;gt; [condition]&quot;,
+      &quot;description&quot;: &quot;Invokes the command on all child items in a targeted container. Optional condition arguments can further restrict the set of objects.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;Count&quot;,
+      &quot;aliases&quot;: [],
+      &quot;usage&quot;: &quot;Count&quot;,
+      &quot;modifiers&quot;: [
+        &quot;Region&quot;,
+        &quot;Global&quot;,
+        &quot;Online&quot;,
+        &quot;Area&quot;,
+        &quot;Contained&quot;,
+        &quot;IPAddress&quot;,
+        &quot;Range&quot;,
+        &quot;Screen&quot;,
+        &quot;Facet&quot;
+      ],
+      &quot;description&quot;: &quot;Counts the number of objects that a command modifier would use. Generally used with condition arguments.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;Delete&quot;,
+      &quot;aliases&quot;: [
+        &quot;Remove&quot;,
+        &quot;Rm&quot;
+      ],
+      &quot;usage&quot;: &quot;Delete&quot;,
+      &quot;modifiers&quot;: [
+        &quot;Region&quot;,
+        &quot;Global&quot;,
+        &quot;Single&quot;,
+        &quot;Serial&quot;,
+        &quot;Multi&quot;,
+        &quot;Area&quot;,
+        &quot;Contained&quot;,
+        &quot;Range&quot;,
+        &quot;Screen&quot;,
+        &quot;Facet&quot;
+      ],
+      &quot;description&quot;: &quot;Deletes a targeted item or mobile. Does not delete players.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;DesignInsert&quot;,
+      &quot;aliases&quot;: [],
+      &quot;usage&quot;: &quot;DesignInsert [allItems=false]&quot;,
+      &quot;modifiers&quot;: [
+        &quot;Single&quot;,
+        &quot;Serial&quot;,
+        &quot;Area&quot;,
+        &quot;Range&quot;,
+        &quot;Screen&quot;,
+        &quot;Facet&quot;
+      ],
+      &quot;description&quot;: &quot;Inserts multiple targeted items into a customizable house&#39;s design.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;Dismount&quot;,
+      &quot;aliases&quot;: [],
+      &quot;usage&quot;: &quot;Dismount&quot;,
+      &quot;modifiers&quot;: [
+        &quot;Region&quot;,
+        &quot;Global&quot;,
+        &quot;Online&quot;,
+        &quot;Single&quot;,
+        &quot;Serial&quot;,
+        &quot;Multi&quot;,
+        &quot;Area&quot;,
+        &quot;Self&quot;,
+        &quot;IPAddress&quot;,
+        &quot;Range&quot;,
+        &quot;Screen&quot;,
+        &quot;Facet&quot;
+      ],
+      &quot;description&quot;: &quot;Forcefully dismounts a given target.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;Dupe&quot;,
+      &quot;usage&quot;: &quot;Dupe [amount]&quot;,
+      &quot;description&quot;: &quot;Dupes a targeted item.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;DupeInBag&quot;,
+      &quot;usage&quot;: &quot;DupeInBag &amp;lt;count&amp;gt;&quot;,
+      &quot;description&quot;: &quot;Dupes an item at it&#39;s current location (count) number of times.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;EditSpawner&quot;,
+      &quot;aliases&quot;: [],
+      &quot;usage&quot;: &quot;EditSpawner &amp;lt;type&amp;gt; &amp;lt;arguments&amp;gt; set &amp;lt;properties&amp;gt; where &amp;lt;properties&amp;gt;&quot;,
+      &quot;modifiers&quot;: [
+        &quot;Region&quot;,
+        &quot;Global&quot;,
+        &quot;Online&quot;,
+        &quot;Single&quot;,
+        &quot;Serial&quot;,
+        &quot;Multi&quot;,
+        &quot;Area&quot;,
+        &quot;Contained&quot;,
+        &quot;IPAddress&quot;,
+        &quot;Range&quot;,
+        &quot;Screen&quot;,
+        &quot;Facet&quot;
+      ],
+      &quot;description&quot;: &quot;Modifies spawners arguments and properties for the given type&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;ExportSpawners&quot;,
+      &quot;aliases&quot;: [],
+      &quot;usage&quot;: &quot;ExportSpawners&quot;,
+      &quot;modifiers&quot;: [
+        &quot;Region&quot;,
+        &quot;Global&quot;,
+        &quot;Single&quot;,
+        &quot;Serial&quot;,
+        &quot;Multi&quot;,
+        &quot;Area&quot;,
+        &quot;Range&quot;,
+        &quot;Screen&quot;,
+        &quot;Facet&quot;
+      ],
+      &quot;description&quot;: &quot;Exports the given spawners to a file&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;Facet&quot;,
+      &quot;aliases&quot;: [],
+      &quot;usage&quot;: &quot;Facet &amp;lt;command&amp;gt; [condition]&quot;,
+      &quot;description&quot;: &quot;Invokes the command on all appropriate objects within your facet&#39;s map bounds. Optional condition arguments can further restrict the set of objects.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;FactionBan&quot;,
+      &quot;aliases&quot;: [],
+      &quot;usage&quot;: &quot;FactionBan&quot;,
+      &quot;modifiers&quot;: [
+        &quot;Region&quot;,
+        &quot;Global&quot;,
+        &quot;Online&quot;,
+        &quot;Single&quot;,
+        &quot;Serial&quot;,
+        &quot;Multi&quot;,
+        &quot;Area&quot;,
+        &quot;Self&quot;,
+        &quot;IPAddress&quot;,
+        &quot;Range&quot;,
+        &quot;Screen&quot;,
+        &quot;Facet&quot;
+      ],
+      &quot;description&quot;: &quot;Bans the account of a targeted player from joining factions. All players on the account are removed from their current faction, if any.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;FactionElection&quot;,
+      &quot;usage&quot;: &quot;FactionElection&quot;,
+      &quot;description&quot;: &quot;Opens the election properties for the targeted faction stone.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;FactionKick&quot;,
+      &quot;aliases&quot;: [],
+      &quot;usage&quot;: &quot;FactionKick&quot;,
+      &quot;modifiers&quot;: [
+        &quot;Region&quot;,
+        &quot;Global&quot;,
+        &quot;Online&quot;,
+        &quot;Single&quot;,
+        &quot;Serial&quot;,
+        &quot;Multi&quot;,
+        &quot;Area&quot;,
+        &quot;Self&quot;,
+        &quot;IPAddress&quot;,
+        &quot;Range&quot;,
+        &quot;Screen&quot;,
+        &quot;Facet&quot;
+      ],
+      &quot;description&quot;: &quot;Kicks the targeted player out of his current faction. This does not prevent them from rejoining.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;FactionUnban&quot;,
+      &quot;aliases&quot;: [],
+      &quot;usage&quot;: &quot;FactionUnban&quot;,
+      &quot;modifiers&quot;: [
+        &quot;Region&quot;,
+        &quot;Global&quot;,
+        &quot;Online&quot;,
+        &quot;Single&quot;,
+        &quot;Serial&quot;,
+        &quot;Multi&quot;,
+        &quot;Area&quot;,
+        &quot;Self&quot;,
+        &quot;IPAddress&quot;,
+        &quot;Range&quot;,
+        &quot;Screen&quot;,
+        &quot;Facet&quot;
+      ],
+      &quot;description&quot;: &quot;Unbans the account of a targeted player from joining factions.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;Flip&quot;,
+      &quot;usage&quot;: &quot;Flip&quot;,
+      &quot;description&quot;: &quot;Turns an item.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;ForgetAllRecipes&quot;,
+      &quot;usage&quot;: &quot;ForgetAllRecipes&quot;,
+      &quot;description&quot;: &quot;Makes a player forget all the recipes they&#39;ve learned.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;GetFollowers&quot;,
+      &quot;usage&quot;: &quot;GetFollowers&quot;,
+      &quot;description&quot;: &quot;Teleports all pets of a targeted player to your location.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;GetSkill&quot;,
+      &quot;usage&quot;: &quot;GetSkill &amp;lt;name&amp;gt;&quot;,
+      &quot;description&quot;: &quot;Gets a skill value by name of a targeted mobile.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;GlobalLight&quot;,
+      &quot;usage&quot;: &quot;GlobalLight &amp;lt;value&amp;gt;&quot;,
+      &quot;description&quot;: &quot;Sets the current global light level.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;HWInfo&quot;,
+      &quot;usage&quot;: &quot;HWInfo&quot;,
+      &quot;description&quot;: &quot;Displays information about a targeted player&#39;s hardware.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;Immortal&quot;,
+      &quot;aliases&quot;: [],
+      &quot;usage&quot;: &quot;Immortal&quot;,
+      &quot;modifiers&quot;: [
+        &quot;Region&quot;,
+        &quot;Global&quot;,
+        &quot;Online&quot;,
+        &quot;Single&quot;,
+        &quot;Serial&quot;,
+        &quot;Multi&quot;,
+        &quot;Area&quot;,
+        &quot;Self&quot;,
+        &quot;IPAddress&quot;,
+        &quot;Range&quot;,
+        &quot;Screen&quot;,
+        &quot;Facet&quot;
+      ],
+      &quot;description&quot;: &quot;Sets the blessed property to true.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;Interface&quot;,
+      &quot;aliases&quot;: [],
+      &quot;usage&quot;: &quot;Interface [view &amp;lt;properties ...&amp;gt;]&quot;,
+      &quot;modifiers&quot;: [
+        &quot;Region&quot;,
+        &quot;Global&quot;,
+        &quot;Online&quot;,
+        &quot;Single&quot;,
+        &quot;Serial&quot;,
+        &quot;Multi&quot;,
+        &quot;Area&quot;,
+        &quot;Contained&quot;,
+        &quot;IPAddress&quot;,
+        &quot;Range&quot;,
+        &quot;Screen&quot;,
+        &quot;Facet&quot;
+      ],
+      &quot;description&quot;: &quot;Opens an interface to interact with matched objects. Generally used with condition arguments.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;Invul&quot;,
+      &quot;aliases&quot;: [],
+      &quot;usage&quot;: &quot;Invul&quot;,
+      &quot;modifiers&quot;: [
+        &quot;Region&quot;,
+        &quot;Global&quot;,
+        &quot;Online&quot;,
+        &quot;Single&quot;,
+        &quot;Serial&quot;,
+        &quot;Multi&quot;,
+        &quot;Area&quot;,
+        &quot;Self&quot;,
+        &quot;IPAddress&quot;,
+        &quot;Range&quot;,
+        &quot;Screen&quot;,
+        &quot;Facet&quot;
+      ],
+      &quot;description&quot;: &quot;Sets the blessed property to true.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;Jail&quot;,
+      &quot;usage&quot;: &quot;Jail &amp;lt;player&amp;gt; [reason]&quot;,
+      &quot;description&quot;: &quot;Jails a player with freeze/teleport/unfreeze sequence.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;Kick&quot;,
+      &quot;aliases&quot;: [],
+      &quot;usage&quot;: &quot;Kick&quot;,
+      &quot;modifiers&quot;: [
+        &quot;Region&quot;,
+        &quot;Global&quot;,
+        &quot;Online&quot;,
+        &quot;Single&quot;,
+        &quot;Serial&quot;,
+        &quot;Multi&quot;,
+        &quot;Area&quot;,
+        &quot;Self&quot;,
+        &quot;IPAddress&quot;,
+        &quot;Range&quot;,
+        &quot;Screen&quot;,
+        &quot;Facet&quot;
+      ],
+      &quot;description&quot;: &quot;Disconnects a targeted player.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;Kill&quot;,
+      &quot;aliases&quot;: [],
+      &quot;usage&quot;: &quot;Kill&quot;,
+      &quot;modifiers&quot;: [
+        &quot;Region&quot;,
+        &quot;Global&quot;,
+        &quot;Online&quot;,
+        &quot;Single&quot;,
+        &quot;Serial&quot;,
+        &quot;Multi&quot;,
+        &quot;Area&quot;,
+        &quot;Self&quot;,
+        &quot;IPAddress&quot;,
+        &quot;Range&quot;,
+        &quot;Screen&quot;,
+        &quot;Facet&quot;
+      ],
+      &quot;description&quot;: &quot;Kills a targeted player or npc.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;LearnAllRecipes&quot;,
+      &quot;usage&quot;: &quot;LearnAllRecipes&quot;,
+      &quot;description&quot;: &quot;Teaches a player all available recipes.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;Link&quot;,
+      &quot;usage&quot;: &quot;Link&quot;,
+      &quot;description&quot;: &quot;Links two targeted doors together.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;ListenToParty&quot;,
+      &quot;usage&quot;: &quot;ListenToParty&quot;,
+      &quot;description&quot;: &quot;Listen to the targeted player&#39;s party chat.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;Mortal&quot;,
+      &quot;aliases&quot;: [],
+      &quot;usage&quot;: &quot;Mortal&quot;,
+      &quot;modifiers&quot;: [
+        &quot;Region&quot;,
+        &quot;Global&quot;,
+        &quot;Online&quot;,
+        &quot;Single&quot;,
+        &quot;Serial&quot;,
+        &quot;Multi&quot;,
+        &quot;Area&quot;,
+        &quot;Self&quot;,
+        &quot;IPAddress&quot;,
+        &quot;Range&quot;,
+        &quot;Screen&quot;,
+        &quot;Facet&quot;
+      ],
+      &quot;description&quot;: &quot;Sets the blessed property to false.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;Move&quot;,
+      &quot;usage&quot;: &quot;Move&quot;,
+      &quot;description&quot;: &quot;Repositions a targeted item or mobile.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;NoInvul&quot;,
+      &quot;aliases&quot;: [],
+      &quot;usage&quot;: &quot;NoInvul&quot;,
+      &quot;modifiers&quot;: [
+        &quot;Region&quot;,
+        &quot;Global&quot;,
+        &quot;Online&quot;,
+        &quot;Single&quot;,
+        &quot;Serial&quot;,
+        &quot;Multi&quot;,
+        &quot;Area&quot;,
+        &quot;Self&quot;,
+        &quot;IPAddress&quot;,
+        &quot;Range&quot;,
+        &quot;Screen&quot;,
+        &quot;Facet&quot;
+      ],
+      &quot;description&quot;: &quot;Sets the blessed property to false.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;Online&quot;,
+      &quot;aliases&quot;: [],
+      &quot;usage&quot;: &quot;Online &amp;lt;command&amp;gt; [condition]&quot;,
+      &quot;description&quot;: &quot;Invokes the command on all mobiles that are currently logged in. Optional condition arguments can further restrict the set of objects.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;OpenBrowser&quot;,
+      &quot;aliases&quot;: [
+        &quot;OB&quot;
+      ],
+      &quot;usage&quot;: &quot;OpenBrowser &amp;lt;url&amp;gt;&quot;,
+      &quot;modifiers&quot;: [
+        &quot;Region&quot;,
+        &quot;Global&quot;,
+        &quot;Online&quot;,
+        &quot;Single&quot;,
+        &quot;Serial&quot;,
+        &quot;Multi&quot;,
+        &quot;Area&quot;,
+        &quot;Self&quot;,
+        &quot;IPAddress&quot;,
+        &quot;Range&quot;,
+        &quot;Screen&quot;,
+        &quot;Facet&quot;
+      ],
+      &quot;description&quot;: &quot;Opens the web browser of a targeted player to a specified url.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;Outline&quot;,
+      &quot;usage&quot;: &quot;Outline &amp;lt;name&amp;gt; [params] [set {&amp;lt;propertyName&amp;gt; &amp;lt;value&amp;gt; ...}]&quot;,
+      &quot;description&quot;: &quot;Tiles an item or npc by name around a targeted bounding box. Optional constructor parameters. Optional set property list.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;OutlineAvg&quot;,
+      &quot;usage&quot;: &quot;OutlineAvg &amp;lt;name&amp;gt; [params] [set {&amp;lt;propertyName&amp;gt; &amp;lt;value&amp;gt; ...}]&quot;,
+      &quot;description&quot;: &quot;Tiles an item or npc by name around a targeted bounding box on the map&#39;s average Z elevation. Optional constructor parameters. Optional set property list.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;OutlineRXYZ&quot;,
+      &quot;usage&quot;: &quot;OutlineRXYZ &amp;lt;x&amp;gt; &amp;lt;y&amp;gt; &amp;lt;w&amp;gt; &amp;lt;h&amp;gt; &amp;lt;z&amp;gt; &amp;lt;name&amp;gt; [params] [set {&amp;lt;propertyName&amp;gt; &amp;lt;value&amp;gt; ...}]&quot;,
+      &quot;description&quot;: &quot;Tiles an item or npc by name around a given bounding box, (x, y) parameters are relative to your characters position. Optional constructor parameters. Optional set property list.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;OutlineXYZ&quot;,
+      &quot;usage&quot;: &quot;OutlineXYZ &amp;lt;x&amp;gt; &amp;lt;y&amp;gt; &amp;lt;w&amp;gt; &amp;lt;h&amp;gt; &amp;lt;z&amp;gt; &amp;lt;name&amp;gt; [params] [set {&amp;lt;propertyName&amp;gt; &amp;lt;value&amp;gt; ...}]&quot;,
+      &quot;description&quot;: &quot;Tiles an item or npc by name around a given bounding box. Optional constructor parameters. Optional set property list.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;OutlineZ&quot;,
+      &quot;usage&quot;: &quot;OutlineZ &amp;lt;z&amp;gt; &amp;lt;name&amp;gt; [params] [set {&amp;lt;propertyName&amp;gt; &amp;lt;value&amp;gt; ...}]&quot;,
+      &quot;description&quot;: &quot;Tiles an item or npc by name around a targeted bounding box at a fixed Z location. Optional constructor parameters. Optional set property list.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;Path&quot;,
+      &quot;usage&quot;: &quot;Path&quot;,
+      &quot;description&quot;: &quot;Draws a path from your current location to a targeted location.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;PrivSound&quot;,
+      &quot;aliases&quot;: [],
+      &quot;usage&quot;: &quot;PrivSound &amp;lt;index&amp;gt;&quot;,
+      &quot;modifiers&quot;: [
+        &quot;Region&quot;,
+        &quot;Global&quot;,
+        &quot;Online&quot;,
+        &quot;Single&quot;,
+        &quot;Serial&quot;,
+        &quot;Multi&quot;,
+        &quot;Area&quot;,
+        &quot;Self&quot;,
+        &quot;IPAddress&quot;,
+        &quot;Range&quot;,
+        &quot;Screen&quot;,
+        &quot;Facet&quot;
+      ],
+      &quot;description&quot;: &quot;Plays a sound to a given target.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;RandomTalisman&quot;,
+      &quot;usage&quot;: &quot;RandomTalisman &amp;lt;count&amp;gt;&quot;,
+      &quot;description&quot;: &quot;Generates random talismans in your backpack.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;Range&quot;,
+      &quot;aliases&quot;: [],
+      &quot;usage&quot;: &quot;Range &amp;lt;range&amp;gt; &amp;lt;command&amp;gt; [condition]&quot;,
+      &quot;description&quot;: &quot;Invokes the command on all appropriate objects within a specified range of you. Optional condition arguments can further restrict the set of objects.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;RefreshHouse&quot;,
+      &quot;aliases&quot;: [],
+      &quot;usage&quot;: &quot;RefreshHouse&quot;,
+      &quot;modifiers&quot;: [
+        &quot;Single&quot;,
+        &quot;Serial&quot;,
+        &quot;Multi&quot;
+      ],
+      &quot;description&quot;: &quot;Refreshes a targeted house sign.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;Region&quot;,
+      &quot;aliases&quot;: [],
+      &quot;usage&quot;: &quot;Region &amp;lt;command&amp;gt; [condition]&quot;,
+      &quot;description&quot;: &quot;Invokes the command on all appropriate mobiles in your current region. Optional condition arguments can further restrict the set of objects.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;Respawn&quot;,
+      &quot;aliases&quot;: [],
+      &quot;usage&quot;: &quot;Respawn&quot;,
+      &quot;modifiers&quot;: [
+        &quot;Region&quot;,
+        &quot;Global&quot;,
+        &quot;Online&quot;,
+        &quot;Single&quot;,
+        &quot;Serial&quot;,
+        &quot;Multi&quot;,
+        &quot;Area&quot;,
+        &quot;Contained&quot;,
+        &quot;IPAddress&quot;,
+        &quot;Range&quot;,
+        &quot;Screen&quot;,
+        &quot;Facet&quot;
+      ],
+      &quot;description&quot;: &quot;Respawns the given the spawners.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;Restock&quot;,
+      &quot;aliases&quot;: [],
+      &quot;usage&quot;: &quot;Restock&quot;,
+      &quot;modifiers&quot;: [
+        &quot;Region&quot;,
+        &quot;Global&quot;,
+        &quot;Single&quot;,
+        &quot;Serial&quot;,
+        &quot;Multi&quot;,
+        &quot;Area&quot;,
+        &quot;Range&quot;,
+        &quot;Screen&quot;,
+        &quot;Facet&quot;
+      ],
+      &quot;description&quot;: &quot;Manually restocks a targeted vendor, refreshing the quantity of every item the vendor sells to the maximum. This also invokes the maximum quantity adjustment algorithms.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;Resurrect&quot;,
+      &quot;aliases&quot;: [
+        &quot;Res&quot;
+      ],
+      &quot;usage&quot;: &quot;Resurrect&quot;,
+      &quot;modifiers&quot;: [
+        &quot;Region&quot;,
+        &quot;Global&quot;,
+        &quot;Online&quot;,
+        &quot;Single&quot;,
+        &quot;Serial&quot;,
+        &quot;Multi&quot;,
+        &quot;Area&quot;,
+        &quot;Self&quot;,
+        &quot;IPAddress&quot;,
+        &quot;Range&quot;,
+        &quot;Screen&quot;,
+        &quot;Facet&quot;
+      ],
+      &quot;description&quot;: &quot;Resurrects a targeted ghost.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;Screen&quot;,
+      &quot;aliases&quot;: [],
+      &quot;usage&quot;: &quot;Screen &amp;lt;command&amp;gt; [condition]&quot;,
+      &quot;description&quot;: &quot;Invokes the command on all appropriate objects in your screen. Optional condition arguments can further restrict the set of objects.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;SetAllSkills&quot;,
+      &quot;usage&quot;: &quot;SetAllSkills &amp;lt;name&amp;gt; &amp;lt;value&amp;gt;&quot;,
+      &quot;description&quot;: &quot;Sets all skill values of a targeted mobile.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;SetSkill&quot;,
+      &quot;usage&quot;: &quot;SetSkill &amp;lt;name&amp;gt; &amp;lt;value&amp;gt;&quot;,
+      &quot;description&quot;: &quot;Sets a skill value by name of a targeted mobile.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;ShaveBeard&quot;,
+      &quot;aliases&quot;: [],
+      &quot;usage&quot;: &quot;ShaveBeard&quot;,
+      &quot;modifiers&quot;: [
+        &quot;Region&quot;,
+        &quot;Global&quot;,
+        &quot;Online&quot;,
+        &quot;Single&quot;,
+        &quot;Serial&quot;,
+        &quot;Multi&quot;,
+        &quot;Area&quot;,
+        &quot;Self&quot;,
+        &quot;IPAddress&quot;,
+        &quot;Range&quot;,
+        &quot;Screen&quot;,
+        &quot;Facet&quot;
+      ],
+      &quot;description&quot;: &quot;Sets the FacialHairItemID property to 0.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;ShaveHair&quot;,
+      &quot;aliases&quot;: [],
+      &quot;usage&quot;: &quot;ShaveHair&quot;,
+      &quot;modifiers&quot;: [
+        &quot;Region&quot;,
+        &quot;Global&quot;,
+        &quot;Online&quot;,
+        &quot;Single&quot;,
+        &quot;Serial&quot;,
+        &quot;Multi&quot;,
+        &quot;Area&quot;,
+        &quot;Self&quot;,
+        &quot;IPAddress&quot;,
+        &quot;Range&quot;,
+        &quot;Screen&quot;,
+        &quot;Facet&quot;
+      ],
+      &quot;description&quot;: &quot;Sets the HairItemID property to 0.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;Sound&quot;,
+      &quot;usage&quot;: &quot;Sound &amp;lt;index&amp;gt; [toAll=true]&quot;,
+      &quot;description&quot;: &quot;Plays a sound to players within 12 tiles of you. The (toAll) argument specifies to everyone, or just those who can see you.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;SpawnAdmin&quot;,
+      &quot;aliases&quot;: [
+        &quot;Spawn&quot;
+      ],
+      &quot;usage&quot;: &quot;Spawn&quot;,
+      &quot;description&quot;: &quot;Opens the spawn administration gump.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;SpawnProps&quot;,
+      &quot;aliases&quot;: [],
+      &quot;usage&quot;: &quot;SpawnProps&quot;,
+      &quot;modifiers&quot;: [
+        &quot;Region&quot;,
+        &quot;Global&quot;,
+        &quot;Online&quot;,
+        &quot;Single&quot;,
+        &quot;Serial&quot;,
+        &quot;Multi&quot;,
+        &quot;Area&quot;,
+        &quot;Contained&quot;,
+        &quot;IPAddress&quot;,
+        &quot;Range&quot;,
+        &quot;Screen&quot;,
+        &quot;Facet&quot;
+      ],
+      &quot;description&quot;: &quot;Shows a props gump that will modify the properties of spawn entries related to the chosen entity&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;Squelch&quot;,
+      &quot;aliases&quot;: [],
+      &quot;usage&quot;: &quot;Squelch&quot;,
+      &quot;modifiers&quot;: [
+        &quot;Region&quot;,
+        &quot;Global&quot;,
+        &quot;Online&quot;,
+        &quot;Single&quot;,
+        &quot;Serial&quot;,
+        &quot;Multi&quot;,
+        &quot;Area&quot;,
+        &quot;Self&quot;,
+        &quot;IPAddress&quot;,
+        &quot;Range&quot;,
+        &quot;Screen&quot;,
+        &quot;Facet&quot;
+      ],
+      &quot;description&quot;: &quot;Sets the squelched property to true.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;Tile&quot;,
+      &quot;usage&quot;: &quot;Tile &amp;lt;name&amp;gt; [params] [set {&amp;lt;propertyName&amp;gt; &amp;lt;value&amp;gt; ...}]&quot;,
+      &quot;description&quot;: &quot;Tiles an item or npc by name into a targeted bounding box. Optional constructor parameters. Optional set property list.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;TileAvg&quot;,
+      &quot;usage&quot;: &quot;TileAvg &amp;lt;name&amp;gt; [params] [set {&amp;lt;propertyName&amp;gt; &amp;lt;value&amp;gt; ...}]&quot;,
+      &quot;description&quot;: &quot;Tiles an item or npc by name into a targeted bounding box on the map&#39;s average Z elevation. Optional constructor parameters. Optional set property list.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;TileRXYZ&quot;,
+      &quot;usage&quot;: &quot;TileRXYZ &amp;lt;x&amp;gt; &amp;lt;y&amp;gt; &amp;lt;w&amp;gt; &amp;lt;h&amp;gt; &amp;lt;z&amp;gt; &amp;lt;name&amp;gt; [params] [set {&amp;lt;propertyName&amp;gt; &amp;lt;value&amp;gt; ...}]&quot;,
+      &quot;description&quot;: &quot;Tiles an item or npc by name into a given bounding box, (x, y) parameters are relative to your characters position. Optional constructor parameters. Optional set property list.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;TileXYZ&quot;,
+      &quot;usage&quot;: &quot;TileXYZ &amp;lt;x&amp;gt; &amp;lt;y&amp;gt; &amp;lt;w&amp;gt; &amp;lt;h&amp;gt; &amp;lt;z&amp;gt; &amp;lt;name&amp;gt; [params] [set {&amp;lt;propertyName&amp;gt; &amp;lt;value&amp;gt; ...}]&quot;,
+      &quot;description&quot;: &quot;Tiles an item or npc by name into a given bounding box. Optional constructor parameters. Optional set property list.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;TileZ&quot;,
+      &quot;usage&quot;: &quot;TileZ &amp;lt;z&amp;gt; &amp;lt;name&amp;gt; [params] [set {&amp;lt;propertyName&amp;gt; &amp;lt;value&amp;gt; ...}]&quot;,
+      &quot;description&quot;: &quot;Tiles an item or npc by name into a targeted bounding box at a fixed Z location. Optional constructor parameters. Optional set property list.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;Toggle&quot;,
+      &quot;aliases&quot;: [],
+      &quot;usage&quot;: &quot;Toggle&quot;,
+      &quot;modifiers&quot;: [
+        &quot;Region&quot;,
+        &quot;Global&quot;,
+        &quot;Single&quot;,
+        &quot;Serial&quot;,
+        &quot;Multi&quot;,
+        &quot;Area&quot;,
+        &quot;Contained&quot;,
+        &quot;Range&quot;,
+        &quot;Screen&quot;,
+        &quot;Facet&quot;
+      ],
+      &quot;description&quot;: &quot;Toggles a targeted ToggleItem.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;TownCriers&quot;,
+      &quot;usage&quot;: &quot;TownCriers&quot;,
+      &quot;description&quot;: &quot;Manages the global town crier list.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;Unjail&quot;,
+      &quot;usage&quot;: &quot;Unjail &amp;lt;player&amp;gt;&quot;,
+      &quot;description&quot;: &quot;Manually releases a player from jail.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;Unsquelch&quot;,
+      &quot;aliases&quot;: [],
+      &quot;usage&quot;: &quot;Unsquelch&quot;,
+      &quot;modifiers&quot;: [
+        &quot;Region&quot;,
+        &quot;Global&quot;,
+        &quot;Online&quot;,
+        &quot;Single&quot;,
+        &quot;Serial&quot;,
+        &quot;Multi&quot;,
+        &quot;Area&quot;,
+        &quot;Self&quot;,
+        &quot;IPAddress&quot;,
+        &quot;Range&quot;,
+        &quot;Screen&quot;,
+        &quot;Facet&quot;
+      ],
+      &quot;description&quot;: &quot;Sets the squelched property to false.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;ViewEquip&quot;,
+      &quot;usage&quot;: &quot;ViewEquip&quot;,
+      &quot;description&quot;: &quot;Lists equipment of a targeted mobile. From the list you can move, delete, or open props.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;ViewHouses&quot;,
+      &quot;usage&quot;: &quot;ViewHouses&quot;,
+      &quot;description&quot;: &quot;Displays a menu listing all houses of a targeted player. The menu also contains specific house details, and options to: go to house, open house menu, and demolish house.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;ViewMLContext&quot;,
+      &quot;aliases&quot;: [],
+      &quot;usage&quot;: &quot;ViewMLContext&quot;,
+      &quot;modifiers&quot;: [
+        &quot;Single&quot;,
+        &quot;Serial&quot;,
+        &quot;Multi&quot;
+      ],
+      &quot;description&quot;: &quot;Opens the ML quest context for a targeted mobile.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;ViewQuests&quot;,
+      &quot;aliases&quot;: [],
+      &quot;usage&quot;: &quot;ViewQuests&quot;,
+      &quot;modifiers&quot;: [
+        &quot;Single&quot;,
+        &quot;Serial&quot;,
+        &quot;Multi&quot;
+      ],
+      &quot;description&quot;: &quot;Displays a targeted mobile&#39;s quest overview.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;WayPointSeq&quot;,
+      &quot;usage&quot;: &quot;WayPointSeq&quot;,
+      &quot;description&quot;: &quot;Creates a sequence of way points.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;Wipe&quot;,
+      &quot;usage&quot;: &quot;Wipe&quot;,
+      &quot;description&quot;: &quot;Wipes all items and npcs in a targeted bounding box.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;WipeItems&quot;,
+      &quot;usage&quot;: &quot;WipeItems&quot;,
+      &quot;description&quot;: &quot;Wipes all items in a targeted bounding box.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;WipeMultis&quot;,
+      &quot;usage&quot;: &quot;WipeMultis&quot;,
+      &quot;description&quot;: &quot;Wipes all multis in a targeted bounding box.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;WipeNPCs&quot;,
+      &quot;usage&quot;: &quot;WipeNPCs&quot;,
+      &quot;description&quot;: &quot;Wipes all npcs in a targeted bounding box.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+      &quot;name&quot;: &quot;vli&quot;,
+      &quot;aliases&quot;: [
+        &quot;ViewLadderInfo&quot;
+      ],
+      &quot;usage&quot;: &quot;vli&quot;,
+      &quot;description&quot;: &quot;View ladder information.&quot;
+    }
+  ],
+  &quot;Counselor&quot;: [
+    {
+      &quot;accessLevel&quot;: &quot;Counselor&quot;,
+      &quot;name&quot;: &quot;AutoPageNotify&quot;,
+      &quot;aliases&quot;: [
+        &quot;APN&quot;
+      ],
+      &quot;usage&quot;: &quot;AutoPageNotify&quot;,
+      &quot;description&quot;: &quot;Toggles your auto-page-notify status.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Counselor&quot;,
+      &quot;name&quot;: &quot;Batch&quot;,
+      &quot;usage&quot;: &quot;Batch&quot;,
+      &quot;description&quot;: &quot;Allows multiple commands to be run at the same time.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Counselor&quot;,
+      &quot;name&quot;: &quot;Cast&quot;,
+      &quot;usage&quot;: &quot;Cast &amp;lt;name&amp;gt;&quot;,
+      &quot;description&quot;: &quot;Casts a spell by name.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Counselor&quot;,
+      &quot;name&quot;: &quot;Client&quot;,
+      &quot;usage&quot;: &quot;Client&quot;,
+      &quot;description&quot;: &quot;Opens the client gump menu for a given player.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Counselor&quot;,
+      &quot;name&quot;: &quot;Comments&quot;,
+      &quot;usage&quot;: &quot;Comments&quot;,
+      &quot;description&quot;: &quot;View/Modify/Add account comments.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Counselor&quot;,
+      &quot;name&quot;: &quot;DropHolding&quot;,
+      &quot;usage&quot;: &quot;DropHolding&quot;,
+      &quot;description&quot;: &quot;Drops the item, if any, that a targeted player is holding. The item is placed into their backpack, or if that&#39;s full, at their feet.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Counselor&quot;,
+      &quot;name&quot;: &quot;Echo&quot;,
+      &quot;usage&quot;: &quot;Echo &amp;lt;text&amp;gt;&quot;,
+      &quot;description&quot;: &quot;Relays (text) as a system message.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Counselor&quot;,
+      &quot;name&quot;: &quot;Get&quot;,
+      &quot;aliases&quot;: [],
+      &quot;usage&quot;: &quot;Get &amp;lt;propertyName&amp;gt;&quot;,
+      &quot;modifiers&quot;: [
+        &quot;Region&quot;,
+        &quot;Global&quot;,
+        &quot;Online&quot;,
+        &quot;Single&quot;,
+        &quot;Serial&quot;,
+        &quot;Multi&quot;,
+        &quot;Area&quot;,
+        &quot;Self&quot;,
+        &quot;Contained&quot;,
+        &quot;IPAddress&quot;,
+        &quot;Range&quot;,
+        &quot;Screen&quot;,
+        &quot;Facet&quot;
+      ],
+      &quot;description&quot;: &quot;Gets one or more property values by name of a targeted object.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Counselor&quot;,
+      &quot;name&quot;: &quot;GetType&quot;,
+      &quot;aliases&quot;: [],
+      &quot;usage&quot;: &quot;GetType&quot;,
+      &quot;modifiers&quot;: [
+        &quot;Region&quot;,
+        &quot;Global&quot;,
+        &quot;Online&quot;,
+        &quot;Single&quot;,
+        &quot;Serial&quot;,
+        &quot;Multi&quot;,
+        &quot;Area&quot;,
+        &quot;Self&quot;,
+        &quot;Contained&quot;,
+        &quot;IPAddress&quot;,
+        &quot;Range&quot;,
+        &quot;Screen&quot;,
+        &quot;Facet&quot;
+      ],
+      &quot;description&quot;: &quot;Gets the type name of a targeted object.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Counselor&quot;,
+      &quot;name&quot;: &quot;Go&quot;,
+      &quot;usage&quot;: &quot;Go [name | serial | (x y [z]) | (deg min (N | S) deg min (E | W))]&quot;,
+      &quot;description&quot;: &quot;With no arguments, this command brings up the go menu. With one argument, (name), you are moved to that regions \&quot;go location.\&quot; Or, if a numerical value is specified for one argument, (serial), you are moved to that object. Two or three arguments, (x y [z]), will move your character to that location. When six arguments are specified, (deg min (N | S) deg min (E | W)), your character will go to an approximate of those sextant coordinates.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Counselor&quot;,
+      &quot;name&quot;: &quot;GuildProps&quot;,
+      &quot;usage&quot;: &quot;GuildProps&quot;,
+      &quot;description&quot;: &quot;Opens a menu where you can view and edit guild properties of a targeted player or guild stone.  If the new Guild system is active, also brings up the guild gump.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Counselor&quot;,
+      &quot;name&quot;: &quot;Hide&quot;,
+      &quot;aliases&quot;: [],
+      &quot;usage&quot;: &quot;Hide&quot;,
+      &quot;modifiers&quot;: [
+        &quot;Region&quot;,
+        &quot;Global&quot;,
+        &quot;Online&quot;,
+        &quot;Single&quot;,
+        &quot;Serial&quot;,
+        &quot;Multi&quot;,
+        &quot;Area&quot;,
+        &quot;Self&quot;,
+        &quot;IPAddress&quot;,
+        &quot;Range&quot;,
+        &quot;Screen&quot;,
+        &quot;Facet&quot;
+      ],
+      &quot;description&quot;: &quot;Makes a targeted mobile disappear in a puff of smoke.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Counselor&quot;,
+      &quot;name&quot;: &quot;Increase&quot;,
+      &quot;aliases&quot;: [
+        &quot;Inc&quot;
+      ],
+      &quot;usage&quot;: &quot;Increase {&amp;lt;propertyName&amp;gt; &amp;lt;offset&amp;gt; ...}&quot;,
+      &quot;modifiers&quot;: [
+        &quot;Region&quot;,
+        &quot;Global&quot;,
+        &quot;Online&quot;,
+        &quot;Single&quot;,
+        &quot;Serial&quot;,
+        &quot;Multi&quot;,
+        &quot;Area&quot;,
+        &quot;Self&quot;,
+        &quot;Contained&quot;,
+        &quot;IPAddress&quot;,
+        &quot;Range&quot;,
+        &quot;Screen&quot;,
+        &quot;Facet&quot;
+      ],
+      &quot;description&quot;: &quot;Increases the value of a specified property by the specified offset.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Counselor&quot;,
+      &quot;name&quot;: &quot;JailInfo&quot;,
+      &quot;usage&quot;: &quot;JailInfo &amp;lt;player&amp;gt;&quot;,
+      &quot;description&quot;: &quot;Shows jail information for a player.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Counselor&quot;,
+      &quot;name&quot;: &quot;Light&quot;,
+      &quot;usage&quot;: &quot;Light &amp;lt;level&amp;gt;&quot;,
+      &quot;description&quot;: &quot;Set your local lightlevel.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Counselor&quot;,
+      &quot;name&quot;: &quot;Location&quot;,
+      &quot;aliases&quot;: [
+        &quot;Loc&quot;,
+        &quot;Pos&quot;
+      ],
+      &quot;usage&quot;: &quot;Location [itemIds ...]&quot;,
+      &quot;modifiers&quot;: [
+        &quot;Single&quot;,
+        &quot;Serial&quot;,
+        &quot;Multi&quot;
+      ],
+      &quot;description&quot;: &quot;Retrieves the positional coordinates of a target. Displaying a message above the item, mobile, or environment. Environment targets will also have a graphic temporarily displayed on the tile. This graphic can be changed to the provided list of itemIds.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Counselor&quot;,
+      &quot;name&quot;: &quot;Message&quot;,
+      &quot;aliases&quot;: [
+        &quot;Msg&quot;
+      ],
+      &quot;usage&quot;: &quot;Message &amp;lt;text&amp;gt;&quot;,
+      &quot;modifiers&quot;: [
+        &quot;Region&quot;,
+        &quot;Global&quot;,
+        &quot;Online&quot;,
+        &quot;Single&quot;,
+        &quot;Serial&quot;,
+        &quot;Multi&quot;,
+        &quot;Area&quot;,
+        &quot;Self&quot;,
+        &quot;IPAddress&quot;,
+        &quot;Range&quot;,
+        &quot;Screen&quot;,
+        &quot;Facet&quot;
+      ],
+      &quot;description&quot;: &quot;Sends a message to a targeted player.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Counselor&quot;,
+      &quot;name&quot;: &quot;Multi&quot;,
+      &quot;aliases&quot;: [
+        &quot;m&quot;
+      ],
+      &quot;usage&quot;: &quot;Multi &amp;lt;command&amp;gt;&quot;,
+      &quot;description&quot;: &quot;Invokes the command on multiple targeted objects.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Counselor&quot;,
+      &quot;name&quot;: &quot;Pages&quot;,
+      &quot;usage&quot;: &quot;Pages&quot;,
+      &quot;description&quot;: &quot;Opens the page queue menu.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Counselor&quot;,
+      &quot;name&quot;: &quot;Props&quot;,
+      &quot;usage&quot;: &quot;Props [serial]&quot;,
+      &quot;description&quot;: &quot;Opens a menu where you can view and edit all properties of a targeted (or specified) object.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Counselor&quot;,
+      &quot;name&quot;: &quot;ResetStaffDress&quot;,
+      &quot;usage&quot;: &quot;ResetStaffDress&quot;,
+      &quot;description&quot;: &quot;Resets staff to proper GM&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Counselor&quot;,
+      &quot;name&quot;: &quot;SMsg&quot;,
+      &quot;aliases&quot;: [
+        &quot;S&quot;,
+        &quot;SM&quot;
+      ],
+      &quot;usage&quot;: &quot;SMsg &amp;lt;text&amp;gt;&quot;,
+      &quot;description&quot;: &quot;Broadcasts a message to all online staff.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Counselor&quot;,
+      &quot;name&quot;: &quot;Self&quot;,
+      &quot;aliases&quot;: [],
+      &quot;usage&quot;: &quot;Self &amp;lt;command&amp;gt;&quot;,
+      &quot;description&quot;: &quot;Invokes the command on the commanding player.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Counselor&quot;,
+      &quot;name&quot;: &quot;Serial&quot;,
+      &quot;aliases&quot;: [],
+      &quot;usage&quot;: &quot;Serial &amp;lt;serial&amp;gt; &amp;lt;command&amp;gt;&quot;,
+      &quot;description&quot;: &quot;Invokes the command on a single object by serial.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Counselor&quot;,
+      &quot;name&quot;: &quot;Set&quot;,
+      &quot;aliases&quot;: [],
+      &quot;usage&quot;: &quot;Set &amp;lt;propertyName&amp;gt; &amp;lt;value&amp;gt; [...]&quot;,
+      &quot;modifiers&quot;: [
+        &quot;Region&quot;,
+        &quot;Global&quot;,
+        &quot;Online&quot;,
+        &quot;Single&quot;,
+        &quot;Serial&quot;,
+        &quot;Multi&quot;,
+        &quot;Area&quot;,
+        &quot;Self&quot;,
+        &quot;Contained&quot;,
+        &quot;IPAddress&quot;,
+        &quot;Range&quot;,
+        &quot;Screen&quot;,
+        &quot;Facet&quot;
+      ],
+      &quot;description&quot;: &quot;Sets one or more property values by name of a targeted object.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Counselor&quot;,
+      &quot;name&quot;: &quot;Single&quot;,
+      &quot;aliases&quot;: [],
+      &quot;usage&quot;: &quot;Single &amp;lt;command&amp;gt;&quot;,
+      &quot;description&quot;: &quot;Invokes the command on a single targeted object. This is the same as just invoking the command directly.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Counselor&quot;,
+      &quot;name&quot;: &quot;Skills&quot;,
+      &quot;usage&quot;: &quot;Skills&quot;,
+      &quot;description&quot;: &quot;Opens a menu where you can view or edit skills of a targeted mobile.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Counselor&quot;,
+      &quot;name&quot;: &quot;SpeechLog&quot;,
+      &quot;usage&quot;: &quot;SpeechLog&quot;,
+      &quot;description&quot;: &quot;Opens the speech log of a given target.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Counselor&quot;,
+      &quot;name&quot;: &quot;SpeedBoost&quot;,
+      &quot;usage&quot;: &quot;SpeedBoost [true|false]&quot;,
+      &quot;description&quot;: &quot;Enables a speed boost for the invoker.  Disable with parameters.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Counselor&quot;,
+      &quot;name&quot;: &quot;Stats&quot;,
+      &quot;usage&quot;: &quot;Stats&quot;,
+      &quot;description&quot;: &quot;View some stats about the server.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Counselor&quot;,
+      &quot;name&quot;: &quot;Stuck&quot;,
+      &quot;usage&quot;: &quot;Stuck&quot;,
+      &quot;description&quot;: &quot;Opens a menu of towns, used for teleporting stuck mobiles.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Counselor&quot;,
+      &quot;name&quot;: &quot;Teleport&quot;,
+      &quot;aliases&quot;: [
+        &quot;Tele&quot;
+      ],
+      &quot;usage&quot;: &quot;Teleport&quot;,
+      &quot;modifiers&quot;: [
+        &quot;Single&quot;,
+        &quot;Serial&quot;,
+        &quot;Multi&quot;
+      ],
+      &quot;description&quot;: &quot;Teleports your character to a targeted location.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Counselor&quot;,
+      &quot;name&quot;: &quot;Tell&quot;,
+      &quot;aliases&quot;: [],
+      &quot;usage&quot;: &quot;Tell &amp;lt;text&amp;gt;&quot;,
+      &quot;modifiers&quot;: [
+        &quot;Region&quot;,
+        &quot;Global&quot;,
+        &quot;Online&quot;,
+        &quot;Single&quot;,
+        &quot;Serial&quot;,
+        &quot;Multi&quot;,
+        &quot;Area&quot;,
+        &quot;Self&quot;,
+        &quot;IPAddress&quot;,
+        &quot;Range&quot;,
+        &quot;Screen&quot;,
+        &quot;Facet&quot;
+      ],
+      &quot;description&quot;: &quot;Sends a system message to a targeted player.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Counselor&quot;,
+      &quot;name&quot;: &quot;Unhide&quot;,
+      &quot;aliases&quot;: [],
+      &quot;usage&quot;: &quot;Unhide&quot;,
+      &quot;modifiers&quot;: [
+        &quot;Region&quot;,
+        &quot;Global&quot;,
+        &quot;Online&quot;,
+        &quot;Single&quot;,
+        &quot;Serial&quot;,
+        &quot;Multi&quot;,
+        &quot;Area&quot;,
+        &quot;Self&quot;,
+        &quot;IPAddress&quot;,
+        &quot;Range&quot;,
+        &quot;Screen&quot;,
+        &quot;Facet&quot;
+      ],
+      &quot;description&quot;: &quot;Makes a targeted mobile appear in a puff of smoke.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Counselor&quot;,
+      &quot;name&quot;: &quot;Vis&quot;,
+      &quot;usage&quot;: &quot;Vis&quot;,
+      &quot;description&quot;: &quot;Adds or removes a targeted player from your visibility list.  Anyone on your visibility list will be able to see you at all times, even when you&#39;re hidden.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Counselor&quot;,
+      &quot;name&quot;: &quot;VisClear&quot;,
+      &quot;usage&quot;: &quot;VisClear&quot;,
+      &quot;description&quot;: &quot;Removes everyone from your visibility list.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Counselor&quot;,
+      &quot;name&quot;: &quot;VisList&quot;,
+      &quot;usage&quot;: &quot;VisList&quot;,
+      &quot;description&quot;: &quot;Shows the names of everyone in your visibility list.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Counselor&quot;,
+      &quot;name&quot;: &quot;Where&quot;,
+      &quot;usage&quot;: &quot;Where&quot;,
+      &quot;description&quot;: &quot;Tells the commanding player his coordinates, region, and facet.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Counselor&quot;,
+      &quot;name&quot;: &quot;WhoList&quot;,
+      &quot;aliases&quot;: [
+        &quot;Who&quot;
+      ],
+      &quot;usage&quot;: &quot;WhoList [filter]&quot;,
+      &quot;description&quot;: &quot;Lists all connected clients. Optionally filters results by name.&quot;
+    }
+  ],
+  &quot;Player&quot;: [
+    {
+      &quot;accessLevel&quot;: &quot;Player&quot;,
+      &quot;name&quot;: &quot;Help&quot;,
+      &quot;usage&quot;: &quot;Help&quot;,
+      &quot;description&quot;: &quot;Lists all available commands.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Player&quot;,
+      &quot;name&quot;: &quot;HelpInfo&quot;,
+      &quot;usage&quot;: &quot;HelpInfo [&amp;lt;command&amp;gt;]&quot;,
+      &quot;description&quot;: &quot;Gives information on a specified command, or when no argument specified, displays a gump containing all commands&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Player&quot;,
+      &quot;name&quot;: &quot;JailRecord&quot;,
+      &quot;usage&quot;: &quot;JailRecord&quot;,
+      &quot;description&quot;: &quot;Shows your own jail information.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Player&quot;,
+      &quot;name&quot;: &quot;StaffAccess&quot;,
+      &quot;usage&quot;: &quot;StaffAccess &amp;lt;access level&amp;gt;&quot;,
+      &quot;description&quot;: &quot;Changes your access level. Only access levels at or below your current access level can be set. Use the same access level to reset.&quot;
+    },
+    {
+      &quot;accessLevel&quot;: &quot;Player&quot;,
+      &quot;name&quot;: &quot;Time&quot;,
+      &quot;usage&quot;: &quot;Time&quot;,
+      &quot;description&quot;: &quot;Returns the server&#39;s local time.&quot;
+    }
+  ]
+}
+</span>
+<span id="modifiers" style="display:none; visibility: hidden">
+    {
+  &quot;Region&quot;: {
+    &quot;supportsConditionals&quot;: true,
+    &quot;accessors&quot;: [
+      &quot;Region&quot;
+    ],
+    &quot;usage&quot;: &quot;Region &amp;lt;command&amp;gt; [condition]&quot;,
+    &quot;description&quot;: &quot;Invokes the command on all appropriate mobiles in your current region. Optional condition arguments can further restrict the set of objects.&quot;,
+    &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+    &quot;supportRequirement&quot;: &quot;Region&quot;
+  },
+  &quot;Global&quot;: {
+    &quot;supportsConditionals&quot;: true,
+    &quot;accessors&quot;: [
+      &quot;Global&quot;
+    ],
+    &quot;usage&quot;: &quot;Global &amp;lt;command&amp;gt; [condition]&quot;,
+    &quot;description&quot;: &quot;Invokes the command on all appropriate objects in the world. Optional condition arguments can further restrict the set of objects.&quot;,
+    &quot;accessLevel&quot;: &quot;Administrator&quot;,
+    &quot;supportRequirement&quot;: &quot;Global&quot;
+  },
+  &quot;Online&quot;: {
+    &quot;supportsConditionals&quot;: true,
+    &quot;accessors&quot;: [
+      &quot;Online&quot;
+    ],
+    &quot;usage&quot;: &quot;Online &amp;lt;command&amp;gt; [condition]&quot;,
+    &quot;description&quot;: &quot;Invokes the command on all mobiles that are currently logged in. Optional condition arguments can further restrict the set of objects.&quot;,
+    &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+    &quot;supportRequirement&quot;: &quot;Online&quot;
+  },
+  &quot;Single&quot;: {
+    &quot;supportsConditionals&quot;: false,
+    &quot;accessors&quot;: [
+      &quot;Single&quot;
+    ],
+    &quot;usage&quot;: &quot;Single &amp;lt;command&amp;gt;&quot;,
+    &quot;description&quot;: &quot;Invokes the command on a single targeted object. This is the same as just invoking the command directly.&quot;,
+    &quot;accessLevel&quot;: &quot;Counselor&quot;,
+    &quot;supportRequirement&quot;: &quot;Single&quot;
+  },
+  &quot;Serial&quot;: {
+    &quot;supportsConditionals&quot;: false,
+    &quot;accessors&quot;: [
+      &quot;Serial&quot;
+    ],
+    &quot;usage&quot;: &quot;Serial &amp;lt;serial&amp;gt; &amp;lt;command&amp;gt;&quot;,
+    &quot;description&quot;: &quot;Invokes the command on a single object by serial.&quot;,
+    &quot;accessLevel&quot;: &quot;Counselor&quot;,
+    &quot;supportRequirement&quot;: &quot;Single&quot;
+  },
+  &quot;Multi&quot;: {
+    &quot;supportsConditionals&quot;: false,
+    &quot;accessors&quot;: [
+      &quot;Multi&quot;,
+      &quot;m&quot;
+    ],
+    &quot;usage&quot;: &quot;Multi &amp;lt;command&amp;gt;&quot;,
+    &quot;description&quot;: &quot;Invokes the command on multiple targeted objects.&quot;,
+    &quot;accessLevel&quot;: &quot;Counselor&quot;,
+    &quot;supportRequirement&quot;: &quot;Multi&quot;
+  },
+  &quot;Area&quot;: {
+    &quot;supportsConditionals&quot;: true,
+    &quot;accessors&quot;: [
+      &quot;Area&quot;,
+      &quot;Group&quot;
+    ],
+    &quot;usage&quot;: &quot;Area &amp;lt;command&amp;gt; [condition]&quot;,
+    &quot;description&quot;: &quot;Invokes the command on all appropriate objects in a targeted area. Optional condition arguments can further restrict the set of objects.&quot;,
+    &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+    &quot;supportRequirement&quot;: &quot;Area&quot;
+  },
+  &quot;Self&quot;: {
+    &quot;supportsConditionals&quot;: false,
+    &quot;accessors&quot;: [
+      &quot;Self&quot;
+    ],
+    &quot;usage&quot;: &quot;Self &amp;lt;command&amp;gt;&quot;,
+    &quot;description&quot;: &quot;Invokes the command on the commanding player.&quot;,
+    &quot;accessLevel&quot;: &quot;Counselor&quot;,
+    &quot;supportRequirement&quot;: &quot;Self&quot;
+  },
+  &quot;Contained&quot;: {
+    &quot;supportsConditionals&quot;: false,
+    &quot;accessors&quot;: [
+      &quot;Contained&quot;
+    ],
+    &quot;usage&quot;: &quot;Contained &amp;lt;command&amp;gt; [condition]&quot;,
+    &quot;description&quot;: &quot;Invokes the command on all child items in a targeted container. Optional condition arguments can further restrict the set of objects.&quot;,
+    &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+    &quot;supportRequirement&quot;: &quot;Contained&quot;
+  },
+  &quot;IPAddress&quot;: {
+    &quot;supportsConditionals&quot;: true,
+    &quot;accessors&quot;: [
+      &quot;IPAddress&quot;
+    ],
+    &quot;usage&quot;: &quot;IPAddress &amp;lt;command&amp;gt; [condition]&quot;,
+    &quot;description&quot;: &quot;Invokes the command on one mobile from each IP address that is logged in. Optional condition arguments can further restrict the set of objects.&quot;,
+    &quot;accessLevel&quot;: &quot;Administrator&quot;,
+    &quot;supportRequirement&quot;: &quot;IPAddress&quot;
+  },
+  &quot;Range&quot;: {
+    &quot;supportsConditionals&quot;: true,
+    &quot;accessors&quot;: [
+      &quot;Range&quot;
+    ],
+    &quot;usage&quot;: &quot;Range &amp;lt;range&amp;gt; &amp;lt;command&amp;gt; [condition]&quot;,
+    &quot;description&quot;: &quot;Invokes the command on all appropriate objects within a specified range of you. Optional condition arguments can further restrict the set of objects.&quot;,
+    &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+    &quot;supportRequirement&quot;: &quot;Area&quot;
+  },
+  &quot;Screen&quot;: {
+    &quot;supportsConditionals&quot;: true,
+    &quot;accessors&quot;: [
+      &quot;Screen&quot;
+    ],
+    &quot;usage&quot;: &quot;Screen &amp;lt;command&amp;gt; [condition]&quot;,
+    &quot;description&quot;: &quot;Invokes the command on all appropriate objects in your screen. Optional condition arguments can further restrict the set of objects.&quot;,
+    &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+    &quot;supportRequirement&quot;: &quot;Area&quot;
+  },
+  &quot;Facet&quot;: {
+    &quot;supportsConditionals&quot;: true,
+    &quot;accessors&quot;: [
+      &quot;Facet&quot;
+    ],
+    &quot;usage&quot;: &quot;Facet &amp;lt;command&amp;gt; [condition]&quot;,
+    &quot;description&quot;: &quot;Invokes the command on all appropriate objects within your facet&#39;s map bounds. Optional condition arguments can further restrict the set of objects.&quot;,
+    &quot;accessLevel&quot;: &quot;GameMaster&quot;,
+    &quot;supportRequirement&quot;: &quot;Area&quot;
+  }
+}
+  </span>
+<script>
+  /*
+  Modifiers Structure:
+  {
+    "modifier": {
+      name: "Modifier",
+      usage: "[modifier <command> [condition]",
+      description: "long description. Optional condition arguments can further restrict the set of objects."
+    }
+  }
+*/
+  let allModifiers = {};
+
+  try {
+    allModifiers = JSON.parse(document.querySelectorAll('#modifiers')[0].innerText.trim() || {});
+  } catch {}
+
+  /*
+    Commands Structure:
+    {
+      "AccessLevel": [
+        {
+          command: "CommandName",
+          aliases: ["cn"],
+          usage: "CommandName <options>",
+          modifiers: ["Global", "Online", "Region", "Multi", "Area", "Self"],
+          description: "Long Description"
+        }
+      ]
+    }
+  */
+  let commands = {};
+
+  try {
+    commands = JSON.parse(document.querySelectorAll('#commands')[0].innerText.trim() || {});
+  } catch {}
+
+  function createTab(name, selected) {
+    const tab = document.createElement("li");
+    tab.className = "mr-2 last:mr-0 flex-auto text-center";
+    const tabLink = document.createElement("a");
+    tabLink.href = "#";
+    tabLink.className = "text-xs font-bold uppercase px-5 py-3 rounded block leading-normal text-white bg-modern-black hover:bg-modern-black-hover hover:bg-opacity-70 transition-background-color ease-in-out duration-700";
+
+    tabLink.innerText = name;
+    tabLink.onclick = function (e) {
+      e.preventDefault();
+      document.querySelectorAll("#tabs a").forEach(tab => {
+        tab.classList.remove("bg-gold-500", "text-modern-black");
+        tab.classList.add("bg-modern-black", "text-white", "hover:bg-modern-black-hover", "hover:bg-opacity-70");
+      });
+      tabLink.classList.remove("bg-gold-900", "text-white", "hover:bg-modern-black-hover", "hover:bg-opacity-70");
+      tabLink.classList.add("bg-gold-500", "text-modern-black");
+      loadTabContent(name);
+    };
+
+    if (selected) {
+      tabLink.classList.remove("bg-gold-900", "text-white", "hover:bg-modern-black-hover", "hover:bg-opacity-70");
+      tabLink.classList.add("bg-gold-500", "text-modern-black");
+    }
+    tab.appendChild(tabLink);
+    return tab;
+  }
+
+  function createTable(tabData) {
+    let table = `<table class="min-w-full border-collapse table-fixed"><tbody>`;
+    tabData.forEach(item => {
+      table += `
+        <tr class="border-b border-gold-500">
+            <td class="xs:px-2 py-4 text-sm font-medium text-gold-500 w-1/3 m-w-1/2"><p class="break-all">${item.name}</p></td>
+            <td class="text-sm text-gold-900 pl-4 py-4">
+        `;
+
+      const usageParts = (item.usage || item.name).split(" ");
+      const usage = `${usageParts[0]} <span class='text-gold-700 font-light'>${usageParts.slice(1).join(" ")}</span>`;
+
+      table += `<div class="text-white">Usage: <span class="font-bold text-gold-500">${usage}</span></div>`;
+
+      if (item.aliases && item.aliases.length > 0) {
+        table += `<div class="text-white">Aliases: <span class="text-gold-500">${item.aliases.join(", ")}</span></div>`;
+      }
+
+      if (item.modifiers && item.modifiers.length > 0) {
+        table += "<div>";
+        item.modifiers.forEach((mod, index) => {
+          table += `<span class="modifier cursor-pointer italic text-gold-300"
+              data-modifier="${mod}"
+              data-command="${item.name}">${mod}</span>${index !== item.modifiers.length - 1 ? ", " : ""}`;
+        });
+        table += "</div>";
+      }
+
+      if (item.description) {
+        table += `<div class="text-white pt-2">${item.description}</div>`;
+      }
+      table += "</td></tr>";
+    });
+    table += "</tbody></table>";
+    return table;
+  }
+
+  function loadTabContent(tabName) {
+    const tabContent = document.getElementById("tabContent");
+    tabContent.innerHTML = createTable(commands[tabName]);
+
+    // Add event listeners to modifiers
+    const modifiers = document.querySelectorAll(".modifier");
+    modifiers.forEach(el => {
+      el.addEventListener("mouseenter", (event) => {
+        showTooltip(el, event);
+      });
+
+      el.addEventListener("touchstart", (event) => {
+        showTooltip(el, event, true);
+      });
+
+      el.addEventListener("mouseleave", hideTooltip);
+      // el.addEventListener('touchend', hideTooltip);
+    });
+  }
+
+  function initTabs() {
+    const tabsContainer = document.getElementById("tabs");
+    Object.keys(commands).forEach((tabName, index) => {
+      const tab = createTab(tabName, index === 0);
+      tabsContainer.appendChild(tab);
+      if (index === 0) { // Load first tab content by default
+        loadTabContent(tabName);
+      }
+    });
+  }
+
+  let currentShownEl = null;
+
+  // Function to show the tooltip
+  function showTooltip(el, event, isTouchEvent) {
+    const tooltip = document.getElementById('tooltip');
+
+    if (el === currentShownEl && (tooltip.classList.contains('invisible') || !tooltip.classList.contains('hidden'))) {
+      event.preventDefault();
+      return;
+    }
+
+    currentShownEl = el;
+    const mod = allModifiers[el.dataset.modifier];
+    const command = el.dataset.command.toLowerCase()
+
+    let aliases = "";
+    if (mod.accessors.length > 1) {
+      aliases = `<p class="text-white">Aliases: <span class="text-gold-500">${mod.accessors.slice(1).join(", ")}</span></p>`;
+    }
+
+    const usageParts = (mod.usage || mod.accessors[0]).split(" ");
+    const usage = `${usageParts[0]} <span class='text-gold-700 font-light'>${usageParts.slice(1).join(" ")}</span>`
+      .replace("<command>", command);
+
+    tooltip.innerHTML = `
+      <p class="font-bold text-gold-500">${mod.accessors[0]}</p>
+      <p class="text-white">Access Level: <span class="text-${mod.accessLevel.toLowerCase()}">${mod.accessLevel}</span></p>
+      ${aliases}
+      <p class="text-white">Usage: <span class="font-bold text-gold-500">${usage}</span></p>
+      <p class="italic text-white pt-2">${mod.description}</p>
+    `;
+
+    // Make it visible to the DOM so we can get size calculations
+    tooltip.classList.add('invisible');
+    tooltip.classList.remove('hidden');
+
+    const srcRect = event.target.getBoundingClientRect();
+
+    // Calculate the size of the tooltip for positioning
+    const tooltipRect = tooltip.getBoundingClientRect();
+    const offset = 20; // Offset from the cursor for the tooltip
+
+    const startX = window.scrollX + srcRect.x;
+    const startY = window.scrollY + srcRect.y;
+
+    // Initial horizontal position (with viewport width check for side overflow)
+    let leftPosition = startX + offset;
+    if (leftPosition + tooltipRect.width > document.documentElement.clientWidth) {
+      leftPosition = document.documentElement.clientWidth - tooltipRect.width - offset;
+    }
+
+    // Determine vertical position based on available space
+    let topPosition;
+    const spaceAbove = startY - window.scrollY;
+    const spaceBelow = window.innerHeight - spaceAbove;
+
+    // Check if there's enough space below the cursor; otherwise, flip above
+    if (spaceBelow > tooltipRect.height + offset) {
+      topPosition = startY + offset;
+    } else if (spaceAbove > tooltipRect.height + offset) {
+      topPosition = startY - tooltipRect.height - offset;
+    } else {
+      // If neither above nor below has enough space, default to below and adjust to within viewport
+      topPosition = Math.max(window.scrollY + offset, startY - (tooltipRect.height / 2));
+    }
+
+    // Apply the calculated positions
+    tooltip.style.left = `${leftPosition}px`;
+    tooltip.style.top = `${topPosition}px`;
+    tooltip.classList.remove('invisible');
+
+    if (isTouchEvent) {
+      // Delay hiding tooltip to allow it to be seen
+      setTimeout(() => {
+        document.addEventListener('touchstart', hideTooltipOnNextTouch, { passive: false });
+      }, 10);
+    }
+  }
+
+  // Function to hide the tooltip
+  function hideTooltip() {
+    document.removeEventListener('touchstart', hideTooltipOnNextTouch);
+    const tooltip = document.getElementById("tooltip");
+    tooltip.classList.add("hidden");
+  }
+
+  function hideTooltipOnNextTouch(event) {
+    // Check if the touch is outside the tooltip, if so, hide the tooltip
+    if (event.target !== currentShownEl && !event.target.matches('#tooltip, #tooltip *')) {
+      hideTooltip();
+    } else { event.preventDefault(); }
+  }
+
+  initTabs();
+</script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+{
+    "category":  "FreeShard Protocol (0xF1)",
+    "packets":  [
+                    {
+                        "id":  "0xF1",
+                        "name":  "FreeShard Protocol",
+                        "description":  "Bundle packet for freeshard-specific commands (UOGateway). Sub-command is a single byte.",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "var",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xF1",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Sub-Command",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Subcommand ID"
+                                       },
+                                       {
+                                           "name":  "Data",
+                                           "type":  "byte[]",
+                                           "description":  "Subcommand-specific data"
+                                       }
+                                   ],
+                        "subpackets":  [
+                                           {
+                                               "subId":  "0xFE",
+                                               "name":  "Query Compact Shard Stats",
+                                               "direction":  "incoming"
+                                           },
+                                           {
+                                               "subId":  "0xFF",
+                                               "name":  "Query Extended Shard Stats",
+                                               "direction":  "incoming"
+                                           }
+                                       ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/FreeshardProtocol.cs",
+                                       "line":  21
+                                   }
+                    },
+                    {
+                        "id":  "0xF1/0xFE",
+                        "subId":  "0xFE",
+                        "name":  "Query Compact Shard Stats",
+                        "description":  "Query server for compact statistics. Server responds with 0x51.",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "var",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xF1",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Sub-Command",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xFE",
+                                           "description":  "Query Compact Shard Stats subcommand"
+                                       }
+                                   ],
+                        "notes":  "Outgame only. Requires uogateway.enabled configuration.",
+                        "related":  [
+                                        {
+                                            "id":  "0x51",
+                                            "relationship":  "response",
+                                            "note":  "Compact Shard Stats response"
+                                        }
+                                    ],
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/UOGateway.cs",
+                                       "line":  31
+                                   }
+                    },
+                    {
+                        "id":  "0xF1/0xFF",
+                        "subId":  "0xFF",
+                        "name":  "Query Extended Shard Stats",
+                        "description":  "Query server for extended statistics. Server responds with raw UTF-8 string.",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "var",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xF1",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Sub-Command",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xFF",
+                                           "description":  "Query Extended Shard Stats subcommand"
+                                       }
+                                   ],
+                        "notes":  "Outgame only. Requires uogateway.enabled configuration. Response is a raw UTF-8 string (no packet wrapper): 'ModernUO, Name={name}, Age={hours}, Clients={count}, Items={count}, Chars={count}, Mem={kb}K, Ver=2\\0'",
+                        "source":  {
+                                       "file":  "Projects/UOContent/Network/UOGateway.cs",
+                                       "line":  32
+                                   }
+                    }
+                ]
+}
