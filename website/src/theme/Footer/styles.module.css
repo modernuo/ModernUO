@@ -1,0 +1,105 @@
+.footer {
+  background-color: #1a1a1a;
+  border-top: 1px solid rgba(213, 191, 116, 0.15);
+  padding: 2.5rem 0 1.5rem;
+}
+
+.content {
+  display: flex;
+  justify-content: space-between;
+  gap: 3rem;
+}
+
+@media screen and (max-width: 768px) {
+  .content {
+    flex-direction: column;
+    gap: 2rem;
+  }
+}
+
+.heading {
+  color: rgba(213, 191, 116, 0.5);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 0.75rem;
+}
+
+/* Documentation links */
+.docs {
+  flex-shrink: 0;
+}
+
+.linkList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.25rem;
+}
+
+.docLink {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.docLink:hover {
+  color: #d5bf74;
+  text-decoration: none;
+}
+
+/* Social links */
+.social {
+  flex-shrink: 0;
+}
+
+.socialButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.socialLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid rgba(213, 191, 116, 0.15);
+  color: rgba(213, 191, 116, 0.7);
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.socialLink:hover {
+  color: #d5bf74;
+  border-color: rgba(213, 191, 116, 0.4);
+  text-decoration: none;
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+}
+
+.count {
+  opacity: 0.5;
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Copyright */
+.bottom {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(213, 191, 116, 0.08);
+  text-align: center;
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 0.8rem;
+}

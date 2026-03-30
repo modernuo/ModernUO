@@ -1,39 +1,35 @@
-name: Updates Docs
+name: Deploy Docs
 
 on:
-  repository_dispatch:
-    types: [docs]
+  push:
+    branches: [website]
+    paths:
+      - 'website/**'
+      - '.github/workflows/update-docs.yml'
   workflow_dispatch:
 
 jobs:
-  update-docs:
+  deploy-docs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
 
-      - uses: actions/setup-python@v6
-        with:
-          python-version: 3.x
-
-      - name: Install mkdocs-material
-        run: pip install mkdocs-material
-
-      - name: Build mkdocs site
-        run: mkdocs build --strict
-
       - name: Build packets documentation
         shell: pwsh
-        run: ./docs/tools/build-packets.ps1
+        run: ./website/tools/build-packets.ps1 -OutputPath ./website/static/packets.html
 
-      - name: Copy commands and packets to site
-        run: |
-          cp ./docs/commands/commands.html ./site/
-          cp ./docs/packets/packets.html ./site/
+      - name: Install dependencies
+        working-directory: website
+        run: npm ci
+
+      - name: Build site
+        working-directory: website
+        run: npm run build
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: ./site
+          folder: ./website/build
           branch: gh-pages
           clean: true
           clean-exclude: |

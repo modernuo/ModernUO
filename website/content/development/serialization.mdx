@@ -1,0 +1,569 @@
+---
+sidebar_position: 2
+title: Serialization
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Serialization
+
+ModernUO uses a source generator-based serialization system. Decorate fields with attributes, and the generator produces `Serialize()` / `Deserialize()` methods automatically.
+
+---
+
+## When to Use Which
+
+| Approach | Use For |
+|:---------|:--------|
+| **Code Generation** | Items, Mobiles, and any class inheriting `ISerializable` |
+| **Generic Persistence** | Global systems, lookup tables, non-entity data |
+| **Entity Persistence** | Custom types that need their own `Serial` and parallel serialization (like Items/Mobiles) |
+
+---
+
+<Tabs>
+<TabItem value="codegen" label="Code Generation" default>
+
+### Before and After
+
+**Old way** -- manual serialization:
+```csharp
+public class ExampleItem : Item
+{
+    private string _exampleText;
+
+    [CommandProperty(AccessLevel.GameMaster)]
+    public string ExampleText
+    {
+        get => _exampleText;
+        set
+        {
+            if (value != _exampleText)
+            {
+                _exampleText = value;
+                this.MarkDirty();
+            }
+        }
+    }
+
+    [Constructible]
+    public ExampleItem(string text) : base(0)
+    {
+        _exampleText = text;
+    }
+
+    public ExampleItem(Serial serial) : base(serial) { }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        base.Serialize(writer);
+        writer.WriteEncodedInt(0);
+        writer.Write(_exampleText);
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        base.Deserialize(reader);
+        var version = reader.ReadEncodedInt();
+        _exampleText = reader.ReadString();
+    }
+}
+```
+
+**New way** -- source-generated:
+```csharp
+[SerializationGenerator(0)]
+public partial class ExampleItem : Item
+{
+    [SerializableField(0)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private string _exampleText;
+
+    [Constructible]
+    public ExampleItem(string text) : base(0)
+    {
+        _exampleText = text;
+    }
+}
+```
+
+### Step by Step
+
+1. Add `[SerializationGenerator(version)]` and make the class `partial`:
+    ```csharp
+    [SerializationGenerator(0)]
+    public partial class ExampleItem : Item
+    ```
+2. Delete the `Serial` constructor.
+3. Delete the `Serialize` and `Deserialize` methods.
+4. Add `[SerializableField(index)]` to each field you want saved:
+    ```csharp
+    [SerializableField(0)]
+    private string _exampleText;
+    ```
+5. Run `publish.cmd` (or `publish.sh`) to generate migration files.
+
+The generator creates `Namespace.TypeName.v0.json` and `Namespace.TypeName.Serialization.cs` for you.
+
+</TabItem>
+<TabItem value="generic" label="Generic Persistence">
+
+### Global System Data
+
+Use `GenericPersistence` for global data that doesn't belong to a specific entity. Subclass it and implement `Serialize` / `Deserialize`.
+
+Here's a real example based on the disguise system, which tracks active disguise timers per player:
+
+```csharp
+using System;
+using System.Collections.Generic;
+
+namespace Server.Items;
+
+public class DisguisePersistence : GenericPersistence
+{
+    private static DisguisePersistence _instance;
+    public static Dictionary<Mobile, Timer> Timers { get; } = new();
+
+    public static void Configure()
+    {
+        _instance = new DisguisePersistence();
+    }
+
+    public DisguisePersistence() : base("Disguises", 10)
+    {
+    }
+
+    public override void Serialize(IGenericWriter writer)
+    {
+        writer.WriteEncodedInt(Timers.Count);
+        foreach (var (m, timer) in Timers)
+        {
+            writer.Write(m);
+            writer.Write(timer.Next - Core.Now);
+            writer.Write(m.NameMod);
+        }
+    }
+
+    public override void Deserialize(IGenericReader reader)
+    {
+        var count = reader.ReadEncodedInt();
+        for (var i = 0; i < count; ++i)
+        {
+            var m = reader.ReadEntity<Mobile>();
+            var delay = reader.ReadTimeSpan();
+            var nameMod = reader.ReadString();
+            // Restore timer and state
+            CreateTimer(m, delay);
+            m.NameMod = nameMod;
+        }
+    }
+
+    public static void CreateTimer(Mobile m, TimeSpan delay) { /* ... */ }
+}
+```
+
+Key points:
+
+- The constructor takes a **name** (used for the save file path) and a **priority** (load order).
+- `Configure()` is automatically discovered and called at startup.
+- Data is saved to `Saves/Disguises/Disguises.bin`.
+- You are responsible for reading/writing in the exact same order.
+
+</TabItem>
+<TabItem value="entity-persistence" label="Entity Persistence">
+
+### Custom Entity Types
+
+Use `GenericEntityPersistence<T>` when you need custom types with their own `Serial` that are serialized in parallel -- the same way Items and Mobiles work internally. Each entity gets its own serialization thread for parallel world saves.
+
+#### 1. Define the persistence manager
+
+```csharp
+namespace Server.Engines.BulkOrders;
+
+public class BOBEntries : GenericEntityPersistence<IBOBEntry>
+{
+    private static BOBEntries _instance;
+
+    public static void Configure()
+    {
+        _instance = new BOBEntries();
+    }
+
+    // name, priority, minSerial, maxSerial
+    public BOBEntries() : base("BOBEntries", 3, 0x1, 0x7FFFFFFF)
+    {
+    }
+
+    public static Serial NewBOBEntry => _instance.NewEntity;
+    public static void Add(IBOBEntry entity) => _instance.AddEntity(entity);
+    public static void Remove(IBOBEntry entity) => _instance.RemoveEntity(entity);
+}
+```
+
+#### 2. Define the entity base class
+
+The base class uses standard `[SerializationGenerator]` attributes and manages its own `Serial`:
+
+```csharp
+[SerializationGenerator(1)]
+public abstract partial class BaseBOBEntry : IBOBEntry
+{
+    [SerializableField(0, setter: "protected")]
+    private bool _requireExceptional;
+
+    [SerializableField(1, setter: "protected")]
+    private BODType _deedType;
+
+    [SerializableField(2, setter: "protected")]
+    private BulkMaterialType _material;
+
+    [SerializableField(3, setter: "protected")]
+    private int _amountMax;
+
+    [SerializableField(4)]
+    private int _price;
+
+    public Serial Serial { get; }
+    public bool Deleted { get; private set; }
+
+    public BaseBOBEntry()
+    {
+        Serial = BOBEntries.NewBOBEntry;
+        BOBEntries.Add(this);
+    }
+
+    public virtual void Delete()
+    {
+        Deleted = true;
+        BOBEntries.Remove(this);
+    }
+}
+```
+
+Concrete subclasses inherit from this base and add their own serialized fields, just like how specific items inherit from `Item`.
+
+:::caution
+Each entity has approximately **32 bytes of indexing overhead** regardless of its data size. Don't use entity persistence for lightweight or high-volume data where `GenericPersistence` would suffice. Benchmark your world save sizes and times before committing to this pattern.
+:::
+
+</TabItem>
+</Tabs>
+
+---
+
+## Attribute Reference
+
+### Class-Level Attributes
+
+| Attribute | Target | Description |
+|:----------|:-------|:------------|
+| `[SerializationGenerator(version)]` | Class | Enables code generation. `version` is the current serialization version number. |
+| `[Constructible]` | Constructor | Marks the constructor as available for the `[add` command. |
+| `[TypeAlias("OldName")]` | Class | Maps old type names for deserialization of legacy saves. |
+
+### Field-Level Attributes
+
+| Attribute | Target | Description |
+|:----------|:-------|:------------|
+| `[SerializableField(index)]` | Private field | Marks field for serialization at the given index. Generates a public PascalCase property. |
+| `[InvalidateProperties]` | Serializable field | Auto-calls `InvalidateProperties()` in the generated setter to refresh tooltips. |
+| `[SerializedCommandProperty(level)]` | Serializable field | Exposes the generated property to the `[Props` gump for in-game editing. |
+| `[DeltaDateTime]` | `DateTime` field | Stores as offset from current time. Ensures expiration dates survive restarts. |
+| `[EncodedInt]` | `int` field | Uses variable-length encoding (1 byte for 0--127, 2 bytes for 128--16383, etc.). |
+| `[InternString]` | `string` field | Deduplicates identical strings in memory via `string.Intern()`. |
+| `[Tidy]` | Collection field | Removes null and deleted entries after deserialization. |
+
+### Method-Level Attributes
+
+| Attribute | Target | Description |
+|:----------|:-------|:------------|
+| `[AfterDeserialization]` | Private method | Called after fields are loaded. Use this to restart timers and set up derived state. |
+| `[DeserializeTimerField(index)]` | Method taking `TimeSpan` | Custom deserialization for `Timer` fields. The timer is saved as remaining delay. |
+
+---
+
+## Serializable Fields in Detail
+
+### Basic Field
+
+```csharp
+[SerializableField(0)]
+private int _charges;
+```
+
+The generator creates:
+```csharp
+public int Charges
+{
+    get => _charges;
+    set { _charges = value; this.MarkDirty(); }
+}
+```
+
+### Field with Tooltip Refresh and GM Access
+
+```csharp
+[SerializableField(0)]
+[InvalidateProperties]
+[SerializedCommandProperty(AccessLevel.GameMaster)]
+private int _charges;
+```
+
+### Private or Internal Setter
+
+```csharp
+[SerializableField(0, setter: "private")]
+private string _name;
+```
+
+### Custom Property Logic
+
+Use `[SerializableProperty]` when you need non-trivial getter/setter logic:
+
+```csharp
+[SerializableProperty(0)]
+[CommandProperty(AccessLevel.GameMaster)]
+public int MaxItems
+{
+    get => _maxItems == -1 ? DefaultMaxItems : _maxItems;
+    set
+    {
+        _maxItems = value;
+        InvalidateProperties();
+        this.MarkDirty(); // REQUIRED in custom setters
+    }
+}
+```
+
+---
+
+## Version Migration
+
+When you add, remove, or reorder serialized fields, bump the version number.
+
+### Adding a Field
+
+```csharp
+// Version 0 had only _charges. Version 1 adds _quality.
+[SerializationGenerator(1)]
+public partial class MagicGem : Item
+{
+    [SerializableField(0)]
+    private int _charges;
+
+    [SerializableField(1)] // New in v1
+    private GemQuality _quality;
+
+    [Constructible]
+    public MagicGem() : base(0x1EA7)
+    {
+        _charges = Utility.RandomMinMax(5, 15);
+        _quality = GemQuality.Rough;
+    }
+}
+```
+
+After running `publish`, the generator creates a `V0Content` struct. You must provide a migration:
+
+```csharp
+// In MagicGem.Migrations.cs (separate partial file)
+public partial class MagicGem
+{
+    private void MigrateFrom(V0Content content)
+    {
+        _charges = content.Charges;
+        // _quality gets its default value (GemQuality.Rough)
+    }
+}
+```
+
+### The MigrateFrom Pattern
+
+- Method signature: `private void MigrateFrom(VXContent content)` where `X` is the **previous** version.
+- `VXContent` is auto-generated with PascalCase properties matching the old fields.
+- New fields not present in the old version get their default values.
+- Add one `MigrateFrom` for each older version that needs a migration path.
+
+:::tip
+Since the class is `partial`, create a standalone `MyClass.Migrations.cs` file to keep migrations organized.
+:::
+
+### Migrating from Pre-Codegen
+
+To migrate a class that previously used manual `Serialize`/`Deserialize`:
+
+1. Set `encoded` to `false` if the old code used `reader.ReadInt()` for the version:
+    ```csharp
+    [SerializationGenerator(3, false)] // Old version was 2, bumped to 3
+    ```
+2. Keep the old deserialization logic as a private method:
+    ```csharp
+    private void Deserialize(IGenericReader reader, int version)
+    {
+        // Old deserialization logic here
+    }
+    ```
+
+This method is called automatically for saves that predate the serialization generator.
+
+:::warning
+**Never** modify `Deserialize(IGenericReader reader, int version)` for post-codegen version bumps. That method only handles legacy (pre-codegen) saves. All new version transitions must use `MigrateFrom`.
+:::
+
+---
+
+## After Deserialization
+
+Use `[AfterDeserialization]` to run code after an entity's fields are loaded:
+
+```csharp
+[AfterDeserialization]
+private void AfterDeserialization()
+{
+    // Restart timers, compute derived values
+    Timer.StartTimer(TimeSpan.FromSeconds(5), CheckExpiry, out _timerToken);
+}
+```
+
+The attribute accepts an optional `synchronous` parameter:
+
+| Value | Timing | Use When |
+|:------|:-------|:---------|
+| `true` (default) | Immediately after this entity loads | Restarting timers, setting up derived state from own fields |
+| `false` | After **all** entities in the world are loaded | Logic that depends on other entities, calls `Delete()`, or affects game state |
+
+```csharp
+[AfterDeserialization(false)]
+private void AfterDeserialization()
+{
+    if (_expireTime < Core.Now)
+    {
+        Delete(); // Safe -- all entities are loaded
+    }
+}
+```
+
+---
+
+## Important Rules
+
+1. **Class must be `partial`** -- the generator adds code to your class via a separate file.
+2. **`TimerExecutionToken` must NOT have `[SerializableField]`** -- it is not serializable. Restart timers in `[AfterDeserialization]`.
+3. **Call `this.MarkDirty()`** in any custom property setter to flag the entity for saving.
+4. **Use `[AfterDeserialization]`** to restart timers after world load -- never create timers inside the deserialization path directly.
+5. **For new classes**, omit the `encoded` parameter: `[SerializationGenerator(0)]`.
+6. **Field index order matters** -- fields are serialized/deserialized in index order. Never reorder without bumping the version.
+
+---
+
+## Complete Example
+
+```csharp
+using ModernUO.Serialization;
+
+namespace Server.Items;
+
+public enum GemQuality { Rough, Cut, Flawless }
+
+[SerializationGenerator(1)]
+public partial class MagicGem : Item
+{
+    [SerializableField(0)]
+    [InvalidateProperties]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private int _charges;
+
+    [SerializableField(1)]
+    [InvalidateProperties]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private GemQuality _quality;
+
+    private TimerExecutionToken _pulseTimer;
+
+    [Constructible]
+    public MagicGem() : base(0x1EA7)
+    {
+        _charges = Utility.RandomMinMax(5, 15);
+        _quality = GemQuality.Rough;
+        Weight = 1.0;
+        Light = LightType.Circle150;
+        StartPulse();
+    }
+
+    public override string DefaultName => "a magic gem";
+
+    private void StartPulse()
+    {
+        Timer.StartTimer(
+            TimeSpan.FromSeconds(3),
+            TimeSpan.FromSeconds(3),
+            Pulse,
+            out _pulseTimer
+        );
+    }
+
+    [AfterDeserialization]
+    private void AfterDeserialization() => StartPulse();
+
+    public override void OnAfterDelete()
+    {
+        _pulseTimer.Cancel();
+        base.OnAfterDelete();
+    }
+
+    private void Pulse()
+    {
+        if (_charges <= 0)
+        {
+            _pulseTimer.Cancel();
+            return;
+        }
+
+        Effects.SendLocationParticles(this, 0x376A, 9, 10, 5042);
+    }
+
+    public override void GetProperties(IPropertyList list)
+    {
+        base.GetProperties(list);
+        list.Add(1060741, $"{_charges}");
+        list.Add($"{"Quality: "}{_quality}");
+    }
+
+    public override void OnDoubleClick(Mobile from)
+    {
+        if (!IsChildOf(from.Backpack))
+        {
+            from.SendLocalizedMessage(1042001);
+            return;
+        }
+
+        if (_charges <= 0)
+        {
+            from.SendMessage("The gem is depleted.");
+            return;
+        }
+
+        _charges--;
+        InvalidateProperties();
+        this.MarkDirty();
+        from.SendMessage("The gem pulses with energy!");
+    }
+}
+```
+
+Migration file (`MagicGem.Migrations.cs`):
+```csharp
+namespace Server.Items;
+
+public partial class MagicGem
+{
+    private void MigrateFrom(V0Content content)
+    {
+        _charges = content.Charges;
+        // _quality defaults to GemQuality.Rough
+    }
+}
+```
