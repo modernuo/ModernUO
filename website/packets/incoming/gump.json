@@ -1,0 +1,116 @@
+{
+    "category":  "Gump",
+    "packets":  [
+                    {
+                        "id":  "0xB1",
+                        "name":  "Gump Response",
+                        "description":  "Client response to a generic gump dialog (button press, checkbox/radio selections, text entries).",
+                        "direction":  "incoming",
+                        "isDynamic":  true,
+                        "size":  "var",
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xB1",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Length",
+                                           "type":  "ushort",
+                                           "size":  2,
+                                           "description":  "Packet length"
+                                       },
+                                       {
+                                           "name":  "Serial",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Serial from the 0xB0/0xDD gump packet"
+                                       },
+                                       {
+                                           "name":  "Gump ID",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Gump type ID from the 0xB0/0xDD gump packet"
+                                       },
+                                       {
+                                           "name":  "Button ID",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "ID of button pressed (0 if gump closed without pressing a button)"
+                                       },
+                                       {
+                                           "name":  "Switch Count",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Number of active switches (checkboxes/radio buttons)"
+                                       },
+                                       {
+                                           "name":  "Switches",
+                                           "type":  "array",
+                                           "description":  "Array of switch IDs that are active/checked",
+                                           "entries":  [
+                                                           {
+                                                               "name":  "Switch ID",
+                                                               "type":  "uint",
+                                                               "size":  4,
+                                                               "description":  "ID of an active switch"
+                                                           }
+                                                       ]
+                                       },
+                                       {
+                                           "name":  "Text Entry Count",
+                                           "type":  "uint",
+                                           "size":  4,
+                                           "description":  "Number of text entries"
+                                       },
+                                       {
+                                           "name":  "Text Entries",
+                                           "type":  "array",
+                                           "description":  "Array of text entry responses",
+                                           "entries":  [
+                                                           {
+                                                               "name":  "Entry ID",
+                                                               "type":  "ushort",
+                                                               "size":  2,
+                                                               "description":  "Text entry field ID"
+                                                           },
+                                                           {
+                                                               "name":  "Text Length",
+                                                               "type":  "ushort",
+                                                               "size":  2,
+                                                               "description":  "Length of text in characters"
+                                                           },
+                                                           {
+                                                               "name":  "Text",
+                                                               "type":  "unicode-be",
+                                                               "size":  "var",
+                                                               "description":  "UTF-16 BE encoded text (length * 2 bytes, not null-terminated)"
+                                                           }
+                                                       ]
+                                       }
+                                   ],
+                        "related":  [
+                                        {
+                                            "id":  "0xB0",
+                                            "relationship":  "response",
+                                            "note":  "Generic Gump (uncompressed) - server sends this to display the gump"
+                                        },
+                                        {
+                                            "id":  "0xDD",
+                                            "relationship":  "response",
+                                            "note":  "Compressed Gump - server sends this to display a compressed gump"
+                                        }
+                                    ],
+                        "clientVersion":  {
+                                              "classic":  {},
+                                              "enhanced":  {}
+                                          },
+                        "source":  {
+                                       "file":  "Projects/UOContent/Gumps/Base/GumpSystem.cs",
+                                       "line":  31
+                                   }
+                    }
+                ]
+}

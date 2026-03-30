@@ -1,0 +1,1910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="Network packet documentation for the Ultima Online Server Emulator ModernUO">
+  <meta name="author" content="ModernUO Development Team">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <link rel="icon" href="https://modernuo.com/branding/favicon.png">
+  <title>ModernUO Packet Documentation</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com/3.4.1?plugins=typography@0.5.10"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            mono: ['Roboto Mono', 'monospace'],
+          },
+          colors: {
+            "modern-black": "#212121",
+            "modern-black-hover": "#2F2F2F",
+            "modern-dark-black": "#1A1A1A",
+            "incoming": "#3b82f6",
+            "outgoing": "#22c55e",
+            "both": "#a855f7",
+            gold: {
+              50: "#fbf3ee",
+              100: "#f8e9dd",
+              200: "#f0d9bd",
+              300: "#e8cea1",
+              400: "#dfc688",
+              500: "#d5bf74",
+              600: "#cab664",
+              700: "#bdab58",
+              800: "#b09f4f",
+              900: "#a29147",
+            },
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    /* Mobile viewport fix: 100vh doesn't account for browser chrome/gesture nav */
+    .h-dvh {
+      height: 100vh; /* fallback for older browsers */
+      height: 100dvh; /* dynamic viewport height - adjusts for browser chrome */
+    }
+
+    /* Safe area insets for edge-to-edge phones (notches, gesture nav) */
+    @supports (padding-bottom: env(safe-area-inset-bottom)) {
+      .safe-area-bottom {
+        padding-bottom: env(safe-area-inset-bottom);
+      }
+    }
+
+    .packet-list::-webkit-scrollbar {
+      width: 8px;
+    }
+    .packet-list::-webkit-scrollbar-track {
+      background: #1A1A1A;
+    }
+    .packet-list::-webkit-scrollbar-thumb {
+      background: #404040;
+      border-radius: 4px;
+    }
+    .packet-list::-webkit-scrollbar-thumb:hover {
+      background: #525252;
+    }
+    .field-row:nth-child(even) {
+      background-color: rgba(255, 255, 255, 0.02);
+    }
+    .loop-field {
+      border-left: 2px solid #d5bf74;
+      margin-left: 1rem;
+      padding-left: 0.75rem;
+    }
+    select {
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23d5bf74' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.75rem center;
+      padding-right: 2rem;
+    }
+    .client-badge {
+      font-size: 0.65rem;
+      padding: 1px 4px;
+      border-radius: 3px;
+      font-weight: 500;
+    }
+    .client-cc { background: rgba(59, 130, 246, 0.3); color: #93c5fd; }
+    .client-ec { background: rgba(168, 85, 247, 0.3); color: #d8b4fe; }
+  </style>
+</head>
+
+<body class="bg-modern-dark-black text-gold-300 font-sans h-dvh overflow-hidden safe-area-bottom">
+<div id="app" class="h-dvh flex flex-col">
+  <!-- Header -->
+  <header class="bg-modern-black p-3 md:p-4 shadow-lg border-b border-gold-500/30">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-2">
+      <div class="flex items-center space-x-2 md:space-x-4 min-w-0">
+        <img src="https://modernuo.com/branding/logo.svg" class="h-8 w-8 md:h-12 md:w-12 flex-shrink-0">
+        <div class="min-w-0">
+          <h1 class="text-white text-base md:text-xl font-medium">
+            <span class="md:hidden">Packet Documentation</span>
+            <span class="hidden md:inline">ModernUO Packet Documentation</span>
+          </h1>
+          <p class="text-gold-500/70 text-xs md:text-sm hidden sm:block">Ultima Online Network Protocol Reference</p>
+        </div>
+      </div>
+      <div class="flex items-center space-x-2 md:space-x-4 flex-shrink-0">
+        <button id="typeLegendBtn" class="px-2 md:px-3 py-1.5 text-sm bg-modern-dark-black text-gold-400 rounded border border-gold-500/30 hover:border-gold-500 hover:bg-gold-500/10 transition-colors flex items-center space-x-1.5">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          <span class="hidden sm:inline">Types</span>
+        </button>
+        <span id="packetCount" class="text-gold-500/70 text-xs md:text-sm whitespace-nowrap"></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="flex-1 flex overflow-hidden min-h-0">
+    <!-- Left Panel: Packet List -->
+    <aside id="sidebar" class="w-full md:w-80 bg-modern-black border-r border-gold-500/30 flex flex-col overflow-hidden">
+      <!-- Search & Filter -->
+      <div class="p-3 border-b border-gold-500/20 space-y-2">
+        <!-- Collapse button for medium screens -->
+        <div class="hidden md:flex xl:hidden justify-end -mt-1 -mr-1 mb-1">
+          <button id="collapseSidebarBtn" class="p-1 text-gold-500/70 hover:text-gold-500 transition-colors" title="Collapse sidebar">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"></path></svg>
+          </button>
+        </div>
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Search packets (ID, name, field)..."
+          class="w-full bg-modern-dark-black text-gold-300 placeholder-gold-500/50 px-3 py-2 rounded border border-gold-500/30 focus:outline-none focus:border-gold-500 text-sm"
+        >
+        <div class="flex space-x-1">
+          <button data-filter="all" class="filter-btn flex-1 px-2 py-1 text-xs rounded bg-gold-500 text-modern-black font-medium">All</button>
+          <button data-filter="incoming" class="filter-btn flex-1 px-2 py-1 text-xs rounded bg-modern-dark-black text-incoming border border-incoming/50 hover:bg-incoming/20">In</button>
+          <button data-filter="outgoing" class="filter-btn flex-1 px-2 py-1 text-xs rounded bg-modern-dark-black text-outgoing border border-outgoing/50 hover:bg-outgoing/20">Out</button>
+          <button data-filter="both" class="filter-btn flex-1 px-2 py-1 text-xs rounded bg-modern-dark-black text-both border border-both/50 hover:bg-both/20">Both</button>
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="toggleTagsBtn" class="md:hidden text-gold-500/70 text-xs flex items-center gap-1 hover:text-gold-400">
+            <span>Tags</span>
+            <svg id="toggleTagsIcon" class="w-3 h-3 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+          </button>
+          <span class="text-gold-500/70 text-xs flex-shrink-0 hidden md:inline">Tags:</span>
+          <button id="clearTagsBtn" class="text-xs px-2 py-0.5 rounded bg-modern-dark-black text-gold-500/70 border border-gold-500/30 hover:border-gold-500 hover:text-gold-400 hidden">Clear</button>
+        </div>
+        <div id="tagFilter" class="hidden md:flex flex-wrap gap-1 max-h-32 overflow-y-auto">
+          <!-- Tags will be populated by JavaScript -->
+        </div>
+
+        <!-- Client Type Filter -->
+        <div class="flex items-center gap-2 mt-2">
+          <span class="text-gold-500/70 text-xs flex-shrink-0">Client:</span>
+        </div>
+        <div class="flex space-x-1 mt-1">
+          <button data-client="all" class="client-btn flex-1 px-2 py-1 text-xs rounded bg-gold-500 text-modern-black font-medium">All</button>
+          <button data-client="classic" class="client-btn flex-1 px-2 py-1 text-xs rounded bg-modern-dark-black text-blue-400 border border-blue-500/50 hover:bg-blue-500/20">Classic</button>
+          <button data-client="enhanced" class="client-btn flex-1 px-2 py-1 text-xs rounded bg-modern-dark-black text-purple-400 border border-purple-500/50 hover:bg-purple-500/20">Enhanced</button>
+        </div>
+
+        <!-- Version Filter -->
+        <div class="mt-2">
+          <input
+            type="text"
+            id="versionInput"
+            placeholder="Version (e.g., 7.0.9.0)"
+            class="w-full bg-modern-dark-black text-gold-300 placeholder-gold-500/50 px-3 py-1.5 rounded border border-gold-500/30 focus:outline-none focus:border-gold-500 text-xs font-mono"
+          >
+        </div>
+      </div>
+
+      <!-- Packet List -->
+      <div id="packetList" class="packet-list flex-1 overflow-y-auto min-h-0">
+        <!-- Populated by JavaScript -->
+      </div>
+    </aside>
+
+    <!-- Expand sidebar button (shown when collapsed on medium screens) -->
+    <button id="expandSidebarBtn" class="hidden bg-modern-black border-r border-gold-500/30 px-2 py-4 text-gold-500/70 hover:text-gold-500 hover:bg-modern-black-hover transition-colors" title="Expand sidebar">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"></path></svg>
+    </button>
+
+    <!-- Right Panel: Packet Details -->
+    <main id="detailPanel" class="hidden md:block flex-1 overflow-y-auto bg-modern-dark-black">
+      <div id="packetDetails" class="p-4 md:p-6 max-w-4xl mx-auto">
+        <!-- Mobile back button -->
+        <button id="mobileBackBtn" class="md:hidden flex items-center space-x-2 text-gold-500 hover:text-gold-400 mb-4 -ml-1">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+          <span>Back to list</span>
+        </button>
+
+        <!-- Welcome message when no packet selected -->
+        <div id="welcomeMessage" class="text-center py-16">
+          <div class="text-gold-500/50 text-6xl mb-4">&#x1F4E6;</div>
+          <h2 class="text-gold-500 text-xl mb-2">Select a Packet</h2>
+          <p class="text-gold-500/70">Choose a packet from the list to view its documentation.</p>
+          <p class="text-gold-500/50 text-sm mt-4">Use the search box to find packets by ID (0x02), name, or field names.</p>
+        </div>
+
+        <!-- Packet detail content (hidden by default) -->
+        <div id="packetContent" class="hidden">
+          <!-- Header -->
+          <div class="flex items-start justify-between mb-6">
+            <div>
+              <div class="flex items-center space-x-3 mb-2">
+                <span id="detailId" class="font-mono text-2xl text-white"></span>
+                <span id="detailSubId" class="font-mono text-lg text-gold-500/70 hidden"></span>
+                <span id="detailDirection" class="px-2 py-0.5 rounded text-xs font-medium uppercase"></span>
+              </div>
+              <h2 id="detailName" class="text-xl text-gold-500 font-medium"></h2>
+            </div>
+            <a id="sourceLink" href="#" target="_blank" class="flex items-center space-x-1 text-sm text-gold-500/70 hover:text-gold-500 transition-colors" title="View Source on GitHub">
+              <svg class="w-5 h-5 md:w-4 md:h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+              <span class="hidden md:inline">View Source</span>
+            </a>
+          </div>
+
+          <!-- Description -->
+          <p id="detailDescription" class="text-gold-300/90 mb-6 leading-relaxed"></p>
+
+          <!-- Size Info -->
+          <div class="bg-modern-black rounded-lg p-4 mb-6 border border-gold-500/20">
+            <div class="flex items-center space-x-6">
+              <div>
+                <span class="text-gold-500/70 text-sm">Size:</span>
+                <span id="detailSize" class="text-white font-mono ml-2"></span>
+              </div>
+              <div id="detailDynamic" class="hidden">
+                <span class="px-2 py-0.5 bg-gold-500/20 text-gold-500 rounded text-xs">Dynamic Length</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Client Version Requirements -->
+          <div id="clientVersionSection" class="bg-modern-black rounded-lg p-4 mb-6 border border-gold-500/20 hidden">
+            <h3 class="text-gold-500 font-medium mb-3">Client Version Requirements</h3>
+            <div id="clientVersionContent" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <!-- Populated by JavaScript -->
+            </div>
+            <div id="clientVersionNotes" class="mt-3 text-gold-500/70 text-sm italic hidden"></div>
+          </div>
+
+          <!-- Fields Table -->
+          <div id="fieldsSection" class="mb-6">
+            <h3 class="text-gold-500 font-medium mb-3">Packet Structure</h3>
+            <div class="bg-modern-black rounded-lg border border-gold-500/20 overflow-x-auto">
+              <table class="w-full text-sm table-fixed min-w-[600px]">
+                <thead>
+                  <tr class="bg-gold-500/10 text-gold-500">
+                    <th class="px-4 py-2 text-left font-medium w-16">Offset</th>
+                    <th class="px-4 py-2 text-left font-medium w-44">Name</th>
+                    <th class="px-4 py-2 text-left font-medium w-24">Type</th>
+                    <th class="px-4 py-2 text-left font-medium w-20">Size</th>
+                    <th class="px-4 py-2 text-left font-medium">Description</th>
+                  </tr>
+                </thead>
+                <tbody id="fieldsTable">
+                  <!-- Populated by JavaScript -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Subpackets (for container packets like 0xBF, 0xD7) -->
+          <div id="subpacketsSection" class="mb-6 hidden">
+            <h3 class="text-gold-500 font-medium mb-3">Subpackets</h3>
+            <div class="bg-modern-black rounded-lg border border-gold-500/20 overflow-x-auto">
+              <table class="w-full text-sm min-w-[500px]">
+                <thead>
+                  <tr class="bg-gold-500/10 text-gold-500">
+                    <th class="px-4 py-2 text-left font-medium w-24">SubID</th>
+                    <th class="px-4 py-2 text-left font-medium w-20">Direction</th>
+                    <th class="px-4 py-2 text-left font-medium w-48">Name</th>
+                    <th class="px-4 py-2 text-left font-medium">Description</th>
+                  </tr>
+                </thead>
+                <tbody id="subpacketsTable">
+                  <!-- Populated by JavaScript -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Packet Variants -->
+          <div id="variantsSection" class="mb-6 hidden">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-gold-500 font-medium">Packet Variants</h3>
+              <select id="variantSelect" class="bg-modern-black text-gold-300 px-3 py-1 rounded border border-gold-500/30 focus:outline-none focus:border-gold-500 text-sm">
+                <option value="">Jump to variant...</option>
+              </select>
+            </div>
+            <div id="variantsList" class="space-y-4">
+              <!-- Populated by JavaScript -->
+            </div>
+          </div>
+
+          <!-- Related Packets -->
+          <div id="relatedSection" class="mb-6 hidden">
+            <h3 class="text-gold-500 font-medium mb-3">Related Packets</h3>
+            <div id="relatedPackets" class="space-y-2">
+              <!-- Populated by JavaScript -->
+            </div>
+          </div>
+
+          <!-- Floating Back to Top Button -->
+          <button id="backToTopBtn" class="hidden fixed bottom-6 right-6 bg-modern-black text-gold-300 px-4 py-2 rounded-lg border border-gold-500/30 hover:border-gold-500 hover:bg-gold-500/10 text-sm transition-all shadow-lg z-50" title="Back to Top">
+            ↑ Top
+          </button>
+
+          <!-- Notes -->
+          <div id="notesSection" class="mb-6 hidden">
+            <h3 class="text-gold-500 font-medium mb-3">Notes</h3>
+            <p id="detailNotes" class="text-gold-300/80 text-sm bg-modern-black rounded-lg p-4 border border-gold-500/20"></p>
+          </div>
+
+          <!-- Compression Info -->
+          <div id="compressionSection" class="mb-6 hidden">
+            <h3 class="text-gold-500 font-medium mb-3">Compression</h3>
+            <div id="compressionContent" class="text-sm bg-modern-black rounded-lg p-4 border border-gold-500/20">
+            </div>
+          </div>
+
+          <!-- Plane Format (for house packets) -->
+          <div id="planeFormatSection" class="mb-6 hidden">
+            <h3 class="text-gold-500 font-medium mb-3">Plane Format</h3>
+            <div id="planeFormatContent" class="bg-modern-black rounded-lg border border-gold-500/20 overflow-hidden">
+            </div>
+          </div>
+
+          <!-- Layout Format -->
+          <div id="layoutFormatSection" class="mb-6 hidden">
+            <h3 class="text-gold-500 font-medium mb-3">Layout Format</h3>
+            <div id="layoutFormatContent" class="bg-modern-black rounded-lg border border-gold-500/20 overflow-hidden">
+            </div>
+          </div>
+
+          <!-- Strings Format -->
+          <div id="stringsFormatSection" class="mb-6 hidden">
+            <h3 class="text-gold-500 font-medium mb-3">Strings Format</h3>
+            <div id="stringsFormatContent" class="bg-modern-black rounded-lg border border-gold-500/20 overflow-hidden">
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- Type Legend Modal -->
+<div id="typeLegendModal" class="hidden fixed inset-0 z-50 flex items-center justify-center">
+  <div class="absolute inset-0 bg-black/60" id="typeLegendBackdrop"></div>
+  <div class="relative bg-modern-black rounded-lg border border-gold-500/30 shadow-2xl max-w-2xl w-full mx-4 max-h-[80vh] overflow-hidden">
+    <div class="flex items-center justify-between px-4 py-3 border-b border-gold-500/20">
+      <h3 class="text-gold-500 font-medium">Type Legend</h3>
+      <button id="typeLegendClose" class="text-gold-500/70 hover:text-gold-500 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+      </button>
+    </div>
+    <div class="p-4 overflow-y-auto max-h-[calc(80vh-60px)]">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+        <!-- Integer Types -->
+        <div class="bg-modern-dark-black rounded-lg p-3 border border-gold-500/10">
+          <h4 class="text-gold-400 font-medium mb-2">Integer Types</h4>
+          <div class="space-y-1.5 text-gold-300/80">
+            <div class="flex"><span class="font-mono text-gold-400 w-20 flex-shrink-0">byte</span><span>Unsigned 8-bit (0-255)</span></div>
+            <div class="flex"><span class="font-mono text-gold-400 w-20 flex-shrink-0">sbyte</span><span>Signed 8-bit (-128 to 127)</span></div>
+            <div class="flex"><span class="font-mono text-gold-400 w-20 flex-shrink-0">bool</span><span>Boolean (0=false, else true)</span></div>
+            <div class="flex"><span class="font-mono text-gold-400 w-20 flex-shrink-0">short</span><span>Signed 16-bit BE</span></div>
+            <div class="flex"><span class="font-mono text-gold-400 w-20 flex-shrink-0">ushort</span><span>Unsigned 16-bit BE</span></div>
+            <div class="flex"><span class="font-mono text-gold-400 w-20 flex-shrink-0">int</span><span>Signed 32-bit BE</span></div>
+            <div class="flex"><span class="font-mono text-gold-400 w-20 flex-shrink-0">uint</span><span>Unsigned 32-bit BE</span></div>
+            <div class="flex"><span class="font-mono text-gold-400 w-20 flex-shrink-0">long</span><span>Signed 64-bit BE</span></div>
+            <div class="flex"><span class="font-mono text-gold-400 w-20 flex-shrink-0">ulong</span><span>Unsigned 64-bit BE</span></div>
+          </div>
+        </div>
+        <!-- String Types -->
+        <div class="bg-modern-dark-black rounded-lg p-3 border border-gold-500/10">
+          <h4 class="text-gold-400 font-medium mb-2">String Types</h4>
+          <p class="text-gold-500/60 text-xs mb-2">-t suffix = null-terminated</p>
+          <div class="space-y-1.5 text-gold-300/80">
+            <div class="flex"><span class="font-mono text-gold-400 w-20 flex-shrink-0">ascii</span><span>Fixed-length ASCII</span></div>
+            <div class="flex"><span class="font-mono text-gold-400 w-20 flex-shrink-0">ascii-t</span><span>Null-terminated ASCII</span></div>
+            <div class="flex"><span class="font-mono text-gold-400 w-20 flex-shrink-0">utf8</span><span>Fixed-length UTF-8</span></div>
+            <div class="flex"><span class="font-mono text-gold-400 w-20 flex-shrink-0">utf8-t</span><span>Null-terminated UTF-8</span></div>
+            <div class="flex"><span class="font-mono text-gold-400 w-20 flex-shrink-0">utf16be</span><span>UTF-16 Big Endian</span></div>
+            <div class="flex"><span class="font-mono text-gold-400 w-20 flex-shrink-0">utf16be-t</span><span>Null-term UTF-16 BE</span></div>
+            <div class="flex"><span class="font-mono text-gold-400 w-20 flex-shrink-0">utf16le</span><span>UTF-16 Little Endian</span></div>
+            <div class="flex"><span class="font-mono text-gold-400 w-20 flex-shrink-0">utf16le-t</span><span>Null-term UTF-16 LE</span></div>
+          </div>
+        </div>
+        <!-- Special Types -->
+        <div class="bg-modern-dark-black rounded-lg p-3 border border-gold-500/10">
+          <h4 class="text-gold-400 font-medium mb-2">Special Types</h4>
+          <div class="space-y-1.5 text-gold-300/80">
+            <div class="flex"><span class="font-mono text-green-400 w-20 flex-shrink-0">enum</span><span>Enumerated value</span></div>
+            <div class="flex"><span class="font-mono text-purple-400 w-20 flex-shrink-0">bitfield</span><span>Bit flags</span></div>
+            <div class="flex"><span class="font-mono text-gold-400 w-20 flex-shrink-0">byte[]</span><span>Byte array</span></div>
+            <div class="flex"><span class="font-mono text-gold-400 w-20 flex-shrink-0">bytes</span><span>Variable byte data</span></div>
+          </div>
+        </div>
+        <!-- Structure Types -->
+        <div class="bg-modern-dark-black rounded-lg p-3 border border-gold-500/10">
+          <h4 class="text-gold-400 font-medium mb-2">Structure Types</h4>
+          <div class="space-y-1.5 text-gold-300/80">
+            <div class="flex"><span class="font-mono text-gold-400 w-20 flex-shrink-0">loop</span><span>Repeated field group</span></div>
+            <div class="flex"><span class="font-mono text-gold-400 w-20 flex-shrink-0">array</span><span>Array of elements</span></div>
+            <div class="flex"><span class="font-mono text-gold-400 w-20 flex-shrink-0">packet</span><span>Embedded packet</span></div>
+          </div>
+        </div>
+        <!-- Client Indicators -->
+        <div class="bg-modern-dark-black rounded-lg p-3 border border-gold-500/10">
+          <h4 class="text-gold-400 font-medium mb-2">Client Indicators</h4>
+          <p class="text-gold-500/60 text-xs mb-2">Shown when a packet is client-specific</p>
+          <div class="space-y-1.5 text-gold-300/80">
+            <div class="flex items-center"><span class="client-badge client-cc w-12 text-center flex-shrink-0">CC</span><span class="ml-2">Classic Client only (2D)</span></div>
+            <div class="flex items-center"><span class="client-badge client-ec w-12 text-center flex-shrink-0">EC</span><span class="ml-2">Enhanced Client only (EC/KR)</span></div>
+          </div>
+          <p class="text-gold-500/60 text-xs mt-2">Packets without a badge support both clients.</p>
+        </div>
+      </div>
+      <div class="mt-4 text-xs text-gold-500/60">
+        <p><strong>Note:</strong> All multi-byte integers use Big Endian (network) byte order unless otherwise specified.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Hidden data containers -->
+<span id="packets" style="display:none; visibility: hidden">
+  <!-- PACKETS -->
+</span>
+
+<script>
+// Parse packet data
+let allPackets = { incoming: [], outgoing: [] };
+try {
+  allPackets = JSON.parse(document.getElementById('packets').innerText.trim() || '{"incoming":[],"outgoing":[]}');
+} catch (e) {
+  console.error('Failed to parse packet data:', e);
+}
+
+// Get canonical packet key (handles both "0xBF" with subId and "0xBF/0x05" formats)
+function getPacketKey(p) {
+  // If id already contains a slash, it's already a full subpacket id
+  if (p.id.includes('/')) return p.id;
+  // Otherwise, append subId if present
+  return p.subId ? `${p.id}/${p.subId}` : p.id;
+}
+
+// Flatten and merge bidirectional packets
+function mergePackets(incoming, outgoing) {
+  const incomingMap = new Map();
+  const outgoingMap = new Map();
+
+  // Index incoming packets by ID/subId
+  incoming.forEach(p => {
+    const key = getPacketKey(p);
+    // Preserve original direction if already set to "both"
+    const direction = p.direction === 'both' ? 'both' : 'incoming';
+    incomingMap.set(key, { ...p, direction });
+  });
+
+  // Index outgoing packets by ID/subId
+  outgoing.forEach(p => {
+    const key = getPacketKey(p);
+    outgoingMap.set(key, { ...p, direction: 'outgoing' });
+  });
+
+  const merged = [];
+  const processed = new Set();
+
+  // Process all incoming packets, checking for bidirectional matches
+  incomingMap.forEach((inPacket, key) => {
+    const outPacket = outgoingMap.get(key);
+
+    // If packet is already marked as "both", keep it as-is (don't merge)
+    if (inPacket.direction === 'both') {
+      merged.push(inPacket);
+      processed.add(key); // Mark so outgoing doesn't add duplicate
+      return;
+    }
+
+    // If either packet has noMerge flag, don't merge them (they're different packets sharing same ID)
+    if (inPacket.noMerge || (outPacket && outPacket.noMerge)) {
+      merged.push(inPacket);
+      // Don't mark as processed - let outgoing add its own entry
+      return;
+    }
+
+    if (outPacket) {
+      // Bidirectional packet - merge them
+      processed.add(key);
+
+      // Create direction variants from both packets
+      const directionVariants = [];
+
+      // Incoming variant
+      const inVariant = {
+        name: 'Incoming',
+        direction: 'incoming',
+        size: inPacket.size,
+        condition: inPacket.description,
+        fields: inPacket.fields || []
+      };
+      if (inPacket.variants && inPacket.variants.length > 0) {
+        // If incoming has its own variants, nest them
+        inVariant.subVariants = inPacket.variants;
+        inVariant.fields = null;
+      }
+      directionVariants.push(inVariant);
+
+      // Outgoing variant
+      const outVariant = {
+        name: 'Outgoing',
+        direction: 'outgoing',
+        size: outPacket.size,
+        condition: outPacket.description,
+        fields: outPacket.fields || []
+      };
+      if (outPacket.variants && outPacket.variants.length > 0) {
+        // If outgoing has its own variants, nest them
+        outVariant.subVariants = outPacket.variants;
+        outVariant.fields = null;
+      }
+      directionVariants.push(outVariant);
+
+      // Merge packet info
+      merged.push({
+        id: inPacket.id,
+        subId: inPacket.subId,
+        name: inPacket.name || outPacket.name,
+        description: `Bidirectional packet used for both client requests and server responses.`,
+        direction: 'both',
+        category: inPacket.category || outPacket.category,
+        isDynamic: inPacket.isDynamic || outPacket.isDynamic,
+        size: inPacket.size === outPacket.size ? inPacket.size : 'Variable',
+        fields: [], // Empty - use direction variants instead
+        directionVariants: directionVariants,
+        related: [...(inPacket.related || []), ...(outPacket.related || [])].filter((r, i, arr) =>
+          arr.findIndex(x => x.id === r.id) === i // deduplicate
+        ),
+        subpackets: inPacket.subpackets || outPacket.subpackets, // Preserve subpackets
+        notes: [inPacket.notes, outPacket.notes].filter(Boolean).join(' '),
+        source: inPacket.source || outPacket.source,
+        clientVersion: inPacket.clientVersion || outPacket.clientVersion
+      });
+    } else {
+      // Incoming-only packet
+      merged.push(inPacket);
+    }
+  });
+
+  // Add remaining outgoing-only packets
+  outgoingMap.forEach((outPacket, key) => {
+    if (!processed.has(key)) {
+      merged.push(outPacket);
+    }
+  });
+
+  return merged;
+}
+
+const packets = mergePackets(
+  allPackets.incoming || [],
+  allPackets.outgoing || []
+);
+
+// Build packet index by ID for quick lookups
+const packetIndex = new Map();
+packets.forEach(p => {
+  const key = getPacketKey(p);
+  packetIndex.set(key, p);
+  // Index by direction:id for direction-specific lookups (e.g., "incoming:0x66")
+  if (p.direction) {
+    packetIndex.set(`${p.direction}:${p.id}`, p);
+  }
+  // Also index by base ID for basic lookups (but don't overwrite more specific keys)
+  if (!packetIndex.has(p.id)) {
+    packetIndex.set(p.id, p);
+  }
+});
+
+// State
+let currentFilter = 'all';
+let selectedTags = new Set();
+let currentSearch = '';
+let selectedPacket = null;
+let currentClientType = 'all';
+let currentVersion = '';
+
+// DOM elements
+const searchInput = document.getElementById('searchInput');
+const tagFilterContainer = document.getElementById('tagFilter');
+const clearTagsBtn = document.getElementById('clearTagsBtn');
+const packetList = document.getElementById('packetList');
+const packetCount = document.getElementById('packetCount');
+const welcomeMessage = document.getElementById('welcomeMessage');
+const packetContent = document.getElementById('packetContent');
+const sidebar = document.getElementById('sidebar');
+const detailPanel = document.getElementById('detailPanel');
+const mobileBackBtn = document.getElementById('mobileBackBtn');
+const collapseSidebarBtn = document.getElementById('collapseSidebarBtn');
+const expandSidebarBtn = document.getElementById('expandSidebarBtn');
+
+// Responsive breakpoints
+const MOBILE_BREAKPOINT = 768; // md breakpoint
+const LARGE_BREAKPOINT = 1280; // xl breakpoint
+
+function isMobile() {
+  return window.innerWidth < MOBILE_BREAKPOINT;
+}
+
+function isMediumScreen() {
+  return window.innerWidth >= MOBILE_BREAKPOINT && window.innerWidth < LARGE_BREAKPOINT;
+}
+
+// Sidebar collapse state (for medium screens)
+let isSidebarCollapsed = false;
+
+function collapseSidebar() {
+  if (!isMediumScreen()) return;
+  isSidebarCollapsed = true;
+  sidebar.classList.add('hidden');
+  expandSidebarBtn.classList.remove('hidden');
+}
+
+function expandSidebar() {
+  isSidebarCollapsed = false;
+  sidebar.classList.remove('hidden');
+  expandSidebarBtn.classList.add('hidden');
+}
+
+// Collapse/expand button handlers
+collapseSidebarBtn.addEventListener('click', collapseSidebar);
+expandSidebarBtn.addEventListener('click', expandSidebar);
+
+function showMobileDetailView() {
+  if (!isMobile()) return;
+  sidebar.classList.add('hidden');
+  detailPanel.classList.remove('hidden');
+}
+
+function showMobileListView() {
+  if (!isMobile()) return;
+  sidebar.classList.remove('hidden');
+  detailPanel.classList.add('hidden');
+}
+
+// Back button handler
+mobileBackBtn.addEventListener('click', () => {
+  showMobileListView();
+});
+
+// Handle window resize - reset to proper state
+window.addEventListener('resize', () => {
+  if (isMobile()) {
+    // Mobile: hide expand button, handle list/detail toggle
+    expandSidebarBtn.classList.add('hidden');
+    if (!selectedPacket) {
+      sidebar.classList.remove('hidden');
+      detailPanel.classList.add('hidden');
+    }
+  } else if (isMediumScreen()) {
+    // Medium: show both panels, respect collapsed state
+    detailPanel.classList.remove('hidden');
+    if (isSidebarCollapsed) {
+      sidebar.classList.add('hidden');
+      expandSidebarBtn.classList.remove('hidden');
+    } else {
+      sidebar.classList.remove('hidden');
+      expandSidebarBtn.classList.add('hidden');
+    }
+  } else {
+    // Large: always show both panels, no collapse
+    sidebar.classList.remove('hidden');
+    detailPanel.classList.remove('hidden');
+    expandSidebarBtn.classList.add('hidden');
+    isSidebarCollapsed = false;
+  }
+});
+
+// Tags toggle for mobile
+const toggleTagsBtn = document.getElementById('toggleTagsBtn');
+const toggleTagsIcon = document.getElementById('toggleTagsIcon');
+let tagsExpanded = false;
+
+toggleTagsBtn.addEventListener('click', () => {
+  tagsExpanded = !tagsExpanded;
+  if (tagsExpanded) {
+    tagFilterContainer.classList.remove('hidden');
+    tagFilterContainer.classList.add('flex');
+    toggleTagsIcon.style.transform = 'rotate(180deg)';
+  } else {
+    tagFilterContainer.classList.add('hidden');
+    tagFilterContainer.classList.remove('flex');
+    toggleTagsIcon.style.transform = '';
+  }
+});
+
+// Helper to ensure tags is always an array
+function ensureArray(val) {
+  if (!val) return [];
+  if (Array.isArray(val)) return val;
+  return [val];
+}
+
+// Extract all unique tags from all packets
+const allTags = [...new Set(
+  packets.flatMap(p => ensureArray(p.tags).length ? ensureArray(p.tags) : [p.category]).filter(Boolean)
+)].sort();
+
+// Render tag filter badges
+function renderTagFilter() {
+  tagFilterContainer.innerHTML = allTags.map(tag => {
+    const isSelected = selectedTags.has(tag);
+    return `<button class="tag-badge text-xs px-2 py-0.5 rounded border transition-colors ${
+      isSelected
+        ? 'bg-gold-500 text-modern-black border-gold-500 font-medium'
+        : 'bg-modern-dark-black text-gold-300 border-gold-500/30 hover:border-gold-500'
+    }" data-tag="${tag}">${tag}</button>`;
+  }).join('');
+
+  // Show/hide clear button
+  clearTagsBtn.classList.toggle('hidden', selectedTags.size === 0);
+
+  // Add click handlers to tag badges
+  document.querySelectorAll('.tag-badge').forEach(badge => {
+    badge.addEventListener('click', () => {
+      const tag = badge.dataset.tag;
+      if (selectedTags.has(tag)) {
+        selectedTags.delete(tag);
+      } else {
+        selectedTags.add(tag);
+      }
+      renderTagFilter();
+      renderPacketList();
+    });
+  });
+}
+
+// Clear tags button handler
+clearTagsBtn.addEventListener('click', () => {
+  selectedTags.clear();
+  renderTagFilter();
+  renderPacketList();
+});
+
+// Initial render of tag filter
+renderTagFilter();
+
+// Update packet count
+function updatePacketCount() {
+  const filtered = getFilteredPackets();
+  packetCount.textContent = `${filtered.length} of ${packets.length} packets`;
+}
+
+// Get direction color class
+function getDirectionClass(direction) {
+  switch(direction) {
+    case 'incoming': return 'text-incoming';
+    case 'outgoing': return 'text-outgoing';
+    case 'both': return 'text-both';
+    default: return 'text-gold-500';
+  }
+}
+
+function getDirectionBgClass(direction) {
+  switch(direction) {
+    case 'incoming': return 'bg-incoming';
+    case 'outgoing': return 'bg-outgoing';
+    case 'both': return 'bg-both';
+    default: return 'bg-gold-500';
+  }
+}
+
+function getClientSupport(packet) {
+  const cv = packet.clientVersion;
+  if (!cv) return 'both';
+
+  const hasClassic = cv.classic !== undefined;
+  const hasEnhanced = cv.enhanced !== undefined;
+
+  if (hasClassic && hasEnhanced) return 'both';
+  if (hasClassic) return 'classic';
+  if (hasEnhanced) return 'enhanced';
+  return 'both';
+}
+
+function getClientBadge(packet) {
+  const support = getClientSupport(packet);
+  if (support === 'both') return '';
+  if (support === 'classic') return '<span class="client-badge client-cc">CC</span>';
+  if (support === 'enhanced') return '<span class="client-badge client-ec">EC</span>';
+  return '';
+}
+
+// Version parsing helper - handles "7.0.9.0", "5.0.0a", "66.x.x.x" formats
+function parseVersion(v) {
+  if (!v) return null;
+  // Remove any trailing letters (like "5.0.0a" -> "5.0.0")
+  const cleaned = v.replace(/[a-z]$/i, '');
+  const parts = cleaned.split('.').map(part => {
+    if (part === 'x' || part === '*') return -1; // Wildcard marker
+    const num = parseInt(part, 10);
+    return isNaN(num) ? 0 : num;
+  });
+  // Pad to 4 parts
+  while (parts.length < 4) parts.push(0);
+  return parts.slice(0, 4);
+}
+
+// Compare two version arrays: returns -1, 0, or 1
+function compareVersions(a, b) {
+  for (let i = 0; i < 4; i++) {
+    // Wildcards (-1) match anything
+    if (a[i] === -1 || b[i] === -1) continue;
+    if (a[i] < b[i]) return -1;
+    if (a[i] > b[i]) return 1;
+  }
+  return 0;
+}
+
+// Check if a version is within a client version range
+function isVersionInRange(version, clientVersion, clientType) {
+  const v = parseVersion(version);
+  if (!v) return true; // Invalid version input, don't filter
+
+  // Check appropriate client type(s)
+  const typesToCheck = clientType === 'all'
+    ? ['classic', 'enhanced'].filter(t => clientVersion[t])
+    : [clientType];
+
+  if (typesToCheck.length === 0) return true; // No version info for this type
+
+  return typesToCheck.some(type => {
+    const range = clientVersion[type];
+    if (!range) return false;
+
+    const min = range.min ? parseVersion(range.min) : [0, 0, 0, 0];
+    const max = range.max ? parseVersion(range.max) : [Infinity, Infinity, Infinity, Infinity];
+
+    // Handle wildcards in max (e.g., "7.0.8.x" means any 7.0.8.*)
+    for (let i = 0; i < 4; i++) {
+      if (max[i] === -1) max[i] = Infinity;
+    }
+
+    return compareVersions(v, min) >= 0 && compareVersions(v, max) <= 0;
+  });
+}
+
+// Filter packets
+function getFilteredPackets() {
+  return packets.filter(p => {
+    // Direction filter
+    if (currentFilter !== 'all' && p.direction !== currentFilter) return false;
+
+    // Tag filter (OR logic: packet shown if it has ANY selected tag)
+    if (selectedTags.size > 0) {
+      const packetTags = ensureArray(p.tags).length ? ensureArray(p.tags) : [p.category];
+      if (!packetTags.some(tag => selectedTags.has(tag))) return false;
+    }
+
+    // Search filter
+    if (currentSearch) {
+      const search = currentSearch.toLowerCase();
+      const matchId = p.id.toLowerCase().includes(search) ||
+                      (p.subId && p.subId.toLowerCase().includes(search));
+      const matchName = p.name.toLowerCase().includes(search);
+      const matchDesc = p.description && p.description.toLowerCase().includes(search);
+      const matchFields = p.fields && p.fields.some(f =>
+        f.name.toLowerCase().includes(search) ||
+        (f.description && f.description.toLowerCase().includes(search))
+      );
+
+      // Also search decimal ID
+      const decimalId = parseInt(p.id, 16);
+      const matchDecimal = !isNaN(decimalId) && decimalId.toString() === search;
+
+      if (!matchId && !matchName && !matchDesc && !matchFields && !matchDecimal) return false;
+    }
+
+    // Client type filter - packets without clientVersion always pass (work with all versions)
+    if (currentClientType !== 'all' && p.clientVersion) {
+      const hasType = currentClientType === 'classic'
+        ? p.clientVersion.classic
+        : p.clientVersion.enhanced;
+      if (!hasType) return false;
+    }
+
+    // Version filter (range check) - packets without clientVersion always pass
+    if (currentVersion && p.clientVersion) {
+      if (!isVersionInRange(currentVersion, p.clientVersion, currentClientType)) {
+        return false;
+      }
+    }
+
+    return true;
+  });
+}
+
+// Render packet list
+function renderPacketList() {
+  const filtered = getFilteredPackets();
+
+  // Sort by ID
+  filtered.sort((a, b) => {
+    // Extract base ID and subId (handles both "0xBF" and "0xBF/0x22" formats)
+    const aParts = a.id.split('/');
+    const bParts = b.id.split('/');
+    const aId = parseInt(aParts[0], 16);
+    const bId = parseInt(bParts[0], 16);
+    if (aId !== bId) return aId - bId;
+
+    // Get subId from property or embedded in id
+    const aSubId = a.subId || aParts[1];
+    const bSubId = b.subId || bParts[1];
+
+    // If same ID, sort by subId (base packet without subId comes first)
+    if (aSubId && bSubId) {
+      return parseInt(aSubId, 16) - parseInt(bSubId, 16);
+    }
+    return aSubId ? 1 : -1;
+  });
+
+  packetList.innerHTML = filtered.map(p => {
+    // Use getPacketKey for consistent display (avoids "0xBF/0x05/0x05")
+    const displayId = getPacketKey(p);
+    // For noMerge packets, we need to also compare direction to distinguish them
+    const isSelected = selectedPacket &&
+      selectedPacket.id === p.id &&
+      selectedPacket.subId === p.subId &&
+      (!p.noMerge || selectedPacket.direction === p.direction);
+
+    return `
+      <div
+        class="packet-item px-3 py-2 cursor-pointer border-b border-gold-500/10 hover:bg-modern-black-hover transition-colors ${isSelected ? 'bg-gold-500/20' : ''}"
+        data-id="${p.id}"
+        data-subid="${p.subId || ''}"
+        data-direction="${p.direction}"
+        data-nomerge="${p.noMerge || false}"
+      >
+        <div class="flex items-center space-x-2">
+          <span class="font-mono text-sm ${getDirectionClass(p.direction)}">${displayId}</span>
+          ${getClientBadge(p)}
+          <span class="text-gold-300/90 text-sm truncate">${p.name}</span>
+        </div>
+        <div class="flex flex-wrap gap-1 mt-0.5">
+          ${(ensureArray(p.tags).length ? ensureArray(p.tags) : [p.category]).filter(Boolean).slice(0, 3).map(tag =>
+            `<span class="text-xs px-1 py-0 rounded bg-gold-500/10 text-gold-500/70">${tag}</span>`
+          ).join('')}${ensureArray(p.tags).length > 3 ? `<span class="text-xs text-gold-500/50">+${(ensureArray(p.tags).length - 3)}</span>` : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  // Add click handlers
+  document.querySelectorAll('.packet-item').forEach(el => {
+    el.addEventListener('click', () => {
+      const id = el.dataset.id;
+      const subId = el.dataset.subid;
+      const direction = el.dataset.direction;
+      const noMerge = el.dataset.nomerge === 'true';
+      // For noMerge packets, also match by direction to find the correct one
+      const packet = packets.find(p =>
+        p.id === id &&
+        (p.subId || '') === subId &&
+        (!noMerge || p.direction === direction)
+      );
+      if (packet) selectPacket(packet);
+    });
+  });
+
+  updatePacketCount();
+}
+
+// Calculate field offsets
+function calculateOffsets(fields) {
+  let offset = 0;
+  return fields.map(f => {
+    const fieldOffset = offset;
+    if (f.size && typeof f.size === 'number') {
+      offset += f.size;
+    }
+    return { ...f, offset: fieldOffset };
+  });
+}
+
+// Render enum values
+function renderEnumValues(f) {
+  if (!f.values || f.values.length === 0) return '';
+
+  const enumType = f.enumType === 'bitfield' || f.type === 'bitfield' ? 'bitfield' : 'enum';
+  const typeLabel = enumType === 'bitfield' ? 'Flags' : 'Values';
+
+  return `
+    <div class="mt-2 text-xs">
+      <div class="text-gold-500/70 mb-1">${typeLabel}:</div>
+      <div class="grid grid-cols-1 gap-1 pl-2 border-l-2 border-gold-500/30">
+        ${f.values.map(v => `
+          <div class="flex items-start">
+            <span class="font-mono text-gold-400 w-16 flex-shrink-0">${typeof v.value === 'number' ? (enumType === 'bitfield' ? '0x' + v.value.toString(16).toUpperCase().padStart(2, '0') : v.value) : v.value}</span>
+            <span class="text-gold-300 font-medium">${v.name}</span>
+            ${v.description ? `<span class="text-gold-500/60 ml-2">- ${v.description}</span>` : ''}
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+// Render bitfield flags
+function renderBitfieldFlags(f) {
+  if (!f.flags || f.flags.length === 0) return '';
+
+  return `
+    <div class="mt-2 text-xs">
+      <div class="text-gold-500/70 mb-1">Bit Layout:</div>
+      <div class="grid grid-cols-1 gap-1 pl-2 border-l-2 border-purple-500/30">
+        ${f.flags.map(flag => `
+          <div class="flex items-start">
+            <span class="font-mono text-purple-400 w-16 flex-shrink-0">${flag.bit}</span>
+            <span class="text-gold-300 font-medium">${flag.name}</span>
+            ${flag.description ? `<span class="text-gold-500/60 ml-2">- ${flag.description}</span>` : ''}
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+// Render bitfield values (for fields that have both flags and value meanings)
+function renderBitfieldValues(f) {
+  if (!f.values || f.values.length === 0) return '';
+
+  return `
+    <div class="mt-2 text-xs">
+      <div class="text-gold-500/70 mb-1">Values (per field):</div>
+      <div class="grid grid-cols-1 gap-1 pl-2 border-l-2 border-purple-500/30">
+        ${f.values.map(v => `
+          <div class="flex items-start">
+            <span class="font-mono text-purple-400 w-16 flex-shrink-0">${v.value}</span>
+            <span class="text-gold-300 font-medium">${v.name}</span>
+            ${v.description ? `<span class="text-gold-500/60 ml-2">- ${v.description}</span>` : ''}
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+// Render fields table
+function renderFields(fields, parentOffset = 0) {
+  const fieldsWithOffsets = calculateOffsets(fields);
+
+  return fieldsWithOffsets.map(f => {
+    const offset = parentOffset + f.offset;
+    // Bitfield takes precedence if it has flags, otherwise check for enum/values
+    const isBitfield = f.type === 'bitfield' || f.flags;
+    const isEnum = !isBitfield && (f.type === 'enum' || f.values);
+    const hasValues = f.values && f.values.length > 0;
+    const typeDisplay = isBitfield ? 'bitfield' : isEnum ? 'enum' : f.type;
+
+    let row = `
+      <tr class="field-row border-b border-gold-500/10">
+        <td class="px-4 py-2 font-mono text-gold-500/70">${f.size ? offset : '-'}</td>
+        <td class="px-4 py-2 font-mono text-white">${f.name}</td>
+        <td class="px-4 py-2 font-mono ${isBitfield ? 'text-purple-400' : isEnum ? 'text-green-400' : 'text-gold-400'}">${typeDisplay}</td>
+        <td class="px-4 py-2 font-mono text-gold-500/70">${f.size || 'var'}</td>
+        <td class="px-4 py-2 text-gold-300/80">
+          ${f.description || ''}
+          ${f.value ? `<span class="text-gold-500/70 ml-1">(${f.value})</span>` : ''}
+          ${f.condition ? `<span class="text-gold-400/70 ml-1 text-xs italic">[${f.condition}]</span>` : ''}
+          ${f.notes ? `<div class="text-gold-500/60 text-xs mt-1 italic">${f.notes}</div>` : ''}
+          ${isBitfield ? renderBitfieldFlags(f) : ''}
+          ${isBitfield && hasValues ? renderBitfieldValues(f) : ''}
+          ${isEnum ? renderEnumValues(f) : ''}
+        </td>
+      </tr>
+    `;
+
+    // Handle loop fields
+    if (f.loop && f.loop.fields) {
+      row += `
+        <tr class="field-row border-b border-gold-500/10 bg-gold-500/5">
+          <td colspan="5" class="px-4 py-2">
+            <div class="loop-field">
+              <div class="text-gold-500/70 text-xs mb-2">Repeats for each ${f.loop.countField || 'item'}:</div>
+              <table class="w-full text-sm table-fixed">
+                <colgroup>
+                  <col class="w-16">
+                  <col class="w-44">
+                  <col class="w-24">
+                  <col class="w-20">
+                  <col>
+                </colgroup>
+                <tbody>
+                  ${renderFields(f.loop.fields, 0)}
+                </tbody>
+              </table>
+            </div>
+          </td>
+        </tr>
+      `;
+    }
+
+    return row;
+  }).join('');
+}
+
+// Select and display a packet
+function selectPacket(packet) {
+  selectedPacket = packet;
+
+  // Switch to detail view on mobile
+  showMobileDetailView();
+
+  // Update list selection
+  document.querySelectorAll('.packet-item').forEach(el => {
+    const idMatch = el.dataset.id === packet.id && (el.dataset.subid || '') === (packet.subId || '');
+    // For noMerge packets, also check direction to distinguish between same-ID packets
+    const noMerge = el.dataset.nomerge === 'true';
+    const isMatch = idMatch && (!noMerge || el.dataset.direction === packet.direction);
+    el.classList.toggle('bg-gold-500/20', isMatch);
+  });
+
+  // Show content, hide welcome
+  welcomeMessage.classList.add('hidden');
+  packetContent.classList.remove('hidden');
+
+  // Populate header
+  document.getElementById('detailId').textContent = packet.id;
+
+  const subIdEl = document.getElementById('detailSubId');
+  if (packet.subId) {
+    subIdEl.textContent = `/ ${packet.subId}`;
+    subIdEl.classList.remove('hidden');
+  } else {
+    subIdEl.classList.add('hidden');
+  }
+
+  document.getElementById('detailName').textContent = packet.name;
+
+  const directionEl = document.getElementById('detailDirection');
+  directionEl.textContent = packet.direction;
+  directionEl.className = `px-2 py-0.5 rounded text-xs font-medium uppercase ${getDirectionBgClass(packet.direction)} text-white`;
+
+  // Description
+  document.getElementById('detailDescription').textContent = packet.description || 'No description available.';
+
+  // Size
+  const sizeText = typeof packet.size === 'number'
+    ? `${packet.size} bytes`
+    : packet.size || 'Variable';
+  document.getElementById('detailSize').textContent = sizeText;
+  document.getElementById('detailDynamic').classList.toggle('hidden', !packet.isDynamic);
+
+  // Client version
+  const versionSection = document.getElementById('clientVersionSection');
+  const versionContent = document.getElementById('clientVersionContent');
+  const versionNotes = document.getElementById('clientVersionNotes');
+  if (packet.clientVersion) {
+    versionSection.classList.remove('hidden');
+    let html = '';
+
+    // Classic Client
+    if (packet.clientVersion.classic) {
+      const c = packet.clientVersion.classic;
+      html += `
+        <div class="bg-modern-dark-black rounded p-3 border border-gold-500/10">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="px-2 py-0.5 bg-blue-500/20 text-blue-400 rounded text-xs font-medium">Classic</span>
+          </div>
+          <div class="text-sm space-y-1">
+            ${c.min ? `<div><span class="text-gold-500/70">Min:</span> <span class="font-mono text-gold-300">${c.min}</span></div>` : ''}
+            ${c.max ? `<div><span class="text-gold-500/70">Max:</span> <span class="font-mono text-gold-300">${c.max}</span></div>` : ''}
+            ${!c.min && !c.max ? `<div class="text-gold-500/50">All versions</div>` : ''}
+          </div>
+        </div>
+      `;
+    }
+
+    // Enhanced Client
+    if (packet.clientVersion.enhanced) {
+      const e = packet.clientVersion.enhanced;
+      html += `
+        <div class="bg-modern-dark-black rounded p-3 border border-gold-500/10">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="px-2 py-0.5 bg-purple-500/20 text-purple-400 rounded text-xs font-medium">Enhanced</span>
+          </div>
+          <div class="text-sm space-y-1">
+            ${e.min ? `<div><span class="text-gold-500/70">Min:</span> <span class="font-mono text-gold-300">${e.min}</span></div>` : ''}
+            ${e.max ? `<div><span class="text-gold-500/70">Max:</span> <span class="font-mono text-gold-300">${e.max}</span></div>` : ''}
+            ${!e.min && !e.max ? `<div class="text-gold-500/50">All versions</div>` : ''}
+          </div>
+        </div>
+      `;
+    }
+
+    versionContent.innerHTML = html;
+
+    // Notes
+    if (packet.clientVersion.notes) {
+      versionNotes.classList.remove('hidden');
+      versionNotes.textContent = packet.clientVersion.notes;
+    } else {
+      versionNotes.classList.add('hidden');
+    }
+  } else {
+    versionSection.classList.add('hidden');
+  }
+
+  // Fields - hide if empty and packet has variants or direction variants
+  const fieldsSection = document.getElementById('fieldsSection');
+  const fieldsTable = document.getElementById('fieldsTable');
+  const hasVariants = (packet.variants && packet.variants.length > 0) ||
+                      (packet.directionVariants && packet.directionVariants.length > 0);
+
+  if (packet.fields && packet.fields.length > 0) {
+    fieldsSection.classList.remove('hidden');
+    fieldsTable.innerHTML = renderFields(packet.fields);
+  } else if (hasVariants) {
+    // Hide empty fields section if packet has variants (structure is in variants)
+    fieldsSection.classList.add('hidden');
+  } else {
+    fieldsSection.classList.remove('hidden');
+    fieldsTable.innerHTML = '<tr><td colspan="5" class="px-4 py-4 text-center text-gold-500/50">No field documentation available</td></tr>';
+  }
+
+  // Subpackets (for container packets like 0xBF, 0xD7)
+  const subpacketsSection = document.getElementById('subpacketsSection');
+  const subpacketsTable = document.getElementById('subpacketsTable');
+  if (packet.subpackets && packet.subpackets.length > 0) {
+    subpacketsSection.classList.remove('hidden');
+    subpacketsTable.innerHTML = packet.subpackets.map(sp => {
+      // Build the full packet ID for lookup (e.g., "0xBF/0x05")
+      const fullId = `${packet.id}/${sp.subId}`;
+      const subPacket = packetIndex.get(fullId);
+      const hasDetails = !!subPacket;
+
+      // Direction badge for subpacket
+      const spDirection = sp.direction || 'incoming';
+      const dirBadgeClass = spDirection === 'incoming' ? 'bg-incoming' :
+                            spDirection === 'outgoing' ? 'bg-outgoing' : 'bg-both';
+      const dirBadge = `<span class="px-1.5 py-0.5 rounded text-xs font-medium uppercase ${dirBadgeClass} text-white">${spDirection === 'both' ? 'both' : spDirection.substring(0, 3)}</span>`;
+
+      return `
+        <tr class="field-row border-b border-gold-500/10 ${hasDetails ? 'cursor-pointer hover:bg-gold-500/10' : ''} transition-colors subpacket-row" data-id="${fullId}" data-has-details="${hasDetails}">
+          <td class="px-4 py-2 font-mono ${hasDetails ? 'text-gold-400' : 'text-gold-500/70'}">${sp.subId}</td>
+          <td class="px-4 py-2">${dirBadge}</td>
+          <td class="px-4 py-2 ${hasDetails ? 'text-white' : 'text-gold-300/70'}">${sp.name}</td>
+          <td class="px-4 py-2 text-gold-300/80">
+            ${sp.description || ''}
+            ${hasDetails ? '<span class="text-gold-500/50 text-xs ml-2">→ Click for details</span>' : ''}
+          </td>
+        </tr>
+      `;
+    }).join('');
+
+    // Add click handlers to subpacket rows
+    document.querySelectorAll('.subpacket-row').forEach(el => {
+      if (el.dataset.hasDetails === 'true') {
+        el.addEventListener('click', () => {
+          const id = el.dataset.id;
+          const subPacket = packetIndex.get(id);
+          if (subPacket) selectPacket(subPacket);
+        });
+      }
+    });
+  } else {
+    subpacketsSection.classList.add('hidden');
+  }
+
+  // Related packets
+  const relatedSection = document.getElementById('relatedSection');
+  const relatedPackets = document.getElementById('relatedPackets');
+  if (packet.related && packet.related.length > 0) {
+    relatedSection.classList.remove('hidden');
+    relatedPackets.innerHTML = packet.related.map(r => {
+      // Look up by direction:id if direction specified, else fall back to just id
+      const lookupKey = r.direction ? `${r.direction}:${r.id}` : r.id;
+      const relatedPacket = packetIndex.get(lookupKey) || packetIndex.get(r.id);
+      const relationshipColors = {
+        'request': 'bg-blue-500/20 text-blue-400',
+        'response': 'bg-green-500/20 text-green-400',
+        'ack': 'bg-green-500/20 text-green-400',
+        'rej': 'bg-red-500/20 text-red-400',
+        'variant': 'bg-purple-500/20 text-purple-400',
+        'notification': 'bg-yellow-500/20 text-yellow-400'
+      };
+      const colorClass = relationshipColors[r.relationship] || 'bg-gold-500/20 text-gold-400';
+      const directionBadge = r.direction ?
+        `<span class="px-1.5 py-0.5 rounded text-xs font-medium uppercase ${getDirectionBgClass(r.direction)} text-white">${r.direction}</span>` : '';
+
+      const idColorClass = relatedPacket ? getDirectionClass(relatedPacket.direction) : 'text-white';
+      const clientBadge = relatedPacket ? getClientBadge(relatedPacket) : '';
+
+      return `
+        <div class="flex items-center justify-between bg-modern-black rounded-lg p-3 border border-gold-500/20 cursor-pointer hover:border-gold-500/40 transition-colors related-packet" data-id="${r.id}" data-direction="${r.direction || ''}">
+          <div class="flex items-center space-x-3">
+            <span class="font-mono ${idColorClass}">${r.id}</span>
+            ${clientBadge}
+            ${directionBadge}
+            <span class="text-gold-300/90">${relatedPacket?.name || 'Unknown'}</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="px-2 py-0.5 rounded text-xs ${colorClass}">${r.relationship}</span>
+            ${r.note ? `<span class="text-gold-500/50 text-sm">${r.note}</span>` : ''}
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    // Add click handlers to related packets
+    document.querySelectorAll('.related-packet').forEach(el => {
+      el.addEventListener('click', () => {
+        const id = el.dataset.id;
+        const direction = el.dataset.direction;
+        // Look up by direction:id if direction specified, else fall back to just id
+        const lookupKey = direction ? `${direction}:${id}` : id;
+        const relatedPacket = packetIndex.get(lookupKey) || packetIndex.get(id);
+        if (relatedPacket) selectPacket(relatedPacket);
+      });
+    });
+  } else {
+    relatedSection.classList.add('hidden');
+  }
+
+  // Render a single variant card
+  function renderVariantCard(v, id) {
+    const directionBadge = v.direction ?
+      `<span class="px-2 py-0.5 rounded text-xs font-medium uppercase ${getDirectionBgClass(v.direction)} text-white ml-2">${v.direction}</span>` : '';
+
+    let content = '';
+
+    // If variant has subVariants (nested version variants), render those
+    if (v.subVariants && v.subVariants.length > 0) {
+      content = v.subVariants.map((sv, svIndex) => `
+        <div class="border-t border-gold-500/10">
+          <div class="bg-gold-500/5 px-4 py-2 flex items-center justify-between">
+            <div>
+              <span class="text-gold-400 font-medium text-sm">${sv.name || 'Version ' + (svIndex + 1)}</span>
+              ${sv.version ? `<span class="text-gold-500/70 ml-2 text-xs">(${sv.version})</span>` : ''}
+            </div>
+            <div class="flex items-center space-x-3 text-xs">
+              ${sv.size ? `<span class="text-gold-500/70">Size: <span class="text-white font-mono">${typeof sv.size === 'number' ? sv.size + ' bytes' : sv.size}</span></span>` : ''}
+              ${sv.condition ? `<span class="text-gold-400/70 italic">${sv.condition}</span>` : ''}
+            </div>
+          </div>
+          ${sv.fields && sv.fields.length > 0 ? `
+            <table class="w-full text-sm table-fixed">
+              <thead>
+                <tr class="bg-gold-500/5 text-gold-500 text-xs">
+                  <th class="px-4 py-1 text-left font-medium w-16">Offset</th>
+                  <th class="px-4 py-1 text-left font-medium w-44">Name</th>
+                  <th class="px-4 py-1 text-left font-medium w-24">Type</th>
+                  <th class="px-4 py-1 text-left font-medium w-20">Size</th>
+                  <th class="px-4 py-1 text-left font-medium">Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${renderFields(sv.fields)}
+              </tbody>
+            </table>
+          ` : ''}
+        </div>
+      `).join('');
+    } else if (v.fields && v.fields.length > 0) {
+      // Regular variant with fields
+      content = `
+        <table class="w-full text-sm table-fixed">
+          <thead>
+            <tr class="bg-gold-500/5 text-gold-500 text-xs">
+              <th class="px-4 py-1 text-left font-medium w-16">Offset</th>
+              <th class="px-4 py-1 text-left font-medium w-44">Name</th>
+              <th class="px-4 py-1 text-left font-medium w-32">Type</th>
+              <th class="px-4 py-1 text-left font-medium w-14">Size</th>
+              <th class="px-4 py-1 text-left font-medium">Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${renderFields(v.fields)}
+          </tbody>
+        </table>
+      `;
+    }
+
+    // Show condition/description below header for all variants (not inline)
+    const hasCondition = v.condition && !v.subVariants;
+
+    // Build client version info
+    let clientVersionHtml = '';
+    if (v.clientVersion) {
+      const parts = [];
+      if (v.clientVersion.min) parts.push(`Min: ${v.clientVersion.min}`);
+      if (v.clientVersion.max) parts.push(`Max: ${v.clientVersion.max}`);
+      if (parts.length > 0) {
+        clientVersionHtml = `<span class="text-gold-400/70 text-xs ml-3">[${parts.join(', ')}]</span>`;
+      }
+    }
+
+    return `
+      <div id="${id}" class="bg-modern-black rounded-lg border border-gold-500/20 overflow-hidden">
+        <div class="bg-gold-500/10 px-4 py-2 flex items-center justify-between">
+          <div class="flex items-center flex-shrink-0">
+            <span class="text-gold-500 font-medium">${v.name || 'Variant'}</span>
+            ${directionBadge}
+            ${v.version ? `<span class="text-gold-500/70 ml-2 text-sm">(${v.version})</span>` : ''}
+            ${clientVersionHtml}
+          </div>
+          <div class="flex items-center space-x-3 text-sm flex-shrink-0">
+            ${v.size ? `<span class="text-gold-500/70">Size: <span class="text-white font-mono">${typeof v.size === 'number' ? v.size + ' bytes' : v.size}</span></span>` : ''}
+          </div>
+        </div>
+        ${hasCondition ? `<div class="px-4 py-2 text-gold-300/80 text-sm border-b border-gold-500/10">${v.condition}</div>` : ''}
+        ${v.notes ? `<div class="px-4 py-2 text-gold-500/70 text-xs italic border-b border-gold-500/10">${v.notes}</div>` : ''}
+        ${content}
+      </div>
+    `;
+  }
+
+  // Variants (including direction variants for bidirectional packets)
+  const variantsSection = document.getElementById('variantsSection');
+  const variantsList = document.getElementById('variantsList');
+  const variantSelect = document.getElementById('variantSelect');
+
+  // Combine direction variants and regular variants
+  const allVariants = [
+    ...(packet.directionVariants || []),
+    ...(packet.variants || [])
+  ];
+
+  if (allVariants.length > 0) {
+    variantsSection.classList.remove('hidden');
+
+    // Populate variant dropdown
+    variantSelect.innerHTML = `
+      <option value="">Jump to variant...</option>
+      ${allVariants.map((v, index) => `
+        <option value="variant-${index}">${v.name || 'Variant ' + (index + 1)}</option>
+      `).join('')}
+    `;
+
+    // Render variant cards with IDs for scrolling
+    variantsList.innerHTML = allVariants.map((v, index) =>
+      renderVariantCard(v, `variant-${index}`)
+    ).join('');
+
+    // Handle variant dropdown change
+    variantSelect.onchange = function() {
+      const value = this.value;
+      if (value) {
+        const el = document.getElementById(value);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        // Reset dropdown
+        setTimeout(() => { this.value = ''; }, 100);
+      }
+    };
+
+  } else {
+    variantsSection.classList.add('hidden');
+  }
+
+  // Notes
+  const notesSection = document.getElementById('notesSection');
+  const notesEl = document.getElementById('detailNotes');
+  if (packet.notes) {
+    notesSection.classList.remove('hidden');
+    notesEl.textContent = packet.notes;
+  } else {
+    notesSection.classList.add('hidden');
+  }
+
+  // Compression Info
+  const compressionSection = document.getElementById('compressionSection');
+  const compressionContent = document.getElementById('compressionContent');
+  if (packet.compression) {
+    compressionSection.classList.remove('hidden');
+    compressionContent.innerHTML = `
+      <div class="flex items-center space-x-4">
+        <span class="text-gold-400">Algorithm:</span>
+        <span class="text-gold-300 font-mono">${packet.compression.algorithm || 'Unknown'}</span>
+      </div>
+      ${packet.compression.notes ? `<p class="text-gold-300/70 mt-2">${packet.compression.notes}</p>` : ''}
+    `;
+  } else {
+    compressionSection.classList.add('hidden');
+  }
+
+  // Plane Format (for house customization packets)
+  const planeFormatSection = document.getElementById('planeFormatSection');
+  const planeFormatContent = document.getElementById('planeFormatContent');
+  if (packet.planeFormat) {
+    planeFormatSection.classList.remove('hidden');
+    let planeHtml = `
+      <div class="p-4 border-b border-gold-500/10">
+        <p class="text-gold-300/80 text-sm">${packet.planeFormat.description || ''}</p>
+      </div>
+    `;
+
+    // Header Decoding
+    if (packet.planeFormat.headerDecoding) {
+      const hd = packet.planeFormat.headerDecoding;
+      planeHtml += `
+        <div class="p-4 border-b border-gold-500/10">
+          <h4 class="text-gold-400 font-medium mb-2">Header Decoding (4-byte packed)</h4>
+          <table class="w-full text-sm">
+            <tbody>
+              ${Object.entries(hd).map(([key, formula]) => `
+                <tr class="border-b border-gold-500/10 last:border-0">
+                  <td class="py-2 font-mono text-gold-300 w-28">${key}</td>
+                  <td class="py-2 font-mono text-gold-500/80 text-xs">${formula}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    // Plane Z Mapping
+    if (packet.planeFormat.planeZMapping && packet.planeFormat.planeZMapping.length > 0) {
+      planeHtml += `
+        <div class="p-4 border-b border-gold-500/10">
+          <h4 class="text-gold-400 font-medium mb-2">Plane Z-Height Mapping</h4>
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="bg-gold-500/5 text-gold-500 text-xs">
+                <th class="px-3 py-2 text-left font-medium w-24">Plane</th>
+                <th class="px-3 py-2 text-left font-medium w-24">Z</th>
+                <th class="px-3 py-2 text-left font-medium">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${packet.planeFormat.planeZMapping.map(m => `
+                <tr class="border-b border-gold-500/10 last:border-0">
+                  <td class="px-3 py-2 font-mono text-gold-300">${m.plane}</td>
+                  <td class="px-3 py-2 font-mono text-gold-400">${m.z}</td>
+                  <td class="px-3 py-2 text-gold-300/70">${m.description || ''}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    // Encoding Modes
+    if (packet.planeFormat.encodingModes && packet.planeFormat.encodingModes.length > 0) {
+      planeHtml += `
+        <div class="p-4 border-b border-gold-500/10">
+          <h4 class="text-gold-400 font-medium mb-2">Encoding Modes</h4>
+          <div class="space-y-3">
+            ${packet.planeFormat.encodingModes.map(em => `
+              <div class="bg-modern-darker rounded p-3">
+                <div class="flex items-center gap-3 mb-1">
+                  <span class="bg-gold-500/20 text-gold-400 px-2 py-0.5 rounded text-xs font-mono">Mode ${em.mode}</span>
+                  <span class="text-gold-300 font-medium">${em.name}</span>
+                  <span class="text-gold-500 text-xs">${em.bytesPerTile} bytes/tile</span>
+                </div>
+                <div class="font-mono text-xs text-gold-500/80 mb-1">${em.format}</div>
+                <p class="text-gold-300/60 text-xs">${em.description || ''}</p>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    // Grid Sizes
+    if (packet.planeFormat.gridSizes && packet.planeFormat.gridSizes.length > 0) {
+      planeHtml += `
+        <div class="p-4">
+          <h4 class="text-gold-400 font-medium mb-2">Grid Sizes by Plane</h4>
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="bg-gold-500/5 text-gold-500 text-xs">
+                <th class="px-3 py-2 text-left font-medium w-24">Plane</th>
+                <th class="px-3 py-2 text-left font-medium w-32">Width</th>
+                <th class="px-3 py-2 text-left font-medium w-32">Height</th>
+                <th class="px-3 py-2 text-left font-medium">Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${packet.planeFormat.gridSizes.map(gs => `
+                <tr class="border-b border-gold-500/10 last:border-0">
+                  <td class="px-3 py-2 font-mono text-gold-300">${gs.plane}</td>
+                  <td class="px-3 py-2 font-mono text-gold-400">${gs.width}</td>
+                  <td class="px-3 py-2 font-mono text-gold-400">${gs.height}</td>
+                  <td class="px-3 py-2 text-gold-300/70">${gs.notes || ''}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    planeFormatContent.innerHTML = planeHtml;
+  } else {
+    planeFormatSection.classList.add('hidden');
+  }
+
+  // Layout Format (for gump packets)
+  const layoutFormatSection = document.getElementById('layoutFormatSection');
+  const layoutFormatContent = document.getElementById('layoutFormatContent');
+  if (packet.layoutFormat) {
+    layoutFormatSection.classList.remove('hidden');
+    let layoutHtml = `
+      <div class="p-4 border-b border-gold-500/10">
+        <p class="text-gold-300/80 text-sm">${packet.layoutFormat.description || ''}</p>
+        ${packet.layoutFormat.encoding ? `<p class="text-gold-400 text-sm mt-1">Encoding: <span class="font-mono text-gold-300">${packet.layoutFormat.encoding}</span></p>` : ''}
+      </div>
+    `;
+    if (packet.layoutFormat.commands && packet.layoutFormat.commands.length > 0) {
+      layoutHtml += `
+        <div class="divide-y divide-gold-500/20">
+          ${packet.layoutFormat.commands.map(cmd => {
+            const hasArgs = cmd.args && cmd.args.length > 0;
+            // Build syntax string dynamically: { command arg1 arg2 [optional] }
+            const syntaxArgs = hasArgs ? cmd.args.map(arg => arg.optional ? `[${arg.name}]` : arg.name).join(' ') : '';
+            const syntax = syntaxArgs ? `{ ${cmd.name} ${syntaxArgs} }` : `{ ${cmd.name} }`;
+
+            const argsHtml = hasArgs ? `
+              <div class="pl-6 pr-4 pb-3 border-l-2 border-gold-500/30 ml-4 mt-1">
+                <table class="w-full text-xs">
+                  <tbody>
+                    ${cmd.args.map((arg, idx) => `
+                      <tr class="${idx > 0 ? 'border-t border-gold-500/10' : ''}">
+                        <td class="py-1 font-mono text-gold-300 w-28">${arg.name}${arg.optional ? ' <span class="text-gold-500/50 text-xs">(opt)</span>' : ''}</td>
+                        <td class="py-1 text-gold-500 w-16">${arg.type}</td>
+                        <td class="py-1 text-gold-300/60">${arg.description || ''}</td>
+                      </tr>
+                    `).join('')}
+                  </tbody>
+                </table>
+              </div>
+            ` : '';
+
+            // Build tags HTML if command has tags
+            const tagsHtml = cmd.tags && cmd.tags.length > 0 ?
+              cmd.tags.map(tag => `<span class="px-1.5 py-0.5 rounded text-xs font-medium bg-purple-500/20 text-purple-400 ml-2">${tag}</span>`).join('') : '';
+
+            return `
+              <div class="py-3 px-4">
+                <div class="flex items-start justify-between gap-4">
+                  <div>
+                    <span class="font-mono text-gold-400 font-medium">${cmd.name}</span>${tagsHtml}
+                    <span class="text-gold-300/70 ml-3">${cmd.description || ''}</span>
+                  </div>
+                </div>
+                <div class="font-mono text-xs text-gold-500/80 mt-1">${syntax}</div>
+                ${cmd.notes ? `<div class="text-gold-500/60 text-xs mt-1 italic">${cmd.notes}</div>` : ''}
+                ${argsHtml}
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+    layoutFormatContent.innerHTML = layoutHtml;
+  } else {
+    layoutFormatSection.classList.add('hidden');
+  }
+
+  // Strings Format (for gump packets)
+  const stringsFormatSection = document.getElementById('stringsFormatSection');
+  const stringsFormatContent = document.getElementById('stringsFormatContent');
+  if (packet.stringsFormat) {
+    stringsFormatSection.classList.remove('hidden');
+    let stringsHtml = `
+      <div class="p-4 border-b border-gold-500/10">
+        <p class="text-gold-300/80 text-sm">${packet.stringsFormat.description || ''}</p>
+        ${packet.stringsFormat.encoding ? `<p class="text-gold-400 text-sm mt-1">Encoding: <span class="font-mono text-gold-300">${packet.stringsFormat.encoding}</span></p>` : ''}
+      </div>
+    `;
+    if (packet.stringsFormat.entryFormat && packet.stringsFormat.entryFormat.length > 0) {
+      stringsHtml += `
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="bg-gold-500/5 text-gold-500 text-xs">
+              <th class="px-4 py-2 text-left font-medium w-32">Field</th>
+              <th class="px-4 py-2 text-left font-medium w-24">Type</th>
+              <th class="px-4 py-2 text-left font-medium w-20">Size</th>
+              <th class="px-4 py-2 text-left font-medium">Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${packet.stringsFormat.entryFormat.map(f => `
+              <tr class="border-b border-gold-500/10">
+                <td class="px-4 py-2 font-mono text-gold-300">${f.name}</td>
+                <td class="px-4 py-2 text-gold-400">${f.type}</td>
+                <td class="px-4 py-2 text-gold-300/70">${f.size || ''}</td>
+                <td class="px-4 py-2 text-gold-300/70">${f.description || ''}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+    }
+    stringsFormatContent.innerHTML = stringsHtml;
+  } else {
+    stringsFormatSection.classList.add('hidden');
+  }
+
+  // Source link
+  const sourceLink = document.getElementById('sourceLink');
+  if (packet.source && packet.source.file) {
+    sourceLink.href = `https://github.com/modernuo/ModernUO/blob/main/${packet.source.file}#L${packet.source.line || 1}`;
+    sourceLink.classList.remove('hidden');
+  } else {
+    sourceLink.classList.add('hidden');
+  }
+
+  // Update URL hash
+  const hash = packet.subId ? `${packet.id}-${packet.subId}` : packet.id;
+  history.replaceState(null, '', `#${hash}`);
+}
+
+// Filter button handlers
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    currentFilter = btn.dataset.filter;
+
+    // Update button styles
+    document.querySelectorAll('.filter-btn').forEach(b => {
+      const isActive = b.dataset.filter === currentFilter;
+      if (b.dataset.filter === 'all') {
+        b.classList.toggle('bg-gold-500', isActive);
+        b.classList.toggle('text-modern-black', isActive);
+        b.classList.toggle('bg-modern-dark-black', !isActive);
+        b.classList.toggle('text-gold-500', !isActive);
+      } else {
+        const color = b.dataset.filter;
+        b.classList.toggle(`bg-${color}/20`, isActive);
+        b.classList.toggle('bg-modern-dark-black', !isActive);
+      }
+    });
+
+    renderPacketList();
+  });
+});
+
+// Search handler
+let searchTimeout;
+searchInput.addEventListener('input', (e) => {
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(() => {
+    currentSearch = e.target.value;
+    renderPacketList();
+  }, 150);
+});
+
+// Client type button handlers
+document.querySelectorAll('.client-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    currentClientType = btn.dataset.client;
+
+    // Update button styles
+    document.querySelectorAll('.client-btn').forEach(b => {
+      const isActive = b.dataset.client === currentClientType;
+      if (b.dataset.client === 'all') {
+        b.classList.toggle('bg-gold-500', isActive);
+        b.classList.toggle('text-modern-black', isActive);
+        b.classList.toggle('bg-modern-dark-black', !isActive);
+        b.classList.toggle('text-gold-500', !isActive);
+      } else if (b.dataset.client === 'classic') {
+        b.classList.toggle('bg-blue-500/20', isActive);
+        b.classList.toggle('bg-modern-dark-black', !isActive);
+      } else if (b.dataset.client === 'enhanced') {
+        b.classList.toggle('bg-purple-500/20', isActive);
+        b.classList.toggle('bg-modern-dark-black', !isActive);
+      }
+    });
+
+    renderPacketList();
+  });
+});
+
+// Version input handler
+const versionInput = document.getElementById('versionInput');
+let versionTimeout;
+versionInput.addEventListener('input', (e) => {
+  clearTimeout(versionTimeout);
+  versionTimeout = setTimeout(() => {
+    currentVersion = e.target.value.trim();
+    renderPacketList();
+  }, 300);
+});
+
+// Keyboard navigation
+document.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+
+  const filtered = getFilteredPackets();
+  if (filtered.length === 0) return;
+
+  let currentIndex = selectedPacket
+    ? filtered.findIndex(p => p.id === selectedPacket.id && p.subId === selectedPacket.subId)
+    : -1;
+
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    currentIndex = Math.min(currentIndex + 1, filtered.length - 1);
+    selectPacket(filtered[currentIndex]);
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    currentIndex = Math.max(currentIndex - 1, 0);
+    selectPacket(filtered[currentIndex]);
+  }
+});
+
+// Handle URL hash on load
+function loadFromHash() {
+  const hash = window.location.hash.slice(1);
+  if (hash) {
+    // Try to find packet by hash
+    // Formats: 0x02, 0xBF-0x0026, 0x22-incoming, 0x22-outgoing (for noMerge packets)
+    const parts = hash.split('-');
+    const id = parts[0];
+    let subId = null;
+    let direction = null;
+
+    // Check if second part is a direction or a subId
+    if (parts[1]) {
+      if (['incoming', 'outgoing', 'both'].includes(parts[1].toLowerCase())) {
+        direction = parts[1].toLowerCase();
+      } else {
+        subId = parts[1];
+        // Third part could be direction for subpackets with noMerge
+        if (parts[2] && ['incoming', 'outgoing', 'both'].includes(parts[2].toLowerCase())) {
+          direction = parts[2].toLowerCase();
+        }
+      }
+    }
+
+    const packet = packets.find(p =>
+      p.id.toLowerCase() === id.toLowerCase() &&
+      (p.subId || '').toLowerCase() === (subId || '').toLowerCase() &&
+      (!direction || p.direction === direction)
+    );
+
+    if (packet) {
+      selectPacket(packet);
+      // Collapse sidebar on medium screens when loading with hash
+      if (isMediumScreen()) {
+        collapseSidebar();
+      }
+    }
+  }
+}
+
+// Initialize
+renderPacketList();
+loadFromHash();
+
+// Handle hash changes
+window.addEventListener('hashchange', loadFromHash);
+
+// Back to top button
+const backToTopBtn = document.getElementById('backToTopBtn');
+const mainContent = document.querySelector('main');
+
+mainContent.addEventListener('scroll', function() {
+  if (mainContent.scrollTop > 200) {
+    backToTopBtn.classList.remove('hidden');
+  } else {
+    backToTopBtn.classList.add('hidden');
+  }
+});
+
+backToTopBtn.addEventListener('click', function() {
+  mainContent.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+// Type Legend Modal
+const typeLegendBtn = document.getElementById('typeLegendBtn');
+const typeLegendModal = document.getElementById('typeLegendModal');
+const typeLegendClose = document.getElementById('typeLegendClose');
+const typeLegendBackdrop = document.getElementById('typeLegendBackdrop');
+
+typeLegendBtn.addEventListener('click', () => {
+  typeLegendModal.classList.remove('hidden');
+});
+
+typeLegendClose.addEventListener('click', () => {
+  typeLegendModal.classList.add('hidden');
+});
+
+typeLegendBackdrop.addEventListener('click', () => {
+  typeLegendModal.classList.add('hidden');
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && !typeLegendModal.classList.contains('hidden')) {
+    typeLegendModal.classList.add('hidden');
+  }
+});
+</script>
+</body>
+</html>

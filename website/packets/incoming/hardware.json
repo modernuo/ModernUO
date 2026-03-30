@@ -1,0 +1,188 @@
+{
+    "category":  "Hardware",
+    "packets":  [
+                    {
+                        "id":  "0xD9",
+                        "name":  "Hardware Info",
+                        "description":  "Client sends hardware and system information. Also known as 'Spy on Client' packet.",
+                        "direction":  "incoming",
+                        "isDynamic":  false,
+                        "size":  268,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xD9",
+                                           "description":  "Packet identifier"
+                                       },
+                                       {
+                                           "name":  "Unknown",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Unknown (1 for pre-4.0.1a, 2 for 4.0.1a+)"
+                                       },
+                                       {
+                                           "name":  "Instance ID",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "UO client instance identifier"
+                                       },
+                                       {
+                                           "name":  "OS Major",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Operating system major version"
+                                       },
+                                       {
+                                           "name":  "OS Minor",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Operating system minor version"
+                                       },
+                                       {
+                                           "name":  "OS Revision",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Operating system revision"
+                                       },
+                                       {
+                                           "name":  "CPU Manufacturer",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "CPU manufacturer code"
+                                       },
+                                       {
+                                           "name":  "CPU Family",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "CPU family identifier"
+                                       },
+                                       {
+                                           "name":  "CPU Model",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "CPU model number"
+                                       },
+                                       {
+                                           "name":  "CPU Clock Speed",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "CPU clock speed in MHz"
+                                       },
+                                       {
+                                           "name":  "CPU Quantity",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Number of CPUs/cores"
+                                       },
+                                       {
+                                           "name":  "Physical Memory",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Physical memory in MB"
+                                       },
+                                       {
+                                           "name":  "Screen Width",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Screen width in pixels"
+                                       },
+                                       {
+                                           "name":  "Screen Height",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Screen height in pixels"
+                                       },
+                                       {
+                                           "name":  "Screen Depth",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Screen color depth in bits"
+                                       },
+                                       {
+                                           "name":  "DirectX Major",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "DirectX major version"
+                                       },
+                                       {
+                                           "name":  "DirectX Minor",
+                                           "type":  "short",
+                                           "size":  2,
+                                           "description":  "DirectX minor version"
+                                       },
+                                       {
+                                           "name":  "Video Card Description",
+                                           "type":  "unicode-le",
+                                           "size":  128,
+                                           "description":  "Video card description string (64 chars, little-endian UTF-16)"
+                                       },
+                                       {
+                                           "name":  "Video Card Vendor ID",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Video card vendor identifier"
+                                       },
+                                       {
+                                           "name":  "Video Card Device ID",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Video card device identifier"
+                                       },
+                                       {
+                                           "name":  "Video Card Memory",
+                                           "type":  "int",
+                                           "size":  4,
+                                           "description":  "Video card memory in MB"
+                                       },
+                                       {
+                                           "name":  "Distribution",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Distribution type"
+                                       },
+                                       {
+                                           "name":  "Clients Running",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Number of UO clients currently running"
+                                       },
+                                       {
+                                           "name":  "Clients Installed",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Number of UO clients installed"
+                                       },
+                                       {
+                                           "name":  "Partial Installed",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "description":  "Partial installation flag"
+                                       },
+                                       {
+                                           "name":  "Language",
+                                           "type":  "unicode-le",
+                                           "size":  8,
+                                           "description":  "Language code (4 chars, little-endian UTF-16)"
+                                       },
+                                       {
+                                           "name":  "Unknown2",
+                                           "type":  "ascii",
+                                           "size":  64,
+                                           "description":  "Unknown data"
+                                       }
+                                   ],
+                        "clientVersion":  {
+                                              "classic":  {},
+                                              "enhanced":  {},
+                                              "notes":  "Packet size is 268 bytes (0x10C) for clients 4.0.1a+"
+                                          },
+                        "source":  {
+                                       "file":  "Projects/UOContent/Misc/HardwareInfo.cs",
+                                       "line":  93
+                                   },
+                        "notes":  "This packet is sent automatically by the client after login. The server uses this to track hardware information for debugging and statistics purposes."
+                    }
+                ]
+}

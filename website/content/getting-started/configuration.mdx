@@ -1,0 +1,441 @@
+---
+sidebar_position: 4
+title: Configuration
+---
+
+import CodeBlock from '@theme/CodeBlock';
+
+# Configuration
+
+ModernUO is self-configuring. On first launch, the server walks you through an interactive setup and generates all required configuration files. After that, settings take effect on the next server restart (unless otherwise noted).
+
+All configuration files live in the `Configuration/` folder inside your `Distribution` directory.
+
+## Configuration Files
+
+| File | Purpose |
+|------|---------|
+| `modernuo.json` | Main server settings -- listeners, data paths, and all `settings` key-value pairs |
+| `expansion.json` | Target expansion, enabled maps, and feature/client flags |
+| `antimacro.json` | Anti-macro skill gain rules (per-skill toggle, area size, cooldowns) |
+| `email-settings.json` | SMTP and crash report email configuration |
+| `server-access.json` | Protected accounts that auto-reset to Owner access on login |
+| `throttles.json` | Per-packet throttle delays in milliseconds |
+
+:::tip
+If you ever want to re-run the first-launch setup wizard, delete `modernuo.json` and `expansion.json`, then restart the server.
+:::
+
+## modernuo.json Structure
+
+The main configuration file has four top-level keys:
+
+```json
+{
+  "assemblyDirectories": ["./Assemblies"],
+  "dataDirectories": ["/path/to/uo/game/files"],
+  "listeners": ["0.0.0.0:2593"],
+  "settings": {
+    "accountHandler.maxAccountsPerIP": "1",
+    "autosave.enabled": "true",
+    "autosave.saveDelay": "00:05:00"
+  }
+}
+```
+
+| Key | Type | Description |
+|-----|------|-------------|
+| `assemblyDirectories` | string array | Directories to search for additional plugin assemblies |
+| `dataDirectories` | string array | Paths to Ultima Online game files (`.mul` / `.uop`) |
+| `listeners` | string array | IP:port endpoints the server binds to |
+| `settings` | key-value map | All configurable settings (string keys and string values) |
+
+:::note
+All values in the `settings` map are stored as strings. The server parses them to the appropriate type (bool, int, TimeSpan, etc.) at startup. Unrecognized keys are silently ignored.
+:::
+
+## Feature Flags
+
+ModernUO includes a runtime feature flag system for toggling game mechanics without restarting the server. Feature flags are managed by the `FeatureFlagManager` and stored in the `Configuration/FeatureFlags/` directory.
+
+### Built-in Flags
+
+These boolean flags are optimized for hot-path checks and are synchronized from UOContent:
+
+**Server-level flags** (checked in the core engine):
+
+| Flag Key | Default | Description |
+|----------|---------|-------------|
+| `player_trading` | `true` | Allow players to trade items |
+| `pvp_combat` | `true` | Allow player-vs-player combat |
+| `bank_access` | `true` | Allow bank box access |
+| `speedhack_detection` | `false` | Enable speed-hack detection via movement analysis |
+
+**Content-level flags** (checked in UOContent game logic):
+
+| Flag Key | Default | Description |
+|----------|---------|-------------|
+| `vendor_purchase` | `true` | Allow buying from NPC vendors |
+| `vendor_sell` | `true` | Allow selling to NPC vendors |
+| `player_vendors` | `true` | Allow player vendor usage |
+| `house_placement` | `true` | Allow placing new houses |
+| `boat_placement` | `true` | Allow placing new boats |
+| `bulk_orders` | `true` | Allow bulk order deed system |
+| `passive_detect_hidden` | `true` | Allow passive detect hidden skill |
+
+### Additional Blocking
+
+Beyond boolean flags, the feature flag system also supports blocking specific:
+
+- **Gumps** -- prevent specific UI dialogs from opening
+- **Items** -- block use, equip, or container access for specific item types
+- **Skills** -- disable individual skills with a custom message
+- **Spells** -- disable individual spells with a custom message
+
+These are managed through in-game admin commands and the feature flag admin gump, and are persisted as JSON files in `Configuration/FeatureFlags/`.
+
+## Settings Reference
+
+The tables below document every setting key available in the `settings` section of `modernuo.json`. Default values marked with an expansion name (e.g., `Core.AOS`) mean the default depends on your configured expansion.
+
+### Movement
+
+| Key | Default | Description |
+|-----|---------|-------------|
+| `movement.delay.runFoot` | `200` | Run speed on foot (ms) |
+| `movement.delay.runMount` | `100` | Run speed while mounted (ms) |
+| `movement.delay.walkFoot` | `400` | Walk speed on foot (ms) |
+| `movement.delay.walkMount` | `200` | Walk speed while mounted (ms) |
+| `movement.delay.turn` | `0` | Delay for turning in place (ms) |
+| `movement.delay.npcMinIdle` | `15` | Minimum idle time for NPCs (seconds) |
+| `movement.delay.npcMaxIdle` | `25` | Maximum idle time for NPCs (seconds) |
+
+### Movement Throttling
+
+The movement throttle system uses RTT-based credit buffering to absorb network jitter while detecting speed hacks through movement rate analysis.
+
+| Key | Default | Description |
+|-----|---------|-------------|
+| `movementThrottle.debugLogging` | `false` | Enable debug logging for movement throttle decisions |
+| `movementThrottle.maxCredit` | `200` | Maximum credit buffer for timing jitter (ms) |
+| `movementThrottle.hardQueueLimit` | `10` | Reject and clear movement queue at this depth |
+| `movementThrottle.movementHistorySize` | `20` | Circular buffer size for rate analysis |
+| `movementThrottle.minSamplesForRate` | `8` | Minimum movements before calculating speed |
+| `movementThrottle.suspiciousRateThreshold` | `1.05` | Flag as suspicious at 5% over expected speed |
+| `movementThrottle.definiteRateThreshold` | `1.10` | Flag as definite hack at 10% over expected speed |
+
+:::note
+Most movement throttle settings are auto-tuned and rarely need manual adjustment. The `debugLogging` flag is useful for diagnosing false positives.
+:::
+
+### Client Verification
+
+| Key | Default | Description |
+|-----|---------|-------------|
+| `clientVerification.enable` | `true` | Enable client version verification |
+| `clientVerification.ageLeniency` | `10.00:00:00` (10 days) | Grace period for new accounts before enforcing version checks |
+| `clientVerification.gameTimeLeniency` | `1.01:00:00` | Grace period based on game time played |
+| `clientVerification.invalidClientResponse` | `Kick` | Action on invalid client: `Kick`, `LenientKick`, `Annoy`, or `None` |
+| `clientVerification.kickDelay` | `00:00:20` (20s) | Delay before kicking an invalid client |
+| `clientVerification.minRequired` | `null` | Minimum allowed client version (e.g., `7.0.0.0`) |
+| `clientVerification.maxRequired` | `null` | Maximum allowed client version |
+| `clientVerification.allowedClientTypes` | `Classic \| SA` | Allowed client types bitmask |
+| `clientData.clientVersion` | `null` | Override the expected client version |
+
+### Accounts and Security
+
+| Key | Default | Description |
+|-----|---------|-------------|
+| `accountHandler.enableAutoAccountCreation` | `true` | Create accounts automatically on first login |
+| `accountHandler.enablePlayerPasswordCommand` | `false` | Allow players to change password via in-game command |
+| `accountHandler.maxAccountsPerIP` | `1` | Maximum accounts allowed per IP address |
+| `accountSecurity.encryptionAlgorithm` | `Argon2` | Password hashing algorithm (`SHA2`, `PBKDF2`, or `Argon2`) |
+
+:::note
+Algorithms below `SHA2` (such as `MD5`, `SHA1`, `None`) are rejected at startup. They exist only for automatic password migration from legacy RunUO/ServUO databases.
+:::
+
+### World Saves
+
+| Key | Default | Description |
+|-----|---------|-------------|
+| `world.savePath` | `Saves` | Directory for world save files (relative to Distribution) |
+| `world.tempSavePath` | `temp` | Temporary directory during save operations |
+| `world.useMultithreadedSaves` | `true` | Use background threads for serialization during saves |
+| `world.enableAutoRestart` | `false` | Automatically restart the server after a crash or shutdown |
+| `autosave.enabled` | `true` | Enable automatic world saves |
+| `autosave.saveDelay` | `00:05:00` (5 min) | Interval between automatic saves |
+| `autosave.warningDelay` | `00:00:00` (0) | Broadcast a warning this long before each save (0 = no warning) |
+
+### Archives and Backups
+
+| Key | Default | Description |
+|-----|---------|-------------|
+| `autoArchive.archiveLocally` | `true` | Archive saves to a local directory |
+| `autoArchive.archivePath` | `Archives` | Directory for compressed save archives |
+| `autoArchive.backupPath` | `Backups` | Directory for backup copies |
+| `autoArchive.compressionLevel` | `3` | Zstd compression level (1-19) |
+| `autoArchive.enableArchivePruning` | `true` | Automatically prune old archives based on retention policy |
+| `autoArchive.verifyArchives` | `true` | Verify archive integrity after creation |
+| `autoArchive.retryCount` | `3` | Number of retries on archive failure |
+| `autoArchive.retryDelayMs` | `500` | Delay between retries (ms) |
+| `autoArchive.backupMaxAge` | `30` | Maximum age of backup files in days |
+| `autoArchive.hourlyRetention` | `24` | Number of hourly archives to keep |
+| `autoArchive.dailyRetention` | `30` | Number of daily archives to keep |
+| `autoArchive.monthlyRetention` | `12` | Number of monthly archives to keep |
+
+### Crash Guard
+
+| Key | Default | Description |
+|-----|---------|-------------|
+| `crashGuard.enabled` | `true` | Enable the crash guard system |
+| `crashGuard.saveBackup` | `true` | Save a backup on crash |
+| `crashGuard.restartServer` | `true` | Attempt to restart after a crash |
+| `crashGuard.generateReport` | `true` | Generate a crash report file |
+
+### Stats and Stamina
+
+**Stat Gain:**
+
+| Key | Default | Description |
+|-----|---------|-------------|
+| `stats.statMax` | `Core.LBR ? 125 : 100` | Maximum value for a single stat |
+| `stats.gainChanceMultiplier` | `1.0` | Multiplier for stat gain chance |
+| `stats.primaryStatGainChance` | `0.75` | Chance to gain in the primary stat |
+| `stats.gainDelay` | `Core.ML ? 0.05m : 10m` | Cooldown between stat gain checks |
+| `stats.petGainDelay` | `5m` | Cooldown between pet stat gain checks |
+| `stats.usePub45StatGain` | `Core.ML` | Use Publish 45 stat gain system |
+
+**Stamina System:**
+
+| Key | Default | Description |
+|-----|---------|-------------|
+| `stamina.cannotRunWhenFatigued` | `!Core.AOS` | Prevent running at zero stamina |
+| `stamina.cannotWalkWhenFatigued` | `false` | Prevent walking at zero stamina |
+| `stamina.stonesPerOverweightLoss` | `25` | Stones of weight per stamina loss tick |
+| `stamina.stonesOverweightAllowance` | `4` | Extra stones allowed before overweight penalty |
+| `stamina.baseOverweightLoss` | `5` | Base stamina loss per overweight tick |
+| `stamina.additionalLossWhenBelow` | `0.10` | Extra loss rate when stamina is below this fraction |
+| `stamina.enableMountStamina` | `true` | Enable stamina drain while mounted |
+| `stamina.useMountStaminaOnlyWhenOverloaded` | `Core.SA` | Only drain mount stamina when overloaded |
+| `stamina.globalEtherealMountStamina` | `Core.ML` | Apply stamina drain to ethereal mounts |
+
+### Combat and Systems
+
+| Key | Default | Description |
+|-----|---------|-------------|
+| `melee.enableInstaHit` | `!Core.UOR` | Enable instant first melee hit on target switch |
+| `spellCasting.disableCastParalyze` | `true` | Prevent casting while paralyzed |
+| `actionDelay` | `Core.AOS ? 1000 : 500` | Global action delay in milliseconds |
+| `visibleDamage` | `Core.AOS` | Show damage numbers above targets |
+| `insurance.enable` | `Core.AOS` | Enable the item insurance system |
+
+### Player Systems
+
+**Murder System:**
+
+| Key | Default | Description |
+|-----|---------|-------------|
+| `murderSystem.shortTermMurderDuration` | `8h` | Duration of a short-term murder count |
+| `murderSystem.longTermMurderDuration` | `40h` | Duration of a long-term murder count |
+| `murderSystem.bountiesEnabled` | `!Core.LBR` | Enable the bounty system |
+| `murderSystem.recentlyReportedDelay` | `10m` | Cooldown before a victim can report the same murderer |
+| `murderSystem.bountyExpiry` | `14d` | Time before an uncollected bounty expires |
+
+**Stealing:**
+
+| Key | Default | Description |
+|-----|---------|-------------|
+| `stealing.classicMode` | `!Core.AOS` | Use classic (pre-AOS) stealing mechanics |
+| `stealing.suspendOnMurder` | `!Core.AOS` | Suspend stealing perma-flag on murder |
+| `stealing.canStealContainers` | `!Core.AOS` | Allow stealing entire containers |
+| `stealing.maxWeightToSteal` | `10` | Maximum weight of an item that can be stolen (stones) |
+
+**Taming:**
+
+| Key | Default | Description |
+|-----|---------|-------------|
+| `taming.enableBonding` | `Core.LBR` | Enable pet bonding |
+
+### Game Systems
+
+| Key | Default | Description |
+|-----|---------|-------------|
+| `opl.enable` | `Core.AOS` | Enable Object Property Lists (item tooltips) |
+| `opl.enableForVendorBuy` | `true` | Show property lists in vendor buy menus |
+| `vendor.isInvulnerable` | `Core.LBR` | Make NPC vendors invulnerable |
+| `guards.instantKill` | `true` | Guards instantly kill criminals (vs. fighting them) |
+| `factions.enabled` | `false` | Enable the factions system |
+| `ethics.enable` | `false` | Enable the ethics (Hero/Evil) system |
+| `questSystem.enableMLQuests` | `Core.ML` | Enable Mondain's Legacy quest system |
+| `vetRewards.enable` | `true` | Enable veteran rewards |
+| `vetRewards.skillCapRewards` | `true` | Enable skill cap increase rewards |
+| `vetRewards.rewardInterval` | `30d` | Time between reward tiers |
+| `testCenter.enable` | `false` | Enable test center mode (free skills, items, etc.) |
+| `chat.enabled` | `false` | Enable the built-in chat system |
+| `buffIcons.enable` | `Core.ML` | Enable buff/debuff icons on the client UI |
+| `houseDecay.enable` | `true` | Enable house decay over time |
+| `pathfinding.enable` | `true` | Enable NPC pathfinding |
+
+### Network
+
+| Key | Default | Description |
+|-----|---------|-------------|
+| `pingServer.enabled` | `true` | Enable the UDP ping server (used by server browsers) |
+| `pingServer.port` | `12000` | UDP port for the ping server |
+| `pingServer.maxConnections` | `2048` | Maximum queued ping connections |
+| `network.encryptionMode` | `Both` | Encryption mode: `None`, `Login`, `Game`, or `Both` |
+| `network.encryptionDebug` | `false` | Enable debug logging for encryption negotiation |
+| `netstate.packetLoggingPath` | `Packets` | Directory for per-client packet logs |
+| `uogateway.enabled` | `true` | Enable the UO Gateway protocol |
+| `assistants.enableNegotiation` | `false` | Enable Razor-style assistant protocol negotiation |
+
+### Server Listing
+
+| Key | Default | Description |
+|-----|---------|-------------|
+| `serverListing.serverName` | `ModernUO` | Server name shown in the server list |
+| `serverListing.address` | `null` | Public IP address override for the server list |
+| `serverListing.autoDetect` | `true` | Auto-detect public IP via external service |
+
+### Maps and Client Data
+
+| Key | Default | Description |
+|-----|---------|-------------|
+| `maps.enablePre6000Trammel` | `false` | Use pre-client-6000 Trammel map format |
+| `maps.enableMapDiffPatches` | auto | Enable map diff patches |
+| `maps.enableStaticsDiffPatches` | auto | Enable statics diff patches |
+| `maps.enablePostHSMultiComponentFormat` | auto | Use post-High Seas multi component format |
+| `expansion.forceOldAnimations` | `false` | Force pre-expansion animation set |
+
+### Miscellaneous
+
+| Key | Default | Description |
+|-----|---------|-------------|
+| `commandsystem.prefix` | `[` | Command prefix character (e.g., `[` for `[command`) |
+| `profanityProtection.enabled` | `false` | Enable profanity filter |
+| `profanityProtection.action` | `Disallow` | Profanity action: `Disallow`, `Criminal`, `None` |
+| `system.localTimeZone` | system default | Override the server's time zone (IANA or Windows ID) |
+| `pages.discordWebhookUrl` | `null` | Discord webhook URL for GM page notifications |
+| `guildClickMessage` | `!Core.AOS` | Show guild abbreviation on single-click |
+| `asciiClickMessage` | `!Core.AOS` | Use ASCII (not Unicode) for single-click messages |
+| `bulletinboards.creationTimeDelay` | `2m` | Cooldown between creating bulletin board threads |
+| `bulletinboards.expireDuration` | `6h` | Time before bulletin board threads expire |
+| `bulletinboards.replyDelay` | `30s` | Cooldown between bulletin board replies |
+
+## Other Configuration Files
+
+### expansion.json
+
+Controls which expansion the server emulates and which maps are active.
+
+```json
+{
+  "id": 7,
+  "name": "Mondain\u0027s Legacy",
+  "mapSelectionFlags": "Felucca, Trammel, Ilshenar, Malas, Tokuno"
+}
+```
+
+The `id` corresponds to the `Expansion` enum (0 = None, 1 = T2A, 2 = UOR, 3 = UOTD, 4 = LBR, 5 = AOS, 6 = SE, 7 = ML, 8 = SA, 9 = HS, 10 = TOL, 11 = EJ). The `mapSelectionFlags` field controls which maps are loaded.
+
+### antimacro.json
+
+Configures per-skill anti-macro rules to prevent automated skill gain.
+
+```json
+{
+  "allowance": 3,
+  "locationSize": 5,
+  "enabled": true,
+  "skillTriggers": {
+    "Anatomy": true,
+    "AnimalLore": true,
+    "Blacksmith": false,
+    "Magery": true
+  },
+  "expire": "00:05:00"
+}
+```
+
+| Field | Description |
+|-------|-------------|
+| `allowance` | Number of allowed skill uses per location before throttling |
+| `locationSize` | Tile radius that defines a "location" for anti-macro purposes |
+| `enabled` | Master toggle for the anti-macro system |
+| `skillTriggers` | Per-skill toggle (true = anti-macro enforced for this skill) |
+| `expire` | How long before location-based counters reset |
+
+### email-settings.json
+
+SMTP configuration for crash reports and support emails. Created with defaults on first launch if not present.
+
+```json
+{
+  "enabled": false,
+  "fromAddress": "support@example.com",
+  "fromName": "ModernUO Team",
+  "crashAddress": "crashes@example.com",
+  "crashName": "Crash Log",
+  "speechLogPageAddress": "support@example.com",
+  "speechLogPageName": "GM Support Conversation",
+  "emailServer": "smtp.gmail.com",
+  "emailPort": 465,
+  "emailUsername": "support@example.com",
+  "emailPassword": "your-app-password",
+  "emailSendRetryCount": 5,
+  "emailSendRetryDelay": 3
+}
+```
+
+:::tip
+Set `"enabled": true` and configure your SMTP credentials to receive crash reports by email. For Gmail, use an [App Password](https://support.google.com/accounts/answer/185833).
+:::
+
+### server-access.json
+
+Defines protected accounts that cannot be permanently locked out. If a protected account is banned or has its access level lowered, it automatically resets to `Owner` on the next successful login.
+
+```json
+{
+  "protectedAccounts": ["admin", "owner"]
+}
+```
+
+:::note
+Account names are case-insensitive. This is a safety net for server owners -- it ensures you can always regain access to your server even if another admin modifies your account.
+:::
+
+### throttles.json
+
+Maps packet IDs to throttle delays in milliseconds. Packets sent faster than the configured delay are dropped for players (staff is exempt).
+
+```json
+{
+  "0x03": 25,
+  "0x12": 25,
+  "0x75": 500,
+  "0xAD": 25
+}
+```
+
+| Packet | Delay | Purpose |
+|--------|-------|---------|
+| `0x03` | 25ms | Speech |
+| `0xAD` | 25ms | Unicode speech |
+| `0x12` | 25ms | Text commands |
+| `0x75` | 500ms | Rename request |
+
+You can modify throttles at runtime using the `[SetThrottle` and `[GetThrottle` admin commands.
+
+## Custom Configuration
+
+Developers can create custom JSON configuration files using the `JsonConfig` utility:
+
+```csharp
+var mySettings = JsonConfig.Deserialize<MySettings>(
+    Path.Combine(Core.BaseDirectory, "Configuration/my-settings.json")
+);
+```
+
+Files are read from the `Configuration/` directory and support comments, trailing commas, and all standard JSON converters (enums, TimeSpan, IPEndPoint, etc.) automatically.

@@ -1,0 +1,32 @@
+{
+    "category":  "Store",
+    "packets":  [
+                    {
+                        "id":  "0xFA",
+                        "name":  "Open UO Store",
+                        "description":  "Client requests to open the Ultima Store interface. Sent when player clicks the UO Store button in the client toolbar (Classic) or selects Ultima Store from the menu (Enhanced).",
+                        "direction":  "incoming",
+                        "isDynamic":  false,
+                        "size":  1,
+                        "fields":  [
+                                       {
+                                           "name":  "Packet ID",
+                                           "type":  "byte",
+                                           "size":  1,
+                                           "value":  "0xFA",
+                                           "description":  "Packet identifier"
+                                       }
+                                   ],
+                        "clientVersion":  {
+                                              "classic":  {},
+                                              "enhanced":  {},
+                                              "notes":  "Ultima Store feature"
+                                          },
+                        "source":  {
+                                       "file":  "Projects/UOContent/Engines/UltimaStore/UltimaStorePackets.cs",
+                                       "line":  10
+                                   },
+                        "notes":  "The Ultima Store is an in-game microtransaction store on official servers. ModernUO includes a placeholder that displays a 'not available' message. Free shards may implement their own store functionality using this packet trigger."
+                    }
+                ]
+}

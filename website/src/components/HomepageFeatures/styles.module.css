@@ -1,0 +1,80 @@
+.features {
+  padding: 3rem 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+@media screen and (max-width: 996px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.featureCard {
+  background: var(--ifm-background-surface-color);
+  border: 1px solid rgba(213, 191, 116, 0.15);
+  border-radius: 8px;
+  padding: 1.5rem;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.featureCard:hover {
+  border-color: rgba(213, 191, 116, 0.4);
+  transform: translateY(-2px);
+}
+
+/* Desktop: icon centered on its own line */
+.featureHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.4rem;
+  margin-bottom: 0.5rem;
+}
+
+.featureIcon {
+  font-size: 1.6rem;
+  flex-shrink: 0;
+}
+
+.featureCard h3 {
+  color: var(--ifm-color-primary);
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.featureCard p {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin: 0;
+  text-align: center;
+}
+
+/* Tablet/mobile: icon inline next to title, left-aligned */
+@media screen and (max-width: 996px) {
+  .featureHeader {
+    flex-direction: row;
+    align-items: center;
+    text-align: left;
+    gap: 0.5rem;
+  }
+
+  .featureIcon {
+    font-size: 1.4rem;
+  }
+
+  .featureCard p {
+    text-align: left;
+  }
+}

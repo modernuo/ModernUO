@@ -1,0 +1,150 @@
+---
+sidebar_position: 5
+title: Era & Expansions
+---
+
+# Era & Expansions
+
+## Overview
+
+ModernUO supports all Ultima Online expansions from the original release through the most recent era. The target expansion controls game mechanics, damage formulas, loot tables, available features, and which maps are accessible. A single configuration setting determines which era your server emulates, and all era-aware code branches automatically based on that setting.
+
+---
+
+## Expansions
+
+ModernUO defines the following expansions in chronological order:
+
+| Expansion | Enum Value | Core Check | Year | Key Changes |
+|:----------|:-----------|:-----------|:-----|:------------|
+| None | `Expansion.None` | -- | 1997 | Original release, no expansion features |
+| The Second Age | `Expansion.T2A` | `Core.T2A` | 1998 | Lost Lands, new dungeons, stat cap 225 |
+| Renaissance | `Expansion.UOR` | `Core.UOR` | 2000 | Trammel/Felucca split, power hour |
+| Third Dawn | `Expansion.UOTD` | `Core.UOTD` | 2001 | 3D client, Ilshenar, new monsters |
+| Lord Blackthorn's Revenge | `Expansion.LBR` | `Core.LBR` | 2002 | Pet bonding, new quests |
+| Age of Shadows | `Expansion.AOS` | `Core.AOS` | 2003 | Item properties, Malas, Paladin/Necromancer |
+| Samurai Empire | `Expansion.SE` | `Core.SE` | 2004 | Tokuno, Bushido/Ninjitsu, new housing |
+| Mondain's Legacy | `Expansion.ML` | `Core.ML` | 2005 | Elves, new dungeons, ML artifacts |
+| Stygian Abyss | `Expansion.SA` | `Core.SA` | 2009 | Gargoyles, Ter Mur, Enhanced Client |
+| High Seas | `Expansion.HS` | `Core.HS` | 2010 | Ship combat, fishing overhaul |
+| Time of Legends | `Expansion.TOL` | `Core.TOL` | 2015 | Valley of Eodon, account gold |
+| Endless Journey | `Expansion.EJ` | `Core.EJ` | 2018 | Free-to-play tier, restrictions on F2P |
+
+---
+
+## Era Checks
+
+The `Core` class provides boolean properties for each expansion. Each property returns `true` when the server's configured expansion is **equal to or later than** that era.
+
+```csharp
+Core.AOS  // true if Age of Shadows or later
+Core.ML   // true if Mondain's Legacy or later
+Core.SA   // true if Stygian Abyss or later
+```
+
+This means that on a Mondain's Legacy server, `Core.AOS`, `Core.SE`, and `Core.ML` all return `true`, while `Core.SA` and later return `false`.
+
+---
+
+## The AOS Divide
+
+Age of Shadows (AOS) is the most significant dividing line in Ultima Online's history. It fundamentally restructured combat and itemization:
+
+- **Five damage types** -- Physical, Fire, Cold, Poison, Energy replaced the single damage model.
+- **Item properties** -- Weapons and armor gained randomized magical properties (hit chance, damage increase, resistances).
+- **Luck system** -- Luck stat influences loot quality.
+- **Insurance** -- Players can insure items against loss on death.
+- **New spell schools** -- Chivalry (Paladin) and Necromancy were added.
+- **Property lists (tooltips)** -- Items display their properties on hover.
+
+Because of this, the majority of era-conditional code in the codebase checks `Core.AOS`. If you are writing mechanics that differ between classic and modern UO, this is almost always the branch point.
+
+---
+
+## Writing Era-Conditional Code
+
+### Ternary chains
+
+For simple value selection, chain ternaries from **newest to oldest** expansion:
+
+```csharp
+var delay = Core.SE ? 250 : Core.AOS ? 500 : 1000;
+```
+
+This reads as: "If SE or later, use 250ms. Otherwise if AOS or later, use 500ms. Otherwise use 1000ms."
+
+### If/else branching
+
+For more complex logic like damage formulas, use if/else blocks:
+
+```csharp
+if (Core.AOS)
+{
+    // AOS+ damage: uses item properties, resistances, and 5 damage types
+    var baseDamage = weapon.MaxDamage;
+    var bonus = attacker.GetDamageBonus();
+    damage = ScaleDamage(baseDamage, bonus);
+}
+else
+{
+    // Pre-AOS damage: simpler formula based on weapon damage and tactics
+    damage = weapon.MaxDamage;
+    damage += (int)(attacker.Skills.Tactics.Value * 0.5);
+}
+```
+
+### Property display branching
+
+Tooltips often show different information depending on the era:
+
+```csharp
+if (Core.ML)
+{
+    list.Add(1060847, $"{"crafted by"}\t{_crafter?.Name}");
+}
+```
+
+### Era-aware loot
+
+`LootPack` automatically selects era-appropriate loot tables. Use the built-in properties:
+
+```csharp
+LootPack.Rich      // Selects the correct rich loot table for the current era
+LootPack.Average   // Era-appropriate average loot
+```
+
+---
+
+## Configuration
+
+The server's target expansion is set in `expansion.json`. This file is generated during first-run setup, but you can edit it manually.
+
+```json
+{
+  "Id": 8,
+  "Name": "Stygian Abyss",
+  "ClientFlags": "Felucca,Trammel,Ilshenar,Malas,Tokuno,TerMur",
+  "MapSelectionFlags": {
+    "Felucca": true,
+    "Trammel": true,
+    "Ilshenar": true,
+    "Malas": true,
+    "Tokuno": true,
+    "TerMur": true
+  }
+}
+```
+
+The `Id` field corresponds to the expansion's numeric value (0 = None, 1 = T2A, ..., 8 = SA, etc.). The `MapSelectionFlags` control which maps are available to players.
+
+A companion file, `expansions.json`, contains the full metadata for all expansions, including supported features, character creation flags, and housing flags. The server uses this as a reference when applying `expansion.json`.
+
+---
+
+## Best Practices
+
+- **Use `Core.XYZ` properties** -- Write `Core.AOS`, not `Core.Expansion >= Expansion.AOS`. The properties are clearer and less error-prone.
+- **Chain ternaries from newest to oldest** -- `Core.SE ? x : Core.AOS ? y : z` reads naturally and avoids logic bugs.
+- **Test both branches** -- When adding era-conditional code, verify behavior on both sides of the branch. A feature that works on AOS but crashes on pre-AOS (or vice versa) is a bug.
+- **Use era-aware `LootPack` properties** -- Do not hardcode loot tables. The built-in properties handle era selection automatically.
+- **Do not assume an era** -- If you are unsure which expansion a piece of code should target, ask. The correct branch points depend on the specific mechanic.

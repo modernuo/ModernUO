@@ -1,0 +1,77 @@
+---
+sidebar_position: 1
+title: Installation
+---
+
+import OsTabs from '@site/src/components/OsTabs';
+import CodeBlock from '@theme/CodeBlock';
+import Admonition from '@theme/Admonition';
+
+# Installation
+
+<OsTabs>
+{{
+  windows: (
+    <>
+      <h3>Prerequisites</h3>
+      <ol>
+        <li>Download and install the latest <a href="https://dotnet.microsoft.com/download/dotnet/10.0">.NET 10 SDK</a></li>
+        <li>Download and install <a href="https://git-scm.com/download/win">Git for Windows</a></li>
+        <li>Install <a href="https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist">Visual C++ Redistributable</a> (v14 or later)</li>
+      </ol>
+      <Admonition type="tip">
+        <p>Use <a href="https://learn.microsoft.com/en-us/windows/terminal/install">Windows Terminal</a> as your command prompt.</p>
+      </Admonition>
+      <p><strong>Recommended IDEs:</strong> <a href="https://visualstudio.microsoft.com/">Visual Studio 2026+</a>, <a href="https://www.jetbrains.com/rider/">JetBrains Rider 2025.3+</a>, or <a href="https://code.visualstudio.com/">VS Code</a></p>
+      <h3>Install ModernUO</h3>
+      <ol>
+        <li>Navigate to the folder where you want to install ModernUO.</li>
+        <li>Using <em>Windows Terminal</em>, run:</li>
+      </ol>
+      <CodeBlock language="bash">{`git clone https://github.com/modernuo/modernuo
+cd modernuo`}</CodeBlock>
+    </>
+  ),
+  macos: (
+    <>
+      <h3>Prerequisites</h3>
+      <ol>
+        <li>Download and install the latest <a href="https://dotnet.microsoft.com/download/dotnet/10.0">.NET 10 SDK</a></li>
+        <li>Using <em>terminal</em>, install <a href="https://brew.sh">Homebrew</a> and dependencies:</li>
+      </ol>
+      <CodeBlock language="bash">{`/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+brew install git icu4c libdeflate zstd argon2`}</CodeBlock>
+      <p><strong>Recommended IDEs:</strong> <a href="https://www.jetbrains.com/rider/">JetBrains Rider 2025.3+</a> or <a href="https://code.visualstudio.com/">VS Code</a></p>
+      <h3>Install ModernUO</h3>
+      <ol>
+        <li>Using <em>terminal</em>, navigate to the folder where you want to install ModernUO and run:</li>
+      </ol>
+      <CodeBlock language="bash">{`git clone https://github.com/modernuo/modernuo
+cd modernuo`}</CodeBlock>
+    </>
+  ),
+  linux: (
+    <>
+      <h3>Prerequisites</h3>
+      <ol>
+        <li>Download and install the latest <a href="https://docs.microsoft.com/en-us/dotnet/core/install/linux">.NET 10 SDK</a></li>
+        <li>Using <em>bash</em>, install git and dependencies:</li>
+      </ol>
+      <p><strong>Debian / Ubuntu:</strong></p>
+      <CodeBlock language="bash">{'sudo apt update && sudo apt install git libicu-dev libdeflate-dev zstd libargon2-dev'}</CodeBlock>
+      <p><strong>Fedora:</strong></p>
+      <CodeBlock language="bash">{'sudo dnf install git libicu-devel libdeflate-devel zstd libargon2-devel'}</CodeBlock>
+      <Admonition type="note">
+        <p>The exact package names may vary by distribution. Consult your distribution's package manager documentation.</p>
+      </Admonition>
+      <p><strong>Recommended IDEs:</strong> <a href="https://www.jetbrains.com/rider/">JetBrains Rider 2025.3+</a> or <a href="https://code.visualstudio.com/">VS Code</a></p>
+      <h3>Install ModernUO</h3>
+      <ol>
+        <li>Using <em>bash</em>, navigate to the folder where you want to install ModernUO and run:</li>
+      </ol>
+      <CodeBlock language="bash">{`git clone https://github.com/modernuo/modernuo
+cd modernuo`}</CodeBlock>
+    </>
+  ),
+}}
+</OsTabs>

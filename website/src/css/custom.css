@@ -1,0 +1,97 @@
+/* ModernUO Gold Theme — dark mode only */
+
+:root {
+  --muo-gold: #d5bf74;
+  --muo-gold-dark: #b09f4f;
+  --muo-gold-light: #e8d89e;
+  --muo-green: #77d574;
+  --muo-blue: #748ad5;
+  --muo-purple: #bf74d5;
+
+  --ifm-font-family-base: 'Inter', system-ui, -apple-system, sans-serif;
+  --ifm-heading-font-family: 'Inter', system-ui, -apple-system, sans-serif;
+
+  --ifm-color-primary: #d5bf74;
+  --ifm-color-primary-dark: #cdb45e;
+  --ifm-color-primary-darker: #c9ae53;
+  --ifm-color-primary-darkest: #b09635;
+  --ifm-color-primary-light: #ddca8a;
+  --ifm-color-primary-lighter: #e1d095;
+  --ifm-color-primary-lightest: #ede0b6;
+  --ifm-background-color: #1a1a1a;
+  --ifm-background-surface-color: #212121;
+  --ifm-code-font-size: 95%;
+  --docusaurus-highlighted-code-line-bg: rgba(213, 191, 116, 0.15);
+}
+
+/* Navbar */
+.navbar {
+  background-color: #212121;
+  border-bottom: 1px solid rgba(213, 191, 116, 0.2);
+}
+
+.navbar__title {
+  color: #d5bf74;
+}
+
+/* Hide external link icon on internal static pages */
+.navbar__link--internal svg[class*="iconExternalLink"],
+.navbar__link--internal svg[class*="external"],
+.navbar__link--internal::after,
+.menu__link--internal svg[class*="iconExternalLink"],
+.menu__link--internal svg[class*="external"],
+.menu__link--internal::after {
+  display: none !important;
+}
+
+/* Navbar icon links */
+.navbar-icon {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem;
+  color: rgba(255, 255, 255, 0.35);
+  transition: color 0.15s ease;
+}
+
+.navbar-icon:hover {
+  color: #d5bf74;
+}
+
+.navbar-icon--sponsor {
+  color: rgba(219, 68, 85, 0.45);
+}
+
+.navbar-icon--sponsor:hover {
+  color: #db4455;
+}
+
+/* Sidebar */
+.menu__link--active:not(.menu__link--sublist) {
+  color: #d5bf74;
+}
+
+/* Button overrides for landing page */
+.button--gold {
+  background-color: #d5bf74;
+  color: #212121;
+  border: none;
+  font-weight: 600;
+}
+
+.button--gold:hover {
+  background-color: #e8d89e;
+  color: #212121;
+}
+
+.button--outline-gold {
+  background: transparent;
+  color: #d5bf74;
+  border: 1px solid rgba(213, 191, 116, 0.4);
+  font-weight: 500;
+}
+
+.button--outline-gold:hover {
+  background-color: rgba(213, 191, 116, 0.08);
+  border-color: rgba(213, 191, 116, 0.6);
+  color: #d5bf74;
+}
