@@ -21,6 +21,13 @@ public static partial class GameServer
 
         public bool Accepted { get; set; }
 
+        /// <summary>
+        /// When true, the login will be completed asynchronously (e.g., by a gateway handler).
+        /// The packet handler skips both the accept and reject paths.
+        /// The handler that sets this is responsible for calling SendCharacterList or Disconnect.
+        /// </summary>
+        public bool Deferred { get; set; }
+
         public CityInfo[] CityInfo { get; set; }
     }
 
