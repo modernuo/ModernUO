@@ -21,7 +21,7 @@ public static class GatewayClient
     public static bool IsReady => _httpClient != null;
     public static bool IsSignalRConnected => _hubConnection?.State == HubConnectionState.Connected;
 
-    public static void Configure()
+    public static void Initialize()
     {
         if (!GatewayConfig.Enabled)
         {
@@ -36,53 +36,76 @@ public static class GatewayClient
         };
         _httpClient.DefaultRequestHeaders.Add("Authorization", $"ApiKey {GatewayConfig.ApiKey}");
 
-        // SignalR client (optional)
-        if (GatewayConfig.SignalREnabled)
-        {
-            var hubUrl = $"{GatewayConfig.GatewayUrl.TrimEnd('/')}/hubs/gameserver?apiKey={GatewayConfig.ApiKey}";
+        logger.Information("Gateway API key configured: length={Length}, first4='{First4}', last4='{Last4}'",
+            GatewayConfig.ApiKey.Length,
+            GatewayConfig.ApiKey.Length >= 4 ? GatewayConfig.ApiKey[..4] : GatewayConfig.ApiKey,
+            GatewayConfig.ApiKey.Length >= 4 ? GatewayConfig.ApiKey[^4..] : GatewayConfig.ApiKey);
 
-            _hubConnection = new HubConnectionBuilder()
-                .WithUrl(hubUrl)
-                .WithAutomaticReconnect(new[]
+        // SignalR client
+        var encodedApiKey = Uri.EscapeDataString(GatewayConfig.ApiKey);
+        var hubUrl = $"{GatewayConfig.GatewayUrl.TrimEnd('/')}/hubs/gameserver?apiKey={encodedApiKey}";
+
+        _hubConnection = new HubConnectionBuilder()
+            .WithUrl(hubUrl, options =>
+            {
+                // Prefer IPv4 to avoid ::1 vs 127.0.0.1 mismatch in IP allowlists
+                options.HttpMessageHandlerFactory = handler =>
                 {
-                    TimeSpan.Zero,
-                    TimeSpan.FromSeconds(2),
-                    TimeSpan.FromSeconds(5),
-                    TimeSpan.FromSeconds(10),
-                    TimeSpan.FromSeconds(30)
-                })
-                .Build();
-
-            // Register handlers -- all marshal to game thread
-            _hubConnection.On<PushedSession>("PushSession", session =>
+                    if (handler is SocketsHttpHandler socketsHandler)
+                    {
+                        socketsHandler.ConnectCallback = async (context, ct) =>
+                        {
+                            var socket = new System.Net.Sockets.Socket(
+                                System.Net.Sockets.AddressFamily.InterNetwork,
+                                System.Net.Sockets.SocketType.Stream,
+                                System.Net.Sockets.ProtocolType.Tcp);
+                            socket.NoDelay = true;
+                            await socket.ConnectAsync(context.DnsEndPoint, ct);
+                            return new System.Net.Sockets.NetworkStream(socket, ownsSocket: true);
+                        };
+                    }
+                    return handler;
+                };
+            })
+            .WithAutomaticReconnect(new[]
             {
-                Core.LoopContext.Post(() => GatewaySessionStore.Add(session), EventLoopContext.Priority.High);
-            });
+                TimeSpan.Zero,
+                TimeSpan.FromSeconds(2),
+                TimeSpan.FromSeconds(5),
+                TimeSpan.FromSeconds(10),
+                TimeSpan.FromSeconds(30)
+            })
+            .Build();
 
-            _hubConnection.On<AdminCommandData>("AdminCommand", command =>
-            {
-                Core.LoopContext.Post(() => GatewayAdminHandler.HandleCommand(command));
-            });
+        // Register handlers -- all marshal to game thread
+        _hubConnection.On<PushedSession>("PushSession", session =>
+        {
+            Core.LoopContext.Post(() => GatewaySessionStore.Add(session), EventLoopContext.Priority.High);
+        });
 
-            _hubConnection.On("Ping", () =>
-            {
-                // No-op, connection keep-alive handled by SignalR internally
-            });
+        _hubConnection.On<AdminCommandData>("AdminCommand", command =>
+        {
+            Core.LoopContext.Post(() => GatewayAdminHandler.HandleCommand(command));
+        });
 
-            _hubConnection.Reconnected += connectionId =>
-            {
-                logger.Information("SignalR reconnected to gateway (ConnectionId: {Id})", connectionId);
-                return Task.CompletedTask;
-            };
+        _hubConnection.On("Ping", () =>
+        {
+            // No-op, connection keep-alive handled by SignalR internally
+        });
 
-            _hubConnection.Closed += error =>
-            {
-                logger.Warning("SignalR connection to gateway closed: {Message}", error?.Message ?? "clean disconnect");
-                return Task.CompletedTask;
-            };
+        _hubConnection.Reconnected += connectionId =>
+        {
+            logger.Information("SignalR reconnected to gateway (ConnectionId: {Id})", connectionId);
+            return Task.CompletedTask;
+        };
 
-            // Connect after server starts (via EventSink.ServerStarted)
-        }
+        _hubConnection.Closed += error =>
+        {
+            logger.Warning("SignalR connection to gateway closed: {Message}", error?.Message ?? "clean disconnect");
+            return Task.CompletedTask;
+        };
+
+        // Connect after server starts (via EventSink.ServerStarted)
     }
 
     /// <summary>
@@ -112,6 +135,16 @@ public static class GatewayClient
         _hubConnection?.InvokeAsync("Heartbeat", new { data.PlayerCount, data.MaxPlayers, data.IsOnline })
         ?? Task.CompletedTask;
 
+    public static Task SyncAccountStateAsync(string username, string accessLevel, bool isBanned)
+    {
+        if (_hubConnection?.State != HubConnectionState.Connected)
+        {
+            return Task.CompletedTask;
+        }
+
+        return _hubConnection.SendAsync("SyncAccountState", new { username, accessLevel, isBanned });
+    }
+
     public static async Task<GameLoginResponse?> ValidateSessionAsync(int authId)
     {
         if (_hubConnection?.State != HubConnectionState.Connected)
@@ -127,7 +160,7 @@ public static class GatewayClient
                 return null;
             }
 
-            return new GameLoginResponse(result.Valid, result.Reason, result.GameAccountId, result.AccessLevel);
+            return new GameLoginResponse(result.Valid, result.Reason, result.GameAccountId, result.AccessLevel, result.ClientVersion);
         }
         catch (Exception ex)
         {
@@ -159,7 +192,8 @@ public static class GatewayClient
         [property: JsonPropertyName("accepted")] bool Accepted,
         [property: JsonPropertyName("reason")] string? Reason,
         [property: JsonPropertyName("accountId")] Guid? AccountId,
-        [property: JsonPropertyName("accessLevel")] string? AccessLevel
+        [property: JsonPropertyName("accessLevel")] string? AccessLevel,
+        [property: JsonPropertyName("clientVersion")] string? ClientVersion
     );
 
     public record AdminCommandData(
@@ -171,6 +205,7 @@ public static class GatewayClient
         [property: JsonPropertyName("valid")] bool Valid,
         [property: JsonPropertyName("gameAccountId")] Guid? GameAccountId,
         [property: JsonPropertyName("accessLevel")] string? AccessLevel,
-        [property: JsonPropertyName("reason")] string? Reason
+        [property: JsonPropertyName("reason")] string? Reason,
+        [property: JsonPropertyName("clientVersion")] string? ClientVersion
     );
 }

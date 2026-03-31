@@ -41,7 +41,13 @@ public static class GatewayLoginHandler
         // Fast path: check local pushed session store (O(1), no network)
         if (GatewaySessionStore.TryConsume(authId, out var session))
         {
-            logger.Information("Login: {NetState} Account '{Username}' accepted via pushed session", state, username);
+            logger.Information("Login: {NetState} Account '{Username}' accepted via pushed session (fast path)", state, username);
+            // Set client version from the pushed session before the packet handler sends the response
+            if (state.Version == null && session.ClientVersion != null)
+            {
+                state.Version = new ClientVersion(session.ClientVersion);
+            }
+            state.Version ??= ClientVersion.Version70654;
             AcceptLogin(e, state, username, session.AccessLevel);
             return;
         }
@@ -107,9 +113,9 @@ public static class GatewayLoginHandler
             return;
         }
 
-        // Gateway accepted -- use common accept logic (deferred path)
-        logger.Information("Login: {NetState} Account '{Username}' at character list (via Gateway)", state, username);
-        AcceptLoginDeferred(state, username, response.AccessLevel);
+        // Gateway accepted -- use deferred accept logic (sends packets directly)
+        logger.Information("Login: {NetState} Account '{Username}' at character list (via Gateway, deferred path)", state, username);
+        AcceptLoginDeferred(state, username, response.AccessLevel, response.ClientVersion);
     }
 
     /// <summary>
@@ -133,13 +139,16 @@ public static class GatewayLoginHandler
         state.CityInfo = CharacterCreation.GetStartingCities();
         e.Accepted = true;
         e.CityInfo = CharacterCreation.GetStartingCities();
+
+        // Sync real account state back to gateway
+        _ = GatewayClient.SyncAccountStateAsync(username, acct.AccessLevel.ToString(), acct.Banned);
     }
 
     /// <summary>
     /// Handles login acceptance for the deferred path (after async network validation).
     /// Sends packets directly since the original packet handler has already returned.
     /// </summary>
-    private static void AcceptLoginDeferred(NetState state, string username, string accessLevel)
+    private static void AcceptLoginDeferred(NetState state, string username, string accessLevel, string clientVersion = null)
     {
         var acct = FindOrCreateAccount(state, username, accessLevel);
 
@@ -156,9 +165,23 @@ public static class GatewayLoginHandler
         state.CityInfo = CharacterCreation.GetStartingCities();
 
         // Send the same packets that IncomingAccountPackets.GameLogin sends on e.Accepted = true
+        // The game server connection doesn't have the client version (0xEF goes to the login server,
+        // not the game server). Set it from the gateway session data, or fall back to latest known.
+        if (state.Version == null)
+        {
+            state.Version = clientVersion != null
+                ? new ClientVersion(clientVersion)
+                : ClientVersion.Version70654;
+        }
+
         state.CompressionEnabled = true;
         state.SendSupportedFeature();
         state.SendCharacterList();
+
+        // Sync the real account state back to the gateway (access level, ban status).
+        // This ensures the gateway DB reflects the game server's actual state,
+        // especially for accounts that existed before the gateway was deployed.
+        _ = GatewayClient.SyncAccountStateAsync(username, acct.AccessLevel.ToString(), acct.Banned);
     }
 
     /// <summary>

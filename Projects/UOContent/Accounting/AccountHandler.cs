@@ -330,6 +330,12 @@ public static class AccountHandler
     [OnEvent(nameof(GameServer.GameServerLoginEvent))]
     public static void OnGameServerLogin(GameServer.GameLoginEventArgs e)
     {
+        // When gateway is enabled, the GatewayLoginHandler handles login validation.
+        if (Systems.Gateway.GatewayConfig.Enabled)
+        {
+            return;
+        }
+
         var un = e.Username;
         var pw = e.Password;
 

@@ -18,7 +18,6 @@ public static class GatewayConfig
     public static string ApiKey { get; private set; } = "";
     public static int HeartbeatIntervalSeconds { get; private set; }
     public static int MaxPlayers { get; private set; }
-    public static bool SignalREnabled { get; private set; }
 
     public static void Configure()
     {
@@ -33,7 +32,6 @@ public static class GatewayConfig
         ApiKey = ServerConfiguration.GetOrUpdateSetting("gateway.apiKey", "");
         HeartbeatIntervalSeconds = ServerConfiguration.GetOrUpdateSetting("gateway.heartbeatIntervalSeconds", 30);
         MaxPlayers = ServerConfiguration.GetOrUpdateSetting("gateway.maxPlayers", 200);
-        SignalREnabled = ServerConfiguration.GetOrUpdateSetting("gateway.signalREnabled", false);
 
         if (string.IsNullOrWhiteSpace(ApiKey))
         {

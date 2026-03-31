@@ -18,7 +18,7 @@ public static class GatewaySessionStore
 
     public static void Configure()
     {
-        if (!GatewayConfig.Enabled || !GatewayConfig.SignalREnabled)
+        if (!GatewayConfig.Enabled)
         {
             return;
         }
@@ -87,5 +87,6 @@ public record PushedSession(
     string Username,
     string AccessLevel,
     string ClientIP,
+    string? ClientVersion,
     DateTime ExpiresAt
 );
