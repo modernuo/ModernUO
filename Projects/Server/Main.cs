@@ -50,6 +50,7 @@ public static class Core
     private static int _itemCount;
     private static int _mobileCount;
     public static EventLoopContext LoopContext { get; set; }
+    public static TaskScheduler LoopContextTaskScheduler { get; set; }
 
     private static readonly Type[] _serialTypeArray = { typeof(Serial) };
 
@@ -372,6 +373,7 @@ public static class Core
         Thread = Thread.CurrentThread;
         LoopContext = new EventLoopContext();
         SynchronizationContext.SetSynchronizationContext(LoopContext);
+        LoopContextTaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
 
         AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
         AppDomain.CurrentDomain.ProcessExit += CurrentDomain_ProcessExit;

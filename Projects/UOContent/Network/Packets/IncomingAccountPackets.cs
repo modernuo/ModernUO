@@ -384,6 +384,13 @@ public static class IncomingAccountPackets
 
         GameServer.GameServerLoginEvent(e);
 
+        if (e.Deferred)
+        {
+            // Login is being handled asynchronously (e.g., gateway validation).
+            // The handler that set Deferred is responsible for completing the login.
+            return;
+        }
+
         if (e.Accepted)
         {
             state.CityInfo = e.CityInfo;
