@@ -37,8 +37,7 @@ public static class GatewayHeartbeat
         // Send first heartbeat immediately
         SendHeartbeat();
 
-        // Connect SignalR if enabled
-        if (GatewayConfig.SignalREnabled)
+        // Connect SignalR
         {
             _ = GatewayClient.ConnectSignalRAsync();
         }
