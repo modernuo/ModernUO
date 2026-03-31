@@ -53,7 +53,7 @@ public static class GatewayHeartbeat
         try
         {
             var playerCount = NetState.Instances.Count;
-            var request = new GatewayClient.HeartbeatRequest(playerCount, GatewayConfig.MaxPlayers, true);
+            var request = new GatewayClient.HeartbeatRequest(playerCount, true);
 
             if (GatewayClient.IsSignalRConnected)
             {

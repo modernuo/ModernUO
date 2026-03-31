@@ -132,7 +132,7 @@ public static class GatewayClient
     // --- SignalR methods ---
 
     public static Task SendHeartbeatAsync(HeartbeatRequest data) =>
-        _hubConnection?.InvokeAsync("Heartbeat", new { data.PlayerCount, data.MaxPlayers, data.IsOnline })
+        _hubConnection?.InvokeAsync("Heartbeat", new { data.PlayerCount, data.IsOnline })
         ?? Task.CompletedTask;
 
     public static Task SyncAccountStateAsync(string username, string accessLevel, bool isBanned)
@@ -178,7 +178,6 @@ public static class GatewayClient
 
     public record HeartbeatRequest(
         [property: JsonPropertyName("playerCount")] int PlayerCount,
-        [property: JsonPropertyName("maxPlayers")] int MaxPlayers,
         [property: JsonPropertyName("isOnline")] bool IsOnline
     );
 
