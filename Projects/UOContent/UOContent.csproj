@@ -30,7 +30,10 @@
         <Delete Files="..\..\Distribution\Assemblies\libdeflate.dll" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Assemblies\libdeflate.dylib" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Assemblies\ZstdNet.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\Assemblies\libzstd.dll" ContinueOnError="true" />
         <Delete Files="..\..\Distribution\Assemblies\ModernUO.Serialization.Annotations.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\Assemblies\ModernUO.CodeGeneratedEvents.Annotations.dll" ContinueOnError="true" />
+        <Delete Files="..\..\Distribution\Assemblies\ModernUO.CodeGeneratedEvents.Generator.dll" ContinueOnError="true" />
     </Target>
     <ItemGroup>
         <ProjectReference Include="..\Logger\Logger.csproj" />
