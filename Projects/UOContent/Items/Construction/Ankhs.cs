@@ -14,7 +14,7 @@ namespace Server.Items
 
         public static void GetContextMenuEntries(Mobile from, Item item, ref PooledRefList<ContextMenuEntry> list)
         {
-            if (from is PlayerMobile mobile)
+            if (Core.UOTD && !Core.AOS && from is PlayerMobile mobile)
             {
                 list.Add(new LockKarmaEntry(mobile.KarmaLocked));
             }
