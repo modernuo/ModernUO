@@ -144,7 +144,9 @@ public static class NativeLibraryChecker
         var missing = new List<string>();
         foreach (var formula in formulae)
         {
-            var installed = installedFormulae.Contains(formula);
+            // Check exact match or versioned variant (e.g. "icu4c@78" matches "icu4c")
+            var installed = installedFormulae.Contains(formula) ||
+                installedFormulae.Any(f => f.StartsWith($"{formula}@", StringComparison.OrdinalIgnoreCase));
             if (!installed)
             {
                 missing.Add(formula);
