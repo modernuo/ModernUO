@@ -17,37 +17,23 @@ using System;
 
 namespace Server.Mobiles;
 
-internal sealed class AITimer : Timer
+public sealed class AITimer : Timer
 {
     private readonly BaseAI _owner;
     private int _detectHiddenMinDelay;
     private int _detectHiddenMaxDelay;
 
     public AITimer(BaseAI owner) : base(TimeSpan.FromMilliseconds(Utility.Random(3000)),
-        TimeSpan.FromMilliseconds(GetBaseInterval(owner)))
+        TimeSpan.FromSeconds(owner.Mobile.CurrentSpeed))
     {
         _owner = owner;
         _owner._nextDetectHidden = Core.TickCount;
     }
 
-    private static double GetBaseInterval(BaseAI owner)
+    public void Activate()
     {
-        double interval;
-
-        if (owner.IsFollowingMaster())
-        {
-            interval = owner.Mobile.CurrentSpeed * (Core.AOS ? 100 : 400);
-        }
-        else if (owner.Mobile.CurrentSpeed <= 0.4)
-        {
-            interval = owner.Mobile.CurrentSpeed * 1000;
-        }
-        else
-        {
-            interval = owner.Mobile.CurrentSpeed * 3000;
-        }
-
-        return Math.Max(interval, Core.AOS ? 100 : 200);
+        Interval = TimeSpan.FromSeconds(_owner.Mobile.CurrentSpeed);
+        Start();
     }
 
     protected override void OnTick()
@@ -58,8 +44,6 @@ internal sealed class AITimer : Timer
             return;
         }
 
-        Interval = TimeSpan.FromMilliseconds(GetBaseInterval(_owner));
-
         _owner.Mobile.OnThink();
 
         if (ShouldStop())
@@ -68,6 +52,7 @@ internal sealed class AITimer : Timer
             return;
         }
 
+        Interval = TimeSpan.FromSeconds(_owner.Mobile.CurrentSpeed);
         HandleBardEffects();
 
         if (_owner.Mobile.Controlled ? !_owner.Obey() : !_owner.Think())
