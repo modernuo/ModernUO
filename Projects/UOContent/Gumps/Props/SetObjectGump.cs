@@ -14,10 +14,6 @@ namespace Server.Gumps
         private const int EntryWidth = 212;
 
         private const int TotalWidth = OffsetSize + EntryWidth + OffsetSize + SetWidth + OffsetSize;
-        private const int TotalHeight = OffsetSize + 5 * (EntryHeight + OffsetSize);
-
-        private const int BackWidth = BorderSize + TotalWidth + BorderSize;
-        private const int BackHeight = BorderSize + TotalHeight + BorderSize;
         private readonly Mobile m_Mobile;
         private readonly object m_Object;
         private readonly PropertyInfo m_Property;

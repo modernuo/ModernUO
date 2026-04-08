@@ -14,8 +14,6 @@ public class WhoGump : DynamicGump
 
     private const int TotalWidth = OffsetSize + EntryWidth + OffsetSize + SetWidth + OffsetSize;
 
-    private const int BackWidth = BorderSize + TotalWidth + BorderSize;
-
     private readonly List<Mobile> _mobiles;
     private readonly int _page;
 

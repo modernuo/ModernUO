@@ -13,10 +13,6 @@ namespace Server.Gumps
         private const int EntryWidth = CoordWidth + OffsetSize + CoordWidth;
 
         private const int TotalWidth = OffsetSize + EntryWidth + OffsetSize + SetWidth + OffsetSize;
-        private const int TotalHeight = OffsetSize + 4 * (EntryHeight + OffsetSize);
-
-        private const int BackWidth = BorderSize + TotalWidth + BorderSize;
-        private const int BackHeight = BorderSize + TotalHeight + BorderSize;
         private readonly Mobile m_Mobile;
         private readonly object m_Object;
         private readonly PropertyInfo m_Property;
@@ -34,51 +30,13 @@ namespace Server.Gumps
 
             AddPage(0);
 
-            AddBackground(0, 0, BackWidth, BackHeight, BackGumpID);
-            AddImageTiled(BorderSize, BorderSize, TotalWidth, TotalHeight, OffsetGumpID);
-
-            var x = BorderSize + OffsetSize;
-            var y = BorderSize + OffsetSize;
-
-            AddImageTiled(x, y, EntryWidth, EntryHeight, EntryGumpID);
-            AddLabelCropped(x + TextOffsetX, y, EntryWidth - TextOffsetX, EntryHeight, TextHue, prop?.Name);
-            x += EntryWidth + OffsetSize;
-
-            if (SetGumpID != 0)
-            {
-                AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
-            }
-
-            x = BorderSize + OffsetSize;
-            y += EntryHeight + OffsetSize;
-
-            AddImageTiled(x, y, EntryWidth, EntryHeight, EntryGumpID);
-            AddLabelCropped(x + TextOffsetX, y, EntryWidth - TextOffsetX, EntryHeight, TextHue, "Use your location");
-            x += EntryWidth + OffsetSize;
-
-            if (SetGumpID != 0)
-            {
-                AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
-            }
-
-            AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 1);
-
-            x = BorderSize + OffsetSize;
-            y += EntryHeight + OffsetSize;
-
-            AddImageTiled(x, y, EntryWidth, EntryHeight, EntryGumpID);
-            AddLabelCropped(x + TextOffsetX, y, EntryWidth - TextOffsetX, EntryHeight, TextHue, "Target a location");
-            x += EntryWidth + OffsetSize;
-
-            if (SetGumpID != 0)
-            {
-                AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
-            }
-
-            AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 2);
-
-            x = BorderSize + OffsetSize;
-            y += EntryHeight + OffsetSize;
+            this.AddPropsFrame(TotalWidth, 4, out var x, out var y);
+            this.AddPropsEntryLabel(ref x, ref y, EntryWidth, prop?.Name);
+            PropsLayout.NextRow(ref x, ref y);
+            this.AddPropsEntryButton(ref x, ref y, EntryWidth, "Use your location", true, 1);
+            PropsLayout.NextRow(ref x, ref y);
+            this.AddPropsEntryButton(ref x, ref y, EntryWidth, "Target a location", true, 2);
+            PropsLayout.NextRow(ref x, ref y);
 
             AddImageTiled(x, y, CoordWidth, EntryHeight, EntryGumpID);
             AddLabelCropped(x + TextOffsetX, y, CoordWidth - TextOffsetX, EntryHeight, TextHue, "X:");

@@ -21,8 +21,6 @@ namespace Server.Gumps
 
         private const int TotalWidth = OffsetSize + EntryWidth + OffsetSize + SetWidth + OffsetSize;
 
-        private const int BackWidth = BorderSize + TotalWidth + BorderSize;
-
         private readonly CAGCategory m_Category;
 
         private readonly Mobile m_Owner;
@@ -50,64 +48,21 @@ namespace Server.Gumps
 
             var count = Math.Clamp(nodes.Length - page * EntryCount, 0, EntryCount);
 
-            var totalHeight = OffsetSize + (EntryHeight + OffsetSize) * (count + 1);
-
             AddPage(0);
 
-            AddBackground(0, 0, BackWidth, BorderSize + totalHeight + BorderSize, BackGumpID);
-            AddImageTiled(
-                BorderSize,
-                BorderSize,
-                TotalWidth,
-                totalHeight,
-                OffsetGumpID
+            this.AddPropsFrame(TotalWidth, count + 1, out var x, out var y, EntryHeight);
+            this.AddPropsHeaderWithBack(
+                TotalWidth, ref x, ref y, m_Category.Title,
+                m_Category.Parent != null, 1,
+                page > 0, 2,
+                (page + 1) * EntryCount < nodes.Length, 3,
+                nextType: GumpButtonType.Reply, nextParam: 1,
+                entryHeight: EntryHeight
             );
-
-            var x = BorderSize + OffsetSize;
-            var y = BorderSize + OffsetSize;
-
-            AddImageTiled(x, y, PrevWidth, EntryHeight, HeaderGumpID);
-
-            if (m_Category.Parent != null)
-            {
-                AddButton(x + PrevOffsetX, y + PrevOffsetY, PrevButtonID1, PrevButtonID2, 1);
-            }
-
-            x += PrevWidth + OffsetSize;
-
-            const int emptyWidth = TotalWidth - PrevWidth * 2 - NextWidth - OffsetSize * 5;
-            AddImageTiled(x, y, emptyWidth, EntryHeight, EntryGumpID);
-
-            AddHtml(
-                x + TextOffsetX,
-                y + (EntryHeight - 20) / 2,
-                emptyWidth - TextOffsetX,
-                EntryHeight,
-                $"<center>{m_Category.Title}</center>"
-            );
-
-            x += emptyWidth + OffsetSize;
-
-            AddImageTiled(x, y, PrevWidth, EntryHeight, HeaderGumpID);
-
-            if (page > 0)
-            {
-                AddButton(x + PrevOffsetX, y + PrevOffsetY, PrevButtonID1, PrevButtonID2, 2);
-            }
-
-            x += PrevWidth + OffsetSize;
-
-            AddImageTiled(x, y, NextWidth, EntryHeight, HeaderGumpID);
-
-            if ((page + 1) * EntryCount < nodes.Length)
-            {
-                AddButton(x + NextOffsetX, y + NextOffsetY, NextButtonID1, NextButtonID2, 3, GumpButtonType.Reply, 1);
-            }
 
             for (int i = 0, index = page * EntryCount; i < EntryCount && index < nodes.Length; ++i, ++index)
             {
-                x = BorderSize + OffsetSize;
-                y += EntryHeight + OffsetSize;
+                PropsLayout.NextRow(ref x, ref y, EntryHeight);
 
                 var node = nodes[index];
 

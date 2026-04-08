@@ -12,10 +12,6 @@ namespace Server.Gumps
         private const int EntryWidth = 160;
 
         private const int TotalWidth = OffsetSize + EntryWidth + OffsetSize + SetWidth + OffsetSize;
-        private const int TotalHeight = OffsetSize + 2 * (EntryHeight + OffsetSize);
-
-        private const int BackWidth = BorderSize + TotalWidth + BorderSize;
-        private const int BackHeight = BorderSize + TotalHeight + BorderSize;
 
         private readonly Mobile m_From;
 
@@ -37,34 +33,10 @@ namespace Server.Gumps
 
             AddPage(0);
 
-            AddBackground(0, 0, BackWidth, BackHeight, BackGumpID);
-            AddImageTiled(BorderSize, BorderSize, TotalWidth, TotalHeight, OffsetGumpID);
-
-            var x = BorderSize + OffsetSize;
-            var y = BorderSize + OffsetSize;
-
-            AddImageTiled(x, y, EntryWidth, EntryHeight, EntryGumpID);
-            AddLabelCropped(x + TextOffsetX, y, EntryWidth - TextOffsetX, EntryHeight, TextHue, skill.Name);
-            x += EntryWidth + OffsetSize;
-
-            if (SetGumpID != 0)
-            {
-                AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
-            }
-
-            x = BorderSize + OffsetSize;
-            y += EntryHeight + OffsetSize;
-
-            AddImageTiled(x, y, EntryWidth, EntryHeight, EntryGumpID);
-            AddTextEntry(x + TextOffsetX, y, EntryWidth - TextOffsetX, EntryHeight, TextHue, 0, initialText);
-            x += EntryWidth + OffsetSize;
-
-            if (SetGumpID != 0)
-            {
-                AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
-            }
-
-            AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 1);
+            this.AddPropsFrame(TotalWidth, 2, out var x, out var y);
+            this.AddPropsEntryLabel(ref x, ref y, EntryWidth, skill.Name);
+            PropsLayout.NextRow(ref x, ref y);
+            this.AddPropsEntryTextInput(ref x, ref y, EntryWidth, 0, initialText, true, 1);
         }
 
         public override void OnResponse(NetState sender, in RelayInfo info)
@@ -110,8 +82,6 @@ namespace Server.Gumps
 
         private const int TotalWidth = OffsetSize + NameWidth + OffsetSize + ValueWidth + OffsetSize + SetWidth + OffsetSize;
 
-        private static readonly int BackWidth = BorderSize + TotalWidth + BorderSize;
-
         private static readonly int IndentWidth = 12;
 
         private readonly Mobile m_From;
@@ -135,26 +105,12 @@ namespace Server.Gumps
                 count += selected.Skills.Length;
             }
 
-            var totalHeight = OffsetSize + (EntryHeight + OffsetSize) * (count + 1);
-
             AddPage(0);
 
-            AddBackground(0, 0, BackWidth, BorderSize + totalHeight + BorderSize, BackGumpID);
-            AddImageTiled(BorderSize, BorderSize, TotalWidth, totalHeight, OffsetGumpID);
-
-            var x = BorderSize + OffsetSize;
-            var y = BorderSize + OffsetSize;
+            this.AddPropsFrame(TotalWidth, count + 1, out var x, out var y);
+            this.AddPropsHeader(TotalWidth, ref x, ref y, null, false, 0, false, 0);
 
             const int emptyWidth = TotalWidth - PrevWidth - NextWidth - OffsetSize * 4;
-            AddImageTiled(x, y, PrevWidth, EntryHeight, HeaderGumpID);
-
-            x += PrevWidth + OffsetSize;
-
-            AddImageTiled(x, y, emptyWidth, EntryHeight, HeaderGumpID);
-
-            x += emptyWidth + OffsetSize;
-
-            AddImageTiled(x, y, NextWidth, EntryHeight, HeaderGumpID);
 
             for (var i = 0; i < m_Groups.Length; ++i)
             {

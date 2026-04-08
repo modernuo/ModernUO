@@ -100,7 +100,7 @@ public static class PropsLayoutExtensions
 
             if (title != null)
             {
-                gump.AddHtml(x + TextOffsetX, y, emptyWidth - TextOffsetX, entryHeight, $"<center>{title}</center>");
+                gump.AddHtml(x, y, emptyWidth, entryHeight, title);
             }
 
             x += emptyWidth + OffsetSize;
