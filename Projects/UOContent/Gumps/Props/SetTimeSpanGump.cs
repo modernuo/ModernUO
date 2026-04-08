@@ -9,13 +9,13 @@ namespace Server.Gumps
 {
     public class SetTimeSpanGump : Gump
     {
-        private static readonly int EntryWidth = 212;
+        private const int EntryWidth = 212;
 
-        private static readonly int TotalWidth = OffsetSize + EntryWidth + OffsetSize + SetWidth + OffsetSize;
-        private static readonly int TotalHeight = OffsetSize + 7 * (EntryHeight + OffsetSize);
+        private const int TotalWidth = OffsetSize + EntryWidth + OffsetSize + SetWidth + OffsetSize;
+        private const int TotalHeight = OffsetSize + 7 * (EntryHeight + OffsetSize);
 
-        private static readonly int BackWidth = BorderSize + TotalWidth + BorderSize;
-        private static readonly int BackHeight = BorderSize + TotalHeight + BorderSize;
+        private const int BackWidth = BorderSize + TotalWidth + BorderSize;
+        private const int BackHeight = BorderSize + TotalHeight + BorderSize;
         private readonly Mobile m_Mobile;
         private readonly object m_Object;
         private readonly PropertyInfo m_Property;
@@ -36,13 +36,7 @@ namespace Server.Gumps
             AddPage(0);
 
             AddBackground(0, 0, BackWidth, BackHeight, BackGumpID);
-            AddImageTiled(
-                BorderSize,
-                BorderSize,
-                TotalWidth - (OldStyle ? SetWidth + OffsetSize : 0),
-                TotalHeight,
-                OffsetGumpID
-            );
+            AddImageTiled(BorderSize, BorderSize, TotalWidth, TotalHeight, OffsetGumpID);
 
             AddRect(0, prop?.Name, 0, -1);
             AddRect(1, ts.ToString(), 0, -1);

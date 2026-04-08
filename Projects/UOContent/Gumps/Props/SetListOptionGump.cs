@@ -9,21 +9,12 @@ namespace Server.Gumps
 {
     public class SetListOptionGump : Gump
     {
-        private static readonly int EntryWidth = 212;
-        private static readonly int EntryCount = 13;
+        private const int EntryWidth = 212;
+        private const int EntryCount = 13;
 
-        private static readonly int TotalWidth = OffsetSize + EntryWidth + OffsetSize + SetWidth + OffsetSize;
+        private const int TotalWidth = OffsetSize + EntryWidth + OffsetSize + SetWidth + OffsetSize;
 
-        private static readonly int BackWidth = BorderSize + TotalWidth + BorderSize;
-
-        private static readonly bool PrevLabel = OldStyle;
-        private static readonly bool NextLabel = OldStyle;
-
-        private static readonly int PrevLabelOffsetX = PrevWidth + 1;
-        private static readonly int PrevLabelOffsetY = 0;
-
-        private static readonly int NextLabelOffsetX = -29;
-        private static readonly int NextLabelOffsetY = 0;
+        private const int BackWidth = BorderSize + TotalWidth + BorderSize;
 
         private readonly object[] m_Values;
         protected Mobile m_Mobile;
@@ -61,19 +52,12 @@ namespace Server.Gumps
                 var backHeight = BorderSize + totalHeight + BorderSize;
 
                 AddBackground(0, 0, BackWidth, backHeight, BackGumpID);
-                AddImageTiled(
-                    BorderSize,
-                    BorderSize,
-                    TotalWidth - (OldStyle ? SetWidth + OffsetSize : 0),
-                    totalHeight,
-                    OffsetGumpID
-                );
+                AddImageTiled(BorderSize, BorderSize, TotalWidth, totalHeight, OffsetGumpID);
 
                 var x = BorderSize + OffsetSize;
-                var y = BorderSize + OffsetSize;
+                const int y = BorderSize + OffsetSize;
 
-                var emptyWidth = TotalWidth - PrevWidth - NextWidth - OffsetSize * 4 -
-                                 (OldStyle ? SetWidth + OffsetSize : 0);
+                const int emptyWidth = TotalWidth - PrevWidth - NextWidth - OffsetSize * 4;
 
                 AddImageTiled(x, y, PrevWidth, EntryHeight, HeaderGumpID);
 
@@ -88,32 +72,15 @@ namespace Server.Gumps
                         GumpButtonType.Page,
                         page - 1
                     );
-
-                    if (PrevLabel)
-                    {
-                        AddLabel(x + PrevLabelOffsetX, y + PrevLabelOffsetY, TextHue, "Previous");
-                    }
                 }
 
                 x += PrevWidth + OffsetSize;
 
-                if (!OldStyle)
-                {
-                    AddImageTiled(
-                        x - (OldStyle ? OffsetSize : 0),
-                        y,
-                        emptyWidth + (OldStyle ? OffsetSize * 2 : 0),
-                        EntryHeight,
-                        HeaderGumpID
-                    );
-                }
+                AddImageTiled(x, y, emptyWidth, EntryHeight, HeaderGumpID);
 
                 x += emptyWidth + OffsetSize;
 
-                if (!OldStyle)
-                {
-                    AddImageTiled(x, y, NextWidth, EntryHeight, HeaderGumpID);
-                }
+                AddImageTiled(x, y, NextWidth, EntryHeight, HeaderGumpID);
 
                 if (page < pages)
                 {
@@ -126,11 +93,6 @@ namespace Server.Gumps
                         GumpButtonType.Page,
                         page + 1
                     );
-
-                    if (NextLabel)
-                    {
-                        AddLabel(x + NextLabelOffsetX, y + NextLabelOffsetY, TextHue, "Next");
-                    }
                 }
 
                 AddRect(0, prop.Name, 0);

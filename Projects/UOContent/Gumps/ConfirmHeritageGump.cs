@@ -39,32 +39,36 @@ namespace Server.Gumps
             switch (info.ButtonID)
             {
                 case (int)Buttons.Okay:
-
-                    Item item = null;
-
-                    foreach (var type in m_Selected)
                     {
-                        try
+                        Item item = null;
+
+                        foreach (var type in m_Selected)
                         {
-                            item = type.CreateInstance<Item>();
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine(ex.Message);
-                            Console.WriteLine(ex.StackTrace);
+                            try
+                            {
+                                item = type.CreateInstance<Item>();
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine(ex.Message);
+                                Console.WriteLine(ex.StackTrace);
+                            }
+
+                            if (item != null)
+                            {
+                                m_Token.Delete();
+                                sender.Mobile.AddToBackpack(item);
+                            }
                         }
 
-                        if (item != null)
-                        {
-                            m_Token.Delete();
-                            sender.Mobile.AddToBackpack(item);
-                        }
+                        break;
                     }
 
-                    break;
                 case (int)Buttons.Cancel:
-                    sender.Mobile.SendGump(new HeritageTokenGump(m_Token));
-                    break;
+                    {
+                        sender.Mobile.SendGump(new HeritageTokenGump(m_Token));
+                        break;
+                    }
             }
         }
 
