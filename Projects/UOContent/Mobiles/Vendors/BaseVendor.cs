@@ -547,7 +547,7 @@ namespace Server.Mobiles
 
                 seller.PlaySound(0x0037); // Gold dropping sound
 
-                if (SupportsBulkOrders(seller))
+                if (ContentFeatureFlags.BulkOrders && SupportsBulkOrders(seller))
                 {
                     var bulkOrder = CreateBulkOrder(seller, false);
 
@@ -1092,7 +1092,7 @@ namespace Server.Mobiles
             var smallBod = dropped as SmallBOD;
             var largeBod = dropped as LargeBOD;
 
-            if (!(smallBod != null || largeBod != null))
+            if (!ContentFeatureFlags.BulkOrders || !(smallBod != null || largeBod != null))
             {
                 return base.OnDragDrop(from, dropped);
             }
@@ -1414,7 +1414,7 @@ namespace Server.Mobiles
         {
             if (from.Alive && IsActiveVendor)
             {
-                if (SupportsBulkOrders(from))
+                if (ContentFeatureFlags.BulkOrders && SupportsBulkOrders(from))
                 {
                     list.Add(new BulkOrderInfoEntry());
                 }
@@ -1457,7 +1457,7 @@ namespace Server.Mobiles
 
             public override void OnClick(Mobile from, IEntity target)
             {
-                if (target is not BaseVendor vendor || !vendor.SupportsBulkOrders(from))
+                if (!ContentFeatureFlags.BulkOrders || target is not BaseVendor vendor || !vendor.SupportsBulkOrders(from))
                 {
                     return;
                 }
