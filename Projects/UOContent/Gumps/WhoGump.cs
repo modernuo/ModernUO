@@ -14,8 +14,6 @@ public class WhoGump : DynamicGump
 
     private const int TotalWidth = OffsetSize + EntryWidth + OffsetSize + SetWidth + OffsetSize;
 
-    private const int BackWidth = BorderSize + TotalWidth + BorderSize;
-
     private readonly List<Mobile> _mobiles;
     private readonly int _page;
 
@@ -77,15 +75,9 @@ public class WhoGump : DynamicGump
     {
         var count = Math.Clamp(_mobiles.Count - _page * EntryCount, 0, EntryCount);
 
-        var totalHeight = OffsetSize + (EntryHeight + OffsetSize) * (count + 1);
-
         builder.AddPage();
 
-        builder.AddBackground(0, 0, BackWidth, BorderSize + totalHeight + BorderSize, BackGumpID);
-        builder.AddImageTiled(BorderSize, BorderSize, TotalWidth, totalHeight, OffsetGumpID);
-
-        var x = BorderSize + OffsetSize;
-        var y = BorderSize + OffsetSize;
+        builder.AddPropsFrame(TotalWidth, count + 1, out var x, out var y);
 
         const int emptyWidth = TotalWidth - PrevWidth - NextWidth - OffsetSize * 4;
 
@@ -118,32 +110,19 @@ public class WhoGump : DynamicGump
 
         for (int i = 0, index = _page * EntryCount; i < EntryCount && index < _mobiles.Count; ++i, ++index)
         {
-            x = BorderSize + OffsetSize;
-            y += EntryHeight + OffsetSize;
+            PropsLayout.NextRow(ref x, ref y);
 
             var m = _mobiles[index];
 
-            builder.AddImageTiled(x, y, EntryWidth, EntryHeight, EntryGumpID);
-            builder.AddLabelCropped(
-                x + TextOffsetX,
-                y,
-                EntryWidth - TextOffsetX,
-                EntryHeight,
-                GetHueFor(m),
-                m.Deleted ? "(deleted)" : m.Name
+            builder.AddPropsEntryButton(
+                ref x,
+                ref y,
+                EntryWidth,
+                m.Deleted ? "(deleted)" : m.Name,
+                m.NetState != null && !m.Deleted,
+                i + 3,
+                textHue: GetHueFor(m)
             );
-
-            x += EntryWidth + OffsetSize;
-
-            if (SetGumpID != 0)
-            {
-                builder.AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
-            }
-
-            if (m.NetState != null && !m.Deleted)
-            {
-                builder.AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, i + 3);
-            }
         }
     }
 

@@ -14,8 +14,6 @@ namespace Server.Gumps
 
         private const int TotalWidth = OffsetSize + EntryWidth + OffsetSize + SetWidth + OffsetSize;
 
-        private const int BackWidth = BorderSize + TotalWidth + BorderSize;
-
         private readonly object[] m_Values;
         protected Mobile m_Mobile;
         protected object m_Object;
@@ -48,52 +46,13 @@ namespace Server.Gumps
                     count = EntryCount;
                 }
 
-                var totalHeight = OffsetSize + (count + 2) * (EntryHeight + OffsetSize);
-                var backHeight = BorderSize + totalHeight + BorderSize;
-
-                AddBackground(0, 0, BackWidth, backHeight, BackGumpID);
-                AddImageTiled(BorderSize, BorderSize, TotalWidth, totalHeight, OffsetGumpID);
-
-                var x = BorderSize + OffsetSize;
-                const int y = BorderSize + OffsetSize;
-
-                const int emptyWidth = TotalWidth - PrevWidth - NextWidth - OffsetSize * 4;
-
-                AddImageTiled(x, y, PrevWidth, EntryHeight, HeaderGumpID);
-
-                if (page > 1)
-                {
-                    AddButton(
-                        x + PrevOffsetX,
-                        y + PrevOffsetY,
-                        PrevButtonID1,
-                        PrevButtonID2,
-                        0,
-                        GumpButtonType.Page,
-                        page - 1
-                    );
-                }
-
-                x += PrevWidth + OffsetSize;
-
-                AddImageTiled(x, y, emptyWidth, EntryHeight, HeaderGumpID);
-
-                x += emptyWidth + OffsetSize;
-
-                AddImageTiled(x, y, NextWidth, EntryHeight, HeaderGumpID);
-
-                if (page < pages)
-                {
-                    AddButton(
-                        x + NextOffsetX,
-                        y + NextOffsetY,
-                        NextButtonID1,
-                        NextButtonID2,
-                        0,
-                        GumpButtonType.Page,
-                        page + 1
-                    );
-                }
+                this.AddPropsFrame(TotalWidth, count + 2, out var x, out var y);
+                this.AddPropsHeader(
+                    TotalWidth, ref x, ref y, null,
+                    page > 1, 0, page < pages, 0,
+                    prevType: GumpButtonType.Page, prevParam: page - 1,
+                    nextType: GumpButtonType.Page, nextParam: page + 1
+                );
 
                 AddRect(0, prop.Name, 0);
 
