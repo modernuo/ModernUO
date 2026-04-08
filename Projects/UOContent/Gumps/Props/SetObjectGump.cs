@@ -38,76 +38,16 @@ namespace Server.Gumps
 
             AddPage(0);
 
-            AddBackground(0, 0, BackWidth, BackHeight, BackGumpID);
-            AddImageTiled(BorderSize, BorderSize, TotalWidth, TotalHeight, OffsetGumpID);
-
-            var x = BorderSize + OffsetSize;
-            var y = BorderSize + OffsetSize;
-
-            AddImageTiled(x, y, EntryWidth, EntryHeight, EntryGumpID);
-            AddLabelCropped(x + TextOffsetX, y, EntryWidth - TextOffsetX, EntryHeight, TextHue, prop.Name);
-            x += EntryWidth + OffsetSize;
-
-            if (SetGumpID != 0)
-            {
-                AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
-            }
-
-            x = BorderSize + OffsetSize;
-            y += EntryHeight + OffsetSize;
-
-            AddImageTiled(x, y, EntryWidth, EntryHeight, EntryGumpID);
-            AddLabelCropped(x + TextOffsetX, y, EntryWidth - TextOffsetX, EntryHeight, TextHue, initialText);
-            x += EntryWidth + OffsetSize;
-
-            if (SetGumpID != 0)
-            {
-                AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
-            }
-
-            AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 1);
-
-            x = BorderSize + OffsetSize;
-            y += EntryHeight + OffsetSize;
-
-            AddImageTiled(x, y, EntryWidth, EntryHeight, EntryGumpID);
-            AddLabelCropped(x + TextOffsetX, y, EntryWidth - TextOffsetX, EntryHeight, TextHue, "Change by Serial");
-            x += EntryWidth + OffsetSize;
-
-            if (SetGumpID != 0)
-            {
-                AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
-            }
-
-            AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 2);
-
-            x = BorderSize + OffsetSize;
-            y += EntryHeight + OffsetSize;
-
-            AddImageTiled(x, y, EntryWidth, EntryHeight, EntryGumpID);
-            AddLabelCropped(x + TextOffsetX, y, EntryWidth - TextOffsetX, EntryHeight, TextHue, "Nullify");
-            x += EntryWidth + OffsetSize;
-
-            if (SetGumpID != 0)
-            {
-                AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
-            }
-
-            AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 3);
-
-            x = BorderSize + OffsetSize;
-            y += EntryHeight + OffsetSize;
-
-            AddImageTiled(x, y, EntryWidth, EntryHeight, EntryGumpID);
-            AddLabelCropped(x + TextOffsetX, y, EntryWidth - TextOffsetX, EntryHeight, TextHue, "View Properties");
-            x += EntryWidth + OffsetSize;
-
-            if (SetGumpID != 0)
-            {
-                AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
-            }
-
-            AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 4);
+            this.AddPropsFrame(TotalWidth, 5, out var x, out var y);
+            this.AddPropsEntryLabel(ref x, ref y, EntryWidth, prop.Name);
+            PropsLayout.NextRow(ref x, ref y);
+            this.AddPropsEntryButton(ref x, ref y, EntryWidth, initialText, true, 1);
+            PropsLayout.NextRow(ref x, ref y);
+            this.AddPropsEntryButton(ref x, ref y, EntryWidth, "Change by Serial", true, 2);
+            PropsLayout.NextRow(ref x, ref y);
+            this.AddPropsEntryButton(ref x, ref y, EntryWidth, "Nullify", true, 3);
+            PropsLayout.NextRow(ref x, ref y);
+            this.AddPropsEntryButton(ref x, ref y, EntryWidth, "View Properties", true, 4);
         }
 
         public override void OnResponse(NetState sender, in RelayInfo info)
