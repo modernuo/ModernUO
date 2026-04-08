@@ -108,7 +108,11 @@ namespace Server.Gumps
             AddPage(0);
 
             this.AddPropsFrame(TotalWidth, count + 1, out var x, out var y);
-            this.AddPropsHeader(TotalWidth, ref x, ref y, null, false, 0, false, 0);
+            this.AddPropsHeader(
+                TotalWidth, ref x, ref y,
+                $"{target.GetType().Name} ({target.Serial})".Center(0xFAFAFA),
+                false, 0, false, 0
+            );
 
             const int emptyWidth = TotalWidth - PrevWidth - NextWidth - OffsetSize * 4;
 

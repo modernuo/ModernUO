@@ -109,9 +109,13 @@ namespace Server.Gumps
             AddPage(0);
 
             this.AddPropsFrame(TotalWidth, m_EntryCount + 1, out var x, out var y);
+            var title = m_Type != null && m_Object is ISerializable serializable
+                ? $"{m_Type.Name} ({serializable.Serial})".Center(0xFAFAFA)
+                : m_Type?.Name.Center(0xFAFAFA);
+
             this.AddPropsHeader(
                 TotalWidth, ref x, ref y,
-                m_Type?.Name.Center(0xFAFAFA),
+                title,
                 page > 0, 1,
                 (page + 1) * MaxEntriesPerPage < m_List.Count, 2,
                 nextType: GumpButtonType.Reply, nextParam: 1
