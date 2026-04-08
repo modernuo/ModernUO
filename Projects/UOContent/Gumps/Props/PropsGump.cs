@@ -24,27 +24,16 @@ namespace Server.Gumps
 
     public class PropertiesGump : Gump
     {
-        private static readonly bool PrevLabel = OldStyle;
-        private static readonly bool NextLabel = OldStyle;
-        private static readonly bool TypeLabel = !OldStyle;
+        private const int NameWidth = 107;
+        private const int ValueWidth = 128;
 
-        public static readonly int PrevLabelOffsetX = PrevWidth + 1;
-        private static readonly int PrevLabelOffsetY = 0;
+        private const int MaxEntriesPerPage = 15;
 
-        private static readonly int NextLabelOffsetX = -29;
-        private static readonly int NextLabelOffsetY = 0;
+        private const int TypeWidth = NameWidth + OffsetSize + ValueWidth;
 
-        private static readonly int NameWidth = 107;
-        private static readonly int ValueWidth = 128;
+        private const int TotalWidth = OffsetSize + NameWidth + OffsetSize + ValueWidth + OffsetSize + SetWidth + OffsetSize;
 
-        public static readonly int MaxEntriesPerPage = 15;
-
-        private static readonly int TypeWidth = NameWidth + OffsetSize + ValueWidth;
-
-        private static readonly int TotalWidth =
-            OffsetSize + NameWidth + OffsetSize + ValueWidth + OffsetSize + SetWidth + OffsetSize;
-
-        protected static readonly int BackWidth = BorderSize + TotalWidth + BorderSize;
+        protected const int BackWidth = BorderSize + TotalWidth + BorderSize;
 
         protected readonly List<object> m_List;
         protected readonly Mobile m_Mobile;
@@ -125,7 +114,7 @@ namespace Server.Gumps
             AddImageTiled(
                 BorderSize,
                 BorderSize,
-                TotalWidth - (OldStyle ? SetWidth + OffsetSize : 0),
+                TotalWidth,
                 OffsetSize + (EntryHeight + OffsetSize) * (m_EntryCount + 1),
                 OffsetGumpID
             );
@@ -133,60 +122,30 @@ namespace Server.Gumps
             var x = BorderSize + OffsetSize;
             var y = BorderSize + OffsetSize;
 
-            var emptyWidth = TotalWidth - PrevWidth - NextWidth - OffsetSize * 4 - (OldStyle ? SetWidth + OffsetSize : 0);
-
-            if (OldStyle)
-            {
-                AddImageTiled(x, y, TotalWidth - OffsetSize * 3 - SetWidth, EntryHeight, HeaderGumpID);
-            }
-            else
-            {
-                AddImageTiled(x, y, PrevWidth, EntryHeight, HeaderGumpID);
-            }
+            const int emptyWidth = TotalWidth - PrevWidth - NextWidth - OffsetSize * 4;
+            AddImageTiled(x, y, PrevWidth, EntryHeight, HeaderGumpID);
 
             if (page > 0)
             {
                 AddButton(x + PrevOffsetX, y + PrevOffsetY, PrevButtonID1, PrevButtonID2, 1);
-
-                if (PrevLabel)
-                {
-                    AddLabel(x + PrevLabelOffsetX, y + PrevLabelOffsetY, TextHue, "Previous");
-                }
             }
 
             x += PrevWidth + OffsetSize;
 
-            if (!OldStyle)
-            {
-                AddImageTiled(x, y, emptyWidth, EntryHeight, HeaderGumpID);
-            }
+            AddImageTiled(x, y, emptyWidth, EntryHeight, HeaderGumpID);
 
-            if (TypeLabel && m_Type != null)
+            if (m_Type != null)
             {
-                AddHtml(
-                    x,
-                    y,
-                    emptyWidth,
-                    EntryHeight,
-                    m_Type.Name.Center(0xFAFAFA)
-                );
+                AddHtml(x, y, emptyWidth, EntryHeight, m_Type.Name.Center(0xFAFAFA));
             }
 
             x += emptyWidth + OffsetSize;
 
-            if (!OldStyle)
-            {
-                AddImageTiled(x, y, NextWidth, EntryHeight, HeaderGumpID);
-            }
+            AddImageTiled(x, y, NextWidth, EntryHeight, HeaderGumpID);
 
             if ((page + 1) * MaxEntriesPerPage < m_List.Count)
             {
                 AddButton(x + NextOffsetX, y + NextOffsetY, NextButtonID1, NextButtonID2, 2, GumpButtonType.Reply, 1);
-
-                if (NextLabel)
-                {
-                    AddLabel(x + NextLabelOffsetX, y + NextLabelOffsetY, TextHue, "Next");
-                }
             }
 
             for (int i = 0, index = page * MaxEntriesPerPage; i < m_EntryCount && index < m_List.Count; ++i, ++index)
@@ -452,12 +411,12 @@ namespace Server.Gumps
 
             if (attrs.Length == 0)
             {
-                return Array.Empty<string>();
+                return [];
             }
 
             if (attrs[0] is not CustomEnumAttribute ce)
             {
-                return Array.Empty<string>();
+                return [];
             }
 
             return ce.Names;
@@ -627,7 +586,7 @@ namespace Server.Gumps
                             }
                             else
                             {
-                                groups[type] = new List<PropertyInfo> { prop };
+                                groups[type] = [prop];
                             }
                         }
                     }

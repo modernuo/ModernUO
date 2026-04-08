@@ -9,23 +9,21 @@ namespace Server.Gumps
 {
     public class SetPoint3DGump : Gump
     {
-        private static readonly int CoordWidth = 70;
-        private static readonly int EntryWidth = CoordWidth + OffsetSize + CoordWidth + OffsetSize + CoordWidth;
+        private const int CoordWidth = 70;
+        private const int EntryWidth = CoordWidth + OffsetSize + CoordWidth + OffsetSize + CoordWidth;
 
-        private static readonly int TotalWidth = OffsetSize + EntryWidth + OffsetSize + SetWidth + OffsetSize;
-        private static readonly int TotalHeight = OffsetSize + 4 * (EntryHeight + OffsetSize);
+        private const int TotalWidth = OffsetSize + EntryWidth + OffsetSize + SetWidth + OffsetSize;
+        private const int TotalHeight = OffsetSize + 4 * (EntryHeight + OffsetSize);
 
-        private static readonly int BackWidth = BorderSize + TotalWidth + BorderSize;
-        private static readonly int BackHeight = BorderSize + TotalHeight + BorderSize;
+        private const int BackWidth = BorderSize + TotalWidth + BorderSize;
+        private const int BackHeight = BorderSize + TotalHeight + BorderSize;
 
         private readonly Mobile m_Mobile;
         private readonly object m_Object;
         private readonly PropertyInfo m_Property;
         private readonly PropertiesGump m_PropertiesGump;
 
-        public SetPoint3DGump(
-            PropertyInfo prop, Mobile mobile, object o, PropertiesGump propertiesGump
-        )
+        public SetPoint3DGump(PropertyInfo prop, Mobile mobile, object o, PropertiesGump propertiesGump)
             : base(GumpOffsetX, GumpOffsetY)
         {
             m_PropertiesGump = propertiesGump;
@@ -38,13 +36,7 @@ namespace Server.Gumps
             AddPage(0);
 
             AddBackground(0, 0, BackWidth, BackHeight, BackGumpID);
-            AddImageTiled(
-                BorderSize,
-                BorderSize,
-                TotalWidth - (OldStyle ? SetWidth + OffsetSize : 0),
-                TotalHeight,
-                OffsetGumpID
-            );
+            AddImageTiled(BorderSize, BorderSize, TotalWidth, TotalHeight, OffsetGumpID);
 
             var x = BorderSize + OffsetSize;
             var y = BorderSize + OffsetSize;
@@ -186,9 +178,8 @@ namespace Server.Gumps
             private readonly PropertyInfo m_Property;
             private readonly PropertiesGump m_PropertiesGump;
 
-            public InternalTarget(
-                PropertyInfo prop, Mobile mobile, object o, PropertiesGump propertiesGump
-            ) : base(-1, true, TargetFlags.None)
+            public InternalTarget(PropertyInfo prop, Mobile mobile, object o, PropertiesGump propertiesGump)
+                : base(-1, true, TargetFlags.None)
             {
                 m_PropertiesGump = propertiesGump;
                 m_Property = prop;

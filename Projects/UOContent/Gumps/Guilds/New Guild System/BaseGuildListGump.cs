@@ -40,7 +40,7 @@ namespace Server.Guilds
             var list = m_List;
             if (WillFilter)
             {
-                m_List = new List<T>();
+                m_List = [];
                 for (var i = 0; i < list.Count; i++)
                 {
                     if (!IsFiltered(list[i], m_Filter))

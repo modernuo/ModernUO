@@ -35,14 +35,20 @@ namespace Server.Gumps
                 switch (m_Guild.Type)
                 {
                     case GuildType.Regular:
-                        AddHtmlLocalized(55, 100, 470, 30, 1013059); // Change guild type: Currently Standard
-                        break;
+                        {
+                            AddHtmlLocalized(55, 100, 470, 30, 1013059); // Change guild type: Currently Standard
+                            break;
+                        }
                     case GuildType.Order:
-                        AddHtmlLocalized(55, 100, 470, 30, 1013057); // Change guild type: Currently Order
-                        break;
+                        {
+                            AddHtmlLocalized(55, 100, 470, 30, 1013057); // Change guild type: Currently Order
+                            break;
+                        }
                     case GuildType.Chaos:
-                        AddHtmlLocalized(55, 100, 470, 30, 1013058); // Change guild type: Currently Chaos
-                        break;
+                        {
+                            AddHtmlLocalized(55, 100, 470, 30, 1013058); // Change guild type: Currently Chaos
+                            break;
+                        }
                 }
             }
 

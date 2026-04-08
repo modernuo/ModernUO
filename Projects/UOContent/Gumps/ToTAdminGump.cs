@@ -7,7 +7,7 @@ namespace Server.Gumps
     public class ToTAdminGump : Gump
     {
         private static readonly string[] m_ToTInfo =
-        {
+        [
             // Opening Message
             "<center>Treasures of Tokuno Admin</center><br>" +
             "-Use the gems to switch eras<br>" +
@@ -27,7 +27,7 @@ namespace Server.Gumps
             "-10 types of 1 charge Fresh Pigments drop as Lesser Artifacts<br>" +
             "-1 charge Bleach Pigment can drop as a Lesser Artifact<br>" +
             "-Leurocian's Mempo Of Fortune can drop as a Lesser Artifact"
-        };
+        ];
 
         private readonly int m_ToTEras;
 

@@ -164,32 +164,46 @@ namespace Server.Gumps
                 switch (info.ButtonID)
                 {
                     case 1: // Price Per Rental
-                        SetPricePerRental(from);
-                        break;
+                        {
+                            SetPricePerRental(from);
+                            break;
+                        }
 
                     case 2: // Accept offer
-                        AcceptOffer(from);
-                        break;
+                        {
+                            AcceptOffer(from);
+                            break;
+                        }
 
                     case 3: // Renew on expiration - landlord
-                        LandlordRenewOnExpiration(from);
-                        break;
+                        {
+                            LandlordRenewOnExpiration(from);
+                            break;
+                        }
 
                     case 4: // Renew on expiration - renter
-                        RenterRenewOnExpiration(from);
-                        break;
+                        {
+                            RenterRenewOnExpiration(from);
+                            break;
+                        }
 
                     case 5: // Offer Contract To Someone
-                        OfferContract(from);
-                        break;
+                        {
+                            OfferContract(from);
+                            break;
+                        }
 
                     case 6: // Renewal price
-                        SetRenewalPrice(from);
-                        break;
+                        {
+                            SetRenewalPrice(from);
+                            break;
+                        }
 
                     default:
-                        Cancel(from);
-                        break;
+                        {
+                            Cancel(from);
+                            break;
+                        }
                 }
             }
         }

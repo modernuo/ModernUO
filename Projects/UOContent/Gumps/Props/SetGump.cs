@@ -9,13 +9,14 @@ namespace Server.Gumps
 {
     public class SetGump : Gump
     {
-        private static readonly int EntryWidth = 212;
+        private const int EntryWidth = 212;
 
-        private static readonly int TotalWidth = OffsetSize + EntryWidth + OffsetSize + SetWidth + OffsetSize;
-        private static readonly int TotalHeight = OffsetSize + 2 * (EntryHeight + OffsetSize);
+        private const int TotalWidth = OffsetSize + EntryWidth + OffsetSize + SetWidth + OffsetSize;
+        private const int TotalHeight = OffsetSize + 2 * (EntryHeight + OffsetSize);
 
-        private static readonly int BackWidth = BorderSize + TotalWidth + BorderSize;
-        private static readonly int BackHeight = BorderSize + TotalHeight + BorderSize;
+        private const int BackWidth = BorderSize + TotalWidth + BorderSize;
+        private const int BackHeight = BorderSize + TotalHeight + BorderSize;
+
         private readonly Mobile m_Mobile;
         private readonly object m_Object;
         private readonly PropertyInfo m_Property;
@@ -51,7 +52,7 @@ namespace Server.Gumps
             AddImageTiled(
                 BorderSize,
                 BorderSize,
-                TotalWidth - (OldStyle ? SetWidth + OffsetSize : 0),
+                TotalWidth,
                 TotalHeight + (canNull ? EntryHeight + OffsetSize : 0) + (canDye ? EntryHeight + OffsetSize : 0),
                 OffsetGumpID
             );
@@ -144,7 +145,6 @@ namespace Server.Gumps
                         }
                         else
                         {
-                            toSet = null;
                             shouldSet = false;
                         }
 
@@ -202,8 +202,8 @@ namespace Server.Gumps
             private readonly PropertyInfo m_Property;
             private readonly PropertiesGump m_PropertiesGump;
 
-            public InternalPicker(
-                PropertyInfo prop, Mobile mobile, object o, PropertiesGump propertiesGump) : base(((IHued)o).HuedItemID)
+            public InternalPicker(PropertyInfo prop, Mobile mobile, object o, PropertiesGump propertiesGump)
+                : base(((IHued)o).HuedItemID)
             {
                 m_Property = prop;
                 m_Mobile = mobile;

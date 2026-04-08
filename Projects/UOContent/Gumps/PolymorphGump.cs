@@ -49,7 +49,7 @@ namespace Server.Gumps
     public class PolymorphGump : StaticGump<PolymorphGump>
     {
         private static readonly PolymorphCategory[] Categories =
-        {
+        [
             new(
                 1015235, // Animals
                 PolymorphEntry.Chicken,
@@ -75,7 +75,7 @@ namespace Server.Gumps
                 PolymorphEntry.Daemon,
                 PolymorphEntry.HumanFemale
             )
-        };
+        ];
 
         private readonly Item _scroll;
 
@@ -161,7 +161,7 @@ namespace Server.Gumps
     public class NewPolymorphGump : StaticGump<NewPolymorphGump>
     {
         private static readonly PolymorphEntry[] _entries =
-        {
+        [
             PolymorphEntry.Chicken,
             PolymorphEntry.Dog,
             PolymorphEntry.Wolf,
@@ -180,7 +180,7 @@ namespace Server.Gumps
             PolymorphEntry.Troll,
             PolymorphEntry.Ettin,
             PolymorphEntry.Daemon
-        };
+        ];
 
         private readonly Item _scroll;
 
