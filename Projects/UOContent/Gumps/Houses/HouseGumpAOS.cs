@@ -42,32 +42,32 @@ namespace Server.Gumps
         private const int HighlightedLabelHue = 0x64;
 
         private static readonly int[] m_HangerNumbers =
-        {
+        [
             2968, 2970, 2972,
             2974, 2976, 2978
-        };
+        ];
 
         private static readonly int[] m_FoundationNumbers = Core.ML
-            ? new[]
-            {
+            ?
+            [
                 20, 189, 765, 65, 101, 0x2DF7, 0x2DFB, 0x3672, 0x3676
-            }
-            : new[]
-            {
+            ]
+            :
+            [
                 20, 189, 765, 65, 101
-            };
+            ];
 
         private static readonly int[] m_PostNumbers =
-        {
+        [
             9, 29, 54, 90, 147, 169,
             177, 204, 251, 257, 263,
             298, 347, 424, 441, 466,
             514, 600, 601, 602, 603,
             660, 666, 672, 898, 970,
             974, 982
-        };
+        ];
 
-        private static readonly List<int> _HouseSigns = new();
+        private static readonly List<int> _HouseSigns = [];
         private readonly BaseHouse m_House;
         private readonly HouseGumpPageAOS m_Page;
 
@@ -1046,21 +1046,34 @@ namespace Server.Gumps
                         switch (index)
                         {
                             case 0:
-                                page = HouseGumpPageAOS.Information;
-                                break;
+                                {
+                                    page = HouseGumpPageAOS.Information;
+                                    break;
+                                }
                             case 1:
-                                page = HouseGumpPageAOS.Security;
-                                break;
+                                {
+                                    page = HouseGumpPageAOS.Security;
+                                    break;
+                                }
                             case 2:
-                                page = HouseGumpPageAOS.Storage;
-                                break;
+                                {
+                                    page = HouseGumpPageAOS.Storage;
+                                    break;
+                                }
                             case 3:
-                                page = HouseGumpPageAOS.Customize;
-                                break;
+                                {
+                                    page = HouseGumpPageAOS.Customize;
+                                    break;
+                                }
                             case 4:
-                                page = HouseGumpPageAOS.Ownership;
-                                break;
-                            default: return;
+                                {
+                                    page = HouseGumpPageAOS.Ownership;
+                                    break;
+                                }
+                            default:
+                                {
+                                    return;
+                                }
                         }
 
                         from.SendGump(new HouseGumpAOS(page, from, m_House));
@@ -1459,7 +1472,9 @@ namespace Server.Gumps
                                     break;
                                 }
                             case 2: // Make Primary
-                                break;
+                                {
+                                    break;
+                                }
                         }
 
                         break;
@@ -1491,18 +1506,29 @@ namespace Server.Gumps
                                 switch (index)
                                 {
                                     case 5:
-                                        newType = FoundationType.ElvenGrey;
-                                        break;
+                                        {
+                                            newType = FoundationType.ElvenGrey;
+                                            break;
+                                        }
                                     case 6:
-                                        newType = FoundationType.ElvenNatural;
-                                        break;
+                                        {
+                                            newType = FoundationType.ElvenNatural;
+                                            break;
+                                        }
                                     case 7:
-                                        newType = FoundationType.Crystal;
-                                        break;
+                                        {
+                                            newType = FoundationType.Crystal;
+                                            break;
+                                        }
                                     case 8:
-                                        newType = FoundationType.Shadow;
-                                        break;
-                                    default: return;
+                                        {
+                                            newType = FoundationType.Shadow;
+                                            break;
+                                        }
+                                    default:
+                                        {
+                                            return;
+                                        }
                                 }
                             }
                             else
@@ -1510,21 +1536,34 @@ namespace Server.Gumps
                                 switch (index)
                                 {
                                     case 0:
-                                        newType = FoundationType.DarkWood;
-                                        break;
+                                        {
+                                            newType = FoundationType.DarkWood;
+                                            break;
+                                        }
                                     case 1:
-                                        newType = FoundationType.LightWood;
-                                        break;
+                                        {
+                                            newType = FoundationType.LightWood;
+                                            break;
+                                        }
                                     case 2:
-                                        newType = FoundationType.Dungeon;
-                                        break;
+                                        {
+                                            newType = FoundationType.Dungeon;
+                                            break;
+                                        }
                                     case 3:
-                                        newType = FoundationType.Brick;
-                                        break;
+                                        {
+                                            newType = FoundationType.Brick;
+                                            break;
+                                        }
                                     case 4:
-                                        newType = FoundationType.Stone;
-                                        break;
-                                    default: return;
+                                        {
+                                            newType = FoundationType.Stone;
+                                            break;
+                                        }
+                                    default:
+                                        {
+                                            return;
+                                        }
                                 }
                             }
 

@@ -78,12 +78,11 @@ namespace Server.Guilds
                 ascending,
                 filter,
                 startNumber,
-                new[]
-                {
+                [
                     new InfoField<Guild>(1062954, 280, NameComparer.Instance),  // Guild Name
                     new InfoField<Guild>(1062957, 50, AbbrevComparer.Instance), // Abbrev
                     new InfoField<Guild>(1062958, 120, new StatusComparer(g))   // Guild Title
-                }
+                ]
             )
         {
             m_Display = display;

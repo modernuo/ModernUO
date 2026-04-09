@@ -9,18 +9,10 @@ using static Server.Gumps.PropsConfig;
 namespace Server.Gumps;
 public class WhoGump : DynamicGump
 {
-    private static readonly int PrevLabelOffsetX = PrevWidth + 1;
-    private static readonly int PrevLabelOffsetY = 0;
+    private const int EntryWidth = 180;
+    private const int EntryCount = 15;
 
-    private static readonly int NextLabelOffsetX = -29;
-    private static readonly int NextLabelOffsetY = 0;
-
-    private static readonly int EntryWidth = 180;
-    private static readonly int EntryCount = 15;
-
-    private static readonly int TotalWidth = OffsetSize + EntryWidth + OffsetSize + SetWidth + OffsetSize;
-
-    private static readonly int BackWidth = BorderSize + TotalWidth + BorderSize;
+    private const int TotalWidth = OffsetSize + EntryWidth + OffsetSize + SetWidth + OffsetSize;
 
     private readonly List<Mobile> _mobiles;
     private readonly int _page;
@@ -83,34 +75,13 @@ public class WhoGump : DynamicGump
     {
         var count = Math.Clamp(_mobiles.Count - _page * EntryCount, 0, EntryCount);
 
-        var totalHeight = OffsetSize + (EntryHeight + OffsetSize) * (count + 1);
-
         builder.AddPage();
 
-        builder.AddBackground(0, 0, BackWidth, BorderSize + totalHeight + BorderSize, BackGumpID);
-        builder.AddImageTiled(
-            BorderSize,
-            BorderSize,
-            TotalWidth - (OldStyle ? SetWidth + OffsetSize : 0),
-            totalHeight,
-            OffsetGumpID
-        );
+        builder.AddPropsFrame(TotalWidth, count + 1, out var x, out var y);
 
-        var x = BorderSize + OffsetSize;
-        var y = BorderSize + OffsetSize;
+        const int emptyWidth = TotalWidth - PrevWidth - NextWidth - OffsetSize * 4;
 
-        var emptyWidth = TotalWidth - PrevWidth - NextWidth - OffsetSize * 4 - (OldStyle ? SetWidth + OffsetSize : 0);
-
-        if (!OldStyle)
-        {
-            builder.AddImageTiled(
-                x - (OldStyle ? OffsetSize : 0),
-                y,
-                emptyWidth + (OldStyle ? OffsetSize * 2 : 0),
-                EntryHeight,
-                EntryGumpID
-            );
-        }
+        builder.AddImageTiled(x, y, emptyWidth, EntryHeight, EntryGumpID);
 
         builder.AddLabel(
             x + TextOffsetX,
@@ -121,70 +92,37 @@ public class WhoGump : DynamicGump
 
         x += emptyWidth + OffsetSize;
 
-        if (OldStyle)
-        {
-            builder.AddImageTiled(x, y, TotalWidth - OffsetSize * 3 - SetWidth, EntryHeight, HeaderGumpID);
-        }
-        else
-        {
-            builder.AddImageTiled(x, y, PrevWidth, EntryHeight, HeaderGumpID);
-        }
+        builder.AddImageTiled(x, y, PrevWidth, EntryHeight, HeaderGumpID);
 
         if (_page > 0)
         {
             builder.AddButton(x + PrevOffsetX, y + PrevOffsetY, PrevButtonID1, PrevButtonID2, 1);
-
-            if (PrevLabel)
-            {
-                builder.AddLabel(x + PrevLabelOffsetX, y + PrevLabelOffsetY, TextHue, "Previous");
-            }
         }
 
         x += PrevWidth + OffsetSize;
 
-        if (!OldStyle)
-        {
-            builder.AddImageTiled(x, y, NextWidth, EntryHeight, HeaderGumpID);
-        }
+        builder.AddImageTiled(x, y, NextWidth, EntryHeight, HeaderGumpID);
 
         if ((_page + 1) * EntryCount < _mobiles.Count)
         {
             builder.AddButton(x + NextOffsetX, y + NextOffsetY, NextButtonID1, NextButtonID2, 2, GumpButtonType.Reply, 1);
-
-            if (NextLabel)
-            {
-                builder.AddLabel(x + NextLabelOffsetX, y + NextLabelOffsetY, TextHue, "Next");
-            }
         }
 
         for (int i = 0, index = _page * EntryCount; i < EntryCount && index < _mobiles.Count; ++i, ++index)
         {
-            x = BorderSize + OffsetSize;
-            y += EntryHeight + OffsetSize;
+            PropsLayout.NextRow(ref x, ref y);
 
             var m = _mobiles[index];
 
-            builder.AddImageTiled(x, y, EntryWidth, EntryHeight, EntryGumpID);
-            builder.AddLabelCropped(
-                x + TextOffsetX,
-                y,
-                EntryWidth - TextOffsetX,
-                EntryHeight,
-                GetHueFor(m),
-                m.Deleted ? "(deleted)" : m.Name
+            builder.AddPropsEntryButton(
+                ref x,
+                ref y,
+                EntryWidth,
+                m.Deleted ? "(deleted)" : m.Name,
+                m.NetState != null && !m.Deleted,
+                i + 3,
+                textHue: GetHueFor(m)
             );
-
-            x += EntryWidth + OffsetSize;
-
-            if (SetGumpID != 0)
-            {
-                builder.AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
-            }
-
-            if (m.NetState != null && !m.Deleted)
-            {
-                builder.AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, i + 3);
-            }
         }
     }
 
@@ -193,12 +131,12 @@ public class WhoGump : DynamicGump
         m.AccessLevel switch
         {
             >= AccessLevel.Administrator => 0x516,
-            AccessLevel.Seer                                                        => 0x144,
-            AccessLevel.GameMaster                                                  => 0x21,
-            AccessLevel.Counselor                                                   => 0x2,
-            _ when m.Murderer                                                       => 0x21,
-            _ when m.Criminal                                                       => 0x3B1,
-            _                                                                       => 0x58
+            AccessLevel.Seer             => 0x144,
+            AccessLevel.GameMaster       => 0x21,
+            AccessLevel.Counselor        => 0x2,
+            _ when m.Murderer            => 0x21,
+            _ when m.Criminal            => 0x3B1,
+            _                            => 0x58
         };
 
     public override void OnResponse(NetState state, in RelayInfo info)
@@ -270,15 +208,8 @@ public class WhoGump : DynamicGump
 
         public int Compare(Mobile x, Mobile y)
         {
-            if (x == null)
-            {
-                throw new ArgumentNullException(nameof(x));
-            }
-
-            if (y == null)
-            {
-                throw new ArgumentNullException(nameof(y));
-            }
+            ArgumentNullException.ThrowIfNull(x);
+            ArgumentNullException.ThrowIfNull(y);
 
             if (x.AccessLevel > y.AccessLevel)
             {

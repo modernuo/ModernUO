@@ -21,7 +21,13 @@ detect_platform() {
 
 PLATFORM="$(detect_platform)"
 TOOL_BINARY="$REPO_ROOT/tools/build-tool"
+STAMP_FILE="$REPO_ROOT/tools/.build-tool-commit"
 BUILD_TOOL_PROJECT="$REPO_ROOT/Projects/BuildTool/BuildTool.csproj"
+
+# Get the commit hash of the latest change to BuildTool source
+get_buildtool_commit() {
+    git -C "$REPO_ROOT" log -1 --format=%H -- Projects/BuildTool/ 2>/dev/null
+}
 
 # Try to download native binary from GitHub Release
 download_build_tool() {
@@ -45,6 +51,13 @@ download_build_tool() {
     mkdir -p "$tools_dir"
     curl -fsSL --connect-timeout 10 -o "$TOOL_BINARY" "$download_url" || return 1
     chmod +x "$TOOL_BINARY"
+
+    local current_commit
+    current_commit="$(get_buildtool_commit)"
+    if [ -n "$current_commit" ]; then
+        echo -n "$current_commit" > "$STAMP_FILE"
+    fi
+
     return 0
 }
 
@@ -62,9 +75,24 @@ if [ -f /etc/os-release ]; then
     esac
 fi
 
-# Try native binary first
+# Try native binary first (with staleness check)
 if [ -x "$TOOL_BINARY" ]; then
-    exec "$TOOL_BINARY" "$@"
+    current_commit="$(get_buildtool_commit)"
+    if [ -n "$current_commit" ] && [ -f "$STAMP_FILE" ]; then
+        stored_commit="$(cat "$STAMP_FILE")"
+        if [ "$current_commit" = "$stored_commit" ]; then
+            exec "$TOOL_BINARY" "$@"
+        else
+            echo -e "\033[33mBuild tool source has changed, updating...\033[0m"
+            rm -f "$TOOL_BINARY"
+        fi
+    elif [ -z "$current_commit" ]; then
+        # Not in a git repo — use binary as-is
+        exec "$TOOL_BINARY" "$@"
+    else
+        # Binary exists but no stamp file — re-download to establish tracking
+        rm -f "$TOOL_BINARY"
+    fi
 fi
 
 # Try to download native binary

@@ -56,8 +56,14 @@ namespace Server.Gumps
 
             switch (info.ButtonID)
             {
-                case 0: return; // Close
-                case 1: break;  // Return to main menu
+                case 0:
+                    {
+                        return; // Close
+                    }
+                case 1:
+                    {
+                        break;  // Return to main menu
+                    }
                 case 2:
                     {
                         string website;

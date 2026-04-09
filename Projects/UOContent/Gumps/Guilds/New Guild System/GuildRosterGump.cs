@@ -10,12 +10,12 @@ namespace Server.Guilds
     public class GuildRosterGump : BaseGuildListGump<PlayerMobile>
     {
         private static readonly InfoField<PlayerMobile>[] m_Fields =
-        {
+        [
             new(1062955, 130, NameComparer.Instance),  // Name
             new(1062956, 80, RankComparer.Instance),   // Rank
             new(1062952, 80, LastOnComparer.Instance), // Last On
             new(1062953, 150, TitleComparer.Instance)  // Guild Title
-        };
+        ];
 
         public GuildRosterGump(PlayerMobile pm, Guild g) : this(pm, g, LastOnComparer.Instance)
         {

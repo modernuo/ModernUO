@@ -31,7 +31,7 @@ namespace Server.Gumps
             {
                 try
                 {
-                    var info = m_Property.PropertyType.GetMethod("Parse", new[] { typeof(string) });
+                    var info = m_Property.PropertyType.GetMethod("Parse", [typeof(string)]);
 
                     string result;
 
@@ -43,7 +43,7 @@ namespace Server.Gumps
                             m_Object,
                             m_Property,
                             m_Property.Name,
-                            info.Invoke(null, new object[] { m_Names[index] }),
+                            info.Invoke(null, [m_Names[index]]),
                             true
                         );
                     }
