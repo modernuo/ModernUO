@@ -173,7 +173,7 @@ public abstract partial class BaseGuard : Mobile
         {
             PlayerMurderSystem.ClearBounty(target);
             Banker.Deposit(from, bounty);
-            Titles.AwardKarma(from, 2000, true);
+            Titles.AwardKarma(from, 20, true);
 
             Say(1042855, $"{target.Name}\t{bounty}"); // The bounty on ~1_PLAYER_NAME~ was ~2_AMOUNT~ gold, and has been credited to your account.
         }
