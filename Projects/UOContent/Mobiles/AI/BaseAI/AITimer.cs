@@ -57,7 +57,6 @@ public sealed class AITimer : Timer
 
         if (_owner.Mobile.Controlled ? !_owner.Obey() : !_owner.Think())
         {
-            Stop();
             return;
         }
 

@@ -26,6 +26,8 @@ public abstract partial class BaseAI
             return;
         }
 
+        Activate();
+
         switch (Mobile.ControlOrder)
         {
             case OrderType.None:

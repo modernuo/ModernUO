@@ -3863,6 +3863,8 @@ namespace Server.Mobiles
 
             OnAfterResurrect();
 
+            AIObject?.Activate();
+
             var owner = ControlMaster;
 
             if (owner?.Deleted == false && owner.Map == Map && owner.InRange(this, 12) && CanSee(owner) && InLOS(owner))
