@@ -957,11 +957,6 @@ public abstract partial class BaseAI
 
     public virtual void Deactivate()
     {
-        if (!Mobile.PlayerRangeSensitive)
-        {
-            return;
-        }
-
         if (Mobile.Map == Map.Internal || !Mobile.Controlled && !Mobile.Map.GetSector(Mobile.Location).Active)
         {
             AITimer.Stop();

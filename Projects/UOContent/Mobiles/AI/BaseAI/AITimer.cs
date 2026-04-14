@@ -70,14 +70,14 @@ public sealed class AITimer : Timer
             return true;
         }
 
-        if (_owner.Mobile.Map != null && _owner.Mobile.Map != Map.Internal &&
-            (!_owner.Mobile.PlayerRangeSensitive || _owner.Mobile.Map.GetSector(_owner.Mobile.Location).Active))
+        if (_owner.Mobile.Map == null || _owner.Mobile.Map == Map.Internal || _owner.Mobile.PlayerRangeSensitive &&
+            !_owner.Mobile.Controlled && !_owner.Mobile.Map.GetSector(_owner.Mobile.Location).Active)
         {
-            return false;
+            _owner.Deactivate();
+            return true;
         }
 
-        _owner.Deactivate();
-        return true;
+        return false;
     }
 
     private void HandleBardEffects()

@@ -3916,7 +3916,7 @@ namespace Server.Mobiles
             {
                 SetLocation(Home, true);
 
-                if (!Map.GetSector(X, Y).Active)
+                if (PlayerRangeSensitive && !Map.GetSector(X, Y).Active)
                 {
                     AIObject?.Deactivate();
                 }
