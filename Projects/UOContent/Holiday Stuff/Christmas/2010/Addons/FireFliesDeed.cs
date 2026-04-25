@@ -47,7 +47,7 @@ public partial class Fireflies : Item, IAddon
         if (house?.IsOwner(from) == true)
         {
             // Do you wish to re-deed this decoration?
-            from.SendGump(new RewardDemolitionGump(this, 1049783));
+            RewardDemolitionGump.DisplayTo(from, this, 1049783);
         }
         else
         {

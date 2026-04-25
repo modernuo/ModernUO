@@ -132,7 +132,7 @@ public partial class RewardBrazierDeed : Item, IRewardItem
             return;
         }
 
-        from.SendGump(new InternalGump(this));
+        BrazierGump.DisplayTo(from, this);
     }
 
     public override void GetProperties(IPropertyList list)
@@ -145,32 +145,37 @@ public partial class RewardBrazierDeed : Item, IRewardItem
         }
     }
 
-    private class InternalGump : Gump
+    private class BrazierGump : StaticGump<BrazierGump>
     {
         private readonly RewardBrazierDeed _brazier;
 
         public override bool Singleton => true;
 
-        public InternalGump(RewardBrazierDeed brazier) : base(100, 200)
+        private BrazierGump(RewardBrazierDeed brazier) : base(100, 200) => _brazier = brazier;
+
+        public static void DisplayTo(Mobile from, RewardBrazierDeed brazier)
         {
-            _brazier = brazier;
+            if (from?.NetState == null || brazier?.Deleted != false)
+            {
+                return;
+            }
 
-            Closable = true;
-            Disposable = true;
-            Draggable = true;
-            Resizable = false;
+            from.SendGump(new BrazierGump(brazier));
+        }
 
-            AddPage(0);
-            AddBackground(0, 0, 200, 200, 2600);
+        protected override void BuildLayout(ref StaticGumpBuilder builder)
+        {
+            builder.AddPage();
+            builder.AddBackground(0, 0, 200, 200, 2600);
 
-            AddPage(1);
-            AddLabel(45, 15, 0, "Choose a Brazier:");
+            builder.AddPage(1);
+            builder.AddLabel(45, 15, 0, "Choose a Brazier:");
 
-            AddItem(40, 75, 0x19AA);
-            AddButton(55, 50, 0x845, 0x846, 0x19AA);
+            builder.AddItem(40, 75, 0x19AA);
+            builder.AddButton(55, 50, 0x845, 0x846, 0x19AA);
 
-            AddItem(100, 75, 0x19BB);
-            AddButton(115, 50, 0x845, 0x846, 0x19BB);
+            builder.AddItem(100, 75, 0x19BB);
+            builder.AddButton(115, 50, 0x845, 0x846, 0x19BB);
         }
 
         public override void OnResponse(NetState sender, in RelayInfo info)

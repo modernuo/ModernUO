@@ -73,7 +73,7 @@ public partial class WeaponEngravingTool : Item, IUsesRemaining, IRewardItem
         }
 
         from.SendLocalizedMessage(1076163); // There are no charges left on this engraving tool.
-        from.SendGump(new ConfirmGump(this, null));
+        WeaponEngravingToolConfirmGump.DisplayTo(from, this, null);
     }
 
     public override void GetProperties(IPropertyList list)
@@ -174,7 +174,7 @@ public partial class WeaponEngravingTool : Item, IUsesRemaining, IRewardItem
 
             if (targeted is BaseWeapon item)
             {
-                from.SendGump(new InternalGump(_tool, item));
+                WeaponEngravingToolGump.DisplayTo(from, _tool, item);
             }
             else
             {
@@ -183,39 +183,47 @@ public partial class WeaponEngravingTool : Item, IUsesRemaining, IRewardItem
         }
     }
 
-    private class InternalGump : Gump
+    private class WeaponEngravingToolGump : StaticGump<WeaponEngravingToolGump>
     {
         private readonly BaseWeapon _target;
         private readonly WeaponEngravingTool _tool;
 
         public override bool Singleton => true;
 
-        public InternalGump(WeaponEngravingTool tool, BaseWeapon target) : base(0, 0)
+        private WeaponEngravingToolGump(WeaponEngravingTool tool, BaseWeapon target) : base(0, 0)
         {
             _tool = tool;
             _target = target;
+        }
 
-            Closable = true;
-            Disposable = true;
-            Draggable = true;
-            Resizable = false;
+        public static void DisplayTo(Mobile from, WeaponEngravingTool tool, BaseWeapon target)
+        {
+            if (from?.NetState == null || tool?.Deleted != false || target?.Deleted != false)
+            {
+                return;
+            }
 
-            AddBackground(50, 50, 400, 300, 0xA28);
+            from.SendGump(new WeaponEngravingToolGump(tool, target));
+        }
 
-            AddPage(0);
+        protected override void BuildLayout(ref StaticGumpBuilder builder)
+        {
+            builder.AddPage();
 
-            AddHtmlLocalized(50, 70, 400, 20, 1072359, 0x0); // <CENTER>Engraving Tool</CENTER>
+            builder.AddBackground(50, 50, 400, 300, 0xA28);
+
+            builder.AddHtmlLocalized(50, 70, 400, 20, 1072359, 0x0); // <CENTER>Engraving Tool</CENTER>
             // Please enter the text to add to the selected object. Leave the text area blank to remove any existing text.  Removing text does not use a charge.
-            AddHtmlLocalized(75, 95, 350, 145, 1076229, 0x0, true, true);
-            AddButton(125, 300, 0x81A, 0x81B, (int)Buttons.Okay);
-            AddButton(320, 300, 0x819, 0x818, (int)Buttons.Cancel);
-            AddImageTiled(75, 245, 350, 40, 0xDB0);
-            AddImageTiled(76, 245, 350, 2, 0x23C5);
-            AddImageTiled(75, 245, 2, 40, 0x23C3);
-            AddImageTiled(75, 285, 350, 2, 0x23C5);
-            AddImageTiled(425, 245, 2, 42, 0x23C3);
+            builder.AddHtmlLocalized(75, 95, 350, 145, 1076229, 0x0, true, true);
+            builder.AddButton(125, 300, 0x81A, 0x81B, (int)Buttons.Okay);
+            builder.AddButton(320, 300, 0x819, 0x818, (int)Buttons.Cancel);
+            builder.AddImageTiled(75, 245, 350, 40, 0xDB0);
+            builder.AddImageTiled(76, 245, 350, 2, 0x23C5);
+            builder.AddImageTiled(75, 245, 2, 40, 0x23C3);
+            builder.AddImageTiled(75, 285, 350, 2, 0x23C5);
+            builder.AddImageTiled(425, 245, 2, 42, 0x23C3);
 
-            AddTextEntry(75, 245, 350, 40, 0x0, (int)Buttons.Text, "");
+            builder.AddTextEntry(75, 245, 350, 40, 0x0, (int)Buttons.Text, "");
         }
 
         public override void OnResponse(NetState state, in RelayInfo info)
@@ -262,42 +270,54 @@ public partial class WeaponEngravingTool : Item, IUsesRemaining, IRewardItem
         }
     }
 
-    public class ConfirmGump : Gump
+    public class WeaponEngravingToolConfirmGump : DynamicGump
     {
         private readonly WeaponEngravingTool _engraver;
         private readonly Mobile _guildmaster;
 
-        public ConfirmGump(WeaponEngravingTool engraver, Mobile guildmaster) : base(200, 200)
+        public override bool Singleton => true;
+
+        private WeaponEngravingToolConfirmGump(WeaponEngravingTool engraver, Mobile guildmaster) : base(200, 200)
         {
             _engraver = engraver;
             _guildmaster = guildmaster;
+        }
 
-            Closable = false;
-            Disposable = true;
-            Draggable = true;
-            Resizable = false;
+        public static void DisplayTo(Mobile from, WeaponEngravingTool engraver, Mobile guildmaster)
+        {
+            if (from?.NetState == null || engraver?.Deleted != false)
+            {
+                return;
+            }
 
-            AddPage(0);
+            from.SendGump(new WeaponEngravingToolConfirmGump(engraver, guildmaster));
+        }
 
-            AddBackground(0, 0, 291, 133, 0x13BE);
-            AddImageTiled(5, 5, 280, 100, 0xA40);
+        protected override void BuildLayout(ref DynamicGumpBuilder builder)
+        {
+            builder.SetNoClose();
 
-            if (guildmaster != null)
+            builder.AddPage();
+
+            builder.AddBackground(0, 0, 291, 133, 0x13BE);
+            builder.AddImageTiled(5, 5, 280, 100, 0xA40);
+
+            if (_guildmaster != null)
             {
                 // It will cost you 100,000 gold and a blue diamond to recharge your weapon engraver with 10 charges.
-                AddHtmlLocalized(9, 9, 272, 100, 1076169, 0x7FFF);
-                AddHtmlLocalized(195, 109, 120, 20, 1076172, 0x7FFF); // Recharge it
+                builder.AddHtmlLocalized(9, 9, 272, 100, 1076169, 0x7FFF);
+                builder.AddHtmlLocalized(195, 109, 120, 20, 1076172, 0x7FFF); // Recharge it
             }
             else
             {
                 // You will need a blue diamond to repair the tip of the engraver.  A successful repair will give the engraver 10 charges.
-                AddHtmlLocalized(9, 9, 272, 100, 1076176, 0x7FFF);
-                AddHtmlLocalized(195, 109, 120, 20, 1076177, 0x7FFF); // Replace the tip.
+                builder.AddHtmlLocalized(9, 9, 272, 100, 1076176, 0x7FFF);
+                builder.AddHtmlLocalized(195, 109, 120, 20, 1076177, 0x7FFF); // Replace the tip.
             }
 
-            AddButton(160, 107, 0xFB7, 0xFB8, (int)Buttons.Confirm);
-            AddButton(5, 107, 0xFB1, 0xFB2, (int)Buttons.Cancel);
-            AddHtmlLocalized(40, 109, 100, 20, 1060051, 0x7FFF); // CANCEL
+            builder.AddButton(160, 107, 0xFB7, 0xFB8, (int)Buttons.Confirm);
+            builder.AddButton(5, 107, 0xFB1, 0xFB2, (int)Buttons.Cancel);
+            builder.AddHtmlLocalized(40, 109, 100, 20, 1060051, 0x7FFF); // CANCEL
         }
 
         public override void OnResponse(NetState state, in RelayInfo info)

@@ -84,7 +84,7 @@ public partial class StoneAnkh : BaseAddon, IRewardItem
 
         if (house?.IsOwner(from) == true)
         {
-            from.SendGump(new RewardDemolitionGump(this, 1049783)); // Do you wish to re-deed this decoration?
+            RewardDemolitionGump.DisplayTo(from, this, 1049783); // Do you wish to re-deed this decoration?
         }
         else
         {
@@ -124,7 +124,7 @@ public partial class StoneAnkhDeed : BaseAddonDeed, IRewardItem
 
         if (IsChildOf(from.Backpack))
         {
-            from.SendGump(new InternalGump(this));
+            StoneAnkhGump.DisplayTo(from, this);
         }
         else
         {
@@ -147,32 +147,37 @@ public partial class StoneAnkhDeed : BaseAddonDeed, IRewardItem
         }
     }
 
-    private class InternalGump : Gump
+    private class StoneAnkhGump : StaticGump<StoneAnkhGump>
     {
         private readonly StoneAnkhDeed _deed;
 
         public override bool Singleton => true;
 
-        public InternalGump(StoneAnkhDeed deed) : base(150, 50)
+        private StoneAnkhGump(StoneAnkhDeed deed) : base(150, 50) => _deed = deed;
+
+        public static void DisplayTo(Mobile from, StoneAnkhDeed deed)
         {
-            _deed = deed;
+            if (from?.NetState == null || deed?.Deleted != false)
+            {
+                return;
+            }
 
-            Closable = true;
-            Disposable = true;
-            Draggable = true;
-            Resizable = false;
+            from.SendGump(new StoneAnkhGump(deed));
+        }
 
-            AddPage(0);
+        protected override void BuildLayout(ref StaticGumpBuilder builder)
+        {
+            builder.AddPage();
 
-            AddBackground(0, 0, 300, 150, 0xA28);
+            builder.AddBackground(0, 0, 300, 150, 0xA28);
 
-            AddItem(90, 30, 0x4);
-            AddItem(112, 30, 0x5);
-            AddButton(50, 35, 0x867, 0x869, (int)Buttons.South); // South
+            builder.AddItem(90, 30, 0x4);
+            builder.AddItem(112, 30, 0x5);
+            builder.AddButton(50, 35, 0x867, 0x869, (int)Buttons.South); // South
 
-            AddItem(170, 30, 0x2);
-            AddItem(192, 30, 0x3);
-            AddButton(145, 35, 0x867, 0x869, (int)Buttons.East); // East
+            builder.AddItem(170, 30, 0x2);
+            builder.AddItem(192, 30, 0x3);
+            builder.AddButton(145, 35, 0x867, 0x869, (int)Buttons.East); // East
         }
 
         public override void OnResponse(NetState sender, in RelayInfo info)

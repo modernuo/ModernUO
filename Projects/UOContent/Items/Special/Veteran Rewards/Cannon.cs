@@ -142,7 +142,7 @@ public partial class CannonAddon : BaseAddon
 
             if (Validate(keg) > 0)
             {
-                from.SendGump(new InternalGump(this, keg));
+                CannonGump.DisplayTo(from, this, keg);
             }
             else
             {
@@ -309,34 +309,44 @@ public partial class CannonAddon : BaseAddon
         }
     }
 
-    private class InternalGump : Gump
+    private class CannonGump : DynamicGump
     {
         private readonly CannonAddon _cannon;
         private readonly PotionKeg _keg;
 
-        public InternalGump(CannonAddon cannon, PotionKeg keg) : base(50, 50)
+        public override bool Singleton => true;
+
+        private CannonGump(CannonAddon cannon, PotionKeg keg) : base(50, 50)
         {
             _cannon = cannon;
             _keg = keg;
+        }
 
-            Closable = true;
-            Disposable = true;
-            Draggable = true;
-            Resizable = false;
+        public static void DisplayTo(Mobile from, CannonAddon cannon, PotionKeg keg)
+        {
+            if (from?.NetState == null || cannon?.Deleted != false || keg?.Deleted != false)
+            {
+                return;
+            }
 
-            AddPage(0);
+            from.SendGump(new CannonGump(cannon, keg));
+        }
 
-            AddBackground(0, 0, 291, 133, 0x13BE);
-            AddImageTiled(5, 5, 280, 100, 0xA40);
+        protected override void BuildLayout(ref DynamicGumpBuilder builder)
+        {
+            builder.AddPage();
+
+            builder.AddBackground(0, 0, 291, 133, 0x13BE);
+            builder.AddImageTiled(5, 5, 280, 100, 0xA40);
 
             // You will need a full keg of explosion potions to recharge the cannon.  Your keg will provide ~1_CHARGES~ charges.
-            AddHtmlLocalized(9, 9, 272, 100, 1076196, cannon.Validate(keg).ToString(), 0x7FFF);
+            builder.AddHtmlLocalized(9, 9, 272, 100, 1076196, _cannon.Validate(_keg).ToString(), 0x7FFF);
 
-            AddButton(5, 107, 0xFB1, 0xFB2, (int)Buttons.Cancel);
-            AddHtmlLocalized(40, 109, 100, 20, 1060051, 0x7FFF); // CANCEL
+            builder.AddButton(5, 107, 0xFB1, 0xFB2, (int)Buttons.Cancel);
+            builder.AddHtmlLocalized(40, 109, 100, 20, 1060051, 0x7FFF); // CANCEL
 
-            AddButton(160, 107, 0xFB7, 0xFB8, (int)Buttons.Recharge);
-            AddHtmlLocalized(195, 109, 120, 20, 1076197, 0x7FFF); // Recharge
+            builder.AddButton(160, 107, 0xFB7, 0xFB8, (int)Buttons.Recharge);
+            builder.AddHtmlLocalized(195, 109, 120, 20, 1076197, 0x7FFF); // Recharge
         }
 
         public override void OnResponse(NetState state, in RelayInfo info)
@@ -420,7 +430,7 @@ public partial class CannonDeed : BaseAddonDeed, IRewardItem, IRewardOption
 
         if (IsChildOf(from.Backpack))
         {
-            from.SendGump(new RewardOptionGump(this));
+            RewardOptionGump.DisplayTo(from, this);
         }
         else
         {

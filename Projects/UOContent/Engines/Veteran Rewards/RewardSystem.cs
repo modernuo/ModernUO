@@ -595,7 +595,7 @@ namespace Server.Engines.VeteranRewards
 
             if (cur < max)
             {
-                pm.SendGump(new RewardNoticeGump(pm));
+                RewardNoticeGump.DisplayTo(pm);
             }
         }
     }

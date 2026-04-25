@@ -69,7 +69,7 @@ public partial class HangingSkeleton : Item, IAddon, IRewardItem
 
         if (house?.IsOwner(from) == true)
         {
-            from.SendGump(new RewardDemolitionGump(this, 1049783)); // Do you wish to re-deed this decoration?
+            RewardDemolitionGump.DisplayTo(from, this, 1049783); // Do you wish to re-deed this decoration?
         }
         else
         {
@@ -124,7 +124,7 @@ public partial class HangingSkeletonDeed : Item, IRewardItem
             return;
         }
 
-        from.SendGump(new InternalGump(this));
+        HangingSkeletonGump.DisplayTo(from, this);
     }
 
     public static int GetWestItemID(int south)
@@ -137,41 +137,46 @@ public partial class HangingSkeletonDeed : Item, IRewardItem
         };
     }
 
-    private class InternalGump : Gump
+    private class HangingSkeletonGump : StaticGump<HangingSkeletonGump>
     {
         private readonly HangingSkeletonDeed _deed;
 
         public override bool Singleton => true;
 
-        public InternalGump(HangingSkeletonDeed skeleton) : base(100, 200)
+        private HangingSkeletonGump(HangingSkeletonDeed skeleton) : base(100, 200) => _deed = skeleton;
+
+        public static void DisplayTo(Mobile from, HangingSkeletonDeed deed)
         {
-            _deed = skeleton;
+            if (from?.NetState == null || deed?.Deleted != false)
+            {
+                return;
+            }
 
-            Closable = true;
-            Disposable = true;
-            Draggable = true;
-            Resizable = false;
+            from.SendGump(new HangingSkeletonGump(deed));
+        }
 
-            AddPage(0);
+        protected override void BuildLayout(ref StaticGumpBuilder builder)
+        {
+            builder.AddPage();
 
-            AddBackground(25, 0, 500, 230, 0xA28);
+            builder.AddBackground(25, 0, 500, 230, 0xA28);
 
-            AddPage(1);
+            builder.AddPage(1);
 
-            AddItem(130, 70, 0x1A03);
-            AddButton(150, 50, 0x845, 0x846, 0x1A03);
+            builder.AddItem(130, 70, 0x1A03);
+            builder.AddButton(150, 50, 0x845, 0x846, 0x1A03);
 
-            AddItem(190, 70, 0x1A05);
-            AddButton(210, 50, 0x845, 0x846, 0x1A05);
+            builder.AddItem(190, 70, 0x1A05);
+            builder.AddButton(210, 50, 0x845, 0x846, 0x1A05);
 
-            AddItem(250, 70, 0x1A09);
-            AddButton(270, 50, 0x845, 0x846, 0x1A09);
+            builder.AddItem(250, 70, 0x1A09);
+            builder.AddButton(270, 50, 0x845, 0x846, 0x1A09);
 
-            AddItem(310, 70, 0x1B1E);
-            AddButton(330, 50, 0x845, 0x846, 0x1B1E);
+            builder.AddItem(310, 70, 0x1B1E);
+            builder.AddButton(330, 50, 0x845, 0x846, 0x1B1E);
 
-            AddItem(370, 70, 0x1B7F);
-            AddButton(390, 50, 0x845, 0x846, 0x1B7F);
+            builder.AddItem(370, 70, 0x1B7F);
+            builder.AddButton(390, 50, 0x845, 0x846, 0x1B7F);
         }
 
         public override void OnResponse(NetState sender, in RelayInfo info)
