@@ -33,7 +33,7 @@ public partial class ArenasMoongate : Item
             return false;
         }
 
-        from.SendGump(new ArenaGump(from, this));
+        ArenaGump.DisplayTo(from, this);
 
         if (!from.Hidden || from.AccessLevel == AccessLevel.Player)
         {
@@ -58,44 +58,59 @@ public partial class ArenasMoongate : Item
     public override bool OnMoveOver(Mobile m) => !m.Player || UseGate(m);
 }
 
-public class ArenaGump : Gump
+public class ArenaGump : DynamicGump
 {
-    private readonly List<Arena> m_Arenas;
-    private readonly Mobile m_From;
-    private readonly ArenasMoongate m_Gate;
+    private readonly List<Arena> _arenas;
+    private readonly Mobile _from;
+    private readonly ArenasMoongate _gate;
 
-    private int m_ColumnX = 12;
+    private int _columnX;
 
     public override bool Singleton => true;
 
-    public ArenaGump(Mobile from, ArenasMoongate gate) : base(50, 50)
+    private ArenaGump(Mobile from, ArenasMoongate gate) : base(50, 50)
     {
-        m_From = from;
-        m_Gate = gate;
-        m_Arenas = Arena.Arenas;
+        _from = from;
+        _gate = gate;
+        _arenas = Arena.Arenas;
+    }
 
-        AddPage(0);
+    public static void DisplayTo(Mobile from, ArenasMoongate gate)
+    {
+        if (from?.NetState == null || gate == null)
+        {
+            return;
+        }
 
-        var height = 12 + 20 + m_Arenas.Count * 31 + 24 + 12;
+        from.SendGump(new ArenaGump(from, gate));
+    }
 
-        AddBackground(0, 0, 499 + 40, height, 0x2436);
+    protected override void BuildLayout(ref DynamicGumpBuilder builder)
+    {
+        _columnX = 12;
 
-        var list = m_Arenas;
+        builder.AddPage();
+
+        var height = 12 + 20 + _arenas.Count * 31 + 24 + 12;
+
+        builder.AddBackground(0, 0, 499 + 40, height, 0x2436);
+
+        var list = _arenas;
 
         for (var i = 1; i < list.Count; i += 2)
         {
-            AddImageTiled(12, 32 + i * 31, 475 + 40, 30, 0x2430);
+            builder.AddImageTiled(12, 32 + i * 31, 475 + 40, 30, 0x2430);
         }
 
-        AddAlphaRegion(10, 10, 479 + 40, height - 20);
+        builder.AddAlphaRegion(10, 10, 479 + 40, height - 20);
 
-        AddColumnHeader(35, null);
-        AddColumnHeader(115, "Arena");
-        AddColumnHeader(325, "Participants");
-        AddColumnHeader(40, "Obs");
+        AddColumnHeader(ref builder, 35, null);
+        AddColumnHeader(ref builder, 115, "Arena");
+        AddColumnHeader(ref builder, 325, "Participants");
+        AddColumnHeader(ref builder, 40, "Obs");
 
-        AddButton(499 + 40 - 12 - 63 - 4 - 63, height - 12 - 24, 247, 248, 1);
-        AddButton(499 + 40 - 12 - 63, height - 12 - 24, 241, 242, 2);
+        builder.AddButton(499 + 40 - 12 - 63 - 4 - 63, height - 12 - 24, 247, 248, 1);
+        builder.AddButton(499 + 40 - 12 - 63, height - 12 - 24, 241, 242, 2);
 
         var sb = new ValueStringBuilder(stackalloc char[256]);
 
@@ -108,10 +123,10 @@ public class ArenaGump : Gump
 
             var color = ar.Players.Count > 0 ? 0xCCFFCC : 0xCCCCCC;
 
-            AddRadio(x + 3, y + 1, 9727, 9730, false, i);
+            builder.AddRadio(x + 3, y + 1, 9727, 9730, false, i);
             x += 35;
 
-            AddBorderedText(x + 5, y + 5, 115 - 5, ar.Name ?? "(no name)", color, 0);
+            AddBorderedText(ref builder, x + 5, y + 5, 115 - 5, ar.Name ?? "(no name)", color, 0);
             x += 115;
 
             sb.Reset();
@@ -171,16 +186,16 @@ public class ArenaGump : Gump
                 sb.Append("Empty");
             }
 
-            AddBorderedText(x + 5, y + 5, 325 - 5, sb.ToString(), color, 0);
+            AddBorderedText(ref builder, x + 5, y + 5, 325 - 5, sb.ToString(), color, 0);
             x += 325;
 
-            AddBorderedText(x, y + 5, 40, Html.Center($"{ar.Spectators}"), color, 0);
+            AddBorderedText(ref builder, x, y + 5, 40, Html.Center($"{ar.Spectators}"), color, 0);
         }
 
         sb.Dispose();
     }
 
-    private void Append(ref ValueStringBuilder sb, LadderEntry le)
+    private static void Append(ref ValueStringBuilder sb, LadderEntry le)
     {
         if (le == null)
         {
@@ -211,72 +226,66 @@ public class ArenaGump : Gump
 
         var opt = switches[0];
 
-        if (opt < 0 || opt >= m_Arenas.Count)
+        if (opt < 0 || opt >= _arenas.Count)
         {
             return;
         }
 
-        var arena = m_Arenas[opt];
+        var arena = _arenas[opt];
 
-        if (!m_From.InRange(m_Gate.GetWorldLocation(), 1) || m_From.Map != m_Gate.Map)
+        if (!_from.InRange(_gate.GetWorldLocation(), 1) || _from.Map != _gate.Map)
         {
-            m_From.SendLocalizedMessage(1019002); // You are too far away to use the gate.
+            _from.SendLocalizedMessage(1019002); // You are too far away to use the gate.
         }
-        else if (DuelContext.CheckCombat(m_From))
+        else if (DuelContext.CheckCombat(_from))
         {
-            m_From.SendMessage(
+            _from.SendMessage(
                 0x22,
                 "You have recently been in combat with another player and cannot use this moongate."
             );
         }
-        else if (m_From.Spell != null)
+        else if (_from.Spell != null)
         {
-            m_From.SendLocalizedMessage(1049616); // You are too busy to do that at the moment.
+            _from.SendLocalizedMessage(1049616); // You are too busy to do that at the moment.
         }
-        else if (m_From.Map == arena.Facet && arena.Zone.Contains(m_From.Location))
+        else if (_from.Map == arena.Facet && arena.Zone.Contains(_from.Location))
         {
-            m_From.SendLocalizedMessage(1019003); // You are already there.
+            _from.SendLocalizedMessage(1019003); // You are already there.
         }
         else
         {
-            BaseCreature.TeleportPets(m_From, arena.GateIn, arena.Facet);
+            BaseCreature.TeleportPets(_from, arena.GateIn, arena.Facet);
 
-            m_From.Combatant = null;
-            m_From.Warmode = false;
-            m_From.Hidden = true;
+            _from.Combatant = null;
+            _from.Warmode = false;
+            _from.Hidden = true;
 
-            m_From.MoveToWorld(arena.GateIn, arena.Facet);
+            _from.MoveToWorld(arena.GateIn, arena.Facet);
 
             Effects.PlaySound(arena.GateIn, arena.Facet, 0x1FE);
         }
     }
 
-    private void AddBorderedText(int x, int y, int width, string text, int color, int borderColor)
+    private static void AddBorderedText(ref DynamicGumpBuilder builder, int x, int y, int width, string text, int color, int borderColor)
     {
-        /*AddColoredText( x - 1, y, width, text, borderColor );
-        AddColoredText( x + 1, y, width, text, borderColor );
-        AddColoredText( x, y - 1, width, text, borderColor );
-        AddColoredText( x, y + 1, width, text, borderColor );*/
-        /*AddColoredText( x - 1, y - 1, width, text, borderColor );
-        AddColoredText( x + 1, y + 1, width, text, borderColor );*/
-        AddColoredText(x, y, width, text, color);
+        AddColoredText(ref builder, x, y, width, text, color);
     }
 
-    private void AddColoredText(int x, int y, int width, string text, int color)
+    private static void AddColoredText(ref DynamicGumpBuilder builder, int x, int y, int width, string text, int color)
     {
-        AddHtml(x, y, width, 20, color == 0 ? text : text.Color(color));
+        builder.AddHtml(x, y, width, 20, color == 0 ? text : text.Color(color));
     }
 
-    private void AddColumnHeader(int width, string name)
+    private void AddColumnHeader(ref DynamicGumpBuilder builder, int width, string name)
     {
-        AddBackground(m_ColumnX, 12, width, 20, 0x242C);
-        AddImageTiled(m_ColumnX + 2, 14, width - 4, 16, 0x2430);
+        builder.AddBackground(_columnX, 12, width, 20, 0x242C);
+        builder.AddImageTiled(_columnX + 2, 14, width - 4, 16, 0x2430);
 
         if (name != null)
         {
-            AddBorderedText(m_ColumnX, 13, width, name.Center(), 0xFFFFFF, 0);
+            AddBorderedText(ref builder, _columnX, 13, width, name.Center(), 0xFFFFFF, 0);
         }
 
-        m_ColumnX += width;
+        _columnX += width;
     }
 }

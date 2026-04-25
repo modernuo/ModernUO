@@ -2,142 +2,156 @@ using System.Collections;
 using Server.Gumps;
 using Server.Network;
 
-namespace Server.Engines.ConPVP
+namespace Server.Engines.ConPVP;
+
+public class RulesetGump : DynamicGump
 {
-    public class RulesetGump : Gump
+    private readonly DuelContext _duelContext;
+    private readonly Mobile _from;
+    private readonly RulesetLayout _page;
+    private readonly bool _readOnly;
+    private readonly Ruleset _ruleset;
+
+    public override bool Singleton => true;
+
+    private RulesetGump(Mobile from, Ruleset ruleset, RulesetLayout page, DuelContext duelContext, bool readOnly)
+        : base(readOnly ? 310 : 50, 50)
     {
-        private readonly DuelContext m_DuelContext;
-        private readonly Mobile m_From;
-        private readonly RulesetLayout m_Page;
-        private readonly bool m_ReadOnly;
-        private readonly Ruleset m_Ruleset;
+        _from = from;
+        _ruleset = ruleset;
+        _page = page;
+        _duelContext = duelContext;
+        _readOnly = readOnly;
+    }
 
-        public override bool Singleton => true;
-
-        public RulesetGump(Mobile from, Ruleset ruleset, RulesetLayout page, DuelContext duelContext, bool readOnly = false)
-            : base(readOnly ? 310 : 50, 50)
+    public static void DisplayTo(Mobile from, Ruleset ruleset, RulesetLayout page, DuelContext duelContext, bool readOnly = false)
+    {
+        if (from?.NetState == null || ruleset == null || page == null)
         {
-            m_From = from;
-            m_Ruleset = ruleset;
-            m_Page = page;
-            m_DuelContext = duelContext;
-            m_ReadOnly = readOnly;
-
-            Draggable = !readOnly;
-
-            var gumps = from.GetGumps();
-
-            gumps.Close<DuelContextGump>();
-            gumps.Close<ParticipantGump>();
-
-            var depthCounter = page;
-
-            while (depthCounter != null)
-            {
-                depthCounter = depthCounter.Parent;
-            }
-
-            var count = page.Children.Length + page.Options.Length;
-
-            AddPage(0);
-
-            var height = 35 + 10 + 2 + count * 22 + 2 + 30;
-
-            AddBackground(0, 0, 260, height, 9250);
-            AddBackground(10, 10, 240, height - 20, 0xDAC);
-
-            AddHtml(35, 25, 190, 20, Center(page.Title));
-
-            var x = 35;
-            var y = 47;
-
-            for (var i = 0; i < page.Children.Length; ++i)
-            {
-                AddGoldenButton(x, y, 1 + i);
-                AddHtml(x + 25, y, 250, 22, page.Children[i].Title);
-
-                y += 22;
-            }
-
-            for (var i = 0; i < page.Options.Length; ++i)
-            {
-                var enabled = ruleset.Options[page.Offset + i];
-
-                if (readOnly)
-                {
-                    AddImage(x, y, enabled ? 0xD3 : 0xD2);
-                }
-                else
-                {
-                    AddCheck(x, y, 0xD2, 0xD3, enabled, i);
-                }
-
-                AddHtml(x + 25, y, 250, 22, page.Options[i]);
-
-                y += 22;
-            }
+            return;
         }
 
-        public string Center(string text) => $"<CENTER>{text}</CENTER>";
+        var gumps = from.GetGumps();
+        gumps.Close<DuelContextGump>();
+        gumps.Close<ParticipantGump>();
 
-        public void AddGoldenButton(int x, int y, int bid)
+        from.SendGump(new RulesetGump(from, ruleset, page, duelContext, readOnly));
+    }
+
+    protected override void BuildLayout(ref DynamicGumpBuilder builder)
+    {
+        if (_readOnly)
         {
-            AddButton(x, y, 0xD2, 0xD2, bid);
-            AddButton(x + 3, y + 3, 0xD8, 0xD8, bid);
+            builder.SetNoMove();
         }
 
-        public override void OnResponse(NetState sender, in RelayInfo info)
+        var depthCounter = _page;
+
+        while (depthCounter != null)
         {
-            if (m_DuelContext?.Registered == false)
+            depthCounter = depthCounter.Parent;
+        }
+
+        var count = _page.Children.Length + _page.Options.Length;
+
+        builder.AddPage();
+
+        var height = 35 + 10 + 2 + count * 22 + 2 + 30;
+
+        builder.AddBackground(0, 0, 260, height, 9250);
+        builder.AddBackground(10, 10, 240, height - 20, 0xDAC);
+
+        builder.AddHtml(35, 25, 190, 20, Center(_page.Title));
+
+        var x = 35;
+        var y = 47;
+
+        for (var i = 0; i < _page.Children.Length; ++i)
+        {
+            AddGoldenButton(ref builder, x, y, 1 + i);
+            builder.AddHtml(x + 25, y, 250, 22, _page.Children[i].Title);
+
+            y += 22;
+        }
+
+        for (var i = 0; i < _page.Options.Length; ++i)
+        {
+            var enabled = _ruleset.Options[_page.Offset + i];
+
+            if (_readOnly)
             {
-                return;
-            }
-
-            if (!m_ReadOnly)
-            {
-                var opts = new BitArray(m_Page.Options.Length);
-
-                for (var i = 0; i < info.Switches.Length; ++i)
-                {
-                    var sid = info.Switches[i];
-
-                    if (sid >= 0 && sid < m_Page.Options.Length)
-                    {
-                        opts[sid] = true;
-                    }
-                }
-
-                for (var i = 0; i < opts.Length; ++i)
-                {
-                    if (m_Ruleset.Options[m_Page.Offset + i] != opts[i])
-                    {
-                        m_Ruleset.Options[m_Page.Offset + i] = opts[i];
-                        m_Ruleset.Changed = true;
-                    }
-                }
-            }
-
-            var bid = info.ButtonID;
-
-            if (bid == 0)
-            {
-                if (m_Page.Parent != null)
-                {
-                    m_From.SendGump(new RulesetGump(m_From, m_Ruleset, m_Page.Parent, m_DuelContext, m_ReadOnly));
-                }
-                else if (!m_ReadOnly)
-                {
-                    m_From.SendGump(new PickRulesetGump(m_From, m_DuelContext, m_Ruleset));
-                }
+                builder.AddImage(x, y, enabled ? 0xD3 : 0xD2);
             }
             else
             {
-                bid -= 1;
+                builder.AddCheckbox(x, y, 0xD2, 0xD3, enabled, i);
+            }
 
-                if (bid >= 0 && bid < m_Page.Children.Length)
+            builder.AddHtml(x + 25, y, 250, 22, _page.Options[i]);
+
+            y += 22;
+        }
+    }
+
+    private static string Center(string text) => $"<CENTER>{text}</CENTER>";
+
+    private static void AddGoldenButton(ref DynamicGumpBuilder builder, int x, int y, int bid)
+    {
+        builder.AddButton(x, y, 0xD2, 0xD2, bid);
+        builder.AddButton(x + 3, y + 3, 0xD8, 0xD8, bid);
+    }
+
+    public override void OnResponse(NetState sender, in RelayInfo info)
+    {
+        if (_duelContext?.Registered == false)
+        {
+            return;
+        }
+
+        if (!_readOnly)
+        {
+            var opts = new BitArray(_page.Options.Length);
+
+            for (var i = 0; i < info.Switches.Length; ++i)
+            {
+                var sid = info.Switches[i];
+
+                if (sid >= 0 && sid < _page.Options.Length)
                 {
-                    m_From.SendGump(new RulesetGump(m_From, m_Ruleset, m_Page.Children[bid], m_DuelContext, m_ReadOnly));
+                    opts[sid] = true;
                 }
+            }
+
+            for (var i = 0; i < opts.Length; ++i)
+            {
+                if (_ruleset.Options[_page.Offset + i] != opts[i])
+                {
+                    _ruleset.Options[_page.Offset + i] = opts[i];
+                    _ruleset.Changed = true;
+                }
+            }
+        }
+
+        var bid = info.ButtonID;
+
+        if (bid == 0)
+        {
+            if (_page.Parent != null)
+            {
+                DisplayTo(_from, _ruleset, _page.Parent, _duelContext, _readOnly);
+            }
+            else if (!_readOnly)
+            {
+                PickRulesetGump.DisplayTo(_from, _duelContext, _ruleset);
+            }
+        }
+        else
+        {
+            bid -= 1;
+
+            if (bid >= 0 && bid < _page.Children.Length)
+            {
+                DisplayTo(_from, _ruleset, _page.Children[bid], _duelContext, _readOnly);
             }
         }
     }

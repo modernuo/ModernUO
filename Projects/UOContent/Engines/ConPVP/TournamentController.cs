@@ -70,7 +70,7 @@ namespace Server.Engines.ConPVP
 
                 gumps.Close<RulesetGump>();
                 gumps.Close<PickRulesetGump>();
-                gumps.Send(new PickRulesetGump(from, null, Tournament.Ruleset));
+                PickRulesetGump.DisplayTo(from, null, Tournament.Ruleset);
             }
         }
 

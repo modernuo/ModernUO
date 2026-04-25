@@ -144,7 +144,7 @@ public partial class TournamentSignupItem : Item
                         }
                         else if (!tourney.HasParticipant(from))
                         {
-                            from.SendGump(new ConfirmSignupGump(from, Registrar, tourney, new List<Mobile> { from }));
+                            ConfirmSignupGump.DisplayTo(from, Registrar, tourney, new List<Mobile> { from });
                         }
                         else
                         {
