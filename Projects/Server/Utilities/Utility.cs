@@ -1422,9 +1422,9 @@ public static partial class Utility
     public static bool IsNullOrWhiteSpace(this ReadOnlySpan<char> span) => span.IsEmpty || span.IsWhiteSpace();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool InTypeList<T>(this T obj, Type[] types) => obj.GetType().InTypeList(types);
+    public static bool InTypeList<T>(this T obj, ReadOnlySpan<Type> types) => obj.GetType().InTypeList(types);
 
-    public static bool InTypeList(this Type t, Type[] types)
+    public static bool InTypeList(this Type t, ReadOnlySpan<Type> types)
     {
         for (var i = 0; i < types.Length; ++i)
         {
