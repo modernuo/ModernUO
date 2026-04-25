@@ -163,7 +163,7 @@ public class ReproductionGump : DynamicGump
             case 1: // Main menu
                 {
                     MainPlantGump.DisplayTo(from, _plant);
-                    break;
+                    return;
                 }
             case 2: // Set to decorative
                 {
@@ -171,24 +171,21 @@ public class ReproductionGump : DynamicGump
                     {
                         SetToDecorativeGump.DisplayTo(from, _plant);
                     }
-                    break;
+                    return;
                 }
             case 3: // Pollination
                 {
                     from.NetState.SendDisplayHelpTopic(HelpTopic.PollinationState);
-                    from.SendGump(this);
                     break;
                 }
             case 4: // Resources
                 {
                     from.NetState.SendDisplayHelpTopic(HelpTopic.ResourceProduction);
-                    from.SendGump(this);
                     break;
                 }
             case 5: // Seeds
                 {
                     from.NetState.SendDisplayHelpTopic(HelpTopic.SeedProduction);
-                    from.SendGump(this);
                     break;
                 }
             case 6: // Gather pollen
@@ -210,10 +207,9 @@ public class ReproductionGump : DynamicGump
                     {
                         from.Target = new PollinateTarget(_plant);
                         from.SendLocalizedMessage(1053054); // Target the plant you wish to cross-pollinate to.
-                        break;
+                        return;
                     }
 
-                    from.SendGump(this);
                     break;
                 }
             case 7: // Gather resources
@@ -253,7 +249,6 @@ public class ReproductionGump : DynamicGump
                         }
                     }
 
-                    from.SendGump(this);
                     break;
                 }
             case 8: // Gather seeds
@@ -285,9 +280,10 @@ public class ReproductionGump : DynamicGump
                         }
                     }
 
-                    from.SendGump(this);
                     break;
                 }
         }
+
+        from.SendGump(this);
     }
 }

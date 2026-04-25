@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 using Server.Engines.Help;
 using Server.Gumps;
 using Server.Items;
@@ -246,10 +247,9 @@ public class MainPlantGump : DynamicGump
         }
     }
 
-    private static void AddLevel(ref DynamicGumpBuilder builder, int x, int y, int value)
-    {
-        builder.AddLabel(x, y, 0x835, value.ToString());
-    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static void AddLevel(ref DynamicGumpBuilder builder, int x, int y, int value) =>
+        builder.AddLabel(x, y, 0x835, $"{value}");
 
     private void AddGrowthIndicator(ref DynamicGumpBuilder builder, int x, int y)
     {
