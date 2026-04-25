@@ -71,9 +71,22 @@ public abstract partial class BaseAI
 
         if (TryMove(d))
         {
-            Mobile.CurrentSpeed = Mobile.Hits < Mobile.HitsMax * 0.3
-                ? BadlyHurtMoveDelay(Mobile)
-                : Mobile.Warmode || Mobile.Combatant != null ? Mobile.ActiveSpeed : Mobile.PassiveSpeed;
+            if (Core.AOS && IsFollowingMaster())
+            {
+                Mobile.CurrentSpeed = 0.1;
+            }
+            else if (Mobile.Hits < Mobile.HitsMax * 0.3)
+            {
+                Mobile.CurrentSpeed = BadlyHurtMoveDelay(Mobile);
+            }
+            else if (Mobile.Warmode || Mobile.Combatant != null)
+            {
+                Mobile.CurrentSpeed = Mobile.ActiveSpeed;
+            }
+            else
+            {
+                Mobile.CurrentSpeed = Mobile.PassiveSpeed;
+            }
 
             return MoveResult.Success;
         }

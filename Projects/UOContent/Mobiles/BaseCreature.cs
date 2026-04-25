@@ -2245,7 +2245,7 @@ namespace Server.Mobiles
 
         public void ChangeAIType(AIType newAI)
         {
-            AIObject?._timer.Stop();
+            AIObject?.AITimer.Stop();
 
             if (ForcedAI != null)
             {
@@ -2368,7 +2368,7 @@ namespace Server.Mobiles
         {
             if (AIObject != null)
             {
-                AIObject._timer?.Stop();
+                AIObject.AITimer?.Stop();
                 AIObject = null;
             }
 
@@ -3863,6 +3863,8 @@ namespace Server.Mobiles
 
             OnAfterResurrect();
 
+            AIObject?.Activate();
+
             var owner = ControlMaster;
 
             if (owner?.Deleted == false && owner.Map == Map && owner.InRange(this, 12) && CanSee(owner) && InLOS(owner))
@@ -3914,7 +3916,7 @@ namespace Server.Mobiles
             {
                 SetLocation(Home, true);
 
-                if (!Map.GetSector(X, Y).Active)
+                if (PlayerRangeSensitive && !Map.GetSector(X, Y).Active)
                 {
                     AIObject?.Deactivate();
                 }
