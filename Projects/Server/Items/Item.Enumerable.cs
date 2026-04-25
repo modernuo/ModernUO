@@ -54,16 +54,16 @@ public partial class Item
     ///     <paramref name="predicate" />.
     /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public FindItemsByTypeEnumerator<T> FindItemsByType<T>(bool recurse = true, Predicate<T> predicate = null) where T : Item =>
-        new(this, recurse, predicate);
+    public FindItemsByTypeEnumerator<T> FindItemsByType<T>(bool recurse = true, Predicate<T> predicate = null)
+        where T : Item => new(this, recurse, predicate);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public FindItemsByTypeEnumerator<Item> FindItemsByType(Type type, bool recurse = true) =>
-        new(this, recurse, type.IsInstanceOfType);
+        new(this, recurse, type);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public FindItemsByTypeEnumerator<Item> FindItemsByType(Type[] types, bool recurse = true) =>
-        new(this, recurse, item => item.InTypeList(types));
+    public FindItemsByTypeEnumerator<Item> FindItemsByType(ReadOnlySpan<Type> types, bool recurse = true) =>
+        new(this, recurse, types);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public FindItemsByTypeEnumerator<Item> FindItems(bool recurse = true, Predicate<Item> predicate = null) =>
@@ -122,28 +122,22 @@ public partial class Item
     {
         var queue = PooledRefQueue<Item>.Create(128);
 
-        foreach (var item in FindItemsByType<Item>(recurse))
+        foreach (var item in FindItemsByType(type, recurse))
         {
-            if (type.IsInstanceOfType(item))
-            {
-                queue.Enqueue(item);
-            }
+            queue.Enqueue(item);
         }
 
         return queue;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public PooledRefQueue<Item> EnumerateItemsByType(Type[] types, bool recurse = true)
+    public PooledRefQueue<Item> EnumerateItemsByType(ReadOnlySpan<Type> types, bool recurse = true)
     {
         var queue = PooledRefQueue<Item>.Create(128);
 
-        foreach (var item in FindItemsByType<Item>(recurse))
+        foreach (var item in FindItemsByType(types, recurse))
         {
-            if (item.InTypeList(types))
-            {
-                queue.Enqueue(item);
-            }
+            queue.Enqueue(item);
         }
 
         return queue;
@@ -170,28 +164,22 @@ public partial class Item
     {
         var list = PooledRefList<Item>.Create(128);
 
-        foreach (var item in FindItemsByType<Item>(recurse))
+        foreach (var item in FindItemsByType(type, recurse))
         {
-            if (type.IsInstanceOfType(item))
-            {
-                list.Add(item);
-            }
+            list.Add(item);
         }
 
         return list;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public PooledRefList<Item> ListItemsByType(Type[] types, bool recurse = true)
+    public PooledRefList<Item> ListItemsByType(ReadOnlySpan<Type> types, bool recurse = true)
     {
         var list = PooledRefList<Item>.Create(128);
 
-        foreach (var item in FindItemsByType<Item>(recurse))
+        foreach (var item in FindItemsByType(types, recurse))
         {
-            if (item.InTypeList(types))
-            {
-                list.Add(item);
-            }
+            list.Add(item);
         }
 
         return list;
@@ -211,13 +199,30 @@ public partial class Item
         private int _index;
         private T _current;
         private readonly bool _recurse;
-        private readonly Predicate<T> _predicate;
         private Item _currentContainer;
         private int _version;
 
+        // Exactly one filter source is used per enumerator instance, depending on
+        // which constructor was called. The unused fields stay at default and the
+        // branches below pick the right path. This avoids the per-call delegate
+        // allocation that the (Type)/(Type[]) factory methods used to incur.
+        private readonly Predicate<T> _predicate;
+        private readonly Type _runtimeType;
+        private readonly ReadOnlySpan<Type> _runtimeTypes;
+
         public FindItemsByTypeEnumerator(Item container, bool recurse, Predicate<T> predicate)
+            : this(container, recurse) => _predicate = predicate;
+
+        public FindItemsByTypeEnumerator(Item container, bool recurse, Type runtimeType)
+            : this(container, recurse) => _runtimeType = runtimeType;
+
+        public FindItemsByTypeEnumerator(Item container, bool recurse, ReadOnlySpan<Type> runtimeTypes)
+            : this(container, recurse) => _runtimeTypes = runtimeTypes;
+
+        private FindItemsByTypeEnumerator(Item container, bool recurse)
         {
-            _containers = PooledRefQueue<Item>.Create(_recurse ? 64 : 0);
+            _recurse = recurse;
+            _containers = PooledRefQueue<Item>.Create(recurse ? 64 : 0);
 
             if (container != null)
             {
@@ -230,11 +235,6 @@ public partial class Item
                 _currentContainer = container;
                 _version = container.LookupContainerVersion();
             }
-
-            _current = default;
-            _index = 0;
-            _recurse = recurse;
-            _predicate = predicate;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -260,6 +260,22 @@ public partial class Item
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private bool Matches(T t)
+        {
+            if (_runtimeType is not null)
+            {
+                return _runtimeType.IsInstanceOfType(t);
+            }
+
+            if (_runtimeTypes.Length > 0)
+            {
+                return t.GetType().InTypeList(_runtimeTypes);
+            }
+
+            return _predicate?.Invoke(t) != false;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool SetNextItem()
         {
             if (_version != _currentContainer.LookupContainerVersion())
@@ -270,12 +286,12 @@ public partial class Item
             while (_index < _items.Length)
             {
                 var item = _items[_index++];
-                if (_recurse && item.LookupItems() is { Count: > 0 } items)
+                if (_recurse && item.LookupItems() is { Count: > 0 })
                 {
                     _containers.Enqueue(item);
                 }
 
-                if (item is T t && _predicate?.Invoke(t) != false)
+                if (item is T t && Matches(t))
                 {
                     if (_version != _currentContainer.LookupContainerVersion())
                     {

@@ -1705,13 +1705,13 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
         }
     }
 
-    public List<Item> LookupItems() => (this is Container container ? container.m_Items : LookupCompactInfo()?.m_Items) ?? EmptyItems;
+    public List<Item> LookupItems() => (this is Container container ? container._items : LookupCompactInfo()?.m_Items) ?? EmptyItems;
 
     public List<Item> AcquireItems()
     {
         if (this is Container cont)
         {
-            return cont.m_Items ??= new List<Item>();
+            return cont._items ??= new List<Item>();
         }
 
         var info = AcquireCompactInfo();
@@ -2714,7 +2714,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
 
                         if (this is Container)
                         {
-                            (this as Container).m_Items = items;
+                            (this as Container)._items = items;
                         }
                         else
                         {
@@ -2875,7 +2875,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
 
                         if (this is Container cont)
                         {
-                            cont.m_Items = items;
+                            cont._items = items;
                         }
                         else
                         {
@@ -3004,7 +3004,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
 
                         if (this is Container cont)
                         {
-                            cont.m_Items = items;
+                            cont._items = items;
                         }
                         else
                         {

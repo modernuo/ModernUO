@@ -28,10 +28,11 @@ public abstract partial class BaseAI
 {
     private ActionType _action;
     public long _nextDetectHidden;
-    public PathFollower Path { get; protected set; }
-    public readonly Timer _timer;
     public DateTime _lastOrder = DateTime.MinValue;
     public Mobile _commandIssuer;
+
+    public PathFollower Path { get; protected set; }
+    public AITimer AITimer { get; }
     public long NextMove { get; set; }
 
     public BaseCreature Mobile { get; }
@@ -43,11 +44,11 @@ public abstract partial class BaseAI
     public BaseAI(BaseCreature m)
     {
         Mobile = m;
-        _timer = new AITimer(this);
+        AITimer = new AITimer(this);
 
         if (!m.PlayerRangeSensitive || !World.Loading && m.Map != null && m.Map != Map.Internal && m.Map.GetSector(m.Location).Active)
         {
-            _timer.Start();
+            AITimer.Start();
         }
 
         if (Action != ActionType.Wander)
@@ -360,7 +361,7 @@ public abstract partial class BaseAI
         else if (Mobile.IsAnimatedDead)
         {
             FollowMaster();
-    
+
             if (CheckMove() && CanMoveNow(out _) && !Mobile.CheckIdle())
             {
                 WalkRandomInHome(3, 2, 1);
@@ -437,7 +438,7 @@ public abstract partial class BaseAI
         return true;
     }
 
-    public bool IsValidCombatant(Mobile combatant) => IsValidFocusMob(combatant) 
+    public bool IsValidCombatant(Mobile combatant) => IsValidFocusMob(combatant)
         && (Mobile.InLOS(combatant) || IsHostile(combatant));
 
     public bool IsValidFocusMob(Mobile focusMob) =>
@@ -594,7 +595,7 @@ public abstract partial class BaseAI
                 Action = ActionType.Wander;
                 return false;
             }
-            
+
             Action = ActionType.Flee;
             return true;
         }
@@ -618,14 +619,14 @@ public abstract partial class BaseAI
         {
             return false;
         }
-            
+
         var hitPercent = (double)Mobile.Hits / Mobile.HitsMax;
-        
+
         if (hitPercent > FleeHealthThreshold)
         {
             return false;
         }
-            
+
         return Utility.RandomDouble() < FleeChance;
     }
 
@@ -637,12 +638,12 @@ public abstract partial class BaseAI
         {
             return false;
         }
-    
+
         if (AcquireFocusMob(Mobile.RangePerception, Mobile.FightMode, false, false, true))
         {
             return Utility.RandomDouble() < BackoffChance;
         }
-    
+
         return false;
     }
 
@@ -660,7 +661,7 @@ public abstract partial class BaseAI
         else
         {
             DebugSay("Focus target missing. Wandering...");
-            
+
             Action = ActionType.Wander;
         }
 
@@ -882,8 +883,8 @@ public abstract partial class BaseAI
         return !valid && (acqType != FightMode.Evil || (bc?.GetMaster()?.Karma ?? m.Karma) >= 0);
     }
 
-    private bool IsHostile(Mobile from) => Mobile.Combatant == from || from.Combatant == Mobile 
-        || IsAggressor(from) || IsAggressed(from);
+    private bool IsHostile(Mobile from) =>
+        Mobile.Combatant == from || from.Combatant == Mobile || IsAggressor(from) || IsAggressed(from);
 
     private bool IsAggressor(Mobile from)
     {
@@ -956,14 +957,9 @@ public abstract partial class BaseAI
 
     public virtual void Deactivate()
     {
-        if (!Mobile.PlayerRangeSensitive)
-        {
-            return;
-        }
-
         if (Mobile.Map == Map.Internal || !Mobile.Controlled && !Mobile.Map.GetSector(Mobile.Location).Active)
         {
-            _timer.Stop();
+            AITimer.Stop();
         }
 
         if (ShouldReturnToHome(Mobile.Spawner))
@@ -990,19 +986,19 @@ public abstract partial class BaseAI
             Mobile.MoveToWorld(loc, spawner.Map);
         }
 
-        _timer.Start();
+        Activate();
     }
 
     public virtual void Activate()
     {
-        if (!_timer.Running)
+        if (!AITimer.Running)
         {
-            _timer.Start();
+            AITimer.Activate();
         }
     }
 
     public virtual void OnCurrentSpeedChanged()
     {
-        _timer.Interval = TimeSpan.FromMilliseconds(Mobile.CurrentSpeed * 1000);
+        AITimer.Interval = TimeSpan.FromSeconds(Mobile.CurrentSpeed);
     }
 }
