@@ -409,6 +409,11 @@ public partial class Corpse : Container, ICarvable
             if (IsCriminalAction(from))
             {
                 from.CriminalAction(true);
+                Titles.AwardKarma(from, -70, true);
+            }
+            else
+            {
+                Titles.AwardKarma(from, -20, true);
             }
         }
         else if (dead is BaseCreature creature)

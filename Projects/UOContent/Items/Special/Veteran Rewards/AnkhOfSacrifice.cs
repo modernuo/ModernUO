@@ -23,7 +23,7 @@ public partial class AnkhOfSacrificeComponent : AddonComponent
     {
         base.GetContextMenuEntries(from, ref list);
 
-        if (from is PlayerMobile mobile)
+        if (Core.UOTD && !Core.AOS && from is PlayerMobile mobile)
         {
             list.Add(new Ankhs.LockKarmaEntry(mobile.KarmaLocked));
         }
