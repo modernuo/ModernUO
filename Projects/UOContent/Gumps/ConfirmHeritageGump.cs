@@ -1,37 +1,55 @@
 using System;
 using Server.Items;
+using Server.Logging;
 using Server.Network;
 
 namespace Server.Gumps
 {
-    public class ConfirmHeritageGump : Gump
+    public class ConfirmHeritageGump : DynamicGump
     {
-        private readonly Type[] m_Selected;
-        private readonly HeritageToken m_Token;
+        private static readonly ILogger _logger = LogFactory.GetLogger(typeof(ConfirmHeritageGump));
+
+        private readonly Type[] _selected;
+        private readonly HeritageToken _token;
+        private readonly int _cliloc;
 
         public override bool Singleton => true;
 
-        public ConfirmHeritageGump(HeritageToken token, Type[] selected, int cliloc) : base(60, 36)
+        private ConfirmHeritageGump(HeritageToken token, Type[] selected, int cliloc) : base(60, 36)
         {
-            m_Token = token;
-            m_Selected = selected;
+            _token = token;
+            _selected = selected;
+            _cliloc = cliloc;
+        }
 
-            AddPage(0);
+        public static void DisplayTo(Mobile from, HeritageToken token, Type[] selected, int cliloc)
+        {
+            if (from?.NetState == null || token?.Deleted != false || selected == null || selected.Length == 0)
+            {
+                return;
+            }
 
-            AddBackground(0, 0, 291, 99, 0x13BE);
-            AddImageTiled(5, 6, 280, 20, 0xA40);
-            AddHtmlLocalized(9, 8, 280, 20, 1070972, 0x7FFF); // Click "OKAY" to redeem the following promotional item:
-            AddImageTiled(5, 31, 280, 40, 0xA40);
-            AddHtmlLocalized(9, 35, 272, 40, cliloc, 0x7FFF);
-            AddButton(180, 73, 0xFB7, 0xFB8, (int)Buttons.Okay);
-            AddHtmlLocalized(215, 75, 100, 20, 1011036, 0x7FFF); // OKAY
-            AddButton(5, 73, 0xFB1, 0xFB2, (int)Buttons.Cancel);
-            AddHtmlLocalized(40, 75, 100, 20, 1060051, 0x7FFF); // CANCEL
+            from.SendGump(new ConfirmHeritageGump(token, selected, cliloc));
+        }
+
+        protected override void BuildLayout(ref DynamicGumpBuilder builder)
+        {
+            builder.AddPage();
+
+            builder.AddBackground(0, 0, 291, 99, 0x13BE);
+            builder.AddImageTiled(5, 6, 280, 20, 0xA40);
+            builder.AddHtmlLocalized(9, 8, 280, 20, 1070972, 0x7FFF); // Click "OKAY" to redeem the following promotional item:
+            builder.AddImageTiled(5, 31, 280, 40, 0xA40);
+            builder.AddHtmlLocalized(9, 35, 272, 40, _cliloc, 0x7FFF);
+            builder.AddButton(180, 73, 0xFB7, 0xFB8, (int)Buttons.Okay);
+            builder.AddHtmlLocalized(215, 75, 100, 20, 1011036, 0x7FFF); // OKAY
+            builder.AddButton(5, 73, 0xFB1, 0xFB2, (int)Buttons.Cancel);
+            builder.AddHtmlLocalized(40, 75, 100, 20, 1060051, 0x7FFF); // CANCEL
         }
 
         public override void OnResponse(NetState sender, in RelayInfo info)
         {
-            if (m_Token?.Deleted != false)
+            if (_token?.Deleted != false)
             {
                 return;
             }
@@ -42,7 +60,7 @@ namespace Server.Gumps
                     {
                         Item item = null;
 
-                        foreach (var type in m_Selected)
+                        foreach (var type in _selected)
                         {
                             try
                             {
@@ -50,13 +68,12 @@ namespace Server.Gumps
                             }
                             catch (Exception ex)
                             {
-                                Console.WriteLine(ex.Message);
-                                Console.WriteLine(ex.StackTrace);
+                                _logger.Error(ex, "Failed to create heritage item of type {Type}", type);
                             }
 
                             if (item != null)
                             {
-                                m_Token.Delete();
+                                _token.Delete();
                                 sender.Mobile.AddToBackpack(item);
                             }
                         }
@@ -66,7 +83,7 @@ namespace Server.Gumps
 
                 case (int)Buttons.Cancel:
                     {
-                        sender.Mobile.SendGump(new HeritageTokenGump(m_Token));
+                        HeritageTokenGump.DisplayTo(sender.Mobile, _token);
                         break;
                     }
             }

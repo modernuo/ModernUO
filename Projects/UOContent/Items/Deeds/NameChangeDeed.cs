@@ -18,7 +18,7 @@ public partial class NameChangeDeed : Item
     {
         if (RootParent == from)
         {
-            from.SendGump(new NameChangeDeedGump(this));
+            NameChangeDeedGump.DisplayTo(from, this);
         }
         else
         {
@@ -27,53 +27,59 @@ public partial class NameChangeDeed : Item
     }
 }
 
-public class NameChangeDeedGump : Gump
+public class NameChangeDeedGump : StaticGump<NameChangeDeedGump>
 {
-    private readonly Item m_Sender;
+    private readonly Item _sender;
 
     public override bool Singleton => true;
 
-    public NameChangeDeedGump(Item sender) : base(50, 50)
+    private NameChangeDeedGump(Item sender) : base(50, 50) => _sender = sender;
+
+    public static void DisplayTo(Mobile from, Item sender)
     {
-        m_Sender = sender;
+        if (from?.NetState == null || sender?.Deleted != false)
+        {
+            return;
+        }
 
-        Closable = true;
-        Draggable = true;
-        Resizable = false;
-
-        AddPage(0);
-
-        AddBlackAlpha(10, 120, 250, 85);
-        AddHtml(10, 125, 250, 20, "Name Change Deed".Center(0xFFFFFF));
-
-        AddLabel(73, 15, 1152, "");
-        AddLabel(20, 150, 0x480, "New Name:");
-        AddTextField(100, 150, 150, 20, 0);
-
-        AddButtonLabeled(75, 180, 1, "Submit");
+        from.SendGump(new NameChangeDeedGump(sender));
     }
 
-    public void AddBlackAlpha(int x, int y, int width, int height)
+    protected override void BuildLayout(ref StaticGumpBuilder builder)
     {
-        AddImageTiled(x, y, width, height, 2624);
-        AddAlphaRegion(x, y, width, height);
+        builder.AddPage();
+
+        AddBlackAlpha(ref builder, 10, 120, 250, 85);
+        builder.AddHtml(10, 125, 250, 20, "Name Change Deed".Center(0xFFFFFF));
+
+        builder.AddLabel(73, 15, 1152, "");
+        builder.AddLabel(20, 150, 0x480, "New Name:");
+        AddTextField(ref builder, 100, 150, 150, 20, 0);
+
+        AddButtonLabeled(ref builder, 75, 180, 1, "Submit");
     }
 
-    public void AddTextField(int x, int y, int width, int height, int index)
+    private static void AddBlackAlpha(ref StaticGumpBuilder builder, int x, int y, int width, int height)
     {
-        AddBackground(x - 2, y - 2, width + 4, height + 4, 0x2486);
-        AddTextEntry(x + 2, y + 2, width - 4, height - 4, 0, index, "");
+        builder.AddImageTiled(x, y, width, height, 2624);
+        builder.AddAlphaRegion(x, y, width, height);
     }
 
-    public void AddButtonLabeled(int x, int y, int buttonID, string text)
+    private static void AddTextField(ref StaticGumpBuilder builder, int x, int y, int width, int height, int index)
     {
-        AddButton(x, y - 1, 4005, 4007, buttonID);
-        AddHtml(x + 35, y, 240, 20, text.Color(0xFFFFFF));
+        builder.AddBackground(x - 2, y - 2, width + 4, height + 4, 0x2486);
+        builder.AddTextEntry(x + 2, y + 2, width - 4, height - 4, 0, index, "");
+    }
+
+    private static void AddButtonLabeled(ref StaticGumpBuilder builder, int x, int y, int buttonID, string text)
+    {
+        builder.AddButton(x, y - 1, 4005, 4007, buttonID);
+        builder.AddHtml(x + 35, y, 240, 20, text.Color(0xFFFFFF));
     }
 
     public override void OnResponse(NetState sender, in RelayInfo info)
     {
-        if (m_Sender?.Deleted != false || info.ButtonID != 1 || m_Sender.RootParent != sender.Mobile)
+        if (_sender?.Deleted != false || info.ButtonID != 1 || _sender.RootParent != sender.Mobile)
         {
             return;
         }
@@ -91,6 +97,6 @@ public class NameChangeDeedGump : Gump
         m.RawName = newName.ToString();
         m.SendMessage("Your name has been changed!");
         m.SendMessage($"You are now known as {newName}");
-        m_Sender.Delete();
+        _sender.Delete();
     }
 }

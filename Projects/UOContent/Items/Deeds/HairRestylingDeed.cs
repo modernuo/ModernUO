@@ -26,11 +26,11 @@ public partial class HairRestylingDeed : Item
         }
         else
         {
-            from.SendGump(new InternalGump(from, this));
+            HairRestylingDeedGump.DisplayTo(from, this);
         }
     }
 
-    private class InternalGump : Gump
+    private class HairRestylingDeedGump : DynamicGump
     {
         private static readonly int[][] ElvenArray =
         {
@@ -82,52 +82,65 @@ public partial class HairRestylingDeed : Item
             new[] { 235, 280, 150, 295, 168, 245, 118, 292 } // slot 10, Curly - N/A for elfs.
         };
 
-        private readonly HairRestylingDeed m_Deed;
-        private readonly Mobile m_From;
+        private readonly HairRestylingDeed _deed;
+        private readonly Mobile _from;
 
         public override bool Singleton => true;
 
-        public InternalGump(Mobile from, HairRestylingDeed deed) : base(50, 50)
+        private HairRestylingDeedGump(Mobile from, HairRestylingDeed deed) : base(50, 50)
         {
-            m_From = from;
-            m_Deed = deed;
+            _from = from;
+            _deed = deed;
+        }
 
-            AddBackground(100, 10, 400, 385, 0xA28);
-
-            AddHtmlLocalized(100, 25, 400, 35, 1013008);
-            AddButton(175, 340, 0xFA5, 0xFA7, 0x0); // CANCEL
-
-            AddHtmlLocalized(210, 342, 90, 35, 1011012); // <CENTER>HAIRSTYLE SELECTION MENU</center>
-
-            var RacialData = from.Race == Race.Human ? HumanArray : ElvenArray;
-
-            for (var i = 1; i < RacialData.Length; i++)
+        public static void DisplayTo(Mobile from, HairRestylingDeed deed)
+        {
+            if (from?.NetState == null || deed?.Deleted != false)
             {
-                AddHtmlLocalized(
+                return;
+            }
+
+            from.SendGump(new HairRestylingDeedGump(from, deed));
+        }
+
+        protected override void BuildLayout(ref DynamicGumpBuilder builder)
+        {
+            builder.AddBackground(100, 10, 400, 385, 0xA28);
+
+            builder.AddHtmlLocalized(100, 25, 400, 35, 1013008);
+            builder.AddButton(175, 340, 0xFA5, 0xFA7, 0x0); // CANCEL
+
+            builder.AddHtmlLocalized(210, 342, 90, 35, 1011012); // <CENTER>HAIRSTYLE SELECTION MENU</center>
+
+            var racialData = _from.Race == Race.Human ? HumanArray : ElvenArray;
+
+            for (var i = 1; i < racialData.Length; i++)
+            {
+                builder.AddHtmlLocalized(
                     LayoutArray[i][2],
                     LayoutArray[i][3],
                     i == 1 ? 125 : 80,
                     i == 1 ? 70 : 35,
-                    m_From.Female ? RacialData[i][0] : RacialData[i][1]
+                    _from.Female ? racialData[i][0] : racialData[i][1]
                 );
                 if (LayoutArray[i][4] != 0)
                 {
-                    AddBackground(LayoutArray[i][0], LayoutArray[i][1], 50, 50, 0xA3C);
-                    AddImage(LayoutArray[i][4], LayoutArray[i][5], m_From.Female ? RacialData[i][4] : RacialData[i][5]);
+                    builder.AddBackground(LayoutArray[i][0], LayoutArray[i][1], 50, 50, 0xA3C);
+                    builder.AddImage(LayoutArray[i][4], LayoutArray[i][5], _from.Female ? racialData[i][4] : racialData[i][5]);
                 }
 
-                AddButton(LayoutArray[i][6], LayoutArray[i][7], 0xFA5, 0xFA7, i);
+                builder.AddButton(LayoutArray[i][6], LayoutArray[i][7], 0xFA5, 0xFA7, i);
             }
         }
 
         public override void OnResponse(NetState sender, in RelayInfo info)
         {
-            if (m_From?.Alive != true)
+            if (_from?.Alive != true)
             {
                 return;
             }
 
-            if (m_Deed.Deleted)
+            if (_deed.Deleted)
             {
                 return;
             }
@@ -137,13 +150,13 @@ public partial class HairRestylingDeed : Item
                 return;
             }
 
-            var RacialData = m_From.Race == Race.Human ? HumanArray : ElvenArray;
+            var racialData = _from.Race == Race.Human ? HumanArray : ElvenArray;
 
-            if (m_From is PlayerMobile pm)
+            if (_from is PlayerMobile pm)
             {
                 pm.SetHairMods(-1, -1); // clear any hairmods (disguise kit, incognito)
-                pm.HairItemID = pm.Female ? RacialData[info.ButtonID][2] : RacialData[info.ButtonID][3];
-                m_Deed.Delete();
+                pm.HairItemID = pm.Female ? racialData[info.ButtonID][2] : racialData[info.ButtonID][3];
+                _deed.Delete();
             }
         }
     }

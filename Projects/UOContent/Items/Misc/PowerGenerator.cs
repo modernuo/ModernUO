@@ -153,7 +153,7 @@ public partial class ControlPanel : AddonComponent
 
         if (m_User != null)
         {
-            m_User.CloseGump<GameGump>();
+            m_User.CloseGump<PowerGeneratorGump>();
             m_User = null;
         }
     }
@@ -176,7 +176,7 @@ public partial class ControlPanel : AddonComponent
             if (m_User.Deleted || m_User.Map != Map || !m_User.InRange(this, 3)
                 || m_User.NetState == null || Core.Now - m_LastUse >= m_UseTimeout)
             {
-                m_User.CloseGump<GameGump>();
+                m_User.CloseGump<PowerGeneratorGump>();
             }
             else
             {
@@ -188,7 +188,7 @@ public partial class ControlPanel : AddonComponent
         m_User = from;
         m_LastUse = Core.Now;
 
-        from.SendGump(new GameGump(this, from, 0, false));
+        PowerGeneratorGump.DisplayTo(from, this, 0, false);
     }
 
     public void DoDamage(Mobile to)
@@ -277,57 +277,74 @@ public partial class ControlPanel : AddonComponent
         Down
     }
 
-    private class GameGump : Gump
+    private class PowerGeneratorGump : DynamicGump
     {
-        private readonly Mobile m_From;
+        private readonly Mobile _from;
 
-        private readonly ControlPanel m_Panel;
-        private readonly int m_Step;
+        private readonly ControlPanel _panel;
+        private readonly int _step;
+        private readonly bool _hint;
 
-        public GameGump(ControlPanel panel, Mobile from, int step, bool hint) : base(5, 30)
+        public override bool Singleton => true;
+
+        private PowerGeneratorGump(ControlPanel panel, Mobile from, int step, bool hint) : base(5, 30)
         {
-            m_Panel = panel;
-            m_From = from;
-            m_Step = step;
+            _panel = panel;
+            _from = from;
+            _step = step;
+            _hint = hint;
+        }
 
-            var sideLength = panel.SideLength;
+        public static void DisplayTo(Mobile from, ControlPanel panel, int step, bool hint)
+        {
+            if (from?.NetState == null || panel?.Deleted != false)
+            {
+                return;
+            }
 
-            AddBackground(50, 0, 530, 410, 0xA28);
+            from.SendGump(new PowerGeneratorGump(panel, from, step, hint));
+        }
 
-            AddImage(0, 0, 0x28C8);
-            AddImage(547, 0, 0x28C9);
+        protected override void BuildLayout(ref DynamicGumpBuilder builder)
+        {
+            var sideLength = _panel.SideLength;
 
-            AddBackground(95, 20, 442, 90, 0xA28);
+            builder.AddBackground(50, 0, 530, 410, 0xA28);
 
-            AddHtml(229, 35, 300, 45, "GENERATOR CONTROL PANEL");
+            builder.AddImage(0, 0, 0x28C8);
+            builder.AddImage(547, 0, 0x28C9);
 
-            AddHtml(223, 60, 300, 70, "Use the Directional Controls to");
-            AddHtml(253, 75, 300, 85, "Close the Grid Circuit");
+            builder.AddBackground(95, 20, 442, 90, 0xA28);
 
-            AddImage(140, 40, 0x28D3);
-            AddImage(420, 40, 0x28D3);
+            builder.AddHtml(229, 35, 300, 45, "GENERATOR CONTROL PANEL");
 
-            AddBackground(365, 120, 178, 210, 0x1400);
+            builder.AddHtml(223, 60, 300, 70, "Use the Directional Controls to");
+            builder.AddHtml(253, 75, 300, 85, "Close the Grid Circuit");
 
-            AddImage(365, 115, 0x28D4);
-            AddImage(365, 288, 0x28D4);
+            builder.AddImage(140, 40, 0x28D3);
+            builder.AddImage(420, 40, 0x28D3);
 
-            AddImage(414, 189, 0x589);
-            AddImage(435, 210, 0xA52);
+            builder.AddBackground(365, 120, 178, 210, 0x1400);
 
-            AddButton(408, 222, 0x29EA, 0x29EC, 1); // Left
-            AddButton(448, 185, 0x29CC, 0x29CE, 2); // Up
-            AddButton(473, 222, 0x29D6, 0x29D8, 3); // Right
-            AddButton(448, 243, 0x29E0, 0x29E2, 4); // Down
+            builder.AddImage(365, 115, 0x28D4);
+            builder.AddImage(365, 288, 0x28D4);
 
-            AddBackground(90, 115, 30 + 40 * sideLength, 30 + 40 * sideLength, 0xA28);
-            AddBackground(100, 125, 10 + 40 * sideLength, 10 + 40 * sideLength, 0x1400);
+            builder.AddImage(414, 189, 0x589);
+            builder.AddImage(435, 210, 0xA52);
+
+            builder.AddButton(408, 222, 0x29EA, 0x29EC, 1); // Left
+            builder.AddButton(448, 185, 0x29CC, 0x29CE, 2); // Up
+            builder.AddButton(473, 222, 0x29D6, 0x29D8, 3); // Right
+            builder.AddButton(448, 243, 0x29E0, 0x29E2, 4); // Down
+
+            builder.AddBackground(90, 115, 30 + 40 * sideLength, 30 + 40 * sideLength, 0xA28);
+            builder.AddBackground(100, 125, 10 + 40 * sideLength, 10 + 40 * sideLength, 0x1400);
 
             for (var i = 0; i < sideLength; i++)
             {
                 for (var j = 0; j < sideLength - 1; j++)
                 {
-                    AddImage(120 + 40 * i, 162 + 40 * j, 0x13F9);
+                    builder.AddImage(120 + 40 * i, 162 + 40 * j, 0x13F9);
                 }
             }
 
@@ -335,15 +352,15 @@ public partial class ControlPanel : AddonComponent
             {
                 for (var j = 0; j < sideLength; j++)
                 {
-                    AddImage(138 + 40 * i, 147 + 40 * j, 0x13FD);
+                    builder.AddImage(138 + 40 * i, 147 + 40 * j, 0x13FD);
                 }
             }
 
-            var path = panel.Path;
+            var path = _panel.Path;
 
             var hues = new NodeHue[sideLength, sideLength];
 
-            for (var i = 0; i <= step; i++)
+            for (var i = 0; i <= _step; i++)
             {
                 var n = path[i];
                 hues[n.X, n.Y] = NodeHue.Blue;
@@ -356,27 +373,27 @@ public partial class ControlPanel : AddonComponent
             {
                 for (var j = 0; j < sideLength; j++)
                 {
-                    AddNode(110 + 40 * i, 135 + 40 * j, hues[i, j]);
+                    AddNode(ref builder, 110 + 40 * i, 135 + 40 * j, hues[i, j]);
                 }
             }
 
-            var curNode = path[step];
-            AddImage(118 + 40 * curNode.X, 143 + 40 * curNode.Y, 0x13A8);
+            var curNode = path[_step];
+            builder.AddImage(118 + 40 * curNode.X, 143 + 40 * curNode.Y, 0x13A8);
 
-            if (hint)
+            if (_hint)
             {
-                var nextNode = path[step + 1];
-                AddImage(119 + 40 * nextNode.X, 143 + 40 * nextNode.Y, 0x939);
+                var nextNode = path[_step + 1];
+                builder.AddImage(119 + 40 * nextNode.X, 143 + 40 * nextNode.Y, 0x939);
             }
 
-            if (from.Skills.Lockpicking.Value >= 65.0)
+            if (_from.Skills.Lockpicking.Value >= 65.0)
             {
-                AddButton(365, 350, 0xFA6, 0xFA7, 5);
-                AddHtml(405, 345, 140, 40, "Attempt to Decipher the Circuit Path");
+                builder.AddButton(365, 350, 0xFA6, 0xFA7, 5);
+                builder.AddHtml(405, 345, 140, 40, "Attempt to Decipher the Circuit Path");
             }
         }
 
-        private void AddNode(int x, int y, NodeHue hue)
+        private static void AddNode(ref DynamicGumpBuilder builder, int x, int y, NodeHue hue)
         {
             var id = hue switch
             {
@@ -385,51 +402,51 @@ public partial class ControlPanel : AddonComponent
                 _            => 0x9A8
             };
 
-            AddImage(x, y, id);
+            builder.AddImage(x, y, id);
         }
 
         public override void OnResponse(NetState sender, in RelayInfo info)
         {
-            if (m_Panel.Deleted || info.ButtonID == 0 || !m_From.CheckAlive())
+            if (_panel.Deleted || info.ButtonID == 0 || !_from.CheckAlive())
             {
-                m_Panel.m_User = null;
+                _panel.m_User = null;
                 return;
             }
 
-            if (m_From.Map != m_Panel.Map || !m_From.InRange(m_Panel, 3))
+            if (_from.Map != _panel.Map || !_from.InRange(_panel, 3))
             {
-                m_From.SendLocalizedMessage(500446); // That is too far away.
-                m_Panel.m_User = null;
+                _from.SendLocalizedMessage(500446); // That is too far away.
+                _panel.m_User = null;
                 return;
             }
 
-            var nextNode = m_Panel.Path[m_Step + 1];
+            var nextNode = _panel.Path[_step + 1];
 
             if (info.ButtonID == 5) // Attempt to Decipher
             {
-                var lockpicking = m_From.Skills.Lockpicking.Value;
+                var lockpicking = _from.Skills.Lockpicking.Value;
 
                 if (lockpicking < 65.0)
                 {
                     return;
                 }
 
-                m_From.PlaySound(0x241);
+                _from.PlaySound(0x241);
 
                 if (40.0 + Utility.RandomDouble() * 80.0 < lockpicking)
                 {
-                    m_From.SendGump(new GameGump(m_Panel, m_From, m_Step, true));
-                    m_Panel.m_LastUse = Core.Now;
+                    DisplayTo(_from, _panel, _step, true);
+                    _panel.m_LastUse = Core.Now;
                 }
                 else
                 {
-                    m_Panel.DoDamage(m_From);
-                    m_Panel.m_User = null;
+                    _panel.DoDamage(_from);
+                    _panel.m_User = null;
                 }
             }
             else
             {
-                var curNode = m_Panel.Path[m_Step];
+                var curNode = _panel.Path[_step];
 
                 int newX, newY;
                 switch (info.ButtonID)
@@ -467,22 +484,22 @@ public partial class ControlPanel : AddonComponent
 
                 if (nextNode.X == newX && nextNode.Y == newY)
                 {
-                    if (m_Step + 1 == m_Panel.Path.Length - 1)
+                    if (_step + 1 == _panel.Path.Length - 1)
                     {
-                        m_Panel.Solve(m_From);
-                        m_Panel.m_User = null;
+                        _panel.Solve(_from);
+                        _panel.m_User = null;
                     }
                     else
                     {
-                        m_From.PlaySound(0x1F4);
-                        m_From.SendGump(new GameGump(m_Panel, m_From, m_Step + 1, false));
-                        m_Panel.m_LastUse = Core.Now;
+                        _from.PlaySound(0x1F4);
+                        DisplayTo(_from, _panel, _step + 1, false);
+                        _panel.m_LastUse = Core.Now;
                     }
                 }
                 else
                 {
-                    m_Panel.DoDamage(m_From);
-                    m_Panel.m_User = null;
+                    _panel.DoDamage(_from);
+                    _panel.m_User = null;
                 }
             }
         }

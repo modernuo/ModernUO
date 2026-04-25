@@ -104,37 +104,50 @@ public partial class HolidayTreeDeed : Item
 
     public override void OnDoubleClick(Mobile from)
     {
-        from.SendGump(new HolidayTreeChoiceGump(from, this));
+        HolidayTreeChoiceGump.DisplayTo(from, this);
     }
 }
 
-public class HolidayTreeChoiceGump : Gump
+public class HolidayTreeChoiceGump : StaticGump<HolidayTreeChoiceGump>
 {
-    private readonly HolidayTreeDeed m_Deed;
-    private readonly Mobile m_From;
+    private readonly HolidayTreeDeed _deed;
+    private readonly Mobile _from;
 
     public override bool Singleton => true;
 
-    public HolidayTreeChoiceGump(Mobile from, HolidayTreeDeed deed) : base(200, 200)
+    private HolidayTreeChoiceGump(Mobile from, HolidayTreeDeed deed) : base(200, 200)
     {
-        m_From = from;
-        m_Deed = deed;
+        _from = from;
+        _deed = deed;
+    }
 
-        AddPage(0);
+    public static void DisplayTo(Mobile from, HolidayTreeDeed deed)
+    {
+        if (from?.NetState == null || deed?.Deleted != false)
+        {
+            return;
+        }
 
-        AddBackground(0, 0, 220, 120, 5054);
-        AddBackground(10, 10, 200, 100, 3000);
+        from.SendGump(new HolidayTreeChoiceGump(from, deed));
+    }
 
-        AddButton(20, 35, 4005, 4007, 1);
-        AddHtmlLocalized(55, 35, 145, 25, 1018322); // Classic
+    protected override void BuildLayout(ref StaticGumpBuilder builder)
+    {
+        builder.AddPage();
 
-        AddButton(20, 65, 4005, 4007, 2);
-        AddHtmlLocalized(55, 65, 145, 25, 1018321); // Modern
+        builder.AddBackground(0, 0, 220, 120, 5054);
+        builder.AddBackground(10, 10, 200, 100, 3000);
+
+        builder.AddButton(20, 35, 4005, 4007, 1);
+        builder.AddHtmlLocalized(55, 35, 145, 25, 1018322); // Classic
+
+        builder.AddButton(20, 65, 4005, 4007, 2);
+        builder.AddHtmlLocalized(55, 65, 145, 25, 1018321); // Modern
     }
 
     public override void OnResponse(NetState sender, in RelayInfo info)
     {
-        if (m_Deed.Deleted)
+        if (_deed.Deleted)
         {
             return;
         }
@@ -143,12 +156,12 @@ public class HolidayTreeChoiceGump : Gump
         {
             case 1:
                 {
-                    m_Deed.BeginPlace(m_From, HolidayTreeType.Classic);
+                    _deed.BeginPlace(_from, HolidayTreeType.Classic);
                     break;
                 }
             case 2:
                 {
-                    m_Deed.BeginPlace(m_From, HolidayTreeType.Modern);
+                    _deed.BeginPlace(_from, HolidayTreeType.Modern);
                     break;
                 }
         }
