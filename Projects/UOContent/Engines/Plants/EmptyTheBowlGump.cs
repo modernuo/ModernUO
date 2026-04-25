@@ -2,125 +2,125 @@ using Server.Engines.Help;
 using Server.Gumps;
 using Server.Network;
 
-namespace Server.Engines.Plants
+namespace Server.Engines.Plants;
+
+public class EmptyTheBowlGump : DynamicGump
 {
-    public class EmptyTheBowlGump : Gump
+    private readonly PlantItem _plant;
+
+    public override bool Singleton => true;
+
+    private EmptyTheBowlGump(PlantItem plant) : base(20, 20)
     {
-        private readonly PlantItem m_Plant;
+        _plant = plant;
+    }
 
-        public EmptyTheBowlGump(PlantItem plant) : base(20, 20)
+    public static void DisplayTo(Mobile from, PlantItem plant)
+    {
+        if (from?.NetState == null || plant == null || plant.Deleted)
         {
-            m_Plant = plant;
-
-            DrawBackground();
-
-            AddLabel(90, 70, 0x44, "Empty the bowl?");
-
-            DrawPicture();
-
-            AddButton(98, 150, 0x47E, 0x480, 1); // Cancel
-
-            AddButton(138, 151, 0xD2, 0xD2, 2); // Help
-            AddLabel(143, 151, 0x835, "?");
-
-            AddButton(168, 150, 0x481, 0x483, 3); // Ok
+            return;
         }
 
-        private void DrawBackground()
+        from.SendGump(new EmptyTheBowlGump(plant));
+    }
+
+    protected override void BuildLayout(ref DynamicGumpBuilder builder)
+    {
+        builder.AddPage();
+
+        builder.AddBackground(50, 50, 200, 150, 0xE10);
+
+        builder.AddItem(45, 45, 0xCEF);
+        builder.AddItem(45, 118, 0xCF0);
+
+        builder.AddItem(211, 45, 0xCEB);
+        builder.AddItem(211, 118, 0xCEC);
+
+        builder.AddLabel(90, 70, 0x44, "Empty the bowl?");
+
+        builder.AddItem(90, 100, 0x1602);
+        builder.AddImage(140, 102, 0x15E1);
+        builder.AddItem(160, 100, 0x15FD);
+
+        if (_plant.PlantStatus != PlantStatus.BowlOfDirt && _plant.PlantStatus < PlantStatus.Plant)
         {
-            AddBackground(50, 50, 200, 150, 0xE10);
-
-            AddItem(45, 45, 0xCEF);
-            AddItem(45, 118, 0xCF0);
-
-            AddItem(211, 45, 0xCEB);
-            AddItem(211, 118, 0xCEC);
+            builder.AddItem(156, 130, 0xDCF); // Seed
         }
 
-        private void DrawPicture()
-        {
-            AddItem(90, 100, 0x1602);
-            AddImage(140, 102, 0x15E1);
-            AddItem(160, 100, 0x15FD);
+        builder.AddButton(98, 150, 0x47E, 0x480, 1); // Cancel
 
-            if (m_Plant.PlantStatus != PlantStatus.BowlOfDirt && m_Plant.PlantStatus < PlantStatus.Plant)
-            {
-                AddItem(156, 130, 0xDCF); // Seed
-            }
+        builder.AddButton(138, 151, 0xD2, 0xD2, 2); // Help
+        builder.AddLabel(143, 151, 0x835, "?");
+
+        builder.AddButton(168, 150, 0x481, 0x483, 3); // Ok
+    }
+
+    public override void OnResponse(NetState sender, in RelayInfo info)
+    {
+        var from = sender.Mobile;
+
+        if (info.ButtonID == 0 || _plant.Deleted || _plant.PlantStatus >= PlantStatus.DecorativePlant)
+        {
+            return;
         }
 
-        public override void OnResponse(NetState sender, in RelayInfo info)
+        if (info.ButtonID == 3 && !from.InRange(_plant.GetWorldLocation(), 3))
         {
-            var from = sender.Mobile;
+            from.LocalOverheadMessage(MessageType.Regular, 0x3E9, 500446); // That is too far away.
+            return;
+        }
 
-            if (info.ButtonID == 0 || m_Plant.Deleted || m_Plant.PlantStatus >= PlantStatus.DecorativePlant)
-            {
-                return;
-            }
+        if (!_plant.IsUsableBy(from))
+        {
+            _plant.LabelTo(from, 1061856); // You must have the item in your backpack or locked down in order to use it.
+            return;
+        }
 
-            if (info.ButtonID == 3 && !from.InRange(m_Plant.GetWorldLocation(), 3))
-            {
-                from.LocalOverheadMessage(MessageType.Regular, 0x3E9, 500446); // That is too far away.
-                return;
-            }
+        switch (info.ButtonID)
+        {
+            case 1: // Cancel
+                {
+                    MainPlantGump.DisplayTo(from, _plant);
+                    break;
+                }
+            case 2: // Help
+                {
+                    from.NetState.SendDisplayHelpTopic(HelpTopic.EmptyingBowl);
+                    from.SendGump(this);
+                    break;
+                }
+            case 3: // Ok
+                {
+                    var bowl = new PlantBowl();
 
-            if (!m_Plant.IsUsableBy(from))
-            {
-                m_Plant.LabelTo(from, 1061856); // You must have the item in your backpack or locked down in order to use it.
-                return;
-            }
-
-            switch (info.ButtonID)
-            {
-                case 1: // Cancel
+                    if (!from.PlaceInBackpack(bowl))
                     {
-                        from.SendGump(new MainPlantGump(m_Plant));
+                        bowl.Delete();
 
+                        _plant.LabelTo(from, 1053047); // You cannot empty a bowl with a full pack!
+                        MainPlantGump.DisplayTo(from, _plant);
                         break;
                     }
-                case 2: // Help
+
+                    if (_plant.PlantStatus != PlantStatus.BowlOfDirt && _plant.PlantStatus < PlantStatus.Plant)
                     {
-                        from.NetState.SendDisplayHelpTopic(HelpTopic.EmptyingBowl);
+                        var seed = new Seed(_plant.PlantType, _plant.PlantHue, _plant.ShowType);
 
-                        from.SendGump(new EmptyTheBowlGump(m_Plant));
-
-                        break;
-                    }
-                case 3: // Ok
-                    {
-                        var bowl = new PlantBowl();
-
-                        if (!from.PlaceInBackpack(bowl))
+                        if (!from.PlaceInBackpack(seed))
                         {
                             bowl.Delete();
+                            seed.Delete();
 
-                            m_Plant.LabelTo(from, 1053047); // You cannot empty a bowl with a full pack!
-                            from.SendGump(new MainPlantGump(m_Plant));
-
+                            _plant.LabelTo(from, 1053047); // You cannot empty a bowl with a full pack!
+                            MainPlantGump.DisplayTo(from, _plant);
                             break;
                         }
-
-                        if (m_Plant.PlantStatus != PlantStatus.BowlOfDirt && m_Plant.PlantStatus < PlantStatus.Plant)
-                        {
-                            var seed = new Seed(m_Plant.PlantType, m_Plant.PlantHue, m_Plant.ShowType);
-
-                            if (!from.PlaceInBackpack(seed))
-                            {
-                                bowl.Delete();
-                                seed.Delete();
-
-                                m_Plant.LabelTo(from, 1053047); // You cannot empty a bowl with a full pack!
-                                from.SendGump(new MainPlantGump(m_Plant));
-
-                                break;
-                            }
-                        }
-
-                        m_Plant.Delete();
-
-                        break;
                     }
-            }
+
+                    _plant.Delete();
+                    break;
+                }
         }
     }
 }
