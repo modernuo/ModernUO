@@ -725,9 +725,7 @@ public partial class Container : Item
         return -1;
     }
 
-    public int ConsumeTotal(
-        Type[][] types, ReadOnlySpan<int> amounts,
-        bool recurse = true, OnItemConsumed callback = null)
+    public int ConsumeTotal(Type[][] types, ReadOnlySpan<int> amounts, bool recurse = true, OnItemConsumed callback = null)
     {
         if (types.Length != amounts.Length)
         {
@@ -754,8 +752,8 @@ public partial class Container : Item
     }
 
     public int ConsumeTotal(
-        ReadOnlySpan<Type> types, ReadOnlySpan<int> amounts,
-        bool recurse = true, OnItemConsumed callback = null)
+        ReadOnlySpan<Type> types, ReadOnlySpan<int> amounts, bool recurse = true, OnItemConsumed callback = null
+    )
     {
         if (types.Length != amounts.Length)
         {
@@ -810,8 +808,7 @@ public partial class Container : Item
     }
 
     private static void RecurseConsumeUpTo(
-        Item current, Type type, int amount, bool recurse, ref int consumed,
-        ref PooledRefQueue<Item> toDelete
+        Item current, Type type, int amount, bool recurse, ref int consumed, ref PooledRefQueue<Item> toDelete
     )
     {
         if (current == null || current.Items.Count == 0)
@@ -963,8 +960,8 @@ public partial class Container : Item
     // by `grouper`. Returns the first group whose Amount sum is >= `amount`,
     // emitting its slice [start, start+length). Streaming, no per-group list.
     private static bool TryFindGroupMeetingAmount(
-        PooledRefList<Item> items, int amount, CheckItemGroup grouper,
-        out int groupStart, out int groupLength)
+        PooledRefList<Item> items, int amount, CheckItemGroup grouper, out int groupStart, out int groupLength
+    )
     {
         var i = 0;
         while (i < items.Count)
