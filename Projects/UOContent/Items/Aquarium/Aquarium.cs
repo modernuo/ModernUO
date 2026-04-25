@@ -876,7 +876,7 @@ namespace Server.Items
                 return;
             }
 
-            from.SendGump(new AquariumGump(this, HasAccess(from)), true);
+            AquariumGump.DisplayTo(from, this);
 
             from.PlaySound(0x5A4);
         }
@@ -1128,7 +1128,7 @@ namespace Server.Items
                     return;
                 }
 
-                from.SendGump(new AquariumGump(aquarium, true));
+                AquariumGump.DisplayTo(from, aquarium, true);
             }
         }
 

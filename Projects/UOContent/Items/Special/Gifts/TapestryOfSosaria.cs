@@ -36,7 +36,7 @@ public partial class TapestryOfSosaria : Item, ISecurable
     {
         if (from.InRange(GetWorldLocation(), 2))
         {
-            from.SendGump(new InternalGump());
+            TapestryOfSosariaGump.DisplayTo(from);
         }
         else
         {
@@ -49,13 +49,28 @@ public partial class TapestryOfSosaria : Item, ISecurable
         Level = (SecureLevel)reader.ReadEncodedInt();
     }
 
-    private class InternalGump : Gump
+    private class TapestryOfSosariaGump : StaticGump<TapestryOfSosariaGump>
     {
         public override bool Singleton => true;
 
-        public InternalGump() : base(50, 50)
+        private TapestryOfSosariaGump() : base(50, 50)
         {
-            AddImage(0, 0, 0x2C95);
+        }
+
+        public static void DisplayTo(Mobile from)
+        {
+            if (from?.NetState == null)
+            {
+                return;
+            }
+
+            from.SendGump(new TapestryOfSosariaGump());
+        }
+
+        protected override void BuildLayout(ref StaticGumpBuilder builder)
+        {
+            builder.AddPage();
+            builder.AddImage(0, 0, 0x2C95);
         }
     }
 }
