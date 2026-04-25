@@ -114,7 +114,7 @@ public abstract partial class BasePlayerBB : Item, ISecurable
         }
         else if (CheckAccess(house, from))
         {
-            from.SendGump(new PlayerBBGump(from, house, this, 0));
+            PlayerBBGump.DisplayTo(from, house, this, 0);
         }
     }
 
@@ -198,7 +198,7 @@ public abstract partial class BasePlayerBB : Item, ISecurable
                 }
             }
 
-            from.SendGump(new PlayerBBGump(from, house, board, page));
+            PlayerBBGump.DisplayTo(from, house, board, page);
         }
     }
 
@@ -256,7 +256,7 @@ public abstract partial class BasePlayerBB : Item, ISecurable
                 board.Title = text;
             }
 
-            from.SendGump(new PlayerBBGump(from, house, board, page));
+            PlayerBBGump.DisplayTo(from, house, board, page);
         }
     }
 }
@@ -289,54 +289,72 @@ public partial class PlayerBBMessage
     }
 }
 
-public class PlayerBBGump : Gump
+public class PlayerBBGump : DynamicGump
 {
     private const int LabelColor = 0x7FFF;
     private const int LabelHue = 1153;
-    private BasePlayerBB _board;
-    private Mobile _from;
-    private BaseHouse _house;
+    private readonly BasePlayerBB _board;
+    private readonly Mobile _from;
+    private readonly BaseHouse _house;
     private int _page;
 
     public override bool Singleton => true;
 
-    public PlayerBBGump(Mobile from, BaseHouse house, BasePlayerBB board, int page) : base(50, 10)
+    private PlayerBBGump(Mobile from, BaseHouse house, BasePlayerBB board, int page) : base(50, 10)
     {
         _page = page;
         _from = from;
         _house = house;
         _board = board;
+    }
 
-        AddPage(0);
+    public static void DisplayTo(Mobile from, BaseHouse house, BasePlayerBB board, int page)
+    {
+        if (from?.NetState == null || house == null || board == null || board.Deleted)
+        {
+            return;
+        }
 
-        AddImage(30, 30, 5400);
+        from.SendGump(new PlayerBBGump(from, house, board, page));
+    }
 
-        AddButton(393, 145, 2084, 2084, 4); // Scroll up
-        AddButton(390, 371, 2085, 2085, 5); // Scroll down
+    protected override void BuildLayout(ref DynamicGumpBuilder builder)
+    {
+        var page = _page;
+        var board = _board;
+        var house = _house;
+        var from = _from;
 
-        AddButton(32, 183, 5412, 5413, 1); // Post message
+        builder.AddPage();
+
+        builder.AddImage(30, 30, 5400);
+
+        builder.AddButton(393, 145, 2084, 2084, 4); // Scroll up
+        builder.AddButton(390, 371, 2085, 2085, 5); // Scroll down
+
+        builder.AddButton(32, 183, 5412, 5413, 1); // Post message
 
         if (house.IsOwner(from))
         {
-            AddButton(63, 90, 5601, 5605, 2);
-            AddHtmlLocalized(81, 89, 230, 20, 1062400, LabelColor); // Set title
+            builder.AddButton(63, 90, 5601, 5605, 2);
+            builder.AddHtmlLocalized(81, 89, 230, 20, 1062400, LabelColor); // Set title
 
-            AddButton(63, 109, 5601, 5605, 3);
-            AddHtmlLocalized(81, 108, 230, 20, 1062401, LabelColor); // Post greeting
+            builder.AddButton(63, 109, 5601, 5605, 3);
+            builder.AddHtmlLocalized(81, 108, 230, 20, 1062401, LabelColor); // Post greeting
         }
 
         var title = board.Title;
 
         if (title != null)
         {
-            AddHtml(183, 68, 180, 23, title);
+            builder.AddHtml(183, 68, 180, 23, title);
         }
 
-        AddHtmlLocalized(385, 89, 60, 20, 1062409, LabelColor); // Post
+        builder.AddHtmlLocalized(385, 89, 60, 20, 1062409, LabelColor); // Post
 
-        AddLabel(440, 89, LabelHue, page.ToString());
-        AddLabel(455, 89, LabelHue, "/");
-        AddLabel(470, 89, LabelHue, board.Messages.Count.ToString());
+        builder.AddLabel(440, 89, LabelHue, page.ToString());
+        builder.AddLabel(455, 89, LabelHue, "/");
+        builder.AddLabel(470, 89, LabelHue, board.Messages.Count.ToString());
 
         var message = board.Greeting;
 
@@ -345,41 +363,40 @@ public class PlayerBBGump : Gump
             message = board.Messages[page - 1];
         }
 
-        AddImageTiled(150, 220, 240, 1, 2700); // Separator
+        builder.AddImageTiled(150, 220, 240, 1, 2700); // Separator
 
-        AddHtmlLocalized(150, 180, 100, 20, 1062405, 16715); // Posted On:
-        AddHtmlLocalized(150, 200, 100, 20, 1062406, 16715); // Posted By:
+        builder.AddHtmlLocalized(150, 180, 100, 20, 1062405, 16715); // Posted On:
+        builder.AddHtmlLocalized(150, 200, 100, 20, 1062406, 16715); // Posted By:
 
         if (message != null)
         {
-            AddHtml(255, 180, 150, 20, message.Time.ToString("yyyy-MM-dd HH:mm:ss"));
+            builder.AddHtml(255, 180, 150, 20, message.Time.ToString("yyyy-MM-dd HH:mm:ss"));
 
             var poster = message.Poster;
             var name = (poster?.Name?.Trim()).DefaultIfNullOrEmpty("Someone");
 
-            AddHtml(255, 200, 150, 20, name);
+            builder.AddHtml(255, 200, 150, 20, name);
 
-            AddHtml(150, 240, 250, 100, message.Message ?? "");
+            builder.AddHtml(150, 240, 250, 100, message.Message ?? "");
 
             if (message != board.Greeting && house.IsOwner(from))
             {
-                AddButton(130, 395, 1209, 1210, 6);
-                AddHtmlLocalized(150, 393, 150, 20, 1062410, LabelColor); // Banish Poster
+                builder.AddButton(130, 395, 1209, 1210, 6);
+                builder.AddHtmlLocalized(150, 393, 150, 20, 1062410, LabelColor); // Banish Poster
 
-                AddButton(310, 395, 1209, 1210, 7);
-                AddHtmlLocalized(330, 393, 150, 20, 1062411, LabelColor); // Delete Message
+                builder.AddButton(310, 395, 1209, 1210, 7);
+                builder.AddHtmlLocalized(330, 393, 150, 20, 1062411, LabelColor); // Delete Message
             }
 
             if (from.AccessLevel >= AccessLevel.GameMaster)
             {
-                AddButton(135, 242, 1209, 1210, 8); // Post props
+                builder.AddButton(135, 242, 1209, 1210, 8); // Post props
             }
         }
     }
 
     public override void OnResponse(NetState sender, in RelayInfo info)
     {
-        var page = _page;
         var from = _from;
         var house = _house;
         var board = _board;
@@ -406,16 +423,15 @@ public class PlayerBBGump : Gump
         {
             case 1: // Post message
                 {
-                    from.Prompt = new BasePlayerBB.PostPrompt(page, house, board, false);
+                    from.Prompt = new BasePlayerBB.PostPrompt(_page, house, board, false);
                     from.SendLocalizedMessage(1062397); // Please enter your message:
-
                     break;
                 }
             case 2: // Set title
                 {
                     if (house.IsOwner(from))
                     {
-                        from.Prompt = new BasePlayerBB.SetTitlePrompt(page, house, board);
+                        from.Prompt = new BasePlayerBB.SetTitlePrompt(_page, house, board);
                         from.SendLocalizedMessage(1062402); // Enter new title:
                     }
 
@@ -425,7 +441,7 @@ public class PlayerBBGump : Gump
                 {
                     if (house.IsOwner(from))
                     {
-                        from.Prompt = new BasePlayerBB.PostPrompt(page, house, board, true);
+                        from.Prompt = new BasePlayerBB.PostPrompt(_page, house, board, true);
                         from.SendLocalizedMessage(1062404); // Enter new greeting (this will always be the first post):
                     }
 
@@ -433,40 +449,38 @@ public class PlayerBBGump : Gump
                 }
             case 4: // Scroll up
                 {
-                    if (page == 0)
+                    if (_page == 0)
                     {
-                        page = board.Messages.Count;
+                        _page = board.Messages.Count;
                     }
                     else
                     {
-                        page -= 1;
+                        _page -= 1;
                     }
 
-                    from.SendGump(new PlayerBBGump(from, house, board, page));
-
+                    from.SendGump(this);
                     break;
                 }
             case 5: // Scroll down
                 {
-                    page += 1;
-                    page %= board.Messages.Count + 1;
+                    _page += 1;
+                    _page %= board.Messages.Count + 1;
 
-                    from.SendGump(new PlayerBBGump(from, house, board, page));
-
+                    from.SendGump(this);
                     break;
                 }
             case 6: // Banish poster
                 {
                     if (house.IsOwner(from))
                     {
-                        if (page >= 1 && page <= board.Messages.Count)
+                        if (_page >= 1 && _page <= board.Messages.Count)
                         {
-                            var message = board.Messages[page - 1];
+                            var message = board.Messages[_page - 1];
                             var poster = message.Poster;
 
                             if (poster == null)
                             {
-                                from.SendGump(new PlayerBBGump(from, house, board, page));
+                                from.SendGump(this);
                                 return;
                             }
 
@@ -511,7 +525,7 @@ public class PlayerBBGump : Gump
                             }
                         }
 
-                        from.SendGump(new PlayerBBGump(from, house, board, page));
+                        from.SendGump(this);
                     }
 
                     break;
@@ -520,12 +534,13 @@ public class PlayerBBGump : Gump
                 {
                     if (house.IsOwner(from))
                     {
-                        if (page >= 1 && page <= board.Messages.Count)
+                        if (_page >= 1 && _page <= board.Messages.Count)
                         {
-                            board.RemoveFromMessagesAt(page - 1);
+                            board.RemoveFromMessagesAt(_page - 1);
                         }
 
-                        from.SendGump(new PlayerBBGump(from, house, board, 0));
+                        _page = 0;
+                        from.SendGump(this);
                     }
 
                     break;
@@ -536,12 +551,12 @@ public class PlayerBBGump : Gump
                     {
                         var message = board.Greeting;
 
-                        if (page >= 1 && page <= board.Messages.Count)
+                        if (_page >= 1 && _page <= board.Messages.Count)
                         {
-                            message = board.Messages[page - 1];
+                            message = board.Messages[_page - 1];
                         }
 
-                        from.SendGump(new PlayerBBGump(from, house, board, page));
+                        from.SendGump(this);
                         from.SendGump(new PropertiesGump(from, message));
                     }
 
