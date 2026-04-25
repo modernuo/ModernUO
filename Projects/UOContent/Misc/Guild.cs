@@ -351,8 +351,6 @@ namespace Server.Guilds
 
         public class AllianceRosterGump : GuildDiplomacyGump
         {
-            private readonly AllianceInfo m_Alliance;
-
             public AllianceRosterGump(PlayerMobile pm, Guild g, AllianceInfo alliance) : base(
                 pm,
                 g,
@@ -361,31 +359,11 @@ namespace Server.Guilds
                 0,
                 alliance.m_Members,
                 alliance.Name
-            ) =>
-                m_Alliance = alliance;
-
-            public AllianceRosterGump(
-                PlayerMobile pm, Guild g, AllianceInfo alliance, IComparer<Guild> currentComparer,
-                bool ascending, string filter, int startNumber
-            ) : base(
-                pm,
-                g,
-                currentComparer,
-                ascending,
-                filter,
-                startNumber,
-                alliance.m_Members,
-                alliance.Name
-            ) =>
-                m_Alliance = alliance;
+            )
+            {
+            }
 
             protected override bool AllowAdvancedSearch => false;
-
-            public override Gump GetResentGump(
-                PlayerMobile pm, Guild g, IComparer<Guild> comparer, bool ascending,
-                string filter, int startNumber
-            ) =>
-                new AllianceRosterGump(pm, g, m_Alliance, comparer, ascending, filter, startNumber);
 
             public override void OnResponse(NetState sender, in RelayInfo info)
             {

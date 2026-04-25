@@ -7,75 +7,74 @@ namespace Server.Guilds
 {
     public class GuildMemberInfoGump : BaseGuildGump
     {
-        private readonly PlayerMobile m_Member;
-        private readonly bool m_toKick;
-        private readonly bool m_ToLeader;
+        private readonly PlayerMobile _member;
+        private readonly bool _toKick;
+        private readonly bool _toLeader;
 
         public GuildMemberInfoGump(
             PlayerMobile pm, Guild g, PlayerMobile member, bool toKick, bool toPromoteToLeader
         ) : base(pm, g, 10, 40)
         {
-            m_ToLeader = toPromoteToLeader;
-            m_toKick = toKick;
-            m_Member = member;
-            PopulateGump();
+            _toLeader = toPromoteToLeader;
+            _toKick = toKick;
+            _member = member;
         }
 
-        public override void PopulateGump()
+        protected override bool ShowTabStrip => false;
+
+        protected override void BuildContent(ref DynamicGumpBuilder builder)
         {
-            AddPage(0);
+            builder.AddBackground(0, 0, 350, 255, 0x242C);
+            builder.AddHtmlLocalized(20, 15, 310, 26, 1063018, 0x0); // <div align=center><i>Guild Member Information</i></div>
+            builder.AddImageTiled(20, 40, 310, 2, 0x2711);
 
-            AddBackground(0, 0, 350, 255, 0x242C);
-            AddHtmlLocalized(20, 15, 310, 26, 1063018, 0x0); // <div align=center><i>Guild Member Information</i></div>
-            AddImageTiled(20, 40, 310, 2, 0x2711);
+            builder.AddHtmlLocalized(20, 50, 150, 26, 1062955, 0x0, true); // <i>Name</i>
+            builder.AddHtml(180, 53, 150, 26, _member.Name);
 
-            AddHtmlLocalized(20, 50, 150, 26, 1062955, 0x0, true); // <i>Name</i>
-            AddHtml(180, 53, 150, 26, m_Member.Name);
+            builder.AddHtmlLocalized(20, 80, 150, 26, 1062956, 0x0, true); // <i>Rank</i>
+            builder.AddHtmlLocalized(180, 83, 150, 26, _member.GuildRank.Name, 0x0);
 
-            AddHtmlLocalized(20, 80, 150, 26, 1062956, 0x0, true); // <i>Rank</i>
-            AddHtmlLocalized(180, 83, 150, 26, m_Member.GuildRank.Name, 0x0);
+            builder.AddHtmlLocalized(20, 110, 150, 26, 1062953, 0x0, true); // <i>Guild Title</i>
+            builder.AddHtml(180, 113, 150, 26, _member.GuildTitle);
+            builder.AddImageTiled(20, 142, 310, 2, 0x2711);
 
-            AddHtmlLocalized(20, 110, 150, 26, 1062953, 0x0, true); // <i>Guild Title</i>
-            AddHtml(180, 113, 150, 26, m_Member.GuildTitle);
-            AddImageTiled(20, 142, 310, 2, 0x2711);
-
-            AddBackground(20, 150, 310, 26, 0x2486);
-            AddButton(25, 155, 0x845, 0x846, 4);
-            AddHtmlLocalized(
+            builder.AddBackground(20, 150, 310, 26, 0x2486);
+            builder.AddButton(25, 155, 0x845, 0x846, 4);
+            builder.AddHtmlLocalized(
                 50,
                 153,
                 270,
                 26,
-                m_Member == player.GuildFealty && guild.Leader != m_Member ? 1063082 : 1062996,
+                _member == player.GuildFealty && guild.Leader != _member ? 1063082 : 1062996,
                 0x0
             ); // Clear/Cast Vote For This Member
 
-            AddBackground(20, 180, 150, 26, 0x2486);
-            AddButton(25, 185, 0x845, 0x846, 1);
-            AddHtmlLocalized(50, 183, 110, 26, 1062993, m_ToLeader ? 0x990000 : 0); // Promote
+            builder.AddBackground(20, 180, 150, 26, 0x2486);
+            builder.AddButton(25, 185, 0x845, 0x846, 1);
+            builder.AddHtmlLocalized(50, 183, 110, 26, 1062993, _toLeader ? 0x990000 : 0); // Promote
 
-            AddBackground(180, 180, 150, 26, 0x2486);
-            AddButton(185, 185, 0x845, 0x846, 3);
-            AddHtmlLocalized(210, 183, 110, 26, 1062995, 0x0); // Set Guild Title
+            builder.AddBackground(180, 180, 150, 26, 0x2486);
+            builder.AddButton(185, 185, 0x845, 0x846, 3);
+            builder.AddHtmlLocalized(210, 183, 110, 26, 1062995, 0x0); // Set Guild Title
 
-            AddBackground(20, 210, 150, 26, 0x2486);
-            AddButton(25, 215, 0x845, 0x846, 2);
-            AddHtmlLocalized(50, 213, 110, 26, 1062994, 0x0); // Demote
+            builder.AddBackground(20, 210, 150, 26, 0x2486);
+            builder.AddButton(25, 215, 0x845, 0x846, 2);
+            builder.AddHtmlLocalized(50, 213, 110, 26, 1062994, 0x0); // Demote
 
-            AddBackground(180, 210, 150, 26, 0x2486);
-            AddButton(185, 215, 0x845, 0x846, 5);
-            AddHtmlLocalized(210, 213, 110, 26, 1062997, m_toKick ? 0x5000 : 0); // Kick
+            builder.AddBackground(180, 210, 150, 26, 0x2486);
+            builder.AddButton(185, 215, 0x845, 0x846, 5);
+            builder.AddHtmlLocalized(210, 213, 110, 26, 1062997, _toKick ? 0x5000 : 0); // Kick
         }
 
         public override void OnResponse(NetState sender, in RelayInfo info)
         {
-            if (sender.Mobile is not PlayerMobile pm || !IsMember(pm, guild) || !IsMember(m_Member, guild))
+            if (sender.Mobile is not PlayerMobile pm || !IsMember(pm, guild) || !IsMember(_member, guild))
             {
                 return;
             }
 
             var playerRank = pm.GuildRank;
-            var targetRank = m_Member.GuildRank;
+            var targetRank = _member.GuildRank;
 
             switch (info.ButtonID)
             {
@@ -89,34 +88,26 @@ namespace Server.Guilds
 
                             if (targetRank == RankDefinition.Leader)
                             {
-                                if (m_ToLeader)
+                                if (_toLeader)
                                 {
-                                    m_Member.GuildRank = targetRank;
-                                    pm.SendLocalizedMessage(
-                                        1063156,
-                                        m_Member.Name
-                                    ); // The guild information for ~1_val~ has been updated.
-                                    pm.SendLocalizedMessage(
-                                        1063156,
-                                        pm.Name
-                                    ); // The guild information for ~1_val~ has been updated.
-                                    guild.Leader = m_Member;
+                                    _member.GuildRank = targetRank;
+                                    // The guild information for ~1_val~ has been updated.
+                                    pm.SendLocalizedMessage(1063156, _member.Name);
+                                    pm.SendLocalizedMessage(1063156, pm.Name);
+                                    guild.Leader = _member;
                                 }
                                 else
                                 {
-                                    pm.SendLocalizedMessage(
-                                        1063144
-                                    ); // Are you sure you wish to make this member the new guild leader?
-                                    pm.SendGump(new GuildMemberInfoGump(player, guild, m_Member, false, true));
+                                    // Are you sure you wish to make this member the new guild leader?
+                                    pm.SendLocalizedMessage(1063144);
+                                    pm.SendGump(new GuildMemberInfoGump(player, guild, _member, false, true));
                                 }
                             }
                             else
                             {
-                                m_Member.GuildRank = targetRank;
-                                pm.SendLocalizedMessage(
-                                    1063156,
-                                    m_Member.Name
-                                ); // The guild information for ~1_val~ has been updated.
+                                _member.GuildRank = targetRank;
+                                // The guild information for ~1_val~ has been updated.
+                                pm.SendLocalizedMessage(1063156, _member.Name);
                             }
                         }
                         else
@@ -143,11 +134,9 @@ namespace Server.Guilds
                             }
                             else
                             {
-                                m_Member.GuildRank = RankDefinition.Ranks[targetRank.Rank - 1];
-                                pm.SendLocalizedMessage(
-                                    1063156,
-                                    m_Member.Name
-                                ); // The guild information for ~1_val~ has been updated.
+                                _member.GuildRank = RankDefinition.Ranks[targetRank.Rank - 1];
+                                // The guild information for ~1_val~ has been updated.
+                                pm.SendLocalizedMessage(1063156, _member.Name);
                             }
                         }
                         else
@@ -160,52 +149,47 @@ namespace Server.Guilds
                 case 3: // Set Guild title
                     {
                         if (playerRank.GetFlag(RankFlags.CanSetGuildTitle) &&
-                            (playerRank.Rank > targetRank.Rank || m_Member == player))
+                            (playerRank.Rank > targetRank.Rank || _member == player))
                         {
-                            pm.SendLocalizedMessage(
-                                1011128
-                            ); // Enter the new title for this guild member or 'none' to remove a title:
+                            // Enter the new title for this guild member or 'none' to remove a title:
+                            pm.SendLocalizedMessage(1011128);
 
                             pm.BeginPrompt(SetTitle_Callback);
                         }
-                        else if (m_Member.GuildTitle == null || m_Member.GuildTitle.Length <= 0)
+                        else if (_member.GuildTitle == null || _member.GuildTitle.Length <= 0)
                         {
-                            pm.SendLocalizedMessage(
-                                1070746
-                            ); // You don't have the permission to set that member's guild title.
+                            // You don't have the permission to set that member's guild title.
+                            pm.SendLocalizedMessage(1070746);
                         }
                         else
                         {
-                            pm.SendLocalizedMessage(
-                                1063148
-                            ); // You don't have permission to change this member's guild title.
+                            // You don't have permission to change this member's guild title.
+                            pm.SendLocalizedMessage(1063148);
                         }
 
                         break;
                     }
                 case 4: // Vote
                     {
-                        if (m_Member == pm.GuildFealty && guild.Leader != m_Member)
+                        if (_member == pm.GuildFealty && guild.Leader != _member)
                         {
                             pm.SendLocalizedMessage(1063158); // You have cleared your vote for guild leader.
                         }
-                        else if (guild.CanVote(m_Member))
+                        else if (guild.CanVote(_member))
                         {
-                            if (m_Member == guild.Leader)
+                            if (_member == guild.Leader)
                             {
                                 pm.SendLocalizedMessage(1063424); // You can't vote for the current guild leader.
                             }
-                            else if (!guild.CanBeVotedFor(m_Member))
+                            else if (!guild.CanBeVotedFor(_member))
                             {
                                 pm.SendLocalizedMessage(1063425); // You can't vote for an inactive guild member.
                             }
                             else
                             {
-                                pm.GuildFealty = m_Member;
-                                pm.SendLocalizedMessage(
-                                    1063159,
-                                    m_Member.Name
-                                ); // You cast your vote for ~1_val~ for guild leader.
+                                pm.GuildFealty = _member;
+                                // You cast your vote for ~1_val~ for guild leader.
+                                pm.SendLocalizedMessage(1063159, _member.Name);
                             }
                         }
                         else
@@ -220,17 +204,16 @@ namespace Server.Guilds
                         if (playerRank.GetFlag(RankFlags.RemovePlayers) && playerRank.Rank > targetRank.Rank ||
                             playerRank.GetFlag(RankFlags.RemoveLowestRank) && targetRank == RankDefinition.Lowest)
                         {
-                            if (m_toKick)
+                            if (_toKick)
                             {
-                                guild.RemoveMember(m_Member);
+                                guild.RemoveMember(_member);
                                 pm.SendLocalizedMessage(1063157); // The member has been removed from your guild.
                             }
                             else
                             {
-                                pm.SendLocalizedMessage(
-                                    1063152
-                                ); // Are you sure you wish to kick this member from the guild?
-                                pm.SendGump(new GuildMemberInfoGump(player, guild, m_Member, true, false));
+                                // Are you sure you wish to kick this member from the guild?
+                                pm.SendLocalizedMessage(1063152);
+                                pm.SendGump(new GuildMemberInfoGump(player, guild, _member, true, false));
                             }
                         }
                         else
@@ -245,22 +228,24 @@ namespace Server.Guilds
 
         public void SetTitle_Callback(Mobile from, string text)
         {
-            if (from is not PlayerMobile pm || m_Member == null)
+            if (from is not PlayerMobile pm || _member == null)
             {
                 return;
             }
 
-            if (m_Member.Guild is not Guild g || !IsMember(pm, g) ||
+            if (_member.Guild is not Guild g || !IsMember(pm, g) ||
                 !(pm.GuildRank.GetFlag(RankFlags.CanSetGuildTitle) &&
-                  (pm.GuildRank.Rank > m_Member.GuildRank.Rank || pm == m_Member)))
+                  (pm.GuildRank.Rank > _member.GuildRank.Rank || pm == _member)))
             {
-                if (m_Member.GuildTitle == null || m_Member.GuildTitle.Length <= 0)
+                if (_member.GuildTitle == null || _member.GuildTitle.Length <= 0)
                 {
-                    pm.SendLocalizedMessage(1070746); // You don't have the permission to set that member's guild title.
+                    // You don't have the permission to set that member's guild title.
+                    pm.SendLocalizedMessage(1070746);
                 }
                 else
                 {
-                    pm.SendLocalizedMessage(1063148); // You don't have permission to change this member's guild title.
+                    // You don't have permission to change this member's guild title.
+                    pm.SendLocalizedMessage(1063148);
                 }
 
                 return;
@@ -280,14 +265,15 @@ namespace Server.Guilds
             {
                 if (title.InsensitiveEquals("none"))
                 {
-                    m_Member.GuildTitle = null;
+                    _member.GuildTitle = null;
                 }
                 else
                 {
-                    m_Member.GuildTitle = title;
+                    _member.GuildTitle = title;
                 }
 
-                pm.SendLocalizedMessage(1063156, m_Member.Name); // The guild information for ~1_val~ has been updated.
+                // The guild information for ~1_val~ has been updated.
+                pm.SendLocalizedMessage(1063156, _member.Name);
             }
         }
     }

@@ -8,55 +8,55 @@ namespace Server.Guilds
 {
     public class OtherGuildInfo : BaseGuildGump
     {
-        private readonly Guild m_Other;
+        private readonly Guild _other;
 
         public OtherGuildInfo(PlayerMobile pm, Guild g, Guild otherGuild) : base(pm, g, 10, 40)
         {
-            m_Other = otherGuild;
+            _other = otherGuild;
 
             g.CheckExpiredWars();
-
-            PopulateGump();
         }
 
-        public void AddButtonAndBackground(int x, int y, int buttonID, int locNum)
+        protected override bool ShowTabStrip => false;
+
+        private static void AddButtonAndBackground(ref DynamicGumpBuilder builder, int x, int y, int buttonID, int locNum)
         {
-            AddBackground(x, y, 225, 26, 0x2486);
-            AddButton(x + 5, y + 5, 0x845, 0x846, buttonID);
-            AddHtmlLocalized(x + 30, y + 3, 185, 26, locNum, 0x0);
+            builder.AddBackground(x, y, 225, 26, 0x2486);
+            builder.AddButton(x + 5, y + 5, 0x845, 0x846, buttonID);
+            builder.AddHtmlLocalized(x + 30, y + 3, 185, 26, locNum, 0x0);
         }
 
-        public override void PopulateGump()
+        protected override void BuildContent(ref DynamicGumpBuilder builder)
         {
+            builder.AddBackground(0, 0, 520, 335, 0x242C);
+
             var g = Guild.GetAllianceLeader(guild);
-            var other = Guild.GetAllianceLeader(m_Other);
+            var other = Guild.GetAllianceLeader(_other);
 
             var war = g.FindPendingWar(other);
             var activeWar = g.FindActiveWar(other);
 
             var alliance = guild.Alliance;
-            var otherAlliance = m_Other.Alliance;
+            var otherAlliance = _other.Alliance;
             // NOTE TO SELF: Only only alliance leader can see pending guild alliance statuses
 
-            var PendingWar = war != null;
-            var ActiveWar = activeWar != null;
-            AddPage(0);
+            var pendingWar = war != null;
+            var activeWarFlag = activeWar != null;
 
-            AddBackground(0, 0, 520, 335, 0x242C);
-            AddHtmlLocalized(20, 15, 480, 26, 1062975, 0x0); // <div align=center><i>Guild Relationship</i></div>
-            AddImageTiled(20, 40, 480, 2, 0x2711);
-            AddHtmlLocalized(20, 50, 120, 26, 1062954, 0x0, true); // <i>Guild Name</i>
-            AddHtml(150, 53, 360, 26, m_Other.Name);
+            builder.AddHtmlLocalized(20, 15, 480, 26, 1062975, 0x0); // <div align=center><i>Guild Relationship</i></div>
+            builder.AddImageTiled(20, 40, 480, 2, 0x2711);
+            builder.AddHtmlLocalized(20, 50, 120, 26, 1062954, 0x0, true); // <i>Guild Name</i>
+            builder.AddHtml(150, 53, 360, 26, _other.Name);
 
-            AddHtmlLocalized(20, 80, 120, 26, 1063025, 0x0, true); // <i>Alliance</i>
+            builder.AddHtmlLocalized(20, 80, 120, 26, 1063025, 0x0, true); // <i>Alliance</i>
 
-            if (otherAlliance?.IsMember(m_Other) == true)
+            if (otherAlliance?.IsMember(_other) == true)
             {
-                AddHtml(150, 83, 360, 26, otherAlliance.Name);
+                builder.AddHtml(150, 83, 360, 26, otherAlliance.Name);
             }
 
-            AddHtmlLocalized(20, 110, 120, 26, 1063139, 0x0, true); // <i>Abbreviation</i>
-            AddHtml(150, 113, 120, 26, m_Other.Abbreviation);
+            builder.AddHtmlLocalized(20, 110, 120, 26, 1063139, 0x0, true); // <i>Abbreviation</i>
+            builder.AddHtml(150, 113, 120, 26, _other.Abbreviation);
 
             var kills = "0/0";
             var time = "00:00";
@@ -64,7 +64,7 @@ namespace Server.Guilds
 
             WarDeclaration otherWar;
 
-            if (ActiveWar)
+            if (activeWarFlag)
             {
                 kills = $"{activeWar.Kills}/{activeWar.MaxKills}";
 
@@ -77,38 +77,38 @@ namespace Server.Guilds
 
                 time = $"{timeRemaining.Hours:D2}:{DateTime.MinValue + timeRemaining:mm}";
 
-                otherWar = m_Other.FindActiveWar(guild);
+                otherWar = _other.FindActiveWar(guild);
                 if (otherWar != null)
                 {
                     otherKills = $"{otherWar.Kills}/{otherWar.MaxKills}";
                 }
             }
-            else if (PendingWar)
+            else if (pendingWar)
             {
                 kills = Html.Color($"{war.Kills}/{war.MaxKills}", 0x990000);
                 time = Html.Color($"{war.WarLength.Hours:D2}:{DateTime.MinValue + war.WarLength:mm}", 0x990000);
 
-                otherWar = m_Other.FindPendingWar(guild);
+                otherWar = _other.FindPendingWar(guild);
                 if (otherWar != null)
                 {
                     otherKills = Html.Color($"{otherWar.Kills}/{otherWar.MaxKills}", 0x990000);
                 }
             }
 
-            AddHtmlLocalized(280, 110, 120, 26, 1062966, 0x0, true); // <i>Your Kills</i>
-            AddHtml(410, 113, 120, 26, kills);
+            builder.AddHtmlLocalized(280, 110, 120, 26, 1062966, 0x0, true); // <i>Your Kills</i>
+            builder.AddHtml(410, 113, 120, 26, kills);
 
-            AddHtmlLocalized(20, 140, 120, 26, 1062968, 0x0, true); // <i>Time Remaining</i>
-            AddHtml(150, 143, 120, 26, time);
+            builder.AddHtmlLocalized(20, 140, 120, 26, 1062968, 0x0, true); // <i>Time Remaining</i>
+            builder.AddHtml(150, 143, 120, 26, time);
 
-            AddHtmlLocalized(280, 140, 120, 26, 1062967, 0x0, true); // <i>Their Kills</i>
-            AddHtml(410, 143, 120, 26, otherKills);
+            builder.AddHtmlLocalized(280, 140, 120, 26, 1062967, 0x0, true); // <i>Their Kills</i>
+            builder.AddHtml(410, 143, 120, 26, otherKills);
 
-            AddImageTiled(20, 172, 480, 2, 0x2711);
+            builder.AddImageTiled(20, 172, 480, 2, 0x2711);
 
             var number = 1062973; // <div align=center>You are at peace with this guild.</div>
 
-            if (PendingWar)
+            if (pendingWar)
             {
                 if (war.WarRequester)
                 {
@@ -118,73 +118,73 @@ namespace Server.Guilds
                 {
                     number = 1062969; // <div align=center>This guild has challenged you to war!</div>
 
-                    AddButtonAndBackground(20, 260, 5, 1062981);  // Accept Challenge
-                    AddButtonAndBackground(275, 260, 6, 1062983); // Modify Terms
+                    AddButtonAndBackground(ref builder, 20, 260, 5, 1062981);  // Accept Challenge
+                    AddButtonAndBackground(ref builder, 275, 260, 6, 1062983); // Modify Terms
                 }
 
-                AddButtonAndBackground(20, 290, 7, 1062982); // Dismiss Challenge
+                AddButtonAndBackground(ref builder, 20, 290, 7, 1062982); // Dismiss Challenge
             }
-            else if (ActiveWar)
+            else if (activeWarFlag)
             {
                 number = 1062965; // <div align=center>You are at war with this guild!</div>
-                AddButtonAndBackground(20, 290, 8, 1062980); // Surrender
+                AddButtonAndBackground(ref builder, 20, 290, 8, 1062980); // Surrender
             }
             else if (alliance != null && alliance == otherAlliance) // alliance, Same Alliance
             {
-                if (alliance.IsMember(guild) && alliance.IsMember(m_Other)) // Both in Same alliance, full members
+                if (alliance.IsMember(guild) && alliance.IsMember(_other)) // Both in Same alliance, full members
                 {
                     number = 1062970; // <div align=center>You are allied with this guild.</div>
 
                     if (alliance.Leader == guild)
                     {
-                        AddButtonAndBackground(20, 260, 12, 1062984); // Remove Guild from Alliance
+                        AddButtonAndBackground(ref builder, 20, 260, 12, 1062984); // Remove Guild from Alliance
 
-                        //Note: No 'confirmation' like the other leader guild promotion things
+                        // Note: No 'confirmation' like the other leader guild promotion things
                         // Promote to Alliance Leader
-                        AddButtonAndBackground(275, 260, 13, 1063433);
+                        AddButtonAndBackground(ref builder, 275, 260, 13, 1063433);
                         // Remove guild from alliance	//Promote to Alliance Leader
                     }
 
                     // Show roster, Centered, up
-                    AddButtonAndBackground(148, 215, 10, 1063164); // Show Alliance Roster
+                    AddButtonAndBackground(ref builder, 148, 215, 10, 1063164); // Show Alliance Roster
                     // Leave Alliance
-                    AddButtonAndBackground(20, 290, 11, 1062985); // Leave Alliance
+                    AddButtonAndBackground(ref builder, 20, 290, 11, 1062985); // Leave Alliance
                 }
-                else if (alliance.Leader == guild && alliance.IsPendingMember(m_Other))
+                else if (alliance.Leader == guild && alliance.IsPendingMember(_other))
                 {
                     number = 1062971; // <div align=center>You have requested an alliance with this guild.</div>
 
                     // Show Alliance Roster, Centered, down.
-                    AddButtonAndBackground(148, 245, 10, 1063164); // Show Alliance Roster
+                    AddButtonAndBackground(ref builder, 148, 245, 10, 1063164); // Show Alliance Roster
                     // Withdraw Request
-                    AddButtonAndBackground(20, 290, 14, 1062986); // Withdraw Request
+                    AddButtonAndBackground(ref builder, 20, 290, 14, 1062986); // Withdraw Request
 
-                    AddHtml(150, 83, 360, 26, alliance.Name.Color(0x99));
+                    builder.AddHtml(150, 83, 360, 26, alliance.Name.Color(0x99));
                 }
-                else if (alliance.Leader == m_Other && alliance.IsPendingMember(guild))
+                else if (alliance.Leader == _other && alliance.IsPendingMember(guild))
                 {
                     number = 1062972; // <div align=center>This guild has requested an alliance.</div>
 
                     // Show alliance Roster, top
-                    AddButtonAndBackground(148, 215, 10, 1063164); // Show Alliance Roster
+                    AddButtonAndBackground(ref builder, 148, 215, 10, 1063164); // Show Alliance Roster
                     // Deny Request
                     // Accept Request
-                    AddButtonAndBackground(20, 260, 15, 1062988); // Deny Request
-                    AddButtonAndBackground(20, 290, 16, 1062987); // Accept Request
+                    AddButtonAndBackground(ref builder, 20, 260, 15, 1062988); // Deny Request
+                    AddButtonAndBackground(ref builder, 20, 290, 16, 1062987); // Accept Request
 
-                    AddHtml(150, 83, 360, 26, alliance.Name.Color(0x99));
+                    builder.AddHtml(150, 83, 360, 26, alliance.Name.Color(0x99));
                 }
             }
             else
             {
-                AddButtonAndBackground(20, 260, 2, 1062990); // Request Alliance
-                AddButtonAndBackground(20, 290, 1, 1062989); // Declare War!
+                AddButtonAndBackground(ref builder, 20, 260, 2, 1062990); // Request Alliance
+                AddButtonAndBackground(ref builder, 20, 290, 1, 1062989); // Declare War!
             }
 
-            AddButtonAndBackground(275, 290, 0, 3000091); // Cancel
+            AddButtonAndBackground(ref builder, 275, 290, 0, 3000091); // Cancel
 
-            AddHtmlLocalized(20, 180, 480, 30, number, 0x0, true);
-            AddImageTiled(20, 245, 480, 2, 0x2711);
+            builder.AddHtmlLocalized(20, 180, 480, 30, number, 0x0, true);
+            builder.AddImageTiled(20, 245, 480, 2, 0x2711);
         }
 
         public override void OnResponse(NetState sender, in RelayInfo info)
@@ -197,7 +197,7 @@ namespace Server.Guilds
             var playerRank = pm.GuildRank;
 
             var guildLeader = Guild.GetAllianceLeader(guild);
-            var otherGuild = Guild.GetAllianceLeader(m_Other);
+            var otherGuild = Guild.GetAllianceLeader(_other);
 
             var war = guildLeader.FindPendingWar(otherGuild);
             var activeWar = guildLeader.FindActiveWar(otherGuild);
@@ -249,7 +249,7 @@ namespace Server.Guilds
                                 otherWar.WarBeginning = Core.Now;
                                 otherGuild.AcceptedWars.Add(otherWar);
 
-                                if (otherAlliance != null && m_Other.Alliance.IsMember(m_Other))
+                                if (otherAlliance != null && _other.Alliance.IsMember(_other))
                                 {
                                     // Guild Message: Your guild is now at war with ~1_GUILDNAME~
                                     otherAlliance.AllianceMessage(1070769, alliance?.Name ?? guild.Name);
@@ -386,17 +386,17 @@ namespace Server.Guilds
                                 // You need to negotiate via ~1_val~ instead.
                                 pm.SendLocalizedMessage(1070707, alliance.Leader.Name);
                             }
-                            else if (otherAlliance != null && otherAlliance.Leader != m_Other)
+                            else if (otherAlliance != null && otherAlliance.Leader != _other)
                             {
                                 // ~1_val~ is not the leader of the ~2_val~ alliance.
-                                pm.SendLocalizedMessage(1063239, $"{m_Other.Name}\t{otherAlliance.Name}");
+                                pm.SendLocalizedMessage(1063239, $"{_other.Name}\t{otherAlliance.Name}");
 
                                 // You need to negotiate via ~1_val~ instead.
                                 pm.SendLocalizedMessage(1070707, otherAlliance.Leader.Name);
                             }
                             else
                             {
-                                pm.SendGump(new WarDeclarationGump(pm, guild, m_Other));
+                                pm.SendGump(new WarDeclarationGump(pm, guild, _other));
                             }
                         }
 
@@ -411,28 +411,28 @@ namespace Server.Guilds
                             {
                                 pm.SendLocalizedMessage(1070747); // You don't have permission to create an alliance.
                             }
-                            else if (Faction.Find(guild.Leader) != Faction.Find(m_Other.Leader))
+                            else if (Faction.Find(guild.Leader) != Faction.Find(_other.Leader))
                             {
                                 // You cannot propose an alliance to a guild with a different faction allegiance.
                                 pm.SendLocalizedMessage(1070758);
                             }
                             else if (otherAlliance != null)
                             {
-                                if (otherAlliance.IsPendingMember(m_Other))
+                                if (otherAlliance.IsPendingMember(_other))
                                 {
                                     // ~1_val~ is currently considering another alliance proposal.
-                                    pm.SendLocalizedMessage(1063416, m_Other.Name);
+                                    pm.SendLocalizedMessage(1063416, _other.Name);
                                 }
                                 else
                                 {
                                     // ~1_val~ already belongs to an alliance.
-                                    pm.SendLocalizedMessage(1063426, m_Other.Name);
+                                    pm.SendLocalizedMessage(1063426, _other.Name);
                                 }
                             }
-                            else if (m_Other.AcceptedWars.Count > 0 || m_Other.PendingWars.Count > 0)
+                            else if (_other.AcceptedWars.Count > 0 || _other.PendingWars.Count > 0)
                             {
                                 // ~1_val~ is currently involved in a guild war.
-                                pm.SendLocalizedMessage(1063427, m_Other.Name);
+                                pm.SendLocalizedMessage(1063427, _other.Name);
                             }
                             else if (guild.AcceptedWars.Count > 0 || guild.PendingWars.Count > 0)
                             {
@@ -458,15 +458,15 @@ namespace Server.Guilds
                             }
                             else if (otherAlliance != null)
                             {
-                                if (otherAlliance.IsPendingMember(m_Other))
+                                if (otherAlliance.IsPendingMember(_other))
                                 {
                                     // ~1_val~ is currently considering another alliance proposal.
-                                    pm.SendLocalizedMessage(1063416, m_Other.Name);
+                                    pm.SendLocalizedMessage(1063416, _other.Name);
                                 }
                                 else
                                 {
                                     // ~1_val~ already belongs to an alliance.
-                                    pm.SendLocalizedMessage(1063426, m_Other.Name);
+                                    pm.SendLocalizedMessage(1063426, _other.Name);
                                 }
                             }
                             else if (alliance.IsPendingMember(guild))
@@ -474,17 +474,17 @@ namespace Server.Guilds
                                 // ~1_val~ is currently considering another alliance proposal.
                                 pm.SendLocalizedMessage(1063416, guild.Name);
                             }
-                            else if (m_Other.AcceptedWars.Count > 0 || m_Other.PendingWars.Count > 0)
+                            else if (_other.AcceptedWars.Count > 0 || _other.PendingWars.Count > 0)
                             {
                                 // ~1_val~ is currently involved in a guild war.
-                                pm.SendLocalizedMessage(1063427, m_Other.Name);
+                                pm.SendLocalizedMessage(1063427, _other.Name);
                             }
                             else if (guild.AcceptedWars.Count > 0 || guild.PendingWars.Count > 0)
                             {
                                 // ~1_val~ is currently involved in a guild war.
                                 pm.SendLocalizedMessage(1063427, guild.Name);
                             }
-                            else if (Faction.Find(guild.Leader) != Faction.Find(m_Other.Leader))
+                            else if (Faction.Find(guild.Leader) != Faction.Find(_other.Leader))
                             {
                                 // You cannot propose an alliance to a guild with a different faction allegiance.
                                 pm.SendLocalizedMessage(1070758);
@@ -492,12 +492,11 @@ namespace Server.Guilds
                             else
                             {
                                 // An invitation to join your alliance has been sent to ~1_val~.
-                                pm.SendLocalizedMessage(1070750, m_Other.Name);
+                                pm.SendLocalizedMessage(1070750, _other.Name);
 
-                                m_Other.GuildMessage(1070780, guild.Name); // ~1_val~ has proposed an alliance.
+                                _other.GuildMessage(1070780, guild.Name); // ~1_val~ has proposed an alliance.
 
-                                m_Other.Alliance = alliance; // Calls addPendingGuild
-                                // alliance.AddPendingGuild( m_Other );
+                                _other.Alliance = alliance; // Calls addPendingGuild
                             }
                         }
 
@@ -521,9 +520,8 @@ namespace Server.Guilds
                         else if (alliance?.IsMember(guild) == true)
                         {
                             guild.Alliance = null; // Calls alliance.RemoveGuild
-                            // alliance.RemoveGuild( guild );
 
-                            m_Other.InvalidateWarNotoriety();
+                            _other.InvalidateWarNotoriety();
 
                             guild.InvalidateMemberNotoriety();
                         }
@@ -541,11 +539,11 @@ namespace Server.Guilds
                             // ~1_val~ is not the leader of the ~2_val~ alliance.
                             pm.SendLocalizedMessage(1063239, $"{guild.Name}\t{alliance.Name}");
                         }
-                        else if (alliance?.IsMember(guild) == true && alliance.IsMember(m_Other))
+                        else if (alliance?.IsMember(guild) == true && alliance.IsMember(_other))
                         {
-                            m_Other.Alliance = null;
+                            _other.Alliance = null;
 
-                            m_Other.InvalidateMemberNotoriety();
+                            _other.InvalidateMemberNotoriety();
 
                             guild.InvalidateWarNotoriety();
                         }
@@ -563,12 +561,12 @@ namespace Server.Guilds
                             // ~1_val~ is not the leader of the ~2_val~ alliance.
                             pm.SendLocalizedMessage(1063239, $"{guild.Name}\t{alliance.Name}");
                         }
-                        else if (alliance?.IsMember(guild) == true && alliance.IsMember(m_Other))
+                        else if (alliance?.IsMember(guild) == true && alliance.IsMember(_other))
                         {
                             // ~1_val~ is now the leader of ~2_val~.
-                            pm.SendLocalizedMessage(1063434, $"{m_Other.Name}\t{alliance.Name}");
+                            pm.SendLocalizedMessage(1063434, $"{_other.Name}\t{alliance.Name}");
 
-                            alliance.Leader = m_Other;
+                            alliance.Leader = _other;
                         }
 
                         break;
@@ -579,9 +577,9 @@ namespace Server.Guilds
                         {
                             pm.SendLocalizedMessage(1063436); // You don't have permission to negotiate an alliance.
                         }
-                        else if (alliance != null && alliance.Leader == guild && alliance.IsPendingMember(m_Other))
+                        else if (alliance != null && alliance.Leader == guild && alliance.IsPendingMember(_other))
                         {
-                            m_Other.Alliance = null;
+                            _other.Alliance = null;
                             pm.SendLocalizedMessage(1070752); // The proposal has been updated.
                         }
 
@@ -593,13 +591,13 @@ namespace Server.Guilds
                         {
                             pm.SendLocalizedMessage(1063436); // You don't have permission to negotiate an alliance.
                         }
-                        else if (alliance != null && otherAlliance != null && alliance.Leader == m_Other &&
+                        else if (alliance != null && otherAlliance != null && alliance.Leader == _other &&
                                  otherAlliance.IsPendingMember(guild))
                         {
                             // The proposal has been updated.
-                            // m_Other.GuildMessage( 1070782 );
+                            // _other.GuildMessage( 1070782 );
                             // // ~1_val~ has responded to your proposal.
-                            // //Per OSI commented out.
+                            // // Per OSI commented out.
                             pm.SendLocalizedMessage(1070752);
                             guild.Alliance = null;
                         }
@@ -612,13 +610,13 @@ namespace Server.Guilds
                         {
                             pm.SendLocalizedMessage(1063436); // You don't have permission to negotiate an alliance.
                         }
-                        else if (otherAlliance != null && otherAlliance.Leader == m_Other &&
+                        else if (otherAlliance != null && otherAlliance.Leader == _other &&
                                  otherAlliance.IsPendingMember(guild))
                         {
                             pm.SendLocalizedMessage(1070752); // The proposal has been updated.
 
                             // No need to verify it's in the guild or already a member, the function does this
-                            otherAlliance.TurnToMember(m_Other);
+                            otherAlliance.TurnToMember(_other);
 
                             otherAlliance.TurnToMember(guild);
                         }
@@ -636,7 +634,7 @@ namespace Server.Guilds
             }
 
             var alliance = guild.Alliance;
-            var otherAlliance = m_Other.Alliance;
+            var otherAlliance = _other.Alliance;
 
             if (!IsMember(from, guild) || alliance != null)
             {
@@ -649,7 +647,7 @@ namespace Server.Guilds
             {
                 pm.SendLocalizedMessage(1070747); // You don't have permission to create an alliance.
             }
-            else if (Faction.Find(guild.Leader) != Faction.Find(m_Other.Leader))
+            else if (Faction.Find(guild.Leader) != Faction.Find(_other.Leader))
             {
                 // Notes about this: OSI only cares/checks when proposing, you can change your faction all you want later.
                 // You cannot propose an alliance to a guild with a different faction allegiance.
@@ -657,19 +655,19 @@ namespace Server.Guilds
             }
             else if (otherAlliance != null)
             {
-                if (otherAlliance.IsPendingMember(m_Other))
+                if (otherAlliance.IsPendingMember(_other))
                 {
                     // ~1_val~ is currently considering another alliance proposal.
-                    pm.SendLocalizedMessage(1063416, m_Other.Name);
+                    pm.SendLocalizedMessage(1063416, _other.Name);
                 }
                 else
                 {
-                    pm.SendLocalizedMessage(1063426, m_Other.Name); // ~1_val~ already belongs to an alliance.
+                    pm.SendLocalizedMessage(1063426, _other.Name); // ~1_val~ already belongs to an alliance.
                 }
             }
-            else if (m_Other.AcceptedWars.Count > 0 || m_Other.PendingWars.Count > 0)
+            else if (_other.AcceptedWars.Count > 0 || _other.PendingWars.Count > 0)
             {
-                pm.SendLocalizedMessage(1063427, m_Other.Name); // ~1_val~ is currently involved in a guild war.
+                pm.SendLocalizedMessage(1063427, _other.Name); // ~1_val~ is currently involved in a guild war.
             }
             else if (guild.AcceptedWars.Count > 0 || guild.PendingWars.Count > 0)
             {
@@ -695,11 +693,11 @@ namespace Server.Guilds
                 else
                 {
                     // An invitation to join your alliance has been sent to ~1_val~.
-                    pm.SendLocalizedMessage(1070750, m_Other.Name);
+                    pm.SendLocalizedMessage(1070750, _other.Name);
 
-                    m_Other.GuildMessage(1070780, guild.Name); // ~1_val~ has proposed an alliance.
+                    _other.GuildMessage(1070780, guild.Name); // ~1_val~ has proposed an alliance.
 
-                    new AllianceInfo(guild, name, m_Other);
+                    new AllianceInfo(guild, name, _other);
                 }
             }
         }
