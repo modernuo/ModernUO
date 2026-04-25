@@ -262,38 +262,19 @@ namespace Server.Misc
 
         private static void SendKarmaMessage(Mobile m, int offset)
         {
-            if (offset > 40)
+            var message = offset switch
             {
-                m.SendLocalizedMessage(1019062); // You have gained a lot of karma.
-            }
-            else if (offset > 20)
-            {
-                m.SendLocalizedMessage(1019061); // You have gained a good amount of karma.
-            }
-            else if (offset > 10)
-            {
-                m.SendLocalizedMessage(1019060); // You have gained some karma.
-            }
-            else if (offset > 0)
-            {
-                m.SendLocalizedMessage(1019059); // You have gained a little karma.
-            }
-            else if (offset < -40)
-            {
-                m.SendLocalizedMessage(1019066); // You have lost a lot of karma.
-            }
-            else if (offset < -20)
-            {
-                m.SendLocalizedMessage(1019065); // You have lost a good amount of karma.
-            }
-            else if (offset < -10)
-            {
-                m.SendLocalizedMessage(1019064); // You have lost some karma.
-            }
-            else if (offset < 0)
-            {
-                m.SendLocalizedMessage(1019063); // You have lost a little karma.
-            }
+                > 40  => 1019062, // You have gained a lot of karma.
+                > 20  => 1019061, // You have gained a good amount of karma.
+                > 10  => 1019060, // You have gained some karma.
+                > 0   => 1019059, // You have gained a little karma.
+                < -40 => 1019066, // You have lost a lot of karma.
+                < -20 => 1019065, // You have lost a good amount of karma.
+                < -10 => 1019064, // You have lost some karma.
+                _     => 1019063, // You have lost a little karma.
+            };
+
+            m.SendLocalizedMessage(message);
         }
 
         private static void CheckKarmaLock(Mobile m, bool wasPositiveKarma)

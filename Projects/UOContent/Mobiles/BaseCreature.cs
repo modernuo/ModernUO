@@ -3308,9 +3308,7 @@ namespace Server.Mobiles
 
                     if (!Core.UOR)
                     {
-                        var killer = LastKiller is BaseCreature bc
-                            ? bc.GetDamageMaster(this)
-                            : LastKiller;
+                        var killer = LastKiller is BaseCreature bc ? bc.GetDamageMaster(this) : LastKiller;
 
                         if (ds.m_Mobile == killer)
                         {
