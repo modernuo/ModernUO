@@ -63,17 +63,17 @@ namespace Server.Engines.MLQuests.Objectives
             return true;
         }
 
-        public override void WriteToGump(Gump g, ref int y)
+        public override void WriteToGump(ref DynamicGumpBuilder builder, ref int y)
         {
-            g.AddHtmlLocalized(98, y, 312, 16, 1072206, 0x5F90); // Escort to
+            builder.AddHtmlLocalized(98, y, 312, 16, 1072206, 0x5F90); // Escort to
 
             if (Destination.Name.Number > 0)
             {
-                g.AddHtmlLocalized(173, y, 312, 20, Destination.Name.Number, 0x7FFF);
+                builder.AddHtmlLocalized(173, y, 312, 20, Destination.Name.Number, 0x7FFF);
             }
             else if (Destination.Name.String != null)
             {
-                g.AddLabel(173, y, 0x481, Destination.Name.String);
+                builder.AddLabel(173, y, 0x481, Destination.Name.String);
             }
 
             y += 16;
@@ -275,11 +275,11 @@ namespace Server.Engines.MLQuests.Objectives
             Abandon();
         }
 
-        public override void WriteToGump(Gump g, ref int y)
+        public override void WriteToGump(ref DynamicGumpBuilder builder, ref int y)
         {
-            m_Objective.WriteToGump(g, ref y);
+            m_Objective.WriteToGump(ref builder, ref y);
 
-            base.WriteToGump(g, ref y);
+            base.WriteToGump(ref builder, ref y);
 
             // No extra instance stuff printed for this objective
         }

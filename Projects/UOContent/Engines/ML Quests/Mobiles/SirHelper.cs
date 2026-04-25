@@ -1,7 +1,6 @@
 ﻿using System;
 using ModernUO.Serialization;
 using Server.Engines.MLQuests.Gumps;
-using Server.Gumps;
 using Server.Items;
 using Server.Mobiles;
 using Server.Network;
@@ -11,7 +10,6 @@ namespace Server.Engines.MLQuests.Mobiles;
 [SerializationGenerator(0)]
 public partial class SirHelper : Mage
 {
-    private static readonly Gump m_Gump = new InfoNPCGump(1078029, 1078028);
     private static readonly TimeSpan m_ShoutDelay = TimeSpan.FromSeconds(20);
 
     private static readonly TimeSpan
@@ -77,7 +75,7 @@ public partial class SirHelper : Mage
         }
 
         MLQuestSystem.TurnToFace(this, from);
-        from.SendGump(m_Gump);
+        InfoNPCGump.DisplayTo(from, 1078029, 1078028);
 
         // Paperdoll doesn't open
         // base.OnDoubleClick( from );

@@ -19,41 +19,54 @@ namespace Server.Engines.MLQuests.Gumps
         void OnCancel(PlayerMobile from);
     }
 
-    public class RaceChangeConfirmGump : Gump
+    public class RaceChangeConfirmGump : DynamicGump
     {
         private static Dictionary<NetState, RaceChangeState> m_Pending;
-        private readonly PlayerMobile m_From;
+        private readonly PlayerMobile _from;
 
-        private readonly IRaceChanger m_Owner;
-        private readonly Race m_Race;
+        private readonly IRaceChanger _owner;
+        private readonly Race _race;
 
         public override bool Singleton => true;
 
-        public RaceChangeConfirmGump(IRaceChanger owner, PlayerMobile from, Race targetRace)
+        private RaceChangeConfirmGump(IRaceChanger owner, PlayerMobile from, Race targetRace)
             : base(50, 50)
         {
-            m_Owner = owner;
-            m_From = from;
-            m_Race = targetRace;
+            _owner = owner;
+            _from = from;
+            _race = targetRace;
+        }
 
-            AddPage(0);
-            AddBackground(0, 0, 240, 135, 0x2422);
-
-            if (targetRace == Race.Human)
+        public static void DisplayTo(PlayerMobile from, IRaceChanger owner, Race targetRace)
+        {
+            if (from?.NetState == null || targetRace == null)
             {
-                AddHtmlLocalized(15, 15, 210, 75, 1073643, 0); // Are you sure you wish to embrace your humanity?
+                return;
             }
-            else if (targetRace == Race.Elf)
+
+            from.SendGump(new RaceChangeConfirmGump(owner, from, targetRace));
+        }
+
+        protected override void BuildLayout(ref DynamicGumpBuilder builder)
+        {
+            builder.AddPage();
+            builder.AddBackground(0, 0, 240, 135, 0x2422);
+
+            if (_race == Race.Human)
             {
-                AddHtmlLocalized(15, 15, 210, 75, 1073642, 0); // Are you sure you want to follow the elven ways?
+                builder.AddHtmlLocalized(15, 15, 210, 75, 1073643, 0); // Are you sure you wish to embrace your humanity?
+            }
+            else if (_race == Race.Elf)
+            {
+                builder.AddHtmlLocalized(15, 15, 210, 75, 1073642, 0); // Are you sure you want to follow the elven ways?
             }
             else
             {
-                AddHtml(15, 15, 210, 75, $"Are you sure you want to change your race to {targetRace.Name}?");
+                builder.AddHtml(15, 15, 210, 75, $"Are you sure you want to change your race to {_race.Name}?");
             }
 
-            AddButton(160, 95, 0xF7, 0xF8, 1);
-            AddButton(90, 95, 0xF2, 0xF1, 0);
+            builder.AddButton(160, 95, 0xF7, 0xF8, 1);
+            builder.AddButton(90, 95, 0xF2, 0xF1, 0);
         }
 
         public override void OnResponse(NetState sender, in RelayInfo info)
@@ -62,15 +75,15 @@ namespace Server.Engines.MLQuests.Gumps
             {
                 case 0: // Cancel
                     {
-                        m_Owner?.OnCancel(m_From);
+                        _owner?.OnCancel(_from);
 
                         break;
                     }
                 case 1: // Okay
                     {
-                        if (m_Owner?.CheckComplete(m_From) != false)
+                        if (_owner?.CheckComplete(_from) != false)
                         {
-                            Offer(m_Owner, m_From, m_Race);
+                            Offer(_owner, _from, _race);
                         }
 
                         break;
@@ -329,7 +342,7 @@ namespace Server.Engines.MLQuests.Gumps
 
             if (CheckComplete(pm))
             {
-                pm.SendGump(new RaceChangeConfirmGump(this, pm, pm.Race == Race.Human ? Race.Elf : Race.Human));
+                RaceChangeConfirmGump.DisplayTo(pm, this, pm.Race == Race.Human ? Race.Elf : Race.Human);
             }
         }
     }

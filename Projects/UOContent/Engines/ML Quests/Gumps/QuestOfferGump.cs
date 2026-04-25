@@ -4,35 +4,48 @@ using Server.Network;
 
 namespace Server.Engines.MLQuests.Gumps
 {
-    public class QuestOfferGump : BaseQuestGump
+    public class QuestOfferGump : BaseMLQuestGump
     {
-        private readonly MLQuest m_Quest;
-        private readonly IQuestGiver m_Quester;
+        private readonly MLQuest _quest;
+        private readonly IQuestGiver _quester;
 
         public override bool Singleton => true;
 
-        public QuestOfferGump(MLQuest quest, IQuestGiver quester, PlayerMobile pm)
+        private QuestOfferGump(MLQuest quest, IQuestGiver quester)
             : base(1049010) // Quest Offer
         {
-            m_Quest = quest;
-            m_Quester = quester;
-
-            CloseOtherGumps(pm);
+            _quest = quest;
+            _quester = quester;
 
             SetTitle(quest.Title);
             RegisterButton(ButtonPosition.Left, ButtonGraphic.Accept, 1);
             RegisterButton(ButtonPosition.Right, ButtonGraphic.Refuse, 2);
 
             SetPageCount(3);
+        }
 
-            BuildPage();
-            AddDescription(quest);
+        public static void DisplayTo(PlayerMobile pm, MLQuest quest, IQuestGiver quester)
+        {
+            if (pm?.NetState == null || quest == null)
+            {
+                return;
+            }
 
-            BuildPage();
-            AddObjectives(quest);
+            CloseOtherGumps(pm);
 
-            BuildPage();
-            AddRewardsPage(quest);
+            pm.SendGump(new QuestOfferGump(quest, quester));
+        }
+
+        protected override void BuildContent(ref DynamicGumpBuilder builder)
+        {
+            BuildPage(ref builder);
+            AddDescription(ref builder, _quest);
+
+            BuildPage(ref builder);
+            AddObjectives(ref builder, _quest);
+
+            BuildPage(ref builder);
+            AddRewardsPage(ref builder, _quest);
         }
 
         public override void OnResponse(NetState sender, in RelayInfo info)
@@ -46,12 +59,12 @@ namespace Server.Engines.MLQuests.Gumps
             {
                 case 1: // Accept
                     {
-                        m_Quest.OnAccept(m_Quester, pm);
+                        _quest.OnAccept(_quester, pm);
                         break;
                     }
                 case 2: // Refuse
                     {
-                        m_Quest.OnRefuse(m_Quester, pm);
+                        _quest.OnRefuse(_quester, pm);
                         break;
                     }
             }

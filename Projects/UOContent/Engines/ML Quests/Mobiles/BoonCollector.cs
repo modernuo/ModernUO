@@ -306,7 +306,7 @@ public partial class Darius : DoneQuestCollector
 
     public override void OnComplete(PlayerMobile from)
     {
-        from.SendGump(new RaceChangeConfirmGump(this, from, Race.Elf));
+        RaceChangeConfirmGump.DisplayTo(from, this, Race.Elf);
     }
 }
 
@@ -382,6 +382,6 @@ public partial class Nedrick : DoneQuestCollector
 
     public override void OnComplete(PlayerMobile from)
     {
-        from.SendGump(new RaceChangeConfirmGump(this, from, Race.Human));
+        RaceChangeConfirmGump.DisplayTo(from, this, Race.Human);
     }
 }

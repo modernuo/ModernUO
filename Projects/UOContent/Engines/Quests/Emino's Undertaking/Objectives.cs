@@ -1,3 +1,4 @@
+using Server.Gumps;
 using Server.Items;
 using Server.Mobiles;
 
@@ -187,19 +188,19 @@ namespace Server.Engines.Quests.Ninja
 
         public override int MaxProgress => 3;
 
-        public override void RenderProgress(BaseQuestGump gump)
+        public override void RenderProgress(ref DynamicGumpBuilder builder)
         {
             if (!Completed)
             {
                 // Henchmen killed:
-                gump.AddHtmlLocalized(70, 260, 270, 100, 1063207, BaseQuestGump.Blue);
-                gump.AddLabel(70, 280, 0x64, CurProgress.ToString());
-                gump.AddLabel(100, 280, 0x64, "/");
-                gump.AddLabel(130, 280, 0x64, MaxProgress.ToString());
+                builder.AddHtmlLocalized(70, 260, 270, 100, 1063207, BaseQuestGump.Blue);
+                builder.AddLabel(70, 280, 0x64, CurProgress.ToString());
+                builder.AddLabel(100, 280, 0x64, "/");
+                builder.AddLabel(130, 280, 0x64, MaxProgress.ToString());
             }
             else
             {
-                base.RenderProgress(gump);
+                base.RenderProgress(ref builder);
             }
         }
 

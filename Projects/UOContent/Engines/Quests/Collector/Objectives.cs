@@ -1,4 +1,5 @@
 using System;
+using Server.Gumps;
 
 namespace Server.Engines.Quests.Collector
 {
@@ -8,20 +9,20 @@ namespace Server.Engines.Quests.Collector
 
         public override int MaxProgress => 6;
 
-        public override void RenderProgress(BaseQuestGump gump)
+        public override void RenderProgress(ref DynamicGumpBuilder builder)
         {
             if (!Completed)
             {
                 // Rainbow pearls collected:
-                gump.AddHtmlObject(70, 260, 270, 100, 1055085, BaseQuestGump.Blue, false, false);
+                BaseQuestGump.AddHtmlObject(ref builder, 70, 260, 270, 100, 1055085, BaseQuestGump.Blue, false, false);
 
-                gump.AddLabel(70, 280, 0x64, CurProgress.ToString());
-                gump.AddLabel(100, 280, 0x64, "/");
-                gump.AddLabel(130, 280, 0x64, MaxProgress.ToString());
+                builder.AddLabel(70, 280, 0x64, CurProgress.ToString());
+                builder.AddLabel(100, 280, 0x64, "/");
+                builder.AddLabel(130, 280, 0x64, MaxProgress.ToString());
             }
             else
             {
-                base.RenderProgress(gump);
+                base.RenderProgress(ref builder);
             }
         }
 
@@ -311,7 +312,7 @@ namespace Server.Engines.Quests.Collector
             return CaptureResponse.Invalid;
         }
 
-        public override void RenderProgress(BaseQuestGump gump)
+        public override void RenderProgress(ref DynamicGumpBuilder builder)
         {
             if (!Completed)
             {
@@ -319,9 +320,10 @@ namespace Server.Engines.Quests.Collector
                 {
                     var info = ImageTypeInfo.Get(m_Images[i]);
 
-                    gump.AddHtmlObject(70, 260 + 20 * i, 200, 100, info.Name, BaseQuestGump.Blue, false, false);
-                    gump.AddLabel(200, 260 + 20 * i, 0x64, " : ");
-                    gump.AddHtmlObject(
+                    BaseQuestGump.AddHtmlObject(ref builder, 70, 260 + 20 * i, 200, 100, info.Name, BaseQuestGump.Blue, false, false);
+                    builder.AddLabel(200, 260 + 20 * i, 0x64, " : ");
+                    BaseQuestGump.AddHtmlObject(
+                        ref builder,
                         220,
                         260 + 20 * i,
                         100,
@@ -335,7 +337,7 @@ namespace Server.Engines.Quests.Collector
             }
             else
             {
-                base.RenderProgress(gump);
+                base.RenderProgress(ref builder);
             }
         }
 

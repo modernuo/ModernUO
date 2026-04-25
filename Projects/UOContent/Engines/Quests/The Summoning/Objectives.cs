@@ -1,3 +1,4 @@
+using Server.Gumps;
 using Server.Items;
 using Server.Mobiles;
 
@@ -42,33 +43,33 @@ namespace Server.Engines.Quests.Doom
             }
         }
 
-        public override void RenderMessage(BaseQuestGump gump)
+        public override void RenderMessage(ref DynamicGumpBuilder builder)
         {
             if (CurProgress > 0 && CurProgress < MaxProgress)
             {
                 // Victoria has accepted the Daemon bones, but the requirement is not yet met.
-                gump.AddHtmlObject(70, 130, 300, 100, 1050028, BaseQuestGump.Blue, false, false);
+                BaseQuestGump.AddHtmlObject(ref builder, 70, 130, 300, 100, 1050028, BaseQuestGump.Blue, false, false);
             }
             else
             {
-                base.RenderMessage(gump);
+                base.RenderMessage(ref builder);
             }
         }
 
-        public override void RenderProgress(BaseQuestGump gump)
+        public override void RenderProgress(ref DynamicGumpBuilder builder)
         {
             if (CurProgress > 0 && CurProgress < MaxProgress)
             {
                 // Number of bones collected:
-                gump.AddHtmlObject(70, 260, 270, 100, 1050019, BaseQuestGump.Blue, false, false);
+                BaseQuestGump.AddHtmlObject(ref builder, 70, 260, 270, 100, 1050019, BaseQuestGump.Blue, false, false);
 
-                gump.AddLabel(70, 280, 100, CurProgress.ToString());
-                gump.AddLabel(100, 280, 100, "/");
-                gump.AddLabel(130, 280, 100, MaxProgress.ToString());
+                builder.AddLabel(70, 280, 100, CurProgress.ToString());
+                builder.AddLabel(100, 280, 100, "/");
+                builder.AddLabel(130, 280, 100, MaxProgress.ToString());
             }
             else
             {
-                base.RenderProgress(gump);
+                base.RenderProgress(ref builder);
             }
         }
     }
