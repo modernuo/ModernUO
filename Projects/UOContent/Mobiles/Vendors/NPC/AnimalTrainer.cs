@@ -142,7 +142,7 @@ namespace Server.Mobiles
 
             if (list.Count > 0)
             {
-                from.SendGump(new ClaimListGump(this, from, list));
+                ClaimListGump.DisplayTo(this, from, list);
             }
             else
             {
@@ -421,38 +421,51 @@ namespace Server.Mobiles
             }
         }
 
-        private class ClaimListGump : Gump
+        private class ClaimListGump : DynamicGump
         {
-            private readonly Mobile m_From;
-            private readonly List<BaseCreature> m_List;
-            private readonly AnimalTrainer m_Trainer;
+            private readonly Mobile _from;
+            private readonly List<BaseCreature> _list;
+            private readonly AnimalTrainer _trainer;
 
             public override bool Singleton => true;
 
-            public ClaimListGump(AnimalTrainer trainer, Mobile from, List<BaseCreature> list) : base(50, 50)
+            private ClaimListGump(AnimalTrainer trainer, Mobile from, List<BaseCreature> list) : base(50, 50)
             {
-                m_Trainer = trainer;
-                m_From = from;
-                m_List = list;
+                _trainer = trainer;
+                _from = from;
+                _list = list;
+            }
 
-                AddPage(0);
-
-                AddBackground(0, 0, 325, 50 + list.Count * 20, 9250);
-                AddAlphaRegion(5, 5, 315, 40 + list.Count * 20);
-
-                AddHtml(15, 15, 275, 20, "<BASEFONT COLOR=#FFFFFF>Select a pet to retrieve from the stables:</BASEFONT>");
-
-                for (var i = 0; i < list.Count; ++i)
+            public static void DisplayTo(AnimalTrainer trainer, Mobile from, List<BaseCreature> list)
+            {
+                if (from?.NetState == null || trainer == null || list == null || list.Count == 0)
                 {
-                    var pet = list[i];
+                    return;
+                }
+
+                from.SendGump(new ClaimListGump(trainer, from, list));
+            }
+
+            protected override void BuildLayout(ref DynamicGumpBuilder builder)
+            {
+                builder.AddPage();
+
+                builder.AddBackground(0, 0, 325, 50 + _list.Count * 20, 9250);
+                builder.AddAlphaRegion(5, 5, 315, 40 + _list.Count * 20);
+
+                builder.AddHtml(15, 15, 275, 20, "<BASEFONT COLOR=#FFFFFF>Select a pet to retrieve from the stables:</BASEFONT>");
+
+                for (var i = 0; i < _list.Count; ++i)
+                {
+                    var pet = _list[i];
 
                     if (pet?.Deleted != false)
                     {
                         continue;
                     }
 
-                    AddButton(15, 39 + i * 20, 10006, 10006, i + 1);
-                    AddHtml(32, 35 + i * 20, 275, 18, pet.Name.Color(0xC0C0EE));
+                    builder.AddButton(15, 39 + i * 20, 10006, 10006, i + 1);
+                    builder.AddHtml(32, 35 + i * 20, 275, 18, pet.Name.Color(0xC0C0EE));
                 }
             }
 
@@ -460,9 +473,9 @@ namespace Server.Mobiles
             {
                 var index = info.ButtonID - 1;
 
-                if (index >= 0 && index < m_List.Count)
+                if (index >= 0 && index < _list.Count)
                 {
-                    m_Trainer.EndClaimList(m_From, m_List[index]);
+                    _trainer.EndClaimList(_from, _list[index]);
                 }
             }
         }
