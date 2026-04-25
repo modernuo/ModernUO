@@ -3289,9 +3289,9 @@ namespace Server.Mobiles
                 var (totalFame, totalKarma) = Titles.ComputeKillAwards(this, Map);
 
                 var list = GetLootingRights(DamageEntries, HitsMax);
-                var titles = new List<Mobile>();
-                var fame = new List<int>();
-                var karma = new List<int>();
+                using var titles = PooledRefList<Mobile>.Create();
+                var fame = PooledRefList<int>.Create();
+                var karma = PooledRefList<int>.Create();
 
                 var givenQuestKill = false;
                 var givenFactionKill = false;
@@ -3396,6 +3396,9 @@ namespace Server.Mobiles
                     Titles.AwardFame(titles[i], fame[i], true);
                     Titles.AwardKarma(titles[i], karma[i], true);
                 }
+
+                fame.Dispose();
+                karma.Dispose();
             }
 
             base.OnDeath(c);
