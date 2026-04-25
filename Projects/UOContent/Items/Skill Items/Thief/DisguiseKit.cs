@@ -71,14 +71,14 @@ public partial class DisguiseKit : Item
     {
         if (ValidateUse(from))
         {
-            from.SendGump(new DisguiseGump(from, this, true, false));
+            DisguiseGump.DisplayTo(from, this, true, false);
         }
     }
 }
 
-public class DisguiseGump : Gump
+public class DisguiseGump : DynamicGump
 {
-    private static readonly DisguiseEntry[] m_HairEntries =
+    private static readonly DisguiseEntry[] _hairEntries =
     {
         new(8251, 50700, 0, 5, 1011052),  // Short
         new(8261, 60710, 0, 3, 1011047),  // Pageboy
@@ -92,7 +92,7 @@ public class DisguiseGump : Gump
         new(0, 0, 0, 0, 1011051) // None
     };
 
-    private static readonly DisguiseEntry[] m_BeardEntries =
+    private static readonly DisguiseEntry[] _beardEntries =
     {
         new(8269, 50906, 0, 0, 1011401),   // Vandyke
         new(8257, 50808, 0, -2, 1011062),  // Mustache
@@ -104,55 +104,70 @@ public class DisguiseGump : Gump
         new(0, 0, 0, 0, 1011051) // None
     };
 
-    private readonly Mobile m_From;
-    private readonly DisguiseKit m_Kit;
-    private readonly bool m_Used;
+    private readonly Mobile _from;
+    private readonly DisguiseKit _kit;
+    private readonly bool _startAtHair;
+    private readonly bool _used;
 
     public override bool Singleton => true;
 
-    public DisguiseGump(Mobile from, DisguiseKit kit, bool startAtHair, bool used) : base(50, 50)
+    private DisguiseGump(Mobile from, DisguiseKit kit, bool startAtHair, bool used) : base(50, 50)
     {
-        m_From = from;
-        m_Kit = kit;
-        m_Used = used;
+        _from = from;
+        _kit = kit;
+        _startAtHair = startAtHair;
+        _used = used;
+    }
 
-        AddPage(0);
+    public static void DisplayTo(Mobile from, DisguiseKit kit, bool startAtHair, bool used)
+    {
+        if (from?.NetState == null || kit == null || kit.Deleted)
+        {
+            return;
+        }
 
-        AddBackground(100, 10, 400, 385, 2600);
+        from.SendGump(new DisguiseGump(from, kit, startAtHair, used));
+    }
+
+    protected override void BuildLayout(ref DynamicGumpBuilder builder)
+    {
+        builder.AddPage(0);
+
+        builder.AddBackground(100, 10, 400, 385, 2600);
 
         // <center>THIEF DISGUISE KIT</center>
-        AddHtmlLocalized(100, 25, 400, 35, 1011045);
+        builder.AddHtmlLocalized(100, 25, 400, 35, 1011045);
 
-        AddButton(140, 353, 4005, 4007, 0);
-        AddHtmlLocalized(172, 355, 90, 35, 1011036); // OKAY
+        builder.AddButton(140, 353, 4005, 4007, 0);
+        builder.AddHtmlLocalized(172, 355, 90, 35, 1011036); // OKAY
 
-        AddButton(257, 353, 4005, 4007, 1);
-        AddHtmlLocalized(289, 355, 90, 35, 1011046); // APPLY
+        builder.AddButton(257, 353, 4005, 4007, 1);
+        builder.AddHtmlLocalized(289, 355, 90, 35, 1011046); // APPLY
 
-        if (from.Female || from.Body.IsFemale)
+        if (_from.Female || _from.Body.IsFemale)
         {
-            DrawEntries(0, 1, -1, m_HairEntries, -1);
+            DrawEntries(ref builder, 0, 1, -1, _hairEntries, -1);
         }
-        else if (startAtHair)
+        else if (_startAtHair)
         {
-            DrawEntries(0, 1, 2, m_HairEntries, 1011056);
-            DrawEntries(1, 2, 1, m_BeardEntries, 1011059);
+            DrawEntries(ref builder, 0, 1, 2, _hairEntries, 1011056);
+            DrawEntries(ref builder, 1, 2, 1, _beardEntries, 1011059);
         }
         else
         {
-            DrawEntries(1, 1, 2, m_BeardEntries, 1011059);
-            DrawEntries(0, 2, 1, m_HairEntries, 1011056);
+            DrawEntries(ref builder, 1, 1, 2, _beardEntries, 1011059);
+            DrawEntries(ref builder, 0, 2, 1, _hairEntries, 1011056);
         }
     }
 
-    private void DrawEntries(int index, int page, int nextPage, DisguiseEntry[] entries, int nextNumber)
+    private static void DrawEntries(ref DynamicGumpBuilder builder, int index, int page, int nextPage, DisguiseEntry[] entries, int nextNumber)
     {
-        AddPage(page);
+        builder.AddPage(page);
 
         if (nextPage != -1)
         {
-            AddButton(155, 320, 250 + index * 2, 251 + index * 2, 0, GumpButtonType.Page, nextPage);
-            AddHtmlLocalized(180, 320, 150, 35, nextNumber);
+            builder.AddButton(155, 320, 250 + index * 2, 251 + index * 2, 0, GumpButtonType.Page, nextPage);
+            builder.AddHtmlLocalized(180, 320, 150, 35, nextNumber);
         }
 
         for (var i = 0; i < entries.Length; ++i)
@@ -167,14 +182,14 @@ public class DisguiseGump : Gump
             var x = i % 2 * 205;
             var y = i / 2 * 55;
 
-            if (entry.m_GumpID != 0)
+            if (entry.GumpID != 0)
             {
-                AddBackground(220 + x, 60 + y, 50, 50, 2620);
-                AddImage(153 + x + entry.m_OffsetX, 15 + y + entry.m_OffsetY, entry.m_GumpID);
+                builder.AddBackground(220 + x, 60 + y, 50, 50, 2620);
+                builder.AddImage(153 + x + entry.OffsetX, 15 + y + entry.OffsetY, entry.GumpID);
             }
 
-            AddHtmlLocalized(140 + x, 72 + y, 80, 35, entry.m_Number);
-            AddRadio(118 + x, 73 + y, 208, 209, false, i * 2 + index);
+            builder.AddHtmlLocalized(140 + x, 72 + y, 80, 35, entry.Number);
+            builder.AddRadio(118 + x, 73 + y, 208, 209, false, i * 2 + index);
         }
     }
 
@@ -182,13 +197,13 @@ public class DisguiseGump : Gump
     {
         if (info.ButtonID == 0)
         {
-            if (m_Used)
+            if (_used)
             {
-                m_From.SendLocalizedMessage(501706); // Disguises wear off after 2 hours.
+                _from.SendLocalizedMessage(501706); // Disguises wear off after 2 hours.
             }
             else
             {
-                m_From.SendLocalizedMessage(501707); // You're looking good.
+                _from.SendLocalizedMessage(501707); // You're looking good.
             }
 
             return;
@@ -207,7 +222,7 @@ public class DisguiseGump : Gump
 
         var hair = type == 0;
 
-        var entries = hair ? m_HairEntries : m_BeardEntries;
+        var entries = hair ? _hairEntries : _beardEntries;
 
         if (index >= 0 && index < entries.Length)
         {
@@ -218,54 +233,54 @@ public class DisguiseGump : Gump
                 return;
             }
 
-            if (!m_Kit.ValidateUse(m_From))
+            if (!_kit.ValidateUse(_from))
             {
                 return;
             }
 
-            if (!hair && (m_From.Female || m_From.Body.IsFemale))
+            if (!hair && (_from.Female || _from.Body.IsFemale))
             {
                 return;
             }
 
-            m_From.NameMod = NameList.RandomName(m_From.Female ? "female" : "male");
+            _from.NameMod = NameList.RandomName(_from.Female ? "female" : "male");
 
-            if (m_From is PlayerMobile pm)
+            if (_from is PlayerMobile pm)
             {
                 if (hair)
                 {
-                    pm.SetHairMods(entry.m_ItemID, -2);
+                    pm.SetHairMods(entry.ItemID, -2);
                 }
                 else
                 {
-                    pm.SetHairMods(-2, entry.m_ItemID);
+                    pm.SetHairMods(-2, entry.ItemID);
                 }
             }
 
-            m_From.SendGump(new DisguiseGump(m_From, m_Kit, hair, true));
+            DisguiseGump.DisplayTo(_from, _kit, hair, true);
 
-            DisguisePersistence.RemoveTimer(m_From);
+            DisguisePersistence.RemoveTimer(_from);
 
-            DisguisePersistence.CreateTimer(m_From, TimeSpan.FromHours(2.0));
-            DisguisePersistence.StartTimer(m_From);
+            DisguisePersistence.CreateTimer(_from, TimeSpan.FromHours(2.0));
+            DisguisePersistence.StartTimer(_from);
         }
     }
 
     private class DisguiseEntry
     {
-        public readonly int m_GumpID;
-        public readonly int m_ItemID;
-        public readonly int m_Number;
-        public readonly int m_OffsetX;
-        public readonly int m_OffsetY;
+        public int GumpID { get; }
+        public int ItemID { get; }
+        public int Number { get; }
+        public int OffsetX { get; }
+        public int OffsetY { get; }
 
         public DisguiseEntry(int itemID, int gumpID, int ox, int oy, int name)
         {
-            m_ItemID = itemID;
-            m_GumpID = gumpID;
-            m_OffsetX = ox;
-            m_OffsetY = oy;
-            m_Number = name;
+            ItemID = itemID;
+            GumpID = gumpID;
+            OffsetX = ox;
+            OffsetY = oy;
+            Number = name;
         }
     }
 }

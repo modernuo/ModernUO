@@ -88,7 +88,7 @@ public class GlobalTownCrierEntryList : ITownCrierEntryList
     [Usage("TownCriers"), Description("Manages the global town crier list.")]
     public static void TownCriers_OnCommand(CommandEventArgs e)
     {
-        e.Mobile.SendGump(new TownCrierGump(e.Mobile, Instance));
+        TownCrierGump.DisplayTo(e.Mobile, Instance);
     }
 }
 
@@ -119,7 +119,7 @@ public class TownCrierDurationPrompt : Prompt
         if (!TimeSpan.TryParse(text, out var ts))
         {
             from.SendMessage("Value was not properly formatted. Use: <hours:minutes:seconds, 00:00:00>");
-            from.SendGump(new TownCrierGump(from, m_Owner));
+            TownCrierGump.DisplayTo(from, m_Owner);
             return;
         }
 
@@ -137,7 +137,7 @@ public class TownCrierDurationPrompt : Prompt
     public override void OnCancel(Mobile from)
     {
         from.SendLocalizedMessage(502980); // Message entry cancelled.
-        from.SendGump(new TownCrierGump(from, m_Owner));
+        TownCrierGump.DisplayTo(from, m_Owner);
     }
 }
 
@@ -188,83 +188,94 @@ public class TownCrierLinesPrompt : Prompt
             }
         }
 
-        from.SendGump(new TownCrierGump(from, m_Owner));
+        TownCrierGump.DisplayTo(from, m_Owner);
     }
 }
 
-public class TownCrierGump : Gump
+public class TownCrierGump : DynamicGump
 {
-    private readonly Mobile m_From;
-    private readonly ITownCrierEntryList m_Owner;
+    private readonly Mobile _from;
+    private readonly ITownCrierEntryList _owner;
 
     public override bool Singleton => true;
 
-    public TownCrierGump(Mobile from, ITownCrierEntryList owner) : base(50, 50)
+    private TownCrierGump(Mobile from, ITownCrierEntryList owner) : base(50, 50)
     {
-        m_From = from;
-        m_Owner = owner;
+        _from = from;
+        _owner = owner;
+    }
 
-        AddPage(0);
+    public static void DisplayTo(Mobile from, ITownCrierEntryList owner)
+    {
+        if (from?.NetState == null || owner == null)
+        {
+            return;
+        }
 
-        var entries = owner.Entries;
+        from.SendGump(new TownCrierGump(from, owner));
+    }
 
-        owner.GetRandomEntry(); // force expiration checks
+    protected override void BuildLayout(ref DynamicGumpBuilder builder)
+    {
+        builder.AddPage();
 
+        _owner.GetRandomEntry(); // force expiration checks
+
+        var entries = _owner.Entries;
         var count = entries?.Count ?? 0;
 
-        AddImageTiled(0, 0, 300, 38 + (count == 0 ? 20 : count * 85), 0xA40);
-        AddAlphaRegion(1, 1, 298, 36 + (count == 0 ? 20 : count * 85));
+        builder.AddImageTiled(0, 0, 300, 38 + (count == 0 ? 20 : count * 85), 0xA40);
+        builder.AddAlphaRegion(1, 1, 298, 36 + (count == 0 ? 20 : count * 85));
 
-        AddHtml(8, 8, 300 - 8 - 30, 20, "<basefont color=#FFFFFF><center>TOWN CRIER MESSAGES</center></basefont>");
+        builder.AddHtml(8, 8, 300 - 8 - 30, 20, "<basefont color=#FFFFFF><center>TOWN CRIER MESSAGES</center></basefont>");
 
-        AddButton(300 - 8 - 30, 8, 0xFAB, 0xFAD, 1);
+        builder.AddButton(300 - 8 - 30, 8, 0xFAB, 0xFAD, 1);
 
         if (count == 0)
         {
-            AddHtml(8, 30, 284, 20, "<basefont color=#FFFFFF>The crier has no news.</basefont>");
+            builder.AddHtml(8, 30, 284, 20, "<basefont color=#FFFFFF>The crier has no news.</basefont>");
+            return;
         }
-        else
+
+        for (var i = 0; i < entries!.Count; ++i)
         {
-            for (var i = 0; i < entries!.Count; ++i)
+            var tce = entries[i];
+
+            var toExpire = Utility.Max(tce.ExpireTime - Core.Now, TimeSpan.Zero);
+
+            using var sb = ValueStringBuilder.Create(512);
+
+            sb.Append("[Expires: ");
+
+            if (toExpire.TotalHours >= 1)
             {
-                var tce = entries[i];
-
-                var toExpire = Utility.Max(tce.ExpireTime - Core.Now, TimeSpan.Zero);
-
-                using var sb = ValueStringBuilder.Create(512);
-
-                sb.Append("[Expires: ");
-
-                if (toExpire.TotalHours >= 1)
-                {
-                    sb.Append((int)toExpire.TotalHours);
-                    sb.Append(':');
-                    sb.Append(toExpire.Minutes.ToString("D2"));
-                }
-                else
-                {
-                    sb.Append(toExpire.Minutes);
-                }
-
+                sb.Append((int)toExpire.TotalHours);
                 sb.Append(':');
-                sb.Append(toExpire.Seconds.ToString("D2"));
+                sb.Append(toExpire.Minutes.ToString("D2"));
+            }
+            else
+            {
+                sb.Append(toExpire.Minutes);
+            }
 
-                sb.Append("] ");
+            sb.Append(':');
+            sb.Append(toExpire.Seconds.ToString("D2"));
 
-                for (var j = 0; j < tce.Lines.Length; ++j)
+            sb.Append("] ");
+
+            for (var j = 0; j < tce.Lines.Length; ++j)
+            {
+                if (j > 0)
                 {
-                    if (j > 0)
-                    {
-                        sb.Append("<br>");
-                    }
-
-                    sb.Append(tce.Lines[j]);
+                    sb.Append("<br>");
                 }
 
-                AddHtml(8, 35 + i * 85, 254, 80, sb.ToString(), true, true);
-
-                AddButton(300 - 8 - 26, 35 + i * 85, 0x15E1, 0x15E5, 2 + i);
+                sb.Append(tce.Lines[j]);
             }
+
+            builder.AddHtml(8, 35 + i * 85, 254, 80, sb.ToString(), background: true, scrollbar: true);
+
+            builder.AddButton(300 - 8 - 26, 35 + i * 85, 0x15E1, 0x15E5, 2 + i);
         }
     }
 
@@ -272,12 +283,12 @@ public class TownCrierGump : Gump
     {
         if (info.ButtonID == 1)
         {
-            m_From.SendMessage("Enter the duration for the new message. Format: <hours:minutes:seconds, 00:00:00>");
-            m_From.Prompt = new TownCrierDurationPrompt(m_Owner);
+            _from.SendMessage("Enter the duration for the new message. Format: <hours:minutes:seconds, 00:00:00>");
+            _from.Prompt = new TownCrierDurationPrompt(_owner);
         }
         else if (info.ButtonID > 1)
         {
-            var entries = m_Owner.Entries;
+            var entries = _owner.Entries;
             var index = info.ButtonID - 2;
 
             if (index < entries?.Count)
@@ -285,9 +296,9 @@ public class TownCrierGump : Gump
                 var tce = entries[index];
                 var ts = Utility.Max(tce.ExpireTime - Core.Now, TimeSpan.Zero);
 
-                m_From.SendMessage($"Editing entry #{index + 1}.");
-                m_From.SendMessage("Enter the first line to shout:");
-                m_From.Prompt = new TownCrierLinesPrompt(m_Owner, tce, new List<string>(), ts);
+                _from.SendMessage($"Editing entry #{index + 1}.");
+                _from.SendMessage("Enter the first line to shout:");
+                _from.Prompt = new TownCrierLinesPrompt(_owner, tce, new List<string>(), ts);
             }
         }
     }
@@ -467,7 +478,7 @@ public partial class TownCrier : Mobile, ITownCrierEntryList
     {
         if (from.AccessLevel >= AccessLevel.GameMaster)
         {
-            from.SendGump(new TownCrierGump(from, this));
+            TownCrierGump.DisplayTo(from, this);
         }
         else
         {
