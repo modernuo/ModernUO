@@ -24,34 +24,51 @@ public sealed partial class CTFBoard : Item
     {
         if (m_TeamInfo?.Game != null)
         {
-            from.SendGump(new CTFBoardGump(from, m_TeamInfo.Game));
+            CTFBoardGump.DisplayTo(from, m_TeamInfo.Game);
         }
     }
 }
 
-public class CTFBoardGump : Gump
+public class CTFBoardGump : DynamicGump
 {
     private const int LabelColor32 = 0xFFFFFF;
     private const int BlackColor32 = 0x000000;
 
-    private CTFGame m_Game;
+    private readonly Mobile _mob;
+    private readonly CTFGame _game;
+    private readonly CTFTeamInfo _section;
 
     public override bool Singleton => true;
 
-    public CTFBoardGump(Mobile mob, CTFGame game, CTFTeamInfo section = null)
+    private CTFBoardGump(Mobile mob, CTFGame game, CTFTeamInfo section)
         : base(60, 60)
     {
-        m_Game = game;
+        _mob = mob;
+        _game = game;
+        _section = section;
+    }
 
-        var ourTeam = game.GetTeamInfo(mob);
+    public static void DisplayTo(Mobile mob, CTFGame game, CTFTeamInfo section = null)
+    {
+        if (mob?.NetState == null || game == null)
+        {
+            return;
+        }
+
+        mob.SendGump(new CTFBoardGump(mob, game, section));
+    }
+
+    protected override void BuildLayout(ref DynamicGumpBuilder builder)
+    {
+        var ourTeam = _game.GetTeamInfo(_mob);
 
         var entries = new List<IRankedCTF>();
 
-        if (section == null)
+        if (_section == null)
         {
-            for (var i = 0; i < game.Context.Participants.Count; ++i)
+            for (var i = 0; i < _game.Context.Participants.Count; ++i)
             {
-                var teamInfo = game.Controller.TeamInfo[i % 8];
+                var teamInfo = _game.Controller.TeamInfo[i % 8];
 
                 if (teamInfo?.Flag == null)
                 {
@@ -63,7 +80,7 @@ public class CTFBoardGump : Gump
         }
         else
         {
-            foreach (var player in section.Players.Values)
+            foreach (var player in _section.Players.Values)
             {
                 if (player.Score > 0)
                 {
@@ -76,51 +93,48 @@ public class CTFBoardGump : Gump
 
         var height = 0;
 
-        if (section == null)
+        if (_section == null)
         {
             height = 73 + entries.Count * 75 + 28;
         }
 
-        Closable = false;
+        builder.SetNoClose();
 
-        AddPage(0);
+        builder.AddPage();
 
-        AddBackground(1, 1, 398, height, 3600);
+        builder.AddBackground(1, 1, 398, height, 3600);
 
-        AddImageTiled(16, 15, 369, height - 29, 3604);
+        builder.AddImageTiled(16, 15, 369, height - 29, 3604);
 
         for (var i = 0; i < entries.Count; i += 1)
         {
-            AddImageTiled(22, 58 + i * 75, 357, 70, 0x2430);
+            builder.AddImageTiled(22, 58 + i * 75, 357, 70, 0x2430);
         }
 
-        AddAlphaRegion(16, 15, 369, height - 29);
+        builder.AddAlphaRegion(16, 15, 369, height - 29);
 
-        AddImage(215, -45, 0xEE40);
-        // AddImage( 330, 141, 0x8BA );
+        builder.AddImage(215, -45, 0xEE40);
 
-        AddBorderedText(22, 22, 294, 20, "CTF Scoreboard".Center(), LabelColor32, BlackColor32);
+        AddBorderedText(ref builder, 22, 22, 294, 20, "CTF Scoreboard".Center(), LabelColor32, BlackColor32);
 
-        AddImageTiled(32, 50, 264, 1, 9107);
-        AddImageTiled(42, 52, 264, 1, 9157);
+        builder.AddImageTiled(32, 50, 264, 1, 9107);
+        builder.AddImageTiled(42, 52, 264, 1, 9157);
 
-        if (section == null)
+        if (_section == null)
         {
             for (var i = 0; i < entries.Count; ++i)
             {
-                var teamInfo = entries[i] as CTFTeamInfo;
-
-                if (teamInfo == null)
+                if (entries[i] is not CTFTeamInfo teamInfo)
                 {
                     continue;
                 }
 
-                AddImage(30, 70 + i * 75, 10152);
-                AddImage(30, 85 + i * 75, 10151);
-                AddImage(30, 100 + i * 75, 10151);
-                AddImage(30, 106 + i * 75, 10154);
+                builder.AddImage(30, 70 + i * 75, 10152);
+                builder.AddImage(30, 85 + i * 75, 10151);
+                builder.AddImage(30, 100 + i * 75, 10151);
+                builder.AddImage(30, 106 + i * 75, 10154);
 
-                AddImage(24, 60 + i * 75, teamInfo == ourTeam ? 9730 : 9727, teamInfo.Color - 1);
+                builder.AddImage(24, 60 + i * 75, teamInfo == ourTeam ? 9730 : 9727, teamInfo.Color - 1);
 
                 var borderColor = teamInfo.Color == 0x455 ? LabelColor32 : BlackColor32;
                 var nameColor = teamInfo.Color switch
@@ -136,6 +150,7 @@ public class CTFBoardGump : Gump
                 };
 
                 AddBorderedText(
+                    ref builder,
                     60,
                     65 + i * 75,
                     250,
@@ -145,14 +160,15 @@ public class CTFBoardGump : Gump
                     borderColor
                 );
 
-                AddBorderedText(50 + 10, 85 + i * 75, 100, 20, "Score:", 0xFFC000, BlackColor32);
-                AddBorderedText(50 + 15, 105 + i * 75, 100, 20, teamInfo.Score.ToString("N0"), 0xFFC000, BlackColor32);
+                AddBorderedText(ref builder, 50 + 10, 85 + i * 75, 100, 20, "Score:", 0xFFC000, BlackColor32);
+                AddBorderedText(ref builder, 50 + 15, 105 + i * 75, 100, 20, teamInfo.Score.ToString("N0"), 0xFFC000, BlackColor32);
 
-                AddBorderedText(110 + 10, 85 + i * 75, 100, 20, "Kills:", 0xFFC000, BlackColor32);
-                AddBorderedText(110 + 15, 105 + i * 75, 100, 20, teamInfo.Kills.ToString("N0"), 0xFFC000, BlackColor32);
+                AddBorderedText(ref builder, 110 + 10, 85 + i * 75, 100, 20, "Kills:", 0xFFC000, BlackColor32);
+                AddBorderedText(ref builder, 110 + 15, 105 + i * 75, 100, 20, teamInfo.Kills.ToString("N0"), 0xFFC000, BlackColor32);
 
-                AddBorderedText(160 + 10, 85 + i * 75, 100, 20, "Captures:", 0xFFC000, BlackColor32);
+                AddBorderedText(ref builder, 160 + 10, 85 + i * 75, 100, 20, "Captures:", 0xFFC000, BlackColor32);
                 AddBorderedText(
+                    ref builder,
                     160 + 15,
                     105 + i * 75,
                     100,
@@ -164,30 +180,30 @@ public class CTFBoardGump : Gump
 
                 var pl = teamInfo.Leader;
 
-                AddBorderedText(235 + 10, 85 + i * 75, 250, 20, "Leader:", 0xFFC000, BlackColor32);
+                AddBorderedText(ref builder, 235 + 10, 85 + i * 75, 250, 20, "Leader:", 0xFFC000, BlackColor32);
 
                 if (pl != null)
                 {
-                    AddBorderedText(235 + 15, 105 + i * 75, 250, 20, pl.Player.Name, 0xFFC000, BlackColor32);
+                    AddBorderedText(ref builder, 235 + 15, 105 + i * 75, 250, 20, pl.Player.Name, 0xFFC000, BlackColor32);
                 }
             }
         }
 
-        AddButton(314, height - 42, 247, 248, 1);
+        builder.AddButton(314, height - 42, 247, 248, 1);
     }
 
-    private void AddBorderedText(int x, int y, int width, int height, string text, int color, int borderColor)
+    private static void AddBorderedText(ref DynamicGumpBuilder builder, int x, int y, int width, int height, string text, int color, int borderColor)
     {
-        AddColoredText(x - 1, y - 1, width, height, text, borderColor);
-        AddColoredText(x - 1, y + 1, width, height, text, borderColor);
-        AddColoredText(x + 1, y - 1, width, height, text, borderColor);
-        AddColoredText(x + 1, y + 1, width, height, text, borderColor);
-        AddColoredText(x, y, width, height, text, color);
+        AddColoredText(ref builder, x - 1, y - 1, width, height, text, borderColor);
+        AddColoredText(ref builder, x - 1, y + 1, width, height, text, borderColor);
+        AddColoredText(ref builder, x + 1, y - 1, width, height, text, borderColor);
+        AddColoredText(ref builder, x + 1, y + 1, width, height, text, borderColor);
+        AddColoredText(ref builder, x, y, width, height, text, color);
     }
 
-    private void AddColoredText(int x, int y, int width, int height, string text, int color)
+    private static void AddColoredText(ref DynamicGumpBuilder builder, int x, int y, int width, int height, string text, int color)
     {
-        AddHtml(x, y, width, height, color == 0 ? text : text.Color(color));
+        builder.AddHtml(x, y, width, height, color == 0 ? text : text.Color(color));
     }
 }
 
@@ -1025,7 +1041,7 @@ public sealed class CTFGame : EventGame
             }
         }
 
-        mob.SendGump(new CTFBoardGump(mob, this));
+        CTFBoardGump.DisplayTo(mob, this);
 
         m_Context.Requip(mob, corpse);
         DelayBounce(TimeSpan.FromSeconds(30.0), mob, corpse);
@@ -1224,7 +1240,7 @@ public sealed class CTFGame : EventGame
 
                 if (dp?.Mobile != null)
                 {
-                    dp.Mobile.SendGump(new CTFBoardGump(dp.Mobile, this));
+                    CTFBoardGump.DisplayTo(dp.Mobile, this);
                 }
             }
 
