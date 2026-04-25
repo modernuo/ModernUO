@@ -21,8 +21,7 @@ namespace Server.Gumps
                 return;
             }
 
-            GuildGump.EnsureClosed(m_Mobile);
-            m_Mobile.SendGump(new GuildWarAdminGump(m_Mobile, m_Guild));
+            GuildWarAdminGump.DisplayTo(m_Mobile, m_Guild);
         }
 
         public override void OnResponse(Mobile from, string text)
@@ -38,15 +37,13 @@ namespace Server.Gumps
             {
                 var guilds = BaseGuild.Search(text).SafeConvertList<BaseGuild, Guild>();
 
-                GuildGump.EnsureClosed(m_Mobile);
-
                 if (guilds.Count > 0)
                 {
-                    m_Mobile.SendGump(new GuildDeclareWarGump(m_Mobile, m_Guild, guilds));
+                    GuildDeclareWarGump.DisplayTo(m_Mobile, m_Guild, guilds);
                 }
                 else
                 {
-                    m_Mobile.SendGump(new GuildWarAdminGump(m_Mobile, m_Guild));
+                    GuildWarAdminGump.DisplayTo(m_Mobile, m_Guild);
                     m_Mobile.SendLocalizedMessage(1018003); // No guilds found matching - try another name in the search
                 }
             }

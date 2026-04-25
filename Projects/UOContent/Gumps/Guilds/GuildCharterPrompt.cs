@@ -21,8 +21,7 @@ namespace Server.Gumps
                 return;
             }
 
-            GuildGump.EnsureClosed(m_Mobile);
-            m_Mobile.SendGump(new GuildmasterGump(m_Mobile, m_Guild));
+            GuildmasterGump.DisplayTo(m_Mobile, m_Guild);
         }
 
         public override void OnResponse(Mobile from, string text)
@@ -47,8 +46,7 @@ namespace Server.Gumps
             m_Mobile.SendLocalizedMessage(1013072); // Enter the new website for the guild (50 characters max):
             m_Mobile.Prompt = new GuildWebsitePrompt(m_Mobile, m_Guild);
 
-            GuildGump.EnsureClosed(m_Mobile);
-            m_Mobile.SendGump(new GuildmasterGump(m_Mobile, m_Guild));
+            GuildmasterGump.DisplayTo(m_Mobile, m_Guild);
         }
     }
 }

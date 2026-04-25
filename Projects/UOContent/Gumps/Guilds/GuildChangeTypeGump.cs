@@ -5,45 +5,61 @@ using Server.Network;
 
 namespace Server.Gumps
 {
-    public class GuildChangeTypeGump : Gump
+    public class GuildChangeTypeGump : DynamicGump
     {
-        private readonly Guild m_Guild;
-        private readonly Mobile m_Mobile;
+        private readonly Guild _guild;
+        private readonly Mobile _mobile;
 
-        public GuildChangeTypeGump(Mobile from, Guild guild) : base(20, 30)
+        public override bool Singleton => true;
+
+        private GuildChangeTypeGump(Mobile from, Guild guild) : base(20, 30)
         {
-            m_Mobile = from;
-            m_Guild = guild;
+            _mobile = from;
+            _guild = guild;
+        }
 
-            Draggable = false;
+        public static void DisplayTo(Mobile from, Guild guild)
+        {
+            if (from?.NetState == null || guild == null)
+            {
+                return;
+            }
 
-            AddPage(0);
-            AddBackground(0, 0, 550, 400, 5054);
-            AddBackground(10, 10, 530, 380, 3000);
+            GuildGump.EnsureClosed(from);
+            from.SendGump(new GuildChangeTypeGump(from, guild));
+        }
 
-            AddHtmlLocalized(20, 15, 510, 30, 1013062); // <center>Change Guild Type Menu</center>
+        protected override void BuildLayout(ref DynamicGumpBuilder builder)
+        {
+            builder.SetNoMove();
 
-            AddHtmlLocalized(50, 50, 450, 30, 1013066); // Please select the type of guild you would like to change to
+            builder.AddPage();
+            builder.AddBackground(0, 0, 550, 400, 5054);
+            builder.AddBackground(10, 10, 530, 380, 3000);
 
-            AddButton(20, 100, 4005, 4007, 1);
-            AddHtmlLocalized(85, 100, 300, 30, 1013063); // Standard guild
+            builder.AddHtmlLocalized(20, 15, 510, 30, 1013062); // <center>Change Guild Type Menu</center>
 
-            AddButton(20, 150, 4005, 4007, 2);
-            AddItem(50, 143, 7109);
-            AddHtmlLocalized(85, 150, 300, 300, 1013064); // Order guild
+            builder.AddHtmlLocalized(50, 50, 450, 30, 1013066); // Please select the type of guild you would like to change to
 
-            AddButton(20, 200, 4005, 4007, 3);
-            AddItem(45, 200, 7107);
-            AddHtmlLocalized(85, 200, 300, 300, 1013065); // Chaos guild
+            builder.AddButton(20, 100, 4005, 4007, 1);
+            builder.AddHtmlLocalized(85, 100, 300, 30, 1013063); // Standard guild
 
-            AddButton(300, 360, 4005, 4007, 4);
-            AddHtmlLocalized(335, 360, 150, 30, 1011012); // CANCEL
+            builder.AddButton(20, 150, 4005, 4007, 2);
+            builder.AddItem(50, 143, 7109);
+            builder.AddHtmlLocalized(85, 150, 300, 300, 1013064); // Order guild
+
+            builder.AddButton(20, 200, 4005, 4007, 3);
+            builder.AddItem(45, 200, 7107);
+            builder.AddHtmlLocalized(85, 200, 300, 300, 1013065); // Chaos guild
+
+            builder.AddButton(300, 360, 4005, 4007, 4);
+            builder.AddHtmlLocalized(335, 360, 150, 30, 1011012); // CANCEL
         }
 
         public override void OnResponse(NetState state, in RelayInfo info)
         {
-            if (Guild.NewGuildSystem && !BaseGuildGump.IsLeader(m_Mobile, m_Guild) ||
-                !Guild.NewGuildSystem && GuildGump.BadLeader(m_Mobile, m_Guild))
+            if (Guild.NewGuildSystem && !BaseGuildGump.IsLeader(_mobile, _guild) ||
+                !Guild.NewGuildSystem && GuildGump.BadLeader(_mobile, _guild))
             {
                 return;
             }
@@ -53,41 +69,40 @@ namespace Server.Gumps
                 1 => GuildType.Regular,
                 2 => GuildType.Order,
                 3 => GuildType.Chaos,
-                _ => m_Guild.Type
+                _ => _guild.Type
             };
 
-            if (m_Guild.Type != newType)
+            if (_guild.Type != newType)
             {
-                var pl = PlayerState.Find(m_Mobile);
+                var pl = PlayerState.Find(_mobile);
 
                 if (pl != null)
                 {
-                    m_Mobile.SendLocalizedMessage(1010405); // You cannot change guild types while in a Faction!
+                    _mobile.SendLocalizedMessage(1010405); // You cannot change guild types while in a Faction!
                 }
-                else if (m_Guild.TypeLastChange.AddDays(7) > Core.Now)
+                else if (_guild.TypeLastChange.AddDays(7) > Core.Now)
                 {
-                    m_Mobile.SendLocalizedMessage(1011142); // You have already changed your guild type recently.
+                    _mobile.SendLocalizedMessage(1011142); // You have already changed your guild type recently.
                     // TODO: Clilocs 1011142-1011145 suggest a timer for pending changes
                 }
                 else
                 {
-                    m_Guild.Type = newType;
-                    m_Guild.GuildMessage(1018022, true, newType.ToString()); // Guild Message: Your guild type has changed:
+                    _guild.Type = newType;
+                    _guild.GuildMessage(1018022, true, newType.ToString()); // Guild Message: Your guild type has changed:
                 }
             }
 
             if (Guild.NewGuildSystem)
             {
-                if (m_Mobile is PlayerMobile mobile)
+                if (_mobile is PlayerMobile mobile)
                 {
-                    mobile.SendGump(new GuildInfoGump(mobile, m_Guild));
+                    mobile.SendGump(new GuildInfoGump(mobile, _guild));
                 }
 
                 return;
             }
 
-            GuildGump.EnsureClosed(m_Mobile);
-            m_Mobile.SendGump(new GuildmasterGump(m_Mobile, m_Guild));
+            GuildmasterGump.DisplayTo(_mobile, _guild);
         }
     }
 }

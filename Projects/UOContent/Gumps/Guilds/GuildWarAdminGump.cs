@@ -3,69 +3,85 @@ using Server.Network;
 
 namespace Server.Gumps
 {
-    public class GuildWarAdminGump : Gump
+    public class GuildWarAdminGump : DynamicGump
     {
-        private readonly Guild m_Guild;
-        private readonly Mobile m_Mobile;
+        private readonly Guild _guild;
+        private readonly Mobile _mobile;
 
-        public GuildWarAdminGump(Mobile from, Guild guild) : base(20, 30)
+        public override bool Singleton => true;
+
+        private GuildWarAdminGump(Mobile from, Guild guild) : base(20, 30)
         {
-            m_Mobile = from;
-            m_Guild = guild;
+            _mobile = from;
+            _guild = guild;
+        }
 
-            Draggable = false;
+        public static void DisplayTo(Mobile from, Guild guild)
+        {
+            if (from?.NetState == null || guild == null)
+            {
+                return;
+            }
 
-            AddPage(0);
-            AddBackground(0, 0, 550, 440, 5054);
-            AddBackground(10, 10, 530, 420, 3000);
+            GuildGump.EnsureClosed(from);
+            from.SendGump(new GuildWarAdminGump(from, guild));
+        }
 
-            AddHtmlLocalized(20, 10, 510, 35, 1011105); // <center>WAR FUNCTIONS</center>
+        protected override void BuildLayout(ref DynamicGumpBuilder builder)
+        {
+            builder.SetNoMove();
 
-            AddButton(20, 40, 4005, 4007, 1);
-            AddHtmlLocalized(55, 40, 400, 30, 1011099); // Declare war through guild name search.
+            builder.AddPage();
+            builder.AddBackground(0, 0, 550, 440, 5054);
+            builder.AddBackground(10, 10, 530, 420, 3000);
+
+            builder.AddHtmlLocalized(20, 10, 510, 35, 1011105); // <center>WAR FUNCTIONS</center>
+
+            builder.AddButton(20, 40, 4005, 4007, 1);
+            builder.AddHtmlLocalized(55, 40, 400, 30, 1011099); // Declare war through guild name search.
 
             var count = 0;
 
-            if (guild.Enemies.Count > 0)
+            if (_guild.Enemies.Count > 0)
             {
-                AddButton(20, 160 + count * 30, 4005, 4007, 2);
-                AddHtmlLocalized(55, 160 + count++ * 30, 400, 30, 1011103); // Declare peace.
+                builder.AddButton(20, 160 + count * 30, 4005, 4007, 2);
+                builder.AddHtmlLocalized(55, 160 + count++ * 30, 400, 30, 1011103); // Declare peace.
             }
             else
             {
-                AddHtmlLocalized(20, 160 + count++ * 30, 400, 30, 1013033); // No current wars
+                builder.AddHtmlLocalized(20, 160 + count++ * 30, 400, 30, 1013033); // No current wars
             }
 
-            if (guild.WarInvitations.Count > 0)
+            if (_guild.WarInvitations.Count > 0)
             {
-                AddButton(20, 160 + count * 30, 4005, 4007, 3);
-                AddHtmlLocalized(55, 160 + count++ * 30, 400, 30, 1011100); // Accept war invitations.
+                builder.AddButton(20, 160 + count * 30, 4005, 4007, 3);
+                builder.AddHtmlLocalized(55, 160 + count++ * 30, 400, 30, 1011100); // Accept war invitations.
 
-                AddButton(20, 160 + count * 30, 4005, 4007, 4);
-                AddHtmlLocalized(55, 160 + count++ * 30, 400, 30, 1011101); // Reject war invitations.
+                builder.AddButton(20, 160 + count * 30, 4005, 4007, 4);
+                builder.AddHtmlLocalized(55, 160 + count++ * 30, 400, 30, 1011101); // Reject war invitations.
             }
             else
             {
-                AddHtmlLocalized(20, 160 + count++ * 30, 400, 30, 1018012); // No current invitations received for war.
+                builder.AddHtmlLocalized(20, 160 + count++ * 30, 400, 30, 1018012); // No current invitations received for war.
             }
 
-            if (guild.WarDeclarations.Count > 0)
+            if (_guild.WarDeclarations.Count > 0)
             {
-                AddButton(20, 160 + count * 30, 4005, 4007, 5);
-                AddHtmlLocalized(55, 160 + count++ * 30, 400, 30, 1011102); // Rescind your war declarations.
+                builder.AddButton(20, 160 + count * 30, 4005, 4007, 5);
+                builder.AddHtmlLocalized(55, 160 + count++ * 30, 400, 30, 1011102); // Rescind your war declarations.
             }
             else
             {
-                AddHtmlLocalized(20, 160 + count++ * 30, 400, 30, 1013055); // No current war declarations
+                builder.AddHtmlLocalized(20, 160 + count++ * 30, 400, 30, 1013055); // No current war declarations
             }
 
-            AddButton(20, 400, 4005, 4007, 6);
-            AddHtmlLocalized(55, 400, 400, 35, 1011104); // Return to the previous menu.
+            builder.AddButton(20, 400, 4005, 4007, 6);
+            builder.AddHtmlLocalized(55, 400, 400, 35, 1011104); // Return to the previous menu.
         }
 
         public override void OnResponse(NetState state, in RelayInfo info)
         {
-            if (GuildGump.BadLeader(m_Mobile, m_Guild))
+            if (GuildGump.BadLeader(_mobile, _guild))
             {
                 return;
             }
@@ -74,44 +90,33 @@ namespace Server.Gumps
             {
                 case 1: // Declare war
                     {
-                        m_Mobile.SendLocalizedMessage(1018001); // Declare war through search - Enter Guild Name:
-                        m_Mobile.Prompt = new GuildDeclareWarPrompt(m_Mobile, m_Guild);
-
+                        _mobile.SendLocalizedMessage(1018001); // Declare war through search - Enter Guild Name:
+                        _mobile.Prompt = new GuildDeclareWarPrompt(_mobile, _guild);
                         break;
                     }
                 case 2: // Declare peace
                     {
-                        GuildGump.EnsureClosed(m_Mobile);
-                        m_Mobile.SendGump(new GuildDeclarePeaceGump(m_Mobile, m_Guild));
-
+                        GuildDeclarePeaceGump.DisplayTo(_mobile, _guild);
                         break;
                     }
                 case 3: // Accept war
                     {
-                        GuildGump.EnsureClosed(m_Mobile);
-                        m_Mobile.SendGump(new GuildAcceptWarGump(m_Mobile, m_Guild));
-
+                        GuildAcceptWarGump.DisplayTo(_mobile, _guild);
                         break;
                     }
                 case 4: // Reject war
                     {
-                        GuildGump.EnsureClosed(m_Mobile);
-                        m_Mobile.SendGump(new GuildRejectWarGump(m_Mobile, m_Guild));
-
+                        GuildRejectWarGump.DisplayTo(_mobile, _guild);
                         break;
                     }
                 case 5: // Rescind declarations
                     {
-                        GuildGump.EnsureClosed(m_Mobile);
-                        m_Mobile.SendGump(new GuildRescindDeclarationGump(m_Mobile, m_Guild));
-
+                        GuildRescindDeclarationGump.DisplayTo(_mobile, _guild);
                         break;
                     }
                 case 6: // Return
                     {
-                        GuildGump.EnsureClosed(m_Mobile);
-                        m_Mobile.SendGump(new GuildmasterGump(m_Mobile, m_Guild));
-
+                        GuildmasterGump.DisplayTo(_mobile, _guild);
                         break;
                     }
             }

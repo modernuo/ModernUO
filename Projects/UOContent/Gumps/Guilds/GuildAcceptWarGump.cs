@@ -5,24 +5,35 @@ namespace Server.Gumps
 {
     public class GuildAcceptWarGump : GuildListGump
     {
-        public GuildAcceptWarGump(Mobile from, Guild guild) : base(from, guild, true, guild.WarInvitations)
+        private GuildAcceptWarGump(Mobile from, Guild guild) : base(from, guild, true, guild.WarInvitations)
         {
         }
 
-        protected override void Design()
+        public static void DisplayTo(Mobile from, Guild guild)
         {
-            AddHtmlLocalized(20, 10, 400, 35, 1011147); // Select the guild to accept the invitations:
+            if (from?.NetState == null || guild == null)
+            {
+                return;
+            }
 
-            AddButton(20, 400, 4005, 4007, 1);
-            AddHtmlLocalized(55, 400, 245, 30, 1011100); // Accept war invitations.
+            GuildGump.EnsureClosed(from);
+            from.SendGump(new GuildAcceptWarGump(from, guild));
+        }
 
-            AddButton(300, 400, 4005, 4007, 2);
-            AddHtmlLocalized(335, 400, 100, 35, 1011012); // CANCEL
+        protected override void BuildHeader(ref DynamicGumpBuilder builder)
+        {
+            builder.AddHtmlLocalized(20, 10, 400, 35, 1011147); // Select the guild to accept the invitations:
+
+            builder.AddButton(20, 400, 4005, 4007, 1);
+            builder.AddHtmlLocalized(55, 400, 245, 30, 1011100); // Accept war invitations.
+
+            builder.AddButton(300, 400, 4005, 4007, 2);
+            builder.AddHtmlLocalized(335, 400, 100, 35, 1011012); // CANCEL
         }
 
         public override void OnResponse(NetState state, in RelayInfo info)
         {
-            if (GuildGump.BadLeader(m_Mobile, m_Guild))
+            if (GuildGump.BadLeader(_mobile, _guild))
             {
                 return;
             }
@@ -35,27 +46,25 @@ namespace Server.Gumps
                 {
                     var index = switches[0];
 
-                    if (index >= 0 && index < m_List.Count)
+                    if (index >= 0 && index < _list.Count)
                     {
-                        var g = m_List[index];
+                        var g = _list[index];
 
                         if (g != null)
                         {
-                            m_Guild.WarInvitations.Remove(g);
-                            g.WarDeclarations.Remove(m_Guild);
+                            _guild.WarInvitations.Remove(g);
+                            g.WarDeclarations.Remove(_guild);
 
-                            m_Guild.AddEnemy(g);
-                            m_Guild.GuildMessage(1018020, true, $"{g.Name} ({g.Abbreviation})");
+                            _guild.AddEnemy(g);
+                            _guild.GuildMessage(1018020, true, $"{g.Name} ({g.Abbreviation})");
 
-                            GuildGump.EnsureClosed(m_Mobile);
-
-                            if (m_Guild.WarInvitations.Count > 0)
+                            if (_guild.WarInvitations.Count > 0)
                             {
-                                m_Mobile.SendGump(new GuildAcceptWarGump(m_Mobile, m_Guild));
+                                DisplayTo(_mobile, _guild);
                             }
                             else
                             {
-                                m_Mobile.SendGump(new GuildmasterGump(m_Mobile, m_Guild));
+                                GuildmasterGump.DisplayTo(_mobile, _guild);
                             }
                         }
                     }
@@ -63,8 +72,7 @@ namespace Server.Gumps
             }
             else if (info.ButtonID == 2)
             {
-                GuildGump.EnsureClosed(m_Mobile);
-                m_Mobile.SendGump(new GuildmasterGump(m_Mobile, m_Guild));
+                GuildmasterGump.DisplayTo(_mobile, _guild);
             }
         }
     }

@@ -28,8 +28,7 @@ namespace Server.Gumps
                 return;
             }
 
-            GuildGump.EnsureClosed(m_Leader);
-            m_Leader.SendGump(new GuildmasterGump(m_Leader, m_Guild));
+            GuildmasterGump.DisplayTo(m_Leader, m_Guild);
         }
 
         public override void OnResponse(Mobile from, string text)
@@ -56,8 +55,7 @@ namespace Server.Gumps
                 m_Target.GuildTitle = text;
             }
 
-            GuildGump.EnsureClosed(m_Leader);
-            m_Leader.SendGump(new GuildmasterGump(m_Leader, m_Guild));
+            GuildmasterGump.DisplayTo(m_Leader, m_Guild);
         }
     }
 }
