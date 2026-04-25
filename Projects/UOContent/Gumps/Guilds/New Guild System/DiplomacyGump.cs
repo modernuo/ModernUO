@@ -14,8 +14,8 @@ namespace Server.Guilds
 
     public class GuildDiplomacyGump : BaseGuildListGump<Guild>
     {
-        private readonly TextDefinition m_LowerText;
-        private GuildDisplayType m_Display;
+        private readonly TextDefinition _lowerText;
+        private GuildDisplayType _display;
 
         public GuildDiplomacyGump(PlayerMobile pm, Guild g)
             : this(
@@ -85,9 +85,8 @@ namespace Server.Guilds
                 ]
             )
         {
-            m_Display = display;
-            m_LowerText = lowerText;
-            PopulateGump();
+            _display = display;
+            _lowerText = lowerText;
         }
 
         protected virtual bool AllowAdvancedSearch => true;
@@ -96,7 +95,7 @@ namespace Server.Guilds
         {
             get
             {
-                if (m_Display == GuildDisplayType.All)
+                if (_display == GuildDisplayType.All)
                 {
                     return base.WillFilter;
                 }
@@ -105,25 +104,23 @@ namespace Server.Guilds
             }
         }
 
-        public override void PopulateGump()
+        protected override void BuildListExtras(ref DynamicGumpBuilder builder)
         {
-            base.PopulateGump();
-
-            AddHtmlLocalized(431, 43, 110, 26, 1062978, 0xF); // Diplomacy
+            builder.AddHtmlLocalized(431, 43, 110, 26, 1062978, 0xF); // Diplomacy
         }
 
         protected override TextDefinition[] GetValuesFor(Guild g, int aryLength)
         {
             var defs = new TextDefinition[aryLength];
 
-            defs[0] = g == guild ? g.Name.Color(0x006600) : g.Name;
+            defs[0] = g == Guild ? g.Name.Color(0x006600) : g.Name;
             defs[1] = g.Abbreviation;
 
             defs[2] = 3000085; // Peace
 
-            if (guild.IsAlly(g))
+            if (Guild.IsAlly(g))
             {
-                if (guild.Alliance.Leader == g)
+                if (Guild.Alliance.Leader == g)
                 {
                     defs[2] = 1063237; // Alliance Leader
                 }
@@ -132,7 +129,7 @@ namespace Server.Guilds
                     defs[2] = 1062964; // Ally
                 }
             }
-            else if (guild.IsWar(g))
+            else if (Guild.IsWar(g))
             {
                 defs[2] = 3000086; // War
             }
@@ -142,17 +139,17 @@ namespace Server.Guilds
 
         public override bool HasRelationship(Guild g)
         {
-            if (g == guild)
+            if (g == Guild)
             {
                 return false;
             }
 
-            if (guild.FindPendingWar(g) != null)
+            if (Guild.FindPendingWar(g) != null)
             {
                 return true;
             }
 
-            var alliance = guild.Alliance;
+            var alliance = Guild.Alliance;
 
             if (alliance != null)
             {
@@ -160,7 +157,7 @@ namespace Server.Guilds
 
                 if (leader != null)
                 {
-                    if (guild == leader && alliance.IsPendingMember(g) || g == leader && alliance.IsPendingMember(guild))
+                    if (Guild == leader && alliance.IsPendingMember(g) || g == leader && alliance.IsPendingMember(Guild))
                     {
                         return true;
                     }
@@ -174,25 +171,22 @@ namespace Server.Guilds
             return false;
         }
 
-        public override void DrawEndingEntry(int itemNumber)
+        protected override void DrawEndingEntry(ref DynamicGumpBuilder builder, int itemNumber)
         {
-            // AddHtmlLocalized( 66, 153 + itemNumber * 28, 280, 26, 1063136 + (int)m_Display, 0xF, false, false ); // Showing All Guilds/Awaiting Action/ w/Relation Ship
-            // AddHtmlText( 66, 153 + itemNumber * 28, 280, 26, m_LowerText, false, false );
-
-            if (m_LowerText?.Number > 0)
+            if (_lowerText?.Number > 0)
             {
-                AddHtmlLocalized(66, 153 + itemNumber * 28, 280, 26, m_LowerText.Number, 0xF);
+                builder.AddHtmlLocalized(66, 153 + itemNumber * 28, 280, 26, _lowerText.Number, 0xF);
             }
-            else if (m_LowerText?.String != null)
+            else if (_lowerText?.String != null)
             {
-                AddHtml(66, 153 + itemNumber * 28, 280, 26, m_LowerText.String.Color(0x99));
+                builder.AddHtml(66, 153 + itemNumber * 28, 280, 26, _lowerText.String.Color(0x99));
             }
 
             if (AllowAdvancedSearch)
             {
-                AddBackground(350, 148 + itemNumber * 28, 200, 26, 0x2486);
-                AddButton(355, 153 + itemNumber * 28, 0x845, 0x846, 8);
-                AddHtmlLocalized(380, 151 + itemNumber * 28, 160, 26, 1063083, 0x0); // Advanced Search
+                builder.AddBackground(350, 148 + itemNumber * 28, 200, 26, 0x2486);
+                builder.AddButton(355, 153 + itemNumber * 28, 0x845, 0x846, 8);
+                builder.AddHtmlLocalized(380, 151 + itemNumber * 28, 160, 26, 1063083, 0x0); // Advanced Search
             }
         }
 
@@ -203,12 +197,12 @@ namespace Server.Guilds
                 return true;
             }
 
-            switch (m_Display)
+            switch (_display)
             {
                 case GuildDisplayType.Relations:
                     {
                         // As per OSI, only the guild leader wars show up under the sorting by relation
-                        return !(guild.FindActiveWar(g) != null || guild.IsAlly(g));
+                        return !(Guild.FindActiveWar(g) != null || Guild.IsAlly(g));
                     }
                 case GuildDisplayType.AwaitingAction:
                     {
@@ -219,15 +213,9 @@ namespace Server.Guilds
             return !(g.Name.InsensitiveContains(filter) || g.Abbreviation.InsensitiveContains(filter));
         }
 
-        public override Gump GetResentGump(
-            PlayerMobile pm, Guild g, IComparer<Guild> comparer, bool ascending,
-            string filter, int startNumber
-        ) =>
-            new GuildDiplomacyGump(pm, g, comparer, ascending, filter, startNumber, m_Display);
-
-        public override Gump GetObjectInfoGump(PlayerMobile pm, Guild g, Guild o)
+        public override BaseGump GetObjectInfoGump(PlayerMobile pm, Guild g, Guild o)
         {
-            if (guild == o)
+            if (Guild == o)
             {
                 return new GuildInfoGump(pm, g);
             }
@@ -239,20 +227,20 @@ namespace Server.Guilds
         {
             base.OnResponse(sender, info);
 
-            if (sender.Mobile is not PlayerMobile pm || !IsMember(pm, guild))
+            if (sender.Mobile is not PlayerMobile pm || !IsMember(pm, Guild))
             {
                 return;
             }
 
             if (AllowAdvancedSearch && info.ButtonID == 8)
             {
-                pm.SendGump(new GuildAdvancedSearchGump(pm, guild, m_Display, AdvancedSearch_Callback));
+                pm.SendGump(new GuildAdvancedSearchGump(pm, Guild, _display, AdvancedSearch_Callback));
             }
         }
 
         public void AdvancedSearch_Callback(GuildDisplayType display)
         {
-            m_Display = display;
+            _display = display;
             ResendGump();
         }
 
@@ -283,9 +271,9 @@ namespace Server.Guilds
 
         private class StatusComparer : IComparer<Guild>
         {
-            private readonly Guild m_Guild;
+            private readonly Guild _guild;
 
-            public StatusComparer(Guild g) => m_Guild = g;
+            public StatusComparer(Guild g) => _guild = g;
 
             public int Compare(Guild x, Guild y)
             {
@@ -307,20 +295,20 @@ namespace Server.Guilds
                 var aStatus = GuildCompareStatus.Peace;
                 var bStatus = GuildCompareStatus.Peace;
 
-                if (m_Guild.IsAlly(x))
+                if (_guild.IsAlly(x))
                 {
                     aStatus = GuildCompareStatus.Ally;
                 }
-                else if (m_Guild.IsWar(x))
+                else if (_guild.IsWar(x))
                 {
                     aStatus = GuildCompareStatus.War;
                 }
 
-                if (m_Guild.IsAlly(y))
+                if (_guild.IsAlly(y))
                 {
                     bStatus = GuildCompareStatus.Ally;
                 }
-                else if (m_Guild.IsWar(y))
+                else if (_guild.IsWar(y))
                 {
                     bStatus = GuildCompareStatus.War;
                 }
