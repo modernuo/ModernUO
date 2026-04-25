@@ -84,7 +84,7 @@ public partial class PublicMoongate : Item
             return false;
         }
 
-        m.SendGump(new MoongateGump(m, this));
+        MoongateGump.DisplayTo(m, this);
 
         if (!m.Hidden || m.AccessLevel == AccessLevel.Player)
         {
@@ -316,18 +316,29 @@ public class PMList
     public PMEntry[] Entries { get; }
 }
 
-public class MoongateGump : Gump
+public class MoongateGump : DynamicGump
 {
-    private PMList[] _lists;
-    private Mobile _mobile;
-    private Item _moongate;
+    private readonly PMList[] _lists;
+    private readonly PMList[] _tabOrder;
+    private readonly Mobile _mobile;
+    private readonly Item _moongate;
 
     public override bool Singleton => true;
 
-    public MoongateGump(Mobile mobile, Item moongate) : base(100, 100)
+    private MoongateGump(Mobile mobile, Item moongate, PMList[] lists, PMList[] tabOrder) : base(100, 100)
     {
         _mobile = mobile;
         _moongate = moongate;
+        _lists = lists;
+        _tabOrder = tabOrder;
+    }
+
+    public static void DisplayTo(Mobile mobile, Item moongate)
+    {
+        if (mobile?.NetState == null || moongate == null || moongate.Deleted)
+        {
+            return;
+        }
 
         PMList[] checkLists;
 
@@ -376,60 +387,73 @@ public class MoongateGump : Gump
         }
 
         var mapCount = filteredBySelectedMaps.Count;
-        _lists = new PMList[mapCount];
-        for (var i = 0; i < mapCount; i++)
+        if (mapCount == 0)
         {
-            _lists[i] = filteredBySelectedMaps[i];
+            return;
         }
 
-        for (var i = 0; i < _lists.Length; ++i)
+        var lists = new PMList[mapCount];
+        var tabOrder = new PMList[mapCount];
+        for (var i = 0; i < mapCount; i++)
         {
-            if (_lists[i].Map == mobile.Map)
+            lists[i] = filteredBySelectedMaps[i];
+            tabOrder[i] = filteredBySelectedMaps[i];
+        }
+
+        for (var i = 0; i < lists.Length; ++i)
+        {
+            if (lists[i].Map == mobile.Map)
             {
-                (_lists[i], _lists[0]) = (_lists[0], _lists[i]);
+                (lists[i], lists[0]) = (lists[0], lists[i]);
                 break;
             }
         }
 
-        AddPage(0);
+        mobile.SendGump(new MoongateGump(mobile, moongate, lists, tabOrder));
+    }
 
-        AddBackground(0, 0, 380, 280, 5054);
+    protected override void BuildLayout(ref DynamicGumpBuilder builder)
+    {
+        builder.AddPage();
 
-        AddButton(10, 210, 4005, 4007, 1);
-        AddHtmlLocalized(45, 210, 140, 25, 1011036); // OKAY
+        builder.AddBackground(0, 0, 380, 280, 5054);
 
-        AddButton(10, 235, 4005, 4007, 0);
-        AddHtmlLocalized(45, 235, 140, 25, 1011012); // CANCEL
+        builder.AddButton(10, 210, 4005, 4007, 1);
+        builder.AddHtmlLocalized(45, 210, 140, 25, 1011036); // OKAY
 
-        AddHtmlLocalized(5, 5, 200, 20, 1012011); // Pick your destination:
+        builder.AddButton(10, 235, 4005, 4007, 0);
+        builder.AddHtmlLocalized(45, 235, 140, 25, 1011012); // CANCEL
 
-        for (var i = 0; i < filteredBySelectedMaps.Count; ++i)
+        builder.AddHtmlLocalized(5, 5, 200, 20, 1012011); // Pick your destination:
+
+        // Tab buttons on page 0 — rendered in original (pre-swap) order so the active map appears at its expected slot.
+        for (var i = 0; i < _tabOrder.Length; ++i)
         {
-            AddButton(10, 35 + i * 25, 2117, 2118, 0, GumpButtonType.Page, Array.IndexOf(_lists, filteredBySelectedMaps[i]) + 1);
-            AddHtmlLocalized(30, 35 + i * 25, 150, 20, filteredBySelectedMaps[i].Number);
+            builder.AddButton(10, 35 + i * 25, 2117, 2118, 0, GumpButtonType.Page, Array.IndexOf(_lists, _tabOrder[i]) + 1);
+            builder.AddHtmlLocalized(30, 35 + i * 25, 150, 20, _tabOrder[i].Number);
         }
 
         for (var i = 0; i < _lists.Length; ++i)
         {
-            RenderPage(i, filteredBySelectedMaps.IndexOf(_lists[i]));
+            RenderPage(ref builder, i, Array.IndexOf(_tabOrder, _lists[i]));
         }
     }
 
-    private void RenderPage(int index, int offset)
+    private void RenderPage(ref DynamicGumpBuilder builder, int index, int offset)
     {
         var list = _lists[index];
 
-        AddPage(index + 1);
+        builder.AddPage(index + 1);
 
-        AddButton(10, 35 + offset * 25, 2117, 2118, 0, GumpButtonType.Page, index + 1);
-        AddHtmlLocalized(30, 35 + offset * 25, 150, 20, list.SelNumber);
+        builder.AddButton(10, 35 + offset * 25, 2117, 2118, 0, GumpButtonType.Page, index + 1);
+        builder.AddHtmlLocalized(30, 35 + offset * 25, 150, 20, list.SelNumber);
 
         var entries = list.Entries;
 
         for (var i = 0; i < entries.Length; ++i)
         {
-            AddRadio(200, 35 + i * 25, 210, 211, false, index * 100 + i);
-            AddHtmlLocalized(225, 35 + i * 25, 150, 20, entries[i].Number);
+            builder.AddRadio(200, 35 + i * 25, 210, 211, false, index * 100 + i);
+            builder.AddHtmlLocalized(225, 35 + i * 25, 150, 20, entries[i].Number);
         }
     }
 
