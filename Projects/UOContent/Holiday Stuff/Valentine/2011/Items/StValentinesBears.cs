@@ -101,22 +101,36 @@ namespace Server.Items
                 return;
             }
 
-            from.SendGump(new InternalGump(this));
+            StValentinesBearsGump.DisplayTo(from, this);
         }
 
-        private class InternalGump : Gump
+        private class StValentinesBearsGump : StaticGump<StValentinesBearsGump>
         {
-            private readonly StValentinesBear m_Bear;
+            private readonly StValentinesBear _bear;
 
-            public InternalGump(StValentinesBear bear)
-                : base(50, 50)
+            public override bool Singleton => true;
+
+            private StValentinesBearsGump(StValentinesBear bear) : base(50, 50)
             {
-                m_Bear = bear;
+                _bear = bear;
+            }
 
-                AddPage(0);
-                AddBackground(0, 0, 420, 320, 9300);
-                AddHtml(10, 10, 400, 21, "<CENTER>St. Valentine Bear</CENTER>");
-                AddHtmlLocalized(
+            public static void DisplayTo(Mobile from, StValentinesBear bear)
+            {
+                if (from?.NetState == null || bear?.Deleted != false)
+                {
+                    return;
+                }
+
+                from.SendGump(new StValentinesBearsGump(bear));
+            }
+
+            protected override void BuildLayout(ref StaticGumpBuilder builder)
+            {
+                builder.AddPage();
+                builder.AddBackground(0, 0, 420, 320, 9300);
+                builder.AddHtml(10, 10, 400, 21, "<CENTER>St. Valentine Bear</CENTER>");
+                builder.AddHtmlLocalized(
                     10,
                     40,
                     400,
@@ -125,27 +139,27 @@ namespace Server.Items
                     0
                 ); // Enter up to three lines of personalized greeting for your St. Valentine Bear. You many enter up to 25 characters per line. Once you enter text, you will only be able to correct mistakes for 10 minutes.
 
-                AddHtmlLocalized(10, 129, 400, 21, 1150296, 0); // Line 1:
-                AddBackground(10, 150, 400, 24, 9350);
-                AddTextEntry(15, 152, 390, 20, 0, 0, "", 25);
+                builder.AddHtmlLocalized(10, 129, 400, 21, 1150296, 0); // Line 1:
+                builder.AddBackground(10, 150, 400, 24, 9350);
+                builder.AddTextEntryLimited(15, 152, 390, 20, 0, 0, "", 25);
 
-                AddHtmlLocalized(10, 179, 400, 21, 1150297, 0); // Line 2:
-                AddBackground(10, 200, 400, 24, 9350);
-                AddTextEntry(15, 202, 390, 20, 0, 1, "", 25);
+                builder.AddHtmlLocalized(10, 179, 400, 21, 1150297, 0); // Line 2:
+                builder.AddBackground(10, 200, 400, 24, 9350);
+                builder.AddTextEntryLimited(15, 202, 390, 20, 0, 1, "", 25);
 
-                AddHtmlLocalized(10, 229, 400, 21, 1150298, 0); // Line 3:
-                AddBackground(10, 250, 400, 24, 9350);
-                AddTextEntry(15, 252, 390, 20, 0, 2, "", 25);
+                builder.AddHtmlLocalized(10, 229, 400, 21, 1150298, 0); // Line 3:
+                builder.AddBackground(10, 250, 400, 24, 9350);
+                builder.AddTextEntryLimited(15, 252, 390, 20, 0, 2, "", 25);
 
-                AddButton(15, 285, 242, 241, 0);
-                AddButton(335, 285, 247, 248, 1);
+                builder.AddButton(15, 285, 242, 241, 0);
+                builder.AddButton(335, 285, 247, 248, 1);
             }
 
             public override void OnResponse(NetState sender, in RelayInfo info)
             {
                 var from = sender.Mobile;
 
-                if (m_Bear.Deleted || !m_Bear.IsChildOf(from.Backpack) || !m_Bear.CanSign || info.ButtonID != 1)
+                if (_bear.Deleted || !_bear.IsChildOf(from.Backpack) || !_bear.CanSign || info.ButtonID != 1)
                 {
                     return;
                 }
@@ -170,14 +184,14 @@ namespace Server.Items
                     return;
                 }
 
-                if (!m_Bear.IsSigned)
+                if (!_bear.IsSigned)
                 {
-                    m_Bear.EditLimit = Core.Now + TimeSpan.FromMinutes(10);
+                    _bear.EditLimit = Core.Now + TimeSpan.FromMinutes(10);
                 }
 
-                m_Bear.Line1 = line1.FixHtml();
-                m_Bear.Line2 = line2.FixHtml();
-                m_Bear.Line3 = line3.FixHtml();
+                _bear.Line1 = line1.FixHtml();
+                _bear.Line2 = line2.FixHtml();
+                _bear.Line3 = line3.FixHtml();
 
                 from.SendMessage("You add the personalized greeting to your St. Valentine Bear.");
             }

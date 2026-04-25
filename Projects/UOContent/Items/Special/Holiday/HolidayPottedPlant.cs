@@ -33,7 +33,7 @@ public partial class PottedPlantDeed : Item
     {
         if (IsChildOf(from.Backpack))
         {
-            from.SendGump(new InternalGump(this));
+            HolidayPottedPlantGump.DisplayTo(from, this);
         }
         else
         {
@@ -41,41 +41,49 @@ public partial class PottedPlantDeed : Item
         }
     }
 
-    private class InternalGump : Gump
+    private class HolidayPottedPlantGump : StaticGump<HolidayPottedPlantGump>
     {
         private readonly PottedPlantDeed _deed;
 
         public override bool Singleton => true;
 
-        public InternalGump(PottedPlantDeed deed) : base(100, 200)
+        private HolidayPottedPlantGump(PottedPlantDeed deed) : base(100, 200)
         {
             _deed = deed;
+        }
 
-            Closable = true;
-            Disposable = true;
-            Draggable = true;
-            Resizable = false;
+        public static void DisplayTo(Mobile from, PottedPlantDeed deed)
+        {
+            if (from?.NetState == null || deed?.Deleted != false)
+            {
+                return;
+            }
 
-            AddPage(0);
-            AddBackground(0, 0, 360, 195, 0xA28);
+            from.SendGump(new HolidayPottedPlantGump(deed));
+        }
 
-            AddPage(1);
-            AddLabel(45, 15, 0, "Choose a Potted Plant:");
+        protected override void BuildLayout(ref StaticGumpBuilder builder)
+        {
+            builder.AddPage();
+            builder.AddBackground(0, 0, 360, 195, 0xA28);
 
-            AddItem(45, 75, 0x11C8);
-            AddButton(55, 50, 0x845, 0x846, 1);
+            builder.AddPage(1);
+            builder.AddLabel(45, 15, 0, "Choose a Potted Plant:");
 
-            AddItem(100, 75, 0x11C9);
-            AddButton(115, 50, 0x845, 0x846, 2);
+            builder.AddItem(45, 75, 0x11C8);
+            builder.AddButton(55, 50, 0x845, 0x846, 1);
 
-            AddItem(160, 75, 0x11CA);
-            AddButton(175, 50, 0x845, 0x846, 3);
+            builder.AddItem(100, 75, 0x11C9);
+            builder.AddButton(115, 50, 0x845, 0x846, 2);
 
-            AddItem(225, 75, 0x11CB);
-            AddButton(235, 50, 0x845, 0x846, 4);
+            builder.AddItem(160, 75, 0x11CA);
+            builder.AddButton(175, 50, 0x845, 0x846, 3);
 
-            AddItem(280, 75, 0x11CC);
-            AddButton(295, 50, 0x845, 0x846, 5);
+            builder.AddItem(225, 75, 0x11CB);
+            builder.AddButton(235, 50, 0x845, 0x846, 4);
+
+            builder.AddItem(280, 75, 0x11CC);
+            builder.AddButton(295, 50, 0x845, 0x846, 5);
         }
 
         public override void OnResponse(NetState sender, in RelayInfo info)

@@ -99,7 +99,7 @@ public partial class WreathAddon : Item, IDyable, IAddon
 
         if (from.InRange(GetWorldLocation(), 3))
         {
-            from.SendGump(new WreathAddonGump(from, this));
+            WreathAddonGump.DisplayTo(from, this);
         }
         else
         {
@@ -107,27 +107,40 @@ public partial class WreathAddon : Item, IDyable, IAddon
         }
     }
 
-    private class WreathAddonGump : Gump
+    private class WreathAddonGump : StaticGump<WreathAddonGump>
     {
         private readonly WreathAddon _addon;
         private readonly Mobile _from;
 
         public override bool Singleton => true;
 
-        public WreathAddonGump(Mobile from, WreathAddon addon) : base(150, 50)
+        private WreathAddonGump(Mobile from, WreathAddon addon) : base(150, 50)
         {
             _from = from;
             _addon = addon;
+        }
 
-            AddPage(0);
+        public static void DisplayTo(Mobile from, WreathAddon addon)
+        {
+            if (from?.NetState == null || addon?.Deleted != false)
+            {
+                return;
+            }
 
-            AddBackground(0, 0, 220, 170, 0x13BE);
-            AddBackground(10, 10, 200, 150, 0xBB8);
-            AddHtmlLocalized(20, 30, 180, 60, 1062839);  // Do you wish to re-deed this decoration?
-            AddHtmlLocalized(55, 100, 160, 25, 1011011); // CONTINUE
-            AddButton(20, 100, 0xFA5, 0xFA7, 1);
-            AddHtmlLocalized(55, 125, 160, 25, 1011012); // CANCEL
-            AddButton(20, 125, 0xFA5, 0xFA7, 0);
+            from.SendGump(new WreathAddonGump(from, addon));
+        }
+
+        protected override void BuildLayout(ref StaticGumpBuilder builder)
+        {
+            builder.AddPage();
+
+            builder.AddBackground(0, 0, 220, 170, 0x13BE);
+            builder.AddBackground(10, 10, 200, 150, 0xBB8);
+            builder.AddHtmlLocalized(20, 30, 180, 60, 1062839);  // Do you wish to re-deed this decoration?
+            builder.AddHtmlLocalized(55, 100, 160, 25, 1011011); // CONTINUE
+            builder.AddButton(20, 100, 0xFA5, 0xFA7, 1);
+            builder.AddHtmlLocalized(55, 125, 160, 25, 1011012); // CANCEL
+            builder.AddButton(20, 125, 0xFA5, 0xFA7, 0);
         }
 
         public override void OnResponse(NetState sender, in RelayInfo info)
