@@ -157,7 +157,7 @@ public partial class Moongate : Item
                 from.SendSound(0x20E, from);
             }
 
-            from.SendGump(new MoongateConfirmGump(from, this));
+            MoongateConfirmGump.DisplayTo(from, this);
         }
         else
         {
@@ -301,37 +301,50 @@ public partial class ConfirmationMoongate : Moongate
     }
 }
 
-public class MoongateConfirmGump : Gump
+public class MoongateConfirmGump : DynamicGump
 {
-    private Mobile _from;
-    private Moongate _gate;
+    private readonly Mobile _from;
+    private readonly Moongate _gate;
 
     public override bool Singleton => true;
 
-    public MoongateConfirmGump(Mobile from, Moongate gate) : base(Core.AOS ? 110 : 20, Core.AOS ? 100 : 30)
+    private MoongateConfirmGump(Mobile from, Moongate gate) : base(Core.AOS ? 110 : 20, Core.AOS ? 100 : 30)
     {
         _from = from;
         _gate = gate;
+    }
+
+    public static void DisplayTo(Mobile from, Moongate gate)
+    {
+        if (from?.NetState == null || gate == null || gate.Deleted)
+        {
+            return;
+        }
+
+        from.SendGump(new MoongateConfirmGump(from, gate));
+    }
+
+    protected override void BuildLayout(ref DynamicGumpBuilder builder)
+    {
+        builder.AddPage();
 
         if (Core.AOS)
         {
-            Closable = false;
+            builder.SetNoClose();
 
-            AddPage(0);
+            builder.AddBackground(0, 0, 420, 280, 5054);
 
-            AddBackground(0, 0, 420, 280, 5054);
+            builder.AddImageTiled(10, 10, 400, 20, 2624);
+            builder.AddAlphaRegion(10, 10, 400, 20);
 
-            AddImageTiled(10, 10, 400, 20, 2624);
-            AddAlphaRegion(10, 10, 400, 20);
+            builder.AddHtmlLocalized(10, 10, 400, 20, 1062051, 30720); // Gate Warning
 
-            AddHtmlLocalized(10, 10, 400, 20, 1062051, 30720); // Gate Warning
+            builder.AddImageTiled(10, 40, 400, 200, 2624);
+            builder.AddAlphaRegion(10, 40, 400, 200);
 
-            AddImageTiled(10, 40, 400, 200, 2624);
-            AddAlphaRegion(10, 40, 400, 200);
-
-            if (from.Map != Map.Felucca && gate.TargetMap == Map.Felucca && gate.ShowFeluccaWarning)
+            if (_from.Map != Map.Felucca && _gate.TargetMap == Map.Felucca && _gate.ShowFeluccaWarning)
             {
-                AddHtmlLocalized(
+                builder.AddHtmlLocalized(
                     10,
                     40,
                     400,
@@ -344,7 +357,7 @@ public class MoongateConfirmGump : Gump
             }
             else
             {
-                AddHtmlLocalized(
+                builder.AddHtmlLocalized(
                     10,
                     40,
                     400,
@@ -356,23 +369,21 @@ public class MoongateConfirmGump : Gump
                 );
             }
 
-            AddImageTiled(10, 250, 400, 20, 2624);
-            AddAlphaRegion(10, 250, 400, 20);
+            builder.AddImageTiled(10, 250, 400, 20, 2624);
+            builder.AddAlphaRegion(10, 250, 400, 20);
 
-            AddButton(10, 250, 4005, 4007, 1);
-            AddHtmlLocalized(40, 250, 170, 20, 1011036, 32767); // OKAY
+            builder.AddButton(10, 250, 4005, 4007, 1);
+            builder.AddHtmlLocalized(40, 250, 170, 20, 1011036, 32767); // OKAY
 
-            AddButton(210, 250, 4005, 4007, 0);
-            AddHtmlLocalized(240, 250, 170, 20, 1011012, 32767); // CANCEL
+            builder.AddButton(210, 250, 4005, 4007, 0);
+            builder.AddHtmlLocalized(240, 250, 170, 20, 1011012, 32767); // CANCEL
         }
         else
         {
-            AddPage(0);
+            builder.AddBackground(0, 0, 420, 400, 5054);
+            builder.AddBackground(10, 10, 400, 380, 3000);
 
-            AddBackground(0, 0, 420, 400, 5054);
-            AddBackground(10, 10, 400, 380, 3000);
-
-            AddHtmlLocalized(
+            builder.AddHtmlLocalized(
                 20,
                 40,
                 380,
@@ -380,11 +391,11 @@ public class MoongateConfirmGump : Gump
                 1062049 // Dost thou wish to step into the moongate? Continue to enter the gate, Cancel to stay here
             );
 
-            AddHtmlLocalized(55, 110, 290, 20, 1011012); // CANCEL
-            AddButton(20, 110, 4005, 4007, 0);
+            builder.AddHtmlLocalized(55, 110, 290, 20, 1011012); // CANCEL
+            builder.AddButton(20, 110, 4005, 4007, 0);
 
-            AddHtmlLocalized(55, 140, 290, 40, 1011011); // CONTINUE
-            AddButton(20, 140, 4005, 4007, 1);
+            builder.AddHtmlLocalized(55, 140, 290, 40, 1011011); // CONTINUE
+            builder.AddButton(20, 140, 4005, 4007, 1);
         }
     }
 
