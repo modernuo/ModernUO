@@ -63,10 +63,7 @@ public partial class BRBomb : Item
 
         var mob = FindOwner(parent);
 
-        if (mob != null)
-        {
-            mob.SolidHueOverride = 0x0499;
-        }
+        mob?.SolidHueOverride = 0x0499;
     }
 
     public override void OnRemoved(IEntity parent)
@@ -989,32 +986,51 @@ public sealed partial class BRBoard : Item
     {
         if (m_TeamInfo?.Game != null)
         {
-            from.SendGump(new BRBoardGump(from, m_TeamInfo.Game));
+            BRBoardGump.DisplayTo(from, m_TeamInfo.Game);
         }
     }
 }
 
-public class BRBoardGump : Gump
+public class BRBoardGump : DynamicGump
 {
     private const int LabelColor32 = 0xFFFFFF;
     private const int BlackColor32 = 0x000000;
 
+    private readonly Mobile _mob;
+    private readonly BRGame _game;
+    private readonly BRTeamInfo _section;
+
     public override bool Singleton => true;
 
-    public BRBoardGump(Mobile mob, BRGame game, BRTeamInfo section = null) : base(60, 60)
+    private BRBoardGump(Mobile mob, BRGame game, BRTeamInfo section) : base(60, 60)
     {
-        // m_Game = game;
+        _mob = mob;
+        _game = game;
+        _section = section;
+    }
 
-        var ourTeam = game.GetTeamInfo(mob);
+    public static void DisplayTo(Mobile mob, BRGame game, BRTeamInfo section = null)
+    {
+        if (mob?.NetState == null || game == null)
+        {
+            return;
+        }
+
+        mob.SendGump(new BRBoardGump(mob, game, section));
+    }
+
+    protected override void BuildLayout(ref DynamicGumpBuilder builder)
+    {
+        var ourTeam = _game.GetTeamInfo(_mob);
 
         var entries = new List<BRTeamInfo>();
         var total = 0;
 
-        if (section == null)
+        if (_section == null)
         {
-            for (var i = 0; i < game.Context.Participants.Count; ++i)
+            for (var i = 0; i < _game.Context.Participants.Count; ++i)
             {
-                var teamInfo = game.Controller.TeamInfo[i % game.Controller.TeamInfo.Length];
+                var teamInfo = _game.Controller.TeamInfo[i % _game.Controller.TeamInfo.Length];
 
                 if (teamInfo == null)
                 {
@@ -1028,7 +1044,7 @@ public class BRBoardGump : Gump
         }
         else
         {
-            foreach (var player in section.Players.Values)
+            foreach (var player in _section.Players.Values)
             {
                 if (player.Score > 0)
                 {
@@ -1041,46 +1057,45 @@ public class BRBoardGump : Gump
 
         var height = 0;
 
-        if (section == null)
+        if (_section == null)
         {
             height = 73 + entries.Count * 75 + 28;
         }
 
-        Closable = false;
+        builder.SetNoClose();
 
-        AddPage(0);
+        builder.AddPage();
 
-        AddBackground(1, 1, 398, height, 3600);
+        builder.AddBackground(1, 1, 398, height, 3600);
 
-        AddImageTiled(16, 15, 369, height - 29, 3604);
+        builder.AddImageTiled(16, 15, 369, height - 29, 3604);
 
         for (var i = 0; i < total; i += 1)
         {
-            AddImageTiled(22, 58 + i * 75, 357, 70, 0x2430);
+            builder.AddImageTiled(22, 58 + i * 75, 357, 70, 0x2430);
         }
 
-        AddAlphaRegion(16, 15, 369, height - 29);
+        builder.AddAlphaRegion(16, 15, 369, height - 29);
 
-        AddImage(215, -45, 0xEE40);
-        // AddImage( 330, 141, 0x8BA );
+        builder.AddImage(215, -45, 0xEE40);
 
-        AddBorderedText(22, 22, 294, 20, "BR Scoreboard".Center(), LabelColor32, BlackColor32);
+        AddBorderedText(ref builder, 22, 22, 294, 20, "BR Scoreboard".Center(), LabelColor32, BlackColor32);
 
-        AddImageTiled(32, 50, 264, 1, 9107);
-        AddImageTiled(42, 52, 264, 1, 9157);
+        builder.AddImageTiled(32, 50, 264, 1, 9107);
+        builder.AddImageTiled(42, 52, 264, 1, 9157);
 
-        if (section == null)
+        if (_section == null)
         {
             for (var i = 0; i < entries.Count; ++i)
             {
                 var teamInfo = entries[i];
 
-                AddImage(30, 70 + i * 75, 10152);
-                AddImage(30, 85 + i * 75, 10151);
-                AddImage(30, 100 + i * 75, 10151);
-                AddImage(30, 106 + i * 75, 10154);
+                builder.AddImage(30, 70 + i * 75, 10152);
+                builder.AddImage(30, 85 + i * 75, 10151);
+                builder.AddImage(30, 100 + i * 75, 10151);
+                builder.AddImage(30, 106 + i * 75, 10154);
 
-                AddImage(24, 60 + i * 75, teamInfo == ourTeam ? 9730 : 9727, teamInfo.Color - 1);
+                builder.AddImage(24, 60 + i * 75, teamInfo == ourTeam ? 9730 : 9727, teamInfo.Color - 1);
 
                 var borderColor = teamInfo.Color == 0x455 ? LabelColor32 : BlackColor32;
                 var nameColor = teamInfo.Color switch
@@ -1096,6 +1111,7 @@ public class BRBoardGump : Gump
                 };
 
                 AddBorderedText(
+                    ref builder,
                     60,
                     65 + i * 75,
                     250,
@@ -1105,50 +1121,52 @@ public class BRBoardGump : Gump
                     borderColor
                 );
 
-                AddBorderedText(50 + 10, 85 + i * 75, 100, 20, "Score:", 0xFFC000, BlackColor32);
-                AddBorderedText(50 + 15, 105 + i * 75, 100, 20, teamInfo.Score.ToString("N0"), 0xFFC000, BlackColor32);
+                AddBorderedText(ref builder, 50 + 10, 85 + i * 75, 100, 20, "Score:", 0xFFC000, BlackColor32);
+                AddBorderedText(ref builder, 50 + 15, 105 + i * 75, 100, 20, $"{teamInfo.Score:N0}", 0xFFC000, BlackColor32);
 
-                AddBorderedText(110 + 10, 85 + i * 75, 100, 20, "Kills:", 0xFFC000, BlackColor32);
-                AddBorderedText(110 + 15, 105 + i * 75, 100, 20, teamInfo.Kills.ToString("N0"), 0xFFC000, BlackColor32);
+                AddBorderedText(ref builder, 110 + 10, 85 + i * 75, 100, 20, "Kills:", 0xFFC000, BlackColor32);
+                AddBorderedText(ref builder, 110 + 15, 105 + i * 75, 100, 20, $"{teamInfo.Kills:N0}", 0xFFC000, BlackColor32);
 
-                AddBorderedText(160 + 10, 85 + i * 75, 100, 20, "Points:", 0xFFC000, BlackColor32);
+                AddBorderedText(ref builder, 160 + 10, 85 + i * 75, 100, 20, "Points:", 0xFFC000, BlackColor32);
                 AddBorderedText(
+                    ref builder,
                     160 + 15,
                     105 + i * 75,
                     100,
                     20,
-                    teamInfo.Captures.ToString("N0"),
+                    $"{teamInfo.Captures:N0}",
                     0xFFC000,
                     BlackColor32
                 );
 
                 var pl = teamInfo.Leader;
 
-                AddBorderedText(235 + 10, 85 + i * 75, 250, 20, "Leader:", 0xFFC000, BlackColor32);
+                AddBorderedText(ref builder, 235 + 10, 85 + i * 75, 250, 20, "Leader:", 0xFFC000, BlackColor32);
 
                 if (pl != null)
                 {
-                    AddBorderedText(235 + 15, 105 + i * 75, 250, 20, pl.Player.Name, 0xFFC000, BlackColor32);
+                    AddBorderedText(ref builder, 235 + 15, 105 + i * 75, 250, 20, pl.Player.Name, 0xFFC000, BlackColor32);
                 }
             }
         }
 
-        AddButton(314, height - 42, 247, 248, 1);
+        builder.AddButton(314, height - 42, 247, 248, 1);
     }
 
-    private void AddBorderedText(int x, int y, int width, int height, string text, int color, int borderColor)
+    private static void AddBorderedText(
+        ref DynamicGumpBuilder builder, int x, int y, int width, int height, string text, int color, int borderColor
+    )
     {
-        AddColoredText(x - 1, y - 1, width, height, text, borderColor);
-        AddColoredText(x - 1, y + 1, width, height, text, borderColor);
-        AddColoredText(x + 1, y - 1, width, height, text, borderColor);
-        AddColoredText(x + 1, y + 1, width, height, text, borderColor);
-        AddColoredText(x, y, width, height, text, color);
+        AddColoredText(ref builder, x - 1, y - 1, width, height, text, borderColor);
+        AddColoredText(ref builder, x - 1, y + 1, width, height, text, borderColor);
+        AddColoredText(ref builder, x + 1, y - 1, width, height, text, borderColor);
+        AddColoredText(ref builder, x + 1, y + 1, width, height, text, borderColor);
+        AddColoredText(ref builder, x, y, width, height, text, color);
     }
 
-    private void AddColoredText(int x, int y, int width, int height, string text, int color)
-    {
-        AddHtml(x, y, width, height, color == 0 ? text : text.Color(color));
-    }
+    private static void AddColoredText(
+        ref DynamicGumpBuilder builder, int x, int y, int width, int height, string text, int color
+    ) => builder.AddHtml(x, y, width, height, color == 0 ? text : text.Color(color));
 }
 
 public sealed class BRPlayerInfo : IRankedCTF, IComparable<BRPlayerInfo>
@@ -1297,10 +1315,7 @@ public sealed class BRTeamInfo : IRankedCTF, IComparable<BRTeamInfo>
         set
         {
             m_Goal = value;
-            if (m_Goal != null)
-            {
-                m_Goal.Team = this;
-            }
+            m_Goal?.Team = this;
         }
     }
 
@@ -1338,15 +1353,9 @@ public sealed class BRTeamInfo : IRankedCTF, IComparable<BRTeamInfo>
 
         Players.Clear();
 
-        if (Board != null)
-        {
-            Board.m_TeamInfo = this;
-        }
+        Board?.m_TeamInfo = this;
 
-        if (m_Goal != null)
-        {
-            m_Goal.Team = this;
-        }
+        m_Goal?.Team = this;
     }
 
     public void Serialize(IGenericWriter op)
@@ -1362,15 +1371,7 @@ public sealed class BRTeamInfo : IRankedCTF, IComparable<BRTeamInfo>
         op.Write(m_Goal);
     }
 
-    public override string ToString()
-    {
-        if (TeamName != null)
-        {
-            return $"({Name}) ...";
-        }
-
-        return "...";
-    }
+    public override string ToString() => TeamName != null ? $"({Name}) ..." : "...";
 }
 
 public sealed class BRController : EventController
@@ -1640,7 +1641,7 @@ public sealed class BRGame : EventGame
             }
         }
 
-        mob.SendGump(new BRBoardGump(mob, this));
+        BRBoardGump.DisplayTo(mob, this);
 
         m_Context.Requip(mob, corpse);
         DelayBounce(TimeSpan.FromSeconds(30.0), mob, corpse);
@@ -1839,7 +1840,7 @@ public sealed class BRGame : EventGame
 
                 if (dp?.Mobile != null)
                 {
-                    dp.Mobile.SendGump(new BRBoardGump(dp.Mobile, this));
+                    BRBoardGump.DisplayTo(dp.Mobile, this);
                 }
             }
 
@@ -1852,10 +1853,7 @@ public sealed class BRGame : EventGame
             {
                 for (var j = 0; j < p.Players.Length; ++j)
                 {
-                    if (p.Players[j] != null)
-                    {
-                        p.Players[j].Eliminated = true;
-                    }
+                    p.Players[j]?.Eliminated = true;
                 }
             }
         }
@@ -1872,10 +1870,7 @@ public sealed class BRGame : EventGame
         {
             var teamInfo = Controller.TeamInfo[i];
 
-            if (teamInfo.Board != null)
-            {
-                teamInfo.Board.m_TeamInfo = null;
-            }
+            teamInfo.Board?.m_TeamInfo = null;
 
             teamInfo.Game = null;
         }
