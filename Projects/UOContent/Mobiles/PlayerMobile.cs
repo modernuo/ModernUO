@@ -37,7 +37,7 @@ using Server.Spells.Sixth;
 using Server.Spells.Spellweaving;
 using Server.Systems.FeatureFlags;
 using Server.Targeting;
-using BaseQuestGump = Server.Engines.MLQuests.Gumps.BaseQuestGump;
+using BaseMLQuestGump = Server.Engines.MLQuests.Gumps.BaseMLQuestGump;
 using CalcMoves = Server.Movement.Movement;
 using QuestOfferGump = Server.Engines.MLQuests.Gumps.QuestOfferGump;
 using RankDefinition = Server.Guilds.RankDefinition;
@@ -3996,7 +3996,7 @@ namespace Server.Mobiles
         {
             if (NetState != null)
             {
-                BaseQuestGump.CloseOtherGumps(this);
+                BaseMLQuestGump.CloseOtherGumps(this);
                 var gumps = this.GetGumps();
                 gumps.Close<QuestLogDetailedGump>();
                 gumps.Close<QuestLogGump>();

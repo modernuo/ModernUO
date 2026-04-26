@@ -4,33 +4,57 @@ using Server.Network;
 
 namespace Server.Engines.MLQuests.Gumps
 {
-    public class QuestLogGump : BaseQuestGump
+    public class QuestLogGump : BaseMLQuestGump
     {
-        private readonly bool m_CloseGumps;
-        private readonly PlayerMobile m_Owner;
+        private readonly bool _closeGumps;
+        private readonly PlayerMobile _owner;
 
         public override bool Singleton => true;
 
-        public QuestLogGump(PlayerMobile pm, bool closeGumps = true)
+        private QuestLogGump(PlayerMobile pm, bool closeGumps)
             : base(1046026) // Quest Log
         {
-            m_Owner = pm;
-            m_CloseGumps = closeGumps;
+            _owner = pm;
+            _closeGumps = closeGumps;
+
+            RegisterButton(ButtonPosition.Right, ButtonGraphic.Okay, 3);
+
+            SetPageCount(1);
+        }
+
+        public static void DisplayTo(Mobile from, PlayerMobile pm, bool closeGumps = true)
+        {
+            if (from?.NetState == null || pm == null)
+            {
+                return;
+            }
 
             if (closeGumps)
             {
                 pm.CloseGump<QuestLogDetailedGump>();
             }
 
-            RegisterButton(ButtonPosition.Right, ButtonGraphic.Okay, 3);
+            from.SendGump(new QuestLogGump(pm, closeGumps));
+        }
 
-            SetPageCount(1);
+        public static void DisplayTo(PlayerMobile pm)
+        {
+            if (pm?.NetState == null)
+            {
+                return;
+            }
 
-            BuildPage();
+            pm.CloseGump<QuestLogDetailedGump>();
+            pm.SendGump(new QuestLogGump(pm, true));
+        }
+
+        protected override void BuildContent(ref DynamicGumpBuilder builder)
+        {
+            BuildPage(ref builder);
 
             int numberColor, stringColor;
 
-            var context = MLQuestSystem.GetContext(pm);
+            var context = MLQuestSystem.GetContext(_owner);
 
             if (context != null)
             {
@@ -49,7 +73,7 @@ namespace Server.Engines.MLQuests.Gumps
                     }
 
                     instances[i].Quest.Title.AddHtmlText(
-                        this,
+                        ref builder,
                         98,
                         140 + 21 * i,
                         270,
@@ -59,7 +83,7 @@ namespace Server.Engines.MLQuests.Gumps
                         numberColor,
                         stringColor
                     );
-                    AddButton(368, 140 + 21 * i, 0x26B0, 0x26B1, 6 + i, GumpButtonType.Reply, 1);
+                    builder.AddButton(368, 140 + 21 * i, 0x26B0, 0x26B1, 6 + i, GumpButtonType.Reply, 1);
                 }
             }
         }
@@ -71,7 +95,7 @@ namespace Server.Engines.MLQuests.Gumps
                 return;
             }
 
-            var context = MLQuestSystem.GetContext(m_Owner);
+            var context = MLQuestSystem.GetContext(_owner);
 
             if (context == null)
             {
@@ -86,7 +110,7 @@ namespace Server.Engines.MLQuests.Gumps
                 return;
             }
 
-            sender.Mobile.SendGump(new QuestLogDetailedGump(instances[index], m_CloseGumps));
+            QuestLogDetailedGump.DisplayTo(sender.Mobile, instances[index], _closeGumps);
         }
     }
 }

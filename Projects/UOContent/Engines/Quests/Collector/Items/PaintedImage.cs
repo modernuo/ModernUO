@@ -40,19 +40,37 @@ public partial class PaintedImage : Item
             return;
         }
 
-        from.SendGump(new InternalGump(_image));
+        PaintedImageGump.DisplayTo(from, _image);
+    }
+}
+
+public class PaintedImageGump : DynamicGump
+{
+    private readonly ImageType _image;
+
+    public override bool Singleton => true;
+
+    private PaintedImageGump(ImageType image) : base(75, 25) => _image = image;
+
+    public static void DisplayTo(Mobile from, ImageType image)
+    {
+        if (from?.NetState == null)
+        {
+            return;
+        }
+
+        from.SendGump(new PaintedImageGump(image));
     }
 
-    private class InternalGump : Gump
+    protected override void BuildLayout(ref DynamicGumpBuilder builder)
     {
-        public InternalGump(ImageType image) : base(75, 25)
-        {
-            var info = ImageTypeInfo.Get(image);
+        builder.AddPage();
 
-            AddBackground(45, 20, 100, 100, 0xA3C);
-            AddBackground(52, 29, 86, 82, 0xBB8);
+        var info = ImageTypeInfo.Get(_image);
 
-            AddItem(info.X, info.Y, info.Figurine);
-        }
+        builder.AddBackground(45, 20, 100, 100, 0xA3C);
+        builder.AddBackground(52, 29, 86, 82, 0xBB8);
+
+        builder.AddItem(info.X, info.Y, info.Figurine);
     }
 }

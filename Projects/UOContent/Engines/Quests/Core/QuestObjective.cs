@@ -84,14 +84,24 @@ namespace Server.Engines.Quests
             CurProgress = MaxProgress;
         }
 
-        public virtual void RenderMessage(BaseQuestGump gump)
+        public virtual void RenderMessage(ref DynamicGumpBuilder builder)
         {
-            gump.AddHtmlObject(70, 130, 300, 100, Message, BaseQuestGump.Blue, false, false);
+            BaseQuestGump.AddHtmlObject(ref builder, 70, 130, 300, 100, Message, BaseQuestGump.Blue, false, false);
         }
 
-        public virtual void RenderProgress(BaseQuestGump gump)
+        public virtual void RenderProgress(ref DynamicGumpBuilder builder)
         {
-            gump.AddHtmlObject(70, 260, 270, 100, Completed ? 1049077 : 1049078, BaseQuestGump.Blue, false, false);
+            BaseQuestGump.AddHtmlObject(
+                ref builder,
+                70,
+                260,
+                270,
+                100,
+                Completed ? 1049077 : 1049078,
+                BaseQuestGump.Blue,
+                false,
+                false
+            );
         }
 
         public virtual void CheckCompletionStatus()
@@ -128,116 +138,142 @@ namespace Server.Engines.Quests
 
     public class QuestLogUpdatedGump : BaseQuestGump
     {
-        private readonly QuestSystem m_System;
+        private readonly QuestSystem _system;
 
         public override bool Singleton => true;
 
-        public QuestLogUpdatedGump(QuestSystem system) : base(3, 30)
+        private QuestLogUpdatedGump(QuestSystem system) : base(3, 30) => _system = system;
+
+        public static void DisplayTo(Mobile from, QuestSystem system)
         {
-            m_System = system;
+            if (from?.NetState == null || system == null)
+            {
+                return;
+            }
 
-            AddPage(0);
+            from.SendGump(new QuestLogUpdatedGump(system));
+        }
 
-            AddImage(20, 5, 1417);
+        protected override void BuildLayout(ref DynamicGumpBuilder builder)
+        {
+            builder.AddPage();
 
-            AddHtmlLocalized(0, 78, 120, 40, 1049079, White); // Quest Log Updated
+            builder.AddImage(20, 5, 1417);
 
-            AddImageTiled(0, 78, 120, 40, 2624);
-            AddAlphaRegion(0, 78, 120, 40);
+            builder.AddHtmlLocalized(0, 78, 120, 40, 1049079, White); // Quest Log Updated
 
-            AddButton(30, 15, 5575, 5576, 1);
+            builder.AddImageTiled(0, 78, 120, 40, 2624);
+            builder.AddAlphaRegion(0, 78, 120, 40);
+
+            builder.AddButton(30, 15, 5575, 5576, 1);
         }
 
         public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (info.ButtonID == 1)
             {
-                m_System.ShowQuestLog();
+                _system.ShowQuestLog();
             }
         }
     }
 
     public class QuestObjectivesGump : BaseQuestGump
     {
-        private readonly List<QuestObjective> m_Objectives;
+        private readonly List<QuestObjective> _objectives;
 
-        public QuestObjectivesGump(QuestObjective obj) : this(new List<QuestObjective> { obj })
+        private QuestObjectivesGump(List<QuestObjective> objectives) : base(90, 50) => _objectives = objectives;
+
+        public static void DisplayTo(Mobile from, QuestObjective obj)
         {
+            if (from?.NetState == null || obj == null)
+            {
+                return;
+            }
+
+            from.SendGump(new QuestObjectivesGump(new List<QuestObjective> { obj }));
         }
 
-        public QuestObjectivesGump(List<QuestObjective> objectives) : base(90, 50)
+        public static void DisplayTo(Mobile from, List<QuestObjective> objectives)
         {
-            m_Objectives = objectives;
-
-            Closable = false;
-
-            AddPage(0);
-
-            AddImage(0, 0, 3600);
-            AddImageTiled(0, 14, 15, 375, 3603);
-            AddImageTiled(380, 14, 14, 375, 3605);
-            AddImage(0, 376, 3606);
-            AddImageTiled(15, 376, 370, 16, 3607);
-            AddImageTiled(15, 0, 370, 16, 3601);
-            AddImage(380, 0, 3602);
-            AddImage(380, 376, 3608);
-
-            AddImageTiled(15, 15, 365, 365, 2624);
-            AddAlphaRegion(15, 15, 365, 365);
-
-            AddImage(20, 87, 1231);
-            AddImage(75, 62, 9307);
-
-            AddHtmlLocalized(117, 35, 230, 20, 1046026, Blue); // Quest Log
-
-            AddImage(77, 33, 9781);
-            AddImage(65, 110, 2104);
-
-            AddHtmlLocalized(79, 106, 230, 20, 1049073, Blue); // Objective:
-
-            AddImageTiled(68, 125, 120, 1, 9101);
-            AddImage(65, 240, 2104);
-
-            AddHtmlLocalized(79, 237, 230, 20, 1049076, Blue); // Progress details:
-
-            AddImageTiled(68, 255, 120, 1, 9101);
-            AddButton(175, 355, 2313, 2312, 1);
-
-            AddImage(341, 15, 10450);
-            AddImage(341, 330, 10450);
-            AddImage(15, 330, 10450);
-            AddImage(15, 15, 10450);
-
-            AddPage(1);
-
-            for (var i = 0; i < objectives.Count; ++i)
+            if (from?.NetState == null || objectives == null || objectives.Count == 0)
             {
-                var obj = objectives[objectives.Count - 1 - i];
+                return;
+            }
+
+            from.SendGump(new QuestObjectivesGump(objectives));
+        }
+
+        protected override void BuildLayout(ref DynamicGumpBuilder builder)
+        {
+            builder.SetNoClose();
+
+            builder.AddPage();
+
+            builder.AddImage(0, 0, 3600);
+            builder.AddImageTiled(0, 14, 15, 375, 3603);
+            builder.AddImageTiled(380, 14, 14, 375, 3605);
+            builder.AddImage(0, 376, 3606);
+            builder.AddImageTiled(15, 376, 370, 16, 3607);
+            builder.AddImageTiled(15, 0, 370, 16, 3601);
+            builder.AddImage(380, 0, 3602);
+            builder.AddImage(380, 376, 3608);
+
+            builder.AddImageTiled(15, 15, 365, 365, 2624);
+            builder.AddAlphaRegion(15, 15, 365, 365);
+
+            builder.AddImage(20, 87, 1231);
+            builder.AddImage(75, 62, 9307);
+
+            builder.AddHtmlLocalized(117, 35, 230, 20, 1046026, Blue); // Quest Log
+
+            builder.AddImage(77, 33, 9781);
+            builder.AddImage(65, 110, 2104);
+
+            builder.AddHtmlLocalized(79, 106, 230, 20, 1049073, Blue); // Objective:
+
+            builder.AddImageTiled(68, 125, 120, 1, 9101);
+            builder.AddImage(65, 240, 2104);
+
+            builder.AddHtmlLocalized(79, 237, 230, 20, 1049076, Blue); // Progress details:
+
+            builder.AddImageTiled(68, 255, 120, 1, 9101);
+            builder.AddButton(175, 355, 2313, 2312, 1);
+
+            builder.AddImage(341, 15, 10450);
+            builder.AddImage(341, 330, 10450);
+            builder.AddImage(15, 330, 10450);
+            builder.AddImage(15, 15, 10450);
+
+            builder.AddPage(1);
+
+            for (var i = 0; i < _objectives.Count; ++i)
+            {
+                var obj = _objectives[_objectives.Count - 1 - i];
 
                 if (i > 0)
                 {
-                    AddButton(55, 346, 9909, 9911, 0, GumpButtonType.Page, 1 + i);
-                    AddHtmlLocalized(82, 347, 50, 20, 1043354, White); // Previous
+                    builder.AddButton(55, 346, 9909, 9911, 0, GumpButtonType.Page, 1 + i);
+                    builder.AddHtmlLocalized(82, 347, 50, 20, 1043354, White); // Previous
 
-                    AddPage(1 + i);
+                    builder.AddPage(1 + i);
                 }
 
-                obj.RenderMessage(this);
-                obj.RenderProgress(this);
+                obj.RenderMessage(ref builder);
+                obj.RenderProgress(ref builder);
 
                 if (i > 0)
                 {
-                    AddButton(317, 346, 9903, 9905, 0, GumpButtonType.Page, i);
-                    AddHtmlLocalized(278, 347, 50, 20, 1043353, White); // Next
+                    builder.AddButton(317, 346, 9903, 9905, 0, GumpButtonType.Page, i);
+                    builder.AddHtmlLocalized(278, 347, 50, 20, 1043353, White); // Next
                 }
             }
         }
 
         public override void OnResponse(NetState sender, in RelayInfo info)
         {
-            for (var i = m_Objectives.Count - 1; i >= 0; --i)
+            for (var i = _objectives.Count - 1; i >= 0; --i)
             {
-                var obj = m_Objectives[i];
+                var obj = _objectives[i];
 
                 if (!obj.HasBeenRead)
                 {

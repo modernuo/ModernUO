@@ -1,4 +1,5 @@
 using Server.Engines.Help;
+using Server.Gumps;
 using Server.Items;
 using Server.Mobiles;
 
@@ -138,16 +139,16 @@ namespace Server.Engines.Quests.Haven
             }
         }
 
-        public override void RenderProgress(BaseQuestGump gump)
+        public override void RenderProgress(ref DynamicGumpBuilder builder)
         {
             if (!Completed)
             {
-                gump.AddHtmlObject(70, 260, 270, 100, 1049090, BaseQuestGump.Blue, false, false); // Horde Minions killed:
-                gump.AddLabel(70, 280, 0x64, CurProgress.ToString());
+                BaseQuestGump.AddHtmlObject(ref builder, 70, 260, 270, 100, 1049090, BaseQuestGump.Blue, false, false); // Horde Minions killed:
+                builder.AddLabel(70, 280, 0x64, $"{CurProgress}");
             }
             else
             {
-                base.RenderProgress(gump);
+                base.RenderProgress(ref builder);
             }
         }
 

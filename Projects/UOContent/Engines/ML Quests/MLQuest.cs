@@ -184,7 +184,7 @@ namespace Server.Engines.MLQuests
 
         public virtual void SendOffer(IQuestGiver quester, PlayerMobile pm)
         {
-            pm.SendGump(new QuestOfferGump(this, quester, pm));
+            QuestOfferGump.DisplayTo(pm, this, quester);
         }
 
         public virtual void OnAccept(IQuestGiver quester, PlayerMobile pm)
@@ -213,7 +213,7 @@ namespace Server.Engines.MLQuests
 
         public virtual void OnRefuse(IQuestGiver quester, PlayerMobile pm)
         {
-            pm.SendGump(new QuestConversationGump(this, pm, RefusalMessage));
+            QuestConversationGump.DisplayTo(pm, this, RefusalMessage);
         }
 
         public virtual void GetRewards(MLQuestInstance instance)

@@ -657,7 +657,7 @@ namespace Server.Engines.MLQuests
                 return;
             }
 
-            pm.SendGump(new QuestLogGump(pm));
+            QuestLogGump.DisplayTo(pm);
         }
 
         public static MLQuest RandomStarterQuest(IQuestGiver quester, PlayerMobile pm, MLQuestContext context)
@@ -833,7 +833,7 @@ namespace Server.Engines.MLQuests
                     from,
                     $"{from.AccessLevel} {CommandLogging.Format(from)} viewing quest overview of {CommandLogging.Format(pm)}"
                 );
-                from.SendGump(new QuestLogGump(pm, false));
+                QuestLogGump.DisplayTo(from, pm, false);
             }
         }
 
