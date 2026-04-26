@@ -161,10 +161,10 @@ public class CTFBoardGump : DynamicGump
                 );
 
                 AddBorderedText(ref builder, 50 + 10, 85 + i * 75, 100, 20, "Score:", 0xFFC000, BlackColor32);
-                AddBorderedText(ref builder, 50 + 15, 105 + i * 75, 100, 20, teamInfo.Score.ToString("N0"), 0xFFC000, BlackColor32);
+                AddBorderedText(ref builder, 50 + 15, 105 + i * 75, 100, 20, $"{teamInfo.Score:N0}", 0xFFC000, BlackColor32);
 
                 AddBorderedText(ref builder, 110 + 10, 85 + i * 75, 100, 20, "Kills:", 0xFFC000, BlackColor32);
-                AddBorderedText(ref builder, 110 + 15, 105 + i * 75, 100, 20, teamInfo.Kills.ToString("N0"), 0xFFC000, BlackColor32);
+                AddBorderedText(ref builder, 110 + 15, 105 + i * 75, 100, 20, $"{teamInfo.Kills:N0}", 0xFFC000, BlackColor32);
 
                 AddBorderedText(ref builder, 160 + 10, 85 + i * 75, 100, 20, "Captures:", 0xFFC000, BlackColor32);
                 AddBorderedText(
@@ -173,7 +173,7 @@ public class CTFBoardGump : DynamicGump
                     105 + i * 75,
                     100,
                     20,
-                    teamInfo.Captures.ToString("N0"),
+                    $"{teamInfo.Captures:N0}",
                     0xFFC000,
                     BlackColor32
                 );
@@ -265,10 +265,7 @@ public sealed partial class CTFFlag : Item
                 {
                     var playerInfo = useTeam[from];
 
-                    if (playerInfo != null)
-                    {
-                        playerInfo.Score += 4; // return
-                    }
+                    playerInfo?.Score += 4; // return
 
                     m_Returner = from;
                     m_ReturnTime = Core.Now;
@@ -417,10 +414,7 @@ public sealed partial class CTFFlag : Item
                     {
                         var assistInfo = useTeam[teamFlag.m_Fragger];
 
-                        if (assistInfo != null)
-                        {
-                            assistInfo.Score += 6; // frag assist
-                        }
+                        assistInfo?.Score += 6; // frag assist
                     }
 
                     if (teamFlag.m_Returner != null &&
@@ -428,10 +422,7 @@ public sealed partial class CTFFlag : Item
                     {
                         var assistInfo = useTeam[teamFlag.m_Returner];
 
-                        if (assistInfo != null)
-                        {
-                            assistInfo.Score += 4; // return assist
-                        }
+                        assistInfo?.Score += 4; // return assist
                     }
                 }
             }
@@ -497,10 +488,7 @@ public sealed partial class CTFFlag : Item
 
         var mob = FindOwner(parent);
 
-        if (mob != null)
-        {
-            mob.SolidHueOverride = 0x4001;
-        }
+        mob?.SolidHueOverride = 0x4001;
     }
 
     public override void OnRemoved(IEntity parent)
@@ -509,10 +497,7 @@ public sealed partial class CTFFlag : Item
 
         var mob = FindOwner(parent);
 
-        if (mob != null)
-        {
-            mob.SolidHueOverride = m_TeamInfo?.Game.GetColor(mob) ?? -1;
-        }
+        mob?.SolidHueOverride = m_TeamInfo?.Game.GetColor(mob) ?? -1;
     }
 }
 
@@ -687,10 +672,7 @@ public sealed class CTFTeamInfo : IRankedCTF
             Flag.SendHome();
         }
 
-        if (Board != null)
-        {
-            Board.m_TeamInfo = this;
-        }
+        Board?.m_TeamInfo = this;
     }
 
     public void Serialize(IGenericWriter op)
@@ -868,10 +850,7 @@ public sealed class CTFGame : EventGame
 
             for (var j = 0; j < p.Players.Length; ++j)
             {
-                if (p.Players[j] != null)
-                {
-                    p.Players[j].Mobile.SendMessage(0x35, text);
-                }
+                p.Players[j]?.Mobile.SendMessage(0x35, text);
             }
         }
     }
@@ -924,10 +903,7 @@ public sealed class CTFGame : EventGame
     {
         for (var i = 0; i < p.Players.Length; ++i)
         {
-            if (p.Players[i] != null)
-            {
-                p.Players[i].Mobile.SolidHueOverride = hueOverride;
-            }
+            p.Players[i]?.Mobile.SolidHueOverride = hueOverride;
         }
     }
 
@@ -1276,10 +1252,7 @@ public sealed class CTFGame : EventGame
                 teamInfo.Flag.m_TeamInfo = null;
             }
 
-            if (teamInfo.Board != null)
-            {
-                teamInfo.Board.m_TeamInfo = null;
-            }
+            teamInfo.Board?.m_TeamInfo = null;
 
             teamInfo.Game = null;
         }

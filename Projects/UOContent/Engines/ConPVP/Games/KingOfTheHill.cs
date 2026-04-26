@@ -294,8 +294,7 @@ public sealed class KHBoardGump : DynamicGump
 
     public override bool Singleton => true;
 
-    private KHBoardGump(Mobile mob, KHGame game)
-        : base(60, 60)
+    private KHBoardGump(Mobile mob, KHGame game) : base(60, 60)
     {
         _mob = mob;
         _game = game;
@@ -389,13 +388,13 @@ public sealed class KHBoardGump : DynamicGump
             );
 
             AddBorderedText(ref builder, 50 + 10, 85 + i * 75, 100, 20, "Score:", 0xFFC000, BlackColor32);
-            AddBorderedText(ref builder, 50 + 15, 105 + i * 75, 100, 20, teamInfo.Score.ToString("N0"), 0xFFC000, BlackColor32);
+            AddBorderedText(ref builder, 50 + 15, 105 + i * 75, 100, 20, $"{teamInfo.Score:N0}", 0xFFC000, BlackColor32);
 
             AddBorderedText(ref builder, 110 + 10, 85 + i * 75, 100, 20, "Kills:", 0xFFC000, BlackColor32);
-            AddBorderedText(ref builder, 110 + 15, 105 + i * 75, 100, 20, teamInfo.Kills.ToString("N0"), 0xFFC000, BlackColor32);
+            AddBorderedText(ref builder, 110 + 15, 105 + i * 75, 100, 20, $"{teamInfo.Kills:N0}", 0xFFC000, BlackColor32);
 
             AddBorderedText(ref builder, 160 + 10, 85 + i * 75, 100, 20, "Captures:", 0xFFC000, BlackColor32);
-            AddBorderedText(ref builder, 160 + 15, 105 + i * 75, 100, 20, teamInfo.Captures.ToString("N0"), 0xFFC000, BlackColor32);
+            AddBorderedText(ref builder, 160 + 15, 105 + i * 75, 100, 20, $"{teamInfo.Captures:N0}", 0xFFC000, BlackColor32);
 
             var leader = teamInfo.Leader?.Name ?? "(none)";
 
@@ -813,10 +812,7 @@ public sealed class KHGame : EventGame
 
             for (var j = 0; j < p.Players.Length; ++j)
             {
-                if (p.Players[j] != null)
-                {
-                    p.Players[j].Mobile.SendMessage(0x35, text);
-                }
+                p.Players[j]?.Mobile.SendMessage(0x35, text);
             }
         }
     }
@@ -859,10 +855,7 @@ public sealed class KHGame : EventGame
     {
         for (var i = 0; i < p.Players.Length; ++i)
         {
-            if (p.Players[i] != null)
-            {
-                p.Players[i].Mobile.SolidHueOverride = hueOverride;
-            }
+            p.Players[i]?.Mobile.SolidHueOverride = hueOverride;
         }
     }
 
@@ -967,10 +960,7 @@ public sealed class KHGame : EventGame
 
         for (var i = 0; i < Controller.Hills.Length; i++)
         {
-            if (Controller.Hills[i] != null)
-            {
-                Controller.Hills[i].Game = this;
-            }
+            Controller.Hills[i]?.Game = this;
         }
 
         foreach (var board in Controller.Boards)
@@ -1162,10 +1152,7 @@ public sealed class KHGame : EventGame
             {
                 for (var j = 0; j < p.Players.Length; ++j)
                 {
-                    if (p.Players[j] != null)
-                    {
-                        p.Players[j].Eliminated = true;
-                    }
+                    p.Players[j]?.Eliminated = true;
                 }
             }
         }
@@ -1185,18 +1172,12 @@ public sealed class KHGame : EventGame
 
         for (var i = 0; i < Controller.Hills.Length; ++i)
         {
-            if (Controller.Hills[i] != null)
-            {
-                Controller.Hills[i].Game = null;
-            }
+            Controller.Hills[i]?.Game = null;
         }
 
         foreach (var board in Controller.Boards)
         {
-            if (board != null)
-            {
-                board.m_Game = null;
-            }
+            board?.m_Game = null;
         }
 
         for (var i = 0; i < m_Context.Participants.Count; ++i)

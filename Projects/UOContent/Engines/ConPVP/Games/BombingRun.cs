@@ -63,10 +63,7 @@ public partial class BRBomb : Item
 
         var mob = FindOwner(parent);
 
-        if (mob != null)
-        {
-            mob.SolidHueOverride = 0x0499;
-        }
+        mob?.SolidHueOverride = 0x0499;
     }
 
     public override void OnRemoved(IEntity parent)
@@ -1125,10 +1122,10 @@ public class BRBoardGump : DynamicGump
                 );
 
                 AddBorderedText(ref builder, 50 + 10, 85 + i * 75, 100, 20, "Score:", 0xFFC000, BlackColor32);
-                AddBorderedText(ref builder, 50 + 15, 105 + i * 75, 100, 20, teamInfo.Score.ToString("N0"), 0xFFC000, BlackColor32);
+                AddBorderedText(ref builder, 50 + 15, 105 + i * 75, 100, 20, $"{teamInfo.Score:N0}", 0xFFC000, BlackColor32);
 
                 AddBorderedText(ref builder, 110 + 10, 85 + i * 75, 100, 20, "Kills:", 0xFFC000, BlackColor32);
-                AddBorderedText(ref builder, 110 + 15, 105 + i * 75, 100, 20, teamInfo.Kills.ToString("N0"), 0xFFC000, BlackColor32);
+                AddBorderedText(ref builder, 110 + 15, 105 + i * 75, 100, 20, $"{teamInfo.Kills:N0}", 0xFFC000, BlackColor32);
 
                 AddBorderedText(ref builder, 160 + 10, 85 + i * 75, 100, 20, "Points:", 0xFFC000, BlackColor32);
                 AddBorderedText(
@@ -1137,7 +1134,7 @@ public class BRBoardGump : DynamicGump
                     105 + i * 75,
                     100,
                     20,
-                    teamInfo.Captures.ToString("N0"),
+                    $"{teamInfo.Captures:N0}",
                     0xFFC000,
                     BlackColor32
                 );
@@ -1156,7 +1153,9 @@ public class BRBoardGump : DynamicGump
         builder.AddButton(314, height - 42, 247, 248, 1);
     }
 
-    private static void AddBorderedText(ref DynamicGumpBuilder builder, int x, int y, int width, int height, string text, int color, int borderColor)
+    private static void AddBorderedText(
+        ref DynamicGumpBuilder builder, int x, int y, int width, int height, string text, int color, int borderColor
+    )
     {
         AddColoredText(ref builder, x - 1, y - 1, width, height, text, borderColor);
         AddColoredText(ref builder, x - 1, y + 1, width, height, text, borderColor);
@@ -1165,10 +1164,9 @@ public class BRBoardGump : DynamicGump
         AddColoredText(ref builder, x, y, width, height, text, color);
     }
 
-    private static void AddColoredText(ref DynamicGumpBuilder builder, int x, int y, int width, int height, string text, int color)
-    {
-        builder.AddHtml(x, y, width, height, color == 0 ? text : text.Color(color));
-    }
+    private static void AddColoredText(
+        ref DynamicGumpBuilder builder, int x, int y, int width, int height, string text, int color
+    ) => builder.AddHtml(x, y, width, height, color == 0 ? text : text.Color(color));
 }
 
 public sealed class BRPlayerInfo : IRankedCTF, IComparable<BRPlayerInfo>
@@ -1317,10 +1315,7 @@ public sealed class BRTeamInfo : IRankedCTF, IComparable<BRTeamInfo>
         set
         {
             m_Goal = value;
-            if (m_Goal != null)
-            {
-                m_Goal.Team = this;
-            }
+            m_Goal?.Team = this;
         }
     }
 
@@ -1358,15 +1353,9 @@ public sealed class BRTeamInfo : IRankedCTF, IComparable<BRTeamInfo>
 
         Players.Clear();
 
-        if (Board != null)
-        {
-            Board.m_TeamInfo = this;
-        }
+        Board?.m_TeamInfo = this;
 
-        if (m_Goal != null)
-        {
-            m_Goal.Team = this;
-        }
+        m_Goal?.Team = this;
     }
 
     public void Serialize(IGenericWriter op)
@@ -1382,15 +1371,7 @@ public sealed class BRTeamInfo : IRankedCTF, IComparable<BRTeamInfo>
         op.Write(m_Goal);
     }
 
-    public override string ToString()
-    {
-        if (TeamName != null)
-        {
-            return $"({Name}) ...";
-        }
-
-        return "...";
-    }
+    public override string ToString() => TeamName != null ? $"({Name}) ..." : "...";
 }
 
 public sealed class BRController : EventController
@@ -1872,10 +1853,7 @@ public sealed class BRGame : EventGame
             {
                 for (var j = 0; j < p.Players.Length; ++j)
                 {
-                    if (p.Players[j] != null)
-                    {
-                        p.Players[j].Eliminated = true;
-                    }
+                    p.Players[j]?.Eliminated = true;
                 }
             }
         }
@@ -1892,10 +1870,7 @@ public sealed class BRGame : EventGame
         {
             var teamInfo = Controller.TeamInfo[i];
 
-            if (teamInfo.Board != null)
-            {
-                teamInfo.Board.m_TeamInfo = null;
-            }
+            teamInfo.Board?.m_TeamInfo = null;
 
             teamInfo.Game = null;
         }
