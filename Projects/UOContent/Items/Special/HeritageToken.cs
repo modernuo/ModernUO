@@ -16,7 +16,7 @@ public partial class HeritageToken : Item
     {
         if (IsChildOf(from.Backpack))
         {
-            from.SendGump(new HeritageTokenGump(this), true);
+            HeritageTokenGump.DisplayTo(from, this);
         }
         else
         {

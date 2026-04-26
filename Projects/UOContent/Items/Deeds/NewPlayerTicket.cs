@@ -71,8 +71,8 @@ public partial class NewPlayerTicket : Item
                 }
                 else
                 {
-                    from.SendGump(new InternalGump(from, m_Ticket));
-                    them.SendGump(new InternalGump(them, theirTicket));
+                    NewPlayerTicketGump.DisplayTo(from, m_Ticket);
+                    NewPlayerTicketGump.DisplayTo(them, theirTicket);
                 }
             }
             else if ((targeted as Item)?.ItemID == 0x14F0)
@@ -86,46 +86,56 @@ public partial class NewPlayerTicket : Item
         }
     }
 
-    private class InternalGump : Gump
+    private class NewPlayerTicketGump : StaticGump<NewPlayerTicketGump>
     {
-        private readonly Mobile m_From;
-        private readonly NewPlayerTicket m_Ticket;
+        private readonly NewPlayerTicket _ticket;
 
-        public InternalGump(Mobile from, NewPlayerTicket ticket) : base(50, 50)
+        public override bool Singleton => true;
+
+        private NewPlayerTicketGump(NewPlayerTicket ticket) : base(50, 50) => _ticket = ticket;
+
+        public static void DisplayTo(Mobile from, NewPlayerTicket ticket)
         {
-            m_From = from;
-            m_Ticket = ticket;
+            if (from?.NetState == null || ticket?.Deleted != false)
+            {
+                return;
+            }
 
-            AddBackground(0, 0, 400, 385, 0xA28);
+            from.SendGump(new NewPlayerTicketGump(ticket));
+        }
+
+        protected override void BuildLayout(ref StaticGumpBuilder builder)
+        {
+            builder.AddBackground(0, 0, 400, 385, 0xA28);
 
             // Choose the gift you prefer. WARNING: if you cancel, and your partner does not, you will need to find another matching ticket!
-            AddHtmlLocalized(30, 45, 340, 70, 1013011, true, true);
+            builder.AddHtmlLocalized(30, 45, 340, 70, 1013011, true, true);
 
-            AddButton(46, 128, 0xFA5, 0xFA7, 1);
-            AddHtmlLocalized(80, 130, 320, 35, 1013012); // A sextant
+            builder.AddButton(46, 128, 0xFA5, 0xFA7, 1);
+            builder.AddHtmlLocalized(80, 130, 320, 35, 1013012); // A sextant
 
-            AddButton(46, 163, 0xFA5, 0xFA7, 2);
-            AddHtmlLocalized(80, 165, 320, 35, 1013013); // A coupon for a single hair restyling
+            builder.AddButton(46, 163, 0xFA5, 0xFA7, 2);
+            builder.AddHtmlLocalized(80, 165, 320, 35, 1013013); // A coupon for a single hair restyling
 
-            AddButton(46, 198, 0xFA5, 0xFA7, 3);
-            AddHtmlLocalized(80, 200, 320, 35, 1013014); // A spellbook with all 1st - 4th spells.
+            builder.AddButton(46, 198, 0xFA5, 0xFA7, 3);
+            builder.AddHtmlLocalized(80, 200, 320, 35, 1013014); // A spellbook with all 1st - 4th spells.
 
-            AddButton(46, 233, 0xFA5, 0xFA7, 4);
-            AddHtmlLocalized(80, 235, 320, 35, 1013015); // A wand of fireworks
+            builder.AddButton(46, 233, 0xFA5, 0xFA7, 4);
+            builder.AddHtmlLocalized(80, 235, 320, 35, 1013015); // A wand of fireworks
 
-            AddButton(46, 268, 0xFA5, 0xFA7, 5);
-            AddHtmlLocalized(80, 270, 320, 35, 1013016); // A spyglass
+            builder.AddButton(46, 268, 0xFA5, 0xFA7, 5);
+            builder.AddHtmlLocalized(80, 270, 320, 35, 1013016); // A spyglass
 
-            AddButton(46, 303, 0xFA5, 0xFA7, 6);
-            AddHtmlLocalized(80, 305, 320, 35, 1013017); // Dyes and a dye tub
+            builder.AddButton(46, 303, 0xFA5, 0xFA7, 6);
+            builder.AddHtmlLocalized(80, 305, 320, 35, 1013017); // Dyes and a dye tub
 
-            AddButton(120, 340, 0xFA5, 0xFA7, 0);
-            AddHtmlLocalized(154, 342, 100, 35, 1011012); // CANCEL
+            builder.AddButton(120, 340, 0xFA5, 0xFA7, 0);
+            builder.AddHtmlLocalized(154, 342, 100, 35, 1011012); // CANCEL
         }
 
         public override void OnResponse(NetState sender, in RelayInfo info)
         {
-            if (m_Ticket.Deleted)
+            if (_ticket.Deleted)
             {
                 return;
             }
@@ -178,14 +188,15 @@ public partial class NewPlayerTicket : Item
 
             if (item != null)
             {
-                m_Ticket.Delete();
+                var from = sender.Mobile;
+                _ticket.Delete();
 
-                m_From.SendLocalizedMessage(number);
-                m_From.AddToBackpack(item);
+                from.SendLocalizedMessage(number);
+                from.AddToBackpack(item);
 
                 if (item2 != null)
                 {
-                    m_From.AddToBackpack(item2);
+                    from.AddToBackpack(item2);
                 }
             }
         }
