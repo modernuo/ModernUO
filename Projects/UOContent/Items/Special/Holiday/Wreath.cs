@@ -56,7 +56,6 @@ public partial class WreathAddon : Item, IDyable, IAddon
             }
 
             from.SendLocalizedMessage(500295); // You are too far away to do that.
-            return false;
         }
 
         return false;
@@ -110,15 +109,10 @@ public partial class WreathAddon : Item, IDyable, IAddon
     private class WreathAddonGump : StaticGump<WreathAddonGump>
     {
         private readonly WreathAddon _addon;
-        private readonly Mobile _from;
 
         public override bool Singleton => true;
 
-        private WreathAddonGump(Mobile from, WreathAddon addon) : base(150, 50)
-        {
-            _from = from;
-            _addon = addon;
-        }
+        private WreathAddonGump(WreathAddon addon) : base(150, 50) => _addon = addon;
 
         public static void DisplayTo(Mobile from, WreathAddon addon)
         {
@@ -127,7 +121,7 @@ public partial class WreathAddon : Item, IDyable, IAddon
                 return;
             }
 
-            from.SendGump(new WreathAddonGump(from, addon));
+            from.SendGump(new WreathAddonGump(addon));
         }
 
         protected override void BuildLayout(ref StaticGumpBuilder builder)
@@ -145,22 +139,21 @@ public partial class WreathAddon : Item, IDyable, IAddon
 
         public override void OnResponse(NetState sender, in RelayInfo info)
         {
-            if (_addon.Deleted)
+            if (_addon.Deleted || info.ButtonID != 1)
             {
                 return;
             }
 
-            if (info.ButtonID == 1)
+            var from = sender.Mobile;
+
+            if (from.InRange(_addon.GetWorldLocation(), 3))
             {
-                if (_from.InRange(_addon.GetWorldLocation(), 3))
-                {
-                    _from.AddToBackpack(_addon.Deed);
-                    _addon.Delete();
-                }
-                else
-                {
-                    _from.SendLocalizedMessage(500295); // You are too far away to do that.
-                }
+                from.AddToBackpack(_addon.Deed);
+                _addon.Delete();
+            }
+            else
+            {
+                from.SendLocalizedMessage(500295); // You are too far away to do that.
             }
         }
     }

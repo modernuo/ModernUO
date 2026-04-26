@@ -110,6 +110,8 @@ namespace Server.Items
 
             public override bool Singleton => true;
 
+            protected override bool Cached => false;
+
             private StValentinesBearsGump(StValentinesBear bear) : base(50, 50)
             {
                 _bear = bear;
@@ -129,15 +131,11 @@ namespace Server.Items
             {
                 builder.AddPage();
                 builder.AddBackground(0, 0, 420, 320, 9300);
-                builder.AddHtml(10, 10, 400, 21, "<CENTER>St. Valentine Bear</CENTER>");
-                builder.AddHtmlLocalized(
-                    10,
-                    40,
-                    400,
-                    75,
-                    1150293,
-                    0
-                ); // Enter up to three lines of personalized greeting for your St. Valentine Bear. You many enter up to 25 characters per line. Once you enter text, you will only be able to correct mistakes for 10 minutes.
+                // St. Valentine Bear
+                builder.AddHtmlLocalized(10, 10, 400, 21, 1154645, "#1150294", 0);
+
+                // Enter up to three lines of personalized greeting for your St. Valentine Bear. You many enter up to 25 characters per line. Once you enter text, you will only be able to correct mistakes for 10 minutes.
+                builder.AddHtmlLocalized(10, 40, 400, 75, 1150293, 0);
 
                 builder.AddHtmlLocalized(10, 129, 400, 21, 1150296, 0); // Line 1:
                 builder.AddBackground(10, 150, 400, 24, 9350);

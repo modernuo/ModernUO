@@ -78,16 +78,11 @@ public abstract partial class SpecialScroll : Item
 
     public class SpecialScrollGump : DynamicGump
     {
-        private readonly Mobile _mobile;
         private readonly SpecialScroll _scroll;
 
         public override bool Singleton => true;
 
-        private SpecialScrollGump(Mobile mobile, SpecialScroll scroll) : base(25, 50)
-        {
-            _mobile = mobile;
-            _scroll = scroll;
-        }
+        private SpecialScrollGump(SpecialScroll scroll) : base(25, 50) => _scroll = scroll;
 
         public static void DisplayTo(Mobile from, SpecialScroll scroll)
         {
@@ -96,7 +91,7 @@ public abstract partial class SpecialScroll : Item
                 return;
             }
 
-            from.SendGump(new SpecialScrollGump(from, scroll));
+            from.SendGump(new SpecialScrollGump(scroll));
         }
 
         protected override void BuildLayout(ref DynamicGumpBuilder builder)
@@ -139,7 +134,7 @@ public abstract partial class SpecialScroll : Item
         {
             if (info.ButtonID == 1)
             {
-                _scroll.Use(_mobile);
+                _scroll.Use(state.Mobile);
             }
         }
     }

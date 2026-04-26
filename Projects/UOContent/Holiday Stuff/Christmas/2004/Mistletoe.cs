@@ -56,7 +56,6 @@ public partial class MistletoeAddon : Item, IDyable, IAddon
             }
 
             from.SendLocalizedMessage(500295); // You are too far away to do that.
-            return false;
         }
 
         return false;
@@ -115,15 +114,10 @@ public partial class MistletoeAddon : Item, IDyable, IAddon
     private class MistletoeAddonGump : StaticGump<MistletoeAddonGump>
     {
         private readonly MistletoeAddon _addon;
-        private readonly Mobile _from;
 
         public override bool Singleton => true;
 
-        private MistletoeAddonGump(Mobile from, MistletoeAddon addon) : base(150, 50)
-        {
-            _from = from;
-            _addon = addon;
-        }
+        private MistletoeAddonGump(MistletoeAddon addon) : base(150, 50) => _addon = addon;
 
         public static void DisplayTo(Mobile from, MistletoeAddon addon)
         {
@@ -132,7 +126,7 @@ public partial class MistletoeAddon : Item, IDyable, IAddon
                 return;
             }
 
-            from.SendGump(new MistletoeAddonGump(from, addon));
+            from.SendGump(new MistletoeAddonGump(addon));
         }
 
         protected override void BuildLayout(ref StaticGumpBuilder builder)
@@ -155,14 +149,16 @@ public partial class MistletoeAddon : Item, IDyable, IAddon
                 return;
             }
 
-            if (_from.InRange(_addon.GetWorldLocation(), 3))
+            var from = sender.Mobile;
+
+            if (from.InRange(_addon.GetWorldLocation(), 3))
             {
-                _from.AddToBackpack(_addon.Deed);
+                from.AddToBackpack(_addon.Deed);
                 _addon.Delete();
             }
             else
             {
-                _from.SendLocalizedMessage(500295); // You are too far away to do that.
+                from.SendLocalizedMessage(500295); // You are too far away to do that.
             }
         }
     }

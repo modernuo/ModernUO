@@ -167,9 +167,8 @@ namespace Server.Items
         }
 
         public virtual bool HasAccess(Mobile from) =>
-            from?.Deleted == false && (
-                from.AccessLevel >= AccessLevel.GameMaster ||
-                BaseHouse.FindHouseAt(this)?.IsCoOwner(from) == true);
+            from?.Deleted == false && (from.AccessLevel >= AccessLevel.GameMaster ||
+                                       BaseHouse.FindHouseAt(this)?.IsCoOwner(from) == true);
 
         public override bool OnDragDrop(Mobile from, Item dropped)
         {
@@ -1128,7 +1127,7 @@ namespace Server.Items
                     return;
                 }
 
-                AquariumGump.DisplayTo(from, aquarium, true);
+                AquariumGump.DisplayTo(from, aquarium);
             }
         }
 

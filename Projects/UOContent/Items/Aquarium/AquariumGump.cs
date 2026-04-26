@@ -26,16 +26,6 @@ public class AquariumGump : DynamicGump
         from.SendGump(new AquariumGump(aquarium, aquarium.HasAccess(from)));
     }
 
-    public static void DisplayTo(Mobile from, Aquarium aquarium, bool edit)
-    {
-        if (from?.NetState == null || aquarium?.Deleted != false)
-        {
-            return;
-        }
-
-        from.SendGump(new AquariumGump(aquarium, edit));
-    }
-
     protected override void BuildLayout(ref DynamicGumpBuilder builder)
     {
         builder.AddPage();
@@ -115,7 +105,7 @@ public class AquariumGump : DynamicGump
 
         if (info.ButtonID > 0)
         {
-            DisplayTo(sender.Mobile, _aquarium, edit);
+            sender.Mobile.SendGump(this);
         }
     }
 }
