@@ -111,15 +111,10 @@ public partial class HolidayTreeDeed : Item
 public class HolidayTreeChoiceGump : StaticGump<HolidayTreeChoiceGump>
 {
     private readonly HolidayTreeDeed _deed;
-    private readonly Mobile _from;
 
     public override bool Singleton => true;
 
-    private HolidayTreeChoiceGump(Mobile from, HolidayTreeDeed deed) : base(200, 200)
-    {
-        _from = from;
-        _deed = deed;
-    }
+    private HolidayTreeChoiceGump(HolidayTreeDeed deed) : base(200, 200) => _deed = deed;
 
     public static void DisplayTo(Mobile from, HolidayTreeDeed deed)
     {
@@ -128,7 +123,7 @@ public class HolidayTreeChoiceGump : StaticGump<HolidayTreeChoiceGump>
             return;
         }
 
-        from.SendGump(new HolidayTreeChoiceGump(from, deed));
+        from.SendGump(new HolidayTreeChoiceGump(deed));
     }
 
     protected override void BuildLayout(ref StaticGumpBuilder builder)
@@ -152,16 +147,18 @@ public class HolidayTreeChoiceGump : StaticGump<HolidayTreeChoiceGump>
             return;
         }
 
+        var from = sender.Mobile;
+
         switch (info.ButtonID)
         {
             case 1:
                 {
-                    _deed.BeginPlace(_from, HolidayTreeType.Classic);
+                    _deed.BeginPlace(from, HolidayTreeType.Classic);
                     break;
                 }
             case 2:
                 {
-                    _deed.BeginPlace(_from, HolidayTreeType.Modern);
+                    _deed.BeginPlace(from, HolidayTreeType.Modern);
                     break;
                 }
         }

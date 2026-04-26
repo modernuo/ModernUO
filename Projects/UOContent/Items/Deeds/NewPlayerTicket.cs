@@ -88,16 +88,11 @@ public partial class NewPlayerTicket : Item
 
     private class NewPlayerTicketGump : StaticGump<NewPlayerTicketGump>
     {
-        private readonly Mobile _from;
         private readonly NewPlayerTicket _ticket;
 
         public override bool Singleton => true;
 
-        private NewPlayerTicketGump(Mobile from, NewPlayerTicket ticket) : base(50, 50)
-        {
-            _from = from;
-            _ticket = ticket;
-        }
+        private NewPlayerTicketGump(NewPlayerTicket ticket) : base(50, 50) => _ticket = ticket;
 
         public static void DisplayTo(Mobile from, NewPlayerTicket ticket)
         {
@@ -106,7 +101,7 @@ public partial class NewPlayerTicket : Item
                 return;
             }
 
-            from.SendGump(new NewPlayerTicketGump(from, ticket));
+            from.SendGump(new NewPlayerTicketGump(ticket));
         }
 
         protected override void BuildLayout(ref StaticGumpBuilder builder)
@@ -193,14 +188,15 @@ public partial class NewPlayerTicket : Item
 
             if (item != null)
             {
+                var from = sender.Mobile;
                 _ticket.Delete();
 
-                _from.SendLocalizedMessage(number);
-                _from.AddToBackpack(item);
+                from.SendLocalizedMessage(number);
+                from.AddToBackpack(item);
 
                 if (item2 != null)
                 {
-                    _from.AddToBackpack(item2);
+                    from.AddToBackpack(item2);
                 }
             }
         }

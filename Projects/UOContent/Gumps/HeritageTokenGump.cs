@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Server.Items;
 using Server.Network;
 
@@ -6,6 +7,93 @@ namespace Server.Gumps
 {
     public class HeritageTokenGump : StaticGump<HeritageTokenGump>
     {
+        private static readonly Dictionary<int, (Type[] Types, int CliLoc)> ButtonLookup = new()
+        {
+            // 7th anniversary
+            { 0x64, ([typeof(LeggingsOfEmbers)], 1078147) },
+            { 0x65, ([typeof(RoseOfTrinsic)], 1062913) },
+            { 0x66, ([typeof(ShaminoCrossbow)], 1062915) },
+            { 0x67, ([typeof(TapestryOfSosaria)], 1062917) },
+            { 0x68, ([typeof(HearthOfHomeFireDeed)], 1062919) },
+            { 0x69, ([typeof(HolySword)], 1062921) },
+            { 0x6A, ([typeof(SamuraiHelm)], 1062923) },
+
+            // 8th anniversary
+            { 0x6D, ([typeof(DupresShield)], 1075196) },
+            { 0x6E, ([typeof(FountainOfLifeDeed)], 1075197) },
+            { 0x6F, ([typeof(DawnsMusicBox)], 1075198) },
+            { 0x70, ([typeof(OssianGrimoire)], 1078148) },
+            { 0x71, ([typeof(FerretFormTalisman)], 1078142) },
+            { 0x72, ([typeof(SquirrelFormTalisman)], 1078143) },
+            { 0x73, ([typeof(CuSidheFormTalisman)], 1078144) },
+            { 0x74, ([typeof(ReptalonFormTalisman)], 1078145) },
+            { 0x75, ([typeof(QuiverOfInfinity)], 1075201) },
+
+            // evil home decor
+            { 0x76, ([typeof(BoneThroneDeed), typeof(BoneCouchDeed), typeof(BoneTableDeed)], 1074797) },
+            { 0x77, ([typeof(CreepyPortraitDeed), typeof(DisturbingPortraitDeed), typeof(UnsettlingPortraitDeed)], 1078146) },
+            {
+                0x78,
+                (
+                    [
+                        typeof(MountedPixieBlueDeed), typeof(MountedPixieGreenDeed), typeof(MountedPixieLimeDeed),
+                        typeof(MountedPixieOrangeDeed), typeof(MountedPixieWhiteDeed)
+                    ],
+                    1074799
+                )
+            },
+            { 0x79, ([typeof(HaunterMirrorDeed)], 1074800) },
+            { 0x7A, ([typeof(BedOfNailsDeed)], 1074801) },
+            { 0x7B, ([typeof(SacrificialAltarDeed)], 1074818) },
+
+            // broken furniture
+            { 0x7C, ([typeof(BrokenCoveredChairDeed)], 1076257) },
+            { 0x7D, ([typeof(BrokenBookcaseDeed)], 1076258) },
+            { 0x7E, ([typeof(StandingBrokenChairDeed)], 1076259) },
+            { 0x7F, ([typeof(BrokenVanityDeed)], 1076260) },
+            { 0x80, ([typeof(BrokenChestOfDrawersDeed)], 1076261) },
+            { 0x81, ([typeof(BrokenArmoireDeed)], 1076262) },
+            { 0x82, ([typeof(BrokenBedDeed)], 1076263) },
+            { 0x83, ([typeof(BrokenFallenChairDeed)], 1076264) },
+
+            // other
+            { 0x84, ([typeof(SuitOfGoldArmorDeed)], 1076265) },
+            { 0x85, ([typeof(SuitOfSilverArmorDeed)], 1076266) },
+            { 0x86, ([typeof(BoilingCauldronDeed)], 1076267) },
+            { 0x87, ([typeof(GuillotineDeed)], 1024656) },
+            { 0x88, ([typeof(CherryBlossomTreeDeed)], 1076268) },
+            { 0x89, ([typeof(AppleTreeDeed)], 1076269) },
+            { 0x8A, ([typeof(PeachTreeDeed)], 1076270) },
+            { 0x8B, ([typeof(HangingAxesDeed)], 1076271) },
+            { 0x8C, ([typeof(HangingSwordsDeed)], 1076272) },
+            { 0x8D, ([typeof(BlueFancyRugDeed)], 1076273) },
+            { 0x8E, ([typeof(WoodenCoffinDeed)], 1076274) },
+            { 0x8F, ([typeof(VanityDeed)], 1074027) },
+            { 0x90, ([typeof(TableWithPurpleClothDeed)], 1076635) },
+            { 0x91, ([typeof(TableWithBlueClothDeed)], 1076636) },
+            { 0x92, ([typeof(TableWithRedClothDeed)], 1076637) },
+            { 0x93, ([typeof(TableWithOrangeClothDeed)], 1076638) },
+            { 0x94, ([typeof(UnmadeBedDeed)], 1076279) },
+            { 0x95, ([typeof(CurtainsDeed)], 1076280) },
+            { 0x96, ([typeof(ScarecrowDeed)], 1076281) },
+            { 0x97, ([typeof(WallTorchDeed)], 1076282) },
+            { 0x98, ([typeof(FountainDeed)], 1076283) },
+            { 0x99, ([typeof(StoneStatueDeed)], 1076284) },
+            { 0x9A, ([typeof(LargeFishingNetDeed)], 1076285) },
+            { 0x9B, ([typeof(SmallFishingNetDeed)], 1076286) },
+            { 0x9C, ([typeof(HouseLadderDeed)], 1076287) },
+            { 0x9D, ([typeof(IronMaidenDeed)], 1076288) },
+            { 0x9E, ([typeof(BluePlainRugDeed)], 1076585) },
+            { 0x9F, ([typeof(GoldenDecorativeRugDeed)], 1076586) },
+            { 0xA0, ([typeof(CinnamonFancyRugDeed)], 1076587) },
+            { 0xA1, ([typeof(RedPlainRugDeed)], 1076588) },
+            { 0xA2, ([typeof(BlueDecorativeRugDeed)], 1076589) },
+            { 0xA3, ([typeof(PinkFancyRugDeed)], 1076590) },
+            { 0xA4, ([typeof(CherryBlossomTrunkDeed)], 1076784) },
+            { 0xA5, ([typeof(AppleTrunkDeed)], 1076785) },
+            { 0xA6, ([typeof(PeachTrunkDeed)], 1076786) }
+        };
+
         private readonly HeritageToken _token;
 
         public override bool Singleton => true;
@@ -19,7 +107,7 @@ namespace Server.Gumps
                 return;
             }
 
-            from.SendGump(new HeritageTokenGump(token), true);
+            from.SendGump(new HeritageTokenGump(token));
         }
 
         protected override void BuildLayout(ref StaticGumpBuilder builder)
@@ -289,431 +377,12 @@ namespace Server.Gumps
                 return;
             }
 
-            Type[] types;
-            int cliloc;
-
-            switch (info.ButtonID)
+            if (!ButtonLookup.TryGetValue(info.ButtonID, out var buttonInfo))
             {
-                default:
-                    {
-                        types = null;
-                        cliloc = 0;
-                        break;
-                    }
-                // 7th anniversary
-                case 0x64:
-                    {
-                        types = [typeof(LeggingsOfEmbers)];
-                        cliloc = 1078147;
-                        break;
-                    }
-                case 0x65:
-                    {
-                        types = [typeof(RoseOfTrinsic)];
-                        cliloc = 1062913;
-                        break;
-                    }
-                case 0x66:
-                    {
-                        types = [typeof(ShaminoCrossbow)];
-                        cliloc = 1062915;
-                        break;
-                    }
-                case 0x67:
-                    {
-                        types = [typeof(TapestryOfSosaria)];
-                        cliloc = 1062917;
-                        break;
-                    }
-                case 0x68:
-                    {
-                        types = [typeof(HearthOfHomeFireDeed)];
-                        cliloc = 1062919;
-                        break;
-                    }
-                case 0x69:
-                    {
-                        types = [typeof(HolySword)];
-                        cliloc = 1062921;
-                        break;
-                    }
-                case 0x6A:
-                    {
-                        types = [typeof(SamuraiHelm)];
-                        cliloc = 1062923;
-                        break;
-                    }
-
-                // 8th anniversary
-                /*case 0x6B: types = new [] {  typeof( SpiritualityHelm )  }; cliloc = 1075188; break;
-                case 0x6C: types = new [] {  typeof( ValorGauntlets )  }; cliloc = 1075192; break;*/
-                case 0x6D:
-                    {
-                        types = [typeof(DupresShield)];
-                        cliloc = 1075196;
-                        break;
-                    }
-                case 0x6E:
-                    {
-                        types = [typeof(FountainOfLifeDeed)];
-                        cliloc = 1075197;
-                        break;
-                    }
-                case 0x6F:
-                    {
-                        types = [typeof(DawnsMusicBox)];
-                        cliloc = 1075198;
-                        break;
-                    }
-                case 0x70:
-                    {
-                        types = [typeof(OssianGrimoire)];
-                        cliloc = 1078148;
-                        break;
-                    }
-                case 0x71:
-                    {
-                        types = [typeof(FerretFormTalisman)];
-                        cliloc = 1078142;
-                        break;
-                    }
-                case 0x72:
-                    {
-                        types = [typeof(SquirrelFormTalisman)];
-                        cliloc = 1078143;
-                        break;
-                    }
-                case 0x73:
-                    {
-                        types = [typeof(CuSidheFormTalisman)];
-                        cliloc = 1078144;
-                        break;
-                    }
-                case 0x74:
-                    {
-                        types = [typeof(ReptalonFormTalisman)];
-                        cliloc = 1078145;
-                        break;
-                    }
-                case 0x75:
-                    {
-                        types = [typeof(QuiverOfInfinity)];
-                        cliloc = 1075201;
-                        break;
-                    }
-
-                // evil home decor
-                case 0x76:
-                    {
-                        types = [typeof(BoneThroneDeed), typeof(BoneCouchDeed), typeof(BoneTableDeed)];
-                        cliloc = 1074797;
-                        break;
-                    }
-                case 0x77:
-                    {
-                        types =
-                        [
-                            typeof(CreepyPortraitDeed),
-                            typeof(DisturbingPortraitDeed),
-                            typeof(UnsettlingPortraitDeed)
-                        ];
-                        cliloc = 1078146;
-                        break;
-                    }
-                case 0x78:
-                    {
-                        types =
-                        [
-                            typeof(MountedPixieBlueDeed),
-                            typeof(MountedPixieGreenDeed),
-                            typeof(MountedPixieLimeDeed),
-                            typeof(MountedPixieOrangeDeed),
-                            typeof(MountedPixieWhiteDeed)
-                        ];
-                        cliloc = 1074799;
-                        break;
-                    }
-                case 0x79:
-                    {
-                        types = [typeof(HaunterMirrorDeed)];
-                        cliloc = 1074800;
-                        break;
-                    }
-                case 0x7A:
-                    {
-                        types = [typeof(BedOfNailsDeed)];
-                        cliloc = 1074801;
-                        break;
-                    }
-                case 0x7B:
-                    {
-                        types = [typeof(SacrificialAltarDeed)];
-                        cliloc = 1074818;
-                        break;
-                    }
-
-                // broken furniture
-                case 0x7C:
-                    {
-                        types = [typeof(BrokenCoveredChairDeed)];
-                        cliloc = 1076257;
-                        break;
-                    }
-                case 0x7D:
-                    {
-                        types = [typeof(BrokenBookcaseDeed)];
-                        cliloc = 1076258;
-                        break;
-                    }
-                case 0x7E:
-                    {
-                        types = [typeof(StandingBrokenChairDeed)];
-                        cliloc = 1076259;
-                        break;
-                    }
-                case 0x7F:
-                    {
-                        types = [typeof(BrokenVanityDeed)];
-                        cliloc = 1076260;
-                        break;
-                    }
-                case 0x80:
-                    {
-                        types = [typeof(BrokenChestOfDrawersDeed)];
-                        cliloc = 1076261;
-                        break;
-                    }
-                case 0x81:
-                    {
-                        types = [typeof(BrokenArmoireDeed)];
-                        cliloc = 1076262;
-                        break;
-                    }
-                case 0x82:
-                    {
-                        types = [typeof(BrokenBedDeed)];
-                        cliloc = 1076263;
-                        break;
-                    }
-                case 0x83:
-                    {
-                        types = [typeof(BrokenFallenChairDeed)];
-                        cliloc = 1076264;
-                        break;
-                    }
-
-                // other
-                case 0x84:
-                    {
-                        types = [typeof(SuitOfGoldArmorDeed)];
-                        cliloc = 1076265;
-                        break;
-                    }
-                case 0x85:
-                    {
-                        types = [typeof(SuitOfSilverArmorDeed)];
-                        cliloc = 1076266;
-                        break;
-                    }
-                case 0x86:
-                    {
-                        types = [typeof(BoilingCauldronDeed)];
-                        cliloc = 1076267;
-                        break;
-                    }
-                case 0x87:
-                    {
-                        types = [typeof(GuillotineDeed)];
-                        cliloc = 1024656;
-                        break;
-                    }
-                case 0x88:
-                    {
-                        types = [typeof(CherryBlossomTreeDeed)];
-                        cliloc = 1076268;
-                        break;
-                    }
-                case 0x89:
-                    {
-                        types = [typeof(AppleTreeDeed)];
-                        cliloc = 1076269;
-                        break;
-                    }
-                case 0x8A:
-                    {
-                        types = [typeof(PeachTreeDeed)];
-                        cliloc = 1076270;
-                        break;
-                    }
-                case 0x8B:
-                    {
-                        types = [typeof(HangingAxesDeed)];
-                        cliloc = 1076271;
-                        break;
-                    }
-                case 0x8C:
-                    {
-                        types = [typeof(HangingSwordsDeed)];
-                        cliloc = 1076272;
-                        break;
-                    }
-                case 0x8D:
-                    {
-                        types = [typeof(BlueFancyRugDeed)];
-                        cliloc = 1076273;
-                        break;
-                    }
-                case 0x8E:
-                    {
-                        types = [typeof(WoodenCoffinDeed)];
-                        cliloc = 1076274;
-                        break;
-                    }
-                case 0x8F:
-                    {
-                        types = [typeof(VanityDeed)];
-                        cliloc = 1074027;
-                        break;
-                    }
-                case 0x90:
-                    {
-                        types = [typeof(TableWithPurpleClothDeed)];
-                        cliloc = 1076635;
-                        break;
-                    }
-                case 0x91:
-                    {
-                        types = [typeof(TableWithBlueClothDeed)];
-                        cliloc = 1076636;
-                        break;
-                    }
-                case 0x92:
-                    {
-                        types = [typeof(TableWithRedClothDeed)];
-                        cliloc = 1076637;
-                        break;
-                    }
-                case 0x93:
-                    {
-                        types = [typeof(TableWithOrangeClothDeed)];
-                        cliloc = 1076638;
-                        break;
-                    }
-                case 0x94:
-                    {
-                        types = [typeof(UnmadeBedDeed)];
-                        cliloc = 1076279;
-                        break;
-                    }
-                case 0x95:
-                    {
-                        types = [typeof(CurtainsDeed)];
-                        cliloc = 1076280;
-                        break;
-                    }
-                case 0x96:
-                    {
-                        types = [typeof(ScarecrowDeed)];
-                        cliloc = 1076281;
-                        break;
-                    }
-                case 0x97:
-                    {
-                        types = [typeof(WallTorchDeed)];
-                        cliloc = 1076282;
-                        break;
-                    }
-                case 0x98:
-                    {
-                        types = [typeof(FountainDeed)];
-                        cliloc = 1076283;
-                        break;
-                    }
-                case 0x99:
-                    {
-                        types = [typeof(StoneStatueDeed)];
-                        cliloc = 1076284;
-                        break;
-                    }
-                case 0x9A:
-                    {
-                        types = [typeof(LargeFishingNetDeed)];
-                        cliloc = 1076285;
-                        break;
-                    }
-                case 0x9B:
-                    {
-                        types = [typeof(SmallFishingNetDeed)];
-                        cliloc = 1076286;
-                        break;
-                    }
-                case 0x9C:
-                    {
-                        types = [typeof(HouseLadderDeed)];
-                        cliloc = 1076287;
-                        break;
-                    }
-                case 0x9D:
-                    {
-                        types = [typeof(IronMaidenDeed)];
-                        cliloc = 1076288;
-                        break;
-                    }
-                case 0x9E:
-                    {
-                        types = [typeof(BluePlainRugDeed)];
-                        cliloc = 1076585;
-                        break;
-                    }
-                case 0x9F:
-                    {
-                        types = [typeof(GoldenDecorativeRugDeed)];
-                        cliloc = 1076586;
-                        break;
-                    }
-                case 0xA0:
-                    {
-                        types = [typeof(CinnamonFancyRugDeed)];
-                        cliloc = 1076587;
-                        break;
-                    }
-                case 0xA1:
-                    {
-                        types = [typeof(RedPlainRugDeed)];
-                        cliloc = 1076588;
-                        break;
-                    }
-                case 0xA2:
-                    {
-                        types = [typeof(BlueDecorativeRugDeed)];
-                        cliloc = 1076589;
-                        break;
-                    }
-                case 0xA3:
-                    {
-                        types = [typeof(PinkFancyRugDeed)];
-                        cliloc = 1076590;
-                        break;
-                    }
-                case 0xA4:
-                    {
-                        types = [typeof(CherryBlossomTrunkDeed)];
-                        cliloc = 1076784;
-                        break;
-                    }
-                case 0xA5:
-                    {
-                        types = [typeof(AppleTrunkDeed)];
-                        cliloc = 1076785;
-                        break;
-                    }
-                case 0xA6:
-                    {
-                        types = [typeof(PeachTrunkDeed)];
-                        cliloc = 1076786;
-                        break;
-                    }
+                return;
             }
+
+            var (types, cliloc) = buttonInfo;
 
             if (types?.Length > 0 && cliloc > 0)
             {
