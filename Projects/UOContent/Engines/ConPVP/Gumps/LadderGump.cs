@@ -26,7 +26,7 @@ public partial class LadderItem : Item
 
             if (ladder != null)
             {
-                from.SendGump(new LadderGump(ladder), true);
+                LadderGump.DisplayTo(from, ladder);
             }
         }
         else
@@ -36,26 +36,43 @@ public partial class LadderItem : Item
     }
 }
 
-public class LadderGump : Gump
+public class LadderGump : DynamicGump
 {
-    private readonly Ladder m_Ladder;
+    private readonly Ladder _ladder;
 
-    private readonly List<LadderEntry> m_List;
-    private readonly int m_Page;
-    private int m_ColumnX = 12;
+    private List<LadderEntry> _list;
+    private int _page;
+    private int _columnX;
 
-    public LadderGump(Ladder ladder, int page = 0) : base(50, 50)
+    public override bool Singleton => true;
+
+    private LadderGump(Ladder ladder, int page) : base(50, 50)
     {
-        m_Ladder = ladder;
-        m_Page = page;
+        _ladder = ladder;
+        _page = page;
+    }
 
-        AddPage(0);
+    public static void DisplayTo(Mobile from, Ladder ladder, int page = 0)
+    {
+        if (from?.NetState == null || ladder == null)
+        {
+            return;
+        }
 
-        m_List = new List<LadderEntry>(ladder.Entries);
+        from.SendGump(new LadderGump(ladder, page), true);
+    }
 
-        var lc = Math.Min(m_List.Count, 150);
+    protected override void BuildLayout(ref DynamicGumpBuilder builder)
+    {
+        _columnX = 12;
 
-        var start = page * 15;
+        builder.AddPage();
+
+        _list = new List<LadderEntry>(_ladder.Entries);
+
+        var lc = Math.Min(_list.Count, 150);
+
+        var start = _page * 15;
         var end = start + 15;
 
         if (end > lc)
@@ -67,66 +84,59 @@ public class LadderGump : Gump
 
         var height = 12 + 20 + ct * 20 + 23 + 12;
 
-        AddBackground(0, 0, 499, height, 0x2436);
+        builder.AddBackground(0, 0, 499, height, 0x2436);
 
         for (var i = start + 1; i < end; i += 2)
         {
-            AddImageTiled(12, 32 + (i - start) * 20, 475, 20, 0x2430);
+            builder.AddImageTiled(12, 32 + (i - start) * 20, 475, 20, 0x2430);
         }
 
-        AddAlphaRegion(10, 10, 479, height - 20);
+        builder.AddAlphaRegion(10, 10, 479, height - 20);
 
-        if (page > 0)
+        if (_page > 0)
         {
-            AddButton(446, height - 12 - 2 - 16, 0x15E3, 0x15E7, 1);
+            builder.AddButton(446, height - 12 - 2 - 16, 0x15E3, 0x15E7, 1);
         }
         else
         {
-            AddImage(446, height - 12 - 2 - 16, 0x2626);
+            builder.AddImage(446, height - 12 - 2 - 16, 0x2626);
         }
 
-        if ((page + 1) * 15 < lc)
+        if ((_page + 1) * 15 < lc)
         {
-            AddButton(466, height - 12 - 2 - 16, 0x15E1, 0x15E5, 2);
+            builder.AddButton(466, height - 12 - 2 - 16, 0x15E1, 0x15E5, 2);
         }
         else
         {
-            AddImage(466, height - 12 - 2 - 16, 0x2622);
+            builder.AddImage(466, height - 12 - 2 - 16, 0x2622);
         }
 
-        AddHtml(
+        builder.AddHtml(
             16,
             height - 12 - 2 - 18,
             400,
             20,
-            Html.Color($"Top {lc} of {m_List.Count:N0} duelists, page {page + 1} of {(lc + 14) / 15}", 0xFFC000)
+            Html.Color($"Top {lc} of {_list.Count:N0} duelists, page {_page + 1} of {(lc + 14) / 15}", 0xFFC000)
         );
 
-        AddColumnHeader(75, "Rank");
-        AddColumnHeader(115, "Level");
-        AddColumnHeader(50, "Guild");
-        AddColumnHeader(115, "Name");
-        AddColumnHeader(60, "Wins");
-        AddColumnHeader(60, "Losses");
+        AddColumnHeader(ref builder, 75, "Rank");
+        AddColumnHeader(ref builder, 115, "Level");
+        AddColumnHeader(ref builder, 50, "Guild");
+        AddColumnHeader(ref builder, 115, "Name");
+        AddColumnHeader(ref builder, 60, "Wins");
+        AddColumnHeader(ref builder, 60, "Losses");
 
         for (var i = start; i < end && i < lc; ++i)
         {
-            var entry = m_List[i];
+            var entry = _list[i];
 
             var y = 32 + (i - start) * 20;
             var x = 12;
 
-            AddBorderedText(x, y, 75, Rank(i + 1).Center(), 0xFFFFFF, 0);
+            AddBorderedText(ref builder, x, y, 75, Rank(i + 1).Center(), 0xFFFFFF, 0);
             x += 75;
 
-            /*AddImage( 20, y + 5, 0x2616, 0x96C );
-            AddImage( 22, y + 5, 0x2616, 0x96C );
-            AddImage( 20, y + 7, 0x2616, 0x96C );
-            AddImage( 22, y + 7, 0x2616, 0x96C );
-
-            AddImage( 21, y + 6, 0x2616, 0x454 );*/
-
-            AddImage(x + 3, y + 4, 0x805);
+            builder.AddImage(x + 3, y + 4, 0x805);
 
             var xp = entry.Experience;
             var level = Ladder.GetLevel(xp);
@@ -146,30 +156,27 @@ public class LadderGump : Gump
                 width = (109 * xpOffset + xpAdvance / 2) / (xpAdvance - 1);
             }
 
-            // AddImageTiled( 21, y + 6, width, 8, 0x2617 );
-            AddImageTiled(x + 3, y + 4, width, 11, 0x806);
-            AddBorderedText(x, y, 115, Html.Center($"{level}"), 0xFFFFFF, 0);
+            builder.AddImageTiled(x + 3, y + 4, width, 11, 0x806);
+            AddBorderedText(ref builder, x, y, 115, Html.Center($"{level}"), 0xFFFFFF, 0);
             x += 115;
 
             var mob = entry.Mobile;
 
             if (mob.Guild != null)
             {
-                AddBorderedText(x, y, 50, mob.Guild.Abbreviation.Center(), 0xFFFFFF, 0);
+                AddBorderedText(ref builder, x, y, 50, mob.Guild.Abbreviation.Center(), 0xFFFFFF, 0);
             }
 
             x += 50;
 
-            AddBorderedText(x + 5, y, 115 - 5, mob.Name, 0xFFFFFF, 0);
+            AddBorderedText(ref builder, x + 5, y, 115 - 5, mob.Name, 0xFFFFFF, 0);
             x += 115;
 
-            AddBorderedText(x, y, 60, Html.Center($"{entry.Wins}"), 0xFFFFFF, 0);
+            AddBorderedText(ref builder, x, y, 60, Html.Center($"{entry.Wins}"), 0xFFFFFF, 0);
             x += 60;
 
-            AddBorderedText(x, y, 60, Html.Center($"{entry.Losses}"), 0xFFFFFF, 0);
+            AddBorderedText(ref builder, x, y, 60, Html.Center($"{entry.Losses}"), 0xFFFFFF, 0);
             x += 60;
-
-            // AddBorderedText( 292 + 15, y, 115 - 30, String.Format( "{0} <DIV ALIGN=CENTER>/</DIV> <DIV ALIGN=RIGHT>{1}</DIV>", entry.Wins, entry.Losses ), 0xFFC000, 0 );
         }
     }
 
@@ -195,38 +202,34 @@ public class LadderGump : Gump
     {
         var from = sender.Mobile;
 
-        if (info.ButtonID == 1 && m_Page > 0)
+        if (info.ButtonID == 1 && _page > 0)
         {
-            from.SendGump(new LadderGump(m_Ladder, m_Page - 1));
+            _page--;
+            from.SendGump(this); // refresh-via-this
         }
-        else if (info.ButtonID == 2 && (m_Page + 1) * 15 < Math.Min(m_List.Count, 150))
+        else if (info.ButtonID == 2 && (_page + 1) * 15 < Math.Min(_list.Count, 150))
         {
-            from.SendGump(new LadderGump(m_Ladder, m_Page + 1));
+            _page++;
+            from.SendGump(this); // refresh-via-this
         }
     }
 
-    private void AddBorderedText(int x, int y, int width, string text, int color, int borderColor)
+    private static void AddBorderedText(ref DynamicGumpBuilder builder, int x, int y, int width, string text, int color, int borderColor)
     {
-        /*AddColoredText( x - 1, y, width, text, borderColor );
-        AddColoredText( x + 1, y, width, text, borderColor );
-        AddColoredText( x, y - 1, width, text, borderColor );
-        AddColoredText( x, y + 1, width, text, borderColor );*/
-        /*AddColoredText( x - 1, y - 1, width, text, borderColor );
-        AddColoredText( x + 1, y + 1, width, text, borderColor );*/
-        AddColoredText(x, y, width, text, color);
+        AddColoredText(ref builder, x, y, width, text, color);
     }
 
-    private void AddColoredText(int x, int y, int width, string text, int color)
+    private static void AddColoredText(ref DynamicGumpBuilder builder, int x, int y, int width, string text, int color)
     {
-        AddHtml(x, y, width, 20, color == 0 ? text : text.Color(color));
+        builder.AddHtml(x, y, width, 20, color == 0 ? text : text.Color(color));
     }
 
-    private void AddColumnHeader(int width, string name)
+    private void AddColumnHeader(ref DynamicGumpBuilder builder, int width, string name)
     {
-        AddBackground(m_ColumnX, 12, width, 20, 0x242C);
-        AddImageTiled(m_ColumnX + 2, 14, width - 4, 16, 0x2430);
-        AddBorderedText(m_ColumnX, 13, width, name.Center(), 0xFFFFFF, 0);
+        builder.AddBackground(_columnX, 12, width, 20, 0x242C);
+        builder.AddImageTiled(_columnX + 2, 14, width - 4, 16, 0x2430);
+        AddBorderedText(ref builder, _columnX, 13, width, name.Center(), 0xFFFFFF, 0);
 
-        m_ColumnX += width;
+        _columnX += width;
     }
 }

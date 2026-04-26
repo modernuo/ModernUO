@@ -1307,19 +1307,19 @@ public partial class DuelContext
         {
             if (dc.m_Tournament == null)
             {
-                pm.SendGump(new ReadyGump(pm, dc, dc.ReadyCount));
+                ReadyGump.DisplayTo(pm, dc, dc.ReadyCount);
             }
         }
         else if (dc.ReadyWait && !dc.StartedBeginCountdown && !dc.Started && !dc.Finished)
         {
             if (dc.m_Tournament == null)
             {
-                pm.SendGump(new ReadyUpGump(pm, dc));
+                ReadyUpGump.DisplayTo(pm, dc);
             }
         }
         else if (dc.Initiator == pm && !dc.ReadyWait && !dc.StartedBeginCountdown && !dc.Started && !dc.Finished)
         {
-            pm.SendGump(new DuelContextGump(pm, dc));
+            DuelContextGump.DisplayTo(pm, dc);
         }
     }
 
@@ -1418,7 +1418,7 @@ public partial class DuelContext
             }
             else
             {
-                pm.SendGump(new DuelContextGump(pm, new DuelContext(pm, RulesetLayout.Root)));
+                DuelContextGump.DisplayTo(pm, new DuelContext(pm, RulesetLayout.Root));
                 e.Handled = true;
             }
         }
@@ -1433,7 +1433,7 @@ public partial class DuelContext
 
                 if (prefs != null)
                 {
-                    e.Mobile.SendGump(new PreferencesGump(e.Mobile, prefs));
+                    PreferencesGump.DisplayTo(e.Mobile, prefs);
                 }
             }
         }
@@ -1547,13 +1547,13 @@ public partial class DuelContext
                             {
                                 if (g is ParticipantGump pg && pg.Participant == p)
                                 {
-                                    init.SendGump(new ParticipantGump(init, dc, p));
+                                    ParticipantGump.DisplayTo(init, dc, p);
                                     break;
                                 }
 
                                 if (g is DuelContextGump dcg && dcg.Context == dc)
                                 {
-                                    init.SendGump(new DuelContextGump(init, dc));
+                                    DuelContextGump.DisplayTo(init, dc);
                                     break;
                                 }
                             }
@@ -1582,14 +1582,14 @@ public partial class DuelContext
                             {
                                 if (g is ParticipantGump pg && pg.Participant == p)
                                 {
-                                    init.SendGump(new ParticipantGump(init, dc, p));
+                                    ParticipantGump.DisplayTo(init, dc, p);
                                     send = false;
                                     break;
                                 }
 
                                 if (g is DuelContextGump dcg && dcg.Context == dc)
                                 {
-                                    init.SendGump(new DuelContextGump(init, dc));
+                                    DuelContextGump.DisplayTo(init, dc);
                                     send = false;
                                     break;
                                 }
@@ -1597,7 +1597,7 @@ public partial class DuelContext
 
                             if (send)
                             {
-                                init.SendGump(new DuelContextGump(init, dc));
+                                DuelContextGump.DisplayTo(init, dc);
                             }
                         }
                     }
@@ -1626,14 +1626,14 @@ public partial class DuelContext
                             {
                                 if (g is ParticipantGump pg && pg.Participant == p)
                                 {
-                                    init.SendGump(new ParticipantGump(init, dc, p));
+                                    ParticipantGump.DisplayTo(init, dc, p);
                                     send = false;
                                     break;
                                 }
 
                                 if (g is DuelContextGump dcg && dcg.Context == dc)
                                 {
-                                    init.SendGump(new DuelContextGump(init, dc));
+                                    DuelContextGump.DisplayTo(init, dc);
                                     send = false;
                                     break;
                                 }
@@ -1641,7 +1641,7 @@ public partial class DuelContext
 
                             if (send)
                             {
-                                init.SendGump(new DuelContextGump(init, dc));
+                                DuelContextGump.DisplayTo(init, dc);
                             }
                         }
                     }
@@ -1801,7 +1801,7 @@ public partial class DuelContext
         }
         else if (!m_Yielding)
         {
-            Initiator.SendGump(new DuelContextGump(Initiator, this));
+            DuelContextGump.DisplayTo(Initiator, this);
         }
 
         ReadyWait = false;
@@ -2195,7 +2195,7 @@ public partial class DuelContext
                         gumps.Close<ReadyGump>();
                         gumps.Close<ReadyUpGump>();
                         gumps.Close<BeginGump>();
-                        gumps.Send(new BeginGump(count));
+                        BeginGump.DisplayTo(mob, count);
                     }
 
                     mob.Frozen = true;
@@ -2254,7 +2254,7 @@ public partial class DuelContext
 
                 if (mob != null && m_Tournament == null)
                 {
-                    mob.SendGump(new ReadyUpGump(mob, this), true);
+                    ReadyUpGump.DisplayTo(mob, this);
                 }
             }
         }
@@ -2509,7 +2509,7 @@ public partial class DuelContext
                 {
                     if (m_Tournament == null)
                     {
-                        mob.SendGump(new ReadyGump(mob, this, count), true);
+                        ReadyGump.DisplayTo(mob, this, count);
                     }
                 }
                 else
