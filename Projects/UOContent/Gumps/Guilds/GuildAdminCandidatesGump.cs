@@ -6,7 +6,7 @@ namespace Server.Gumps
 {
     public class GuildAdminCandidatesGump : GuildMobileListGump
     {
-        private GuildAdminCandidatesGump(Mobile from, Guild guild) : base(from, guild, true, guild.Candidates)
+        private GuildAdminCandidatesGump(Guild guild) : base(guild, true, guild.Candidates)
         {
         }
 
@@ -18,7 +18,7 @@ namespace Server.Gumps
             }
 
             GuildGump.EnsureClosed(from);
-            from.SendGump(new GuildAdminCandidatesGump(from, guild));
+            from.SendGump(new GuildAdminCandidatesGump(guild));
         }
 
         protected override void BuildHeader(ref DynamicGumpBuilder builder)
@@ -34,7 +34,8 @@ namespace Server.Gumps
 
         public override void OnResponse(NetState state, in RelayInfo info)
         {
-            if (GuildGump.BadLeader(_mobile, _guild))
+            var from = state.Mobile;
+            if (GuildGump.BadLeader(from, _guild))
             {
                 return;
             }
@@ -43,7 +44,7 @@ namespace Server.Gumps
             {
                 case 0:
                     {
-                        GuildmasterGump.DisplayTo(_mobile, _guild);
+                        GuildmasterGump.DisplayTo(from, _guild);
                         break;
                     }
                 case 1: // Accept
@@ -71,17 +72,17 @@ namespace Server.Gumps
                                         if (guildFaction == null)
                                         {
                                             // That player cannot join a non-faction guild.
-                                            _mobile.SendLocalizedMessage(1013027);
+                                            from.SendLocalizedMessage(1013027);
                                         }
                                         else if (targetFaction == null)
                                         {
                                             // That player must be in a faction before joining this guild.
-                                            _mobile.SendLocalizedMessage(1013026);
+                                            from.SendLocalizedMessage(1013026);
                                         }
                                         else
                                         {
                                             // That person has a different faction affiliation.
-                                            _mobile.SendLocalizedMessage(1013028);
+                                            from.SendLocalizedMessage(1013028);
                                         }
 
                                         break;
@@ -90,7 +91,7 @@ namespace Server.Gumps
                                     if (targetState?.IsLeaving == true)
                                     {
                                         // OSI does this quite strangely, so we'll just do it this way
-                                        _mobile.SendMessage(
+                                        from.SendMessage(
                                             "That person is quitting their faction and so you may not recruit them."
                                         );
                                         break;
@@ -101,11 +102,11 @@ namespace Server.Gumps
 
                                     if (_guild.Candidates.Count > 0)
                                     {
-                                        DisplayTo(_mobile, _guild);
+                                        DisplayTo(from, _guild);
                                     }
                                     else
                                     {
-                                        GuildmasterGump.DisplayTo(_mobile, _guild);
+                                        GuildmasterGump.DisplayTo(from, _guild);
                                     }
                                 }
                             }
@@ -131,11 +132,11 @@ namespace Server.Gumps
 
                                     if (_guild.Candidates.Count > 0)
                                     {
-                                        DisplayTo(_mobile, _guild);
+                                        DisplayTo(from, _guild);
                                     }
                                     else
                                     {
-                                        GuildmasterGump.DisplayTo(_mobile, _guild);
+                                        GuildmasterGump.DisplayTo(from, _guild);
                                     }
                                 }
                             }

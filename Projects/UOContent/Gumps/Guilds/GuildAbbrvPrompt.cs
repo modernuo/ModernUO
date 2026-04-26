@@ -1,3 +1,4 @@
+using System;
 using Server.Guilds;
 using Server.Prompts;
 
@@ -5,53 +6,49 @@ namespace Server.Gumps
 {
     public class GuildAbbrvPrompt : Prompt
     {
-        private readonly Guild m_Guild;
-        private readonly Mobile m_Mobile;
+        private readonly Guild _guild;
 
-        public GuildAbbrvPrompt(Mobile m, Guild g)
-        {
-            m_Mobile = m;
-            m_Guild = g;
-        }
+        public GuildAbbrvPrompt(Guild g) => _guild = g;
 
         public override void OnCancel(Mobile from)
         {
-            if (GuildGump.BadLeader(m_Mobile, m_Guild))
+            if (GuildGump.BadLeader(from, _guild))
             {
                 return;
             }
 
-            GuildmasterGump.DisplayTo(m_Mobile, m_Guild);
+            GuildmasterGump.DisplayTo(from, _guild);
         }
 
         public override void OnResponse(Mobile from, string text)
         {
-            if (GuildGump.BadLeader(m_Mobile, m_Guild))
+            if (GuildGump.BadLeader(from, _guild))
             {
                 return;
             }
 
-            text = text.Trim();
+            var textSpan = text.AsSpan().Trim();
 
-            if (text.Length > 3)
+            if (textSpan.Length > 3)
             {
-                text = text[..3];
+                textSpan = textSpan[..3];
             }
 
-            if (text.Length > 0)
+            if (textSpan.Length > 0)
             {
-                if (BaseGuild.FindByAbbrev(text) != null)
+                if (BaseGuild.FindByAbbrev(textSpan) != null)
                 {
-                    m_Mobile.SendMessage($"{text} conflicts with the abbreviation of an existing guild.");
+                    from.SendMessage($"{textSpan} conflicts with the abbreviation of an existing guild.");
                 }
                 else
                 {
-                    m_Guild.Abbreviation = text;
-                    m_Guild.GuildMessage(1018025, true, text); // Your guild abbreviation has changed:
+                    text = textSpan.ToString();
+                    _guild.Abbreviation = text;
+                    _guild.GuildMessage(1018025, true, text); // Your guild abbreviation has changed:
                 }
             }
 
-            GuildmasterGump.DisplayTo(m_Mobile, m_Guild);
+            GuildmasterGump.DisplayTo(from, _guild);
         }
     }
 }

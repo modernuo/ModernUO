@@ -5,7 +5,7 @@ namespace Server.Gumps
 {
     public class GuildRosterGump : GuildMobileListGump
     {
-        private GuildRosterGump(Mobile from, Guild guild) : base(from, guild, false, guild.Members)
+        private GuildRosterGump(Guild guild) : base(guild, false, guild.Members)
         {
         }
 
@@ -17,7 +17,7 @@ namespace Server.Gumps
             }
 
             GuildGump.EnsureClosed(from);
-            from.SendGump(new GuildRosterGump(from, guild));
+            from.SendGump(new GuildRosterGump(guild));
         }
 
         protected override void BuildHeader(ref DynamicGumpBuilder builder)
@@ -30,14 +30,15 @@ namespace Server.Gumps
 
         public override void OnResponse(NetState state, in RelayInfo info)
         {
-            if (GuildGump.BadMember(_mobile, _guild))
+            var from = state.Mobile;
+            if (GuildGump.BadMember(from, _guild))
             {
                 return;
             }
 
             if (info.ButtonID == 1)
             {
-                GuildGump.DisplayTo(_mobile, _guild);
+                GuildGump.DisplayTo(from, _guild);
             }
         }
     }

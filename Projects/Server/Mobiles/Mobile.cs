@@ -7809,10 +7809,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         return false;
     }
 
-    public void LaunchBrowser(string url)
-    {
-        m_NetState?.LaunchBrowser(url);
-    }
+    public void LaunchBrowser(ReadOnlySpan<char> url) => m_NetState?.LaunchBrowser(url);
 
     public void InitStats(int str, int dex, int intel)
     {

@@ -1,3 +1,4 @@
+using System;
 using Server.Guilds;
 using Server.Prompts;
 
@@ -5,48 +6,43 @@ namespace Server.Gumps
 {
     public class GuildCharterPrompt : Prompt
     {
-        private readonly Guild m_Guild;
-        private readonly Mobile m_Mobile;
+        private readonly Guild _guild;
 
-        public GuildCharterPrompt(Mobile m, Guild g)
-        {
-            m_Mobile = m;
-            m_Guild = g;
-        }
+        public GuildCharterPrompt(Guild g) => _guild = g;
 
         public override void OnCancel(Mobile from)
         {
-            if (GuildGump.BadLeader(m_Mobile, m_Guild))
+            if (GuildGump.BadLeader(from, _guild))
             {
                 return;
             }
 
-            GuildmasterGump.DisplayTo(m_Mobile, m_Guild);
+            GuildmasterGump.DisplayTo(from, _guild);
         }
 
         public override void OnResponse(Mobile from, string text)
         {
-            if (GuildGump.BadLeader(m_Mobile, m_Guild))
+            if (GuildGump.BadLeader(from, _guild))
             {
                 return;
             }
 
-            text = text.Trim();
+            var textSpan = text.AsSpan().Trim();
 
-            if (text.Length > 50)
+            if (textSpan.Length > 50)
             {
-                text = text[..50];
+                textSpan = textSpan[..50];
             }
 
-            if (text.Length > 0)
+            if (textSpan.Length > 0)
             {
-                m_Guild.Charter = text;
+                _guild.Charter = textSpan.ToString();
             }
 
-            m_Mobile.SendLocalizedMessage(1013072); // Enter the new website for the guild (50 characters max):
-            m_Mobile.Prompt = new GuildWebsitePrompt(m_Mobile, m_Guild);
+            from.SendLocalizedMessage(1013072); // Enter the new website for the guild (50 characters max):
+            from.Prompt = new GuildWebsitePrompt(from, _guild);
 
-            GuildmasterGump.DisplayTo(m_Mobile, m_Guild);
+            GuildmasterGump.DisplayTo(from, _guild);
         }
     }
 }

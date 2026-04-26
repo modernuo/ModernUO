@@ -5,51 +5,46 @@ namespace Server.Gumps
 {
     public class GuildDeclareWarPrompt : Prompt
     {
-        private readonly Guild m_Guild;
-        private readonly Mobile m_Mobile;
+        private readonly Guild _guild;
 
-        public GuildDeclareWarPrompt(Mobile m, Guild g)
-        {
-            m_Mobile = m;
-            m_Guild = g;
-        }
+        public GuildDeclareWarPrompt(Guild g) => _guild = g;
 
         public override void OnCancel(Mobile from)
         {
-            if (GuildGump.BadLeader(m_Mobile, m_Guild))
+            if (GuildGump.BadLeader(from, _guild))
             {
                 return;
             }
 
-            GuildWarAdminGump.DisplayTo(m_Mobile, m_Guild);
+            GuildWarAdminGump.DisplayTo(from, _guild);
         }
 
         public override void OnResponse(Mobile from, string text)
         {
-            if (GuildGump.BadLeader(m_Mobile, m_Guild))
+            if (GuildGump.BadLeader(from, _guild))
             {
                 return;
             }
 
-            text = text.Trim();
+            var textSpan = text.Trim();
 
-            if (text.Length >= 3)
+            if (textSpan.Length >= 3)
             {
-                var guilds = BaseGuild.Search(text).SafeConvertList<BaseGuild, Guild>();
+                var guilds = BaseGuild.Search(textSpan).SafeConvertList<BaseGuild, Guild>();
 
                 if (guilds.Count > 0)
                 {
-                    GuildDeclareWarGump.DisplayTo(m_Mobile, m_Guild, guilds);
+                    GuildDeclareWarGump.DisplayTo(from, _guild, guilds);
                 }
                 else
                 {
-                    GuildWarAdminGump.DisplayTo(m_Mobile, m_Guild);
-                    m_Mobile.SendLocalizedMessage(1018003); // No guilds found matching - try another name in the search
+                    GuildWarAdminGump.DisplayTo(from, _guild);
+                    from.SendLocalizedMessage(1018003); // No guilds found matching - try another name in the search
                 }
             }
             else
             {
-                m_Mobile.SendMessage("Search string must be at least three letters in length.");
+                from.SendMessage("Search string must be at least three letters in length.");
             }
         }
     }

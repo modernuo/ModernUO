@@ -5,7 +5,7 @@ namespace Server.Gumps
 {
     public class GuildDismissGump : GuildMobileListGump
     {
-        private GuildDismissGump(Mobile from, Guild guild) : base(from, guild, true, guild.Members)
+        private GuildDismissGump(Guild guild) : base(guild, true, guild.Members)
         {
         }
 
@@ -17,7 +17,7 @@ namespace Server.Gumps
             }
 
             GuildGump.EnsureClosed(from);
-            from.SendGump(new GuildDismissGump(from, guild));
+            from.SendGump(new GuildDismissGump(guild));
         }
 
         protected override void BuildHeader(ref DynamicGumpBuilder builder)
@@ -33,7 +33,8 @@ namespace Server.Gumps
 
         public override void OnResponse(NetState state, in RelayInfo info)
         {
-            if (GuildGump.BadLeader(_mobile, _guild))
+            var from = state.Mobile;
+            if (GuildGump.BadLeader(from, _guild))
             {
                 return;
             }
@@ -54,17 +55,17 @@ namespace Server.Gumps
                         {
                             _guild.RemoveMember(m);
 
-                            if (_mobile.AccessLevel >= AccessLevel.GameMaster || _mobile == _guild.Leader)
+                            if (from.AccessLevel >= AccessLevel.GameMaster || from == _guild.Leader)
                             {
-                                GuildmasterGump.DisplayTo(_mobile, _guild);
+                                GuildmasterGump.DisplayTo(from, _guild);
                             }
                         }
                     }
                 }
             }
-            else if (info.ButtonID == 2 && (_mobile.AccessLevel >= AccessLevel.GameMaster || _mobile == _guild.Leader))
+            else if (info.ButtonID == 2 && (from.AccessLevel >= AccessLevel.GameMaster || from == _guild.Leader))
             {
-                GuildmasterGump.DisplayTo(_mobile, _guild);
+                GuildmasterGump.DisplayTo(from, _guild);
             }
         }
     }

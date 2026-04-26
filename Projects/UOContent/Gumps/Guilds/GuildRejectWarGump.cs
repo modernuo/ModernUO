@@ -5,7 +5,7 @@ namespace Server.Gumps
 {
     public class GuildRejectWarGump : GuildListGump
     {
-        private GuildRejectWarGump(Mobile from, Guild guild) : base(from, guild, true, guild.WarInvitations)
+        private GuildRejectWarGump(Guild guild) : base(guild, true, guild.WarInvitations)
         {
         }
 
@@ -17,7 +17,7 @@ namespace Server.Gumps
             }
 
             GuildGump.EnsureClosed(from);
-            from.SendGump(new GuildRejectWarGump(from, guild));
+            from.SendGump(new GuildRejectWarGump(guild));
         }
 
         protected override void BuildHeader(ref DynamicGumpBuilder builder)
@@ -33,7 +33,8 @@ namespace Server.Gumps
 
         public override void OnResponse(NetState state, in RelayInfo info)
         {
-            if (GuildGump.BadLeader(_mobile, _guild))
+            var from = state.Mobile;
+            if (GuildGump.BadLeader(from, _guild))
             {
                 return;
             }
@@ -57,11 +58,11 @@ namespace Server.Gumps
 
                             if (_guild.WarInvitations.Count > 0)
                             {
-                                DisplayTo(_mobile, _guild);
+                                DisplayTo(from, _guild);
                             }
                             else
                             {
-                                GuildmasterGump.DisplayTo(_mobile, _guild);
+                                GuildmasterGump.DisplayTo(from, _guild);
                             }
                         }
                     }
@@ -69,7 +70,7 @@ namespace Server.Gumps
             }
             else if (info.ButtonID == 2)
             {
-                GuildmasterGump.DisplayTo(_mobile, _guild);
+                GuildmasterGump.DisplayTo(from, _guild);
             }
         }
     }

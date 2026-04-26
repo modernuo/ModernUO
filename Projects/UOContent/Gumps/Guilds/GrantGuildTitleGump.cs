@@ -5,7 +5,7 @@ namespace Server.Gumps
 {
     public class GrantGuildTitleGump : GuildMobileListGump
     {
-        private GrantGuildTitleGump(Mobile from, Guild guild) : base(from, guild, true, guild.Members)
+        private GrantGuildTitleGump(Guild guild) : base(guild, true, guild.Members)
         {
         }
 
@@ -17,7 +17,7 @@ namespace Server.Gumps
             }
 
             GuildGump.EnsureClosed(from);
-            from.SendGump(new GrantGuildTitleGump(from, guild));
+            from.SendGump(new GrantGuildTitleGump(guild));
         }
 
         protected override void BuildHeader(ref DynamicGumpBuilder builder)
@@ -33,7 +33,8 @@ namespace Server.Gumps
 
         public override void OnResponse(NetState state, in RelayInfo info)
         {
-            if (GuildGump.BadLeader(_mobile, _guild))
+            var from = state.Mobile;
+            if (info.ButtonID == 0 || GuildGump.BadMember(from, _guild))
             {
                 return;
             }
@@ -52,15 +53,15 @@ namespace Server.Gumps
 
                         if (m?.Deleted == false)
                         {
-                            _mobile.SendLocalizedMessage(1013074); // New title (20 characters max):
-                            _mobile.Prompt = new GuildTitlePrompt(_mobile, m, _guild);
+                            from.SendLocalizedMessage(1013074); // New title (20 characters max):
+                            from.Prompt = new GuildTitlePrompt(m, _guild);
                         }
                     }
                 }
             }
             else if (info.ButtonID == 2)
             {
-                GuildmasterGump.DisplayTo(_mobile, _guild);
+                GuildmasterGump.DisplayTo(from, _guild);
             }
         }
     }

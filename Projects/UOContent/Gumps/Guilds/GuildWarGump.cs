@@ -6,15 +6,10 @@ namespace Server.Gumps
     public class GuildWarGump : DynamicGump
     {
         private readonly Guild _guild;
-        private readonly Mobile _mobile;
 
         public override bool Singleton => true;
 
-        private GuildWarGump(Mobile from, Guild guild) : base(20, 30)
-        {
-            _mobile = from;
-            _guild = guild;
-        }
+        private GuildWarGump(Guild guild) : base(20, 30) => _guild = guild;
 
         public static void DisplayTo(Mobile from, Guild guild)
         {
@@ -24,7 +19,7 @@ namespace Server.Gumps
             }
 
             GuildGump.EnsureClosed(from);
-            from.SendGump(new GuildWarGump(from, guild));
+            from.SendGump(new GuildWarGump(guild));
         }
 
         protected override void BuildLayout(ref DynamicGumpBuilder builder)
@@ -57,9 +52,7 @@ namespace Server.Gumps
             {
                 for (var i = 0; i < enemies.Count; ++i)
                 {
-                    var g = enemies[i];
-
-                    builder.AddHtml(20, 65 + i * 20, 300, 20, g.Name);
+                    builder.AddHtml(20, 65 + i * 20, 300, 20, enemies[i].Name);
                 }
             }
 
@@ -83,9 +76,7 @@ namespace Server.Gumps
             {
                 for (var i = 0; i < declared.Count; ++i)
                 {
-                    var g = declared[i];
-
-                    builder.AddHtml(20, 65 + i * 20, 300, 20, g.Name);
+                    builder.AddHtml(20, 65 + i * 20, 300, 20, declared[i].Name);
                 }
             }
 
@@ -106,23 +97,22 @@ namespace Server.Gumps
             {
                 for (var i = 0; i < invites.Count; ++i)
                 {
-                    var g = invites[i];
-
-                    builder.AddHtml(20, 65 + i * 20, 300, 20, g.Name);
+                    builder.AddHtml(20, 65 + i * 20, 300, 20, invites[i].Name);
                 }
             }
         }
 
         public override void OnResponse(NetState state, in RelayInfo info)
         {
-            if (GuildGump.BadMember(_mobile, _guild))
+            var from = state.Mobile;
+            if (GuildGump.BadMember(from, _guild))
             {
                 return;
             }
 
             if (info.ButtonID == 1)
             {
-                GuildGump.DisplayTo(_mobile, _guild);
+                GuildGump.DisplayTo(from, _guild);
             }
         }
     }

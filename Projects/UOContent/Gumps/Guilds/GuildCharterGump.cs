@@ -1,3 +1,4 @@
+using System;
 using Server.Guilds;
 using Server.Network;
 
@@ -7,15 +8,10 @@ namespace Server.Gumps
     {
         private const string DefaultWebsite = "https://www.modernuo.com";
         private readonly Guild _guild;
-        private readonly Mobile _mobile;
 
         public override bool Singleton => true;
 
-        private GuildCharterGump(Mobile from, Guild guild) : base(20, 30)
-        {
-            _mobile = from;
-            _guild = guild;
-        }
+        private GuildCharterGump(Guild guild) : base(20, 30) => _guild = guild;
 
         public static void DisplayTo(Mobile from, Guild guild)
         {
@@ -25,7 +21,7 @@ namespace Server.Gumps
             }
 
             GuildGump.EnsureClosed(from);
-            from.SendGump(new GuildCharterGump(from, guild));
+            from.SendGump(new GuildCharterGump(guild));
         }
 
         protected override void BuildLayout(ref DynamicGumpBuilder builder)
@@ -53,9 +49,8 @@ namespace Server.Gumps
             builder.AddButton(20, 200, 4005, 4007, 2);
             builder.AddHtmlLocalized(55, 200, 300, 20, 1011122); // Visit the guild website :
 
-            string website;
-
-            if ((website = _guild.Website) == null || (website = website.Trim()).Length <= 0)
+            var website = _guild.Website != null ? _guild.Website.AsSpan().Trim() : "";
+            if (website.Length <= 0)
             {
                 website = DefaultWebsite;
             }
@@ -65,36 +60,24 @@ namespace Server.Gumps
 
         public override void OnResponse(NetState state, in RelayInfo info)
         {
-            if (GuildGump.BadMember(_mobile, _guild))
+            var from = state.Mobile;
+            if (info.ButtonID == 0 || GuildGump.BadMember(from, _guild))
             {
                 return;
             }
 
-            switch (info.ButtonID)
+            if (info.ButtonID == 2)
             {
-                case 0:
-                    {
-                        return; // Close
-                    }
-                case 1:
-                    {
-                        break; // Return to main menu
-                    }
-                case 2:
-                    {
-                        string website;
+                var website = _guild.Website != null ? _guild.Website.AsSpan().Trim() : "";
+                if (website.Length <= 0)
+                {
+                    website = DefaultWebsite;
+                }
 
-                        if ((website = _guild.Website) == null || (website = website.Trim()).Length <= 0)
-                        {
-                            website = DefaultWebsite;
-                        }
-
-                        _mobile.LaunchBrowser(website);
-                        break;
-                    }
+                from.LaunchBrowser(website);
             }
 
-            GuildGump.DisplayTo(_mobile, _guild);
+            GuildGump.DisplayTo(from, _guild);
         }
     }
 }

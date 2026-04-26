@@ -5,18 +5,13 @@ using Server.Network;
 
 namespace Server.Gumps
 {
-    public class GuildChangeTypeGump : DynamicGump
+    public class GuildChangeTypeGump : StaticGump<GuildChangeTypeGump>
     {
         private readonly Guild _guild;
-        private readonly Mobile _mobile;
 
         public override bool Singleton => true;
 
-        private GuildChangeTypeGump(Mobile from, Guild guild) : base(20, 30)
-        {
-            _mobile = from;
-            _guild = guild;
-        }
+        private GuildChangeTypeGump(Guild guild) : base(20, 30) => _guild = guild;
 
         public static void DisplayTo(Mobile from, Guild guild)
         {
@@ -26,10 +21,10 @@ namespace Server.Gumps
             }
 
             GuildGump.EnsureClosed(from);
-            from.SendGump(new GuildChangeTypeGump(from, guild));
+            from.SendGump(new GuildChangeTypeGump(guild));
         }
 
-        protected override void BuildLayout(ref DynamicGumpBuilder builder)
+        protected override void BuildLayout(ref StaticGumpBuilder builder)
         {
             builder.SetNoMove();
 
@@ -58,8 +53,9 @@ namespace Server.Gumps
 
         public override void OnResponse(NetState state, in RelayInfo info)
         {
-            if (Guild.NewGuildSystem && !BaseGuildGump.IsLeader(_mobile, _guild) ||
-                !Guild.NewGuildSystem && GuildGump.BadLeader(_mobile, _guild))
+            var from = state.Mobile;
+            if (Guild.NewGuildSystem && !BaseGuildGump.IsLeader(from, _guild) ||
+                !Guild.NewGuildSystem && GuildGump.BadLeader(from, _guild))
             {
                 return;
             }
@@ -74,15 +70,15 @@ namespace Server.Gumps
 
             if (_guild.Type != newType)
             {
-                var pl = PlayerState.Find(_mobile);
+                var pl = PlayerState.Find(from);
 
                 if (pl != null)
                 {
-                    _mobile.SendLocalizedMessage(1010405); // You cannot change guild types while in a Faction!
+                    from.SendLocalizedMessage(1010405); // You cannot change guild types while in a Faction!
                 }
                 else if (_guild.TypeLastChange.AddDays(7) > Core.Now)
                 {
-                    _mobile.SendLocalizedMessage(1011142); // You have already changed your guild type recently.
+                    from.SendLocalizedMessage(1011142); // You have already changed your guild type recently.
                     // TODO: Clilocs 1011142-1011145 suggest a timer for pending changes
                 }
                 else
@@ -94,7 +90,7 @@ namespace Server.Gumps
 
             if (Guild.NewGuildSystem)
             {
-                if (_mobile is PlayerMobile mobile)
+                if (from is PlayerMobile mobile)
                 {
                     mobile.SendGump(new GuildInfoGump(mobile, _guild));
                 }
@@ -102,7 +98,7 @@ namespace Server.Gumps
                 return;
             }
 
-            GuildmasterGump.DisplayTo(_mobile, _guild);
+            GuildmasterGump.DisplayTo(from, _guild);
         }
     }
 }

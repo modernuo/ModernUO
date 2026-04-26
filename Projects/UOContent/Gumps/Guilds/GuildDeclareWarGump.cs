@@ -7,20 +7,19 @@ namespace Server.Gumps
 {
     public class GuildDeclareWarGump : GuildListGump
     {
-        private GuildDeclareWarGump(Mobile from, Guild guild, List<Guild> list)
-            : base(from, guild, true, list)
+        private GuildDeclareWarGump(Guild guild, List<Guild> list) : base(guild, true, list)
         {
         }
 
         public static void DisplayTo(Mobile from, Guild guild, List<Guild> list)
         {
-            if (from?.NetState == null || guild == null || list == null)
+            if (from?.NetState == null || guild == null || list == null || list.Count == 0)
             {
                 return;
             }
 
             GuildGump.EnsureClosed(from);
-            from.SendGump(new GuildDeclareWarGump(from, guild, list));
+            from.SendGump(new GuildDeclareWarGump(guild, list));
         }
 
         protected override void BuildHeader(ref DynamicGumpBuilder builder)
@@ -36,7 +35,8 @@ namespace Server.Gumps
 
         public override void OnResponse(NetState state, in RelayInfo info)
         {
-            if (GuildGump.BadLeader(_mobile, _guild))
+            var from = state.Mobile;
+            if (GuildGump.BadLeader(from, _guild))
             {
                 return;
             }
@@ -57,16 +57,16 @@ namespace Server.Gumps
                         {
                             if (g == _guild)
                             {
-                                _mobile.SendLocalizedMessage(501184); // You cannot declare war against yourself!
+                                from.SendLocalizedMessage(501184); // You cannot declare war against yourself!
                             }
                             else if (g.WarInvitations.Contains(_guild) && _guild.WarDeclarations.Contains(g) ||
                                      _guild.IsWar(g))
                             {
-                                _mobile.SendLocalizedMessage(501183); // You are already at war with that guild.
+                                from.SendLocalizedMessage(501183); // You are already at war with that guild.
                             }
                             else if (Faction.Find(_guild.Leader) != null)
                             {
-                                _mobile.SendLocalizedMessage(1005288); // You cannot declare war while you are in a faction
+                                from.SendLocalizedMessage(1005288); // You cannot declare war while you are in a faction
                             }
                             else
                             {
@@ -85,14 +85,14 @@ namespace Server.Gumps
                                 }
                             }
 
-                            GuildWarAdminGump.DisplayTo(_mobile, _guild);
+                            GuildWarAdminGump.DisplayTo(from, _guild);
                         }
                     }
                 }
             }
             else if (info.ButtonID == 2)
             {
-                GuildmasterGump.DisplayTo(_mobile, _guild);
+                GuildmasterGump.DisplayTo(from, _guild);
             }
         }
     }

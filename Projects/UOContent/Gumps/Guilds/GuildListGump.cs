@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Server.Guilds;
 
@@ -7,14 +8,12 @@ namespace Server.Gumps
     {
         protected Guild _guild;
         protected List<Guild> _list;
-        protected Mobile _mobile;
         private readonly bool _radio;
 
         public override bool Singleton => true;
 
-        protected GuildListGump(Mobile from, Guild guild, bool radio, List<Guild> list) : base(20, 30)
+        protected GuildListGump(Guild guild, bool radio, List<Guild> list) : base(20, 30)
         {
-            _mobile = from;
             _guild = guild;
             _radio = radio;
             _list = list;
@@ -56,8 +55,8 @@ namespace Server.Gumps
 
                 var g = _list[i];
 
-                var name = g.Name?.Trim().DefaultIfNullOrEmpty("(empty)");
-                builder.AddLabel(_radio ? 55 : 20, 35 + i % 11 * 30, 0, name);
+                var name = g.Name;
+                builder.AddLabel(_radio ? 55 : 20, 35 + i % 11 * 30, 0, name != null ? name.AsSpan().Trim() : "(empty)");
             }
         }
 

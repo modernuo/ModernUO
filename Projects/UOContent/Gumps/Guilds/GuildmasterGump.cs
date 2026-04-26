@@ -7,15 +7,10 @@ namespace Server.Gumps
     public class GuildmasterGump : DynamicGump
     {
         private readonly Guild _guild;
-        private readonly Mobile _mobile;
 
         public override bool Singleton => true;
 
-        private GuildmasterGump(Mobile from, Guild guild) : base(20, 30)
-        {
-            _mobile = from;
-            _guild = guild;
-        }
+        private GuildmasterGump(Guild guild) : base(20, 30) => _guild = guild;
 
         public static void DisplayTo(Mobile from, Guild guild)
         {
@@ -25,7 +20,7 @@ namespace Server.Gumps
             }
 
             GuildGump.EnsureClosed(from);
-            from.SendGump(new GuildmasterGump(from, guild));
+            from.SendGump(new GuildmasterGump(guild));
         }
 
         protected override void BuildLayout(ref DynamicGumpBuilder builder)
@@ -106,7 +101,8 @@ namespace Server.Gumps
 
         public override void OnResponse(NetState state, in RelayInfo info)
         {
-            if (GuildGump.BadLeader(_mobile, _guild))
+            var from = state.Mobile;
+            if (GuildGump.BadLeader(from, _guild))
             {
                 return;
             }
@@ -115,19 +111,19 @@ namespace Server.Gumps
             {
                 case 1: // Main menu
                     {
-                        GuildGump.DisplayTo(_mobile, _guild);
+                        GuildGump.DisplayTo(from, _guild);
                         break;
                     }
                 case 2: // Set guild name
                     {
-                        _mobile.SendLocalizedMessage(1013060); // Enter new guild name (40 characters max):
-                        _mobile.Prompt = new GuildNamePrompt(_mobile, _guild);
+                        from.SendLocalizedMessage(1013060); // Enter new guild name (40 characters max):
+                        from.Prompt = new GuildNamePrompt(from, _guild);
                         break;
                     }
                 case 3: // Set guild abbreviation
                     {
-                        _mobile.SendLocalizedMessage(1013061); // Enter new guild abbreviation (3 characters max):
-                        _mobile.Prompt = new GuildAbbrvPrompt(_mobile, _guild);
+                        from.SendLocalizedMessage(1013061); // Enter new guild abbreviation (3 characters max):
+                        from.Prompt = new GuildAbbrvPrompt(_guild);
                         break;
                     }
                 case 4: // Change guild type
@@ -137,39 +133,39 @@ namespace Server.Gumps
                             return;
                         }
 
-                        GuildChangeTypeGump.DisplayTo(_mobile, _guild);
+                        GuildChangeTypeGump.DisplayTo(from, _guild);
                         break;
                     }
                 case 5: // Set charter
                     {
-                        _mobile.SendLocalizedMessage(1013071); // Enter the new guild charter (50 characters max):
-                        _mobile.Prompt = new GuildCharterPrompt(_mobile, _guild);
+                        from.SendLocalizedMessage(1013071); // Enter the new guild charter (50 characters max):
+                        from.Prompt = new GuildCharterPrompt(_guild);
                         break;
                     }
                 case 6: // Dismiss member
                     {
-                        GuildDismissGump.DisplayTo(_mobile, _guild);
+                        GuildDismissGump.DisplayTo(from, _guild);
                         break;
                     }
                 case 7: // War menu
                     {
-                        GuildWarAdminGump.DisplayTo(_mobile, _guild);
+                        GuildWarAdminGump.DisplayTo(from, _guild);
                         break;
                     }
                 case 8: // Administer candidates
                     {
-                        GuildAdminCandidatesGump.DisplayTo(_mobile, _guild);
+                        GuildAdminCandidatesGump.DisplayTo(from, _guild);
                         break;
                     }
                 case 9: // Set guildmaster's title
                     {
-                        _mobile.SendLocalizedMessage(1013073); // Enter new guildmaster title (20 characters max):
-                        _mobile.Prompt = new GuildTitlePrompt(_mobile, _mobile, _guild);
+                        from.SendLocalizedMessage(1013073); // Enter new guildmaster title (20 characters max):
+                        from.Prompt = new GuildTitlePrompt(from, _guild);
                         break;
                     }
                 case 10: // Grant title
                     {
-                        GrantGuildTitleGump.DisplayTo(_mobile, _guild);
+                        GrantGuildTitleGump.DisplayTo(from, _guild);
                         break;
                     }
                 case 11: // Move guildstone
@@ -181,13 +177,13 @@ namespace Server.Gumps
                             _guild.Teleporter?.Delete();
 
                             // Use the teleporting object placed in your backpack to move this guildstone.
-                            _mobile.SendLocalizedMessage(501133);
+                            from.SendLocalizedMessage(501133);
 
-                            _mobile.AddToBackpack(item);
+                            from.AddToBackpack(item);
                             _guild.Teleporter = item;
                         }
 
-                        DisplayTo(_mobile, _guild);
+                        DisplayTo(from, _guild);
                         break;
                     }
             }

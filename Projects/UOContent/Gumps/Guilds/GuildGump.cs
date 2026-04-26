@@ -1,3 +1,4 @@
+using System;
 using Server.Guilds;
 using Server.Network;
 
@@ -41,9 +42,10 @@ namespace Server.Gumps
 
             if (leader != null)
             {
-                var leadTitle = leader.GuildTitle?.Trim();
-                var leadName = (leader.Name?.Trim()).DefaultIfNullOrEmpty("(empty)");
-                var text = leadTitle?.Length > 0 ? $"{leadTitle}: {leadName}" : leadName;
+                var leadTitle = leader.GuildTitle != null ? leader.GuildTitle.AsSpan().Trim() : ReadOnlySpan<char>.Empty;
+                var leadName = leader.Name;
+                var leadNameSpan = leadName != null ? leadName.AsSpan().Trim() : ReadOnlySpan<char>.Empty;
+                var text = leadTitle.Length > 0 ? $"{leadTitle}: {leadNameSpan}" : leadNameSpan;
 
                 builder.AddHtml(220, 15, 250, 35, text);
             }
@@ -60,15 +62,14 @@ namespace Server.Gumps
 
             fealty ??= _mobile;
 
-            var fealtyName = (fealty.Name?.Trim()).DefaultIfNullOrEmpty("(empty)");
-
             if (_mobile == fealty)
             {
                 builder.AddHtmlLocalized(55, 70, 470, 20, 1018002); // yourself
             }
             else
             {
-                builder.AddHtml(55, 70, 470, 20, fealtyName);
+                var fealtyName = fealty.Name;
+                builder.AddHtml(55, 70, 470, 20, fealtyName != null ? fealtyName.AsSpan().Trim() : "(empty)");
             }
 
             builder.AddButton(215, 50, 4005, 4007, 2);
