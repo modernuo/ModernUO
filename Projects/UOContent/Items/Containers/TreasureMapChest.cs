@@ -447,15 +447,10 @@ public partial class TreasureMapChest : LockableContainer
     private class RemoveGump : StaticGump<RemoveGump>
     {
         private readonly TreasureMapChest _chest;
-        private readonly Mobile _from;
 
         public override bool Singleton => true;
 
-        private RemoveGump(Mobile from, TreasureMapChest chest) : base(15, 15)
-        {
-            _from = from;
-            _chest = chest;
-        }
+        private RemoveGump(TreasureMapChest chest) : base(15, 15) => _chest = chest;
 
         public static void DisplayTo(Mobile from, TreasureMapChest chest)
         {
@@ -464,7 +459,7 @@ public partial class TreasureMapChest : LockableContainer
                 return;
             }
 
-            from.SendGump(new RemoveGump(from, chest));
+            from.SendGump(new RemoveGump(chest));
         }
 
         protected override void BuildLayout(ref StaticGumpBuilder builder)
@@ -492,7 +487,7 @@ public partial class TreasureMapChest : LockableContainer
         {
             if (info.ButtonID == 1)
             {
-                _chest.EndRemove(_from);
+                _chest.EndRemove(sender.Mobile);
             }
         }
     }

@@ -352,12 +352,7 @@ public partial class SoulStone : Item, ISecurable
             }
 
             var skill = from.Skills[iSkill];
-            if (skill.Base <= 0.0)
-            {
-                return;
-            }
-
-            if (!_stone.CheckUse(from))
+            if (skill.Base <= 0.0 || !_stone.CheckUse(from))
             {
                 return;
             }
