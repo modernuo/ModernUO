@@ -344,29 +344,13 @@ public class MoongateConfirmGump : DynamicGump
 
             if (_from.Map != Map.Felucca && _gate.TargetMap == Map.Felucca && _gate.ShowFeluccaWarning)
             {
-                builder.AddHtmlLocalized(
-                    10,
-                    40,
-                    400,
-                    200,
-                    1062050, // This Gate goes to Felucca... Continue to enter the gate, Cancel to stay here
-                    32512,
-                    false,
-                    true
-                );
+                // This Gate goes to Felucca... Continue to enter the gate, Cancel to stay here
+                builder.AddHtmlLocalized(10, 40, 400, 200, 1062050, 32512, false, true);
             }
             else
             {
-                builder.AddHtmlLocalized(
-                    10,
-                    40,
-                    400,
-                    200,
-                    1062049, // Dost thou wish to step into the moongate? Continue to enter the gate, Cancel to stay here
-                    32512,
-                    false,
-                    true
-                );
+                // Dost thou wish to step into the moongate? Continue to enter the gate, Cancel to stay here
+                builder.AddHtmlLocalized(10, 40, 400, 200, 1062049, 32512, false, true);
             }
 
             builder.AddImageTiled(10, 250, 400, 20, 2624);
@@ -383,13 +367,8 @@ public class MoongateConfirmGump : DynamicGump
             builder.AddBackground(0, 0, 420, 400, 5054);
             builder.AddBackground(10, 10, 400, 380, 3000);
 
-            builder.AddHtmlLocalized(
-                20,
-                40,
-                380,
-                60,
-                1062049 // Dost thou wish to step into the moongate? Continue to enter the gate, Cancel to stay here
-            );
+            // Dost thou wish to step into the moongate? Continue to enter the gate, Cancel to stay here
+            builder.AddHtmlLocalized(20, 40, 380, 60, 1062049);
 
             builder.AddHtmlLocalized(55, 110, 290, 20, 1011012); // CANCEL
             builder.AddButton(20, 110, 4005, 4007, 0);
