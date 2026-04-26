@@ -23,9 +23,9 @@ namespace Server.Engines.Quests.Ambitious
                     ((AmbitiousQueenQuest)System).RedSolen ? 1054064 : 1054065,
                     BaseQuestGump.Blue
                 );
-                builder.AddLabel(70, 280, 0x64, CurProgress.ToString());
+                builder.AddLabel(70, 280, 0x64, $"{CurProgress}");
                 builder.AddLabel(100, 280, 0x64, "/");
-                builder.AddLabel(130, 280, 0x64, MaxProgress.ToString());
+                builder.AddLabel(130, 280, 0x64, $"{MaxProgress}");
             }
             else
             {

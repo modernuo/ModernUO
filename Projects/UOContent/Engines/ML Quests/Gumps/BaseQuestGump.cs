@@ -106,8 +106,9 @@ namespace Server.Engines.MLQuests.Gumps
                 );
             }
 
-            foreach (var button in _buttons)
+            for (var i = 0; i < _buttons.Count; i++)
             {
+                var button = _buttons[i];
                 builder.AddButton(
                     button.Position == ButtonPosition.Left ? 95 : 313,
                     455,

@@ -57,7 +57,7 @@ namespace Server.Engines.MLQuests.Objectives
         public static void WriteTimeRemaining(ref DynamicGumpBuilder builder, ref int y, TimeSpan timeRemaining)
         {
             builder.AddHtmlLocalized(103, y, 120, 16, 1062379, 0x5F90); // Est. time remaining:
-            builder.AddLabel(223, y, 0x481, timeRemaining.TotalSeconds.ToString("F0"));
+            builder.AddLabel(223, y, 0x481, $"{timeRemaining.TotalSeconds:F0}");
             y += 16;
         }
 

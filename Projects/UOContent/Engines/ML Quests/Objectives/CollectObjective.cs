@@ -209,7 +209,7 @@ namespace Server.Engines.MLQuests.Objectives
                 base.WriteToGump(ref builder, ref y);
 
                 builder.AddHtmlLocalized(103, y, 120, 16, 3000087, 0x5F90); // Total
-                builder.AddLabel(223, y, 0x481, GetCurrentTotal().ToString());
+                builder.AddLabel(223, y, 0x481, $"{GetCurrentTotal()}");
                 y += 16;
 
                 builder.AddHtmlLocalized(103, y, 120, 16, 1074782, 0x5F90); // Return to

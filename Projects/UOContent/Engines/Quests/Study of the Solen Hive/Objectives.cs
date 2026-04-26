@@ -123,9 +123,9 @@ namespace Server.Engines.Quests.Naturalist
             if (!Completed)
             {
                 builder.AddHtmlLocalized(70, 260, 270, 100, 1054055, BaseQuestGump.Blue); // Solen Nests Studied :
-                builder.AddLabel(70, 280, 0x64, CurProgress.ToString());
+                builder.AddLabel(70, 280, 0x64, $"{CurProgress}");
                 builder.AddLabel(100, 280, 0x64, "/");
-                builder.AddLabel(130, 280, 0x64, MaxProgress.ToString());
+                builder.AddLabel(130, 280, 0x64, $"{MaxProgress}");
             }
             else
             {
@@ -179,12 +179,10 @@ namespace Server.Engines.Quests.Naturalist
 
         public override void RenderProgress(ref DynamicGumpBuilder builder)
         {
-            var count = NestArea.NonSpecialCount.ToString();
-
             builder.AddHtmlLocalized(70, 260, 270, 100, 1054055, BaseQuestGump.Blue); // Solen Nests Studied :
-            builder.AddLabel(70, 280, 0x64, count);
+            builder.AddLabel(70, 280, 0x64, $"{NestArea.NonSpecialCount}");
             builder.AddLabel(100, 280, 0x64, "/");
-            builder.AddLabel(130, 280, 0x64, count);
+            builder.AddLabel(130, 280, 0x64, $"{NestArea.NonSpecialCount}");
         }
     }
 }

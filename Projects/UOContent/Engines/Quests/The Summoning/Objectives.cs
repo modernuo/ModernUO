@@ -63,9 +63,9 @@ namespace Server.Engines.Quests.Doom
                 // Number of bones collected:
                 BaseQuestGump.AddHtmlObject(ref builder, 70, 260, 270, 100, 1050019, BaseQuestGump.Blue, false, false);
 
-                builder.AddLabel(70, 280, 100, CurProgress.ToString());
+                builder.AddLabel(70, 280, 100, $"{CurProgress}");
                 builder.AddLabel(100, 280, 100, "/");
-                builder.AddLabel(130, 280, 100, MaxProgress.ToString());
+                builder.AddLabel(130, 280, 100, $"{MaxProgress}");
             }
             else
             {

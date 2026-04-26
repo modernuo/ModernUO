@@ -144,7 +144,7 @@ namespace Server.Engines.Quests.Haven
             if (!Completed)
             {
                 BaseQuestGump.AddHtmlObject(ref builder, 70, 260, 270, 100, 1049090, BaseQuestGump.Blue, false, false); // Horde Minions killed:
-                builder.AddLabel(70, 280, 0x64, CurProgress.ToString());
+                builder.AddLabel(70, 280, 0x64, $"{CurProgress}");
             }
             else
             {

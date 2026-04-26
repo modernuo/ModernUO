@@ -22,18 +22,15 @@ namespace Server.Engines.MLQuests.Gumps
     public class RaceChangeConfirmGump : DynamicGump
     {
         private static Dictionary<NetState, RaceChangeState> m_Pending;
-        private readonly PlayerMobile _from;
 
         private readonly IRaceChanger _owner;
         private readonly Race _race;
 
         public override bool Singleton => true;
 
-        private RaceChangeConfirmGump(IRaceChanger owner, PlayerMobile from, Race targetRace)
-            : base(50, 50)
+        private RaceChangeConfirmGump(IRaceChanger owner, Race targetRace) : base(50, 50)
         {
             _owner = owner;
-            _from = from;
             _race = targetRace;
         }
 
@@ -44,7 +41,7 @@ namespace Server.Engines.MLQuests.Gumps
                 return;
             }
 
-            from.SendGump(new RaceChangeConfirmGump(owner, from, targetRace));
+            from.SendGump(new RaceChangeConfirmGump(owner, targetRace));
         }
 
         protected override void BuildLayout(ref DynamicGumpBuilder builder)
@@ -71,19 +68,21 @@ namespace Server.Engines.MLQuests.Gumps
 
         public override void OnResponse(NetState sender, in RelayInfo info)
         {
+            var from = sender.Mobile;
+
             switch (info.ButtonID)
             {
                 case 0: // Cancel
                     {
-                        _owner?.OnCancel(_from);
+                        _owner?.OnCancel((PlayerMobile)from);
 
                         break;
                     }
                 case 1: // Okay
                     {
-                        if (_owner?.CheckComplete(_from) != false)
+                        if (_owner?.CheckComplete((PlayerMobile)from) != false)
                         {
-                            Offer(_owner, _from, _race);
+                            Offer(_owner, (PlayerMobile)from, _race);
                         }
 
                         break;

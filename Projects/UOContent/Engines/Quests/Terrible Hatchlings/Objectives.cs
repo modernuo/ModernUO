@@ -98,7 +98,7 @@ namespace Server.Engines.Quests.Zento
                 // Deathwatch Beetle Hatchlings killed:
                 builder.AddHtmlLocalized(70, 260, 270, 100, 1063318, 0xC6BF);
 
-                builder.AddLabel(70, 280, 0x64, CurProgress.ToString());
+                builder.AddLabel(70, 280, 0x64, $"{CurProgress}");
                 builder.AddLabel(100, 280, 0x64, "/");
                 builder.AddLabel(130, 280, 0x64, "10");
             }
