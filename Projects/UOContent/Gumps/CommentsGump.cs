@@ -5,32 +5,44 @@ using Server.Targeting;
 
 namespace Server.Gumps
 {
-    public class CommentsGump : Gump
+    public class CommentsGump : DynamicGump
     {
-        private readonly Account m_Acct;
+        private readonly Account _acct;
 
-        public CommentsGump(Account acct) : base(30, 30)
+        public override bool Singleton => true;
+
+        private CommentsGump(Account acct) : base(30, 30) => _acct = acct;
+
+        public static void DisplayTo(Mobile from, Account acct)
         {
-            m_Acct = acct;
+            if (from?.NetState == null || acct == null)
+            {
+                return;
+            }
 
-            AddPage(0);
-            AddImageTiled(0, 0, 410, 448, 0xA40);
-            AddAlphaRegion(1, 1, 408, 446);
+            from.SendGump(new CommentsGump(acct));
+        }
 
-            var title = $"Comments for '{acct.Username}'";
+        protected override void BuildLayout(ref DynamicGumpBuilder builder)
+        {
+            builder.AddPage(0);
+            builder.AddImageTiled(0, 0, 410, 448, 0xA40);
+            builder.AddAlphaRegion(1, 1, 408, 446);
+
+            var title = $"Comments for '{_acct.Username}'";
             var x = 205 - title.Length / 2 * 7;
             if (x < 120)
             {
                 x = 120;
             }
 
-            AddLabel(x, 12, 2100, title);
+            builder.AddLabel(x, 12, 2100, title);
 
-            AddPage(1);
-            AddButton(12, 12, 0xFA8, 0xFAA, 0x7F);
-            AddLabel(48, 12, 2100, "Add Comment");
+            builder.AddPage(1);
+            builder.AddButton(12, 12, 0xFA8, 0xFAA, 0x7F);
+            builder.AddLabel(48, 12, 2100, "Add Comment");
 
-            var list = acct.Comments;
+            var list = _acct.Comments;
             if (list.Count > 0)
             {
                 for (var i = 0; i < list.Count; ++i)
@@ -39,21 +51,21 @@ namespace Server.Gumps
 
                     if (i >= 5 && i % 5 == 0)
                     {
-                        AddButton(368, 12, 0xFA5, 0xFA7, 0, GumpButtonType.Page, i / 5 + 1);
-                        AddLabel(298, 12, 2100, "Next Page");
-                        AddPage(i / 5 + 1);
-                        AddButton(12, 12, 0xFAE, 0xFB0, 0, GumpButtonType.Page, i / 5);
-                        AddLabel(48, 12, 2100, "Prev Page");
+                        builder.AddButton(368, 12, 0xFA5, 0xFA7, 0, GumpButtonType.Page, i / 5 + 1);
+                        builder.AddLabel(298, 12, 2100, "Next Page");
+                        builder.AddPage(i / 5 + 1);
+                        builder.AddButton(12, 12, 0xFAE, 0xFB0, 0, GumpButtonType.Page, i / 5);
+                        builder.AddLabel(48, 12, 2100, "Prev Page");
                     }
 
                     var html =
                         $"[Added By: {comment.AddedBy} on {comment.LastModified.ToString("H:mm M/d/yy")}]<br>{comment.Content}";
-                    AddHtml(12, 44 + i % 5 * 80, 386, 70, html, true, true);
+                    builder.AddHtml(12, 44 + i % 5 * 80, 386, 70, html, background: true, scrollbar: true);
                 }
             }
             else
             {
-                AddLabel(12, 44, 2100, "There are no comments for this account.");
+                builder.AddLabel(12, 44, 2100, "There are no comments for this account.");
             }
         }
 
@@ -83,7 +95,7 @@ namespace Server.Gumps
             }
             else
             {
-                from.SendGump(new CommentsGump((Account)m.Account));
+                DisplayTo(from, (Account)m.Account);
             }
         }
 
@@ -92,19 +104,19 @@ namespace Server.Gumps
             if (info.ButtonID == 0x7F)
             {
                 state.Mobile.SendMessage("Enter the text for the account comment (or press [Esc] to cancel):");
-                state.Mobile.Prompt = new CommentPrompt(m_Acct);
+                state.Mobile.Prompt = new CommentPrompt(_acct);
             }
         }
 
         public class CommentPrompt : Prompt
         {
-            private readonly Account m_Acct;
+            private readonly Account _acct;
 
-            public CommentPrompt(Account acct) => m_Acct = acct;
+            public CommentPrompt(Account acct) => _acct = acct;
 
             public override void OnCancel(Mobile from)
             {
-                from.SendGump(new CommentsGump(m_Acct), true);
+                DisplayTo(from, _acct);
                 base.OnCancel(from);
             }
 
@@ -112,9 +124,8 @@ namespace Server.Gumps
             {
                 base.OnResponse(from, text);
                 from.SendMessage("Comment added.");
-                // m_Acct.AddComment( from.Name, text );
-                m_Acct.Comments.Add(new AccountComment(from.Name, text));
-                from.SendGump(new CommentsGump(m_Acct), true);
+                _acct.Comments.Add(new AccountComment(from.Name, text));
+                DisplayTo(from, _acct);
             }
         }
     }
