@@ -175,14 +175,12 @@ public static class OutgoingPlayerPackets
         ns.Send(writer.Span);
     }
 
-    public static void SendLaunchBrowser(this NetState ns, string uri)
+    public static void SendLaunchBrowser(this NetState ns, ReadOnlySpan<char> uri)
     {
         if (ns.CannotSendPackets())
         {
             return;
         }
-
-        uri ??= "";
 
         var length = 4 + uri.Length;
         var writer = new SpanWriter(stackalloc byte[length]);

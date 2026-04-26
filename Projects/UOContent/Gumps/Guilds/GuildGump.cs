@@ -1,103 +1,120 @@
+using System;
 using Server.Guilds;
 using Server.Network;
 
 namespace Server.Gumps
 {
-    public class GuildGump : Gump
+    public class GuildGump : DynamicGump
     {
-        private readonly Guild m_Guild;
-        private readonly Mobile m_Mobile;
+        private readonly Guild _guild;
+        private readonly Mobile _mobile;
 
-        public GuildGump(Mobile beholder, Guild guild) : base(20, 30)
+        public override bool Singleton => true;
+
+        private GuildGump(Mobile beholder, Guild guild) : base(20, 30)
         {
-            m_Mobile = beholder;
-            m_Guild = guild;
+            _mobile = beholder;
+            _guild = guild;
+        }
 
-            Draggable = false;
+        public static void DisplayTo(Mobile from, Guild guild)
+        {
+            if (from?.NetState == null || guild == null)
+            {
+                return;
+            }
 
-            AddPage(0);
-            AddBackground(0, 0, 550, 400, 5054);
-            AddBackground(10, 10, 530, 380, 3000);
+            EnsureClosed(from);
+            from.SendGump(new GuildGump(from, guild));
+        }
 
-            AddHtml(20, 15, 200, 35, guild.Name);
+        protected override void BuildLayout(ref DynamicGumpBuilder builder)
+        {
+            builder.SetNoMove();
 
-            var leader = guild.Leader;
+            builder.AddPage();
+            builder.AddBackground(0, 0, 550, 400, 5054);
+            builder.AddBackground(10, 10, 530, 380, 3000);
+
+            builder.AddHtml(20, 15, 200, 35, _guild.Name);
+
+            var leader = _guild.Leader;
 
             if (leader != null)
             {
-                var leadTitle = leader.GuildTitle?.Trim();
-                var leadName = (leader.Name?.Trim()).DefaultIfNullOrEmpty("(empty)");
-                var text = leadTitle?.Length > 0 ? $"{leadTitle}: {leadName}" : leadName;
+                var leadTitle = leader.GuildTitle != null ? leader.GuildTitle.AsSpan().Trim() : ReadOnlySpan<char>.Empty;
+                var leadName = leader.Name;
+                var leadNameSpan = leadName != null ? leadName.AsSpan().Trim() : ReadOnlySpan<char>.Empty;
+                var text = leadTitle.Length > 0 ? $"{leadTitle}: {leadNameSpan}" : leadNameSpan;
 
-                AddHtml(220, 15, 250, 35, text);
+                builder.AddHtml(220, 15, 250, 35, text);
             }
 
-            AddButton(20, 50, 4005, 4007, 1);
-            AddHtmlLocalized(55, 50, 100, 20, 1013022); // Loyal to
+            builder.AddButton(20, 50, 4005, 4007, 1);
+            builder.AddHtmlLocalized(55, 50, 100, 20, 1013022); // Loyal to
 
-            var fealty = beholder.GuildFealty;
+            var fealty = _mobile.GuildFealty;
 
-            if (fealty == null || !guild.IsMember(fealty))
+            if (fealty == null || !_guild.IsMember(fealty))
             {
                 fealty = leader;
             }
 
-            fealty ??= beholder;
+            fealty ??= _mobile;
 
-            var fealtyName = (fealty.Name?.Trim()).DefaultIfNullOrEmpty("(empty)");
-
-            if (beholder == fealty)
+            if (_mobile == fealty)
             {
-                AddHtmlLocalized(55, 70, 470, 20, 1018002); // yourself
+                builder.AddHtmlLocalized(55, 70, 470, 20, 1018002); // yourself
             }
             else
             {
-                AddHtml(55, 70, 470, 20, fealtyName);
+                var fealtyName = fealty.Name;
+                builder.AddHtml(55, 70, 470, 20, fealtyName != null ? fealtyName.AsSpan().Trim() : "(empty)");
             }
 
-            AddButton(215, 50, 4005, 4007, 2);
-            AddHtmlLocalized(250, 50, 170, 20, 1013023);                                       // Display guild abbreviation
-            AddHtmlLocalized(250, 70, 50, 20, beholder.DisplayGuildTitle ? 1011262 : 1011263); // on/off
+            builder.AddButton(215, 50, 4005, 4007, 2);
+            builder.AddHtmlLocalized(250, 50, 170, 20, 1013023);                                       // Display guild abbreviation
+            builder.AddHtmlLocalized(250, 70, 50, 20, _mobile.DisplayGuildTitle ? 1011262 : 1011263); // on/off
 
-            AddButton(20, 100, 4005, 4007, 3);
-            AddHtmlLocalized(55, 100, 470, 30, 1011086); // View the current roster.
+            builder.AddButton(20, 100, 4005, 4007, 3);
+            builder.AddHtmlLocalized(55, 100, 470, 30, 1011086); // View the current roster.
 
-            AddButton(20, 130, 4005, 4007, 4);
-            AddHtmlLocalized(55, 130, 470, 30, 1011085); // Recruit someone into the guild.
+            builder.AddButton(20, 130, 4005, 4007, 4);
+            builder.AddHtmlLocalized(55, 130, 470, 30, 1011085); // Recruit someone into the guild.
 
-            if (guild.Candidates.Count > 0)
+            if (_guild.Candidates.Count > 0)
             {
-                AddButton(20, 160, 4005, 4007, 5);
-                AddHtmlLocalized(55, 160, 470, 30, 1011093); // View list of candidates who have been sponsored to the guild.
+                builder.AddButton(20, 160, 4005, 4007, 5);
+                builder.AddHtmlLocalized(55, 160, 470, 30, 1011093); // View list of candidates who have been sponsored to the guild.
             }
             else
             {
-                AddImage(20, 160, 4020);
-                AddHtmlLocalized(55, 160, 470, 30, 1013031); // There are currently no candidates for membership.
+                builder.AddImage(20, 160, 4020);
+                builder.AddHtmlLocalized(55, 160, 470, 30, 1013031); // There are currently no candidates for membership.
             }
 
-            AddButton(20, 220, 4005, 4007, 6);
-            AddHtmlLocalized(55, 220, 470, 30, 1011087); // View the guild's charter.
+            builder.AddButton(20, 220, 4005, 4007, 6);
+            builder.AddHtmlLocalized(55, 220, 470, 30, 1011087); // View the guild's charter.
 
-            AddButton(20, 250, 4005, 4007, 7);
-            AddHtmlLocalized(55, 250, 470, 30, 1011092); // Resign from the guild.
+            builder.AddButton(20, 250, 4005, 4007, 7);
+            builder.AddHtmlLocalized(55, 250, 470, 30, 1011092); // Resign from the guild.
 
-            AddButton(20, 280, 4005, 4007, 8);
-            AddHtmlLocalized(55, 280, 470, 30, 1011095); // View list of guilds you are at war with.
+            builder.AddButton(20, 280, 4005, 4007, 8);
+            builder.AddHtmlLocalized(55, 280, 470, 30, 1011095); // View list of guilds you are at war with.
 
-            if (beholder.AccessLevel >= AccessLevel.GameMaster || beholder == leader)
+            if (_mobile.AccessLevel >= AccessLevel.GameMaster || _mobile == leader)
             {
-                AddButton(20, 310, 4005, 4007, 9);
-                AddHtmlLocalized(55, 310, 470, 30, 1011094); // Access guildmaster functions.
+                builder.AddButton(20, 310, 4005, 4007, 9);
+                builder.AddHtmlLocalized(55, 310, 470, 30, 1011094); // Access guildmaster functions.
             }
             else
             {
-                AddImage(20, 310, 4020);
-                AddHtmlLocalized(55, 310, 470, 30, 1018013); // Reserved for guildmaster
+                builder.AddImage(20, 310, 4020);
+                builder.AddHtmlLocalized(55, 310, 470, 30, 1018013); // Reserved for guildmaster
             }
 
-            AddButton(20, 360, 4005, 4007, 0);
-            AddHtmlLocalized(55, 360, 470, 30, 1011441); // EXIT
+            builder.AddButton(20, 360, 4005, 4007, 0);
+            builder.AddHtmlLocalized(55, 360, 470, 30, 1011441); // EXIT
         }
 
         public static void EnsureClosed(Mobile m)
@@ -143,7 +160,7 @@ namespace Server.Gumps
 
         public override void OnResponse(NetState sender, in RelayInfo info)
         {
-            if (BadMember(m_Mobile, m_Guild))
+            if (BadMember(_mobile, _guild))
             {
                 return;
             }
@@ -152,66 +169,50 @@ namespace Server.Gumps
             {
                 case 1: // Loyalty
                     {
-                        EnsureClosed(m_Mobile);
-                        m_Mobile.SendGump(new DeclareFealtyGump(m_Mobile, m_Guild));
-
+                        DeclareFealtyGump.DisplayTo(_mobile, _guild);
                         break;
                     }
                 case 2: // Toggle display abbreviation
                     {
-                        m_Mobile.DisplayGuildTitle = !m_Mobile.DisplayGuildTitle;
-
-                        EnsureClosed(m_Mobile);
-                        m_Mobile.SendGump(new GuildGump(m_Mobile, m_Guild));
-
+                        _mobile.DisplayGuildTitle = !_mobile.DisplayGuildTitle;
+                        DisplayTo(_mobile, _guild);
                         break;
                     }
                 case 3: // View the current roster
                     {
-                        EnsureClosed(m_Mobile);
-                        m_Mobile.SendGump(new GuildRosterGump(m_Mobile, m_Guild));
-
+                        GuildRosterGump.DisplayTo(_mobile, _guild);
                         break;
                     }
                 case 4: // Recruit
                     {
-                        m_Mobile.Target = new GuildRecruitTarget(m_Mobile, m_Guild);
-
+                        _mobile.Target = new GuildRecruitTarget(_mobile, _guild);
                         break;
                     }
                 case 5: // Membership candidates
                     {
-                        EnsureClosed(m_Mobile);
-                        m_Mobile.SendGump(new GuildCandidatesGump(m_Mobile, m_Guild));
-
+                        GuildCandidatesGump.DisplayTo(_mobile, _guild);
                         break;
                     }
                 case 6: // View charter
                     {
-                        EnsureClosed(m_Mobile);
-                        m_Mobile.SendGump(new GuildCharterGump(m_Mobile, m_Guild));
-
+                        GuildCharterGump.DisplayTo(_mobile, _guild);
                         break;
                     }
                 case 7: // Resign
                     {
-                        m_Guild.RemoveMember(m_Mobile);
-
+                        _guild.RemoveMember(_mobile);
                         break;
                     }
                 case 8: // View wars
                     {
-                        EnsureClosed(m_Mobile);
-                        m_Mobile.SendGump(new GuildWarGump(m_Mobile, m_Guild));
-
+                        GuildWarGump.DisplayTo(_mobile, _guild);
                         break;
                     }
                 case 9: // Guildmaster functions
                     {
-                        if (m_Mobile.AccessLevel >= AccessLevel.GameMaster || m_Guild.Leader == m_Mobile)
+                        if (_mobile.AccessLevel >= AccessLevel.GameMaster || _guild.Leader == _mobile)
                         {
-                            EnsureClosed(m_Mobile);
-                            m_Mobile.SendGump(new GuildmasterGump(m_Mobile, m_Guild));
+                            GuildmasterGump.DisplayTo(_mobile, _guild);
                         }
 
                         break;

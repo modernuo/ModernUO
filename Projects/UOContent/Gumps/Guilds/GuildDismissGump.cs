@@ -5,24 +5,36 @@ namespace Server.Gumps
 {
     public class GuildDismissGump : GuildMobileListGump
     {
-        public GuildDismissGump(Mobile from, Guild guild) : base(from, guild, true, guild.Members)
+        private GuildDismissGump(Guild guild) : base(guild, true, guild.Members)
         {
         }
 
-        protected override void Design()
+        public static void DisplayTo(Mobile from, Guild guild)
         {
-            AddHtmlLocalized(20, 10, 400, 35, 1011124); // Whom do you wish to dismiss?
+            if (from?.NetState == null || guild == null)
+            {
+                return;
+            }
 
-            AddButton(20, 400, 4005, 4007, 1);
-            AddHtmlLocalized(55, 400, 245, 30, 1011125); // Kick them out!
+            GuildGump.EnsureClosed(from);
+            from.SendGump(new GuildDismissGump(guild));
+        }
 
-            AddButton(300, 400, 4005, 4007, 2);
-            AddHtmlLocalized(335, 400, 100, 35, 1011012); // CANCEL
+        protected override void BuildHeader(ref DynamicGumpBuilder builder)
+        {
+            builder.AddHtmlLocalized(20, 10, 400, 35, 1011124); // Whom do you wish to dismiss?
+
+            builder.AddButton(20, 400, 4005, 4007, 1);
+            builder.AddHtmlLocalized(55, 400, 245, 30, 1011125); // Kick them out!
+
+            builder.AddButton(300, 400, 4005, 4007, 2);
+            builder.AddHtmlLocalized(335, 400, 100, 35, 1011012); // CANCEL
         }
 
         public override void OnResponse(NetState state, in RelayInfo info)
         {
-            if (GuildGump.BadLeader(m_Mobile, m_Guild))
+            var from = state.Mobile;
+            if (GuildGump.BadLeader(from, _guild))
             {
                 return;
             }
@@ -35,27 +47,25 @@ namespace Server.Gumps
                 {
                     var index = switches[0];
 
-                    if (index >= 0 && index < m_List.Count)
+                    if (index >= 0 && index < _list.Count)
                     {
-                        var m = m_List[index];
+                        var m = _list[index];
 
                         if (m?.Deleted == false)
                         {
-                            m_Guild.RemoveMember(m);
+                            _guild.RemoveMember(m);
 
-                            if (m_Mobile.AccessLevel >= AccessLevel.GameMaster || m_Mobile == m_Guild.Leader)
+                            if (from.AccessLevel >= AccessLevel.GameMaster || from == _guild.Leader)
                             {
-                                GuildGump.EnsureClosed(m_Mobile);
-                                m_Mobile.SendGump(new GuildmasterGump(m_Mobile, m_Guild));
+                                GuildmasterGump.DisplayTo(from, _guild);
                             }
                         }
                     }
                 }
             }
-            else if (info.ButtonID == 2 && (m_Mobile.AccessLevel >= AccessLevel.GameMaster || m_Mobile == m_Guild.Leader))
+            else if (info.ButtonID == 2 && (from.AccessLevel >= AccessLevel.GameMaster || from == _guild.Leader))
             {
-                GuildGump.EnsureClosed(m_Mobile);
-                m_Mobile.SendGump(new GuildmasterGump(m_Mobile, m_Guild));
+                GuildmasterGump.DisplayTo(from, _guild);
             }
         }
     }
