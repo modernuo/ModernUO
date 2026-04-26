@@ -236,11 +236,11 @@ public partial class SoulStone : Item, ISecurable
 
         if (IsEmpty)
         {
-            gumps.Send(new SelectSkillGump(this, from));
+            SelectSkillGump.DisplayTo(from, this);
         }
         else
         {
-            gumps.Send(new ConfirmTransferGump(this, from));
+            ConfirmTransferGump.DisplayTo(from, this);
         }
     }
 
@@ -257,32 +257,50 @@ public partial class SoulStone : Item, ISecurable
         _skillValue = reader.ReadDouble();
     }
 
-    private class SelectSkillGump : Gump
+    private class SelectSkillGump : DynamicGump
     {
         private readonly SoulStone _stone;
+        private readonly Mobile _from;
 
-        public SelectSkillGump(SoulStone stone, Mobile from) : base(50, 50)
+        public override bool Singleton => true;
+
+        private SelectSkillGump(SoulStone stone, Mobile from) : base(50, 50)
         {
             _stone = stone;
+            _from = from;
+        }
 
-            AddPage(0);
-
-            AddBackground(0, 0, 520, 440, 0x13BE);
-
-            AddImageTiled(10, 10, 500, 20, 0xA40);
-            AddImageTiled(10, 40, 500, 360, 0xA40);
-            AddImageTiled(10, 410, 500, 20, 0xA40);
-
-            AddAlphaRegion(10, 10, 500, 420);
-
-            AddHtmlLocalized(10, 12, 500, 20, 1061087, 0x7FFF); // Which skill do you wish to transfer to the Soulstone?
-
-            AddButton(10, 410, 0xFB1, 0xFB2, 0);
-            AddHtmlLocalized(45, 412, 450, 20, 1060051, 0x7FFF); // CANCEL
-
-            for (int i = 0, n = 0; i < from.Skills.Length; i++)
+        public static void DisplayTo(Mobile from, SoulStone stone)
+        {
+            if (from?.NetState == null || stone == null || stone.Deleted || !stone.IsEmpty)
             {
-                var skill = from.Skills[i];
+                return;
+            }
+
+            from.SendGump(new SelectSkillGump(stone, from));
+        }
+
+        protected override void BuildLayout(ref DynamicGumpBuilder builder)
+        {
+            builder.AddPage();
+
+            builder.AddBackground(0, 0, 520, 440, 0x13BE);
+
+            builder.AddImageTiled(10, 10, 500, 20, 0xA40);
+            builder.AddImageTiled(10, 40, 500, 360, 0xA40);
+            builder.AddImageTiled(10, 410, 500, 20, 0xA40);
+
+            builder.AddAlphaRegion(10, 10, 500, 420);
+
+            // Which skill do you wish to transfer to the Soulstone?
+            builder.AddHtmlLocalized(10, 12, 500, 20, 1061087, 0x7FFF);
+
+            builder.AddButton(10, 410, 0xFB1, 0xFB2, 0);
+            builder.AddHtmlLocalized(45, 412, 450, 20, 1060051, 0x7FFF); // CANCEL
+
+            for (int i = 0, n = 0; i < _from.Skills.Length; i++)
+            {
+                var skill = _from.Skills[i];
 
                 if (skill.Base > 0.0)
                 {
@@ -294,24 +312,24 @@ public partial class SoulStone : Item, ISecurable
 
                         if (page > 0)
                         {
-                            AddButton(260, 380, 0xFA5, 0xFA6, 0, GumpButtonType.Page, page + 1);
-                            AddHtmlLocalized(305, 382, 200, 20, 1011066, 0x7FFF); // Next page
+                            builder.AddButton(260, 380, 0xFA5, 0xFA6, 0, GumpButtonType.Page, page + 1);
+                            builder.AddHtmlLocalized(305, 382, 200, 20, 1011066, 0x7FFF); // Next page
                         }
 
-                        AddPage(page + 1);
+                        builder.AddPage(page + 1);
 
                         if (page > 0)
                         {
-                            AddButton(10, 380, 0xFAE, 0xFAF, 0, GumpButtonType.Page, page);
-                            AddHtmlLocalized(55, 382, 200, 20, 1011067, 0x7FFF); // Previous page
+                            builder.AddButton(10, 380, 0xFAE, 0xFAF, 0, GumpButtonType.Page, page);
+                            builder.AddHtmlLocalized(55, 382, 200, 20, 1011067, 0x7FFF); // Previous page
                         }
                     }
 
                     var x = p % 2 == 0 ? 10 : 260;
                     var y = p / 2 * 20 + 40;
 
-                    AddButton(x, y, 0xFA5, 0xFA6, i + 1);
-                    AddHtmlLocalized(x + 45, y + 2, 200, 20, AosSkillBonuses.GetLabel(skill.SkillName), 0x7FFF);
+                    builder.AddButton(x, y, 0xFA5, 0xFA6, i + 1);
+                    builder.AddHtmlLocalized(x + 45, y + 2, 200, 20, AosSkillBonuses.GetLabel(skill.SkillName), 0x7FFF);
 
                     n++;
                 }
@@ -334,39 +352,52 @@ public partial class SoulStone : Item, ISecurable
             }
 
             var skill = from.Skills[iSkill];
-            if (skill.Base <= 0.0)
+            if (skill.Base <= 0.0 || !_stone.CheckUse(from))
             {
                 return;
             }
 
-            if (!_stone.CheckUse(from))
-            {
-                return;
-            }
-
-            from.SendGump(new ConfirmSkillGump(_stone, skill));
+            ConfirmSkillGump.DisplayTo(from, _stone, skill);
         }
     }
 
-    private class ConfirmSkillGump : Gump
+    private class ConfirmSkillGump : DynamicGump
     {
         private readonly Skill _skill;
         private readonly SoulStone _stone;
 
-        public ConfirmSkillGump(SoulStone stone, Skill skill) : base(50, 50)
+        public override bool Singleton => true;
+
+        private ConfirmSkillGump(SoulStone stone, Skill skill) : base(50, 50)
         {
             _stone = stone;
             _skill = skill;
+        }
 
-            AddBackground(0, 0, 520, 440, 0x13BE);
+        public static void DisplayTo(Mobile from, SoulStone stone, Skill skill)
+        {
+            if (from?.NetState == null || stone == null || stone.Deleted || !stone.IsEmpty || skill == null)
+            {
+                return;
+            }
 
-            AddImageTiled(10, 10, 500, 20, 0xA40);
-            AddImageTiled(10, 40, 500, 360, 0xA40);
-            AddImageTiled(10, 410, 500, 20, 0xA40);
+            from.SendGump(new ConfirmSkillGump(stone, skill));
+        }
 
-            AddAlphaRegion(10, 10, 500, 420);
+        protected override void BuildLayout(ref DynamicGumpBuilder builder)
+        {
+            builder.AddPage();
 
-            AddHtmlLocalized(10, 12, 500, 20, 1070709, 0x7FFF); // <CENTER>Confirm Soulstone Transfer</CENTER>
+            builder.AddBackground(0, 0, 520, 440, 0x13BE);
+
+            builder.AddImageTiled(10, 10, 500, 20, 0xA40);
+            builder.AddImageTiled(10, 40, 500, 360, 0xA40);
+            builder.AddImageTiled(10, 410, 500, 20, 0xA40);
+
+            builder.AddAlphaRegion(10, 10, 500, 420);
+
+            // <CENTER>Confirm Soulstone Transfer</CENTER>
+            builder.AddHtmlLocalized(10, 12, 500, 20, 1070709, 0x7FFF);
 
             /* <CENTER>Soulstone</CENTER><BR>
              * You are using a Soulstone.  This powerful artifact allows you to remove skill points
@@ -383,30 +414,30 @@ public partial class SoulStone : Item, ISecurable
              * This is an Account Bound Soulstone.  Skill pointsstored inside can be retrieved by any
              * character on the same account as the character who placed them into the stone.
              */
-            AddHtmlLocalized(10, 42, 500, 110, 1061067, 0x7FFF, false, true);
+            builder.AddHtmlLocalized(10, 42, 500, 110, 1061067, 0x7FFF, false, true);
 
-            AddHtmlLocalized(10, 200, 390, 20, 1062297, 0x7FFF); // Skill Chosen:
-            AddHtmlLocalized(210, 200, 390, 20, AosSkillBonuses.GetLabel(skill.SkillName), 0x7FFF);
+            builder.AddHtmlLocalized(10, 200, 390, 20, 1062297, 0x7FFF); // Skill Chosen:
+            builder.AddHtmlLocalized(210, 200, 390, 20, AosSkillBonuses.GetLabel(_skill.SkillName), 0x7FFF);
 
-            AddHtmlLocalized(10, 220, 390, 20, 1062298, 0x7FFF); // Current Value:
-            AddLabel(210, 220, 0x481, skill.Base.ToString("F1"));
+            builder.AddHtmlLocalized(10, 220, 390, 20, 1062298, 0x7FFF); // Current Value:
+            builder.AddLabel(210, 220, 0x481, $"{_skill.Base:F1}");
 
-            AddHtmlLocalized(10, 240, 390, 20, 1062299, 0x7FFF); // Current Cap:
-            AddLabel(210, 240, 0x481, skill.Cap.ToString("F1"));
+            builder.AddHtmlLocalized(10, 240, 390, 20, 1062299, 0x7FFF); // Current Cap:
+            builder.AddLabel(210, 240, 0x481, $"{_skill.Cap:F1}");
 
-            AddHtmlLocalized(10, 260, 390, 20, 1062300, 0x7FFF); // New Value:
-            AddLabel(210, 260, 0x481, "0.0");
+            builder.AddHtmlLocalized(10, 260, 390, 20, 1062300, 0x7FFF); // New Value:
+            builder.AddLabel(210, 260, 0x481, "0.0");
 
-            AddButton(10, 360, 0xFA5, 0xFA6, 2);
+            builder.AddButton(10, 360, 0xFA5, 0xFA6, 2);
 
             // Activate the stone.  I am ready to transfer the skill points to it.
-            AddHtmlLocalized(45, 362, 450, 20, 1070720, 0x7FFF);
+            builder.AddHtmlLocalized(45, 362, 450, 20, 1070720, 0x7FFF);
 
-            AddButton(10, 380, 0xFA5, 0xFA6, 1);
-            AddHtmlLocalized(45, 382, 450, 20, 1062279, 0x7FFF); // No, let me make another selection.
+            builder.AddButton(10, 380, 0xFA5, 0xFA6, 1);
+            builder.AddHtmlLocalized(45, 382, 450, 20, 1062279, 0x7FFF); // No, let me make another selection.
 
-            AddButton(10, 410, 0xFB1, 0xFB2, 0);
-            AddHtmlLocalized(45, 412, 450, 20, 1060051, 0x7FFF); // CANCEL
+            builder.AddButton(10, 410, 0xFB1, 0xFB2, 0);
+            builder.AddHtmlLocalized(45, 412, 450, 20, 1060051, 0x7FFF); // CANCEL
         }
 
         public override void OnResponse(NetState sender, in RelayInfo info)
@@ -425,7 +456,7 @@ public partial class SoulStone : Item, ISecurable
 
             if (info.ButtonID == 1) // Is asking for another selection
             {
-                from.SendGump(new SelectSkillGump(_stone, from));
+                SelectSkillGump.DisplayTo(from, _stone);
                 return;
             }
 
@@ -445,7 +476,7 @@ public partial class SoulStone : Item, ISecurable
                  * the selected skill at this time, click "Cancel".
                  */
 
-                from.SendGump(new ErrorGump(_stone, 1070710, 1070711));
+                ErrorGump.DisplayTo(from, _stone, 1070710, 1070711);
                 return;
             }
 
@@ -492,23 +523,43 @@ public partial class SoulStone : Item, ISecurable
         }
     }
 
-    private class ConfirmTransferGump : Gump
+    private class ConfirmTransferGump : DynamicGump
     {
         private readonly SoulStone _stone;
+        private readonly Mobile _from;
 
-        public ConfirmTransferGump(SoulStone stone, Mobile from) : base(50, 50)
+        public override bool Singleton => true;
+
+        private ConfirmTransferGump(SoulStone stone, Mobile from) : base(50, 50)
         {
             _stone = stone;
+            _from = from;
+        }
 
-            AddBackground(0, 0, 520, 440, 0x13BE);
+        public static void DisplayTo(Mobile from, SoulStone stone)
+        {
+            if (from?.NetState == null || stone == null || stone.Deleted || stone.IsEmpty)
+            {
+                return;
+            }
 
-            AddImageTiled(10, 10, 500, 20, 0xA40);
-            AddImageTiled(10, 40, 500, 360, 0xA40);
-            AddImageTiled(10, 410, 500, 20, 0xA40);
+            from.SendGump(new ConfirmTransferGump(stone, from));
+        }
 
-            AddAlphaRegion(10, 10, 500, 420);
+        protected override void BuildLayout(ref DynamicGumpBuilder builder)
+        {
+            builder.AddPage();
 
-            AddHtmlLocalized(10, 12, 500, 20, 1070709, 0x7FFF); // <CENTER>Confirm Soulstone Transfer</CENTER>
+            builder.AddBackground(0, 0, 520, 440, 0x13BE);
+
+            builder.AddImageTiled(10, 10, 500, 20, 0xA40);
+            builder.AddImageTiled(10, 40, 500, 360, 0xA40);
+            builder.AddImageTiled(10, 410, 500, 20, 0xA40);
+
+            builder.AddAlphaRegion(10, 10, 500, 420);
+
+            // <CENTER>Confirm Soulstone Transfer</CENTER>
+            builder.AddHtmlLocalized(10, 12, 500, 20, 1070709, 0x7FFF);
 
             /* <CENTER>Soulstone</CENTER><BR>
              * You are using a Soulstone.  This powerful artifact allows you to remove skill points
@@ -525,34 +576,34 @@ public partial class SoulStone : Item, ISecurable
              * This is an Account Bound Soulstone.  Skill pointsstored inside can be retrieved by any
              * character on the same account as the character who placed them into the stone.
              */
-            AddHtmlLocalized(10, 42, 500, 110, 1061067, 0x7FFF, false, true);
+            builder.AddHtmlLocalized(10, 42, 500, 110, 1061067, 0x7FFF, false, true);
 
-            AddHtmlLocalized(10, 200, 390, 20, 1070718, 0x7FFF); // Skill Stored:
-            AddHtmlLocalized(210, 200, 390, 20, AosSkillBonuses.GetLabel(stone.Skill), 0x7FFF);
+            builder.AddHtmlLocalized(10, 200, 390, 20, 1070718, 0x7FFF); // Skill Stored:
+            builder.AddHtmlLocalized(210, 200, 390, 20, AosSkillBonuses.GetLabel(_stone.Skill), 0x7FFF);
 
-            var fromSkill = from.Skills[stone.Skill];
+            var fromSkill = _from.Skills[_stone.Skill];
 
-            AddHtmlLocalized(10, 220, 390, 20, 1062298, 0x7FFF); // Current Value:
-            AddLabel(210, 220, 0x481, fromSkill.Base.ToString("F1"));
+            builder.AddHtmlLocalized(10, 220, 390, 20, 1062298, 0x7FFF); // Current Value:
+            builder.AddLabel(210, 220, 0x481, $"{fromSkill.Base:F1}");
 
-            AddHtmlLocalized(10, 240, 390, 20, 1062299, 0x7FFF); // Current Cap:
-            AddLabel(210, 240, 0x481, fromSkill.Cap.ToString("F1"));
+            builder.AddHtmlLocalized(10, 240, 390, 20, 1062299, 0x7FFF); // Current Cap:
+            builder.AddLabel(210, 240, 0x481, $"{fromSkill.Cap:F1}");
 
-            AddHtmlLocalized(10, 260, 390, 20, 1062300, 0x7FFF); // New Value:
-            AddLabel(210, 260, 0x481, stone.SkillValue.ToString("F1"));
+            builder.AddHtmlLocalized(10, 260, 390, 20, 1062300, 0x7FFF); // New Value:
+            builder.AddLabel(210, 260, 0x481, $"{_stone.SkillValue:F1}");
 
-            AddButton(10, 360, 0xFA5, 0xFA6, 2);
+            builder.AddButton(10, 360, 0xFA5, 0xFA6, 2);
 
             // Activate the stone.  I am ready to retrieve the skill points from it.
-            AddHtmlLocalized(45, 362, 450, 20, 1070719, 0x7FFF);
+            builder.AddHtmlLocalized(45, 362, 450, 20, 1070719, 0x7FFF);
 
-            AddButton(10, 380, 0xFA5, 0xFA6, 1);
+            builder.AddButton(10, 380, 0xFA5, 0xFA6, 1);
 
             // Remove all skill points from this stone and DO NOT absorb them.
-            AddHtmlLocalized(45, 382, 450, 20, 1070723, 0x7FFF);
+            builder.AddHtmlLocalized(45, 382, 450, 20, 1070723, 0x7FFF);
 
-            AddButton(10, 410, 0xFB1, 0xFB2, 0);
-            AddHtmlLocalized(45, 412, 450, 20, 1060051, 0x7FFF); // CANCEL
+            builder.AddButton(10, 410, 0xFB1, 0xFB2, 0);
+            builder.AddHtmlLocalized(45, 412, 450, 20, 1060051, 0x7FFF); // CANCEL
         }
 
         public override void OnResponse(NetState sender, in RelayInfo info)
@@ -571,7 +622,7 @@ public partial class SoulStone : Item, ISecurable
 
             if (info.ButtonID == 1) // Remove skill points
             {
-                from.SendGump(new ConfirmRemovalGump(_stone));
+                ConfirmRemovalGump.DisplayTo(from, _stone);
                 return;
             }
 
@@ -622,7 +673,7 @@ public partial class SoulStone : Item, ISecurable
                  * time, click "Cancel".
                  */
 
-                from.SendGump(new ErrorGump(_stone, 1070717, 1070716));
+                ErrorGump.DisplayTo(from, _stone, 1070717, 1070716);
                 return;
             }
 
@@ -636,7 +687,7 @@ public partial class SoulStone : Item, ISecurable
                  * skill cap.  You cannot currently retrieve the skill points stored in this stone.
                  */
 
-                from.SendGump(new ErrorGump(_stone, 1070717, 1070715));
+                ErrorGump.DisplayTo(from, _stone, 1070717, 1070715);
                 return;
             }
 
@@ -650,7 +701,7 @@ public partial class SoulStone : Item, ISecurable
 
                 // Wrong message?!
 
-                from.SendGump(new ErrorGump(_stone, 1070717, 1070802));
+                ErrorGump.DisplayTo(from, _stone, 1070717, 1070802);
                 return;
             }
 
@@ -662,7 +713,7 @@ public partial class SoulStone : Item, ISecurable
 
                 // Wrong message?!
 
-                from.SendGump(new ErrorGump(_stone, 1070717, 1078115));
+                ErrorGump.DisplayTo(from, _stone, 1070717, 1078115);
                 return;
             }
 
@@ -736,23 +787,41 @@ public partial class SoulStone : Item, ISecurable
         }
     }
 
-    private class ConfirmRemovalGump : Gump
+    private class ConfirmRemovalGump : StaticGump<ConfirmRemovalGump>
     {
         private readonly SoulStone _stone;
 
-        public ConfirmRemovalGump(SoulStone stone) : base(50, 50)
+        public override bool Singleton => true;
+
+        private ConfirmRemovalGump(SoulStone stone) : base(50, 50)
         {
             _stone = stone;
+        }
 
-            AddBackground(0, 0, 520, 440, 0x13BE);
+        public static void DisplayTo(Mobile from, SoulStone stone)
+        {
+            if (from?.NetState == null || stone == null || stone.Deleted || stone.IsEmpty)
+            {
+                return;
+            }
 
-            AddImageTiled(10, 10, 500, 20, 0xA40);
-            AddImageTiled(10, 40, 500, 360, 0xA40);
-            AddImageTiled(10, 410, 500, 20, 0xA40);
+            from.SendGump(new ConfirmRemovalGump(stone));
+        }
 
-            AddAlphaRegion(10, 10, 500, 420);
+        protected override void BuildLayout(ref StaticGumpBuilder builder)
+        {
+            builder.AddPage();
 
-            AddHtmlLocalized(10, 12, 500, 20, 1070725, 0x7FFF); // <CENTER>Confirm Soulstone Skill Removal</CENTER>
+            builder.AddBackground(0, 0, 520, 440, 0x13BE);
+
+            builder.AddImageTiled(10, 10, 500, 20, 0xA40);
+            builder.AddImageTiled(10, 40, 500, 360, 0xA40);
+            builder.AddImageTiled(10, 410, 500, 20, 0xA40);
+
+            builder.AddAlphaRegion(10, 10, 500, 420);
+
+            // <CENTER>Confirm Soulstone Skill Removal</CENTER>
+            builder.AddHtmlLocalized(10, 12, 500, 20, 1070725, 0x7FFF);
 
             /* WARNING!<BR><BR>
              *
@@ -761,13 +830,13 @@ public partial class SoulStone : Item, ISecurable
              *
              * Are you sure you wish to do this?  If not, press the Cancel button.
              */
-            AddHtmlLocalized(10, 42, 500, 110, 1070724, 0x7FFF, false, true);
+            builder.AddHtmlLocalized(10, 42, 500, 110, 1070724, 0x7FFF, false, true);
 
-            AddButton(10, 380, 0xFA5, 0xFA6, 1);
-            AddHtmlLocalized(45, 382, 450, 20, 1052072, 0x7FFF); // Continue
+            builder.AddButton(10, 380, 0xFA5, 0xFA6, 1);
+            builder.AddHtmlLocalized(45, 382, 450, 20, 1052072, 0x7FFF); // Continue
 
-            AddButton(10, 410, 0xFB1, 0xFB2, 0);
-            AddHtmlLocalized(45, 412, 450, 20, 1060051, 0x7FFF); // CANCEL
+            builder.AddButton(10, 410, 0xFB1, 0xFB2, 0);
+            builder.AddHtmlLocalized(45, 412, 450, 20, 1060051, 0x7FFF); // CANCEL
         }
 
         public override void OnResponse(NetState sender, in RelayInfo info)
@@ -789,31 +858,52 @@ public partial class SoulStone : Item, ISecurable
         }
     }
 
-    private class ErrorGump : Gump
+    private class ErrorGump : DynamicGump
     {
         private readonly SoulStone _stone;
+        private readonly int _title;
+        private readonly int _message;
 
-        public ErrorGump(SoulStone stone, int title, int message) : base(50, 50)
+        public override bool Singleton => true;
+
+        private ErrorGump(SoulStone stone, int title, int message) : base(50, 50)
         {
             _stone = stone;
+            _title = title;
+            _message = message;
+        }
 
-            AddBackground(0, 0, 520, 440, 0x13BE);
+        public static void DisplayTo(Mobile from, SoulStone stone, int title, int message)
+        {
+            if (from?.NetState == null || stone == null || stone.Deleted)
+            {
+                return;
+            }
 
-            AddImageTiled(10, 10, 500, 20, 0xA40);
-            AddImageTiled(10, 40, 500, 360, 0xA40);
-            AddImageTiled(10, 410, 500, 20, 0xA40);
+            from.SendGump(new ErrorGump(stone, title, message));
+        }
 
-            AddAlphaRegion(10, 10, 500, 420);
+        protected override void BuildLayout(ref DynamicGumpBuilder builder)
+        {
+            builder.AddPage();
 
-            AddHtmlLocalized(10, 12, 500, 20, title, 0x7FFF);
+            builder.AddBackground(0, 0, 520, 440, 0x13BE);
 
-            AddHtmlLocalized(10, 42, 500, 110, message, 0x7FFF, false, true);
+            builder.AddImageTiled(10, 10, 500, 20, 0xA40);
+            builder.AddImageTiled(10, 40, 500, 360, 0xA40);
+            builder.AddImageTiled(10, 410, 500, 20, 0xA40);
 
-            AddButton(10, 380, 0xFA5, 0xFA6, 1);
-            AddHtmlLocalized(45, 382, 450, 20, 1052072, 0x7FFF); // Continue
+            builder.AddAlphaRegion(10, 10, 500, 420);
 
-            AddButton(10, 410, 0xFB1, 0xFB2, 0);
-            AddHtmlLocalized(45, 412, 450, 20, 1060051, 0x7FFF); // CANCEL
+            builder.AddHtmlLocalized(10, 12, 500, 20, _title, 0x7FFF);
+
+            builder.AddHtmlLocalized(10, 42, 500, 110, _message, 0x7FFF, false, true);
+
+            builder.AddButton(10, 380, 0xFA5, 0xFA6, 1);
+            builder.AddHtmlLocalized(45, 382, 450, 20, 1052072, 0x7FFF); // Continue
+
+            builder.AddButton(10, 410, 0xFB1, 0xFB2, 0);
+            builder.AddHtmlLocalized(45, 412, 450, 20, 1060051, 0x7FFF); // CANCEL
         }
 
         public override void OnResponse(NetState sender, in RelayInfo info)
@@ -832,11 +922,11 @@ public partial class SoulStone : Item, ISecurable
 
             if (_stone.IsEmpty)
             {
-                from.SendGump(new SelectSkillGump(_stone, from));
+                SelectSkillGump.DisplayTo(from, _stone);
             }
             else
             {
-                from.SendGump(new ConfirmTransferGump(_stone, from));
+                ConfirmTransferGump.DisplayTo(from, _stone);
             }
         }
     }

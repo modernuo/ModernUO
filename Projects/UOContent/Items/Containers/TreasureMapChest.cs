@@ -430,12 +430,7 @@ public partial class TreasureMapChest : LockableContainer
 
     public void BeginRemove(Mobile from)
     {
-        if (!from.Alive)
-        {
-            return;
-        }
-
-        from.SendGump(new RemoveGump(from, this));
+        RemoveGump.DisplayTo(from, this);
     }
 
     public void EndRemove(Mobile from)
@@ -449,42 +444,50 @@ public partial class TreasureMapChest : LockableContainer
         Delete();
     }
 
-    private class RemoveGump : Gump
+    private class RemoveGump : StaticGump<RemoveGump>
     {
         private readonly TreasureMapChest _chest;
-        private readonly Mobile _from;
 
         public override bool Singleton => true;
 
-        public RemoveGump(Mobile from, TreasureMapChest chest) : base(15, 15)
+        private RemoveGump(TreasureMapChest chest) : base(15, 15) => _chest = chest;
+
+        public static void DisplayTo(Mobile from, TreasureMapChest chest)
         {
-            _from = from;
-            _chest = chest;
+            if (from?.NetState == null || !from.Alive || chest == null || chest.Deleted)
+            {
+                return;
+            }
 
-            Closable = false;
-            Disposable = false;
+            from.SendGump(new RemoveGump(chest));
+        }
 
-            AddPage(0);
+        protected override void BuildLayout(ref StaticGumpBuilder builder)
+        {
+            builder.AddPage();
 
-            AddBackground(30, 0, 240, 240, 2620);
+            builder.SetNoClose();
+            builder.SetNoDispose();
+
+            builder.AddBackground(30, 0, 240, 240, 2620);
 
             // When this treasure chest is removed, any items still inside of it will be lost.
-            AddHtmlLocalized(45, 15, 200, 80, 1048125, 0x7FFF);
+            builder.AddHtmlLocalized(45, 15, 200, 80, 1048125, 0x7FFF);
             // Are you certain you're ready to remove this chest?
-            AddHtmlLocalized(45, 95, 200, 60, 1048126, 0x7FFF);
+            builder.AddHtmlLocalized(45, 95, 200, 60, 1048126, 0x7FFF);
 
-            AddButton(40, 153, 4005, 4007, 1);
-            AddHtmlLocalized(75, 155, 180, 40, 1048127, 0x7FFF); // Remove the Treasure Chest
+            builder.AddButton(40, 153, 4005, 4007, 1);
+            builder.AddHtmlLocalized(75, 155, 180, 40, 1048127, 0x7FFF); // Remove the Treasure Chest
 
-            AddButton(40, 195, 4005, 4007, 2);
-            AddHtmlLocalized(75, 197, 180, 35, 1006045, 0x7FFF); // Cancel
+            builder.AddButton(40, 195, 4005, 4007, 2);
+            builder.AddHtmlLocalized(75, 197, 180, 35, 1006045, 0x7FFF); // Cancel
         }
 
         public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (info.ButtonID == 1)
             {
-                _chest.EndRemove(_from);
+                _chest.EndRemove(sender.Mobile);
             }
         }
     }
