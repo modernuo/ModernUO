@@ -321,9 +321,6 @@ public class PlayerBBGump : DynamicGump
     protected override void BuildLayout(ref DynamicGumpBuilder builder)
     {
         var page = _page;
-        var board = _board;
-        var house = _house;
-        var from = _from;
 
         builder.AddPage();
 
@@ -334,7 +331,7 @@ public class PlayerBBGump : DynamicGump
 
         builder.AddButton(32, 183, 5412, 5413, 1); // Post message
 
-        if (house.IsOwner(from))
+        if (_house.IsOwner(_from))
         {
             builder.AddButton(63, 90, 5601, 5605, 2);
             builder.AddHtmlLocalized(81, 89, 230, 20, 1062400, LabelColor); // Set title
@@ -343,7 +340,7 @@ public class PlayerBBGump : DynamicGump
             builder.AddHtmlLocalized(81, 108, 230, 20, 1062401, LabelColor); // Post greeting
         }
 
-        var title = board.Title;
+        var title = _board.Title;
 
         if (title != null)
         {
@@ -352,15 +349,15 @@ public class PlayerBBGump : DynamicGump
 
         builder.AddHtmlLocalized(385, 89, 60, 20, 1062409, LabelColor); // Post
 
-        builder.AddLabel(440, 89, LabelHue, page.ToString());
+        builder.AddLabel(440, 89, LabelHue, $"{page}");
         builder.AddLabel(455, 89, LabelHue, "/");
-        builder.AddLabel(470, 89, LabelHue, board.Messages.Count.ToString());
+        builder.AddLabel(470, 89, LabelHue, $"{_board.Messages.Count}");
 
-        var message = board.Greeting;
+        var message = _board.Greeting;
 
-        if (page >= 1 && page <= board.Messages.Count)
+        if (page >= 1 && page <= _board.Messages.Count)
         {
-            message = board.Messages[page - 1];
+            message = _board.Messages[page - 1];
         }
 
         builder.AddImageTiled(150, 220, 240, 1, 2700); // Separator
@@ -370,16 +367,15 @@ public class PlayerBBGump : DynamicGump
 
         if (message != null)
         {
-            builder.AddHtml(255, 180, 150, 20, message.Time.ToString("yyyy-MM-dd HH:mm:ss"));
+            builder.AddHtml(255, 180, 150, 20, $"{message.Time:yyyy-MM-dd HH:mm:ss}");
 
             var poster = message.Poster;
-            var name = (poster?.Name?.Trim()).DefaultIfNullOrEmpty("Someone");
-
-            builder.AddHtml(255, 200, 150, 20, name);
+            var posterName = poster?.Name ?? "Someone";
+            builder.AddHtml(255, 200, 150, 20, posterName.AsSpan().Trim());
 
             builder.AddHtml(150, 240, 250, 100, message.Message ?? "");
 
-            if (message != board.Greeting && house.IsOwner(from))
+            if (message != _board.Greeting && _house.IsOwner(_from))
             {
                 builder.AddButton(130, 395, 1209, 1210, 6);
                 builder.AddHtmlLocalized(150, 393, 150, 20, 1062410, LabelColor); // Banish Poster
@@ -388,7 +384,7 @@ public class PlayerBBGump : DynamicGump
                 builder.AddHtmlLocalized(330, 393, 150, 20, 1062411, LabelColor); // Delete Message
             }
 
-            if (from.AccessLevel >= AccessLevel.GameMaster)
+            if (_from.AccessLevel >= AccessLevel.GameMaster)
             {
                 builder.AddButton(135, 242, 1209, 1210, 8); // Post props
             }
