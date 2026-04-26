@@ -9,7 +9,7 @@ namespace Server.Guilds
 {
     public class GuildRosterGump : BaseGuildListGump<PlayerMobile>
     {
-        private static readonly InfoField<PlayerMobile>[] m_Fields =
+        private static readonly InfoField<PlayerMobile>[] _fields =
         [
             new(1062955, 130, NameComparer.Instance),  // Name
             new(1062956, 80, RankComparer.Instance),   // Rank
@@ -33,24 +33,21 @@ namespace Server.Guilds
                 ascending,
                 filter,
                 startNumber,
-                m_Fields
+                _fields
             )
         {
-            PopulateGump();
         }
 
-        public override void PopulateGump()
+        protected override void BuildListExtras(ref DynamicGumpBuilder builder)
         {
-            base.PopulateGump();
-
-            AddHtmlLocalized(266, 43, 110, 26, 1062974, 0xF); // Guild Roster
+            builder.AddHtmlLocalized(266, 43, 110, 26, 1062974, 0xF); // Guild Roster
         }
 
-        public override void DrawEndingEntry(int itemNumber)
+        protected override void DrawEndingEntry(ref DynamicGumpBuilder builder, int itemNumber)
         {
-            AddBackground(225, 148 + itemNumber * 28, 150, 26, 0x2486);
-            AddButton(230, 153 + itemNumber * 28, 0x845, 0x846, 8);
-            AddHtmlLocalized(255, 151 + itemNumber * 28, 110, 26, 1062992, 0x0); // Invite Player
+            builder.AddBackground(225, 148 + itemNumber * 28, 150, 26, 0x2486);
+            builder.AddButton(230, 153 + itemNumber * 28, 0x845, 0x846, 8);
+            builder.AddHtmlLocalized(255, 151 + itemNumber * 28, 110, 26, 1062992, 0x0); // Invite Player
         }
 
         protected override TextDefinition[] GetValuesFor(PlayerMobile pm, int aryLength)
@@ -86,13 +83,7 @@ namespace Server.Guilds
             return !pm.Name.InsensitiveContains(filter);
         }
 
-        public override Gump GetResentGump(
-            PlayerMobile pm, Guild g, IComparer<PlayerMobile> comparer, bool ascending,
-            string filter, int startNumber
-        ) =>
-            new GuildRosterGump(pm, g, comparer, ascending, filter, startNumber);
-
-        public override Gump GetObjectInfoGump(PlayerMobile pm, Guild g, PlayerMobile o) =>
+        public override BaseGump GetObjectInfoGump(PlayerMobile pm, Guild g, PlayerMobile o) =>
             new GuildMemberInfoGump(pm, g, o, false, false);
 
         public override void OnResponse(NetState sender, in RelayInfo info)

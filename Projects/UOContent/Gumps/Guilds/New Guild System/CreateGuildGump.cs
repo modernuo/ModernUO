@@ -4,43 +4,55 @@ using Server.Network;
 
 namespace Server.Guilds
 {
-    public class CreateGuildGump : Gump
+    public class CreateGuildGump : DynamicGump
     {
+        private readonly PlayerMobile _player;
+        private readonly string _guildName;
+        private readonly string _guildAbbrev;
+
         public override bool Singleton => true;
 
         public CreateGuildGump(PlayerMobile pm, string guildName = "Guild Name", string guildAbbrev = "") : base(10, 10)
         {
+            _player = pm;
+            _guildName = guildName;
+            _guildAbbrev = guildAbbrev;
+
             pm.CloseGump<BaseGuildGump>();
+        }
 
-            AddPage(0);
+        protected override void BuildLayout(ref DynamicGumpBuilder builder)
+        {
+            builder.AddPage();
 
-            AddBackground(0, 0, 500, 300, 0x2422);
-            AddHtmlLocalized(25, 20, 450, 25, 1062939, 0x0, true); // <center>GUILD MENU</center>
+            builder.AddBackground(0, 0, 500, 300, 0x2422);
+            builder.AddHtmlLocalized(25, 20, 450, 25, 1062939, 0x0, true); // <center>GUILD MENU</center>
 
-            // As you are not a member of any guild, you can create your own by providing a unique guild name and paying the standard guild registration fee.
-            AddHtmlLocalized(25, 60, 450, 60, 1062940, 0x0);
+            // As you are not a member of any guild, you can create your own by providing a unique guild name and
+            // paying the standard guild registration fee.
+            builder.AddHtmlLocalized(25, 60, 450, 60, 1062940, 0x0);
 
-            AddHtmlLocalized(25, 135, 120, 25, 1062941, 0x0); // Registration Fee:
-            AddLabel(155, 135, 0x481, Guild.RegistrationFee.ToString());
-            AddHtmlLocalized(25, 165, 120, 25, 1011140, 0x0); // Enter Guild Name:
-            AddBackground(155, 160, 320, 26, 0xBB8);
-            AddTextEntry(160, 163, 315, 21, 0x481, 5, guildName);
-            AddHtmlLocalized(25, 191, 120, 26, 1063035, 0x0); // Abbreviation:
-            AddBackground(155, 186, 320, 26, 0xBB8);
-            AddTextEntry(160, 189, 315, 21, 0x481, 6, guildAbbrev);
-            AddButton(415, 217, 0xF7, 0xF8, 1);
-            AddButton(345, 217, 0xF2, 0xF1, 0);
+            builder.AddHtmlLocalized(25, 135, 120, 25, 1062941, 0x0); // Registration Fee:
+            builder.AddLabel(155, 135, 0x481, Guild.RegistrationFee.ToString());
+            builder.AddHtmlLocalized(25, 165, 120, 25, 1011140, 0x0); // Enter Guild Name:
+            builder.AddBackground(155, 160, 320, 26, 0xBB8);
+            builder.AddTextEntry(160, 163, 315, 21, 0x481, 5, _guildName);
+            builder.AddHtmlLocalized(25, 191, 120, 26, 1063035, 0x0); // Abbreviation:
+            builder.AddBackground(155, 186, 320, 26, 0xBB8);
+            builder.AddTextEntry(160, 189, 315, 21, 0x481, 6, _guildAbbrev);
+            builder.AddButton(415, 217, 0xF7, 0xF8, 1);
+            builder.AddButton(345, 217, 0xF2, 0xF1, 0);
 
-            if (pm.AcceptGuildInvites)
+            if (_player.AcceptGuildInvites)
             {
-                AddButton(20, 260, 0xD2, 0xD3, 2);
+                builder.AddButton(20, 260, 0xD2, 0xD3, 2);
             }
             else
             {
-                AddButton(20, 260, 0xD3, 0xD2, 2);
+                builder.AddButton(20, 260, 0xD3, 0xD2, 2);
             }
 
-            AddHtmlLocalized(45, 260, 200, 30, 1062943, 0x0); // <i>Ignore Guild Invites</i>
+            builder.AddHtmlLocalized(45, 260, 200, 30, 1062943, 0x0); // <i>Ignore Guild Invites</i>
         }
 
         public override void OnResponse(NetState sender, in RelayInfo info)
