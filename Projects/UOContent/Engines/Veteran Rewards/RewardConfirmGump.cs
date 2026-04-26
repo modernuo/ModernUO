@@ -45,17 +45,12 @@ public class RewardConfirmGump : DynamicGump
         }
 
         builder.AddHtmlLocalized(30, 95, 300, 35, 1006001); // This will be assigned to this character:
-        builder.AddLabel(335, 95, 0, _from.Name);
+        builder.AddLabel(335, 95, 0, _from.RawName);
 
-        builder.AddHtmlLocalized(
-            35,
-            160,
-            450,
-            90,
-            1006002,
-            true,
-            true
-        ); // Are you sure you wish to select this reward for this character?  You will not be able to transfer this reward to another character on another shard.  Click 'ok' below to confirm your selection or 'cancel' to go back to the selection screen.
+        // Are you sure you wish to select this reward for this character?
+        // You will not be able to transfer this reward to another character on another shard.
+        // Click 'ok' below to confirm your selection or 'cancel' to go back to the selection screen.
+        builder.AddHtmlLocalized(35, 160, 450, 90, 1006002, true, true);
 
         builder.AddButton(60, 265, 4005, 4007, 1);
         builder.AddHtmlLocalized(95, 266, 150, 35, 1006044); // Ok

@@ -5,11 +5,11 @@ namespace Server.Engines.VeteranRewards;
 
 public class RewardNoticeGump : StaticGump<RewardNoticeGump>
 {
-    private readonly Mobile _from;
-
     public override bool Singleton => true;
 
-    private RewardNoticeGump(Mobile from) : base(0, 0) => _from = from;
+    private RewardNoticeGump() : base(0, 0)
+    {
+    }
 
     public static void DisplayTo(Mobile from)
     {
@@ -18,7 +18,7 @@ public class RewardNoticeGump : StaticGump<RewardNoticeGump>
             return;
         }
 
-        from.SendGump(new RewardNoticeGump(from));
+        from.SendGump(new RewardNoticeGump());
     }
 
     protected override void BuildLayout(ref StaticGumpBuilder builder)
@@ -43,7 +43,7 @@ public class RewardNoticeGump : StaticGump<RewardNoticeGump>
     {
         if (info.ButtonID == 1)
         {
-            RewardChoiceGump.DisplayTo(_from);
+            RewardChoiceGump.DisplayTo(sender.Mobile);
         }
     }
 }

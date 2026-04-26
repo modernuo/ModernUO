@@ -6,26 +6,24 @@ namespace Server.Gumps;
 public class CharacterStatueGump : DynamicGump
 {
     private readonly Item _maker;
-    private readonly Mobile _owner;
     private readonly CharacterStatue _statue;
 
     public override bool Singleton => true;
 
-    private CharacterStatueGump(Item maker, CharacterStatue statue, Mobile owner) : base(60, 36)
+    private CharacterStatueGump(Item maker, CharacterStatue statue) : base(60, 36)
     {
         _maker = maker;
         _statue = statue;
-        _owner = owner;
     }
 
-    public static void DisplayTo(Mobile from, Item maker, CharacterStatue statue, Mobile owner)
+    public static void DisplayTo(Mobile from, Item maker, CharacterStatue statue)
     {
         if (from?.NetState == null || statue == null || statue.Deleted)
         {
             return;
         }
 
-        from.SendGump(new CharacterStatueGump(maker, statue, owner));
+        from.SendGump(new CharacterStatueGump(maker, statue));
     }
 
     protected override void BuildLayout(ref DynamicGumpBuilder builder)
@@ -73,44 +71,21 @@ public class CharacterStatueGump : DynamicGump
         }
     }
 
-    private static int GetMaterialNumber(StatueType type, StatueMaterial material)
-    {
-        switch (material)
+    private static int GetMaterialNumber(StatueType type, StatueMaterial material) =>
+        material switch
         {
-            case StatueMaterial.Antique:
-                {
-                    return type switch
-                    {
-                        StatueType.Bronze => 1076187,
-                        StatueType.Jade   => 1076186,
-                        StatueType.Marble => 1076182,
-                        _                 => 1076187
-                    };
-                }
-
-            case StatueMaterial.Dark:
-                {
-                    if (type == StatueType.Marble)
-                    {
-                        return 1076183;
-                    }
-
-                    return 1076182;
-                }
-            case StatueMaterial.Medium:
-                {
-                    return 1076184;
-                }
-            case StatueMaterial.Light:
-                {
-                    return 1076185;
-                }
-            default:
-                {
-                    return 1076187;
-                }
-        }
-    }
+            StatueMaterial.Antique => type switch
+            {
+                StatueType.Bronze => 1076187,
+                StatueType.Jade   => 1076186,
+                StatueType.Marble => 1076182,
+                _                 => 1076187
+            },
+            StatueMaterial.Dark   => type == StatueType.Marble ? 1076183 : 1076182,
+            StatueMaterial.Medium => 1076184,
+            StatueMaterial.Light  => 1076185,
+            _                     => 1076187
+        };
 
     private static int GetDirectionNumber(Direction direction) =>
         direction switch

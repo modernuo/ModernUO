@@ -592,7 +592,7 @@ public class CharacterStatueTarget : Target
             _maker.Delete();
             statue.Sculpt(from);
 
-            CharacterStatueGump.DisplayTo(from, _maker, statue, from);
+            CharacterStatueGump.DisplayTo(from, _maker, statue);
             return;
         }
 

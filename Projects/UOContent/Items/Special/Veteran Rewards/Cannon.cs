@@ -340,7 +340,7 @@ public partial class CannonAddon : BaseAddon
             builder.AddImageTiled(5, 5, 280, 100, 0xA40);
 
             // You will need a full keg of explosion potions to recharge the cannon.  Your keg will provide ~1_CHARGES~ charges.
-            builder.AddHtmlLocalized(9, 9, 272, 100, 1076196, _cannon.Validate(_keg).ToString(), 0x7FFF);
+            builder.AddHtmlLocalized(9, 9, 272, 100, 1076196, $"{_cannon.Validate(_keg)}", 0x7FFF);
 
             builder.AddButton(5, 107, 0xFB1, 0xFB2, (int)Buttons.Cancel);
             builder.AddHtmlLocalized(40, 109, 100, 20, 1060051, 0x7FFF); // CANCEL
