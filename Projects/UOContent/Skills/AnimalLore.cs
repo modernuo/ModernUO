@@ -76,10 +76,7 @@ namespace Server.SkillHandlers
 
         public override bool Singleton => true;
 
-        private AnimalLoreGump(BaseCreature c) : base(250, 50)
-        {
-            _creature = c;
-        }
+        private AnimalLoreGump(BaseCreature c) : base(250, 50) => _creature = c;
 
         public static void DisplayTo(Mobile from, BaseCreature c)
         {

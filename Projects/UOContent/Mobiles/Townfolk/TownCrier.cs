@@ -194,16 +194,11 @@ public class TownCrierLinesPrompt : Prompt
 
 public class TownCrierGump : DynamicGump
 {
-    private readonly Mobile _from;
     private readonly ITownCrierEntryList _owner;
 
     public override bool Singleton => true;
 
-    private TownCrierGump(Mobile from, ITownCrierEntryList owner) : base(50, 50)
-    {
-        _from = from;
-        _owner = owner;
-    }
+    private TownCrierGump(ITownCrierEntryList owner) : base(50, 50) => _owner = owner;
 
     public static void DisplayTo(Mobile from, ITownCrierEntryList owner)
     {
@@ -212,7 +207,7 @@ public class TownCrierGump : DynamicGump
             return;
         }
 
-        from.SendGump(new TownCrierGump(from, owner));
+        from.SendGump(new TownCrierGump(owner));
     }
 
     protected override void BuildLayout(ref DynamicGumpBuilder builder)
@@ -281,10 +276,12 @@ public class TownCrierGump : DynamicGump
 
     public override void OnResponse(NetState sender, in RelayInfo info)
     {
+        var from = sender.Mobile;
+
         if (info.ButtonID == 1)
         {
-            _from.SendMessage("Enter the duration for the new message. Format: <hours:minutes:seconds, 00:00:00>");
-            _from.Prompt = new TownCrierDurationPrompt(_owner);
+            from.SendMessage("Enter the duration for the new message. Format: <hours:minutes:seconds, 00:00:00>");
+            from.Prompt = new TownCrierDurationPrompt(_owner);
         }
         else if (info.ButtonID > 1)
         {
@@ -296,9 +293,9 @@ public class TownCrierGump : DynamicGump
                 var tce = entries[index];
                 var ts = Utility.Max(tce.ExpireTime - Core.Now, TimeSpan.Zero);
 
-                _from.SendMessage($"Editing entry #{index + 1}.");
-                _from.SendMessage("Enter the first line to shout:");
-                _from.Prompt = new TownCrierLinesPrompt(_owner, tce, new List<string>(), ts);
+                from.SendMessage($"Editing entry #{index + 1}.");
+                from.SendMessage("Enter the first line to shout:");
+                from.Prompt = new TownCrierLinesPrompt(_owner, tce, new List<string>(), ts);
             }
         }
     }
@@ -361,11 +358,6 @@ public partial class TownCrier : Mobile, ITownCrierEntryList
         AddItem(boots);
 
         Utility.AssignRandomHair(this);
-    }
-
-    public TownCrier(Serial serial) : base(serial)
-    {
-        Instances.Add(this);
     }
 
     public static List<TownCrier> Instances { get; } = new();
@@ -520,5 +512,11 @@ public partial class TownCrier : Mobile, ITownCrierEntryList
     {
         Instances.Remove(this);
         base.OnDelete();
+    }
+
+    [AfterDeserialization]
+    private void AfterDeserialization()
+    {
+        Instances.Add(this);
     }
 }

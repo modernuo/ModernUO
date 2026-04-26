@@ -423,16 +423,14 @@ namespace Server.Mobiles
 
         private class ClaimListGump : DynamicGump
         {
-            private readonly Mobile _from;
             private readonly List<BaseCreature> _list;
             private readonly AnimalTrainer _trainer;
 
             public override bool Singleton => true;
 
-            private ClaimListGump(AnimalTrainer trainer, Mobile from, List<BaseCreature> list) : base(50, 50)
+            private ClaimListGump(AnimalTrainer trainer, List<BaseCreature> list) : base(50, 50)
             {
                 _trainer = trainer;
-                _from = from;
                 _list = list;
             }
 
@@ -443,7 +441,7 @@ namespace Server.Mobiles
                     return;
                 }
 
-                from.SendGump(new ClaimListGump(trainer, from, list));
+                from.SendGump(new ClaimListGump(trainer, list));
             }
 
             protected override void BuildLayout(ref DynamicGumpBuilder builder)
@@ -453,7 +451,8 @@ namespace Server.Mobiles
                 builder.AddBackground(0, 0, 325, 50 + _list.Count * 20, 9250);
                 builder.AddAlphaRegion(5, 5, 315, 40 + _list.Count * 20);
 
-                builder.AddHtml(15, 15, 275, 20, "<BASEFONT COLOR=#FFFFFF>Select a pet to retrieve from the stables:</BASEFONT>");
+                // Select a pet to retrieve from the stables:
+                builder.AddHtmlLocalized(15, 15, 275, 20, 1080333, 0x7FFF);
 
                 for (var i = 0; i < _list.Count; ++i)
                 {
@@ -475,7 +474,7 @@ namespace Server.Mobiles
 
                 if (index >= 0 && index < _list.Count)
                 {
-                    _trainer.EndClaimList(_from, _list[index]);
+                    _trainer.EndClaimList(sender.Mobile, _list[index]);
                 }
             }
         }

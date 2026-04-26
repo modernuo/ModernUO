@@ -11,10 +11,7 @@ namespace Server.Gumps
 
         public override bool Singleton => true;
 
-        private CommentsGump(Account acct) : base(30, 30)
-        {
-            _acct = acct;
-        }
+        private CommentsGump(Account acct) : base(30, 30) => _acct = acct;
 
         public static void DisplayTo(Mobile from, Account acct)
         {
