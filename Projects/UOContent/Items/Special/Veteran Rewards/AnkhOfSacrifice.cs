@@ -214,7 +214,7 @@ public partial class AnkhOfSacrificeDeed : BaseAddonDeed, IRewardItem, IRewardOp
 
         if (IsChildOf(from.Backpack))
         {
-            from.SendGump(new RewardOptionGump(this));
+            RewardOptionGump.DisplayTo(from, this);
         }
         else
         {

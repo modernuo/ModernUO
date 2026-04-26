@@ -79,7 +79,7 @@ public partial class FlamingHead : StoneFaceTrapNoDamage, IAddon, IRewardItem
 
         if (house?.IsOwner(from) == true)
         {
-            from.SendGump(new RewardDemolitionGump(this, 1018329)); // Do you wish to re-deed this skull?
+            RewardDemolitionGump.DisplayTo(from, this, 1018329); // Do you wish to re-deed this skull?
         }
         else
         {

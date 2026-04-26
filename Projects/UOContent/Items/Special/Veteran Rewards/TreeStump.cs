@@ -203,7 +203,7 @@ public partial class TreeStumpDeed : BaseAddonDeed, IRewardItem, IRewardOption
 
         if (IsChildOf(from.Backpack))
         {
-            from.SendGump(new RewardOptionGump(this));
+            RewardOptionGump.DisplayTo(from, this);
         }
         else
         {

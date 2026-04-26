@@ -304,7 +304,7 @@ public partial class WallBannerDeed : BaseAddonDeed, IRewardItem
 
         if (IsChildOf(from.Backpack))
         {
-            from.SendGump(new InternalGump(this));
+            WallBannerGump.DisplayTo(from, this);
         }
         else
         {
@@ -319,152 +319,157 @@ public partial class WallBannerDeed : BaseAddonDeed, IRewardItem
         base.OnDoubleClick(m);
     }
 
-    private class InternalGump : Gump
+    private class WallBannerGump : StaticGump<WallBannerGump>
     {
         private readonly WallBannerDeed _wallBanner;
 
         public override bool Singleton => true;
 
-        public InternalGump(WallBannerDeed wallBanner) : base(150, 50)
+        private WallBannerGump(WallBannerDeed wallBanner) : base(150, 50) => _wallBanner = wallBanner;
+
+        public static void DisplayTo(Mobile from, WallBannerDeed wallBanner)
         {
-            _wallBanner = wallBanner;
+            if (from?.NetState == null || wallBanner?.Deleted != false)
+            {
+                return;
+            }
 
-            Closable = true;
-            Disposable = true;
-            Draggable = true;
-            Resizable = false;
+            from.SendGump(new WallBannerGump(wallBanner));
+        }
 
-            AddBackground(25, 0, 500, 265, 0xA28);
-            AddLabel(70, 12, 0x3E3, "Choose a Wall Banner:");
+        protected override void BuildLayout(ref StaticGumpBuilder builder)
+        {
+            builder.AddBackground(25, 0, 500, 265, 0xA28);
+            builder.AddLabel(70, 12, 0x3E3, "Choose a Wall Banner:");
 
-            AddPage(1);
+            builder.AddPage(1);
 
-            AddItem(55, 110, 0x161D);
-            AddItem(75, 90, 0x161E);
-            AddItem(95, 70, 0x161F);
-            AddButton(70, 50, 0x845, 0x846, 1);
-            AddItem(105, 70, 0x1586);
-            AddItem(125, 90, 0x1587);
-            AddItem(145, 110, 0x1588);
-            AddButton(145, 50, 0x845, 0x846, 2);
-            AddItem(200, 110, 0x1620);
-            AddItem(220, 90, 0x1621);
-            AddItem(240, 70, 0x1622);
-            AddButton(220, 50, 0x845, 0x846, 3);
-            AddItem(250, 70, 0x1589);
-            AddItem(270, 90, 0x158A);
-            AddItem(290, 110, 0x158B);
-            AddButton(300, 50, 0x845, 0x846, 4);
-            AddItem(350, 110, 0x1623);
-            AddItem(370, 90, 0x1624);
-            AddItem(390, 70, 0x1625);
-            AddButton(365, 50, 0x845, 0x846, 5);
-            AddItem(400, 70, 0x158C);
-            AddItem(420, 90, 0x158D);
-            AddItem(440, 110, 0x158E);
-            AddButton(445, 50, 0x845, 0x846, 6);
-            AddButton(455, 205, 0x8B0, 0x8B0, 0, GumpButtonType.Page, 2);
+            builder.AddItem(55, 110, 0x161D);
+            builder.AddItem(75, 90, 0x161E);
+            builder.AddItem(95, 70, 0x161F);
+            builder.AddButton(70, 50, 0x845, 0x846, 1);
+            builder.AddItem(105, 70, 0x1586);
+            builder.AddItem(125, 90, 0x1587);
+            builder.AddItem(145, 110, 0x1588);
+            builder.AddButton(145, 50, 0x845, 0x846, 2);
+            builder.AddItem(200, 110, 0x1620);
+            builder.AddItem(220, 90, 0x1621);
+            builder.AddItem(240, 70, 0x1622);
+            builder.AddButton(220, 50, 0x845, 0x846, 3);
+            builder.AddItem(250, 70, 0x1589);
+            builder.AddItem(270, 90, 0x158A);
+            builder.AddItem(290, 110, 0x158B);
+            builder.AddButton(300, 50, 0x845, 0x846, 4);
+            builder.AddItem(350, 110, 0x1623);
+            builder.AddItem(370, 90, 0x1624);
+            builder.AddItem(390, 70, 0x1625);
+            builder.AddButton(365, 50, 0x845, 0x846, 5);
+            builder.AddItem(400, 70, 0x158C);
+            builder.AddItem(420, 90, 0x158D);
+            builder.AddItem(440, 110, 0x158E);
+            builder.AddButton(445, 50, 0x845, 0x846, 6);
+            builder.AddButton(455, 205, 0x8B0, 0x8B0, 0, GumpButtonType.Page, 2);
 
-            AddPage(2);
+            builder.AddPage(2);
 
-            AddItem(52, 110, 0x1626);
-            AddItem(72, 90, 0x1627);
-            AddItem(95, 70, 0x1628);
-            AddButton(70, 50, 0x845, 0x846, 7);
-            AddItem(105, 70, 0x1590);
-            AddItem(125, 90, 0x1591);
-            AddItem(145, 110, 0x158F);
-            AddButton(145, 50, 0x845, 0x846, 8);
-            AddItem(197, 110, 0x1626);
-            AddItem(217, 90, 0x1629);
-            AddItem(240, 70, 0x162A);
-            AddButton(220, 50, 0x845, 0x846, 9);
-            AddItem(250, 70, 0x1592);
-            AddItem(270, 90, 0x1593);
-            AddItem(290, 110, 0x158F);
-            AddButton(300, 50, 0x845, 0x846, 10);
-            AddItem(340, 110, 0x162B);
-            AddItem(363, 90, 0x162C);
-            AddItem(385, 70, 0x162D);
-            AddButton(365, 50, 0x845, 0x846, 11);
-            AddItem(395, 70, 0x1594);
-            AddItem(417, 90, 0x1595);
-            AddItem(439, 111, 0x1596);
-            AddButton(445, 50, 0x845, 0x846, 12);
-            AddButton(70, 205, 0x8AF, 0x8AF, 0, GumpButtonType.Page, 1);
-            AddButton(455, 205, 0x8B0, 0x8B0, 0, GumpButtonType.Page, 3);
+            builder.AddItem(52, 110, 0x1626);
+            builder.AddItem(72, 90, 0x1627);
+            builder.AddItem(95, 70, 0x1628);
+            builder.AddButton(70, 50, 0x845, 0x846, 7);
+            builder.AddItem(105, 70, 0x1590);
+            builder.AddItem(125, 90, 0x1591);
+            builder.AddItem(145, 110, 0x158F);
+            builder.AddButton(145, 50, 0x845, 0x846, 8);
+            builder.AddItem(197, 110, 0x1626);
+            builder.AddItem(217, 90, 0x1629);
+            builder.AddItem(240, 70, 0x162A);
+            builder.AddButton(220, 50, 0x845, 0x846, 9);
+            builder.AddItem(250, 70, 0x1592);
+            builder.AddItem(270, 90, 0x1593);
+            builder.AddItem(290, 110, 0x158F);
+            builder.AddButton(300, 50, 0x845, 0x846, 10);
+            builder.AddItem(340, 110, 0x162B);
+            builder.AddItem(363, 90, 0x162C);
+            builder.AddItem(385, 70, 0x162D);
+            builder.AddButton(365, 50, 0x845, 0x846, 11);
+            builder.AddItem(395, 70, 0x1594);
+            builder.AddItem(417, 90, 0x1595);
+            builder.AddItem(439, 111, 0x1596);
+            builder.AddButton(445, 50, 0x845, 0x846, 12);
+            builder.AddButton(70, 205, 0x8AF, 0x8AF, 0, GumpButtonType.Page, 1);
+            builder.AddButton(455, 205, 0x8B0, 0x8B0, 0, GumpButtonType.Page, 3);
 
-            AddPage(3);
+            builder.AddPage(3);
 
-            AddItem(55, 110, 0x162E);
-            AddItem(75, 93, 0x1631);
-            AddItem(95, 70, 0x1632);
-            AddButton(70, 50, 0x845, 0x846, 13);
-            AddItem(118, 70, 0x1598);
-            AddItem(138, 94, 0x159B);
-            AddItem(159, 113, 0x159C);
-            AddButton(160, 50, 0x845, 0x846, 14);
-            AddItem(219, 111, 0x162F);
-            AddItem(238, 94, 0x1630);
-            AddItem(258, 70, 0x1633);
-            AddButton(240, 50, 0x845, 0x846, 15);
-            AddItem(279, 70, 0x1599);
-            AddItem(298, 93, 0x159A);
-            AddItem(319, 113, 0x159D);
-            AddButton(320, 50, 0x845, 0x846, 16);
-            AddItem(380, 90, 0x160F);
-            AddItem(400, 70, 0x1610);
-            AddButton(390, 50, 0x845, 0x846, 17);
-            AddItem(420, 70, 0x15A0);
-            AddItem(440, 90, 0x15A1);
-            AddButton(455, 50, 0x845, 0x846, 18);
-            AddButton(70, 205, 0x8AF, 0x8AF, 0, GumpButtonType.Page, 2);
-            AddButton(455, 205, 0x8B0, 0x8B0, 0, GumpButtonType.Page, 4);
+            builder.AddItem(55, 110, 0x162E);
+            builder.AddItem(75, 93, 0x1631);
+            builder.AddItem(95, 70, 0x1632);
+            builder.AddButton(70, 50, 0x845, 0x846, 13);
+            builder.AddItem(118, 70, 0x1598);
+            builder.AddItem(138, 94, 0x159B);
+            builder.AddItem(159, 113, 0x159C);
+            builder.AddButton(160, 50, 0x845, 0x846, 14);
+            builder.AddItem(219, 111, 0x162F);
+            builder.AddItem(238, 94, 0x1630);
+            builder.AddItem(258, 70, 0x1633);
+            builder.AddButton(240, 50, 0x845, 0x846, 15);
+            builder.AddItem(279, 70, 0x1599);
+            builder.AddItem(298, 93, 0x159A);
+            builder.AddItem(319, 113, 0x159D);
+            builder.AddButton(320, 50, 0x845, 0x846, 16);
+            builder.AddItem(380, 90, 0x160F);
+            builder.AddItem(400, 70, 0x1610);
+            builder.AddButton(390, 50, 0x845, 0x846, 17);
+            builder.AddItem(420, 70, 0x15A0);
+            builder.AddItem(440, 90, 0x15A1);
+            builder.AddButton(455, 50, 0x845, 0x846, 18);
+            builder.AddButton(70, 205, 0x8AF, 0x8AF, 0, GumpButtonType.Page, 2);
+            builder.AddButton(455, 205, 0x8B0, 0x8B0, 0, GumpButtonType.Page, 4);
 
-            AddPage(4);
+            builder.AddPage(4);
 
-            AddItem(55, 90, 0x1611);
-            AddItem(75, 70, 0x1612);
-            AddButton(70, 50, 0x845, 0x846, 19);
-            AddItem(105, 70, 0x15A2);
-            AddItem(125, 90, 0x15A3);
-            AddButton(145, 50, 0x845, 0x846, 20);
-            AddItem(200, 84, 0x1613);
-            AddItem(220, 70, 0x1614);
-            AddButton(215, 50, 0x845, 0x846, 21);
-            AddItem(250, 70, 0x15A4);
-            AddItem(270, 84, 0x15A5);
-            AddButton(290, 50, 0x845, 0x846, 22);
-            AddItem(350, 90, 0x1615);
-            AddItem(370, 70, 0x1616);
-            AddButton(365, 50, 0x845, 0x846, 23);
-            AddItem(400, 70, 0x15A6);
-            AddItem(420, 90, 0x15A7);
-            AddButton(445, 50, 0x845, 0x846, 24);
-            AddButton(70, 205, 0x8AF, 0x8AF, 0, GumpButtonType.Page, 3);
-            AddButton(455, 205, 0x8B0, 0x8B0, 0, GumpButtonType.Page, 5);
+            builder.AddItem(55, 90, 0x1611);
+            builder.AddItem(75, 70, 0x1612);
+            builder.AddButton(70, 50, 0x845, 0x846, 19);
+            builder.AddItem(105, 70, 0x15A2);
+            builder.AddItem(125, 90, 0x15A3);
+            builder.AddButton(145, 50, 0x845, 0x846, 20);
+            builder.AddItem(200, 84, 0x1613);
+            builder.AddItem(220, 70, 0x1614);
+            builder.AddButton(215, 50, 0x845, 0x846, 21);
+            builder.AddItem(250, 70, 0x15A4);
+            builder.AddItem(270, 84, 0x15A5);
+            builder.AddButton(290, 50, 0x845, 0x846, 22);
+            builder.AddItem(350, 90, 0x1615);
+            builder.AddItem(370, 70, 0x1616);
+            builder.AddButton(365, 50, 0x845, 0x846, 23);
+            builder.AddItem(400, 70, 0x15A6);
+            builder.AddItem(420, 90, 0x15A7);
+            builder.AddButton(445, 50, 0x845, 0x846, 24);
+            builder.AddButton(70, 205, 0x8AF, 0x8AF, 0, GumpButtonType.Page, 3);
+            builder.AddButton(455, 205, 0x8B0, 0x8B0, 0, GumpButtonType.Page, 5);
 
-            AddPage(5);
+            builder.AddPage(5);
 
-            AddItem(55, 90, 0x1617);
-            AddItem(77, 70, 0x1618);
-            AddButton(70, 50, 0x845, 0x846, 25);
-            AddItem(105, 70, 0x15A8);
-            AddItem(127, 90, 0x15A9);
-            AddButton(145, 50, 0x845, 0x846, 26);
-            AddItem(200, 90, 0x1619);
-            AddItem(222, 70, 0x161A);
-            AddButton(220, 50, 0x845, 0x846, 27);
-            AddItem(250, 70, 0x15AA);
-            AddItem(272, 90, 0x15AB);
-            AddButton(300, 50, 0x845, 0x846, 28);
-            AddItem(350, 90, 0x161B);
-            AddItem(372, 70, 0x161C);
-            AddButton(365, 50, 0x845, 0x846, 29);
-            AddItem(400, 70, 0x15AC);
-            AddItem(422, 90, 0x15AD);
-            AddButton(445, 50, 0x845, 0x846, 30);
-            AddButton(70, 205, 0x8AF, 0x8AF, 0, GumpButtonType.Page, 4);
+            builder.AddItem(55, 90, 0x1617);
+            builder.AddItem(77, 70, 0x1618);
+            builder.AddButton(70, 50, 0x845, 0x846, 25);
+            builder.AddItem(105, 70, 0x15A8);
+            builder.AddItem(127, 90, 0x15A9);
+            builder.AddButton(145, 50, 0x845, 0x846, 26);
+            builder.AddItem(200, 90, 0x1619);
+            builder.AddItem(222, 70, 0x161A);
+            builder.AddButton(220, 50, 0x845, 0x846, 27);
+            builder.AddItem(250, 70, 0x15AA);
+            builder.AddItem(272, 90, 0x15AB);
+            builder.AddButton(300, 50, 0x845, 0x846, 28);
+            builder.AddItem(350, 90, 0x161B);
+            builder.AddItem(372, 70, 0x161C);
+            builder.AddButton(365, 50, 0x845, 0x846, 29);
+            builder.AddItem(400, 70, 0x15AC);
+            builder.AddItem(422, 90, 0x15AD);
+            builder.AddButton(445, 50, 0x845, 0x846, 30);
+            builder.AddButton(70, 205, 0x8AF, 0x8AF, 0, GumpButtonType.Page, 4);
         }
 
         public override void OnResponse(NetState sender, in RelayInfo info)
