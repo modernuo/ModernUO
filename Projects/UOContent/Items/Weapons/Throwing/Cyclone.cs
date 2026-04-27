@@ -20,5 +20,5 @@ public partial class Cyclone : BaseThrown
     public override int InitMinHits => 31;
     public override int InitMaxHits => 60;
 
-
+    public override int RequiredRaces => Race.AllowGargoylesOnly;
 }
