@@ -62,10 +62,31 @@ public enum CorpseFlag
     /// <summary>
     ///     Has this corpse been self looted?
     /// </summary>
-    SelfLooted = 0x00000080
+    SelfLooted = 0x00000080,
+
+    /// <summary>
+    ///     Was the owner a murderer when he died?
+    /// </summary>
+    Murderer = 0x00000100,
+
+    /// <summary>
+    ///     Was the owner a BaseCreature? Snapshot at death so notoriety still resolves after the
+    ///     owner Mobile is deleted (BaseCreatures are deleted on death; the reference is null after restart).
+    /// </summary>
+    OwnerWasBaseCreature = 0x00000200,
+
+    /// <summary>
+    ///     Was the owner a summoned creature?
+    /// </summary>
+    OwnerWasSummoned = 0x00000400,
+
+    /// <summary>
+    ///     Was the owner an animated dead creature?
+    /// </summary>
+    OwnerWasAnimatedDead = 0x00000800
 }
 
-[SerializationGenerator(15, false)]
+[SerializationGenerator(16, false)]
 public partial class Corpse : Container, ICarvable
 {
     public static readonly TimeSpan MonsterLootRightSacrifice = TimeSpan.FromMinutes(2.0);
@@ -125,21 +146,17 @@ public partial class Corpse : Container, ICarvable
     [SerializableField(11, setter: "private")]
     private Guild _guild;
 
-    [SerializableField(12)]
-    [SerializedCommandProperty(AccessLevel.GameMaster)]
-    private bool _murderer;
-
-    [SerializableField(13, setter: "private")]
+    [SerializableField(12, setter: "private")]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private List<Item> _equipItems;
 
     [CanBeNull]
-    [SerializableField(14, setter: "private")]
+    [SerializableField(13, setter: "private")]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private VirtualHairInfo _hair;
 
     [CanBeNull]
-    [SerializableField(15, setter: "private")]
+    [SerializableField(14, setter: "private")]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private VirtualHairInfo _facialHair;
 
@@ -171,8 +188,19 @@ public partial class Corpse : Container, ICarvable
 
         _accessLevel = owner.AccessLevel;
         _guild = owner.Guild as Guild;
-        _murderer = owner.Murderer;
+        SetFlag(CorpseFlag.Murderer, owner.Murderer);
         SetFlag(CorpseFlag.Criminal, owner.Criminal);
+
+        var ownerBaseCreature = owner as BaseCreature;
+
+        // Snapshot owner type & state. BaseCreatures are deleted after death, so the owner mobile
+        // reference becomes null after restart - notoriety must be derivable without it.
+        if (ownerBaseCreature != null)
+        {
+            SetFlag(CorpseFlag.OwnerWasBaseCreature, true);
+            SetFlag(CorpseFlag.OwnerWasSummoned, ownerBaseCreature.Summoned);
+            SetFlag(CorpseFlag.OwnerWasAnimatedDead, ownerBaseCreature.IsAnimatedDead);
+        }
 
         if (hair?.ItemId > 0)
         {
@@ -192,8 +220,6 @@ public partial class Corpse : Container, ICarvable
 
         _aggressors = new List<Mobile>(owner.Aggressors.Count + owner.Aggressed.Count);
 
-        var isBaseCreature = owner is BaseCreature;
-
         var lastTime = TimeSpan.MaxValue;
 
         for (var i = 0; i < owner.Aggressors.Count; ++i)
@@ -206,7 +232,7 @@ public partial class Corpse : Container, ICarvable
                 lastTime = Core.Now - info.LastCombatTime;
             }
 
-            if (!isBaseCreature && !info.CriminalAggression)
+            if (ownerBaseCreature == null && !info.CriminalAggression)
             {
                 _aggressors.Add(info.Attacker);
             }
@@ -222,23 +248,21 @@ public partial class Corpse : Container, ICarvable
                 lastTime = Core.Now - info.LastCombatTime;
             }
 
-            if (!isBaseCreature)
+            if (ownerBaseCreature == null)
             {
                 _aggressors.Add(info.Defender);
             }
         }
 
-        if (isBaseCreature)
+        if (ownerBaseCreature != null)
         {
-            var bc = (BaseCreature)owner;
-
-            var master = bc.GetMaster();
+            var master = ownerBaseCreature.GetMaster();
             if (master != null)
             {
                 _aggressors.Add(master);
             }
 
-            var rights = BaseCreature.GetLootingRights(bc.DamageEntries, bc.HitsMax);
+            var rights = BaseCreature.GetLootingRights(ownerBaseCreature.DamageEntries, ownerBaseCreature.HitsMax);
             for (var i = 0; i < rights.Count; ++i)
             {
                 var ds = rights[i];
@@ -255,11 +279,15 @@ public partial class Corpse : Container, ICarvable
         DevourCorpse();
     }
 
-    // Replaced int Kills snapshot with bool Murderer snapshot
-    private void MigrateFrom(V14Content content)
+    // Folded Murderer bool field into CorpseFlag.Murderer
+    private void MigrateFrom(V15Content content)
     {
         _restoreEquip = content.RestoreEquip;
         _flags = content.Flags;
+        if (content.Murderer)
+        {
+            _flags |= CorpseFlag.Murderer;
+        }
         _timeOfDeath = content.TimeOfDeath;
         _restoreTable = content.RestoreTable;
         _decayTimer = new InternalTimer(this, content.DecayTimerDelay);
@@ -271,7 +299,31 @@ public partial class Corpse : Container, ICarvable
         _corpseName = content.CorpseName;
         _accessLevel = content.AccessLevel;
         _guild = content.Guild;
-        _murderer = content.Kills >= 5;
+        _equipItems = content.EquipItems;
+        _hair = content.Hair;
+        _facialHair = content.FacialHair;
+    }
+
+    // Replaced int Kills snapshot with bool Murderer snapshot
+    private void MigrateFrom(V14Content content)
+    {
+        _restoreEquip = content.RestoreEquip;
+        _flags = content.Flags;
+        if (content.Kills >= 5)
+        {
+            _flags |= CorpseFlag.Murderer;
+        }
+        _timeOfDeath = content.TimeOfDeath;
+        _restoreTable = content.RestoreTable;
+        _decayTimer = new InternalTimer(this, content.DecayTimerDelay);
+        _decayTimer.Start();
+        _looters = content.Looters;
+        _killer = content.Killer;
+        _aggressors = content.Aggressors;
+        _owner = content.Owner;
+        _corpseName = content.CorpseName;
+        _accessLevel = content.AccessLevel;
+        _guild = content.Guild;
         _equipItems = content.EquipItems;
         _hair = content.Hair;
         _facialHair = content.FacialHair;
@@ -282,6 +334,10 @@ public partial class Corpse : Container, ICarvable
     {
         _restoreEquip = content.RestoreEquip;
         _flags = content.Flags;
+        if (content.Kills >= 5)
+        {
+            _flags |= CorpseFlag.Murderer;
+        }
         _timeOfDeath = content.TimeOfDeath;
         _restoreTable = content.RestoreTable;
         _decayTimer = new InternalTimer(this, content.DecayTimerDelay);
@@ -293,7 +349,6 @@ public partial class Corpse : Container, ICarvable
         _corpseName = content.CorpseName;
         _accessLevel = content.AccessLevel;
         _guild = content.Guild;
-        _murderer = content.Kills >= 5;
         _equipItems = content.EquipItems;
     }
 
@@ -355,6 +410,22 @@ public partial class Corpse : Container, ICarvable
         get => GetFlag(CorpseFlag.Criminal);
         set => SetFlag(CorpseFlag.Criminal, value);
     }
+
+    [CommandProperty(AccessLevel.GameMaster)]
+    public bool Murderer
+    {
+        get => GetFlag(CorpseFlag.Murderer);
+        set => SetFlag(CorpseFlag.Murderer, value);
+    }
+
+    [CommandProperty(AccessLevel.GameMaster)]
+    public bool OwnerWasBaseCreature => GetFlag(CorpseFlag.OwnerWasBaseCreature);
+
+    [CommandProperty(AccessLevel.GameMaster)]
+    public bool OwnerWasSummoned => GetFlag(CorpseFlag.OwnerWasSummoned);
+
+    [CommandProperty(AccessLevel.GameMaster)]
+    public bool OwnerWasAnimatedDead => GetFlag(CorpseFlag.OwnerWasAnimatedDead);
 
     public override bool DisplaysContent => false;
 
@@ -666,7 +737,10 @@ public partial class Corpse : Container, ICarvable
 
         _accessLevel = (AccessLevel)reader.ReadInt();
         reader.ReadInt(); // guild reserve
-        _murderer = reader.ReadInt() >= 5;
+        if (reader.ReadInt() >= 5)
+        {
+            _flags |= CorpseFlag.Murderer;
+        }
 
         _equipItems = reader.ReadEntityList<Item>();
     }

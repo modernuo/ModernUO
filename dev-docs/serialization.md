@@ -367,6 +367,15 @@ Increment the version number when you:
 Located in `Projects/Server/Migrations/` and `Projects/UOContent/Migrations/`.
 Format: `Namespace.TypeName.vN.json`
 
+These JSONs are read by the source generator at compile time to build the `VXContent` types referenced by `MigrateFrom`. They are **not** emitted by `dotnet build` — you must run the schema generator tool after every version bump to produce the new `vN.json`:
+
+```sh
+dotnet tool restore
+dotnet tool run ModernUOSchemaGenerator -- ModernUO.slnx
+```
+
+Verify `Namespace.TypeName.v{N+1}.json` appears in the appropriate `Migrations/` folder, then commit it with the code change. Without the new JSON, the next version bump won't be able to construct `V{N+1}Content` and will fail to compile. Equivalent shortcut via the build tool: `dotnet run --project Projects/BuildTool -- --action migrate`.
+
 Example: `Server.Accounting.Account.v6.json`
 ```json
 {
