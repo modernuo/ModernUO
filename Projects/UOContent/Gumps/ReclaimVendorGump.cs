@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using Server.Multis;
 using Server.Network;
 
@@ -8,38 +6,36 @@ namespace Server.Gumps;
 public class ReclaimVendorGump : DynamicGump
 {
     private readonly BaseHouse _house;
-    private readonly List<Mobile> _vendors;
+    private readonly Mobile[] _vendors;
 
     public override bool Singleton => true;
 
     private ReclaimVendorGump(BaseHouse house) : base(50, 50)
     {
         _house = house;
-        _vendors = house.InternalizedVendors.ToList();
+        _vendors = house.InternalizedVendors.ToArray();
     }
 
     public static void DisplayTo(Mobile from, BaseHouse house)
     {
-        if (from?.NetState == null || house?.Deleted != false || house.InternalizedVendors.Count == 0)
+        if (from?.NetState != null && house?.Deleted == false && house.InternalizedVendors.Count != 0)
         {
-            return;
+            from.SendGump(new ReclaimVendorGump(house));
         }
-
-        from.SendGump(new ReclaimVendorGump(house));
     }
 
     protected override void BuildLayout(ref DynamicGumpBuilder builder)
     {
         builder.AddPage();
 
-        builder.AddBackground(0, 0, 170, 50 + _vendors.Count * 20, 0x13BE);
+        builder.AddBackground(0, 0, 170, 50 + _vendors.Length * 20, 0x13BE);
 
         builder.AddImageTiled(10, 10, 150, 20, 0xA40);
         builder.AddHtmlLocalized(10, 10, 150, 20, 1061827, 0x7FFF); // <CENTER>Reclaim Vendor</CENTER>
 
-        builder.AddImageTiled(10, 40, 150, _vendors.Count * 20, 0xA40);
+        builder.AddImageTiled(10, 40, 150, _vendors.Length * 20, 0xA40);
 
-        for (var i = 0; i < _vendors.Count; i++)
+        for (var i = 0; i < _vendors.Length; i++)
         {
             var m = _vendors[i];
 
@@ -54,15 +50,14 @@ public class ReclaimVendorGump : DynamicGump
     {
         var from = sender.Mobile;
 
-        if (info.ButtonID == 0 || !_house.IsActive || !_house.IsInside(from) || !_house.IsOwner(from) ||
-            !from.CheckAlive())
+        if (info.ButtonID == 0 || !_house.IsActive || !_house.IsInside(from) || !_house.IsOwner(from) || !from.CheckAlive())
         {
             return;
         }
 
         var index = info.ButtonID - 1;
 
-        if (index < 0 || index >= _vendors.Count)
+        if (index < 0 || index >= _vendors.Length)
         {
             return;
         }

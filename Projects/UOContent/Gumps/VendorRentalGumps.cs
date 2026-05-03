@@ -1,3 +1,4 @@
+using System;
 using Server.Items;
 using Server.Mobiles;
 using Server.Multis;
@@ -42,7 +43,7 @@ public abstract class BaseVendorRentalGump : DynamicGump
             builder.SetNoClose();
         }
 
-        builder.AddPage(0);
+        builder.AddPage();
 
         builder.AddImage(0, 0, 0x1F40);
         builder.AddImageTiled(20, 37, 300, 308, 0x1F42);
@@ -63,7 +64,7 @@ public abstract class BaseVendorRentalGump : DynamicGump
         {
             builder.AddImage(65, 60, 0x827);
             builder.AddHtmlLocalized(79, 58, 270, 20, 1062370, 0x1); // Landlord:
-            builder.AddLabel(150, 58, 0x64, _landlord != null ? _landlord.Name : "");
+            builder.AddLabel(150, 58, 0x64, _landlord?.Name ?? "");
 
             builder.AddImageTiled(70, 80, 230, 2, 0x23C5);
         }
@@ -188,53 +189,53 @@ public abstract class BaseVendorRentalGump : DynamicGump
             {
                 SetContractDuration(from, VendorRentalDuration.Instances[index]);
             }
+
+            return;
         }
-        else
+
+        switch (info.ButtonID)
         {
-            switch (info.ButtonID)
-            {
-                case 1: // Price Per Rental
-                    {
-                        SetPricePerRental(from);
-                        break;
-                    }
+            case 1: // Price Per Rental
+                {
+                    SetPricePerRental(from);
+                    break;
+                }
 
-                case 2: // Accept offer
-                    {
-                        AcceptOffer(from);
-                        break;
-                    }
+            case 2: // Accept offer
+                {
+                    AcceptOffer(from);
+                    break;
+                }
 
-                case 3: // Renew on expiration - landlord
-                    {
-                        LandlordRenewOnExpiration(from);
-                        break;
-                    }
+            case 3: // Renew on expiration - landlord
+                {
+                    LandlordRenewOnExpiration(from);
+                    break;
+                }
 
-                case 4: // Renew on expiration - renter
-                    {
-                        RenterRenewOnExpiration(from);
-                        break;
-                    }
+            case 4: // Renew on expiration - renter
+                {
+                    RenterRenewOnExpiration(from);
+                    break;
+                }
 
-                case 5: // Offer Contract To Someone
-                    {
-                        OfferContract(from);
-                        break;
-                    }
+            case 5: // Offer Contract To Someone
+                {
+                    OfferContract(from);
+                    break;
+                }
 
-                case 6: // Renewal price
-                    {
-                        SetRenewalPrice(from);
-                        break;
-                    }
+            case 6: // Renewal price
+                {
+                    SetRenewalPrice(from);
+                    break;
+                }
 
-                default:
-                    {
-                        Cancel(from);
-                        break;
-                    }
-            }
+            default:
+                {
+                    Cancel(from);
+                    break;
+                }
         }
     }
 
@@ -296,17 +297,14 @@ public class VendorRentalContractGump : BaseVendorRentalGump
         contract.LandlordRenew,
         false,
         false
-    ) =>
-        _contract = contract;
+    ) => _contract = contract;
 
     public static void DisplayTo(Mobile from, VendorRentalContract contract)
     {
-        if (from?.NetState == null || contract?.Deleted != false)
+        if (from?.NetState != null && contract?.Deleted == false)
         {
-            return;
+            from.SendGump(new VendorRentalContractGump(contract, from), true);
         }
-
-        from.SendGump(new VendorRentalContractGump(contract, from), true);
     }
 
     protected override bool IsValidResponse(Mobile from) => _contract.IsUsableBy(from, true, true, true, true);
@@ -320,9 +318,8 @@ public class VendorRentalContractGump : BaseVendorRentalGump
 
     protected override void SetPricePerRental(Mobile from)
     {
-        from.SendLocalizedMessage(
-            1062365
-        ); // Please enter the amount of gold that should be charged for this contract (ESC to cancel):
+        // Please enter the amount of gold that should be charged for this contract (ESC to cancel):
+        from.SendLocalizedMessage(1062365);
         from.Prompt = new PricePerRentalPrompt(_contract);
     }
 
@@ -355,9 +352,7 @@ public class VendorRentalContractGump : BaseVendorRentalGump
                 return;
             }
 
-            text = text.Trim();
-
-            if (!int.TryParse(text, out var price))
+            if (!int.TryParse(text.AsSpan().Trim(), out var price))
             {
                 price = -1;
             }
@@ -414,10 +409,8 @@ public class VendorRentalContractGump : BaseVendorRentalGump
             {
                 from.SendLocalizedMessage(1062372); // Please wait while that person considers your offer.
 
-                mob.SendLocalizedMessage(
-                    1062373,
-                    from.Name
-                ); // ~1_NAME~ is offering you a vendor rental.   If you choose to accept this offer, you have 30 seconds to do so.
+                // ~1_NAME~ is offering you a vendor rental.   If you choose to accept this offer, you have 30 seconds to do so.
+                mob.SendLocalizedMessage(1062373, from.Name);
                 VendorRentalOfferGump.DisplayTo(mob, _contract, from);
 
                 _contract.Offeree = mob;
@@ -454,12 +447,10 @@ public class VendorRentalOfferGump : BaseVendorRentalGump
 
     public static void DisplayTo(Mobile to, VendorRentalContract contract, Mobile landlord)
     {
-        if (to?.NetState == null || contract?.Deleted != false || landlord == null)
+        if (to?.NetState != null && contract?.Deleted == false && landlord != null)
         {
-            return;
+            to.SendGump(new VendorRentalOfferGump(contract, landlord));
         }
-
-        to.SendGump(new VendorRentalOfferGump(contract, landlord));
     }
 
     protected override bool IsValidResponse(Mobile from) =>
@@ -488,20 +479,16 @@ public class VendorRentalOfferGump : BaseVendorRentalGump
         {
             if (Banker.Withdraw(from, price))
             {
-                from.SendLocalizedMessage(
-                    1060398,
-                    price.ToString()
-                ); // ~1_AMOUNT~ gold has been withdrawn from your bank box.
+                // ~1_AMOUNT~ gold has been withdrawn from your bank box.
+                from.SendLocalizedMessage(1060398, price.ToString());
 
                 var depositedGold = Banker.DepositUpTo(_landlord, price);
                 goldToGive = price - depositedGold;
 
                 if (depositedGold > 0)
                 {
-                    _landlord.SendLocalizedMessage(
-                        1060397,
-                        price.ToString()
-                    ); // ~1_AMOUNT~ gold has been deposited into your bank box.
+                    // ~1_AMOUNT~ gold has been deposited into your bank box.
+                    _landlord.SendLocalizedMessage(1060397, price.ToString());
                 }
 
                 if (goldToGive > 0)
@@ -511,9 +498,8 @@ public class VendorRentalOfferGump : BaseVendorRentalGump
             }
             else
             {
-                from.SendLocalizedMessage(
-                    1062378
-                ); // You do not have enough gold in your bank account to cover the cost of the contract.
+                // You do not have enough gold in your bank account to cover the cost of the contract.
+                from.SendLocalizedMessage(1062378);
                 _landlord.SendLocalizedMessage(1062374, from.Name); // ~1_NAME~ has declined your vendor rental offer.
 
                 return;
@@ -524,14 +510,7 @@ public class VendorRentalOfferGump : BaseVendorRentalGump
             goldToGive = 0;
         }
 
-        var vendor = new RentedVendor(
-            from,
-            house,
-            _contract.Duration,
-            price,
-            _contract.LandlordRenew,
-            goldToGive
-        );
+        var vendor = new RentedVendor(from, house, _contract.Duration, price, _contract.LandlordRenew, goldToGive);
         vendor.MoveToWorld(_contract.Location, _contract.Map);
 
         _contract.Delete();
@@ -566,17 +545,14 @@ public class RenterVendorRentalGump : BaseVendorRentalGump
         vendor.LandlordRenew,
         vendor.RenterRenew,
         vendor.Renew
-    ) =>
-        _vendor = vendor;
+    ) => _vendor = vendor;
 
     public static void DisplayTo(Mobile from, RentedVendor vendor)
     {
-        if (from?.NetState == null || vendor?.Deleted != false)
+        if (from?.NetState != null && vendor?.Deleted == false)
         {
-            return;
+            from.SendGump(new RenterVendorRentalGump(vendor), true);
         }
-
-        from.SendGump(new RenterVendorRentalGump(vendor), true);
     }
 
     protected override bool IsValidResponse(Mobile from) => _vendor.CanInteractWith(from, true);
@@ -603,17 +579,14 @@ public class LandlordVendorRentalGump : BaseVendorRentalGump
         vendor.LandlordRenew,
         vendor.RenterRenew,
         vendor.Renew
-    ) =>
-        _vendor = vendor;
+    ) => _vendor = vendor;
 
     public static void DisplayTo(Mobile from, RentedVendor vendor)
     {
-        if (from?.NetState == null || vendor?.Deleted != false)
+        if (from?.NetState != null && vendor?.Deleted == false)
         {
-            return;
+            from.SendGump(new LandlordVendorRentalGump(vendor), true);
         }
-
-        from.SendGump(new LandlordVendorRentalGump(vendor), true);
     }
 
     protected override bool IsValidResponse(Mobile from) =>
@@ -646,9 +619,7 @@ public class LandlordVendorRentalGump : BaseVendorRentalGump
                 return;
             }
 
-            text = text.Trim();
-
-            if (!int.TryParse(text, out var price))
+            if (!int.TryParse(text.AsSpan().Trim(), out var price))
             {
                 price = -1;
             }
@@ -758,39 +729,33 @@ public class VendorRentalRefundGump : StaticGump<VendorRentalRefundGump>
             return;
         }
 
-        if (info.ButtonID == 1)
-        {
-            if (Banker.Withdraw(_landlord, _refundAmount))
-            {
-                _landlord.SendLocalizedMessage(
-                    1060398,
-                    _refundAmount.ToString()
-                ); // ~1_AMOUNT~ gold has been withdrawn from your bank box.
-
-                var depositedGold = Banker.DepositUpTo(from, _refundAmount);
-
-                if (depositedGold > 0)
-                {
-                    from.SendLocalizedMessage(
-                        1060397,
-                        depositedGold.ToString()
-                    ); // ~1_AMOUNT~ gold has been deposited into your bank box.
-                }
-
-                _vendor.HoldGold += _refundAmount - depositedGold;
-
-                _vendor.Destroy(false);
-
-                from.SendLocalizedMessage(1071990); // Remember to claim your vendor's belongings from the house sign!
-            }
-            else
-            {
-                _landlord.SendLocalizedMessage(1062507); // You do not have that much money in your bank account.
-            }
-        }
-        else
+        if (info.ButtonID != 1)
         {
             _landlord.SendLocalizedMessage(1062513); // The renter declined your offer.
+            return;
         }
+
+        if (!Banker.Withdraw(_landlord, _refundAmount))
+        {
+            _landlord.SendLocalizedMessage(1062507); // You do not have that much money in your bank account.
+            return;
+        }
+
+        // ~1_AMOUNT~ gold has been withdrawn from your bank box.
+        _landlord.SendLocalizedMessage(1060398, _refundAmount.ToString());
+
+        var depositedGold = Banker.DepositUpTo(from, _refundAmount);
+
+        if (depositedGold > 0)
+        {
+            // ~1_AMOUNT~ gold has been deposited into your bank box.
+            from.SendLocalizedMessage(1060397, depositedGold.ToString());
+        }
+
+        _vendor.HoldGold += _refundAmount - depositedGold;
+
+        _vendor.Destroy(false);
+
+        from.SendLocalizedMessage(1071990); // Remember to claim your vendor's belongings from the house sign!
     }
 }

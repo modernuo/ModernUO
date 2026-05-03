@@ -10,7 +10,7 @@ public class VendorInventoryGump : DynamicGump
 {
     private readonly BaseHouse _house;
     private readonly Mobile _from;
-    private readonly List<VendorInventory> _inventories;
+    private readonly VendorInventory[] _inventories;
 
     public override bool Singleton => true;
 
@@ -18,32 +18,30 @@ public class VendorInventoryGump : DynamicGump
     {
         _house = house;
         _from = from;
-        _inventories = house.VendorInventories.ToList();
+        _inventories = house.VendorInventories.ToArray();
     }
 
     public static void DisplayTo(Mobile from, BaseHouse house)
     {
-        if (from?.NetState == null || house?.Deleted != false || house.VendorInventories.Count == 0)
+        if (from?.NetState != null && house?.Deleted == false && house.VendorInventories.Count != 0)
         {
-            return;
+            from.SendGump(new VendorInventoryGump(house, from));
         }
-
-        from.SendGump(new VendorInventoryGump(house, from));
     }
 
     protected override void BuildLayout(ref DynamicGumpBuilder builder)
     {
         builder.AddPage();
 
-        builder.AddBackground(0, 0, 420, 50 + 20 * _inventories.Count, 0x13BE);
+        builder.AddBackground(0, 0, 420, 50 + 20 * _inventories.Length, 0x13BE);
 
         builder.AddImageTiled(10, 10, 400, 20, 0xA40);
         builder.AddHtmlLocalized(15, 10, 200, 20, 1062435, 0x7FFF); // Reclaim Vendor Inventory
         builder.AddHtmlLocalized(330, 10, 50, 20, 1062465, 0x7FFF); // Expires
 
-        builder.AddImageTiled(10, 40, 400, 20 * _inventories.Count, 0xA40);
+        builder.AddImageTiled(10, 40, 400, 20 * _inventories.Length, 0xA40);
 
-        for (var i = 0; i < _inventories.Count; i++)
+        for (var i = 0; i < _inventories.Length; i++)
         {
             var inventory = _inventories[i];
 
@@ -86,7 +84,7 @@ public class VendorInventoryGump : DynamicGump
         }
 
         var index = info.ButtonID - 1;
-        if (index < 0 || index >= _inventories.Count)
+        if (index < 0 || index >= _inventories.Length)
         {
             return;
         }
@@ -125,28 +123,23 @@ public class VendorInventoryGump : DynamicGump
             }
         }
 
-        from.SendLocalizedMessage(
-            1062436,
-            $"{totalItems}\t{inventory.Gold}"
-        ); // The vendor you selected had ~1_COUNT~ items in its inventory, and ~2_AMOUNT~ gold in its account.
+        // The vendor you selected had ~1_COUNT~ items in its inventory, and ~2_AMOUNT~ gold in its account.
+        from.SendLocalizedMessage(1062436, $"{totalItems}\t{inventory.Gold}");
 
         var givenGold = Banker.DepositUpTo(from, inventory.Gold);
         inventory.Gold -= givenGold;
 
-        from.SendLocalizedMessage(
-            1060397,
-            givenGold.ToString()
-        ); // ~1_AMOUNT~ gold has been deposited into your bank box.
-        from.SendLocalizedMessage(
-            1062437,
-            $"{givenToBackpack}\t{givenToBankBox}"
-        ); // ~1_COUNT~ items have been removed from the shop inventory and placed in your backpack.  ~2_BANKCOUNT~ items were removed from the shop inventory and placed in your bank box.
+        // ~1_AMOUNT~ gold has been deposited into your bank box.
+        from.SendLocalizedMessage(1060397, givenGold.ToString());
+
+        // ~1_COUNT~ items have been removed from the shop inventory and placed in your backpack.
+        // ~2_BANKCOUNT~ items were removed from the shop inventory and placed in your bank box.
+        from.SendLocalizedMessage(1062437, $"{givenToBackpack}\t{givenToBankBox}");
 
         if (inventory.Gold > 0 || inventory.Items.Count > 0)
         {
-            from.SendLocalizedMessage(
-                1062440
-            ); // Some of the shop inventory would not fit in your backpack or bank box.  Please free up some room and try again.
+            // Some of the shop inventory would not fit in your backpack or bank box.  Please free up some room and try again.
+            from.SendLocalizedMessage(1062440);
         }
         else
         {
