@@ -2006,7 +2006,7 @@ namespace Server.Mobiles
 
             if (CheckAlive() && house?.IsOwner(this) == true && house.InternalizedVendors.Count > 0 && NetState is NetState { } ns)
             {
-                ns.SendGump(new ReclaimVendorGump(house));
+                ReclaimVendorGump.DisplayTo(this, house);
             }
         }
 
