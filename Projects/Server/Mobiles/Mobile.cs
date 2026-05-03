@@ -5611,9 +5611,9 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
             ProcessDelta();
 
-            var regBuffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)].InitializePacket();
+            var regBuffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text.Length)].InitializePacket();
             var mutBuffer =
-                stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(mutatedText)].InitializePacket();
+                stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(mutatedText.Length)].InitializePacket();
 
             // TODO: Should this be sorted like onSpeech is below?
             for (var i = 0; i < hears.Count; ++i)
