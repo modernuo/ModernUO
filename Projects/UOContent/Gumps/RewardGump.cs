@@ -43,12 +43,10 @@ public class RewardGump : DynamicGump
 
     public static void DisplayTo(Mobile from, TextDefinition title, IRewardEntry[] rewards, int points, RewardPickedHandler onPicked)
     {
-        if (from?.NetState == null || rewards == null || rewards.Length == 0 || onPicked == null)
+        if (from?.NetState != null && rewards != null && rewards.Length != 0 && onPicked != null)
         {
-            return;
+            from.SendGump(new RewardGump(title, rewards, points, onPicked));
         }
-
-        from.SendGump(new RewardGump(title, rewards, points, onPicked));
     }
 
     protected override void BuildLayout(ref DynamicGumpBuilder builder)
@@ -64,14 +62,7 @@ public class RewardGump : DynamicGump
         builder.AddImage(32, 33, 0x2635);
         builder.AddImageTiled(70, 55, 230, 2, 0x23C5);
 
-        if (_title.String != null)
-        {
-            builder.AddHtml(70, 35, 270, 20, _title.String);
-        }
-        else if (_title.Number != 0)
-        {
-            builder.AddHtmlLocalized(70, 35, 270, 20, _title.Number, 1);
-        }
+        _title.AddHtmlText(ref builder, 70, 35, 270, 20, numberColor: 1);
 
         builder.AddHtmlLocalized(50, 65, 150, 20, 1072843, 1); // Your Reward Points:
         builder.AddLabel(230, 65, 0x64, $"{_points}");
@@ -143,14 +134,7 @@ public class RewardGump : DynamicGump
 
     public override void OnResponse(NetState sender, in RelayInfo info)
     {
-        var choice = info.ButtonID;
-
-        if (choice == 0)
-        {
-            return; // Close
-        }
-
-        choice -= 100;
+        var choice = info.ButtonID - 100;
 
         if (choice >= 0 && choice < _rewards.Length)
         {
@@ -181,12 +165,10 @@ public class RewardConfirmGump : DynamicGump
 
     public static void DisplayTo(Mobile from, RewardGump parent, int index, IRewardEntry entry)
     {
-        if (from?.NetState == null || parent == null || entry == null)
+        if (from?.NetState != null && parent != null && entry != null)
         {
-            return;
+            from.SendGump(new RewardConfirmGump(parent, index, entry));
         }
-
-        from.SendGump(new RewardConfirmGump(parent, index, entry));
     }
 
     protected override void BuildLayout(ref DynamicGumpBuilder builder)
