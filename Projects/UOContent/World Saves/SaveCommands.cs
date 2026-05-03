@@ -69,9 +69,7 @@ public static class SaveCommands
         foreach (var dest in destinations)
         {
             mobile.SendMessage(
-                $"  - {dest.Name} (retention: {dest.GetRetentionCount(ArchivePeriod.Hourly)}h/" +
-                $"{dest.GetRetentionCount(ArchivePeriod.Daily)}d/" +
-                $"{dest.GetRetentionCount(ArchivePeriod.Monthly)}m)"
+                $"  - {dest.Name} (retention: {dest.GetRetentionCount(ArchivePeriod.Hourly)}h/{dest.GetRetentionCount(ArchivePeriod.Daily)}d/{dest.GetRetentionCount(ArchivePeriod.Monthly)}m)"
             );
         }
 

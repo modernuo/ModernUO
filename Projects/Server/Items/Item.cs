@@ -4106,6 +4106,20 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
                 );
             }
         }
+        else if (m_Amount > 1)
+        {
+            ns.SendMessage(
+                Serial,
+                m_ItemID,
+                MessageType.Label,
+                0x3B2,
+                3,
+                false,
+                "ENU",
+                "",
+                $"{Name} : {m_Amount}"
+            );
+        }
         else
         {
             ns.SendMessage(
@@ -4117,7 +4131,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
                 false,
                 "ENU",
                 "",
-                $"{Name}{(m_Amount > 1 ? $" : {m_Amount}" : "")}"
+                $"{Name}"
             );
         }
     }
