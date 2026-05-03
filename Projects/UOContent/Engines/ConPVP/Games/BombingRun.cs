@@ -1813,13 +1813,13 @@ public sealed class BRGame : EventGame
                     }
 
                     mob.SendMessage( //There is no formatting flag for Lowercase, we may need a custom interface to get rid of it
-                        $"You have been awarded a {rank.ToString().ToLower()} trophy and {cash:N0}gp for your participation in this tournament."
+                        $"You have been awarded a {rank.LowerName()} trophy and {cash:N0}gp for your participation in this tournament."
                     );
                 }
                 else
                 {
                     mob.SendMessage(
-                        $"You have been awarded a {rank.ToString().ToLower()} trophy for your participation in this tournament."
+                        $"You have been awarded a {rank.LowerName()} trophy for your participation in this tournament."
                     );
                 }
             }

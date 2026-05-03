@@ -1113,13 +1113,13 @@ public sealed class KHGame : EventGame
                     }
 
                     mob.SendMessage(
-                        $"You have been awarded a {rank.ToString().ToLower()} trophy and {cash:N0}gp for your participation in this game."
+                        $"You have been awarded a {rank.LowerName()} trophy and {cash:N0}gp for your participation in this game."
                     );
                 }
                 else
                 {
                     mob.SendMessage(
-                        $"You have been awarded a {rank.ToString().ToLower()} trophy for your participation in this game."
+                        $"You have been awarded a {rank.LowerName()} trophy for your participation in this game."
                     );
                 }
             }

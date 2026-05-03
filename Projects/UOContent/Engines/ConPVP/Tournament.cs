@@ -646,13 +646,13 @@ namespace Server.Engines.ConPVP
                     }
 
                     mob.SendMessage(
-                        $"You have been awarded a {rank.ToString().ToLower()} trophy and {cash:N0}gp for your participation in this tournament."
+                        $"You have been awarded a {rank.LowerName()} trophy and {cash:N0}gp for your participation in this tournament."
                     );
                 }
                 else
                 {
                     mob.SendMessage(
-                        $"You have been awarded a {rank.ToString().ToLower()} trophy for your participation in this tournament."
+                        $"You have been awarded a {rank.LowerName()} trophy for your participation in this tournament."
                     );
                 }
             }
