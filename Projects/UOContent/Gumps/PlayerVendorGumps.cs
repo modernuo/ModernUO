@@ -7,63 +7,86 @@ using Server.Network;
 
 namespace Server.Gumps
 {
-    public class PlayerVendorBuyGump : Gump
+    public class PlayerVendorBuyGump : StaticGump<PlayerVendorBuyGump>
     {
-        private readonly PlayerVendor m_Vendor;
-        private readonly VendorItem m_VI;
+        private readonly PlayerVendor _vendor;
+        private readonly VendorItem _vi;
 
         public override bool Singleton => true;
 
-        public PlayerVendorBuyGump(PlayerVendor vendor, VendorItem vi) : base(100, 200)
+        private PlayerVendorBuyGump(PlayerVendor vendor, VendorItem vi) : base(100, 200)
         {
-            m_Vendor = vendor;
-            m_VI = vi;
+            _vendor = vendor;
+            _vi = vi;
+        }
 
-            AddBackground(100, 10, 300, 150, 5054);
-
-            AddHtmlLocalized(125, 20, 250, 24, 1019070); // You have agreed to purchase:
-
-            if (!string.IsNullOrEmpty(vi.Description))
+        public static void DisplayTo(Mobile from, PlayerVendor vendor, VendorItem vi)
+        {
+            if (from == null || vendor == null || vi == null)
             {
-                AddLabel(125, 45, 0, vi.Description);
-            }
-            else
-            {
-                AddHtmlLocalized(125, 45, 250, 24, 1019072); // an item without a description
+                return;
             }
 
-            AddHtmlLocalized(125, 70, 250, 24, 1019071); // for the amount of:
-            AddLabel(125, 95, 0, vi.Price.ToString());
+            from.SendGump(new PlayerVendorBuyGump(vendor, vi));
+        }
 
-            AddButton(250, 130, 4005, 4007, 0);
-            AddHtmlLocalized(282, 130, 100, 24, 1011012); // CANCEL
+        protected override void BuildLayout(ref StaticGumpBuilder builder)
+        {
+            builder.AddPage();
 
-            AddButton(120, 130, 4005, 4007, 1);
-            AddHtmlLocalized(152, 130, 100, 24, 1011036); // OKAY
+            builder.AddBackground(100, 10, 300, 150, 5054);
+
+            builder.AddHtmlLocalized(125, 20, 250, 24, 1019070); // You have agreed to purchase:
+
+            // The description label/text varies per-instance, but the layout is fixed.
+            // We use a placeholder so the same cached layout can carry either the
+            // item description or the localized "no description" string.
+            builder.AddHtmlPlaceholder(125, 45, 250, 24, "description");
+
+            builder.AddHtmlLocalized(125, 70, 250, 24, 1019071); // for the amount of:
+            builder.AddLabelPlaceholder(125, 95, 0, "price");
+
+            builder.AddButton(250, 130, 4005, 4007, 0);
+            builder.AddHtmlLocalized(282, 130, 100, 24, 1011012); // CANCEL
+
+            builder.AddButton(120, 130, 4005, 4007, 1);
+            builder.AddHtmlLocalized(152, 130, 100, 24, 1011036); // OKAY
+        }
+
+        protected override void BuildStrings(ref GumpStringsBuilder builder)
+        {
+            // 1019072: an item without a description
+            var description = !string.IsNullOrEmpty(_vi.Description)
+                ? _vi.Description
+                : Localization.GetText(1019072) ?? "an item without a description";
+
+            builder.SetHtmlText("description", description);
+
+            builder.SetStringSlot("price", $"{_vi.Price}");
         }
 
         public override void OnResponse(NetState state, in RelayInfo info)
         {
             var from = state.Mobile;
 
-            if (!m_Vendor.CanInteractWith(from, false))
+            if (!_vendor.CanInteractWith(from, false))
             {
                 return;
             }
 
-            if (m_Vendor.IsOwner(from))
+            if (_vendor.IsOwner(from))
             {
-                m_Vendor.SayTo(from, 503212); // You own this shop, just take what you want.
+                _vendor.SayTo(from, 503212); // You own this shop, just take what you want.
                 return;
             }
 
             if (info.ButtonID == 1)
             {
-                m_Vendor.Say(from.Name);
+                _vendor.Say(from.Name);
 
-                if (!m_VI.Valid || !m_VI.Item.IsChildOf(m_Vendor.Backpack))
+                if (!_vi.Valid || !_vi.Item.IsChildOf(_vendor.Backpack))
                 {
-                    m_Vendor.SayTo(from, 503216); // You can't buy that.
+                    _vendor.SayTo(from, 503216); // You can't buy that.
                     return;
                 }
 
@@ -76,17 +99,17 @@ namespace Server.Gumps
 
                 totalGold += Banker.GetBalance(from);
 
-                if (totalGold < m_VI.Price)
+                if (totalGold < _vi.Price)
                 {
-                    m_Vendor.SayTo(from, 503205); // You cannot afford this item.
+                    _vendor.SayTo(from, 503205); // You cannot afford this item.
                 }
-                else if (!from.PlaceInBackpack(m_VI.Item))
+                else if (!from.PlaceInBackpack(_vi.Item))
                 {
-                    m_Vendor.SayTo(from, 503204); // You do not have room in your backpack for this.
+                    _vendor.SayTo(from, 503204); // You do not have room in your backpack for this.
                 }
                 else
                 {
-                    var leftPrice = m_VI.Price;
+                    var leftPrice = _vi.Price;
 
                     if (from.Backpack != null)
                     {
@@ -98,7 +121,7 @@ namespace Server.Gumps
                         Banker.Withdraw(from, leftPrice);
                     }
 
-                    m_Vendor.HoldGold += m_VI.Price;
+                    _vendor.HoldGold += _vi.Price;
 
                     from.SendLocalizedMessage(503201); // You take the item.
                 }
@@ -110,49 +133,70 @@ namespace Server.Gumps
         }
     }
 
-    public class PlayerVendorOwnerGump : Gump
+    public class PlayerVendorOwnerGump : StaticGump<PlayerVendorOwnerGump>
     {
-        private readonly PlayerVendor m_Vendor;
+        private readonly PlayerVendor _vendor;
 
-        public PlayerVendorOwnerGump(PlayerVendor vendor) : base(50, 200)
+        private PlayerVendorOwnerGump(PlayerVendor vendor) : base(50, 200)
         {
-            m_Vendor = vendor;
+            _vendor = vendor;
+        }
 
-            var perDay = m_Vendor.ChargePerDay;
+        public static void DisplayTo(Mobile from, PlayerVendor vendor)
+        {
+            if (from == null || vendor == null)
+            {
+                return;
+            }
 
-            AddPage(0);
-            AddBackground(25, 10, 530, 140, 5054);
+            from.SendGump(new PlayerVendorOwnerGump(vendor));
+        }
 
-            AddHtmlLocalized(425, 25, 120, 20, 1019068); // See goods
-            AddButton(390, 25, 4005, 4007, 1);
-            AddHtmlLocalized(425, 48, 120, 20, 1019069); // Customize
-            AddButton(390, 48, 4005, 4007, 2);
-            AddHtmlLocalized(425, 72, 120, 20, 1011012); // CANCEL
-            AddButton(390, 71, 4005, 4007, 0);
+        protected override void BuildLayout(ref StaticGumpBuilder builder)
+        {
+            builder.AddPage();
+            builder.AddBackground(25, 10, 530, 140, 5054);
 
-            AddHtmlLocalized(40, 72, 260, 20, 1038321); // Gold held for you:
-            AddLabel(300, 72, 0, m_Vendor.HoldGold.ToString());
-            AddHtmlLocalized(40, 96, 260, 20, 1038322); // Gold held in my account:
-            AddLabel(300, 96, 0, m_Vendor.BankAccount.ToString());
+            builder.AddHtmlLocalized(425, 25, 120, 20, 1019068); // See goods
+            builder.AddButton(390, 25, 4005, 4007, 1);
+            builder.AddHtmlLocalized(425, 48, 120, 20, 1019069); // Customize
+            builder.AddButton(390, 48, 4005, 4007, 2);
+            builder.AddHtmlLocalized(425, 72, 120, 20, 1011012); // CANCEL
+            builder.AddButton(390, 71, 4005, 4007, 0);
+
+            builder.AddHtmlLocalized(40, 72, 260, 20, 1038321); // Gold held for you:
+            builder.AddLabelPlaceholder(300, 72, 0, "holdGold");
+            builder.AddHtmlLocalized(40, 96, 260, 20, 1038322); // Gold held in my account:
+            builder.AddLabelPlaceholder(300, 96, 0, "bankAccount");
 
             // AddHtmlLocalized( 40, 120, 260, 20, 1038324, false, false ); // My charge per day is:
             // Localization has changed, we must use a string here
-            AddHtml(40, 120, 260, 20, "My charge per day is:");
-            AddLabel(300, 120, 0, perDay.ToString());
+            builder.AddHtml(40, 120, 260, 20, "My charge per day is:");
+            builder.AddLabelPlaceholder(300, 120, 0, "perDay");
 
-            var days = (m_Vendor.HoldGold + m_Vendor.BankAccount) / (double)perDay;
+            builder.AddHtmlLocalized(40, 25, 260, 20, 1038318); // Amount of days I can work:
+            builder.AddLabelPlaceholder(300, 25, 0, "days");
+            builder.AddHtmlLocalized(40, 48, 260, 20, 1038319); // Earth days:
+            builder.AddLabelPlaceholder(300, 48, 0, "earthDays");
+        }
 
-            AddHtmlLocalized(40, 25, 260, 20, 1038318); // Amount of days I can work:
-            AddLabel(300, 25, 0, ((int)days).ToString());
-            AddHtmlLocalized(40, 48, 260, 20, 1038319); // Earth days:
-            AddLabel(300, 48, 0, ((int)(days / 12.0)).ToString());
+        protected override void BuildStrings(ref GumpStringsBuilder builder)
+        {
+            var perDay = _vendor.ChargePerDay;
+            var days = (_vendor.HoldGold + _vendor.BankAccount) / (double)perDay;
+
+            builder.SetStringSlot("holdGold", $"{_vendor.HoldGold}");
+            builder.SetStringSlot("bankAccount", $"{_vendor.BankAccount}");
+            builder.SetStringSlot("perDay", $"{perDay}");
+            builder.SetStringSlot("days", $"{(int)days}");
+            builder.SetStringSlot("earthDays", $"{(int)(days / 12.0)}");
         }
 
         public override void OnResponse(NetState state, in RelayInfo info)
         {
             var from = state.Mobile;
 
-            if (!m_Vendor.CanInteractWith(from, true))
+            if (!_vendor.CanInteractWith(from, true))
             {
                 return;
             }
@@ -161,13 +205,13 @@ namespace Server.Gumps
             {
                 case 1:
                     {
-                        m_Vendor.OpenBackpack(from);
+                        _vendor.OpenBackpack(from);
 
                         break;
                     }
                 case 2:
                     {
-                        from.SendGump(new PlayerVendorCustomizeGump(m_Vendor, from));
+                        PlayerVendorCustomizeGump.DisplayTo(from, _vendor);
 
                         break;
                     }
@@ -175,56 +219,73 @@ namespace Server.Gumps
         }
     }
 
-    public class NewPlayerVendorOwnerGump : Gump
+    public class NewPlayerVendorOwnerGump : DynamicGump
     {
-        private readonly PlayerVendor m_Vendor;
+        private readonly PlayerVendor _vendor;
 
-        public NewPlayerVendorOwnerGump(PlayerVendor vendor) : base(50, 200)
+        public override bool Singleton => true;
+
+        private NewPlayerVendorOwnerGump(PlayerVendor vendor) : base(50, 200)
         {
-            m_Vendor = vendor;
+            _vendor = vendor;
+        }
 
-            var perRealWorldDay = vendor.ChargePerRealWorldDay;
-            var goldHeld = vendor.HoldGold;
+        public static void DisplayTo(Mobile from, PlayerVendor vendor)
+        {
+            if (from == null || vendor == null)
+            {
+                return;
+            }
 
-            AddBackground(25, 10, 530, 180, 0x13BE);
+            from.SendGump(new NewPlayerVendorOwnerGump(vendor));
+        }
 
-            AddImageTiled(35, 20, 510, 160, 0xA40);
-            AddAlphaRegion(35, 20, 510, 160);
+        protected override void BuildLayout(ref DynamicGumpBuilder builder)
+        {
+            var perRealWorldDay = _vendor.ChargePerRealWorldDay;
+            var goldHeld = _vendor.HoldGold;
 
-            AddImage(10, 0, 0x28DC);
-            AddImage(537, 175, 0x28DC);
-            AddImage(10, 175, 0x28DC);
-            AddImage(537, 0, 0x28DC);
+            builder.AddPage();
+
+            builder.AddBackground(25, 10, 530, 180, 0x13BE);
+
+            builder.AddImageTiled(35, 20, 510, 160, 0xA40);
+            builder.AddAlphaRegion(35, 20, 510, 160);
+
+            builder.AddImage(10, 0, 0x28DC);
+            builder.AddImage(537, 175, 0x28DC);
+            builder.AddImage(10, 175, 0x28DC);
+            builder.AddImage(537, 0, 0x28DC);
 
             if (goldHeld < perRealWorldDay)
             {
                 var goldNeeded = perRealWorldDay - goldHeld;
 
-                AddHtmlLocalized(40, 35, 260, 20, 1038320, 0x7FFF); // Gold needed for 1 day of vendor salary:
-                AddLabel(300, 35, 0x1F, goldNeeded.ToString());
+                builder.AddHtmlLocalized(40, 35, 260, 20, 1038320, 0x7FFF); // Gold needed for 1 day of vendor salary:
+                builder.AddLabel(300, 35, 0x1F, $"{goldNeeded}");
             }
             else
             {
                 var days = goldHeld / perRealWorldDay;
 
-                AddHtmlLocalized(40, 35, 260, 20, 1038318, 0x7FFF); // # of days Vendor salary is paid for:
-                AddLabel(300, 35, 0x480, days.ToString());
+                builder.AddHtmlLocalized(40, 35, 260, 20, 1038318, 0x7FFF); // # of days Vendor salary is paid for:
+                builder.AddLabel(300, 35, 0x480, $"{days}");
             }
 
-            AddHtmlLocalized(40, 58, 260, 20, 1038324, 0x7FFF); // My charge per real world day is:
-            AddLabel(300, 58, 0x480, perRealWorldDay.ToString());
+            builder.AddHtmlLocalized(40, 58, 260, 20, 1038324, 0x7FFF); // My charge per real world day is:
+            builder.AddLabel(300, 58, 0x480, $"{perRealWorldDay}");
 
-            AddHtmlLocalized(40, 82, 260, 20, 1038322, 0x7FFF); // Gold held in my account:
-            AddLabel(300, 82, 0x480, goldHeld.ToString());
+            builder.AddHtmlLocalized(40, 82, 260, 20, 1038322, 0x7FFF); // Gold held in my account:
+            builder.AddLabel(300, 82, 0x480, $"{goldHeld}");
 
-            AddHtmlLocalized(40, 108, 260, 20, 1062509, 0x7FFF); // Shop Name:
-            AddLabel(140, 106, 0x66D, vendor.ShopName);
+            builder.AddHtmlLocalized(40, 108, 260, 20, 1062509, 0x7FFF); // Shop Name:
+            builder.AddLabel(140, 106, 0x66D, _vendor.ShopName);
 
-            if (vendor is RentedVendor rentedVendor)
+            if (_vendor is RentedVendor rentedVendor)
             {
                 rentedVendor.ComputeRentalExpireDelay(out var days, out var hours);
 
-                AddLabel(
+                builder.AddLabel(
                     38,
                     132,
                     0x480,
@@ -232,29 +293,29 @@ namespace Server.Gumps
                 );
             }
 
-            AddButton(390, 24, 0x15E1, 0x15E5, 1);
-            AddHtmlLocalized(408, 21, 120, 20, 1019068, 0x7FFF); // See goods
+            builder.AddButton(390, 24, 0x15E1, 0x15E5, 1);
+            builder.AddHtmlLocalized(408, 21, 120, 20, 1019068, 0x7FFF); // See goods
 
-            AddButton(390, 44, 0x15E1, 0x15E5, 2);
-            AddHtmlLocalized(408, 41, 120, 20, 1019069, 0x7FFF); // Customize
+            builder.AddButton(390, 44, 0x15E1, 0x15E5, 2);
+            builder.AddHtmlLocalized(408, 41, 120, 20, 1019069, 0x7FFF); // Customize
 
-            AddButton(390, 64, 0x15E1, 0x15E5, 3);
-            AddHtmlLocalized(408, 61, 120, 20, 1062434, 0x7FFF); // Rename Shop
+            builder.AddButton(390, 64, 0x15E1, 0x15E5, 3);
+            builder.AddHtmlLocalized(408, 61, 120, 20, 1062434, 0x7FFF); // Rename Shop
 
-            AddButton(390, 84, 0x15E1, 0x15E5, 4);
-            AddHtmlLocalized(408, 81, 120, 20, 3006217, 0x7FFF); // Rename Vendor
+            builder.AddButton(390, 84, 0x15E1, 0x15E5, 4);
+            builder.AddHtmlLocalized(408, 81, 120, 20, 3006217, 0x7FFF); // Rename Vendor
 
-            AddButton(390, 104, 0x15E1, 0x15E5, 5);
-            AddHtmlLocalized(408, 101, 120, 20, 3006123, 0x7FFF); // Open Paperdoll
+            builder.AddButton(390, 104, 0x15E1, 0x15E5, 5);
+            builder.AddHtmlLocalized(408, 101, 120, 20, 3006123, 0x7FFF); // Open Paperdoll
 
-            AddButton(390, 124, 0x15E1, 0x15E5, 6);
-            AddLabel(408, 121, 0x480, "Collect Gold");
+            builder.AddButton(390, 124, 0x15E1, 0x15E5, 6);
+            builder.AddLabel(408, 121, 0x480, "Collect Gold");
 
-            AddButton(390, 144, 0x15E1, 0x15E5, 7);
-            AddLabel(408, 141, 0x480, "Dismiss Vendor");
+            builder.AddButton(390, 144, 0x15E1, 0x15E5, 7);
+            builder.AddLabel(408, 141, 0x480, "Dismiss Vendor");
 
-            AddButton(390, 162, 0x15E1, 0x15E5, 0);
-            AddHtmlLocalized(408, 161, 120, 20, 1011012, 0x7FFF); // CANCEL
+            builder.AddButton(390, 162, 0x15E1, 0x15E5, 0);
+            builder.AddHtmlLocalized(408, 161, 120, 20, 1011012, 0x7FFF); // CANCEL
         }
 
         public override void OnResponse(NetState sender, in RelayInfo info)
@@ -263,10 +324,10 @@ namespace Server.Gumps
 
             if (info.ButtonID is 1 or 2) // See goods or Customize
             {
-                m_Vendor.CheckTeleport(from);
+                _vendor.CheckTeleport(from);
             }
 
-            if (!m_Vendor.CanInteractWith(from, true))
+            if (!_vendor.CanInteractWith(from, true))
             {
                 return;
             }
@@ -275,43 +336,43 @@ namespace Server.Gumps
             {
                 case 1: // See goods
                     {
-                        m_Vendor.OpenBackpack(from);
+                        _vendor.OpenBackpack(from);
 
                         break;
                     }
                 case 2: // Customize
                     {
-                        from.SendGump(new NewPlayerVendorCustomizeGump(m_Vendor));
+                        NewPlayerVendorCustomizeGump.DisplayTo(from, _vendor);
 
                         break;
                     }
                 case 3: // Rename Shop
                     {
-                        m_Vendor.RenameShop(from);
+                        _vendor.RenameShop(from);
 
                         break;
                     }
                 case 4: // Rename Vendor
                     {
-                        m_Vendor.Rename(from);
+                        _vendor.Rename(from);
 
                         break;
                     }
                 case 5: // Open Paperdoll
                     {
-                        m_Vendor.DisplayPaperdollTo(from);
+                        _vendor.DisplayPaperdollTo(from);
 
                         break;
                     }
                 case 6: // Collect Gold
                     {
-                        m_Vendor.CollectGold(from);
+                        _vendor.CollectGold(from);
 
                         break;
                     }
                 case 7: // Dismiss Vendor
                     {
-                        m_Vendor.Dismiss(from);
+                        _vendor.Dismiss(from);
 
                         break;
                     }
@@ -319,7 +380,7 @@ namespace Server.Gumps
         }
     }
 
-    public class PlayerVendorCustomizeGump : Gump
+    public class PlayerVendorCustomizeGump : StaticGump<PlayerVendorCustomizeGump>
     {
         private static readonly CustomCategory[] Categories =
         [
@@ -486,37 +547,51 @@ namespace Server.Gumps
             )
         ];
 
-        private readonly Mobile m_Vendor;
+        private readonly Mobile _vendor;
 
         public override bool Singleton => true;
 
-        public PlayerVendorCustomizeGump(Mobile v, Mobile from) : base(30, 40)
+        private PlayerVendorCustomizeGump(Mobile v) : base(30, 40)
         {
-            m_Vendor = v;
+            _vendor = v;
+        }
+
+        public static void DisplayTo(Mobile from, Mobile vendor)
+        {
+            if (from == null || vendor == null || vendor.Deleted)
+            {
+                return;
+            }
+
+            from.SendGump(new PlayerVendorCustomizeGump(vendor));
+        }
+
+        protected override void BuildLayout(ref StaticGumpBuilder builder)
+        {
             int x, y;
 
-            AddPage(0);
-            AddBackground(0, 0, 585, 393, 5054);
-            AddBackground(195, 36, 387, 275, 3000);
-            AddHtmlLocalized(10, 10, 565, 18, 1011356);  // <center>VENDOR CUSTOMIZATION MENU</center>
-            AddHtmlLocalized(60, 355, 150, 18, 1011036); // OKAY
-            AddButton(25, 355, 4005, 4007, 1);
-            AddHtmlLocalized(320, 355, 150, 18, 1011012); // CANCEL
-            AddButton(285, 355, 4005, 4007, 0);
+            builder.AddPage();
+            builder.AddBackground(0, 0, 585, 393, 5054);
+            builder.AddBackground(195, 36, 387, 275, 3000);
+            builder.AddHtmlLocalized(10, 10, 565, 18, 1011356);  // <center>VENDOR CUSTOMIZATION MENU</center>
+            builder.AddHtmlLocalized(60, 355, 150, 18, 1011036); // OKAY
+            builder.AddButton(25, 355, 4005, 4007, 1);
+            builder.AddHtmlLocalized(320, 355, 150, 18, 1011012); // CANCEL
+            builder.AddButton(285, 355, 4005, 4007, 0);
 
             y = 35;
             for (var i = 0; i < Categories.Length; i++)
             {
                 var cat = Categories[i];
-                AddHtmlLocalized(5, y, 150, 25, cat.LocNumber, true);
-                AddButton(155, y, 4005, 4007, 0, GumpButtonType.Page, i + 1);
+                builder.AddHtmlLocalized(5, y, 150, 25, cat.LocNumber, true);
+                builder.AddButton(155, y, 4005, 4007, 0, GumpButtonType.Page, i + 1);
                 y += 25;
             }
 
             for (var i = 0; i < Categories.Length; i++)
             {
                 var cat = Categories[i];
-                AddPage(i + 1);
+                builder.AddPage(i + 1);
 
                 for (var c = 0; c < cat.Entries.Length; c++)
                 {
@@ -524,53 +599,53 @@ namespace Server.Gumps
                     x = 198 + c % 3 * 129;
                     y = 38 + c / 3 * 67;
 
-                    AddHtmlLocalized(x, y, 100, entry.LongText ? 36 : 18, entry.LocNumber);
+                    builder.AddHtmlLocalized(x, y, 100, entry.LongText ? 36 : 18, entry.LocNumber);
 
                     if (entry.ArtNumber != 0)
                     {
-                        AddItem(x + 20, y + 25, entry.ArtNumber);
+                        builder.AddItem(x + 20, y + 25, entry.ArtNumber);
                     }
 
-                    AddRadio(x, y + (entry.LongText ? 40 : 20), 210, 211, false, (c << 8) + i);
+                    builder.AddRadio(x, y + (entry.LongText ? 40 : 20), 210, 211, false, (c << 8) + i);
                 }
 
                 if (cat.CanDye)
                 {
-                    AddHtmlLocalized(327, 239, 100, 18, 1011402); // Color
-                    AddRadio(327, 259, 210, 211, false, 100 + i);
+                    builder.AddHtmlLocalized(327, 239, 100, 18, 1011402); // Color
+                    builder.AddRadio(327, 259, 210, 211, false, 100 + i);
                 }
 
-                AddHtmlLocalized(456, 239, 100, 18, 1011403); // Remove
-                AddRadio(456, 259, 210, 211, false, 200 + i);
+                builder.AddHtmlLocalized(456, 239, 100, 18, 1011403); // Remove
+                builder.AddRadio(456, 259, 210, 211, false, 200 + i);
             }
         }
 
         public override void OnResponse(NetState state, in RelayInfo info)
         {
-            if (m_Vendor.Deleted)
+            if (_vendor.Deleted)
             {
                 return;
             }
 
             var from = state.Mobile;
 
-            if (m_Vendor is PlayerVendor vendor && !vendor.CanInteractWith(from, true))
+            if (_vendor is PlayerVendor vendor && !vendor.CanInteractWith(from, true))
             {
                 return;
             }
 
-            if (m_Vendor is PlayerBarkeeper barkeeper && !barkeeper.IsOwner(from))
+            if (_vendor is PlayerBarkeeper barkeeper && !barkeeper.IsOwner(from))
             {
                 return;
             }
 
             if (info.ButtonID == 0)
             {
-                if (m_Vendor is PlayerVendor) // do nothing for barkeeps
+                if (_vendor is PlayerVendor) // do nothing for barkeeps
                 {
-                    m_Vendor.Direction = m_Vendor.GetDirectionTo(from);
-                    m_Vendor.Animate(32, 5, 1, true, false, 0);         // bow
-                    m_Vendor.SayTo(from, 1043310 + Utility.Random(12)); // a little random speech
+                    _vendor.Direction = _vendor.GetDirectionTo(from);
+                    _vendor.Animate(32, 5, 1, true, false, 0);         // bow
+                    _vendor.SayTo(from, 1043310 + Utility.Random(12)); // a little random speech
                 }
             }
             else if (info.ButtonID == 1 && info.Switches.Length > 0)
@@ -583,11 +658,11 @@ namespace Server.Gumps
                 {
                     if (ent < Categories[cat].Entries.Length && ent >= 0)
                     {
-                        var item = m_Vendor.FindItemOnLayer(Categories[cat].Layer);
+                        var item = _vendor.FindItemOnLayer(Categories[cat].Layer);
 
                         item?.Delete();
 
-                        var items = m_Vendor.Items;
+                        var items = _vendor.Items;
 
                         for (var i = 0; item == null && i < items.Count; ++i)
                         {
@@ -607,30 +682,30 @@ namespace Server.Gumps
 
                         if (Categories[cat].Layer == Layer.FacialHair)
                         {
-                            if (m_Vendor.Female)
+                            if (_vendor.Female)
                             {
                                 from.SendLocalizedMessage(1010639); // You cannot place facial hair on a woman!
                             }
                             else
                             {
-                                var hue = m_Vendor.FacialHairHue;
+                                var hue = _vendor.FacialHairHue;
 
-                                m_Vendor.FacialHairItemID = 0;
-                                m_Vendor.ProcessDelta(); // invalidate item ID for clients
+                                _vendor.FacialHairItemID = 0;
+                                _vendor.ProcessDelta(); // invalidate item ID for clients
 
-                                m_Vendor.FacialHairItemID = Categories[cat].Entries[ent].ItemID;
-                                m_Vendor.FacialHairHue = hue;
+                                _vendor.FacialHairItemID = Categories[cat].Entries[ent].ItemID;
+                                _vendor.FacialHairHue = hue;
                             }
                         }
                         else if (Categories[cat].Layer == Layer.Hair)
                         {
-                            var hue = m_Vendor.HairHue;
+                            var hue = _vendor.HairHue;
 
-                            m_Vendor.HairItemID = 0;
-                            m_Vendor.ProcessDelta(); // invalidate item ID for clients
+                            _vendor.HairItemID = 0;
+                            _vendor.ProcessDelta(); // invalidate item ID for clients
 
-                            m_Vendor.HairItemID = Categories[cat].Entries[ent].ItemID;
-                            m_Vendor.HairHue = hue;
+                            _vendor.HairItemID = Categories[cat].Entries[ent].ItemID;
+                            _vendor.HairHue = hue;
                         }
                         else
                         {
@@ -640,14 +715,14 @@ namespace Server.Gumps
                             {
                                 item.Layer = Categories[cat].Layer;
 
-                                if (!m_Vendor.EquipItem(item))
+                                if (!_vendor.EquipItem(item))
                                 {
                                     item.Delete();
                                 }
                             }
                         }
 
-                        from.SendGump(new PlayerVendorCustomizeGump(m_Vendor, from));
+                        DisplayTo(from, _vendor);
                     }
                 }
                 else
@@ -662,17 +737,17 @@ namespace Server.Gumps
 
                             if (category.Layer == Layer.Hair)
                             {
-                                new PVHairHuePicker(false, m_Vendor, from).SendTo(state);
+                                new PVHairHuePicker(false, _vendor, from).SendTo(state);
                             }
                             else if (category.Layer == Layer.FacialHair)
                             {
-                                new PVHairHuePicker(true, m_Vendor, from).SendTo(state);
+                                new PVHairHuePicker(true, _vendor, from).SendTo(state);
                             }
                             else
                             {
                                 Item item = null;
 
-                                var items = m_Vendor.Items;
+                                var items = _vendor.Items;
 
                                 for (var i = 0; item == null && i < items.Count; ++i)
                                 {
@@ -690,7 +765,7 @@ namespace Server.Gumps
 
                                 if (item != null)
                                 {
-                                    new PVHuePicker(item, m_Vendor, from).SendTo(state);
+                                    new PVHuePicker(item, _vendor, from).SendTo(state);
                                 }
                             }
                         }
@@ -705,17 +780,17 @@ namespace Server.Gumps
 
                             if (category.Layer == Layer.Hair)
                             {
-                                m_Vendor.HairItemID = 0;
+                                _vendor.HairItemID = 0;
                             }
                             else if (category.Layer == Layer.FacialHair)
                             {
-                                m_Vendor.FacialHairItemID = 0;
+                                _vendor.FacialHairItemID = 0;
                             }
                             else
                             {
                                 Item item = null;
 
-                                var items = m_Vendor.Items;
+                                var items = _vendor.Items;
 
                                 for (var i = 0; item == null && i < items.Count; ++i)
                                 {
@@ -734,7 +809,7 @@ namespace Server.Gumps
                                 item?.Delete();
                             }
 
-                            from.SendGump(new PlayerVendorCustomizeGump(m_Vendor, from));
+                            DisplayTo(from, _vendor);
                         }
                     }
                 }
@@ -851,7 +926,7 @@ namespace Server.Gumps
                 }
 
                 m_Item.Hue = hue;
-                m_Mob.SendGump(new PlayerVendorCustomizeGump(m_Vendor, m_Mob));
+                PlayerVendorCustomizeGump.DisplayTo(m_Mob, m_Vendor);
             }
         }
 
@@ -894,12 +969,12 @@ namespace Server.Gumps
                     m_Vendor.HairHue = hue;
                 }
 
-                m_Mob.SendGump(new PlayerVendorCustomizeGump(m_Vendor, m_Mob));
+                PlayerVendorCustomizeGump.DisplayTo(m_Mob, m_Vendor);
             }
         }
     }
 
-    public class NewPlayerVendorCustomizeGump : Gump
+    public class NewPlayerVendorCustomizeGump : DynamicGump
     {
         private static readonly HairOrBeard[] m_HairStyles =
         [
@@ -925,79 +1000,96 @@ namespace Server.Gumps
             new(0x204D, 1011401)  // Vandyke
         ];
 
-        private readonly PlayerVendor m_Vendor;
+        private readonly PlayerVendor _vendor;
 
-        public NewPlayerVendorCustomizeGump(PlayerVendor vendor) : base(50, 50)
+        public override bool Singleton => true;
+
+        private NewPlayerVendorCustomizeGump(PlayerVendor vendor) : base(50, 50)
         {
-            m_Vendor = vendor;
+            _vendor = vendor;
+        }
 
-            AddBackground(0, 0, 370, 370, 0x13BE);
+        public static void DisplayTo(Mobile from, PlayerVendor vendor)
+        {
+            if (from == null || vendor == null || vendor.Deleted)
+            {
+                return;
+            }
 
-            AddImageTiled(10, 10, 350, 20, 0xA40);
-            AddImageTiled(10, 40, 350, 20, 0xA40);
-            AddImageTiled(10, 70, 350, 260, 0xA40);
-            AddImageTiled(10, 340, 350, 20, 0xA40);
+            from.SendGump(new NewPlayerVendorCustomizeGump(vendor));
+        }
 
-            AddAlphaRegion(10, 10, 350, 350);
+        protected override void BuildLayout(ref DynamicGumpBuilder builder)
+        {
+            builder.AddPage();
 
-            AddHtmlLocalized(10, 12, 350, 18, 1011356, 0x7FFF); // <center>VENDOR CUSTOMIZATION MENU</center>
+            builder.AddBackground(0, 0, 370, 370, 0x13BE);
 
-            AddHtmlLocalized(10, 42, 150, 18, 1062459, 0x421F); // <CENTER>HAIR</CENTER>
+            builder.AddImageTiled(10, 10, 350, 20, 0xA40);
+            builder.AddImageTiled(10, 40, 350, 20, 0xA40);
+            builder.AddImageTiled(10, 70, 350, 260, 0xA40);
+            builder.AddImageTiled(10, 340, 350, 20, 0xA40);
+
+            builder.AddAlphaRegion(10, 10, 350, 350);
+
+            builder.AddHtmlLocalized(10, 12, 350, 18, 1011356, 0x7FFF); // <center>VENDOR CUSTOMIZATION MENU</center>
+
+            builder.AddHtmlLocalized(10, 42, 150, 18, 1062459, 0x421F); // <CENTER>HAIR</CENTER>
 
             for (var i = 0; i < m_HairStyles.Length; i++)
             {
                 var hair = m_HairStyles[i];
 
-                AddButton(10, 70 + i * 20, 0xFA5, 0xFA7, 0x100 | i);
-                AddHtmlLocalized(45, 72 + i * 20, 110, 18, hair.Name, 0x7FFF);
+                builder.AddButton(10, 70 + i * 20, 0xFA5, 0xFA7, 0x100 | i);
+                builder.AddHtmlLocalized(45, 72 + i * 20, 110, 18, hair.Name, 0x7FFF);
             }
 
-            AddButton(10, 70 + m_HairStyles.Length * 20, 0xFB1, 0xFB3, 2);
-            AddHtmlLocalized(45, 72 + m_HairStyles.Length * 20, 110, 18, 1011403, 0x7FFF); // Remove
+            builder.AddButton(10, 70 + m_HairStyles.Length * 20, 0xFB1, 0xFB3, 2);
+            builder.AddHtmlLocalized(45, 72 + m_HairStyles.Length * 20, 110, 18, 1011403, 0x7FFF); // Remove
 
-            AddButton(10, 70 + (m_HairStyles.Length + 1) * 20, 0xFA5, 0xFA7, 3);
-            AddHtmlLocalized(45, 72 + (m_HairStyles.Length + 1) * 20, 110, 18, 1011402, 0x7FFF); // Color
+            builder.AddButton(10, 70 + (m_HairStyles.Length + 1) * 20, 0xFA5, 0xFA7, 3);
+            builder.AddHtmlLocalized(45, 72 + (m_HairStyles.Length + 1) * 20, 110, 18, 1011402, 0x7FFF); // Color
 
-            if (vendor.Female)
+            if (_vendor.Female)
             {
-                AddButton(160, 290, 0xFA5, 0xFA7, 1);
-                AddHtmlLocalized(195, 292, 160, 18, 1015327, 0x7FFF); // Male
+                builder.AddButton(160, 290, 0xFA5, 0xFA7, 1);
+                builder.AddHtmlLocalized(195, 292, 160, 18, 1015327, 0x7FFF); // Male
 
-                AddHtmlLocalized(195, 312, 160, 18, 1015328, 0x421F); // Female
+                builder.AddHtmlLocalized(195, 312, 160, 18, 1015328, 0x421F); // Female
             }
             else
             {
-                AddHtmlLocalized(160, 42, 210, 18, 1062460, 0x421F); // <CENTER>BEARD</CENTER>
+                builder.AddHtmlLocalized(160, 42, 210, 18, 1062460, 0x421F); // <CENTER>BEARD</CENTER>
 
                 for (var i = 0; i < m_BeardStyles.Length; i++)
                 {
                     var beard = m_BeardStyles[i];
 
-                    AddButton(160, 70 + i * 20, 0xFA5, 0xFA7, 0x200 | i);
-                    AddHtmlLocalized(195, 72 + i * 20, 160, 18, beard.Name, 0x7FFF);
+                    builder.AddButton(160, 70 + i * 20, 0xFA5, 0xFA7, 0x200 | i);
+                    builder.AddHtmlLocalized(195, 72 + i * 20, 160, 18, beard.Name, 0x7FFF);
                 }
 
-                AddButton(160, 70 + m_BeardStyles.Length * 20, 0xFB1, 0xFB3, 4);
-                AddHtmlLocalized(195, 72 + m_BeardStyles.Length * 20, 160, 18, 1011403, 0x7FFF); // Remove
+                builder.AddButton(160, 70 + m_BeardStyles.Length * 20, 0xFB1, 0xFB3, 4);
+                builder.AddHtmlLocalized(195, 72 + m_BeardStyles.Length * 20, 160, 18, 1011403, 0x7FFF); // Remove
 
-                AddButton(160, 70 + (m_BeardStyles.Length + 1) * 20, 0xFA5, 0xFA7, 5);
-                AddHtmlLocalized(195, 72 + (m_BeardStyles.Length + 1) * 20, 160, 18, 1011402, 0x7FFF); // Color
+                builder.AddButton(160, 70 + (m_BeardStyles.Length + 1) * 20, 0xFA5, 0xFA7, 5);
+                builder.AddHtmlLocalized(195, 72 + (m_BeardStyles.Length + 1) * 20, 160, 18, 1011402, 0x7FFF); // Color
 
-                AddHtmlLocalized(195, 292, 160, 18, 1015327, 0x421F); // Male
+                builder.AddHtmlLocalized(195, 292, 160, 18, 1015327, 0x421F); // Male
 
-                AddButton(160, 310, 0xFA5, 0xFA7, 1);
-                AddHtmlLocalized(195, 312, 160, 18, 1015328, 0x7FFF); // Female
+                builder.AddButton(160, 310, 0xFA5, 0xFA7, 1);
+                builder.AddHtmlLocalized(195, 312, 160, 18, 1015328, 0x7FFF); // Female
             }
 
-            AddButton(10, 340, 0xFA5, 0xFA7, 0);
-            AddHtmlLocalized(45, 342, 305, 18, 1060675, 0x7FFF); // CLOSE
+            builder.AddButton(10, 340, 0xFA5, 0xFA7, 0);
+            builder.AddHtmlLocalized(45, 342, 305, 18, 1060675, 0x7FFF); // CLOSE
         }
 
         public override void OnResponse(NetState sender, in RelayInfo info)
         {
             var from = sender.Mobile;
 
-            if (!m_Vendor.CanInteractWith(from, true))
+            if (!_vendor.CanInteractWith(from, true))
             {
                 return;
             }
@@ -1006,69 +1098,69 @@ namespace Server.Gumps
             {
                 case 0: // CLOSE
                     {
-                        m_Vendor.Direction = m_Vendor.GetDirectionTo(from);
-                        m_Vendor.Animate(32, 5, 1, true, false, 0);         // bow
-                        m_Vendor.SayTo(from, 1043310 + Utility.Random(12)); // a little random speech
+                        _vendor.Direction = _vendor.GetDirectionTo(from);
+                        _vendor.Animate(32, 5, 1, true, false, 0);         // bow
+                        _vendor.SayTo(from, 1043310 + Utility.Random(12)); // a little random speech
 
                         break;
                     }
                 case 1: // Female/Male
                     {
-                        if (m_Vendor.Female)
+                        if (_vendor.Female)
                         {
-                            m_Vendor.Body = 400;
-                            m_Vendor.Female = false;
+                            _vendor.Body = 400;
+                            _vendor.Female = false;
                         }
                         else
                         {
-                            m_Vendor.Body = 401;
-                            m_Vendor.Female = true;
+                            _vendor.Body = 401;
+                            _vendor.Female = true;
 
-                            m_Vendor.FacialHairItemID = 0;
+                            _vendor.FacialHairItemID = 0;
                         }
 
-                        from.SendGump(new NewPlayerVendorCustomizeGump(m_Vendor));
+                        DisplayTo(from, _vendor);
 
                         break;
                     }
                 case 2: // Remove hair
                     {
-                        m_Vendor.HairItemID = 0;
+                        _vendor.HairItemID = 0;
 
-                        from.SendGump(new NewPlayerVendorCustomizeGump(m_Vendor));
+                        DisplayTo(from, _vendor);
 
                         break;
                     }
                 case 3: // Color hair
                     {
-                        if (m_Vendor.HairItemID > 0)
+                        if (_vendor.HairItemID > 0)
                         {
-                            new PVHuePicker(m_Vendor, false, from).SendTo(from.NetState);
+                            new PVHuePicker(_vendor, false, from).SendTo(from.NetState);
                         }
                         else
                         {
-                            from.SendGump(new NewPlayerVendorCustomizeGump(m_Vendor));
+                            DisplayTo(from, _vendor);
                         }
 
                         break;
                     }
                 case 4: // Remove beard
                     {
-                        m_Vendor.FacialHairItemID = 0;
+                        _vendor.FacialHairItemID = 0;
 
-                        from.SendGump(new NewPlayerVendorCustomizeGump(m_Vendor));
+                        DisplayTo(from, _vendor);
 
                         break;
                     }
                 case 5: // Color beard
                     {
-                        if (m_Vendor.FacialHairItemID > 0)
+                        if (_vendor.FacialHairItemID > 0)
                         {
-                            new PVHuePicker(m_Vendor, true, from).SendTo(from.NetState);
+                            new PVHuePicker(_vendor, true, from).SendTo(from.NetState);
                         }
                         else
                         {
-                            from.SendGump(new NewPlayerVendorCustomizeGump(m_Vendor));
+                            DisplayTo(from, _vendor);
                         }
 
                         break;
@@ -1088,20 +1180,20 @@ namespace Server.Gumps
 
                             var hairStyle = m_HairStyles[index];
 
-                            hairhue = m_Vendor.HairHue;
+                            hairhue = _vendor.HairHue;
 
-                            m_Vendor.HairItemID = 0;
-                            m_Vendor.ProcessDelta();
+                            _vendor.HairItemID = 0;
+                            _vendor.ProcessDelta();
 
-                            m_Vendor.HairItemID = hairStyle.ItemID;
+                            _vendor.HairItemID = hairStyle.ItemID;
 
-                            m_Vendor.HairHue = hairhue;
+                            _vendor.HairHue = hairhue;
 
-                            from.SendGump(new NewPlayerVendorCustomizeGump(m_Vendor));
+                            DisplayTo(from, _vendor);
                         }
                         else if ((info.ButtonID & 0x200) != 0) // Beard style selected
                         {
-                            if (m_Vendor.Female)
+                            if (_vendor.Female)
                             {
                                 return;
                             }
@@ -1115,16 +1207,16 @@ namespace Server.Gumps
 
                             var beardStyle = m_BeardStyles[index];
 
-                            hairhue = m_Vendor.FacialHairHue;
+                            hairhue = _vendor.FacialHairHue;
 
-                            m_Vendor.FacialHairItemID = 0;
-                            m_Vendor.ProcessDelta();
+                            _vendor.FacialHairItemID = 0;
+                            _vendor.ProcessDelta();
 
-                            m_Vendor.FacialHairItemID = beardStyle.ItemID;
+                            _vendor.FacialHairItemID = beardStyle.ItemID;
 
-                            m_Vendor.FacialHairHue = hairhue;
+                            _vendor.FacialHairHue = hairhue;
 
-                            from.SendGump(new NewPlayerVendorCustomizeGump(m_Vendor));
+                            DisplayTo(from, _vendor);
                         }
 
                         break;
@@ -1174,7 +1266,7 @@ namespace Server.Gumps
                     m_Vendor.HairHue = hue;
                 }
 
-                m_From.SendGump(new NewPlayerVendorCustomizeGump(m_Vendor));
+                NewPlayerVendorCustomizeGump.DisplayTo(m_From, m_Vendor);
             }
         }
     }

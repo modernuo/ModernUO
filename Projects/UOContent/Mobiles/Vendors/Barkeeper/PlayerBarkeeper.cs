@@ -473,7 +473,7 @@ public partial class PlayerBarkeeper : BaseVendor
 
     public void BeginChangeAppearance(Mobile from)
     {
-        from.SendGump(new PlayerVendorCustomizeGump(this, from));
+        PlayerVendorCustomizeGump.DisplayTo(from, this);
     }
 
     public void ChangeGender()
