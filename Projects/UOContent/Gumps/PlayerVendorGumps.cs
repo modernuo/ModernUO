@@ -38,9 +38,6 @@ namespace Server.Gumps
 
             builder.AddHtmlLocalized(125, 20, 250, 24, 1019070); // You have agreed to purchase:
 
-            // The description label/text varies per-instance, but the layout is fixed.
-            // We use a placeholder so the same cached layout can carry either the
-            // item description or the localized "no description" string.
             builder.AddHtmlPlaceholder(125, 45, 250, 24, "description");
 
             builder.AddHtmlLocalized(125, 70, 250, 24, 1019071); // for the amount of:
@@ -137,19 +134,14 @@ namespace Server.Gumps
     {
         private readonly PlayerVendor _vendor;
 
-        private PlayerVendorOwnerGump(PlayerVendor vendor) : base(50, 200)
-        {
-            _vendor = vendor;
-        }
+        private PlayerVendorOwnerGump(PlayerVendor vendor) : base(50, 200) => _vendor = vendor;
 
         public static void DisplayTo(Mobile from, PlayerVendor vendor)
         {
-            if (from == null || vendor == null)
+            if (from != null && vendor != null)
             {
-                return;
+                from.SendGump(new PlayerVendorOwnerGump(vendor));
             }
-
-            from.SendGump(new PlayerVendorOwnerGump(vendor));
         }
 
         protected override void BuildLayout(ref StaticGumpBuilder builder)
@@ -169,8 +161,7 @@ namespace Server.Gumps
             builder.AddHtmlLocalized(40, 96, 260, 20, 1038322); // Gold held in my account:
             builder.AddLabelPlaceholder(300, 96, 0, "bankAccount");
 
-            // AddHtmlLocalized( 40, 120, 260, 20, 1038324, false, false ); // My charge per day is:
-            // Localization has changed, we must use a string here
+            // Client 1038324 replaced:
             builder.AddHtml(40, 120, 260, 20, "My charge per day is:");
             builder.AddLabelPlaceholder(300, 120, 0, "perDay");
 
@@ -225,19 +216,14 @@ namespace Server.Gumps
 
         public override bool Singleton => true;
 
-        private NewPlayerVendorOwnerGump(PlayerVendor vendor) : base(50, 200)
-        {
-            _vendor = vendor;
-        }
+        private NewPlayerVendorOwnerGump(PlayerVendor vendor) : base(50, 200) => _vendor = vendor;
 
         public static void DisplayTo(Mobile from, PlayerVendor vendor)
         {
-            if (from == null || vendor == null)
+            if (from != null && vendor != null)
             {
-                return;
+                from.SendGump(new NewPlayerVendorOwnerGump(vendor));
             }
-
-            from.SendGump(new NewPlayerVendorOwnerGump(vendor));
         }
 
         protected override void BuildLayout(ref DynamicGumpBuilder builder)
@@ -551,25 +537,18 @@ namespace Server.Gumps
 
         public override bool Singleton => true;
 
-        private PlayerVendorCustomizeGump(Mobile v) : base(30, 40)
-        {
-            _vendor = v;
-        }
+        private PlayerVendorCustomizeGump(Mobile v) : base(30, 40) => _vendor = v;
 
         public static void DisplayTo(Mobile from, Mobile vendor)
         {
-            if (from == null || vendor == null || vendor.Deleted)
+            if (from != null && vendor != null && !vendor.Deleted)
             {
-                return;
+                from.SendGump(new PlayerVendorCustomizeGump(vendor));
             }
-
-            from.SendGump(new PlayerVendorCustomizeGump(vendor));
         }
 
         protected override void BuildLayout(ref StaticGumpBuilder builder)
         {
-            int x, y;
-
             builder.AddPage();
             builder.AddBackground(0, 0, 585, 393, 5054);
             builder.AddBackground(195, 36, 387, 275, 3000);
@@ -579,7 +558,7 @@ namespace Server.Gumps
             builder.AddHtmlLocalized(320, 355, 150, 18, 1011012); // CANCEL
             builder.AddButton(285, 355, 4005, 4007, 0);
 
-            y = 35;
+            var y = 35;
             for (var i = 0; i < Categories.Length; i++)
             {
                 var cat = Categories[i];
@@ -596,7 +575,7 @@ namespace Server.Gumps
                 for (var c = 0; c < cat.Entries.Length; c++)
                 {
                     var entry = cat.Entries[c];
-                    x = 198 + c % 3 * 129;
+                    var x = 198 + c % 3 * 129;
                     y = 38 + c / 3 * 67;
 
                     builder.AddHtmlLocalized(x, y, 100, entry.LongText ? 36 : 18, entry.LocNumber);
@@ -926,7 +905,7 @@ namespace Server.Gumps
                 }
 
                 m_Item.Hue = hue;
-                PlayerVendorCustomizeGump.DisplayTo(m_Mob, m_Vendor);
+                DisplayTo(m_Mob, m_Vendor);
             }
         }
 
@@ -969,14 +948,14 @@ namespace Server.Gumps
                     m_Vendor.HairHue = hue;
                 }
 
-                PlayerVendorCustomizeGump.DisplayTo(m_Mob, m_Vendor);
+                DisplayTo(m_Mob, m_Vendor);
             }
         }
     }
 
     public class NewPlayerVendorCustomizeGump : DynamicGump
     {
-        private static readonly HairOrBeard[] m_HairStyles =
+        private static readonly HairOrBeard[] _hairStyles =
         [
             new(0x203B, 1011052), // Short
             new(0x203C, 1011053), // Long
@@ -989,7 +968,7 @@ namespace Server.Gumps
             new(0x2049, 1011049)  // 2-tails
         ];
 
-        private static readonly HairOrBeard[] m_BeardStyles =
+        private static readonly HairOrBeard[] _beardStyles =
         [
             new(0x2041, 1011062), // Mustache
             new(0x203F, 1011060), // Short beard
@@ -1004,19 +983,14 @@ namespace Server.Gumps
 
         public override bool Singleton => true;
 
-        private NewPlayerVendorCustomizeGump(PlayerVendor vendor) : base(50, 50)
-        {
-            _vendor = vendor;
-        }
+        private NewPlayerVendorCustomizeGump(PlayerVendor vendor) : base(50, 50) => _vendor = vendor;
 
         public static void DisplayTo(Mobile from, PlayerVendor vendor)
         {
-            if (from == null || vendor == null || vendor.Deleted)
+            if (from != null && vendor != null && !vendor.Deleted)
             {
-                return;
+                from.SendGump(new NewPlayerVendorCustomizeGump(vendor));
             }
-
-            from.SendGump(new NewPlayerVendorCustomizeGump(vendor));
         }
 
         protected override void BuildLayout(ref DynamicGumpBuilder builder)
@@ -1036,19 +1010,19 @@ namespace Server.Gumps
 
             builder.AddHtmlLocalized(10, 42, 150, 18, 1062459, 0x421F); // <CENTER>HAIR</CENTER>
 
-            for (var i = 0; i < m_HairStyles.Length; i++)
+            for (var i = 0; i < _hairStyles.Length; i++)
             {
-                var hair = m_HairStyles[i];
+                var hair = _hairStyles[i];
 
                 builder.AddButton(10, 70 + i * 20, 0xFA5, 0xFA7, 0x100 | i);
                 builder.AddHtmlLocalized(45, 72 + i * 20, 110, 18, hair.Name, 0x7FFF);
             }
 
-            builder.AddButton(10, 70 + m_HairStyles.Length * 20, 0xFB1, 0xFB3, 2);
-            builder.AddHtmlLocalized(45, 72 + m_HairStyles.Length * 20, 110, 18, 1011403, 0x7FFF); // Remove
+            builder.AddButton(10, 70 + _hairStyles.Length * 20, 0xFB1, 0xFB3, 2);
+            builder.AddHtmlLocalized(45, 72 + _hairStyles.Length * 20, 110, 18, 1011403, 0x7FFF); // Remove
 
-            builder.AddButton(10, 70 + (m_HairStyles.Length + 1) * 20, 0xFA5, 0xFA7, 3);
-            builder.AddHtmlLocalized(45, 72 + (m_HairStyles.Length + 1) * 20, 110, 18, 1011402, 0x7FFF); // Color
+            builder.AddButton(10, 70 + (_hairStyles.Length + 1) * 20, 0xFA5, 0xFA7, 3);
+            builder.AddHtmlLocalized(45, 72 + (_hairStyles.Length + 1) * 20, 110, 18, 1011402, 0x7FFF); // Color
 
             if (_vendor.Female)
             {
@@ -1061,19 +1035,19 @@ namespace Server.Gumps
             {
                 builder.AddHtmlLocalized(160, 42, 210, 18, 1062460, 0x421F); // <CENTER>BEARD</CENTER>
 
-                for (var i = 0; i < m_BeardStyles.Length; i++)
+                for (var i = 0; i < _beardStyles.Length; i++)
                 {
-                    var beard = m_BeardStyles[i];
+                    var beard = _beardStyles[i];
 
                     builder.AddButton(160, 70 + i * 20, 0xFA5, 0xFA7, 0x200 | i);
                     builder.AddHtmlLocalized(195, 72 + i * 20, 160, 18, beard.Name, 0x7FFF);
                 }
 
-                builder.AddButton(160, 70 + m_BeardStyles.Length * 20, 0xFB1, 0xFB3, 4);
-                builder.AddHtmlLocalized(195, 72 + m_BeardStyles.Length * 20, 160, 18, 1011403, 0x7FFF); // Remove
+                builder.AddButton(160, 70 + _beardStyles.Length * 20, 0xFB1, 0xFB3, 4);
+                builder.AddHtmlLocalized(195, 72 + _beardStyles.Length * 20, 160, 18, 1011403, 0x7FFF); // Remove
 
-                builder.AddButton(160, 70 + (m_BeardStyles.Length + 1) * 20, 0xFA5, 0xFA7, 5);
-                builder.AddHtmlLocalized(195, 72 + (m_BeardStyles.Length + 1) * 20, 160, 18, 1011402, 0x7FFF); // Color
+                builder.AddButton(160, 70 + (_beardStyles.Length + 1) * 20, 0xFA5, 0xFA7, 5);
+                builder.AddHtmlLocalized(195, 72 + (_beardStyles.Length + 1) * 20, 160, 18, 1011402, 0x7FFF); // Color
 
                 builder.AddHtmlLocalized(195, 292, 160, 18, 1015327, 0x421F); // Male
 
@@ -1173,12 +1147,12 @@ namespace Server.Gumps
                         {
                             var index = info.ButtonID & 0xFF;
 
-                            if (index >= m_HairStyles.Length)
+                            if (index >= _hairStyles.Length)
                             {
                                 return;
                             }
 
-                            var hairStyle = m_HairStyles[index];
+                            var hairStyle = _hairStyles[index];
 
                             hairhue = _vendor.HairHue;
 
@@ -1200,12 +1174,12 @@ namespace Server.Gumps
 
                             var index = info.ButtonID & 0xFF;
 
-                            if (index >= m_BeardStyles.Length)
+                            if (index >= _beardStyles.Length)
                             {
                                 return;
                             }
 
-                            var beardStyle = m_BeardStyles[index];
+                            var beardStyle = _beardStyles[index];
 
                             hairhue = _vendor.FacialHairHue;
 
@@ -1266,7 +1240,7 @@ namespace Server.Gumps
                     m_Vendor.HairHue = hue;
                 }
 
-                NewPlayerVendorCustomizeGump.DisplayTo(m_From, m_Vendor);
+                DisplayTo(m_From, m_Vendor);
             }
         }
     }
