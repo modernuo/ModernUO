@@ -23,11 +23,6 @@ namespace Server.Gumps
 
         protected override void BuildLayout(ref DynamicGumpBuilder builder)
         {
-            if (_house.Deleted)
-            {
-                return;
-            }
-
             builder.AddPage();
 
             builder.AddBackground(0, 0, 420, 430, 5054);
@@ -121,11 +116,6 @@ namespace Server.Gumps
 
         protected override void BuildLayout(ref DynamicGumpBuilder builder)
         {
-            if (_house.Deleted)
-            {
-                return;
-            }
-
             builder.AddPage();
 
             builder.AddBackground(0, 0, 420, 430, 5054);

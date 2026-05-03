@@ -47,15 +47,8 @@ namespace Server.Gumps
             2974, 2976, 2978
         ];
 
-        private static readonly int[] _foundationNumbers = Core.ML
-            ?
-            [
-                20, 189, 765, 65, 101, 0x2DF7, 0x2DFB, 0x3672, 0x3676
-            ]
-            :
-            [
-                20, 189, 765, 65, 101
-            ];
+        private static readonly int[] _foundationNumbers =
+            Core.ML ? [20, 189, 765, 65, 101, 0x2DF7, 0x2DFB, 0x3672, 0x3676] : [20, 189, 765, 65, 101];
 
         private static readonly int[] _postNumbers =
         [
@@ -67,7 +60,69 @@ namespace Server.Gumps
             974, 982
         ];
 
-        private static readonly List<int> _houseSigns = [];
+        // Sign graphics for the Change House Sign menu. Each pair of consecutive item IDs in
+        // the art is the same sign with a different orientation; we expose only the even ID.
+        // The last two entries (2966 Library, 3140 Beekeeper) are ML-only and are appended at
+        // the end so the older clients can take a contiguous slice of the first 54 entries.
+        private static readonly int[] _houseSigns =
+        [
+            2980, // Bakery
+            2982, // Tailor
+            2984, // Tinker
+            2986, // Butcher
+            2988, // Healer
+            2990, // Mage
+            2992, // Woodworker
+            2994, // Customs
+            2996, // Inn
+            2998, // Shipwright
+            3000, // Stables
+            3002, // Barber Shop
+            3004, // Bard
+            3006, // Fletcher
+            3008, // Armourer
+            3010, // Jeweler
+            3012, // Tavern
+            3014, // Reagent Shop
+            3016, // Blacksmith
+            3018, // Painter
+            3020, // Provisioner
+            3022, // Bowyer
+            3024, // Wooden sign
+            3026, // Brass sign
+            3028, // Armaments Guild
+            3030, // Armourers' Guild
+            3032, // Blacksmiths' Guild
+            3034, // Weapons Guild
+            3036, // Bardic Guild
+            3038, // Barters' Guild
+            3040, // Provisioner Guild
+            3042, // Traders' Guild
+            3044, // Cooks' Guild
+            3046, // Healers' Guild
+            3048, // Mages' Guild
+            3050, // Sorcerers' Guild
+            3052, // Illusionist Guild
+            3054, // Miners' Guild
+            3056, // Archers' Guild
+            3058, // Seamens' Guild
+            3060, // Fishermens' Guild
+            3062, // Sailors' Guild
+            3064, // Shipwrights' Guild
+            3066, // Tailors' Guild
+            3068, // Thieves' Guild
+            3070, // Rogues' Guild
+            3072, // Assassins' Guild
+            3074, // Tinkers' Guild
+            3076, // Warriors' Guild
+            3078, // Cavalry Guild
+            3080, // Fighters' Guild
+            3082, // Merchants' Guild
+            3084, // Bank
+            3086, // Theatre
+            2966, // Library (ML)
+            3140  // Beekeeper (ML)
+        ];
 
         private readonly BaseHouse _house;
         private readonly HouseGumpPageAOS _page;
@@ -96,11 +151,6 @@ namespace Server.Gumps
 
         protected override void BuildLayout(ref DynamicGumpBuilder builder)
         {
-            if (_house.Deleted)
-            {
-                return;
-            }
-
             var isCombatRestricted = _house.IsCombatRestricted(_from);
 
             var isOwner = _house.IsOwner(_from);
@@ -205,59 +255,35 @@ namespace Server.Gumps
                             case DecayType.Ageless:
                             case DecayType.AutoRefresh:
                                 {
-                                    builder.AddHtmlLocalized(
-                                        20,
-                                        250,
-                                        380,
-                                        20,
-                                        1062209,
-                                        SelectedColor
-                                    ); // This house is <a href = "?ForceTopic97">Automatically</a> refreshed.
+                                    // This house is <a href = "?ForceTopic97">Automatically</a> refreshed.
+                                    builder.AddHtmlLocalized(20, 250, 380, 20, 1062209, SelectedColor);
                                     break;
                                 }
                             case DecayType.ManualRefresh:
                                 {
-                                    builder.AddHtmlLocalized(
-                                        20,
-                                        250,
-                                        380,
-                                        20,
-                                        1062208,
-                                        SelectedColor
-                                    ); // This house is <a href = "?ForceTopic97">Grandfathered</a>.
+                                    // This house is <a href = "?ForceTopic97">Grandfathered</a>.
+                                    builder.AddHtmlLocalized(20, 250, 380, 20, 1062208, SelectedColor);
                                     break;
                                 }
                             case DecayType.Condemned:
                                 {
-                                    builder.AddHtmlLocalized(
-                                        20,
-                                        250,
-                                        380,
-                                        20,
-                                        1062207,
-                                        WarningColor
-                                    ); // This house is <a href = "?ForceTopic97">Condemned</a>.
+                                    // This house is <a href = "?ForceTopic97">Condemned</a>.
+                                    builder.AddHtmlLocalized(20, 250, 380, 20, 1062207, WarningColor);
                                     break;
                                 }
                         }
 
                         builder.AddHtmlLocalized(20, 290, 200, 20, 1060692, SelectedColor); // Built On:
-                        builder.AddLabel(250, 290, LabelHue, GetDateTime(_house.BuiltOn));
+                        builder.AddLabel(250, 290, LabelHue, $"{_house.BuiltOn:yyyy'-'MM'-'dd HH':'mm':'ss}");
 
                         builder.AddHtmlLocalized(20, 310, 200, 20, 1060693, SelectedColor); // Last Traded:
-                        builder.AddLabel(250, 310, LabelHue, GetDateTime(_house.LastTraded));
+                        builder.AddLabel(250, 310, LabelHue, $"{_house.LastTraded:yyyy'-'MM'-'dd HH':'mm':'ss}");
 
                         builder.AddHtmlLocalized(20, 330, 200, 20, 1061793, SelectedColor); // House Value
                         builder.AddLabel(250, 330, LabelHue, $"{_house.Price}");
 
-                        builder.AddHtmlLocalized(
-                            20,
-                            360,
-                            300,
-                            20,
-                            1011241,
-                            SelectedColor
-                        ); // Number of visits this building has had:
+                        // Number of visits this building has had:
+                        builder.AddHtmlLocalized(20, 360, 300, 20, 1011241, SelectedColor);
                         builder.AddLabel(350, 360, LabelHue, $"{_house.Visits}");
 
                         break;
@@ -421,7 +447,7 @@ namespace Server.Gumps
                             GetButtonID(5, 6),
                             1062004,
                             isOwner && isCustomizable
-                        );                                                                            // Change Foundation Style
+                        ); // Change Foundation Style
                         AddButtonLabeled(ref builder, 10, 310, GetButtonID(5, 7), 1060764, isCoOwner); // Rename House
 
                         break;
@@ -435,7 +461,7 @@ namespace Server.Gumps
                             GetButtonID(6, 0),
                             1061794,
                             isOwner && _house.MovingCrate == null && _house.InternalizedVendors.Count == 0
-                        );                                                                          // Demolish House
+                        ); // Demolish House
                         AddButtonLabeled(ref builder, 10, 150, GetButtonID(6, 1), 1061797, isOwner); // Trade House
                         AddButtonLabeled(ref builder, 10, 190, GetButtonID(6, 2), 1061798, false);   // Make Primary
 
@@ -469,24 +495,10 @@ namespace Server.Gumps
                     }
                 case HouseGumpPageAOS.ChangeSign:
                     {
-                        var index = 0;
-
-                        if (_houseSigns.Count == 0)
-                        {
-                            // Add standard signs
-                            for (var i = 0; i < 54; ++i)
-                            {
-                                _houseSigns.Add(2980 + i * 2);
-                            }
-
-                            // Add library and beekeeper signs ( ML )
-                            _houseSigns.Add(2966);
-                            _houseSigns.Add(3140);
-                        }
-
                         var signsPerPage = Core.ML ? 24 : 18;
                         var totalSigns = Core.ML ? 56 : 54;
                         var pages = (int)Math.Ceiling((double)totalSigns / signsPerPage);
+                        var index = 0;
 
                         for (var i = 0; i < pages; ++i)
                         {
@@ -585,9 +597,6 @@ namespace Server.Gumps
 
             return m?.Deleted != false ? "(unowned)" : m.Name.Trim().DefaultIfNullOrEmpty("(no name)");
         }
-
-        private static string GetDateTime(DateTime val) =>
-            val == DateTime.MinValue ? "" : val.ToString("yyyy'-'MM'-'dd HH':'mm':'ss");
 
         private void AddPageButton(ref DynamicGumpBuilder builder, int x, int y, int buttonID, int number, HouseGumpPageAOS page)
         {
@@ -1606,7 +1615,7 @@ namespace Server.Gumps
                     }
                 case 9:
                     {
-                        if (isOwner && _house.Public && index < _houseSigns.Count)
+                        if (isOwner && _house.Public && index < _houseSigns.Length)
                         {
                             _house.ChangeSignType(_houseSigns[index]);
                             DisplayTo(from, _house, HouseGumpPageAOS.Customize);
