@@ -132,7 +132,7 @@ public partial class HouseSign : Item
         }
         else
         {
-            m.SendGump(new HouseGump(m, Owner));
+            HouseGump.DisplayTo(m, Owner);
         }
     }
 
