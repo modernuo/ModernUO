@@ -638,7 +638,7 @@ public partial class HouseRaffleStone : Item
         {
             if (from.AccessLevel >= AccessLevel.Seer && target is HouseRaffleStone { Deleted: false } stone)
             {
-                from.SendGump(new HouseRaffleManagementGump(stone));
+                HouseRaffleManagementGump.DisplayTo(from, stone);
             }
         }
     }

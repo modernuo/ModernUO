@@ -5,7 +5,7 @@ using Server.Network;
 
 namespace Server.Gumps;
 
-public class HouseRaffleManagementGump : Gump
+public class HouseRaffleManagementGump : DynamicGump
 {
     public enum SortMethod
     {
@@ -17,21 +17,38 @@ public class HouseRaffleManagementGump : Gump
 
     public const int LabelColor = 0xFFFFFF;
     public const int HighlightColor = 0x11EE11;
-    private readonly List<RaffleEntry> _list;
-    private readonly SortMethod _sort;
 
     private readonly HouseRaffleStone _stone;
+    private readonly List<RaffleEntry> _list;
+    private SortMethod _sort;
     private int _page;
 
-    public HouseRaffleManagementGump(HouseRaffleStone stone, SortMethod sort = SortMethod.Default, int page = 0)
+    public override bool Singleton => true;
+
+    private HouseRaffleManagementGump(HouseRaffleStone stone, SortMethod sort = SortMethod.Default, int page = 0)
         : base(40, 40)
     {
         _stone = stone;
         _page = page;
-
-        _list = new List<RaffleEntry>(_stone.Entries);
         _sort = sort;
 
+        _list = new List<RaffleEntry>(_stone.Entries);
+
+        SortList();
+    }
+
+    public static void DisplayTo(Mobile from, HouseRaffleStone stone, SortMethod sort = SortMethod.Default, int page = 0)
+    {
+        if (from?.NetState == null || stone == null || stone.Deleted)
+        {
+            return;
+        }
+
+        from.SendGump(new HouseRaffleManagementGump(stone, sort, page));
+    }
+
+    private void SortList()
+    {
         switch (_sort)
         {
             case SortMethod.Name:
@@ -53,66 +70,69 @@ public class HouseRaffleManagementGump : Gump
                     break;
                 }
         }
+    }
 
-        AddPage(0);
+    protected override void BuildLayout(ref DynamicGumpBuilder builder)
+    {
+        builder.AddPage();
 
-        AddBackground(0, 0, 618, 354, 9270);
-        AddAlphaRegion(10, 10, 598, 334);
+        builder.AddBackground(0, 0, 618, 354, 9270);
+        builder.AddAlphaRegion(10, 10, 598, 334);
 
-        AddHtml(10, 10, 598, 20, "Raffle Management".Center(LabelColor));
+        builder.AddHtml(10, 10, 598, 20, "Raffle Management".Center(LabelColor));
 
-        AddHtml(45, 35, 100, 20, "Location:".Color(LabelColor));
-        AddHtml(145, 35, 250, 20, HouseRaffleStone.FormatLocation(stone.PlotBounds, stone.GetPlotCenter(), stone.PlotFacet).Color(LabelColor));
+        builder.AddHtml(45, 35, 100, 20, "Location:".Color(LabelColor));
+        builder.AddHtml(145, 35, 250, 20, HouseRaffleStone.FormatLocation(_stone.PlotBounds, _stone.GetPlotCenter(), _stone.PlotFacet).Color(LabelColor));
 
-        AddHtml(45, 55, 100, 20, "Ticket Price:".Color(LabelColor));
-        AddHtml(145, 55, 250, 20, HouseRaffleStone.FormatPrice(stone.TicketPrice).Color(LabelColor));
+        builder.AddHtml(45, 55, 100, 20, "Ticket Price:".Color(LabelColor));
+        builder.AddHtml(145, 55, 250, 20, HouseRaffleStone.FormatPrice(_stone.TicketPrice).Color(LabelColor));
 
-        AddHtml(45, 75, 100, 20, "Total Entries:".Color(LabelColor));
-        AddHtml(145, 75, 250, 20, Html.Color($"{_stone.Entries.Count}", LabelColor));
+        builder.AddHtml(45, 75, 100, 20, "Total Entries:".Color(LabelColor));
+        builder.AddHtml(145, 75, 250, 20, Html.Color($"{_stone.Entries.Count}", LabelColor));
 
-        AddButton(440, 33, 0xFA5, 0xFA7, 3);
-        AddHtml(474, 35, 120, 20, "Sort by name".Color(LabelColor));
+        builder.AddButton(440, 33, 0xFA5, 0xFA7, 3);
+        builder.AddHtml(474, 35, 120, 20, "Sort by name".Color(LabelColor));
 
-        AddButton(440, 53, 0xFA5, 0xFA7, 4);
-        AddHtml(474, 55, 120, 20, "Sort by account".Color(LabelColor));
+        builder.AddButton(440, 53, 0xFA5, 0xFA7, 4);
+        builder.AddHtml(474, 55, 120, 20, "Sort by account".Color(LabelColor));
 
-        AddButton(440, 73, 0xFA5, 0xFA7, 5);
-        AddHtml(474, 75, 120, 20, "Sort by address".Color(LabelColor));
+        builder.AddButton(440, 73, 0xFA5, 0xFA7, 5);
+        builder.AddHtml(474, 75, 120, 20, "Sort by address".Color(LabelColor));
 
-        AddImageTiled(13, 99, 592, 242, 9264);
-        AddImageTiled(14, 100, 590, 240, 9274);
-        AddAlphaRegion(14, 100, 590, 240);
+        builder.AddImageTiled(13, 99, 592, 242, 9264);
+        builder.AddImageTiled(14, 100, 590, 240, 9274);
+        builder.AddAlphaRegion(14, 100, 590, 240);
 
-        AddHtml(14, 100, 590, 20, "Entries".Center(LabelColor));
+        builder.AddHtml(14, 100, 590, 20, "Entries".Center(LabelColor));
 
-        if (page > 0)
+        if (_page > 0)
         {
-            AddButton(567, 104, 0x15E3, 0x15E7, 1);
+            builder.AddButton(567, 104, 0x15E3, 0x15E7, 1);
         }
         else
         {
-            AddImage(567, 104, 0x25EA);
+            builder.AddImage(567, 104, 0x25EA);
         }
 
-        if ((page + 1) * 10 < _list.Count)
+        if ((_page + 1) * 10 < _list.Count)
         {
-            AddButton(584, 104, 0x15E1, 0x15E5, 2);
+            builder.AddButton(584, 104, 0x15E1, 0x15E5, 2);
         }
         else
         {
-            AddImage(584, 104, 0x25E6);
+            builder.AddImage(584, 104, 0x25E6);
         }
 
-        AddHtml(14, 120, 30, 20, "DEL".Center(LabelColor));
-        AddHtml(47, 120, 250, 20, "Name".Color(LabelColor));
-        AddHtml(295, 120, 100, 20, "Address".Center(LabelColor));
-        AddHtml(395, 120, 150, 20, "Date".Center(LabelColor));
-        AddHtml(545, 120, 60, 20, "Num".Center(LabelColor));
+        builder.AddHtml(14, 120, 30, 20, "DEL".Center(LabelColor));
+        builder.AddHtml(47, 120, 250, 20, "Name".Color(LabelColor));
+        builder.AddHtml(295, 120, 100, 20, "Address".Center(LabelColor));
+        builder.AddHtml(395, 120, 150, 20, "Date".Center(LabelColor));
+        builder.AddHtml(545, 120, 60, 20, "Num".Center(LabelColor));
 
         var idx = 0;
         var winner = _stone.Winner;
 
-        for (var i = page * 10; i >= 0 && i < _list.Count && i < (page + 1) * 10; ++i, ++idx)
+        for (var i = _page * 10; i >= 0 && i < _list.Count && i < (_page + 1) * 10; ++i, ++idx)
         {
             var entry = _list[i];
 
@@ -121,7 +141,7 @@ public class HouseRaffleManagementGump : Gump
                 continue;
             }
 
-            AddButton(13, 138 + idx * 20, 4002, 4004, 6 + i);
+            builder.AddButton(13, 138 + idx * 20, 4002, 4004, 6 + i);
 
             var x = 45;
             var color = winner != null && entry.From == winner ? HighlightColor : LabelColor;
@@ -130,11 +150,11 @@ public class HouseRaffleManagementGump : Gump
             {
                 if (entry.From.Account is Account acc)
                 {
-                    AddHtml(x + 2, 140 + idx * 20, 250, 20, Html.Color($"{entry.From.RawName} ({acc})", color));
+                    builder.AddHtml(x + 2, 140 + idx * 20, 250, 20, Html.Color($"{entry.From.RawName} ({acc})", color));
                 }
                 else
                 {
-                    AddHtml(x + 2, 140 + idx * 20, 250, 20, entry.From.RawName.Color(color));
+                    builder.AddHtml(x + 2, 140 + idx * 20, 250, 20, entry.From.RawName.Color(color));
                 }
             }
 
@@ -142,15 +162,15 @@ public class HouseRaffleManagementGump : Gump
 
             if (entry.Address != null)
             {
-                AddHtml(x, 140 + idx * 20, 100, 20, entry.Address.ToString().Center(color));
+                builder.AddHtml(x, 140 + idx * 20, 100, 20, Html.Center($"{entry.Address}", color));
             }
 
             x += 100;
 
-            AddHtml(x, 140 + idx * 20, 150, 20, entry.Date.ToString().Center(color));
+            builder.AddHtml(x, 140 + idx * 20, 150, 20, Html.Center($"{entry.Date}", color));
             x += 150;
 
-            AddHtml(x, 140 + idx * 20, 60, 20, "1".Center(color));
+            builder.AddHtml(x, 140 + idx * 20, 60, 20, "1".Center(color));
         }
     }
 
@@ -168,7 +188,7 @@ public class HouseRaffleManagementGump : Gump
                         _page--;
                     }
 
-                    from.SendGump(new HouseRaffleManagementGump(_stone, _sort, _page));
+                    DisplayTo(from, _stone, _sort, _page);
 
                     break;
                 }
@@ -179,25 +199,25 @@ public class HouseRaffleManagementGump : Gump
                         _page++;
                     }
 
-                    from.SendGump(new HouseRaffleManagementGump(_stone, _sort, _page));
+                    DisplayTo(from, _stone, _sort, _page);
 
                     break;
                 }
             case 3: // Sort by name
                 {
-                    from.SendGump(new HouseRaffleManagementGump(_stone, SortMethod.Name));
+                    DisplayTo(from, _stone, SortMethod.Name);
 
                     break;
                 }
             case 4: // Sort by account
                 {
-                    from.SendGump(new HouseRaffleManagementGump(_stone, SortMethod.Account));
+                    DisplayTo(from, _stone, SortMethod.Account);
 
                     break;
                 }
             case 5: // Sort by address
                 {
-                    from.SendGump(new HouseRaffleManagementGump(_stone, SortMethod.Address));
+                    DisplayTo(from, _stone, SortMethod.Address);
 
                     break;
                 }
@@ -214,7 +234,7 @@ public class HouseRaffleManagementGump : Gump
                             _page--;
                         }
 
-                        from.SendGump(new HouseRaffleManagementGump(_stone, _sort, _page));
+                        DisplayTo(from, _stone, _sort, _page);
                     }
 
                     break;
