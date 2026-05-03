@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System;
+using Server.Buffers;
 using Server.Network;
 
 namespace Server;
@@ -111,5 +112,31 @@ public partial class Item
             affix,
             args
         );
+    }
+
+    // ---------- Interpolated handler overloads ----------
+
+    public void PublicOverheadMessage(MessageType type, int hue, bool ascii, ref RawInterpolatedStringHandler text)
+    {
+        PublicOverheadMessage(type, hue, ascii, text.Text);
+        text.Clear();
+    }
+
+    public void PublicOverheadMessage(MessageType type, int hue, int number, ref RawInterpolatedStringHandler args)
+    {
+        PublicOverheadMessage(type, hue, number, args.Text);
+        args.Clear();
+    }
+
+    public void SendLocalizedMessageTo(Mobile to, int number, ref RawInterpolatedStringHandler args)
+    {
+        SendLocalizedMessageTo(to, number, args.Text);
+        args.Clear();
+    }
+
+    public void SendLocalizedMessageTo(Mobile to, int number, AffixType affixType, ReadOnlySpan<char> affix, ref RawInterpolatedStringHandler args)
+    {
+        SendLocalizedMessageTo(to, number, affixType, affix, args.Text);
+        args.Clear();
     }
 }
