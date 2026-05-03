@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Server.Accounting;
 using Server.Items;
@@ -18,8 +19,27 @@ public class HouseRaffleManagementGump : DynamicGump
     public const int LabelColor = 0xFFFFFF;
     public const int HighlightColor = 0x11EE11;
 
+    private enum Buttons
+    {
+        Close,
+        PrevPage,
+        NextPage,
+        SortByName,
+        SortByAccount,
+        SortByAddress,
+        Refresh,
+        Delete // per-row delete buttons start here: (int)Buttons.Delete + row index
+    }
+
+    private const int RowsPerPage = 10;
+
     private readonly HouseRaffleStone _stone;
-    private readonly List<RaffleEntry> _list;
+    // Cached, sorted snapshot of _stone.Entries. Page navigation, sort, and delete operate on
+    // this snapshot so paginated indices stay stable even while other staff or players add or
+    // remove entries on the live stone. Staff hits the Refresh button (or reopens the gump) to
+    // resync. _count is the logical length; _entries backing array is reused across responses.
+    private RaffleEntry[] _entries;
+    private int _count;
     private SortMethod _sort;
     private int _page;
 
@@ -32,44 +52,57 @@ public class HouseRaffleManagementGump : DynamicGump
         _page = page;
         _sort = sort;
 
-        _list = new List<RaffleEntry>(_stone.Entries);
-
-        SortList();
+        _entries = _stone.Entries.ToArray();
+        _count = _entries.Length;
+        SortSnapshot();
     }
 
     public static void DisplayTo(Mobile from, HouseRaffleStone stone, SortMethod sort = SortMethod.Default, int page = 0)
     {
-        if (from?.NetState == null || stone == null || stone.Deleted)
+        if (from?.NetState != null && stone != null && !stone.Deleted)
+        {
+            from.SendGump(new HouseRaffleManagementGump(stone, sort, page));
+        }
+    }
+
+    private void SortSnapshot()
+    {
+        if (_sort == SortMethod.Default || _count <= 1)
         {
             return;
         }
 
-        from.SendGump(new HouseRaffleManagementGump(stone, sort, page));
+        var sortMethod = _sort switch
+        {
+            SortMethod.Name    => NameComparer.Instance,
+            SortMethod.Account => AccountComparer.Instance,
+            SortMethod.Address => AddressComparer.Instance
+        };
+
+        Array.Sort(_entries, 0, _count, sortMethod);
     }
 
-    private void SortList()
+    private void RefreshSnapshot()
     {
-        switch (_sort)
+        var live = _stone.Entries;
+        var liveCount = live.Count;
+
+        if (_entries.Length < liveCount)
         {
-            case SortMethod.Name:
-                {
-                    _list.Sort(NameComparer.Instance);
-
-                    break;
-                }
-            case SortMethod.Account:
-                {
-                    _list.Sort(AccountComparer.Instance);
-
-                    break;
-                }
-            case SortMethod.Address:
-                {
-                    _list.Sort(AddressComparer.Instance);
-
-                    break;
-                }
+            // Grow with doubling so subsequent inserts can fit without re-allocating each time.
+            Array.Resize(ref _entries, Math.Max(_entries.Length * 2, liveCount));
         }
+
+        live.CopyTo(_entries, 0);
+
+        // Clear any references in trailing slots so we don't pin deleted entries.
+        if (_count > liveCount)
+        {
+            Array.Clear(_entries, liveCount, _count - liveCount);
+        }
+
+        _count = liveCount;
+        SortSnapshot();
     }
 
     protected override void BuildLayout(ref DynamicGumpBuilder builder)
@@ -90,13 +123,13 @@ public class HouseRaffleManagementGump : DynamicGump
         builder.AddHtml(45, 75, 100, 20, "Total Entries:".Color(LabelColor));
         builder.AddHtml(145, 75, 250, 20, Html.Color($"{_stone.Entries.Count}", LabelColor));
 
-        builder.AddButton(440, 33, 0xFA5, 0xFA7, 3);
+        builder.AddButton(440, 33, 0xFA5, 0xFA7, (int)Buttons.SortByName);
         builder.AddHtml(474, 35, 120, 20, "Sort by name".Color(LabelColor));
 
-        builder.AddButton(440, 53, 0xFA5, 0xFA7, 4);
+        builder.AddButton(440, 53, 0xFA5, 0xFA7, (int)Buttons.SortByAccount);
         builder.AddHtml(474, 55, 120, 20, "Sort by account".Color(LabelColor));
 
-        builder.AddButton(440, 73, 0xFA5, 0xFA7, 5);
+        builder.AddButton(440, 73, 0xFA5, 0xFA7, (int)Buttons.SortByAddress);
         builder.AddHtml(474, 75, 120, 20, "Sort by address".Color(LabelColor));
 
         builder.AddImageTiled(13, 99, 592, 242, 9264);
@@ -105,18 +138,20 @@ public class HouseRaffleManagementGump : DynamicGump
 
         builder.AddHtml(14, 100, 590, 20, "Entries".Center(LabelColor));
 
+        builder.AddButton(545, 104, 0x845, 0x846, (int)Buttons.Refresh);
+
         if (_page > 0)
         {
-            builder.AddButton(567, 104, 0x15E3, 0x15E7, 1);
+            builder.AddButton(567, 104, 0x15E3, 0x15E7, (int)Buttons.PrevPage);
         }
         else
         {
             builder.AddImage(567, 104, 0x25EA);
         }
 
-        if ((_page + 1) * 10 < _list.Count)
+        if ((_page + 1) * RowsPerPage < _count)
         {
-            builder.AddButton(584, 104, 0x15E1, 0x15E5, 2);
+            builder.AddButton(584, 104, 0x15E1, 0x15E5, (int)Buttons.NextPage);
         }
         else
         {
@@ -131,17 +166,19 @@ public class HouseRaffleManagementGump : DynamicGump
 
         var idx = 0;
         var winner = _stone.Winner;
+        var pageStart = _page * RowsPerPage;
+        var pageEnd = Math.Min(pageStart + RowsPerPage, _count);
 
-        for (var i = _page * 10; i >= 0 && i < _list.Count && i < (_page + 1) * 10; ++i, ++idx)
+        for (var i = pageStart; i < pageEnd; ++i, ++idx)
         {
-            var entry = _list[i];
+            var entry = _entries[i];
 
             if (entry == null)
             {
                 continue;
             }
 
-            builder.AddButton(13, 138 + idx * 20, 4002, 4004, 6 + i);
+            builder.AddButton(13, 138 + idx * 20, 4002, 4004, (int)Buttons.Delete + i);
 
             var x = 45;
             var color = winner != null && entry.From == winner ? HighlightColor : LabelColor;
@@ -176,70 +213,105 @@ public class HouseRaffleManagementGump : DynamicGump
 
     public override void OnResponse(NetState sender, in RelayInfo info)
     {
-        var from = sender.Mobile;
-        var buttonId = info.ButtonID;
-
-        switch (buttonId)
+        if (_stone.Deleted)
         {
-            case 1: // Previous
+            return;
+        }
+
+        switch ((Buttons)info.ButtonID)
+        {
+            case Buttons.Close:
+                {
+                    return;
+                }
+            case Buttons.PrevPage:
                 {
                     if (_page > 0)
                     {
                         _page--;
                     }
 
-                    DisplayTo(from, _stone, _sort, _page);
-
                     break;
                 }
-            case 2: // Next
+            case Buttons.NextPage:
                 {
-                    if ((_page + 1) * 10 < _stone.Entries.Count)
+                    if ((_page + 1) * RowsPerPage < _count)
                     {
                         _page++;
                     }
 
-                    DisplayTo(from, _stone, _sort, _page);
+                    break;
+                }
+            case Buttons.SortByName:
+                {
+                    _sort = SortMethod.Name;
+                    _page = 0;
+                    SortSnapshot();
 
                     break;
                 }
-            case 3: // Sort by name
+            case Buttons.SortByAccount:
                 {
-                    DisplayTo(from, _stone, SortMethod.Name);
+                    _sort = SortMethod.Account;
+                    _page = 0;
+                    SortSnapshot();
 
                     break;
                 }
-            case 4: // Sort by account
+            case Buttons.SortByAddress:
                 {
-                    DisplayTo(from, _stone, SortMethod.Account);
+                    _sort = SortMethod.Address;
+                    _page = 0;
+                    SortSnapshot();
 
                     break;
                 }
-            case 5: // Sort by address
+            case Buttons.Refresh:
                 {
-                    DisplayTo(from, _stone, SortMethod.Address);
+                    RefreshSnapshot();
 
-                    break;
-                }
-            default: // Delete
-                {
-                    buttonId -= 6;
-
-                    if (buttonId >= 0 && buttonId < _list.Count)
+                    var maxPage = _count == 0 ? 0 : (_count - 1) / RowsPerPage;
+                    if (_page > maxPage)
                     {
-                        _stone.Entries.Remove(_list[buttonId]);
+                        _page = maxPage;
+                    }
 
-                        if (_page > 0 && _page * 10 >= _list.Count - 1)
-                        {
-                            _page--;
-                        }
+                    break;
+                }
+            default: // Per-row delete
+                {
+                    var deleteIndex = info.ButtonID - (int)Buttons.Delete;
 
-                        DisplayTo(from, _stone, _sort, _page);
+                    if (deleteIndex < 0 || deleteIndex >= _count)
+                    {
+                        return;
+                    }
+
+                    var target = _entries[deleteIndex];
+
+                    if (target != null)
+                    {
+                        _stone.Entries.Remove(target);
+                    }
+
+                    // Compact the snapshot in place — array stays sorted, no reallocation.
+                    var tail = _count - deleteIndex - 1;
+                    if (tail > 0)
+                    {
+                        Array.Copy(_entries, deleteIndex + 1, _entries, deleteIndex, tail);
+                    }
+                    _entries[--_count] = null;
+
+                    if (_page > 0 && _page * RowsPerPage >= _count)
+                    {
+                        _page--;
                     }
 
                     break;
                 }
         }
+
+        sender.Mobile.SendGump(this);
     }
 
     private class NameComparer : IComparer<RaffleEntry>
@@ -266,7 +338,7 @@ public class HouseRaffleManagementGump : DynamicGump
                 return 1;
             }
 
-            var result = x.From.Name.InsensitiveCompare(y.From.Name);
+            var result = x.From.RawName.InsensitiveCompare(y.From.RawName);
 
             return result == 0 ? x.Date.CompareTo(y.Date) : result;
         }
