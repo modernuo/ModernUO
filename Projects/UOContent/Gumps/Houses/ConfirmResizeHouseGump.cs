@@ -62,7 +62,7 @@ public class ConfirmResizeHouseGump : StaticGump<ConfirmResizeHouseGump>
 
         if (info.ButtonID == 0)
         {
-            from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.Customize, from, _house));
+            HouseGumpAOS.DisplayTo(from, _house, HouseGumpPageAOS.Customize);
             return;
         }
 

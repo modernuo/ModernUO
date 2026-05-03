@@ -128,7 +128,7 @@ public partial class HouseSign : Item
 
         if (Owner.IsAosRules)
         {
-            m.SendGump(new HouseGumpAOS(HouseGumpPageAOS.Information, m, Owner));
+            HouseGumpAOS.DisplayTo(m, Owner, HouseGumpPageAOS.Information);
         }
         else
         {
@@ -237,7 +237,7 @@ public partial class HouseSign : Item
             }
             else
             {
-                from.SendGump(new HouseGumpAOS(HouseGumpPageAOS.Vendors, from, sign.Owner));
+                HouseGumpAOS.DisplayTo(from, sign.Owner, HouseGumpPageAOS.Vendors);
             }
         }
     }
