@@ -1334,16 +1334,26 @@ public partial class DuelContext
                 return; // sanity
             }
 
-            var text =
-                $"{{0}} are ranked {LadderGump.Rank(entry.Index + 1)} at level {Ladder.GetLevel(entry.Experience)}.";
-
-            pm.PrivateOverheadMessage(
-                MessageType.Regular,
-                pm.SpeechHue,
-                true,
-                string.Format(text, from == pm ? "You" : "They"),
-                from.NetState
-            );
+            if (from == pm)
+            {
+                pm.PrivateOverheadMessage(
+                    MessageType.Regular,
+                    pm.SpeechHue,
+                    true,
+                    $"You are ranked {LadderGump.Rank(entry.Index + 1)} at level {Ladder.GetLevel(entry.Experience)}.",
+                    from.NetState
+                );
+            }
+            else
+            {
+                pm.PrivateOverheadMessage(
+                    MessageType.Regular,
+                    pm.SpeechHue,
+                    true,
+                    $"They are ranked {LadderGump.Rank(entry.Index + 1)} at level {Ladder.GetLevel(entry.Experience)}.",
+                    from.NetState
+                );
+            }
         }
         else if (obj is Mobile mob)
         {
@@ -1460,15 +1470,17 @@ public partial class DuelContext
                         return; // sanity
                     }
 
-                    var text =
-                        $"{{0}} {{1}} ranked {LadderGump.Rank(entry.Index + 1)} at level {Ladder.GetLevel(entry.Experience)}.";
-
-                    pm.LocalOverheadMessage(MessageType.Regular, pm.SpeechHue, true, string.Format(text, "You", "are"));
+                    pm.LocalOverheadMessage(
+                        MessageType.Regular,
+                        pm.SpeechHue,
+                        true,
+                        $"You are ranked {LadderGump.Rank(entry.Index + 1)} at level {Ladder.GetLevel(entry.Experience)}."
+                    );
                     pm.NonlocalOverheadMessage(
                         MessageType.Regular,
                         pm.SpeechHue,
                         true,
-                        string.Format(text, pm.Name, "is")
+                        $"{pm.Name} is ranked {LadderGump.Rank(entry.Index + 1)} at level {Ladder.GetLevel(entry.Experience)}."
                     );
 
                     // pm.PublicOverheadMessage( MessageType.Regular, pm.SpeechHue, true, String.Format( "Level {0} with {1} win{2} and {3} loss{4}.", Ladder.GetLevel( entry.Experience ), entry.Wins, entry.Wins==1?"":"s", entry.Losses, entry.Losses==1?"":"es" ) );

@@ -7908,14 +7908,26 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                     type = "";
                 }
 
-                var text = string.Format(
-                    title.Length <= 0 ? "[{1}]{2}" : "[{0}, {1}]{2}",
-                    title,
-                    guild.Abbreviation,
-                    type
-                );
-
-                PrivateOverheadMessage(MessageType.Regular, SpeechHue, true, text, from.NetState);
+                if (title.Length <= 0)
+                {
+                    PrivateOverheadMessage(
+                        MessageType.Regular,
+                        SpeechHue,
+                        true,
+                        $"[{guild.Abbreviation}]{type}",
+                        from.NetState
+                    );
+                }
+                else
+                {
+                    PrivateOverheadMessage(
+                        MessageType.Regular,
+                        SpeechHue,
+                        true,
+                        $"[{title}, {guild.Abbreviation}]{type}",
+                        from.NetState
+                    );
+                }
             }
         }
 

@@ -499,13 +499,6 @@ public class ConfirmSignupGump : DynamicGump
 
                     if (_registrar != null)
                     {
-                        string fmt = _tournament.PlayersPerParticipant switch
-                        {
-                            1 => "As you say m'{0}. I've written your name to the bracket. The tournament will begin {1}.",
-                            2 => "As you wish m'{0}. The tournament will begin {1}, but first you must name your partner.",
-                            _ => "As you wish m'{0}. The tournament will begin {1}, but first you must name your team."
-                        };
-
                         var minutesUntil = (int)Math.Round(
                             (_tournament.SignupStart + _tournament.SignupPeriod - Core.Now)
                             .TotalMinutes
@@ -515,13 +508,44 @@ public class ConfirmSignupGump : DynamicGump
                             ? "momentarily"
                             : $"in {minutesUntil} minute{(minutesUntil == 1 ? "" : "s")}";
 
-                        _registrar.PrivateOverheadMessage(
-                            MessageType.Regular,
-                            0x35,
-                            false,
-                            string.Format(fmt, from.Female ? "Lady" : "Lord", timeUntil),
-                            from.NetState
-                        );
+                        var title = from.Female ? "Lady" : "Lord";
+
+                        switch (_tournament.PlayersPerParticipant)
+                        {
+                            case 1:
+                                {
+                                    _registrar.PrivateOverheadMessage(
+                                        MessageType.Regular,
+                                        0x35,
+                                        false,
+                                        $"As you say m'{title}. I've written your name to the bracket. The tournament will begin {timeUntil}.",
+                                        from.NetState
+                                    );
+                                    break;
+                                }
+                            case 2:
+                                {
+                                    _registrar.PrivateOverheadMessage(
+                                        MessageType.Regular,
+                                        0x35,
+                                        false,
+                                        $"As you wish m'{title}. The tournament will begin {timeUntil}, but first you must name your partner.",
+                                        from.NetState
+                                    );
+                                    break;
+                                }
+                            default:
+                                {
+                                    _registrar.PrivateOverheadMessage(
+                                        MessageType.Regular,
+                                        0x35,
+                                        false,
+                                        $"As you wish m'{title}. The tournament will begin {timeUntil}, but first you must name your team.",
+                                        from.NetState
+                                    );
+                                    break;
+                                }
+                        }
                     }
 
                     var part = new TourneyParticipant(from);
