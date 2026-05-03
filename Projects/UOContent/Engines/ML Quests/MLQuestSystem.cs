@@ -730,7 +730,7 @@ namespace Server.Engines.MLQuests
             }
             else if (quester is Item item)
             {
-                item.SendLocalizedMessageTo(pm, cliloc, args, SpeechColor);
+                item.SendLocalizedMessageTo(pm, cliloc, SpeechColor, args);
             }
             else
             {

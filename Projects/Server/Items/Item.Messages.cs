@@ -90,7 +90,7 @@ public partial class Item
             return;
         }
 
-        to.NetState.SendMessageLocalized(Serial, ItemID, MessageType.Regular, 0x3B2, 3, number, "", args);
+        to?.NetState?.SendMessageLocalized(Serial, ItemID, MessageType.Regular, 0x3B2, 3, number, "", args);
     }
 
     public void SendLocalizedMessageTo(Mobile to, int number, AffixType affixType, ReadOnlySpan<char> affix, ReadOnlySpan<char> args)
@@ -100,7 +100,7 @@ public partial class Item
             return;
         }
 
-        to.NetState.SendMessageLocalizedAffix(
+        to?.NetState?.SendMessageLocalizedAffix(
             Serial,
             ItemID,
             MessageType.Regular,
@@ -113,6 +113,14 @@ public partial class Item
             args
         );
     }
+
+    // Configurable hue, blank name
+    public void SendLocalizedMessageTo(Mobile to, int number, int hue, ReadOnlySpan<char> args = default)
+        => to?.NetState?.SendMessageLocalized(Serial, ItemID, MessageType.Regular, hue, 3, number, "", args);
+
+    // Configurable hue, blank name — text (non-localized)
+    public void SendMessageTo(Mobile to, ReadOnlySpan<char> text, int hue = 0x3B2)
+        => to?.NetState?.SendMessage(Serial, ItemID, MessageType.Regular, hue, 3, false, "ENU", "", text);
 
     // ---------- Interpolated handler overloads ----------
 
@@ -138,5 +146,17 @@ public partial class Item
     {
         SendLocalizedMessageTo(to, number, affixType, affix, args.Text);
         args.Clear();
+    }
+
+    public void SendLocalizedMessageTo(Mobile to, int number, int hue, ref RawInterpolatedStringHandler args)
+    {
+        SendLocalizedMessageTo(to, number, hue, args.Text);
+        args.Clear();
+    }
+
+    public void SendMessageTo(Mobile to, int hue, ref RawInterpolatedStringHandler text)
+    {
+        SendMessageTo(to, text.Text, hue);
+        text.Clear();
     }
 }
