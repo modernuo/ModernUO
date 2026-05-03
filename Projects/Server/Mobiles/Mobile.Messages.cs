@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System;
+using Server.Buffers;
 using Server.Network;
 
 namespace Server;
@@ -300,4 +301,163 @@ public partial class Mobile
 
     public void SendAsciiMessage(int hue, ReadOnlySpan<char> text) =>
         m_NetState.SendMessage(Serial.MinusOne, -1, MessageType.Regular, hue, 3, true, null, "System", text);
+
+    // ---------- Interpolated handler overloads ----------
+
+    public void Say(bool ascii, ref RawInterpolatedStringHandler text)
+    {
+        PublicOverheadMessage(MessageType.Regular, SpeechHue, ascii, text.Text);
+        text.Clear();
+    }
+
+    public void Say(ref RawInterpolatedStringHandler text)
+    {
+        PublicOverheadMessage(MessageType.Regular, SpeechHue, false, text.Text);
+        text.Clear();
+    }
+
+    public void Say(int number, AffixType type, ReadOnlySpan<char> affix, ref RawInterpolatedStringHandler args)
+    {
+        PublicOverheadMessage(MessageType.Regular, SpeechHue, number, type, affix, args.Text);
+        args.Clear();
+    }
+
+    public void Say(int number, ref RawInterpolatedStringHandler args)
+    {
+        PublicOverheadMessage(MessageType.Regular, SpeechHue, number, args.Text);
+        args.Clear();
+    }
+
+    public void Emote(ref RawInterpolatedStringHandler text)
+    {
+        PublicOverheadMessage(MessageType.Emote, EmoteHue, false, text.Text);
+        text.Clear();
+    }
+
+    public void Emote(int number, ref RawInterpolatedStringHandler args)
+    {
+        PublicOverheadMessage(MessageType.Emote, EmoteHue, number, args.Text);
+        args.Clear();
+    }
+
+    public void Whisper(ref RawInterpolatedStringHandler text)
+    {
+        PublicOverheadMessage(MessageType.Whisper, WhisperHue, false, text.Text);
+        text.Clear();
+    }
+
+    public void Whisper(int number, ref RawInterpolatedStringHandler args)
+    {
+        PublicOverheadMessage(MessageType.Whisper, WhisperHue, number, args.Text);
+        args.Clear();
+    }
+
+    public void Yell(ref RawInterpolatedStringHandler text)
+    {
+        PublicOverheadMessage(MessageType.Yell, YellHue, false, text.Text);
+        text.Clear();
+    }
+
+    public void Yell(int number, ref RawInterpolatedStringHandler args)
+    {
+        PublicOverheadMessage(MessageType.Yell, YellHue, number, args.Text);
+        args.Clear();
+    }
+
+    public void PublicOverheadMessage(
+        MessageType type, int hue, bool ascii, ref RawInterpolatedStringHandler text, bool noLineOfSight = true,
+        AccessLevel accessLevel = AccessLevel.Player
+    )
+    {
+        PublicOverheadMessage(type, hue, ascii, text.Text, noLineOfSight, accessLevel);
+        text.Clear();
+    }
+
+    public void PublicOverheadMessage(MessageType type, int hue, int number, ref RawInterpolatedStringHandler args, bool noLineOfSight = true)
+    {
+        PublicOverheadMessage(type, hue, number, args.Text, noLineOfSight);
+        args.Clear();
+    }
+
+    public void PublicOverheadMessage(
+        MessageType type, int hue, int number, AffixType affixType, ReadOnlySpan<char> affix,
+        ref RawInterpolatedStringHandler args, bool noLineOfSight = false,
+        AccessLevel accessLevel = AccessLevel.Player
+    )
+    {
+        PublicOverheadMessage(type, hue, number, affixType, affix, args.Text, noLineOfSight, accessLevel);
+        args.Clear();
+    }
+
+    public void PrivateOverheadMessage(MessageType type, int hue, bool ascii, ref RawInterpolatedStringHandler text, NetState state)
+    {
+        PrivateOverheadMessage(type, hue, ascii, text.Text, state);
+        text.Clear();
+    }
+
+    public void PrivateOverheadMessage(MessageType type, int hue, int number, ref RawInterpolatedStringHandler args, NetState state)
+    {
+        PrivateOverheadMessage(type, hue, number, args.Text, state);
+        args.Clear();
+    }
+
+    public void LocalOverheadMessage(MessageType type, int hue, bool ascii, ref RawInterpolatedStringHandler text)
+    {
+        LocalOverheadMessage(type, hue, ascii, text.Text);
+        text.Clear();
+    }
+
+    public void LocalOverheadMessage(MessageType type, int hue, int number, ref RawInterpolatedStringHandler args)
+    {
+        LocalOverheadMessage(type, hue, number, args.Text);
+        args.Clear();
+    }
+
+    public void NonlocalOverheadMessage(MessageType type, int hue, int number, ref RawInterpolatedStringHandler args)
+    {
+        NonlocalOverheadMessage(type, hue, number, args.Text);
+        args.Clear();
+    }
+
+    public void NonlocalOverheadMessage(MessageType type, int hue, bool ascii, ref RawInterpolatedStringHandler text)
+    {
+        NonlocalOverheadMessage(type, hue, ascii, text.Text);
+        text.Clear();
+    }
+
+    public void SendLocalizedMessage(int number, ref RawInterpolatedStringHandler args, int hue = 0x3B2)
+    {
+        SendLocalizedMessage(number, args.Text, hue);
+        args.Clear();
+    }
+
+    public void SendLocalizedMessage(int number, bool append, ReadOnlySpan<char> affix, ref RawInterpolatedStringHandler args, int hue = 0x3B2)
+    {
+        SendLocalizedMessage(number, append, affix, args.Text, hue);
+        args.Clear();
+    }
+
+    public void SendMessage(ref RawInterpolatedStringHandler text)
+    {
+        SendMessage(0x3B2, text.Text);
+        text.Clear();
+    }
+
+    public void SendMessage(int hue, ref RawInterpolatedStringHandler text)
+    {
+        SendMessage(hue, text.Text);
+        text.Clear();
+    }
+
+    public void SendAsciiMessage(ref RawInterpolatedStringHandler text)
+    {
+        SendAsciiMessage(0x3B2, text.Text);
+        text.Clear();
+    }
+
+    public void SendAsciiMessage(int hue, ref RawInterpolatedStringHandler text)
+    {
+        SendAsciiMessage(hue, text.Text);
+        text.Clear();
+    }
 }
