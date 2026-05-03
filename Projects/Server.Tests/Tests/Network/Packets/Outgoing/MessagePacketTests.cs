@@ -47,6 +47,29 @@ public class MessageTests
     }
 
     [Fact]
+    public void TestMessageLocalizedInterpolated()
+    {
+        var serial = (Serial)0x1024;
+        var graphic = 0x100;
+        var messageType = MessageType.Label;
+        var hue = 1024;
+        var font = 3;
+        var number = 150000;
+        var name = "Stuff";
+        var argValue = 42;
+
+        var expected = new MessageLocalized(
+            serial, graphic, messageType, hue, font, number, name, $"value: {argValue}"
+        ).Compile();
+
+        using var ns = PacketTestUtilities.CreateTestNetState();
+        ns.SendMessageLocalized(serial, graphic, messageType, hue, font, number, name, $"value: {argValue}");
+
+        var result = ns.SendBuffer.GetReadSpan();
+        AssertThat.Equal(result, expected);
+    }
+
+    [Fact]
     public void TestMessageLocalizedAffix()
     {
         var serial = (Serial)0x1024;
@@ -85,6 +108,59 @@ public class MessageTests
             affixType,
             affix,
             args
+        );
+
+        var result = ns.SendBuffer.GetReadSpan();
+        AssertThat.Equal(result, expected);
+    }
+
+    [Fact]
+    public void TestMessageLocalizedAffixInterpolated()
+    {
+        var serial = (Serial)0x1024;
+        var graphic = 0x100;
+        var messageType = MessageType.Label;
+        var hue = 1024;
+        var font = 3;
+        var number = 150000;
+        var name = "Stuff";
+        var affixType = AffixType.System;
+        var affix = "Affix";
+        var argValue = 42;
+
+        var expected = new MessageLocalizedAffix(
+            serial, graphic, messageType, hue, font, number, name, affixType, affix, $"value: {argValue}"
+        ).Compile();
+
+        using var ns = PacketTestUtilities.CreateTestNetState();
+        ns.SendMessageLocalizedAffix(
+            serial, graphic, messageType, hue, font, number, name, affixType, affix,
+            $"value: {argValue}"
+        );
+
+        var result = ns.SendBuffer.GetReadSpan();
+        AssertThat.Equal(result, expected);
+    }
+
+    [Fact]
+    public void TestUnicodeMessageInterpolated()
+    {
+        var serial = (Serial)0x1024;
+        var graphic = 0x100;
+        var messageType = MessageType.Label;
+        var hue = 1024;
+        var font = 3;
+        var lang = "ENU";
+        var name = "Stuff";
+        var who = "Alice";
+
+        var expected = new UnicodeMessage(
+            serial, graphic, messageType, hue, font, lang, name, $"hello, {who}"
+        ).Compile();
+
+        using var ns = PacketTestUtilities.CreateTestNetState();
+        ns.SendMessage(
+            serial, graphic, messageType, hue, font, false, lang, name, $"hello, {who}"
         );
 
         var result = ns.SendBuffer.GetReadSpan();

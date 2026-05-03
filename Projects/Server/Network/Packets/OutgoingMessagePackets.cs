@@ -29,7 +29,7 @@ public enum AffixType : byte
     System = 0x02
 }
 
-public static class OutgoingMessagePackets
+public static partial class OutgoingMessagePackets
 {
     public static void SendMessageLocalized(
         this NetState ns,
