@@ -254,11 +254,6 @@ namespace Server.Gumps
 
         protected override void BuildLayout(ref DynamicGumpBuilder builder)
         {
-            if (_house.Deleted)
-            {
-                return;
-            }
-
             var isCombatRestricted = _house.IsCombatRestricted(_from);
 
             var isOwner = _house.IsOwner(_from);
