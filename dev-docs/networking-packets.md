@@ -338,6 +338,88 @@ reader.Buffer;      // ReadOnlySpan<byte> of full data
 
 ---
 
+## Player-Facing Message APIs
+
+For chat, system messages, and overhead text, prefer the high-level convenience methods on `Mobile` and `Item` — they handle stackalloc sizing, packet buffer initialization, spatial queries, and visibility filtering for you. The underlying packets all live in `OutgoingMessagePackets`.
+
+### On `Mobile`
+
+```csharp
+// Self-message (sent only to this mobile's NetState)
+mob.SendMessage(int hue, ReadOnlySpan<char> text);
+mob.SendAsciiMessage(int hue, ReadOnlySpan<char> text);
+mob.SendLocalizedMessage(int number, ReadOnlySpan<char> args = default, int hue = 0x3B2);
+mob.SendLocalizedMessage(int number, bool append, ReadOnlySpan<char> affix, ReadOnlySpan<char> args = default, int hue = 0x3B2);
+
+// Speech variants (overhead text from this mobile, broadcast in range)
+mob.Say(ReadOnlySpan<char> text);              // SpeechHue
+mob.Say(int number, ReadOnlySpan<char> args = default);
+mob.Emote(ReadOnlySpan<char> text);            // EmoteHue
+mob.Whisper(ReadOnlySpan<char> text);          // WhisperHue, short range
+mob.Yell(ReadOnlySpan<char> text);             // YellHue, long range
+
+// Targeted overhead messages
+mob.PublicOverheadMessage(MessageType type, int hue, bool ascii, ReadOnlySpan<char> text, bool noLineOfSight = true, AccessLevel accessLevel = AccessLevel.Player);
+mob.PublicOverheadMessage(MessageType type, int hue, int number, ReadOnlySpan<char> args = default, bool noLineOfSight = true);
+mob.PrivateOverheadMessage(MessageType type, int hue, int number, ReadOnlySpan<char> args, NetState state);
+mob.LocalOverheadMessage(MessageType type, int hue, bool ascii, ReadOnlySpan<char> text);
+mob.NonlocalOverheadMessage(MessageType type, int hue, int number, ReadOnlySpan<char> args = default);
+```
+
+### On `Item`
+
+```csharp
+item.PublicOverheadMessage(MessageType type, int hue, bool ascii, ReadOnlySpan<char> text);
+item.PublicOverheadMessage(MessageType type, int hue, int number, ReadOnlySpan<char> args = default);
+item.SendLocalizedMessageTo(Mobile to, int number, ReadOnlySpan<char> args = default);
+item.SendLocalizedMessageTo(Mobile to, int number, int hue, ReadOnlySpan<char> args = default);
+item.SendMessageTo(Mobile to, ReadOnlySpan<char> text, int hue = 0x3B2);
+```
+
+### Direct `NetState` extensions
+
+When you have a `NetState` and need full control (custom serial, body, font, language):
+
+```csharp
+ns.SendMessage(Serial serial, int graphic, MessageType type, int hue, int font, bool ascii, string lang, ReadOnlySpan<char> name, ReadOnlySpan<char> text);
+ns.SendMessageLocalized(Serial serial, int graphic, MessageType type, int hue, int font, int number, ReadOnlySpan<char> name = default, ReadOnlySpan<char> args = default);
+ns.SendMessageLocalizedAffix(Serial serial, int graphic, MessageType type, int hue, int font, int number, ReadOnlySpan<char> name, AffixType affixType, ReadOnlySpan<char> affix = default, ReadOnlySpan<char> args = default);
+```
+
+### Zero-allocation interpolation overloads
+
+Every method above has a `ref RawInterpolatedStringHandler` overload for the text/args parameter. When the call-site argument is a `$"..."` literal, the compiler picks the handler overload and the message text is rendered directly into a pooled `char[]` — no `string` allocation:
+
+```csharp
+mob.SendMessage($"You have {gold:N0} gold and {bounty:N0} bounty");
+mob.Say($"Hello, {target.Name}!");
+item.SendLocalizedMessageTo(player, cliloc, $"{a}\t{b}");
+mob.PublicOverheadMessage(MessageType.Regular, hue, false, $"I am {mob.Name}");
+```
+
+When the argument is a pre-built `string` or `ReadOnlySpan<char>` variable, the `ROS<char>` overload is selected via implicit conversion — also fine, just doesn't get the zero-alloc benefit.
+
+For methods with two text parameters (`SendLocalizedMessageTo` with affix, `SendLocalizedMessage` with append), only `args` has a handler overload — `affix` stays `ROS<char>` because it's typically a short literal.
+
+**Critical caveat:** call-site shapes like ternaries, switch expressions, pre-built locals, and `.ToString()` inside the hole silently defeat the handler overload selection. See the [Interpolation Anti-Patterns](string-handling.md#interpolation-anti-patterns) section in the string-handling doc for the full list and the fixes.
+
+### Lowercase format specifier
+
+`RawInterpolatedStringHandler` recognizes `:L` to lowercase a value's output (using `MemoryExtensions.ToLowerInvariant`). Useful for enum names in player-facing text:
+
+```csharp
+mob.SendMessage($"You earned a {rank:L} trophy!");          // "gold" not "Gold"
+```
+
+See [`dev-docs/string-handling.md`](string-handling.md#rawinterpolatedstringhandler) for full coverage.
+
+### Implementation notes
+
+- `Mobile.PublicOverheadMessage` and `Item.PublicOverheadMessage` route through generic `OutgoingMessagePackets.BroadcastMessage*<TFilter>` helpers (in `OutgoingMessagePackets.Broadcast.cs`) parameterized over a `private readonly struct` filter that encapsulates the per-method visibility predicate (`CanSee`, `InLOS`, `AccessLevel`, `!= self`). The `where TFilter : struct, IBroadcastFilter` constraint specializes per filter type and keeps the dispatch zero-allocation (no boxing, no virtual call — JIT inlines the predicate).
+- The convenience methods themselves live in `Mobile.Messages.cs` and `Item.Messages.cs` partial files for organization.
+
+---
+
 ## Common Existing Send Methods
 
 ### Effects and Sounds

@@ -90,6 +90,20 @@ list.Add(1060661, $"{"Range"}\t{_range}");
 
 **Rule**: Only `\t` (argument separator) should be bare literal text. Everything else — including string constants — must be inside `{}` holes.
 
+### No `.ToString()` Inside Holes
+
+`IPropertyList`'s handler formats values directly via `ISpanFormattable.TryFormat` — no intermediate `string` allocation per hole. An explicit `.ToString()` defeats this:
+
+```csharp
+// BAD — .ToString() allocates a string the handler then re-buffers
+list.Add(1060658, $"{"Charges"}\t{_charges.ToString()}");
+
+// GOOD — handler formats _charges directly with no intermediate string
+list.Add(1060658, $"{"Charges"}\t{_charges}");
+```
+
+Same applies to `.String()` (TextDefinition), `.GetValue()`, etc. The full list of interpolation anti-patterns (ternaries, switch expressions, pre-built locals, `string.Format`, concat in hole, LINQ in hole) applies equally to `IPropertyList.Add($"...")`. See `dev-docs/string-handling.md` § "Interpolation Anti-Patterns" or `dev-docs/claude-skills/modernuo-string-handling.md`.
+
 ### Cliloc as Argument (Use `:#` Format Specifier)
 
 When an argument is itself a cliloc number, use the `:#` format specifier — **not** a `"#number"` string:

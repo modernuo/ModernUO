@@ -163,9 +163,37 @@ return type switch
 **Why**: Switch expressions enable JIT/PGO optimization and improve readability.
 **Exception**: Skip if the switch would be unreadable or the code is on a cold path.
 
+### 17. Interpolation Anti-Patterns (handler-aware APIs)
+
+**Context**: Many ModernUO APIs accept `ref RawInterpolatedStringHandler` (`Mobile.SendMessage`/`Say`/`Emote`/etc., `Item.Public/Local/NonlocalOverheadMessage`/`SendLocalizedMessageTo`/`SendMessageTo`, `IPropertyList.Add`, `SpanWriter.WriteAscii`/`WriteLatin1`, gump `AddLabel`/`AddHtml`/`AddHtmlLocalized`, `Html.Center`/`Color`/`Right`). The handler overload renders the interpolation directly into a pooled buffer with **zero `string` allocation** — but only when the call-site argument is a `$"..."` literal directly in the parameter slot.
+
+**Check**: Flag any of the following patterns when the call target is one of those handler-aware APIs. The handler overload is silently bypassed and a `string` is allocated per call.
+
+| Pattern | Fix |
+|---|---|
+| `Send(cond ? $"a" : $"b")` | `if/else` with two calls |
+| `Send(thing switch { 1 => $"a", _ => $"b" })` | `switch` statement, call per arm |
+| `var s = $"foo {x}"; Send(s);` (single-use) | Inline at call site |
+| `Send($"x {value.ToString()}")` | Drop `.ToString()` — handler formats directly |
+| `Send($"x {td.String()}")` | Drop `.String()` — pass `td` directly |
+| `Send($"x {a + b}")` (string concat) | Multiple holes: `Send($"x {a}{b}")` |
+| `Send(string.Format("x {0}", v))` | `Send($"x {v}")` |
+| `Send($"x {items.Aggregate(...)}")` | Build via `ValueStringBuilder`, pass span |
+
+**For lowercase output**, use the `:L` format specifier instead of `value.ToString().ToLowerInvariant()`:
+```csharp
+mob.SendMessage($"You earned a {rank:L} trophy!");          // "gold" not "Gold"
+```
+
+**Why**: These methods are called constantly during gameplay (every chat line, every system message, every gump label, every tooltip). The handler overload exists specifically to eliminate per-call `string` allocation. Each anti-pattern leaks one or more strings per call.
+
+**Severity**: WARNING. Flag and ask before fixing — some patterns (e.g., reused locals across multiple call sites) are intentional and shouldn't be inlined.
+
+**See**: `dev-docs/string-handling.md` § "Interpolation Anti-Patterns" for the full reference with detailed before/after examples.
+
 ## Severity Levels
 - **ERROR**: Rules 3, 9, 10, 13 (will cause bugs, build failures, or client-side leaks)
-- **WARNING**: Rules 1 (Tier 3 LINQ), 2, 4, 5, 6, 7, 8, 12, 14, 15 (performance/convention issues)
+- **WARNING**: Rules 1 (Tier 3 LINQ), 2, 4, 5, 6, 7, 8, 12, 14, 15, 17 (performance/convention issues)
 - **INFO**: Rules 1 (Tier 2 LINQ on warm paths — note it but don't flag as violation), 16 (switch patterns — suggest but don't flag)
 - **ASK**: Rule 11 (need user input)
 

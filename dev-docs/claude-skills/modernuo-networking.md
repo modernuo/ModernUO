@@ -220,6 +220,63 @@ reader.Length;        // Total data length
 reader.Remaining;    // Bytes remaining
 ```
 
+## Player-Facing Message APIs
+
+For chat / system messages / overhead text, use the convenience methods on `Mobile` and `Item` rather than building packets manually. They handle stackalloc sizing, spatial queries, and visibility filtering, and each has a `ref RawInterpolatedStringHandler` overload for zero-allocation interpolation.
+
+### Mobile
+
+```csharp
+// Self-message
+mob.SendMessage(int hue, ROS<char> text);
+mob.SendLocalizedMessage(int number, ROS<char> args = default, int hue = 0x3B2);
+mob.SendAsciiMessage(int hue, ROS<char> text);
+
+// Speech (broadcast in range)
+mob.Say(ROS<char> text);                       // SpeechHue
+mob.Emote(ROS<char> text);                     // EmoteHue
+mob.Whisper(ROS<char> text);                   // WhisperHue, short range
+mob.Yell(ROS<char> text);                      // YellHue, long range
+
+// Overhead (3 visibility variants × text/localized × affix)
+mob.PublicOverheadMessage(MessageType, int hue, bool ascii, ROS<char> text, ...);
+mob.PrivateOverheadMessage(MessageType, int hue, int number, ROS<char> args, NetState);
+mob.LocalOverheadMessage(MessageType, int hue, bool ascii, ROS<char> text);
+mob.NonlocalOverheadMessage(MessageType, int hue, int number, ROS<char> args = default);
+```
+
+### Item
+
+```csharp
+item.PublicOverheadMessage(MessageType, int hue, bool ascii, ROS<char> text);
+item.PublicOverheadMessage(MessageType, int hue, int number, ROS<char> args = default);
+item.SendLocalizedMessageTo(Mobile to, int number, ROS<char> args = default);
+item.SendLocalizedMessageTo(Mobile to, int number, int hue, ROS<char> args = default);
+item.SendMessageTo(Mobile to, ROS<char> text, int hue = 0x3B2);
+```
+
+### Zero-allocation interpolation
+
+```csharp
+// Compiler picks the handler overload — no string allocated
+mob.SendMessage($"You have {gold:N0} gold");
+mob.Say($"Hello, {target.Name}!");
+item.SendLocalizedMessageTo(player, cliloc, $"{a}\t{b}");
+```
+
+Several call-site shapes (ternaries with interpolated branches, `.ToString()` inside holes, pre-built `var msg = $"..."` locals, etc.) silently defeat handler binding and allocate a `string`. See `dev-docs/string-handling.md` § "Interpolation Anti-Patterns" for the list and fixes.
+
+For lowercase output, use `:L`:
+```csharp
+mob.SendMessage($"You earned a {rank:L} trophy!");          // "gold" not "Gold"
+```
+
+### Implementation note
+
+The 7 spatial-broadcast variants (`Public/NonlocalOverheadMessage` × text/localized/affix) route through generic `OutgoingMessagePackets.Broadcast*<TFilter>` helpers parameterized over a `private readonly struct` filter that encapsulates the visibility predicate. The `where TFilter : struct, IBroadcastFilter` constraint specializes per filter type and keeps dispatch zero-alloc. If you add a new spatial-message API, add a filter struct and call the existing helper rather than duplicating the loop.
+
+---
+
 ## Common Packet Patterns
 
 ### Sound Effect
