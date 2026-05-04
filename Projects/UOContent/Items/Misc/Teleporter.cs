@@ -1055,5 +1055,4 @@ public partial class InteractionTeleporter : Teleporter
     }
 
     public override void OnDoubleClickDead(Mobile m) => OnDoubleClick(m);
-
 }
