@@ -21,6 +21,56 @@ namespace Server;
 
 public partial class Mobile
 {
+    // ---------- Broadcast filter structs ----------
+
+    private readonly struct PublicVisibilityFilter : IBroadcastFilter
+    {
+        private readonly Mobile _source;
+        private readonly bool _noLineOfSight;
+        private readonly AccessLevel _accessLevel;
+
+        public PublicVisibilityFilter(Mobile source, bool noLineOfSight, AccessLevel accessLevel)
+        {
+            _source = source;
+            _noLineOfSight = noLineOfSight;
+            _accessLevel = accessLevel;
+        }
+
+        public bool Allow(NetState state) =>
+            state.Mobile.AccessLevel >= _accessLevel &&
+            state.Mobile.CanSee(_source) &&
+            (_noLineOfSight || state.Mobile.InLOS(_source));
+    }
+
+    private readonly struct LocalizedVisibilityFilter : IBroadcastFilter
+    {
+        private readonly Mobile _source;
+        private readonly bool _noLineOfSight;
+
+        public LocalizedVisibilityFilter(Mobile source, bool noLineOfSight)
+        {
+            _source = source;
+            _noLineOfSight = noLineOfSight;
+        }
+
+        public bool Allow(NetState state) =>
+            state.Mobile.CanSee(_source) && (_noLineOfSight || state.Mobile.InLOS(_source));
+    }
+
+    private readonly struct NonlocalVisibilityFilter : IBroadcastFilter
+    {
+        private readonly Mobile _source;
+        private readonly NetState _exclude;
+
+        public NonlocalVisibilityFilter(Mobile source, NetState exclude)
+        {
+            _source = source;
+            _exclude = exclude;
+        }
+
+        public bool Allow(NetState state) => state != _exclude && state.Mobile.CanSee(_source);
+    }
+
     // ---------- Say / Emote / Whisper / Yell ----------
 
     public void Say(bool ascii, ReadOnlySpan<char> text) =>
@@ -58,126 +108,30 @@ public partial class Mobile
     public void PublicOverheadMessage(
         MessageType type, int hue, bool ascii, ReadOnlySpan<char> text, bool noLineOfSight = true,
         AccessLevel accessLevel = AccessLevel.Player
-    )
-    {
-        if (m_Map == null)
-        {
-            return;
-        }
+    ) =>
+        OutgoingMessagePackets.BroadcastMessage(
+            m_Map, m_Location,
+            Serial, Body, type, hue, 3, ascii, Language, Name, text,
+            new PublicVisibilityFilter(this, noLineOfSight, accessLevel)
+        );
 
-        var buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text.Length)].InitializePacket();
-
-        foreach (var state in m_Map.GetClientsInRange(m_Location))
-        {
-            if (
-                state.Mobile.AccessLevel >= accessLevel &&
-                state.Mobile.CanSee(this) &&
-                (noLineOfSight || state.Mobile.InLOS(this))
-            )
-            {
-                var length = OutgoingMessagePackets.CreateMessage(
-                    buffer,
-                    Serial,
-                    Body,
-                    type,
-                    hue,
-                    3,
-                    ascii,
-                    Language,
-                    Name,
-                    text
-                );
-
-                if (length != buffer.Length)
-                {
-                    buffer = buffer[..length]; // Adjust to the actual size
-                }
-
-                state.Send(buffer);
-            }
-        }
-    }
-
-    public void PublicOverheadMessage(MessageType type, int hue, int number, ReadOnlySpan<char> args = default, bool noLineOfSight = true)
-    {
-        if (m_Map == null)
-        {
-            return;
-        }
-
-        var buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedLength(args.Length)].InitializePacket();
-
-        foreach (var state in m_Map.GetClientsInRange(m_Location))
-        {
-            if (state.Mobile.CanSee(this) && (noLineOfSight || state.Mobile.InLOS(this)))
-            {
-                var length = OutgoingMessagePackets.CreateMessageLocalized(
-                    buffer,
-                    Serial,
-                    Body,
-                    type,
-                    hue,
-                    3,
-                    number,
-                    Name,
-                    args
-                );
-
-                if (length != buffer.Length)
-                {
-                    buffer = buffer[..length]; // Adjust to the actual size
-                }
-
-                state.Send(buffer);
-            }
-        }
-    }
+    public void PublicOverheadMessage(MessageType type, int hue, int number, ReadOnlySpan<char> args = default, bool noLineOfSight = true) =>
+        OutgoingMessagePackets.BroadcastMessageLocalized(
+            m_Map, m_Location,
+            Serial, Body, type, hue, 3, number, Name, args,
+            new LocalizedVisibilityFilter(this, noLineOfSight)
+        );
 
     public void PublicOverheadMessage(
         MessageType type, int hue, int number, AffixType affixType, ReadOnlySpan<char> affix,
         ReadOnlySpan<char> args = default, bool noLineOfSight = false,
         AccessLevel accessLevel = AccessLevel.Player
-    )
-    {
-        if (m_Map == null)
-        {
-            return;
-        }
-
-        var buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedAffixLength(affix.Length, args.Length)]
-            .InitializePacket();
-
-        foreach (var state in m_Map.GetClientsInRange(m_Location))
-        {
-            if (
-                state.Mobile.AccessLevel >= accessLevel &&
-                state.Mobile.CanSee(this) &&
-                (noLineOfSight || state.Mobile.InLOS(this))
-            )
-            {
-                var length = OutgoingMessagePackets.CreateMessageLocalizedAffix(
-                    buffer,
-                    Serial,
-                    Body,
-                    type,
-                    hue,
-                    3,
-                    number,
-                    Name,
-                    affixType,
-                    affix,
-                    args
-                );
-
-                if (length != buffer.Length)
-                {
-                    buffer = buffer[..length]; // Adjust to the actual size
-                }
-
-                state.Send(buffer);
-            }
-        }
-    }
+    ) =>
+        OutgoingMessagePackets.BroadcastMessageLocalizedAffix(
+            m_Map, m_Location,
+            Serial, Body, type, hue, 3, number, Name, affixType, affix, args,
+            new PublicVisibilityFilter(this, noLineOfSight, accessLevel)
+        );
 
     // ---------- PrivateOverheadMessage ----------
 
@@ -202,76 +156,19 @@ public partial class Mobile
 
     // ---------- NonlocalOverheadMessage ----------
 
-    public void NonlocalOverheadMessage(MessageType type, int hue, int number, ReadOnlySpan<char> args = default)
-    {
-        if (m_Map == null)
-        {
-            return;
-        }
+    public void NonlocalOverheadMessage(MessageType type, int hue, int number, ReadOnlySpan<char> args = default) =>
+        OutgoingMessagePackets.BroadcastMessageLocalized(
+            m_Map, m_Location,
+            Serial, Body, type, hue, 3, number, Name, args,
+            new NonlocalVisibilityFilter(this, m_NetState)
+        );
 
-        var buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedLength(args.Length)].InitializePacket();
-
-        foreach (var state in m_Map.GetClientsInRange(m_Location))
-        {
-            if (state != m_NetState && state.Mobile.CanSee(this))
-            {
-                var length = OutgoingMessagePackets.CreateMessageLocalized(
-                    buffer,
-                    Serial,
-                    Body,
-                    type,
-                    hue,
-                    3,
-                    number,
-                    Name,
-                    args
-                );
-
-                if (length != buffer.Length)
-                {
-                    buffer = buffer[..length]; // Adjust to the actual size
-                }
-
-                state.Send(buffer);
-            }
-        }
-    }
-
-    public void NonlocalOverheadMessage(MessageType type, int hue, bool ascii, ReadOnlySpan<char> text)
-    {
-        if (m_Map == null)
-        {
-            return;
-        }
-
-        var buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text.Length)].InitializePacket();
-
-        foreach (var state in m_Map.GetClientsInRange(m_Location))
-        {
-            if (state != m_NetState && state.Mobile.CanSee(this))
-            {
-                var length = OutgoingMessagePackets.CreateMessage(
-                    buffer,
-                    Serial,
-                    Body,
-                    type,
-                    hue,
-                    3,
-                    ascii,
-                    Language,
-                    Name,
-                    text
-                );
-
-                if (length != buffer.Length)
-                {
-                    buffer = buffer[..length]; // Adjust to the actual size
-                }
-
-                state.Send(buffer);
-            }
-        }
-    }
+    public void NonlocalOverheadMessage(MessageType type, int hue, bool ascii, ReadOnlySpan<char> text) =>
+        OutgoingMessagePackets.BroadcastMessage(
+            m_Map, m_Location,
+            Serial, Body, type, hue, 3, ascii, Language, Name, text,
+            new NonlocalVisibilityFilter(this, m_NetState)
+        );
 
     // ---------- SendLocalizedMessage / SendMessage / SendAsciiMessage ----------
 

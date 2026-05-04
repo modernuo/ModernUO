@@ -21,66 +21,42 @@ namespace Server;
 
 public partial class Item
 {
-    public void PublicOverheadMessage(MessageType type, int hue, bool ascii, ReadOnlySpan<char> text)
+    private readonly struct PublicVisibilityFilter : IBroadcastFilter
     {
-        if (m_Map == null)
+        private readonly Item _source;
+        private readonly Point3D _worldLoc;
+
+        public PublicVisibilityFilter(Item source, Point3D worldLoc)
         {
-            return;
+            _source = source;
+            _worldLoc = worldLoc;
         }
 
-        var worldLoc = GetWorldLocation();
-
-        var buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text.Length)].InitializePacket();
-
-        foreach (var state in m_Map.GetClientsInRange(worldLoc, GetMaxUpdateRange()))
+        public bool Allow(NetState state)
         {
             var m = state.Mobile;
-
-            if (m.CanSee(this) && m.InRange(worldLoc, GetUpdateRange(m)))
-            {
-                var length = OutgoingMessagePackets.CreateMessage(
-                    buffer, Serial, m_ItemID, type, hue, 3, ascii, "ENU", Name, text
-                );
-
-                if (length != buffer.Length)
-                {
-                    buffer = buffer[..length]; // Adjust to the actual size
-                }
-
-                state.Send(buffer);
-            }
+            return m.CanSee(_source) && m.InRange(_worldLoc, _source.GetUpdateRange(m));
         }
+    }
+
+    public void PublicOverheadMessage(MessageType type, int hue, bool ascii, ReadOnlySpan<char> text)
+    {
+        var worldLoc = GetWorldLocation();
+        OutgoingMessagePackets.BroadcastMessage(
+            m_Map, worldLoc, GetMaxUpdateRange(),
+            Serial, m_ItemID, type, hue, 3, ascii, "ENU", Name, text,
+            new PublicVisibilityFilter(this, worldLoc)
+        );
     }
 
     public void PublicOverheadMessage(MessageType type, int hue, int number, ReadOnlySpan<char> args = default)
     {
-        if (m_Map == null)
-        {
-            return;
-        }
-
         var worldLoc = GetWorldLocation();
-
-        var buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedLength(args.Length)].InitializePacket();
-
-        foreach (var state in m_Map.GetClientsInRange(worldLoc, GetMaxUpdateRange()))
-        {
-            var m = state.Mobile;
-
-            if (m.CanSee(this) && m.InRange(worldLoc, GetUpdateRange(m)))
-            {
-                var length = OutgoingMessagePackets.CreateMessageLocalized(
-                    buffer, Serial, m_ItemID, type, hue, 3, number, Name, args
-                );
-
-                if (length != buffer.Length)
-                {
-                    buffer = buffer[..length]; // Adjust to the actual size
-                }
-
-                state.Send(buffer);
-            }
-        }
+        OutgoingMessagePackets.BroadcastMessageLocalized(
+            m_Map, worldLoc, GetMaxUpdateRange(),
+            Serial, m_ItemID, type, hue, 3, number, Name, args,
+            new PublicVisibilityFilter(this, worldLoc)
+        );
     }
 
     public void SendLocalizedMessageTo(Mobile to, int number, ReadOnlySpan<char> args = default)
