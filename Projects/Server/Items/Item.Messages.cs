@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System;
+using System.Runtime.CompilerServices;
 using Server.Buffers;
 using Server.Network;
 
@@ -90,11 +91,11 @@ public partial class Item
         );
     }
 
-    // Configurable hue, blank name
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void SendLocalizedMessageTo(Mobile to, int number, int hue, ReadOnlySpan<char> args = default)
         => to?.NetState?.SendMessageLocalized(Serial, ItemID, MessageType.Regular, hue, 3, number, "", args);
 
-    // Configurable hue, blank name — text (non-localized)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void SendMessageTo(Mobile to, ReadOnlySpan<char> text, int hue = 0x3B2)
         => to?.NetState?.SendMessage(Serial, ItemID, MessageType.Regular, hue, 3, false, "ENU", "", text);
 

@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System;
+using System.Runtime.CompilerServices;
 using Server.Buffers;
 using Server.Network;
 
@@ -53,8 +54,7 @@ public partial class Mobile
             _noLineOfSight = noLineOfSight;
         }
 
-        public bool Allow(NetState state) =>
-            state.Mobile.CanSee(_source) && (_noLineOfSight || state.Mobile.InLOS(_source));
+        public bool Allow(NetState state) => state.Mobile.CanSee(_source) && (_noLineOfSight || state.Mobile.InLOS(_source));
     }
 
     private readonly struct NonlocalVisibilityFilter : IBroadcastFilter
@@ -73,89 +73,104 @@ public partial class Mobile
 
     // ---------- Say / Emote / Whisper / Yell ----------
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Say(bool ascii, ReadOnlySpan<char> text) =>
         PublicOverheadMessage(MessageType.Regular, SpeechHue, ascii, text);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Say(ReadOnlySpan<char> text) =>
         PublicOverheadMessage(MessageType.Regular, SpeechHue, false, text);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Say(int number, AffixType type, ReadOnlySpan<char> affix, ReadOnlySpan<char> args) =>
         PublicOverheadMessage(MessageType.Regular, SpeechHue, number, type, affix, args);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Say(int number, ReadOnlySpan<char> args = default) =>
         PublicOverheadMessage(MessageType.Regular, SpeechHue, number, args);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Emote(ReadOnlySpan<char> text) =>
         PublicOverheadMessage(MessageType.Emote, EmoteHue, false, text);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Emote(int number, ReadOnlySpan<char> args = default) =>
         PublicOverheadMessage(MessageType.Emote, EmoteHue, number, args);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Whisper(ReadOnlySpan<char> text) =>
         PublicOverheadMessage(MessageType.Whisper, WhisperHue, false, text);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Whisper(int number, ReadOnlySpan<char> args = default) =>
         PublicOverheadMessage(MessageType.Whisper, WhisperHue, number, args);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Yell(ReadOnlySpan<char> text) =>
         PublicOverheadMessage(MessageType.Yell, YellHue, false, text);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Yell(int number, ReadOnlySpan<char> args = default) =>
         PublicOverheadMessage(MessageType.Yell, YellHue, number, args);
 
     // ---------- PublicOverheadMessage ----------
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void PublicOverheadMessage(
         MessageType type, int hue, bool ascii, ReadOnlySpan<char> text, bool noLineOfSight = true,
         AccessLevel accessLevel = AccessLevel.Player
-    ) =>
-        OutgoingMessagePackets.BroadcastMessage(
-            m_Map, m_Location,
-            Serial, Body, type, hue, 3, ascii, Language, Name, text,
-            new PublicVisibilityFilter(this, noLineOfSight, accessLevel)
-        );
+    ) => OutgoingMessagePackets.BroadcastMessage(
+        m_Map, m_Location,
+        Serial, Body, type, hue, 3, ascii, Language, Name, text,
+        new PublicVisibilityFilter(this, noLineOfSight, accessLevel)
+    );
 
-    public void PublicOverheadMessage(MessageType type, int hue, int number, ReadOnlySpan<char> args = default, bool noLineOfSight = true) =>
-        OutgoingMessagePackets.BroadcastMessageLocalized(
-            m_Map, m_Location,
-            Serial, Body, type, hue, 3, number, Name, args,
-            new LocalizedVisibilityFilter(this, noLineOfSight)
-        );
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void PublicOverheadMessage(
+        MessageType type, int hue, int number, ReadOnlySpan<char> args = default, bool noLineOfSight = true
+    ) => OutgoingMessagePackets.BroadcastMessageLocalized(
+        m_Map, m_Location,
+        Serial, Body, type, hue, 3, number, Name, args,
+        new LocalizedVisibilityFilter(this, noLineOfSight));
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void PublicOverheadMessage(
         MessageType type, int hue, int number, AffixType affixType, ReadOnlySpan<char> affix,
         ReadOnlySpan<char> args = default, bool noLineOfSight = false,
         AccessLevel accessLevel = AccessLevel.Player
-    ) =>
-        OutgoingMessagePackets.BroadcastMessageLocalizedAffix(
-            m_Map, m_Location,
-            Serial, Body, type, hue, 3, number, Name, affixType, affix, args,
-            new PublicVisibilityFilter(this, noLineOfSight, accessLevel)
-        );
+    ) => OutgoingMessagePackets.BroadcastMessageLocalizedAffix(
+        m_Map, m_Location,
+        Serial, Body, type, hue, 3, number, Name, affixType, affix, args,
+        new PublicVisibilityFilter(this, noLineOfSight, accessLevel)
+    );
 
     // ---------- PrivateOverheadMessage ----------
 
-    public void PrivateOverheadMessage(MessageType type, int hue, bool ascii, ReadOnlySpan<char> text, NetState state)
-    {
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void PrivateOverheadMessage(MessageType type, int hue, bool ascii, ReadOnlySpan<char> text, NetState state) =>
         state.SendMessage(Serial, Body, type, hue, 3, ascii, m_Language, Name, text);
-    }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void PrivateOverheadMessage(MessageType type, int hue, int number, NetState state) =>
         PrivateOverheadMessage(type, hue, number, default, state);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void PrivateOverheadMessage(MessageType type, int hue, int number, ReadOnlySpan<char> args, NetState state) =>
         state.SendMessageLocalized(Serial, Body, type, hue, 3, number, Name, args);
 
     // ---------- LocalOverheadMessage ----------
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void LocalOverheadMessage(MessageType type, int hue, bool ascii, ReadOnlySpan<char> text) =>
         m_NetState.SendMessage(Serial, Body, type, hue, 3, ascii, m_Language, Name, text);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void LocalOverheadMessage(MessageType type, int hue, int number, ReadOnlySpan<char> args = default) =>
         m_NetState.SendMessageLocalized(Serial, Body, type, hue, 3, number, Name, args);
 
     // ---------- NonlocalOverheadMessage ----------
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void NonlocalOverheadMessage(MessageType type, int hue, int number, ReadOnlySpan<char> args = default) =>
         OutgoingMessagePackets.BroadcastMessageLocalized(
             m_Map, m_Location,
@@ -163,6 +178,7 @@ public partial class Mobile
             new NonlocalVisibilityFilter(this, m_NetState)
         );
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void NonlocalOverheadMessage(MessageType type, int hue, bool ascii, ReadOnlySpan<char> text) =>
         OutgoingMessagePackets.BroadcastMessage(
             m_Map, m_Location,
@@ -172,30 +188,37 @@ public partial class Mobile
 
     // ---------- SendLocalizedMessage / SendMessage / SendAsciiMessage ----------
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void SendLocalizedMessage(int number, ReadOnlySpan<char> args = default, int hue = 0x3B2) =>
         m_NetState.SendMessageLocalized(Serial.MinusOne, -1, MessageType.Regular, hue, 3, number, "System", args);
 
-    public void SendLocalizedMessage(int number, bool append, ReadOnlySpan<char> affix, ReadOnlySpan<char> args = default, int hue = 0x3B2) =>
-        m_NetState.SendMessageLocalizedAffix(
-            Serial.MinusOne,
-            -1,
-            MessageType.Regular,
-            hue,
-            3,
-            number,
-            "System",
-            (append ? AffixType.Append : AffixType.Prepend) | AffixType.System,
-            affix,
-            args
-        );
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void SendLocalizedMessage(
+        int number, bool append, ReadOnlySpan<char> affix, ReadOnlySpan<char> args = default, int hue = 0x3B2
+    ) => m_NetState.SendMessageLocalizedAffix(
+        Serial.MinusOne,
+        -1,
+        MessageType.Regular,
+        hue,
+        3,
+        number,
+        "System",
+        (append ? AffixType.Append : AffixType.Prepend) | AffixType.System,
+        affix,
+        args
+    );
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void SendMessage(ReadOnlySpan<char> text) => SendMessage(0x3B2, text);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void SendMessage(int hue, ReadOnlySpan<char> text) =>
         m_NetState.SendMessage(Serial.MinusOne, -1, MessageType.Regular, hue, 3, false, "ENU", "System", text);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void SendAsciiMessage(ReadOnlySpan<char> text) => SendAsciiMessage(0x3B2, text);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void SendAsciiMessage(int hue, ReadOnlySpan<char> text) =>
         m_NetState.SendMessage(Serial.MinusOne, -1, MessageType.Regular, hue, 3, true, null, "System", text);
 
@@ -286,13 +309,17 @@ public partial class Mobile
         args.Clear();
     }
 
-    public void PrivateOverheadMessage(MessageType type, int hue, bool ascii, ref RawInterpolatedStringHandler text, NetState state)
+    public void PrivateOverheadMessage(
+        MessageType type, int hue, bool ascii, ref RawInterpolatedStringHandler text, NetState state
+    )
     {
         PrivateOverheadMessage(type, hue, ascii, text.Text, state);
         text.Clear();
     }
 
-    public void PrivateOverheadMessage(MessageType type, int hue, int number, ref RawInterpolatedStringHandler args, NetState state)
+    public void PrivateOverheadMessage(
+        MessageType type, int hue, int number, ref RawInterpolatedStringHandler args, NetState state
+    )
     {
         PrivateOverheadMessage(type, hue, number, args.Text, state);
         args.Clear();
@@ -328,7 +355,9 @@ public partial class Mobile
         args.Clear();
     }
 
-    public void SendLocalizedMessage(int number, bool append, ReadOnlySpan<char> affix, ref RawInterpolatedStringHandler args, int hue = 0x3B2)
+    public void SendLocalizedMessage(
+        int number, bool append, ReadOnlySpan<char> affix, ref RawInterpolatedStringHandler args, int hue = 0x3B2
+    )
     {
         SendLocalizedMessage(number, append, affix, args.Text, hue);
         args.Clear();
