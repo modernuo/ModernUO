@@ -95,18 +95,19 @@ public sealed class StepCache
     private readonly Dictionary<int, StepCacheFile.LazyReader> _lazyReaders = new();
 
     /// <summary>
-    /// XxHash3 fingerprint of the running server's TileData flag tables. Public surface
-    /// for tooling (benchmark fixtures, bake utilities) that wants to detect a stale
-    /// .swb file without round-tripping through the lazy-open path.
+    /// Combined XxHash3 fingerprint of the running server's TileData flag tables AND
+    /// the per-map .mul / .uop file contents (mapX.mul, staidxX.mul, staticsX.mul).
+    /// Public surface for tooling (benchmark fixtures, bake utilities) that wants to
+    /// detect a stale .swb file without round-tripping through the lazy-open path.
     /// </summary>
-    public static ulong ComputeLiveTileDataHash() => StepCacheFile.ComputeTileDataHash();
+    public static ulong ComputeLiveFingerprint(int mapId) => StepCacheFile.ComputeFingerprint(mapId);
 
     /// <summary>
-    /// Peek at a .swb file's TileDataHash field without parsing the rest of the header.
-    /// Returns false on missing file, bad magic, or wrong version.
+    /// Peek at a .swb file's stored fingerprint field without parsing the rest of the
+    /// header. Returns false on missing file, bad magic, or wrong version.
     /// </summary>
-    public static bool TryReadTileDataHashFromFile(string path, out ulong hash) =>
-        StepCacheFile.TryReadTileDataHash(path, out hash);
+    public static bool TryReadFingerprintFromFile(string path, out ulong fingerprint) =>
+        StepCacheFile.TryReadFingerprint(path, out fingerprint);
 
     /// <summary>
     /// Walk every chunk in <paramref name="mapId"/>, populate the resident set, then

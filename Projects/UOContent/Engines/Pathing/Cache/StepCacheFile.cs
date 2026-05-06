@@ -20,9 +20,12 @@ namespace Server.Engines.Pathing.Cache;
 ///     u32   Magic           = 0x42575300 ('SWB\0')
 ///     u32   Version         = current FormatVersion
 ///     u32   MapId
-///     u64   TileDataHash    XxHash3 over LandTable + ItemTable flags (via
-///                           HashUtility); rejects a load when client tile data has
-///                           shifted under us.
+///     u64   Fingerprint     XxHash3 over (1) LandTable + ItemTable flags AND (2) the
+///                           on-disk bytes of mapX.mul / .uop, staidxX.mul, staticsX.mul.
+///                           Rejects a load when EITHER tile flags shifted (client patch)
+///                           OR the map data was rewritten (CentredSharp / UOFiddler edit).
+///                           The .mul format has no built-in CRC; this is the only way
+///                           to detect those mutations.
 ///     u64   BakeTimestamp   DateTime.UtcNow.Ticks at write time (informational).
 ///     u32   ChunkCount
 ///     u64   IndexOffset     File position where the chunk index begins.
@@ -54,7 +57,7 @@ internal static class StepCacheFile
         sizeof(uint)    // Magic
         + sizeof(uint)  // Version
         + sizeof(uint)  // MapId
-        + sizeof(ulong) // TileDataHash
+        + sizeof(ulong) // Fingerprint
         + sizeof(ulong) // BakeTimestamp
         + sizeof(uint)  // ChunkCount
         + sizeof(ulong); // IndexOffset
@@ -73,27 +76,20 @@ internal static class StepCacheFile
 
     /// <summary>
     /// Byte offset of the IndexOffset u64 within the header
-    /// (Magic+Version+MapId+TileDataHash+BakeTimestamp+ChunkCount = 32). Patched after chunks land.
+    /// (Magic+Version+MapId+Fingerprint+BakeTimestamp+ChunkCount = 32). Patched after chunks land.
     /// </summary>
     private const int IndexOffsetFieldPosition = 32;
 
     public delegate bool ChunkEnumerator(out int chunkX, out int chunkY, out StepChunk chunk);
 
     /// <summary>
-    /// Computes a stable hash of the loaded TileData flags via XxHash3 (HashUtility).
-    /// Bake files carry this hash so a load can refuse to populate the cache when tile
-    /// data has shifted (client patch, mismatched version) — mismatched data would
-    /// silently skew walkability answers. Hash is stable as long as HashUtility's seed
-    /// constant doesn't change.
-    /// </summary>
-    /// <summary>
-    /// Peek at a .swb file's TileDataHash field (header byte offset 12) without
+    /// Peek at a .swb file's Fingerprint field (header byte offset 12) without
     /// reading any chunk data. Returns false on missing file, bad magic, or wrong
     /// version. Cheap — reads 20 bytes total.
     /// </summary>
-    public static bool TryReadTileDataHash(string path, out ulong hash)
+    public static bool TryReadFingerprint(string path, out ulong fingerprint)
     {
-        hash = 0;
+        fingerprint = 0;
         if (!File.Exists(path))
         {
             return false;
@@ -116,7 +112,7 @@ internal static class StepCacheFile
                 return false;
             }
             // mapId is at buf[8..12], we skip; hash is at buf[12..20].
-            hash = BinaryPrimitives.ReadUInt64LittleEndian(buf[12..]);
+            fingerprint = BinaryPrimitives.ReadUInt64LittleEndian(buf[12..]);
             return true;
         }
         catch
@@ -125,14 +121,24 @@ internal static class StepCacheFile
         }
     }
 
-    public static ulong ComputeTileDataHash()
+    /// <summary>
+    /// Combined XxHash3 fingerprint over (1) the loaded TileData flag tables and (2) the
+    /// per-map .mul / .uop file contents (via <see cref="TileMatrix.MapFilesFingerprint"/>).
+    /// Bake files carry this hash so a load can refuse to populate the cache when EITHER
+    /// tile flags shifted (client patch) OR the map data was rewritten (CentredSharp /
+    /// UOFiddler edit). The .mul format has no built-in CRC; this is the only way to
+    /// detect those mutations.
+    /// </summary>
+    public static ulong ComputeFingerprint(int mapId)
     {
+        var hasher = HashUtility.CreateXxHash3();
+
+        // TileData flag tables — same projection trick as before: just the Flags ulong
+        // from each entry, written little-endian into a contiguous byte buffer. The
+        // struct itself has a string Name (reference) whose object identity isn't
+        // stable across runs, so MemoryMarshal.Cast over the whole struct would drift.
         var landTable = TileData.LandTable;
         var itemTable = TileData.ItemTable;
-
-        // Project just the Flags ulong from each entry into a contiguous byte buffer.
-        // The struct itself contains a string Name (reference) whose object identity isn't
-        // stable across runs, so we can't MemoryMarshal.Cast the whole struct.
         var bytes = new byte[(landTable.Length + itemTable.Length) * sizeof(ulong)];
         var span = bytes.AsSpan();
 
@@ -145,8 +151,19 @@ internal static class StepCacheFile
         {
             BinaryPrimitives.WriteUInt64LittleEndian(span[(itemOffset + i * 8)..], (ulong)itemTable[i].Flags);
         }
+        hasher.Append(bytes);
 
-        return HashUtility.ComputeHash64(bytes);
+        // Map files (mapX.mul / .uop, staidxX.mul, staticsX.mul). TileMatrix already
+        // streamed them through XxHash3 once at construction; mix the result in.
+        var map = Map.Maps[mapId];
+        if (map != null && map != Map.Internal && map.Tiles != null)
+        {
+            Span<byte> mapHashBytes = stackalloc byte[sizeof(ulong)];
+            BinaryPrimitives.WriteUInt64LittleEndian(mapHashBytes, map.Tiles.MapFilesFingerprint);
+            hasher.Append(mapHashBytes);
+        }
+
+        return hasher.GetCurrentHashAsUInt64();
     }
 
     /// <summary>
@@ -167,7 +184,7 @@ internal static class StepCacheFile
         w.Write(Magic);
         w.Write(FormatVersion);
         w.Write(mapId);
-        w.Write(ComputeTileDataHash());
+        w.Write(ComputeFingerprint((int)mapId));
         w.Write((ulong)DateTime.UtcNow.Ticks);
         w.Write(chunkCount);
         w.Write(0UL); // IndexOffset placeholder, patched after chunks
@@ -211,7 +228,7 @@ internal static class StepCacheFile
 
     /// <summary>
     /// Opens a .swb file and reads only its header + chunk-offset index. Returns null on
-    /// missing file, magic / version mismatch, or TileDataHash mismatch (a stale bake
+    /// missing file, magic / version mismatch, or Fingerprint mismatch (a stale bake
     /// against a freshly patched client). Callers own disposal of the returned reader.
     /// </summary>
     public static LazyReader OpenForLazy(string path)
@@ -252,12 +269,12 @@ internal static class StepCacheFile
             }
 
             var mapId = BinaryPrimitives.ReadUInt32LittleEndian(headerBuf[8..]);
-            var tileDataHash = BinaryPrimitives.ReadUInt64LittleEndian(headerBuf[12..]);
+            var fingerprint = BinaryPrimitives.ReadUInt64LittleEndian(headerBuf[12..]);
             var bakeTimestamp = BinaryPrimitives.ReadUInt64LittleEndian(headerBuf[20..]);
             var chunkCount = BinaryPrimitives.ReadUInt32LittleEndian(headerBuf[28..]);
             var indexOffset = BinaryPrimitives.ReadUInt64LittleEndian(headerBuf[32..]);
 
-            if (tileDataHash != ComputeTileDataHash())
+            if (fingerprint != ComputeFingerprint((int)mapId))
             {
                 stream.Dispose();
                 return null;
@@ -282,7 +299,7 @@ internal static class StepCacheFile
                 offsets[key] = off;
             }
 
-            return new LazyReader(stream, mapId, tileDataHash, bakeTimestamp, chunkCount, offsets);
+            return new LazyReader(stream, mapId, fingerprint, bakeTimestamp, chunkCount, offsets);
         }
         catch
         {
@@ -391,7 +408,7 @@ internal static class StepCacheFile
         private byte[] _buffer;
 
         public uint MapId { get; }
-        public ulong TileDataHash { get; }
+        public ulong Fingerprint { get; }
         public ulong BakeTimestamp { get; }
         public uint ChunkCount { get; }
         public int IndexedChunkCount => _offsets.Count;
@@ -399,13 +416,13 @@ internal static class StepCacheFile
         public bool Has(int chunkX, int chunkY) => _offsets.ContainsKey(PackChunkKey(chunkX, chunkY));
 
         internal LazyReader(
-            FileStream stream, uint mapId, ulong tileDataHash, ulong bakeTimestamp,
+            FileStream stream, uint mapId, ulong fingerprint, ulong bakeTimestamp,
             uint chunkCount, Dictionary<ulong, ulong> offsets
         )
         {
             _stream = stream;
             MapId = mapId;
-            TileDataHash = tileDataHash;
+            Fingerprint = fingerprint;
             BakeTimestamp = bakeTimestamp;
             ChunkCount = chunkCount;
             _offsets = offsets;

@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System;
+using System.IO;
 using System.IO.Hashing;
 using System.Numerics;
 using System.Runtime.InteropServices;
@@ -65,6 +66,36 @@ public static class HashUtility
 
         return result;
     }
+
+    /// <summary>
+    /// One-shot streaming hash. Reads from the stream's current position to its end and
+    /// returns the XxHash3 result. The caller is responsible for setting the stream
+    /// position before the call (and restoring it afterward, if the stream will be reused).
+    /// Returns 0 on a null or unreadable stream.
+    /// </summary>
+    public static ulong ComputeHash64(Stream stream)
+    {
+        if (stream == null || !stream.CanRead)
+        {
+            return 0;
+        }
+
+        var hasher = _xxHash3 ??= new XxHash3(unchecked((long)xxHash3Seed));
+        hasher.Append(stream);
+
+        var result = hasher.GetCurrentHashAsUInt64();
+        hasher.Reset();
+
+        return result;
+    }
+
+    /// <summary>
+    /// Returns a fresh <see cref="XxHash3"/> seeded with HashUtility's standard seed.
+    /// Use this when you need to combine multiple inputs into a single hash via
+    /// successive Append calls — the one-shot ComputeHash64 overloads are stateless
+    /// (Reset between callers) and can't compose. Caller owns the returned instance.
+    /// </summary>
+    public static XxHash3 CreateXxHash3() => new(unchecked((long)xxHash3Seed));
 
     public static uint ComputeHash32(ReadOnlySpan<char> str)
     {

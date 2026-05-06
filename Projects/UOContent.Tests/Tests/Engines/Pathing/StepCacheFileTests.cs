@@ -126,7 +126,7 @@ public class StepCacheFileTests
     }
 
     [Fact]
-    public void TryOpenLazyReader_TileDataHashMismatch_ReturnsFalse()
+    public void TryOpenLazyReader_FingerprintMismatch_ReturnsFalse()
     {
         var cache = StepCache.Instance;
         cache.Clear();
@@ -139,7 +139,7 @@ public class StepCacheFileTests
         {
             cache.SaveToFile(path, map.MapID);
 
-            // Corrupt the TileDataHash field at byte offset 12 (Magic[4] + Version[4] + MapId[4]).
+            // Corrupt the Fingerprint field at byte offset 12 (Magic[4] + Version[4] + MapId[4]).
             var bytes = File.ReadAllBytes(path);
             for (var i = 12; i < 20; i++)
             {
