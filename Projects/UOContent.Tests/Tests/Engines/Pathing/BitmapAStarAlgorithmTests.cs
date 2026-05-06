@@ -1,6 +1,7 @@
 using Server.Engines.Pathing.Cache;
 using Server.Mobiles;
 using Server.PathAlgorithms.BitmapAStar;
+using Server.Systems.FeatureFlags;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -126,6 +127,97 @@ public class BitmapAStarAlgorithmTests
 
         walker.Delete();
         blocker.Delete();
+    }
+
+    [Fact]
+    public void DynamicObstaclePass_RejectsCellOccupiedByImpassableItem()
+    {
+        StepCache.Instance.Clear();
+        var map = Map.Maps[1];
+        Assert.NotNull(map);
+
+        // Same NW-around-blocker scenario as the mobile-blocker test, but with an item.
+        var sx = 1500;
+        var sy = 1600;
+        var gx = 1498;
+        var gy = 1598;
+        var blockX = 1499;
+        var blockY = 1599;
+
+        // Find any ItemID whose TileData has ImpassableSurface so the dynamic pass
+        // rejects the cell. Pinning to a specific ID would couple the test to UO art data.
+        ushort blockerItemId = 0;
+        for (ushort id = 1; id < TileData.MaxItemValue; id++)
+        {
+            if (TileData.ItemTable[id].ImpassableSurface)
+            {
+                blockerItemId = id;
+                break;
+            }
+        }
+        Assert.NotEqual<ushort>(0, blockerItemId);
+
+        map.GetAverageZ(sx, sy, out _, out var startZ, out _);
+        var start = new Point3D(sx, sy, (sbyte)startZ);
+        var goal = new Point3D(gx, gy, (sbyte)startZ);
+
+        var walker = new DefaultWalkerStub();
+        walker.MoveToWorld(start, map);
+
+        map.GetAverageZ(blockX, blockY, out _, out var blockZ, out _);
+        var blocker = new Item(World.NewItem)
+        {
+            ItemID = blockerItemId,
+            Map = map,
+            Location = new Point3D(blockX, blockY, (sbyte)blockZ)
+        };
+
+        var result = BitmapAStarAlgorithm.Instance.Find(walker, map, start, goal);
+
+        Assert.NotNull(result);
+        var x = sx;
+        var y = sy;
+        foreach (var dir in result)
+        {
+            Server.Movement.Movement.Offset(dir, ref x, ref y);
+            Assert.False(x == blockX && y == blockY,
+                $"path traversed item-blocker cell ({blockX},{blockY})");
+        }
+
+        walker.Delete();
+        blocker.Delete();
+    }
+
+    [Fact]
+    public void FeatureFlagDisabled_RoutesToSlowPath_NoCacheUse()
+    {
+        StepCache.Instance.Clear();
+        var map = Map.Maps[1];
+        Assert.NotNull(map);
+
+        var stub = new DefaultWalkerStub();
+        map.GetAverageZ(1500, 1600, out _, out var startZ, out _);
+        var start = new Point3D(1500, 1600, (sbyte)startZ);
+        var goal = new Point3D(1498, 1598, (sbyte)startZ);
+        stub.MoveToWorld(start, map);
+
+        var statsBefore = StepCache.Instance.GetStats();
+        var prevFlag = ContentFeatureFlags.BitmapPathfindingCache;
+        try
+        {
+            ContentFeatureFlags.BitmapPathfindingCache = false;
+            var result = BitmapAStarAlgorithm.Instance.Find(stub, map, start, goal);
+            Assert.NotNull(result);
+            Assert.NotEmpty(result);
+        }
+        finally
+        {
+            ContentFeatureFlags.BitmapPathfindingCache = prevFlag;
+        }
+        var statsAfter = StepCache.Instance.GetStats();
+
+        stub.Delete();
+        Assert.Equal(statsBefore.BuildsTotal, statsAfter.BuildsTotal);
     }
 
     [Fact]
