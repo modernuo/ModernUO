@@ -70,50 +70,43 @@ internal static class StepCacheFile
 
     private const int BytesPerMultiZ = 32;
 
-    /// <summary>Byte offset of the IndexOffset u64 within the header (Magic+Version+MapId+TileDataHash+BakeTimestamp+ChunkCount = 32). Patched after chunks land.</summary>
+    /// <summary>
+    /// Byte offset of the IndexOffset u64 within the header
+    /// (Magic+Version+MapId+TileDataHash+BakeTimestamp+ChunkCount = 32). Patched after chunks land.
+    /// </summary>
     private const int IndexOffsetFieldPosition = 32;
 
     public delegate bool ChunkEnumerator(out int chunkX, out int chunkY, out StepChunk chunk);
 
     /// <summary>
-    /// Computes a stable hash of the loaded TileData flags. Bake files carry this
-    /// hash so a load can refuse to populate the cache when tile data has shifted
-    /// (client patch, mismatched version) — mismatched data would silently skew
-    /// walkability answers.
+    /// Computes a stable hash of the loaded TileData flags via XxHash3 (HashUtility).
+    /// Bake files carry this hash so a load can refuse to populate the cache when tile
+    /// data has shifted (client patch, mismatched version) — mismatched data would
+    /// silently skew walkability answers. Hash is stable as long as HashUtility's seed
+    /// constant doesn't change.
     /// </summary>
     public static ulong ComputeTileDataHash()
     {
-        // FNV-1a 64-bit. Not cryptographic; we only need a fast collision-resistant
-        // fingerprint over the flag tables.
-        const ulong FnvOffset = 0xcbf29ce484222325UL;
-        const ulong FnvPrime = 0x100000001b3UL;
-        var hash = FnvOffset;
-
         var landTable = TileData.LandTable;
+        var itemTable = TileData.ItemTable;
+
+        // Project just the Flags ulong from each entry into a contiguous byte buffer.
+        // The struct itself contains a string Name (reference) whose object identity isn't
+        // stable across runs, so we can't MemoryMarshal.Cast the whole struct.
+        var bytes = new byte[(landTable.Length + itemTable.Length) * sizeof(ulong)];
+        var span = bytes.AsSpan();
+
         for (var i = 0; i < landTable.Length; i++)
         {
-            var flags = (ulong)landTable[i].Flags;
-            for (var b = 0; b < 8; b++)
-            {
-                hash ^= flags & 0xFF;
-                hash *= FnvPrime;
-                flags >>= 8;
-            }
+            BinaryPrimitives.WriteUInt64LittleEndian(span[(i * 8)..], (ulong)landTable[i].Flags);
         }
-
-        var itemTable = TileData.ItemTable;
+        var itemOffset = landTable.Length * 8;
         for (var i = 0; i < itemTable.Length; i++)
         {
-            var flags = (ulong)itemTable[i].Flags;
-            for (var b = 0; b < 8; b++)
-            {
-                hash ^= flags & 0xFF;
-                hash *= FnvPrime;
-                flags >>= 8;
-            }
+            BinaryPrimitives.WriteUInt64LittleEndian(span[(itemOffset + i * 8)..], (ulong)itemTable[i].Flags);
         }
 
-        return hash;
+        return HashUtility.ComputeHash64(bytes);
     }
 
     /// <summary>
@@ -126,8 +119,8 @@ internal static class StepCacheFile
         Directory.CreateDirectory(Path.GetDirectoryName(path) ?? ".");
 
         var capacity = HeaderSize
-            + (BytesPerChunkBase + BytesPerMultiZ) * (int)chunkCount
-            + IndexEntryBytes * (int)chunkCount;
+                       + (BytesPerChunkBase + BytesPerMultiZ) * (int)chunkCount
+                       + IndexEntryBytes * (int)chunkCount;
         var buffer = new byte[capacity];
         var w = new BufferWriter(buffer, prefixStr: false);
 
@@ -205,7 +198,7 @@ internal static class StepCacheFile
                 return null;
             }
 
-            var magic = BinaryPrimitives.ReadUInt32LittleEndian(headerBuf[0..]);
+            var magic = BinaryPrimitives.ReadUInt32LittleEndian(headerBuf);
             if (magic != Magic)
             {
                 stream.Dispose();
@@ -258,8 +251,7 @@ internal static class StepCacheFile
         }
     }
 
-    private static ulong PackChunkKey(int chunkX, int chunkY) =>
-        ((ulong)(uint)chunkX << 32) | (uint)chunkY;
+    private static ulong PackChunkKey(int chunkX, int chunkY) => ((ulong)(uint)chunkX << 32) | (uint)chunkY;
 
     private static void WriteChunk(BufferWriter w, int chunkX, int chunkY, StepChunk chunk)
     {
@@ -341,17 +333,11 @@ internal static class StepCacheFile
         return chunk;
     }
 
-    private static void WriteSBytes(BufferWriter w, sbyte[] arr)
-    {
-        var span = MemoryMarshal.Cast<sbyte, byte>(arr.AsSpan());
-        w.Write((ReadOnlySpan<byte>)span);
-    }
+    private static void WriteSBytes(BufferWriter w, sbyte[] arr) =>
+        w.Write(MemoryMarshal.Cast<sbyte, byte>(arr.AsSpan()));
 
-    private static void ReadSBytes(BufferReader r, sbyte[] arr)
-    {
-        var span = MemoryMarshal.Cast<sbyte, byte>(arr.AsSpan());
-        r.Read(span);
-    }
+    private static void ReadSBytes(BufferReader r, sbyte[] arr) =>
+        r.Read(MemoryMarshal.Cast<sbyte, byte>(arr.AsSpan()));
 
     /// <summary>
     /// Open handle on a .swb file. Holds the FileStream + chunk-offset index. Chunks are
@@ -362,7 +348,7 @@ internal static class StepCacheFile
     {
         private FileStream _stream;
         private readonly Dictionary<ulong, ulong> _offsets;
-        private byte[] _scratch;
+        private byte[] _buffer;
 
         public uint MapId { get; }
         public ulong TileDataHash { get; }
@@ -383,7 +369,7 @@ internal static class StepCacheFile
             BakeTimestamp = bakeTimestamp;
             ChunkCount = chunkCount;
             _offsets = offsets;
-            _scratch = new byte[BytesPerChunkBase + BytesPerMultiZ];
+            _buffer = new byte[BytesPerChunkBase + BytesPerMultiZ];
         }
 
         /// <summary>
@@ -407,20 +393,15 @@ internal static class StepCacheFile
             _stream.Position = (long)offset;
             // Try to read the maximum size; the file may have less remaining, which is OK
             // since BufferReader stops at the bytes it actually needs.
-            var read = _stream.Read(_scratch, 0, _scratch.Length);
-            if (read < BytesPerChunkBase)
-            {
-                return null;
-            }
-
-            return ReadChunk(_scratch);
+            var read = _stream.Read(_buffer, 0, _buffer.Length);
+            return read < BytesPerChunkBase ? null : ReadChunk(_buffer);
         }
 
         public void Dispose()
         {
             _stream?.Dispose();
             _stream = null;
-            _scratch = null;
+            _buffer = null;
         }
     }
 }

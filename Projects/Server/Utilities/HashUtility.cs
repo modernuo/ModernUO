@@ -50,6 +50,22 @@ public static class HashUtility
         return result;
     }
 
+    public static ulong ComputeHash64(ReadOnlySpan<byte> bytes)
+    {
+        if (bytes.Length == 0)
+        {
+            return 0;
+        }
+
+        var hasher = _xxHash3 ??= new XxHash3(unchecked((long)xxHash3Seed));
+        hasher.Append(bytes);
+
+        var result = hasher.GetCurrentHashAsUInt64();
+        hasher.Reset();
+
+        return result;
+    }
+
     public static uint ComputeHash32(ReadOnlySpan<char> str)
     {
         if (str == ReadOnlySpan<char>.Empty)
