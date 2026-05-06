@@ -108,6 +108,8 @@ public class BitmapAStarAlgorithm : PathAlgorithm
             return null;
         }
 
+        Server.Engines.Pathing.PathfindRecorder.RecordIfEnabled(m, map, start, goal);
+
         _currentMobileNeedsSlowPath = RequiresSlowPath(m);
         _currentMobilePlayerStrict = m.Player && m.AccessLevel < AccessLevel.GameMaster;
         if (m is BaseCreature creature)

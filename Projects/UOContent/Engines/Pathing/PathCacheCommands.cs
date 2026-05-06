@@ -9,6 +9,7 @@ namespace Server.Engines.Pathing;
 ///   [PathCacheClear — drop all cached chunks, close lazy readers, zero counters.
 ///   [PathCacheSave  — persist resident chunks per map to Data/Pathfinding/&lt;mapId&gt;.swb.
 ///   [PathCacheLoad  — open those files as lazy backing stores. Also runs at startup.
+///   [PathRecord     — toggle JSONL telemetry capture for replay / benchmark corpora.
 /// </summary>
 public static class PathCacheCommands
 {
@@ -25,10 +26,13 @@ public static class PathCacheCommands
             8192
         );
 
+        PathfindRecorder.Configure();
+
         CommandSystem.Register("PathCacheStats", AccessLevel.Administrator, OnPathCacheStats);
         CommandSystem.Register("PathCacheClear", AccessLevel.Administrator, OnPathCacheClear);
         CommandSystem.Register("PathCacheSave",  AccessLevel.Administrator, OnPathCacheSave);
         CommandSystem.Register("PathCacheLoad",  AccessLevel.Administrator, OnPathCacheLoad);
+        CommandSystem.Register("PathRecord",     AccessLevel.Administrator, OnPathRecord);
         AutoLoadAtStartup();
     }
 
@@ -119,5 +123,44 @@ public static class PathCacheCommands
         e.Mobile.SendMessage(
             $"StepCache: opened {openedMaps} map(s) for lazy loading (total readers open: {StepCache.Instance.OpenLazyReaderCount})."
         );
+    }
+
+    [Usage("PathRecord [on|off|flush|status]")]
+    [Description("Toggles PathfindRecorder. With no arg, reports state. 'on' enables JSONL capture of every Find call; 'off' disables and flushes; 'flush' forces a buffer flush without disabling.")]
+    private static void OnPathRecord(CommandEventArgs e)
+    {
+        var arg = (e.Arguments.Length > 0 ? e.Arguments[0] : "status").ToLowerInvariant();
+        var from = e.Mobile;
+        switch (arg)
+        {
+            case "on":
+                {
+                    PathfindRecorder.SetEnabled(true);
+                    from.SendMessage(PathfindRecorder.Enabled
+                        ? $"PathRecord: ON, writing to {PathfindRecorder.OutputPath}"
+                        : "PathRecord: enable failed (see server log)");
+                    break;
+                }
+            case "off":
+                {
+                    PathfindRecorder.SetEnabled(false);
+                    from.SendMessage("PathRecord: OFF");
+                    break;
+                }
+            case "flush":
+                {
+                    PathfindRecorder.Flush();
+                    from.SendMessage($"PathRecord: flushed ({PathfindRecorder.RecordsWritten} records this session)");
+                    break;
+                }
+            default:
+                {
+                    from.SendMessage(
+                        $"PathRecord: {(PathfindRecorder.Enabled ? "ON" : "OFF")}, "
+                        + $"path={PathfindRecorder.OutputPath}, records={PathfindRecorder.RecordsWritten}"
+                    );
+                    break;
+                }
+        }
     }
 }
