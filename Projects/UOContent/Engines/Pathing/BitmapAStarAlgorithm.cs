@@ -75,6 +75,13 @@ public class BitmapAStarAlgorithm : PathAlgorithm
     private static bool _currentMobileCanSwim;
     private static bool _currentMobileCantWalk;
 
+    // Dynamic-obstacle pass capability flags (per-mobile, captured in Find).
+    // Mirrors MovementImpl.Check's per-mobile derivations so per-cell items/mobiles
+    // checks can be evaluated without re-deriving.
+    private static bool _currentMobileIgnoreDoors;
+    private static bool _currentMobileIgnoreSpellFields;
+    private static bool _currentMobileIgnoreMovableImpassables;
+
     private Point3D _goal;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -106,12 +113,19 @@ public class BitmapAStarAlgorithm : PathAlgorithm
         {
             _currentMobileCanSwim = creature.CanSwim;
             _currentMobileCantWalk = creature.CantWalk;
+            _currentMobileIgnoreDoors = creature.CanOpenDoors;
+            _currentMobileIgnoreMovableImpassables = creature.CanMoveOverObstacles;
         }
         else
         {
             _currentMobileCanSwim = false;
             _currentMobileCantWalk = false;
+            _currentMobileIgnoreDoors = false;
+            _currentMobileIgnoreMovableImpassables = false;
         }
+        // Mirrors MovementImpl: dead/spectral mobiles also ignore doors.
+        _currentMobileIgnoreDoors |= !m.Alive || m.Body.BodyID == 0x3DB || m.IsDeadBondedPet;
+        _currentMobileIgnoreSpellFields = m is PlayerMobile && map != Map.Felucca;
 
         Array.Clear(_nodeStates);
 
@@ -245,6 +259,9 @@ public class BitmapAStarAlgorithm : PathAlgorithm
                 _currentMobilePlayerStrict = false;
                 _currentMobileCanSwim = false;
                 _currentMobileCantWalk = false;
+                _currentMobileIgnoreDoors = false;
+                _currentMobileIgnoreSpellFields = false;
+                _currentMobileIgnoreMovableImpassables = false;
                 return dirs;
             }
         }
@@ -254,6 +271,9 @@ public class BitmapAStarAlgorithm : PathAlgorithm
         _currentMobilePlayerStrict = false;
         _currentMobileCanSwim = false;
         _currentMobileCantWalk = false;
+        _currentMobileIgnoreDoors = false;
+        _currentMobileIgnoreSpellFields = false;
+        _currentMobileIgnoreMovableImpassables = false;
         return null;
     }
 
@@ -365,7 +385,17 @@ public class BitmapAStarAlgorithm : PathAlgorithm
                     _ => (sbyte)0
                 };
 
-            var idx = GetIndex(x + _xOffset, y + _yOffset, z);
+            var absX = x + _xOffset;
+            var absY = y + _yOffset;
+
+            // Dynamic-obstacle pass: items + mobiles at the target cell. Cache only
+            // covers static walkability; dynamic state has to be checked at query time.
+            if (IsBlockedByDynamic(m, map, absX, absY, z))
+            {
+                continue;
+            }
+
+            var idx = GetIndex(absX, absY, z);
 
             if (idx >= 0 && idx < NodeCount)
             {
@@ -376,6 +406,79 @@ public class BitmapAStarAlgorithm : PathAlgorithm
 
         return count;
     }
+
+    private const int PersonHeightConst = 16;
+    private const int MobileHeight = 15;
+
+    /// <summary>
+    /// Mirrors MovementImpl's dynamic-item / mobile collision phase for a target cell.
+    /// Items: ImpassableSurface that overlap (z, z+PersonHeight), respecting capability
+    /// overrides (CanOpenDoors → ignore door items; CanMoveOverObstacles → ignore movables;
+    /// non-Felucca players → ignore spell fields). Mobiles: any other mobile whose Z range
+    /// overlaps and which we can't move over.
+    /// </summary>
+    private static bool IsBlockedByDynamic(Mobile m, Map map, int x, int y, int z)
+    {
+        var ourTop = z + PersonHeightConst;
+
+        foreach (var item in map.GetItemsAt(x, y))
+        {
+            var itemData = item.ItemData;
+            if (!itemData.ImpassableSurface)
+            {
+                continue;
+            }
+
+            if (_currentMobileIgnoreMovableImpassables && item.Movable)
+            {
+                continue;
+            }
+
+            var itemId = item.ItemID & TileData.MaxItemValue;
+            if (_currentMobileIgnoreDoors
+                && (itemData.Door
+                    || itemId is 0x692 or 0x846 or 0x873
+                    || itemId >= 0x6F5 && itemId <= 0x6F6))
+            {
+                continue;
+            }
+
+            if (_currentMobileIgnoreSpellFields && itemId is 0x82 or 0x3946 or 0x3956)
+            {
+                continue;
+            }
+
+            var checkZ = item.Z;
+            var checkTop = checkZ + itemData.CalcHeight;
+            if (checkTop > z && ourTop > checkZ)
+            {
+                return true;
+            }
+        }
+
+        foreach (var mob in map.GetMobilesAt(x, y))
+        {
+            if (mob == m)
+            {
+                continue;
+            }
+
+            if (mob.Z + MobileHeight > z && z + MobileHeight > mob.Z && !CanMoveOver(m, mob))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Mirrors MovementImpl.CanMoveOver — true when m can step onto t's cell (dead bodies,
+    /// hidden staff, etc.).
+    /// </summary>
+    private static bool CanMoveOver(Mobile m, Mobile t) =>
+        !t.Alive || !m.Alive || t.IsDeadBondedPet || m.IsDeadBondedPet
+        || t.Hidden && t.AccessLevel > AccessLevel.Player;
 
     /// <summary>
     /// Per-direction <see cref="CalcMoves.CheckMovement"/> loop for a single source cell.

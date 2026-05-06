@@ -83,6 +83,52 @@ public class BitmapAStarAlgorithmTests
     }
 
     [Fact]
+    public void DynamicObstaclePass_RejectsCellOccupiedByLivingMobile()
+    {
+        StepCache.Instance.Clear();
+        var map = Map.Maps[1];
+        Assert.NotNull(map);
+
+        // (1500, 1600) walks N/W/NW only (mask=0xC1). Path NW two cells; plant a blocker
+        // on the direct NW step so the algorithm must route via N→W or W→N around it.
+        var sx = 1500;
+        var sy = 1600;
+        var gx = 1498;
+        var gy = 1598;
+        var blockX = 1499;
+        var blockY = 1599;
+
+        map.GetAverageZ(sx, sy, out _, out var startZ, out _);
+        var start = new Point3D(sx, sy, (sbyte)startZ);
+        var goal = new Point3D(gx, gy, (sbyte)startZ);
+
+        var walker = new DefaultWalkerStub();
+        walker.MoveToWorld(start, map);
+
+        // Living blocker on the only direct-line cell. CanMoveOver returns false for an
+        // alive non-staff mobile, so the dynamic-obstacle pass must reject this cell.
+        map.GetAverageZ(blockX, blockY, out _, out var blockZ, out _);
+        var blocker = new DefaultWalkerStub();
+        blocker.MoveToWorld(new Point3D(blockX, blockY, (sbyte)blockZ), map);
+
+        var result = BitmapAStarAlgorithm.Instance.Find(walker, map, start, goal);
+
+        // Path may exist via an alternate route, but must NOT pass through the blocker.
+        Assert.NotNull(result);
+        var x = sx;
+        var y = sy;
+        foreach (var dir in result)
+        {
+            Server.Movement.Movement.Offset(dir, ref x, ref y);
+            Assert.False(x == blockX && y == blockY,
+                $"path traversed blocker cell ({blockX},{blockY})");
+        }
+
+        walker.Delete();
+        blocker.Delete();
+    }
+
+    [Fact]
     public void FlyCreature_RoutesToSlowPath_NoCacheUse()
     {
         StepCache.Instance.Clear();
