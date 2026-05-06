@@ -99,7 +99,6 @@ public sealed class StaticWalkabilityCache
             return;
         }
 
-        var rng = System.Random.Shared;
         while (overflow-- > 0 && _keysList.Count > 0)
         {
             var oldestIdx = -1;
@@ -111,7 +110,7 @@ public sealed class StaticWalkabilityCache
             var samples = Math.Min(LruSampleSize, _keysList.Count);
             for (var s = 0; s < samples; s++)
             {
-                var idx = rng.Next(_keysList.Count);
+                var idx = Utility.Random(_keysList.Count);
                 var k = _keysList[idx];
                 var touched = _chunks[k].LastTouchedTicks;
                 if (touched < oldestTouched)

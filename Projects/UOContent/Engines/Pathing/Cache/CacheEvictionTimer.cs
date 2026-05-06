@@ -1,5 +1,4 @@
 using System;
-using Server.Logging;
 
 namespace Server.Engines.Pathing.Cache;
 
@@ -10,10 +9,6 @@ namespace Server.Engines.Pathing.Cache;
 /// </summary>
 public class CacheEvictionTimer : Timer
 {
-    private static readonly ILogger logger = LogFactory.GetLogger(typeof(CacheEvictionTimer));
-
-    public static TimeSpan SweepInterval { get; set; } = TimeSpan.FromSeconds(60);
-
     private static CacheEvictionTimer _instance;
 
     public static void Configure()
@@ -25,14 +20,9 @@ public class CacheEvictionTimer : Timer
 
         _instance = new CacheEvictionTimer();
         _instance.Start();
-
-        logger.Information(
-            "CacheEvictionTimer configured: cap-check every {Sweep}s",
-            SweepInterval.TotalSeconds
-        );
     }
 
-    private CacheEvictionTimer() : base(SweepInterval, SweepInterval) { }
+    private CacheEvictionTimer() : base(TimeSpan.FromSeconds(60), TimeSpan.FromSeconds(60)) { }
 
     protected override void OnTick()
     {
