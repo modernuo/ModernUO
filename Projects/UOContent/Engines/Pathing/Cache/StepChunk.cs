@@ -55,4 +55,16 @@ internal sealed class StepChunk
         _multiZCells ??= new byte[32];
         _multiZCells[cellIndex >> 3] |= (byte)(1 << (cellIndex & 7));
     }
+
+    /// <summary>
+    /// Serialization hook for <see cref="StepCacheFile"/>: returns the multi-Z bitmap,
+    /// or null if no cells in this chunk are multi-Z. Read-only — callers must not mutate.
+    /// </summary>
+    internal byte[] GetMultiZCellsForSerialization() => _multiZCells;
+
+    /// <summary>
+    /// Deserialization hook: assigns the multi-Z bitmap from a file load. Caller is
+    /// responsible for passing a 32-byte array (or null for "no cells multi-Z").
+    /// </summary>
+    internal void RestoreMultiZCellsFromSerialization(byte[] multiZ) => _multiZCells = multiZ;
 }

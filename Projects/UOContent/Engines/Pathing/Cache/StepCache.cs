@@ -67,6 +67,7 @@ public sealed class StepCache
     {
         _chunks.Clear();
         _keysList.Clear();
+        CloseLazyReaders();
         _hits = 0;
         _missesNotBuilt = 0;
         _missesDirtyRebuild = 0;
@@ -75,6 +76,111 @@ public sealed class StepCache
         _fallthroughSourceZMismatch = 0;
         _evictionsByLruCap = 0;
         _buildsTotal = 0;
+    }
+
+    // Per-map open .swb readers, populated by TryOpenLazyReader at startup. Chunks are
+    // fetched on demand from the file when ResolveMissingChunk fires; resident memory
+    // stays bounded by MaxResidentChunks regardless of file size.
+    private readonly Dictionary<int, StepCacheFile.LazyReader> _lazyReaders = new();
+
+    /// <summary>
+    /// Persist all resident chunks for <paramref name="mapId"/> to a .swb file. Returns
+    /// the number of chunks written. The file embeds a TileData fingerprint so a stale
+    /// file (built before a client patch) can be detected and rejected at open time.
+    /// </summary>
+    public int SaveToFile(string path, int mapId)
+    {
+        var matching = 0;
+        foreach (var key in _keysList)
+        {
+            DecodeKey(key, out var keyMapId, out _, out _);
+            if (keyMapId == mapId)
+            {
+                matching++;
+            }
+        }
+
+        var enumerator = _keysList.GetEnumerator();
+        StepCacheFile.Write(path, (uint)mapId, (uint)matching, EmitChunk);
+        enumerator.Dispose();
+        return matching;
+
+        bool EmitChunk(out int chunkX, out int chunkY, out StepChunk chunk)
+        {
+            while (enumerator.MoveNext())
+            {
+                var key = enumerator.Current;
+                DecodeKey(key, out var emittedMapId, out chunkX, out chunkY);
+                if (emittedMapId == mapId)
+                {
+                    chunk = _chunks[key];
+                    return true;
+                }
+            }
+            chunkX = chunkY = 0;
+            chunk = null!;
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Open a .swb file as a lazy backing store for <paramref name="mapId"/>. Reads only
+    /// header + chunk-offset index (~16 bytes per chunk); individual records are fetched
+    /// on demand by <see cref="ResolveMissingChunk"/>. Returns false on missing file,
+    /// magic / version mismatch, or TileData hash mismatch (stale bake).
+    /// </summary>
+    public bool TryOpenLazyReader(string path, int mapId)
+    {
+        var reader = StepCacheFile.OpenForLazy(path);
+        if (reader == null)
+        {
+            return false;
+        }
+
+        if (reader.MapId != (uint)mapId)
+        {
+            logger.Warning(
+                "StepCache: {Path} declares mapId {FileMapId} but caller requested {RequestedMapId}; ignoring",
+                path, reader.MapId, mapId
+            );
+            reader.Dispose();
+            return false;
+        }
+
+        if (_lazyReaders.TryGetValue(mapId, out var existing))
+        {
+            existing.Dispose();
+        }
+        _lazyReaders[mapId] = reader;
+
+        logger.Information(
+            "StepCache: opened {Path} ({ChunkCount} chunks indexed) for map {MapId}",
+            path, reader.IndexedChunkCount, mapId
+        );
+        return true;
+    }
+
+    /// <summary>
+    /// Number of .swb readers currently open. Mostly for tests / telemetry.
+    /// </summary>
+    public int OpenLazyReaderCount => _lazyReaders.Count;
+
+    /// <summary>Test-only diagnostic: does the lazy reader for <paramref name="mapId"/> hold an offset for (chunkX, chunkY)?</summary>
+    internal bool LazyReaderHasChunk(int mapId, int chunkX, int chunkY) =>
+        _lazyReaders.TryGetValue(mapId, out var r) && r.Has(chunkX, chunkY);
+
+    /// <summary>
+    /// Closes all open lazy readers, releasing their underlying file streams. Called from
+    /// <see cref="Clear"/> so test cleanup can delete .swb files (they're held with
+    /// FileShare.Read | FileShare.Delete, so this is mostly belt-and-suspenders).
+    /// </summary>
+    public void CloseLazyReaders()
+    {
+        foreach (var reader in _lazyReaders.Values)
+        {
+            reader.Dispose();
+        }
+        _lazyReaders.Clear();
     }
 
     /// <summary>
@@ -230,10 +336,29 @@ public sealed class StepCache
     }
 
     /// <summary>
-    /// Chunk-miss resolution: build the chunk via the runtime baker.
+    /// Chunk-miss resolution: try the lazy file reader for this map first; if there's no
+    /// file or no record at this (chunkX, chunkY), fall back to the runtime baker. The
+    /// file path validates each loaded chunk's MultisVersion against the live sector — a
+    /// stale snapshot triggers a rebuild rather than serving a wrong answer.
     /// </summary>
-    private StepChunk ResolveMissingChunk(Map map, int chunkX, int chunkY) =>
-        BuildChunk(map, chunkX, chunkY);
+    private StepChunk ResolveMissingChunk(Map map, int chunkX, int chunkY)
+    {
+        if (_lazyReaders.TryGetValue(map.MapID, out var reader))
+        {
+            var loaded = reader.TryReadChunk(chunkX, chunkY);
+            if (loaded != null)
+            {
+                var sector = map.GetRealSector(chunkX, chunkY);
+                if (loaded.BuiltMultisVersion == sector.MultisVersion)
+                {
+                    return loaded;
+                }
+                // Snapshot is stale (multis added/removed since the bake). Fall through
+                // to the runtime baker; a future SaveToFile will overwrite the entry.
+            }
+        }
+        return BuildChunk(map, chunkX, chunkY);
+    }
 
     private StepChunk BuildChunk(Map map, int chunkX, int chunkY)
     {

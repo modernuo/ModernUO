@@ -1,0 +1,426 @@
+using System;
+using System.Buffers.Binary;
+using System.Collections.Generic;
+using System.IO;
+using System.Runtime.InteropServices;
+
+namespace Server.Engines.Pathing.Cache;
+
+/// <summary>
+/// Binary serializer + lazy reader for the step cache. Persists chunk records to disk
+/// so a server warm-starts without paying chunk-build cost on the first pathfind through
+/// a region. Lazy: opening a file reads only the header + chunk-offset index (~few KB
+/// for tens of thousands of chunks), then individual chunks are seeked + deserialized
+/// only when the cache asks for them. RAM stays bounded by MaxResidentChunks regardless
+/// of file size.
+///
+/// File layout (little-endian, BufferWriter / BufferReader convention):
+///
+///   Header (48 bytes):
+///     u32   Magic           = 0x42575300 ('SWB\0')
+///     u32   Version         = current FormatVersion
+///     u32   MapId
+///     u64   TileDataHash    FNV-1a-64 over LandTable + ItemTable flags; rejects
+///                           a load when client tile data has shifted under us.
+///     u64   BakeTimestamp   DateTime.UtcNow.Ticks at write time (informational).
+///     u32   ChunkCount
+///     u64   IndexOffset     File position where the chunk index begins.
+///
+///   Per chunk (ChunkCount times, variable size):
+///     u16   ChunkX
+///     u16   ChunkY
+///     u32   BuiltMultisVersion
+///     u8    HasMultiZ       0 = no MultiZCells follow; 1 = 32 bytes of MultiZCells follow
+///     byte  WalkMask[256]
+///     byte  WetMask[256]
+///     sbyte SourceZ[256]
+///     sbyte WalkZN[256]..WalkZNW[256]    (8 arrays in N,NE,E,SE,S,SW,W,NW order)
+///     sbyte SwimZN[256]..SwimZNW[256]    (8 arrays in same order)
+///     [byte MultiZCells[32] — only when HasMultiZ == 1]
+///
+///   Index trailer (16 × ChunkCount bytes):
+///     For each chunk: { u64 chunkKey, u64 fileOffset }
+///
+/// Per-chunk size: ~5,393 bytes (no multi-Z) or ~5,425 bytes (with multi-Z).
+/// LRU bookkeeping (LastTouchedTicks) is intentionally not persisted.
+/// </summary>
+internal static class StepCacheFile
+{
+    public const uint Magic = 0x42575300; // 'SWB\0'
+    public const uint FormatVersion = 1;
+
+    private const int HeaderSize =
+        sizeof(uint)    // Magic
+        + sizeof(uint)  // Version
+        + sizeof(uint)  // MapId
+        + sizeof(ulong) // TileDataHash
+        + sizeof(ulong) // BakeTimestamp
+        + sizeof(uint)  // ChunkCount
+        + sizeof(ulong); // IndexOffset
+
+    private const int IndexEntryBytes = sizeof(ulong) + sizeof(ulong); // chunkKey + offset
+
+    private const int BytesPerChunkBase =
+        sizeof(ushort) + sizeof(ushort) + sizeof(uint) + sizeof(byte)
+        + StepChunk.CellsPerChunk           // WalkMask
+        + StepChunk.CellsPerChunk           // WetMask
+        + StepChunk.CellsPerChunk           // SourceZ
+        + 8 * StepChunk.CellsPerChunk       // WalkZ[8]
+        + 8 * StepChunk.CellsPerChunk;      // SwimZ[8]
+
+    private const int BytesPerMultiZ = 32;
+
+    /// <summary>Byte offset of the IndexOffset u64 within the header (Magic+Version+MapId+TileDataHash+BakeTimestamp+ChunkCount = 32). Patched after chunks land.</summary>
+    private const int IndexOffsetFieldPosition = 32;
+
+    public delegate bool ChunkEnumerator(out int chunkX, out int chunkY, out StepChunk chunk);
+
+    /// <summary>
+    /// Computes a stable hash of the loaded TileData flags. Bake files carry this
+    /// hash so a load can refuse to populate the cache when tile data has shifted
+    /// (client patch, mismatched version) — mismatched data would silently skew
+    /// walkability answers.
+    /// </summary>
+    public static ulong ComputeTileDataHash()
+    {
+        // FNV-1a 64-bit. Not cryptographic; we only need a fast collision-resistant
+        // fingerprint over the flag tables.
+        const ulong FnvOffset = 0xcbf29ce484222325UL;
+        const ulong FnvPrime = 0x100000001b3UL;
+        var hash = FnvOffset;
+
+        var landTable = TileData.LandTable;
+        for (var i = 0; i < landTable.Length; i++)
+        {
+            var flags = (ulong)landTable[i].Flags;
+            for (var b = 0; b < 8; b++)
+            {
+                hash ^= flags & 0xFF;
+                hash *= FnvPrime;
+                flags >>= 8;
+            }
+        }
+
+        var itemTable = TileData.ItemTable;
+        for (var i = 0; i < itemTable.Length; i++)
+        {
+            var flags = (ulong)itemTable[i].Flags;
+            for (var b = 0; b < 8; b++)
+            {
+                hash ^= flags & 0xFF;
+                hash *= FnvPrime;
+                flags >>= 8;
+            }
+        }
+
+        return hash;
+    }
+
+    /// <summary>
+    /// Writes the file: header (with placeholder IndexOffset) → chunks (offsets recorded)
+    /// → index trailer → patches the header IndexOffset. <paramref name="chunkCount"/> must
+    /// equal the actual number of chunks <paramref name="next"/> will yield.
+    /// </summary>
+    public static void Write(string path, uint mapId, uint chunkCount, ChunkEnumerator next)
+    {
+        Directory.CreateDirectory(Path.GetDirectoryName(path) ?? ".");
+
+        var capacity = HeaderSize
+            + (BytesPerChunkBase + BytesPerMultiZ) * (int)chunkCount
+            + IndexEntryBytes * (int)chunkCount;
+        var buffer = new byte[capacity];
+        var w = new BufferWriter(buffer, prefixStr: false);
+
+        w.Write(Magic);
+        w.Write(FormatVersion);
+        w.Write(mapId);
+        w.Write(ComputeTileDataHash());
+        w.Write((ulong)DateTime.UtcNow.Ticks);
+        w.Write(chunkCount);
+        w.Write(0UL); // IndexOffset placeholder, patched after chunks
+
+        var indexEntries = new (ulong key, ulong offset)[chunkCount];
+        var written = 0u;
+        while (next(out var chunkX, out var chunkY, out var chunk))
+        {
+            if (written >= chunkCount)
+            {
+                throw new InvalidOperationException(
+                    $"StepCacheFile.Write: enumerator yielded more than the declared {chunkCount} chunks"
+                );
+            }
+            var chunkOffset = (ulong)w.Position;
+            WriteChunk(w, chunkX, chunkY, chunk);
+            indexEntries[written] = (PackChunkKey(chunkX, chunkY), chunkOffset);
+            written++;
+        }
+
+        if (written != chunkCount)
+        {
+            throw new InvalidOperationException(
+                $"StepCacheFile.Write: declared {chunkCount} chunks but enumerator yielded {written}"
+            );
+        }
+
+        var indexOffset = (ulong)w.Position;
+        for (var i = 0u; i < chunkCount; i++)
+        {
+            w.Write(indexEntries[i].key);
+            w.Write(indexEntries[i].offset);
+        }
+
+        // Patch IndexOffset directly into the buffer (BufferWriter has no Seek).
+        BinaryPrimitives.WriteUInt64LittleEndian(buffer.AsSpan(IndexOffsetFieldPosition, 8), indexOffset);
+
+        var totalBytes = (int)w.Position;
+        File.WriteAllBytes(path, buffer.AsSpan(0, totalBytes).ToArray());
+    }
+
+    /// <summary>
+    /// Opens a .swb file and reads only its header + chunk-offset index. Returns null on
+    /// missing file, magic / version mismatch, or TileDataHash mismatch (a stale bake
+    /// against a freshly patched client). Callers own disposal of the returned reader.
+    /// </summary>
+    public static LazyReader OpenForLazy(string path)
+    {
+        if (!File.Exists(path))
+        {
+            return null;
+        }
+
+        FileStream stream = null;
+        try
+        {
+            stream = new FileStream(
+                path,
+                FileMode.Open,
+                FileAccess.Read,
+                FileShare.Read | FileShare.Delete
+            );
+
+            Span<byte> headerBuf = stackalloc byte[HeaderSize];
+            if (stream.Read(headerBuf) != HeaderSize)
+            {
+                stream.Dispose();
+                return null;
+            }
+
+            var magic = BinaryPrimitives.ReadUInt32LittleEndian(headerBuf[0..]);
+            if (magic != Magic)
+            {
+                stream.Dispose();
+                return null;
+            }
+            var version = BinaryPrimitives.ReadUInt32LittleEndian(headerBuf[4..]);
+            if (version != FormatVersion)
+            {
+                stream.Dispose();
+                return null;
+            }
+
+            var mapId = BinaryPrimitives.ReadUInt32LittleEndian(headerBuf[8..]);
+            var tileDataHash = BinaryPrimitives.ReadUInt64LittleEndian(headerBuf[12..]);
+            var bakeTimestamp = BinaryPrimitives.ReadUInt64LittleEndian(headerBuf[20..]);
+            var chunkCount = BinaryPrimitives.ReadUInt32LittleEndian(headerBuf[28..]);
+            var indexOffset = BinaryPrimitives.ReadUInt64LittleEndian(headerBuf[32..]);
+
+            if (tileDataHash != ComputeTileDataHash())
+            {
+                stream.Dispose();
+                return null;
+            }
+
+            // Read the chunk-offset index in one shot.
+            var indexBytes = (int)chunkCount * IndexEntryBytes;
+            var indexBuf = new byte[indexBytes];
+            stream.Position = (long)indexOffset;
+            if (stream.Read(indexBuf, 0, indexBytes) != indexBytes)
+            {
+                stream.Dispose();
+                return null;
+            }
+
+            var offsets = new Dictionary<ulong, ulong>((int)chunkCount);
+            for (var i = 0; i < chunkCount; i++)
+            {
+                var entry = indexBuf.AsSpan(i * IndexEntryBytes);
+                var key = BinaryPrimitives.ReadUInt64LittleEndian(entry);
+                var off = BinaryPrimitives.ReadUInt64LittleEndian(entry[8..]);
+                offsets[key] = off;
+            }
+
+            return new LazyReader(stream, mapId, tileDataHash, bakeTimestamp, chunkCount, offsets);
+        }
+        catch
+        {
+            stream?.Dispose();
+            return null;
+        }
+    }
+
+    private static ulong PackChunkKey(int chunkX, int chunkY) =>
+        ((ulong)(uint)chunkX << 32) | (uint)chunkY;
+
+    private static void WriteChunk(BufferWriter w, int chunkX, int chunkY, StepChunk chunk)
+    {
+        w.Write((ushort)chunkX);
+        w.Write((ushort)chunkY);
+        w.Write((uint)chunk.BuiltMultisVersion);
+
+        var multiZ = chunk.GetMultiZCellsForSerialization();
+        w.Write((byte)(multiZ != null ? 1 : 0));
+
+        w.Write(chunk.WalkMask);
+        w.Write(chunk.WetMask);
+        WriteSBytes(w, chunk.SourceZ);
+
+        WriteSBytes(w, chunk.WalkZN);
+        WriteSBytes(w, chunk.WalkZNE);
+        WriteSBytes(w, chunk.WalkZE);
+        WriteSBytes(w, chunk.WalkZSE);
+        WriteSBytes(w, chunk.WalkZS);
+        WriteSBytes(w, chunk.WalkZSW);
+        WriteSBytes(w, chunk.WalkZW);
+        WriteSBytes(w, chunk.WalkZNW);
+
+        WriteSBytes(w, chunk.SwimZN);
+        WriteSBytes(w, chunk.SwimZNE);
+        WriteSBytes(w, chunk.SwimZE);
+        WriteSBytes(w, chunk.SwimZSE);
+        WriteSBytes(w, chunk.SwimZS);
+        WriteSBytes(w, chunk.SwimZSW);
+        WriteSBytes(w, chunk.SwimZW);
+        WriteSBytes(w, chunk.SwimZNW);
+
+        if (multiZ != null)
+        {
+            w.Write(multiZ);
+        }
+    }
+
+    private static StepChunk ReadChunk(byte[] buffer)
+    {
+        var r = new BufferReader(buffer);
+        // Skip ChunkX + ChunkY (already known via the index lookup).
+        r.ReadUShort();
+        r.ReadUShort();
+        var multisVersion = (int)r.ReadUInt();
+        var hasMultiZ = r.ReadByte() != 0;
+
+        var chunk = new StepChunk { BuiltMultisVersion = multisVersion };
+
+        r.Read(chunk.WalkMask);
+        r.Read(chunk.WetMask);
+        ReadSBytes(r, chunk.SourceZ);
+
+        ReadSBytes(r, chunk.WalkZN);
+        ReadSBytes(r, chunk.WalkZNE);
+        ReadSBytes(r, chunk.WalkZE);
+        ReadSBytes(r, chunk.WalkZSE);
+        ReadSBytes(r, chunk.WalkZS);
+        ReadSBytes(r, chunk.WalkZSW);
+        ReadSBytes(r, chunk.WalkZW);
+        ReadSBytes(r, chunk.WalkZNW);
+
+        ReadSBytes(r, chunk.SwimZN);
+        ReadSBytes(r, chunk.SwimZNE);
+        ReadSBytes(r, chunk.SwimZE);
+        ReadSBytes(r, chunk.SwimZSE);
+        ReadSBytes(r, chunk.SwimZS);
+        ReadSBytes(r, chunk.SwimZSW);
+        ReadSBytes(r, chunk.SwimZW);
+        ReadSBytes(r, chunk.SwimZNW);
+
+        if (hasMultiZ)
+        {
+            var multiZ = new byte[BytesPerMultiZ];
+            r.Read(multiZ);
+            chunk.RestoreMultiZCellsFromSerialization(multiZ);
+        }
+
+        return chunk;
+    }
+
+    private static void WriteSBytes(BufferWriter w, sbyte[] arr)
+    {
+        var span = MemoryMarshal.Cast<sbyte, byte>(arr.AsSpan());
+        w.Write((ReadOnlySpan<byte>)span);
+    }
+
+    private static void ReadSBytes(BufferReader r, sbyte[] arr)
+    {
+        var span = MemoryMarshal.Cast<sbyte, byte>(arr.AsSpan());
+        r.Read(span);
+    }
+
+    /// <summary>
+    /// Open handle on a .swb file. Holds the FileStream + chunk-offset index. Chunks are
+    /// fetched on demand via <see cref="TryReadChunk"/>; only the records actually queried
+    /// are ever materialized. Dispose releases the underlying stream.
+    /// </summary>
+    internal sealed class LazyReader : IDisposable
+    {
+        private FileStream _stream;
+        private readonly Dictionary<ulong, ulong> _offsets;
+        private byte[] _scratch;
+
+        public uint MapId { get; }
+        public ulong TileDataHash { get; }
+        public ulong BakeTimestamp { get; }
+        public uint ChunkCount { get; }
+        public int IndexedChunkCount => _offsets.Count;
+
+        public bool Has(int chunkX, int chunkY) => _offsets.ContainsKey(PackChunkKey(chunkX, chunkY));
+
+        internal LazyReader(
+            FileStream stream, uint mapId, ulong tileDataHash, ulong bakeTimestamp,
+            uint chunkCount, Dictionary<ulong, ulong> offsets
+        )
+        {
+            _stream = stream;
+            MapId = mapId;
+            TileDataHash = tileDataHash;
+            BakeTimestamp = bakeTimestamp;
+            ChunkCount = chunkCount;
+            _offsets = offsets;
+            _scratch = new byte[BytesPerChunkBase + BytesPerMultiZ];
+        }
+
+        /// <summary>
+        /// Returns the chunk record at (<paramref name="chunkX"/>, <paramref name="chunkY"/>)
+        /// from the file, or null if the file doesn't contain it. Single seek + bulk read;
+        /// no allocations beyond the returned StepChunk and its arrays.
+        /// </summary>
+        public StepChunk TryReadChunk(int chunkX, int chunkY)
+        {
+            if (_stream == null)
+            {
+                return null;
+            }
+
+            var key = PackChunkKey(chunkX, chunkY);
+            if (!_offsets.TryGetValue(key, out var offset))
+            {
+                return null;
+            }
+
+            _stream.Position = (long)offset;
+            // Try to read the maximum size; the file may have less remaining, which is OK
+            // since BufferReader stops at the bytes it actually needs.
+            var read = _stream.Read(_scratch, 0, _scratch.Length);
+            if (read < BytesPerChunkBase)
+            {
+                return null;
+            }
+
+            return ReadChunk(_scratch);
+        }
+
+        public void Dispose()
+        {
+            _stream?.Dispose();
+            _stream = null;
+            _scratch = null;
+        }
+    }
+}
