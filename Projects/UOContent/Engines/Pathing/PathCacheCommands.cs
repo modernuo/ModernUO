@@ -17,6 +17,14 @@ public static class PathCacheCommands
 
     public static void Configure()
     {
+        // Resident-chunk cap is shard-tunable. Default 8192 ≈ 40 MB; small shards may
+        // want lower, large shards (or full-map bakes) may want higher. Setting is
+        // written back to server.cfg on first boot for discoverability.
+        StepCache.Instance.MaxResidentChunks = ServerConfiguration.GetOrUpdateSetting(
+            "pathfinding.maxResidentChunks",
+            8192
+        );
+
         CommandSystem.Register("PathCacheStats", AccessLevel.Administrator, OnPathCacheStats);
         CommandSystem.Register("PathCacheClear", AccessLevel.Administrator, OnPathCacheClear);
         CommandSystem.Register("PathCacheSave",  AccessLevel.Administrator, OnPathCacheSave);
