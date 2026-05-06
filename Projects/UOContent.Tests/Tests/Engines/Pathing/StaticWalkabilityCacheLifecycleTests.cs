@@ -177,68 +177,7 @@ public class StaticWalkabilityCacheLifecycleTests
     }
 
     [Fact]
-    public void Eviction_DeactivatedSectorPastGracePeriod_RemovesChunk()
-    {
-        // Core._now defaults to DateTime.MinValue under unit tests; subtracting a TimeSpan
-        // would underflow. Pin Core._now to a real wall-clock value so the grace-period
-        // arithmetic in this test (and inside RunEvictionSweep) operates in a representable range.
-        Core._now = System.DateTime.UtcNow;
-
-        var cache = StaticWalkabilityCache.Instance;
-        cache.Clear();
-
-        var map = Map.Maps[1];
-        var sector = map.GetRealSector(1500 >> 4, 1600 >> 4);
-
-        // Build a chunk.
-        cache.TryGetMask(map, 1500, 1600, 10,
-            out _, out _, out _, out _, out _, out _, out _, out _, out _, out _);
-        Assert.Equal(1, cache.GetStats().ResidentChunks);
-
-        // Force sector deactivation + push LastDeactivatedAt past the grace period.
-        sector.Deactivate();
-        var backingField = typeof(Map.Sector).GetField(
-            "<LastDeactivatedAt>k__BackingField",
-            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance
-        );
-        Assert.NotNull(backingField);
-        backingField.SetValue(sector, Core.Now - System.TimeSpan.FromSeconds(60));
-
-        cache.RunEvictionSweep(System.TimeSpan.FromSeconds(30));
-
-        Assert.Equal(0, cache.GetStats().ResidentChunks);
-        Assert.Equal(1L, cache.GetStats().EvictionsByDeactivation);
-    }
-
-    [Fact]
-    public void Eviction_DeactivatedWithinGracePeriod_KeepsChunk()
-    {
-        Core._now = System.DateTime.UtcNow;
-
-        var cache = StaticWalkabilityCache.Instance;
-        cache.Clear();
-
-        var map = Map.Maps[1];
-        var sector = map.GetRealSector(1500 >> 4, 1600 >> 4);
-
-        cache.TryGetMask(map, 1500, 1600, 10,
-            out _, out _, out _, out _, out _, out _, out _, out _, out _, out _);
-
-        sector.Deactivate();
-        var backingField = typeof(Map.Sector).GetField(
-            "<LastDeactivatedAt>k__BackingField",
-            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance
-        );
-        backingField.SetValue(sector, Core.Now - System.TimeSpan.FromSeconds(5));
-
-        cache.RunEvictionSweep(System.TimeSpan.FromSeconds(30));
-
-        Assert.Equal(1, cache.GetStats().ResidentChunks);
-        Assert.Equal(0L, cache.GetStats().EvictionsByDeactivation);
-    }
-
-    [Fact]
-    public void LruCap_OverflowEvictsOldestChunks()
+    public void LruCap_OverflowEvictsToCap()
     {
         var cache = StaticWalkabilityCache.Instance;
         cache.Clear();
@@ -262,6 +201,25 @@ public class StaticWalkabilityCacheLifecycleTests
 
             Assert.Equal(4, cache.GetStats().ResidentChunks);
             Assert.True(cache.GetStats().EvictionsByLruCap >= 1L);
+
+            // _keysList must stay in lockstep with _chunks. A desync would silently
+            // break sampled eviction (KeyNotFoundException on stale keys, or a stuck
+            // resident set on missing keys).
+            var chunksField = typeof(StaticWalkabilityCache).GetField(
+                "_chunks",
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance
+            );
+            var keysListField = typeof(StaticWalkabilityCache).GetField(
+                "_keysList",
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance
+            );
+            var chunks = (System.Collections.Generic.Dictionary<long, WalkabilityChunk>)chunksField.GetValue(cache);
+            var keysList = (System.Collections.Generic.List<long>)keysListField.GetValue(cache);
+            Assert.Equal(chunks.Count, keysList.Count);
+            foreach (var k in keysList)
+            {
+                Assert.True(chunks.ContainsKey(k), $"keysList holds key {k} not in _chunks");
+            }
         }
         finally
         {

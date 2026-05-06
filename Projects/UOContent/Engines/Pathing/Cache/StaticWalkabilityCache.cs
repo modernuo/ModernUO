@@ -8,7 +8,7 @@ namespace Server.Engines.Pathing.Cache;
 /// Singleton store of per-chunk static walkability data. Chunks correspond to
 /// Map.SectorSize = 16; key encoding packs (mapId, chunkX, chunkY) into a long.
 /// Lazily built on first query; invalidated by version-check vs Sector.MultisVersion;
-/// evicted by CacheEvictionTimer when owning sector deactivates past the grace period.
+/// memory bounded by MaxResidentChunks via probabilistic LRU eviction.
 ///
 /// Plan 2B scope: default ground walker only. Cells with multi-Z surfaces and queries
 /// for non-default-walker mobiles route to the existing MovementImpl slow path.
@@ -20,6 +20,9 @@ public sealed class StaticWalkabilityCache
     public static StaticWalkabilityCache Instance { get; } = new();
 
     private readonly Dictionary<long, WalkabilityChunk> _chunks = new();
+    // Parallel list of keys for O(1) random sampling during eviction. Kept in lockstep
+    // with _chunks: append on Miss_NotBuilt, swap-and-pop on eviction.
+    private readonly List<long> _keysList = new();
 
     // Telemetry counters
     private long _hits;
@@ -28,7 +31,6 @@ public sealed class StaticWalkabilityCache
     private long _fallthroughMultiZ;
     private long _fallthroughOffMap;
     private long _fallthroughSourceZMismatch;
-    private long _evictionsByDeactivation;
     private long _evictionsByLruCap;
     private long _divergencesShadowMode;
     private long _buildsTotal;
@@ -53,7 +55,6 @@ public sealed class StaticWalkabilityCache
         fallthroughMultiZ: _fallthroughMultiZ,
         fallthroughOffMap: _fallthroughOffMap,
         fallthroughSourceZMismatch: _fallthroughSourceZMismatch,
-        evictionsByDeactivation: _evictionsByDeactivation,
         evictionsByLruCap: _evictionsByLruCap,
         divergencesShadowMode: _divergencesShadowMode,
         buildsTotal: _buildsTotal
@@ -67,77 +68,31 @@ public sealed class StaticWalkabilityCache
     public void Clear()
     {
         _chunks.Clear();
+        _keysList.Clear();
         _hits = 0;
         _missesNotBuilt = 0;
         _missesDirtyRebuild = 0;
         _fallthroughMultiZ = 0;
         _fallthroughOffMap = 0;
         _fallthroughSourceZMismatch = 0;
-        _evictionsByDeactivation = 0;
         _evictionsByLruCap = 0;
         _divergencesShadowMode = 0;
         _buildsTotal = 0;
     }
 
     /// <summary>
-    /// Walk all resident chunks and evict any whose owning sector is !Active and
-    /// whose LastDeactivatedAt is older than `gracePeriod`. Called by CacheEvictionTimer
-    /// every few seconds; also callable directly from tests.
+    /// Probabilistic LRU sample size — picks SampleSize random resident chunks per
+    /// eviction and evicts the oldest of that sample. Approximates true LRU at a tiny
+    /// fraction of the cost (no full sort). Redis uses the same approach (`maxmemory-samples`).
+    /// 5 yields ~quality-of-true-LRU for cache eviction; higher values trade speed for accuracy.
     /// </summary>
-    public void RunEvictionSweep(TimeSpan gracePeriod)
-    {
-        if (_chunks.Count == 0)
-        {
-            return;
-        }
-
-        var threshold = Core.Now - gracePeriod;
-
-        // Snapshot keys so we can mutate during iteration.
-        var keysToEvict = new List<long>();
-        foreach (var (key, chunk) in _chunks)
-        {
-            // Decode key back to (mapId, chunkX, chunkY)
-            DecodeKey(key, out var mapId, out var chunkX, out var chunkY);
-            if (mapId < 0 || mapId >= Map.Maps.Length)
-            {
-                keysToEvict.Add(key);
-                continue;
-            }
-            var map = Map.Maps[mapId];
-            if (map == null)
-            {
-                keysToEvict.Add(key);
-                continue;
-            }
-            var sector = map.GetRealSector(chunkX, chunkY);
-            if (!sector.Active && sector.LastDeactivatedAt <= threshold && sector.LastDeactivatedAt != default)
-            {
-                keysToEvict.Add(key);
-            }
-        }
-
-        foreach (var key in keysToEvict)
-        {
-            _chunks.Remove(key);
-            _evictionsByDeactivation++;
-        }
-
-        if (keysToEvict.Count > 0)
-        {
-            logger.Debug(
-                "Evicted {Count} chunk(s) by sector-deactivation; resident set now {Resident}",
-                keysToEvict.Count, _chunks.Count
-            );
-        }
-
-        EnforceLruCap();
-    }
+    private const int LruSampleSize = 5;
 
     /// <summary>
-    /// If resident chunk count exceeds MaxResidentChunks, evict oldest-touched chunks
-    /// until the count is at or below the cap. Called from RunEvictionSweep and directly
-    /// from tests.
+    /// If resident chunk count exceeds MaxResidentChunks, evict via probabilistic LRU
+    /// until the count is at or below the cap. Per-eviction cost is O(LruSampleSize),
+    /// independent of resident count — sustained cap pressure has no perpetual perf hit.
+    /// Called from CacheEvictionTimer; also callable directly from tests.
     /// </summary>
     public void EnforceLruCap()
     {
@@ -147,17 +102,37 @@ public sealed class StaticWalkabilityCache
             return;
         }
 
-        // Snapshot to (key, lastTouched). Sort ascending by lastTouched. Evict the first `overflow`.
-        var snapshot = new List<KeyValuePair<long, long>>(_chunks.Count);
-        foreach (var (k, c) in _chunks)
+        var rng = System.Random.Shared;
+        while (overflow-- > 0 && _keysList.Count > 0)
         {
-            snapshot.Add(new KeyValuePair<long, long>(k, c.LastTouchedTicks));
-        }
-        snapshot.Sort((a, b) => a.Value.CompareTo(b.Value));
+            var oldestIdx = -1;
+            long oldestTouched = long.MaxValue;
+            long oldestKey = 0;
 
-        for (var i = 0; i < overflow; i++)
-        {
-            _chunks.Remove(snapshot[i].Key);
+            // Sample LruSampleSize random keys; track the oldest by LastTouchedTicks.
+            // With replacement is fine — collisions are rare and don't break correctness.
+            var samples = Math.Min(LruSampleSize, _keysList.Count);
+            for (var s = 0; s < samples; s++)
+            {
+                var idx = rng.Next(_keysList.Count);
+                var k = _keysList[idx];
+                var touched = _chunks[k].LastTouchedTicks;
+                if (touched < oldestTouched)
+                {
+                    oldestTouched = touched;
+                    oldestKey = k;
+                    oldestIdx = idx;
+                }
+            }
+
+            _chunks.Remove(oldestKey);
+            // Swap-and-pop _keysList[oldestIdx] with the tail; O(1) regardless of position.
+            var last = _keysList.Count - 1;
+            if (oldestIdx != last)
+            {
+                _keysList[oldestIdx] = _keysList[last];
+            }
+            _keysList.RemoveAt(last);
             _evictionsByLruCap++;
         }
     }
@@ -209,6 +184,7 @@ public sealed class StaticWalkabilityCache
         {
             chunk = ResolveMissingChunk(map, chunkX, chunkY);
             _chunks[key] = chunk;
+            _keysList.Add(key);
             hitKindResult = CacheHitKind.Miss_NotBuilt;
         }
         else
