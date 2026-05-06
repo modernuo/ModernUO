@@ -2,7 +2,7 @@ namespace Server.Engines.Pathing.Cache;
 
 /// <summary>
 /// Outcome categories for StaticWalkabilityCache.TryGetMask. Used for telemetry
-/// and to drive the slow-path fallthrough logic in CachedMovementCheck.
+/// and to drive the slow-path fallthrough decision in callers.
 /// </summary>
 public enum CacheHitKind : byte
 {

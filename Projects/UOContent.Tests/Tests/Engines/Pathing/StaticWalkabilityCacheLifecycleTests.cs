@@ -34,7 +34,7 @@ public class StaticWalkabilityCacheLifecycleTests
         var map = Map.Maps[1];
         Assert.NotNull(map);
 
-        // Plan 2A pinned cell: (1500, 1600, z=10), mask=0xC1
+        // Pinned cell (1500, 1600, z=10): mask=0xC1
         var ok = cache.TryGetMask(
             map, 1500, 1600, sourceZ: 10,
             out var mask,
@@ -105,7 +105,7 @@ public class StaticWalkabilityCacheLifecycleTests
             out var firstHitKind);
         Assert.Equal(CacheHitKind.Miss_NotBuilt, firstHitKind);
 
-        // Bump _multisVersion via reflection (consistent with Plan 2A's TileData reflection hack).
+        // Bump _multisVersion via reflection.
         var versionField = typeof(Map.Sector).GetField(
             "_multisVersion",
             System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance

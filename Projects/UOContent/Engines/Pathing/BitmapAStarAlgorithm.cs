@@ -24,23 +24,12 @@ using MoveImpl = Server.Movement.MovementImpl;
 namespace Server.PathAlgorithms.BitmapAStar;
 
 /// <summary>
-/// Plan 2D / 2F — unified A* pathfinder. For default-walker mobiles, `GetSuccessors`
-/// issues ONE <see cref="StaticWalkabilityCache.TryGetMask"/> call per cell expansion
-/// (returning the 8-direction mask + destination Zs) instead of 8 separate
-/// <see cref="MovementImpl.CheckMovement"/> orchestrations. Per-cell savings target the
-/// MovementImpl orchestrator overhead (cache lookup, source-Z guard, corner-cut indirection).
-///
-/// Non-default-walker mobiles (players below GameMaster, BaseCreature with
-/// CanSwim/CanFly/CanOpenDoors/CanMoveOverObstacles) take the per-cell slow path inline:
-/// <see cref="GetSuccessors"/> short-circuits to <see cref="GetSuccessorsSlowPath"/>
-/// for every expansion when <see cref="_currentMobileNeedsSlowPath"/> is set. This
-/// preserves correctness (player AND-rule, capability overlays) without delegating
-/// to a separate algorithm.
-///
-/// Per-cell fall-through to the MovementImpl slow path also occurs for default walkers
-/// when <see cref="StaticWalkabilityCache.TryGetMask"/> returns Fallthrough_MultiZ /
-/// Fallthrough_OffMap / Fallthrough_SourceZMismatch. In that case GetSuccessorsSlowPath
-/// runs the per-direction CalcMoves.CheckMovement loop for that single cell.
+/// A* pathfinder with a single bitmap-cache lookup per cell expansion. Default walkers
+/// take one <see cref="StaticWalkabilityCache.TryGetMask"/> call returning the 8-direction
+/// mask + per-direction Z. Non-default walkers (non-GM players, creatures with swim/fly/
+/// door/clip capabilities) and per-cell cache fallthroughs route through
+/// <see cref="GetSuccessorsSlowPath"/>, which runs the per-direction
+/// <see cref="CalcMoves.CheckMovement"/> loop for that one cell.
 /// </summary>
 public class BitmapAStarAlgorithm : PathAlgorithm
 {
@@ -71,7 +60,7 @@ public class BitmapAStarAlgorithm : PathAlgorithm
     private static int _xOffset;
     private static int _yOffset;
 
-    // Plan 2F: when set, GetSuccessors always delegates to the per-cell slow path
+    // When set, GetSuccessors delegates to the per-cell slow path on every expansion
     // (preserves player AND-rule and BaseCreature capability overlays). Reset at end of Find.
     private static bool _currentMobileNeedsSlowPath;
 
@@ -100,10 +89,6 @@ public class BitmapAStarAlgorithm : PathAlgorithm
             return null;
         }
 
-        // Plan 2F: non-default walkers (player below GM, or creature with overlay
-        // capabilities) need the per-cell slow path on every expansion — the cache only
-        // models the lenient creature OR-rule for default walkers. Set the flag and let
-        // GetSuccessors short-circuit to GetSuccessorsSlowPath inline.
         _currentMobileNeedsSlowPath = !IsDefaultWalker(m);
 
         Array.Clear(_nodeStates);
@@ -150,8 +135,7 @@ public class BitmapAStarAlgorithm : PathAlgorithm
 
             _nodeStates[bestNode] = 2;
 
-            // MovementImpl globals are still set so per-cell slow-path fallthroughs
-            // (multi-Z, off-map, source-Z mismatch) match FastAStar's behavior exactly.
+            // Set MovementImpl globals so per-cell slow-path fallthroughs see the right state.
             if (bc != null)
             {
                 MoveImpl.AlwaysIgnoreDoors = bc.CanOpenDoors;
@@ -256,11 +240,11 @@ public class BitmapAStarAlgorithm : PathAlgorithm
     }
 
     /// <summary>
-    /// Batched successor lookup. One <see cref="StaticWalkabilityCache.TryGetMask"/>
-    /// call returns the 8-direction walkable mask + destination Zs. Diagonal corner-cut
-    /// is applied inline (lenient creature OR-rule on the same source mask byte — partner
-    /// bits live in the same mask, no neighbor-chunk lookup needed).
-    /// On Fallthrough_*, defers to <see cref="GetSuccessorsSlowPath"/> for THIS cell only.
+    /// One <see cref="StaticWalkabilityCache.TryGetMask"/> call returns the 8-direction
+    /// walkable mask + destination Zs. Diagonal corner-cut applies the lenient creature
+    /// OR-rule using partner bits in the same mask byte — no neighbor-chunk lookup needed.
+    /// On cache fallthrough or for non-default walkers, defers to
+    /// <see cref="GetSuccessorsSlowPath"/> for THIS cell only.
     /// </summary>
     private static int GetSuccessors(int p, Mobile m, Map map)
     {
@@ -272,8 +256,6 @@ public class BitmapAStarAlgorithm : PathAlgorithm
 
         var vals = _successors;
 
-        // Plan 2F: non-default walkers always use the per-cell slow path (player AND-rule,
-        // capability overlays). Skip the cache entirely for these mobiles.
         if (_currentMobileNeedsSlowPath)
         {
             return GetSuccessorsSlowPath(m, map, px, py, p3D, vals);
@@ -293,84 +275,26 @@ public class BitmapAStarAlgorithm : PathAlgorithm
             or CacheHitKind.Fallthrough_OffMap
             or CacheHitKind.Fallthrough_SourceZMismatch)
         {
-            // Cache can't answer this cell — fall back to per-direction slow path
-            // for this single source cell. The MovementImpl globals (AlwaysIgnoreDoors,
-            // IgnoreMovableImpassables, Goal) are still set by the caller in Find.
             return GetSuccessorsSlowPath(m, map, px, py, p3D, vals);
         }
 
-        // Cache hit — process all 8 directions inline.
         for (var i = 0; i < 8; ++i)
         {
-            int x;
-            int y;
-            switch (i)
-            {
-                default: // 0 N
-                    {
-                        x = 0;
-                        y = -1;
-                        break;
-                    }
-                case 1: // NE
-                    {
-                        x = 1;
-                        y = -1;
-                        break;
-                    }
-                case 2: // E
-                    {
-                        x = 1;
-                        y = 0;
-                        break;
-                    }
-                case 3: // SE
-                    {
-                        x = 1;
-                        y = 1;
-                        break;
-                    }
-                case 4: // S
-                    {
-                        x = 0;
-                        y = 1;
-                        break;
-                    }
-                case 5: // SW
-                    {
-                        x = -1;
-                        y = 1;
-                        break;
-                    }
-                case 6: // W
-                    {
-                        x = -1;
-                        y = 0;
-                        break;
-                    }
-                case 7: // NW
-                    {
-                        x = -1;
-                        y = -1;
-                        break;
-                    }
-            }
-
-            x += px;
-            y += py;
+            var x = px;
+            var y = py;
+            CalcMoves.Offset((Direction)i, ref x, ref y);
 
             if (x is < 0 or >= AreaSize || y is < 0 or >= AreaSize)
             {
                 continue;
             }
 
-            var rawWalkable = (mask & (1 << i)) != 0;
-            if (!rawWalkable)
+            if ((mask & (1 << i)) == 0)
             {
                 continue;
             }
 
-            // Diagonal corner-cut (creature OR-rule): partner bits in the same source mask byte.
+            // Diagonal corner-cut (creature OR-rule): partner bits live in the same mask byte.
             if ((i & 1) == 1)
             {
                 var leftBit = 1 << ((i - 1) & 0x7);
@@ -408,8 +332,7 @@ public class BitmapAStarAlgorithm : PathAlgorithm
 
     /// <summary>
     /// Per-direction <see cref="CalcMoves.CheckMovement"/> loop for a single source cell.
-    /// Used when the cache returns Fallthrough_* for that cell, or unconditionally when
-    /// <see cref="_currentMobileNeedsSlowPath"/> is true (non-default-walker mobile).
+    /// Runs on cache fallthrough or when <see cref="_currentMobileNeedsSlowPath"/> is set.
     /// </summary>
     private static int GetSuccessorsSlowPath(Mobile m, Map map, int px, int py, Point3D p3D, int[] vals)
     {
@@ -417,62 +340,9 @@ public class BitmapAStarAlgorithm : PathAlgorithm
 
         for (var i = 0; i < 8; ++i)
         {
-            int x;
-            int y;
-            switch (i)
-            {
-                default: // 0 N
-                    {
-                        x = 0;
-                        y = -1;
-                        break;
-                    }
-                case 1: // NE
-                    {
-                        x = 1;
-                        y = -1;
-                        break;
-                    }
-                case 2: // E
-                    {
-                        x = 1;
-                        y = 0;
-                        break;
-                    }
-                case 3: // SE
-                    {
-                        x = 1;
-                        y = 1;
-                        break;
-                    }
-                case 4: // S
-                    {
-                        x = 0;
-                        y = 1;
-                        break;
-                    }
-                case 5: // SW
-                    {
-                        x = -1;
-                        y = 1;
-                        break;
-                    }
-                case 6: // W
-                    {
-                        x = -1;
-                        y = 0;
-                        break;
-                    }
-                case 7: // NW
-                    {
-                        x = -1;
-                        y = -1;
-                        break;
-                    }
-            }
-
-            x += px;
-            y += py;
+            var x = px;
+            var y = py;
+            CalcMoves.Offset((Direction)i, ref x, ref y);
 
             if (x is < 0 or >= AreaSize || y is < 0 or >= AreaSize)
             {
@@ -495,14 +365,12 @@ public class BitmapAStarAlgorithm : PathAlgorithm
     }
 
     /// <summary>
-    /// Mirror of <see cref="CachedMovementCheck.IsDefaultWalker"/>. A non-default walker
-    /// causes <see cref="Find"/> to set <see cref="_currentMobileNeedsSlowPath"/> so that
-    /// every <see cref="GetSuccessors"/> call short-circuits to the per-cell slow path.
+    /// Default walker = the cache's baked rules apply directly (lenient OR-rule for
+    /// diagonal corner-cut, no capability overlays). Non-GM players (strict AND-rule)
+    /// and creatures with swim/fly/door/clip capabilities require the slow path.
     /// </summary>
     private static bool IsDefaultWalker(Mobile m)
     {
-        // Non-GM Players use the strict AND-rule for diagonal corner-cut (Movement.cs:144-162);
-        // the cache only models the lenient creature OR-rule. Route them to the slow path.
         if (m.Player && m.AccessLevel < AccessLevel.GameMaster)
         {
             return false;
@@ -510,7 +378,6 @@ public class BitmapAStarAlgorithm : PathAlgorithm
 
         if (m is not BaseCreature bc)
         {
-            // Plain Mobile or staff (GM+) — default walker for the cache's purposes.
             return true;
         }
 

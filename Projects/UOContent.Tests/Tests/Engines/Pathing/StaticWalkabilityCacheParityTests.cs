@@ -36,9 +36,8 @@ public class StaticWalkabilityCacheParityTests
             {
                 map.GetAverageZ(x, y, out _, out var avgZ, out _);
 
-                // Plan 2D fix: the cache bakes from the slow path's standing Z (= the Z a creature
-                // would actually stand at on this cell — paver surface for paver-over-ground, land
-                // center for bare land). Query the cache with that same Z so the source-Z guard
+                // The cache bakes from the slow path's standing Z (the Z a creature actually
+                // stands at on this cell). Query with the same Z so the source-Z guard
                 // doesn't false-positive on every paver cell.
                 var sourceZ = (sbyte)StaticWalkabilityBaker.ComputeStandingZ(map, x, y, avgZ);
 
@@ -58,8 +57,6 @@ public class StaticWalkabilityCacheParityTests
                 {
                     multiZ++;
                     continue;
-                    // TODO(Plan 2C): once multi-Z encoding lands, this branch should
-                    // assert against the (z, mask)[] result instead of skipping.
                 }
 
                 Assert.True(ok, $"Cache returned !ok at ({x},{y}) hitKind={hitKind}");

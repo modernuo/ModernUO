@@ -7,12 +7,10 @@ using Xunit.Abstractions;
 namespace Server.Tests.Pathfinding;
 
 /// <summary>
-/// Smoke tests for <see cref="BitmapAStarAlgorithm"/> after Plan 2F unification.
-/// FastAStarAlgorithm has been deleted; the bitmap algorithm now serves both the
-/// cache-direct fast path (default-walker mobiles) and the per-cell slow path inline
-/// (capability creatures: CanSwim/CanFly/CanOpenDoors/CanMoveOverObstacles, plus
-/// non-GM players). These tests exercise both branches end-to-end against the real
-/// Trammel TileMatrix to ensure neither regresses to "no path found" on reachable goals.
+/// Smoke tests for <see cref="BitmapAStarAlgorithm"/>'s two branches: cache-direct fast
+/// path (default walkers) and per-cell slow path (capability creatures and non-GM players).
+/// Exercised end-to-end against the real Trammel TileMatrix to ensure neither regresses
+/// to "no path found" on reachable goals.
 /// </summary>
 [Collection("Sequential Pathfinding Tests")]
 public class BitmapAStarAlgorithmTests
@@ -25,7 +23,7 @@ public class BitmapAStarAlgorithmTests
     }
 
     [Theory]
-    // (1500, 1600, z=10) is the Plan 2A pinned cell: mask=0xC1 → N, W, NW walkable.
+    // Pinned cell (1500, 1600, z=10): mask=0xC1 → N, W, NW walkable.
     // Use start.Z for goal.Z so destNode lands in the same Z plane the algorithm reaches
     // during expansion (GetAverageZ at the goal cell may differ from the engine's
     // runtime-computed standing Z, which would break the destNode equality check).

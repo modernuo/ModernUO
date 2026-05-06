@@ -10,8 +10,8 @@ namespace Server.Engines.Pathing.Cache;
 /// Lazily built on first query; invalidated by version-check vs Sector.MultisVersion;
 /// memory bounded by MaxResidentChunks via probabilistic LRU eviction.
 ///
-/// Plan 2B scope: default ground walker only. Cells with multi-Z surfaces and queries
-/// for non-default-walker mobiles route to the existing MovementImpl slow path.
+/// Default-walker scope only. Cells with multi-Z surfaces and queries for non-default
+/// walkers route to the MovementImpl slow path via the Fallthrough_* hit kinds.
 /// </summary>
 public sealed class StaticWalkabilityCache
 {
@@ -32,7 +32,6 @@ public sealed class StaticWalkabilityCache
     private long _fallthroughOffMap;
     private long _fallthroughSourceZMismatch;
     private long _evictionsByLruCap;
-    private long _divergencesShadowMode;
     private long _buildsTotal;
 
     private StaticWalkabilityCache() { }
@@ -56,7 +55,6 @@ public sealed class StaticWalkabilityCache
         fallthroughOffMap: _fallthroughOffMap,
         fallthroughSourceZMismatch: _fallthroughSourceZMismatch,
         evictionsByLruCap: _evictionsByLruCap,
-        divergencesShadowMode: _divergencesShadowMode,
         buildsTotal: _buildsTotal
     );
 
@@ -76,7 +74,6 @@ public sealed class StaticWalkabilityCache
         _fallthroughOffMap = 0;
         _fallthroughSourceZMismatch = 0;
         _evictionsByLruCap = 0;
-        _divergencesShadowMode = 0;
         _buildsTotal = 0;
     }
 
@@ -144,13 +141,6 @@ public sealed class StaticWalkabilityCache
         chunkY = (int)(key & 0xFFFF);
     }
 
-    /// <summary>
-    /// Increment the shadow-mode divergence counter. Called by CachedMovementCheck
-    /// (Task 10+) when the cache's answer disagrees with MovementImpl during the
-    /// canary observation window. Surfaced via GetStats().DivergencesShadowMode.
-    /// </summary>
-    internal void RecordDivergence() => _divergencesShadowMode++;
-
     private const int ChunkSize = 16;
 
     /// <summary>
@@ -212,13 +202,9 @@ public sealed class StaticWalkabilityCache
             return false;
         }
 
-        // Source-Z guard (Plan 2C Part 2.1): the cache stores one answer per cell, baked
-        // for sourceZ == BakedSourceZ. Queries with a different source-Z would diverge from
-        // the slow path. StepHeight tolerance accepts the engine's own per-step Z change
-        // envelope (1-unit Z jitter from incremental movement is OK).
-        // EXPERIMENT confirmed (Plan 2D): loosening tolerance beyond StepHeight breaks parity
-        // — the cache mask was baked at BakedSourceZ exactly, and tile reachability shifts at
-        // step-height boundaries. StepHeight is the right (correctness-preserving) value.
+        // Source-Z guard: the cache stores one answer per cell baked at BakedSourceZ.
+        // StepHeight tolerance accepts incremental Z jitter; loosening it breaks parity
+        // because tile reachability shifts at step-height boundaries.
         if (Math.Abs(sourceZ - chunk.BakedSourceZ[cellIndex]) > StepHeight)
         {
             hitKind = CacheHitKind.Fallthrough_SourceZMismatch;
@@ -284,10 +270,9 @@ public sealed class StaticWalkabilityCache
 
                 map.GetAverageZ(x, y, out _, out var avgZ, out _);
 
-                // Bake from the slow path's "standing Z" — the Z a creature actually stands at
-                // on this cell. For paver-over-ground / bridge cells, this is the SURFACE Z, not
-                // the ground avg. A* tracks `_nodes[idx].z` as the slow path's newZ (= standing Z),
-                // so the cache's BakedSourceZ must match for the source-Z guard to not over-fire.
+                // Bake from the slow path's "standing Z" (the surface Z a creature actually
+                // stands at, not the ground avg). A* tracks newZ as standing Z, so BakedSourceZ
+                // must match for the source-Z guard not to over-fire.
                 var standingZ = (sbyte)StaticWalkabilityBaker.ComputeStandingZ(map, x, y, avgZ);
 
                 var result = StaticWalkabilityBaker.ComputeMaskAt(map, x, y, standingZ);
@@ -303,9 +288,8 @@ public sealed class StaticWalkabilityCache
                 chunk.DestZW[cell]  = result.DestZ_W;
                 chunk.DestZNW[cell] = result.DestZ_NW;
 
-                // Multi-Z detection (Plan 2C Part 1): Z-aware reachability check.
-                // A cell is multi-Z only if >=2 surfaces are reachable from standingZ —
-                // mirrors the baker's CheckStaticStep filter so we don't over-mark.
+                // Multi-Z = ≥2 surfaces reachable from standingZ. Mirrors the baker's
+                // CheckStaticStep filter so we don't over-mark.
                 if (CountReachableSurfaces(map, x, y, standingZ) > 1)
                 {
                     chunk.MarkCellMultiZ(cell);
@@ -317,52 +301,15 @@ public sealed class StaticWalkabilityCache
         return chunk;
     }
 
-    /// <summary>
-    /// Conservative heuristic for multi-Z detection: counts walkable static + multi tiles
-    /// plus walkable land. Does NOT verify vertical separation (creature standability gap).
-    /// Over-counting is safe — false positives route the cell to the MovementImpl slow
-    /// path harmlessly. Under-counting would be dangerous (would let the cache answer
-    /// for a multi-Z cell). True multi-Z encoding is deferred to Plan 2C.
-    ///
-    /// Plan 2C Part 1: kept around for diagnostic comparison only — production code
-    /// uses CountReachableSurfaces below.
-    /// </summary>
-    internal static int CountWalkableSurfaces(Map map, int x, int y)
-    {
-        var count = 0;
-        foreach (var tile in map.Tiles.GetStaticAndMultiTiles(x, y))
-        {
-            var data = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
-            if (data.Surface && !data.Impassable)
-            {
-                count++;
-            }
-        }
-
-        // Land itself counts as a surface unless impassable
-        var landTile = map.Tiles.GetLandTile(x, y);
-        var landFlags = TileData.LandTable[landTile.ID & TileData.MaxLandValue].Flags;
-        if (!landTile.Ignored && (landFlags & TileFlag.Impassable) == 0)
-        {
-            count++;
-        }
-
-        return count;
-    }
-
     private const int PersonHeight = 16;
     private const int StepHeight = 2;
 
     /// <summary>
-    /// Z-aware multi-Z detection: counts walkable surfaces that are actually reachable
-    /// from a creature standing at sourceZ. Mirrors the filter logic in
-    /// StaticWalkabilityBaker.CheckStaticStep so cells flagged multi-Z here are exactly
-    /// those where the baker would have multiple distinct candidate destinations.
-    ///
-    /// A surface is reachable when:
-    ///   1. itemData.Surface && !itemData.Impassable
-    ///   2. stepTop >= itemTop (creature can step UP onto it)
-    ///   3. sourceZ + PersonHeight > itemZ && itemZ + itemData.Height > sourceZ (vertical overlap)
+    /// Counts walkable surfaces actually reachable from a creature standing at sourceZ.
+    /// Mirrors <see cref="StaticWalkabilityBaker"/>.CheckStaticStep so cells flagged multi-Z
+    /// here are exactly those where the baker would have multiple candidate destinations.
+    /// Reachable when: surface and !impassable; stepTop ≥ itemTop; vertical overlap with
+    /// the creature's PersonHeight envelope.
     /// </summary>
     internal static int CountReachableSurfaces(Map map, int x, int y, sbyte sourceZ)
     {

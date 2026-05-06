@@ -6,19 +6,13 @@ namespace Server.Engines.Pathing.Cache;
 /// <summary>
 /// Computes static-only walkability for a single cell — the per-cell, per-direction
 /// "can step" mask and destination Z, based purely on land + statics + multis. Mirrors
-/// MovementImpl.Check (Movement.cs) minus the item and mobile collision phases.
+/// <see cref="MovementImpl"/>.Check minus the item and mobile collision phases.
 /// </summary>
 /// <remarks>
-/// Plan 2A scope (current): default ground walker only — assumes CanSwim=false,
-/// CanFly=false, CanOpenDoors=false, CantWalk=false. Single source-Z per cell.
-/// Diagonal corner-cut is NOT applied here; callers must AND the partner-cell results
-/// at query time per the creature rule (one cardinal partner walkable suffices).
-///
-/// Plan 2C will add: swim/door overlay bitmaps for capability-flag mobiles, multi-Z
-/// encoding for bridges/stairs/multi-floor houses.
-///
-/// Parity verified by StaticWalkabilityParityTests over two 32x32 Trammel regions
-/// (open plain and dense buildings) with no items/mobiles present.
+/// Default-walker scope: assumes CanSwim=false, CanFly=false, CanOpenDoors=false,
+/// CantWalk=false. Single source-Z per cell. Diagonal corner-cut is NOT applied here;
+/// callers must AND the partner-cell results at query time per the creature rule
+/// (one cardinal partner walkable suffices).
 /// </remarks>
 public static class StaticWalkabilityBaker
 {
