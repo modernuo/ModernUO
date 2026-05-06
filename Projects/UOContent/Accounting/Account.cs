@@ -10,6 +10,7 @@ using Server.Misc;
 using Server.Mobiles;
 using Server.Multis;
 using Server.Network;
+using Server.Systems.FeatureFlags;
 
 namespace Server.Accounting;
 
@@ -250,7 +251,7 @@ public partial class Account : IAccount, IComparable<Account>
     /// </summary>
     public bool Young
     {
-        get => !GetFlag(1);
+        get => ContentFeatureFlags.YoungPlayerSystem && !GetFlag(1);
         set
         {
             SetFlag(1, !value);

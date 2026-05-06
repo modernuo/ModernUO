@@ -684,7 +684,7 @@ namespace Server.Mobiles
         [CommandProperty(AccessLevel.GameMaster)]
         public bool Young
         {
-            get => GetFlag(PlayerFlag.Young);
+            get => ContentFeatureFlags.YoungPlayerSystem && GetFlag(PlayerFlag.Young);
             set
             {
                 SetFlag(PlayerFlag.Young, value);
