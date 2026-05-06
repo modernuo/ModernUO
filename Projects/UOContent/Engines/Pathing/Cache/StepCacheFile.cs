@@ -107,7 +107,7 @@ internal static class StepCacheFile
             {
                 return false;
             }
-            if (BinaryPrimitives.ReadUInt32LittleEndian(buf[0..]) != Magic)
+            if (BinaryPrimitives.ReadUInt32LittleEndian(buf) != Magic)
             {
                 return false;
             }
