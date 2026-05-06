@@ -54,7 +54,7 @@ public class BitmapAStarAlgorithmTests
     [Theory]
     [InlineData(1500, 1600, 1498, 1598)] // NW, 2 cells diagonal
     [InlineData(1500, 1600, 1497, 1599)] // NW-ish, 3 W + 1 N
-    public void CapabilityCreature_FindsPath_ViaInlineSlowPath(int sx, int sy, int gx, int gy)
+    public void SwimCreature_FindsPath_ViaCacheCapabilityOverlay(int sx, int sy, int gx, int gy)
     {
         StepCache.Instance.Clear();
         var map = Map.Maps[1];
@@ -62,23 +62,49 @@ public class BitmapAStarAlgorithmTests
 
         var stub = new SwimmingStub(World.NewMobile);
         stub.DefaultMobileInit();
-        stub.CanSwim = true; // forces non-default-walker → inline GetSuccessorsSlowPath
+        stub.CanSwim = true; // overlay route — cache + (walkMask | wetMask&canSwim)
         map.GetAverageZ(sx, sy, out _, out var startZ, out _);
         var start = new Point3D(sx, sy, (sbyte)startZ);
         var goal = new Point3D(gx, gy, (sbyte)startZ);
 
         stub.MoveToWorld(start, map);
 
+        var statsBefore = StepCache.Instance.GetStats();
         var result = BitmapAStarAlgorithm.Instance.Find(stub, map, start, goal);
+        var statsAfter = StepCache.Instance.GetStats();
 
         stub.Delete();
 
-        // Capability creature: assert reachability — exact length depends on terrain and
-        // tie-breaking, but a swimmer should always reach a goal a default walker reaches
-        // on dry land (CanSwim is permissive, never restrictive).
         Assert.NotNull(result);
         Assert.NotEmpty(result);
+        Assert.True(statsAfter.BuildsTotal > statsBefore.BuildsTotal,
+            "CanSwim creature should use the cache via capability overlay, not the slow path");
         _output.WriteLine($"swimmer ({sx},{sy})->({gx},{gy}): {result.Length} steps");
+    }
+
+    [Fact]
+    public void FlyCreature_RoutesToSlowPath_NoCacheUse()
+    {
+        StepCache.Instance.Clear();
+        var map = Map.Maps[1];
+
+        var stub = new FlyingStub(World.NewMobile);
+        stub.DefaultMobileInit();
+        map.GetAverageZ(1500, 1600, out _, out var startZ, out _);
+        var start = new Point3D(1500, 1600, (sbyte)startZ);
+        var goal = new Point3D(1498, 1598, (sbyte)startZ);
+
+        stub.MoveToWorld(start, map);
+
+        var statsBefore = StepCache.Instance.GetStats();
+        var result = BitmapAStarAlgorithm.Instance.Find(stub, map, start, goal);
+        var statsAfter = StepCache.Instance.GetStats();
+
+        stub.Delete();
+
+        Assert.NotNull(result);
+        Assert.NotEmpty(result);
+        Assert.Equal(statsBefore.BuildsTotal, statsAfter.BuildsTotal);
     }
 
     [Fact]
@@ -187,10 +213,10 @@ public class BitmapAStarAlgorithmTests
     }
 
     /// <summary>
-    /// BaseCreature with CanSwim=true — RequiresSlowPath returns true, the bitmap
-    /// algorithm short-circuits GetSuccessors to GetSuccessorsSlowPath on every cell.
-    /// Use the Serial constructor (deserialization path) to bypass NPCSpeeds init,
-    /// which requires the npc-speeds.json table loaded — not available in tests.
+    /// BaseCreature with CanSwim=true — uses the cache via capability overlay (walk OR
+    /// (wet AND canSwim)). Use the Serial constructor (deserialization path) to bypass
+    /// NPCSpeeds init, which requires the npc-speeds.json table loaded — not available
+    /// in tests.
     /// </summary>
     private sealed class SwimmingStub : BaseCreature
     {
@@ -198,6 +224,20 @@ public class BitmapAStarAlgorithmTests
         {
             Body = 0xC9;
         }
+    }
+
+    /// <summary>
+    /// BaseCreature with CanFly=true — RequiresSlowPath returns true (Z-jumping is beyond
+    /// the cache's static-only scope), so GetSuccessors short-circuits to the slow path.
+    /// </summary>
+    private sealed class FlyingStub : BaseCreature
+    {
+        public FlyingStub(Serial serial) : base(serial)
+        {
+            Body = 0xC9;
+        }
+
+        public override bool CanFly => true;
     }
 
     private sealed class DoorOpenerStub : BaseCreature

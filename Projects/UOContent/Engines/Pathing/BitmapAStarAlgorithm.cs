@@ -61,13 +61,19 @@ public class BitmapAStarAlgorithm : PathAlgorithm
     private static int _yOffset;
 
     // When set, GetSuccessors delegates to the per-cell slow path on every expansion
-    // (creature has a capability the cache doesn't model: CanSwim/CanFly/CantWalk).
+    // (creature has CanFly — Z-jumping is beyond the cache's static-only scope).
     private static bool _currentMobileNeedsSlowPath;
 
     // When set, diagonal corner-cut uses the strict AND-rule (BOTH cardinal partners
     // must be walkable) instead of the lenient creature OR-rule. Cache still applies —
-    // walkMask carries the partner bits in the same byte. Non-GM players only.
+    // partner bits live in the same source-cell mask byte. Non-GM players only.
     private static bool _currentMobilePlayerStrict;
+
+    // Capability overlay applied to cache results. Layered each cell:
+    //   effective = (walkMask & !cantWalk) | (wetMask & canSwim)
+    // Reset at end of Find.
+    private static bool _currentMobileCanSwim;
+    private static bool _currentMobileCantWalk;
 
     private Point3D _goal;
 
@@ -96,6 +102,16 @@ public class BitmapAStarAlgorithm : PathAlgorithm
 
         _currentMobileNeedsSlowPath = RequiresSlowPath(m);
         _currentMobilePlayerStrict = m.Player && m.AccessLevel < AccessLevel.GameMaster;
+        if (m is BaseCreature creature)
+        {
+            _currentMobileCanSwim = creature.CanSwim;
+            _currentMobileCantWalk = creature.CantWalk;
+        }
+        else
+        {
+            _currentMobileCanSwim = false;
+            _currentMobileCantWalk = false;
+        }
 
         Array.Clear(_nodeStates);
 
@@ -227,6 +243,8 @@ public class BitmapAStarAlgorithm : PathAlgorithm
                 _openQueue.Clear();
                 _currentMobileNeedsSlowPath = false;
                 _currentMobilePlayerStrict = false;
+                _currentMobileCanSwim = false;
+                _currentMobileCantWalk = false;
                 return dirs;
             }
         }
@@ -234,6 +252,8 @@ public class BitmapAStarAlgorithm : PathAlgorithm
         _openQueue.Clear();
         _currentMobileNeedsSlowPath = false;
         _currentMobilePlayerStrict = false;
+        _currentMobileCanSwim = false;
+        _currentMobileCantWalk = false;
         return null;
     }
 
@@ -278,7 +298,11 @@ public class BitmapAStarAlgorithm : PathAlgorithm
             return GetSuccessorsSlowPath(m, map, px, py, p3D, vals);
         }
 
-        var mask = lookup.WalkMask;
+        // Capability overlay: walking allowed unless cantWalk; swimming allowed if canSwim.
+        // Partner bits used for diagonal corner-cut also use the effective mask.
+        var walkBits = _currentMobileCantWalk ? (byte)0 : lookup.WalkMask;
+        var swimBits = _currentMobileCanSwim ? lookup.WetMask : (byte)0;
+        var mask = (byte)(walkBits | swimBits);
 
         for (var i = 0; i < 8; ++i)
         {
@@ -311,18 +335,35 @@ public class BitmapAStarAlgorithm : PathAlgorithm
                 }
             }
 
-            var z = i switch
-            {
-                0 => lookup.WalkZ_N,
-                1 => lookup.WalkZ_NE,
-                2 => lookup.WalkZ_E,
-                3 => lookup.WalkZ_SE,
-                4 => lookup.WalkZ_S,
-                5 => lookup.WalkZ_SW,
-                6 => lookup.WalkZ_W,
-                7 => lookup.WalkZ_NW,
-                _ => (sbyte)0
-            };
+            // Walking takes precedence over swimming when both apply (matches MovementImpl's
+            // surface-selection: closest-to-startZ wins, and walk surface is always closer
+            // when the creature is currently standing on land).
+            var useWalkZ = (walkBits & (1 << i)) != 0;
+            var z = useWalkZ
+                ? i switch
+                {
+                    0 => lookup.WalkZ_N,
+                    1 => lookup.WalkZ_NE,
+                    2 => lookup.WalkZ_E,
+                    3 => lookup.WalkZ_SE,
+                    4 => lookup.WalkZ_S,
+                    5 => lookup.WalkZ_SW,
+                    6 => lookup.WalkZ_W,
+                    7 => lookup.WalkZ_NW,
+                    _ => (sbyte)0
+                }
+                : i switch
+                {
+                    0 => lookup.SwimZ_N,
+                    1 => lookup.SwimZ_NE,
+                    2 => lookup.SwimZ_E,
+                    3 => lookup.SwimZ_SE,
+                    4 => lookup.SwimZ_S,
+                    5 => lookup.SwimZ_SW,
+                    6 => lookup.SwimZ_W,
+                    7 => lookup.SwimZ_NW,
+                    _ => (sbyte)0
+                };
 
             var idx = GetIndex(x + _xOffset, y + _yOffset, z);
 
@@ -371,12 +412,12 @@ public class BitmapAStarAlgorithm : PathAlgorithm
     }
 
     /// <summary>
-    /// True for creatures whose movement rules the static cache can't model (CanSwim
-    /// for water tiles, CanFly for Z-jumping, CantWalk for swim-only). CanOpenDoors and
-    /// CanMoveOverObstacles only affect dynamic items (slow-path territory) and don't
-    /// disqualify the cache. Non-GM players take the cache too — see _currentMobilePlayerStrict
-    /// for their AND-rule diagonal handling.
+    /// True for creatures whose movement rules the static cache can't model. Currently
+    /// only CanFly — flying creatures Z-jump arbitrarily and the cache's source-Z guard
+    /// would over-fire. CanSwim / CantWalk are handled via the capability overlay (walkMask
+    /// + wetMask). CanOpenDoors / CanMoveOverObstacles only affect dynamic items and don't
+    /// disqualify the cache.
     /// </summary>
     private static bool RequiresSlowPath(Mobile m) =>
-        m is BaseCreature bc && (bc.CanSwim || bc.CanFly || bc.CantWalk);
+        m is BaseCreature bc && bc.CanFly;
 }
