@@ -86,6 +86,45 @@ internal static class StepCacheFile
     /// silently skew walkability answers. Hash is stable as long as HashUtility's seed
     /// constant doesn't change.
     /// </summary>
+    /// <summary>
+    /// Peek at a .swb file's TileDataHash field (header byte offset 12) without
+    /// reading any chunk data. Returns false on missing file, bad magic, or wrong
+    /// version. Cheap — reads 20 bytes total.
+    /// </summary>
+    public static bool TryReadTileDataHash(string path, out ulong hash)
+    {
+        hash = 0;
+        if (!File.Exists(path))
+        {
+            return false;
+        }
+
+        try
+        {
+            using var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read | FileShare.Delete);
+            Span<byte> buf = stackalloc byte[20];
+            if (stream.Read(buf) < 20)
+            {
+                return false;
+            }
+            if (BinaryPrimitives.ReadUInt32LittleEndian(buf[0..]) != Magic)
+            {
+                return false;
+            }
+            if (BinaryPrimitives.ReadUInt32LittleEndian(buf[4..]) != FormatVersion)
+            {
+                return false;
+            }
+            // mapId is at buf[8..12], we skip; hash is at buf[12..20].
+            hash = BinaryPrimitives.ReadUInt64LittleEndian(buf[12..]);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
     public static ulong ComputeTileDataHash()
     {
         var landTable = TileData.LandTable;

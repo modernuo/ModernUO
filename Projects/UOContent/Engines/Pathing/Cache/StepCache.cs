@@ -84,6 +84,50 @@ public sealed class StepCache
     private readonly Dictionary<int, StepCacheFile.LazyReader> _lazyReaders = new();
 
     /// <summary>
+    /// XxHash3 fingerprint of the running server's TileData flag tables. Public surface
+    /// for tooling (benchmark fixtures, bake utilities) that wants to detect a stale
+    /// .swb file without round-tripping through the lazy-open path.
+    /// </summary>
+    public static ulong ComputeLiveTileDataHash() => StepCacheFile.ComputeTileDataHash();
+
+    /// <summary>
+    /// Peek at a .swb file's TileDataHash field without parsing the rest of the header.
+    /// Returns false on missing file, bad magic, or wrong version.
+    /// </summary>
+    public static bool TryReadTileDataHashFromFile(string path, out ulong hash) =>
+        StepCacheFile.TryReadTileDataHash(path, out hash);
+
+    /// <summary>
+    /// Walk every chunk in <paramref name="mapId"/>, populate the resident set, then
+    /// save to <paramref name="path"/>. Returns the number of chunks written.
+    /// Designed for offline / fixture use; blocks the calling thread for many seconds
+    /// on a full Trammel walk.
+    /// </summary>
+    public int BakeMap(int mapId, string path)
+    {
+        var map = Map.Maps[mapId];
+        if (map == null || map == Map.Internal)
+        {
+            return 0;
+        }
+
+        var chunkCols = (map.Width + ChunkSize - 1) / ChunkSize;
+        var chunkRows = (map.Height + ChunkSize - 1) / ChunkSize;
+
+        for (var cy = 0; cy < chunkRows; cy++)
+        {
+            for (var cx = 0; cx < chunkCols; cx++)
+            {
+                // Any sourceZ works — the chunk is built on first access regardless of
+                // whether the query returns Hit or Fallthrough_SourceZMismatch.
+                TryGetMask(map, cx * ChunkSize, cy * ChunkSize, sourceZ: 0);
+            }
+        }
+
+        return SaveToFile(path, mapId);
+    }
+
+    /// <summary>
     /// Persist all resident chunks for <paramref name="mapId"/> to a .swb file. Returns
     /// the number of chunks written. The file embeds a TileData fingerprint so a stale
     /// file (built before a client patch) can be detected and rejected at open time.
