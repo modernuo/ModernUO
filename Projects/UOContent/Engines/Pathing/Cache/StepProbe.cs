@@ -14,43 +14,37 @@ namespace Server.Engines.Pathing.Cache;
 /// callers must AND the partner-cell results at query time per the creature rule
 /// (one cardinal partner walkable suffices).
 /// </remarks>
-public static class StaticWalkabilityBaker
+public static class StepProbe
 {
     private const int PersonHeight = 16;
     private const int StepHeight = 2;
 
-    public static StaticWalkabilityResult ComputeMaskAt(Map map, int x, int y, sbyte sourceZ)
+    public static StepMask ComputeMaskAt(Map map, int x, int y, sbyte sourceZ)
     {
         if (map == null || map == Map.Internal)
         {
             return default;
         }
 
-        // Replicate GetStartZ for the source cell (no item list — static-only baker)
         GetStaticStartZ(map, x, y, sourceZ, out var startZ, out var startTop, out _);
 
         byte mask = 0;
-        var destZs = new sbyte[8];
+        Span<sbyte> destZs = stackalloc sbyte[8];
 
         for (var d = 0; d < 8; d++)
         {
-            var dir = (Direction)d;
-            int dx = x;
-            int dy = y;
-            CalcMoves.Offset(dir, ref dx, ref dy);
+            var dx = x;
+            var dy = y;
+            CalcMoves.Offset((Direction)d, ref dx, ref dy);
 
             if (CheckStaticStep(map, dx, dy, startZ, startTop, out var newZ))
             {
                 mask |= (byte)(1 << d);
                 destZs[d] = (sbyte)newZ;
             }
-            else
-            {
-                destZs[d] = 0;
-            }
         }
 
-        return new StaticWalkabilityResult(
+        return new StepMask(
             mask,
             destZs[0], destZs[1], destZs[2], destZs[3],
             destZs[4], destZs[5], destZs[6], destZs[7]
@@ -63,7 +57,7 @@ public static class StaticWalkabilityBaker
     /// surface that's reachable from locZ (paver Z+1 for paver-over-ground; landCenter
     /// for bare land). Mirrors MovementImpl.Check's surface-selection logic for the
     /// destination cell, distilled to "what Z value does the slow path return as newZ
-    /// when stepping ONTO this cell". Used by StaticWalkabilityCache to bake BakedSourceZ
+    /// when stepping ONTO this cell". Used by StepCache to bake SourceZ
     /// correctly so A*'s tracked-per-cell Z matches the cache's bake-time assumption.
     /// </summary>
     public static int ComputeStandingZ(Map map, int x, int y, int locZ)

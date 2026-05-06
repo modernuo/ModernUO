@@ -13,13 +13,13 @@ namespace Server.Engines.Pathing.Cache;
 /// Default-walker scope only. Cells with multi-Z surfaces and queries for non-default
 /// walkers route to the MovementImpl slow path via the Fallthrough_* hit kinds.
 /// </summary>
-public sealed class StaticWalkabilityCache
+public sealed class StepCache
 {
-    private static readonly ILogger logger = LogFactory.GetLogger(typeof(StaticWalkabilityCache));
+    private static readonly ILogger logger = LogFactory.GetLogger(typeof(StepCache));
 
-    public static StaticWalkabilityCache Instance { get; } = new();
+    public static StepCache Instance { get; } = new();
 
-    private readonly Dictionary<long, WalkabilityChunk> _chunks = new();
+    private readonly Dictionary<long, StepChunk> _chunks = new();
     // Parallel list of keys for O(1) random sampling during eviction. Kept in lockstep
     // with _chunks: append on Miss_NotBuilt, swap-and-pop on eviction.
     private readonly List<long> _keysList = new();
@@ -34,7 +34,7 @@ public sealed class StaticWalkabilityCache
     private long _evictionsByLruCap;
     private long _buildsTotal;
 
-    private StaticWalkabilityCache() { }
+    private StepCache() { }
 
     /// <summary>Hard cap on resident chunk count. Default 8192. Override for tests / ops.</summary>
     public int MaxResidentChunks { get; set; } = 8192;
@@ -201,10 +201,10 @@ public sealed class StaticWalkabilityCache
             return false;
         }
 
-        // Source-Z guard: the cache stores one answer per cell baked at BakedSourceZ.
+        // Source-Z guard: the cache stores one answer per cell baked at SourceZ.
         // StepHeight tolerance accepts incremental Z jitter; loosening it breaks parity
         // because tile reachability shifts at step-height boundaries.
-        if (Math.Abs(sourceZ - chunk.BakedSourceZ[cellIndex]) > StepHeight)
+        if (Math.Abs(sourceZ - chunk.SourceZ[cellIndex]) > StepHeight)
         {
             hitKind = CacheHitKind.Fallthrough_SourceZMismatch;
             _fallthroughSourceZMismatch++;
@@ -247,12 +247,12 @@ public sealed class StaticWalkabilityCache
     /// <summary>
     /// Chunk-miss resolution: build the chunk via the runtime baker.
     /// </summary>
-    private WalkabilityChunk ResolveMissingChunk(Map map, int chunkX, int chunkY) =>
+    private StepChunk ResolveMissingChunk(Map map, int chunkX, int chunkY) =>
         BuildChunk(map, chunkX, chunkY);
 
-    private WalkabilityChunk BuildChunk(Map map, int chunkX, int chunkY)
+    private StepChunk BuildChunk(Map map, int chunkX, int chunkY)
     {
-        var chunk = new WalkabilityChunk();
+        var chunk = new StepChunk();
         var sector = map.GetRealSector(chunkX, chunkY);
         chunk.BuiltMultisVersion = sector.MultisVersion;
 
@@ -270,14 +270,14 @@ public sealed class StaticWalkabilityCache
                 map.GetAverageZ(x, y, out _, out var avgZ, out _);
 
                 // Bake from the slow path's "standing Z" (the surface Z a creature actually
-                // stands at, not the ground avg). A* tracks newZ as standing Z, so BakedSourceZ
+                // stands at, not the ground avg). A* tracks newZ as standing Z, so SourceZ
                 // must match for the source-Z guard not to over-fire.
-                var standingZ = (sbyte)StaticWalkabilityBaker.ComputeStandingZ(map, x, y, avgZ);
+                var standingZ = (sbyte)StepProbe.ComputeStandingZ(map, x, y, avgZ);
 
-                var result = StaticWalkabilityBaker.ComputeMaskAt(map, x, y, standingZ);
+                var result = StepProbe.ComputeMaskAt(map, x, y, standingZ);
 
                 chunk.Mask[cell] = result.Mask;
-                chunk.BakedSourceZ[cell] = standingZ;
+                chunk.SourceZ[cell] = standingZ;
                 chunk.DestZN[cell]  = result.DestZ_N;
                 chunk.DestZNE[cell] = result.DestZ_NE;
                 chunk.DestZE[cell]  = result.DestZ_E;
@@ -305,7 +305,7 @@ public sealed class StaticWalkabilityCache
 
     /// <summary>
     /// Counts walkable surfaces actually reachable from a creature standing at sourceZ.
-    /// Mirrors <see cref="StaticWalkabilityBaker"/>.CheckStaticStep so cells flagged multi-Z
+    /// Mirrors <see cref="StepProbe"/>.CheckStaticStep so cells flagged multi-Z
     /// here are exactly those where the baker would have multiple candidate destinations.
     /// Reachable when: surface and !impassable; stepTop ≥ itemTop; vertical overlap with
     /// the creature's PersonHeight envelope.

@@ -25,7 +25,7 @@ namespace Server.PathAlgorithms.BitmapAStar;
 
 /// <summary>
 /// A* pathfinder with a single bitmap-cache lookup per cell expansion. Default walkers
-/// take one <see cref="StaticWalkabilityCache.TryGetMask"/> call returning the 8-direction
+/// take one <see cref="StepCache.TryGetMask"/> call returning the 8-direction
 /// mask + per-direction Z. Non-default walkers (non-GM players, creatures with swim/fly/
 /// door/clip capabilities) and per-cell cache fallthroughs route through
 /// <see cref="GetSuccessorsSlowPath"/>, which runs the per-direction
@@ -240,7 +240,7 @@ public class BitmapAStarAlgorithm : PathAlgorithm
     }
 
     /// <summary>
-    /// One <see cref="StaticWalkabilityCache.TryGetMask"/> call returns the 8-direction
+    /// One <see cref="StepCache.TryGetMask"/> call returns the 8-direction
     /// walkable mask + destination Zs. Diagonal corner-cut applies the lenient creature
     /// OR-rule using partner bits in the same mask byte — no neighbor-chunk lookup needed.
     /// On cache fallthrough or for non-default walkers, defers to
@@ -263,7 +263,7 @@ public class BitmapAStarAlgorithm : PathAlgorithm
 
         var count = 0;
 
-        StaticWalkabilityCache.Instance.TryGetMask(
+        StepCache.Instance.TryGetMask(
             map, p3D.X, p3D.Y, (sbyte)p3D.Z,
             out var mask,
             out var dN, out var dNE, out var dE, out var dSE,

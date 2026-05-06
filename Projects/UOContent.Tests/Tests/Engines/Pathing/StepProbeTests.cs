@@ -5,11 +5,11 @@ using Xunit.Abstractions;
 namespace Server.Tests.Pathfinding;
 
 [Collection("Sequential Pathfinding Tests")]
-public class StaticWalkabilityBakerTests
+public class StepProbeTests
 {
     private readonly ITestOutputHelper _output;
 
-    public StaticWalkabilityBakerTests(ITestOutputHelper output)
+    public StepProbeTests(ITestOutputHelper output)
     {
         _output = output;
     }
@@ -17,7 +17,7 @@ public class StaticWalkabilityBakerTests
     [Fact]
     public void ComputeMaskAt_NullMap_ReturnsDefault()
     {
-        var result = StaticWalkabilityBaker.ComputeMaskAt(null, 100, 100, 0);
+        var result = StepProbe.ComputeMaskAt(null, 100, 100, 0);
 
         Assert.Equal(0, result.Mask);
         for (var d = 0; d < 8; d++)
@@ -29,7 +29,7 @@ public class StaticWalkabilityBakerTests
     [Fact]
     public void ComputeMaskAt_InternalMap_ReturnsDefault()
     {
-        var result = StaticWalkabilityBaker.ComputeMaskAt(Map.Internal, 100, 100, 0);
+        var result = StepProbe.ComputeMaskAt(Map.Internal, 100, 100, 0);
 
         Assert.Equal(0, result.Mask);
         for (var d = 0; d < 8; d++)
@@ -52,7 +52,7 @@ public class StaticWalkabilityBakerTests
         var map = Map.Maps[1];
         Assert.NotNull(map);
 
-        var result = StaticWalkabilityBaker.ComputeMaskAt(map, 0, 0, 0);
+        var result = StepProbe.ComputeMaskAt(map, 0, 0, 0);
 
         Assert.False(result.IsWalkable(Direction.North), "N should be off-map");
         Assert.False(result.IsWalkable(Direction.Right), "NE should be off-map");
@@ -69,7 +69,7 @@ public class StaticWalkabilityBakerTests
 
         var x = map.Width - 1;
         var y = map.Height - 1;
-        var result = StaticWalkabilityBaker.ComputeMaskAt(map, x, y, 0);
+        var result = StepProbe.ComputeMaskAt(map, x, y, 0);
 
         // From the SE corner, S/SE/SW/E/NE all go off-map (only N/NW/W in-map).
         Assert.False(result.IsWalkable(Direction.Right), "NE should be off-map");
@@ -96,7 +96,7 @@ public class StaticWalkabilityBakerTests
             {
                 map.GetAverageZ(x, y, out _, out var avgZ, out _);
                 var sourceZ = (sbyte)avgZ;
-                var result = StaticWalkabilityBaker.ComputeMaskAt(map, x, y, sourceZ);
+                var result = StepProbe.ComputeMaskAt(map, x, y, sourceZ);
 
                 if (result.Mask != 0xFF)
                 {
@@ -141,7 +141,7 @@ public class StaticWalkabilityBakerTests
             {
                 map.GetAverageZ(x, y, out _, out var avgZ, out _);
                 var sourceZ = (sbyte)avgZ;
-                var result = StaticWalkabilityBaker.ComputeMaskAt(map, x, y, sourceZ);
+                var result = StepProbe.ComputeMaskAt(map, x, y, sourceZ);
 
                 if (result.Mask != 0xFF)
                 {
@@ -168,9 +168,9 @@ public class StaticWalkabilityBakerTests
         map.GetAverageZ(x, y, out _, out var avgZ, out _);
         var sourceZ = (sbyte)avgZ;
 
-        var first = StaticWalkabilityBaker.ComputeMaskAt(map, x, y, sourceZ);
-        var second = StaticWalkabilityBaker.ComputeMaskAt(map, x, y, sourceZ);
-        var third = StaticWalkabilityBaker.ComputeMaskAt(map, x, y, sourceZ);
+        var first = StepProbe.ComputeMaskAt(map, x, y, sourceZ);
+        var second = StepProbe.ComputeMaskAt(map, x, y, sourceZ);
+        var third = StepProbe.ComputeMaskAt(map, x, y, sourceZ);
 
         Assert.Equal(first.Mask, second.Mask);
         Assert.Equal(first.Mask, third.Mask);
@@ -195,7 +195,7 @@ public class StaticWalkabilityBakerTests
         map.GetAverageZ(1500, 1600, out _, out var avgZ, out _);
         var sourceZ = (sbyte)avgZ;
 
-        var result = StaticWalkabilityBaker.ComputeMaskAt(map, 1500, 1600, sourceZ);
+        var result = StepProbe.ComputeMaskAt(map, 1500, 1600, sourceZ);
 
         Assert.Equal((sbyte)10, sourceZ);
         Assert.Equal((byte)0xC1, result.Mask);
@@ -226,7 +226,7 @@ public class StaticWalkabilityBakerTests
         map.GetAverageZ(1480, 1610, out _, out var avgZ, out _);
         var sourceZ = (sbyte)avgZ;
 
-        var result = StaticWalkabilityBaker.ComputeMaskAt(map, 1480, 1610, sourceZ);
+        var result = StepProbe.ComputeMaskAt(map, 1480, 1610, sourceZ);
 
         Assert.Equal((sbyte)20, sourceZ);
         Assert.Equal((byte)0x3F, result.Mask);

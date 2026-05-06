@@ -26,6 +26,6 @@ public class CacheEvictionTimer : Timer
 
     protected override void OnTick()
     {
-        StaticWalkabilityCache.Instance.EnforceLruCap();
+        StepCache.Instance.EnforceLruCap();
     }
 }

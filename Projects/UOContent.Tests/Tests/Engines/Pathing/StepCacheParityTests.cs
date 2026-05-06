@@ -5,11 +5,11 @@ using Xunit.Abstractions;
 namespace Server.Tests.Pathfinding;
 
 [Collection("Sequential Pathfinding Tests")]
-public class StaticWalkabilityCacheParityTests
+public class StepCacheParityTests
 {
     private readonly ITestOutputHelper _output;
 
-    public StaticWalkabilityCacheParityTests(ITestOutputHelper output)
+    public StepCacheParityTests(ITestOutputHelper output)
     {
         _output = output;
     }
@@ -20,7 +20,7 @@ public class StaticWalkabilityCacheParityTests
     [InlineData("britain_causeway", 1475, 1641, 32)]
     public void CacheMatchesBaker(string label, int xStart, int yStart, int size)
     {
-        var cache = StaticWalkabilityCache.Instance;
+        var cache = StepCache.Instance;
         cache.Clear();
 
         var map = Map.Maps[1];
@@ -39,9 +39,9 @@ public class StaticWalkabilityCacheParityTests
                 // The cache bakes from the slow path's standing Z (the Z a creature actually
                 // stands at on this cell). Query with the same Z so the source-Z guard
                 // doesn't false-positive on every paver cell.
-                var sourceZ = (sbyte)StaticWalkabilityBaker.ComputeStandingZ(map, x, y, avgZ);
+                var sourceZ = (sbyte)StepProbe.ComputeStandingZ(map, x, y, avgZ);
 
-                var baker = StaticWalkabilityBaker.ComputeMaskAt(map, x, y, sourceZ);
+                var baker = StepProbe.ComputeMaskAt(map, x, y, sourceZ);
 
                 var ok = cache.TryGetMask(
                     map, x, y, sourceZ,

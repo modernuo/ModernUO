@@ -31,7 +31,7 @@ public class BitmapAStarAlgorithmTests
     [InlineData(1500, 1600, 1497, 1599)] // NW-ish, 3 W + 1 N
     public void DefaultWalker_FindsPath_ViaCacheFastPath(int sx, int sy, int gx, int gy)
     {
-        StaticWalkabilityCache.Instance.Clear();
+        StepCache.Instance.Clear();
         var map = Map.Maps[1];
         Assert.NotNull(map);
 
@@ -56,7 +56,7 @@ public class BitmapAStarAlgorithmTests
     [InlineData(1500, 1600, 1497, 1599)] // NW-ish, 3 W + 1 N
     public void CapabilityCreature_FindsPath_ViaInlineSlowPath(int sx, int sy, int gx, int gy)
     {
-        StaticWalkabilityCache.Instance.Clear();
+        StepCache.Instance.Clear();
         var map = Map.Maps[1];
         Assert.NotNull(map);
 

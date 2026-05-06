@@ -39,7 +39,7 @@ public class StaticWalkabilityParityTests
 
                 var loc = new Point3D(x, y, sourceZ);
 
-                var bakerResult = StaticWalkabilityBaker.ComputeMaskAt(map, x, y, sourceZ);
+                var bakerResult = StepProbe.ComputeMaskAt(map, x, y, sourceZ);
 
                 for (var d = 0; d < 8; d++)
                 {

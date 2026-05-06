@@ -1,6 +1,6 @@
 namespace Server.Engines.Pathing.Cache;
 
-public readonly struct StaticWalkabilityResult(
+public readonly struct StepMask(
     byte mask,
     sbyte destZn,
     sbyte destZne,

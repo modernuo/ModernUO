@@ -1,18 +1,18 @@
 namespace Server.Engines.Pathing.Cache;
 
 /// <summary>
-/// Per-chunk storage backing StaticWalkabilityCache. Holds raw walkability masks and
+/// Per-chunk storage backing StepCache. Holds raw walkability masks and
 /// destination Z values for each of 256 cells in a 16x16 chunk, plus build-time
 /// metadata (multis version, multi-Z bitmap) and LRU bookkeeping.
 /// </summary>
-internal sealed class WalkabilityChunk
+internal sealed class StepChunk
 {
     public const int CellsPerChunk = 256; // 16 x 16
 
     /// <summary>Bit i of Mask[c] = "can step from cell c to neighbor (Direction)i". Raw — no diagonal corner-cut applied here.</summary>
     public readonly byte[] Mask = new byte[CellsPerChunk];
 
-    public readonly sbyte[] BakedSourceZ = new sbyte[CellsPerChunk];
+    public readonly sbyte[] SourceZ = new sbyte[CellsPerChunk];
 
     public readonly sbyte[] DestZN  = new sbyte[CellsPerChunk];
     public readonly sbyte[] DestZNE = new sbyte[CellsPerChunk];
@@ -23,7 +23,12 @@ internal sealed class WalkabilityChunk
     public readonly sbyte[] DestZW  = new sbyte[CellsPerChunk];
     public readonly sbyte[] DestZNW = new sbyte[CellsPerChunk];
 
-    /// <summary>32 bytes = 256 bits. Bit set = cell has &gt;1 walkable surface; route to slow path.</summary>
+    /// <summary>
+    /// 32 bytes = 256 bits. Bit set = cell has &gt;1 walkable surface; route to slow path.
+    /// TODO(PR2): lazy-init this. The vast majority of chunks are entirely single-Z, so
+    /// allocating 32 bytes per chunk wastes ~256KB at full cap. Make nullable; allocate
+    /// on first MarkCellMultiZ; IsCellMultiZ short-circuits to false when null.
+    /// </summary>
     public readonly byte[] MultiZCells = new byte[32];
 
     /// <summary>Snapshot of Sector.MultisVersion at the time this chunk was built.</summary>

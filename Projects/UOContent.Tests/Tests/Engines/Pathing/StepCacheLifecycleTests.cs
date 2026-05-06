@@ -4,19 +4,19 @@ using Xunit;
 namespace Server.Tests.Pathfinding;
 
 [Collection("Sequential Pathfinding Tests")]
-public class StaticWalkabilityCacheLifecycleTests
+public class StepCacheLifecycleTests
 {
     [Fact]
     public void Singleton_IsAvailable()
     {
-        var cache = StaticWalkabilityCache.Instance;
+        var cache = StepCache.Instance;
         Assert.NotNull(cache);
     }
 
     [Fact]
     public void Clear_OnEmptyCache_LeavesStatsZero()
     {
-        var cache = StaticWalkabilityCache.Instance;
+        var cache = StepCache.Instance;
         cache.Clear();
 
         var stats = cache.GetStats();
@@ -28,7 +28,7 @@ public class StaticWalkabilityCacheLifecycleTests
     [Fact]
     public void TryGetMask_FirstQuery_BuildsChunkAndReturnsBakerOutput()
     {
-        var cache = StaticWalkabilityCache.Instance;
+        var cache = StepCache.Instance;
         cache.Clear();
 
         var map = Map.Maps[1];
@@ -74,7 +74,7 @@ public class StaticWalkabilityCacheLifecycleTests
     [Fact]
     public void TryGetMask_OffMap_ReturnsFalseFallthrough()
     {
-        var cache = StaticWalkabilityCache.Instance;
+        var cache = StepCache.Instance;
         cache.Clear();
 
         var map = Map.Maps[1];
@@ -93,7 +93,7 @@ public class StaticWalkabilityCacheLifecycleTests
     [Fact]
     public void MultisVersion_Bump_TriggersDirtyRebuild()
     {
-        var cache = StaticWalkabilityCache.Instance;
+        var cache = StepCache.Instance;
         cache.Clear();
 
         var map = Map.Maps[1];
@@ -136,7 +136,7 @@ public class StaticWalkabilityCacheLifecycleTests
     [Fact]
     public void MultiZCell_RoutesToFallthrough()
     {
-        var cache = StaticWalkabilityCache.Instance;
+        var cache = StepCache.Instance;
         cache.Clear();
 
         var map = Map.Maps[1];
@@ -150,14 +150,14 @@ public class StaticWalkabilityCacheLifecycleTests
         var preInjectionFallthroughMultiZ = cache.GetStats().FallthroughMultiZ;
 
         // Inject a multi-Z bit via reflection on the resident chunk.
-        var chunksField = typeof(StaticWalkabilityCache).GetField(
+        var chunksField = typeof(StepCache).GetField(
             "_chunks",
             System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance
         );
         Assert.NotNull(chunksField);
-        var chunks = (System.Collections.Generic.Dictionary<long, WalkabilityChunk>)chunksField.GetValue(cache);
+        var chunks = (System.Collections.Generic.Dictionary<long, StepChunk>)chunksField.GetValue(cache);
 
-        var key = StaticWalkabilityCacheKeyHelper.EncodeKey(map.MapID, 1500 >> 4, 1600 >> 4);
+        var key = StepCache.EncodeKey(map.MapID, 1500 >> 4, 1600 >> 4);
         Assert.True(chunks.ContainsKey(key));
         var chunk = chunks[key];
 
@@ -179,7 +179,7 @@ public class StaticWalkabilityCacheLifecycleTests
     [Fact]
     public void LruCap_OverflowEvictsToCap()
     {
-        var cache = StaticWalkabilityCache.Instance;
+        var cache = StepCache.Instance;
         cache.Clear();
         cache.MaxResidentChunks = 4;
 
@@ -205,15 +205,15 @@ public class StaticWalkabilityCacheLifecycleTests
             // _keysList must stay in lockstep with _chunks. A desync would silently
             // break sampled eviction (KeyNotFoundException on stale keys, or a stuck
             // resident set on missing keys).
-            var chunksField = typeof(StaticWalkabilityCache).GetField(
+            var chunksField = typeof(StepCache).GetField(
                 "_chunks",
                 System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance
             );
-            var keysListField = typeof(StaticWalkabilityCache).GetField(
+            var keysListField = typeof(StepCache).GetField(
                 "_keysList",
                 System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance
             );
-            var chunks = (System.Collections.Generic.Dictionary<long, WalkabilityChunk>)chunksField.GetValue(cache);
+            var chunks = (System.Collections.Generic.Dictionary<long, StepChunk>)chunksField.GetValue(cache);
             var keysList = (System.Collections.Generic.List<long>)keysListField.GetValue(cache);
             Assert.Equal(chunks.Count, keysList.Count);
             foreach (var k in keysList)
