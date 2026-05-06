@@ -81,8 +81,88 @@ public class BitmapAStarAlgorithmTests
         _output.WriteLine($"swimmer ({sx},{sy})->({gx},{gy}): {result.Length} steps");
     }
 
+    [Fact]
+    public void NonGmPlayer_UsesCache_WithStrictDiagonalRule()
+    {
+        StepCache.Instance.Clear();
+        var map = Map.Maps[1];
+        Assert.NotNull(map);
+
+        var stub = new PlayerStub();
+        map.GetAverageZ(1500, 1600, out _, out var startZ, out _);
+        var start = new Point3D(1500, 1600, (sbyte)startZ);
+        var goal = new Point3D(1498, 1598, (sbyte)startZ);
+
+        stub.MoveToWorld(start, map);
+
+        var statsBefore = StepCache.Instance.GetStats();
+        var result = BitmapAStarAlgorithm.Instance.Find(stub, map, start, goal);
+        var statsAfter = StepCache.Instance.GetStats();
+
+        stub.Delete();
+
+        Assert.NotNull(result);
+        Assert.NotEmpty(result);
+        // BuildsTotal increments on every chunk build, which happens only when the cache
+        // is queried. Slow path never touches the cache.
+        Assert.True(statsAfter.BuildsTotal > statsBefore.BuildsTotal,
+            "Non-GM player should use the cache, not the slow path");
+    }
+
+    [Fact]
+    public void DoorCreature_UsesCache_NotSlowPath()
+    {
+        StepCache.Instance.Clear();
+        var map = Map.Maps[1];
+
+        var stub = new DoorOpenerStub(World.NewMobile);
+        stub.DefaultMobileInit();
+        map.GetAverageZ(1500, 1600, out _, out var startZ, out _);
+        var start = new Point3D(1500, 1600, (sbyte)startZ);
+        var goal = new Point3D(1498, 1598, (sbyte)startZ);
+
+        stub.MoveToWorld(start, map);
+
+        var statsBefore = StepCache.Instance.GetStats();
+        var result = BitmapAStarAlgorithm.Instance.Find(stub, map, start, goal);
+        var statsAfter = StepCache.Instance.GetStats();
+
+        stub.Delete();
+
+        Assert.NotNull(result);
+        Assert.NotEmpty(result);
+        Assert.True(statsAfter.BuildsTotal > statsBefore.BuildsTotal,
+            "CanOpenDoors creature should use the cache (doors are dynamic items)");
+    }
+
+    [Fact]
+    public void ObstacleCreature_UsesCache_NotSlowPath()
+    {
+        StepCache.Instance.Clear();
+        var map = Map.Maps[1];
+
+        var stub = new ObstacleClimberStub(World.NewMobile);
+        stub.DefaultMobileInit();
+        map.GetAverageZ(1500, 1600, out _, out var startZ, out _);
+        var start = new Point3D(1500, 1600, (sbyte)startZ);
+        var goal = new Point3D(1498, 1598, (sbyte)startZ);
+
+        stub.MoveToWorld(start, map);
+
+        var statsBefore = StepCache.Instance.GetStats();
+        var result = BitmapAStarAlgorithm.Instance.Find(stub, map, start, goal);
+        var statsAfter = StepCache.Instance.GetStats();
+
+        stub.Delete();
+
+        Assert.NotNull(result);
+        Assert.NotEmpty(result);
+        Assert.True(statsAfter.BuildsTotal > statsBefore.BuildsTotal,
+            "CanMoveOverObstacles creature should use the cache (movables are dynamic items)");
+    }
+
     /// <summary>
-    /// Plain Mobile — IsDefaultWalker returns true, the bitmap algorithm uses the cache
+    /// Plain Mobile — RequiresSlowPath returns false, the bitmap algorithm uses the cache
     /// fast path on every expansion.
     /// </summary>
     private sealed class DefaultWalkerStub : Mobile
@@ -94,7 +174,20 @@ public class BitmapAStarAlgorithmTests
     }
 
     /// <summary>
-    /// BaseCreature with CanSwim=true — IsDefaultWalker returns false, the bitmap
+    /// Mobile with Player=true and default AccessLevel (Player). Triggers the strict
+    /// AND-rule for diagonal corner-cut while still using the cache.
+    /// </summary>
+    private sealed class PlayerStub : Mobile
+    {
+        public PlayerStub()
+        {
+            Body = 0xC9;
+            Player = true;
+        }
+    }
+
+    /// <summary>
+    /// BaseCreature with CanSwim=true — RequiresSlowPath returns true, the bitmap
     /// algorithm short-circuits GetSuccessors to GetSuccessorsSlowPath on every cell.
     /// Use the Serial constructor (deserialization path) to bypass NPCSpeeds init,
     /// which requires the npc-speeds.json table loaded — not available in tests.
@@ -105,5 +198,25 @@ public class BitmapAStarAlgorithmTests
         {
             Body = 0xC9;
         }
+    }
+
+    private sealed class DoorOpenerStub : BaseCreature
+    {
+        public DoorOpenerStub(Serial serial) : base(serial)
+        {
+            Body = 0xC9;
+        }
+
+        public override bool CanOpenDoors => true;
+    }
+
+    private sealed class ObstacleClimberStub : BaseCreature
+    {
+        public ObstacleClimberStub(Serial serial) : base(serial)
+        {
+            Body = 0xC9;
+        }
+
+        public override bool CanMoveOverObstacles => true;
     }
 }

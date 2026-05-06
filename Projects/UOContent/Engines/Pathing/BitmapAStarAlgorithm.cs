@@ -61,8 +61,13 @@ public class BitmapAStarAlgorithm : PathAlgorithm
     private static int _yOffset;
 
     // When set, GetSuccessors delegates to the per-cell slow path on every expansion
-    // (preserves player AND-rule and BaseCreature capability overlays). Reset at end of Find.
+    // (creature has a capability the cache doesn't model: CanSwim/CanFly/CantWalk).
     private static bool _currentMobileNeedsSlowPath;
+
+    // When set, diagonal corner-cut uses the strict AND-rule (BOTH cardinal partners
+    // must be walkable) instead of the lenient creature OR-rule. Cache still applies —
+    // walkMask carries the partner bits in the same byte. Non-GM players only.
+    private static bool _currentMobilePlayerStrict;
 
     private Point3D _goal;
 
@@ -89,7 +94,8 @@ public class BitmapAStarAlgorithm : PathAlgorithm
             return null;
         }
 
-        _currentMobileNeedsSlowPath = !IsDefaultWalker(m);
+        _currentMobileNeedsSlowPath = RequiresSlowPath(m);
+        _currentMobilePlayerStrict = m.Player && m.AccessLevel < AccessLevel.GameMaster;
 
         Array.Clear(_nodeStates);
 
@@ -220,12 +226,14 @@ public class BitmapAStarAlgorithm : PathAlgorithm
 
                 _openQueue.Clear();
                 _currentMobileNeedsSlowPath = false;
+                _currentMobilePlayerStrict = false;
                 return dirs;
             }
         }
 
         _openQueue.Clear();
         _currentMobileNeedsSlowPath = false;
+        _currentMobilePlayerStrict = false;
         return null;
     }
 
@@ -294,12 +302,16 @@ public class BitmapAStarAlgorithm : PathAlgorithm
                 continue;
             }
 
-            // Diagonal corner-cut (creature OR-rule): partner bits live in the same mask byte.
+            // Diagonal corner-cut. Creatures (default): OR-rule — at least one cardinal
+            // partner walkable. Non-GM players: AND-rule — BOTH partners must be walkable.
+            // Partner bits live in the same source-cell mask byte either way.
             if ((i & 1) == 1)
             {
                 var leftBit = 1 << ((i - 1) & 0x7);
                 var rightBit = 1 << ((i + 1) & 0x7);
-                if ((mask & leftBit) == 0 && (mask & rightBit) == 0)
+                if (_currentMobilePlayerStrict
+                        ? (mask & leftBit) == 0 || (mask & rightBit) == 0
+                        : (mask & leftBit) == 0 && (mask & rightBit) == 0)
                 {
                     continue;
                 }
@@ -365,22 +377,12 @@ public class BitmapAStarAlgorithm : PathAlgorithm
     }
 
     /// <summary>
-    /// Default walker = the cache's baked rules apply directly (lenient OR-rule for
-    /// diagonal corner-cut, no capability overlays). Non-GM players (strict AND-rule)
-    /// and creatures with swim/fly/door/clip capabilities require the slow path.
+    /// True for creatures whose movement rules the static cache can't model (CanSwim
+    /// for water tiles, CanFly for Z-jumping, CantWalk for swim-only). CanOpenDoors and
+    /// CanMoveOverObstacles only affect dynamic items (slow-path territory) and don't
+    /// disqualify the cache. Non-GM players take the cache too — see _currentMobilePlayerStrict
+    /// for their AND-rule diagonal handling.
     /// </summary>
-    private static bool IsDefaultWalker(Mobile m)
-    {
-        if (m.Player && m.AccessLevel < AccessLevel.GameMaster)
-        {
-            return false;
-        }
-
-        if (m is not BaseCreature bc)
-        {
-            return true;
-        }
-
-        return !bc.CanSwim && !bc.CanFly && !bc.CanOpenDoors && !bc.CanMoveOverObstacles;
-    }
+    private static bool RequiresSlowPath(Mobile m) =>
+        m is BaseCreature bc && (bc.CanSwim || bc.CanFly || bc.CantWalk);
 }
