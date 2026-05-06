@@ -348,6 +348,18 @@ public sealed class StepCache
 
         if (chunk.IsCellMultiZ(cellIndex))
         {
+            // Tier 4: try the per-cell strata. Each stratum is keyed by its bake-time
+            // standing-Z; a query matches when |sourceZ - stratum.zCenter| <= StepHeight.
+            if (TryStratumHit(chunk, cellIndex, sourceZ, hitKindResult, out var stratumResult))
+            {
+                switch (hitKindResult)
+                {
+                    case CacheHitKind.Miss_NotBuilt:    { _missesNotBuilt++;     break; }
+                    case CacheHitKind.Miss_DirtyRebuild: { _missesDirtyRebuild++; break; }
+                    case CacheHitKind.Hit:              { _hits++;               break; }
+                }
+                return stratumResult;
+            }
             _fallthroughMultiZ++;
             return new StepMask(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CacheHitKind.Fallthrough_MultiZ);
         }
@@ -425,6 +437,11 @@ public sealed class StepCache
         var baseX = chunkX << 4;
         var baseY = chunkY << 4;
 
+        // Tier 4 strata accumulator. Lazily allocated when the first multi-Z cell
+        // appears; otherwise the chunk has zero strata overhead.
+        ushort[] strataOffsetByCell = null;
+        System.Collections.Generic.List<byte> strataData = null;
+
         for (var dy = 0; dy < ChunkSize; dy++)
         {
             for (var dx = 0; dx < ChunkSize; dx++)
@@ -462,17 +479,143 @@ public sealed class StepCache
                 chunk.SwimZW[cell]   = result.SwimZ_W;
                 chunk.SwimZNW[cell]  = result.SwimZ_NW;
 
-                // Multi-Z = ≥2 surfaces reachable from standingZ. Mirrors the baker's
-                // CheckStaticStep filter so we don't over-mark.
+                // Multi-Z handling: if the cell has 2+ reachable surfaces, compute its
+                // Tier 4 strata so future queries can be answered without falling through
+                // to the slow path. ComputeStrataAt returns null for single-Z cells.
                 if (CountReachableSurfaces(map, x, y, standingZ) > 1)
                 {
-                    chunk.MarkCellMultiZ(cell);
+                    var strata = StepProbe.ComputeStrataAt(map, x, y);
+                    if (strata != null)
+                    {
+                        if (strataOffsetByCell == null)
+                        {
+                            strataOffsetByCell = new ushort[StepChunk.CellsPerChunk];
+                            for (var i = 0; i < strataOffsetByCell.Length; i++)
+                            {
+                                strataOffsetByCell[i] = StepChunk.NoStrata;
+                            }
+                            strataData = new System.Collections.Generic.List<byte>(256);
+                        }
+
+                        // Cap at 65,535 byte offsets — well above realistic per-chunk
+                        // strata volume. If we ever blow past this we'd silently truncate;
+                        // assert as a defensive guard.
+                        if (strataData.Count > ushort.MaxValue - StepChunk.StratumByteLength * 8)
+                        {
+                            // Should never happen for sane tile data; bail to fallthrough.
+                        }
+                        else
+                        {
+                            strataOffsetByCell[cell] = (ushort)strataData.Count;
+                            strataData.Add((byte)strata.Length);
+                            for (var s = 0; s < strata.Length; s++)
+                            {
+                                AppendStratumBytes(strataData, strata[s]);
+                            }
+                        }
+                    }
                 }
             }
         }
 
+        if (strataOffsetByCell != null)
+        {
+            chunk.SetStrata(strataOffsetByCell, strataData.ToArray());
+        }
+
         _buildsTotal++;
         return chunk;
+    }
+
+    /// <summary>
+    /// Tier 4 strata lookup. Walks the cell's stratum list, returns true with the first
+    /// stratum whose <c>zCenter</c> is within StepHeight of <paramref name="sourceZ"/>.
+    /// Layout matches <see cref="StepChunk.StrataData"/>: u8 count, then count × 19-byte
+    /// stratum (sbyte zCenter, byte walkMask, byte wetMask, 8 sbyte walkZ, 8 sbyte swimZ).
+    /// </summary>
+    private static bool TryStratumHit(
+        StepChunk chunk, int cellIndex, sbyte sourceZ, CacheHitKind hitKind, out StepMask result
+    )
+    {
+        var off = chunk.GetStrataOffset(cellIndex);
+        if (off == StepChunk.NoStrata)
+        {
+            result = default;
+            return false;
+        }
+
+        var data = chunk.StrataData;
+        if (off >= data.Length)
+        {
+            result = default;
+            return false;
+        }
+
+        var count = data[off];
+        var entryStart = off + 1;
+        for (var i = 0; i < count; i++)
+        {
+            var entryOff = entryStart + i * StepChunk.StratumByteLength;
+            if (entryOff + StepChunk.StratumByteLength > data.Length)
+            {
+                break;
+            }
+            var zCenter = (sbyte)data[entryOff];
+            if (Math.Abs(sourceZ - zCenter) > StepHeight)
+            {
+                continue;
+            }
+            result = new StepMask(
+                /* walkMask */ data[entryOff + 1],
+                /* wetMask  */ data[entryOff + 2],
+                (sbyte)data[entryOff + 3],
+                (sbyte)data[entryOff + 4],
+                (sbyte)data[entryOff + 5],
+                (sbyte)data[entryOff + 6],
+                (sbyte)data[entryOff + 7],
+                (sbyte)data[entryOff + 8],
+                (sbyte)data[entryOff + 9],
+                (sbyte)data[entryOff + 10],
+                (sbyte)data[entryOff + 11],
+                (sbyte)data[entryOff + 12],
+                (sbyte)data[entryOff + 13],
+                (sbyte)data[entryOff + 14],
+                (sbyte)data[entryOff + 15],
+                (sbyte)data[entryOff + 16],
+                (sbyte)data[entryOff + 17],
+                (sbyte)data[entryOff + 18],
+                hitKind
+            );
+            return true;
+        }
+
+        result = default;
+        return false;
+    }
+
+    private static void AppendStratumBytes(
+        System.Collections.Generic.List<byte> dst, in StepProbe.ComputedStratum s
+    )
+    {
+        dst.Add((byte)s.ZCenter);
+        dst.Add(s.Mask.WalkMask);
+        dst.Add(s.Mask.WetMask);
+        dst.Add((byte)s.Mask.WalkZ_N);
+        dst.Add((byte)s.Mask.WalkZ_NE);
+        dst.Add((byte)s.Mask.WalkZ_E);
+        dst.Add((byte)s.Mask.WalkZ_SE);
+        dst.Add((byte)s.Mask.WalkZ_S);
+        dst.Add((byte)s.Mask.WalkZ_SW);
+        dst.Add((byte)s.Mask.WalkZ_W);
+        dst.Add((byte)s.Mask.WalkZ_NW);
+        dst.Add((byte)s.Mask.SwimZ_N);
+        dst.Add((byte)s.Mask.SwimZ_NE);
+        dst.Add((byte)s.Mask.SwimZ_E);
+        dst.Add((byte)s.Mask.SwimZ_SE);
+        dst.Add((byte)s.Mask.SwimZ_S);
+        dst.Add((byte)s.Mask.SwimZ_SW);
+        dst.Add((byte)s.Mask.SwimZ_W);
+        dst.Add((byte)s.Mask.SwimZ_NW);
     }
 
     private const int PersonHeight = 16;

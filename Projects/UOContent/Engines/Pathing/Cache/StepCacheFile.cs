@@ -14,11 +14,11 @@ namespace Server.Engines.Pathing.Cache;
 /// only when the cache asks for them. RAM stays bounded by MaxResidentChunks regardless
 /// of file size.
 ///
-/// File layout (little-endian, BufferWriter / BufferReader convention):
+/// File layout v2 (little-endian, BufferWriter / BufferReader convention):
 ///
 ///   Header (48 bytes):
 ///     u32   Magic           = 0x42575300 ('SWB\0')
-///     u32   Version         = current FormatVersion
+///     u32   Version         = current FormatVersion (2)
 ///     u32   MapId
 ///     u64   Fingerprint     XxHash3 over (1) LandTable + ItemTable flags AND (2) the
 ///                           on-disk bytes of mapX.mul / .uop, staidxX.mul, staticsX.mul.
@@ -31,27 +31,47 @@ namespace Server.Engines.Pathing.Cache;
 ///     u64   IndexOffset     File position where the chunk index begins.
 ///
 ///   Per chunk (ChunkCount times, variable size):
-///     u16   ChunkX
-///     u16   ChunkY
-///     u32   BuiltMultisVersion
-///     u8    HasMultiZ       0 = no MultiZCells follow; 1 = 32 bytes of MultiZCells follow
-///     byte  WalkMask[256]
-///     byte  WetMask[256]
-///     sbyte SourceZ[256]
-///     sbyte WalkZN[256]..WalkZNW[256]    (8 arrays in N,NE,E,SE,S,SW,W,NW order)
-///     sbyte SwimZN[256]..SwimZNW[256]    (8 arrays in same order)
-///     [byte MultiZCells[32] — only when HasMultiZ == 1]
+///     u16    ChunkX
+///     u16    ChunkY
+///     u32    BuiltMultisVersion
+///     u8     HasStrata       0 = single-Z chunk (no strata trailer); 1 = strata trailer follows
+///     byte   WalkMask[256]
+///     byte   WetMask[256]
+///     sbyte  SourceZ[256]
+///     sbyte  WalkZN[256]..WalkZNW[256]   (8 arrays in N,NE,E,SE,S,SW,W,NW order)
+///     sbyte  SwimZN[256]..SwimZNW[256]   (8 arrays in same order)
+///     // Strata trailer — only when HasStrata == 1:
+///     u16    StrataOffsetByCell[256]    (NoStrata sentinel = 0xFFFF)
+///     u32    StrataDataLength
+///     byte   StrataData[StrataDataLength]
+///       For each multi-Z cell: u8 stratumCount, then stratumCount × Stratum (19 bytes):
+///         sbyte zCenter
+///         byte  walkMask, wetMask
+///         sbyte walkZ_N..NW (8)
+///         sbyte swimZ_N..NW (8)
 ///
-///   Index trailer (16 × ChunkCount bytes):
-///     For each chunk: { u64 chunkKey, u64 fileOffset }
+///   Index trailer (20 × ChunkCount bytes):
+///     For each chunk: { u64 chunkKey, u64 fileOffset, u32 recordLength }
 ///
-/// Per-chunk size: ~5,393 bytes (no multi-Z) or ~5,425 bytes (with multi-Z).
-/// LRU bookkeeping (LastTouchedTicks) is intentionally not persisted.
+/// Per-chunk fixed portion: ~5,393 bytes. Strata trailer: 516 + N × ~30 bytes for a
+/// chunk with N multi-Z cells averaging ~2 strata each. LRU bookkeeping
+/// (LastTouchedTicks) is intentionally not persisted.
+///
+/// Files with version &lt; <see cref="MinSupportedVersion"/> are silently rejected
+/// at open time (treated as missing) and overwritten on the next save.
 /// </summary>
 internal static class StepCacheFile
 {
     public const uint Magic = 0x42575300; // 'SWB\0'
-    public const uint FormatVersion = 1;
+    public const uint FormatVersion = 2;
+
+    /// <summary>
+    /// Lowest format version this binary can load. Files below this version are treated as
+    /// missing (silently rejected) — a subsequent SaveToFile / BakeMap overwrites them with
+    /// the current FormatVersion. Bumped to 2 when Tier 4 multi-Z strata landed; v1 had no
+    /// strata data and is incompatible with the strata-aware lookup path.
+    /// </summary>
+    public const uint MinSupportedVersion = 2;
 
     private const int HeaderSize =
         sizeof(uint)    // Magic
@@ -62,8 +82,12 @@ internal static class StepCacheFile
         + sizeof(uint)  // ChunkCount
         + sizeof(ulong); // IndexOffset
 
-    private const int IndexEntryBytes = sizeof(ulong) + sizeof(ulong); // chunkKey + offset
+    // Index entry: chunkKey + fileOffset + recordLength. Bumped to include length when
+    // strata made chunk records variable-size; the lazy reader uses length to do a
+    // single bulk read per chunk without consulting the next offset.
+    private const int IndexEntryBytes = sizeof(ulong) + sizeof(ulong) + sizeof(uint);
 
+    /// <summary>Fixed-size portion of a chunk record (everything except the optional strata trailer).</summary>
     private const int BytesPerChunkBase =
         sizeof(ushort) + sizeof(ushort) + sizeof(uint) + sizeof(byte)
         + StepChunk.CellsPerChunk           // WalkMask
@@ -72,7 +96,8 @@ internal static class StepCacheFile
         + 8 * StepChunk.CellsPerChunk       // WalkZ[8]
         + 8 * StepChunk.CellsPerChunk;      // SwimZ[8]
 
-    private const int BytesPerMultiZ = 32;
+    /// <summary>Strata trailer overhead when present: 256×u16 offset table + u32 data length.</summary>
+    private const int StrataTrailerOverhead = StepChunk.CellsPerChunk * sizeof(ushort) + sizeof(uint);
 
     /// <summary>
     /// Byte offset of the IndexOffset u64 within the header
@@ -107,7 +132,8 @@ internal static class StepCacheFile
             {
                 return false;
             }
-            if (BinaryPrimitives.ReadUInt32LittleEndian(buf[4..]) != FormatVersion)
+            var version = BinaryPrimitives.ReadUInt32LittleEndian(buf[4..]);
+            if (version < MinSupportedVersion || version > FormatVersion)
             {
                 return false;
             }
@@ -175,8 +201,11 @@ internal static class StepCacheFile
     {
         Directory.CreateDirectory(Path.GetDirectoryName(path) ?? ".");
 
+        // Initial estimate: base record + a modest strata budget per chunk. BufferWriter
+        // grows on overflow, so under-estimating just causes a few realloc/copy cycles
+        // during the bake — not a correctness issue.
         var capacity = HeaderSize
-                       + (BytesPerChunkBase + BytesPerMultiZ) * (int)chunkCount
+                       + (BytesPerChunkBase + 256) * (int)chunkCount
                        + IndexEntryBytes * (int)chunkCount;
         var buffer = new byte[capacity];
         var w = new BufferWriter(buffer, prefixStr: false);
@@ -189,7 +218,7 @@ internal static class StepCacheFile
         w.Write(chunkCount);
         w.Write(0UL); // IndexOffset placeholder, patched after chunks
 
-        var indexEntries = new (ulong key, ulong offset)[chunkCount];
+        var indexEntries = new (ulong key, ulong offset, uint length)[chunkCount];
         var written = 0u;
         while (next(out var chunkX, out var chunkY, out var chunk))
         {
@@ -201,7 +230,8 @@ internal static class StepCacheFile
             }
             var chunkOffset = (ulong)w.Position;
             WriteChunk(w, chunkX, chunkY, chunk);
-            indexEntries[written] = (PackChunkKey(chunkX, chunkY), chunkOffset);
+            var chunkLength = (uint)((ulong)w.Position - chunkOffset);
+            indexEntries[written] = (PackChunkKey(chunkX, chunkY), chunkOffset, chunkLength);
             written++;
         }
 
@@ -217,13 +247,16 @@ internal static class StepCacheFile
         {
             w.Write(indexEntries[i].key);
             w.Write(indexEntries[i].offset);
+            w.Write(indexEntries[i].length);
         }
 
-        // Patch IndexOffset directly into the buffer (BufferWriter has no Seek).
-        BinaryPrimitives.WriteUInt64LittleEndian(buffer.AsSpan(IndexOffsetFieldPosition, 8), indexOffset);
+        // Patch IndexOffset on the writer's current backing buffer (BufferWriter may
+        // have grown during chunk writes; the original `buffer` ref is stale after grow).
+        var liveBuffer = w.Buffer;
+        BinaryPrimitives.WriteUInt64LittleEndian(liveBuffer.AsSpan(IndexOffsetFieldPosition, 8), indexOffset);
 
         var totalBytes = (int)w.Position;
-        File.WriteAllBytes(path, buffer.AsSpan(0, totalBytes).ToArray());
+        File.WriteAllBytes(path, liveBuffer.AsSpan(0, totalBytes).ToArray());
     }
 
     /// <summary>
@@ -262,8 +295,10 @@ internal static class StepCacheFile
                 return null;
             }
             var version = BinaryPrimitives.ReadUInt32LittleEndian(headerBuf[4..]);
-            if (version != FormatVersion)
+            if (version < MinSupportedVersion || version > FormatVersion)
             {
+                // Below the minimum supported version: treat as missing. Older files
+                // get silently overwritten on the next SaveToFile / BakeMap.
                 stream.Dispose();
                 return null;
             }
@@ -290,13 +325,14 @@ internal static class StepCacheFile
                 return null;
             }
 
-            var offsets = new Dictionary<ulong, ulong>((int)chunkCount);
+            var offsets = new Dictionary<ulong, (ulong offset, uint length)>((int)chunkCount);
             for (var i = 0; i < chunkCount; i++)
             {
                 var entry = indexBuf.AsSpan(i * IndexEntryBytes);
                 var key = BinaryPrimitives.ReadUInt64LittleEndian(entry);
                 var off = BinaryPrimitives.ReadUInt64LittleEndian(entry[8..]);
-                offsets[key] = off;
+                var len = BinaryPrimitives.ReadUInt32LittleEndian(entry[16..]);
+                offsets[key] = (off, len);
             }
 
             return new LazyReader(stream, mapId, fingerprint, bakeTimestamp, chunkCount, offsets);
@@ -316,8 +352,10 @@ internal static class StepCacheFile
         w.Write((ushort)chunkY);
         w.Write((uint)chunk.BuiltMultisVersion);
 
-        var multiZ = chunk.GetMultiZCellsForSerialization();
-        w.Write((byte)(multiZ != null ? 1 : 0));
+        var strataOffsetByCell = chunk.GetStrataOffsetByCellForSerialization();
+        var strataData = chunk.GetStrataDataForSerialization();
+        var hasStrata = strataOffsetByCell != null;
+        w.Write((byte)(hasStrata ? 1 : 0));
 
         w.Write(chunk.WalkMask);
         w.Write(chunk.WetMask);
@@ -341,9 +379,19 @@ internal static class StepCacheFile
         WriteSBytes(w, chunk.SwimZW);
         WriteSBytes(w, chunk.SwimZNW);
 
-        if (multiZ != null)
+        if (hasStrata)
         {
-            w.Write(multiZ);
+            // 256 × u16 offsets, then u32 length-prefixed strata byte array.
+            for (var i = 0; i < StepChunk.CellsPerChunk; i++)
+            {
+                w.Write(strataOffsetByCell[i]);
+            }
+            var dataLen = (uint)(strataData?.Length ?? 0);
+            w.Write(dataLen);
+            if (dataLen > 0)
+            {
+                w.Write(strataData);
+            }
         }
     }
 
@@ -354,7 +402,7 @@ internal static class StepCacheFile
         r.ReadUShort();
         r.ReadUShort();
         var multisVersion = (int)r.ReadUInt();
-        var hasMultiZ = r.ReadByte() != 0;
+        var hasStrata = r.ReadByte() != 0;
 
         var chunk = new StepChunk { BuiltMultisVersion = multisVersion };
 
@@ -380,11 +428,20 @@ internal static class StepCacheFile
         ReadSBytes(r, chunk.SwimZW);
         ReadSBytes(r, chunk.SwimZNW);
 
-        if (hasMultiZ)
+        if (hasStrata)
         {
-            var multiZ = new byte[BytesPerMultiZ];
-            r.Read(multiZ);
-            chunk.RestoreMultiZCellsFromSerialization(multiZ);
+            var offsets = new ushort[StepChunk.CellsPerChunk];
+            for (var i = 0; i < offsets.Length; i++)
+            {
+                offsets[i] = r.ReadUShort();
+            }
+            var dataLen = (int)r.ReadUInt();
+            var data = new byte[dataLen];
+            if (dataLen > 0)
+            {
+                r.Read(data);
+            }
+            chunk.SetStrata(offsets, data);
         }
 
         return chunk;
@@ -404,7 +461,7 @@ internal static class StepCacheFile
     internal sealed class LazyReader : IDisposable
     {
         private FileStream _stream;
-        private readonly Dictionary<ulong, ulong> _offsets;
+        private readonly Dictionary<ulong, (ulong offset, uint length)> _offsets;
         private byte[] _buffer;
 
         public uint MapId { get; }
@@ -417,7 +474,7 @@ internal static class StepCacheFile
 
         internal LazyReader(
             FileStream stream, uint mapId, ulong fingerprint, ulong bakeTimestamp,
-            uint chunkCount, Dictionary<ulong, ulong> offsets
+            uint chunkCount, Dictionary<ulong, (ulong offset, uint length)> offsets
         )
         {
             _stream = stream;
@@ -426,13 +483,13 @@ internal static class StepCacheFile
             BakeTimestamp = bakeTimestamp;
             ChunkCount = chunkCount;
             _offsets = offsets;
-            _buffer = new byte[BytesPerChunkBase + BytesPerMultiZ];
+            _buffer = new byte[BytesPerChunkBase];
         }
 
         /// <summary>
         /// Returns the chunk record at (<paramref name="chunkX"/>, <paramref name="chunkY"/>)
-        /// from the file, or null if the file doesn't contain it. Single seek + bulk read;
-        /// no allocations beyond the returned StepChunk and its arrays.
+        /// from the file, or null if the file doesn't contain it. Single seek + bulk read,
+        /// sized exactly to the chunk's recorded length (which varies with strata size).
         /// </summary>
         public StepChunk TryReadChunk(int chunkX, int chunkY)
         {
@@ -442,16 +499,21 @@ internal static class StepCacheFile
             }
 
             var key = PackChunkKey(chunkX, chunkY);
-            if (!_offsets.TryGetValue(key, out var offset))
+            if (!_offsets.TryGetValue(key, out var entry))
             {
                 return null;
             }
 
-            _stream.Position = (long)offset;
-            // Try to read the maximum size; the file may have less remaining, which is OK
-            // since BufferReader stops at the bytes it actually needs.
-            var read = _stream.Read(_buffer, 0, _buffer.Length);
-            return read < BytesPerChunkBase ? null : ReadChunk(_buffer);
+            // Grow the scratch buffer if this chunk's record is larger than what we have.
+            // Common case: chunks fit in BytesPerChunkBase; only multi-Z-heavy chunks grow.
+            if (entry.length > _buffer.Length)
+            {
+                _buffer = new byte[entry.length];
+            }
+
+            _stream.Position = (long)entry.offset;
+            var read = _stream.Read(_buffer, 0, (int)entry.length);
+            return read < (int)entry.length ? null : ReadChunk(_buffer);
         }
 
         public void Dispose()

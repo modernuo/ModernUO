@@ -139,9 +139,17 @@ public class StepCacheLifecycleTests
         Assert.True(chunks.ContainsKey(key));
         var chunk = chunks[key];
 
-        // Mark cell at (1500, 1600) within the chunk as multi-Z.
+        // Inject "this cell has strata but none match the query Z" — proves the cache
+        // still falls through to slow path when no stratum can answer.
         var cellIndex = ((1600 - ((1600 >> 4) << 4)) << 4) | (1500 - ((1500 >> 4) << 4));
-        chunk.MarkCellMultiZ(cellIndex);
+        var offsets = new ushort[StepChunk.CellsPerChunk];
+        for (var i = 0; i < offsets.Length; i++)
+        {
+            offsets[i] = StepChunk.NoStrata;
+        }
+        offsets[cellIndex] = 0; // points to a 0-stratum-count entry → no match
+        var data = new byte[] { 0 };
+        chunk.SetStrata(offsets, data);
 
         var lookup = cache.TryGetMask(map, 1500, 1600, 10);
 
@@ -150,6 +158,86 @@ public class StepCacheLifecycleTests
 
         var stats = cache.GetStats();
         Assert.Equal(preInjectionFallthroughMultiZ + 1L, stats.FallthroughMultiZ);
+    }
+
+    [Fact]
+    public void Tier4Strata_MatchingZ_ReturnsHitFromStratum()
+    {
+        var cache = StepCache.Instance;
+        cache.Clear();
+
+        var map = Map.Maps[1];
+        cache.TryGetMask(map, 1500, 1600, 10);
+
+        var chunksField = typeof(StepCache).GetField(
+            "_chunks",
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance
+        );
+        var chunks = (System.Collections.Generic.Dictionary<long, StepChunk>)chunksField.GetValue(cache);
+        var key = StepCache.EncodeKey(map.MapID, 1500 >> 4, 1600 >> 4);
+        var chunk = chunks[key];
+
+        // Inject one stratum at zCenter=42, walkMask=0b00000011 (N + NE).
+        // Query at sourceZ=42 must hit and return that stratum's data.
+        var cellIndex = ((1600 - ((1600 >> 4) << 4)) << 4) | (1500 - ((1500 >> 4) << 4));
+        var offsets = new ushort[StepChunk.CellsPerChunk];
+        for (var i = 0; i < offsets.Length; i++)
+        {
+            offsets[i] = StepChunk.NoStrata;
+        }
+        offsets[cellIndex] = 0;
+
+        var data = new byte[1 + StepChunk.StratumByteLength];
+        data[0] = 1;          // count
+        data[1] = 42;         // zCenter
+        data[2] = 0b0000_0011; // walkMask (N | NE)
+        data[3] = 0;          // wetMask
+        data[4] = 42; data[5] = 42; data[6] = 0; data[7] = 0;
+        data[8] = 0; data[9] = 0; data[10] = 0; data[11] = 0;
+        data[12] = 0; data[13] = 0; data[14] = 0; data[15] = 0;
+        data[16] = 0; data[17] = 0; data[18] = 0; data[19] = 0;
+        chunk.SetStrata(offsets, data);
+
+        var lookup = cache.TryGetMask(map, 1500, 1600, 42);
+        Assert.True(lookup.IsHit);
+        Assert.Equal((byte)0b0000_0011, lookup.WalkMask);
+        Assert.Equal((sbyte)42, lookup.WalkZ_N);
+        Assert.Equal((sbyte)42, lookup.WalkZ_NE);
+    }
+
+    [Fact]
+    public void Tier4Strata_NonMatchingZ_FallsThrough()
+    {
+        var cache = StepCache.Instance;
+        cache.Clear();
+
+        var map = Map.Maps[1];
+        cache.TryGetMask(map, 1500, 1600, 10);
+
+        var chunksField = typeof(StepCache).GetField(
+            "_chunks",
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance
+        );
+        var chunks = (System.Collections.Generic.Dictionary<long, StepChunk>)chunksField.GetValue(cache);
+        var key = StepCache.EncodeKey(map.MapID, 1500 >> 4, 1600 >> 4);
+        var chunk = chunks[key];
+
+        // Stratum at zCenter=42; query at sourceZ=10 (delta > StepHeight=2). Must fallthrough.
+        var cellIndex = ((1600 - ((1600 >> 4) << 4)) << 4) | (1500 - ((1500 >> 4) << 4));
+        var offsets = new ushort[StepChunk.CellsPerChunk];
+        for (var i = 0; i < offsets.Length; i++)
+        {
+            offsets[i] = StepChunk.NoStrata;
+        }
+        offsets[cellIndex] = 0;
+
+        var data = new byte[1 + StepChunk.StratumByteLength];
+        data[0] = 1; data[1] = 42; // zCenter=42, all other bytes 0
+        chunk.SetStrata(offsets, data);
+
+        var lookup = cache.TryGetMask(map, 1500, 1600, 10);
+        Assert.False(lookup.IsHit);
+        Assert.Equal(CacheHitKind.Fallthrough_MultiZ, lookup.HitKind);
     }
 
     [Fact]

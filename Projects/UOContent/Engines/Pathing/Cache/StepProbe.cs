@@ -19,6 +19,89 @@ public static class StepProbe
     private const int PersonHeight = 16;
     private const int StepHeight = 2;
 
+    public readonly struct ComputedStratum(sbyte zCenter, StepMask mask)
+    {
+        public readonly sbyte ZCenter = zCenter;
+        public readonly StepMask Mask = mask;
+    }
+
+    /// <summary>
+    /// Tier 4 strata builder: enumerates the distinct walkable standing-Zs at (x, y)
+    /// — one per land surface plus one per walkable static — and runs
+    /// <see cref="ComputeMaskAt"/> at each, producing a per-stratum walkability snapshot.
+    /// Returns null when the cell has 0 or 1 strata (single-Z; the caller should use
+    /// the chunk's main mask).
+    /// </summary>
+    public static ComputedStratum[] ComputeStrataAt(Map map, int x, int y)
+    {
+        if (map == null || map == Map.Internal)
+        {
+            return null;
+        }
+        if (x < 0 || y < 0 || x >= map.Width || y >= map.Height)
+        {
+            return null;
+        }
+
+        // Collect candidate Zs. 16 slots is generous — multi-Z cells in practice rarely
+        // exceed 3-4 surfaces (bridge over land, paver-over-ground, multi-floor stairs).
+        Span<int> zs = stackalloc int[16];
+        var count = 0;
+
+        var landTile = map.Tiles.GetLandTile(x, y);
+        var landFlags = TileData.LandTable[landTile.ID & TileData.MaxLandValue].Flags;
+        if (!landTile.Ignored && (landFlags & TileFlag.Impassable) == 0)
+        {
+            map.GetAverageZ(x, y, out _, out var landCenter, out _);
+            zs[count++] = landCenter;
+        }
+
+        foreach (var tile in map.Tiles.GetStaticAndMultiTiles(x, y))
+        {
+            if (count >= zs.Length)
+            {
+                break;
+            }
+            var data = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
+            if (!data.Surface || data.Impassable)
+            {
+                continue;
+            }
+            zs[count++] = tile.Z + data.CalcHeight;
+        }
+
+        if (count <= 1)
+        {
+            return null;
+        }
+
+        // Sort and merge near-equal Zs. Two Zs separated by less than 2*StepHeight collapse
+        // into a single stratum — the slow path's tolerance treats them as the same surface.
+        zs[..count].Sort();
+        Span<int> distinct = stackalloc int[16];
+        var distinctCount = 0;
+        for (var i = 0; i < count; i++)
+        {
+            if (distinctCount == 0 || zs[i] - distinct[distinctCount - 1] > 2 * StepHeight)
+            {
+                distinct[distinctCount++] = zs[i];
+            }
+        }
+
+        if (distinctCount <= 1)
+        {
+            return null;
+        }
+
+        var strata = new ComputedStratum[distinctCount];
+        for (var i = 0; i < distinctCount; i++)
+        {
+            var z = (sbyte)Math.Clamp(distinct[i], sbyte.MinValue, sbyte.MaxValue);
+            strata[i] = new ComputedStratum(z, ComputeMaskAt(map, x, y, z));
+        }
+        return strata;
+    }
+
     public static StepMask ComputeMaskAt(Map map, int x, int y, sbyte sourceZ)
     {
         if (map == null || map == Map.Internal)
