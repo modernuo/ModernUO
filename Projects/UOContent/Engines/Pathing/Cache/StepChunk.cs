@@ -24,12 +24,10 @@ internal sealed class StepChunk
     public readonly sbyte[] DestZNW = new sbyte[CellsPerChunk];
 
     /// <summary>
-    /// 32 bytes = 256 bits. Bit set = cell has &gt;1 walkable surface; route to slow path.
-    /// TODO(PR2): lazy-init this. The vast majority of chunks are entirely single-Z, so
-    /// allocating 32 bytes per chunk wastes ~256KB at full cap. Make nullable; allocate
-    /// on first MarkCellMultiZ; IsCellMultiZ short-circuits to false when null.
+    /// 32 bytes = 256 bits when allocated. Lazy: most chunks are entirely single-Z,
+    /// so we only pay the 32 bytes on chunks that actually need it.
     /// </summary>
-    public readonly byte[] MultiZCells = new byte[32];
+    private byte[] _multiZCells;
 
     /// <summary>Snapshot of Sector.MultisVersion at the time this chunk was built.</summary>
     public int BuiltMultisVersion;
@@ -37,14 +35,12 @@ internal sealed class StepChunk
     /// <summary>Updated on every cache hit/miss. Used by LRU fallback eviction.</summary>
     public long LastTouchedTicks;
 
-    /// <summary>True if any cell in this chunk has more than one walkable surface (set during build).</summary>
-    public bool HasAnyMultiZ;
-
-    public bool IsCellMultiZ(int cellIndex) => (MultiZCells[cellIndex >> 3] & (1 << (cellIndex & 7))) != 0;
+    public bool IsCellMultiZ(int cellIndex) =>
+        _multiZCells != null && (_multiZCells[cellIndex >> 3] & (1 << (cellIndex & 7))) != 0;
 
     public void MarkCellMultiZ(int cellIndex)
     {
-        MultiZCells[cellIndex >> 3] |= (byte)(1 << (cellIndex & 7));
-        HasAnyMultiZ = true;
+        _multiZCells ??= new byte[32];
+        _multiZCells[cellIndex >> 3] |= (byte)(1 << (cellIndex & 7));
     }
 }
