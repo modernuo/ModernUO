@@ -6,9 +6,9 @@ namespace Server.Engines.Pathing;
 /// <summary>
 /// Admin commands for inspecting and operating the pathfinding step cache.
 ///   [PathCacheStats — current resident-chunk count + hit/miss/eviction telemetry.
-///   [PathCacheClear — drop all cached chunks and zero counters.
+///   [PathCacheClear — drop all cached chunks, close lazy readers, zero counters.
 ///   [PathCacheSave  — persist resident chunks per map to Data/Pathfinding/&lt;mapId&gt;.swb.
-///   [PathCacheLoad  — read those files back. Also runs automatically at startup.
+///   [PathCacheLoad  — open those files as lazy backing stores. Also runs at startup.
 /// </summary>
 public static class PathCacheCommands
 {
@@ -25,10 +25,10 @@ public static class PathCacheCommands
     }
 
     /// <summary>
-    /// Scan Data/Pathfinding/&lt;mapId&gt;.swb for every map and merge the chunks into
-    /// the resident set. Runs once at server boot via <see cref="Configure"/>. Files
-    /// whose TileData hash doesn't match the running server are rejected — see
-    /// <see cref="StepCache.TryLoadFromFile"/>.
+    /// Open Data/Pathfinding/&lt;mapId&gt;.swb as a lazy backing store for every map.
+    /// Reads only the header + chunk-offset index up front (~16 bytes per chunk);
+    /// individual chunk records are fetched on demand when the cache asks for them.
+    /// RAM stays bounded by MaxResidentChunks regardless of file size.
     /// </summary>
     private static void AutoLoadAtStartup()
     {
@@ -39,7 +39,7 @@ public static class PathCacheCommands
             {
                 continue;
             }
-            StepCache.Instance.TryLoadFromFile(PathFor(map.MapID));
+            StepCache.Instance.TryOpenLazyReader(PathFor(map.MapID), map.MapID);
         }
     }
 
@@ -92,11 +92,10 @@ public static class PathCacheCommands
     }
 
     [Usage("PathCacheLoad")]
-    [Description("Reads Data/Pathfinding/<mapId>.swb for every map and merges the chunks into the resident set.")]
+    [Description("Opens Data/Pathfinding/<mapId>.swb as a lazy backing store for every map. Chunks are fetched on demand, so RAM stays bounded by the LRU cap regardless of file size.")]
     private static void OnPathCacheLoad(CommandEventArgs e)
     {
-        var beforeResident = StepCache.Instance.GetStats().ResidentChunks;
-        var loadedMaps = 0;
+        var openedMaps = 0;
         for (var i = 0; i < Map.Maps.Length; i++)
         {
             var map = Map.Maps[i];
@@ -104,14 +103,13 @@ public static class PathCacheCommands
             {
                 continue;
             }
-            if (StepCache.Instance.TryLoadFromFile(PathFor(map.MapID)))
+            if (StepCache.Instance.TryOpenLazyReader(PathFor(map.MapID), map.MapID))
             {
-                loadedMaps++;
+                openedMaps++;
             }
         }
-        var afterResident = StepCache.Instance.GetStats().ResidentChunks;
         e.Mobile.SendMessage(
-            $"StepCache loaded: +{afterResident - beforeResident} chunks across {loadedMaps} map(s) (total resident: {afterResident})."
+            $"StepCache: opened {openedMaps} map(s) for lazy loading (total readers open: {StepCache.Instance.OpenLazyReaderCount})."
         );
     }
 }
