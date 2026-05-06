@@ -65,9 +65,20 @@ public sealed class StepCache
     /// </summary>
     public void Clear()
     {
+        ClearResidentChunks();
+        CloseLazyReaders();
+    }
+
+    /// <summary>
+    /// Drop all resident chunks AND zero counters, but keep lazy readers open.
+    /// Useful in benchmark loops that want to measure "first query after boot" cost
+    /// without paying the lazy-reader reopen overhead each iteration. Same intent as
+    /// <see cref="Clear"/> minus the file-handle teardown.
+    /// </summary>
+    public void ClearResidentChunks()
+    {
         _chunks.Clear();
         _keysList.Clear();
-        CloseLazyReaders();
         _hits = 0;
         _missesNotBuilt = 0;
         _missesDirtyRebuild = 0;
