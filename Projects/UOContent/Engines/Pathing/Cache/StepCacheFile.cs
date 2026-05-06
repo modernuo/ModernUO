@@ -20,8 +20,9 @@ namespace Server.Engines.Pathing.Cache;
 ///     u32   Magic           = 0x42575300 ('SWB\0')
 ///     u32   Version         = current FormatVersion
 ///     u32   MapId
-///     u64   TileDataHash    FNV-1a-64 over LandTable + ItemTable flags; rejects
-///                           a load when client tile data has shifted under us.
+///     u64   TileDataHash    XxHash3 over LandTable + ItemTable flags (via
+///                           HashUtility); rejects a load when client tile data has
+///                           shifted under us.
 ///     u64   BakeTimestamp   DateTime.UtcNow.Ticks at write time (informational).
 ///     u32   ChunkCount
 ///     u64   IndexOffset     File position where the chunk index begins.
