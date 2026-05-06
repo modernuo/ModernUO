@@ -35,20 +35,14 @@ public class StepCacheLifecycleTests
         Assert.NotNull(map);
 
         // Pinned cell (1500, 1600, z=10): mask=0xC1
-        var ok = cache.TryGetMask(
-            map, 1500, 1600, sourceZ: 10,
-            out var mask,
-            out var dN, out var dNE, out var dE, out var dSE,
-            out var dS, out var dSW, out var dW, out var dNW,
-            out var hitKind
-        );
+        var lookup = cache.TryGetMask(map, 1500, 1600, sourceZ: 10);
 
-        Assert.True(ok);
-        Assert.Equal(CacheHitKind.Miss_NotBuilt, hitKind);
-        Assert.Equal((byte)0xC1, mask);
-        Assert.Equal((sbyte)10, dN);
-        Assert.Equal((sbyte)10, dW);
-        Assert.Equal((sbyte)10, dNW);
+        Assert.True(lookup.IsHit);
+        Assert.Equal(CacheHitKind.Miss_NotBuilt, lookup.HitKind);
+        Assert.Equal((byte)0xC1, lookup.Mask);
+        Assert.Equal((sbyte)10, lookup.DestZ_N);
+        Assert.Equal((sbyte)10, lookup.DestZ_W);
+        Assert.Equal((sbyte)10, lookup.DestZ_NW);
 
         var stats = cache.GetStats();
         Assert.Equal(1, stats.ResidentChunks);
@@ -56,15 +50,10 @@ public class StepCacheLifecycleTests
         Assert.Equal(1L, stats.BuildsTotal);
 
         // Second query of same cell → Hit
-        var ok2 = cache.TryGetMask(
-            map, 1500, 1600, sourceZ: 10,
-            out var mask2,
-            out _, out _, out _, out _, out _, out _, out _, out _,
-            out var hitKind2
-        );
-        Assert.True(ok2);
-        Assert.Equal(CacheHitKind.Hit, hitKind2);
-        Assert.Equal((byte)0xC1, mask2);
+        var lookup2 = cache.TryGetMask(map, 1500, 1600, sourceZ: 10);
+        Assert.True(lookup2.IsHit);
+        Assert.Equal(CacheHitKind.Hit, lookup2.HitKind);
+        Assert.Equal((byte)0xC1, lookup2.Mask);
 
         var stats2 = cache.GetStats();
         Assert.Equal(1, stats2.ResidentChunks);
@@ -79,15 +68,11 @@ public class StepCacheLifecycleTests
 
         var map = Map.Maps[1];
 
-        var ok = cache.TryGetMask(
-            map, -1, -1, sourceZ: 0,
-            out var mask, out _, out _, out _, out _, out _, out _, out _, out _,
-            out var hitKind
-        );
+        var lookup = cache.TryGetMask(map, -1, -1, sourceZ: 0);
 
-        Assert.False(ok);
-        Assert.Equal(CacheHitKind.Fallthrough_OffMap, hitKind);
-        Assert.Equal((byte)0, mask);
+        Assert.False(lookup.IsHit);
+        Assert.Equal(CacheHitKind.Fallthrough_OffMap, lookup.HitKind);
+        Assert.Equal((byte)0, lookup.Mask);
     }
 
     [Fact]
@@ -100,10 +85,7 @@ public class StepCacheLifecycleTests
         var sector = map.GetRealSector(1500 >> 4, 1600 >> 4);
 
         // First query: builds chunk, snapshots current MultisVersion.
-        cache.TryGetMask(map, 1500, 1600, 10,
-            out _, out _, out _, out _, out _, out _, out _, out _, out _,
-            out var firstHitKind);
-        Assert.Equal(CacheHitKind.Miss_NotBuilt, firstHitKind);
+        Assert.Equal(CacheHitKind.Miss_NotBuilt, cache.TryGetMask(map, 1500, 1600, 10).HitKind);
 
         // Bump _multisVersion via reflection.
         var versionField = typeof(Map.Sector).GetField(
@@ -115,10 +97,7 @@ public class StepCacheLifecycleTests
         versionField.SetValue(sector, current + 1);
 
         // Second query: detects version mismatch, rebuilds.
-        cache.TryGetMask(map, 1500, 1600, 10,
-            out _, out _, out _, out _, out _, out _, out _, out _, out _,
-            out var secondHitKind);
-        Assert.Equal(CacheHitKind.Miss_DirtyRebuild, secondHitKind);
+        Assert.Equal(CacheHitKind.Miss_DirtyRebuild, cache.TryGetMask(map, 1500, 1600, 10).HitKind);
 
         var stats = cache.GetStats();
         Assert.Equal(1L, stats.MissesDirtyRebuild);
@@ -142,8 +121,7 @@ public class StepCacheLifecycleTests
         var map = Map.Maps[1];
 
         // Build a chunk first so it exists.
-        cache.TryGetMask(map, 1500, 1600, 10,
-            out _, out _, out _, out _, out _, out _, out _, out _, out _, out _);
+        cache.TryGetMask(map, 1500, 1600, 10);
 
         // Snapshot current FallthroughMultiZ in case (1500, 1600) is naturally multi-Z
         // in real tile data; we only assert the synthetic injection produces a delta of 1.
@@ -165,12 +143,10 @@ public class StepCacheLifecycleTests
         var cellIndex = ((1600 - ((1600 >> 4) << 4)) << 4) | (1500 - ((1500 >> 4) << 4));
         chunk.MarkCellMultiZ(cellIndex);
 
-        var ok = cache.TryGetMask(map, 1500, 1600, 10,
-            out _, out _, out _, out _, out _, out _, out _, out _, out _,
-            out var hitKind);
+        var lookup = cache.TryGetMask(map, 1500, 1600, 10);
 
-        Assert.False(ok);
-        Assert.Equal(CacheHitKind.Fallthrough_MultiZ, hitKind);
+        Assert.False(lookup.IsHit);
+        Assert.Equal(CacheHitKind.Fallthrough_MultiZ, lookup.HitKind);
 
         var stats = cache.GetStats();
         Assert.Equal(preInjectionFallthroughMultiZ + 1L, stats.FallthroughMultiZ);
@@ -192,8 +168,7 @@ public class StepCacheLifecycleTests
             {
                 var x = 1500 + (i * 16);
                 var y = 1600;
-                cache.TryGetMask(map, x, y, 10,
-                    out _, out _, out _, out _, out _, out _, out _, out _, out _, out _);
+                cache.TryGetMask(map, x, y, 10);
                 System.Threading.Thread.Sleep(2); // ensure LastTouchedTicks differs
             }
 

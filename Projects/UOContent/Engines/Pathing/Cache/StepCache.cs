@@ -143,25 +143,16 @@ public sealed class StepCache
     private const int ChunkSize = 16;
 
     /// <summary>
-    /// Hot-path query. Returns the cached mask + 8 destination Z values for (map, x, y, sourceZ).
-    /// Returns false on off-map or multi-Z fallthrough; the caller should use the slow path.
+    /// Hot-path query. Returns the cached mask + 8 destination Z values + hit kind.
+    /// Inspect <see cref="StepMask.IsHit"/> to decide whether to use the result or fall
+    /// back to the slow path.
     /// </summary>
-    public bool TryGetMask(
-        Map map, int x, int y, sbyte sourceZ,
-        out byte mask,
-        out sbyte destZN, out sbyte destZNE, out sbyte destZE, out sbyte destZSE,
-        out sbyte destZS, out sbyte destZSW, out sbyte destZW, out sbyte destZNW,
-        out CacheHitKind hitKind
-    )
+    public StepMask TryGetMask(Map map, int x, int y, sbyte sourceZ)
     {
-        mask = 0;
-        destZN = destZNE = destZE = destZSE = destZS = destZSW = destZW = destZNW = 0;
-
         if (map == null || map == Map.Internal || x < 0 || y < 0 || x >= map.Width || y >= map.Height)
         {
-            hitKind = CacheHitKind.Fallthrough_OffMap;
             _fallthroughOffMap++;
-            return false;
+            return new StepMask(0, 0, 0, 0, 0, 0, 0, 0, 0, CacheHitKind.Fallthrough_OffMap);
         }
 
         var chunkX = x >> 4;
@@ -184,9 +175,8 @@ public sealed class StepCache
                 chunk = BuildChunk(map, chunkX, chunkY);
                 _chunks[key] = chunk;
                 hitKindResult = CacheHitKind.Miss_DirtyRebuild;
-                // _missesDirtyRebuild++ moved into the success switch below to
-                // preserve the mutual-exclusivity invariant (a multi-Z fallthrough
-                // on a freshly dirty-rebuilt chunk must NOT count both counters).
+                // _missesDirtyRebuild++ deferred to the outcome switch below so a
+                // multi-Z fallthrough on a freshly dirty-rebuilt chunk doesn't double-count.
             }
         }
 
@@ -196,9 +186,8 @@ public sealed class StepCache
 
         if (chunk.IsCellMultiZ(cellIndex))
         {
-            hitKind = CacheHitKind.Fallthrough_MultiZ;
             _fallthroughMultiZ++;
-            return false;
+            return new StepMask(0, 0, 0, 0, 0, 0, 0, 0, 0, CacheHitKind.Fallthrough_MultiZ);
         }
 
         // Source-Z guard: the cache stores one answer per cell baked at SourceZ.
@@ -206,42 +195,29 @@ public sealed class StepCache
         // because tile reachability shifts at step-height boundaries.
         if (Math.Abs(sourceZ - chunk.SourceZ[cellIndex]) > StepHeight)
         {
-            hitKind = CacheHitKind.Fallthrough_SourceZMismatch;
             _fallthroughSourceZMismatch++;
-            return false;
+            return new StepMask(0, 0, 0, 0, 0, 0, 0, 0, 0, CacheHitKind.Fallthrough_SourceZMismatch);
         }
-
-        mask = chunk.Mask[cellIndex];
-        destZN  = chunk.DestZN[cellIndex];
-        destZNE = chunk.DestZNE[cellIndex];
-        destZE  = chunk.DestZE[cellIndex];
-        destZSE = chunk.DestZSE[cellIndex];
-        destZS  = chunk.DestZS[cellIndex];
-        destZSW = chunk.DestZSW[cellIndex];
-        destZW  = chunk.DestZW[cellIndex];
-        destZNW = chunk.DestZNW[cellIndex];
 
         switch (hitKindResult)
         {
-            case CacheHitKind.Miss_NotBuilt:
-                {
-                    _missesNotBuilt++;
-                    break;
-                }
-            case CacheHitKind.Miss_DirtyRebuild:
-                {
-                    _missesDirtyRebuild++;
-                    break;
-                }
-            case CacheHitKind.Hit:
-                {
-                    _hits++;
-                    break;
-                }
+            case CacheHitKind.Miss_NotBuilt:    { _missesNotBuilt++;     break; }
+            case CacheHitKind.Miss_DirtyRebuild: { _missesDirtyRebuild++; break; }
+            case CacheHitKind.Hit:              { _hits++;               break; }
         }
-        hitKind = hitKindResult;
 
-        return true;
+        return new StepMask(
+            chunk.Mask[cellIndex],
+            chunk.DestZN[cellIndex],
+            chunk.DestZNE[cellIndex],
+            chunk.DestZE[cellIndex],
+            chunk.DestZSE[cellIndex],
+            chunk.DestZS[cellIndex],
+            chunk.DestZSW[cellIndex],
+            chunk.DestZW[cellIndex],
+            chunk.DestZNW[cellIndex],
+            hitKindResult
+        );
     }
 
     /// <summary>

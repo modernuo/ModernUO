@@ -43,36 +43,32 @@ public class StepCacheParityTests
 
                 var baker = StepProbe.ComputeMaskAt(map, x, y, sourceZ);
 
-                var ok = cache.TryGetMask(
-                    map, x, y, sourceZ,
-                    out var mask,
-                    out var dN, out var dNE, out var dE, out var dSE,
-                    out var dS, out var dSW, out var dW, out var dNW,
-                    out var hitKind
-                );
+                var lookup = cache.TryGetMask(map, x, y, sourceZ);
 
                 samples++;
 
-                if (hitKind == CacheHitKind.Fallthrough_MultiZ)
+                if (lookup.HitKind == CacheHitKind.Fallthrough_MultiZ)
                 {
                     multiZ++;
                     continue;
                 }
 
-                Assert.True(ok, $"Cache returned !ok at ({x},{y}) hitKind={hitKind}");
+                Assert.True(lookup.IsHit, $"Cache returned !ok at ({x},{y}) hitKind={lookup.HitKind}");
 
-                if (mask != baker.Mask)
+                if (lookup.Mask != baker.Mask)
                 {
                     disagreements++;
-                    _output.WriteLine($"MASK DIFF @ ({x},{y}) cache=0x{mask:X2} baker=0x{baker.Mask:X2}");
+                    _output.WriteLine($"MASK DIFF @ ({x},{y}) cache=0x{lookup.Mask:X2} baker=0x{baker.Mask:X2}");
                     continue;
                 }
 
-                if (dN != baker.DestZ_N || dNE != baker.DestZ_NE || dE != baker.DestZ_E || dSE != baker.DestZ_SE
-                    || dS != baker.DestZ_S || dSW != baker.DestZ_SW || dW != baker.DestZ_W || dNW != baker.DestZ_NW)
+                if (lookup.DestZ_N != baker.DestZ_N || lookup.DestZ_NE != baker.DestZ_NE
+                    || lookup.DestZ_E != baker.DestZ_E || lookup.DestZ_SE != baker.DestZ_SE
+                    || lookup.DestZ_S != baker.DestZ_S || lookup.DestZ_SW != baker.DestZ_SW
+                    || lookup.DestZ_W != baker.DestZ_W || lookup.DestZ_NW != baker.DestZ_NW)
                 {
                     disagreements++;
-                    _output.WriteLine($"Z DIFF @ ({x},{y}) cache=({dN},{dNE},{dE},{dSE},{dS},{dSW},{dW},{dNW}) baker=({baker.DestZ_N},{baker.DestZ_NE},{baker.DestZ_E},{baker.DestZ_SE},{baker.DestZ_S},{baker.DestZ_SW},{baker.DestZ_W},{baker.DestZ_NW})");
+                    _output.WriteLine($"Z DIFF @ ({x},{y}) cache=({lookup.DestZ_N},{lookup.DestZ_NE},{lookup.DestZ_E},{lookup.DestZ_SE},{lookup.DestZ_S},{lookup.DestZ_SW},{lookup.DestZ_W},{lookup.DestZ_NW}) baker=({baker.DestZ_N},{baker.DestZ_NE},{baker.DestZ_E},{baker.DestZ_SE},{baker.DestZ_S},{baker.DestZ_SW},{baker.DestZ_W},{baker.DestZ_NW})");
                 }
             }
         }

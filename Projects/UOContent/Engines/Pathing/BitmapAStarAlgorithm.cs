@@ -271,20 +271,14 @@ public class BitmapAStarAlgorithm : PathAlgorithm
 
         var count = 0;
 
-        StepCache.Instance.TryGetMask(
-            map, p3D.X, p3D.Y, (sbyte)p3D.Z,
-            out var mask,
-            out var dN, out var dNE, out var dE, out var dSE,
-            out var dS, out var dSW, out var dW, out var dNW,
-            out var hitKind
-        );
+        var lookup = StepCache.Instance.TryGetMask(map, p3D.X, p3D.Y, (sbyte)p3D.Z);
 
-        if (hitKind is CacheHitKind.Fallthrough_MultiZ
-            or CacheHitKind.Fallthrough_OffMap
-            or CacheHitKind.Fallthrough_SourceZMismatch)
+        if (!lookup.IsHit)
         {
             return GetSuccessorsSlowPath(m, map, px, py, p3D, vals);
         }
+
+        var mask = lookup.Mask;
 
         for (var i = 0; i < 8; ++i)
         {
@@ -319,14 +313,14 @@ public class BitmapAStarAlgorithm : PathAlgorithm
 
             var z = i switch
             {
-                0 => dN,
-                1 => dNE,
-                2 => dE,
-                3 => dSE,
-                4 => dS,
-                5 => dSW,
-                6 => dW,
-                7 => dNW,
+                0 => lookup.DestZ_N,
+                1 => lookup.DestZ_NE,
+                2 => lookup.DestZ_E,
+                3 => lookup.DestZ_SE,
+                4 => lookup.DestZ_S,
+                5 => lookup.DestZ_SW,
+                6 => lookup.DestZ_W,
+                7 => lookup.DestZ_NW,
                 _ => (sbyte)0
             };
 

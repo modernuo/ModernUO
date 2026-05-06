@@ -1,8 +1,9 @@
 namespace Server.Engines.Pathing.Cache;
 
 /// <summary>
-/// Outcome categories for StaticWalkabilityCache.TryGetMask. Used for telemetry
-/// and to drive the slow-path fallthrough decision in callers.
+/// Outcome categories for StepCache.TryGetMask. Used for telemetry and to drive
+/// the slow-path fallthrough decision in callers. Ordering is load-bearing:
+/// values 0-2 are hits, values 3-5 are fallthroughs (see StepMask.IsHit).
 /// </summary>
 public enum CacheHitKind : byte
 {

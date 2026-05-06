@@ -9,7 +9,8 @@ public readonly struct StepMask(
     sbyte destZs,
     sbyte destZsw,
     sbyte destZw,
-    sbyte destZnw
+    sbyte destZnw,
+    CacheHitKind hitKind = CacheHitKind.Hit
 )
 {
     public readonly byte Mask = mask;
@@ -21,6 +22,13 @@ public readonly struct StepMask(
     public readonly sbyte DestZ_SW = destZsw;
     public readonly sbyte DestZ_W = destZw;
     public readonly sbyte DestZ_NW = destZnw;
+    public readonly CacheHitKind HitKind = hitKind;
+
+    /// <summary>
+    /// True when the cache produced a usable answer (Hit / Miss_NotBuilt / Miss_DirtyRebuild).
+    /// False on Fallthrough_*, in which case the caller must use the slow path for this cell.
+    /// </summary>
+    public bool IsHit => HitKind <= CacheHitKind.Miss_DirtyRebuild;
 
     public bool IsWalkable(Direction d) => (Mask & (1 << (int)d)) != 0;
 
