@@ -1863,6 +1863,8 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
         private int _multisVersion;
         private List<Region> _regions;
 
+        public DateTime LastDeactivatedAt { get; private set; }
+
         public Sector(int x, int y, Map owner)
         {
             X = x;
@@ -1875,7 +1877,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
 
         internal List<BaseMulti> Multis => _multis ?? m_DefaultMultiList;
 
-        internal int MultisVersion => _multisVersion;
+        public int MultisVersion => _multisVersion;
 
         internal ref readonly ValueLinkList<Mobile> Mobiles => ref _mobiles;
 
@@ -2052,6 +2054,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
                 }
 
                 m_Active = false;
+                LastDeactivatedAt = Core.Now;
             }
         }
     }

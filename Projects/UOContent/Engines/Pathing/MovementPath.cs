@@ -1,8 +1,9 @@
 using System;
 using System.Diagnostics;
+using Server.Engines.Pathing.Cache;
 using Server.Items;
 using Server.PathAlgorithms;
-using Server.PathAlgorithms.FastAStar;
+using Server.PathAlgorithms.BitmapAStar;
 using Server.Spells;
 using Server.Targeting;
 
@@ -31,7 +32,7 @@ namespace Server
 
             try
             {
-                var alg = OverrideAlgorithm ?? FastAStarAlgorithm.Instance;
+                var alg = OverrideAlgorithm ?? BitmapAStarAlgorithm.Instance;
 
                 if (alg?.CheckCondition(m, map, start, goal) == true)
                 {
@@ -59,6 +60,7 @@ namespace Server
         public static void Configure()
         {
             CommandSystem.Register("Path", AccessLevel.GameMaster, Path_OnCommand);
+            CacheEvictionTimer.Configure();
         }
 
         [Usage("Path")]
@@ -111,7 +113,7 @@ namespace Server
 
             SpellHelper.GetSurfaceTop(ref p);
 
-            Path(from, p, FastAStarAlgorithm.Instance, "Fast", 0);
+            Path(from, p, BitmapAStarAlgorithm.Instance, "Bitmap", 0);
             OverrideAlgorithm = null;
         }
     }
