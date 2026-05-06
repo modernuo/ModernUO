@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Server.Engines.Pathing.Cache;
 using Server.Mobiles;
+using Server.Systems.FeatureFlags;
 using CalcMoves = Server.Movement.Movement;
 using MoveImpl = Server.Movement.MovementImpl;
 
@@ -304,7 +305,7 @@ public class BitmapAStarAlgorithm : PathAlgorithm
 
         var vals = _successors;
 
-        if (_currentMobileNeedsSlowPath)
+        if (_currentMobileNeedsSlowPath || !ContentFeatureFlags.BitmapPathfindingCache)
         {
             return GetSuccessorsSlowPath(m, map, px, py, p3D, vals);
         }

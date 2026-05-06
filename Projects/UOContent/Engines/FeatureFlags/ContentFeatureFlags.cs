@@ -14,4 +14,5 @@ public static class ContentFeatureFlags
     public static bool BulkOrders { get; set; } = true;
     public static bool PassiveDetectHidden { get; set; } = true;
     public static bool YoungPlayerSystem { get; set; } = true;
+    public static bool BitmapPathfindingCache { get; set; } = true;
 }

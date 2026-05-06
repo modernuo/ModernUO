@@ -976,6 +976,7 @@ public static class FeatureFlagManager
             "bulk_orders"            => ContentFeatureFlags.BulkOrders = enabled,
             "passive_detect_hidden"  => ContentFeatureFlags.PassiveDetectHidden = enabled,
             "young_player_system"    => ContentFeatureFlags.YoungPlayerSystem = enabled,
+            "bitmap_pathfinding_cache" => ContentFeatureFlags.BitmapPathfindingCache = enabled,
         };
     }
 

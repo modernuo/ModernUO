@@ -3,6 +3,7 @@ using System.Diagnostics;
 using Server.Engines.Pathing;
 using Server.Engines.Pathing.Cache;
 using Server.Items;
+using Server.Systems.FeatureFlags;
 using Server.PathAlgorithms;
 using Server.PathAlgorithms.BitmapAStar;
 using Server.Spells;
@@ -63,6 +64,12 @@ namespace Server
             CommandSystem.Register("Path", AccessLevel.GameMaster, Path_OnCommand);
             CacheEvictionTimer.Configure();
             PathCacheCommands.Configure();
+            FeatureFlagManager.CreateOrUpdateFlag(
+                "bitmap_pathfinding_cache",
+                "Use the bitmap step cache for A* successor lookup. When off, routes every cell expansion to the per-direction MovementImpl slow path (existing FastAStar-equivalent behavior).",
+                "Pathfinding",
+                defaultEnabled: true
+            );
         }
 
         [Usage("Path")]
