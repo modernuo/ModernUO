@@ -62,7 +62,7 @@ public class StaticWalkabilityParityTests
                         }
                     }
 
-                    var newZ = bakerResult.GetDestZ(dir);
+                    var newZ = bakerResult.GetWalkZ(dir);
 
                     if (oldOk)
                     {

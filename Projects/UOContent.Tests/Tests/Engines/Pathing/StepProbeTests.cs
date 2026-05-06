@@ -19,10 +19,10 @@ public class StepProbeTests
     {
         var result = StepProbe.ComputeMaskAt(null, 100, 100, 0);
 
-        Assert.Equal(0, result.Mask);
+        Assert.Equal(0, result.WalkMask);
         for (var d = 0; d < 8; d++)
         {
-            Assert.Equal(0, result.GetDestZ((Direction)d));
+            Assert.Equal(0, result.GetWalkZ((Direction)d));
         }
     }
 
@@ -31,10 +31,10 @@ public class StepProbeTests
     {
         var result = StepProbe.ComputeMaskAt(Map.Internal, 100, 100, 0);
 
-        Assert.Equal(0, result.Mask);
+        Assert.Equal(0, result.WalkMask);
         for (var d = 0; d < 8; d++)
         {
-            Assert.Equal(0, result.GetDestZ((Direction)d));
+            Assert.Equal(0, result.GetWalkZ((Direction)d));
         }
     }
 
@@ -98,7 +98,7 @@ public class StepProbeTests
                 var sourceZ = (sbyte)avgZ;
                 var result = StepProbe.ComputeMaskAt(map, x, y, sourceZ);
 
-                if (result.Mask != 0xFF)
+                if (result.WalkMask != 0xFF)
                 {
                     continue;
                 }
@@ -106,7 +106,7 @@ public class StepProbeTests
                 var allSameZ = true;
                 for (var d = 0; d < 8; d++)
                 {
-                    if (result.GetDestZ((Direction)d) != sourceZ)
+                    if (result.GetWalkZ((Direction)d) != sourceZ)
                     {
                         allSameZ = false;
                         break;
@@ -143,7 +143,7 @@ public class StepProbeTests
                 var sourceZ = (sbyte)avgZ;
                 var result = StepProbe.ComputeMaskAt(map, x, y, sourceZ);
 
-                if (result.Mask != 0xFF)
+                if (result.WalkMask != 0xFF)
                 {
                     blockedCellCount++;
                 }
@@ -172,12 +172,12 @@ public class StepProbeTests
         var second = StepProbe.ComputeMaskAt(map, x, y, sourceZ);
         var third = StepProbe.ComputeMaskAt(map, x, y, sourceZ);
 
-        Assert.Equal(first.Mask, second.Mask);
-        Assert.Equal(first.Mask, third.Mask);
+        Assert.Equal(first.WalkMask, second.WalkMask);
+        Assert.Equal(first.WalkMask, third.WalkMask);
         for (var d = 0; d < 8; d++)
         {
-            Assert.Equal(first.GetDestZ((Direction)d), second.GetDestZ((Direction)d));
-            Assert.Equal(first.GetDestZ((Direction)d), third.GetDestZ((Direction)d));
+            Assert.Equal(first.GetWalkZ((Direction)d), second.GetWalkZ((Direction)d));
+            Assert.Equal(first.GetWalkZ((Direction)d), third.GetWalkZ((Direction)d));
         }
     }
 
@@ -198,7 +198,7 @@ public class StepProbeTests
         var result = StepProbe.ComputeMaskAt(map, 1500, 1600, sourceZ);
 
         Assert.Equal((sbyte)10, sourceZ);
-        Assert.Equal((byte)0xC1, result.Mask);
+        Assert.Equal((byte)0xC1, result.WalkMask);
 
         Assert.True(result.IsWalkable(Direction.North));
         Assert.False(result.IsWalkable(Direction.Right));
@@ -209,9 +209,9 @@ public class StepProbeTests
         Assert.True(result.IsWalkable(Direction.West));
         Assert.True(result.IsWalkable(Direction.Up));
 
-        Assert.Equal((sbyte)10, result.GetDestZ(Direction.North));
-        Assert.Equal((sbyte)10, result.GetDestZ(Direction.West));
-        Assert.Equal((sbyte)10, result.GetDestZ(Direction.Up));
+        Assert.Equal((sbyte)10, result.GetWalkZ(Direction.North));
+        Assert.Equal((sbyte)10, result.GetWalkZ(Direction.West));
+        Assert.Equal((sbyte)10, result.GetWalkZ(Direction.Up));
     }
 
     [Fact]
@@ -229,7 +229,7 @@ public class StepProbeTests
         var result = StepProbe.ComputeMaskAt(map, 1480, 1610, sourceZ);
 
         Assert.Equal((sbyte)20, sourceZ);
-        Assert.Equal((byte)0x3F, result.Mask);
+        Assert.Equal((byte)0x3F, result.WalkMask);
 
         Assert.True(result.IsWalkable(Direction.North));
         Assert.True(result.IsWalkable(Direction.Right));
@@ -242,7 +242,7 @@ public class StepProbeTests
 
         for (var d = 0; d < 6; d++)
         {
-            Assert.Equal((sbyte)20, result.GetDestZ((Direction)d));
+            Assert.Equal((sbyte)20, result.GetWalkZ((Direction)d));
         }
     }
 }

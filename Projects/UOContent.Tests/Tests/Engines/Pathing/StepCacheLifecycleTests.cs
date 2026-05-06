@@ -39,10 +39,10 @@ public class StepCacheLifecycleTests
 
         Assert.True(lookup.IsHit);
         Assert.Equal(CacheHitKind.Miss_NotBuilt, lookup.HitKind);
-        Assert.Equal((byte)0xC1, lookup.Mask);
-        Assert.Equal((sbyte)10, lookup.DestZ_N);
-        Assert.Equal((sbyte)10, lookup.DestZ_W);
-        Assert.Equal((sbyte)10, lookup.DestZ_NW);
+        Assert.Equal((byte)0xC1, lookup.WalkMask);
+        Assert.Equal((sbyte)10, lookup.WalkZ_N);
+        Assert.Equal((sbyte)10, lookup.WalkZ_W);
+        Assert.Equal((sbyte)10, lookup.WalkZ_NW);
 
         var stats = cache.GetStats();
         Assert.Equal(1, stats.ResidentChunks);
@@ -53,7 +53,7 @@ public class StepCacheLifecycleTests
         var lookup2 = cache.TryGetMask(map, 1500, 1600, sourceZ: 10);
         Assert.True(lookup2.IsHit);
         Assert.Equal(CacheHitKind.Hit, lookup2.HitKind);
-        Assert.Equal((byte)0xC1, lookup2.Mask);
+        Assert.Equal((byte)0xC1, lookup2.WalkMask);
 
         var stats2 = cache.GetStats();
         Assert.Equal(1, stats2.ResidentChunks);
@@ -72,7 +72,7 @@ public class StepCacheLifecycleTests
 
         Assert.False(lookup.IsHit);
         Assert.Equal(CacheHitKind.Fallthrough_OffMap, lookup.HitKind);
-        Assert.Equal((byte)0, lookup.Mask);
+        Assert.Equal((byte)0, lookup.WalkMask);
     }
 
     [Fact]

@@ -278,7 +278,7 @@ public class BitmapAStarAlgorithm : PathAlgorithm
             return GetSuccessorsSlowPath(m, map, px, py, p3D, vals);
         }
 
-        var mask = lookup.Mask;
+        var mask = lookup.WalkMask;
 
         for (var i = 0; i < 8; ++i)
         {
@@ -313,14 +313,14 @@ public class BitmapAStarAlgorithm : PathAlgorithm
 
             var z = i switch
             {
-                0 => lookup.DestZ_N,
-                1 => lookup.DestZ_NE,
-                2 => lookup.DestZ_E,
-                3 => lookup.DestZ_SE,
-                4 => lookup.DestZ_S,
-                5 => lookup.DestZ_SW,
-                6 => lookup.DestZ_W,
-                7 => lookup.DestZ_NW,
+                0 => lookup.WalkZ_N,
+                1 => lookup.WalkZ_NE,
+                2 => lookup.WalkZ_E,
+                3 => lookup.WalkZ_SE,
+                4 => lookup.WalkZ_S,
+                5 => lookup.WalkZ_SW,
+                6 => lookup.WalkZ_W,
+                7 => lookup.WalkZ_NW,
                 _ => (sbyte)0
             };
 

@@ -1,27 +1,39 @@
 namespace Server.Engines.Pathing.Cache;
 
 /// <summary>
-/// Per-chunk storage backing StepCache. Holds raw walkability masks and
-/// destination Z values for each of 256 cells in a 16x16 chunk, plus build-time
-/// metadata (multis version, multi-Z bitmap) and LRU bookkeeping.
+/// Per-chunk storage backing StepCache. Holds raw walk + swim masks and destination Z
+/// values for each of 256 cells in a 16x16 chunk, plus build-time metadata (multis
+/// version, multi-Z bitmap) and LRU bookkeeping.
 /// </summary>
 internal sealed class StepChunk
 {
     public const int CellsPerChunk = 256; // 16 x 16
 
-    /// <summary>Bit i of Mask[c] = "can step from cell c to neighbor (Direction)i". Raw — no diagonal corner-cut applied here.</summary>
-    public readonly byte[] Mask = new byte[CellsPerChunk];
+    /// <summary>Bit i of WalkMask[c] = "default walker can step from cell c to neighbor (Direction)i". Raw — no diagonal corner-cut applied here.</summary>
+    public readonly byte[] WalkMask = new byte[CellsPerChunk];
+
+    /// <summary>Bit i of WetMask[c] = "swim-only mob can step from cell c to neighbor (Direction)i". Layered with WalkMask via canSwim/cantWalk capability flags.</summary>
+    public readonly byte[] WetMask = new byte[CellsPerChunk];
 
     public readonly sbyte[] SourceZ = new sbyte[CellsPerChunk];
 
-    public readonly sbyte[] DestZN  = new sbyte[CellsPerChunk];
-    public readonly sbyte[] DestZNE = new sbyte[CellsPerChunk];
-    public readonly sbyte[] DestZE  = new sbyte[CellsPerChunk];
-    public readonly sbyte[] DestZSE = new sbyte[CellsPerChunk];
-    public readonly sbyte[] DestZS  = new sbyte[CellsPerChunk];
-    public readonly sbyte[] DestZSW = new sbyte[CellsPerChunk];
-    public readonly sbyte[] DestZW  = new sbyte[CellsPerChunk];
-    public readonly sbyte[] DestZNW = new sbyte[CellsPerChunk];
+    public readonly sbyte[] WalkZN  = new sbyte[CellsPerChunk];
+    public readonly sbyte[] WalkZNE = new sbyte[CellsPerChunk];
+    public readonly sbyte[] WalkZE  = new sbyte[CellsPerChunk];
+    public readonly sbyte[] WalkZSE = new sbyte[CellsPerChunk];
+    public readonly sbyte[] WalkZS  = new sbyte[CellsPerChunk];
+    public readonly sbyte[] WalkZSW = new sbyte[CellsPerChunk];
+    public readonly sbyte[] WalkZW  = new sbyte[CellsPerChunk];
+    public readonly sbyte[] WalkZNW = new sbyte[CellsPerChunk];
+
+    public readonly sbyte[] SwimZN  = new sbyte[CellsPerChunk];
+    public readonly sbyte[] SwimZNE = new sbyte[CellsPerChunk];
+    public readonly sbyte[] SwimZE  = new sbyte[CellsPerChunk];
+    public readonly sbyte[] SwimZSE = new sbyte[CellsPerChunk];
+    public readonly sbyte[] SwimZS  = new sbyte[CellsPerChunk];
+    public readonly sbyte[] SwimZSW = new sbyte[CellsPerChunk];
+    public readonly sbyte[] SwimZW  = new sbyte[CellsPerChunk];
+    public readonly sbyte[] SwimZNW = new sbyte[CellsPerChunk];
 
     /// <summary>
     /// 32 bytes = 256 bits when allocated. Lazy: most chunks are entirely single-Z,

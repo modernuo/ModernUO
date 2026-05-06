@@ -9,10 +9,10 @@ namespace Server.Engines.Pathing.Cache;
 /// <see cref="MovementImpl"/>.Check minus the item and mobile collision phases.
 /// </summary>
 /// <remarks>
-/// Default-walker scope: assumes CanSwim=false, CanFly=false, CanOpenDoors=false,
-/// CantWalk=false. Single source-Z per cell. Diagonal corner-cut is NOT applied here;
-/// callers must AND the partner-cell results at query time per the creature rule
-/// (one cardinal partner walkable suffices).
+/// Bakes two rule sets per cell: walker (canSwim=false, cantWalk=false) and swim-only
+/// (canSwim=true, cantWalk=true). Item / mobile collision phases are omitted (they're
+/// the dynamic-obstacle pass's job). Diagonal corner-cut is NOT applied here; callers
+/// must AND the partner-cell results at query time.
 /// </remarks>
 public static class StepProbe
 {
@@ -26,10 +26,19 @@ public static class StepProbe
             return default;
         }
 
-        GetStaticStartZ(map, x, y, sourceZ, out var startZ, out var startTop, out _);
+        GetStaticStartZ(map, x, y, sourceZ, canSwim: false, cantWalk: false,
+            out var walkStartZ, out var walkStartTop, out _);
+        GetStaticStartZ(map, x, y, sourceZ, canSwim: true, cantWalk: true,
+            out var swimStartZ, out var swimStartTop, out _);
 
-        byte mask = 0;
-        Span<sbyte> destZs = stackalloc sbyte[8];
+        byte walkMask = 0;
+        byte wetMask = 0;
+        Span<sbyte> walkZs = stackalloc sbyte[8];
+        Span<sbyte> swimZs = stackalloc sbyte[8];
+        // stackalloc is NOT zero-initialized — unwritten slots hold whatever was on the
+        // stack. Clear before use; the loop only writes slots where the step succeeds.
+        walkZs.Clear();
+        swimZs.Clear();
 
         for (var d = 0; d < 8; d++)
         {
@@ -37,47 +46,59 @@ public static class StepProbe
             var dy = y;
             CalcMoves.Offset((Direction)d, ref dx, ref dy);
 
-            if (CheckStaticStep(map, dx, dy, startZ, startTop, out var newZ))
+            if (CheckStaticStep(map, dx, dy, walkStartZ, walkStartTop,
+                    canSwim: false, cantWalk: false, out var walkZ))
             {
-                mask |= (byte)(1 << d);
-                destZs[d] = (sbyte)newZ;
+                walkMask |= (byte)(1 << d);
+                walkZs[d] = (sbyte)walkZ;
+            }
+
+            if (CheckStaticStep(map, dx, dy, swimStartZ, swimStartTop,
+                    canSwim: true, cantWalk: true, out var swimZ))
+            {
+                wetMask |= (byte)(1 << d);
+                swimZs[d] = (sbyte)swimZ;
             }
         }
 
         return new StepMask(
-            mask,
-            destZs[0], destZs[1], destZs[2], destZs[3],
-            destZs[4], destZs[5], destZs[6], destZs[7]
+            walkMask, wetMask,
+            walkZs[0], walkZs[1], walkZs[2], walkZs[3],
+            walkZs[4], walkZs[5], walkZs[6], walkZs[7],
+            swimZs[0], swimZs[1], swimZs[2], swimZs[3],
+            swimZs[4], swimZs[5], swimZs[6], swimZs[7]
         );
     }
 
     /// <summary>
-    /// Returns the slow path's standing-Z for a default walker at (x, y) with hint locZ.
-    /// This is the Z the creature ends up STANDING AT — typically the topmost walkable
-    /// surface that's reachable from locZ (paver Z+1 for paver-over-ground; landCenter
-    /// for bare land). Mirrors MovementImpl.Check's surface-selection logic for the
-    /// destination cell, distilled to "what Z value does the slow path return as newZ
-    /// when stepping ONTO this cell". Used by StepCache to bake SourceZ
-    /// correctly so A*'s tracked-per-cell Z matches the cache's bake-time assumption.
+    /// Returns the slow path's standing-Z for a default walker at (x, y). Mirrors
+    /// MovementImpl.Check's surface-selection — paver Z+1 for paver-over-ground,
+    /// landCenter for bare land. Used by <see cref="StepCache"/> to bake SourceZ so
+    /// A*'s tracked-per-cell Z matches the cache's bake-time assumption.
     /// </summary>
     public static int ComputeStandingZ(Map map, int x, int y, int locZ)
     {
-        GetStaticStartZ(map, x, y, locZ, out _, out _, out var zCenter);
+        GetStaticStartZ(map, x, y, locZ, canSwim: false, cantWalk: false,
+            out _, out _, out var zCenter);
         return zCenter;
     }
 
     /// <summary>
-    /// Mirrors GetStartZ from MovementImpl, but static-only (no item list).
-    /// Assumes default walker: CanSwim=false, CantWalk=false.
+    /// Mirrors GetStartZ from MovementImpl, parameterized by canSwim / cantWalk.
     /// </summary>
-    private static void GetStaticStartZ(Map map, int x, int y, int locZ, out int zLow, out int zTop, out int zCenter)
+    private static void GetStaticStartZ(
+        Map map, int x, int y, int locZ, bool canSwim, bool cantWalk,
+        out int zLow, out int zTop, out int zCenter
+    )
     {
         var landTile = map.Tiles.GetLandTile(x, y);
         var flags = TileData.LandTable[landTile.ID & TileData.MaxLandValue].Flags;
         var impassable = (flags & TileFlag.Impassable) != 0;
 
-        // CantWalk=false, CanSwim=false → landBlocks = impassable
-        var landBlocks = impassable;
+        // Mirrors MovementImpl: impassable + swim on water is OK; otherwise block on
+        // cantWalk or impassable.
+        var landBlocks = (cantWalk || impassable)
+            && !(impassable && canSwim && (flags & TileFlag.Wet) != 0);
 
         map.GetAverageZ(x, y, out var landZ, out var landCenter, out var landTop);
 
@@ -99,8 +120,7 @@ public static class StepProbe
             var id = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
             var calcTop = tile.Z + id.CalcHeight;
 
-            // CanSwim=false → only check Surface; CantWalk=false
-            if (isSet && calcTop < zCenter || locZ < calcTop || !id.Surface)
+            if (isSet && calcTop < zCenter || locZ < calcTop || !id.Surface && !(canSwim && id.Wet))
             {
                 continue;
             }
@@ -129,11 +149,13 @@ public static class StepProbe
     }
 
     /// <summary>
-    /// Mirrors MovementImpl.Check for static tiles only.
-    /// Assumes default walker: CanSwim=false, CanFly=false, CantWalk=false,
-    /// AlwaysIgnoreDoors=false. Items and mobile collision phases are omitted.
+    /// Mirrors MovementImpl.Check for static tiles only, parameterized by canSwim / cantWalk.
+    /// Items and mobile collision phases are omitted.
     /// </summary>
-    private static bool CheckStaticStep(Map map, int x, int y, int startZ, int startTop, out int newZ)
+    private static bool CheckStaticStep(
+        Map map, int x, int y, int startZ, int startTop, bool canSwim, bool cantWalk,
+        out int newZ
+    )
     {
         newZ = 0;
 
@@ -146,8 +168,8 @@ public static class StepProbe
         var flags = TileData.LandTable[landTile.ID & TileData.MaxLandValue].Flags;
         var impassable = (flags & TileFlag.Impassable) != 0;
 
-        // CantWalk=false, CanSwim=false → landBlocks = impassable
-        var landBlocks = impassable;
+        var landBlocks = (cantWalk || impassable)
+            && !(impassable && canSwim && (flags & TileFlag.Wet) != 0);
 
         var considerLand = !landTile.Ignored;
 
@@ -163,10 +185,12 @@ public static class StepProbe
         foreach (var tile in map.Tiles.GetStaticAndMultiTiles(x, y))
         {
             var itemData = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
+            var notWater = !itemData.Wet;
 
-            // CanSwim=false, CantWalk=false:
-            // Skip if not a passable surface (no swim path either)
-            if (!itemData.Surface || itemData.Impassable)
+            // Mirrors MovementImpl: skip if not a passable surface AND not swimmable water,
+            // OR if the mobile can't walk and this isn't water.
+            if ((!itemData.Surface || itemData.Impassable) && (!canSwim || notWater)
+                || cantWalk && notWater)
             {
                 continue;
             }
@@ -176,7 +200,6 @@ public static class StepProbe
             var ourZ = itemZ + itemData.CalcHeight;
             testTop = checkTop;
 
-            // Pick the candidate closest to startZ; ties broken by higher ourZ
             if (moveIsOk)
             {
                 var cmp = Math.Abs(ourZ - startZ) - Math.Abs(newZ - startZ);
@@ -209,7 +232,6 @@ public static class StepProbe
                 continue;
             }
 
-            // IsOk equivalent: check static tiles don't block (ourZ, testTop) space
             if (StaticsBlockAt(map, x, y, ourZ, testTop))
             {
                 continue;
@@ -219,7 +241,6 @@ public static class StepProbe
             moveIsOk = true;
         }
 
-        // Land surface fallback (mirrors Check's land block at the bottom)
         if (!considerLand || landBlocks || stepTop < landZ)
         {
             return moveIsOk;
