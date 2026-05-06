@@ -1,8 +1,8 @@
-using System.Globalization;
 using System.IO;
 using System.Text;
 using Server.Logging;
 using Server.Mobiles;
+using Server.Text;
 
 namespace Server.Engines.Pathing;
 
@@ -12,10 +12,20 @@ namespace Server.Engines.Pathing;
 /// map, capability flags) needed to replay the scenario in benchmarks. Output format
 /// matches the corpus the BDN harness consumes.
 ///
-/// Off by default; flipped on via [PathRecord on / off or
-/// pathfinding.recorder.enable in server.cfg. Holds a single StreamWriter open
-/// while recording — its internal buffer absorbs per-record writes without per-call
-/// File.Open / File.Append overhead.
+/// Hot-toggleable at runtime via the [PathRecord admin command — no restart needed.
+/// <see cref="Configure"/> only seeds the initial state from server.cfg
+/// (pathfinding.recorder.enable, default false).
+///
+/// Holds a single StreamWriter open while recording; its internal buffer absorbs
+/// per-record writes without per-call File.Open / File.Append. Each record is built
+/// in a stack-allocated ValueStringBuilder (zero per-int allocation for the field
+/// formatting), then handed to the writer as a ReadOnlySpan&lt;char&gt;.
+///
+/// <b>Workload note:</b> intended for short bursts of capture (turn on, walk a region
+/// or trigger a scenario, turn off). On a busy server with hundreds of pathfinds
+/// per second, sustained recording can saturate the StreamWriter's 4 KB buffer and
+/// block the game thread on disk writes. A backpressure-aware async sink is a
+/// future enhancement if 24/7 capture becomes a use case.
 /// </summary>
 public static class PathfindRecorder
 {
@@ -133,30 +143,22 @@ public static class PathfindRecorder
 
         try
         {
-            var w = _writer;
-            w.Write("{\"Name\":\"recorded\",\"MapId\":");
-            w.Write(map.MapID.ToString(CultureInfo.InvariantCulture));
-            w.Write(",\"StartX\":");
-            w.Write(start.X.ToString(CultureInfo.InvariantCulture));
-            w.Write(",\"StartY\":");
-            w.Write(start.Y.ToString(CultureInfo.InvariantCulture));
-            w.Write(",\"StartZ\":");
-            w.Write(start.Z.ToString(CultureInfo.InvariantCulture));
-            w.Write(",\"GoalX\":");
-            w.Write(goal.X.ToString(CultureInfo.InvariantCulture));
-            w.Write(",\"GoalY\":");
-            w.Write(goal.Y.ToString(CultureInfo.InvariantCulture));
-            w.Write(",\"GoalZ\":");
-            w.Write(goal.Z.ToString(CultureInfo.InvariantCulture));
-            w.Write(",\"CanSwim\":");
-            w.Write(canSwim ? "true" : "false");
-            w.Write(",\"CanFly\":");
-            w.Write(canFly ? "true" : "false");
-            w.Write(",\"CanOpenDoors\":");
-            w.Write(canOpenDoors ? "true" : "false");
-            w.Write(",\"CanMoveOverObstacles\":");
-            w.Write(canMoveOverObstacles ? "true" : "false");
-            w.Write("}\n");
+            // One interpolation handles every numeric field with no per-int ToString
+            // allocation; bool fields use explicit literal spans because JSON wants
+            // lowercase "true"/"false" and bool.ToString() yields "True"/"False".
+            using var vsb = ValueStringBuilder.Create(192);
+            vsb.Append(
+                $"{{\"Name\":\"recorded\",\"MapId\":{map.MapID},\"StartX\":{start.X},\"StartY\":{start.Y},\"StartZ\":{start.Z},\"GoalX\":{goal.X},\"GoalY\":{goal.Y},\"GoalZ\":{goal.Z},\"CanSwim\":"
+            );
+            vsb.Append(canSwim ? "true" : "false");
+            vsb.Append(",\"CanFly\":");
+            vsb.Append(canFly ? "true" : "false");
+            vsb.Append(",\"CanOpenDoors\":");
+            vsb.Append(canOpenDoors ? "true" : "false");
+            vsb.Append(",\"CanMoveOverObstacles\":");
+            vsb.Append(canMoveOverObstacles ? "true" : "false");
+            vsb.Append("}\n");
+            _writer.Write(vsb.AsSpan());
             _recordsWritten++;
         }
         catch (IOException ex)
