@@ -64,6 +64,14 @@ public sealed class StepCache
     public int MaxResidentChunks { get; set; } = 8192;
 
     /// <summary>
+    /// When true, <see cref="TryOpenLazyReader"/> immediately materializes every chunk in
+    /// the .swb file into the resident set, paying the file-load cost upfront at boot
+    /// instead of on first query. Trades ~25–50ms boot time per fully-baked map for zero
+    /// first-touch latency in production. Default off — preserves the lazy memory profile.
+    /// </summary>
+    public bool PreloadOnLazyOpen { get; set; }
+
+    /// <summary>
     /// Number of misses on the same chunk within <see cref="MissPromotionWindowMs"/>
     /// required to trigger a build. 1 = eager (legacy behavior). 2 = second-touch (default,
     /// filters single-touch pass-throughs).
@@ -282,7 +290,52 @@ public sealed class StepCache
             "StepCache: opened {Path} ({ChunkCount} chunks indexed) for map {MapId}",
             path, reader.IndexedChunkCount, mapId
         );
+
+        if (PreloadOnLazyOpen)
+        {
+            PreloadFromLazyReader(mapId, reader);
+        }
+
         return true;
+    }
+
+    /// <summary>
+    /// Materializes every chunk in <paramref name="reader"/> into the resident set.
+    /// Called from <see cref="TryOpenLazyReader"/> when <see cref="PreloadOnLazyOpen"/>
+    /// is set. Skips chunks whose live <see cref="Map.Sector.MultisVersion"/> doesn't
+    /// match the file's snapshot — those will rebake on first query.
+    /// </summary>
+    private void PreloadFromLazyReader(int mapId, StepCacheFile.LazyReader reader)
+    {
+        var map = Map.Maps[mapId];
+        if (map == null || map == Map.Internal)
+        {
+            return;
+        }
+
+        var loaded = 0;
+        foreach (var (chunkX, chunkY) in reader.EnumerateChunkCoords())
+        {
+            var key = EncodeKey(mapId, chunkX, chunkY);
+            if (_chunks.ContainsKey(key))
+            {
+                continue;
+            }
+
+            var chunk = TryLoadFromLazyReader(map, chunkX, chunkY);
+            if (chunk == null)
+            {
+                continue;
+            }
+
+            _chunks[key] = chunk;
+            _keysList.Add(key);
+            loaded++;
+        }
+
+        logger.Information(
+            "StepCache: preloaded {Loaded} chunks from .swb for map {MapId}", loaded, mapId
+        );
     }
 
     /// <summary>

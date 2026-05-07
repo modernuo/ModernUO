@@ -219,6 +219,66 @@ public class StepCacheFileTests
     /// them warm. This guards the deployment shape where an admin ships .swb files and
     /// expects the very first NPC pathfind in any region to use cache (not slow path).
     /// </summary>
+    /// <summary>
+    /// PreloadOnLazyOpen=true must materialize every chunk in the .swb file into the
+    /// resident set immediately, eliminating first-touch file-read latency. Counterpart
+    /// to <see cref="LazyReader_DoesNotMaterializeUntilQueried"/> which proves the
+    /// default lazy behavior.
+    /// </summary>
+    [Fact]
+    public void TryOpenLazyReader_WithPreloadFlag_MaterializesAllChunksImmediately()
+    {
+        var cache = StepCache.Instance;
+        cache.Clear();
+        cache.MissPromotionThreshold = 1;
+
+        var map = Map.Maps[1];
+        Assert.NotNull(map);
+
+        var coords = new (int, int)[]
+        {
+            (1500, 1600), (1516, 1600), (1500, 1616), (1516, 1616), (1532, 1600)
+        };
+        foreach (var (x, y) in coords)
+        {
+            cache.TryGetMask(map, x, y, sourceZ: 10);
+        }
+
+        var path = Path.Combine(Path.GetTempPath(), $"step-cache-preload-{System.Guid.NewGuid():N}.swb");
+        try
+        {
+            Assert.Equal(coords.Length, cache.SaveToFile(path, map.MapID));
+
+            cache.Clear();
+            cache.PreloadOnLazyOpen = true;
+            try
+            {
+                Assert.True(cache.TryOpenLazyReader(path, map.MapID));
+
+                // Every chunk should be resident — no further queries needed.
+                Assert.Equal(coords.Length, cache.GetStats().ResidentChunks);
+                Assert.Equal(0L, cache.GetStats().BuildsTotal); // came from file, not baker
+
+                // Subsequent query is a clean Hit, not a Miss_NotBuilt.
+                var lookup = cache.TryGetMask(map, coords[0].Item1, coords[0].Item2, sourceZ: 10);
+                Assert.Equal(CacheHitKind.Hit, lookup.HitKind);
+                Assert.Equal(coords.Length, cache.GetStats().ResidentChunks);
+            }
+            finally
+            {
+                cache.PreloadOnLazyOpen = false;
+            }
+        }
+        finally
+        {
+            cache.Clear();
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+        }
+    }
+
     [Fact]
     public void LazyReaderHit_BypassesMissTrackerOnFirstTouch()
     {

@@ -472,6 +472,19 @@ internal static class StepCacheFile
 
         public bool Has(int chunkX, int chunkY) => _offsets.ContainsKey(PackChunkKey(chunkX, chunkY));
 
+        /// <summary>
+        /// Enumerates every (chunkX, chunkY) coordinate the file holds. Used by
+        /// <see cref="StepCache"/> when preload is enabled to materialize all chunks
+        /// upfront instead of on first query.
+        /// </summary>
+        public IEnumerable<(int chunkX, int chunkY)> EnumerateChunkCoords()
+        {
+            foreach (var key in _offsets.Keys)
+            {
+                yield return ((int)(key >> 32), (int)(key & 0xFFFFFFFF));
+            }
+        }
+
         internal LazyReader(
             FileStream stream, uint mapId, ulong fingerprint, ulong bakeTimestamp,
             uint chunkCount, Dictionary<ulong, (ulong offset, uint length)> offsets
