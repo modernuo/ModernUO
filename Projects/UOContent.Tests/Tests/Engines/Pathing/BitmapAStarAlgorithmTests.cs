@@ -58,6 +58,7 @@ public class BitmapAStarAlgorithmTests
     public void SwimCreature_FindsPath_ViaCacheCapabilityOverlay(int sx, int sy, int gx, int gy)
     {
         StepCache.Instance.Clear();
+        StepCache.Instance.MissPromotionThreshold = 1;
         var map = Map.Maps[1];
         Assert.NotNull(map);
 
@@ -249,6 +250,7 @@ public class BitmapAStarAlgorithmTests
     public void NonGmPlayer_UsesCache_WithStrictDiagonalRule()
     {
         StepCache.Instance.Clear();
+        StepCache.Instance.MissPromotionThreshold = 1;
         var map = Map.Maps[1];
         Assert.NotNull(map);
 
@@ -277,6 +279,7 @@ public class BitmapAStarAlgorithmTests
     public void DoorCreature_UsesCache_NotSlowPath()
     {
         StepCache.Instance.Clear();
+        StepCache.Instance.MissPromotionThreshold = 1;
         var map = Map.Maps[1];
 
         var stub = new DoorOpenerStub(World.NewMobile);
@@ -303,6 +306,7 @@ public class BitmapAStarAlgorithmTests
     public void ObstacleCreature_UsesCache_NotSlowPath()
     {
         StepCache.Instance.Clear();
+        StepCache.Instance.MissPromotionThreshold = 1;
         var map = Map.Maps[1];
 
         var stub = new ObstacleClimberStub(World.NewMobile);

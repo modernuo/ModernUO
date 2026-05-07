@@ -12,6 +12,7 @@ public readonly struct CacheStats(
     long fallthroughMultiZ,
     long fallthroughOffMap,
     long fallthroughSourceZMismatch,
+    long fallthroughNotBuilt,
     long evictionsByLruCap,
     long buildsTotal
 )
@@ -23,6 +24,7 @@ public readonly struct CacheStats(
     public readonly long FallthroughMultiZ = fallthroughMultiZ;
     public readonly long FallthroughOffMap = fallthroughOffMap;
     public readonly long FallthroughSourceZMismatch = fallthroughSourceZMismatch;
+    public readonly long FallthroughNotBuilt = fallthroughNotBuilt;
     public readonly long EvictionsByLruCap = evictionsByLruCap;
     public readonly long BuildsTotal = buildsTotal;
 }

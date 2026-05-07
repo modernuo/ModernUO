@@ -17,6 +17,7 @@ public class StepCacheFileTests
     {
         var cache = StepCache.Instance;
         cache.Clear();
+        cache.MissPromotionThreshold = 1; // eager build to populate chunks for save
 
         var map = Map.Maps[1];
         Assert.NotNull(map);
@@ -171,6 +172,7 @@ public class StepCacheFileTests
     {
         var cache = StepCache.Instance;
         cache.Clear();
+        cache.MissPromotionThreshold = 1; // eager build to populate chunks for save
 
         var map = Map.Maps[1];
         Assert.NotNull(map);

@@ -486,6 +486,8 @@ public class BitmapAStarAlgorithm : PathAlgorithm
     /// <summary>
     /// Per-direction <see cref="CalcMoves.CheckMovement"/> loop for a single source cell.
     /// Runs on cache fallthrough or when <see cref="_currentMobileNeedsSlowPath"/> is set.
+    /// CheckMovement validates land/statics/items via MovementImpl; dynamic mobile blocking
+    /// is layered on top because MovementImpl doesn't iterate same-cell mobiles.
     /// </summary>
     private static int GetSuccessorsSlowPath(Mobile m, Map map, int px, int py, Point3D p3D, int[] vals)
     {
@@ -502,15 +504,23 @@ public class BitmapAStarAlgorithm : PathAlgorithm
                 continue;
             }
 
-            if (CalcMoves.CheckMovement(m, map, p3D, (Direction)i, out var z))
+            if (!CalcMoves.CheckMovement(m, map, p3D, (Direction)i, out var z))
             {
-                var idx = GetIndex(x + _xOffset, y + _yOffset, z);
+                continue;
+            }
 
-                if (idx >= 0 && idx < NodeCount)
-                {
-                    _nodes[idx].z = z;
-                    vals[count++] = idx;
-                }
+            var absX = x + _xOffset;
+            var absY = y + _yOffset;
+            if (IsBlockedByDynamic(m, map, absX, absY, z))
+            {
+                continue;
+            }
+
+            var idx = GetIndex(absX, absY, z);
+            if (idx >= 0 && idx < NodeCount)
+            {
+                _nodes[idx].z = z;
+                vals[count++] = idx;
             }
         }
 

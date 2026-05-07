@@ -22,6 +22,7 @@ public class StepCacheParityTests
     {
         var cache = StepCache.Instance;
         cache.Clear();
+        cache.MissPromotionThreshold = 1; // sweep cells expecting cache to answer immediately
 
         var map = Map.Maps[1];
         Assert.NotNull(map);

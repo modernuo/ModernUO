@@ -24,6 +24,21 @@ public sealed class StepCache
     // with _chunks: append on Miss_NotBuilt, swap-and-pop on eviction.
     private readonly List<long> _keysList = new();
 
+    // Second-touch promotion tracker. A chunk's first miss within the window returns
+    // Fallthrough_NotBuilt; the caller takes the slow path. The Nth miss within the same
+    // window (where N = MissPromotionThreshold) promotes to BuildChunk + serve. This
+    // keeps single-touch pass-throughs (mounted player + pet covering many chunks) on the
+    // ~30µs slow path and reserves the ~700µs BuildChunk cost for chunks NPCs actually
+    // hit repeatedly.
+    private readonly Dictionary<long, ChunkMissState> _chunkMissTracker = new();
+    private const int MaxMissTrackerEntries = 4096;
+
+    private struct ChunkMissState
+    {
+        public byte MissCount;
+        public uint LastMissTickStamp;
+    }
+
     // Telemetry counters
     private long _hits;
     private long _missesNotBuilt;
@@ -31,6 +46,7 @@ public sealed class StepCache
     private long _fallthroughMultiZ;
     private long _fallthroughOffMap;
     private long _fallthroughSourceZMismatch;
+    private long _fallthroughNotBuilt;
     private long _evictionsByLruCap;
     private long _buildsTotal;
 
@@ -38,6 +54,19 @@ public sealed class StepCache
 
     /// <summary>Hard cap on resident chunk count. Default 8192. Override for tests / ops.</summary>
     public int MaxResidentChunks { get; set; } = 8192;
+
+    /// <summary>
+    /// Number of misses on the same chunk within <see cref="MissPromotionWindowMs"/>
+    /// required to trigger a build. 1 = eager (legacy behavior). 2 = second-touch (default,
+    /// filters single-touch pass-throughs).
+    /// </summary>
+    public int MissPromotionThreshold { get; set; } = 2;
+
+    /// <summary>
+    /// Window over which misses against the same chunk accumulate toward promotion.
+    /// Misses spaced wider than this restart the count. Default 30s.
+    /// </summary>
+    public uint MissPromotionWindowMs { get; set; } = 30_000;
 
     /// <summary>
     /// Pack (mapId, chunkX, chunkY) into a single long key.
@@ -54,6 +83,7 @@ public sealed class StepCache
         fallthroughMultiZ: _fallthroughMultiZ,
         fallthroughOffMap: _fallthroughOffMap,
         fallthroughSourceZMismatch: _fallthroughSourceZMismatch,
+        fallthroughNotBuilt: _fallthroughNotBuilt,
         evictionsByLruCap: _evictionsByLruCap,
         buildsTotal: _buildsTotal
     );
@@ -79,12 +109,14 @@ public sealed class StepCache
     {
         _chunks.Clear();
         _keysList.Clear();
+        _chunkMissTracker.Clear();
         _hits = 0;
         _missesNotBuilt = 0;
         _missesDirtyRebuild = 0;
         _fallthroughMultiZ = 0;
         _fallthroughOffMap = 0;
         _fallthroughSourceZMismatch = 0;
+        _fallthroughNotBuilt = 0;
         _evictionsByLruCap = 0;
         _buildsTotal = 0;
     }
@@ -324,10 +356,27 @@ public sealed class StepCache
         var hitKindResult = CacheHitKind.Hit;
         if (!_chunks.TryGetValue(key, out var chunk))
         {
-            chunk = ResolveMissingChunk(map, chunkX, chunkY);
-            _chunks[key] = chunk;
-            _keysList.Add(key);
-            hitKindResult = CacheHitKind.Miss_NotBuilt;
+            // Try lazy file first — file-loaded chunks bypass the miss tracker because
+            // the .swb represents an explicit prior decision to keep this chunk warm.
+            chunk = TryLoadFromLazyReader(map, chunkX, chunkY);
+            if (chunk != null)
+            {
+                _chunks[key] = chunk;
+                _keysList.Add(key);
+                hitKindResult = CacheHitKind.Miss_NotBuilt;
+            }
+            else if (ShouldPromoteAfterMiss(key))
+            {
+                chunk = BuildChunk(map, chunkX, chunkY);
+                _chunks[key] = chunk;
+                _keysList.Add(key);
+                hitKindResult = CacheHitKind.Miss_NotBuilt;
+            }
+            else
+            {
+                _fallthroughNotBuilt++;
+                return new StepMask(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CacheHitKind.Fallthrough_NotBuilt);
+            }
         }
         else
         {
@@ -404,28 +453,98 @@ public sealed class StepCache
     }
 
     /// <summary>
-    /// Chunk-miss resolution: try the lazy file reader for this map first; if there's no
-    /// file or no record at this (chunkX, chunkY), fall back to the runtime baker. The
-    /// file path validates each loaded chunk's MultisVersion against the live sector — a
-    /// stale snapshot triggers a rebuild rather than serving a wrong answer.
+    /// Returns a fresh StepChunk loaded from the lazy file reader, or null if there's no
+    /// open reader for the map / no record at (chunkX, chunkY) / the loaded snapshot is
+    /// stale relative to the live sector's <see cref="Map.Sector.MultisVersion"/>. A null
+    /// return means the caller should consult the miss tracker; a stale return means
+    /// "rebuild, the .swb is out of date and a future SaveToFile will overwrite it."
     /// </summary>
-    private StepChunk ResolveMissingChunk(Map map, int chunkX, int chunkY)
+    private StepChunk TryLoadFromLazyReader(Map map, int chunkX, int chunkY)
     {
-        if (_lazyReaders.TryGetValue(map.MapID, out var reader))
+        if (!_lazyReaders.TryGetValue(map.MapID, out var reader))
         {
-            var loaded = reader.TryReadChunk(chunkX, chunkY);
-            if (loaded != null)
+            return null;
+        }
+        var loaded = reader.TryReadChunk(chunkX, chunkY);
+        if (loaded == null)
+        {
+            return null;
+        }
+        var sector = map.GetRealSector(chunkX, chunkY);
+        return loaded.BuiltMultisVersion == sector.MultisVersion ? loaded : null;
+    }
+
+    /// <summary>
+    /// Records a miss for <paramref name="chunkKey"/> and decides whether to build now
+    /// or defer to slow path. Returns true when the miss count within the window crosses
+    /// <see cref="MissPromotionThreshold"/> — caller should run BuildChunk and serve.
+    /// Returns false on first miss / out-of-window misses — caller should return
+    /// Fallthrough_NotBuilt so the algorithm uses the slow path.
+    /// </summary>
+    private bool ShouldPromoteAfterMiss(long chunkKey)
+    {
+        var now = (uint)Core.TickCount;
+
+        if (_chunkMissTracker.TryGetValue(chunkKey, out var state))
+        {
+            var elapsed = now - state.LastMissTickStamp;
+            if (elapsed > MissPromotionWindowMs)
             {
-                var sector = map.GetRealSector(chunkX, chunkY);
-                if (loaded.BuiltMultisVersion == sector.MultisVersion)
-                {
-                    return loaded;
-                }
-                // Snapshot is stale (multis added/removed since the bake). Fall through
-                // to the runtime baker; a future SaveToFile will overwrite the entry.
+                _chunkMissTracker[chunkKey] = new ChunkMissState { MissCount = 1, LastMissTickStamp = now };
+                return false;
+            }
+
+            var newCount = (byte)Math.Min(state.MissCount + 1, byte.MaxValue);
+            if (newCount >= MissPromotionThreshold)
+            {
+                _chunkMissTracker.Remove(chunkKey);
+                return true;
+            }
+
+            _chunkMissTracker[chunkKey] = new ChunkMissState { MissCount = newCount, LastMissTickStamp = now };
+            return false;
+        }
+
+        if (MissPromotionThreshold <= 1)
+        {
+            return true;
+        }
+
+        if (_chunkMissTracker.Count >= MaxMissTrackerEntries)
+        {
+            PruneMissTracker(now);
+        }
+
+        _chunkMissTracker[chunkKey] = new ChunkMissState { MissCount = 1, LastMissTickStamp = now };
+        return false;
+    }
+
+    /// <summary>
+    /// Drop tracker entries older than the promotion window. Called when the tracker hits
+    /// its capacity ceiling. If the prune doesn't reclaim anything (every entry is in
+    /// window), the cap is enforced by clearing — the worst case is a few extra
+    /// Fallthrough_NotBuilt returns until traffic re-establishes hot chunks.
+    /// </summary>
+    private void PruneMissTracker(uint now)
+    {
+        var window = MissPromotionWindowMs;
+        var beforeCount = _chunkMissTracker.Count;
+        var toRemove = new List<long>();
+        foreach (var kvp in _chunkMissTracker)
+        {
+            if (now - kvp.Value.LastMissTickStamp > window)
+            {
+                toRemove.Add(kvp.Key);
             }
         }
-        return BuildChunk(map, chunkX, chunkY);
+        foreach (var k in toRemove)
+        {
+            _chunkMissTracker.Remove(k);
+        }
+        if (_chunkMissTracker.Count == beforeCount)
+        {
+            _chunkMissTracker.Clear();
+        }
     }
 
     private StepChunk BuildChunk(Map map, int chunkX, int chunkY)
