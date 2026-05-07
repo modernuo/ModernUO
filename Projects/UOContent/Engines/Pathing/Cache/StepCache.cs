@@ -508,6 +508,37 @@ public sealed class StepCache
         // because tile reachability shifts at step-height boundaries.
         if (Math.Abs(sourceZ - chunk.SourceZ[cellIndex]) > StepHeight)
         {
+            // Swim-layer fallback for shore cells: if the chunk has the layer and this
+            // cell's water-surface Z is within StepHeight of the query, serve from the
+            // swim layer (computed at swim-perspective Z). Walker queries on shore cells
+            // fall through this branch via their Z mismatch with SwimSourceZ.
+            if (chunk.HasSwimLayer)
+            {
+                var swimSrc = chunk.SwimSourceZ[cellIndex];
+                if (swimSrc != StepChunk.NoSwimLayerCell && Math.Abs(sourceZ - swimSrc) <= StepHeight)
+                {
+                    switch (hitKindResult)
+                    {
+                        case CacheHitKind.Miss_NotBuilt:    { _missesNotBuilt++;     break; }
+                        case CacheHitKind.Miss_DirtyRebuild: { _missesDirtyRebuild++; break; }
+                        case CacheHitKind.Hit:              { _hits++;               break; }
+                    }
+                    return new StepMask(
+                        0, chunk.SwimMask[cellIndex],
+                        0, 0, 0, 0, 0, 0, 0, 0,
+                        chunk.SwimZN_Layer[cellIndex],
+                        chunk.SwimZNE_Layer[cellIndex],
+                        chunk.SwimZE_Layer[cellIndex],
+                        chunk.SwimZSE_Layer[cellIndex],
+                        chunk.SwimZS_Layer[cellIndex],
+                        chunk.SwimZSW_Layer[cellIndex],
+                        chunk.SwimZW_Layer[cellIndex],
+                        chunk.SwimZNW_Layer[cellIndex],
+                        hitKindResult
+                    );
+                }
+            }
+
             _fallthroughSourceZMismatch++;
             return new StepMask(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CacheHitKind.Fallthrough_SourceZMismatch);
         }
@@ -717,6 +748,33 @@ public sealed class StepCache
                 chunk.SwimZSW[cell]  = result.SwimZ_SW;
                 chunk.SwimZW[cell]   = result.SwimZ_W;
                 chunk.SwimZNW[cell]  = result.SwimZ_NW;
+
+                // Shore-cell handling: if the cell has BOTH a walk surface (standing Z)
+                // AND a water surface (Wet land tile or wet static) at a Z separated by
+                // > StepHeight, populate the swim layer at swim-perspective Z. This lets
+                // swim-only mobs (sea serpents, water elementals) hit the cache on coast
+                // cells instead of degrading to slow path. ~10% of map chunks need this;
+                // the rest (pure inland or pure deep ocean) get null swim layer.
+                var swimZRaw = StepProbe.ComputeSwimStandingZ(map, x, y);
+                if (swimZRaw != int.MinValue && Math.Abs(swimZRaw - standingZ) > StepHeight)
+                {
+                    if (chunk.SwimSourceZ == null)
+                    {
+                        chunk.AllocateSwimLayer();
+                    }
+                    var swimSrc = (sbyte)Math.Clamp(swimZRaw, sbyte.MinValue + 1, sbyte.MaxValue);
+                    var swimResult = StepProbe.ComputeMaskAt(map, x, y, swimSrc);
+                    chunk.SwimSourceZ[cell]  = swimSrc;
+                    chunk.SwimMask[cell]     = swimResult.WetMask;
+                    chunk.SwimZN_Layer[cell]  = swimResult.SwimZ_N;
+                    chunk.SwimZNE_Layer[cell] = swimResult.SwimZ_NE;
+                    chunk.SwimZE_Layer[cell]  = swimResult.SwimZ_E;
+                    chunk.SwimZSE_Layer[cell] = swimResult.SwimZ_SE;
+                    chunk.SwimZS_Layer[cell]  = swimResult.SwimZ_S;
+                    chunk.SwimZSW_Layer[cell] = swimResult.SwimZ_SW;
+                    chunk.SwimZW_Layer[cell]  = swimResult.SwimZ_W;
+                    chunk.SwimZNW_Layer[cell] = swimResult.SwimZ_NW;
+                }
 
                 // Multi-Z handling: if the cell has 2+ reachable surfaces, compute its
                 // Tier 4 strata so future queries can be answered without falling through

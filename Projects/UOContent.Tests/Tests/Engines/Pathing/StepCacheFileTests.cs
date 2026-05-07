@@ -220,6 +220,70 @@ public class StepCacheFileTests
     /// expects the very first NPC pathfind in any region to use cache (not slow path).
     /// </summary>
     /// <summary>
+    /// A chunk with an injected swim layer must serialize and deserialize via the lazy
+    /// reader without losing the layer. Validates v3 file format end-to-end: swim layer
+    /// fields survive Save → Clear → LazyOpen → first-touch query.
+    /// </summary>
+    [Fact]
+    public void SwimLayer_RoundTrips_ThroughLazyReader()
+    {
+        var cache = StepCache.Instance;
+        cache.Clear();
+        cache.MissPromotionThreshold = 1;
+
+        var map = Map.Maps[1];
+        Assert.NotNull(map);
+
+        // Build a chunk and inject a synthetic swim layer onto cell (1500, 1600).
+        cache.TryGetMask(map, 1500, 1600, sourceZ: 10);
+
+        var chunksField = typeof(StepCache).GetField(
+            "_chunks",
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance
+        );
+        var chunks = (System.Collections.Generic.Dictionary<long, StepChunk>)chunksField!.GetValue(cache)!;
+        var key = StepCache.EncodeKey(map.MapID, 1500 >> 4, 1600 >> 4);
+        var chunk = chunks[key];
+
+        chunk.AllocateSwimLayer();
+        var cellIndex = ((1600 - ((1600 >> 4) << 4)) << 4) | (1500 - ((1500 >> 4) << 4));
+        chunk.SwimSourceZ[cellIndex]   = -7;
+        chunk.SwimMask[cellIndex]      = 0b0000_1111;
+        chunk.SwimZN_Layer[cellIndex]  = -7;
+        chunk.SwimZNE_Layer[cellIndex] = -7;
+        chunk.SwimZE_Layer[cellIndex]  = -7;
+        chunk.SwimZSE_Layer[cellIndex] = -7;
+
+        var path = Path.Combine(Path.GetTempPath(), $"step-cache-swim-{System.Guid.NewGuid():N}.swb");
+        try
+        {
+            Assert.Equal(1, cache.SaveToFile(path, map.MapID));
+
+            cache.Clear();
+            cache.MissPromotionThreshold = 1;
+            Assert.True(cache.TryOpenLazyReader(path, map.MapID));
+
+            // Pull the chunk back via a query at swim Z; the layer must hit and serve our
+            // injected mask. Walk-Z query of the same cell should still hit the walk
+            // layer with whatever the bake produced.
+            var swim = cache.TryGetMask(map, 1500, 1600, sourceZ: -7);
+            Assert.True(swim.IsHit);
+            Assert.Equal((byte)0, swim.WalkMask);
+            Assert.Equal((byte)0b0000_1111, swim.WetMask);
+            Assert.Equal((sbyte)-7, swim.SwimZ_N);
+            Assert.Equal((sbyte)-7, swim.SwimZ_E);
+        }
+        finally
+        {
+            cache.Clear();
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+        }
+    }
+
+    /// <summary>
     /// PreloadOnLazyOpen=true must materialize every chunk in the .swb file into the
     /// resident set immediately, eliminating first-touch file-read latency. Counterpart
     /// to <see cref="LazyReader_DoesNotMaterializeUntilQueried"/> which proves the

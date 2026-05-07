@@ -167,6 +167,45 @@ public static class StepProbe
     }
 
     /// <summary>
+    /// Returns the water-surface standing Z at (x, y) — the Z a swim-only mob would stand
+    /// at on this cell — or <see cref="int.MinValue"/> if no water surface exists. Used
+    /// by <see cref="StepCache"/> to detect shore cells (cells with both walk and swim
+    /// surfaces separated by &gt; StepHeight) and bake their swim layer at swim-perspective Z.
+    /// </summary>
+    public static int ComputeSwimStandingZ(Map map, int x, int y)
+    {
+        if (map == null || map == Map.Internal)
+        {
+            return int.MinValue;
+        }
+        if (x < 0 || y < 0 || x >= map.Width || y >= map.Height)
+        {
+            return int.MinValue;
+        }
+
+        // Land tile flagged Wet — its center Z is the swim surface.
+        var landTile = map.Tiles.GetLandTile(x, y);
+        var landFlags = TileData.LandTable[landTile.ID & TileData.MaxLandValue].Flags;
+        if (!landTile.Ignored && (landFlags & TileFlag.Wet) != 0)
+        {
+            map.GetAverageZ(x, y, out _, out var landCenter, out _);
+            return landCenter;
+        }
+
+        // Otherwise scan statics for a wet surface.
+        foreach (var tile in map.Tiles.GetStaticAndMultiTiles(x, y))
+        {
+            var data = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
+            if (data.Wet)
+            {
+                return tile.Z + data.CalcHeight;
+            }
+        }
+
+        return int.MinValue;
+    }
+
+    /// <summary>
     /// Mirrors GetStartZ from MovementImpl, parameterized by canSwim / cantWalk.
     /// </summary>
     private static void GetStaticStartZ(

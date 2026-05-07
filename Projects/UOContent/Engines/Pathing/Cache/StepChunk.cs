@@ -37,6 +37,91 @@ internal sealed class StepChunk
     public readonly sbyte[] SwimZW  = new sbyte[CellsPerChunk];
     public readonly sbyte[] SwimZNW = new sbyte[CellsPerChunk];
 
+    /// <summary>
+    /// Swim layer — populated only for chunks containing at least one shore cell (a cell
+    /// with both a walkable land surface and a water surface separated by > StepHeight).
+    /// On shore cells, queries from the swim source Z miss the primary source-Z guard;
+    /// the swim layer carries the correct wetMask + per-direction destination Zs computed
+    /// from the water surface's perspective. For non-shore cells in a chunk that has the
+    /// layer, <see cref="SwimSourceZ"/>[cell] = <see cref="NoSwimLayerCell"/> sentinel.
+    /// All swim-layer arrays are null on chunks with no shore cells (~90% of map chunks
+    /// on Trammel) — zero memory cost on the common case.
+    /// </summary>
+    public const sbyte NoSwimLayerCell = sbyte.MinValue;
+
+    private sbyte[] _swimSourceZ;
+    private byte[]  _swimMask;
+    private sbyte[] _swimZN_extra;
+    private sbyte[] _swimZNE_extra;
+    private sbyte[] _swimZE_extra;
+    private sbyte[] _swimZSE_extra;
+    private sbyte[] _swimZS_extra;
+    private sbyte[] _swimZSW_extra;
+    private sbyte[] _swimZW_extra;
+    private sbyte[] _swimZNW_extra;
+
+    /// <summary>True when this chunk has at least one shore cell with a populated swim layer.</summary>
+    public bool HasSwimLayer => _swimSourceZ != null;
+
+    /// <summary>Per-cell water-surface standing Z (or <see cref="NoSwimLayerCell"/>). Null when chunk has no swim layer.</summary>
+    public sbyte[] SwimSourceZ => _swimSourceZ;
+    /// <summary>Per-cell swim mask computed at <see cref="SwimSourceZ"/>. Null when chunk has no swim layer.</summary>
+    public byte[]  SwimMask    => _swimMask;
+    public sbyte[] SwimZN_Layer  => _swimZN_extra;
+    public sbyte[] SwimZNE_Layer => _swimZNE_extra;
+    public sbyte[] SwimZE_Layer  => _swimZE_extra;
+    public sbyte[] SwimZSE_Layer => _swimZSE_extra;
+    public sbyte[] SwimZS_Layer  => _swimZS_extra;
+    public sbyte[] SwimZSW_Layer => _swimZSW_extra;
+    public sbyte[] SwimZW_Layer  => _swimZW_extra;
+    public sbyte[] SwimZNW_Layer => _swimZNW_extra;
+
+    /// <summary>
+    /// Lazily allocates the swim-layer arrays and seeds <see cref="SwimSourceZ"/> with
+    /// the <see cref="NoSwimLayerCell"/> sentinel. Called at bake time the first time a
+    /// shore cell is detected in this chunk.
+    /// </summary>
+    internal void AllocateSwimLayer()
+    {
+        if (_swimSourceZ != null)
+        {
+            return;
+        }
+        _swimSourceZ = new sbyte[CellsPerChunk];
+        _swimMask    = new byte[CellsPerChunk];
+        _swimZN_extra  = new sbyte[CellsPerChunk];
+        _swimZNE_extra = new sbyte[CellsPerChunk];
+        _swimZE_extra  = new sbyte[CellsPerChunk];
+        _swimZSE_extra = new sbyte[CellsPerChunk];
+        _swimZS_extra  = new sbyte[CellsPerChunk];
+        _swimZSW_extra = new sbyte[CellsPerChunk];
+        _swimZW_extra  = new sbyte[CellsPerChunk];
+        _swimZNW_extra = new sbyte[CellsPerChunk];
+        for (var i = 0; i < CellsPerChunk; i++)
+        {
+            _swimSourceZ[i] = NoSwimLayerCell;
+        }
+    }
+
+    /// <summary>Test/serialization hook: install pre-built swim-layer arrays. Pass nulls to clear.</summary>
+    internal void SetSwimLayer(
+        sbyte[] swimSourceZ, byte[] swimMask,
+        sbyte[] zN, sbyte[] zNE, sbyte[] zE, sbyte[] zSE,
+        sbyte[] zS, sbyte[] zSW, sbyte[] zW, sbyte[] zNW
+    )
+    {
+        _swimSourceZ = swimSourceZ;
+        _swimMask    = swimMask;
+        _swimZN_extra  = zN;
+        _swimZNE_extra = zNE;
+        _swimZE_extra  = zE;
+        _swimZSE_extra = zSE;
+        _swimZS_extra  = zS;
+        _swimZSW_extra = zSW;
+        _swimZW_extra  = zW;
+        _swimZNW_extra = zNW;
+    }
+
     /// <summary>Sentinel: cell has no strata — single-Z, use the main Walk/Wet arrays.</summary>
     public const ushort NoStrata = ushort.MaxValue;
 

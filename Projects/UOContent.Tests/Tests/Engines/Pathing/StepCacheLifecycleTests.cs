@@ -339,6 +339,116 @@ public class StepCacheLifecycleTests
     }
 
     [Fact]
+    public void SwimLayer_NotInjected_StaysFallthroughOnSourceZMismatch()
+    {
+        // Sanity check: a chunk WITHOUT a swim layer falls through on source-Z mismatch
+        // exactly like before. Validates we didn't accidentally serve garbage when the
+        // chunk has no shore cells.
+        var cache = StepCache.Instance;
+        cache.Clear();
+        cache.MissPromotionThreshold = 1;
+
+        var map = Map.Maps[1];
+
+        cache.TryGetMask(map, 1500, 1600, sourceZ: 10); // build chunk
+        var beforeMismatch = cache.GetStats().FallthroughSourceZMismatch;
+
+        // Same cell but query Z far from baked Z → source-Z guard fires.
+        var lookup = cache.TryGetMask(map, 1500, 1600, sourceZ: 100);
+        Assert.False(lookup.IsHit);
+        Assert.Equal(CacheHitKind.Fallthrough_SourceZMismatch, lookup.HitKind);
+        Assert.Equal(beforeMismatch + 1L, cache.GetStats().FallthroughSourceZMismatch);
+    }
+
+    [Fact]
+    public void SwimLayer_InjectedMatchingZ_ReturnsHitFromSwimLayer()
+    {
+        // Inject a synthetic swim layer onto a resident chunk and verify a query at the
+        // swim source Z routes through the swim-layer fallback, returning the swim mask.
+        var cache = StepCache.Instance;
+        cache.Clear();
+        cache.MissPromotionThreshold = 1;
+
+        var map = Map.Maps[1];
+        cache.TryGetMask(map, 1500, 1600, sourceZ: 10);
+
+        var chunksField = typeof(StepCache).GetField(
+            "_chunks",
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance
+        );
+        var chunks = (System.Collections.Generic.Dictionary<long, StepChunk>)chunksField!.GetValue(cache)!;
+        var key = StepCache.EncodeKey(map.MapID, 1500 >> 4, 1600 >> 4);
+        var chunk = chunks[key];
+
+        chunk.AllocateSwimLayer();
+        var cellIndex = ((1600 - ((1600 >> 4) << 4)) << 4) | (1500 - ((1500 >> 4) << 4));
+        chunk.SwimSourceZ[cellIndex]   = -5;
+        chunk.SwimMask[cellIndex]      = 0b0000_0011;
+        chunk.SwimZN_Layer[cellIndex]  = -5;
+        chunk.SwimZNE_Layer[cellIndex] = -5;
+        // Other directions stay 0 — Mask bits 0 and 1 cover N and NE.
+
+        // Query at the chunk's primary SourceZ — primary path serves walk-layer data,
+        // swim layer not consulted.
+        var bakedSourceZ = chunk.SourceZ[cellIndex];
+        var walkLookup = cache.TryGetMask(map, 1500, 1600, bakedSourceZ);
+        Assert.True(walkLookup.IsHit);
+        Assert.Equal(CacheHitKind.Hit, walkLookup.HitKind);
+        // Walk-layer query produces walk-layer walkMask (whatever the bake found), NOT
+        // the synthetic swim mask we injected.
+
+        // Query at the swim source Z — primary source-Z guard fails (|−5 − bakedZ| > 2
+        // assuming baked Z is land surface), swim-layer fallback serves with our mask.
+        if (System.Math.Abs(-5 - bakedSourceZ) <= 2)
+        {
+            // Bake landed near water Z — adjust the test to a clearer swim Z.
+            chunk.SwimSourceZ[cellIndex] = (sbyte)(bakedSourceZ - 20);
+        }
+        var swimLookup = cache.TryGetMask(map, 1500, 1600, chunk.SwimSourceZ[cellIndex]);
+        Assert.True(swimLookup.IsHit);
+        Assert.Equal(CacheHitKind.Hit, swimLookup.HitKind);
+        Assert.Equal((byte)0, swimLookup.WalkMask); // walk = 0 at swim Z
+        Assert.Equal(chunk.SwimMask[cellIndex], swimLookup.WetMask);
+        Assert.Equal(chunk.SwimZN_Layer[cellIndex], swimLookup.SwimZ_N);
+        Assert.Equal(chunk.SwimZNE_Layer[cellIndex], swimLookup.SwimZ_NE);
+    }
+
+    [Fact]
+    public void SwimLayer_InjectedButCellHasNoSentinel_FallsThrough()
+    {
+        // Chunk has the swim layer (some other cell is shore), but THIS cell is inland
+        // (SwimSourceZ = NoSwimLayerCell). Query at non-matching walk Z must fall through,
+        // not erroneously match -128 against the query.
+        var cache = StepCache.Instance;
+        cache.Clear();
+        cache.MissPromotionThreshold = 1;
+
+        var map = Map.Maps[1];
+        cache.TryGetMask(map, 1500, 1600, sourceZ: 10);
+
+        var chunksField = typeof(StepCache).GetField(
+            "_chunks",
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance
+        );
+        var chunks = (System.Collections.Generic.Dictionary<long, StepChunk>)chunksField!.GetValue(cache)!;
+        var key = StepCache.EncodeKey(map.MapID, 1500 >> 4, 1600 >> 4);
+        var chunk = chunks[key];
+
+        // Allocate layer but leave THIS cell at the sentinel.
+        chunk.AllocateSwimLayer();
+        var cellIndex = ((1600 - ((1600 >> 4) << 4)) << 4) | (1500 - ((1500 >> 4) << 4));
+        Assert.Equal(StepChunk.NoSwimLayerCell, chunk.SwimSourceZ[cellIndex]);
+
+        var beforeMismatch = cache.GetStats().FallthroughSourceZMismatch;
+        // Query at -128 (the sentinel value) — must NOT match. The guard short-circuits
+        // on the sentinel before computing |sourceZ - SwimSourceZ|.
+        var lookup = cache.TryGetMask(map, 1500, 1600, sbyte.MinValue);
+        Assert.False(lookup.IsHit);
+        Assert.Equal(CacheHitKind.Fallthrough_SourceZMismatch, lookup.HitKind);
+        Assert.Equal(beforeMismatch + 1L, cache.GetStats().FallthroughSourceZMismatch);
+    }
+
+    [Fact]
     public void Tier4Strata_NonMatchingZ_FallsThrough()
     {
         var cache = StepCache.Instance;
