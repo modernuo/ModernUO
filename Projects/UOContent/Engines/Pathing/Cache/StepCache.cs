@@ -25,18 +25,26 @@ public sealed class StepCache
     private readonly List<long> _keysList = new();
 
     // Second-touch promotion tracker. A chunk's first miss within the window returns
-    // Fallthrough_NotBuilt; the caller takes the slow path. The Nth miss within the same
-    // window (where N = MissPromotionThreshold) promotes to BuildChunk + serve. This
-    // keeps single-touch pass-throughs (mounted player + pet covering many chunks) on the
-    // ~30µs slow path and reserves the ~700µs BuildChunk cost for chunks NPCs actually
-    // hit repeatedly.
+    // Fallthrough_NotBuilt; the caller takes the slow path. The Nth DISTINCT-FIND miss
+    // within the same window (where N = MissPromotionThreshold) promotes to BuildChunk +
+    // serve. We count distinct Find generations, not raw TryGetMask calls — A* expansion
+    // hits each visited chunk many times in one Find, so per-call counting hits threshold
+    // immediately and defeats the gate. Per-Find counting filters single-Find pass-throughs
+    // (pet following a moving player) while still promoting chunks revisited by multiple
+    // Finds (NPC patrolling fixed territory).
     private readonly Dictionary<long, ChunkMissState> _chunkMissTracker = new();
     private const int MaxMissTrackerEntries = 4096;
+
+    // Generation counter incremented by BeginFindGeneration(). Sentinel 0 = "no Find started
+    // yet"; treated as a distinct generation per call so callers that bypass BeginFindGeneration
+    // (single-call tests, BakeMap with threshold=1) get sensible behavior.
+    private uint _findGeneration;
 
     private struct ChunkMissState
     {
         public byte MissCount;
         public uint LastMissTickStamp;
+        public uint LastFindGeneration;
     }
 
     // Telemetry counters
@@ -67,6 +75,22 @@ public sealed class StepCache
     /// Misses spaced wider than this restart the count. Default 30s.
     /// </summary>
     public uint MissPromotionWindowMs { get; set; } = 30_000;
+
+    /// <summary>
+    /// Marks the start of a new pathfind. The promotion gate counts distinct Find
+    /// generations per chunk, not raw TryGetMask calls — call this once at the top of
+    /// each pathfind invocation so multiple cell expansions within one Find don't trip
+    /// the threshold. Wraps at uint.MaxValue back to 1 (0 is reserved as the
+    /// "no Find started yet" sentinel).
+    /// </summary>
+    public void BeginFindGeneration()
+    {
+        unchecked { _findGeneration++; }
+        if (_findGeneration == 0) { _findGeneration = 1; }
+    }
+
+    /// <summary>Test-only: read the current Find generation.</summary>
+    internal uint CurrentFindGeneration => _findGeneration;
 
     /// <summary>
     /// Pack (mapId, chunkX, chunkY) into a single long key.
@@ -110,6 +134,7 @@ public sealed class StepCache
         _chunks.Clear();
         _keysList.Clear();
         _chunkMissTracker.Clear();
+        _findGeneration = 0;
         _hits = 0;
         _missesNotBuilt = 0;
         _missesDirtyRebuild = 0;
@@ -155,17 +180,29 @@ public sealed class StepCache
             return 0;
         }
 
-        var chunkCols = (map.Width + ChunkSize - 1) / ChunkSize;
-        var chunkRows = (map.Height + ChunkSize - 1) / ChunkSize;
-
-        for (var cy = 0; cy < chunkRows; cy++)
+        // BakeMap is an explicit decision to populate every chunk; the promotion gate
+        // would otherwise return Fallthrough_NotBuilt for every chunk (each touched once)
+        // and the bake would write an empty file. Force eager build for the duration.
+        var prevThreshold = MissPromotionThreshold;
+        MissPromotionThreshold = 1;
+        try
         {
-            for (var cx = 0; cx < chunkCols; cx++)
+            var chunkCols = (map.Width + ChunkSize - 1) / ChunkSize;
+            var chunkRows = (map.Height + ChunkSize - 1) / ChunkSize;
+
+            for (var cy = 0; cy < chunkRows; cy++)
             {
-                // Any sourceZ works — the chunk is built on first access regardless of
-                // whether the query returns Hit or Fallthrough_SourceZMismatch.
-                TryGetMask(map, cx * ChunkSize, cy * ChunkSize, sourceZ: 0);
+                for (var cx = 0; cx < chunkCols; cx++)
+                {
+                    // Any sourceZ works — the chunk is built on first access regardless of
+                    // whether the query returns Hit or Fallthrough_SourceZMismatch.
+                    TryGetMask(map, cx * ChunkSize, cy * ChunkSize, sourceZ: 0);
+                }
             }
+        }
+        finally
+        {
+            MissPromotionThreshold = prevThreshold;
         }
 
         return SaveToFile(path, mapId);
@@ -476,23 +513,41 @@ public sealed class StepCache
 
     /// <summary>
     /// Records a miss for <paramref name="chunkKey"/> and decides whether to build now
-    /// or defer to slow path. Returns true when the miss count within the window crosses
-    /// <see cref="MissPromotionThreshold"/> — caller should run BuildChunk and serve.
-    /// Returns false on first miss / out-of-window misses — caller should return
-    /// Fallthrough_NotBuilt so the algorithm uses the slow path.
+    /// or defer to slow path. Counts distinct Find generations, not raw calls — multiple
+    /// TryGetMask calls within one Find (BeginFindGeneration scope) count as one touch.
+    /// Returns true when DISTINCT-FIND misses within the window cross
+    /// <see cref="MissPromotionThreshold"/>; caller should run BuildChunk and serve.
+    /// Returns false otherwise; caller should return Fallthrough_NotBuilt so the algorithm
+    /// uses the slow path. Generation 0 ("no Find active") treats every call as distinct,
+    /// preserving legacy semantics for callers that don't call BeginFindGeneration.
     /// </summary>
     private bool ShouldPromoteAfterMiss(long chunkKey)
     {
         // Environment.TickCount, not Core.TickCount: tests/bench fixtures may not advance
         // the game-loop tick. The promotion window is wall-clock anyway.
         var now = (uint)Environment.TickCount;
+        var gen = _findGeneration;
 
         if (_chunkMissTracker.TryGetValue(chunkKey, out var state))
         {
+            // Same Find generation as the last touch — A* expansion is probing this chunk
+            // multiple times in one pathfind. Don't increment; the gate counts distinct
+            // Finds. Skip when gen==0 (no Find started) so legacy single-call tests still
+            // see incrementing behavior.
+            if (gen != 0 && state.LastFindGeneration == gen)
+            {
+                return false;
+            }
+
             var elapsed = now - state.LastMissTickStamp;
             if (elapsed > MissPromotionWindowMs)
             {
-                _chunkMissTracker[chunkKey] = new ChunkMissState { MissCount = 1, LastMissTickStamp = now };
+                _chunkMissTracker[chunkKey] = new ChunkMissState
+                {
+                    MissCount = 1,
+                    LastMissTickStamp = now,
+                    LastFindGeneration = gen
+                };
                 return false;
             }
 
@@ -503,7 +558,12 @@ public sealed class StepCache
                 return true;
             }
 
-            _chunkMissTracker[chunkKey] = new ChunkMissState { MissCount = newCount, LastMissTickStamp = now };
+            _chunkMissTracker[chunkKey] = new ChunkMissState
+            {
+                MissCount = newCount,
+                LastMissTickStamp = now,
+                LastFindGeneration = gen
+            };
             return false;
         }
 
@@ -517,7 +577,12 @@ public sealed class StepCache
             PruneMissTracker(now);
         }
 
-        _chunkMissTracker[chunkKey] = new ChunkMissState { MissCount = 1, LastMissTickStamp = now };
+        _chunkMissTracker[chunkKey] = new ChunkMissState
+        {
+            MissCount = 1,
+            LastMissTickStamp = now,
+            LastFindGeneration = gen
+        };
         return false;
     }
 

@@ -108,6 +108,12 @@ public class BitmapAStarAlgorithm : PathAlgorithm
             return null;
         }
 
+        // Mark a new Find generation so the StepCache promotion gate counts THIS pathfind
+        // as one touch per chunk regardless of how many times the expansion frontier
+        // probes a given chunk. Without this, A* hits each visited chunk dozens of times
+        // and trips the threshold immediately.
+        StepCache.Instance.BeginFindGeneration();
+
         Server.Engines.Pathing.PathfindRecorder.RecordIfEnabled(m, map, start, goal);
 
         _currentMobileNeedsSlowPath = RequiresSlowPath(m);

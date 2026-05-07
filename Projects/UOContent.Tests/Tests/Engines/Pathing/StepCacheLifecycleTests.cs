@@ -110,6 +110,67 @@ public class StepCacheLifecycleTests
     }
 
     [Fact]
+    public void TryGetMask_MultipleCallsInSameFindGeneration_StayInFallthrough()
+    {
+        var cache = StepCache.Instance;
+        cache.Clear();
+        cache.MissPromotionThreshold = 2;
+
+        var map = Map.Maps[1];
+
+        // Open a pathfind. Multiple TryGetMask calls inside this Find target the same chunk
+        // (different cells). The promotion gate counts distinct Finds, not raw probes — these
+        // calls must NOT increment the per-chunk counter, even though there are many of them.
+        // Without this, A* expansion would trip the gate on the second cell expansion in any
+        // visited chunk, defeating the whole point of deferred promotion.
+        cache.BeginFindGeneration();
+        for (var i = 0; i < 8; i++)
+        {
+            // All cells are inside chunk (1500>>4, 1600>>4) = (93, 100).
+            var lookup = cache.TryGetMask(map, 1500 + i, 1600, sourceZ: 10);
+            Assert.False(lookup.IsHit);
+            Assert.Equal(CacheHitKind.Fallthrough_NotBuilt, lookup.HitKind);
+        }
+
+        Assert.Equal(0, cache.GetStats().ResidentChunks);
+        Assert.Equal(0L, cache.GetStats().BuildsTotal);
+        Assert.Equal(8L, cache.GetStats().FallthroughNotBuilt);
+
+        // Begin a NEW Find — this is the second distinct touch under the per-Find gate.
+        // The chunk now crosses the threshold and promotes.
+        cache.BeginFindGeneration();
+        var promoted = cache.TryGetMask(map, 1500, 1600, sourceZ: 10);
+        Assert.True(promoted.IsHit);
+        Assert.Equal(CacheHitKind.Miss_NotBuilt, promoted.HitKind);
+        Assert.Equal(1, cache.GetStats().ResidentChunks);
+        Assert.Equal(1L, cache.GetStats().BuildsTotal);
+    }
+
+    [Fact]
+    public void TryGetMask_TwoFindGenerationsAcrossWindow_RestartsCounter()
+    {
+        var cache = StepCache.Instance;
+        cache.Clear();
+        cache.MissPromotionThreshold = 2;
+        cache.MissPromotionWindowMs = 1; // 1ms window for testability
+
+        var map = Map.Maps[1];
+
+        cache.BeginFindGeneration();
+        Assert.False(cache.TryGetMask(map, 1500, 1600, sourceZ: 10).IsHit);
+
+        System.Threading.Thread.Sleep(20); // exceed window
+
+        // Second Find lands outside the window. Even though it's a distinct generation,
+        // the elapsed-time check resets the counter to 1, so no promotion.
+        cache.BeginFindGeneration();
+        var second = cache.TryGetMask(map, 1500, 1600, sourceZ: 10);
+        Assert.False(second.IsHit);
+        Assert.Equal(CacheHitKind.Fallthrough_NotBuilt, second.HitKind);
+        Assert.Equal(0, cache.GetStats().ResidentChunks);
+    }
+
+    [Fact]
     public void TryGetMask_DistinctChunks_TrackedIndependently()
     {
         var cache = StepCache.Instance;

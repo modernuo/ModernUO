@@ -329,6 +329,74 @@ public class BitmapAStarAlgorithmTests
             "CanMoveOverObstacles creature should use the cache (movables are dynamic items)");
     }
 
+    // ---------------------------------------------------------------------------------
+    // Promotion-gate integration tests. These exercise BitmapAStarAlgorithm.Find()
+    // end-to-end against the live StepCache to prove the per-Find generation gate
+    // actually defers BuildChunk on a single pathfind. They duplicate behavior that
+    // unit tests cover at the cache layer; the value is end-to-end verification that
+    // the bench-relevant scenario (single Find on cleared cache) skips builds entirely.
+    // TODO: REMOVE these two tests once PR-6's gate is proven stable in production BDN.
+    // ---------------------------------------------------------------------------------
+
+    [Fact]
+    public void Find_SinglePathfindOnClearedCache_DoesNotBuildAnyChunk()
+    {
+        StepCache.Instance.Clear();
+        StepCache.Instance.MissPromotionThreshold = 2;
+
+        var map = Map.Maps[1];
+        var stub = new DefaultWalkerStub();
+        map.GetAverageZ(1500, 1600, out _, out var startZ, out _);
+        var start = new Point3D(1500, 1600, (sbyte)startZ);
+        var goal = new Point3D(1498, 1598, (sbyte)startZ);
+        stub.MoveToWorld(start, map);
+
+        var result = BitmapAStarAlgorithm.Instance.Find(stub, map, start, goal);
+
+        var stats = StepCache.Instance.GetStats();
+        stub.Delete();
+
+        Assert.NotNull(result);
+        Assert.Equal(0L, stats.BuildsTotal);
+        Assert.True(stats.FallthroughNotBuilt > 0L,
+            $"expected fallthrough on every chunk touched once; got 0 (residents={stats.ResidentChunks})");
+        _output.WriteLine(
+            $"single-Find gate: builds={stats.BuildsTotal} fallthrough_not_built={stats.FallthroughNotBuilt}"
+        );
+    }
+
+    [Fact]
+    public void Find_TwoPathfindsOverlappingChunks_PromoteToBuildOnSecondFind()
+    {
+        StepCache.Instance.Clear();
+        StepCache.Instance.MissPromotionThreshold = 2;
+
+        var map = Map.Maps[1];
+        var stub = new DefaultWalkerStub();
+        map.GetAverageZ(1500, 1600, out _, out var startZ, out _);
+        var start = new Point3D(1500, 1600, (sbyte)startZ);
+        var goal = new Point3D(1498, 1598, (sbyte)startZ);
+        stub.MoveToWorld(start, map);
+
+        // Find #1: first time anyone touches these chunks. Gate defers; no builds.
+        BitmapAStarAlgorithm.Instance.Find(stub, map, start, goal);
+        var afterFirst = StepCache.Instance.GetStats();
+        Assert.Equal(0L, afterFirst.BuildsTotal);
+
+        // Find #2: same path; chunks now hit their second distinct Find inside the window.
+        // Gate promotes — at least one BuildChunk fires.
+        BitmapAStarAlgorithm.Instance.Find(stub, map, start, goal);
+        var afterSecond = StepCache.Instance.GetStats();
+
+        stub.Delete();
+
+        Assert.True(afterSecond.BuildsTotal > 0L,
+            $"second Find through overlapping chunks must promote (got {afterSecond.BuildsTotal} builds)");
+        _output.WriteLine(
+            $"two-Find gate: first builds={afterFirst.BuildsTotal} second builds={afterSecond.BuildsTotal}"
+        );
+    }
+
     /// <summary>
     /// Plain Mobile — RequiresSlowPath returns false, the bitmap algorithm uses the cache
     /// fast path on every expansion.
