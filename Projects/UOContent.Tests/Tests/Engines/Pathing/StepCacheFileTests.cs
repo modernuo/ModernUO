@@ -212,4 +212,51 @@ public class StepCacheFileTests
             }
         }
     }
+
+    /// <summary>
+    /// First-touch on a chunk that the lazy reader can satisfy must NOT route through the
+    /// miss tracker — file-loaded chunks represent an explicit prior decision to keep
+    /// them warm. This guards the deployment shape where an admin ships .swb files and
+    /// expects the very first NPC pathfind in any region to use cache (not slow path).
+    /// </summary>
+    [Fact]
+    public void LazyReaderHit_BypassesMissTrackerOnFirstTouch()
+    {
+        var cache = StepCache.Instance;
+        cache.Clear();
+        cache.MissPromotionThreshold = 1; // eager build for save phase
+
+        var map = Map.Maps[1];
+
+        // Build + save one chunk.
+        cache.TryGetMask(map, 1500, 1600, sourceZ: 10);
+        var path = Path.Combine(Path.GetTempPath(), $"step-cache-bypass-{System.Guid.NewGuid():N}.swb");
+        try
+        {
+            Assert.Equal(1, cache.SaveToFile(path, map.MapID));
+
+            // Reset to a fresh state with the file open as a lazy reader and the deferred
+            // promotion threshold restored to 2.
+            cache.Clear();
+            cache.MissPromotionThreshold = 2;
+            Assert.True(cache.TryOpenLazyReader(path, map.MapID));
+
+            // First touch must NOT return Fallthrough_NotBuilt — the lazy reader has the
+            // chunk and serves it before the miss tracker is consulted.
+            var lookup = cache.TryGetMask(map, 1500, 1600, sourceZ: 10);
+            Assert.True(lookup.IsHit);
+            Assert.Equal(CacheHitKind.Miss_NotBuilt, lookup.HitKind);
+            Assert.Equal(1, cache.GetStats().ResidentChunks);
+            Assert.Equal(0L, cache.GetStats().FallthroughNotBuilt);
+            Assert.Equal(0L, cache.GetStats().BuildsTotal); // came from file, not baker
+        }
+        finally
+        {
+            cache.Clear();
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+        }
+    }
 }

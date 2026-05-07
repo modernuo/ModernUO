@@ -483,7 +483,9 @@ public sealed class StepCache
     /// </summary>
     private bool ShouldPromoteAfterMiss(long chunkKey)
     {
-        var now = (uint)Core.TickCount;
+        // Environment.TickCount, not Core.TickCount: tests/bench fixtures may not advance
+        // the game-loop tick. The promotion window is wall-clock anyway.
+        var now = (uint)Environment.TickCount;
 
         if (_chunkMissTracker.TryGetValue(chunkKey, out var state))
         {

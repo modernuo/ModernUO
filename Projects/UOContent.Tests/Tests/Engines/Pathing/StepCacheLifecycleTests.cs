@@ -85,6 +85,50 @@ public class StepCacheLifecycleTests
     }
 
     [Fact]
+    public void TryGetMask_SecondTouchAfterWindow_RestartsCounterAndDefers()
+    {
+        var cache = StepCache.Instance;
+        cache.Clear();
+        cache.MissPromotionThreshold = 2;
+        cache.MissPromotionWindowMs = 1; // 1ms window for testability
+
+        var map = Map.Maps[1];
+
+        var first = cache.TryGetMask(map, 1500, 1600, sourceZ: 10);
+        Assert.False(first.IsHit);
+
+        System.Threading.Thread.Sleep(20); // exceed the window
+
+        // Second touch lands outside the window: tracker resets the count to 1, returns
+        // Fallthrough_NotBuilt again — chunks the player just glanced through don't get
+        // promoted just because they get re-touched minutes later by an unrelated NPC.
+        var second = cache.TryGetMask(map, 1500, 1600, sourceZ: 10);
+        Assert.False(second.IsHit);
+        Assert.Equal(CacheHitKind.Fallthrough_NotBuilt, second.HitKind);
+        Assert.Equal(0, cache.GetStats().ResidentChunks);
+        Assert.Equal(2L, cache.GetStats().FallthroughNotBuilt);
+    }
+
+    [Fact]
+    public void TryGetMask_DistinctChunks_TrackedIndependently()
+    {
+        var cache = StepCache.Instance;
+        cache.Clear();
+        cache.MissPromotionThreshold = 2;
+
+        var map = Map.Maps[1];
+
+        // Two different chunks, one touch each — both must defer (each has its own counter).
+        var chunkA = cache.TryGetMask(map, 1500, 1600, sourceZ: 10);
+        var chunkB = cache.TryGetMask(map, 1600, 1700, sourceZ: 10); // different chunk
+
+        Assert.False(chunkA.IsHit);
+        Assert.False(chunkB.IsHit);
+        Assert.Equal(0, cache.GetStats().ResidentChunks);
+        Assert.Equal(2L, cache.GetStats().FallthroughNotBuilt);
+    }
+
+    [Fact]
     public void TryGetMask_OffMap_ReturnsFalseFallthrough()
     {
         var cache = StepCache.Instance;
