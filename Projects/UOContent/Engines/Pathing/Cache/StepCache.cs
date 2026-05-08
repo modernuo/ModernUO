@@ -751,29 +751,35 @@ public sealed class StepCache
 
                 // Shore-cell handling: if the cell has BOTH a walk surface (standing Z)
                 // AND a water surface (Wet land tile or wet static) at a Z separated by
-                // > StepHeight, populate the swim layer at swim-perspective Z. This lets
-                // swim-only mobs (sea serpents, water elementals) hit the cache on coast
-                // cells instead of degrading to slow path. ~10% of map chunks need this;
-                // the rest (pure inland or pure deep ocean) get null swim layer.
+                // > StepHeight, populate the swim layer at swim-perspective Z. Only when
+                // ComputeMaskAt produces a non-zero swim mask — bridges/docks/piers with
+                // insufficient vertical clearance for a swim creature's body envelope
+                // produce wetMask=0 (StaticsBlockAt rejects them), and we skip those cells
+                // rather than baking a stratum that always answers "no movement." The
+                // sentinel NoSwimLayerCell stays in SwimSourceZ for skipped cells; the
+                // chunk only sets HasSwimLayer when at least one cell got a usable entry.
                 var swimZRaw = StepProbe.ComputeSwimStandingZ(map, x, y);
                 if (swimZRaw != int.MinValue && Math.Abs(swimZRaw - standingZ) > StepHeight)
                 {
-                    if (chunk.SwimSourceZ == null)
-                    {
-                        chunk.AllocateSwimLayer();
-                    }
                     var swimSrc = (sbyte)Math.Clamp(swimZRaw, sbyte.MinValue + 1, sbyte.MaxValue);
                     var swimResult = StepProbe.ComputeMaskAt(map, x, y, swimSrc);
-                    chunk.SwimSourceZ[cell]  = swimSrc;
-                    chunk.SwimMask[cell]     = swimResult.WetMask;
-                    chunk.SwimZN_Layer[cell]  = swimResult.SwimZ_N;
-                    chunk.SwimZNE_Layer[cell] = swimResult.SwimZ_NE;
-                    chunk.SwimZE_Layer[cell]  = swimResult.SwimZ_E;
-                    chunk.SwimZSE_Layer[cell] = swimResult.SwimZ_SE;
-                    chunk.SwimZS_Layer[cell]  = swimResult.SwimZ_S;
-                    chunk.SwimZSW_Layer[cell] = swimResult.SwimZ_SW;
-                    chunk.SwimZW_Layer[cell]  = swimResult.SwimZ_W;
-                    chunk.SwimZNW_Layer[cell] = swimResult.SwimZ_NW;
+                    if (swimResult.WetMask != 0)
+                    {
+                        if (chunk.SwimSourceZ == null)
+                        {
+                            chunk.AllocateSwimLayer();
+                        }
+                        chunk.SwimSourceZ[cell]    = swimSrc;
+                        chunk.SwimMask[cell]       = swimResult.WetMask;
+                        chunk.SwimZN_Layer[cell]   = swimResult.SwimZ_N;
+                        chunk.SwimZNE_Layer[cell]  = swimResult.SwimZ_NE;
+                        chunk.SwimZE_Layer[cell]   = swimResult.SwimZ_E;
+                        chunk.SwimZSE_Layer[cell]  = swimResult.SwimZ_SE;
+                        chunk.SwimZS_Layer[cell]   = swimResult.SwimZ_S;
+                        chunk.SwimZSW_Layer[cell]  = swimResult.SwimZ_SW;
+                        chunk.SwimZW_Layer[cell]   = swimResult.SwimZ_W;
+                        chunk.SwimZNW_Layer[cell]  = swimResult.SwimZ_NW;
+                    }
                 }
 
                 // Multi-Z handling: if the cell has 2+ reachable surfaces, compute its
