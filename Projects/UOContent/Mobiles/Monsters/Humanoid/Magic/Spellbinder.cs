@@ -1,4 +1,7 @@
 using ModernUO.Serialization;
+using Server.Mobiles;
+using Server.Spells;
+
 
 namespace Server.Mobiles
 {
@@ -37,6 +40,8 @@ namespace Server.Mobiles
 
         }
 
+        protected override BaseAI ForcedAI => new SpellbinderAI(this);
+
         public override string CorpseName => "a ghostly corpse";
         public override string DefaultName => "a spectral spellbinder";
 
@@ -54,3 +59,12 @@ namespace Server.Mobiles
     }
 
 }
+
+public class SpellbinderAI : MageAI{
+    public SpellbinderAI(BaseCreature m) : base(m)
+    {
+    }
+
+    public override Spell GetRandomDamageSpell() => GetRandomCurseSpell();
+}
+
