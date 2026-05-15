@@ -209,6 +209,11 @@ public partial class HouseRaffleStone : Item
 
     public static void CheckEnd_OnTick()
     {
+        if (_allStones == null)
+        {
+            return;
+        }
+
         foreach (var stone in _allStones)
         {
             stone.CheckEnd();
@@ -218,21 +223,24 @@ public partial class HouseRaffleStone : Item
     private static void AddRaffleStone(HouseRaffleStone stone)
     {
         _allStones ??= new HashSet<HouseRaffleStone>();
-        _allStones.Add(stone);
 
-        if (_allStones.Count == 1)
+        /* BEGIN HOUSE RAFFLE TIMER REGISTRATION: keep the shared end-check timer paired with active raffle stones. */
+        if (_allStones.Add(stone) && _allStones.Count == 1)
         {
-            Timer.DelayCall(TimeSpan.FromMinutes(1.0), TimeSpan.FromMinutes(1.0), CheckEnd_OnTick);
+            _allStonesTimer ??= Timer.DelayCall(TimeSpan.FromMinutes(1.0), TimeSpan.FromMinutes(1.0), CheckEnd_OnTick);
         }
+        /* END HOUSE RAFFLE TIMER REGISTRATION */
     }
 
     private static void RemoveRaffleStone(HouseRaffleStone stone)
     {
+        /* BEGIN HOUSE RAFFLE TIMER CLEANUP: stop the shared end-check timer when the final raffle stone is removed. */
         if (_allStones?.Remove(stone) == true && _allStones.Count == 0)
         {
-            _allStonesTimer.Stop();
+            _allStonesTimer?.Stop();
             _allStonesTimer = null;
         }
+        /* END HOUSE RAFFLE TIMER CLEANUP */
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
