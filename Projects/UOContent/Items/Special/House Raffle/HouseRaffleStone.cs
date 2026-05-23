@@ -221,7 +221,7 @@ public partial class HouseRaffleStone : Item
 
         if (_allStones.Add(stone) && _allStones.Count == 1)
         {
-            _allStonesTimer ??= Timer.DelayCall(TimeSpan.FromMinutes(1.0), TimeSpan.FromMinutes(1.0), CheckEnd_OnTick);
+            _allStonesTimer = Timer.DelayCall(TimeSpan.FromMinutes(1.0), TimeSpan.FromMinutes(1.0), CheckEnd_OnTick);
         }
     }
 
@@ -229,7 +229,7 @@ public partial class HouseRaffleStone : Item
     {
         if (_allStones?.Remove(stone) == true && _allStones.Count == 0)
         {
-            _allStonesTimer?.Stop();
+            _allStonesTimer.Stop();
             _allStonesTimer = null;
         }
     }
