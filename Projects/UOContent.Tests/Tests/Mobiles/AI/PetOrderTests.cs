@@ -15,7 +15,7 @@ public class PetOrderTests : IDisposable
 
     private (PlayerMobile master, PetTestStub pet) Spawn(Point3D masterLoc, Point3D petLoc)
     {
-        var pair = Spawn(masterLoc, petLoc);
+        var pair = PetTestSetup.SpawnControlledPet(masterLoc, petLoc);
         _created.Add(pair.master);
         _created.Add(pair.pet);
         return pair;
