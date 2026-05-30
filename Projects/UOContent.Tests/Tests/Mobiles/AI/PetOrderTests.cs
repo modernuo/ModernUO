@@ -85,4 +85,33 @@ public class PetOrderTests
         Assert.NotEqual(postA, pet.Home);    // never re-acquires A
         Assert.Equal(pet.Location, pet.Home); // idles at B
     }
+
+    [Fact]
+    public void AttackTargetLost_ResumesPersistentFollow()
+    {
+        var (_, pet) = PetTestSetup.SpawnControlledPet(new Point3D(1000, 1000, 0), new Point3D(1002, 1000, 0));
+        pet.ControlOrder = OrderType.Follow; // persistent = Follow
+        pet.ControlOrder = OrderType.Attack;
+        pet.ControlTarget = null;            // target gone
+
+        pet.AIObject.DoOrderAttack();        // invalid-target path
+
+        Assert.Equal(OrderType.Follow, pet.ControlOrder);
+    }
+
+    [Fact]
+    public void StayPet_AttacksThenTargetLost_ReturnsToOriginalPost() // report 1
+    {
+        var post = new Point3D(1005, 1005, 0);
+        var (_, pet) = PetTestSetup.SpawnControlledPet(new Point3D(1000, 1000, 0), post);
+        pet.ControlOrder = OrderType.Stay;   // persistent = Stay, Home = post
+        pet.ControlOrder = OrderType.Attack;
+        pet.MoveToWorld(new Point3D(1060, 1060, 0), pet.Map); // chased far to the "corpse"
+        pet.ControlTarget = null;
+
+        pet.AIObject.DoOrderAttack();
+
+        Assert.Equal(OrderType.Stay, pet.ControlOrder);
+        Assert.Equal(post, pet.Home);        // anchor still the original post, not the corpse
+    }
 }
