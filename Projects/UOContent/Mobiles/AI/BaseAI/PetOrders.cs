@@ -65,33 +65,9 @@ public abstract partial class BaseAI
 
         Mobile.Warmode = IsValidCombatant(Mobile.Combatant);
 
-        if (PersistentOrder == OrderType.Guard)
-        {
-            DebugSay("Target lost, resuming guard duty.");
-
-            Mobile.ControlOrder = OrderType.Guard;
-            SetPersistentOrder(OrderType.None);
-            return true;
-        }
-        else if (PersistentOrder == OrderType.Stay)
-        {
-            DebugSay("Target lost, resuming stay position.");
-
-            Mobile.ControlOrder = OrderType.Stay;
-            SetPersistentOrder(OrderType.None);
-            return true;
-        }
-        else if (PersistentOrder == OrderType.Follow)
-        {
-            DebugSay("Target lost, resuming follow command.");
-
-            Mobile.ControlTarget = Mobile.ControlMaster;
-            Mobile.ControlOrder = OrderType.Follow;
-            SetPersistentOrder(OrderType.None);
-            return true;
-        }
-
-        WalkRandom(3, 2, 1);
+        // Pure idle: gently wander near the anchor, with CheckIdle rest periods. Pets resume
+        // a standing order via ResumePersistentOrder, not by re-deriving it here.
+        WalkRandomIdle();
         return true;
     }
 
@@ -128,8 +104,6 @@ public abstract partial class BaseAI
 
         if (Mobile.ControlTarget?.Deleted == false && Mobile.ControlTarget != Mobile)
         {
-            SetPersistentOrder(OrderType.Follow);
-
             FollowTarget();
         }
         else
@@ -317,8 +291,6 @@ public abstract partial class BaseAI
             return true;
         }
 
-        SetPersistentOrder(OrderType.Guard);
-
         FindCombatant();
 
         if (IsValidCombatant(Mobile.Combatant))
@@ -494,30 +466,19 @@ public abstract partial class BaseAI
             this.DebugSayFormatted($"I have been ordered to stay by {Mobile.ControlMaster?.Name ?? "Unknown"}.");
         }
 
-        SetPersistentOrder(OrderType.Stay);
-
-        WalkRandomInHome(3, 2, 1);
-        return true;
-    }
-
-    public virtual bool DoOrderStop()
-    {
-        if (CheckHerding())
+        // Hold position at the post (Home). Stand still when there; only walk back if displaced
+        // (e.g. after chasing a kill). No idle shuffle.
+        if (Mobile.Home != Point3D.Zero && Mobile.Location != Mobile.Home)
         {
-            this.DebugSayFormatted($"I am being herded by {Mobile.ControlTarget?.Name ?? "Unknown"}.");
-        }
-        else
-        {
-            this.DebugSayFormatted($"I have been ordered to stop by {Mobile.ControlMaster?.Name ?? "Unknown"}.");
-        }
-
-        if (Core.ML)
-        {
-            WalkRandomInHome(5, 2, 1);
+            DoMove(Mobile.GetDirectionTo(Mobile.Home));
         }
 
         return true;
     }
+
+    // Stop is resolved into another order in OnCurrentOrderChanged and never rests as the
+    // active order; this is a defensive no-op.
+    public virtual bool DoOrderStop() => true;
 
     public virtual bool DoOrderTransfer()
     {
