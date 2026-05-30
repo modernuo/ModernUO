@@ -803,9 +803,10 @@ namespace Server.Mobiles
             get => m_ControlOrder;
             set
             {
+                var previous = m_ControlOrder;
                 m_ControlOrder = value;
 
-                AIObject?.OnCurrentOrderChanged();
+                AIObject?.OnCurrentOrderChanged(previous);
 
                 InvalidateProperties();
 
