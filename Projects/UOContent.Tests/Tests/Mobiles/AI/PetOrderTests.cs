@@ -187,4 +187,27 @@ public class PetOrderTests
 
         Assert.Equal(OrderType.Stay, pet.AIObject.PersistentOrder);
     }
+
+    [Fact]
+    public void Stop_WhileFollowing_CancelsToIdle_NonML()
+    {
+        var previous = Core.Expansion;
+        try
+        {
+            Core.Expansion = Expansion.SE; // pre-ML: Core.ML is false
+            var (_, pet) = PetTestSetup.SpawnControlledPet(new Point3D(1000, 1000, 0), new Point3D(1002, 1000, 0));
+            pet.ControlOrder = OrderType.Follow;
+
+            pet.ControlOrder = OrderType.Stop;
+
+            // Stop/idle resolution is era-independent.
+            Assert.Equal(OrderType.None, pet.ControlOrder);
+            Assert.Equal(OrderType.None, pet.AIObject.PersistentOrder);
+            Assert.Equal(pet.Location, pet.Home);
+        }
+        finally
+        {
+            Core.Expansion = previous;
+        }
+    }
 }
