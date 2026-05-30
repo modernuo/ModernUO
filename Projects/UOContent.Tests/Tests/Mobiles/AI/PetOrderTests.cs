@@ -152,4 +152,18 @@ public class PetOrderTests
 
         Assert.Equal(Direction.North, pet.Direction); // frozen -> no wander attempts
     }
+
+    [Fact]
+    public void Release_WithoutSpawner_AnchorsHomeToCurrentLocation()
+    {
+        var loc = new Point3D(1010, 1010, 0);
+        var (_, pet) = PetTestSetup.SpawnControlledPet(new Point3D(1000, 1000, 0), loc);
+        pet.ControlOrder = OrderType.Stay; // sets Home to loc
+        pet.Home = new Point3D(800, 800, 0); // simulate a stale anchor
+        pet.Spawner = null;
+
+        pet.AIObject.DoOrderRelease();
+
+        Assert.Equal(loc, pet.Home); // released where it stands, not the stale point
+    }
 }

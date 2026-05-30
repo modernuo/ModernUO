@@ -435,6 +435,9 @@ public abstract partial class BaseAI
         }
         else
         {
+            // No spawner to return to: anchor where it stands so it idle-wanders here
+            // instead of pathing toward a stale (e.g. former stay) anchor.
+            Mobile.Home = Mobile.Location;
             Action = ActionType.Wander;
         }
 
