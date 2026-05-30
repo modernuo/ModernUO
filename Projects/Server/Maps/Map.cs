@@ -1875,7 +1875,7 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
 
         internal List<BaseMulti> Multis => _multis ?? m_DefaultMultiList;
 
-        internal int MultisVersion => _multisVersion;
+        public int MultisVersion => _multisVersion;
 
         internal ref readonly ValueLinkList<Mobile> Mobiles => ref _mobiles;
 
