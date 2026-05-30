@@ -166,4 +166,25 @@ public class PetOrderTests
 
         Assert.Equal(loc, pet.Home); // released where it stands, not the stale point
     }
+
+    [Fact]
+    public void Login_NearMaster_DerivesFollow()
+    {
+        var (master, pet) = PetTestSetup.SpawnControlledPet(new Point3D(1000, 1000, 0), new Point3D(1001, 1000, 0));
+        Assert.Equal(OrderType.None, pet.AIObject.PersistentOrder);
+
+        PetLoginHandler.DeriveFollowerOrders(master);
+
+        Assert.Equal(OrderType.Follow, pet.AIObject.PersistentOrder);
+    }
+
+    [Fact]
+    public void Login_FarFromMaster_DerivesStay()
+    {
+        var (master, pet) = PetTestSetup.SpawnControlledPet(new Point3D(1000, 1000, 0), new Point3D(1040, 1000, 0));
+
+        PetLoginHandler.DeriveFollowerOrders(master);
+
+        Assert.Equal(OrderType.Stay, pet.AIObject.PersistentOrder);
+    }
 }
