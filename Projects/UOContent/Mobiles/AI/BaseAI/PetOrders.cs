@@ -17,7 +17,29 @@ namespace Server.Mobiles;
 
 public abstract partial class BaseAI
 {
-    private OrderType _lastPetOrder = OrderType.None;
+    // The standing command a pet falls back to when a transient order (Attack/Come/Drop)
+    // completes: None, Stay, Follow, or Guard. Runtime-only (not serialized); reset to None
+    // on load and derived from master proximity on login. See PetLoginHandler.
+    internal OrderType PersistentOrder { get; private set; } = OrderType.None;
+
+    // Guards anchor/persistent derivation while we resume a fallback order, so a resume
+    // never re-derives the persistent command or re-anchors Home. See OnCurrentOrderChanged.
+    private bool _resolvingOrder;
+
+    // The controlled-pet wander anchor (Home) is a pure function of the persistent command.
+    internal void SetPersistentOrder(OrderType order)
+    {
+        PersistentOrder = order;
+        Mobile.Home = order is OrderType.Follow or OrderType.Guard ? Point3D.Zero : Mobile.Location;
+    }
+
+    // Resume the persistent command without re-deriving the persistent order or anchor.
+    private void ResumePersistentOrder()
+    {
+        _resolvingOrder = true;
+        Mobile.ControlOrder = PersistentOrder;
+        _resolvingOrder = false;
+    }
 
     public virtual bool Obey() =>
         !Mobile.Deleted && Mobile.ControlOrder switch
@@ -43,29 +65,29 @@ public abstract partial class BaseAI
 
         Mobile.Warmode = IsValidCombatant(Mobile.Combatant);
 
-        if (_lastPetOrder == OrderType.Guard)
+        if (PersistentOrder == OrderType.Guard)
         {
             DebugSay("Target lost, resuming guard duty.");
 
             Mobile.ControlOrder = OrderType.Guard;
-            _lastPetOrder = OrderType.None;
+            SetPersistentOrder(OrderType.None);
             return true;
         }
-        else if (_lastPetOrder == OrderType.Stay)
+        else if (PersistentOrder == OrderType.Stay)
         {
             DebugSay("Target lost, resuming stay position.");
 
             Mobile.ControlOrder = OrderType.Stay;
-            _lastPetOrder = OrderType.None;
+            SetPersistentOrder(OrderType.None);
             return true;
         }
-        else if (_lastPetOrder == OrderType.Follow)
+        else if (PersistentOrder == OrderType.Follow)
         {
             DebugSay("Target lost, resuming follow command.");
 
             Mobile.ControlTarget = Mobile.ControlMaster;
             Mobile.ControlOrder = OrderType.Follow;
-            _lastPetOrder = OrderType.None;
+            SetPersistentOrder(OrderType.None);
             return true;
         }
 
@@ -106,7 +128,7 @@ public abstract partial class BaseAI
 
         if (Mobile.ControlTarget?.Deleted == false && Mobile.ControlTarget != Mobile)
         {
-            _lastPetOrder = OrderType.Follow;
+            SetPersistentOrder(OrderType.Follow);
 
             FollowTarget();
         }
@@ -296,7 +318,7 @@ public abstract partial class BaseAI
             return true;
         }
 
-        _lastPetOrder = OrderType.Guard;
+        SetPersistentOrder(OrderType.Guard);
 
         FindCombatant();
 
@@ -473,7 +495,7 @@ public abstract partial class BaseAI
             this.DebugSayFormatted($"I have been ordered to stay by {Mobile.ControlMaster?.Name ?? "Unknown"}.");
         }
 
-        _lastPetOrder = OrderType.Stay;
+        SetPersistentOrder(OrderType.Stay);
 
         WalkRandomInHome(3, 2, 1);
         return true;

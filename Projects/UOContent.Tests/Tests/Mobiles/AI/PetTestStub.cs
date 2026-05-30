@@ -15,6 +15,14 @@ public class PetTestStub : BaseCreature
         Body = 0xC8; // dog
     }
 
+    // NPCSpeeds isn't configured in the test fixture; provide fixed speeds so the
+    // AIType constructor doesn't hit the unconfigured speed table.
+    public override void GetSpeeds(out double activeSpeed, out double passiveSpeed)
+    {
+        activeSpeed = 0.2;
+        passiveSpeed = 0.4;
+    }
+
     public override bool CheckIdle() => ForceIdle || base.CheckIdle();
 
     public PetTestStub(Serial serial) : base(serial)
