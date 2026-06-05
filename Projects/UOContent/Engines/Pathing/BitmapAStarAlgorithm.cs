@@ -130,6 +130,17 @@ public class BitmapAStarAlgorithm : PathAlgorithm
 
         PathfindRecorder.RecordIfEnabled(m, map, start, goal);
 
+        // Passive cache-warming telemetry for [PathTrack'd mobs. Snapshot the cache counters
+        // before the search so RecordIfTracked can attribute the delta to this one Find.
+        // Cheap when nothing is tracked (one int check); does not alter cache behavior.
+        var trackSnapshot = default(Server.Engines.Pathing.Cache.CacheStats);
+        var tracked = Server.Engines.Pathing.PathTracker.IsTracking
+                      && Server.Engines.Pathing.PathTracker.IsTracked(m);
+        if (tracked)
+        {
+            trackSnapshot = StepCache.Instance.GetStats();
+        }
+
         _currentMobileNeedsSlowPath = RequiresSlowPath(m);
         _currentMobilePlayerStrict = m.Player && m.AccessLevel < AccessLevel.GameMaster;
         if (m is BaseCreature creature)
@@ -287,6 +298,10 @@ public class BitmapAStarAlgorithm : PathAlgorithm
                 _currentMobileIgnoreDoors = false;
                 _currentMobileIgnoreSpellFields = false;
                 _currentMobileIgnoreMovableImpassables = false;
+                if (tracked)
+                {
+                    Server.Engines.Pathing.PathTracker.RecordIfTracked(m, map, start, goal, dirs, trackSnapshot);
+                }
                 return dirs;
             }
         }
@@ -299,6 +314,10 @@ public class BitmapAStarAlgorithm : PathAlgorithm
         _currentMobileIgnoreDoors = false;
         _currentMobileIgnoreSpellFields = false;
         _currentMobileIgnoreMovableImpassables = false;
+        if (tracked)
+        {
+            Server.Engines.Pathing.PathTracker.RecordIfTracked(m, map, start, goal, null, trackSnapshot);
+        }
         return null;
     }
 

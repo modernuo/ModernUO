@@ -251,6 +251,46 @@ public class PathTrackerTests
         }
     }
 
+    [Fact]
+    public void Find_OnTrackedMob_AppendsLine()
+    {
+        var path = NewTempPath();
+        OverrideOutputPath(path);
+
+        try
+        {
+            var observer = new TrackStub(World.NewMobile);
+            observer.DefaultMobileInit();
+            observer.MoveToWorld(new Point3D(1500, 1600, 0), Map.Maps[1]);
+
+            var m = new TrackStub(World.NewMobile);
+            m.DefaultMobileInit();
+            var start = new Point3D(1496, 1628, 10);
+            m.MoveToWorld(start, Map.Maps[1]);
+
+            PathTracker.Toggle(observer, m);
+
+            // A short, real route on Trammel (same family as the open_plain corpus scenario).
+            Server.PathAlgorithms.BitmapAStar.BitmapAStarAlgorithm.Instance.Find(
+                m, Map.Maps[1], start, new Point3D(1500, 1628, 10)
+            );
+
+            PathTracker.Clear(); // flush + close
+            observer.Delete();
+            m.Delete();
+
+            Assert.True(File.Exists(path), "a tracked mob's Find must append a line");
+            var content = File.ReadAllText(path).TrimEnd();
+            Assert.Contains("\"sx\":1496", content);
+            Assert.Contains("\"gx\":1500", content);
+        }
+        finally
+        {
+            PathTracker.Clear();
+            if (File.Exists(path)) { File.Delete(path); }
+        }
+    }
+
     private sealed class TrackStub : Server.Mobiles.BaseCreature
     {
         public TrackStub(Serial serial) : base(serial)
