@@ -62,21 +62,27 @@ public static class PathTracker
             return false;
         }
 
-        if (_tracked.ContainsKey(target))
+        if (_tracked.TryGetValue(target, out _))
         {
             StopTracking(observer, target);
             return false;
         }
 
-        StartTracking(observer, target);
-        return true;
+        return StartTracking(observer, target);
     }
 
-    private static void StartTracking(Mobile observer, Mobile target)
+    private static bool StartTracking(Mobile observer, Mobile target)
     {
         EnsureWriter();
+        if (_writer == null)
+        {
+            observer?.SendMessage($"PathTrack: could not open {_outputPath} for write; not tracking {target.Name}.");
+            return false;
+        }
+
         _tracked[target] = new TrackState { Observer = observer };
         observer?.SendMessage($"PathTrack: now tracking {target.Name} (0x{target.Serial.Value:X}). Writing to {_outputPath}");
+        return true;
     }
 
     private static void StopTracking(Mobile observer, Mobile target)

@@ -93,6 +93,36 @@ public class PathTrackerTests
         }
     }
 
+    [Fact]
+    public void Toggle_Start_OpensLogFile()
+    {
+        var path = NewTempPath();
+        OverrideOutputPath(path);
+
+        try
+        {
+            var observer = new TrackStub(World.NewMobile);
+            observer.DefaultMobileInit();
+            observer.MoveToWorld(new Point3D(1500, 1600, 0), Map.Maps[1]);
+
+            var target = new TrackStub(World.NewMobile);
+            target.DefaultMobileInit();
+            target.MoveToWorld(new Point3D(1500, 1600, 0), Map.Maps[1]);
+
+            var started = PathTracker.Toggle(observer, target);
+            Assert.True(started);
+            Assert.True(File.Exists(path));
+
+            observer.Delete();
+            target.Delete();
+        }
+        finally
+        {
+            PathTracker.Clear();
+            if (File.Exists(path)) { File.Delete(path); }
+        }
+    }
+
     private sealed class TrackStub : Server.Mobiles.BaseCreature
     {
         public TrackStub(Serial serial) : base(serial)
