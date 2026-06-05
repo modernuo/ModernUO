@@ -51,6 +51,21 @@ public static class PathTracker
     public static string OutputPath => _outputPath;
 
     /// <summary>
+    /// Per-Find counter delta, grouped into the three signals we care about:
+    ///   served = cache hits (chunk was already warm),
+    ///   built  = chunk built or dirty-rebuilt on this Find (warming in progress),
+    ///   fell   = fallthroughs (cache couldn't help: multi-Z / off-map / src-Z / not-built).
+    /// </summary>
+    internal static (long served, long built, long fell) ComputeDelta(in CacheStats before, in CacheStats after) => (
+        after.Hits - before.Hits,
+        (after.MissesNotBuilt - before.MissesNotBuilt) + (after.MissesDirtyRebuild - before.MissesDirtyRebuild),
+        (after.FallthroughMultiZ - before.FallthroughMultiZ)
+        + (after.FallthroughSourceZMismatch - before.FallthroughSourceZMismatch)
+        + (after.FallthroughOffMap - before.FallthroughOffMap)
+        + (after.FallthroughNotBuilt - before.FallthroughNotBuilt)
+    );
+
+    /// <summary>
     /// Start tracking <paramref name="target"/> if untracked (returns true), or stop and
     /// print its lifetime tally if already tracked (returns false). <paramref name="observer"/>
     /// is the admin who receives the live verdict lines.

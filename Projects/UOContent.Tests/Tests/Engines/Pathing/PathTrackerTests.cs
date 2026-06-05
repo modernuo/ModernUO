@@ -1,5 +1,6 @@
 using System.IO;
 using Server.Engines.Pathing;
+using Server.Engines.Pathing.Cache;
 using Xunit;
 
 namespace Server.Tests.Pathfinding;
@@ -121,6 +122,27 @@ public class PathTrackerTests
             PathTracker.Clear();
             if (File.Exists(path)) { File.Delete(path); }
         }
+    }
+
+    [Fact]
+    public void ComputeDelta_SubtractsBeforeFromAfter_GroupingCounters()
+    {
+        var before = new CacheStats(
+            residentChunks: 0, hits: 10, missesNotBuilt: 2, missesDirtyRebuild: 1,
+            fallthroughMultiZ: 3, fallthroughOffMap: 1, fallthroughSourceZMismatch: 2,
+            fallthroughNotBuilt: 4, evictionsByLruCap: 0, buildsTotal: 0
+        );
+        var after = new CacheStats(
+            residentChunks: 0, hits: 18, missesNotBuilt: 5, missesDirtyRebuild: 3,
+            fallthroughMultiZ: 4, fallthroughOffMap: 1, fallthroughSourceZMismatch: 2,
+            fallthroughNotBuilt: 6, evictionsByLruCap: 0, buildsTotal: 0
+        );
+
+        var (served, built, fell) = PathTracker.ComputeDelta(before, after);
+
+        Assert.Equal(8, served);                 // 18 - 10
+        Assert.Equal(5, built);                   // (5-2) + (3-1)
+        Assert.Equal(3, fell);                    // (4-3) + (1-1) + (2-2) + (6-4)
     }
 
     private sealed class TrackStub : Server.Mobiles.BaseCreature
