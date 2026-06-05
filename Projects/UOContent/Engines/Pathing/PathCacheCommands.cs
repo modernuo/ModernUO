@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using Server.Engines.Pathing.Cache;
 using Server.Logging;
+using Server.Targeting;
 
 namespace Server.Engines.Pathing;
 
@@ -45,6 +46,7 @@ public static class PathCacheCommands
         CommandSystem.Register("PathCacheSave",  AccessLevel.Administrator, OnPathCacheSave);
         CommandSystem.Register("PathCacheLoad",  AccessLevel.Administrator, OnPathCacheLoad);
         CommandSystem.Register("PathRecord",     AccessLevel.Administrator, OnPathRecord);
+        CommandSystem.Register("PathTrack",      AccessLevel.Administrator, OnPathTrack);
     }
 
     /// <summary>
@@ -308,5 +310,32 @@ public static class PathCacheCommands
                     break;
                 }
         }
+    }
+
+    [Usage("PathTrack [clear]")]
+    [Description("Passive per-mob pathfinding telemetry. With no arg: target a mob to start tracking it (or target an already-tracked mob to stop and print its tally). Logs one JSONL line per Find to Logs/pathtrack.jsonl and whispers a rolling served/built/fell verdict every 25 Finds. 'clear' stops all tracking. Does NOT change cache behavior — measures natural warming at the production threshold.")]
+    private static void OnPathTrack(CommandEventArgs e)
+    {
+        var from = e.Mobile;
+
+        if (e.Arguments.Length > 0 && e.Arguments[0].ToLowerInvariant() == "clear")
+        {
+            PathTracker.Clear();
+            from.SendMessage("PathTrack: cleared all tracking.");
+            return;
+        }
+
+        from.SendMessage("PathTrack: target a mob to start/stop tracking it.");
+        from.BeginTarget(-1, false, TargetFlags.None, (m, targeted) =>
+        {
+            if (targeted is not Mobile target)
+            {
+                m.SendMessage("PathTrack: that is not a mob.");
+                return;
+            }
+
+            // Toggle prints its own start/stop confirmation to the observer.
+            PathTracker.Toggle(m, target);
+        });
     }
 }
