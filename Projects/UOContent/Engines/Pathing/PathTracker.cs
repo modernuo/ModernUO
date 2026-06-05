@@ -76,7 +76,7 @@ public static class PathTracker
             return false;
         }
 
-        if (_tracked.TryGetValue(target, out _))
+        if (_tracked.ContainsKey(target))
         {
             StopTracking(observer, target);
             return false;

@@ -319,7 +319,7 @@ public static class PathCacheCommands
     {
         var from = e.Mobile;
 
-        if (e.Arguments.Length > 0 && e.Arguments[0].ToLowerInvariant() == "clear")
+        if (e.Arguments.Length > 0 && string.Equals(e.Arguments[0], "clear", StringComparison.OrdinalIgnoreCase))
         {
             PathTracker.Clear();
             from.SendMessage("PathTrack: cleared all tracking.");
