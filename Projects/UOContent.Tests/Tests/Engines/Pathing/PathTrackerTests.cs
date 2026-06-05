@@ -145,6 +145,112 @@ public class PathTrackerTests
         Assert.Equal(3, fell);                    // (4-3) + (1-1) + (2-2) + (6-4)
     }
 
+    [Fact]
+    public void RecordIfTracked_Untracked_WritesNothing()
+    {
+        var path = NewTempPath();
+        OverrideOutputPath(path);
+
+        try
+        {
+            var m = new TrackStub(World.NewMobile);
+            m.DefaultMobileInit();
+            m.MoveToWorld(new Point3D(1500, 1600, 0), Map.Maps[1]);
+
+            PathTracker.RecordIfTracked(
+                m, Map.Maps[1], new Point3D(1500, 1600, 0), new Point3D(1502, 1600, 0),
+                null, default
+            );
+
+            m.Delete();
+            Assert.False(File.Exists(path));
+        }
+        finally
+        {
+            PathTracker.Clear();
+            if (File.Exists(path)) { File.Delete(path); }
+        }
+    }
+
+    [Fact]
+    public void RecordIfTracked_Tracked_WritesOneJsonlLine()
+    {
+        var path = NewTempPath();
+        OverrideOutputPath(path);
+
+        try
+        {
+            var observer = new TrackStub(World.NewMobile);
+            observer.DefaultMobileInit();
+            observer.MoveToWorld(new Point3D(1500, 1600, 0), Map.Maps[1]);
+
+            var m = new TrackStub(World.NewMobile);
+            m.DefaultMobileInit();
+            m.MoveToWorld(new Point3D(1500, 1600, 0), Map.Maps[1]);
+
+            PathTracker.Toggle(observer, m);
+            PathTracker.RecordIfTracked(
+                m, Map.Maps[1], new Point3D(1500, 1600, 5), new Point3D(1504, 1600, 5),
+                new[] { Direction.East, Direction.East }, default
+            );
+
+            PathTracker.Clear(); // flush + close
+            observer.Delete();
+            m.Delete();
+
+            Assert.True(File.Exists(path));
+            var content = File.ReadAllText(path).TrimEnd();
+            Assert.Single(content.Split('\n'));
+            Assert.Contains("\"mapId\":1", content);
+            Assert.Contains("\"sx\":1500", content);
+            Assert.Contains("\"gx\":1504", content);
+            Assert.Contains("\"len\":2", content);
+            Assert.Contains("\"served\":", content);
+            Assert.Contains("\"built\":", content);
+            Assert.Contains("\"fell\":", content);
+        }
+        finally
+        {
+            PathTracker.Clear();
+            if (File.Exists(path)) { File.Delete(path); }
+        }
+    }
+
+    [Fact]
+    public void RecordIfTracked_DeletedMob_IsPruned()
+    {
+        var path = NewTempPath();
+        OverrideOutputPath(path);
+
+        try
+        {
+            var observer = new TrackStub(World.NewMobile);
+            observer.DefaultMobileInit();
+            observer.MoveToWorld(new Point3D(1500, 1600, 0), Map.Maps[1]);
+
+            var m = new TrackStub(World.NewMobile);
+            m.DefaultMobileInit();
+            m.MoveToWorld(new Point3D(1500, 1600, 0), Map.Maps[1]);
+
+            PathTracker.Toggle(observer, m);
+            Assert.True(PathTracker.IsTracked(m));
+
+            m.Delete();
+            PathTracker.RecordIfTracked(
+                m, Map.Maps[1], new Point3D(1500, 1600, 0), new Point3D(1502, 1600, 0),
+                null, default
+            );
+
+            Assert.False(PathTracker.IsTracked(m));
+            observer.Delete();
+        }
+        finally
+        {
+            PathTracker.Clear();
+            if (File.Exists(path)) { File.Delete(path); }
+        }
+    }
+
     private sealed class TrackStub : Server.Mobiles.BaseCreature
     {
         public TrackStub(Serial serial) : base(serial)

@@ -3,6 +3,7 @@ using System.IO;
 using System.Text;
 using Server.Engines.Pathing.Cache;
 using Server.Logging;
+using Server.Text;
 
 namespace Server.Engines.Pathing;
 
@@ -35,11 +36,9 @@ public static class PathTracker
     private sealed class TrackState
     {
         public Mobile Observer;
-        // Lifetime counters — populated by the per-Find record method (Task 2+).
-#pragma warning disable CS0649
+        // Lifetime counters — populated by RecordIfTracked.
         public long LifeServed, LifeBuilt, LifeFell, LifeFinds;
         public long WinServed, WinBuilt, WinFell, WinFinds;
-#pragma warning restore CS0649
     }
 
     private static readonly Dictionary<Mobile, TrackState> _tracked = new();
@@ -157,5 +156,118 @@ public static class PathTracker
         }
 
         _writer = null;
+    }
+
+    /// <summary>
+    /// Record one Find by a tracked mob: compute the cache delta vs <paramref name="before"/>,
+    /// append a JSONL line, accumulate lifetime + rolling totals, and emit the live verdict
+    /// every <see cref="WindowSize"/> Finds. No-op when <paramref name="m"/> is not tracked.
+    /// Prunes the mob if it was deleted since tracking began.
+    /// </summary>
+    public static void RecordIfTracked(
+        Mobile m, Map map, Point3D start, Point3D goal, Direction[] path, in CacheStats before
+    )
+    {
+        if (m == null || !_tracked.TryGetValue(m, out var st))
+        {
+            return;
+        }
+
+        if (m.Deleted)
+        {
+            _tracked.Remove(m);
+            if (_tracked.Count == 0)
+            {
+                CloseWriter();
+            }
+            return;
+        }
+
+        var after = StepCache.Instance.GetStats();
+        var (served, built, fell) = ComputeDelta(before, after);
+        var len = path?.Length ?? -1;
+
+        WriteLine(m, map, start, goal, len, served, built, fell);
+
+        st.LifeServed += served;
+        st.LifeBuilt += built;
+        st.LifeFell += fell;
+        st.LifeFinds++;
+
+        st.WinServed += served;
+        st.WinBuilt += built;
+        st.WinFell += fell;
+        st.WinFinds++;
+
+        if (st.WinFinds >= WindowSize)
+        {
+            EmitLive(m, st);
+            st.WinServed = st.WinBuilt = st.WinFell = st.WinFinds = 0;
+        }
+    }
+
+    private static void WriteLine(
+        Mobile m, Map map, Point3D start, Point3D goal, int len, long served, long built, long fell
+    )
+    {
+        if (_writer == null)
+        {
+            return;
+        }
+
+        try
+        {
+            // One stack-allocated builder, no per-field ToString allocation. The mob name is
+            // sanitized (quotes/backslashes/newlines dropped) so it can't break the JSON line.
+            var vsb = ValueStringBuilder.Create(192);
+            try
+            {
+                vsb.Append($"{{\"t\":\"{Core.Now:yyyy-MM-dd HH:mm:ss}\",\"serial\":\"0x{m.Serial.Value:X}\",\"name\":\"");
+                AppendSanitized(ref vsb, m.Name);
+                vsb.Append(
+                    $"\",\"mapId\":{map?.MapID ?? -1},\"sx\":{start.X},\"sy\":{start.Y},\"sz\":{start.Z},\"gx\":{goal.X},\"gy\":{goal.Y},\"gz\":{goal.Z},\"len\":{len},\"served\":{served},\"built\":{built},\"fell\":{fell}}}\n"
+                );
+                _writer.Write(vsb.AsSpan());
+            }
+            finally
+            {
+                vsb.Dispose();
+            }
+        }
+        catch (IOException ex)
+        {
+            logger.Warning(ex, "PathTracker: write failed, clearing tracking");
+            Clear();
+        }
+    }
+
+    // Strips characters that would break a JSON string literal. Names are short and rarely
+    // contain these, so the per-char loop is negligible.
+    private static void AppendSanitized(ref ValueStringBuilder vsb, string s)
+    {
+        if (string.IsNullOrEmpty(s))
+        {
+            return;
+        }
+
+        foreach (var c in s)
+        {
+            if (c is '"' or '\\' or '\n' or '\r')
+            {
+                continue;
+            }
+            vsb.Append(c);
+        }
+    }
+
+    private static void EmitLive(Mobile m, TrackState st)
+    {
+        var total = st.WinServed + st.WinBuilt + st.WinFell;
+        var servedPct = total == 0 ? 0 : 100 * st.WinServed / total;
+        var builtPct = total == 0 ? 0 : 100 * st.WinBuilt / total;
+        var fellPct = total == 0 ? 0 : 100 * st.WinFell / total;
+        st.Observer?.SendMessage(
+            $"{m.Name}: served {servedPct}% | built {builtPct}% | fell {fellPct}% (last {WindowSize})"
+        );
     }
 }
