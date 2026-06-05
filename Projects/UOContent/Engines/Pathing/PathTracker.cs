@@ -185,9 +185,13 @@ public static class PathTracker
 
         var after = StepCache.Instance.GetStats();
         var (served, built, fell) = ComputeDelta(before, after);
+        // len is the path length in steps, or -1 when no path was found (null path).
         var len = path?.Length ?? -1;
 
-        WriteLine(m, map, start, goal, len, served, built, fell);
+        if (!WriteLine(m, map, start, goal, len, served, built, fell))
+        {
+            return;
+        }
 
         st.LifeServed += served;
         st.LifeBuilt += built;
@@ -201,24 +205,28 @@ public static class PathTracker
 
         if (st.WinFinds >= WindowSize)
         {
+            // Emit first: the window counters still hold the full WindowSize-Find window here; reset after.
             EmitLive(m, st);
             st.WinServed = st.WinBuilt = st.WinFell = st.WinFinds = 0;
         }
     }
 
-    private static void WriteLine(
+    private static bool WriteLine(
         Mobile m, Map map, Point3D start, Point3D goal, int len, long served, long built, long fell
     )
     {
         if (_writer == null)
         {
-            return;
+            return false;
         }
 
         try
         {
+            // ValueStringBuilder is a ref struct; a `using var` ref local can't be combined with a
+            // try/catch here, so dispose it explicitly in a finally. (PathfindRecorder uses `using var`
+            // because it has no inner catch around the write.)
             // One stack-allocated builder, no per-field ToString allocation. The mob name is
-            // sanitized (quotes/backslashes/newlines dropped) so it can't break the JSON line.
+            // sanitized (quotes/backslashes/control characters dropped) so it can't break the JSON line.
             var vsb = ValueStringBuilder.Create(192);
             try
             {
@@ -233,16 +241,20 @@ public static class PathTracker
             {
                 vsb.Dispose();
             }
+
+            return true;
         }
         catch (IOException ex)
         {
             logger.Warning(ex, "PathTracker: write failed, clearing tracking");
             Clear();
+            return false;
         }
     }
 
-    // Strips characters that would break a JSON string literal. Names are short and rarely
-    // contain these, so the per-char loop is negligible.
+    // Strips quotes, backslashes, and all control characters (< 0x20) so the name can't break
+    // or invalidate the JSON line. Names are short and rarely contain these, so the per-char
+    // loop is negligible.
     private static void AppendSanitized(ref ValueStringBuilder vsb, string s)
     {
         if (string.IsNullOrEmpty(s))
@@ -252,7 +264,7 @@ public static class PathTracker
 
         foreach (var c in s)
         {
-            if (c is '"' or '\\' or '\n' or '\r')
+            if (c is '"' or '\\' || c < ' ')
             {
                 continue;
             }
