@@ -15,6 +15,7 @@ namespace Server.Engines.Pathing;
 ///   [PathCacheSave  — persist the resident chunks to Data/Pathfinding/&lt;mapId&gt;.swb.
 ///   [PathCacheLoad  — open those files as backing stores. Also runs at startup.
 ///   [PathRecord     — toggle capture of pathfind telemetry.
+///   [PathTrack      — passive per-mob cache-warming telemetry (Logs/pathtrack.jsonl).
 ///
 /// None of this is required: the cache builds chunks on demand as creatures path, with or without
 /// a .swb on disk. Baking one is purely an optimization that trades disk and a few minutes of bake
