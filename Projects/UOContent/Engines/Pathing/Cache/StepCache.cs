@@ -710,7 +710,7 @@ public sealed class StepCache
         // Tier 4 strata accumulator. Lazily allocated when the first multi-Z cell
         // appears; otherwise the chunk has zero strata overhead.
         ushort[] strataOffsetByCell = null;
-        System.Collections.Generic.List<byte> strataData = null;
+        List<byte> strataData = null;
 
         // Reused per cell: the standable surface Zs (walkway / bridge / floor levels). 16 is
         // generous — clearance forces standable surfaces >= PersonHeight apart, so a 256-tall
@@ -811,7 +811,7 @@ public sealed class StepCache
                         {
                             strataOffsetByCell[i] = StepChunk.NoStrata;
                         }
-                        strataData = new System.Collections.Generic.List<byte>(256);
+                        strataData = new List<byte>(256);
                     }
 
                     // Cap at 65,535 byte offsets — well above realistic per-chunk strata
@@ -906,9 +906,7 @@ public sealed class StepCache
         return false;
     }
 
-    private static void AppendStratumBytes(
-        System.Collections.Generic.List<byte> dst, in StepProbe.ComputedStratum s
-    )
+    private static void AppendStratumBytes(List<byte> dst, in StepProbe.ComputedStratum s)
     {
         dst.Add((byte)s.ZCenter);
         dst.Add(s.Mask.WalkMask);
