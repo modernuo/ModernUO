@@ -712,6 +712,11 @@ public sealed class StepCache
         ushort[] strataOffsetByCell = null;
         System.Collections.Generic.List<byte> strataData = null;
 
+        // Reused per cell: the standable surface Zs (walkway / bridge / floor levels). 16 is
+        // generous — clearance forces standable surfaces >= PersonHeight apart, so a 256-tall
+        // Z range admits at most ~16 anyway.
+        Span<sbyte> surfaceZs = stackalloc sbyte[16];
+
         for (var dy = 0; dy < ChunkSize; dy++)
         {
             for (var dx = 0; dx < ChunkSize; dx++)
@@ -722,10 +727,18 @@ public sealed class StepCache
 
                 map.GetAverageZ(x, y, out _, out var avgZ, out _);
 
-                // Bake from the slow path's "standing Z" (the surface Z a creature actually
-                // stands at, not the ground avg). A* tracks newZ as standing Z, so SourceZ
-                // must match for the source-Z guard not to over-fire.
-                var standingZ = (sbyte)StepProbe.ComputeStandingZ(map, x, y, avgZ);
+                // Anchor the cell at the surface a creature actually STANDS on, not the land
+                // average. For plain overworld that's the land; for static-over-land terrain
+                // (sewer/dungeon walkways, bridges, stair treads, raised foundations, upper
+                // building floors) it's the walkable static surface — which the old
+                // ComputeStandingZ(avgZ) anchor missed, producing source-Z fallthroughs (or,
+                // within the StepHeight tolerance band on stairs, a wrong vertical-neighbor
+                // answer baked at the adjacent tread). ComputeStandableSurfaceZs returns the
+                // standable surfaces ascending; the lowest is the primary anchor and A* tracks
+                // newZ to match it. Cells with no standable walk surface (deep water, solid
+                // rock) fall back to the land avg so the swim layer / wetMask still bake.
+                var surfaceCount = StepProbe.ComputeStandableSurfaceZs(map, x, y, surfaceZs);
+                var standingZ = surfaceCount > 0 ? surfaceZs[0] : (sbyte)Math.Clamp(avgZ, sbyte.MinValue, sbyte.MaxValue);
 
                 var result = StepProbe.ComputeMaskAt(map, x, y, standingZ);
 
@@ -782,39 +795,36 @@ public sealed class StepCache
                     }
                 }
 
-                // Multi-Z handling: if the cell has 2+ reachable surfaces, compute its
-                // Tier 4 strata so future queries can be answered without falling through
-                // to the slow path. ComputeStrataAt returns null for single-Z cells.
-                if (CountReachableSurfaces(map, x, y, standingZ) > 1)
+                // Stacked walkable surfaces at one cell (ground + 1st + 2nd building floors,
+                // a bridge over a walkable path, etc.): bake a stratum per standable surface
+                // so a query at any floor's Z hits. The primary (lowest) surface is also in
+                // the main mask above, but multi-Z cells are served exclusively from strata,
+                // so every standable surface — including the primary — must appear here.
+                // Single-surface cells (the common case, incl. stair treads and sewer
+                // walkways) skip this entirely and stay on the fast single-mask path.
+                if (surfaceCount >= 2)
                 {
-                    var strata = StepProbe.ComputeStrataAt(map, x, y);
-                    if (strata != null)
+                    if (strataOffsetByCell == null)
                     {
-                        if (strataOffsetByCell == null)
+                        strataOffsetByCell = new ushort[StepChunk.CellsPerChunk];
+                        for (var i = 0; i < strataOffsetByCell.Length; i++)
                         {
-                            strataOffsetByCell = new ushort[StepChunk.CellsPerChunk];
-                            for (var i = 0; i < strataOffsetByCell.Length; i++)
-                            {
-                                strataOffsetByCell[i] = StepChunk.NoStrata;
-                            }
-                            strataData = new System.Collections.Generic.List<byte>(256);
+                            strataOffsetByCell[i] = StepChunk.NoStrata;
                         }
+                        strataData = new System.Collections.Generic.List<byte>(256);
+                    }
 
-                        // Cap at 65,535 byte offsets — well above realistic per-chunk
-                        // strata volume. If we ever blow past this we'd silently truncate;
-                        // assert as a defensive guard.
-                        if (strataData.Count > ushort.MaxValue - StepChunk.StratumByteLength * 8)
+                    // Cap at 65,535 byte offsets — well above realistic per-chunk strata
+                    // volume. If we ever blow past this we silently leave the cell single-Z
+                    // (it keeps the land-anchored main mask and falls through off-surface).
+                    if (strataData.Count <= ushort.MaxValue - StepChunk.StratumByteLength * 8)
+                    {
+                        strataOffsetByCell[cell] = (ushort)strataData.Count;
+                        strataData.Add((byte)surfaceCount);
+                        for (var i = 0; i < surfaceCount; i++)
                         {
-                            // Should never happen for sane tile data; bail to fallthrough.
-                        }
-                        else
-                        {
-                            strataOffsetByCell[cell] = (ushort)strataData.Count;
-                            strataData.Add((byte)strata.Length);
-                            for (var s = 0; s < strata.Length; s++)
-                            {
-                                AppendStratumBytes(strataData, strata[s]);
-                            }
+                            var sz = surfaceZs[i];
+                            AppendStratumBytes(strataData, new StepProbe.ComputedStratum(sz, StepProbe.ComputeMaskAt(map, x, y, sz)));
                         }
                     }
                 }
@@ -923,54 +933,4 @@ public sealed class StepCache
 
     private const int PersonHeight = 16;
     private const int StepHeight = 2;
-
-    /// <summary>
-    /// Counts walkable surfaces actually reachable from a creature standing at sourceZ.
-    /// Mirrors <see cref="StepProbe"/>.CheckStaticStep so cells flagged multi-Z
-    /// here are exactly those where the baker would have multiple candidate destinations.
-    /// Reachable when: surface and !impassable; stepTop ≥ itemTop; vertical overlap with
-    /// the creature's PersonHeight envelope.
-    /// </summary>
-    internal static int CountReachableSurfaces(Map map, int x, int y, sbyte sourceZ)
-    {
-        var startTop = sourceZ + PersonHeight;
-        var stepTop = startTop + StepHeight;
-        var count = 0;
-
-        foreach (var tile in map.Tiles.GetStaticAndMultiTiles(x, y))
-        {
-            var data = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
-            if (!data.Surface || data.Impassable)
-            {
-                continue;
-            }
-
-            var itemZ = tile.Z;
-            var itemTop = data.Bridge ? itemZ : itemZ + data.Height;
-
-            if (stepTop < itemTop)
-            {
-                continue;
-            }
-
-            if (sourceZ + PersonHeight > itemZ && itemZ + data.Height > sourceZ)
-            {
-                count++;
-            }
-        }
-
-        // Land surface check — same shape, but use GetAverageZ for the land's effective top.
-        var landTile = map.Tiles.GetLandTile(x, y);
-        var landFlags = TileData.LandTable[landTile.ID & TileData.MaxLandValue].Flags;
-        if (!landTile.Ignored && (landFlags & TileFlag.Impassable) == 0)
-        {
-            map.GetAverageZ(x, y, out var landZ, out _, out var landTop);
-            if (stepTop >= landZ && sourceZ + PersonHeight > landZ && landTop > sourceZ)
-            {
-                count++;
-            }
-        }
-
-        return count;
-    }
 }

@@ -68,16 +68,20 @@ namespace Server.Engines.Pathing.Cache;
 internal static class StepCacheFile
 {
     public const uint Magic = 0x42575300; // 'SWB\0'
-    public const uint FormatVersion = 3;
+    public const uint FormatVersion = 4;
 
     /// <summary>
     /// Lowest format version this binary can load. Files below this version are treated as
     /// missing (silently rejected) — a subsequent SaveToFile / BakeMap overwrites them with
-    /// the current FormatVersion. Bumped to 3 when the swim layer landed; v2 had no swim
-    /// layer and is incompatible with the shore-cell fallback path. Operators upgrading
-    /// from v2 → v3 see a one-time re-bake on first server boot under the new binary.
+    /// the current FormatVersion. Bumped to 3 when the swim layer landed (v2 had no swim
+    /// layer). Bumped to 4 when the baker switched to clearance-aware standable-surface
+    /// strata: v3 bakes anchored every cell at the land average and so missed walkable
+    /// static-over-land surfaces (sewer/dungeon walkways, bridges, upper building floors),
+    /// producing ~98% source-Z fallthroughs on those routes. The on-disk layout is
+    /// unchanged; only the strata population differs, so the bump exists purely to force a
+    /// one-time re-bake of stale v3 files on first boot under the new binary.
     /// </summary>
-    public const uint MinSupportedVersion = 3;
+    public const uint MinSupportedVersion = 4;
 
     private const int HeaderSize =
         sizeof(uint)    // Magic

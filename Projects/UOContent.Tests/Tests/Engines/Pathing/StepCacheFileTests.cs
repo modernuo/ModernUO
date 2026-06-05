@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using Server.Engines.Pathing.Cache;
 using Xunit;
@@ -22,11 +23,25 @@ public class StepCacheFileTests
         var map = Map.Maps[1];
         Assert.NotNull(map);
 
-        // Populate three distinct chunks by querying different sectors.
+        // Populate three distinct chunks by querying different sectors. Query at each cell's
+        // real standable surface Z (where the cache anchors) so first-touch yields a clean
+        // hit rather than an off-surface fallthrough.
         var sourceQueries = new[] { (1500, 1600), (1516, 1600), (1500, 1616) };
-        foreach (var (x, y) in sourceQueries)
+        var standZ = new sbyte[sourceQueries.Length];
         {
-            cache.TryGetMask(map, x, y, sourceZ: 10);
+            Span<sbyte> surfZ = stackalloc sbyte[16];
+            for (var i = 0; i < sourceQueries.Length; i++)
+            {
+                var (qx, qy) = sourceQueries[i];
+                var n = StepProbe.ComputeStandableSurfaceZs(map, qx, qy, surfZ);
+                Assert.True(n > 0, $"({qx},{qy}) has no standable surface — bad test cell");
+                standZ[i] = surfZ[0];
+            }
+        }
+        for (var i = 0; i < sourceQueries.Length; i++)
+        {
+            var (x, y) = sourceQueries[i];
+            cache.TryGetMask(map, x, y, standZ[i]);
         }
 
         Assert.Equal(3, cache.GetStats().ResidentChunks);
@@ -37,7 +52,7 @@ public class StepCacheFileTests
         for (var i = 0; i < sourceQueries.Length; i++)
         {
             var (x, y) = sourceQueries[i];
-            expected[i] = cache.TryGetMask(map, x, y, sourceZ: 10);
+            expected[i] = cache.TryGetMask(map, x, y, standZ[i]);
         }
 
         var path = Path.Combine(Path.GetTempPath(), $"step-cache-roundtrip-{System.Guid.NewGuid():N}.swb");
@@ -67,7 +82,7 @@ public class StepCacheFileTests
             for (var i = 0; i < sourceQueries.Length; i++)
             {
                 var (x, y) = sourceQueries[i];
-                var lookup = cache.TryGetMask(map, x, y, sourceZ: 10);
+                var lookup = cache.TryGetMask(map, x, y, standZ[i]);
                 Assert.Equal(CacheHitKind.Miss_NotBuilt, lookup.HitKind);
                 Assert.Equal(expected[i].WalkMask, lookup.WalkMask);
                 Assert.Equal(expected[i].WetMask, lookup.WetMask);
