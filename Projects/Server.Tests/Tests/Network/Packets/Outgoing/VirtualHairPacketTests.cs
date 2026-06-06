@@ -45,6 +45,7 @@ public class VirtualHairPacketTests
         var m = new Mobile((Serial)0x1025u);
         m.DefaultMobileInit();
         m.HairItemID = 0x2000;
+        m.HairHue = 0x1000;
 
         var equippedSerial = m.HairSerial;
         Assert.NotEqual(Serial.Zero, equippedSerial);
@@ -53,6 +54,8 @@ public class VirtualHairPacketTests
 
         // Serial must survive removal so the client can remove the correct entity.
         Assert.Equal(equippedSerial, m.HairSerial);
+        // Hue is cleared with the item id (matches the legacy object-nulling behavior).
+        Assert.Equal(0, m.HairHue);
     }
 
     [Fact]
@@ -61,6 +64,7 @@ public class VirtualHairPacketTests
         var m = new Mobile((Serial)0x1026u);
         m.DefaultMobileInit();
         m.FacialHairItemID = 0x2040;
+        m.FacialHairHue = 0x1000;
 
         var equippedSerial = m.FacialHairSerial;
         Assert.NotEqual(Serial.Zero, equippedSerial);
@@ -69,5 +73,7 @@ public class VirtualHairPacketTests
 
         // Serial must survive removal so the client can remove the correct entity.
         Assert.Equal(equippedSerial, m.FacialHairSerial);
+        // Hue is cleared with the item id (matches the legacy object-nulling behavior).
+        Assert.Equal(0, m.FacialHairHue);
     }
 }

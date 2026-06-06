@@ -2186,9 +2186,15 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         get => _hairItemId;
         set
         {
-            // An item id of 0 is the "no hair" state; _hairSerial is intentionally retained
-            // so a pending removal packet can reference the previously equipped serial.
+            // An item id of 0 is the "no hair" state; clear the hue with it, but keep
+            // _hairSerial so a pending removal packet references the equipped serial.
             _hairItemId = value < 0 ? 0 : value;
+
+            if (_hairItemId == 0)
+            {
+                _hairHue = 0;
+            }
+
             Delta(MobileDelta.Hair);
             this.MarkDirty();
         }
@@ -2201,6 +2207,12 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         set
         {
             _facialHairItemId = value < 0 ? 0 : value;
+
+            if (_facialHairItemId == 0)
+            {
+                _facialHairHue = 0;
+            }
+
             Delta(MobileDelta.FacialHair);
             this.MarkDirty();
         }
