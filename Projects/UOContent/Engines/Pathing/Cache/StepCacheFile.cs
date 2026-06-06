@@ -14,11 +14,11 @@ namespace Server.Engines.Pathing.Cache;
 /// only when the cache asks for them. RAM stays bounded by MaxResidentChunks regardless
 /// of file size.
 ///
-/// File layout v3 (little-endian, BufferWriter / BufferReader convention):
+/// File layout v5 (little-endian, BufferWriter / BufferReader convention):
 ///
 ///   Header (48 bytes):
 ///     u32   Magic           = 0x42575300 ('SWB\0')
-///     u32   Version         = current FormatVersion (3)
+///     u32   Version         = current FormatVersion (5)
 ///     u32   MapId
 ///     u64   Fingerprint     XxHash3 over (1) LandTable + ItemTable flags AND (2) the
 ///                           on-disk bytes of mapX.mul / .uop, staidxX.mul, staticsX.mul.
@@ -34,6 +34,10 @@ namespace Server.Engines.Pathing.Cache;
 ///     u16    ChunkX
 ///     u16    ChunkY
 ///     u32    BuiltMultisVersion
+///     u8     Kind            0 = Full; 2 = Uniform
+///     // Uniform (Kind == 2): ~28-byte record — all 256 cells share these single values:
+///     byte   walkMask, wetMask;  sbyte sourceZ;  sbyte walkZ_N..NW (8);  sbyte swimZ_N..NW (8)
+///     // Full (Kind == 0) body:
 ///     u8     HasStrata       0 = single-Z chunk (no strata trailer); 1 = strata trailer follows
 ///     u8     HasSwimLayer    0 = no shore cells (no swim trailer); 1 = swim trailer follows
 ///     byte   WalkMask[256]
@@ -68,7 +72,7 @@ namespace Server.Engines.Pathing.Cache;
 internal static class StepCacheFile
 {
     public const uint Magic = 0x42575300; // 'SWB\0'
-    public const uint FormatVersion = 4;
+    public const uint FormatVersion = 5;
 
     /// <summary>
     /// Lowest format version this binary can load. Files below this version are treated as
@@ -79,9 +83,16 @@ internal static class StepCacheFile
     /// static-over-land surfaces (sewer/dungeon walkways, bridges, upper building floors),
     /// producing ~98% source-Z fallthroughs on those routes. The on-disk layout is
     /// unchanged; only the strata population differs, so the bump exists purely to force a
-    /// one-time re-bake of stale v3 files on first boot under the new binary.
+    /// one-time re-bake of stale v3 files on first boot under the new binary. Bumped to 5 for
+    /// uniform-chunk elision: each record now begins with a Kind byte (0 = Full, 2 = Uniform);
+    /// a fully-uniform chunk (no strata, no swim layer, all 19 base arrays constant) stores
+    /// one cell's worth of data (~28 bytes) instead of the full record.
     /// </summary>
-    public const uint MinSupportedVersion = 4;
+    public const uint MinSupportedVersion = 5;
+
+    // Per-chunk record discriminator (first byte after BuiltMultisVersion). 1 is reserved.
+    private const byte KindFull = 0;
+    private const byte KindUniform = 2;
 
     private const int HeaderSize =
         sizeof(uint)    // Magic
@@ -100,7 +111,7 @@ internal static class StepCacheFile
     /// <summary>Fixed-size portion of a chunk record (everything except the optional strata + swim trailers).</summary>
     private const int BytesPerChunkBase =
         sizeof(ushort) + sizeof(ushort) + sizeof(uint)
-        + sizeof(byte) + sizeof(byte)       // HasStrata + HasSwimLayer
+        + sizeof(byte) + sizeof(byte) + sizeof(byte) // Kind + HasStrata + HasSwimLayer
         + StepChunk.CellsPerChunk           // WalkMask
         + StepChunk.CellsPerChunk           // WetMask
         + StepChunk.CellsPerChunk           // SourceZ
@@ -367,6 +378,35 @@ internal static class StepCacheFile
         w.Write((ushort)chunkY);
         w.Write((uint)chunk.BuiltMultisVersion);
 
+        // Kind: 0 = Full, 2 = Uniform. A uniform chunk (no strata, no swim layer, all 19 base
+        // arrays constant) stores one cell's worth of data (~28-byte record total).
+        if (chunk.IsUniform())
+        {
+            w.Write(KindUniform);
+            w.Write(chunk.WalkMask[0]);
+            w.Write(chunk.WetMask[0]);
+            w.Write((byte)chunk.SourceZ[0]);
+            w.Write((byte)chunk.WalkZN[0]);
+            w.Write((byte)chunk.WalkZNE[0]);
+            w.Write((byte)chunk.WalkZE[0]);
+            w.Write((byte)chunk.WalkZSE[0]);
+            w.Write((byte)chunk.WalkZS[0]);
+            w.Write((byte)chunk.WalkZSW[0]);
+            w.Write((byte)chunk.WalkZW[0]);
+            w.Write((byte)chunk.WalkZNW[0]);
+            w.Write((byte)chunk.SwimZN[0]);
+            w.Write((byte)chunk.SwimZNE[0]);
+            w.Write((byte)chunk.SwimZE[0]);
+            w.Write((byte)chunk.SwimZSE[0]);
+            w.Write((byte)chunk.SwimZS[0]);
+            w.Write((byte)chunk.SwimZSW[0]);
+            w.Write((byte)chunk.SwimZW[0]);
+            w.Write((byte)chunk.SwimZNW[0]);
+            return;
+        }
+
+        w.Write(KindFull); // Full
+
         var strataOffsetByCell = chunk.GetStrataOffsetByCellForSerialization();
         var strataData = chunk.GetStrataDataForSerialization();
         var hasStrata = strataOffsetByCell != null;
@@ -433,10 +473,36 @@ internal static class StepCacheFile
         r.ReadUShort();
         r.ReadUShort();
         var multisVersion = (int)r.ReadUInt();
-        var hasStrata = r.ReadByte() != 0;
-        var hasSwimLayer = r.ReadByte() != 0;
+        var kind = r.ReadByte();
 
         var chunk = new StepChunk { BuiltMultisVersion = multisVersion };
+
+        if (kind == KindUniform) // Uniform — one cell's worth of the 19 base arrays, fill all 256 cells.
+        {
+            Array.Fill(chunk.WalkMask, r.ReadByte());
+            Array.Fill(chunk.WetMask, r.ReadByte());
+            Array.Fill(chunk.SourceZ, (sbyte)r.ReadByte());
+            Array.Fill(chunk.WalkZN, (sbyte)r.ReadByte());
+            Array.Fill(chunk.WalkZNE, (sbyte)r.ReadByte());
+            Array.Fill(chunk.WalkZE, (sbyte)r.ReadByte());
+            Array.Fill(chunk.WalkZSE, (sbyte)r.ReadByte());
+            Array.Fill(chunk.WalkZS, (sbyte)r.ReadByte());
+            Array.Fill(chunk.WalkZSW, (sbyte)r.ReadByte());
+            Array.Fill(chunk.WalkZW, (sbyte)r.ReadByte());
+            Array.Fill(chunk.WalkZNW, (sbyte)r.ReadByte());
+            Array.Fill(chunk.SwimZN, (sbyte)r.ReadByte());
+            Array.Fill(chunk.SwimZNE, (sbyte)r.ReadByte());
+            Array.Fill(chunk.SwimZE, (sbyte)r.ReadByte());
+            Array.Fill(chunk.SwimZSE, (sbyte)r.ReadByte());
+            Array.Fill(chunk.SwimZS, (sbyte)r.ReadByte());
+            Array.Fill(chunk.SwimZSW, (sbyte)r.ReadByte());
+            Array.Fill(chunk.SwimZW, (sbyte)r.ReadByte());
+            Array.Fill(chunk.SwimZNW, (sbyte)r.ReadByte());
+            return chunk;
+        }
+
+        var hasStrata = r.ReadByte() != 0;
+        var hasSwimLayer = r.ReadByte() != 0;
 
         r.Read(chunk.WalkMask);
         r.Read(chunk.WetMask);
