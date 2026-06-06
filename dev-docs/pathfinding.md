@@ -242,4 +242,12 @@ Validate size **and** read-latency vs the corpus in the benchmark repo after eac
   (both stay Full). **#1 alone: 592.2 MB → 231.9 MB (−61%), actual on-disk.** The residual is
   ~150 MB of non-uniform land Z-blocks (→ #2 predictive-Z) + ~81 MB of swim-layer trailers
   (→ #2/#3). Confirms build order **#1 → #2 → #3**, with #1 the dominant, lowest-risk,
-  no-algorithm-change win (now shipped as format v5).
+  no-algorithm-change win (shipped as format v5).
+- *Calibrated v6 (`BakeMap`-measured, full Trammel, `MaxResidentChunks` raised above 114,688):*
+  **#2 predictive-Z: 231.9 MB → 124.7 MB (−46%, −107 MB; −78% vs the original 565 MB).** Of the
+  42,775 Full chunks (71,913 are Uniform), **walk directional-Z arrays elide 47.7%** and **swim
+  arrays elide 87.6%** (per-array, not per-cell — one slope cell keeps a 256-byte array, which is
+  why the per-array rate trails the 95.2% per-cell zero-residual). Remaining v6 bytes are dominated
+  by present walk-residual blocks (~46 MB, mostly ±1..3 + zeros → highly compressible), the
+  per-Full-chunk mask/SourceZ base (~33 MB), and absolute swim-layer trailers (~26 MB) — all prime
+  targets for #3 per-chunk compression.
