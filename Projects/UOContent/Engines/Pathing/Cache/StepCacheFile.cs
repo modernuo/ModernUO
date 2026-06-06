@@ -14,11 +14,11 @@ namespace Server.Engines.Pathing.Cache;
 /// only when the cache asks for them. RAM stays bounded by MaxResidentChunks regardless
 /// of file size.
 ///
-/// File layout v5 (little-endian, BufferWriter / BufferReader convention):
+/// File layout v6 (little-endian, BufferWriter / BufferReader convention):
 ///
 ///   Header (48 bytes):
 ///     u32   Magic           = 0x42575300 ('SWB\0')
-///     u32   Version         = current FormatVersion (5)
+///     u32   Version         = current FormatVersion (6)
 ///     u32   MapId
 ///     u64   Fingerprint     XxHash3 over (1) LandTable + ItemTable flags AND (2) the
 ///                           on-disk bytes of mapX.mul / .uop, staidxX.mul, staticsX.mul.
@@ -40,11 +40,16 @@ namespace Server.Engines.Pathing.Cache;
 ///     // Full (Kind == 0) body:
 ///     u8     HasStrata       0 = single-Z chunk (no strata trailer); 1 = strata trailer follows
 ///     u8     HasSwimLayer    0 = no shore cells (no swim trailer); 1 = swim trailer follows
+///     u16    ZArrayMask      bit d set => base directional Z array d is present below as a
+///                            residual[256] block; cleared => array equals its prediction and is
+///                            omitted (synthesized at read). bits 0-7 = WalkZ N..NW (predicted via
+///                            WalkMask), bits 8-15 = SwimZ N..NW (predicted via WetMask).
 ///     byte   WalkMask[256]
 ///     byte   WetMask[256]
 ///     sbyte  SourceZ[256]
-///     sbyte  WalkZN[256]..WalkZNW[256]   (8 arrays in N,NE,E,SE,S,SW,W,NW order)
-///     sbyte  SwimZN[256]..SwimZNW[256]   (8 arrays in same order; baked at WALK source-Z)
+///     // For each d in 0..15 with ZArrayMask bit d set, in N,NE,E,SE,S,SW,W,NW order
+///     // (walk arrays first, then swim):
+///     sbyte  residual_d[256]   reconstruct: Z_d[c] = (mask bit set ? SourceZ[c] : 0) + residual_d[c]
 ///     // Swim layer trailer — only when HasSwimLayer == 1 (chunks containing shore cells):
 ///     sbyte  SwimSourceZ[256]            (NoSwimLayerCell sentinel = sbyte.MinValue)
 ///     byte   SwimMask[256]               (per-cell swim mask baked at SwimSourceZ)
@@ -62,8 +67,10 @@ namespace Server.Engines.Pathing.Cache;
 ///   Index trailer (20 × ChunkCount bytes):
 ///     For each chunk: { u64 chunkKey, u64 fileOffset, u32 recordLength }
 ///
-/// Per-chunk fixed portion: ~5,393 bytes. Strata trailer: 516 + N × ~30 bytes for a
-/// chunk with N multi-Z cells averaging ~2 strata each. LRU bookkeeping
+/// Per-chunk fixed portion (Kind + flags + ZArrayMask + WalkMask + WetMask + SourceZ):
+/// ~783 bytes; each present base Z array adds 256 bytes (0..16 present, so up to ~4 KB).
+/// A fully-flat Full chunk stores no residual blocks. Strata trailer: 516 + N × ~30 bytes
+/// for a chunk with N multi-Z cells averaging ~2 strata each. LRU bookkeeping
 /// (LastTouchedTicks) is intentionally not persisted.
 ///
 /// Files with version &lt; <see cref="MinSupportedVersion"/> are silently rejected
@@ -72,7 +79,7 @@ namespace Server.Engines.Pathing.Cache;
 internal static class StepCacheFile
 {
     public const uint Magic = 0x42575300; // 'SWB\0'
-    public const uint FormatVersion = 5;
+    public const uint FormatVersion = 6;
 
     /// <summary>
     /// Lowest format version this binary can load. Files below this version are treated as
@@ -86,9 +93,12 @@ internal static class StepCacheFile
     /// one-time re-bake of stale v3 files on first boot under the new binary. Bumped to 5 for
     /// uniform-chunk elision: each record now begins with a Kind byte (0 = Full, 2 = Uniform);
     /// a fully-uniform chunk (no strata, no swim layer, all 19 base arrays constant) stores
-    /// one cell's worth of data (~28 bytes) instead of the full record.
+    /// one cell's worth of data (~28 bytes) instead of the full record. Bumped to 6 for
+    /// predictive-Z residuals: each base directional Z array is stored as a masked residual
+    /// against SourceZ (a ZArrayMask u16 flags which arrays are present); arrays matching their
+    /// prediction are omitted and synthesized at read. v5 files are rejected and re-baked once.
     /// </summary>
-    public const uint MinSupportedVersion = 5;
+    public const uint MinSupportedVersion = 6;
 
     // Per-chunk record discriminator (first byte after BuiltMultisVersion). 1 is reserved.
     private const byte KindFull = 0;
@@ -112,6 +122,7 @@ internal static class StepCacheFile
     private const int BytesPerChunkBase =
         sizeof(ushort) + sizeof(ushort) + sizeof(uint)
         + sizeof(byte) + sizeof(byte) + sizeof(byte) // Kind + HasStrata + HasSwimLayer
+        + sizeof(ushort)                             // ZArrayMask
         + StepChunk.CellsPerChunk           // WalkMask
         + StepChunk.CellsPerChunk           // WetMask
         + StepChunk.CellsPerChunk           // SourceZ
@@ -372,6 +383,35 @@ internal static class StepCacheFile
 
     private static ulong PackChunkKey(int chunkX, int chunkY) => ((ulong)(uint)chunkX << 32) | (uint)chunkY;
 
+    /// <summary>
+    /// Predicted directional-Z for one cell/direction: the cell's own SourceZ when the
+    /// direction is walkable/wet (mask bit set), else 0 — matching the baker, which leaves
+    /// non-walkable directional slots at their zero-initialized default
+    /// (StepProbe.ComputeMaskAt clears walkZs/swimZs and writes only on a successful step).
+    /// </summary>
+    internal static sbyte Predict(byte dirMaskByte, int bit, sbyte sourceZ) =>
+        (dirMaskByte >> bit & 1) != 0 ? sourceZ : (sbyte)0;
+
+    /// <summary>
+    /// Residual of an absolute directional-Z against its prediction. Unchecked two's-complement
+    /// so the transform is byte-exact for ALL sbyte inputs (no value-range constraint).
+    /// </summary>
+    internal static sbyte EncodeResidual(sbyte z, sbyte predict) => unchecked((sbyte)(z - predict));
+
+    /// <summary>Inverse of <see cref="EncodeResidual"/>: absolute directional-Z = predict + residual.</summary>
+    internal static sbyte DecodeZ(sbyte predict, sbyte residual) => unchecked((sbyte)(predict + residual));
+
+    /// <summary>
+    /// The 16 base directional-Z arrays in canonical order: walk N..NW (indices 0-7),
+    /// then swim N..NW (8-15). Index d uses WalkMask (d &lt; 8) or WetMask (d &gt;= 8)
+    /// with direction bit (d &amp; 7). Allocates a 16-slot reference array (bake/read time only).
+    /// </summary>
+    private static sbyte[][] GetBaseZArrays(StepChunk c) => new[]
+    {
+        c.WalkZN, c.WalkZNE, c.WalkZE, c.WalkZSE, c.WalkZS, c.WalkZSW, c.WalkZW, c.WalkZNW,
+        c.SwimZN, c.SwimZNE, c.SwimZE, c.SwimZSE, c.SwimZS, c.SwimZSW, c.SwimZW, c.SwimZNW,
+    };
+
     private static void WriteChunk(BufferWriter w, int chunkX, int chunkY, StepChunk chunk)
     {
         w.Write((ushort)chunkX);
@@ -414,27 +454,47 @@ internal static class StepCacheFile
         w.Write((byte)(hasStrata ? 1 : 0));
         w.Write((byte)(hasSwimLayer ? 1 : 0));
 
+        // Predictive-Z: each base directional Z array is stored as a masked residual against
+        // SourceZ. Bit d of ZArrayMask is set only when array d differs from its prediction
+        // somewhere; cleared arrays are omitted and rebuilt from mask+SourceZ at read.
+        var zArrays = GetBaseZArrays(chunk);
+        ushort zArrayMask = 0;
+        for (var d = 0; d < 16; d++)
+        {
+            var z = zArrays[d];
+            var dirMask = d < 8 ? chunk.WalkMask : chunk.WetMask;
+            var bit = d & 7;
+            for (var cell = 0; cell < StepChunk.CellsPerChunk; cell++)
+            {
+                if (z[cell] != Predict(dirMask[cell], bit, chunk.SourceZ[cell]))
+                {
+                    zArrayMask |= (ushort)(1 << d);
+                    break;
+                }
+            }
+        }
+        w.Write(zArrayMask);
+
         w.Write(chunk.WalkMask);
         w.Write(chunk.WetMask);
         WriteSBytes(w, chunk.SourceZ);
 
-        WriteSBytes(w, chunk.WalkZN);
-        WriteSBytes(w, chunk.WalkZNE);
-        WriteSBytes(w, chunk.WalkZE);
-        WriteSBytes(w, chunk.WalkZSE);
-        WriteSBytes(w, chunk.WalkZS);
-        WriteSBytes(w, chunk.WalkZSW);
-        WriteSBytes(w, chunk.WalkZW);
-        WriteSBytes(w, chunk.WalkZNW);
-
-        WriteSBytes(w, chunk.SwimZN);
-        WriteSBytes(w, chunk.SwimZNE);
-        WriteSBytes(w, chunk.SwimZE);
-        WriteSBytes(w, chunk.SwimZSE);
-        WriteSBytes(w, chunk.SwimZS);
-        WriteSBytes(w, chunk.SwimZSW);
-        WriteSBytes(w, chunk.SwimZW);
-        WriteSBytes(w, chunk.SwimZNW);
+        Span<sbyte> residual = stackalloc sbyte[StepChunk.CellsPerChunk];
+        for (var d = 0; d < 16; d++)
+        {
+            if ((zArrayMask >> d & 1) == 0)
+            {
+                continue;
+            }
+            var z = zArrays[d];
+            var dirMask = d < 8 ? chunk.WalkMask : chunk.WetMask;
+            var bit = d & 7;
+            for (var cell = 0; cell < StepChunk.CellsPerChunk; cell++)
+            {
+                residual[cell] = EncodeResidual(z[cell], Predict(dirMask[cell], bit, chunk.SourceZ[cell]));
+            }
+            w.Write(MemoryMarshal.Cast<sbyte, byte>(residual));
+        }
 
         if (hasSwimLayer)
         {
@@ -503,28 +563,37 @@ internal static class StepCacheFile
 
         var hasStrata = r.ReadByte() != 0;
         var hasSwimLayer = r.ReadByte() != 0;
+        var zArrayMask = r.ReadUShort();
 
         r.Read(chunk.WalkMask);
         r.Read(chunk.WetMask);
         ReadSBytes(r, chunk.SourceZ);
 
-        ReadSBytes(r, chunk.WalkZN);
-        ReadSBytes(r, chunk.WalkZNE);
-        ReadSBytes(r, chunk.WalkZE);
-        ReadSBytes(r, chunk.WalkZSE);
-        ReadSBytes(r, chunk.WalkZS);
-        ReadSBytes(r, chunk.WalkZSW);
-        ReadSBytes(r, chunk.WalkZW);
-        ReadSBytes(r, chunk.WalkZNW);
-
-        ReadSBytes(r, chunk.SwimZN);
-        ReadSBytes(r, chunk.SwimZNE);
-        ReadSBytes(r, chunk.SwimZE);
-        ReadSBytes(r, chunk.SwimZSE);
-        ReadSBytes(r, chunk.SwimZS);
-        ReadSBytes(r, chunk.SwimZSW);
-        ReadSBytes(r, chunk.SwimZW);
-        ReadSBytes(r, chunk.SwimZNW);
+        // Predictive-Z reconstruction: present arrays carry residuals (z = predict + residual);
+        // absent arrays are synthesized from mask+SourceZ (z = predict, residual implicitly 0).
+        var zArrays = GetBaseZArrays(chunk);
+        Span<sbyte> residual = stackalloc sbyte[StepChunk.CellsPerChunk];
+        for (var d = 0; d < 16; d++)
+        {
+            var z = zArrays[d];
+            var dirMask = d < 8 ? chunk.WalkMask : chunk.WetMask;
+            var bit = d & 7;
+            if ((zArrayMask >> d & 1) != 0)
+            {
+                r.Read(MemoryMarshal.Cast<sbyte, byte>(residual));
+                for (var cell = 0; cell < StepChunk.CellsPerChunk; cell++)
+                {
+                    z[cell] = DecodeZ(Predict(dirMask[cell], bit, chunk.SourceZ[cell]), residual[cell]);
+                }
+            }
+            else
+            {
+                for (var cell = 0; cell < StepChunk.CellsPerChunk; cell++)
+                {
+                    z[cell] = Predict(dirMask[cell], bit, chunk.SourceZ[cell]);
+                }
+            }
+        }
 
         if (hasSwimLayer)
         {
