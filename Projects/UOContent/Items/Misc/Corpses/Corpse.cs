@@ -86,7 +86,7 @@ public enum CorpseFlag
     OwnerWasAnimatedDead = 0x00000800
 }
 
-[SerializationGenerator(16, false)]
+[SerializationGenerator(17, false)]
 public partial class Corpse : Container, ICarvable
 {
     public static readonly TimeSpan MonsterLootRightSacrifice = TimeSpan.FromMinutes(2.0);
@@ -150,24 +150,61 @@ public partial class Corpse : Container, ICarvable
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private List<Item> _equipItems;
 
-    [CanBeNull]
     [SerializableField(13, setter: "private")]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
-    private VirtualHairInfo _hair;
+    private int _hairItemId;
 
-    [CanBeNull]
     [SerializableField(14, setter: "private")]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
-    private VirtualHairInfo _facialHair;
+    private int _hairHue;
+
+    [SerializableField(15, setter: "private")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private int _facialHairItemId;
+
+    [SerializableField(16, setter: "private")]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private int _facialHairHue;
+
+    private Serial _hairSerial;
+    private Serial _facialHairSerial;
+
+    public Serial HairSerial
+    {
+        get
+        {
+            if (_hairItemId > 0 && _hairSerial == Serial.Zero)
+            {
+                _hairSerial = World.NewVirtual;
+            }
+
+            return _hairSerial;
+        }
+    }
+
+    public Serial FacialHairSerial
+    {
+        get
+        {
+            if (_facialHairItemId > 0 && _facialHairSerial == Serial.Zero)
+            {
+                _facialHairSerial = World.NewVirtual;
+            }
+
+            return _facialHairSerial;
+        }
+    }
 
     // Why was this public?
     // public override bool IsPublicContainer => true;
 
-    public Corpse(Mobile owner, List<Item> equipItems) : this(owner, null, null, equipItems)
+    public Corpse(Mobile owner, List<Item> equipItems) : this(owner, 0, 0, 0, 0, equipItems)
     {
     }
 
-    public Corpse(Mobile owner, VirtualHairInfo hair, VirtualHairInfo facialHair, List<Item> equipItems)
+    public Corpse(
+        Mobile owner, int hairItemId, int hairHue, int facialHairItemId, int facialHairHue, List<Item> equipItems
+    )
         : base(0x2006)
     {
         // To suppress console warnings, stackable must be true
@@ -202,14 +239,16 @@ public partial class Corpse : Container, ICarvable
             SetFlag(CorpseFlag.OwnerWasAnimatedDead, ownerBaseCreature.IsAnimatedDead);
         }
 
-        if (hair?.ItemId > 0)
+        if (hairItemId > 0)
         {
-            _hair = new VirtualHairInfo(hair.ItemId, hair.Hue);
+            _hairItemId = hairItemId;
+            _hairHue = hairHue;
         }
 
-        if (facialHair?.ItemId > 0)
+        if (facialHairItemId > 0)
         {
-            _facialHair = new VirtualHairInfo(facialHair.ItemId, facialHair.Hue);
+            _facialHairItemId = facialHairItemId;
+            _facialHairHue = facialHairHue;
         }
 
         // This corpse does not turn to bones if: the owner is not a player
@@ -279,6 +318,36 @@ public partial class Corpse : Container, ICarvable
         DevourCorpse();
     }
 
+    // Decomposed VirtualHairInfo into discrete int fields (hair/facial hair item id + hue)
+    private void MigrateFrom(V16Content content)
+    {
+        _restoreEquip = content.RestoreEquip;
+        _flags = content.Flags;
+        _timeOfDeath = content.TimeOfDeath;
+        _restoreTable = content.RestoreTable;
+        _decayTimer = new InternalTimer(this, content.DecayTimerDelay);
+        _decayTimer.Start();
+        _looters = content.Looters;
+        _killer = content.Killer;
+        _aggressors = content.Aggressors;
+        _owner = content.Owner;
+        _corpseName = content.CorpseName;
+        _accessLevel = content.AccessLevel;
+        _guild = content.Guild;
+        _equipItems = content.EquipItems;
+        if (content.Hair != null)
+        {
+            _hairItemId = content.Hair.ItemId;
+            _hairHue = content.Hair.Hue;
+        }
+
+        if (content.FacialHair != null)
+        {
+            _facialHairItemId = content.FacialHair.ItemId;
+            _facialHairHue = content.FacialHair.Hue;
+        }
+    }
+
     // Folded Murderer bool field into CorpseFlag.Murderer
     private void MigrateFrom(V15Content content)
     {
@@ -300,8 +369,17 @@ public partial class Corpse : Container, ICarvable
         _accessLevel = content.AccessLevel;
         _guild = content.Guild;
         _equipItems = content.EquipItems;
-        _hair = content.Hair;
-        _facialHair = content.FacialHair;
+        if (content.Hair != null)
+        {
+            _hairItemId = content.Hair.ItemId;
+            _hairHue = content.Hair.Hue;
+        }
+
+        if (content.FacialHair != null)
+        {
+            _facialHairItemId = content.FacialHair.ItemId;
+            _facialHairHue = content.FacialHair.Hue;
+        }
     }
 
     // Replaced int Kills snapshot with bool Murderer snapshot
@@ -325,8 +403,17 @@ public partial class Corpse : Container, ICarvable
         _accessLevel = content.AccessLevel;
         _guild = content.Guild;
         _equipItems = content.EquipItems;
-        _hair = content.Hair;
-        _facialHair = content.FacialHair;
+        if (content.Hair != null)
+        {
+            _hairItemId = content.Hair.ItemId;
+            _hairHue = content.Hair.Hue;
+        }
+
+        if (content.FacialHair != null)
+        {
+            _facialHairItemId = content.FacialHair.ItemId;
+            _facialHairHue = content.FacialHair.Hue;
+        }
     }
 
     // Added corpse hair and corpse facial hair
@@ -633,14 +720,23 @@ public partial class Corpse : Container, ICarvable
 
     public static Container Mobile_CreateCorpseHandler(Mobile owner, List<Item> initialContent, List<Item> equipItems)
     {
-        var hair = owner.HairItemID > 0 ? new VirtualHairInfo(owner.HairItemID, owner.HairHue) : null;
-        var facialHair = owner.FacialHairItemID > 0
-            ? new VirtualHairInfo(owner.FacialHairItemID, owner.FacialHairHue)
-            : null;
-
         var c = owner is MilitiaFighter
-            ? new MilitiaFighterCorpse(owner, hair, facialHair, equipItems)
-            : new Corpse(owner, hair, facialHair, equipItems);
+            ? new MilitiaFighterCorpse(
+                owner,
+                owner.HairItemID,
+                owner.HairHue,
+                owner.FacialHairItemID,
+                owner.FacialHairHue,
+                equipItems
+            )
+            : new Corpse(
+                owner,
+                owner.HairItemID,
+                owner.HairHue,
+                owner.FacialHairItemID,
+                owner.FacialHairHue,
+                equipItems
+            );
 
         owner.Corpse = c;
 

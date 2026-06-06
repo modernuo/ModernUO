@@ -1,6 +1,5 @@
 using System;
 using System.Buffers;
-using ModernUO.Serialization;
 using Server.Network;
 
 namespace Server;
@@ -63,35 +62,4 @@ public static class OutgoingVirtualHairPackets
         writer.Write((byte)0x1D); // Packet ID
         writer.Write(hairSerial);
     }
-}
-
-[SerializationGenerator(0, false)]
-public partial class VirtualHairInfo
-{
-    [SerializableField(0)]
-    [SerializedCommandProperty(AccessLevel.GameMaster)]
-    private int _itemId;
-
-    [SerializableField(1)]
-    [SerializedCommandProperty(AccessLevel.GameMaster)]
-    private int _hue;
-
-    public VirtualHairInfo() : this(0)
-    {
-    }
-
-    public VirtualHairInfo(int itemid, int hue = 0)
-    {
-        _itemId = itemid;
-        _hue = hue;
-        VirtualSerial = World.NewVirtual;
-    }
-
-    [AfterDeserialization]
-    private void AfterDeserialization()
-    {
-        VirtualSerial = World.NewVirtual;
-    }
-
-    public Serial VirtualSerial { get; private set; }
 }

@@ -49,16 +49,16 @@ public static class CorpsePackets
 
         if (beheld.Owner != null)
         {
-            if (beheld.Hair?.ItemId > 0)
+            if (beheld.HairItemId > 0)
             {
                 writer.Write((byte)(Layer.Hair + 1));
-                writer.Write(beheld.Hair.VirtualSerial);
+                writer.Write(beheld.HairSerial);
             }
 
-            if (beheld.FacialHair?.ItemId > 0)
+            if (beheld.FacialHairItemId > 0)
             {
                 writer.Write((byte)(Layer.FacialHair + 1));
-                writer.Write(beheld.FacialHair.VirtualSerial);
+                writer.Write(beheld.FacialHairSerial);
             }
         }
 
@@ -76,16 +76,14 @@ public static class CorpsePackets
         }
 
         var list = beheld.EquipItems;
-        var hair = beheld.Hair;
-        var facialHair = beheld.FacialHair;
 
         var count = list.Count;
-        if (hair != null)
+        if (beheld.HairItemId > 0)
         {
             count++;
         }
 
-        if (facialHair != null)
+        if (beheld.FacialHairItemId > 0)
         {
             count++;
         }
@@ -121,10 +119,10 @@ public static class CorpsePackets
 
         if (beheld.Owner != null)
         {
-            if (hair?.ItemId > 0)
+            if (beheld.HairItemId > 0)
             {
-                writer.Write(hair.VirtualSerial);
-                writer.Write((ushort)hair.ItemId);
+                writer.Write(beheld.HairSerial);
+                writer.Write((ushort)beheld.HairItemId);
                 writer.Write((byte)0); // signed, itemID offset
                 writer.Write((ushort)1);
                 writer.Write(0); // X/Y
@@ -133,15 +131,15 @@ public static class CorpsePackets
                     writer.Write((byte)0); // Grid Location?
                 }
                 writer.Write(beheld.Serial);
-                writer.Write((ushort)hair.Hue);
+                writer.Write((ushort)beheld.HairHue);
 
                 ++written;
             }
 
-            if (facialHair?.ItemId > 0)
+            if (beheld.FacialHairItemId > 0)
             {
-                writer.Write(facialHair.VirtualSerial);
-                writer.Write((ushort)facialHair.ItemId);
+                writer.Write(beheld.FacialHairSerial);
+                writer.Write((ushort)beheld.FacialHairItemId);
                 writer.Write((byte)0); // signed, itemID offset
                 writer.Write((ushort)1);
                 writer.Write(0); // X/Y
@@ -150,7 +148,7 @@ public static class CorpsePackets
                     writer.Write((byte)0); // Grid Location?
                 }
                 writer.Write(beheld.Serial);
-                writer.Write((ushort)facialHair.Hue);
+                writer.Write((ushort)beheld.FacialHairHue);
 
                 ++written;
             }
