@@ -196,6 +196,11 @@ exists to prove this (ratio ≈ 1.0 vs the vendored FastAStar baseline).
   because the cache's `SourceZ` is computed under default-walker rules, so swim creatures fall
   through to the slow path. Baking swim-aware source Z (or a swim stratum) would let them hit
   the cache. Independent of the size-reduction work below.
+- **Vectorize `StepChunk.AllSame` (uniform detection).** `IsUniform()` scans 19 × 256-element
+  arrays per chunk at bake time (`SaveToFile`/`BakeMap`). A SIMD "all elements equal" —
+  `span.AsSpan(1).IndexOfAnyExcept(span[0]) < 0` or `Vector<byte>` — could materially speed a
+  full-facet bake. Bake-time only (not the game loop); measure first, since 256-element arrays
+  are small and the win may be modest.
 
 ### `.swb` size reduction (the ~565 MB → tens of MB roadmap)
 
@@ -226,3 +231,15 @@ whole-file) and bounded RAM (only touched chunks materialize, LRU-capped):
 all-zero Z residuals?) to size the #1/#2 win before writing any format code. Each technique is a
 clean v3 format bump; `MinSupportedVersion` already silently rejects + overwrites older files.
 Validate size **and** read-latency vs the corpus in the benchmark repo after each.
+
+**Measured headroom (Trammel).** Two measurements, both 2026-06-06:
+
+- *Pre-swim audit (v2 spike, indicative):* directional-Z is **95.2% zero-residual for WalkZ**,
+  **38.1% for SwimZ** vs `SourceZ` (→ #2; swim wants its own predictor or leans on #3). The
+  spike's combined size projection double-counted and is superseded by the calibration below.
+- *Calibrated on the real v4/v5 format (`SaveToFile`-measured):* 114,688 chunks; **62.7% fully
+  uniform** (swim-aware → #1 elides these), **8.9% carry a swim layer** and **1.8% strata**
+  (both stay Full). **#1 alone: 592.2 MB → 231.9 MB (−61%), actual on-disk.** The residual is
+  ~150 MB of non-uniform land Z-blocks (→ #2 predictive-Z) + ~81 MB of swim-layer trailers
+  (→ #2/#3). Confirms build order **#1 → #2 → #3**, with #1 the dominant, lowest-risk,
+  no-algorithm-change win (now shipped as format v5).

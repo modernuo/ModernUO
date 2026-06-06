@@ -174,4 +174,29 @@ internal sealed class StepChunk
 
     /// <summary>Serialization hook: returns the raw data array (or null if no strata).</summary>
     internal byte[] GetStrataDataForSerialization() => _strataData;
+
+    /// <summary>
+    /// True when every cell shares one value across WalkMask, WetMask, SourceZ, and all 16
+    /// directional-Z arrays, and the chunk has neither multi-Z strata nor a swim layer. Such a
+    /// chunk serializes to a ~28-byte uniform record (StepCacheFile v5) instead of the full
+    /// record. Chunks with a swim layer (shore cells) are never uniform — their per-cell swim
+    /// data must be preserved via the Full record.
+    /// </summary>
+    internal bool IsUniform()
+    {
+        if (_strataOffsetByCell != null || HasSwimLayer)
+        {
+            return false;
+        }
+        return AllSame(WalkMask) && AllSame(WetMask) && AllSame(SourceZ)
+               && AllSame(WalkZN) && AllSame(WalkZNE) && AllSame(WalkZE) && AllSame(WalkZSE)
+               && AllSame(WalkZS) && AllSame(WalkZSW) && AllSame(WalkZW) && AllSame(WalkZNW)
+               && AllSame(SwimZN) && AllSame(SwimZNE) && AllSame(SwimZE) && AllSame(SwimZSE)
+               && AllSame(SwimZS) && AllSame(SwimZSW) && AllSame(SwimZW) && AllSame(SwimZNW);
+    }
+
+    // "All 256 cells equal" via SIMD-accelerated ContainsAnyExcept (skip cell 0, the reference).
+    private static bool AllSame(byte[] a) => a.Length < 2 || !a.AsSpan(1).ContainsAnyExcept(a[0]);
+
+    private static bool AllSame(sbyte[] a) => a.Length < 2 || !a.AsSpan(1).ContainsAnyExcept(a[0]);
 }
