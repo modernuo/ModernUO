@@ -22,6 +22,21 @@ namespace Server.Mobiles;
 
 public abstract partial class BaseAI
 {
+    // --- Centralized progress-based approach state (see ApproachTarget) ---------------
+    // Consecutive move-eligible ticks a creature may fail to improve its best distance to a
+    // STATIONARY goal before it gives up and idles. A moving goal (an active chase) never
+    // triggers give-up. Must exceed the longest no-improvement stretch of a valid detour
+    // (the Britain Inn detour's is ~13 ticks), with margin; this also bounds the largest
+    // concave detour a creature will navigate before idling on a stationary goal.
+    private const int ApproachGiveUpTicks = 40;
+
+    private Mobile _approachGoal;
+    private Point3D _approachGoalLoc;
+    private double _approachBestDist;
+    private int _approachStallTicks;
+    private bool _approachGaveUp;
+    private Point3D _approachGaveUpGoalLoc;
+
     public static double BadlyHurtMoveDelay(BaseCreature bc)
     {
         var statMin = Core.HS ? bc.Stam : bc.Hits;
@@ -279,6 +294,138 @@ public abstract partial class BaseAI
         }
     }
 
+    /// <summary>
+    /// Centralized "move toward <paramref name="target"/> until within
+    /// <paramref name="range"/>" decision shared by MoveTo and WalkMobileRange. A greedy
+    /// step is taken only when it actually gets the creature closer; a blocked step or an
+    /// auto-turn sidestep that made no progress falls through to a persistent PathFollower
+    /// that routes around the obstacle and is never discarded by a greedy step. A
+    /// best-distance stall counter idles the creature if an in-range goal is genuinely
+    /// unreachable, without ever abandoning a real chase or detour.
+    /// </summary>
+    protected bool ApproachTarget(Mobile target, bool run, int range)
+    {
+        if (Mobile.Deleted || Mobile.DisallowAllMoves || target?.Deleted != false)
+        {
+            return false;
+        }
+
+        if (Mobile.InRange(target, range))
+        {
+            ResetApproach();
+            return true;
+        }
+
+        // Already gave up on this exact (unreachable) goal: idle until it moves.
+        if (_approachGaveUp && _approachGoal == target)
+        {
+            if (target.Location == _approachGaveUpGoalLoc)
+            {
+                return false;
+            }
+
+            ResetApproach(); // target moved — try again fresh
+        }
+
+        // FAST PATH: greedy step toward the target, counted as success ONLY when the move
+        // fully succeeded (not an auto-turn sidestep) and actually got us closer. An
+        // auto-turn sidestep can reduce Euclidean distance while moving in the wrong
+        // direction (e.g., east when the true route requires going south-first around a
+        // concave obstacle); treating it as progress would discard a PathFollower that is
+        // the only way to navigate. A blocked step or a non-Success result falls through to
+        // the planner immediately.
+        if (Path == null && Mobile.InLOS(target))
+        {
+            var distBefore = Mobile.GetDistanceToSqrt(target);
+            var res = DoMoveImpl(Mobile.GetDirectionTo(target, run), true);
+
+            if (res == MoveResult.BadState)
+            {
+                return false; // not allowed to move this tick; not a stall
+            }
+
+            if (res == MoveResult.Success && Mobile.GetDistanceToSqrt(target) < distBefore)
+            {
+                ResetApproach();
+                return Mobile.InRange(target, range);
+            }
+            // else: fall through; let the PathFollower route around the obstacle.
+        }
+
+        // PLANNING PATH: a persistent PathFollower, never discarded by a greedy step.
+        if (Path == null || Path.Goal != target)
+        {
+            Path = new PathFollower(Mobile, target) { Mover = DoMoveImpl };
+        }
+
+        if (Path.Follow(run, range))
+        {
+            ResetApproach();
+            return true;
+        }
+
+        TrackApproachProgress(target);
+        return false;
+    }
+
+    /// <summary>
+    /// Best-distance stuck detection. A creature making real headway keeps lowering its
+    /// closest-ever distance to the goal (a detour's outbound leg pauses that, but it
+    /// resumes once the creature rounds the obstacle). A creature that cannot reach a
+    /// STATIONARY goal never lowers it and, after <see cref="ApproachGiveUpTicks"/> ticks,
+    /// gives up and idles. A MOVING goal (an active chase) resets the baseline every tick,
+    /// so chases never give up even when the gap holds constant.
+    /// </summary>
+    private void TrackApproachProgress(Mobile target)
+    {
+        if (!CanMoveNow(out _))
+        {
+            return; // a not-yet-due move (stun) is not a stall
+        }
+
+        var dist = Mobile.GetDistanceToSqrt(target);
+        var goalLoc = target.Location;
+
+        // New goal, or the goal moved (active chase): reset the stall baseline. Clearing the
+        // give-up flag here prevents a prior goal's give-up state from leaking onto a new one.
+        if (_approachGoal != target || goalLoc != _approachGoalLoc)
+        {
+            _approachGoal = target;
+            _approachGoalLoc = goalLoc;
+            _approachBestDist = dist;
+            _approachStallTicks = 0;
+            _approachGaveUp = false;
+            return;
+        }
+
+        // Stationary goal: getting closer than ever resets the stall.
+        if (dist < _approachBestDist)
+        {
+            _approachBestDist = dist;
+            _approachStallTicks = 0;
+            return;
+        }
+
+        if (++_approachStallTicks >= ApproachGiveUpTicks)
+        {
+            _approachGaveUp = true;
+            _approachGaveUpGoalLoc = goalLoc;
+            Path = null;
+        }
+    }
+
+    /// <summary>Clears all approach state (called on arrival, real greedy progress, or when
+    /// a given-up goal moves).</summary>
+    private void ResetApproach()
+    {
+        Path = null;
+        _approachGoal = null;
+        _approachGoalLoc = Point3D.Zero;
+        _approachBestDist = 0;
+        _approachStallTicks = 0;
+        _approachGaveUp = false;
+    }
+
     public virtual bool MoveTo(Mobile m, bool run, int range)
     {
         if (Mobile.Deleted || Mobile.DisallowAllMoves || m?.Deleted != false)
@@ -293,7 +440,7 @@ public abstract partial class BaseAI
 
         if (Mobile.InRange(m, range))
         {
-            Path = null;
+            ResetApproach();
             return true;
         }
 
@@ -302,23 +449,7 @@ public abstract partial class BaseAI
             return MoveToWithGroup(this, m, shouldRun, range);
         }
 
-        if (Path == null && Mobile.InLOS(m) && DoMove(Mobile.GetDirectionTo(m), true))
-        {
-            return true;
-        }
-
-        if (Path?.Goal != m)
-        {
-            Path = new PathFollower(Mobile, m) { Mover = DoMoveImpl };
-        }
-
-        if (Path.Follow(shouldRun, 1))
-        {
-            Path = null;
-            return true;
-        }
-
-        return false;
+        return ApproachTarget(m, shouldRun, range);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -358,18 +489,9 @@ public abstract partial class BaseAI
             }
         }
 
-        if (Path?.Goal != target)
-        {
-            Path = new PathFollower(Mobile, target) { Mover = DoMoveImpl };
-        }
-
-        if (Path.Follow(shouldRun, 1))
-        {
-            Path = null;
-            return true;
-        }
-
-        return false;
+        // Tactical sidesteps exhausted — route around the obstacle via the centralized
+        // approach primitive (persistent PathFollower, no oscillation).
+        return ApproachTarget(target, shouldRun, range);
     }
 
     public virtual bool WalkMobileRange(Mobile m, int iSteps, bool run, int iWantDistMin, int iWantDistMax)
@@ -405,36 +527,17 @@ public abstract partial class BaseAI
     {
         var shouldRun = run && iCurrDist > 5;
 
-        var needCloser = iCurrDist > iWantDistMax;
-
-        if (needCloser && m != null && Path?.Goal == m)
+        if (iCurrDist > iWantDistMax)
         {
-            if (Path.Follow(shouldRun, 1))
-            {
-                Path = null;
-                return true;
-            }
+            // Too far: approach via the centralized progress-based primitive.
+            return ApproachTarget(m, shouldRun, iWantDistMax);
         }
-        else
+
+        // Too close: back away. Retreat keeps the simple greedy behavior (out of scope).
+        if (DoMove(m.GetDirectionTo(Mobile, shouldRun), true))
         {
-            var dirTo = needCloser ? Mobile.GetDirectionTo(m, shouldRun) : m.GetDirectionTo(Mobile, shouldRun);
-
-            if (DoMove(dirTo, true))
-            {
-                Path = null;
-                return true;
-            }
-
-            if (needCloser)
-            {
-                Path = new PathFollower(Mobile, m) { Mover = DoMoveImpl };
-
-                if (Path.Follow(shouldRun, 1))
-                {
-                    Path = null;
-                    return true;
-                }
-            }
+            Path = null;
+            return true;
         }
 
         return false;

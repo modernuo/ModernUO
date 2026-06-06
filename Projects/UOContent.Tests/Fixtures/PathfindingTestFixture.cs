@@ -35,6 +35,7 @@ public class PathfindingTestFixture : ICollectionFixture<PathfindingTestFixture>
         Timer.Init(0);
         RaceDefinitions.Configure();
         MovementImpl.Configure();
+        PathFollower.Configure();
         World.Load();
         World.ExitSerializationThreads();
         DecayScheduler.Configure();
