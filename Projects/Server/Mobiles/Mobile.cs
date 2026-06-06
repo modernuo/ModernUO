@@ -2478,10 +2478,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         m_Map?.OnLeave(this);
         m_Map = null;
 
-        _hairItemId = 0;
-        _hairSerial = Serial.Zero;
-        _facialHairItemId = 0;
-        _facialHairSerial = Serial.Zero;
         m_MountItem = null;
 
         World.RemoveEntity(this);
