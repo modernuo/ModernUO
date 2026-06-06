@@ -207,7 +207,7 @@ public partial class HouseRaffleStone : Item
 
     public override bool DisplayWeight => false;
 
-    public static void CheckEnd_OnTick()
+    private static void CheckEnd_OnTick()
     {
         foreach (var stone in _allStones)
         {
@@ -217,12 +217,11 @@ public partial class HouseRaffleStone : Item
 
     private static void AddRaffleStone(HouseRaffleStone stone)
     {
-        _allStones ??= new HashSet<HouseRaffleStone>();
-        _allStones.Add(stone);
+        _allStones ??= [];
 
-        if (_allStones.Count == 1)
+        if (_allStones.Add(stone) && _allStones.Count == 1)
         {
-            Timer.DelayCall(TimeSpan.FromMinutes(1.0), TimeSpan.FromMinutes(1.0), CheckEnd_OnTick);
+            _allStonesTimer = Timer.DelayCall(TimeSpan.FromMinutes(1.0), TimeSpan.FromMinutes(1.0), CheckEnd_OnTick);
         }
     }
 

@@ -465,16 +465,24 @@ public class BitmapAStarAlgorithm : PathAlgorithm
             }
         }
 
-        foreach (var mob in map.GetMobilesAt(x, y))
-        {
-            if (mob == m)
-            {
-                continue;
-            }
+        // A* must be able to plan a path to the goal cell even when the target mobile is
+        // standing on it (the follower stops within range short of it). Skip the mob-block
+        // check at the goal cell ONLY; everywhere else dynamic mobiles still block.
+        var skipMobCheck = x == MoveImpl.Goal.X && y == MoveImpl.Goal.Y;
 
-            if (mob.Z + MobileHeight > z && z + MobileHeight > mob.Z && !CanMoveOver(m, mob))
+        if (!skipMobCheck)
+        {
+            foreach (var mob in map.GetMobilesAt(x, y))
             {
-                return true;
+                if (mob == m)
+                {
+                    continue;
+                }
+
+                if (mob.Z + MobileHeight > z && z + MobileHeight > mob.Z && !CanMoveOver(m, mob))
+                {
+                    return true;
+                }
             }
         }
 
