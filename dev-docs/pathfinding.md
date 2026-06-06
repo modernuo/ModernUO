@@ -196,12 +196,6 @@ exists to prove this (ratio ≈ 1.0 vs the vendored FastAStar baseline).
   because the cache's `SourceZ` is computed under default-walker rules, so swim creatures fall
   through to the slow path. Baking swim-aware source Z (or a swim stratum) would let them hit
   the cache. Independent of the size-reduction work below.
-- **Vectorize `StepChunk.AllSame` (uniform detection).** `IsUniform()` scans 19 × 256-element
-  arrays per chunk at bake time (`SaveToFile`/`BakeMap`). A SIMD "all elements equal" —
-  `span.AsSpan(1).IndexOfAnyExcept(span[0]) < 0` or `Vector<byte>` — could materially speed a
-  full-facet bake. Bake-time only (not the game loop); measure first, since 256-element arrays
-  are small and the win may be modest.
-
 ### `.swb` size reduction (the ~565 MB → tens of MB roadmap)
 
 The v2 format stores every 16×16 chunk as a flat ~5,393-byte record, uncompressed, with no
