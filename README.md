@@ -120,3 +120,13 @@ Thank you for supporting us! You can find out how by visiting the [sponsors](./S
 <br/><br/>
 <p align=center>Development Tools & Plugins provided with &hearts; by<br/><br/><a href="https://www.jetbrains.com/?from=ModernUO"><img src="https://cdn.muo.gg/gh/jetbrains.svg" height="64px" alt="JetBrains" title="JetBrains" /></a><br/>
 <a href="https://material-theme.com/"><img src="https://github.com/AtomMaterialUI/material-theme-issues/raw/master/logo.svg" width="64px" alt="Material Theme" title="Material Theme"></a></p>
+
+## Code Signing Policy
+
+Free code signing provided by [SignPath.io](https://about.signpath.io), certificate by [SignPath Foundation](https://signpath.org).
+
+This program will not transfer any information to other networked systems unless specifically requested by the user or the person installing or operating it
+
+### Teams & Roles
+Approvers & Committers: [Development Team](https://github.com/orgs/modernuo/teams/development-team)
+
