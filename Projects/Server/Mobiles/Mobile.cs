@@ -273,7 +273,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     private TimerExecutionToken _expireCombatantTimerToken;
     private TimerExecutionToken _expireCriminalTimerToken;
     private VirtualHairInfo _facialHair;
-    public VirtualHairInfo FacialHair => _facialHair ??= new VirtualHairInfo(FacialHairItemID, FacialHairHue);
+    public VirtualHairInfo FacialHair => _facialHair;
 
     private int m_Fame, m_Karma;
     private bool m_Female, m_Warmode, m_Hidden, m_Blessed, m_Flying;
@@ -284,7 +284,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     private string m_GuildTitle;
 
     private VirtualHairInfo _hair;
-    public VirtualHairInfo Hair => _hair ??= new VirtualHairInfo(HairItemID, HairHue);
+    public VirtualHairInfo Hair => _hair;
 
     private int m_Hits, m_Stam, m_Mana;
 
@@ -2734,14 +2734,14 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             sendFacialHair = true;
         }
 
-        var hairSerial = Hair.VirtualSerial;
+        var hairSerial = _hair?.VirtualSerial ?? Serial.Zero;
         var hairLength = removeHair
             ? OutgoingVirtualHairPackets.RemovePacketLength
             : OutgoingVirtualHairPackets.EquipUpdatePacketLength;
 
         var hairPacket = stackalloc byte[hairLength].InitializePacket();
 
-        var facialHairSerial = FacialHair.VirtualSerial;
+        var facialHairSerial = _facialHair?.VirtualSerial ?? Serial.Zero;
         var facialHairLength = removeFacialHair
             ? OutgoingVirtualHairPackets.RemovePacketLength
             : OutgoingVirtualHairPackets.EquipUpdatePacketLength;

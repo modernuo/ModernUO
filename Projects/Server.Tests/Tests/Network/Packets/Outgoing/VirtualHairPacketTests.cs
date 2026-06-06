@@ -33,7 +33,7 @@ public class VirtualHairPacketTests
         var expected = new RemoveHair(m).Compile();
 
         using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendRemoveHairPacket((uint) m.Hair.VirtualSerial);
+        ns.SendRemoveHairPacket((uint)(m.Hair?.VirtualSerial ?? Serial.Zero));
 
         var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
