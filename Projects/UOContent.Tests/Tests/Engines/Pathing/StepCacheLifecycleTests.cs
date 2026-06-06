@@ -26,38 +26,167 @@ public class StepCacheLifecycleTests
     }
 
     [Fact]
-    public void TryGetMask_FirstQuery_BuildsChunkAndReturnsBakerOutput()
+    public void TryGetMask_FirstTouchOnUnbuiltChunk_DefersBuildAndReturnsFallthrough()
     {
         var cache = StepCache.Instance;
         cache.Clear();
+        cache.MissPromotionThreshold = 2;
 
         var map = Map.Maps[1];
         Assert.NotNull(map);
 
-        // Pinned cell (1500, 1600, z=10): mask=0xC1
+        // First touch on a chunk that has no resident copy and no lazy reader behind it
+        // must NOT eagerly build. Caller (BitmapAStarAlgorithm) interprets IsHit=false as
+        // "use slow path" — pets/hireables passing briefly through a chunk avoid the
+        // ~700µs BuildChunk cost they'd never amortize.
         var lookup = cache.TryGetMask(map, 1500, 1600, sourceZ: 10);
 
-        Assert.True(lookup.IsHit);
-        Assert.Equal(CacheHitKind.Miss_NotBuilt, lookup.HitKind);
-        Assert.Equal((byte)0xC1, lookup.WalkMask);
-        Assert.Equal((sbyte)10, lookup.WalkZ_N);
-        Assert.Equal((sbyte)10, lookup.WalkZ_W);
-        Assert.Equal((sbyte)10, lookup.WalkZ_NW);
+        Assert.False(lookup.IsHit);
+        Assert.Equal(CacheHitKind.Fallthrough_NotBuilt, lookup.HitKind);
+
+        var stats = cache.GetStats();
+        Assert.Equal(0, stats.ResidentChunks);
+        Assert.Equal(0L, stats.BuildsTotal);
+        Assert.Equal(0L, stats.MissesNotBuilt);
+        Assert.Equal(1L, stats.FallthroughNotBuilt);
+    }
+
+    [Fact]
+    public void TryGetMask_SecondTouchWithinWindow_PromotesAndBuilds()
+    {
+        var cache = StepCache.Instance;
+        cache.Clear();
+        cache.MissPromotionThreshold = 2;
+
+        var map = Map.Maps[1];
+
+        // First touch defers; second touch inside the promotion window builds + serves.
+        // Pinned cell (1500, 1600, z=10): mask=0xC1
+        var first = cache.TryGetMask(map, 1500, 1600, sourceZ: 10);
+        Assert.False(first.IsHit);
+
+        var second = cache.TryGetMask(map, 1500, 1600, sourceZ: 10);
+        Assert.True(second.IsHit);
+        Assert.Equal(CacheHitKind.Miss_NotBuilt, second.HitKind);
+        Assert.Equal((byte)0xC1, second.WalkMask);
+        Assert.Equal((sbyte)10, second.WalkZ_N);
 
         var stats = cache.GetStats();
         Assert.Equal(1, stats.ResidentChunks);
         Assert.Equal(1L, stats.MissesNotBuilt);
         Assert.Equal(1L, stats.BuildsTotal);
+        Assert.Equal(1L, stats.FallthroughNotBuilt);
 
-        // Second query of same cell → Hit
-        var lookup2 = cache.TryGetMask(map, 1500, 1600, sourceZ: 10);
-        Assert.True(lookup2.IsHit);
-        Assert.Equal(CacheHitKind.Hit, lookup2.HitKind);
-        Assert.Equal((byte)0xC1, lookup2.WalkMask);
+        // Third query of same cell → Hit (chunk now resident).
+        var third = cache.TryGetMask(map, 1500, 1600, sourceZ: 10);
+        Assert.True(third.IsHit);
+        Assert.Equal(CacheHitKind.Hit, third.HitKind);
+        Assert.Equal((byte)0xC1, third.WalkMask);
+    }
 
-        var stats2 = cache.GetStats();
-        Assert.Equal(1, stats2.ResidentChunks);
-        Assert.Equal(1L, stats2.Hits);
+    [Fact]
+    public void TryGetMask_SecondTouchAfterWindow_RestartsCounterAndDefers()
+    {
+        var cache = StepCache.Instance;
+        cache.Clear();
+        cache.MissPromotionThreshold = 2;
+        cache.MissPromotionWindowMs = 1; // 1ms window for testability
+
+        var map = Map.Maps[1];
+
+        var first = cache.TryGetMask(map, 1500, 1600, sourceZ: 10);
+        Assert.False(first.IsHit);
+
+        System.Threading.Thread.Sleep(20); // exceed the window
+
+        // Second touch lands outside the window: tracker resets the count to 1, returns
+        // Fallthrough_NotBuilt again — chunks the player just glanced through don't get
+        // promoted just because they get re-touched minutes later by an unrelated NPC.
+        var second = cache.TryGetMask(map, 1500, 1600, sourceZ: 10);
+        Assert.False(second.IsHit);
+        Assert.Equal(CacheHitKind.Fallthrough_NotBuilt, second.HitKind);
+        Assert.Equal(0, cache.GetStats().ResidentChunks);
+        Assert.Equal(2L, cache.GetStats().FallthroughNotBuilt);
+    }
+
+    [Fact]
+    public void TryGetMask_MultipleCallsInSameFindGeneration_StayInFallthrough()
+    {
+        var cache = StepCache.Instance;
+        cache.Clear();
+        cache.MissPromotionThreshold = 2;
+
+        var map = Map.Maps[1];
+
+        // Open a pathfind. Multiple TryGetMask calls inside this Find target the same chunk
+        // (different cells). The promotion gate counts distinct Finds, not raw probes — these
+        // calls must NOT increment the per-chunk counter, even though there are many of them.
+        // Without this, A* expansion would trip the gate on the second cell expansion in any
+        // visited chunk, defeating the whole point of deferred promotion.
+        cache.BeginFindGeneration();
+        for (var i = 0; i < 8; i++)
+        {
+            // All cells are inside chunk (1500>>4, 1600>>4) = (93, 100).
+            var lookup = cache.TryGetMask(map, 1500 + i, 1600, sourceZ: 10);
+            Assert.False(lookup.IsHit);
+            Assert.Equal(CacheHitKind.Fallthrough_NotBuilt, lookup.HitKind);
+        }
+
+        Assert.Equal(0, cache.GetStats().ResidentChunks);
+        Assert.Equal(0L, cache.GetStats().BuildsTotal);
+        Assert.Equal(8L, cache.GetStats().FallthroughNotBuilt);
+
+        // Begin a NEW Find — this is the second distinct touch under the per-Find gate.
+        // The chunk now crosses the threshold and promotes.
+        cache.BeginFindGeneration();
+        var promoted = cache.TryGetMask(map, 1500, 1600, sourceZ: 10);
+        Assert.True(promoted.IsHit);
+        Assert.Equal(CacheHitKind.Miss_NotBuilt, promoted.HitKind);
+        Assert.Equal(1, cache.GetStats().ResidentChunks);
+        Assert.Equal(1L, cache.GetStats().BuildsTotal);
+    }
+
+    [Fact]
+    public void TryGetMask_TwoFindGenerationsAcrossWindow_RestartsCounter()
+    {
+        var cache = StepCache.Instance;
+        cache.Clear();
+        cache.MissPromotionThreshold = 2;
+        cache.MissPromotionWindowMs = 1; // 1ms window for testability
+
+        var map = Map.Maps[1];
+
+        cache.BeginFindGeneration();
+        Assert.False(cache.TryGetMask(map, 1500, 1600, sourceZ: 10).IsHit);
+
+        System.Threading.Thread.Sleep(20); // exceed window
+
+        // Second Find lands outside the window. Even though it's a distinct generation,
+        // the elapsed-time check resets the counter to 1, so no promotion.
+        cache.BeginFindGeneration();
+        var second = cache.TryGetMask(map, 1500, 1600, sourceZ: 10);
+        Assert.False(second.IsHit);
+        Assert.Equal(CacheHitKind.Fallthrough_NotBuilt, second.HitKind);
+        Assert.Equal(0, cache.GetStats().ResidentChunks);
+    }
+
+    [Fact]
+    public void TryGetMask_DistinctChunks_TrackedIndependently()
+    {
+        var cache = StepCache.Instance;
+        cache.Clear();
+        cache.MissPromotionThreshold = 2;
+
+        var map = Map.Maps[1];
+
+        // Two different chunks, one touch each — both must defer (each has its own counter).
+        var chunkA = cache.TryGetMask(map, 1500, 1600, sourceZ: 10);
+        var chunkB = cache.TryGetMask(map, 1600, 1700, sourceZ: 10); // different chunk
+
+        Assert.False(chunkA.IsHit);
+        Assert.False(chunkB.IsHit);
+        Assert.Equal(0, cache.GetStats().ResidentChunks);
+        Assert.Equal(2L, cache.GetStats().FallthroughNotBuilt);
     }
 
     [Fact]
@@ -80,11 +209,13 @@ public class StepCacheLifecycleTests
     {
         var cache = StepCache.Instance;
         cache.Clear();
+        cache.MissPromotionThreshold = 2;
 
         var map = Map.Maps[1];
         var sector = map.GetRealSector(1500 >> 4, 1600 >> 4);
 
-        // First query: builds chunk, snapshots current MultisVersion.
+        // First touch defers (Fallthrough_NotBuilt); second touch promotes and builds.
+        Assert.Equal(CacheHitKind.Fallthrough_NotBuilt, cache.TryGetMask(map, 1500, 1600, 10).HitKind);
         Assert.Equal(CacheHitKind.Miss_NotBuilt, cache.TryGetMask(map, 1500, 1600, 10).HitKind);
 
         // Bump _multisVersion via reflection.
@@ -96,18 +227,18 @@ public class StepCacheLifecycleTests
         var current = (int)versionField.GetValue(sector);
         versionField.SetValue(sector, current + 1);
 
-        // Second query: detects version mismatch, rebuilds.
+        // Third query: detects version mismatch, rebuilds.
         Assert.Equal(CacheHitKind.Miss_DirtyRebuild, cache.TryGetMask(map, 1500, 1600, 10).HitKind);
 
         var stats = cache.GetStats();
         Assert.Equal(1L, stats.MissesDirtyRebuild);
         Assert.Equal(2L, stats.BuildsTotal);
 
-        // Mutual-exclusivity invariant: every successful TryGetMask hits exactly one
-        // outcome counter. Two queries above both returned true (the test cell is not
-        // multi-Z and not off-map), so the three outcome counters must sum to 2 and the
-        // fallthrough counters must be zero.
+        // Mutual-exclusivity invariant: hits + miss-builds + dirty-rebuilds = served-result count.
+        // Three calls returned an answer; two were "served from a build" (Miss_NotBuilt + Miss_DirtyRebuild),
+        // and the first was a Fallthrough_NotBuilt (no build, slow-path signal).
         Assert.Equal(2L, stats.MissesNotBuilt + stats.MissesDirtyRebuild + stats.Hits);
+        Assert.Equal(1L, stats.FallthroughNotBuilt);
         Assert.Equal(0L, stats.FallthroughMultiZ);
         Assert.Equal(0L, stats.FallthroughOffMap);
     }
@@ -117,6 +248,7 @@ public class StepCacheLifecycleTests
     {
         var cache = StepCache.Instance;
         cache.Clear();
+        cache.MissPromotionThreshold = 1; // eager build for prime-then-inspect tests
 
         var map = Map.Maps[1];
 
@@ -165,6 +297,7 @@ public class StepCacheLifecycleTests
     {
         var cache = StepCache.Instance;
         cache.Clear();
+        cache.MissPromotionThreshold = 1;
 
         var map = Map.Maps[1];
         cache.TryGetMask(map, 1500, 1600, 10);
@@ -206,10 +339,121 @@ public class StepCacheLifecycleTests
     }
 
     [Fact]
+    public void SwimLayer_NotInjected_StaysFallthroughOnSourceZMismatch()
+    {
+        // Sanity check: a chunk WITHOUT a swim layer falls through on source-Z mismatch
+        // exactly like before. Validates we didn't accidentally serve garbage when the
+        // chunk has no shore cells.
+        var cache = StepCache.Instance;
+        cache.Clear();
+        cache.MissPromotionThreshold = 1;
+
+        var map = Map.Maps[1];
+
+        cache.TryGetMask(map, 1500, 1600, sourceZ: 10); // build chunk
+        var beforeMismatch = cache.GetStats().FallthroughSourceZMismatch;
+
+        // Same cell but query Z far from baked Z → source-Z guard fires.
+        var lookup = cache.TryGetMask(map, 1500, 1600, sourceZ: 100);
+        Assert.False(lookup.IsHit);
+        Assert.Equal(CacheHitKind.Fallthrough_SourceZMismatch, lookup.HitKind);
+        Assert.Equal(beforeMismatch + 1L, cache.GetStats().FallthroughSourceZMismatch);
+    }
+
+    [Fact]
+    public void SwimLayer_InjectedMatchingZ_ReturnsHitFromSwimLayer()
+    {
+        // Inject a synthetic swim layer onto a resident chunk and verify a query at the
+        // swim source Z routes through the swim-layer fallback, returning the swim mask.
+        var cache = StepCache.Instance;
+        cache.Clear();
+        cache.MissPromotionThreshold = 1;
+
+        var map = Map.Maps[1];
+        cache.TryGetMask(map, 1500, 1600, sourceZ: 10);
+
+        var chunksField = typeof(StepCache).GetField(
+            "_chunks",
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance
+        );
+        var chunks = (System.Collections.Generic.Dictionary<long, StepChunk>)chunksField!.GetValue(cache)!;
+        var key = StepCache.EncodeKey(map.MapID, 1500 >> 4, 1600 >> 4);
+        var chunk = chunks[key];
+
+        chunk.AllocateSwimLayer();
+        var cellIndex = ((1600 - ((1600 >> 4) << 4)) << 4) | (1500 - ((1500 >> 4) << 4));
+        chunk.SwimSourceZ[cellIndex]   = -5;
+        chunk.SwimMask[cellIndex]      = 0b0000_0011;
+        chunk.SwimZN_Layer[cellIndex]  = -5;
+        chunk.SwimZNE_Layer[cellIndex] = -5;
+        // Other directions stay 0 — Mask bits 0 and 1 cover N and NE.
+
+        // Query at the chunk's primary SourceZ — primary path serves walk-layer data,
+        // swim layer not consulted.
+        var bakedSourceZ = chunk.SourceZ[cellIndex];
+        var walkLookup = cache.TryGetMask(map, 1500, 1600, bakedSourceZ);
+        Assert.True(walkLookup.IsHit);
+        Assert.Equal(CacheHitKind.Hit, walkLookup.HitKind);
+        // Walk-layer query produces walk-layer walkMask (whatever the bake found), NOT
+        // the synthetic swim mask we injected.
+
+        // Query at the swim source Z — primary source-Z guard fails (|−5 − bakedZ| > 2
+        // assuming baked Z is land surface), swim-layer fallback serves with our mask.
+        if (System.Math.Abs(-5 - bakedSourceZ) <= 2)
+        {
+            // Bake landed near water Z — adjust the test to a clearer swim Z.
+            chunk.SwimSourceZ[cellIndex] = (sbyte)(bakedSourceZ - 20);
+        }
+        var swimLookup = cache.TryGetMask(map, 1500, 1600, chunk.SwimSourceZ[cellIndex]);
+        Assert.True(swimLookup.IsHit);
+        Assert.Equal(CacheHitKind.Hit, swimLookup.HitKind);
+        Assert.Equal((byte)0, swimLookup.WalkMask); // walk = 0 at swim Z
+        Assert.Equal(chunk.SwimMask[cellIndex], swimLookup.WetMask);
+        Assert.Equal(chunk.SwimZN_Layer[cellIndex], swimLookup.SwimZ_N);
+        Assert.Equal(chunk.SwimZNE_Layer[cellIndex], swimLookup.SwimZ_NE);
+    }
+
+    [Fact]
+    public void SwimLayer_InjectedButCellHasNoSentinel_FallsThrough()
+    {
+        // Chunk has the swim layer (some other cell is shore), but THIS cell is inland
+        // (SwimSourceZ = NoSwimLayerCell). Query at non-matching walk Z must fall through,
+        // not erroneously match -128 against the query.
+        var cache = StepCache.Instance;
+        cache.Clear();
+        cache.MissPromotionThreshold = 1;
+
+        var map = Map.Maps[1];
+        cache.TryGetMask(map, 1500, 1600, sourceZ: 10);
+
+        var chunksField = typeof(StepCache).GetField(
+            "_chunks",
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance
+        );
+        var chunks = (System.Collections.Generic.Dictionary<long, StepChunk>)chunksField!.GetValue(cache)!;
+        var key = StepCache.EncodeKey(map.MapID, 1500 >> 4, 1600 >> 4);
+        var chunk = chunks[key];
+
+        // Allocate layer but leave THIS cell at the sentinel.
+        chunk.AllocateSwimLayer();
+        var cellIndex = ((1600 - ((1600 >> 4) << 4)) << 4) | (1500 - ((1500 >> 4) << 4));
+        Assert.Equal(StepChunk.NoSwimLayerCell, chunk.SwimSourceZ[cellIndex]);
+
+        var beforeMismatch = cache.GetStats().FallthroughSourceZMismatch;
+        // Query at -128 (the sentinel value) — must NOT match. The guard short-circuits
+        // on the sentinel before computing |sourceZ - SwimSourceZ|.
+        var lookup = cache.TryGetMask(map, 1500, 1600, sbyte.MinValue);
+        Assert.False(lookup.IsHit);
+        Assert.Equal(CacheHitKind.Fallthrough_SourceZMismatch, lookup.HitKind);
+        Assert.Equal(beforeMismatch + 1L, cache.GetStats().FallthroughSourceZMismatch);
+    }
+
+    [Fact]
     public void Tier4Strata_NonMatchingZ_FallsThrough()
     {
         var cache = StepCache.Instance;
         cache.Clear();
+        cache.MissPromotionThreshold = 1;
 
         var map = Map.Maps[1];
         cache.TryGetMask(map, 1500, 1600, 10);
@@ -246,6 +490,7 @@ public class StepCacheLifecycleTests
         var cache = StepCache.Instance;
         cache.Clear();
         cache.MaxResidentChunks = 4;
+        cache.MissPromotionThreshold = 1;
 
         try
         {

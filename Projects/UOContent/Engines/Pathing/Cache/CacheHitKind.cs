@@ -3,7 +3,7 @@ namespace Server.Engines.Pathing.Cache;
 /// <summary>
 /// Outcome categories for StepCache.TryGetMask. Used for telemetry and to drive
 /// the slow-path fallthrough decision in callers. Ordering is load-bearing:
-/// values 0-2 are hits, values 3-5 are fallthroughs (see StepMask.IsHit).
+/// values 0-2 are hits, values 3-6 are fallthroughs (see StepMask.IsHit).
 /// </summary>
 public enum CacheHitKind : byte
 {
@@ -13,4 +13,5 @@ public enum CacheHitKind : byte
     Fallthrough_MultiZ = 3,          // cell has multiple walkable surfaces; caller must use slow path
     Fallthrough_OffMap = 4,          // out of bounds
     Fallthrough_SourceZMismatch = 5, // |loc.Z - BakedSourceZ| > StepHeight; cache answer would diverge
+    Fallthrough_NotBuilt = 6,        // first-touch miss without lazy file hit; build deferred until second touch
 }

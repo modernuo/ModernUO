@@ -14,11 +14,11 @@ namespace Server.Engines.Pathing.Cache;
 /// only when the cache asks for them. RAM stays bounded by MaxResidentChunks regardless
 /// of file size.
 ///
-/// File layout v2 (little-endian, BufferWriter / BufferReader convention):
+/// File layout v3 (little-endian, BufferWriter / BufferReader convention):
 ///
 ///   Header (48 bytes):
 ///     u32   Magic           = 0x42575300 ('SWB\0')
-///     u32   Version         = current FormatVersion (2)
+///     u32   Version         = current FormatVersion (3)
 ///     u32   MapId
 ///     u64   Fingerprint     XxHash3 over (1) LandTable + ItemTable flags AND (2) the
 ///                           on-disk bytes of mapX.mul / .uop, staidxX.mul, staticsX.mul.
@@ -35,11 +35,16 @@ namespace Server.Engines.Pathing.Cache;
 ///     u16    ChunkY
 ///     u32    BuiltMultisVersion
 ///     u8     HasStrata       0 = single-Z chunk (no strata trailer); 1 = strata trailer follows
+///     u8     HasSwimLayer    0 = no shore cells (no swim trailer); 1 = swim trailer follows
 ///     byte   WalkMask[256]
 ///     byte   WetMask[256]
 ///     sbyte  SourceZ[256]
 ///     sbyte  WalkZN[256]..WalkZNW[256]   (8 arrays in N,NE,E,SE,S,SW,W,NW order)
-///     sbyte  SwimZN[256]..SwimZNW[256]   (8 arrays in same order)
+///     sbyte  SwimZN[256]..SwimZNW[256]   (8 arrays in same order; baked at WALK source-Z)
+///     // Swim layer trailer — only when HasSwimLayer == 1 (chunks containing shore cells):
+///     sbyte  SwimSourceZ[256]            (NoSwimLayerCell sentinel = sbyte.MinValue)
+///     byte   SwimMask[256]               (per-cell swim mask baked at SwimSourceZ)
+///     sbyte  SwimZN_Layer[256]..SwimZNW_Layer[256]  (8 arrays, dest-Z at swim perspective)
 ///     // Strata trailer — only when HasStrata == 1:
 ///     u16    StrataOffsetByCell[256]    (NoStrata sentinel = 0xFFFF)
 ///     u32    StrataDataLength
@@ -63,15 +68,20 @@ namespace Server.Engines.Pathing.Cache;
 internal static class StepCacheFile
 {
     public const uint Magic = 0x42575300; // 'SWB\0'
-    public const uint FormatVersion = 2;
+    public const uint FormatVersion = 4;
 
     /// <summary>
     /// Lowest format version this binary can load. Files below this version are treated as
     /// missing (silently rejected) — a subsequent SaveToFile / BakeMap overwrites them with
-    /// the current FormatVersion. Bumped to 2 when Tier 4 multi-Z strata landed; v1 had no
-    /// strata data and is incompatible with the strata-aware lookup path.
+    /// the current FormatVersion. Bumped to 3 when the swim layer landed (v2 had no swim
+    /// layer). Bumped to 4 when the baker switched to clearance-aware standable-surface
+    /// strata: v3 bakes anchored every cell at the land average and so missed walkable
+    /// static-over-land surfaces (sewer/dungeon walkways, bridges, upper building floors),
+    /// producing ~98% source-Z fallthroughs on those routes. The on-disk layout is
+    /// unchanged; only the strata population differs, so the bump exists purely to force a
+    /// one-time re-bake of stale v3 files on first boot under the new binary.
     /// </summary>
-    public const uint MinSupportedVersion = 2;
+    public const uint MinSupportedVersion = 4;
 
     private const int HeaderSize =
         sizeof(uint)    // Magic
@@ -87,14 +97,18 @@ internal static class StepCacheFile
     // single bulk read per chunk without consulting the next offset.
     private const int IndexEntryBytes = sizeof(ulong) + sizeof(ulong) + sizeof(uint);
 
-    /// <summary>Fixed-size portion of a chunk record (everything except the optional strata trailer).</summary>
+    /// <summary>Fixed-size portion of a chunk record (everything except the optional strata + swim trailers).</summary>
     private const int BytesPerChunkBase =
-        sizeof(ushort) + sizeof(ushort) + sizeof(uint) + sizeof(byte)
+        sizeof(ushort) + sizeof(ushort) + sizeof(uint)
+        + sizeof(byte) + sizeof(byte)       // HasStrata + HasSwimLayer
         + StepChunk.CellsPerChunk           // WalkMask
         + StepChunk.CellsPerChunk           // WetMask
         + StepChunk.CellsPerChunk           // SourceZ
         + 8 * StepChunk.CellsPerChunk       // WalkZ[8]
         + 8 * StepChunk.CellsPerChunk;      // SwimZ[8]
+
+    /// <summary>Swim-layer trailer overhead when present: per-cell SourceZ + Mask + 8×Z arrays.</summary>
+    private const int SwimLayerOverhead = 10 * StepChunk.CellsPerChunk;
 
     /// <summary>Strata trailer overhead when present: 256×u16 offset table + u32 data length.</summary>
     private const int StrataTrailerOverhead = StepChunk.CellsPerChunk * sizeof(ushort) + sizeof(uint);
@@ -201,9 +215,10 @@ internal static class StepCacheFile
     {
         Directory.CreateDirectory(Path.GetDirectoryName(path) ?? ".");
 
-        // Initial estimate: base record + a modest strata budget per chunk. BufferWriter
-        // grows on overflow, so under-estimating just causes a few realloc/copy cycles
-        // during the bake — not a correctness issue.
+        // Initial estimate: base record + a modest strata budget per chunk. Coastline
+        // chunks add another ~2.5 KB (swim layer) but they're a small fraction of any
+        // map; the writer grows on overflow so under-estimating just causes a few
+        // realloc/copy cycles during the bake — not a correctness issue.
         var capacity = HeaderSize
                        + (BytesPerChunkBase + 256) * (int)chunkCount
                        + IndexEntryBytes * (int)chunkCount;
@@ -355,7 +370,9 @@ internal static class StepCacheFile
         var strataOffsetByCell = chunk.GetStrataOffsetByCellForSerialization();
         var strataData = chunk.GetStrataDataForSerialization();
         var hasStrata = strataOffsetByCell != null;
+        var hasSwimLayer = chunk.HasSwimLayer;
         w.Write((byte)(hasStrata ? 1 : 0));
+        w.Write((byte)(hasSwimLayer ? 1 : 0));
 
         w.Write(chunk.WalkMask);
         w.Write(chunk.WetMask);
@@ -378,6 +395,20 @@ internal static class StepCacheFile
         WriteSBytes(w, chunk.SwimZSW);
         WriteSBytes(w, chunk.SwimZW);
         WriteSBytes(w, chunk.SwimZNW);
+
+        if (hasSwimLayer)
+        {
+            WriteSBytes(w, chunk.SwimSourceZ);
+            w.Write(chunk.SwimMask);
+            WriteSBytes(w, chunk.SwimZN_Layer);
+            WriteSBytes(w, chunk.SwimZNE_Layer);
+            WriteSBytes(w, chunk.SwimZE_Layer);
+            WriteSBytes(w, chunk.SwimZSE_Layer);
+            WriteSBytes(w, chunk.SwimZS_Layer);
+            WriteSBytes(w, chunk.SwimZSW_Layer);
+            WriteSBytes(w, chunk.SwimZW_Layer);
+            WriteSBytes(w, chunk.SwimZNW_Layer);
+        }
 
         if (hasStrata)
         {
@@ -403,6 +434,7 @@ internal static class StepCacheFile
         r.ReadUShort();
         var multisVersion = (int)r.ReadUInt();
         var hasStrata = r.ReadByte() != 0;
+        var hasSwimLayer = r.ReadByte() != 0;
 
         var chunk = new StepChunk { BuiltMultisVersion = multisVersion };
 
@@ -427,6 +459,21 @@ internal static class StepCacheFile
         ReadSBytes(r, chunk.SwimZSW);
         ReadSBytes(r, chunk.SwimZW);
         ReadSBytes(r, chunk.SwimZNW);
+
+        if (hasSwimLayer)
+        {
+            chunk.AllocateSwimLayer();
+            ReadSBytes(r, chunk.SwimSourceZ);
+            r.Read(chunk.SwimMask);
+            ReadSBytes(r, chunk.SwimZN_Layer);
+            ReadSBytes(r, chunk.SwimZNE_Layer);
+            ReadSBytes(r, chunk.SwimZE_Layer);
+            ReadSBytes(r, chunk.SwimZSE_Layer);
+            ReadSBytes(r, chunk.SwimZS_Layer);
+            ReadSBytes(r, chunk.SwimZSW_Layer);
+            ReadSBytes(r, chunk.SwimZW_Layer);
+            ReadSBytes(r, chunk.SwimZNW_Layer);
+        }
 
         if (hasStrata)
         {
@@ -471,6 +518,19 @@ internal static class StepCacheFile
         public int IndexedChunkCount => _offsets.Count;
 
         public bool Has(int chunkX, int chunkY) => _offsets.ContainsKey(PackChunkKey(chunkX, chunkY));
+
+        /// <summary>
+        /// Enumerates every (chunkX, chunkY) coordinate the file holds. Used by
+        /// <see cref="StepCache"/> when preload is enabled to materialize all chunks
+        /// upfront instead of on first query.
+        /// </summary>
+        public IEnumerable<(int chunkX, int chunkY)> EnumerateChunkCoords()
+        {
+            foreach (var key in _offsets.Keys)
+            {
+                yield return ((int)(key >> 32), (int)(key & 0xFFFFFFFF));
+            }
+        }
 
         internal LazyReader(
             FileStream stream, uint mapId, ulong fingerprint, ulong bakeTimestamp,

@@ -102,6 +102,87 @@ public static class StepProbe
         return strata;
     }
 
+    /// <summary>
+    /// Writes the distinct surface Zs at (x, y) that a default walker (PersonHeight envelope)
+    /// can actually STAND on — each candidate surface (walkable land center + every walkable
+    /// static top) that has PersonHeight of vertical clearance free of impassable statics —
+    /// into <paramref name="zs"/>, ascending, and returns the count.
+    ///
+    /// This is the clearance-aware counterpart to <see cref="ComputeStrataAt"/>'s candidate
+    /// gather: it drops surfaces a creature cannot occupy (land under a sewer walkway, ground
+    /// under a low bridge), so the result is exactly the set of standing Zs the slow path can
+    /// resolve to. Two standable surfaces are inherently &gt;= PersonHeight apart (an upper
+    /// surface within PersonHeight of a lower one removes the lower one's clearance), so a
+    /// single ascending pass with an exact-duplicate skip is sufficient.
+    ///
+    /// Used by the baker to capture walkable static-over-land surfaces (sewer/dungeon
+    /// walkways, bridges, raised foundations, upper building floors) that the land-anchored
+    /// main mask would otherwise miss.
+    /// </summary>
+    public static int ComputeStandableSurfaceZs(Map map, int x, int y, Span<sbyte> zs)
+    {
+        if (map == null || map == Map.Internal)
+        {
+            return 0;
+        }
+        if (x < 0 || y < 0 || x >= map.Width || y >= map.Height)
+        {
+            return 0;
+        }
+
+        Span<int> cand = stackalloc int[16];
+        var count = 0;
+
+        var landTile = map.Tiles.GetLandTile(x, y);
+        var landFlags = TileData.LandTable[landTile.ID & TileData.MaxLandValue].Flags;
+        if (!landTile.Ignored && (landFlags & TileFlag.Impassable) == 0)
+        {
+            map.GetAverageZ(x, y, out _, out var landCenter, out _);
+            cand[count++] = landCenter;
+        }
+
+        foreach (var tile in map.Tiles.GetStaticAndMultiTiles(x, y))
+        {
+            if (count >= cand.Length)
+            {
+                break;
+            }
+            var data = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
+            if (!data.Surface || data.Impassable)
+            {
+                continue;
+            }
+            cand[count++] = tile.Z + data.CalcHeight;
+        }
+
+        if (count == 0)
+        {
+            return 0;
+        }
+
+        cand[..count].Sort();
+
+        var n = 0;
+        for (var i = 0; i < count && n < zs.Length; i++)
+        {
+            var cz = (sbyte)Math.Clamp(cand[i], sbyte.MinValue + 1, sbyte.MaxValue);
+            if (n > 0 && zs[n - 1] == cz)
+            {
+                continue;
+            }
+            // Standable iff the creature's PersonHeight body envelope above this surface is
+            // free of impassable statics. The surface itself never blocks (its top == cz,
+            // which is the envelope floor, not inside it).
+            if (StaticsBlockAt(map, x, y, cz, cz + PersonHeight))
+            {
+                continue;
+            }
+            zs[n++] = cz;
+        }
+
+        return n;
+    }
+
     public static StepMask ComputeMaskAt(Map map, int x, int y, sbyte sourceZ)
     {
         if (map == null || map == Map.Internal)
@@ -164,6 +245,45 @@ public static class StepProbe
         GetStaticStartZ(map, x, y, locZ, canSwim: false, cantWalk: false,
             out _, out _, out var zCenter);
         return zCenter;
+    }
+
+    /// <summary>
+    /// Returns the water-surface standing Z at (x, y) — the Z a swim-only mob would stand
+    /// at on this cell — or <see cref="int.MinValue"/> if no water surface exists. Used
+    /// by <see cref="StepCache"/> to detect shore cells (cells with both walk and swim
+    /// surfaces separated by &gt; StepHeight) and bake their swim layer at swim-perspective Z.
+    /// </summary>
+    public static int ComputeSwimStandingZ(Map map, int x, int y)
+    {
+        if (map == null || map == Map.Internal)
+        {
+            return int.MinValue;
+        }
+        if (x < 0 || y < 0 || x >= map.Width || y >= map.Height)
+        {
+            return int.MinValue;
+        }
+
+        // Land tile flagged Wet — its center Z is the swim surface.
+        var landTile = map.Tiles.GetLandTile(x, y);
+        var landFlags = TileData.LandTable[landTile.ID & TileData.MaxLandValue].Flags;
+        if (!landTile.Ignored && (landFlags & TileFlag.Wet) != 0)
+        {
+            map.GetAverageZ(x, y, out _, out var landCenter, out _);
+            return landCenter;
+        }
+
+        // Otherwise scan statics for a wet surface.
+        foreach (var tile in map.Tiles.GetStaticAndMultiTiles(x, y))
+        {
+            var data = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
+            if (data.Wet)
+            {
+                return tile.Z + data.CalcHeight;
+            }
+        }
+
+        return int.MinValue;
     }
 
     /// <summary>
