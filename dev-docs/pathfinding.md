@@ -208,13 +208,19 @@ whole-file) and bounded RAM (only touched chunks materialize, LRU-capped):
    mask + Z is stored as a few bytes (flag + mask + Z) instead of 5,393. Pairs with a two-level
    **sector index** so a uniform super-sector (open ocean) collapses to a single entry — UO's
    16-tile sectors nest cleanly inside.
-2. **Predictive (lossless) Z residuals** (kills the 76% that is the 16 directional Z arrays).
-   Predict each `WalkZ_dir`/`SwimZ_dir` from the cell's **own `SourceZ`** and store only the
-   residual: 0 on flat ground (→ compresses to nothing → effectively just the walk *bit*),
-   ±1..3 on slopes/stairs, larger or strata for bridges/multi-Z. Reconstruct
-   `WalkZ_dir = SourceZ + residual` at load → byte-identical in-memory `StepChunk`, so **no
-   runtime recompute and no risk of diverging from `MovementImpl`** (the bugs the cache exists
-   to avoid). Predict from *self* (not a neighbor) to keep chunk independence.
+2. **Predictive (lossless) Z residuals** — *shipped as format v6.* Kills the bulk of the 16
+   base directional Z arrays in Full chunks. Each array is stored as a **masked residual**
+   against the cell's **own `SourceZ`**: predict `mask bit ? SourceZ : 0` (the mask term matches
+   the baker, which leaves non-walkable directional slots at `0`), residual `= Z − predict` via
+   unchecked two's-complement (byte-exact for all inputs). A new u16 `ZArrayMask` flags which of
+   the 16 arrays differ from their prediction; an array that matches everywhere (flat terrain —
+   including partial-walkability coastlines with nonzero `SourceZ`) is **omitted entirely** and
+   synthesized from `mask + SourceZ` at read. Reconstruct `Z = predict + residual` → byte-identical
+   in-memory `StepChunk`, so **no runtime recompute and no risk of diverging from `MovementImpl`**.
+   Self-prediction (not a neighbor) keeps chunk independence. The residual *subtraction* itself
+   saves ~0 bytes (a residual is still 1 byte/cell); the win is the per-array elision, and leaving
+   non-elided arrays in residual form makes #3 a pure codec add (no further transform/format bump).
+   Swim-layer + strata trailers stay absolute, deferred to #3.
 3. **Per-chunk block compression + index compaction.** zstd/deflate each chunk record
    independently (index already carries a per-chunk `length`; reader decompresses one chunk on
    read). At 256-cell granularity the **index overhead** then dominates (20 B/chunk ×
