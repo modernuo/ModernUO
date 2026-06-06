@@ -6133,28 +6133,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
         switch (version)
         {
-            case 37:
-                {
-                    LastStrGain = reader.ReadDeltaTime();
-                    LastIntGain = reader.ReadDeltaTime();
-                    LastDexGain = reader.ReadDeltaTime();
-
-                    var hairflag = reader.ReadByte();
-
-                    if ((hairflag & 0x01) != 0)
-                    {
-                        _hairItemId = reader.ReadInt();
-                        _hairHue = reader.ReadInt();
-                    }
-
-                    if ((hairflag & 0x02) != 0)
-                    {
-                        _facialHairItemId = reader.ReadInt();
-                        _facialHairHue = reader.ReadInt();
-                    }
-
-                    goto case 29;
-                }
+            case 37: // Decomposed hair into inline item id/hue (dropped the VirtualHairInfo object)
             case 36: // Moved virtues to VirtueSystem
             case 35: // Moved short term murders to PlayerMurderSystem
             case 34: // Moved Stabled to PlayerMobile
@@ -6170,18 +6149,28 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
                 }
             case 30:
                 {
+                    // Before v37 each hair was a VirtualHairInfo whose Serialize wrote a
+                    // leading version int ahead of the item id and hue.
                     var hairflag = reader.ReadByte();
 
                     if ((hairflag & 0x01) != 0)
                     {
-                        reader.ReadInt(); // legacy VirtualHairInfo version
+                        if (version < 37)
+                        {
+                            reader.ReadInt(); // legacy VirtualHairInfo version
+                        }
+
                         _hairItemId = reader.ReadInt();
                         _hairHue = reader.ReadInt();
                     }
 
                     if ((hairflag & 0x02) != 0)
                     {
-                        reader.ReadInt(); // legacy VirtualHairInfo version
+                        if (version < 37)
+                        {
+                            reader.ReadInt(); // legacy VirtualHairInfo version
+                        }
+
                         _facialHairItemId = reader.ReadInt();
                         _facialHairHue = reader.ReadInt();
                     }
