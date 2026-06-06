@@ -18,7 +18,7 @@ public class VirtualHairPacketTests
         var expected = new HairEquipUpdate(m).Compile();
 
         using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendHairEquipUpdatePacket(m, (uint)m.Hair.VirtualSerial, m.Hair.ItemId, m.Hair.Hue, Layer.Hair);
+        ns.SendHairEquipUpdatePacket(m, (uint)m.HairSerial, m.HairItemID, m.HairHue, Layer.Hair);
 
         var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
@@ -33,9 +33,41 @@ public class VirtualHairPacketTests
         var expected = new RemoveHair(m).Compile();
 
         using var ns = PacketTestUtilities.CreateTestNetState();
-        ns.SendRemoveHairPacket((uint)(m.Hair?.VirtualSerial ?? Serial.Zero));
+        ns.SendRemoveHairPacket((uint)m.HairSerial);
 
         var result = ns.SendBuffer.GetReadSpan();
         AssertThat.Equal(result, expected);
+    }
+
+    [Fact]
+    public void RemoveHairUsesEquippedSerial()
+    {
+        var m = new Mobile((Serial)0x1025u);
+        m.DefaultMobileInit();
+        m.HairItemID = 0x2000;
+
+        var equippedSerial = m.HairSerial;
+        Assert.NotEqual(Serial.Zero, equippedSerial);
+
+        m.HairItemID = 0; // remove
+
+        // Serial must survive removal so the client can remove the correct entity.
+        Assert.Equal(equippedSerial, m.HairSerial);
+    }
+
+    [Fact]
+    public void RemoveFacialHairUsesEquippedSerial()
+    {
+        var m = new Mobile((Serial)0x1026u);
+        m.DefaultMobileInit();
+        m.FacialHairItemID = 0x2040;
+
+        var equippedSerial = m.FacialHairSerial;
+        Assert.NotEqual(Serial.Zero, equippedSerial);
+
+        m.FacialHairItemID = 0; // remove
+
+        // Serial must survive removal so the client can remove the correct entity.
+        Assert.Equal(equippedSerial, m.FacialHairSerial);
     }
 }

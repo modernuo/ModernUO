@@ -633,9 +633,14 @@ public partial class Corpse : Container, ICarvable
 
     public static Container Mobile_CreateCorpseHandler(Mobile owner, List<Item> initialContent, List<Item> equipItems)
     {
+        var hair = owner.HairItemID > 0 ? new VirtualHairInfo(owner.HairItemID, owner.HairHue) : null;
+        var facialHair = owner.FacialHairItemID > 0
+            ? new VirtualHairInfo(owner.FacialHairItemID, owner.FacialHairHue)
+            : null;
+
         var c = owner is MilitiaFighter
-            ? new MilitiaFighterCorpse(owner, owner.Hair, owner.FacialHair, equipItems)
-            : new Corpse(owner, owner.Hair, owner.FacialHair, equipItems);
+            ? new MilitiaFighterCorpse(owner, hair, facialHair, equipItems)
+            : new Corpse(owner, hair, facialHair, equipItems);
 
         owner.Corpse = c;
 

@@ -272,8 +272,9 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     private TimerExecutionToken _expireAggrTimerToken;
     private TimerExecutionToken _expireCombatantTimerToken;
     private TimerExecutionToken _expireCriminalTimerToken;
-    private VirtualHairInfo _facialHair;
-    public VirtualHairInfo FacialHair => _facialHair;
+    private int _facialHairItemId;
+    private int _facialHairHue;
+    private Serial _facialHairSerial;
 
     private int m_Fame, m_Karma;
     private bool m_Female, m_Warmode, m_Hidden, m_Blessed, m_Flying;
@@ -283,8 +284,9 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     private BaseGuild m_Guild;
     private string m_GuildTitle;
 
-    private VirtualHairInfo _hair;
-    public VirtualHairInfo Hair => _hair;
+    private int _hairItemId;
+    private int _hairHue;
+    private Serial _hairSerial;
 
     private int m_Hits, m_Stam, m_Mana;
 
@@ -2181,22 +2183,12 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     [CommandProperty(AccessLevel.GameMaster)]
     public int HairItemID
     {
-        get => _hair?.ItemId ?? 0;
+        get => _hairItemId;
         set
         {
-            if (_hair == null && value > 0)
-            {
-                _hair = new VirtualHairInfo(value);
-            }
-            else if (value <= 0)
-            {
-                _hair = null;
-            }
-            else if (_hair != null)
-            {
-                _hair.ItemId = value;
-            }
-
+            // An item id of 0 is the "no hair" state; _hairSerial is intentionally retained
+            // so a pending removal packet can reference the previously equipped serial.
+            _hairItemId = value < 0 ? 0 : value;
             Delta(MobileDelta.Hair);
             this.MarkDirty();
         }
@@ -2205,22 +2197,10 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     [CommandProperty(AccessLevel.GameMaster)]
     public int FacialHairItemID
     {
-        get => _facialHair?.ItemId ?? 0;
+        get => _facialHairItemId;
         set
         {
-            if (_facialHair == null && value > 0)
-            {
-                _facialHair = new VirtualHairInfo(value);
-            }
-            else if (value <= 0)
-            {
-                _facialHair = null;
-            }
-            else if (_facialHair != null)
-            {
-                _facialHair.ItemId = value;
-            }
-
+            _facialHairItemId = value < 0 ? 0 : value;
             Delta(MobileDelta.FacialHair);
             this.MarkDirty();
         }
@@ -2229,12 +2209,12 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     [CommandProperty(AccessLevel.GameMaster)]
     public int HairHue
     {
-        get => _hair?.Hue ?? 0;
+        get => _hairHue;
         set
         {
-            if (_hair != null)
+            if (_hairItemId > 0)
             {
-                _hair.Hue = value;
+                _hairHue = value;
                 Delta(MobileDelta.Hair);
                 this.MarkDirty();
             }
@@ -2244,15 +2224,41 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     [CommandProperty(AccessLevel.GameMaster)]
     public int FacialHairHue
     {
-        get => _facialHair?.Hue ?? 0;
+        get => _facialHairHue;
         set
         {
-            if (_facialHair != null)
+            if (_facialHairItemId > 0)
             {
-                _facialHair.Hue = value;
+                _facialHairHue = value;
                 Delta(MobileDelta.FacialHair);
                 this.MarkDirty();
             }
+        }
+    }
+
+    public Serial HairSerial
+    {
+        get
+        {
+            if (_hairItemId > 0 && _hairSerial == Serial.Zero)
+            {
+                _hairSerial = World.NewVirtual;
+            }
+
+            return _hairSerial;
+        }
+    }
+
+    public Serial FacialHairSerial
+    {
+        get
+        {
+            if (_facialHairItemId > 0 && _facialHairSerial == Serial.Zero)
+            {
+                _facialHairSerial = World.NewVirtual;
+            }
+
+            return _facialHairSerial;
         }
     }
 
@@ -2296,7 +2302,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
     public virtual void Serialize(IGenericWriter writer)
     {
-        writer.Write(36); // version
+        writer.Write(37); // version
 
         writer.WriteDeltaTime(LastStrGain);
         writer.WriteDeltaTime(LastIntGain);
@@ -2304,12 +2310,12 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
         byte hairflag = 0x00;
 
-        if (_hair != null)
+        if (_hairItemId > 0)
         {
             hairflag |= 0x01;
         }
 
-        if (_facialHair != null)
+        if (_facialHairItemId > 0)
         {
             hairflag |= 0x02;
         }
@@ -2318,12 +2324,14 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
         if ((hairflag & 0x01) != 0)
         {
-            _hair?.Serialize(writer);
+            writer.Write(_hairItemId);
+            writer.Write(_hairHue);
         }
 
         if ((hairflag & 0x02) != 0)
         {
-            _facialHair?.Serialize(writer);
+            writer.Write(_facialHairItemId);
+            writer.Write(_facialHairHue);
         }
 
         writer.Write(Race);
@@ -2458,8 +2466,10 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         m_Map?.OnLeave(this);
         m_Map = null;
 
-        _hair = null;
-        _facialHair = null;
+        _hairItemId = 0;
+        _hairSerial = Serial.Zero;
+        _facialHairItemId = 0;
+        _facialHairSerial = Serial.Zero;
         m_MountItem = null;
 
         World.RemoveEntity(this);
@@ -2734,14 +2744,14 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             sendFacialHair = true;
         }
 
-        var hairSerial = _hair?.VirtualSerial ?? Serial.Zero;
+        var hairSerial = HairSerial;
         var hairLength = removeHair
             ? OutgoingVirtualHairPackets.RemovePacketLength
             : OutgoingVirtualHairPackets.EquipUpdatePacketLength;
 
         var hairPacket = stackalloc byte[hairLength].InitializePacket();
 
-        var facialHairSerial = _facialHair?.VirtualSerial ?? Serial.Zero;
+        var facialHairSerial = FacialHairSerial;
         var facialHairLength = removeFacialHair
             ? OutgoingVirtualHairPackets.RemovePacketLength
             : OutgoingVirtualHairPackets.EquipUpdatePacketLength;
@@ -6111,6 +6121,28 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
         switch (version)
         {
+            case 37:
+                {
+                    LastStrGain = reader.ReadDeltaTime();
+                    LastIntGain = reader.ReadDeltaTime();
+                    LastDexGain = reader.ReadDeltaTime();
+
+                    var hairflag = reader.ReadByte();
+
+                    if ((hairflag & 0x01) != 0)
+                    {
+                        _hairItemId = reader.ReadInt();
+                        _hairHue = reader.ReadInt();
+                    }
+
+                    if ((hairflag & 0x02) != 0)
+                    {
+                        _facialHairItemId = reader.ReadInt();
+                        _facialHairHue = reader.ReadInt();
+                    }
+
+                    goto case 29;
+                }
             case 36: // Moved virtues to VirtueSystem
             case 35: // Moved short term murders to PlayerMurderSystem
             case 34: // Moved Stabled to PlayerMobile
@@ -6130,14 +6162,16 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
                     if ((hairflag & 0x01) != 0)
                     {
-                        _hair = new VirtualHairInfo();
-                        _hair.Deserialize(reader);
+                        reader.ReadInt(); // legacy VirtualHairInfo version
+                        _hairItemId = reader.ReadInt();
+                        _hairHue = reader.ReadInt();
                     }
 
                     if ((hairflag & 0x02) != 0)
                     {
-                        _facialHair = new VirtualHairInfo();
-                        _facialHair.Deserialize(reader);
+                        reader.ReadInt(); // legacy VirtualHairInfo version
+                        _facialHairItemId = reader.ReadInt();
+                        _facialHairHue = reader.ReadInt();
                     }
 
                     goto case 29;
