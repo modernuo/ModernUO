@@ -2,6 +2,7 @@ using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Runtime.InteropServices;
 
 namespace Server.Engines.Pathing.Cache;
@@ -14,11 +15,11 @@ namespace Server.Engines.Pathing.Cache;
 /// only when the cache asks for them. RAM stays bounded by MaxResidentChunks regardless
 /// of file size.
 ///
-/// File layout v6 (little-endian, BufferWriter / BufferReader convention):
+/// File layout v7 (little-endian, BufferWriter / BufferReader convention):
 ///
 ///   Header (48 bytes):
 ///     u32   Magic           = 0x42575300 ('SWB\0')
-///     u32   Version         = current FormatVersion (6)
+///     u32   Version         = current FormatVersion (7)
 ///     u32   MapId
 ///     u64   Fingerprint     XxHash3 over (1) LandTable + ItemTable flags AND (2) the
 ///                           on-disk bytes of mapX.mul / .uop, staidxX.mul, staticsX.mul.
@@ -31,6 +32,13 @@ namespace Server.Engines.Pathing.Cache;
 ///     u64   IndexOffset     File position where the chunk index begins.
 ///
 ///   Per chunk (ChunkCount times, variable size):
+///     u32    UncompressedLen   Size of the inflated record body below.
+///     byte[] Payload           The record body (the v6 layout that follows), libdeflate-
+///                              compressed. If the on-disk payload length (index recordLength −
+///                              4) equals UncompressedLen, the body was stored raw because
+///                              compression did not shrink it (tiny Uniform records).
+///
+///   Record body (after inflate — the v6 layout):
 ///     u16    ChunkX
 ///     u16    ChunkY
 ///     u32    BuiltMultisVersion
@@ -79,7 +87,7 @@ namespace Server.Engines.Pathing.Cache;
 internal static class StepCacheFile
 {
     public const uint Magic = 0x42575300; // 'SWB\0'
-    public const uint FormatVersion = 6;
+    public const uint FormatVersion = 7;
 
     /// <summary>
     /// Lowest format version this binary can load. Files below this version are treated as
@@ -97,8 +105,11 @@ internal static class StepCacheFile
     /// predictive-Z residuals: each base directional Z array is stored as a masked residual
     /// against SourceZ (a ZArrayMask u16 flags which arrays are present); arrays matching their
     /// prediction are omitted and synthesized at read. v5 files are rejected and re-baked once.
+    /// Bumped to 7 for per-chunk compression: each chunk record is libdeflate-compressed
+    /// independently (random access preserved) behind a u32 uncompressed-length prefix; tiny
+    /// records that do not shrink are stored raw. v6 files are rejected and re-baked once.
     /// </summary>
-    public const uint MinSupportedVersion = 6;
+    public const uint MinSupportedVersion = 7;
 
     // Per-chunk record discriminator (first byte after BuiltMultisVersion). 1 is reserved.
     private const byte KindFull = 0;
@@ -255,6 +266,14 @@ internal static class StepCacheFile
         w.Write(chunkCount);
         w.Write(0UL); // IndexOffset placeholder, patched after chunks
 
+        // Per-chunk compression: each record is built uncompressed into `recordScratch`, then
+        // libdeflate-compressed into `compScratch` and framed as [u32 uncompressedLen][payload].
+        // libdeflate is not thread-safe, but bake runs single-threaded. VeryHigh is the best-ratio
+        // level and its slow compression is irrelevant offline (decompression is what's hot, ~1.8us).
+        using var packer = new LibDeflateBinding(LibDeflateCompressionLevel.VeryHigh);
+        var recordScratch = new byte[BytesPerChunkBase + 1024];
+        var compScratch = new byte[packer.MaxPackSize(recordScratch.Length)];
+
         var indexEntries = new (ulong key, ulong offset, uint length)[chunkCount];
         var written = 0u;
         while (next(out var chunkX, out var chunkY, out var chunk))
@@ -266,7 +285,7 @@ internal static class StepCacheFile
                 );
             }
             var chunkOffset = (ulong)w.Position;
-            WriteChunk(w, chunkX, chunkY, chunk);
+            WriteChunk(w, chunkX, chunkY, chunk, packer, ref recordScratch, ref compScratch);
             var chunkLength = (uint)((ulong)w.Position - chunkOffset);
             indexEntries[written] = (PackChunkKey(chunkX, chunkY), chunkOffset, chunkLength);
             written++;
@@ -412,7 +431,44 @@ internal static class StepCacheFile
         c.SwimZN, c.SwimZNE, c.SwimZE, c.SwimZSE, c.SwimZS, c.SwimZSW, c.SwimZW, c.SwimZNW,
     };
 
-    private static void WriteChunk(BufferWriter w, int chunkX, int chunkY, StepChunk chunk)
+    /// <summary>
+    /// Builds the uncompressed v6 record for one chunk into <paramref name="w"/>, libdeflate-
+    /// compresses it, and writes it framed as [u32 uncompressedLen][payload]. The payload is the
+    /// compressed bytes, or — when compression does not shrink the record (tiny Uniform records) —
+    /// the raw record itself; the reader distinguishes the two by payload length vs uncompressedLen.
+    /// </summary>
+    private static void WriteChunk(
+        BufferWriter w, int chunkX, int chunkY, StepChunk chunk,
+        LibDeflateBinding packer, ref byte[] recordScratch, ref byte[] compScratch
+    )
+    {
+        var rw = new BufferWriter(recordScratch, prefixStr: false);
+        BuildRecord(rw, chunkX, chunkY, chunk);
+        recordScratch = rw.Buffer; // may have grown; keep the larger buffer for reuse
+        var recordLen = (int)rw.Position;
+
+        var bound = packer.MaxPackSize(recordLen);
+        if (compScratch.Length < bound)
+        {
+            compScratch = new byte[bound];
+        }
+
+        var compLen = packer.Pack(compScratch, recordScratch.AsSpan(0, recordLen));
+
+        w.Write((uint)recordLen);
+        if (compLen > 0 && compLen < recordLen)
+        {
+            w.Write(compScratch.AsSpan(0, compLen));
+        }
+        else
+        {
+            // Incompressible (or expanded): store the record raw. The reader detects this when
+            // the on-disk payload length equals the uncompressed length.
+            w.Write(recordScratch.AsSpan(0, recordLen));
+        }
+    }
+
+    private static void BuildRecord(BufferWriter w, int chunkX, int chunkY, StepChunk chunk)
     {
         w.Write((ushort)chunkX);
         w.Write((ushort)chunkY);
@@ -644,7 +700,9 @@ internal static class StepCacheFile
     {
         private FileStream _stream;
         private readonly Dictionary<ulong, (ulong offset, uint length)> _offsets;
-        private byte[] _buffer;
+        private byte[] _buffer;      // raw on-disk record: [u32 uncompressedLen][payload]
+        private byte[] _bodyBuffer;  // decompressed v6 record, parsed by ReadChunk
+        private LibDeflateBinding _unpacker;
 
         public uint MapId { get; }
         public ulong Fingerprint { get; }
@@ -679,6 +737,10 @@ internal static class StepCacheFile
             ChunkCount = chunkCount;
             _offsets = offsets;
             _buffer = new byte[BytesPerChunkBase];
+            _bodyBuffer = new byte[BytesPerChunkBase];
+            // Decompress-only; level is irrelevant for Unpack. libdeflate is not thread-safe but
+            // the cache is read on the single game thread.
+            _unpacker = new LibDeflateBinding(LibDeflateCompressionLevel.Default);
         }
 
         /// <summary>
@@ -699,8 +761,7 @@ internal static class StepCacheFile
                 return null;
             }
 
-            // Grow the scratch buffer if this chunk's record is larger than what we have.
-            // Common case: chunks fit in BytesPerChunkBase; only multi-Z-heavy chunks grow.
+            // Grow the on-disk scratch buffer if this chunk's record is larger than what we have.
             if (entry.length > _buffer.Length)
             {
                 _buffer = new byte[entry.length];
@@ -708,7 +769,38 @@ internal static class StepCacheFile
 
             _stream.Position = (long)entry.offset;
             var read = _stream.Read(_buffer, 0, (int)entry.length);
-            return read < (int)entry.length ? null : ReadChunk(_buffer);
+            if (read < (int)entry.length || entry.length < sizeof(uint))
+            {
+                return null;
+            }
+
+            // Frame: [u32 uncompressedLen][payload]. payload is libdeflate-compressed, unless its
+            // length equals uncompressedLen, in which case it was stored raw (incompressible).
+            var uncompressedLen = (int)BinaryPrimitives.ReadUInt32LittleEndian(_buffer);
+            var payloadLen = (int)entry.length - sizeof(uint);
+            if (_bodyBuffer.Length < uncompressedLen)
+            {
+                _bodyBuffer = new byte[uncompressedLen];
+            }
+
+            if (payloadLen == uncompressedLen)
+            {
+                Array.Copy(_buffer, sizeof(uint), _bodyBuffer, 0, uncompressedLen);
+            }
+            else
+            {
+                var result = _unpacker.Unpack(
+                    _bodyBuffer.AsSpan(0, uncompressedLen),
+                    _buffer.AsSpan(sizeof(uint), payloadLen),
+                    out var produced
+                );
+                if (result != LibDeflateResult.Success || produced != uncompressedLen)
+                {
+                    return null;
+                }
+            }
+
+            return ReadChunk(_bodyBuffer);
         }
 
         public void Dispose()
@@ -716,6 +808,9 @@ internal static class StepCacheFile
             _stream?.Dispose();
             _stream = null;
             _buffer = null;
+            _bodyBuffer = null;
+            _unpacker?.Dispose();
+            _unpacker = null;
         }
     }
 }
