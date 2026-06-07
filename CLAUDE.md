@@ -44,6 +44,7 @@ Apply these when writing or reviewing `.cs` files under `Projects/`.
 | Commands & targeting | `dev-docs/commands-targeting.md` |
 | Event system | `dev-docs/events.md` |
 | Threading model | `dev-docs/threading-model.md` |
+| Server lifecycle & bootstrap phases (Configure/ConfigurePrompts/Initialize) | `dev-docs/server-lifecycle.md` |
 | Configuration system | `dev-docs/configuration.md` |
 | Networking & packets | `dev-docs/networking-packets.md` |
 | Region system | `dev-docs/regions.md` |
