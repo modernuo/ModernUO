@@ -11,7 +11,7 @@ namespace Server.Engines.MLQuests.Objectives
 
         public virtual bool CanOffer(IQuestGiver quester, PlayerMobile pm, bool message) => true;
 
-        public abstract void WriteToGump(Gump g, ref int y);
+        public abstract void WriteToGump(ref DynamicGumpBuilder builder, ref int y);
 
         public virtual BaseObjectiveInstance CreateInstance(MLQuestInstance instance) => null;
     }
@@ -46,18 +46,18 @@ namespace Server.Engines.MLQuests.Objectives
 
         public virtual DataType ExtraDataType => DataType.None;
 
-        public virtual void WriteToGump(Gump g, ref int y)
+        public virtual void WriteToGump(ref DynamicGumpBuilder builder, ref int y)
         {
             if (IsTimed)
             {
-                WriteTimeRemaining(g, ref y, Utility.Max(EndTime - Core.Now, TimeSpan.Zero));
+                WriteTimeRemaining(ref builder, ref y, Utility.Max(EndTime - Core.Now, TimeSpan.Zero));
             }
         }
 
-        public static void WriteTimeRemaining(Gump g, ref int y, TimeSpan timeRemaining)
+        public static void WriteTimeRemaining(ref DynamicGumpBuilder builder, ref int y, TimeSpan timeRemaining)
         {
-            g.AddHtmlLocalized(103, y, 120, 16, 1062379, 0x5F90); // Est. time remaining:
-            g.AddLabel(223, y, 0x481, timeRemaining.TotalSeconds.ToString("F0"));
+            builder.AddHtmlLocalized(103, y, 120, 16, 1062379, 0x5F90); // Est. time remaining:
+            builder.AddLabel(223, y, 0x481, $"{timeRemaining.TotalSeconds:F0}");
             y += 16;
         }
 

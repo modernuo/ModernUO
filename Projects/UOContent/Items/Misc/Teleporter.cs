@@ -128,10 +128,8 @@ public partial class Teleporter : Item
 
     public override int LabelNumber => 1026095; // teleporter
 
-    public override void GetProperties(IPropertyList list)
+    public virtual void AddProperties(IPropertyList list)
     {
-        base.GetProperties(list);
-
         if (Active)
         {
             list.Add(1060742); // active
@@ -152,6 +150,12 @@ public partial class Teleporter : Item
         }
 
         list.Add(1060660, $"{"Creatures"}\t{(Creatures ? "Yes" : "No")}");
+    }
+
+    public override void GetProperties(IPropertyList list)
+    {
+        base.GetProperties(list);
+        AddProperties(list);
     }
 
     public override void OnSingleClick(Mobile from)
@@ -377,10 +381,8 @@ public partial class SkillTeleporter : Teleporter
         return false;
     }
 
-    public override void GetProperties(IPropertyList list)
+    public override void AddProperties(IPropertyList list)
     {
-        base.GetProperties(list);
-
         var skillIndex = (int)_skill;
         string skillName;
 
@@ -487,10 +489,8 @@ public partial class KeywordTeleporter : Teleporter
 
     public override bool OnMoveOver(Mobile m) => true;
 
-    public override void GetProperties(IPropertyList list)
+    public override void AddProperties(IPropertyList list)
     {
-        base.GetProperties(list);
-
         list.Add(1060661, $"{"Range"}\t{_range}");
 
         if (_keyword >= 0)
@@ -934,10 +934,8 @@ public partial class ConditionTeleporter : Teleporter
         return true;
     }
 
-    public override void GetProperties(IPropertyList list)
+    public override void AddProperties(IPropertyList list)
     {
-        base.GetProperties(list);
-
         using var props = ValueStringBuilder.Create(128);
 
         if (GetFlag(ConditionFlag.DenyMounted))
@@ -1025,4 +1023,36 @@ public partial class ConditionTeleporter : Teleporter
         DenyPackEthereals = 0x080,
         DeadOnly = 0x100
     }
+}
+
+[SerializationGenerator(0, false)]
+public partial class InteractionTeleporter : Teleporter
+{
+    [Constructible]
+    public InteractionTeleporter()
+    {
+        Visible = true;
+    }
+
+    [Constructible]
+    public InteractionTeleporter(Point3D pointDest, Map mapDest = null) : base(pointDest, mapDest)
+    {
+        Visible = true;
+    }
+
+    public override bool OnMoveOver(Mobile m) => true;
+
+    public override void AddProperties(IPropertyList list) {}
+
+    public override void OnDoubleClick(Mobile m)
+    {
+        base.OnDoubleClick(m);
+
+        if (Active && CanTeleport(m) && m.InRange(GetWorldLocation(), 2))
+        {
+            StartTeleport(m);
+        }
+    }
+
+    public override void OnDoubleClickDead(Mobile m) => OnDoubleClick(m);
 }

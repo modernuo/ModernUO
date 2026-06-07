@@ -5,24 +5,36 @@ namespace Server.Gumps
 {
     public class GuildRescindDeclarationGump : GuildListGump
     {
-        public GuildRescindDeclarationGump(Mobile from, Guild guild) : base(from, guild, true, guild.WarDeclarations)
+        private GuildRescindDeclarationGump(Guild guild) : base(guild, true, guild.WarDeclarations)
         {
         }
 
-        protected override void Design()
+        public static void DisplayTo(Mobile from, Guild guild)
         {
-            AddHtmlLocalized(20, 10, 400, 35, 1011150); // Select the guild to rescind our invitations:
+            if (from?.NetState == null || guild == null)
+            {
+                return;
+            }
 
-            AddButton(20, 400, 4005, 4007, 1);
-            AddHtmlLocalized(55, 400, 245, 30, 1011102); // Rescind your war declarations.
+            GuildGump.EnsureClosed(from);
+            from.SendGump(new GuildRescindDeclarationGump(guild));
+        }
 
-            AddButton(300, 400, 4005, 4007, 2);
-            AddHtmlLocalized(335, 400, 100, 35, 1011012); // CANCEL
+        protected override void BuildHeader(ref DynamicGumpBuilder builder)
+        {
+            builder.AddHtmlLocalized(20, 10, 400, 35, 1011150); // Select the guild to rescind our invitations:
+
+            builder.AddButton(20, 400, 4005, 4007, 1);
+            builder.AddHtmlLocalized(55, 400, 245, 30, 1011102); // Rescind your war declarations.
+
+            builder.AddButton(300, 400, 4005, 4007, 2);
+            builder.AddHtmlLocalized(335, 400, 100, 35, 1011012); // CANCEL
         }
 
         public override void OnResponse(NetState state, in RelayInfo info)
         {
-            if (GuildGump.BadLeader(m_Mobile, m_Guild))
+            var from = state.Mobile;
+            if (GuildGump.BadLeader(from, _guild))
             {
                 return;
             }
@@ -35,24 +47,22 @@ namespace Server.Gumps
                 {
                     var index = switches[0];
 
-                    if (index >= 0 && index < m_List.Count)
+                    if (index >= 0 && index < _list.Count)
                     {
-                        var g = m_List[index];
+                        var g = _list[index];
 
                         if (g != null)
                         {
-                            m_Guild.WarDeclarations.Remove(g);
-                            g.WarInvitations.Remove(m_Guild);
+                            _guild.WarDeclarations.Remove(g);
+                            g.WarInvitations.Remove(_guild);
 
-                            GuildGump.EnsureClosed(m_Mobile);
-
-                            if (m_Guild.WarDeclarations.Count > 0)
+                            if (_guild.WarDeclarations.Count > 0)
                             {
-                                m_Mobile.SendGump(new GuildRescindDeclarationGump(m_Mobile, m_Guild));
+                                DisplayTo(from, _guild);
                             }
                             else
                             {
-                                m_Mobile.SendGump(new GuildmasterGump(m_Mobile, m_Guild));
+                                GuildmasterGump.DisplayTo(from, _guild);
                             }
                         }
                     }
@@ -60,8 +70,7 @@ namespace Server.Gumps
             }
             else if (info.ButtonID == 2)
             {
-                GuildGump.EnsureClosed(m_Mobile);
-                m_Mobile.SendGump(new GuildmasterGump(m_Mobile, m_Guild));
+                GuildmasterGump.DisplayTo(from, _guild);
             }
         }
     }

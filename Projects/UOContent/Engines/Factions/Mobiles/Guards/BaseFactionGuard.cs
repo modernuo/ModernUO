@@ -137,17 +137,39 @@ namespace Server.Factions
             {
                 Direction = GetDirectionTo(m);
 
-                var warning = Utility.Random(6) switch
+                switch (Utility.Random(6))
                 {
-                    0 => $"I warn you, {m.Name}, you would do well to leave this area before someone shows you the world of gray.",
-                    1 => $"It would be wise to leave this area, {m.Name}, lest your head become my commanders' trophy.",
-                    2 => $"You are bold, {m.Name}, for one of the meager {Faction.Find(m)?.Definition.FriendlyName ?? "civilians"}. Leave now, lest you be taught the taste of dirt.",
-                    3 => $"Your presence here is an insult, {m.Name}. Be gone now, knave.",
-                    4 => $"Dost thou wish to be hung by your toes, {m.Name}? Nay? Then come no closer.",
-                    _ => $"Hey, {m.Name}. Yeah, you. Get out of here before I beat you with a stick." // 5
-                };
-
-                Say(warning);
+                    case 0:
+                        {
+                            Say($"I warn you, {m.Name}, you would do well to leave this area before someone shows you the world of gray.");
+                            break;
+                        }
+                    case 1:
+                        {
+                            Say($"It would be wise to leave this area, {m.Name}, lest your head become my commanders' trophy.");
+                            break;
+                        }
+                    case 2:
+                        {
+                            Say($"You are bold, {m.Name}, for one of the meager {Faction.Find(m)?.Definition.FriendlyName ?? "civilians"}. Leave now, lest you be taught the taste of dirt.");
+                            break;
+                        }
+                    case 3:
+                        {
+                            Say($"Your presence here is an insult, {m.Name}. Be gone now, knave.");
+                            break;
+                        }
+                    case 4:
+                        {
+                            Say($"Dost thou wish to be hung by your toes, {m.Name}? Nay? Then come no closer.");
+                            break;
+                        }
+                    default: // 5
+                        {
+                            Say($"Hey, {m.Name}. Yeah, you. Get out of here before I beat you with a stick.");
+                            break;
+                        }
+                }
             }
         }
 

@@ -170,6 +170,15 @@ builder.AddLabelPlaceholder(int x, int y, int hue, ReadOnlySpan<char> slotKey);
 builder.AddHtmlPlaceholder(int x, int y, int w, int h, ReadOnlySpan<char> slotKey, ...);
 ```
 
+Text-accepting builders take `ROS<char>` and have `ref RawInterpolatedStringHandler` overloads — `$"..."` literals at the call site are zero-allocation. Same for `Html.Center`/`Html.Color`/`Html.Right` helpers used for HTML markup wrapping.
+
+```csharp
+builder.AddHtml(20, 20, 200, 100, $"<center>{Title}: {Score:N0}</center>");
+builder.AddLabel(20, 40, hue, $"You have {gold} gold");
+```
+
+Avoid the interpolation anti-patterns (ternaries with `$"..."` branches, `.ToString()` inside holes, pre-built `var msg = $"..."` locals, `string.Format`, etc.) — they silently fall back to string-allocating overloads. See `dev-docs/claude-skills/modernuo-string-handling.md` § "Interpolation Anti-Patterns" for the full list.
+
 ### Interactive
 ```csharp
 builder.AddButton(int x, int y, int normalID, int pressedID, int buttonID, ...);

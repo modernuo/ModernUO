@@ -9,7 +9,7 @@ namespace Server.Gumps
     {
         private readonly List<Account> m_List;
 
-        public BanDurationGump(Account a) : this(new List<Account> { a })
+        public BanDurationGump(Account a) : this([a])
         {
         }
 
@@ -218,7 +218,10 @@ namespace Server.Gumps
 
                         break;
                     }
-                default: return;
+                default:
+                    {
+                        return;
+                    }
             }
 
             if (shouldSet)

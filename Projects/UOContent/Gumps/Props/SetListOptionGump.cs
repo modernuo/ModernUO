@@ -9,21 +9,10 @@ namespace Server.Gumps
 {
     public class SetListOptionGump : Gump
     {
-        private static readonly int EntryWidth = 212;
-        private static readonly int EntryCount = 13;
+        private const int EntryWidth = 212;
+        private const int EntryCount = 13;
 
-        private static readonly int TotalWidth = OffsetSize + EntryWidth + OffsetSize + SetWidth + OffsetSize;
-
-        private static readonly int BackWidth = BorderSize + TotalWidth + BorderSize;
-
-        private static readonly bool PrevLabel = OldStyle;
-        private static readonly bool NextLabel = OldStyle;
-
-        private static readonly int PrevLabelOffsetX = PrevWidth + 1;
-        private static readonly int PrevLabelOffsetY = 0;
-
-        private static readonly int NextLabelOffsetX = -29;
-        private static readonly int NextLabelOffsetY = 0;
+        private const int TotalWidth = OffsetSize + EntryWidth + OffsetSize + SetWidth + OffsetSize;
 
         private readonly object[] m_Values;
         protected Mobile m_Mobile;
@@ -57,81 +46,13 @@ namespace Server.Gumps
                     count = EntryCount;
                 }
 
-                var totalHeight = OffsetSize + (count + 2) * (EntryHeight + OffsetSize);
-                var backHeight = BorderSize + totalHeight + BorderSize;
-
-                AddBackground(0, 0, BackWidth, backHeight, BackGumpID);
-                AddImageTiled(
-                    BorderSize,
-                    BorderSize,
-                    TotalWidth - (OldStyle ? SetWidth + OffsetSize : 0),
-                    totalHeight,
-                    OffsetGumpID
+                this.AddPropsFrame(TotalWidth, count + 2, out var x, out var y);
+                this.AddPropsHeader(
+                    TotalWidth, ref x, ref y, null,
+                    page > 1, 0, page < pages, 0,
+                    prevType: GumpButtonType.Page, prevParam: page - 1,
+                    nextType: GumpButtonType.Page, nextParam: page + 1
                 );
-
-                var x = BorderSize + OffsetSize;
-                var y = BorderSize + OffsetSize;
-
-                var emptyWidth = TotalWidth - PrevWidth - NextWidth - OffsetSize * 4 -
-                                 (OldStyle ? SetWidth + OffsetSize : 0);
-
-                AddImageTiled(x, y, PrevWidth, EntryHeight, HeaderGumpID);
-
-                if (page > 1)
-                {
-                    AddButton(
-                        x + PrevOffsetX,
-                        y + PrevOffsetY,
-                        PrevButtonID1,
-                        PrevButtonID2,
-                        0,
-                        GumpButtonType.Page,
-                        page - 1
-                    );
-
-                    if (PrevLabel)
-                    {
-                        AddLabel(x + PrevLabelOffsetX, y + PrevLabelOffsetY, TextHue, "Previous");
-                    }
-                }
-
-                x += PrevWidth + OffsetSize;
-
-                if (!OldStyle)
-                {
-                    AddImageTiled(
-                        x - (OldStyle ? OffsetSize : 0),
-                        y,
-                        emptyWidth + (OldStyle ? OffsetSize * 2 : 0),
-                        EntryHeight,
-                        HeaderGumpID
-                    );
-                }
-
-                x += emptyWidth + OffsetSize;
-
-                if (!OldStyle)
-                {
-                    AddImageTiled(x, y, NextWidth, EntryHeight, HeaderGumpID);
-                }
-
-                if (page < pages)
-                {
-                    AddButton(
-                        x + NextOffsetX,
-                        y + NextOffsetY,
-                        NextButtonID1,
-                        NextButtonID2,
-                        0,
-                        GumpButtonType.Page,
-                        page + 1
-                    );
-
-                    if (NextLabel)
-                    {
-                        AddLabel(x + NextLabelOffsetX, y + NextLabelOffsetY, TextHue, "Next");
-                    }
-                }
 
                 AddRect(0, prop.Name, 0);
 

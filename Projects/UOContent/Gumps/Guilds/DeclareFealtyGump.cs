@@ -5,24 +5,36 @@ namespace Server.Gumps
 {
     public class DeclareFealtyGump : GuildMobileListGump
     {
-        public DeclareFealtyGump(Mobile from, Guild guild) : base(from, guild, true, guild.Members)
+        private DeclareFealtyGump(Guild guild) : base(guild, true, guild.Members)
         {
         }
 
-        protected override void Design()
+        public static void DisplayTo(Mobile from, Guild guild)
         {
-            AddHtmlLocalized(20, 10, 400, 35, 1011097); // Declare your fealty
+            if (from?.NetState == null || guild == null)
+            {
+                return;
+            }
 
-            AddButton(20, 400, 4005, 4007, 1);
-            AddHtmlLocalized(55, 400, 250, 35, 1011098); // I have selected my new lord.
+            GuildGump.EnsureClosed(from);
+            from.SendGump(new DeclareFealtyGump(guild));
+        }
 
-            AddButton(300, 400, 4005, 4007, 0);
-            AddHtmlLocalized(335, 400, 100, 35, 1011012); // CANCEL
+        protected override void BuildHeader(ref DynamicGumpBuilder builder)
+        {
+            builder.AddHtmlLocalized(20, 10, 400, 35, 1011097); // Declare your fealty
+
+            builder.AddButton(20, 400, 4005, 4007, 1);
+            builder.AddHtmlLocalized(55, 400, 250, 35, 1011098); // I have selected my new lord.
+
+            builder.AddButton(300, 400, 4005, 4007, 0);
+            builder.AddHtmlLocalized(335, 400, 100, 35, 1011012); // CANCEL
         }
 
         public override void OnResponse(NetState state, in RelayInfo info)
         {
-            if (GuildGump.BadMember(m_Mobile, m_Guild))
+            var from = state.Mobile;
+            if (info.ButtonID == 0 || GuildGump.BadMember(from, _guild))
             {
                 return;
             }
@@ -35,9 +47,9 @@ namespace Server.Gumps
                 {
                     var index = switches[0];
 
-                    if (index >= 0 && index < m_List.Count)
+                    if (index >= 0 && index < _list.Count)
                     {
-                        var m = m_List[index];
+                        var m = _list[index];
 
                         if (m?.Deleted == false)
                         {
@@ -47,8 +59,7 @@ namespace Server.Gumps
                 }
             }
 
-            GuildGump.EnsureClosed(m_Mobile);
-            m_Mobile.SendGump(new GuildGump(m_Mobile, m_Guild));
+            GuildGump.DisplayTo(from, _guild);
         }
     }
 }

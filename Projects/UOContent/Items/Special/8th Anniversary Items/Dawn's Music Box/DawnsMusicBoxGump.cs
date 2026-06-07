@@ -3,44 +3,54 @@ using Server.Network;
 
 namespace Server.Gumps;
 
-public class DawnsMusicBoxGump : Gump
+public class DawnsMusicBoxGump : DynamicGump
 {
-    private readonly DawnsMusicBox m_Box;
+    private readonly DawnsMusicBox _box;
 
     public override bool Singleton => true;
 
-    public DawnsMusicBoxGump(DawnsMusicBox box) : base(60, 36)
+    private DawnsMusicBoxGump(DawnsMusicBox box) : base(60, 36) => _box = box;
+
+    public static void DisplayTo(Mobile from, DawnsMusicBox box)
     {
-        m_Box = box;
+        if (from?.NetState == null || box?.Deleted != false)
+        {
+            return;
+        }
 
-        AddPage(0);
+        from.SendGump(new DawnsMusicBoxGump(box));
+    }
 
-        AddBackground(0, 0, 273, 324, 0x13BE);
-        AddImageTiled(10, 10, 253, 20, 0xA40);
-        AddImageTiled(10, 40, 253, 244, 0xA40);
-        AddImageTiled(10, 294, 253, 20, 0xA40);
-        AddAlphaRegion(10, 10, 253, 304);
-        AddButton(10, 294, 0xFB1, 0xFB2, 0);
-        AddHtmlLocalized(45, 296, 450, 20, 1060051, 0x7FFF); // CANCEL
-        AddHtmlLocalized(14, 12, 273, 20, 1075130, 0x7FFF);  // Choose a track to play
+    protected override void BuildLayout(ref DynamicGumpBuilder builder)
+    {
+        builder.AddPage();
+
+        builder.AddBackground(0, 0, 273, 324, 0x13BE);
+        builder.AddImageTiled(10, 10, 253, 20, 0xA40);
+        builder.AddImageTiled(10, 40, 253, 244, 0xA40);
+        builder.AddImageTiled(10, 294, 253, 20, 0xA40);
+        builder.AddAlphaRegion(10, 10, 253, 304);
+        builder.AddButton(10, 294, 0xFB1, 0xFB2, 0);
+        builder.AddHtmlLocalized(45, 296, 450, 20, 1060051, 0x7FFF); // CANCEL
+        builder.AddHtmlLocalized(14, 12, 273, 20, 1075130, 0x7FFF);  // Choose a track to play
 
         var page = 1;
         int i, y = 49;
 
-        AddPage(page);
+        builder.AddPage(page);
 
-        for (i = 0; i < m_Box.Tracks.Count; i++, y += 24)
+        for (i = 0; i < _box.Tracks.Count; i++, y += 24)
         {
-            var info = DawnsMusicBox.GetInfo(m_Box.Tracks[i]);
+            var info = DawnsMusicBox.GetInfo(_box.Tracks[i]);
 
             if (i > 0 && i % 10 == 0)
             {
-                AddButton(228, 294, 0xFA5, 0xFA6, 0, GumpButtonType.Page, page + 1);
+                builder.AddButton(228, 294, 0xFA5, 0xFA6, 0, GumpButtonType.Page, page + 1);
 
-                AddPage(page + 1);
+                builder.AddPage(page + 1);
                 y = 49;
 
-                AddButton(193, 294, 0xFAE, 0xFAF, 0, GumpButtonType.Page, page);
+                builder.AddButton(193, 294, 0xFAE, 0xFAF, 0, GumpButtonType.Page, page);
 
                 page++;
             }
@@ -50,49 +60,49 @@ public class DawnsMusicBoxGump : Gump
                 continue;
             }
 
-            AddButton(19, y, 0x845, 0x846, 100 + i);
-            AddHtmlLocalized(44, y - 2, 213, 20, info.Name, 0x7FFF);
+            builder.AddButton(19, y, 0x845, 0x846, 100 + i);
+            builder.AddHtmlLocalized(44, y - 2, 213, 20, info.Name, 0x7FFF);
         }
 
         if (i % 10 == 0)
         {
-            AddButton(228, 294, 0xFA5, 0xFA6, 0, GumpButtonType.Page, page + 1);
+            builder.AddButton(228, 294, 0xFA5, 0xFA6, 0, GumpButtonType.Page, page + 1);
 
-            AddPage(page + 1);
+            builder.AddPage(page + 1);
             y = 49;
 
-            AddButton(193, 294, 0xFAE, 0xFAF, 0, GumpButtonType.Page, page);
+            builder.AddButton(193, 294, 0xFAE, 0xFAF, 0, GumpButtonType.Page, page);
         }
 
-        AddButton(19, y, 0x845, 0x846, 1);
-        AddHtmlLocalized(44, y - 2, 213, 20, 1075207, 0x7FFF); // Stop Song
+        builder.AddButton(19, y, 0x845, 0x846, 1);
+        builder.AddHtmlLocalized(44, y - 2, 213, 20, 1075207, 0x7FFF); // Stop Song
     }
 
     public override void OnResponse(NetState sender, in RelayInfo info)
     {
-        if (m_Box?.Deleted != false)
+        if (_box?.Deleted != false)
         {
             return;
         }
 
         var m = sender.Mobile;
 
-        if (!m_Box.IsChildOf(m.Backpack) && !m_Box.IsLockedDown)
+        if (!_box.IsChildOf(m.Backpack) && !_box.IsLockedDown)
         {
             // You must have the item in your backpack or locked down in order to use it.
             m.SendLocalizedMessage(1061856);
         }
-        else if (m_Box.IsLockedDown && !m_Box.HasAccess(m))
+        else if (_box.IsLockedDown && !_box.HasAccess(m))
         {
             m.SendLocalizedMessage(502691); // You must be the owner to use this.
         }
         else if (info.ButtonID == 1)
         {
-            m_Box.EndMusic(m);
+            _box.EndMusic(m);
         }
-        else if (info.ButtonID >= 100 && info.ButtonID - 100 < m_Box.Tracks.Count)
+        else if (info.ButtonID >= 100 && info.ButtonID - 100 < _box.Tracks.Count)
         {
-            m_Box.PlayMusic(m, m_Box.Tracks[info.ButtonID - 100]);
+            _box.PlayMusic(m, _box.Tracks[info.ButtonID - 100]);
         }
     }
 }

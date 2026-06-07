@@ -6,33 +6,28 @@ namespace Server.Gumps
     {
         protected Property m_Property;
 
-        public PropertyException(Property property, string message)
-            : base(message) =>
-            m_Property = property;
+        public PropertyException(Property property, string message) : base(message) => m_Property = property;
 
         public Property Property => m_Property;
     }
 
     public abstract class BindingException : PropertyException
     {
-        public BindingException(Property property, string message)
-            : base(property, message)
+        public BindingException(Property property, string message) : base(property, message)
         {
         }
     }
 
     public sealed class NotYetBoundException : BindingException
     {
-        public NotYetBoundException(Property property)
-            : base(property, "Property has not yet been bound.")
+        public NotYetBoundException(Property property) : base(property, "Property has not yet been bound.")
         {
         }
     }
 
     public sealed class AlreadyBoundException : BindingException
     {
-        public AlreadyBoundException(Property property)
-            : base(property, "Property has already been bound.")
+        public AlreadyBoundException(Property property) : base(property, "Property has already been bound.")
         {
         }
     }
@@ -47,32 +42,28 @@ namespace Server.Gumps
 
     public sealed class ReadOnlyException : BindingException
     {
-        public ReadOnlyException(Property property)
-            : base(property, "Property is read-only.")
+        public ReadOnlyException(Property property) : base(property, "Property is read-only.")
         {
         }
     }
 
     public sealed class WriteOnlyException : BindingException
     {
-        public WriteOnlyException(Property property)
-            : base(property, "Property is write-only.")
+        public WriteOnlyException(Property property) : base(property, "Property is write-only.")
         {
         }
     }
 
     public abstract class AccessException : PropertyException
     {
-        public AccessException(Property property, string message)
-            : base(property, message)
+        public AccessException(Property property, string message) : base(property, message)
         {
         }
     }
 
     public sealed class InternalAccessException : AccessException
     {
-        public InternalAccessException(Property property)
-            : base(property, "Property is internal.")
+        public InternalAccessException(Property property) : base(property, "Property is internal.")
         {
         }
     }

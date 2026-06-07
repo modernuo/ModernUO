@@ -1705,13 +1705,13 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
         }
     }
 
-    public List<Item> LookupItems() => (this is Container container ? container.m_Items : LookupCompactInfo()?.m_Items) ?? EmptyItems;
+    public List<Item> LookupItems() => (this is Container container ? container._items : LookupCompactInfo()?.m_Items) ?? EmptyItems;
 
     public List<Item> AcquireItems()
     {
         if (this is Container cont)
         {
-            return cont.m_Items ??= new List<Item>();
+            return cont._items ??= new List<Item>();
         }
 
         var info = AcquireCompactInfo();
@@ -2714,7 +2714,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
 
                         if (this is Container)
                         {
-                            (this as Container).m_Items = items;
+                            (this as Container)._items = items;
                         }
                         else
                         {
@@ -2875,7 +2875,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
 
                         if (this is Container cont)
                         {
-                            cont.m_Items = items;
+                            cont._items = items;
                         }
                         else
                         {
@@ -3004,7 +3004,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
 
                         if (this is Container cont)
                         {
-                            cont.m_Items = items;
+                            cont._items = items;
                         }
                         else
                         {
@@ -3310,68 +3310,6 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
     public virtual void OnParentDeleted(IEntity parent)
     {
         Delete();
-    }
-
-    public void PublicOverheadMessage(MessageType type, int hue, bool ascii, string text)
-    {
-        if (m_Map == null)
-        {
-            return;
-        }
-
-        var worldLoc = GetWorldLocation();
-
-        var buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLength(text)].InitializePacket();
-
-        foreach (var state in m_Map.GetClientsInRange(worldLoc, GetMaxUpdateRange()))
-        {
-            var m = state.Mobile;
-
-            if (m.CanSee(this) && m.InRange(worldLoc, GetUpdateRange(m)))
-            {
-                var length = OutgoingMessagePackets.CreateMessage(
-                    buffer, Serial, m_ItemID, type, hue, 3, ascii, "ENU", Name, text
-                );
-
-                if (length != buffer.Length)
-                {
-                    buffer = buffer[..length]; // Adjust to the actual size
-                }
-
-                state.Send(buffer);
-            }
-        }
-    }
-
-    public void PublicOverheadMessage(MessageType type, int hue, int number, string args = "")
-    {
-        if (m_Map == null)
-        {
-            return;
-        }
-
-        var worldLoc = GetWorldLocation();
-
-        var buffer = stackalloc byte[OutgoingMessagePackets.GetMaxMessageLocalizedLength(args)].InitializePacket();
-
-        foreach (var state in m_Map.GetClientsInRange(worldLoc, GetMaxUpdateRange()))
-        {
-            var m = state.Mobile;
-
-            if (m.CanSee(this) && m.InRange(worldLoc, GetUpdateRange(m)))
-            {
-                var length = OutgoingMessagePackets.CreateMessageLocalized(
-                    buffer, Serial, m_ItemID, type, hue, 3, number, Name, args
-                );
-
-                if (length != buffer.Length)
-                {
-                    buffer = buffer[..length]; // Adjust to the actual size
-                }
-
-                state.Send(buffer);
-            }
-        }
     }
 
     public virtual void OnAfterDelete()
@@ -3898,37 +3836,6 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
         );
     }
 
-    public void SendLocalizedMessageTo(Mobile to, int number, string args = "")
-    {
-        if (Deleted || !to.CanSee(this))
-        {
-            return;
-        }
-
-        to.NetState.SendMessageLocalized(Serial, ItemID, MessageType.Regular, 0x3B2, 3, number, "", args);
-    }
-
-    public void SendLocalizedMessageTo(Mobile to, int number, AffixType affixType, string affix, string args)
-    {
-        if (Deleted || !to.CanSee(this))
-        {
-            return;
-        }
-
-        to.NetState.SendMessageLocalizedAffix(
-            Serial,
-            ItemID,
-            MessageType.Regular,
-            0x3B2,
-            3,
-            number,
-            "",
-            affixType,
-            affix,
-            args
-        );
-    }
-
     public virtual void OnSnoop(Mobile from)
     {
     }
@@ -4199,6 +4106,20 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
                 );
             }
         }
+        else if (m_Amount > 1)
+        {
+            ns.SendMessage(
+                Serial,
+                m_ItemID,
+                MessageType.Label,
+                0x3B2,
+                3,
+                false,
+                "ENU",
+                "",
+                $"{Name} : {m_Amount}"
+            );
+        }
         else
         {
             ns.SendMessage(
@@ -4210,7 +4131,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
                 false,
                 "ENU",
                 "",
-                $"{Name}{(m_Amount > 1 ? $" : {m_Amount}" : "")}"
+                $"{Name}"
             );
         }
     }

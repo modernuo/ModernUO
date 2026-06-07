@@ -81,7 +81,7 @@ public partial class Banner : Item, IAddon, IDyable, IRewardItem
 
         if (house?.IsOwner(from) == true)
         {
-            from.SendGump(new RewardDemolitionGump(this, 1018318)); // Do you wish to re-deed this banner?
+            RewardDemolitionGump.DisplayTo(from, this, 1018318); // Do you wish to re-deed this banner?
         }
         else
         {
@@ -128,7 +128,7 @@ public partial class BannerDeed : Item, IRewardItem
 
             if (house?.IsOwner(from) == true)
             {
-                from.SendGump(new InternalGump(this));
+                BannerGump.DisplayTo(from, this);
             }
             else
             {
@@ -141,7 +141,7 @@ public partial class BannerDeed : Item, IRewardItem
         }
     }
 
-    private class InternalGump : Gump
+    private class BannerGump : StaticGump<BannerGump>
     {
         public const int Start = 0x15AE;
         public const int End = 0x15F4;
@@ -150,41 +150,46 @@ public partial class BannerDeed : Item, IRewardItem
 
         public override bool Singleton => true;
 
-        public InternalGump(BannerDeed banner) : base(100, 200)
+        private BannerGump(BannerDeed banner) : base(100, 200) => _banner = banner;
+
+        public static void DisplayTo(Mobile from, BannerDeed banner)
         {
-            _banner = banner;
+            if (from?.NetState == null || banner?.Deleted != false)
+            {
+                return;
+            }
 
-            Closable = true;
-            Disposable = true;
-            Draggable = true;
-            Resizable = false;
+            from.SendGump(new BannerGump(banner));
+        }
 
-            AddPage(0);
+        protected override void BuildLayout(ref StaticGumpBuilder builder)
+        {
+            builder.AddPage();
 
-            AddBackground(25, 0, 520, 230, 0xA28);
+            builder.AddBackground(25, 0, 520, 230, 0xA28);
             // TODO: Use 1152360 - <CENTER>Choose a banner:</CENTER>
-            AddLabel(70, 12, 0x3E3, "Choose a Banner:");
+            builder.AddLabel(70, 12, 0x3E3, "Choose a Banner:");
 
             var itemID = Start;
 
             for (var i = 1; i <= 4; i++)
             {
-                AddPage(i);
+                builder.AddPage(i);
 
                 for (var j = 0; j < 8; j++, itemID += 2)
                 {
-                    AddItem(50 + 60 * j, 70, itemID);
-                    AddButton(50 + 60 * j, 50, 0x845, 0x846, itemID);
+                    builder.AddItem(50 + 60 * j, 70, itemID);
+                    builder.AddButton(50 + 60 * j, 50, 0x845, 0x846, itemID);
                 }
 
                 if (i > 1)
                 {
-                    AddButton(75, 198, 0x8AF, 0x8AF, 0, GumpButtonType.Page, i - 1);
+                    builder.AddButton(75, 198, 0x8AF, 0x8AF, 0, GumpButtonType.Page, i - 1);
                 }
 
                 if (i < 4)
                 {
-                    AddButton(475, 198, 0x8B0, 0x8B0, 0, GumpButtonType.Page, i + 1);
+                    builder.AddButton(475, 198, 0x8B0, 0x8B0, 0, GumpButtonType.Page, i + 1);
                 }
             }
         }

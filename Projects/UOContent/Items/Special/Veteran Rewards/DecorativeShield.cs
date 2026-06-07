@@ -65,7 +65,7 @@ public partial class DecorativeShield : Item, IAddon, IRewardItem
 
         if (house?.IsOwner(from) == true)
         {
-            from.SendGump(new RewardDemolitionGump(this, 1049783)); // Do you wish to re-deed this decoration?
+            RewardDemolitionGump.DisplayTo(from, this, 1049783); // Do you wish to re-deed this decoration?
         }
         else
         {
@@ -108,7 +108,7 @@ public partial class DecorativeShieldDeed : Item, IRewardItem
 
         if (IsChildOf(from.Backpack))
         {
-            from.SendGump(new InternalGump(this));
+            DecorativeShieldGump.DisplayTo(from, this);
         }
         else
         {
@@ -128,7 +128,7 @@ public partial class DecorativeShieldDeed : Item, IRewardItem
         };
     }
 
-    private class InternalGump : Gump
+    private class DecorativeShieldGump : StaticGump<DecorativeShieldGump>
     {
         public const int Start = 0x156C;
         public const int End = 0x1585;
@@ -137,29 +137,34 @@ public partial class DecorativeShieldDeed : Item, IRewardItem
 
         public override bool Singleton => true;
 
-        public InternalGump(DecorativeShieldDeed shield) : base(150, 50)
+        private DecorativeShieldGump(DecorativeShieldDeed shield) : base(150, 50) => _shield = shield;
+
+        public static void DisplayTo(Mobile from, DecorativeShieldDeed shield)
         {
-            _shield = shield;
+            if (from?.NetState == null || shield?.Deleted != false)
+            {
+                return;
+            }
 
-            Closable = true;
-            Disposable = true;
-            Draggable = true;
-            Resizable = false;
+            from.SendGump(new DecorativeShieldGump(shield));
+        }
 
-            AddPage(0);
+        protected override void BuildLayout(ref StaticGumpBuilder builder)
+        {
+            builder.AddPage();
 
-            AddBackground(25, 0, 500, 230, 0xA28);
+            builder.AddBackground(25, 0, 500, 230, 0xA28);
 
             var itemID = Start;
 
             for (var i = 1; i <= 2; i++)
             {
-                AddPage(i);
+                builder.AddPage(i);
 
                 for (var j = 0; j < 9 - i; j++)
                 {
-                    AddItem(40 + j * 60, 70, itemID);
-                    AddButton(60 + j * 60, 50, 0x845, 0x846, itemID);
+                    builder.AddItem(40 + j * 60, 70, itemID);
+                    builder.AddButton(60 + j * 60, 50, 0x845, 0x846, itemID);
 
                     if (itemID < 0x1582)
                     {
@@ -175,12 +180,12 @@ public partial class DecorativeShieldDeed : Item, IRewardItem
                 {
                     case 1:
                         {
-                            AddButton(455, 198, 0x8B0, 0x8B0, 0, GumpButtonType.Page, 2);
+                            builder.AddButton(455, 198, 0x8B0, 0x8B0, 0, GumpButtonType.Page, 2);
                             break;
                         }
                     case 2:
                         {
-                            AddButton(70, 198, 0x8AF, 0x8AF, 0, GumpButtonType.Page, 1);
+                            builder.AddButton(70, 198, 0x8AF, 0x8AF, 0, GumpButtonType.Page, 1);
                             break;
                         }
                 }
@@ -263,7 +268,7 @@ public partial class DecorativeShieldDeed : Item, IRewardItem
 
             if (north && west)
             {
-                from.SendGump(new FacingGump(_shield, _itemID, p3d, house));
+                DecorativeShieldFacingGump.DisplayTo(from, _shield, _itemID, p3d, house);
             }
             else if (north || west)
             {
@@ -282,7 +287,7 @@ public partial class DecorativeShieldDeed : Item, IRewardItem
             }
         }
 
-        private class FacingGump : Gump
+        private class DecorativeShieldFacingGump : DynamicGump
         {
             private readonly BaseHouse _house;
             private readonly int _itemID;
@@ -291,26 +296,34 @@ public partial class DecorativeShieldDeed : Item, IRewardItem
 
             public override bool Singleton => true;
 
-            public FacingGump(DecorativeShieldDeed shield, int itemID, Point3D location, BaseHouse house) : base(150, 50)
+            private DecorativeShieldFacingGump(DecorativeShieldDeed shield, int itemID, Point3D location, BaseHouse house) : base(150, 50)
             {
                 _shield = shield;
                 _itemID = itemID;
                 _location = location;
                 _house = house;
+            }
 
-                Closable = true;
-                Disposable = true;
-                Draggable = true;
-                Resizable = false;
+            public static void DisplayTo(Mobile from, DecorativeShieldDeed shield, int itemID, Point3D location, BaseHouse house)
+            {
+                if (from?.NetState == null || shield?.Deleted != false || house == null)
+                {
+                    return;
+                }
 
-                AddPage(0);
-                AddBackground(0, 0, 300, 150, 0xA28);
+                from.SendGump(new DecorativeShieldFacingGump(shield, itemID, location, house));
+            }
 
-                AddItem(90, 30, GetWestItemID(itemID));
-                AddItem(180, 30, itemID);
+            protected override void BuildLayout(ref DynamicGumpBuilder builder)
+            {
+                builder.AddPage();
+                builder.AddBackground(0, 0, 300, 150, 0xA28);
 
-                AddButton(50, 35, 0x867, 0x869, (int)Buttons.East);
-                AddButton(145, 35, 0x867, 0x869, (int)Buttons.South);
+                builder.AddItem(90, 30, GetWestItemID(_itemID));
+                builder.AddItem(180, 30, _itemID);
+
+                builder.AddButton(50, 35, 0x867, 0x869, (int)Buttons.East);
+                builder.AddButton(145, 35, 0x867, 0x869, (int)Buttons.South);
             }
 
             public override void OnResponse(NetState sender, in RelayInfo info)

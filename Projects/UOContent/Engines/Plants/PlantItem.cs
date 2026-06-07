@@ -484,7 +484,7 @@ public partial class PlantItem : Item, ISecurable
             return;
         }
 
-        from.SendGump(new MainPlantGump(this));
+        MainPlantGump.DisplayTo(from, this);
     }
 
     public void PlantSeed(Mobile from, Seed seed)

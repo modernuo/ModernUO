@@ -4,48 +4,63 @@ using Server.Network;
 
 namespace Server.Engines.Virtues;
 
-public class VirtueStatusGump : Gump
+public class VirtueStatusGump : StaticGump<VirtueStatusGump>
 {
     private readonly PlayerMobile _beholder;
 
-    public VirtueStatusGump(PlayerMobile beholder) : base(0, 0)
+    public override bool Singleton => true;
+
+    private VirtueStatusGump(PlayerMobile beholder) : base(0, 0)
     {
         _beholder = beholder;
+    }
 
-        AddPage(0);
+    public static void DisplayTo(PlayerMobile beholder)
+    {
+        if (beholder?.NetState == null)
+        {
+            return;
+        }
 
-        AddImage(30, 40, 2080);
-        AddImage(47, 77, 2081);
-        AddImage(47, 147, 2081);
-        AddImage(47, 217, 2081);
-        AddImage(47, 267, 2083);
-        AddImage(70, 213, 2091);
+        beholder.SendGump(new VirtueStatusGump(beholder));
+    }
 
-        AddPage(1);
+    protected override void BuildLayout(ref StaticGumpBuilder builder)
+    {
+        builder.AddPage();
 
-        AddHtmlLocalized(140, 73, 200, 20, 1077972); // The Virtues
+        builder.AddImage(30, 40, 2080);
+        builder.AddImage(47, 77, 2081);
+        builder.AddImage(47, 147, 2081);
+        builder.AddImage(47, 217, 2081);
+        builder.AddImage(47, 267, 2083);
+        builder.AddImage(70, 213, 2091);
 
-        AddHtmlLocalized(80, 100, 100, 40, 1051000);  // Humility
-        AddHtmlLocalized(80, 129, 100, 40, 1051001);  // Sacrifice
-        AddHtmlLocalized(80, 159, 100, 40, 1051002);  // Compassion
-        AddHtmlLocalized(80, 189, 100, 40, 1051003);  // Spirituality
-        AddHtmlLocalized(200, 100, 200, 40, 1051004); // Valor
-        AddHtmlLocalized(200, 129, 200, 40, 1051005); // Honor
-        AddHtmlLocalized(200, 159, 200, 40, 1051006); // Justice
-        AddHtmlLocalized(200, 189, 200, 40, 1051007); // Honesty
+        builder.AddPage(1);
 
-        AddHtmlLocalized(75, 224, 220, 60, 1052062); // Click on a blue gem to view your status in that virtue.
+        builder.AddHtmlLocalized(140, 73, 200, 20, 1077972); // The Virtues
 
-        AddButton(60, 100, 1210, 1210, 1);  // Humility
-        AddButton(60, 129, 1210, 1210, 2);  // Sacrifice
-        AddButton(60, 159, 1210, 1210, 3);  // Compassion
-        AddButton(60, 189, 1210, 1210, 4);  // Spirituality
-        AddButton(180, 100, 1210, 1210, 5); // Valor
-        AddButton(180, 129, 1210, 1210, 6); // Honor
-        AddButton(180, 159, 1210, 1210, 7); // Justice
-        AddButton(180, 189, 1210, 1210, 8); // Honesty
+        builder.AddHtmlLocalized(80, 100, 100, 40, 1051000);  // Humility
+        builder.AddHtmlLocalized(80, 129, 100, 40, 1051001);  // Sacrifice
+        builder.AddHtmlLocalized(80, 159, 100, 40, 1051002);  // Compassion
+        builder.AddHtmlLocalized(80, 189, 100, 40, 1051003);  // Spirituality
+        builder.AddHtmlLocalized(200, 100, 200, 40, 1051004); // Valor
+        builder.AddHtmlLocalized(200, 129, 200, 40, 1051005); // Honor
+        builder.AddHtmlLocalized(200, 159, 200, 40, 1051006); // Justice
+        builder.AddHtmlLocalized(200, 189, 200, 40, 1051007); // Honesty
 
-        AddButton(280, 43, 4014, 4014, 9);
+        builder.AddHtmlLocalized(75, 224, 220, 60, 1052062); // Click on a blue gem to view your status in that virtue.
+
+        builder.AddButton(60, 100, 1210, 1210, 1);  // Humility
+        builder.AddButton(60, 129, 1210, 1210, 2);  // Sacrifice
+        builder.AddButton(60, 159, 1210, 1210, 3);  // Compassion
+        builder.AddButton(60, 189, 1210, 1210, 4);  // Spirituality
+        builder.AddButton(180, 100, 1210, 1210, 5); // Valor
+        builder.AddButton(180, 129, 1210, 1210, 6); // Honor
+        builder.AddButton(180, 159, 1210, 1210, 7); // Justice
+        builder.AddButton(180, 189, 1210, 1210, 8); // Honesty
+
+        builder.AddButton(280, 43, 4014, 4014, 9);
     }
 
     private static int GetVirtueDescription(VirtueName virtue) =>
@@ -66,7 +81,7 @@ public class VirtueStatusGump : Gump
     {
         if (info.ButtonID == 9)
         {
-            _beholder.SendGump(new VirtueGump(_beholder, _beholder));
+            VirtueGump.RequestVirtueGump(_beholder, _beholder);
             return;
         }
 
@@ -77,11 +92,11 @@ public class VirtueStatusGump : Gump
 
         var virtue = (VirtueName)(info.ButtonID - 1);
 
-        _beholder.SendGump(new VirtueInfoGump(
+        VirtueInfoGump.DisplayTo(
             _beholder,
             virtue,
             GetVirtueDescription(virtue),
             @$"https://uo.com/wiki/ultima-online-wiki/gameplay/the-virtues/#{VirtueSystem.GetLowerCaseName(virtue)}"
-        ));
+        );
     }
 }

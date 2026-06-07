@@ -23,7 +23,7 @@ public partial class AnkhOfSacrificeComponent : AddonComponent
     {
         base.GetContextMenuEntries(from, ref list);
 
-        if (from is PlayerMobile mobile)
+        if (Core.UOTD && !Core.AOS && from is PlayerMobile mobile)
         {
             list.Add(new Ankhs.LockKarmaEntry(mobile.KarmaLocked));
         }
@@ -214,7 +214,7 @@ public partial class AnkhOfSacrificeDeed : BaseAddonDeed, IRewardItem, IRewardOp
 
         if (IsChildOf(from.Backpack))
         {
-            from.SendGump(new RewardOptionGump(this));
+            RewardOptionGump.DisplayTo(from, this);
         }
         else
         {

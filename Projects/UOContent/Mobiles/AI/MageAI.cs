@@ -20,6 +20,9 @@ public class MageAI : BaseAI
     private const double DispelChance = 0.75;   // 75% chance to dispel at gm magery
     private const double InvisChance = 0.50; // 50% chance to invis at gm magery
 
+    public override double FleeHealthThreshold => 0.2; // 20% is default
+    public override double FleeChance => 0.1; // 10% is default
+
     private static readonly int[] Offsets =
     [
         -1, -1,
@@ -692,21 +695,6 @@ public class MageAI : BaseAI
             }
         }
 
-        if (!Mobile.Controlled && !Mobile.Summoned && Mobile.CanFlee && Mobile.Hits < Mobile.HitsMax * 20 / 100)
-        {
-            // We are low on health, should we flee?
-            // (10 + diff)% chance to flee
-            var fleeChance = 10 + Math.Max(0, c.Hits - Mobile.Hits);
-
-            if (Utility.Random(0, 100) > fleeChance)
-            {
-                this.DebugSayFormatted($"I am going to flee from {c.Name}");
-
-                Action = ActionType.Flee;
-                return true;
-            }
-        }
-
         if (Mobile.TriggerAbility(MonsterAbilityTrigger.CombatAction, c))
         {
             DebugSay("I used my abilities!");
@@ -838,37 +826,6 @@ public class MageAI : BaseAI
             }
 
             base.DoActionGuard();
-        }
-
-        return true;
-    }
-
-    public override bool DoActionFlee()
-    {
-        if ((Mobile.Mana > 20 || Mobile.Mana == Mobile.ManaMax) && Mobile.Hits > Mobile.HitsMax / 2)
-        {
-            DebugSay("I am stronger now, my guard is up");
-
-            Action = ActionType.Guard;
-        }
-        else if (AcquireFocusMob(Mobile.RangePerception, Mobile.FightMode, false, false, true))
-        {
-            this.DebugSayFormatted($"I am scared of {Mobile.FocusMob.Name}");
-
-            RunFrom(Mobile.FocusMob);
-            Mobile.FocusMob = null;
-
-            if (Mobile.Poisoned && Utility.Random(0, 5) == 0)
-            {
-                new CureSpell(Mobile).Cast();
-            }
-        }
-        else
-        {
-            DebugSay("Area seems clear, but my guard is up");
-
-            Action = ActionType.Guard;
-            Mobile.Warmode = true;
         }
 
         return true;

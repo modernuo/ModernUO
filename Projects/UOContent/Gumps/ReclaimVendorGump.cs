@@ -1,85 +1,94 @@
-using System.Collections.Generic;
-using System.Linq;
 using Server.Multis;
 using Server.Network;
 
-namespace Server.Gumps
+namespace Server.Gumps;
+
+public class ReclaimVendorGump : DynamicGump
 {
-    public class ReclaimVendorGump : Gump
+    private readonly BaseHouse _house;
+    private readonly Mobile[] _vendors;
+
+    public override bool Singleton => true;
+
+    private ReclaimVendorGump(BaseHouse house) : base(50, 50)
     {
-        private readonly BaseHouse m_House;
-        private readonly List<Mobile> m_Vendors;
+        _house = house;
+        _vendors = house.InternalizedVendors.ToArray();
+    }
 
-        public override bool Singleton => true;
-
-        public ReclaimVendorGump(BaseHouse house) : base(50, 50)
+    public static void DisplayTo(Mobile from, BaseHouse house)
+    {
+        if (from?.NetState != null && house?.Deleted == false && house.InternalizedVendors.Count != 0)
         {
-            m_House = house;
-            m_Vendors = house.InternalizedVendors.ToList();
+            from.SendGump(new ReclaimVendorGump(house));
+        }
+    }
 
-            AddBackground(0, 0, 170, 50 + m_Vendors.Count * 20, 0x13BE);
+    protected override void BuildLayout(ref DynamicGumpBuilder builder)
+    {
+        builder.AddPage();
 
-            AddImageTiled(10, 10, 150, 20, 0xA40);
-            AddHtmlLocalized(10, 10, 150, 20, 1061827, 0x7FFF); // <CENTER>Reclaim Vendor</CENTER>
+        builder.AddBackground(0, 0, 170, 50 + _vendors.Length * 20, 0x13BE);
 
-            AddImageTiled(10, 40, 150, m_Vendors.Count * 20, 0xA40);
+        builder.AddImageTiled(10, 10, 150, 20, 0xA40);
+        builder.AddHtmlLocalized(10, 10, 150, 20, 1061827, 0x7FFF); // <CENTER>Reclaim Vendor</CENTER>
 
-            for (var i = 0; i < m_Vendors.Count; i++)
-            {
-                var m = m_Vendors[i];
+        builder.AddImageTiled(10, 40, 150, _vendors.Length * 20, 0xA40);
 
-                var y = 40 + i * 20;
+        for (var i = 0; i < _vendors.Length; i++)
+        {
+            var m = _vendors[i];
 
-                AddButton(10, y, 0xFA5, 0xFA7, i + 1);
-                AddLabel(45, y, 0x481, m.Name);
-            }
+            var y = 40 + i * 20;
+
+            builder.AddButton(10, y, 0xFA5, 0xFA7, i + 1);
+            builder.AddLabel(45, y, 0x481, m.Name);
+        }
+    }
+
+    public override void OnResponse(NetState sender, in RelayInfo info)
+    {
+        var from = sender.Mobile;
+
+        if (info.ButtonID == 0 || !_house.IsActive || !_house.IsInside(from) || !_house.IsOwner(from) || !from.CheckAlive())
+        {
+            return;
         }
 
-        public override void OnResponse(NetState sender, in RelayInfo info)
+        var index = info.ButtonID - 1;
+
+        if (index < 0 || index >= _vendors.Length)
         {
-            var from = sender.Mobile;
+            return;
+        }
 
-            if (info.ButtonID == 0 || !m_House.IsActive || !m_House.IsInside(from) || !m_House.IsOwner(from) ||
-                !from.CheckAlive())
+        var mob = _vendors[index];
+
+        if (!_house.InternalizedVendors.Contains(mob))
+        {
+            return;
+        }
+
+        if (mob.Deleted)
+        {
+            _house.InternalizedVendors.Remove(mob);
+        }
+        else
+        {
+            BaseHouse.IsThereVendor(from.Location, from.Map, out var vendor, out var contract);
+
+            if (vendor)
             {
-                return;
+                from.SendLocalizedMessage(1062677); // You cannot place a vendor or barkeep at this location.
             }
-
-            var index = info.ButtonID - 1;
-
-            if (index < 0 || index >= m_Vendors.Count)
+            else if (contract)
             {
-                return;
-            }
-
-            var mob = m_Vendors[index];
-
-            if (!m_House.InternalizedVendors.Contains(mob))
-            {
-                return;
-            }
-
-            if (mob.Deleted)
-            {
-                m_House.InternalizedVendors.Remove(mob);
+                from.SendLocalizedMessage(1062678); // You cannot place a vendor or barkeep on top of a rental contract!
             }
             else
             {
-                BaseHouse.IsThereVendor(from.Location, from.Map, out var vendor, out var contract);
-
-                if (vendor)
-                {
-                    from.SendLocalizedMessage(1062677); // You cannot place a vendor or barkeep at this location.
-                }
-                else if (contract)
-                {
-                    from.SendLocalizedMessage(1062678); // You cannot place a vendor or barkeep on top of a rental contract!
-                }
-                else
-                {
-                    m_House.InternalizedVendors.Remove(mob);
-                    mob.MoveToWorld(from.Location, from.Map);
-                }
+                _house.InternalizedVendors.Remove(mob);
+                mob.MoveToWorld(from.Location, from.Map);
             }
         }
     }

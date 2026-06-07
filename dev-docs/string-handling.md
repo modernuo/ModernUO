@@ -5,9 +5,10 @@ This document covers the string building utilities in `Projects/Server/Text/` an
 ## Table of Contents
 1. [ValueStringBuilder](#valuestringbuilder)
 2. [RawInterpolatedStringHandler](#rawinterpolatedstringhandler)
-3. [StringHelpers](#stringhelpers)
-4. [TextEncoding](#textencoding)
-5. [Decision Guide](#decision-guide)
+3. [Interpolation Anti-Patterns](#interpolation-anti-patterns)
+4. [StringHelpers](#stringhelpers)
+5. [TextEncoding](#textencoding)
+6. [Decision Guide](#decision-guide)
 
 ---
 
@@ -122,7 +123,188 @@ For stackalloc-only builders that never grow, `Dispose()` is a no-op. But always
 **Location**: `Projects/Server/Buffers/RawInterpolatedStringHandler.cs`
 **Namespace**: `Server.Buffers`
 
-A `[InterpolatedStringHandler]` ref struct used internally by `ValueStringBuilder`'s interpolation support. You should not need to use this directly — use `sb.Append($"...")` instead.
+A `[InterpolatedStringHandler]` ref struct that renders an interpolated string directly into a `char[]` rented from `STArrayPool<char>.Shared`. Used as a parameter type to make zero-allocation interpolation overloads possible — when the caller writes `$"..."`, the compiler synthesizes the handler, fills it with the formatted chars, and the receiving method passes `handler.Text` to its underlying span path.
+
+**You normally don't construct this directly**: it's used as a parameter type. Most ModernUO APIs that accept formatted text already provide a `ref RawInterpolatedStringHandler` overload alongside the `string` / `ReadOnlySpan<char>` overload. The compiler picks the handler overload automatically when the argument is a `$"..."` literal.
+
+### APIs that accept `ref RawInterpolatedStringHandler`
+
+- `SpanWriter.WriteAscii`, `WriteLatin1`, `Write(Encoding, …)` — packet building
+- `Mobile.SendMessage`, `SendLocalizedMessage`, `SendAsciiMessage`, `Public/Local/Nonlocal/PrivateOverheadMessage`, `Say`, `Emote`, `Whisper`, `Yell` — player-facing chat
+- `Item.PublicOverheadMessage`, `SendLocalizedMessageTo`, `SendMessageTo` — item-attributed messages
+- `OutgoingMessagePackets.SendMessageLocalized`, `SendMessageLocalizedAffix`, `SendMessage` — direct NetState extensions
+- `Html.Center`, `Html.Color`, `Html.Right` — gump HTML helpers
+
+When in doubt, just write `$"..."` at the call site — if a handler overload exists, the compiler picks it.
+
+### `:L` Lowercase Format Specifier
+
+`RawInterpolatedStringHandler` recognizes `:L` as a custom format specifier that lowercases the value's output in-place using `char.ToLowerInvariant`. Handles surrogate pairs correctly via the BCL's vectorized `MemoryExtensions.ToLowerInvariant`.
+
+```csharp
+mob.SendMessage($"You earned a {rank:L} trophy!");          // "gold" instead of "Gold"
+mob.SendMessage($"Welcome, {playerName:L}");                  // lowercased name
+mob.SendMessage($"{count:L} kills");                          // ints unchanged ("42")
+```
+
+This eliminates the `value.ToString().ToLowerInvariant()` two-allocation idiom. Works for any type that goes through the handler (enums, strings, anything `ISpanFormattable`).
+
+The format string is case-sensitive — `:l` is not recognized. Match the convention of standard format specifiers (`:N0`, `:F2`, etc.) and use uppercase `:L`.
+
+### Pooled buffer lifecycle
+
+`RawInterpolatedStringHandler` rents a `char[]` from `STArrayPool<char>.Shared` on construction (sized by the literal length + an estimate of formatted chars per hole). Methods that take `ref RawInterpolatedStringHandler` are responsible for calling `handler.Clear()` after consuming `handler.Text`, which returns the buffer to the pool. The rent is single-threaded and lock-free (~tens of nanoseconds), so the cost is negligible compared to the `string` allocation it replaces.
+
+---
+
+## Interpolation Anti-Patterns
+
+ModernUO has many APIs with `ref RawInterpolatedStringHandler` overloads (messages, gumps, packets, OPL — see the list above). The handler overload is **only selected when the call-site argument is a `$"..."` literal directly in position**. Several patterns silently defeat handler binding and fall back to a `string`-allocating path. Each pattern below has a "before" and "after" — apply the "after" form when writing or reviewing code that interpolates into any handler-aware API.
+
+### 1. Ternary with interpolated branches
+
+```csharp
+// BAD — the ternary unifies branches as `string`; handler overload not selected
+mob.SendMessage(cond ? $"a {x}" : $"b {y}");
+```
+```csharp
+// GOOD — each branch is a separate call, each binds to the handler overload
+if (cond)
+{
+    mob.SendMessage($"a {x}");
+}
+else
+{
+    mob.SendMessage($"b {y}");
+}
+```
+
+`RawInterpolatedStringHandler` is a `ref struct` and cannot appear in a conditional expression result type — the C# compiler unifies the ternary branches to `string`, and the call binds to the `string` / `ROS<char>` overload, allocating the message text per call.
+
+### 2. Switch expression with interpolated arms
+
+```csharp
+// BAD — switch expression branches unify as `string`
+mob.SendMessage(thing switch
+{
+    1 => $"a {x}",
+    _ => $"b"
+});
+```
+```csharp
+// GOOD — switch statement, each arm calls the handler-aware API directly
+switch (thing)
+{
+    case 1:
+        mob.SendMessage($"a {x}");
+        break;
+    default:
+        mob.SendMessage($"b");
+        break;
+}
+```
+
+Same root cause as the ternary case.
+
+### 3. Pre-built local typed as `string`
+
+```csharp
+// BAD — `msg` is a `string`; ROS<char> overload picked, not the handler
+var msg = $"foo {x}";
+mob.SendMessage(msg);
+```
+```csharp
+// GOOD — inline at the call site so the compiler sees the literal
+mob.SendMessage($"foo {x}");
+```
+
+If the local is reused (multiple calls, multiple branches), keep the local — pre-building avoids re-interpolating per send. Inline only when the local is single-use.
+
+### 4. `.ToString()` (or any string-returning method) inside a hole
+
+```csharp
+// BAD — .ToString() allocates a string before the handler copies the chars
+mob.SendMessage($"You are now {accessLevel.ToString()}.");
+mob.SendMessage($"Your guild is {td.String()}.");
+```
+```csharp
+// GOOD — drop the .ToString() and let the handler format the value directly
+mob.SendMessage($"You are now {accessLevel}.");
+mob.SendMessage($"Your guild is {td}.");
+```
+
+The handler's `AppendFormatted<T>` calls `ISpanFormattable.TryFormat` on the value directly, with zero intermediate `string`. An explicit `.ToString()` defeats this. The same applies to `.String()` (TextDefinition), `.GetValue()`, `.AsHexString()`, and any other method that returns a freshly allocated `string`.
+
+For values that don't implement `ISpanFormattable`, the handler falls back to `value.ToString()` internally — same allocation as the explicit call, but at least the call site is consistent.
+
+For lowercase output, use the `:L` format specifier instead of `.ToString().ToLowerInvariant()` (see [RawInterpolatedStringHandler](#rawinterpolatedstringhandler)).
+
+### 5. String concatenation inside a hole
+
+```csharp
+// BAD — `+` on strings allocates an intermediate string
+mob.SendMessage($"Total: {a + b}");
+mob.SendMessage($"Title: {string.Concat(prefix, name)}");
+```
+```csharp
+// GOOD — multiple holes, each formatted directly into the buffer
+mob.SendMessage($"Total: {a}{b}");
+mob.SendMessage($"Title: {prefix}{name}");
+```
+
+Note: `int + int` inside a hole is arithmetic, not concatenation — that's fine. The anti-pattern is `string + string` or `string + value`.
+
+### 6. `string.Format` feeding a handler-aware API
+
+```csharp
+// BAD — string.Format allocates a string the handler then re-buffers
+mob.SendMessage(string.Format("You earned {0:N0} gold", amount));
+```
+```csharp
+// GOOD — the handler formats `amount` directly into its buffer
+mob.SendMessage($"You earned {amount:N0} gold");
+```
+
+### 7. LINQ-built strings inside a hole
+
+```csharp
+// BAD — Select/Aggregate/Join on strings allocates a chain of intermediates
+mob.SendMessage($"Allies: {names.Aggregate((a, b) => $"{a}, {b}")}");
+```
+```csharp
+// GOOD — build via ValueStringBuilder, pass the span
+using var sb = new ValueStringBuilder(stackalloc char[256]);
+sb.Append("Allies: ");
+for (var i = 0; i < names.Count; i++)
+{
+    if (i > 0)
+    {
+        sb.Append(", ");
+    }
+    sb.Append(names[i]);
+}
+mob.SendMessage(sb.AsSpan());
+```
+
+For unbounded inputs, use `ValueStringBuilder.Create()` and call `mob.SendMessage(sb.ToString())` if the consumer needs a `string` (one allocation, vs LINQ's many).
+
+### 8. Pre-built concat var
+
+```csharp
+// BAD — concatenation allocates, then the local picks the ROS overload
+var s = obj.Name + " says hi";
+mob.SendMessage(s);
+```
+```csharp
+// GOOD — interpolation literal at the call site
+mob.SendMessage($"{obj.Name} says hi");
+```
+
+### Why these matter
+
+These patterns aren't bugs — they produce correct output. But they each leak a `string` per call, and message/gump/OPL APIs are called constantly during gameplay. The handler overload exists specifically to eliminate that allocation, but only when the call-site argument is a direct `$"..."` literal.
+
+When in doubt, ask: "is the handler overload selected here?" — and if the argument is anything other than a top-level `$"..."` literal in the parameter slot, the answer is no.
 
 ---
 

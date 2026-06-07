@@ -135,6 +135,7 @@ namespace Server.Engines.ConPVP
 
                     if (nonLocalOverhead != null)
                     {
+                        // Phase 3 audit: Format string passed by caller; restructuring requires changing all callers — out of scope for this PR.
                         Players[i]
                             .Mobile.NonlocalOverheadMessage(
                                 MessageType.Regular,

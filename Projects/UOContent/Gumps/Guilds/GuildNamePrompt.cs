@@ -1,3 +1,4 @@
+using System;
 using Server.Guilds;
 using Server.Prompts;
 
@@ -5,55 +6,49 @@ namespace Server.Gumps
 {
     public class GuildNamePrompt : Prompt
     {
-        private readonly Guild m_Guild;
-        private readonly Mobile m_Mobile;
+        private readonly Guild _guild;
 
-        public GuildNamePrompt(Mobile m, Guild g)
-        {
-            m_Mobile = m;
-            m_Guild = g;
-        }
+        public GuildNamePrompt(Mobile m, Guild g) => _guild = g;
 
         public override void OnCancel(Mobile from)
         {
-            if (GuildGump.BadLeader(m_Mobile, m_Guild))
+            if (GuildGump.BadLeader(from, _guild))
             {
                 return;
             }
 
-            GuildGump.EnsureClosed(m_Mobile);
-            m_Mobile.SendGump(new GuildmasterGump(m_Mobile, m_Guild));
+            GuildmasterGump.DisplayTo(from, _guild);
         }
 
         public override void OnResponse(Mobile from, string text)
         {
-            if (GuildGump.BadLeader(m_Mobile, m_Guild))
+            if (GuildGump.BadLeader(from, _guild))
             {
                 return;
             }
 
-            text = text.Trim();
+            var textSpan = text.AsSpan().Trim();
 
-            if (text.Length > 40)
+            if (textSpan.Length > 40)
             {
-                text = text[..40];
+                textSpan = textSpan[..40];
             }
 
-            if (text.Length > 0)
+            if (textSpan.Length > 0)
             {
-                if (BaseGuild.FindByName(text) != null)
+                if (BaseGuild.FindByName(textSpan) != null)
                 {
-                    m_Mobile.SendMessage($"{text} conflicts with the name of an existing guild.");
+                    from.SendMessage($"{textSpan} conflicts with the name of an existing guild.");
                 }
                 else
                 {
-                    m_Guild.Name = text;
-                    m_Guild.GuildMessage(1018024, true, text); // The name of your guild has changed:
+                    text = textSpan.ToString();
+                    _guild.Name = text;
+                    _guild.GuildMessage(1018024, true, text); // The name of your guild has changed:
                 }
             }
 
-            GuildGump.EnsureClosed(m_Mobile);
-            m_Mobile.SendGump(new GuildmasterGump(m_Mobile, m_Guild));
+            GuildmasterGump.DisplayTo(from, _guild);
         }
     }
 }

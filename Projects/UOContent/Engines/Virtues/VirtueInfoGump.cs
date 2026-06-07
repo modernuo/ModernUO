@@ -4,32 +4,47 @@ using Server.Network;
 
 namespace Server.Engines.Virtues;
 
-public class VirtueInfoGump : Gump
+public class VirtueInfoGump : DynamicGump
 {
     private readonly PlayerMobile _beholder;
     private readonly int _desc;
     private readonly string _site;
     private readonly VirtueName _virtue;
 
-    public VirtueInfoGump(PlayerMobile beholder, VirtueName virtue, int description, string webPage = null) : base(0, 0)
+    public override bool Singleton => true;
+
+    private VirtueInfoGump(PlayerMobile beholder, VirtueName virtue, int description, string webPage) : base(0, 0)
     {
         _beholder = beholder;
         _virtue = virtue;
         _desc = description;
         _site = webPage;
+    }
 
-        var value = VirtueSystem.GetVirtues(beholder)?.GetValue((int)virtue) ?? 0;
+    public static void DisplayTo(PlayerMobile beholder, VirtueName virtue, int description, string webPage = null)
+    {
+        if (beholder?.NetState == null)
+        {
+            return;
+        }
 
-        AddPage(0);
+        beholder.SendGump(new VirtueInfoGump(beholder, virtue, description, webPage));
+    }
 
-        AddImage(30, 40, 2080);
-        AddImage(47, 77, 2081);
-        AddImage(47, 147, 2081);
-        AddImage(47, 217, 2081);
-        AddImage(47, 267, 2083);
-        AddImage(70, 213, 2091);
+    protected override void BuildLayout(ref DynamicGumpBuilder builder)
+    {
+        var value = VirtueSystem.GetVirtues(_beholder)?.GetValue((int)_virtue) ?? 0;
 
-        AddPage(1);
+        builder.AddPage();
+
+        builder.AddImage(30, 40, 2080);
+        builder.AddImage(47, 77, 2081);
+        builder.AddImage(47, 147, 2081);
+        builder.AddImage(47, 217, 2081);
+        builder.AddImage(47, 267, 2083);
+        builder.AddImage(70, 213, 2091);
+
+        builder.AddPage(1);
 
         var maxValue = VirtueSystem.GetMaxAmount(_virtue);
 
@@ -55,7 +70,7 @@ public class VirtueInfoGump : Gump
 
         for (var i = 0; i < 10; ++i)
         {
-            AddImage(95 + i * 17, 50, i < dots ? 2362 : 2360);
+            builder.AddImage(95 + i * 17, 50, i < dots ? 2362 : 2360);
         }
 
         if (value < 1)
@@ -95,16 +110,16 @@ public class VirtueInfoGump : Gump
             valueDesc = 1052050; // You have achieved the highest path in this Virtue.
         }
 
-        AddHtmlLocalized(157, 73, 200, 40, 1051000 + (int)virtue);
-        AddHtmlLocalized(75, 95, 220, 140, description);
-        AddHtmlLocalized(70, 224, 229, 60, valueDesc);
+        builder.AddHtmlLocalized(157, 73, 200, 40, 1051000 + (int)_virtue);
+        builder.AddHtmlLocalized(75, 95, 220, 140, _desc);
+        builder.AddHtmlLocalized(70, 224, 229, 60, valueDesc);
 
-        AddButton(65, 277, 1209, 1209, 1);
+        builder.AddButton(65, 277, 1209, 1209, 1);
 
-        AddButton(280, 43, 4014, 4014, 2);
+        builder.AddButton(280, 43, 4014, 4014, 2);
 
         // This virtue is not yet defined. OR -click to learn more (opens webpage)
-        AddHtmlLocalized(83, 275, 400, 40, webPage == null ? 1052055 : 1052052);
+        builder.AddHtmlLocalized(83, 275, 400, 40, _site == null ? 1052055 : 1052052);
     }
 
     public override void OnResponse(NetState state, in RelayInfo info)
@@ -113,7 +128,7 @@ public class VirtueInfoGump : Gump
         {
             case 1:
                 {
-                    _beholder.SendGump(new VirtueInfoGump(_beholder, _virtue, _desc, _site));
+                    _beholder.SendGump(this);
 
                     if (_site != null)
                     {
@@ -124,7 +139,7 @@ public class VirtueInfoGump : Gump
                 }
             case 2:
                 {
-                    _beholder.SendGump(new VirtueStatusGump(_beholder));
+                    VirtueStatusGump.DisplayTo(_beholder);
                     break;
                 }
         }

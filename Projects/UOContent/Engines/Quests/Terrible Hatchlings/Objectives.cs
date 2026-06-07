@@ -1,3 +1,4 @@
+using Server.Gumps;
 using Server.Items;
 using Server.Mobiles;
 
@@ -7,20 +8,20 @@ namespace Server.Engines.Quests.Zento
     {
         public override int Message => 1063316;
 
-        public override void RenderProgress(BaseQuestGump gump)
+        public override void RenderProgress(ref DynamicGumpBuilder builder)
         {
             if (!Completed)
             {
                 // Deathwatch Beetle Hatchlings killed:
-                gump.AddHtmlLocalized(70, 260, 270, 100, 1063318, 0xC6BF);
+                builder.AddHtmlLocalized(70, 260, 270, 100, 1063318, 0xC6BF);
 
-                gump.AddLabel(70, 280, 0x64, "0");
-                gump.AddLabel(100, 280, 0x64, "/");
-                gump.AddLabel(130, 280, 0x64, "10");
+                builder.AddLabel(70, 280, 0x64, "0");
+                builder.AddLabel(100, 280, 0x64, "/");
+                builder.AddLabel(130, 280, 0x64, "10");
             }
             else
             {
-                base.RenderProgress(gump);
+                base.RenderProgress(ref builder);
             }
         }
 
@@ -42,20 +43,20 @@ namespace Server.Engines.Quests.Zento
     {
         public override int Message => 1063320;
 
-        public override void RenderProgress(BaseQuestGump gump)
+        public override void RenderProgress(ref DynamicGumpBuilder builder)
         {
             if (!Completed)
             {
                 // Deathwatch Beetle Hatchlings killed:
-                gump.AddHtmlLocalized(70, 260, 270, 100, 1063318, 0xC6BF);
+                builder.AddHtmlLocalized(70, 260, 270, 100, 1063318, 0xC6BF);
 
-                gump.AddLabel(70, 280, 0x64, "1");
-                gump.AddLabel(100, 280, 0x64, "/");
-                gump.AddLabel(130, 280, 0x64, "10");
+                builder.AddLabel(70, 280, 0x64, "1");
+                builder.AddLabel(100, 280, 0x64, "/");
+                builder.AddLabel(130, 280, 0x64, "10");
             }
             else
             {
-                base.RenderProgress(gump);
+                base.RenderProgress(ref builder);
             }
         }
 
@@ -90,20 +91,20 @@ namespace Server.Engines.Quests.Zento
 
         public override int MaxProgress => 10;
 
-        public override void RenderProgress(BaseQuestGump gump)
+        public override void RenderProgress(ref DynamicGumpBuilder builder)
         {
             if (!Completed)
             {
                 // Deathwatch Beetle Hatchlings killed:
-                gump.AddHtmlLocalized(70, 260, 270, 100, 1063318, 0xC6BF);
+                builder.AddHtmlLocalized(70, 260, 270, 100, 1063318, 0xC6BF);
 
-                gump.AddLabel(70, 280, 0x64, CurProgress.ToString());
-                gump.AddLabel(100, 280, 0x64, "/");
-                gump.AddLabel(130, 280, 0x64, "10");
+                builder.AddLabel(70, 280, 0x64, $"{CurProgress}");
+                builder.AddLabel(100, 280, 0x64, "/");
+                builder.AddLabel(130, 280, 0x64, "10");
             }
             else
             {
-                base.RenderProgress(gump);
+                base.RenderProgress(ref builder);
             }
         }
 

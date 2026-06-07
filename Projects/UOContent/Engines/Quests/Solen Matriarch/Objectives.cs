@@ -1,3 +1,4 @@
+using Server.Gumps;
 using Server.Items;
 using Server.Mobiles;
 
@@ -9,12 +10,12 @@ namespace Server.Engines.Quests.Matriarch
 
         public override int MaxProgress => 7;
 
-        public override void RenderProgress(BaseQuestGump gump)
+        public override void RenderProgress(ref DynamicGumpBuilder builder)
         {
             if (!Completed)
             {
                 // Black/Red Solen Infiltrators killed:
-                gump.AddHtmlLocalized(
+                builder.AddHtmlLocalized(
                     70,
                     260,
                     270,
@@ -22,13 +23,13 @@ namespace Server.Engines.Quests.Matriarch
                     ((SolenMatriarchQuest)System).RedSolen ? 1054088 : 1054087,
                     BaseQuestGump.Blue
                 );
-                gump.AddLabel(70, 280, 0x64, CurProgress.ToString());
-                gump.AddLabel(100, 280, 0x64, "/");
-                gump.AddLabel(130, 280, 0x64, MaxProgress.ToString());
+                builder.AddLabel(70, 280, 0x64, $"{CurProgress}");
+                builder.AddLabel(100, 280, 0x64, "/");
+                builder.AddLabel(130, 280, 0x64, $"{MaxProgress}");
             }
             else
             {
-                base.RenderProgress(gump);
+                base.RenderProgress(ref builder);
             }
         }
 
@@ -91,18 +92,18 @@ namespace Server.Engines.Quests.Matriarch
 
         public override int MaxProgress => 40;
 
-        public override void RenderProgress(BaseQuestGump gump)
+        public override void RenderProgress(ref DynamicGumpBuilder builder)
         {
             if (!Completed)
             {
-                gump.AddHtmlLocalized(70, 260, 270, 100, 1054093, BaseQuestGump.Blue); // Gallons of Water gathered:
-                gump.AddLabel(70, 280, 0x64, (CurProgress / 5).ToString());
-                gump.AddLabel(100, 280, 0x64, "/");
-                gump.AddLabel(130, 280, 0x64, (MaxProgress / 5).ToString());
+                builder.AddHtmlLocalized(70, 260, 270, 100, 1054093, BaseQuestGump.Blue); // Gallons of Water gathered:
+                builder.AddLabel(70, 280, 0x64, (CurProgress / 5).ToString());
+                builder.AddLabel(100, 280, 0x64, "/");
+                builder.AddLabel(130, 280, 0x64, (MaxProgress / 5).ToString());
             }
             else
             {
-                base.RenderProgress(gump);
+                base.RenderProgress(ref builder);
             }
         }
 

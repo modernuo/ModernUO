@@ -187,8 +187,7 @@ public partial class Guildstone : Item, IAddon, IChoppable
             _guild.Accepted.Remove(from);
             _guild.AddMember(from);
 
-            GuildGump.EnsureClosed(from);
-            from.SendGump(new GuildGump(from, Guild));
+            GuildGump.DisplayTo(from, Guild);
         }
         else if (from.AccessLevel < AccessLevel.GameMaster && !_guild.IsMember(from))
         {
@@ -197,8 +196,7 @@ public partial class Guildstone : Item, IAddon, IChoppable
         }
         else
         {
-            GuildGump.EnsureClosed(from);
-            from.SendGump(new GuildGump(from, _guild));
+            GuildGump.DisplayTo(from, _guild);
         }
     }
 }

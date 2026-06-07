@@ -9,13 +9,9 @@ namespace Server.Gumps
 {
     public class EditSkillGump : Gump
     {
-        private static readonly int EntryWidth = 160;
+        private const int EntryWidth = 160;
 
-        private static readonly int TotalWidth = OffsetSize + EntryWidth + OffsetSize + SetWidth + OffsetSize;
-        private static readonly int TotalHeight = OffsetSize + 2 * (EntryHeight + OffsetSize);
-
-        private static readonly int BackWidth = BorderSize + TotalWidth + BorderSize;
-        private static readonly int BackHeight = BorderSize + TotalHeight + BorderSize;
+        private const int TotalWidth = OffsetSize + EntryWidth + OffsetSize + SetWidth + OffsetSize;
 
         private readonly Mobile m_From;
 
@@ -37,40 +33,10 @@ namespace Server.Gumps
 
             AddPage(0);
 
-            AddBackground(0, 0, BackWidth, BackHeight, BackGumpID);
-            AddImageTiled(
-                BorderSize,
-                BorderSize,
-                TotalWidth - (OldStyle ? SetWidth + OffsetSize : 0),
-                TotalHeight,
-                OffsetGumpID
-            );
-
-            var x = BorderSize + OffsetSize;
-            var y = BorderSize + OffsetSize;
-
-            AddImageTiled(x, y, EntryWidth, EntryHeight, EntryGumpID);
-            AddLabelCropped(x + TextOffsetX, y, EntryWidth - TextOffsetX, EntryHeight, TextHue, skill.Name);
-            x += EntryWidth + OffsetSize;
-
-            if (SetGumpID != 0)
-            {
-                AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
-            }
-
-            x = BorderSize + OffsetSize;
-            y += EntryHeight + OffsetSize;
-
-            AddImageTiled(x, y, EntryWidth, EntryHeight, EntryGumpID);
-            AddTextEntry(x + TextOffsetX, y, EntryWidth - TextOffsetX, EntryHeight, TextHue, 0, initialText);
-            x += EntryWidth + OffsetSize;
-
-            if (SetGumpID != 0)
-            {
-                AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
-            }
-
-            AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 1);
+            this.AddPropsFrame(TotalWidth, 2, out var x, out var y);
+            this.AddPropsEntryLabel(ref x, ref y, EntryWidth, skill.Name);
+            PropsLayout.NextRow(ref x, ref y);
+            this.AddPropsEntryTextInput(ref x, ref y, EntryWidth, 0, initialText, true, 1);
         }
 
         public override void OnResponse(NetState sender, in RelayInfo info)
@@ -111,24 +77,10 @@ namespace Server.Gumps
 
     public class SkillsGump : Gump
     {
-        /*
-        private static bool PrevLabel = OldStyle, NextLabel = OldStyle;
+        private const int NameWidth = 107;
+        private const int ValueWidth = 128;
 
-        private static readonly int PrevLabelOffsetX = PrevWidth + 1;
-
-        private static readonly int PrevLabelOffsetY = 0;
-
-        private static readonly int NextLabelOffsetX = -29;
-        private static readonly int NextLabelOffsetY = 0;
-         * */
-
-        private static readonly int NameWidth = 107;
-        private static readonly int ValueWidth = 128;
-
-        private static readonly int TotalWidth =
-            OffsetSize + NameWidth + OffsetSize + ValueWidth + OffsetSize + SetWidth + OffsetSize;
-
-        private static readonly int BackWidth = BorderSize + TotalWidth + BorderSize;
+        private const int TotalWidth = OffsetSize + NameWidth + OffsetSize + ValueWidth + OffsetSize + SetWidth + OffsetSize;
 
         private static readonly int IndentWidth = 12;
 
@@ -153,52 +105,16 @@ namespace Server.Gumps
                 count += selected.Skills.Length;
             }
 
-            var totalHeight = OffsetSize + (EntryHeight + OffsetSize) * (count + 1);
-
             AddPage(0);
 
-            AddBackground(0, 0, BackWidth, BorderSize + totalHeight + BorderSize, BackGumpID);
-            AddImageTiled(
-                BorderSize,
-                BorderSize,
-                TotalWidth - (OldStyle ? SetWidth + OffsetSize : 0),
-                totalHeight,
-                OffsetGumpID
+            this.AddPropsFrame(TotalWidth, count + 1, out var x, out var y);
+            this.AddPropsHeader(
+                TotalWidth, ref x, ref y,
+                $"{target.GetType().Name} ({target.Serial})".Center(0xFAFAFA),
+                false, 0, false, 0
             );
 
-            var x = BorderSize + OffsetSize;
-            var y = BorderSize + OffsetSize;
-
-            var emptyWidth = TotalWidth - PrevWidth - NextWidth - OffsetSize * 4 - (OldStyle ? SetWidth + OffsetSize : 0);
-
-            if (OldStyle)
-            {
-                AddImageTiled(x, y, TotalWidth - OffsetSize * 3 - SetWidth, EntryHeight, HeaderGumpID);
-            }
-            else
-            {
-                AddImageTiled(x, y, PrevWidth, EntryHeight, HeaderGumpID);
-            }
-
-            x += PrevWidth + OffsetSize;
-
-            if (!OldStyle)
-            {
-                AddImageTiled(
-                    x - (OldStyle ? OffsetSize : 0),
-                    y,
-                    emptyWidth + (OldStyle ? OffsetSize * 2 : 0),
-                    EntryHeight,
-                    HeaderGumpID
-                );
-            }
-
-            x += emptyWidth + OffsetSize;
-
-            if (!OldStyle)
-            {
-                AddImageTiled(x, y, NextWidth, EntryHeight, HeaderGumpID);
-            }
+            const int emptyWidth = TotalWidth - PrevWidth - NextWidth - OffsetSize * 4;
 
             for (var i = 0; i < m_Groups.Length; ++i)
             {
@@ -220,12 +136,10 @@ namespace Server.Gumps
 
                 x += PrevWidth + OffsetSize;
 
-                x -= OldStyle ? OffsetSize : 0;
-
-                AddImageTiled(x, y, emptyWidth + (OldStyle ? OffsetSize * 2 : 0), EntryHeight, EntryGumpID);
+                AddImageTiled(x, y, emptyWidth, EntryHeight, EntryGumpID);
                 AddLabel(x + TextOffsetX, y, TextHue, group?.Name ?? "");
 
-                x += emptyWidth + (OldStyle ? OffsetSize * 2 : 0);
+                x += emptyWidth;
                 x += OffsetSize;
 
                 if (SetGumpID != 0)
@@ -238,7 +152,6 @@ namespace Server.Gumps
                     continue;
                 }
 
-                var indentMaskX = BorderSize;
                 var indentMaskY = y + EntryHeight + OffsetSize;
 
                 for (var j = 0; j < group!.Skills.Length; ++j)
@@ -257,18 +170,10 @@ namespace Server.Gumps
 
                     x += PrevWidth + OffsetSize;
 
-                    x -= OldStyle ? OffsetSize : 0;
-
-                    AddImageTiled(
-                        x,
-                        y,
-                        emptyWidth + (OldStyle ? OffsetSize * 2 : 0) - OffsetSize - IndentWidth,
-                        EntryHeight,
-                        EntryGumpID
-                    );
+                    AddImageTiled(x, y, emptyWidth - OffsetSize - IndentWidth, EntryHeight, EntryGumpID);
                     AddLabel(x + TextOffsetX, y, TextHue, sk == null ? "(null)" : sk.Name);
 
-                    x += emptyWidth + (OldStyle ? OffsetSize * 2 : 0) - OffsetSize - IndentWidth;
+                    x += emptyWidth - OffsetSize - IndentWidth;
                     x += OffsetSize;
 
                     if (SetGumpID != 0)
@@ -284,23 +189,29 @@ namespace Server.Gumps
                         switch (sk.Lock)
                         {
                             default:
-                                buttonID1 = 0x983;
-                                buttonID2 = 0x983;
-                                xOffset = 6;
-                                yOffset = 4;
-                                break;
+                                {
+                                    buttonID1 = 0x983;
+                                    buttonID2 = 0x983;
+                                    xOffset = 6;
+                                    yOffset = 4;
+                                    break;
+                                }
                             case SkillLock.Down:
-                                buttonID1 = 0x985;
-                                buttonID2 = 0x985;
-                                xOffset = 6;
-                                yOffset = 4;
-                                break;
+                                {
+                                    buttonID1 = 0x985;
+                                    buttonID2 = 0x985;
+                                    xOffset = 6;
+                                    yOffset = 4;
+                                    break;
+                                }
                             case SkillLock.Locked:
-                                buttonID1 = 0x82C;
-                                buttonID2 = 0x82C;
-                                xOffset = 5;
-                                yOffset = 2;
-                                break;
+                                {
+                                    buttonID1 = 0x82C;
+                                    buttonID2 = 0x82C;
+                                    xOffset = 5;
+                                    yOffset = 2;
+                                    break;
+                                }
                         }
 
                         AddButton(x + xOffset, y + yOffset, buttonID1, buttonID2, GetButtonID(2, j));
@@ -331,7 +242,7 @@ namespace Server.Gumps
                 }
 
                 AddImageTiled(
-                    indentMaskX,
+                    BorderSize,
                     indentMaskY,
                     IndentWidth + OffsetSize,
                     group.Skills.Length * (EntryHeight + OffsetSize) - (i < m_Groups.Length - 1 ? OffsetSize : 0),
@@ -406,17 +317,23 @@ namespace Server.Gumps
                                     switch (sk.Lock)
                                     {
                                         case SkillLock.Up:
-                                            sk.SetLockNoRelay(SkillLock.Down);
-                                            sk.Update();
-                                            break;
+                                            {
+                                                sk.SetLockNoRelay(SkillLock.Down);
+                                                sk.Update();
+                                                break;
+                                            }
                                         case SkillLock.Down:
-                                            sk.SetLockNoRelay(SkillLock.Locked);
-                                            sk.Update();
-                                            break;
+                                            {
+                                                sk.SetLockNoRelay(SkillLock.Locked);
+                                                sk.Update();
+                                                break;
+                                            }
                                         case SkillLock.Locked:
-                                            sk.SetLockNoRelay(SkillLock.Up);
-                                            sk.Update();
-                                            break;
+                                            {
+                                                sk.SetLockNoRelay(SkillLock.Up);
+                                                sk.Update();
+                                                break;
+                                            }
                                     }
                                 }
                                 else
@@ -451,11 +368,10 @@ namespace Server.Gumps
         public SkillName[] Skills { get; }
 
         public static SkillsGumpGroup[] Groups { get; } =
-        {
+        [
             new(
                 "Crafting",
-                new[]
-                {
+                [
                     SkillName.Alchemy,
                     SkillName.Blacksmith,
                     SkillName.Cartography,
@@ -466,22 +382,20 @@ namespace Server.Gumps
                     SkillName.Tailoring,
                     SkillName.Tinkering,
                     SkillName.Imbuing
-                }
+                ]
             ),
             new(
                 "Bardic",
-                new[]
-                {
+                [
                     SkillName.Discordance,
                     SkillName.Musicianship,
                     SkillName.Peacemaking,
                     SkillName.Provocation
-                }
+                ]
             ),
             new(
                 "Magical",
-                new[]
-                {
+                [
                     SkillName.Chivalry,
                     SkillName.EvalInt,
                     SkillName.Magery,
@@ -493,12 +407,11 @@ namespace Server.Gumps
                     SkillName.Bushido,
                     SkillName.Spellweaving,
                     SkillName.Mysticism
-                }
+                ]
             ),
             new(
                 "Miscellaneous",
-                new[]
-                {
+                [
                     SkillName.Camping,
                     SkillName.Fishing,
                     SkillName.Focus,
@@ -509,12 +422,11 @@ namespace Server.Gumps
                     SkillName.Mining,
                     SkillName.Snooping,
                     SkillName.Veterinary
-                }
+                ]
             ),
             new(
                 "Combat Ratings",
-                new[]
-                {
+                [
                     SkillName.Archery,
                     SkillName.Fencing,
                     SkillName.Macing,
@@ -523,12 +435,11 @@ namespace Server.Gumps
                     SkillName.Tactics,
                     SkillName.Wrestling,
                     SkillName.Throwing
-                }
+                ]
             ),
             new(
                 "Actions",
-                new[]
-                {
+                [
                     SkillName.AnimalTaming,
                     SkillName.Begging,
                     SkillName.DetectHidden,
@@ -538,21 +449,20 @@ namespace Server.Gumps
                     SkillName.Stealing,
                     SkillName.Stealth,
                     SkillName.Tracking
-                }
+                ]
             ),
             new(
                 "Lore & Knowledge",
-                new[]
-                {
+                [
                     SkillName.Anatomy,
                     SkillName.AnimalLore,
                     SkillName.ArmsLore,
                     SkillName.Forensics,
                     SkillName.ItemID,
                     SkillName.TasteID
-                }
+                ]
             )
-        };
+        ];
 
         private class SkillNameComparer : IComparer<SkillName>
         {

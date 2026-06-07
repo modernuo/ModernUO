@@ -41,24 +41,14 @@ public class SpawnPropsGump : PropertiesGump
 
     private List<object> _spawners;
 
-    public SpawnPropsGump(Mobile mobile, object o, List<object> spawners) : base(mobile, o)
-    {
-        _spawners = spawners;
-    }
+    public SpawnPropsGump(Mobile mobile, object o, List<object> spawners) : base(mobile, o) => _spawners = spawners;
 
-    public SpawnPropsGump(Mobile mobile, object o, Stack<StackEntry> stack, StackEntry parent, List<object> spawners) : base(
-        mobile, o, stack, parent
-    )
-    {
-        _spawners = spawners;
-    }
+    public SpawnPropsGump(Mobile mobile, object o, Stack<StackEntry> stack, StackEntry parent, List<object> spawners)
+        : base(mobile, o, stack, parent) => _spawners = spawners;
 
-    public SpawnPropsGump(Mobile mobile, object o, Stack<StackEntry> stack, List<object> list, int page, List<object> spawners) : base(
-        mobile, o, stack, list, page
-    )
-    {
-        _spawners = spawners;
-    }
+    public SpawnPropsGump(
+        Mobile mobile, object o, Stack<StackEntry> stack, List<object> list, int page, List<object> spawners
+    ) : base(mobile, o, stack, list, page) => _spawners = spawners;
 
     protected override int TotalHeight => base.TotalHeight + PropsConfig.ApplySize;
 
@@ -67,7 +57,7 @@ public class SpawnPropsGump : PropertiesGump
         base.Initialize(page);
         var totalHeight = TotalHeight - PropsConfig.ApplySize;
 
-        AddButton(BackWidth / 3, PropsConfig.BorderSize + totalHeight + PropsConfig.BorderSize, 5204, 5205, 3);
+        AddButton(BackWidth / 3, PropsConfig.BorderSize * 2 + totalHeight, 5204, 5205, 3);
     }
 
     public override void SendPropertiesGump() =>
@@ -111,9 +101,7 @@ public class SpawnPropsGump : PropertiesGump
                                 propsBuilder.Append(' ');
                             }
 
-                            propsBuilder.Append(attr);
-                            propsBuilder.Append(' ');
-                            propsBuilder.Append(prop.ToString()); // TODO: Replace with ZString, or IFormatter code
+                            propsBuilder.Append($"{attr} {prop}");
                         }
                     }
 

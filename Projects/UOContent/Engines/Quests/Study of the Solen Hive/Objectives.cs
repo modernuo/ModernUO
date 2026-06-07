@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Server.Gumps;
 
 namespace Server.Engines.Quests.Naturalist
 {
@@ -117,18 +118,18 @@ namespace Server.Engines.Quests.Naturalist
             }
         }
 
-        public override void RenderProgress(BaseQuestGump gump)
+        public override void RenderProgress(ref DynamicGumpBuilder builder)
         {
             if (!Completed)
             {
-                gump.AddHtmlLocalized(70, 260, 270, 100, 1054055, BaseQuestGump.Blue); // Solen Nests Studied :
-                gump.AddLabel(70, 280, 0x64, CurProgress.ToString());
-                gump.AddLabel(100, 280, 0x64, "/");
-                gump.AddLabel(130, 280, 0x64, MaxProgress.ToString());
+                builder.AddHtmlLocalized(70, 260, 270, 100, 1054055, BaseQuestGump.Blue); // Solen Nests Studied :
+                builder.AddLabel(70, 280, 0x64, $"{CurProgress}");
+                builder.AddLabel(100, 280, 0x64, "/");
+                builder.AddLabel(130, 280, 0x64, $"{MaxProgress}");
             }
             else
             {
-                base.RenderProgress(gump);
+                base.RenderProgress(ref builder);
             }
         }
 
@@ -176,14 +177,12 @@ namespace Server.Engines.Quests.Naturalist
     {
         public override int Message => 1054048;
 
-        public override void RenderProgress(BaseQuestGump gump)
+        public override void RenderProgress(ref DynamicGumpBuilder builder)
         {
-            var count = NestArea.NonSpecialCount.ToString();
-
-            gump.AddHtmlLocalized(70, 260, 270, 100, 1054055, BaseQuestGump.Blue); // Solen Nests Studied :
-            gump.AddLabel(70, 280, 0x64, count);
-            gump.AddLabel(100, 280, 0x64, "/");
-            gump.AddLabel(130, 280, 0x64, count);
+            builder.AddHtmlLocalized(70, 260, 270, 100, 1054055, BaseQuestGump.Blue); // Solen Nests Studied :
+            builder.AddLabel(70, 280, 0x64, $"{NestArea.NonSpecialCount}");
+            builder.AddLabel(100, 280, 0x64, "/");
+            builder.AddLabel(130, 280, 0x64, $"{NestArea.NonSpecialCount}");
         }
     }
 }

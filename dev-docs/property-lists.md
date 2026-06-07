@@ -95,6 +95,22 @@ The compiler generates different calls for each:
 
 **Rule of thumb**: The only text that should appear as bare literals in the interpolated string is `\t` (the argument separator). Everything else — including string constants — must be inside `{}` holes.
 
+### No `.ToString()` Inside Holes
+
+`IPropertyList`'s interpolated string handler formats values directly into a pooled buffer via `ISpanFormattable.TryFormat` — no intermediate `string` allocation per hole. An explicit `.ToString()` defeats this:
+
+```csharp
+// BAD — .ToString() allocates a string, then the handler copies its chars
+list.Add(1060658, $"{"Charges"}\t{_charges.ToString()}");
+
+// GOOD — the handler formats _charges directly with no intermediate string
+list.Add(1060658, $"{"Charges"}\t{_charges}");
+```
+
+Same applies to `.String()` on `TextDefinition`, `.GetValue()`, and any method that returns a freshly allocated `string` — drop the call and let the handler format the underlying value directly.
+
+The full list of interpolation anti-patterns (ternaries, switch expressions, pre-built locals, `string.Format`, concat, LINQ in holes) applies equally to `IPropertyList.Add($"...")`. See [`dev-docs/string-handling.md`](string-handling.md#interpolation-anti-patterns) for the full reference.
+
 ### Cliloc as Argument (Use `:#` Format Specifier)
 
 When a cliloc argument is itself another cliloc number (i.e., the argument should resolve to localized text), use the `:#` format specifier on the integer — **not** a `"#number"` string:

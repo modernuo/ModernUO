@@ -127,11 +127,11 @@ public partial class SOS : Item
 
             if (UseNewMessages || entry == null)
             {
-                from.SendGump(new MessageGump(TargetMap, TargetLocation));
+                MessageGump.DisplayTo(from, TargetMap, TargetLocation);
             }
             else
             {
-                from.SendGump(new OldMessageGump(entry, TargetMap, TargetLocation, from.Language));
+                OldMessageGump.DisplayTo(from, entry, TargetMap, TargetLocation, from.Language);
             }
         }
         else
@@ -226,10 +226,24 @@ public partial class SOS : Item
         return water;
     }
 
-    private class MessageGump : Gump
+    private class MessageGump : StaticGump<MessageGump>
     {
-        public MessageGump(Map map, Point3D loc) : base(150, 50)
+        private readonly string _fmt;
+
+        public override bool Singleton => true;
+
+        private MessageGump(string fmt) : base(150, 50)
         {
+            _fmt = fmt;
+        }
+
+        public static void DisplayTo(Mobile from, Map map, Point3D loc)
+        {
+            if (from?.NetState == null)
+            {
+                return;
+            }
+
             int xLong = 0, yLat = 0;
             int xMins = 0, yMins = 0;
             bool xEast = false, ySouth = false;
@@ -244,31 +258,55 @@ public partial class SOS : Item
                 fmt = "?????";
             }
 
-            AddPage(0);
+            from.SendGump(new MessageGump(fmt));
+        }
 
-            AddBackground(0, 40, 350, 300, 2520);
+        protected override void BuildLayout(ref StaticGumpBuilder builder)
+        {
+            builder.AddPage();
+
+            builder.AddBackground(0, 40, 350, 300, 2520);
 
             /* This is a message hastily scribbled by a passenger aboard a sinking ship.
              * While it is probably too late to save the passengers and crew,
              * perhaps some treasure went down with the ship!
              * The message gives the ship's last known sextant co-ordinates.
              */
-            AddHtmlLocalized(30, 80, 285, 160, 1018326, true, true);
+            builder.AddHtmlLocalized(30, 80, 285, 160, 1018326, true, true);
 
-            AddHtml(35, 240, 230, 20, fmt);
+            builder.AddHtmlPlaceholder(35, 240, 230, 20, "fmt");
 
-            AddButton(35, 265, 4005, 4007, 0);
-            AddHtmlLocalized(70, 265, 100, 20, 1011036); // OKAY
+            builder.AddButton(35, 265, 4005, 4007, 0);
+            builder.AddHtmlLocalized(70, 265, 100, 20, 1011036); // OKAY
+        }
+
+        protected override void BuildStrings(ref GumpStringsBuilder builder)
+        {
+            builder.SetStringSlot("fmt", _fmt);
         }
     }
 
-    private class OldMessageGump : Gump
+    private class OldMessageGump : StaticGump<OldMessageGump>
     {
         private const int Width = 350;
         private const int Height = 300;
 
-        public OldMessageGump(TextDefinition entry, Map map, Point3D loc, string lang) : base((640 - Width) / 2, (480 - Height) / 2)
+        private readonly string _message;
+
+        public override bool Singleton => true;
+
+        private OldMessageGump(string message) : base((640 - Width) / 2, (480 - Height) / 2)
         {
+            _message = message;
+        }
+
+        public static void DisplayTo(Mobile from, TextDefinition entry, Map map, Point3D loc, string lang)
+        {
+            if (from?.NetState == null || entry == null)
+            {
+                return;
+            }
+
             int xLong = 0, yLat = 0;
             int xMins = 0, yMins = 0;
             bool xEast = false, ySouth = false;
@@ -283,12 +321,22 @@ public partial class SOS : Item
                 fmt = "?????";
             }
 
-            AddPage(0);
-            AddBackground(0, 0, Width, Height, 2520);
-
             // Gumps do not support non-ascii string arguments. Probably why this was not used on OSI
             var message = entry.Number > 0 ? Localization.Format(entry.Number, lang, $"{fmt}") : string.Format(entry.String, fmt);
-            AddHtml(38, 38, Width - 83, Height - 86, message);
+
+            from.SendGump(new OldMessageGump(message));
+        }
+
+        protected override void BuildLayout(ref StaticGumpBuilder builder)
+        {
+            builder.AddPage();
+            builder.AddBackground(0, 0, Width, Height, 2520);
+            builder.AddHtmlPlaceholder(38, 38, Width - 83, Height - 86, "message");
+        }
+
+        protected override void BuildStrings(ref GumpStringsBuilder builder)
+        {
+            builder.SetStringSlot("message", _message);
         }
     }
 }

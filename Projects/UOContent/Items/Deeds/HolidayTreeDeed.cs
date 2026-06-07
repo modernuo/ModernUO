@@ -104,51 +104,61 @@ public partial class HolidayTreeDeed : Item
 
     public override void OnDoubleClick(Mobile from)
     {
-        from.SendGump(new HolidayTreeChoiceGump(from, this));
+        HolidayTreeChoiceGump.DisplayTo(from, this);
     }
 }
 
-public class HolidayTreeChoiceGump : Gump
+public class HolidayTreeChoiceGump : StaticGump<HolidayTreeChoiceGump>
 {
-    private readonly HolidayTreeDeed m_Deed;
-    private readonly Mobile m_From;
+    private readonly HolidayTreeDeed _deed;
 
     public override bool Singleton => true;
 
-    public HolidayTreeChoiceGump(Mobile from, HolidayTreeDeed deed) : base(200, 200)
+    private HolidayTreeChoiceGump(HolidayTreeDeed deed) : base(200, 200) => _deed = deed;
+
+    public static void DisplayTo(Mobile from, HolidayTreeDeed deed)
     {
-        m_From = from;
-        m_Deed = deed;
+        if (from?.NetState == null || deed?.Deleted != false)
+        {
+            return;
+        }
 
-        AddPage(0);
+        from.SendGump(new HolidayTreeChoiceGump(deed));
+    }
 
-        AddBackground(0, 0, 220, 120, 5054);
-        AddBackground(10, 10, 200, 100, 3000);
+    protected override void BuildLayout(ref StaticGumpBuilder builder)
+    {
+        builder.AddPage();
 
-        AddButton(20, 35, 4005, 4007, 1);
-        AddHtmlLocalized(55, 35, 145, 25, 1018322); // Classic
+        builder.AddBackground(0, 0, 220, 120, 5054);
+        builder.AddBackground(10, 10, 200, 100, 3000);
 
-        AddButton(20, 65, 4005, 4007, 2);
-        AddHtmlLocalized(55, 65, 145, 25, 1018321); // Modern
+        builder.AddButton(20, 35, 4005, 4007, 1);
+        builder.AddHtmlLocalized(55, 35, 145, 25, 1018322); // Classic
+
+        builder.AddButton(20, 65, 4005, 4007, 2);
+        builder.AddHtmlLocalized(55, 65, 145, 25, 1018321); // Modern
     }
 
     public override void OnResponse(NetState sender, in RelayInfo info)
     {
-        if (m_Deed.Deleted)
+        if (_deed.Deleted)
         {
             return;
         }
+
+        var from = sender.Mobile;
 
         switch (info.ButtonID)
         {
             case 1:
                 {
-                    m_Deed.BeginPlace(m_From, HolidayTreeType.Classic);
+                    _deed.BeginPlace(from, HolidayTreeType.Classic);
                     break;
                 }
             case 2:
                 {
-                    m_Deed.BeginPlace(m_From, HolidayTreeType.Modern);
+                    _deed.BeginPlace(from, HolidayTreeType.Modern);
                     break;
                 }
         }

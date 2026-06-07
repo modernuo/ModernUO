@@ -47,7 +47,7 @@ public abstract partial class PromotionalToken : Item
         }
         else
         {
-            from.SendGump(new PromotionalTokenGump(this));
+            PromotionalTokenGump.DisplayTo(from, this);
         }
     }
 
@@ -67,25 +67,35 @@ public abstract partial class PromotionalToken : Item
         m?.CloseGump<PromotionalTokenGump>();
     }
 
-    private class PromotionalTokenGump : Gump
+    private class PromotionalTokenGump : DynamicGump
     {
-        private readonly PromotionalToken m_Token;
+        private readonly PromotionalToken _token;
 
         public override bool Singleton => true;
 
-        public PromotionalTokenGump(PromotionalToken token) : base(10, 10)
+        private PromotionalTokenGump(PromotionalToken token) : base(10, 10) => _token = token;
+
+        public static void DisplayTo(Mobile from, PromotionalToken token)
         {
-            m_Token = token;
+            if (from?.NetState == null || token?.Deleted != false)
+            {
+                return;
+            }
 
-            AddPage(0);
+            from.SendGump(new PromotionalTokenGump(token));
+        }
 
-            AddBackground(0, 0, 240, 135, 0x2422);
+        protected override void BuildLayout(ref DynamicGumpBuilder builder)
+        {
+            builder.AddPage();
+
+            builder.AddBackground(0, 0, 240, 135, 0x2422);
             // Click "OKAY" to redeem the following promotional item:
-            AddHtmlLocalized(15, 15, 210, 75, 1070972, 0x0, true);
-            m_Token.ItemGumpName.AddHtmlText(this, 15, 60, 210, 75);
+            builder.AddHtmlLocalized(15, 15, 210, 75, 1070972, 0x0, true);
+            _token.ItemGumpName.AddHtmlText(ref builder, 15, 60, 210, 75);
 
-            AddButton(160, 95, 0xF7, 0xF8, 1); // Okay
-            AddButton(90, 95, 0xF2, 0xF1, 0);  // Cancel
+            builder.AddButton(160, 95, 0xF7, 0xF8, 1); // Okay
+            builder.AddButton(90, 95, 0xF2, 0xF1, 0);  // Cancel
         }
 
         public override void OnResponse(NetState sender, in RelayInfo info)
@@ -97,19 +107,19 @@ public abstract partial class PromotionalToken : Item
 
             var from = sender.Mobile;
 
-            if (!m_Token.IsChildOf(from.Backpack))
+            if (!_token.IsChildOf(from.Backpack))
             {
                 from.SendLocalizedMessage(1062334); // This item must be in your backpack to be used.
             }
             else
             {
-                var i = m_Token.CreateItemFor(from);
+                var i = _token.CreateItemFor(from);
 
                 if (i != null)
                 {
                     from.BankBox.AddItem(i);
-                    m_Token.ItemReceiveMessage.SendMessageTo(from);
-                    m_Token.Delete();
+                    _token.ItemReceiveMessage.SendMessageTo(from);
+                    _token.Delete();
                 }
             }
         }

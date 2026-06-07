@@ -5,6 +5,7 @@ using Server.Engines.ConPVP;
 using Server.Engines.Stealables;
 using Server.Factions;
 using Server.Items;
+using Server.Misc;
 using Server.Mobiles;
 using Server.Spells;
 using Server.Spells.Fifth;
@@ -360,6 +361,8 @@ public static class Stealing
             {
                 _thief.SendLocalizedMessage(502710); // You can't steal that!
             }
+
+            Titles.AwardKarma(from, -50, true);
 
             var mobRoot = root as Mobile;
 

@@ -547,7 +547,7 @@ namespace Server.Mobiles
 
                 seller.PlaySound(0x0037); // Gold dropping sound
 
-                if (SupportsBulkOrders(seller))
+                if (ContentFeatureFlags.BulkOrders && SupportsBulkOrders(seller))
                 {
                     var bulkOrder = CreateBulkOrder(seller, false);
 
@@ -842,17 +842,12 @@ namespace Server.Mobiles
 
         public virtual void VendorBuy(Mobile from)
         {
-            if (!IsActiveSeller)
+            if (!IsActiveSeller || !from.CheckAlive())
             {
                 return;
             }
 
-            if (!from.CheckAlive())
-            {
-                return;
-            }
-
-            if (!ContentFeatureFlags.VendorPurchase && from.AccessLevel < AccessLevel.Administrator)
+            if (!ContentFeatureFlags.VendorPurchase)
             {
                 from.SendMessage(0x22, "Vendor purchases are temporarily disabled.");
                 return;
@@ -1019,17 +1014,12 @@ namespace Server.Mobiles
 
         public virtual void VendorSell(Mobile from)
         {
-            if (!IsActiveBuyer)
+            if (!IsActiveBuyer || !from.CheckAlive())
             {
                 return;
             }
 
-            if (!from.CheckAlive())
-            {
-                return;
-            }
-
-            if (!ContentFeatureFlags.VendorSell && from.AccessLevel < AccessLevel.Administrator)
+            if (!ContentFeatureFlags.VendorSell)
             {
                 from.SendMessage(0x22, "Vendor sales are temporarily disabled.");
                 return;
@@ -1092,7 +1082,7 @@ namespace Server.Mobiles
             var smallBod = dropped as SmallBOD;
             var largeBod = dropped as LargeBOD;
 
-            if (!(smallBod != null || largeBod != null))
+            if (!ContentFeatureFlags.BulkOrders || !(smallBod != null || largeBod != null))
             {
                 return base.OnDragDrop(from, dropped);
             }
@@ -1414,17 +1404,17 @@ namespace Server.Mobiles
         {
             if (from.Alive && IsActiveVendor)
             {
-                if (SupportsBulkOrders(from))
+                if (ContentFeatureFlags.BulkOrders && SupportsBulkOrders(from))
                 {
                     list.Add(new BulkOrderInfoEntry());
                 }
 
-                if (IsActiveSeller)
+                if (ContentFeatureFlags.VendorPurchase && IsActiveSeller)
                 {
                     list.Add(new VendorBuyEntry(CheckVendorAccess(from)));
                 }
 
-                if (IsActiveBuyer)
+                if (ContentFeatureFlags.VendorSell && IsActiveBuyer)
                 {
                     list.Add(new VendorSellEntry(CheckVendorAccess(from)));
                 }
@@ -1457,7 +1447,7 @@ namespace Server.Mobiles
 
             public override void OnClick(Mobile from, IEntity target)
             {
-                if (target is not BaseVendor vendor || !vendor.SupportsBulkOrders(from))
+                if (!ContentFeatureFlags.BulkOrders || target is not BaseVendor vendor || !vendor.SupportsBulkOrders(from))
                 {
                     return;
                 }

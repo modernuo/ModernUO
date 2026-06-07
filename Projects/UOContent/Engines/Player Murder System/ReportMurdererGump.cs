@@ -60,28 +60,11 @@ public class ReportMurdererGump : StaticGump<ReportMurdererGump>
 
         if (toGive?.Count > 0)
         {
+            var (fameAward, _) = Titles.ComputeKillAwards(m, m.Map);
+
             foreach (var g in toGive)
             {
-                var n = Notoriety.Compute(g, m);
-
-                var ourKarma = g.Karma;
-                var innocent = n == Notoriety.Innocent;
-                var criminal = n is Notoriety.Criminal or Notoriety.Murderer;
-
-                var fameAward = m.Fame / 200;
-                var karmaAward = 0;
-
-                if (innocent)
-                {
-                    karmaAward = ourKarma > -2500 ? -850 : -110 - m.Karma / 100;
-                }
-                else if (criminal)
-                {
-                    karmaAward = 50;
-                }
-
                 Titles.AwardFame(g, fameAward, false);
-                Titles.AwardKarma(g, karmaAward, true);
             }
         }
 

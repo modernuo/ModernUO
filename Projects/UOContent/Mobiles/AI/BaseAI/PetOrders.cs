@@ -17,7 +17,29 @@ namespace Server.Mobiles;
 
 public abstract partial class BaseAI
 {
-    private OrderType _lastPetOrder = OrderType.None;
+    // The standing command a pet falls back to when a transient order (Attack/Come/Drop)
+    // completes: None, Stay, Follow, or Guard. Runtime-only (not serialized); reset to None
+    // on load and derived from master proximity on login. See PetLoginHandler.
+    internal OrderType PersistentOrder { get; private set; } = OrderType.None;
+
+    // Guards anchor/persistent derivation while we resume a fallback order, so a resume
+    // never re-derives the persistent command or re-anchors Home. See OnCurrentOrderChanged.
+    private bool _resolvingOrder;
+
+    // The controlled-pet wander anchor (Home) is a pure function of the persistent command.
+    internal void SetPersistentOrder(OrderType order)
+    {
+        PersistentOrder = order;
+        Mobile.Home = order is OrderType.Follow or OrderType.Guard ? Point3D.Zero : Mobile.Location;
+    }
+
+    // Resume the persistent command without re-deriving the persistent order or anchor.
+    private void ResumePersistentOrder()
+    {
+        _resolvingOrder = true;
+        Mobile.ControlOrder = PersistentOrder;
+        _resolvingOrder = false;
+    }
 
     public virtual bool Obey() =>
         !Mobile.Deleted && Mobile.ControlOrder switch
@@ -43,33 +65,9 @@ public abstract partial class BaseAI
 
         Mobile.Warmode = IsValidCombatant(Mobile.Combatant);
 
-        if (_lastPetOrder == OrderType.Guard)
-        {
-            DebugSay("Target lost, resuming guard duty.");
-
-            Mobile.ControlOrder = OrderType.Guard;
-            _lastPetOrder = OrderType.None;
-            return true;
-        }
-        else if (_lastPetOrder == OrderType.Stay)
-        {
-            DebugSay("Target lost, resuming stay position.");
-
-            Mobile.ControlOrder = OrderType.Stay;
-            _lastPetOrder = OrderType.None;
-            return true;
-        }
-        else if (_lastPetOrder == OrderType.Follow)
-        {
-            DebugSay("Target lost, resuming follow command.");
-
-            Mobile.ControlTarget = Mobile.ControlMaster;
-            Mobile.ControlOrder = OrderType.Follow;
-            _lastPetOrder = OrderType.None;
-            return true;
-        }
-
-        WalkRandom(3, 2, 1);
+        // Pure idle: gently wander near the anchor, with CheckIdle rest periods. Pets resume
+        // a standing order via ResumePersistentOrder, not by re-deriving it here.
+        WalkRandomIdle();
         return true;
     }
 
@@ -106,8 +104,6 @@ public abstract partial class BaseAI
 
         if (Mobile.ControlTarget?.Deleted == false && Mobile.ControlTarget != Mobile)
         {
-            _lastPetOrder = OrderType.Follow;
-
             FollowTarget();
         }
         else
@@ -147,9 +143,8 @@ public abstract partial class BaseAI
 
         this.DebugSayFormatted($"I am ordered to drop my items by {Mobile.ControlMaster?.Name ?? "Unknown"}.");
 
-        Mobile.ControlOrder = OrderType.None;
-
         DropItems();
+        ResumePersistentOrder();
         return true;
     }
 
@@ -224,7 +219,7 @@ public abstract partial class BaseAI
         {
             from.SendLocalizedMessage(1049691);
             // That person is already a friend.
-            Mobile.ControlOrder = OrderType.None;
+            ResumePersistentOrder();
             return;
         }
 
@@ -270,7 +265,7 @@ public abstract partial class BaseAI
         {
             from.SendLocalizedMessage(1070953);
             // That person is not a friend.
-            Mobile.ControlOrder = OrderType.None;
+            ResumePersistentOrder();
             return;
         }
 
@@ -295,8 +290,6 @@ public abstract partial class BaseAI
         {
             return true;
         }
-
-        _lastPetOrder = OrderType.Guard;
 
         FindCombatant();
 
@@ -337,7 +330,7 @@ public abstract partial class BaseAI
     {
         if (Mobile.IsDeadPet)
         {
-            return false;
+            return true;
         }
 
         if (IsInvalidControlTarget(Mobile.ControlTarget))
@@ -357,13 +350,14 @@ public abstract partial class BaseAI
     }
 
     private bool IsInvalidControlTarget(Mobile target) => target?.Deleted != false || target.Map != Mobile.Map
-        || !target.Alive || target.IsDeadBondedPet;
+        || !target.Alive || target.IsDeadBondedPet || target.Hidden;
 
     private void HandleInvalidControlTarget()
     {
         DebugSay("Target is either dead, hidden, or out of range.");
 
-        Mobile.ControlOrder = Core.AOS || Mobile.IsBonded ? OrderType.Follow : OrderType.None;
+        Mobile.ControlTarget = Mobile.ControlMaster;
+        ResumePersistentOrder();
 
         if (Mobile.FightMode is FightMode.Closest or FightMode.Aggressor)
         {
@@ -441,6 +435,9 @@ public abstract partial class BaseAI
         }
         else
         {
+            // No spawner to return to: anchor where it stands so it idle-wanders here
+            // instead of pathing toward a stale (e.g. former stay) anchor.
+            Mobile.Home = Mobile.Location;
             Action = ActionType.Wander;
         }
 
@@ -472,30 +469,19 @@ public abstract partial class BaseAI
             this.DebugSayFormatted($"I have been ordered to stay by {Mobile.ControlMaster?.Name ?? "Unknown"}.");
         }
 
-        _lastPetOrder = OrderType.Stay;
-
-        WalkRandomInHome(3, 2, 1);
-        return true;
-    }
-
-    public virtual bool DoOrderStop()
-    {
-        if (CheckHerding())
+        // Hold position at the post (Home). Stand still when there; only walk back if displaced
+        // (e.g. after chasing a kill). No idle shuffle.
+        if (Mobile.Home != Point3D.Zero && Mobile.Location != Mobile.Home)
         {
-            this.DebugSayFormatted($"I am being herded by {Mobile.ControlTarget?.Name ?? "Unknown"}.");
-        }
-        else
-        {
-            this.DebugSayFormatted($"I have been ordered to stop by {Mobile.ControlMaster?.Name ?? "Unknown"}.");
-        }
-
-        if (Core.ML)
-        {
-            WalkRandomInHome(5, 2, 1);
+            DoMove(Mobile.GetDirectionTo(Mobile.Home));
         }
 
         return true;
     }
+
+    // Stop is resolved into another order in OnCurrentOrderChanged and never rests as the
+    // active order; this is a defensive no-op.
+    public virtual bool DoOrderStop() => true;
 
     public virtual bool DoOrderTransfer()
     {
@@ -518,7 +504,7 @@ public abstract partial class BaseAI
             {
                 from.SendLocalizedMessage(502040);
                 // As a young player, you may not friend pets to older players.
-                Mobile.ControlOrder = OrderType.None;
+                ResumePersistentOrder();
                 return true;
             }
 
@@ -526,7 +512,7 @@ public abstract partial class BaseAI
             {
                 from.SendLocalizedMessage(502041);
                 // As an older player, you may not friend pets to young players.
-                Mobile.ControlOrder = OrderType.None;
+                ResumePersistentOrder();
                 return true;
             }
 
@@ -535,8 +521,8 @@ public abstract partial class BaseAI
                 SendTransferRefusalMessages(from, to, 1043248, 1043249);
                 // 1043248: The pet refuses to be transferred because it will not obey ~1_NAME~.~3_BLANK~
                 // 1043249: The pet will not accept you as a master because it does not trust you.~3_BLANK~
-                Mobile.ControlOrder = OrderType.None;
-                return false;
+                ResumePersistentOrder();
+                return true;
             }
 
             if (!Mobile.CanBeControlledBy(from))
@@ -544,8 +530,8 @@ public abstract partial class BaseAI
                 SendTransferRefusalMessages(from, to, 1043250, 1043251);
                 // 1043250: The pet refuses to be transferred because it will not obey you sufficiently.~3_BLANK~
                 // 1043251: The pet will not accept you as a master because it does not trust ~2_NAME~.~3_BLANK~
-                Mobile.ControlOrder = OrderType.None;
-                return false;
+                ResumePersistentOrder();
+                return true;
             }
 
             if (Mobile.Combatant != null || Mobile.Aggressors.Count > 0 ||
@@ -553,8 +539,8 @@ public abstract partial class BaseAI
             {
                 from.SendMessage("You can not transfer a pet while in combat.");
                 to.SendMessage("You can not transfer a pet while in combat.");
-                Mobile.ControlOrder = OrderType.None;
-                return false;
+                ResumePersistentOrder();
+                return true;
             }
 
             var fromState = from.NetState;
@@ -562,8 +548,8 @@ public abstract partial class BaseAI
 
             if (fromState == null || toState == null)
             {
-                Mobile.ControlOrder = OrderType.None;
-                return false;
+                ResumePersistentOrder();
+                return true;
             }
 
             if (from.HasTrade || to.HasTrade)
@@ -572,8 +558,8 @@ public abstract partial class BaseAI
                 // You cannot transfer a pet with a trade pending
                 to.SendLocalizedMessage(1010507);
                 // You cannot transfer a pet with a trade pending
-                Mobile.ControlOrder = OrderType.None;
-                return false;
+                ResumePersistentOrder();
+                return true;
             }
 
             var container = fromState.AddTrade(toState);

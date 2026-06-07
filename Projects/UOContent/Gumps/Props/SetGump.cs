@@ -9,13 +9,10 @@ namespace Server.Gumps
 {
     public class SetGump : Gump
     {
-        private static readonly int EntryWidth = 212;
+        private const int EntryWidth = 212;
 
-        private static readonly int TotalWidth = OffsetSize + EntryWidth + OffsetSize + SetWidth + OffsetSize;
-        private static readonly int TotalHeight = OffsetSize + 2 * (EntryHeight + OffsetSize);
+        private const int TotalWidth = OffsetSize + EntryWidth + OffsetSize + SetWidth + OffsetSize;
 
-        private static readonly int BackWidth = BorderSize + TotalWidth + BorderSize;
-        private static readonly int BackHeight = BorderSize + TotalHeight + BorderSize;
         private readonly Mobile m_Mobile;
         private readonly object m_Object;
         private readonly PropertyInfo m_Property;
@@ -39,81 +36,25 @@ namespace Server.Gumps
                 _ => val.ToString()
             };
 
+            var rowCount = 2 + (canNull ? 1 : 0) + (canDye ? 1 : 0);
+
             AddPage(0);
 
-            AddBackground(
-                0,
-                0,
-                BackWidth,
-                BackHeight + (canNull ? EntryHeight + OffsetSize : 0) + (canDye ? EntryHeight + OffsetSize : 0),
-                BackGumpID
-            );
-            AddImageTiled(
-                BorderSize,
-                BorderSize,
-                TotalWidth - (OldStyle ? SetWidth + OffsetSize : 0),
-                TotalHeight + (canNull ? EntryHeight + OffsetSize : 0) + (canDye ? EntryHeight + OffsetSize : 0),
-                OffsetGumpID
-            );
-
-            var x = BorderSize + OffsetSize;
-            var y = BorderSize + OffsetSize;
-
-            AddImageTiled(x, y, EntryWidth, EntryHeight, EntryGumpID);
-            AddLabelCropped(x + TextOffsetX, y, EntryWidth - TextOffsetX, EntryHeight, TextHue, prop.Name);
-            x += EntryWidth + OffsetSize;
-
-            if (SetGumpID != 0)
-            {
-                AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
-            }
-
-            x = BorderSize + OffsetSize;
-            y += EntryHeight + OffsetSize;
-
-            AddImageTiled(x, y, EntryWidth, EntryHeight, EntryGumpID);
-            AddTextEntry(x + TextOffsetX, y, EntryWidth - TextOffsetX, EntryHeight, TextHue, 0, initialText);
-            x += EntryWidth + OffsetSize;
-
-            if (SetGumpID != 0)
-            {
-                AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
-            }
-
-            AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 1);
+            this.AddPropsFrame(TotalWidth, rowCount, out var x, out var y);
+            this.AddPropsEntryLabel(ref x, ref y, EntryWidth, prop.Name);
+            PropsLayout.NextRow(ref x, ref y);
+            this.AddPropsEntryTextInput(ref x, ref y, EntryWidth, 0, initialText, true, 1);
 
             if (canNull)
             {
-                x = BorderSize + OffsetSize;
-                y += EntryHeight + OffsetSize;
-
-                AddImageTiled(x, y, EntryWidth, EntryHeight, EntryGumpID);
-                AddLabelCropped(x + TextOffsetX, y, EntryWidth - TextOffsetX, EntryHeight, TextHue, "Null");
-                x += EntryWidth + OffsetSize;
-
-                if (SetGumpID != 0)
-                {
-                    AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
-                }
-
-                AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 2);
+                PropsLayout.NextRow(ref x, ref y);
+                this.AddPropsEntryButton(ref x, ref y, EntryWidth, "Null", true, 2);
             }
 
             if (canDye)
             {
-                x = BorderSize + OffsetSize;
-                y += EntryHeight + OffsetSize;
-
-                AddImageTiled(x, y, EntryWidth, EntryHeight, EntryGumpID);
-                AddLabelCropped(x + TextOffsetX, y, EntryWidth - TextOffsetX, EntryHeight, TextHue, "Hue Picker");
-                x += EntryWidth + OffsetSize;
-
-                if (SetGumpID != 0)
-                {
-                    AddImageTiled(x, y, SetWidth, EntryHeight, SetGumpID);
-                }
-
-                AddButton(x + SetOffsetX, y + SetOffsetY, SetButtonID1, SetButtonID2, 3);
+                PropsLayout.NextRow(ref x, ref y);
+                this.AddPropsEntryButton(ref x, ref y, EntryWidth, "Hue Picker", true, 3);
             }
         }
 
@@ -144,7 +85,6 @@ namespace Server.Gumps
                         }
                         else
                         {
-                            toSet = null;
                             shouldSet = false;
                         }
 
@@ -202,8 +142,8 @@ namespace Server.Gumps
             private readonly PropertyInfo m_Property;
             private readonly PropertiesGump m_PropertiesGump;
 
-            public InternalPicker(
-                PropertyInfo prop, Mobile mobile, object o, PropertiesGump propertiesGump) : base(((IHued)o).HuedItemID)
+            public InternalPicker(PropertyInfo prop, Mobile mobile, object o, PropertiesGump propertiesGump)
+                : base(((IHued)o).HuedItemID)
             {
                 m_Property = prop;
                 m_Mobile = mobile;

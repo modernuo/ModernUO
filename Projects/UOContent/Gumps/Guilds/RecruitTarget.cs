@@ -96,8 +96,7 @@ namespace Server.Gumps
                 return;
             }
 
-            GuildGump.EnsureClosed(m_Mobile);
-            m_Mobile.SendGump(new GuildGump(m_Mobile, m_Guild));
+            GuildGump.DisplayTo(m_Mobile, m_Guild);
         }
     }
 }

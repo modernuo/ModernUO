@@ -60,7 +60,7 @@ namespace Server.Mobiles
 
                 if (Banker.GetBalance(from) >= 100000)
                 {
-                    from.SendGump(new WeaponEngravingTool.ConfirmGump(tool, vendor));
+                    WeaponEngravingTool.WeaponEngravingToolConfirmGump.DisplayTo(from, tool, vendor);
                 }
                 else
                 {

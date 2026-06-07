@@ -674,7 +674,7 @@ public static class OutgoingMobilePackets
                 itemID |= 0x8000;
             }
 
-            writer.Write(beheld.Hair.VirtualSerial);
+            writer.Write(beheld.HairSerial);
             writer.Write((ushort)itemID);
             writer.Write((byte)Layer.Hair);
 
@@ -697,7 +697,7 @@ public static class OutgoingMobilePackets
                 itemID |= 0x8000;
             }
 
-            writer.Write(beheld.FacialHair.VirtualSerial);
+            writer.Write(beheld.FacialHairSerial);
             writer.Write((ushort)itemID);
             writer.Write((byte)Layer.FacialHair);
 
