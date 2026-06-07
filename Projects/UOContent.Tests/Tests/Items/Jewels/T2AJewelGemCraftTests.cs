@@ -72,4 +72,31 @@ public class T2AJewelGemCraftTests
             player.Delete();
         }
     }
+
+    [Fact]
+    public void OnCraft_WithUnsetGemContext_LeavesPlainPiece()
+    {
+        var map = Map.Felucca;
+        var player = CreatePlayerMobile(map, new Point3D(4120, 500, 0));
+
+        try
+        {
+            player.Backpack.AddItem(new IronIngot(10));
+
+            var system = GetOrInitTinkeringSystem();
+            var context = system.GetContext(player);
+            context.PendingGemType = GemType.None; // no gem targeted
+            context.PendingGemCount = 0;
+
+            var ring = new GoldRing();
+            ring.OnCraft(1, false, player, system, typeof(IronIngot), null, MakeRingRecipe(), 0);
+
+            Assert.Equal(GemType.None, ring.GemType);
+            Assert.Equal(0, ring.GemCount);
+        }
+        finally
+        {
+            player.Delete();
+        }
+    }
 }
