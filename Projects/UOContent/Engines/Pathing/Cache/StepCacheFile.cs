@@ -16,11 +16,11 @@ namespace Server.Engines.Pathing.Cache;
 /// only when the cache asks for them. RAM stays bounded by MaxResidentChunks regardless
 /// of file size.
 ///
-/// File layout v7 (little-endian, BufferWriter / BufferReader convention):
+/// File layout v8 (little-endian, BufferWriter / BufferReader convention):
 ///
-///   Header (48 bytes):
+///   Header (40 bytes):
 ///     u32   Magic           = 0x42575300 ('SWB\0')
-///     u32   Version         = current FormatVersion (7)
+///     u32   Version         = current FormatVersion (8)
 ///     u32   MapId
 ///     u64   Fingerprint     XxHash3 over (1) LandTable + ItemTable flags AND (2) the
 ///                           on-disk bytes of mapX.mul / .uop, staidxX.mul, staticsX.mul.
@@ -73,8 +73,10 @@ namespace Server.Engines.Pathing.Cache;
 ///         sbyte walkZ_N..NW (8)
 ///         sbyte swimZ_N..NW (8)
 ///
-///   Index trailer (20 × ChunkCount bytes):
-///     For each chunk: { u64 chunkKey, u64 fileOffset, u32 recordLength }
+///   Index trailer (8 × ChunkCount bytes), in record write order:
+///     For each chunk: { u32 packedKey = (ChunkX << 16) | ChunkY, u32 recordLength }
+///     The file offset is not stored — reconstructed as a cumulative sum of recordLength
+///     starting at HeaderSize (the first record sits immediately after the header).
 ///
 /// Per-chunk fixed portion (Kind + flags + ZArrayMask + WalkMask + WetMask + SourceZ):
 /// ~783 bytes; each present base Z array adds 256 bytes (0..16 present, so up to ~4 KB).
@@ -88,7 +90,7 @@ namespace Server.Engines.Pathing.Cache;
 internal static class StepCacheFile
 {
     public const uint Magic = 0x42575300; // 'SWB\0'
-    public const uint FormatVersion = 7;
+    public const uint FormatVersion = 8;
 
     /// <summary>
     /// Lowest format version this binary can load. Files below this version are treated as
@@ -109,8 +111,11 @@ internal static class StepCacheFile
     /// Bumped to 7 for per-chunk compression: each chunk record is libdeflate-compressed
     /// independently (random access preserved) behind a u32 uncompressed-length prefix; tiny
     /// records that do not shrink are stored raw. v6 files are rejected and re-baked once.
+    /// Bumped to 8 for index compaction: the trailer drops the per-chunk file offset (derived by
+    /// cumulative record length in write order) and packs the chunk key to u32, shrinking each
+    /// index entry from 20 to 8 bytes. v7 files are rejected and re-baked once.
     /// </summary>
-    public const uint MinSupportedVersion = 7;
+    public const uint MinSupportedVersion = 8;
 
     // Per-chunk record discriminator (first byte after BuiltMultisVersion). 1 is reserved.
     private const byte KindFull = 0;
@@ -125,10 +130,10 @@ internal static class StepCacheFile
         + sizeof(uint)  // ChunkCount
         + sizeof(ulong); // IndexOffset
 
-    // Index entry: chunkKey + fileOffset + recordLength. Bumped to include length when
-    // strata made chunk records variable-size; the lazy reader uses length to do a
-    // single bulk read per chunk without consulting the next offset.
-    private const int IndexEntryBytes = sizeof(ulong) + sizeof(ulong) + sizeof(uint);
+    // Index entry (v8 compact): u32 packedKey ((chunkX << 16) | chunkY) + u32 recordLength.
+    // The file offset is NOT stored — entries are in record write order, so the reader
+    // reconstructs each offset by cumulative sum of record lengths starting at HeaderSize.
+    private const int IndexEntryBytes = sizeof(uint) + sizeof(uint);
 
     /// <summary>Fixed-size portion of a chunk record (everything except the optional strata + swim trailers).</summary>
     private const int BytesPerChunkBase =
@@ -303,8 +308,11 @@ internal static class StepCacheFile
         var indexOffset = (ulong)w.Position;
         for (var i = 0u; i < chunkCount; i++)
         {
-            w.Write(indexEntries[i].key);
-            w.Write(indexEntries[i].offset);
+            // v8 compact entry: u32 packedKey ((chunkX << 16) | chunkY) + u32 recordLength.
+            // Offset is omitted; entries are in record write order so the reader derives it.
+            var key = indexEntries[i].key;
+            var packedKey = ((uint)(key >> 32) << 16) | (uint)(key & 0xFFFF);
+            w.Write(packedKey);
             w.Write(indexEntries[i].length);
         }
 
@@ -383,14 +391,19 @@ internal static class StepCacheFile
                 return null;
             }
 
+            // v8 compact index: { u32 packedKey, u32 length } per chunk, in record write order.
+            // The file offset is not stored — reconstruct it by cumulative record length starting
+            // at the first record (immediately after the header).
             var offsets = new Dictionary<ulong, (ulong offset, uint length)>((int)chunkCount);
+            var runningOffset = (ulong)HeaderSize;
             for (var i = 0; i < chunkCount; i++)
             {
                 var entry = indexBuf.AsSpan(i * IndexEntryBytes);
-                var key = BinaryPrimitives.ReadUInt64LittleEndian(entry);
-                var off = BinaryPrimitives.ReadUInt64LittleEndian(entry[8..]);
-                var len = BinaryPrimitives.ReadUInt32LittleEndian(entry[16..]);
-                offsets[key] = (off, len);
+                var packedKey = BinaryPrimitives.ReadUInt32LittleEndian(entry);
+                var len = BinaryPrimitives.ReadUInt32LittleEndian(entry[4..]);
+                var key = PackChunkKey((int)(packedKey >> 16), (int)(packedKey & 0xFFFF));
+                offsets[key] = (runningOffset, len);
+                runningOffset += len;
             }
 
             return new LazyReader(stream, mapId, fingerprint, bakeTimestamp, chunkCount, offsets);
