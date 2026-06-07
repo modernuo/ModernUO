@@ -98,7 +98,7 @@ Expected: **empty** (our branch now has byte-identical T2A content to Jack's for
 
 Run:
 ```bash
-dotnet build ModernUO.sln -c Debug
+dotnet build ModernUO.slnx -c Debug
 ```
 Expected: build succeeds (0 errors). Warnings acceptable. If the serialization generator complains about `BaseJewel`, confirm `Server.Items.BaseJewel.v5.json` exists under `Projects/UOContent/Migrations/`.
 
@@ -344,7 +344,7 @@ Append a short "Inscription consumption — verified" note to the design spec §
 - [ ] **Step 4: Build + commit**
 
 ```bash
-dotnet build ModernUO.sln -c Debug
+dotnet build ModernUO.slnx -c Debug
 git add -A
 git commit -m "verify(t2a-craft): inscription consumes reagents+scroll on success/failure (AI-1)"
 ```
@@ -382,7 +382,7 @@ Ensure `using Server.Logging;` is present (per CLAUDE.md rule 2 — no `Console.
 
 Run:
 ```bash
-dotnet build ModernUO.sln -c Debug
+dotnet build ModernUO.slnx -c Debug
 ```
 Expected: succeeds.
 
@@ -416,7 +416,7 @@ Apply fixes for definite violations (warnings-only items get noted, not force-fi
 - [ ] **Step 3: Build + commit any fixes**
 
 ```bash
-dotnet build ModernUO.sln -c Debug
+dotnet build ModernUO.slnx -c Debug
 git add -A
 git commit -m "chore(t2a-craft): convention audit fixes"
 ```
@@ -428,7 +428,7 @@ git commit -m "chore(t2a-craft): convention audit fixes"
 
 Run:
 ```bash
-dotnet build ModernUO.sln -c Debug
+dotnet build ModernUO.slnx -c Debug
 ```
 Expected: 0 errors.
 
