@@ -29,6 +29,7 @@ public class SerializationThreadWorker
     private readonly AutoResetEvent _stopEvent; // Main thread waits for the worker finish draining
     private bool _pause;
     private bool _exit;
+    private bool _exited;
     private byte[] _heap;
 
     private readonly ConcurrentQueue<IGenericSerializable> _entities;
@@ -56,6 +57,15 @@ public class SerializationThreadWorker
 
     public void Exit()
     {
+        // Idempotent: once the worker thread has exited, its _stopEvent is never set again,
+        // so a second Exit() would block forever in Sleep(). Only the worker's owning (main)
+        // thread calls Exit(), so no synchronization is needed on _exited.
+        if (_exited)
+        {
+            return;
+        }
+
+        _exited = true;
         _exit = true;
         Wake();
         Sleep();
