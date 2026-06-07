@@ -215,7 +215,12 @@ Per confirmed research, **inscription is tool-less** in T2A (and we extend the s
 - `Skills/Cartography.cs`: `OnUse` → `ShowMenu(m, DefCartography.CraftSystem, tool: null)`.
 - `CraftSystem.RequiresTool == false` for both under the flag; `CraftItem` tool-null guards prevent `UsesRemaining` decrement.
 
-**Inscription consumption invariant (✅ confirmed):** reagents + blank scroll consumed on success *and* failure; mana only on success; Magery gates circle availability, Inscription governs success. Implementation must honor this — **verify** Jack's path matches (action item AI-1).
+**Inscription consumption invariant (✅ confirmed) — AI-1 VERIFIED 2026-06-07:** reagents + blank scroll consumed on success *and* failure; mana only on success; Magery gates circle availability, Inscription governs success. Trace result:
+- **Mana only on success** ✅ — `CraftItem.ConsumeAttributes(...)` is called with `consume:true` only on the success path (`CraftItem.cs` ~1387); it is never called on the skill-check failure path (~1582–1585).
+- **Reagents + blank scroll on failure** ✅ — on failure, `ConsumeRes(..., isFailure:true)` runs with `ConsumeType.All` (scroll recipes don't set `UseAllRes`). The half-on-failure line `amounts[i] -= amounts[i] / 2` (`CraftItem.cs` ~684) fires, but **every spell-scroll reagent and the blank scroll are quantity 1**, and integer `1/2 == 0`, so the subtraction is a no-op → they are **fully consumed**. Matches the confirmed rule.
+- **Runebook** uses 8 blank scrolls and therefore loses 4 on failure (`8 - 8/2`). A Runebook is a *non-scroll* craft, so this is **consistent with D1** (half-on-failure for non-scroll crafts), not a violation.
+
+> **Latent fragility (not a current bug; noted for review):** spell-scroll correctness relies on the amount-1 coincidence above. If any future spell-scroll recipe used a reagent amount ≥ 2, the half-on-failure line would wrongly halve it. Optional hardening if desired: add an opt-in `CraftItem.AlwaysConsumeFullOnFailure` flag set on scroll recipes and skip the half-deduction when set (blast radius: `CraftItem.ConsumeRes` + `DefInscription` only). **Deliberately not implemented** during this reconciliation to keep the shared failure logic untouched.
 
 ---
 
@@ -248,7 +253,7 @@ From the implementation audit; fix as part of building the definitive branch:
 - **B3a — Gem consumption count (must fix, per D4):** `OnCraft` deliberately consumes only 1 gem but names the piece by the full targeted stack (`GemCount`). It must consume `PendingGemCount` and verify availability so the name matches what was consumed. (See §9.)
 - **B4 — Make-Last jewelry path:** `T2ACraftToolTarget` re-prompts `GemSelectTarget`; if the player cancels, flow returns to menu rather than crafting. Confirm acceptable; document the cancel behavior.
 - **B5 — `GemSelectTarget` timeout/cancel:** `OnTargetCancel` reopens the menu (no loop). Confirm.
-- **AI-1 — Verify inscription consumption** matches the confirmed invariant (§8).
+- **AI-1 — Inscription consumption VERIFIED (§8):** spell scrolls fully consume reagents+scroll on success/failure; mana only on success; runebook half-on-failure is intended (D1). No code change; latent amount-1 fragility documented for optional future hardening.
 - **Convention sweep:** run `modernuo-code-audit` over all touched `.cs` (LINQ tiers, `PooledRefList`, `STArrayPool`, braces, no `Console`, `ValueStringBuilder`). The branch already favors indexed loops and `stackalloc`; verify no Tier-3 LINQ on craft hot paths.
 
 ---
