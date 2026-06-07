@@ -31,6 +31,5 @@ public static class Deflate
     // Best-ratio compressor. Construction allocates a native libdeflate compressor, so it is
     // cached per thread like Standard and reused. Decompression is level-independent, so the
     // decompress path can use either accessor. libdeflate is not thread-safe — hence ThreadStatic.
-    public static LibDeflateBinding Maximum =>
-        _maximum ??= new LibDeflateBinding(LibDeflateCompressionLevel.VeryHigh);
+    public static LibDeflateBinding Maximum => _maximum ??= new LibDeflateBinding(LibDeflateCompressionLevel.VeryHigh);
 }
