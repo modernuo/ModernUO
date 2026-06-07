@@ -97,7 +97,7 @@ Server-menu changes carried from Jack (`Projects/Server/Menus/`):
 - **`BaseMenu`** gains `HasSent` tracking to prevent double-send.
 - **`IncomingPlayerPackets.MenuResponse`** validates the response serial matches the player's current pending menu, and iterates `state.Menus` by index with a `(uint)` serial compare (avoids sign extension on the high-bit menu serial).
 
-> **Audit note:** these `Projects/Server/` edits are the *only* engine-layer changes. CLAUDE.md says do not modify `Projects/Server/` without explicit request — these are required by the feature and were part of the approved scope. Keep them minimal and additive; they are reviewed as part of this work.
+> **Audit note:** these `Projects/Server/Menus/` edits are the *only* engine-layer changes. CLAUDE.md says do not modify `Projects/Server/` without explicit request — **explicitly authorized by the shard owner (Kamron) on 2026-06-07** to accept Jack's minimal additive changes (`CraftIndex` on `ItemListEntry`, `Entries` setter, `HasSent` guard). Keep them minimal and additive.
 
 ### 5.2 Component map (`Projects/UOContent/Engines/Craft/T2A/`)
 
@@ -255,7 +255,9 @@ From the implementation audit; fix as part of building the definitive branch:
 
 ## 12. Reconciliation / branch plan
 
-1. **Create** the definitive branch from current `origin/main` (name TBD, e.g. `feat/t2a-crafting-menus`).
+**Conflict surface (measured 2026-06-07):** across 78 commits of `main` drift since Jack's merge-base (`e1ae9706`, 2026-03-15), **only 2 of Jack's 39 files also changed on `main`** — `ContentFeatureFlags.cs` and `FeatureFlagManager.cs`, both purely additive (new flag + switch arm). No logic conflicts. `BaseJewel` is at v4 on `main` (Jack → v5), so the serialization bump is clean. The rebase is therefore near-trivial; the real work is the bug fixes below, not conflict resolution.
+
+1. **Create** the definitive branch from current `origin/main` (`feat/t2a-crafting-menus` — already created; design doc is its first commit).
 2. **Replay Jack's 13 commits** (`merge-base(origin/main, jackuoll/t2a_crafting_menus)..jackuoll/t2a_crafting_menus`) onto it via rebase/cherry-pick, preserving logical history.
 3. **Resolve conflicts** against newer `main`, using `delphi/T2A_CraftingMenus`'s two merge commits as a reference for how Kamron began the integration.
 4. **Apply fixes** B3, AI-1, and the §5.4 coherence warning; confirm B1/B2/B4/B5.
