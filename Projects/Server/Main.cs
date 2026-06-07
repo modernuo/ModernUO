@@ -413,8 +413,6 @@ public static class Core
 
         ServerConfiguration.Load();
 
-        logger.Information("Running on {Framework}", RuntimeInformation.FrameworkDescription);
-
         var assemblyPath = Path.Join(BaseDirectory, AssembliesConfiguration);
 
         // Load UOContent.dll
@@ -430,6 +428,14 @@ public static class Core
         }
 
         AssemblyHandler.LoadAssemblies(assemblyFiles);
+
+        // First-boot interactive setup. Runs after assemblies are loaded (so content can
+        // register prompts) but before any Serilog output, so console prompts are not
+        // interleaved with the async console sink. Handlers self-gate on first-boot state
+        // (e.g. "is my setting already present?").
+        AssemblyHandler.Invoke("ConfigurePrompts");
+
+        logger.Information("Running on {Framework}", RuntimeInformation.FrameworkDescription);
 
         VerifySerialization();
 

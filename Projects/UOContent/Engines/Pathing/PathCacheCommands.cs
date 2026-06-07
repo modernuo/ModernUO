@@ -1,6 +1,8 @@
+using System;
 using System.Diagnostics;
 using System.IO;
 using Server.Engines.Pathing.Cache;
+using Server.Logging;
 
 namespace Server.Engines.Pathing;
 
@@ -19,6 +21,12 @@ namespace Server.Engines.Pathing;
 /// </summary>
 public static class PathCacheCommands
 {
+    private static readonly ILogger logger = LogFactory.GetLogger(typeof(PathCacheCommands));
+
+    // modernuo.json flag: when true, Initialize() bakes any missing/stale .swb at startup.
+    // The first-boot ConfigurePrompts() prompt writes it.
+    private const string PrebakeSetting = "pathfinding.prebakeMaps";
+
     private static string PathFor(int mapId) =>
         Path.Combine(Core.BaseDirectory, "Data", "Pathfinding", $"{mapId}.swb");
 
@@ -41,6 +49,81 @@ public static class PathCacheCommands
         CommandSystem.Register("PathCacheLoad",  AccessLevel.Administrator, OnPathCacheLoad);
         CommandSystem.Register("PathRecord",     AccessLevel.Administrator, OnPathRecord);
         AutoLoadAtStartup();
+    }
+
+    /// <summary>
+    /// First-boot prompt, auto-invoked by <c>AssemblyHandler.Invoke("ConfigurePrompts")</c> in
+    /// the startup sequence — after assemblies load (so content can prompt) but before Serilog
+    /// starts, so the console prompt isn't interleaved with async log output. Offers to pre-bake
+    /// the pathfinding <c>.swb</c> cache for the selected maps; the answer persists in
+    /// modernuo.json (<see cref="PrebakeSetting"/>), so it's asked exactly once. Skipped when the
+    /// setting already exists or when input is redirected (headless/CI) — operators can set the
+    /// flag directly. The bake itself happens later in <see cref="Initialize"/>.
+    /// </summary>
+    public static void ConfigurePrompts()
+    {
+        if (ServerConfiguration.GetSetting(PrebakeSetting, (string)null) != null || Console.IsInputRedirected)
+        {
+            return;
+        }
+
+        Console.WriteLine();
+        Console.WriteLine("Pre-bake the pathfinding cache for your selected maps now?");
+        Console.WriteLine("  Bakes each map's .swb so there is zero first-pathfind-after-boot latency.");
+        Console.WriteLine("  Takes several minutes and ~tens of MB of disk per facet. You can also do");
+        Console.WriteLine("  this later at runtime with [PathBake.");
+        Console.Write("Pre-bake now? [y/N] ");
+
+        var answer = Console.ReadLine()?.Trim();
+        var prebake = answer?.StartsWith("y", StringComparison.OrdinalIgnoreCase) == true;
+
+        ServerConfiguration.SetSetting(PrebakeSetting, prebake);
+    }
+
+    /// <summary>
+    /// Auto-invoked by <c>AssemblyHandler.Invoke("Initialize")</c> after the tile matrix and
+    /// world are loaded. When <see cref="PrebakeSetting"/> is set, bakes any map whose
+    /// <c>.swb</c> is missing or stale (its tile-data fingerprint no longer matches), so the
+    /// first pathfind on each region is already warm. A fresh cache makes this a no-op, so only
+    /// first boot — or a client/map update that changes the fingerprint — pays the cost.
+    /// </summary>
+    public static void Initialize()
+    {
+        if (!ServerConfiguration.GetSetting(PrebakeSetting, false))
+        {
+            return;
+        }
+
+        var baked = 0;
+        for (var i = 0; i < Map.Maps.Length; i++)
+        {
+            var map = Map.Maps[i];
+            if (map == null || map == Map.Internal)
+            {
+                continue;
+            }
+
+            var path = PathFor(map.MapID);
+            var live = StepCache.ComputeLiveFingerprint(map.MapID);
+            if (StepCache.TryReadFingerprintFromFile(path, out var onDisk) && onDisk == live)
+            {
+                continue; // .swb already matches the current tile data
+            }
+
+            logger.Information(
+                "PathBake: pre-baking map {MapId} (pathfinding.prebakeMaps) — this can take several minutes...",
+                map.MapID
+            );
+            StepCache.Instance.BakeMap(map.MapID, path);
+            StepCache.Instance.ClearResidentChunks();
+            baked++;
+        }
+
+        if (baked > 0)
+        {
+            logger.Information("PathBake: pre-bake complete ({Count} map(s) written).", baked);
+            AutoLoadAtStartup(); // (re)open the freshly written files as lazy backing stores
+        }
     }
 
     /// <summary>
