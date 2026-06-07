@@ -52,7 +52,7 @@ public class StaticWalkabilityParityTests
                     // diagonal walkable iff raw-diagonal AND (left-partner OR right-partner).
                     // (Raw masks are correct per spec; baker omits diagonal logic per design.)
                     var newOk = bakerResult.IsWalkable(dir);
-                    if (newOk && ((d & 1) == 1))
+                    if (newOk && (d & 1) == 1)
                     {
                         var leftPartner = (Direction)((d - 1) & 7);
                         var rightPartner = (Direction)((d + 1) & 7);

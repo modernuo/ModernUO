@@ -460,7 +460,27 @@ public sealed class StepCache
         if (map == null || map == Map.Internal || x < 0 || y < 0 || x >= map.Width || y >= map.Height)
         {
             _fallthroughOffMap++;
-            return new StepMask(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CacheHitKind.Fallthrough_OffMap);
+            return new StepMask(
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                CacheHitKind.Fallthrough_OffMap
+            );
         }
 
         var chunkX = x >> 4;
@@ -489,7 +509,27 @@ public sealed class StepCache
             else
             {
                 _fallthroughNotBuilt++;
-                return new StepMask(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CacheHitKind.Fallthrough_NotBuilt);
+                return new StepMask(
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    CacheHitKind.Fallthrough_NotBuilt
+                );
             }
         }
         else
@@ -524,7 +564,27 @@ public sealed class StepCache
                 return stratumResult;
             }
             _fallthroughMultiZ++;
-            return new StepMask(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CacheHitKind.Fallthrough_MultiZ);
+            return new StepMask(
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                CacheHitKind.Fallthrough_MultiZ
+            );
         }
 
         // Source-Z guard: the cache stores one answer per cell baked at SourceZ.
@@ -564,7 +624,27 @@ public sealed class StepCache
             }
 
             _fallthroughSourceZMismatch++;
-            return new StepMask(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CacheHitKind.Fallthrough_SourceZMismatch);
+            return new StepMask(
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                CacheHitKind.Fallthrough_SourceZMismatch
+            );
         }
 
         switch (hitKindResult)
