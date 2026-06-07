@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Runtime.InteropServices;
+using Server.Compression;
 
 namespace Server.Engines.Pathing.Cache;
 
@@ -268,9 +269,10 @@ internal static class StepCacheFile
 
         // Per-chunk compression: each record is built uncompressed into `recordScratch`, then
         // libdeflate-compressed into `compScratch` and framed as [u32 uncompressedLen][payload].
+        // Reuse the cached per-thread VeryHigh compressor (construction allocates native state).
         // libdeflate is not thread-safe, but bake runs single-threaded. VeryHigh is the best-ratio
         // level and its slow compression is irrelevant offline (decompression is what's hot, ~1.8us).
-        using var packer = new LibDeflateBinding(LibDeflateCompressionLevel.VeryHigh);
+        var packer = Deflate.Maximum;
         var recordScratch = new byte[BytesPerChunkBase + 1024];
         var compScratch = new byte[packer.MaxPackSize(recordScratch.Length)];
 
@@ -702,7 +704,6 @@ internal static class StepCacheFile
         private readonly Dictionary<ulong, (ulong offset, uint length)> _offsets;
         private byte[] _buffer;      // raw on-disk record: [u32 uncompressedLen][payload]
         private byte[] _bodyBuffer;  // decompressed v6 record, parsed by ReadChunk
-        private LibDeflateBinding _unpacker;
 
         public uint MapId { get; }
         public ulong Fingerprint { get; }
@@ -738,9 +739,6 @@ internal static class StepCacheFile
             _offsets = offsets;
             _buffer = new byte[BytesPerChunkBase];
             _bodyBuffer = new byte[BytesPerChunkBase];
-            // Decompress-only; level is irrelevant for Unpack. libdeflate is not thread-safe but
-            // the cache is read on the single game thread.
-            _unpacker = new LibDeflateBinding(LibDeflateCompressionLevel.Default);
         }
 
         /// <summary>
@@ -789,7 +787,10 @@ internal static class StepCacheFile
             }
             else
             {
-                var result = _unpacker.Unpack(
+                // Decompression is level-independent, so reuse the shared per-thread binding
+                // rather than allocating a native decompressor per reader. The cache is read on
+                // the single game thread; libdeflate's non-thread-safety is satisfied by ThreadStatic.
+                var result = Deflate.Standard.Unpack(
                     _bodyBuffer.AsSpan(0, uncompressedLen),
                     _buffer.AsSpan(sizeof(uint), payloadLen),
                     out var produced
@@ -809,8 +810,6 @@ internal static class StepCacheFile
             _stream = null;
             _buffer = null;
             _bodyBuffer = null;
-            _unpacker?.Dispose();
-            _unpacker = null;
         }
     }
 }
