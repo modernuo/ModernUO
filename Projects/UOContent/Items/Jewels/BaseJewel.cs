@@ -191,7 +191,7 @@ public abstract partial class BaseJewel : Item, ICraftable, IAosItem
 
         // T2A jewelry: read gem info from craft context (set by GemSelectTarget).
         // The entire targeted gem stack is consumed and the piece is named by that
-        // count (e.g. "a 1000 diamond ring"). See design spec D4 / §9.
+        // count (e.g. "a 1000 diamond ring"). See docs/superpowers/specs/2026-06-07-t2a-crafting-menus-design.md (D4 / §9).
         if (context is { PendingGemType: not GemType.None, PendingGemCount: > 0 })
         {
             var gemItemType = GetGemItemType(context.PendingGemType);

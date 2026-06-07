@@ -45,6 +45,7 @@ public class T2AJewelGemCraftTests
     {
         var map = Map.Felucca;
         var player = CreatePlayerMobile(map, new Point3D(4100, 500, 0));
+        var ring = new GoldRing();
 
         try
         {
@@ -57,7 +58,6 @@ public class T2AJewelGemCraftTests
             context.PendingGemType = GemType.Diamond;
             context.PendingGemCount = 50;
 
-            var ring = new GoldRing();
             ring.OnCraft(1, false, player, system, typeof(IronIngot), null, MakeRingRecipe(), 0);
 
             Assert.Equal(0, pack.GetAmount(typeof(Diamond)));   // all 50 consumed
@@ -69,6 +69,7 @@ public class T2AJewelGemCraftTests
         }
         finally
         {
+            ring.Delete();
             player.Delete();
         }
     }
@@ -78,6 +79,7 @@ public class T2AJewelGemCraftTests
     {
         var map = Map.Felucca;
         var player = CreatePlayerMobile(map, new Point3D(4120, 500, 0));
+        var ring = new GoldRing();
 
         try
         {
@@ -88,7 +90,6 @@ public class T2AJewelGemCraftTests
             context.PendingGemType = GemType.None; // no gem targeted
             context.PendingGemCount = 0;
 
-            var ring = new GoldRing();
             ring.OnCraft(1, false, player, system, typeof(IronIngot), null, MakeRingRecipe(), 0);
 
             Assert.Equal(GemType.None, ring.GemType);
@@ -96,6 +97,38 @@ public class T2AJewelGemCraftTests
         }
         finally
         {
+            ring.Delete();
+            player.Delete();
+        }
+    }
+
+    [Fact]
+    public void OnCraft_WhenGemsUnavailableAtCraftTime_CraftsPlainPiece()
+    {
+        var map = Map.Felucca;
+        var player = CreatePlayerMobile(map, new Point3D(4140, 500, 0));
+        var ring = new GoldRing();
+
+        try
+        {
+            player.Backpack.AddItem(new IronIngot(10));
+            // deliberately do NOT add any diamonds
+
+            var system = GetOrInitTinkeringSystem();
+            var context = system.GetContext(player);
+            context.PendingGemType = GemType.Diamond;
+            context.PendingGemCount = 5;
+
+            ring.OnCraft(1, false, player, system, typeof(IronIngot), null, MakeRingRecipe(), 0);
+
+            Assert.Equal(GemType.None, ring.GemType);
+            Assert.Equal(0, ring.GemCount);
+            Assert.Equal(GemType.None, context.PendingGemType);
+            Assert.Equal(0, context.PendingGemCount);
+        }
+        finally
+        {
+            ring.Delete();
             player.Delete();
         }
     }
