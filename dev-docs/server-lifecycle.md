@@ -105,19 +105,23 @@ Tests do **not** go through `Main`. The test fixtures (`Server.Tests`/`UOContent
 to the **startup ordering in `Main.cs`** (including the prompt phases) are **not** covered by the
 test suite and need first-boot runtime verification.
 
-## Planned: unify the engine's first-boot prompts into `ConfigurePrompts`
+## Unified: the engine's first-boot prompts run through `ConfigurePrompts`
 
-Today the engine's own first-boot prompts (data dirs, listeners, server name, expansion + maps)
-are inline in `ServerConfiguration.Load`, separate from the `ConfigurePrompts` mechanism. They
-can be unified into the same phase so there's one prompt sequence/wiring:
+The engine's own first-boot prompts (data directories, listeners, server name, expansion + map
+selection) live in **`ServerConfiguration.ConfigurePrompts()`** (`[CallPriority(0)]`) and are
+discovered by the same `Invoke("ConfigurePrompts")` phase as content prompts — one sequence and
+one wiring for all first-boot prompting. `ServerConfiguration.Load` now only reads/creates the
+config file. What made this safe:
 
-- **Feasible because** assembly loading uses `AssemblyDirectories` (default `./Assemblies`), not
-  `DataDirectories` — so assemblies can load *before* the data-dir prompt, letting all prompts
-  move into the post-assembly `ConfigurePrompts` phase.
-- **`UOClient.Load()`** (client-file discovery via `Core.FindDataFile`) needs `DataDirectories`,
-  so it must move *with* the data-dir prompt into the unified phase.
-- **`Core.Expansion`** is currently assigned during `Load`; under unification it'd be set during
-  `ConfigurePrompts` — verify nothing between assembly-load and that point depends on it.
+- Assembly loading uses `AssemblyDirectories` (default `./Assemblies`), **not** `DataDirectories`,
+  so assemblies load fine before the (now-later) data-dir prompt.
+- `UOClient.Load()` (client-file discovery via `Core.FindDataFile`) needs `DataDirectories`, so it
+  moved *with* the data-dir prompt into `ConfigurePrompts`.
+- `Core.Expansion` is now assigned in `ConfigurePrompts` (every non-mocked boot). Nothing between
+  assembly-load and that phase reads it — type initializers run lazily on first use, not during
+  `LoadAssemblies`.
+- `[CallPriority(0)]` keeps the engine prompts (including map selection) ahead of content prompts
+  such as the pathfinding pre-bake (default priority 50), preserving "after map selection".
 
-This is an engine-startup restructure the test suite can't cover (see Testing note), so it needs
-first-boot runtime verification before merging.
+Since `Main.cs` startup ordering isn't covered by the fixture-based suite (see Testing note), this
+path is validated by a first-boot runtime check rather than tests.
