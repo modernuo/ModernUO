@@ -1,4 +1,3 @@
-using System;
 using Xunit;
 
 namespace Server.Tests;
@@ -8,7 +7,7 @@ namespace Server.Tests;
 /// Configure client path via MODERNUO_CLIENT_PATH environment variable or place files at C:\Ultima Online Classic.
 /// </summary>
 [CollectionDefinition("Sequential Server Tests", DisableParallelization = true)]
-public class ServerFixture : ICollectionFixture<ServerFixture>, IDisposable
+public class ServerFixture : ICollectionFixture<ServerFixture>
 {
     /// <summary>
     /// True if TileData was successfully loaded from client files.
@@ -35,13 +34,8 @@ public class ServerFixture : ICollectionFixture<ServerFixture>, IDisposable
     /// </summary>
     public static ushort SurfaceImpassableTileId => TestServerInitializer.SurfaceImpassableTileId;
 
-    public ServerFixture()
-    {
-        TestServerInitializer.Initialize(loadTileData: true);
-    }
-
-    public void Dispose()
-    {
-        Timer.Init(0);
-    }
+    // Global init runs exactly once via the shared, guarded TestServerInitializer. The single
+    // bootstrap owns global state for the lifetime of the test host, so there is no
+    // per-collection teardown — matching UOContent.Tests' TestServerBootstrap pattern.
+    public ServerFixture() => TestServerInitializer.Initialize(loadTileData: true);
 }
