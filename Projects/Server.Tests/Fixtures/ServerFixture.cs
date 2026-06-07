@@ -36,6 +36,6 @@ public class ServerFixture : ICollectionFixture<ServerFixture>
 
     // Global init runs exactly once via the shared, guarded TestServerInitializer. The single
     // bootstrap owns global state for the lifetime of the test host, so there is no
-    // per-collection teardown — matching UOContent.Tests' TestServerBootstrap pattern.
+    // per-collection teardown — matching UOContent.Tests' TestServerInitializer pattern.
     public ServerFixture() => TestServerInitializer.Initialize(loadTileData: true);
 }

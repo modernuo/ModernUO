@@ -10,35 +10,28 @@ using Server.Tests.Maps;
 namespace Server.Tests;
 
 /// <summary>
-/// Single, process-wide ModernUO bootstrap for the test host.
+/// Single, process-wide ModernUO bootstrap for the UOContent test host. Mirrors Server.Tests'
+/// TestServerInitializer in name and shape; kept as a separate (non-shared) copy because this
+/// one loads the UOContent assembly and configures the UOContent-specific systems. Both types
+/// are <c>internal</c> so the shared name stays scoped to each assembly.
 ///
-/// ModernUO is designed to bootstrap its global singletons (Core, ServerConfiguration,
-/// AssemblyHandler, NetState/io-ring, World, Timer, and the serialization worker threads)
-/// exactly once per process. <see cref="World.Load"/> is guarded to run once, and
-/// <see cref="World.ExitSerializationThreads"/> must run once against the live workers — a
-/// second pass would (prior to the idempotent <c>SerializationThreadWorker.Exit()</c> guard)
-/// deadlock on a worker whose thread has already exited.
-///
-/// Each xUnit collection has its own fixture instance, so without this shared guard every
-/// collection would re-run the full bootstrap. This runs the superset bootstrap (the union of
-/// what every collection needs, including the UO client data directory and TileData load)
-/// exactly once, no matter how many collection fixtures are constructed. Combined with
-/// <c>[assembly: CollectionBehavior(DisableTestParallelization = true)]</c>, collections run
-/// strictly sequentially and share one initialized world.
+/// ModernUO bootstraps its global singletons (Core, ServerConfiguration, AssemblyHandler,
+/// NetState/io-ring, World, Timer, the serialization workers, and TileData) exactly once per
+/// process. <see cref="World.Load"/> is guarded to run once, and
+/// <see cref="World.ExitSerializationThreads"/> must run once against the live workers. Each
+/// xUnit collection gets its own fixture instance, so this guard makes the bootstrap run a
+/// single time regardless of how many collection fixtures are constructed. The two stateful
+/// collections use <c>[CollectionDefinition(DisableParallelization = true)]</c> so they never
+/// overlap; pure tests still run in parallel.
 /// </summary>
-internal static class TestServerBootstrap
+internal static class TestServerInitializer
 {
-    private static readonly Lock _sync = new();
     private static bool _initialized;
+    private static readonly Lock _lock = new();
 
-    public static void EnsureInitialized()
+    public static void Initialize()
     {
-        if (_initialized)
-        {
-            return;
-        }
-
-        lock (_sync)
+        lock (_lock)
         {
             if (_initialized)
             {
