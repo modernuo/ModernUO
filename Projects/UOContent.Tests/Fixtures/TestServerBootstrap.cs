@@ -27,7 +27,7 @@ namespace Server.Tests;
 /// </summary>
 internal static class TestServerBootstrap
 {
-    private static readonly object _sync = new();
+    private static readonly Lock _sync = new();
     private static bool _initialized;
 
     public static void EnsureInitialized()
