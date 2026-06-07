@@ -208,13 +208,19 @@ whole-file) and bounded RAM (only touched chunks materialize, LRU-capped):
    mask + Z is stored as a few bytes (flag + mask + Z) instead of 5,393. Pairs with a two-level
    **sector index** so a uniform super-sector (open ocean) collapses to a single entry — UO's
    16-tile sectors nest cleanly inside.
-2. **Predictive (lossless) Z residuals** (kills the 76% that is the 16 directional Z arrays).
-   Predict each `WalkZ_dir`/`SwimZ_dir` from the cell's **own `SourceZ`** and store only the
-   residual: 0 on flat ground (→ compresses to nothing → effectively just the walk *bit*),
-   ±1..3 on slopes/stairs, larger or strata for bridges/multi-Z. Reconstruct
-   `WalkZ_dir = SourceZ + residual` at load → byte-identical in-memory `StepChunk`, so **no
-   runtime recompute and no risk of diverging from `MovementImpl`** (the bugs the cache exists
-   to avoid). Predict from *self* (not a neighbor) to keep chunk independence.
+2. **Predictive (lossless) Z residuals** — *shipped as format v6.* Kills the bulk of the 16
+   base directional Z arrays in Full chunks. Each array is stored as a **masked residual**
+   against the cell's **own `SourceZ`**: predict `mask bit ? SourceZ : 0` (the mask term matches
+   the baker, which leaves non-walkable directional slots at `0`), residual `= Z − predict` via
+   unchecked two's-complement (byte-exact for all inputs). A new u16 `ZArrayMask` flags which of
+   the 16 arrays differ from their prediction; an array that matches everywhere (flat terrain —
+   including partial-walkability coastlines with nonzero `SourceZ`) is **omitted entirely** and
+   synthesized from `mask + SourceZ` at read. Reconstruct `Z = predict + residual` → byte-identical
+   in-memory `StepChunk`, so **no runtime recompute and no risk of diverging from `MovementImpl`**.
+   Self-prediction (not a neighbor) keeps chunk independence. The residual *subtraction* itself
+   saves ~0 bytes (a residual is still 1 byte/cell); the win is the per-array elision, and leaving
+   non-elided arrays in residual form makes #3 a pure codec add (no further transform/format bump).
+   Swim-layer + strata trailers stay absolute, deferred to #3.
 3. **Per-chunk block compression + index compaction.** zstd/deflate each chunk record
    independently (index already carries a per-chunk `length`; reader decompresses one chunk on
    read). At 256-cell granularity the **index overhead** then dominates (20 B/chunk ×
@@ -236,4 +242,12 @@ Validate size **and** read-latency vs the corpus in the benchmark repo after eac
   (both stay Full). **#1 alone: 592.2 MB → 231.9 MB (−61%), actual on-disk.** The residual is
   ~150 MB of non-uniform land Z-blocks (→ #2 predictive-Z) + ~81 MB of swim-layer trailers
   (→ #2/#3). Confirms build order **#1 → #2 → #3**, with #1 the dominant, lowest-risk,
-  no-algorithm-change win (now shipped as format v5).
+  no-algorithm-change win (shipped as format v5).
+- *Calibrated v6 (`BakeMap`-measured, full Trammel, `MaxResidentChunks` raised above 114,688):*
+  **#2 predictive-Z: 231.9 MB → 124.7 MB (−46%, −107 MB; −78% vs the original 565 MB).** Of the
+  42,775 Full chunks (71,913 are Uniform), **walk directional-Z arrays elide 47.7%** and **swim
+  arrays elide 87.6%** (per-array, not per-cell — one slope cell keeps a 256-byte array, which is
+  why the per-array rate trails the 95.2% per-cell zero-residual). Remaining v6 bytes are dominated
+  by present walk-residual blocks (~46 MB, mostly ±1..3 + zeros → highly compressible), the
+  per-Full-chunk mask/SourceZ base (~33 MB), and absolute swim-layer trailers (~26 MB) — all prime
+  targets for #3 per-chunk compression.
