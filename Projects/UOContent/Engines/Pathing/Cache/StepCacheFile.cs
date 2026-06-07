@@ -16,11 +16,11 @@ namespace Server.Engines.Pathing.Cache;
 /// only when the cache asks for them. RAM stays bounded by MaxResidentChunks regardless
 /// of file size.
 ///
-/// File layout v7 (little-endian, BufferWriter / BufferReader convention):
+/// File layout v8 (little-endian, BufferWriter / BufferReader convention):
 ///
-///   Header (48 bytes):
+///   Header (40 bytes):
 ///     u32   Magic           = 0x42575300 ('SWB\0')
-///     u32   Version         = current FormatVersion (7)
+///     u32   Version         = current FormatVersion (8)
 ///     u32   MapId
 ///     u64   Fingerprint     XxHash3 over (1) LandTable + ItemTable flags AND (2) the
 ///                           on-disk bytes of mapX.mul / .uop, staidxX.mul, staticsX.mul.
@@ -73,8 +73,10 @@ namespace Server.Engines.Pathing.Cache;
 ///         sbyte walkZ_N..NW (8)
 ///         sbyte swimZ_N..NW (8)
 ///
-///   Index trailer (20 × ChunkCount bytes):
-///     For each chunk: { u64 chunkKey, u64 fileOffset, u32 recordLength }
+///   Index trailer (8 × ChunkCount bytes), in record write order:
+///     For each chunk: { u32 packedKey = (ChunkX << 16) | ChunkY, u32 recordLength }
+///     The file offset is not stored — reconstructed as a cumulative sum of recordLength
+///     starting at HeaderSize (the first record sits immediately after the header).
 ///
 /// Per-chunk fixed portion (Kind + flags + ZArrayMask + WalkMask + WetMask + SourceZ):
 /// ~783 bytes; each present base Z array adds 256 bytes (0..16 present, so up to ~4 KB).
@@ -88,29 +90,14 @@ namespace Server.Engines.Pathing.Cache;
 internal static class StepCacheFile
 {
     public const uint Magic = 0x42575300; // 'SWB\0'
-    public const uint FormatVersion = 7;
+    public const uint FormatVersion = 8;
 
     /// <summary>
-    /// Lowest format version this binary can load. Files below this version are treated as
-    /// missing (silently rejected) — a subsequent SaveToFile / BakeMap overwrites them with
-    /// the current FormatVersion. Bumped to 3 when the swim layer landed (v2 had no swim
-    /// layer). Bumped to 4 when the baker switched to clearance-aware standable-surface
-    /// strata: v3 bakes anchored every cell at the land average and so missed walkable
-    /// static-over-land surfaces (sewer/dungeon walkways, bridges, upper building floors),
-    /// producing ~98% source-Z fallthroughs on those routes. The on-disk layout is
-    /// unchanged; only the strata population differs, so the bump exists purely to force a
-    /// one-time re-bake of stale v3 files on first boot under the new binary. Bumped to 5 for
-    /// uniform-chunk elision: each record now begins with a Kind byte (0 = Full, 2 = Uniform);
-    /// a fully-uniform chunk (no strata, no swim layer, all 19 base arrays constant) stores
-    /// one cell's worth of data (~28 bytes) instead of the full record. Bumped to 6 for
-    /// predictive-Z residuals: each base directional Z array is stored as a masked residual
-    /// against SourceZ (a ZArrayMask u16 flags which arrays are present); arrays matching their
-    /// prediction are omitted and synthesized at read. v5 files are rejected and re-baked once.
-    /// Bumped to 7 for per-chunk compression: each chunk record is libdeflate-compressed
-    /// independently (random access preserved) behind a u32 uncompressed-length prefix; tiny
-    /// records that do not shrink are stored raw. v6 files are rejected and re-baked once.
+    /// Lowest format version this binary can load. Files below it are treated as missing
+    /// (silently rejected) and overwritten by the next SaveToFile / BakeMap. The cache is
+    /// fully regenerable, so a format bump just forces a one-time re-bake of stale files.
     /// </summary>
-    public const uint MinSupportedVersion = 7;
+    public const uint MinSupportedVersion = 8;
 
     // Per-chunk record discriminator (first byte after BuiltMultisVersion). 1 is reserved.
     private const byte KindFull = 0;
@@ -125,10 +112,10 @@ internal static class StepCacheFile
         + sizeof(uint)  // ChunkCount
         + sizeof(ulong); // IndexOffset
 
-    // Index entry: chunkKey + fileOffset + recordLength. Bumped to include length when
-    // strata made chunk records variable-size; the lazy reader uses length to do a
-    // single bulk read per chunk without consulting the next offset.
-    private const int IndexEntryBytes = sizeof(ulong) + sizeof(ulong) + sizeof(uint);
+    // Index entry (v8 compact): u32 packedKey ((chunkX << 16) | chunkY) + u32 recordLength.
+    // The file offset is NOT stored — entries are in record write order, so the reader
+    // reconstructs each offset by cumulative sum of record lengths starting at HeaderSize.
+    private const int IndexEntryBytes = sizeof(uint) + sizeof(uint);
 
     /// <summary>Fixed-size portion of a chunk record (everything except the optional strata + swim trailers).</summary>
     private const int BytesPerChunkBase =
@@ -140,12 +127,6 @@ internal static class StepCacheFile
         + StepChunk.CellsPerChunk           // SourceZ
         + 8 * StepChunk.CellsPerChunk       // WalkZ[8]
         + 8 * StepChunk.CellsPerChunk;      // SwimZ[8]
-
-    /// <summary>Swim-layer trailer overhead when present: per-cell SourceZ + Mask + 8×Z arrays.</summary>
-    private const int SwimLayerOverhead = 10 * StepChunk.CellsPerChunk;
-
-    /// <summary>Strata trailer overhead when present: 256×u16 offset table + u32 data length.</summary>
-    private const int StrataTrailerOverhead = StepChunk.CellsPerChunk * sizeof(ushort) + sizeof(uint);
 
     /// <summary>
     /// Byte offset of the IndexOffset u64 within the header
@@ -267,11 +248,8 @@ internal static class StepCacheFile
         w.Write(chunkCount);
         w.Write(0UL); // IndexOffset placeholder, patched after chunks
 
-        // Per-chunk compression: each record is built uncompressed into `recordScratch`, then
-        // libdeflate-compressed into `compScratch` and framed as [u32 uncompressedLen][payload].
-        // Reuse the cached per-thread VeryHigh compressor (construction allocates native state).
-        // libdeflate is not thread-safe, but bake runs single-threaded. VeryHigh is the best-ratio
-        // level and its slow compression is irrelevant offline (decompression is what's hot, ~1.8us).
+        // Each record is built uncompressed into recordScratch, then libdeflate-compressed into
+        // compScratch and framed as [u32 uncompressedLen][payload].
         var packer = Deflate.Maximum;
         var recordScratch = new byte[BytesPerChunkBase + 1024];
         var compScratch = new byte[packer.MaxPackSize(recordScratch.Length)];
@@ -303,8 +281,11 @@ internal static class StepCacheFile
         var indexOffset = (ulong)w.Position;
         for (var i = 0u; i < chunkCount; i++)
         {
-            w.Write(indexEntries[i].key);
-            w.Write(indexEntries[i].offset);
+            // v8 compact entry: u32 packedKey ((chunkX << 16) | chunkY) + u32 recordLength.
+            // Offset is omitted; entries are in record write order so the reader derives it.
+            var key = indexEntries[i].key;
+            var packedKey = ((uint)(key >> 32) << 16) | (uint)(key & 0xFFFF);
+            w.Write(packedKey);
             w.Write(indexEntries[i].length);
         }
 
@@ -383,14 +364,19 @@ internal static class StepCacheFile
                 return null;
             }
 
+            // v8 compact index: { u32 packedKey, u32 length } per chunk, in record write order.
+            // The file offset is not stored — reconstruct it by cumulative record length starting
+            // at the first record (immediately after the header).
             var offsets = new Dictionary<ulong, (ulong offset, uint length)>((int)chunkCount);
+            var runningOffset = (ulong)HeaderSize;
             for (var i = 0; i < chunkCount; i++)
             {
                 var entry = indexBuf.AsSpan(i * IndexEntryBytes);
-                var key = BinaryPrimitives.ReadUInt64LittleEndian(entry);
-                var off = BinaryPrimitives.ReadUInt64LittleEndian(entry[8..]);
-                var len = BinaryPrimitives.ReadUInt32LittleEndian(entry[16..]);
-                offsets[key] = (off, len);
+                var packedKey = BinaryPrimitives.ReadUInt32LittleEndian(entry);
+                var len = BinaryPrimitives.ReadUInt32LittleEndian(entry[4..]);
+                var key = PackChunkKey((int)(packedKey >> 16), (int)(packedKey & 0xFFFF));
+                offsets[key] = (runningOffset, len);
+                runningOffset += len;
             }
 
             return new LazyReader(stream, mapId, fingerprint, bakeTimestamp, chunkCount, offsets);
@@ -423,14 +409,17 @@ internal static class StepCacheFile
     internal static sbyte DecodeZ(sbyte predict, sbyte residual) => unchecked((sbyte)(predict + residual));
 
     /// <summary>
-    /// The 16 base directional-Z arrays in canonical order: walk N..NW (indices 0-7),
-    /// then swim N..NW (8-15). Index d uses WalkMask (d &lt; 8) or WetMask (d &gt;= 8)
-    /// with direction bit (d &amp; 7). Allocates a 16-slot reference array (bake/read time only).
+    /// The base directional-Z array for direction index d in canonical order: walk N..NW (0-7),
+    /// then swim N..NW (8-15). Index d uses WalkMask (d &lt; 8) or WetMask (d &gt;= 8) with
+    /// direction bit (d &amp; 7).
     /// </summary>
-    private static sbyte[][] GetBaseZArrays(StepChunk c) => new[]
+    private static sbyte[] GetBaseZArray(StepChunk c, int d) => d switch
     {
-        c.WalkZN, c.WalkZNE, c.WalkZE, c.WalkZSE, c.WalkZS, c.WalkZSW, c.WalkZW, c.WalkZNW,
-        c.SwimZN, c.SwimZNE, c.SwimZE, c.SwimZSE, c.SwimZS, c.SwimZSW, c.SwimZW, c.SwimZNW,
+        0  => c.WalkZN,  1  => c.WalkZNE, 2  => c.WalkZE,  3  => c.WalkZSE,
+        4  => c.WalkZS,  5  => c.WalkZSW, 6  => c.WalkZW,  7  => c.WalkZNW,
+        8  => c.SwimZN,  9  => c.SwimZNE, 10 => c.SwimZE,  11 => c.SwimZSE,
+        12 => c.SwimZS,  13 => c.SwimZSW, 14 => c.SwimZW,  15 => c.SwimZNW,
+        _  => throw new ArgumentOutOfRangeException(nameof(d))
     };
 
     /// <summary>
@@ -515,11 +504,10 @@ internal static class StepCacheFile
         // Predictive-Z: each base directional Z array is stored as a masked residual against
         // SourceZ. Bit d of ZArrayMask is set only when array d differs from its prediction
         // somewhere; cleared arrays are omitted and rebuilt from mask+SourceZ at read.
-        var zArrays = GetBaseZArrays(chunk);
         ushort zArrayMask = 0;
         for (var d = 0; d < 16; d++)
         {
-            var z = zArrays[d];
+            var z = GetBaseZArray(chunk, d);
             var dirMask = d < 8 ? chunk.WalkMask : chunk.WetMask;
             var bit = d & 7;
             for (var cell = 0; cell < StepChunk.CellsPerChunk; cell++)
@@ -544,7 +532,7 @@ internal static class StepCacheFile
             {
                 continue;
             }
-            var z = zArrays[d];
+            var z = GetBaseZArray(chunk, d);
             var dirMask = d < 8 ? chunk.WalkMask : chunk.WetMask;
             var bit = d & 7;
             for (var cell = 0; cell < StepChunk.CellsPerChunk; cell++)
@@ -629,11 +617,10 @@ internal static class StepCacheFile
 
         // Predictive-Z reconstruction: present arrays carry residuals (z = predict + residual);
         // absent arrays are synthesized from mask+SourceZ (z = predict, residual implicitly 0).
-        var zArrays = GetBaseZArrays(chunk);
         Span<sbyte> residual = stackalloc sbyte[StepChunk.CellsPerChunk];
         for (var d = 0; d < 16; d++)
         {
-            var z = zArrays[d];
+            var z = GetBaseZArray(chunk, d);
             var dirMask = d < 8 ? chunk.WalkMask : chunk.WetMask;
             var bit = d & 7;
             if ((zArrayMask >> d & 1) != 0)
@@ -787,9 +774,7 @@ internal static class StepCacheFile
             }
             else
             {
-                // Decompression is level-independent, so reuse the shared per-thread binding
-                // rather than allocating a native decompressor per reader. The cache is read on
-                // the single game thread; libdeflate's non-thread-safety is satisfied by ThreadStatic.
+                // Decompression is level-independent, so reuse the shared per-thread binding.
                 var result = Deflate.Standard.Unpack(
                     _bodyBuffer.AsSpan(0, uncompressedLen),
                     _buffer.AsSpan(sizeof(uint), payloadLen),

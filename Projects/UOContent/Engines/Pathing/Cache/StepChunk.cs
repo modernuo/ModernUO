@@ -4,17 +4,19 @@ namespace Server.Engines.Pathing.Cache;
 
 /// <summary>
 /// Per-chunk storage backing StepCache. Holds raw walk + swim masks and destination Z
-/// values for each of 256 cells in a 16x16 chunk, plus build-time metadata (multis
-/// version, multi-Z strata) and LRU bookkeeping.
+/// values for each of 256 cells in a 16x16 chunk, plus build-time metadata (multis version, multi-Z strata)
+/// and LRU bookkeeping.
 /// </summary>
 internal sealed class StepChunk
 {
     public const int CellsPerChunk = 256; // 16 x 16
 
-    /// <summary>Bit i of WalkMask[c] = "default walker can step from cell c to neighbor (Direction)i". Raw — no diagonal corner-cut applied here.</summary>
+    /// <summary>Bit i of WalkMask[c] = "default walker can step from cell c to neighbor (Direction)i".
+    /// Raw — no diagonal corner-cut applied here.</summary>
     public readonly byte[] WalkMask = new byte[CellsPerChunk];
 
-    /// <summary>Bit i of WetMask[c] = "swim-only mob can step from cell c to neighbor (Direction)i". Layered with WalkMask via canSwim/cantWalk capability flags.</summary>
+    /// <summary>Bit i of WetMask[c] = "swim-only mob can step from cell c to neighbor (Direction)i".
+    /// Layered with WalkMask via canSwim/cantWalk capability flags.</summary>
     public readonly byte[] WetMask = new byte[CellsPerChunk];
 
     public readonly sbyte[] SourceZ = new sbyte[CellsPerChunk];
@@ -103,25 +105,6 @@ internal sealed class StepChunk
         }
     }
 
-    /// <summary>Test/serialization hook: install pre-built swim-layer arrays. Pass nulls to clear.</summary>
-    internal void SetSwimLayer(
-        sbyte[] swimSourceZ, byte[] swimMask,
-        sbyte[] zN, sbyte[] zNE, sbyte[] zE, sbyte[] zSE,
-        sbyte[] zS, sbyte[] zSW, sbyte[] zW, sbyte[] zNW
-    )
-    {
-        _swimSourceZ = swimSourceZ;
-        _swimMask    = swimMask;
-        _swimZN_extra  = zN;
-        _swimZNE_extra = zNE;
-        _swimZE_extra  = zE;
-        _swimZSE_extra = zSE;
-        _swimZS_extra  = zS;
-        _swimZSW_extra = zSW;
-        _swimZW_extra  = zW;
-        _swimZNW_extra = zNW;
-    }
-
     /// <summary>Sentinel: cell has no strata — single-Z, use the main Walk/Wet arrays.</summary>
     public const ushort NoStrata = ushort.MaxValue;
 
@@ -151,8 +134,7 @@ internal sealed class StepChunk
 
     public bool IsCellMultiZ(int cellIndex) => GetStrataOffset(cellIndex) != NoStrata;
 
-    public ushort GetStrataOffset(int cellIndex) =>
-        _strataOffsetByCell == null ? NoStrata : _strataOffsetByCell[cellIndex];
+    public ushort GetStrataOffset(int cellIndex) => _strataOffsetByCell == null ? NoStrata : _strataOffsetByCell[cellIndex];
 
     public ReadOnlySpan<byte> StrataData =>
         _strataData == null ? ReadOnlySpan<byte>.Empty : _strataData.AsSpan();
@@ -182,18 +164,13 @@ internal sealed class StepChunk
     /// record. Chunks with a swim layer (shore cells) are never uniform — their per-cell swim
     /// data must be preserved via the Full record.
     /// </summary>
-    internal bool IsUniform()
-    {
-        if (_strataOffsetByCell != null || HasSwimLayer)
-        {
-            return false;
-        }
-        return AllSame(WalkMask) && AllSame(WetMask) && AllSame(SourceZ)
-               && AllSame(WalkZN) && AllSame(WalkZNE) && AllSame(WalkZE) && AllSame(WalkZSE)
-               && AllSame(WalkZS) && AllSame(WalkZSW) && AllSame(WalkZW) && AllSame(WalkZNW)
-               && AllSame(SwimZN) && AllSame(SwimZNE) && AllSame(SwimZE) && AllSame(SwimZSE)
-               && AllSame(SwimZS) && AllSame(SwimZSW) && AllSame(SwimZW) && AllSame(SwimZNW);
-    }
+    internal bool IsUniform() => _strataOffsetByCell == null
+                                 && !HasSwimLayer
+                                 && AllSame(WalkMask) && AllSame(WetMask) && AllSame(SourceZ)
+                                 && AllSame(WalkZN) && AllSame(WalkZNE) && AllSame(WalkZE) && AllSame(WalkZSE)
+                                 && AllSame(WalkZS) && AllSame(WalkZSW) && AllSame(WalkZW) && AllSame(WalkZNW)
+                                 && AllSame(SwimZN) && AllSame(SwimZNE) && AllSame(SwimZE) && AllSame(SwimZSE)
+                                 && AllSame(SwimZS) && AllSame(SwimZSW) && AllSame(SwimZW) && AllSame(SwimZNW);
 
     // "All 256 cells equal" via SIMD-accelerated ContainsAnyExcept (skip cell 0, the reference).
     private static bool AllSame(byte[] a) => a.Length < 2 || !a.AsSpan(1).ContainsAnyExcept(a[0]);

@@ -7,9 +7,7 @@ namespace Server.Tests.Pathfinding;
 
 // v7 = per-chunk libdeflate compression on top of the v6 predictive-Z format. Each record is
 // compressed independently (random access preserved) behind a u32 uncompressed-length prefix;
-// records that do not shrink (tiny Uniform records) are stored raw. StepCacheFileV6Tests already
-// round-trips every chunk shape through this compression path; these tests cover the v7-specific
-// behavior: that compression engages, that the stored-raw fallback round-trips, and v6 rejection.
+// records that do not shrink (tiny Uniform records) are stored raw.
 [Collection("Sequential Pathfinding Tests")]
 public class StepCacheFileV7Tests
 {

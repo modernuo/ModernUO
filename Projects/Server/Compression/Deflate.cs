@@ -28,8 +28,6 @@ public static class Deflate
 
     public static LibDeflateBinding Standard => _standard ??= new LibDeflateBinding();
 
-    // Best-ratio compressor. Construction allocates a native libdeflate compressor, so it is
-    // cached per thread like Standard and reused. Decompression is level-independent, so the
-    // decompress path can use either accessor. libdeflate is not thread-safe — hence ThreadStatic.
+    // Best-ratio compressor, cached per thread like Standard (construction allocates native state).
     public static LibDeflateBinding Maximum => _maximum ??= new LibDeflateBinding(LibDeflateCompressionLevel.VeryHigh);
 }

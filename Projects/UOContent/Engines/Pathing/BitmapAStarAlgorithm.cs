@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Server.Engines.Pathing;
 using Server.Engines.Pathing.Cache;
 using Server.Mobiles;
 using Server.Systems.FeatureFlags;
@@ -114,7 +115,7 @@ public class BitmapAStarAlgorithm : PathAlgorithm
         // and trips the threshold immediately.
         StepCache.Instance.BeginFindGeneration();
 
-        Server.Engines.Pathing.PathfindRecorder.RecordIfEnabled(m, map, start, goal);
+        PathfindRecorder.RecordIfEnabled(m, map, start, goal);
 
         _currentMobileNeedsSlowPath = RequiresSlowPath(m);
         _currentMobilePlayerStrict = m.Player && m.AccessLevel < AccessLevel.GameMaster;
@@ -548,6 +549,5 @@ public class BitmapAStarAlgorithm : PathAlgorithm
     /// + wetMask). CanOpenDoors / CanMoveOverObstacles only affect dynamic items and don't
     /// disqualify the cache.
     /// </summary>
-    private static bool RequiresSlowPath(Mobile m) =>
-        m is BaseCreature bc && bc.CanFly;
+    private static bool RequiresSlowPath(Mobile m) => m is BaseCreature bc && bc.CanFly;
 }

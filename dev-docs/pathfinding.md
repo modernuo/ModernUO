@@ -232,9 +232,14 @@ whole-file) and bounded RAM (only touched chunks materialize, LRU-capped):
      zstd's large-window advantage doesn't apply at 256-cell record granularity. Compression runs at
      bake time only (offline); decompression is one-time per chunk (LRU-cached after). **Calibrated:
      v6 124.7 MB → v7 19.2 MB (−85%); −97% vs the original 565 MB.**
-   - **#3b — index compaction (remaining, ~2 MB).** The v7 file's residual is the still-uncompacted
-     index (20 B/chunk × 114 K ≈ 2.3 MB). Compact it: chunks in fixed sweep order → implicit keys,
-     delta-encoded offsets, lengths derivable → ~3 B/chunk ≈ 0.34 MB, landing the file at ~17 MB.
+   - **#3b — index compaction: *shipped as format v8.*** The v7 file's residual was the
+     uncompacted index (20 B/chunk × 114 K ≈ 2.3 MB). The trailer now stores only
+     `{ u32 packedKey = (ChunkX << 16) | ChunkY, u32 recordLength }` per chunk (8 B), in record
+     write order; the per-chunk file offset is dropped and reconstructed by cumulative `recordLength`
+     from `HeaderSize` at open. No record reordering, no varint — a fixed-stride, low-risk change to
+     the load-bearing index. **Calibrated: v7 19.2 MB → v8 17.9 MB.** (A varint/implicit-key scheme
+     could shave the index toward ~0.34 MB for another ~0.6 MB, at the cost of variable-stride
+     parsing and record reordering — not worth it on an already −97% file.)
 
 **Do first:** a uniformity audit over a baked facet (how many chunks are fully uniform / have
 all-zero Z residuals?) to size the #1/#2 win before writing any format code. Each technique is a
@@ -265,3 +270,6 @@ Validate size **and** read-latency vs the corpus in the benchmark repo after eac
   records): libdeflate VeryHigh **16.5 MB** vs Brotli q11 16.4 / zstd L19–22 17.4; decompress
   **1.83 µs/chunk** (libdeflate) vs 2.21 (zstd). The remaining ~2.3 MB is the uncompacted index
   (→ #3b).
+- *Calibrated v8 (`BakeMap`-measured, full Trammel):* **#3b index compaction (20 → 8 B/chunk):
+  19.2 MB → 17.9 MB.** Roadmap end-to-end: **565 MB → 17.9 MB (−96.8%)** across #1 uniform elision
+  (v5) → #2 predictive-Z (v6) → #3a per-chunk libdeflate (v7) → #3b compact index (v8).

@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.IO;
 using Server.Engines.Pathing.Cache;
 
@@ -95,12 +96,12 @@ public static class PathCacheCommands
 
         var totalChunks = 0;
         var totalMaps = 0;
-        var sw = System.Diagnostics.Stopwatch.StartNew();
+        var sw = Stopwatch.StartNew();
 
         for (var i = 0; i < Map.Maps.Length; i++)
         {
             var map = Map.Maps[i];
-            if (map == null || map == Map.Internal || (only.HasValue && map.MapID != only.Value))
+            if (map == null || map == Map.Internal || only.HasValue && map.MapID != only.Value)
             {
                 continue;
             }
