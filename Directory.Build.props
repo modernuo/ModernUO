@@ -31,10 +31,12 @@
         <GitVersionBaseDirectory>$(SolutionDir)</GitVersionBaseDirectory>
         <PredefinedCulturesOnly>false</PredefinedCulturesOnly>
     </PropertyGroup>
+    <PropertyGroup>
+        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    </PropertyGroup>
     <PropertyGroup Condition="'$(RuntimeIdentifier)'==''">
         <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
         <SelfContained>false</SelfContained>
-        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
         <InvariantGlobalization>false</InvariantGlobalization>
     </PropertyGroup>
     <PropertyGroup Condition="'$(IsWindows)'=='true' AND '$(IsX64)'=='true' AND '$(RuntimeIdentifier)'==''">

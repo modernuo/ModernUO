@@ -234,7 +234,7 @@ namespace Server.Engines.MLQuests
 
         public void SendProgressGump()
         {
-            Player.SendGump(new QuestConversationGump(Quest, Player, Quest.InProgressMessage));
+            QuestConversationGump.DisplayTo(Player, Quest, Quest.InProgressMessage);
         }
 
         public void SendRewardOffer()
@@ -260,7 +260,7 @@ namespace Server.Engines.MLQuests
             }
             else
             {
-                Player.SendGump(new QuestRewardGump(this));
+                QuestRewardGump.DisplayTo(Player, this);
             }
         }
 
@@ -272,7 +272,7 @@ namespace Server.Engines.MLQuests
             }
             else
             {
-                Player.SendGump(new QuestReportBackGump(this));
+                QuestReportBackGump.DisplayTo(Player, this);
             }
         }
 

@@ -5,24 +5,36 @@ namespace Server.Gumps
 {
     public class GrantGuildTitleGump : GuildMobileListGump
     {
-        public GrantGuildTitleGump(Mobile from, Guild guild) : base(from, guild, true, guild.Members)
+        private GrantGuildTitleGump(Guild guild) : base(guild, true, guild.Members)
         {
         }
 
-        protected override void Design()
+        public static void DisplayTo(Mobile from, Guild guild)
         {
-            AddHtmlLocalized(20, 10, 400, 35, 1011118); // Grant a title to another member.
+            if (from?.NetState == null || guild == null)
+            {
+                return;
+            }
 
-            AddButton(20, 400, 4005, 4007, 1);
-            AddHtmlLocalized(55, 400, 245, 30, 1011127); // I dub thee...
+            GuildGump.EnsureClosed(from);
+            from.SendGump(new GrantGuildTitleGump(guild));
+        }
 
-            AddButton(300, 400, 4005, 4007, 2);
-            AddHtmlLocalized(335, 400, 100, 35, 1011012); // CANCEL
+        protected override void BuildHeader(ref DynamicGumpBuilder builder)
+        {
+            builder.AddHtmlLocalized(20, 10, 400, 35, 1011118); // Grant a title to another member.
+
+            builder.AddButton(20, 400, 4005, 4007, 1);
+            builder.AddHtmlLocalized(55, 400, 245, 30, 1011127); // I dub thee...
+
+            builder.AddButton(300, 400, 4005, 4007, 2);
+            builder.AddHtmlLocalized(335, 400, 100, 35, 1011012); // CANCEL
         }
 
         public override void OnResponse(NetState state, in RelayInfo info)
         {
-            if (GuildGump.BadLeader(m_Mobile, m_Guild))
+            var from = state.Mobile;
+            if (info.ButtonID == 0 || GuildGump.BadMember(from, _guild))
             {
                 return;
             }
@@ -35,22 +47,21 @@ namespace Server.Gumps
                 {
                     var index = switches[0];
 
-                    if (index >= 0 && index < m_List.Count)
+                    if (index >= 0 && index < _list.Count)
                     {
-                        var m = m_List[index];
+                        var m = _list[index];
 
                         if (m?.Deleted == false)
                         {
-                            m_Mobile.SendLocalizedMessage(1013074); // New title (20 characters max):
-                            m_Mobile.Prompt = new GuildTitlePrompt(m_Mobile, m, m_Guild);
+                            from.SendLocalizedMessage(1013074); // New title (20 characters max):
+                            from.Prompt = new GuildTitlePrompt(m, _guild);
                         }
                     }
                 }
             }
             else if (info.ButtonID == 2)
             {
-                GuildGump.EnsureClosed(m_Mobile);
-                m_Mobile.SendGump(new GuildmasterGump(m_Mobile, m_Guild));
+                GuildmasterGump.DisplayTo(from, _guild);
             }
         }
     }

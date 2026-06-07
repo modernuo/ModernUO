@@ -27,6 +27,7 @@ Apply these when writing or reviewing `.cs` files under `Projects/`.
 15. **Braces required on all control flow** — `if`, `else`, `for`, `foreach`, `while`, `do`, `switch` must always have braces, even for single-line bodies → `dev-docs/code-standards.md`
 16. **Prefer switch expressions and switch-when** — use switch expressions for value mapping and switch-when for pattern matching where they improve readability. Exception: skip if unreadable or cold path → `dev-docs/code-standards.md`
 17. **No `System.Text.StringBuilder`** — use `ValueStringBuilder` with `stackalloc` (bounded output) or `ValueStringBuilder.Create()` (unbounded). Supports `$"..."` interpolation directly. Always use `using var` for disposal. Use `Reset()` instead of reassigning → `dev-docs/string-handling.md`
+18. **Interpolation anti-patterns on handler-aware APIs** — `Send*`/`Say`/`Emote`/`PublicOverhead*`/`IPropertyList.Add`/gump `AddLabel`/`AddHtml`/`Html.Center`/`SpanWriter.Write*` all have `ref RawInterpolatedStringHandler` overloads that allocate zero strings, but only when the call-site argument is a `$"..."` literal directly. Avoid: ternaries with interpolated branches (`Send(c ? $"a" : $"b")`), switch expressions with interpolated arms, pre-built `var s = $"..."` locals (single-use), `.ToString()` / `.String()` / `string.Format` inside holes, string concat (`{a + b}`), LINQ string ops in holes. Use `:L` format spec for lowercase (`{rank:L}` not `rank.ToString().ToLowerInvariant()`) → `dev-docs/string-handling.md` § Interpolation Anti-Patterns
 
 ## Dev-Docs Reference
 

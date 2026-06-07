@@ -73,52 +73,60 @@ public abstract partial class SpecialScroll : Item
             return;
         }
 
-        from.SendGump(new InternalGump(from, this));
+        SpecialScrollGump.DisplayTo(from, this);
     }
 
-    public class InternalGump : Gump
+    public class SpecialScrollGump : DynamicGump
     {
-        private readonly Mobile _mobile;
         private readonly SpecialScroll _scroll;
 
         public override bool Singleton => true;
 
-        public InternalGump(Mobile mobile, SpecialScroll scroll) : base(25, 50)
+        private SpecialScrollGump(SpecialScroll scroll) : base(25, 50) => _scroll = scroll;
+
+        public static void DisplayTo(Mobile from, SpecialScroll scroll)
         {
-            _mobile = mobile;
-            _scroll = scroll;
+            if (from?.NetState == null || scroll?.Deleted != false)
+            {
+                return;
+            }
 
-            AddPage(0);
+            from.SendGump(new SpecialScrollGump(scroll));
+        }
 
-            AddBackground(25, 10, 420, 200, 5054);
+        protected override void BuildLayout(ref DynamicGumpBuilder builder)
+        {
+            builder.AddPage();
 
-            AddImageTiled(33, 20, 401, 181, 2624);
-            AddAlphaRegion(33, 20, 401, 181);
+            builder.AddBackground(25, 10, 420, 200, 5054);
 
-            AddHtmlLocalized(40, 48, 387, 100, _scroll.Message, true, true);
+            builder.AddImageTiled(33, 20, 401, 181, 2624);
+            builder.AddAlphaRegion(33, 20, 401, 181);
 
-            AddHtmlLocalized(125, 148, 200, 20, 1049478, 0x7FFF); // Do you wish to use this scroll?
+            builder.AddHtmlLocalized(40, 48, 387, 100, _scroll.Message, true, true);
 
-            AddButton(100, 172, 4005, 4007, 1);
-            AddHtmlLocalized(135, 172, 120, 20, 1046362, 0x7FFF); // Yes
+            builder.AddHtmlLocalized(125, 148, 200, 20, 1049478, 0x7FFF); // Do you wish to use this scroll?
 
-            AddButton(275, 172, 4005, 4007, 0);
-            AddHtmlLocalized(310, 172, 120, 20, 1046363, 0x7FFF); // No
+            builder.AddButton(100, 172, 4005, 4007, 1);
+            builder.AddHtmlLocalized(135, 172, 120, 20, 1046362, 0x7FFF); // Yes
+
+            builder.AddButton(275, 172, 4005, 4007, 0);
+            builder.AddHtmlLocalized(310, 172, 120, 20, 1046363, 0x7FFF); // No
 
             if (_scroll.Title != 0)
             {
-                AddHtmlLocalized(40, 20, 260, 20, _scroll.Title, 0x7FFF);
+                builder.AddHtmlLocalized(40, 20, 260, 20, _scroll.Title, 0x7FFF);
             }
             else
             {
-                AddHtml(40, 20, 260, 20, _scroll.DefaultTitle);
+                builder.AddHtml(40, 20, 260, 20, _scroll.DefaultTitle);
             }
 
             var skillLabel = _scroll.SkillLabel;
 
             if (skillLabel > 0)
             {
-                AddHtmlLocalized(310, 20, 120, 20, skillLabel, 0x7FFF);
+                builder.AddHtmlLocalized(310, 20, 120, 20, skillLabel, 0x7FFF);
             }
         }
 
@@ -126,7 +134,7 @@ public abstract partial class SpecialScroll : Item
         {
             if (info.ButtonID == 1)
             {
-                _scroll.Use(_mobile);
+                _scroll.Use(state.Mobile);
             }
         }
     }

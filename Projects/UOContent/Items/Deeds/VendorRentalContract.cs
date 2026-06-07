@@ -195,7 +195,7 @@ public partial class VendorRentalContract : Item
         {
             if (from.InRange(this, 5))
             {
-                from.SendGump(new VendorRentalContractGump(this, from), true);
+                VendorRentalContractGump.DisplayTo(from, this);
             }
             else
             {
@@ -231,7 +231,7 @@ public partial class VendorRentalContract : Item
         {
             if (target is VendorRentalContract contract && contract.IsUsableBy(from, true, true, true, true))
             {
-                from.SendGump(new VendorRentalContractGump(contract, from), true);
+                VendorRentalContractGump.DisplayTo(from, contract);
             }
         }
     }

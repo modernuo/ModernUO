@@ -29,11 +29,12 @@ public enum AffixType : byte
     System = 0x02
 }
 
-public static class OutgoingMessagePackets
+public static partial class OutgoingMessagePackets
 {
     public static void SendMessageLocalized(
         this NetState ns,
-        Serial serial, int graphic, MessageType type, int hue, int font, int number, string name = "", string args = ""
+        Serial serial, int graphic, MessageType type, int hue, int font, int number,
+        ReadOnlySpan<char> name = default, ReadOnlySpan<char> args = default
     )
     {
         if (ns.CannotSendPackets())
@@ -41,7 +42,7 @@ public static class OutgoingMessagePackets
             return;
         }
 
-        var buffer = stackalloc byte[GetMaxMessageLocalizedLength(args)].InitializePacket();
+        var buffer = stackalloc byte[GetMaxMessageLocalizedLength(args.Length)].InitializePacket();
         var length = CreateMessageLocalized(
             buffer, serial, graphic, type, hue, font, number, name, args
         );
@@ -50,20 +51,22 @@ public static class OutgoingMessagePackets
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int GetMaxMessageLocalizedLength(string args) => 50 + (args?.Length ?? 0) * 2;
+    public static int GetMaxMessageLocalizedLength(int argsCharCount) => 50 + argsCharCount * 2;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int GetMaxMessageLocalizedLength(ReadOnlySpan<char> args) =>
+        GetMaxMessageLocalizedLength(args.Length);
 
     public static int CreateMessageLocalized(
         Span<byte> buffer,
-        Serial serial, int graphic, MessageType type, int hue, int font, int number, string name = "", string args = ""
+        Serial serial, int graphic, MessageType type, int hue, int font, int number,
+        ReadOnlySpan<char> name = default, ReadOnlySpan<char> args = default
     )
     {
         if (buffer[0] != 0)
         {
             return buffer.Length;
         }
-
-        name ??= "";
-        args ??= "";
 
         if (hue == 0)
         {
@@ -88,8 +91,9 @@ public static class OutgoingMessagePackets
 
     public static void SendMessageLocalizedAffix(
         this NetState ns,
-        Serial serial, int graphic, MessageType type, int hue, int font, int number, string name,
-        AffixType affixType, string affix = "", string args = ""
+        Serial serial, int graphic, MessageType type, int hue, int font, int number,
+        ReadOnlySpan<char> name, AffixType affixType,
+        ReadOnlySpan<char> affix = default, ReadOnlySpan<char> args = default
     )
     {
         if (ns.CannotSendPackets())
@@ -97,7 +101,7 @@ public static class OutgoingMessagePackets
             return;
         }
 
-        var buffer = stackalloc byte[GetMaxMessageLocalizedAffixLength(affix, args)].InitializePacket();
+        var buffer = stackalloc byte[GetMaxMessageLocalizedAffixLength(affix.Length, args.Length)].InitializePacket();
         var length = CreateMessageLocalizedAffix(
             buffer, serial, graphic, type, hue, font, number, name, affixType, affix, args
         );
@@ -106,23 +110,24 @@ public static class OutgoingMessagePackets
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int GetMaxMessageLocalizedAffixLength(string affix, string args) =>
-        52 + (affix?.Length ?? 0) + (args?.Length ?? 0) * 2;
+    public static int GetMaxMessageLocalizedAffixLength(int affixCharCount, int argsCharCount) =>
+        52 + affixCharCount + argsCharCount * 2;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int GetMaxMessageLocalizedAffixLength(ReadOnlySpan<char> affix, ReadOnlySpan<char> args) =>
+        GetMaxMessageLocalizedAffixLength(affix.Length, args.Length);
 
     public static int CreateMessageLocalizedAffix(
         Span<byte> buffer,
-        Serial serial, int graphic, MessageType type, int hue, int font, int number, string name,
-        AffixType affixType, string affix = "", string args = ""
+        Serial serial, int graphic, MessageType type, int hue, int font, int number,
+        ReadOnlySpan<char> name, AffixType affixType,
+        ReadOnlySpan<char> affix = default, ReadOnlySpan<char> args = default
     )
     {
         if (buffer[0] != 0)
         {
             return buffer.Length;
         }
-
-        name ??= "";
-        affix ??= "";
-        args ??= "";
 
         if (hue == 0)
         {
@@ -149,7 +154,8 @@ public static class OutgoingMessagePackets
 
     public static void SendMessage(
         this NetState ns,
-        Serial serial, int graphic, MessageType type, int hue, int font, bool ascii, string lang, string name, string text
+        Serial serial, int graphic, MessageType type, int hue, int font, bool ascii,
+        string lang, ReadOnlySpan<char> name, ReadOnlySpan<char> text
     )
     {
         if (ns.CannotSendPackets())
@@ -157,7 +163,7 @@ public static class OutgoingMessagePackets
             return;
         }
 
-        var buffer = stackalloc byte[GetMaxMessageLength(text)].InitializePacket();
+        var buffer = stackalloc byte[GetMaxMessageLength(text.Length)].InitializePacket();
         var length = CreateMessage(
             buffer,
             serial,
@@ -175,7 +181,10 @@ public static class OutgoingMessagePackets
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int GetMaxMessageLength(string text) => 50 + (text?.Length ?? 0) * 2;
+    public static int GetMaxMessageLength(int textCharCount) => 50 + textCharCount * 2;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int GetMaxMessageLength(ReadOnlySpan<char> text) => GetMaxMessageLength(text.Length);
 
     public static int CreateMessage(
         Span<byte> buffer,
@@ -186,8 +195,8 @@ public static class OutgoingMessagePackets
         int font,
         bool ascii,
         string lang,
-        string name,
-        string text
+        ReadOnlySpan<char> name,
+        ReadOnlySpan<char> text
     )
     {
         if (buffer[0] != 0)
@@ -195,8 +204,6 @@ public static class OutgoingMessagePackets
             return buffer.Length;
         }
 
-        name ??= "";
-        text ??= "";
         lang ??= "ENU";
 
         if (hue == 0)

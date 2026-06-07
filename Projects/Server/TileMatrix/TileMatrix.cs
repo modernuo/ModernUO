@@ -17,6 +17,7 @@ using Server.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Hashing;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -47,6 +48,16 @@ public class TileMatrix
     public FileStream IndexStream { get; }
     public FileStream DataStream { get; }
     public BinaryReader IndexReader { get; }
+
+    /// <summary>
+    /// XxHash3 fingerprint over the bytes of the three on-disk files for this map
+    /// (mapX.mul / .uop, staidxX.mul, staticsX.mul). The .mul format has no built-in
+    /// CRC and CentredSharp / UOFiddler rewrite these files in place, so this is the
+    /// only way to detect "client patched / mapper saved" changes that invalidate
+    /// downstream caches keyed on map data. Computed once at construction; never
+    /// changes for the lifetime of the TileMatrix.
+    /// </summary>
+    public ulong MapFilesFingerprint { get; }
 
     public static bool Pre6000ClientSupport { get; private set; }
 
@@ -140,6 +151,12 @@ public class TileMatrix
             {
                 logger.Warning("{File} was not found.", $"statics{fileIndex}.mul");
             }
+
+            // Stream all three on-disk files through XxHash3 once. Saves + restores
+            // each stream's position so this is invisible to the rest of the constructor
+            // (UOP path has already read part of MapStream by now). Cost is ~5-10ms per
+            // map at boot — paid once, then MapFilesFingerprint is a constant.
+            MapFilesFingerprint = ComputeMapFilesFingerprint();
         }
 
         _emptyStaticBlock = new StaticTile[8][][];
@@ -162,6 +179,27 @@ public class TileMatrix
         _landPatches = new int[BlockWidth][];
 
         Patch = new TileMatrixPatch(this, fileIndex);
+    }
+
+    private ulong ComputeMapFilesFingerprint()
+    {
+        var hasher = HashUtility.CreateXxHash3();
+        AppendStreamFromStart(hasher, MapStream);
+        AppendStreamFromStart(hasher, IndexStream);
+        AppendStreamFromStart(hasher, DataStream);
+        return hasher.GetCurrentHashAsUInt64();
+    }
+
+    private static void AppendStreamFromStart(XxHash3 hasher, FileStream stream)
+    {
+        if (stream == null)
+        {
+            return;
+        }
+        var originalPosition = stream.Position;
+        stream.Position = 0;
+        hasher.Append(stream);
+        stream.Position = originalPosition;
     }
 
     public StaticTile[][][] EmptyStaticBlock => _emptyStaticBlock;

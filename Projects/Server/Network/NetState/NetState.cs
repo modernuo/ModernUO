@@ -404,7 +404,7 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         HuePickers?.Clear();
     }
 
-    public void LaunchBrowser(string url)
+    public void LaunchBrowser(ReadOnlySpan<char> url)
     {
         this.SendMessageLocalized(Serial.MinusOne, -1, MessageType.Label, 0x35, 3, 501231);
         this.SendLaunchBrowser(url);

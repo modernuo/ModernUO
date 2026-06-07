@@ -99,7 +99,7 @@ namespace Server.Commands
                         reg = reg.Parent;
                     }
 
-                    from.SendMessage($"Your region is {builder.ToString()}.");
+                    from.SendMessage($"Your region is {builder.AsSpan()}.");
                 }
             }
         }

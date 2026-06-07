@@ -10,13 +10,18 @@ namespace Server.Engines.Quests.Haven;
 [SerializationGenerator(0, false)]
 public partial class SchmendrickApprenticeCorpse : Corpse
 {
-    private static int _hairHue;
-
     [SerializableField(0, setter: "private")]
     private Lantern _lantern;
 
     [Constructible]
-    public SchmendrickApprenticeCorpse() : base(GetOwner(), GetHair(), GetFacialHair(), GetEquipment())
+    public SchmendrickApprenticeCorpse() : base(
+        GetOwner(),
+        Race.Human.RandomHair(false),
+        Race.Human.RandomHairHue(),
+        Race.Human.RandomFacialHair(false),
+        Race.Human.RandomHairHue(),
+        GetEquipment()
+    )
     {
         Direction = Direction.West;
 
@@ -52,19 +57,6 @@ public partial class SchmendrickApprenticeCorpse : Corpse
         new Shoes(Utility.RandomNeutralHue()),
         new Spellbook()
     ];
-
-    private static VirtualHairInfo GetHair()
-    {
-        _hairHue = Race.Human.RandomHairHue();
-        return new VirtualHairInfo(Race.Human.RandomHair(false), _hairHue);
-    }
-
-    private static VirtualHairInfo GetFacialHair()
-    {
-        _hairHue = Race.Human.RandomHairHue();
-
-        return new VirtualHairInfo(Race.Human.RandomFacialHair(false), _hairHue);
-    }
 
     public override void AddNameProperty(IPropertyList list)
     {

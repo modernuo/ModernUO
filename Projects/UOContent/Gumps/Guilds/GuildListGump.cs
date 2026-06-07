@@ -1,62 +1,65 @@
+using System;
 using System.Collections.Generic;
 using Server.Guilds;
 
 namespace Server.Gumps
 {
-    public abstract class GuildListGump : Gump
+    public abstract class GuildListGump : DynamicGump
     {
-        protected Guild m_Guild;
-        protected List<Guild> m_List;
-        protected Mobile m_Mobile;
+        protected Guild _guild;
+        protected List<Guild> _list;
+        private readonly bool _radio;
 
-        public GuildListGump(Mobile from, Guild guild, bool radio, List<Guild> list) : base(20, 30)
+        public override bool Singleton => true;
+
+        protected GuildListGump(Guild guild, bool radio, List<Guild> list) : base(20, 30)
         {
-            m_Mobile = from;
-            m_Guild = guild;
+            _guild = guild;
+            _radio = radio;
+            _list = list;
+        }
 
-            Draggable = false;
+        protected override void BuildLayout(ref DynamicGumpBuilder builder)
+        {
+            builder.SetNoMove();
 
-            AddPage(0);
-            AddBackground(0, 0, 550, 440, 5054);
-            AddBackground(10, 10, 530, 420, 3000);
+            builder.AddPage();
+            builder.AddBackground(0, 0, 550, 440, 5054);
+            builder.AddBackground(10, 10, 530, 420, 3000);
 
-            Design();
+            BuildHeader(ref builder);
 
-            m_List = list;
-
-            for (var i = 0; i < m_List.Count; ++i)
+            for (var i = 0; i < _list.Count; ++i)
             {
                 if (i % 11 == 0)
                 {
                     if (i != 0)
                     {
-                        AddButton(300, 370, 4005, 4007, 0, GumpButtonType.Page, i / 11 + 1);
-                        AddHtmlLocalized(335, 370, 300, 35, 1011066); // Next page
+                        builder.AddButton(300, 370, 4005, 4007, 0, GumpButtonType.Page, i / 11 + 1);
+                        builder.AddHtmlLocalized(335, 370, 300, 35, 1011066); // Next page
                     }
 
-                    AddPage(i / 11 + 1);
+                    builder.AddPage(i / 11 + 1);
 
                     if (i != 0)
                     {
-                        AddButton(20, 370, 4014, 4016, 0, GumpButtonType.Page, i / 11);
-                        AddHtmlLocalized(55, 370, 300, 35, 1011067); // Previous page
+                        builder.AddButton(20, 370, 4014, 4016, 0, GumpButtonType.Page, i / 11);
+                        builder.AddHtmlLocalized(55, 370, 300, 35, 1011067); // Previous page
                     }
                 }
 
-                if (radio)
+                if (_radio)
                 {
-                    AddRadio(20, 35 + i % 11 * 30, 208, 209, false, i);
+                    builder.AddRadio(20, 35 + i % 11 * 30, 208, 209, false, i);
                 }
 
-                var g = m_List[i];
+                var g = _list[i];
 
-                var name = g.Name?.Trim().DefaultIfNullOrEmpty("(empty)");
-                AddLabel(radio ? 55 : 20, 35 + i % 11 * 30, 0, name);
+                var name = g.Name;
+                builder.AddLabel(_radio ? 55 : 20, 35 + i % 11 * 30, 0, name != null ? name.AsSpan().Trim() : "(empty)");
             }
         }
 
-        protected virtual void Design()
-        {
-        }
+        protected abstract void BuildHeader(ref DynamicGumpBuilder builder);
     }
 }

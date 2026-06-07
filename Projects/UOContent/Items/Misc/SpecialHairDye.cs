@@ -19,7 +19,7 @@ public partial class SpecialHairDye : Item
     {
         if (from.InRange(GetWorldLocation(), 1))
         {
-            from.SendGump(new SpecialHairDyeGump(this));
+            SpecialHairDyeGump.DisplayTo(from, this);
         }
         else
         {
@@ -28,7 +28,7 @@ public partial class SpecialHairDye : Item
     }
 }
 
-public class SpecialHairDyeGump : Gump
+public class SpecialHairDyeGump : StaticGump<SpecialHairDyeGump>
 {
     private static readonly SpecialHairDyeEntry[] _entries =
     {
@@ -42,37 +42,47 @@ public class SpecialHairDyeGump : Gump
         new("*****", 1153, 2)
     };
 
-    private SpecialHairDye _specialHairDye;
+    private readonly SpecialHairDye _specialHairDye;
 
     public override bool Singleton => true;
 
-    public SpecialHairDyeGump(SpecialHairDye dye) : base(0, 0)
-    {
-        _specialHairDye = dye;
+    private SpecialHairDyeGump(SpecialHairDye dye) : base(0, 0) => _specialHairDye = dye;
 
-        AddPage(0);
-        AddBackground(150, 60, 350, 358, 2600);
-        AddBackground(170, 104, 110, 270, 5100);
-        AddHtmlLocalized(230, 75, 200, 20, 1011013);  // Hair Color Selection Menu
-        AddHtmlLocalized(235, 380, 300, 20, 1011014); // Dye my hair this color!
-        AddButton(200, 380, 0xFA5, 0xFA7, 1);         // DYE HAIR
+    public static void DisplayTo(Mobile from, SpecialHairDye dye)
+    {
+        if (from?.NetState == null || dye?.Deleted != false)
+        {
+            return;
+        }
+
+        from.SendGump(new SpecialHairDyeGump(dye));
+    }
+
+    protected override void BuildLayout(ref StaticGumpBuilder builder)
+    {
+        builder.AddPage();
+        builder.AddBackground(150, 60, 350, 358, 2600);
+        builder.AddBackground(170, 104, 110, 270, 5100);
+        builder.AddHtmlLocalized(230, 75, 200, 20, 1011013);  // Hair Color Selection Menu
+        builder.AddHtmlLocalized(235, 380, 300, 20, 1011014); // Dye my hair this color!
+        builder.AddButton(200, 380, 0xFA5, 0xFA7, 1);         // DYE HAIR
 
         for (var i = 0; i < _entries.Length; ++i)
         {
-            AddLabel(180, 109 + i * 22, _entries[i].HueStart - 1, _entries[i].Name);
-            AddButton(257, 110 + i * 22, 5224, 5224, 0, GumpButtonType.Page, i + 1);
+            builder.AddLabel(180, 109 + i * 22, _entries[i].HueStart - 1, _entries[i].Name);
+            builder.AddButton(257, 110 + i * 22, 5224, 5224, 0, GumpButtonType.Page, i + 1);
         }
 
         for (var i = 0; i < _entries.Length; ++i)
         {
             var e = _entries[i];
 
-            AddPage(i + 1);
+            builder.AddPage(i + 1);
 
             for (var j = 0; j < e.HueCount; ++j)
             {
-                AddLabel(328 + j / 16 * 80, 102 + j % 16 * 17, e.HueStart + j - 1, "*****");
-                AddRadio(310 + j / 16 * 80, 102 + j % 16 * 17, 210, 211, false, i * 100 + j);
+                builder.AddLabel(328 + j / 16 * 80, 102 + j % 16 * 17, e.HueStart + j - 1, "*****");
+                builder.AddRadio(310 + j / 16 * 80, 102 + j % 16 * 17, 210, 211, false, i * 100 + j);
             }
         }
     }

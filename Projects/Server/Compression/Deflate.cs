@@ -23,5 +23,11 @@ public static class Deflate
     [ThreadStatic]
     private static LibDeflateBinding _standard;
 
+    [ThreadStatic]
+    private static LibDeflateBinding _maximum;
+
     public static LibDeflateBinding Standard => _standard ??= new LibDeflateBinding();
+
+    // Best-ratio compressor, cached per thread like Standard (construction allocates native state).
+    public static LibDeflateBinding Maximum => _maximum ??= new LibDeflateBinding(LibDeflateCompressionLevel.VeryHigh);
 }

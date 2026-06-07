@@ -84,10 +84,14 @@ public partial class MilitiaFighter : BaseCreature
 [SerializationGenerator(0, false)]
 public partial class MilitiaFighterCorpse : Corpse
 {
-    public MilitiaFighterCorpse(Mobile owner, VirtualHairInfo hair, VirtualHairInfo facialhair, List<Item> equipItems) : base(
+    public MilitiaFighterCorpse(
+        Mobile owner, int hairItemId, int hairHue, int facialHairItemId, int facialHairHue, List<Item> equipItems
+    ) : base(
         owner,
-        hair,
-        facialhair,
+        hairItemId,
+        hairHue,
+        facialHairItemId,
+        facialHairHue,
         equipItems
     )
     {

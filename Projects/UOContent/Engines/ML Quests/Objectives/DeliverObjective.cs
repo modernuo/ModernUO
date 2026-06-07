@@ -70,27 +70,27 @@ namespace Server.Engines.MLQuests.Objectives
             }
         }
 
-        public override void WriteToGump(Gump g, ref int y)
+        public override void WriteToGump(ref DynamicGumpBuilder builder, ref int y)
         {
             var amount = Amount.ToString();
 
-            g.AddHtmlLocalized(98, y, 312, 16, 1072207, 0x5F90); // Deliver
-            g.AddLabel(143, y, 0x481, amount);
+            builder.AddHtmlLocalized(98, y, 312, 16, 1072207, 0x5F90); // Deliver
+            builder.AddLabel(143, y, 0x481, amount);
 
             if (Name.Number > 0)
             {
-                g.AddHtmlLocalized(143 + amount.Length * 15, y, 190, 18, Name.Number, 0x77BF);
-                g.AddItem(350, y, CollectObjective.LabelToItemID(Name.Number));
+                builder.AddHtmlLocalized(143 + amount.Length * 15, y, 190, 18, Name.Number, 0x77BF);
+                builder.AddItem(350, y, CollectObjective.LabelToItemID(Name.Number));
             }
             else if (Name.String != null)
             {
-                g.AddLabel(143 + amount.Length * 15, y, 0x481, Name.String);
+                builder.AddLabel(143 + amount.Length * 15, y, 0x481, Name.String);
             }
 
             y += 32;
 
-            g.AddHtmlLocalized(103, y, 120, 16, 1072379, 0x5F90); // Deliver to
-            g.AddLabel(223, y, 0x481, QuesterNameAttribute.GetQuesterNameFor(Destination));
+            builder.AddHtmlLocalized(103, y, 120, 16, 1072379, 0x5F90); // Deliver to
+            builder.AddLabel(223, y, 0x481, QuesterNameAttribute.GetQuesterNameFor(Destination));
 
             y += 16;
         }
@@ -225,11 +225,11 @@ namespace Server.Engines.MLQuests.Objectives
             Instance.Player.SendLocalizedMessage(1074813); // You have failed to complete your delivery.
         }
 
-        public override void WriteToGump(Gump g, ref int y)
+        public override void WriteToGump(ref DynamicGumpBuilder builder, ref int y)
         {
-            Objective.WriteToGump(g, ref y);
+            Objective.WriteToGump(ref builder, ref y);
 
-            base.WriteToGump(g, ref y);
+            base.WriteToGump(ref builder, ref y);
 
             // No extra instance stuff printed for this objective
         }

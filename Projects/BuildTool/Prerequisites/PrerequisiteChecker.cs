@@ -69,7 +69,7 @@ public static class PrerequisiteChecker
 
         if (!sdkResult.Passed)
         {
-            var installed = DotNetSdkManager.OfferInstall(platform, interactive);
+            var installed = DotNetSdkManager.OfferInstall(platform, repoRoot, interactive);
             if (!installed)
             {
                 return false;

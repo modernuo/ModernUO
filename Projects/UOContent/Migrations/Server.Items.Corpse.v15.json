@@ -111,7 +111,7 @@
     },
     {
       "name": "Hair",
-      "type": "Server.VirtualHairInfo",
+      "type": "Server.Items.LegacyHairInfo",
       "rule": "RawSerializableMigrationRule",
       "ruleArguments": [
         "",
@@ -120,7 +120,7 @@
     },
     {
       "name": "FacialHair",
-      "type": "Server.VirtualHairInfo",
+      "type": "Server.Items.LegacyHairInfo",
       "rule": "RawSerializableMigrationRule",
       "ruleArguments": [
         "",

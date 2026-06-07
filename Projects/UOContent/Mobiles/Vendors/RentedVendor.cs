@@ -203,13 +203,13 @@ public partial class RentedVendor : PlayerVendor
 
             if (vendor.IsOwner(from))
             {
-                from.SendGump(new RenterVendorRentalGump(vendor), true);
+                RenterVendorRentalGump.DisplayTo(from, vendor);
 
                 vendor.SendRentalExpireMessage(from);
             }
             else if (vendor.IsLandlord(from))
             {
-                from.SendGump(new LandlordVendorRentalGump(vendor), true);
+                LandlordVendorRentalGump.DisplayTo(from, vendor);
 
                 vendor.SendRentalExpireMessage(from);
             }
@@ -311,7 +311,7 @@ public partial class RentedVendor : PlayerVendor
             {
                 from.SendLocalizedMessage(1062504); // Please wait while the renter considers your offer.
 
-                owner.SendGump(new VendorRentalRefundGump(m_Vendor, from, amount));
+                VendorRentalRefundGump.DisplayTo(owner, m_Vendor, from, amount);
             }
         }
     }

@@ -10,15 +10,13 @@ public sealed class CorpseEquip : Packet
         var list = beheld.EquipItems;
 
         var count = list.Count;
-        var hair = beheld.Hair;
-        var facialHair = beheld.FacialHair;
 
-        if (hair != null)
+        if (beheld.HairItemId > 0)
         {
             count++;
         }
 
-        if (facialHair != null)
+        if (beheld.FacialHairItemId > 0)
         {
             count++;
         }
@@ -38,16 +36,16 @@ public sealed class CorpseEquip : Packet
             }
         }
 
-        if (hair?.ItemId > 0)
+        if (beheld.HairItemId > 0)
         {
             Stream.Write((byte)(Layer.Hair + 1));
-            Stream.Write(hair.VirtualSerial);
+            Stream.Write(beheld.HairSerial);
         }
 
-        if (facialHair?.ItemId > 0)
+        if (beheld.FacialHairItemId > 0)
         {
             Stream.Write((byte)(Layer.FacialHair + 1));
-            Stream.Write(facialHair.VirtualSerial);
+            Stream.Write(beheld.FacialHairSerial);
         }
 
         Stream.Write((byte)Layer.Invalid);
@@ -61,15 +59,13 @@ public sealed class CorpseContent : Packet
     {
         var items = beheld.EquipItems;
         var count = items.Count;
-        var hair = beheld.Hair;
-        var facialHair = beheld.FacialHair;
 
-        if (hair != null)
+        if (beheld.HairItemId > 0)
         {
             count++;
         }
 
-        if (facialHair != null)
+        if (beheld.FacialHairItemId > 0)
         {
             count++;
         }
@@ -101,30 +97,30 @@ public sealed class CorpseContent : Packet
             }
         }
 
-        if (hair?.ItemId > 0)
+        if (beheld.HairItemId > 0)
         {
-            Stream.Write(hair.VirtualSerial);
-            Stream.Write((ushort)hair.ItemId);
+            Stream.Write(beheld.HairSerial);
+            Stream.Write((ushort)beheld.HairItemId);
             Stream.Write((byte)0); // signed, itemID offset
             Stream.Write((ushort)1);
             Stream.Write((short)0);
             Stream.Write((short)0);
             Stream.Write(beheld.Serial);
-            Stream.Write((ushort)hair.Hue);
+            Stream.Write((ushort)beheld.HairHue);
 
             ++written;
         }
 
-        if (facialHair?.ItemId > 0)
+        if (beheld.FacialHairItemId > 0)
         {
-            Stream.Write(facialHair.VirtualSerial);
-            Stream.Write((ushort)facialHair.ItemId);
+            Stream.Write(beheld.FacialHairSerial);
+            Stream.Write((ushort)beheld.FacialHairItemId);
             Stream.Write((byte)0); // signed, itemID offset
             Stream.Write((ushort)1);
             Stream.Write((short)0);
             Stream.Write((short)0);
             Stream.Write(beheld.Serial);
-            Stream.Write((ushort)facialHair.Hue);
+            Stream.Write((ushort)beheld.FacialHairHue);
 
             ++written;
         }
@@ -141,15 +137,13 @@ public sealed class CorpseContent6017 : Packet
     {
         var items = beheld.EquipItems;
         var count = items.Count;
-        var hair = beheld.Hair;
-        var facialHair = beheld.FacialHair;
 
-        if (hair != null)
+        if (beheld.HairItemId > 0)
         {
             count++;
         }
 
-        if (facialHair != null)
+        if (beheld.FacialHairItemId > 0)
         {
             count++;
         }
@@ -182,32 +176,32 @@ public sealed class CorpseContent6017 : Packet
             }
         }
 
-        if (hair?.ItemId > 0)
+        if (beheld.HairItemId > 0)
         {
-            Stream.Write(hair.VirtualSerial);
-            Stream.Write((ushort)hair.ItemId);
+            Stream.Write(beheld.HairSerial);
+            Stream.Write((ushort)beheld.HairItemId);
             Stream.Write((byte)0); // signed, itemID offset
             Stream.Write((ushort)1);
             Stream.Write((short)0);
             Stream.Write((short)0);
             Stream.Write((byte)0); // Grid Location?
             Stream.Write(beheld.Serial);
-            Stream.Write((ushort)hair.Hue);
+            Stream.Write((ushort)beheld.HairHue);
 
             ++written;
         }
 
-        if (facialHair?.ItemId > 0)
+        if (beheld.FacialHairItemId > 0)
         {
-            Stream.Write(facialHair.VirtualSerial);
-            Stream.Write((ushort)facialHair.ItemId);
+            Stream.Write(beheld.FacialHairSerial);
+            Stream.Write((ushort)beheld.FacialHairItemId);
             Stream.Write((byte)0); // signed, itemID offset
             Stream.Write((ushort)1);
             Stream.Write((short)0);
             Stream.Write((short)0);
             Stream.Write((byte)0); // Grid Location?
             Stream.Write(beheld.Serial);
-            Stream.Write((ushort)facialHair.Hue);
+            Stream.Write((ushort)beheld.FacialHairHue);
 
             ++written;
         }

@@ -7,7 +7,7 @@ public sealed class HairEquipUpdate : Packet
     {
         var hue = parent.SolidHueOverride >= 0 ? parent.SolidHueOverride : parent.HairHue;
 
-        Stream.Write(parent.Hair.VirtualSerial);
+        Stream.Write(parent.HairSerial);
         Stream.Write((short)parent.HairItemID);
         Stream.Write((byte)0);
         Stream.Write((byte)Layer.Hair);
@@ -23,7 +23,7 @@ public sealed class FacialHairEquipUpdate : Packet
     {
         var hue = parent.SolidHueOverride >= 0 ? parent.SolidHueOverride : parent.FacialHairHue;
 
-        Stream.Write(parent.FacialHair.VirtualSerial);
+        Stream.Write(parent.FacialHairSerial);
         Stream.Write((short)parent.FacialHairItemID);
         Stream.Write((byte)0);
         Stream.Write((byte)Layer.FacialHair);
@@ -37,7 +37,7 @@ public sealed class RemoveHair : Packet
     public RemoveHair(Mobile parent)
         : base(0x1D, 5)
     {
-        Stream.Write(parent.Hair.VirtualSerial);
+        Stream.Write(parent.HairSerial);
     }
 }
 
@@ -46,6 +46,6 @@ public sealed class RemoveFacialHair : Packet
     public RemoveFacialHair(Mobile parent)
         : base(0x1D, 5)
     {
-        Stream.Write(parent.FacialHair.VirtualSerial);
+        Stream.Write(parent.FacialHairSerial);
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using Server.Gumps;
 using Server.Items;
 using Server.Mobiles;
 
@@ -343,20 +344,20 @@ namespace Server.Engines.Quests.Hag
         public int Step => Ingredients.Length;
         public bool BlackheartMet { get; private set; }
 
-        public override void RenderProgress(BaseQuestGump gump)
+        public override void RenderProgress(ref DynamicGumpBuilder builder)
         {
             if (!Completed)
             {
                 var info = IngredientInfo.Get(Ingredient);
 
-                gump.AddHtmlLocalized(70, 260, 270, 100, info.Name, BaseQuestGump.Blue);
-                gump.AddLabel(70, 280, 0x64, CurProgress.ToString());
-                gump.AddLabel(100, 280, 0x64, "/");
-                gump.AddLabel(130, 280, 0x64, info.Quantity.ToString());
+                builder.AddHtmlLocalized(70, 260, 270, 100, info.Name, BaseQuestGump.Blue);
+                builder.AddLabel(70, 280, 0x64, $"{CurProgress}");
+                builder.AddLabel(100, 280, 0x64, "/");
+                builder.AddLabel(130, 280, 0x64, $"{info.Quantity}");
             }
             else
             {
-                base.RenderProgress(gump);
+                base.RenderProgress(ref builder);
             }
         }
 

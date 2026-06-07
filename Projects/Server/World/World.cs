@@ -110,7 +110,7 @@ public static class World
 
     public static void Broadcast(int hue, bool ascii, string text)
     {
-        var length = OutgoingMessagePackets.GetMaxMessageLength(text);
+        var length = OutgoingMessagePackets.GetMaxMessageLength(text.Length);
 
         var buffer = stackalloc byte[length].InitializePacket();
 
@@ -140,7 +140,7 @@ public static class World
 
     public static void BroadcastStaff(int hue, bool ascii, string text)
     {
-        var length = OutgoingMessagePackets.GetMaxMessageLength(text);
+        var length = OutgoingMessagePackets.GetMaxMessageLength(text.Length);
 
         var buffer = stackalloc byte[length].InitializePacket();
 

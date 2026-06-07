@@ -58,74 +58,91 @@ namespace Server.Engines.Quests
 
     public class QuestConversationsGump : BaseQuestGump
     {
-        private readonly List<QuestConversation> m_Conversations;
+        private readonly List<QuestConversation> _conversations;
 
-        public QuestConversationsGump(QuestConversation conv) : this(new List<QuestConversation> { conv })
+        private QuestConversationsGump(List<QuestConversation> conversations) : base(30, 50) =>
+            _conversations = conversations;
+
+        public static void DisplayTo(Mobile from, QuestConversation conv)
         {
+            if (from?.NetState == null || conv == null)
+            {
+                return;
+            }
+
+            from.SendGump(new QuestConversationsGump(new List<QuestConversation> { conv }));
         }
 
-        public QuestConversationsGump(List<QuestConversation> conversations) : base(30, 50)
+        public static void DisplayTo(Mobile from, List<QuestConversation> conversations)
         {
-            m_Conversations = conversations;
-
-            Closable = false;
-
-            AddPage(0);
-
-            AddImage(349, 10, 9392);
-            AddImageTiled(349, 130, 100, 120, 9395);
-            AddImageTiled(149, 10, 200, 140, 9391);
-            AddImageTiled(149, 250, 200, 140, 9397);
-            AddImage(349, 250, 9398);
-            AddImage(35, 10, 9390);
-            AddImageTiled(35, 150, 120, 100, 9393);
-            AddImage(35, 250, 9396);
-
-            AddHtmlLocalized(110, 60, 200, 20, 1049069, White); // <STRONG>Conversation Event</STRONG>
-
-            AddImage(65, 14, 10102);
-            AddImageTiled(81, 14, 349, 17, 10101);
-            AddImage(426, 14, 10104);
-
-            AddImageTiled(55, 40, 388, 323, 2624);
-            AddAlphaRegion(55, 40, 388, 323);
-
-            AddImageTiled(75, 90, 200, 1, 9101);
-            AddImage(75, 58, 9781);
-            AddImage(380, 45, 223);
-
-            AddButton(220, 335, 2313, 2312, 1);
-            AddImage(0, 0, 10440);
-
-            AddPage(1);
-
-            for (var i = 0; i < conversations.Count; ++i)
+            if (from?.NetState == null || conversations == null || conversations.Count == 0)
             {
-                var conv = conversations[conversations.Count - 1 - i];
+                return;
+            }
+
+            from.SendGump(new QuestConversationsGump(conversations));
+        }
+
+        protected override void BuildLayout(ref DynamicGumpBuilder builder)
+        {
+            builder.SetNoClose();
+
+            builder.AddPage();
+
+            builder.AddImage(349, 10, 9392);
+            builder.AddImageTiled(349, 130, 100, 120, 9395);
+            builder.AddImageTiled(149, 10, 200, 140, 9391);
+            builder.AddImageTiled(149, 250, 200, 140, 9397);
+            builder.AddImage(349, 250, 9398);
+            builder.AddImage(35, 10, 9390);
+            builder.AddImageTiled(35, 150, 120, 100, 9393);
+            builder.AddImage(35, 250, 9396);
+
+            builder.AddHtmlLocalized(110, 60, 200, 20, 1049069, White); // <STRONG>Conversation Event</STRONG>
+
+            builder.AddImage(65, 14, 10102);
+            builder.AddImageTiled(81, 14, 349, 17, 10101);
+            builder.AddImage(426, 14, 10104);
+
+            builder.AddImageTiled(55, 40, 388, 323, 2624);
+            builder.AddAlphaRegion(55, 40, 388, 323);
+
+            builder.AddImageTiled(75, 90, 200, 1, 9101);
+            builder.AddImage(75, 58, 9781);
+            builder.AddImage(380, 45, 223);
+
+            builder.AddButton(220, 335, 2313, 2312, 1);
+            builder.AddImage(0, 0, 10440);
+
+            builder.AddPage(1);
+
+            for (var i = 0; i < _conversations.Count; ++i)
+            {
+                var conv = _conversations[_conversations.Count - 1 - i];
 
                 if (i > 0)
                 {
-                    AddButton(65, 366, 9909, 9911, 0, GumpButtonType.Page, 1 + i);
-                    AddHtmlLocalized(90, 367, 50, 20, 1043354, Black); // Previous
+                    builder.AddButton(65, 366, 9909, 9911, 0, GumpButtonType.Page, 1 + i);
+                    builder.AddHtmlLocalized(90, 367, 50, 20, 1043354, Black); // Previous
 
-                    AddPage(1 + i);
+                    builder.AddPage(1 + i);
                 }
 
-                AddHtmlObject(70, 110, 365, 220, conv.Message, LightGreen, false, true);
+                AddHtmlObject(ref builder, 70, 110, 365, 220, conv.Message, LightGreen, false, true);
 
                 if (i > 0)
                 {
-                    AddButton(420, 366, 9903, 9905, 0, GumpButtonType.Page, i);
-                    AddHtmlLocalized(370, 367, 50, 20, 1043353, Black); // Next
+                    builder.AddButton(420, 366, 9903, 9905, 0, GumpButtonType.Page, i);
+                    builder.AddHtmlLocalized(370, 367, 50, 20, 1043353, Black); // Next
                 }
             }
         }
 
         public override void OnResponse(NetState sender, in RelayInfo info)
         {
-            for (var i = m_Conversations.Count - 1; i >= 0; --i)
+            for (var i = _conversations.Count - 1; i >= 0; --i)
             {
-                var qc = m_Conversations[i];
+                var qc = _conversations[i];
 
                 if (!qc.HasBeenRead)
                 {

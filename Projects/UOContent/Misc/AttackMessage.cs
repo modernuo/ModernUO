@@ -4,8 +4,6 @@ namespace Server.Misc
 {
     public static class AttackMessage
     {
-        private const string AggressorFormat = "You are attacking {0}!";
-        private const string AggressedFormat = "{0} is attacking you!";
         private const int Hue = 0x22;
 
         private static readonly TimeSpan Delay = TimeSpan.FromMinutes(1.0);
@@ -31,13 +29,13 @@ namespace Server.Misc
                     MessageType.Regular,
                     Hue,
                     true,
-                    string.Format(AggressorFormat, aggressed.Name)
+                    $"You are attacking {aggressed.Name}!"
                 );
                 aggressed.LocalOverheadMessage(
                     MessageType.Regular,
                     Hue,
                     true,
-                    string.Format(AggressedFormat, aggressor.Name)
+                    $"{aggressor.Name} is attacking you!"
                 );
             }
         }

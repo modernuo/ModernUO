@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.CompilerServices;
 using Server.Collections;
 using Server.Logging;
 using Server.Network;
@@ -32,14 +33,14 @@ public delegate void ContainerSnoopHandler(Container cont, Mobile from);
 [SerializationGenerator(0, false)]
 public partial class Container : Item
 {
-    private ContainerData m_ContainerData;
+    private ContainerData _containerData;
 
-    internal List<Item> m_Items;
+    internal List<Item> _items;
 
-    private int m_TotalGold;
+    private int _totalGold;
 
-    private int m_TotalItems;
-    private int m_TotalWeight;
+    private int _totalItems;
+    private int _totalWeight;
     internal int _version;
 
     [SerializableField(3)]
@@ -60,8 +61,8 @@ public partial class Container : Item
 
     public ContainerData ContainerData
     {
-        get => m_ContainerData ?? UpdateContainerData();
-        set => m_ContainerData = value;
+        get => _containerData ?? UpdateContainerData();
+        set => _containerData = value;
     }
 
     [CommandProperty(AccessLevel.GameMaster)]
@@ -76,7 +77,7 @@ public partial class Container : Item
 
             if (ItemID != oldID)
             {
-                m_ContainerData = null;
+                _containerData = null;
             }
         }
     }
@@ -201,8 +202,10 @@ public partial class Container : Item
         return base.CheckItemUse(from, item);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool CheckHold(Mobile m, Item item, bool message) => CheckHold(m, item, message, true, 0, 0);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool CheckHold(Mobile m, Item item, bool message, bool checkItems) =>
         CheckHold(m, item, message, checkItems, 0, 0);
 
@@ -246,16 +249,11 @@ public partial class Container : Item
 
         var parent = Parent;
 
-        while (parent != null)
+        while (parent is Item parentItem)
         {
-            if (parent is Container container)
+            if (parentItem is Container container)
             {
                 return container.CheckHold(m, item, message, checkItems, plusItems, plusWeight);
-            }
-
-            if (parent is not Item parentItem)
-            {
-                break;
             }
 
             parent = parentItem.Parent;
@@ -306,9 +304,9 @@ public partial class Container : Item
     {
         return type switch
         {
-            TotalType.Gold => m_TotalGold,
-            TotalType.Items => m_TotalItems,
-            TotalType.Weight => m_TotalWeight,
+            TotalType.Gold => _totalGold,
+            TotalType.Items => _totalItems,
+            TotalType.Weight => _totalWeight,
             _ => base.GetTotal(type)
         };
     }
@@ -321,20 +319,20 @@ public partial class Container : Item
             {
                 case TotalType.Gold:
                     {
-                        m_TotalGold += delta;
+                        _totalGold += delta;
                         break;
                     }
 
                 case TotalType.Items:
                     {
-                        m_TotalItems += delta;
+                        _totalItems += delta;
                         InvalidateProperties();
                         break;
                     }
 
                 case TotalType.Weight:
                     {
-                        m_TotalWeight += delta;
+                        _totalWeight += delta;
                         InvalidateProperties();
                         break;
                     }
@@ -346,11 +344,11 @@ public partial class Container : Item
 
     public override void UpdateTotals()
     {
-        m_TotalGold = 0;
-        m_TotalItems = 0;
-        m_TotalWeight = 0;
+        _totalGold = 0;
+        _totalItems = 0;
+        _totalWeight = 0;
 
-        var items = m_Items;
+        var items = _items;
 
         if (items == null)
         {
@@ -368,24 +366,27 @@ public partial class Container : Item
                 continue;
             }
 
-            m_TotalGold += item.TotalGold;
-            m_TotalItems += item.TotalItems + 1;
-            m_TotalWeight += item.TotalWeight + item.PileWeight;
+            _totalGold += item.TotalGold;
+            _totalItems += item.TotalItems + 1;
+            _totalWeight += item.TotalWeight + item.PileWeight;
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public override void OnItemAdded(Item item)
     {
         base.OnItemAdded(item);
         _version++;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public override void OnItemRemoved(Item item)
     {
         base.OnItemRemoved(item);
         _version++;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public virtual bool OnStackAttempt(Mobile from, Item stack, Item dropped) =>
         CheckHold(from, dropped, true, false) && stack.StackWith(from, dropped);
 
@@ -428,76 +429,17 @@ public partial class Container : Item
         return false;
     }
 
-    public virtual bool TryDropItems(Mobile from, bool sendFullMessage, params ReadOnlySpan<Item> droppedItems)
-    {
-        using var dropItems = PooledRefQueue<Item>.Create();
-        using var stackItems = PooledRefQueue<ItemStackEntry>.Create();
-
-        var extraItems = 0;
-        var extraWeight = 0;
-
-        for (var i = 0; i < droppedItems.Length; i++)
-        {
-            var dropped = droppedItems[i];
-
-            var list = Items;
-
-            var stacked = false;
-
-            for (var j = 0; j < list.Count; ++j)
-            {
-                var item = list[j];
-
-                if (item is not Container && CheckHold(from, dropped, false, false, 0, extraWeight) &&
-                    item.CanStackWith(dropped))
-                {
-                    stackItems.Enqueue(new ItemStackEntry(item, dropped));
-                    extraWeight += (int)Math.Ceiling(item.Weight * (item.Amount + dropped.Amount)) -
-                                   item.PileWeight; // extra weight delta, do not need TotalWeight as we do not have hybrid stackable container types
-                    stacked = true;
-                    break;
-                }
-            }
-
-            if (!stacked && CheckHold(from, dropped, false, true, extraItems, extraWeight))
-            {
-                dropItems.Enqueue(dropped);
-                extraItems++;
-                extraWeight += dropped.TotalWeight + dropped.PileWeight;
-            }
-        }
-
-        if (dropItems.Count + stackItems.Count == droppedItems.Length) // All good
-        {
-            while (dropItems.Count > 0)
-            {
-                DropItem(dropItems.Dequeue());
-            }
-
-            while (stackItems.Count > 0)
-            {
-                var stackItem = stackItems.Dequeue();
-                stackItem.m_StackItem.StackWith(from, stackItem.m_DropItem, false);
-            }
-
-            return true;
-        }
-
-        return false;
-    }
-
     public virtual void Destroy()
     {
         var loc = GetWorldLocation();
         var map = Map;
+        var items = Items;
 
-        for (var i = Items.Count - 1; i >= 0; --i)
+        for (var i = items.Count - 1; i >= 0; --i)
         {
-            if (i < Items.Count)
-            {
-                Items[i].SetLastMoved();
-                Items[i].MoveToWorld(loc, map);
-            }
+            var item = items[i];
+            item.SetLastMoved();
+            item.MoveToWorld(loc, map);
         }
 
         Delete();
@@ -590,8 +532,6 @@ public partial class Container : Item
                 LabelTo(from, $"({TotalItems} items, {TotalWeight} stones)");
             }
         }
-
-        // LabelTo( from, 1050044, String.Format( "{0}\t{1}", TotalItems.ToString(), TotalWeight.ToString() ) );
     }
 
     public override void OnDelete()
@@ -615,9 +555,10 @@ public partial class Container : Item
 
             if (ObjectPropertyList.Enabled)
             {
-                for (var i = 0; i < Items.Count; ++i)
+                var items = Items;
+                for (var i = 0; i < items.Count; ++i)
                 {
-                    ns.SendOPLInfo(Items[i]);
+                    ns.SendOPLInfo(items[i]);
                 }
             }
         }
@@ -659,7 +600,7 @@ public partial class Container : Item
 
         if (!contains)
         {
-            Openers ??= new List<Mobile>();
+            Openers ??= [];
 
             Openers.Add(opener);
         }
@@ -716,219 +657,37 @@ public partial class Container : Item
         }
     }
 
-    public bool ConsumeTotalGrouped(Type type, int amount, bool recurse, OnItemConsumed callback, CheckItemGroup grouper)
-    {
-        if (grouper == null)
-        {
-            throw new ArgumentNullException(nameof(grouper));
-        }
-
-        using var typedItems = ListItemsByType(type, recurse);
-
-        var groups = new List<List<Item>>();
-        var idx = 0;
-
-        while (idx < typedItems.Count)
-        {
-            var a = typedItems[idx++];
-            var group = new List<Item>
-            {
-                a
-            };
-
-            while (idx < typedItems.Count)
-            {
-                var b = typedItems[idx];
-                var v = grouper(a, b);
-
-                if (v == 0)
-                {
-                    group.Add(b);
-                }
-                else
-                {
-                    break;
-                }
-
-                ++idx;
-            }
-
-            groups.Add(group);
-        }
-
-        var items = new Item[groups.Count][];
-        var totals = new int[groups.Count];
-
-        var hasEnough = false;
-
-        for (var i = 0; i < groups.Count; ++i)
-        {
-            items[i] = groups[i].ToArray();
-
-            for (var j = 0; j < items[i].Length; ++j)
-            {
-                totals[i] += items[i][j].Amount;
-            }
-
-            if (totals[i] >= amount)
-            {
-                hasEnough = true;
-            }
-        }
-
-        if (!hasEnough)
-        {
-            return false;
-        }
-
-        for (var i = 0; i < items.Length; ++i)
-        {
-            if (totals[i] >= amount)
-            {
-                var need = amount;
-
-                for (var j = 0; j < items[i].Length; ++j)
-                {
-                    var item = items[i][j];
-
-                    var theirAmount = item.Amount;
-
-                    if (theirAmount < need)
-                    {
-                        callback?.Invoke(item, theirAmount);
-
-                        item.Consume(theirAmount);
-                        need -= theirAmount;
-                    }
-                    else
-                    {
-                        callback?.Invoke(item, need);
-
-                        item.Consume(need);
-                        break;
-                    }
-                }
-
-                break;
-            }
-        }
-
-        return true;
-    }
-
     public int ConsumeTotalGrouped(
-        Type[] types, int[] amounts, bool recurse, OnItemConsumed callback,
-        CheckItemGroup grouper
-    )
+        ReadOnlySpan<Type> types, ReadOnlySpan<int> amounts,
+        bool recurse, OnItemConsumed callback, CheckItemGroup grouper)
     {
         if (types.Length != amounts.Length)
         {
             throw new ArgumentException("length of types and amounts must match");
         }
+        ArgumentNullException.ThrowIfNull(grouper);
 
-        if (grouper == null)
+        // Phase 1: every slot must have a single group with sum >= amount
+        // before any consume happens (preserves all-or-nothing semantics).
+        for (var i = 0; i < types.Length; i++)
         {
-            throw new ArgumentNullException(nameof(grouper));
-        }
-
-        var items = new Item[types.Length][][];
-        var totals = new int[types.Length][];
-
-        for (var i = 0; i < types.Length; ++i)
-        {
-            var type = types[i];
-
-            using var typedItems = ListItemsByType(type, recurse);
-
-            var groups = new List<List<Item>>();
-            var idx = 0;
-
-            while (idx < typedItems.Count)
-            {
-                var a = typedItems[idx++];
-                var group = new List<Item>
-                {
-                    a
-                };
-
-                while (idx < typedItems.Count)
-                {
-                    var b = typedItems[idx];
-                    var v = grouper(a, b);
-
-                    if (v == 0)
-                    {
-                        group.Add(b);
-                    }
-                    else
-                    {
-                        break;
-                    }
-
-                    ++idx;
-                }
-
-                groups.Add(group);
-            }
-
-            items[i] = new Item[groups.Count][];
-            totals[i] = new int[groups.Count];
-
-            var hasEnough = false;
-
-            for (var j = 0; j < groups.Count; ++j)
-            {
-                items[i][j] = groups[j].ToArray();
-
-                for (var k = 0; k < items[i][j].Length; ++k)
-                {
-                    totals[i][j] += items[i][j][k].Amount;
-                }
-
-                if (totals[i][j] >= amounts[i])
-                {
-                    hasEnough = true;
-                }
-            }
-
-            if (!hasEnough)
+            using var items = ListItemsByType(types[i], recurse);
+            if (!TryFindGroupMeetingAmount(items, amounts[i], grouper, out _, out _))
             {
                 return i;
             }
         }
 
-        for (var i = 0; i < items.Length; ++i)
+        // Phase 2: re-list and consume. Trades one extra ListItemsByType per
+        // slot (small) for eliminating List<List<Item>> + Item[][] + int[]
+        // grouping bridges (large). Live mutation of the container during
+        // Item.Consume bumps _version, so each phase walks its own snapshot.
+        for (var i = 0; i < types.Length; i++)
         {
-            for (var j = 0; j < items[i].Length; ++j)
+            using var items = ListItemsByType(types[i], recurse);
+            if (TryFindGroupMeetingAmount(items, amounts[i], grouper, out var start, out var len))
             {
-                if (totals[i][j] >= amounts[i])
-                {
-                    var need = amounts[i];
-
-                    for (var k = 0; k < items[i][j].Length; ++k)
-                    {
-                        var item = items[i][j][k];
-
-                        var theirAmount = item.Amount;
-
-                        if (theirAmount < need)
-                        {
-                            callback?.Invoke(item, theirAmount);
-
-                            item.Consume(theirAmount);
-                            need -= theirAmount;
-                        }
-                        else
-                        {
-                            callback?.Invoke(item, need);
-
-                            item.Consume(need);
-                            break;
-                        }
-                    }
-
-                    break;
-                }
+                ConsumeSlice(items, start, len, amounts[i], callback);
             }
         }
 
@@ -936,8 +695,64 @@ public partial class Container : Item
     }
 
     public int ConsumeTotalGrouped(
-        Type[][] types, int[] amounts, bool recurse, OnItemConsumed callback,
-        CheckItemGroup grouper
+        Type[][] types, ReadOnlySpan<int> amounts,
+        bool recurse, OnItemConsumed callback, CheckItemGroup grouper)
+    {
+        if (types.Length != amounts.Length)
+        {
+            throw new ArgumentException("length of types and amounts must match");
+        }
+        ArgumentNullException.ThrowIfNull(grouper);
+
+        for (var i = 0; i < types.Length; i++)
+        {
+            using var items = ListItemsByType(types[i], recurse);
+            if (!TryFindGroupMeetingAmount(items, amounts[i], grouper, out _, out _))
+            {
+                return i;
+            }
+        }
+
+        for (var i = 0; i < types.Length; i++)
+        {
+            using var items = ListItemsByType(types[i], recurse);
+            if (TryFindGroupMeetingAmount(items, amounts[i], grouper, out var start, out var len))
+            {
+                ConsumeSlice(items, start, len, amounts[i], callback);
+            }
+        }
+
+        return -1;
+    }
+
+    public int ConsumeTotal(Type[][] types, ReadOnlySpan<int> amounts, bool recurse = true, OnItemConsumed callback = null)
+    {
+        if (types.Length != amounts.Length)
+        {
+            throw new ArgumentException("length of types and amounts must match");
+        }
+
+        // Phase 1: validate every slot before any consume (all-or-nothing).
+        for (var i = 0; i < types.Length; i++)
+        {
+            if (GetAmount(types[i], recurse) < amounts[i])
+            {
+                return i;
+            }
+        }
+
+        // Phase 2: materialize per slot and consume.
+        for (var i = 0; i < types.Length; i++)
+        {
+            using var items = ListItemsByType(types[i], recurse);
+            ConsumeSlice(items, 0, items.Count, amounts[i], callback);
+        }
+
+        return -1;
+    }
+
+    public int ConsumeTotal(
+        ReadOnlySpan<Type> types, ReadOnlySpan<int> amounts, bool recurse = true, OnItemConsumed callback = null
     )
     {
         if (types.Length != amounts.Length)
@@ -945,224 +760,18 @@ public partial class Container : Item
             throw new ArgumentException("length of types and amounts must match");
         }
 
-        if (grouper == null)
+        for (var i = 0; i < types.Length; i++)
         {
-            throw new ArgumentNullException(nameof(grouper));
-        }
-
-        var items = new Item[types.Length][][];
-        var totals = new int[types.Length][];
-
-        for (var i = 0; i < types.Length; ++i)
-        {
-            using var typedItems = ListItemsByType(types[i], recurse);
-
-            var groups = new List<List<Item>>();
-            var idx = 0;
-
-            while (idx < typedItems.Count)
-            {
-                var a = typedItems[idx++];
-                var group = new List<Item>
-                {
-                    a
-                };
-
-                while (idx < typedItems.Count)
-                {
-                    var b = typedItems[idx];
-                    var v = grouper(a, b);
-
-                    if (v == 0)
-                    {
-                        group.Add(b);
-                    }
-                    else
-                    {
-                        break;
-                    }
-
-                    ++idx;
-                }
-
-                groups.Add(group);
-            }
-
-            items[i] = new Item[groups.Count][];
-            totals[i] = new int[groups.Count];
-
-            var hasEnough = false;
-
-            for (var j = 0; j < groups.Count; ++j)
-            {
-                items[i][j] = groups[j].ToArray();
-
-                for (var k = 0; k < items[i][j].Length; ++k)
-                {
-                    totals[i][j] += items[i][j][k].Amount;
-                }
-
-                if (totals[i][j] >= amounts[i])
-                {
-                    hasEnough = true;
-                }
-            }
-
-            if (!hasEnough)
+            if (GetAmount(types[i], recurse) < amounts[i])
             {
                 return i;
             }
         }
 
-        for (var i = 0; i < items.Length; ++i)
+        for (var i = 0; i < types.Length; i++)
         {
-            for (var j = 0; j < items[i].Length; ++j)
-            {
-                if (totals[i][j] >= amounts[i])
-                {
-                    var need = amounts[i];
-
-                    for (var k = 0; k < items[i][j].Length; ++k)
-                    {
-                        var item = items[i][j][k];
-
-                        var theirAmount = item.Amount;
-
-                        if (theirAmount < need)
-                        {
-                            callback?.Invoke(item, theirAmount);
-
-                            item.Consume(theirAmount);
-                            need -= theirAmount;
-                        }
-                        else
-                        {
-                            callback?.Invoke(item, need);
-
-                            item.Consume(need);
-                            break;
-                        }
-                    }
-
-                    break;
-                }
-            }
-        }
-
-        return -1;
-    }
-
-    public int ConsumeTotal(Type[][] types, int[] amounts, bool recurse = true, OnItemConsumed callback = null)
-    {
-        if (types.Length != amounts.Length)
-        {
-            throw new ArgumentException("length of types and amounts must match");
-        }
-
-        var items = new Item[types.Length][];
-        var totals = new int[types.Length];
-
-        for (var i = 0; i < types.Length; ++i)
-        {
-            using var typedItems = ListItemsByType(types[i], recurse);
-
-            items[i] = new Item[typedItems.Count];
-
-            for (var j = 0; j < typedItems.Count; ++j)
-            {
-                items[i][j] = typedItems[j];
-                totals[i] += typedItems[j].Amount;
-            }
-
-            if (totals[i] < amounts[i])
-            {
-                return i;
-            }
-        }
-
-        for (var i = 0; i < types.Length; ++i)
-        {
-            var need = amounts[i];
-
-            for (var j = 0; j < items[i].Length; ++j)
-            {
-                var item = items[i][j];
-
-                var theirAmount = item.Amount;
-
-                if (theirAmount < need)
-                {
-                    callback?.Invoke(item, theirAmount);
-
-                    item.Consume(theirAmount);
-                    need -= theirAmount;
-                }
-                else
-                {
-                    callback?.Invoke(item, need);
-
-                    item.Consume(need);
-                    break;
-                }
-            }
-        }
-
-        return -1;
-    }
-
-    public int ConsumeTotal(Type[] types, int[] amounts, bool recurse = true, OnItemConsumed callback = null)
-    {
-        if (types.Length != amounts.Length)
-        {
-            throw new ArgumentException("length of types and amounts must match");
-        }
-
-        var items = new Item[types.Length][];
-        var totals = new int[types.Length];
-
-        for (var i = 0; i < types.Length; ++i)
-        {
-            using var typedItems = ListItemsByType(types[i], recurse);
-
-            items[i] = new Item[typedItems.Count];
-
-            for (var j = 0; j < typedItems.Count; ++j)
-            {
-                items[i][j] = typedItems[j];
-                totals[i] += typedItems[j].Amount;
-            }
-
-            if (totals[i] < amounts[i])
-            {
-                return i;
-            }
-        }
-
-        for (var i = 0; i < types.Length; ++i)
-        {
-            var need = amounts[i];
-
-            for (var j = 0; j < items[i].Length; ++j)
-            {
-                var item = items[i][j];
-
-                var theirAmount = item.Amount;
-
-                if (theirAmount < need)
-                {
-                    callback?.Invoke(item, theirAmount);
-
-                    item.Consume(theirAmount);
-                    need -= theirAmount;
-                }
-                else
-                {
-                    callback?.Invoke(item, need);
-
-                    item.Consume(need);
-                    break;
-                }
-            }
+            using var items = ListItemsByType(types[i], recurse);
+            ConsumeSlice(items, 0, items.Count, amounts[i], callback);
         }
 
         return -1;
@@ -1170,48 +779,14 @@ public partial class Container : Item
 
     public bool ConsumeTotal(Type type, int amount = 1, bool recurse = true, OnItemConsumed callback = null)
     {
-        var total = 0;
-
-        using var typedItems = ListItemsByType(type, recurse);
-
-        // First pass, compute total
-        foreach (var item in typedItems)
+        if (!HasAmount(type, amount, recurse))
         {
-            total += item.Amount;
-
-            if (total >= amount)
-            {
-                break;
-            }
+            return false;
         }
 
-        // We have enough, so consume it
-        if (total >= amount)
-        {
-            var need = amount;
-
-            foreach (var item in typedItems)
-            {
-                var theirAmount = item.Amount;
-
-                if (theirAmount < need)
-                {
-                    callback?.Invoke(item, theirAmount);
-
-                    item.Consume(theirAmount);
-                    need -= theirAmount;
-                }
-                else
-                {
-                    callback?.Invoke(item, need);
-
-                    item.Consume(need);
-                    return true;
-                }
-            }
-        }
-
-        return false;
+        using var items = ListItemsByType(type, recurse);
+        ConsumeSlice(items, 0, items.Count, amount, callback);
+        return true;
     }
 
     public int ConsumeUpTo(Type type, int amount, bool recurse = true)
@@ -1233,8 +808,7 @@ public partial class Container : Item
     }
 
     private static void RecurseConsumeUpTo(
-        Item current, Type type, int amount, bool recurse, ref int consumed,
-        ref PooledRefQueue<Item> toDelete
+        Item current, Type type, int amount, bool recurse, ref int consumed, ref PooledRefQueue<Item> toDelete
     )
     {
         if (current == null || current.Items.Count == 0)
@@ -1273,191 +847,11 @@ public partial class Container : Item
         }
     }
 
-    public int GetBestGroupAmount(Type type, bool recurse, CheckItemGroup grouper)
-    {
-        if (grouper == null)
-        {
-            throw new ArgumentNullException(nameof(grouper));
-        }
-
-        var best = 0;
-
-        using var typedItems = ListItemsByType(type, recurse);
-
-        var groups = new List<List<Item>>();
-        var idx = 0;
-
-        while (idx < typedItems.Count)
-        {
-            var a = typedItems[idx++];
-            var group = new List<Item>
-            {
-                a
-            };
-
-            while (idx < typedItems.Count)
-            {
-                var b = typedItems[idx];
-                var v = grouper(a, b);
-
-                if (v == 0)
-                {
-                    group.Add(b);
-                }
-                else
-                {
-                    break;
-                }
-
-                ++idx;
-            }
-
-            groups.Add(group);
-        }
-
-        for (var i = 0; i < groups.Count; ++i)
-        {
-            var items = groups[i].ToArray();
-
-            var total = 0;
-
-            for (var j = 0; j < items.Length; ++j)
-            {
-                total += items[j].Amount;
-            }
-
-            if (total >= best)
-            {
-                best = total;
-            }
-        }
-
-        return best;
-    }
-
     public int GetBestGroupAmount(Type[] types, bool recurse, CheckItemGroup grouper)
     {
-        if (grouper == null)
-        {
-            throw new ArgumentNullException(nameof(grouper));
-        }
-
-        var best = 0;
-
-        var typedItems = ListItemsByType(types, recurse);
-
-        var groups = new List<List<Item>>();
-        var idx = 0;
-
-        while (idx < typedItems.Count)
-        {
-            var a = typedItems[idx++];
-            var group = new List<Item>
-            {
-                a
-            };
-
-            while (idx < typedItems.Count)
-            {
-                var b = typedItems[idx];
-                var v = grouper(a, b);
-
-                if (v == 0)
-                {
-                    group.Add(b);
-                }
-                else
-                {
-                    break;
-                }
-
-                ++idx;
-            }
-
-            groups.Add(group);
-        }
-
-        for (var j = 0; j < groups.Count; ++j)
-        {
-            var items = groups[j].ToArray();
-            var total = 0;
-
-            foreach (var item in items)
-            {
-                total += item.Amount;
-            }
-
-            if (total >= best)
-            {
-                best = total;
-            }
-        }
-
-        return best;
-    }
-
-    public int GetBestGroupAmount(Type[][] types, bool recurse, CheckItemGroup grouper)
-    {
-        if (grouper == null)
-        {
-            throw new ArgumentNullException(nameof(grouper));
-        }
-
-        var best = 0;
-
-        for (var i = 0; i < types.Length; ++i)
-        {
-            using var typedItems = ListItemsByType(types[i], recurse);
-
-            var groups = new List<List<Item>>();
-            var idx = 0;
-
-            while (idx < typedItems.Count)
-            {
-                var a = typedItems[idx++];
-                var group = new List<Item>
-                {
-                    a
-                };
-
-                while (idx < typedItems.Count)
-                {
-                    var b = typedItems[idx];
-                    var v = grouper(a, b);
-
-                    if (v == 0)
-                    {
-                        group.Add(b);
-                    }
-                    else
-                    {
-                        break;
-                    }
-
-                    ++idx;
-                }
-
-                groups.Add(group);
-            }
-
-            for (var j = 0; j < groups.Count; ++j)
-            {
-                var items = groups[j].ToArray();
-                var total = 0;
-
-                for (var k = 0; k < items.Length; ++k)
-                {
-                    total += items[k].Amount;
-                }
-
-                if (total >= best)
-                {
-                    best = total;
-                }
-            }
-        }
-
-        return best;
+        ArgumentNullException.ThrowIfNull(grouper);
+        using var items = ListItemsByType(types, recurse);
+        return BestGroupTotal(items, grouper);
     }
 
     public int GetAmount(Type type, bool recurse = true)
@@ -1489,6 +883,7 @@ public partial class Container : Item
 
         return total;
     }
+
     public Item FindItemByType(Type type, bool recurse = true)
     {
         foreach (var item in FindItems(recurse))
@@ -1543,27 +938,112 @@ public partial class Container : Item
         return null;
     }
 
-    private struct ItemStackEntry
+    // Sums Item.Amount of all items matching `type`, bailing as soon as
+    // `amount` is reached. Walks the alloc-free FindItemsByType enumerator —
+    // no list materialization. Used as the Phase-1 sufficiency check by the
+    // ConsumeTotal overloads.
+    private bool HasAmount(Type type, int amount, bool recurse)
     {
-        public readonly Item m_StackItem;
-        public readonly Item m_DropItem;
-
-        public ItemStackEntry(Item stack, Item drop)
+        var total = 0;
+        foreach (var item in FindItemsByType(type, recurse))
         {
-            m_StackItem = stack;
-            m_DropItem = drop;
+            total += item.Amount;
+            if (total >= amount)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Walks `items` (BFS-ordered snapshot) in adjacency-based groups defined
+    // by `grouper`. Returns the first group whose Amount sum is >= `amount`,
+    // emitting its slice [start, start+length). Streaming, no per-group list.
+    private static bool TryFindGroupMeetingAmount(
+        PooledRefList<Item> items, int amount, CheckItemGroup grouper, out int groupStart, out int groupLength
+    )
+    {
+        var i = 0;
+        while (i < items.Count)
+        {
+            var leader = items[i];
+            var start = i;
+            var total = leader.Amount;
+            i++;
+            while (i < items.Count && grouper(leader, items[i]) == 0)
+            {
+                total += items[i].Amount;
+                i++;
+            }
+            if (total >= amount)
+            {
+                groupStart = start;
+                groupLength = i - start;
+                return true;
+            }
+        }
+        groupStart = 0;
+        groupLength = 0;
+        return false;
+    }
+
+    // Returns the largest group sum across `items` partitioned by `grouper`.
+    // Streaming, no per-group list.
+    private static int BestGroupTotal(PooledRefList<Item> items, CheckItemGroup grouper)
+    {
+        var best = 0;
+        var i = 0;
+        while (i < items.Count)
+        {
+            var leader = items[i];
+            var total = leader.Amount;
+            i++;
+            while (i < items.Count && grouper(leader, items[i]) == 0)
+            {
+                total += items[i].Amount;
+                i++;
+            }
+            if (total > best)
+            {
+                best = total;
+            }
+        }
+        return best;
+    }
+
+    // Consumes `need` units from the slice [start, start+length) of `items`,
+    // firing `callback` once per item touched with the actual delta. Items
+    // with Amount <= delta are deleted via Item.Consume.
+    private static void ConsumeSlice(PooledRefList<Item> items, int start, int length, int need, OnItemConsumed callback)
+    {
+        for (var k = 0; k < length && need > 0; k++)
+        {
+            var item = items[start + k];
+            var theirAmount = item.Amount;
+            if (theirAmount < need)
+            {
+                callback?.Invoke(item, theirAmount);
+                item.Consume(theirAmount);
+                need -= theirAmount;
+            }
+            else
+            {
+                callback?.Invoke(item, need);
+                item.Consume(need);
+                return;
+            }
         }
     }
 }
 
 public class ContainerData
 {
-    private static ILogger logger = LogFactory.GetLogger(typeof(ContainerData));
-    private static readonly Dictionary<int, ContainerData> m_Table;
+    private static readonly ILogger _logger = LogFactory.GetLogger(typeof(ContainerData));
+    private static readonly Dictionary<int, ContainerData> _table;
 
     static ContainerData()
     {
-        m_Table = new Dictionary<int, ContainerData>();
+        _table = new Dictionary<int, ContainerData>();
 
         var path = Path.Combine(Core.BaseDirectory, "Data/containers.cfg");
 
@@ -1621,13 +1101,13 @@ public class ContainerData
                             {
                                 var id = Utility.ToInt32(aIDs[i]);
 
-                                if (m_Table.ContainsKey(id))
+                                if (_table.ContainsKey(id))
                                 {
-                                    logger.Warning("double ItemID entry in Data\\containers.cfg");
+                                    _logger.Warning("double ItemID entry in Data\\containers.cfg");
                                 }
                                 else
                                 {
-                                    m_Table[id] = data;
+                                    _table[id] = data;
                                 }
                             }
                         }
@@ -1660,7 +1140,7 @@ public class ContainerData
 
     public static ContainerData GetData(int itemID)
     {
-        m_Table.TryGetValue(itemID, out var data);
+        _table.TryGetValue(itemID, out var data);
         return data ?? Default;
     }
 }

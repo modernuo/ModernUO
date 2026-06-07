@@ -55,7 +55,7 @@ public partial class Impresario : BaseQuester
 
             if (obj.IsInRightTheater())
             {
-                player.SendGump(new SheetMusicOfferGump());
+                SheetMusicOfferGump.DisplayTo(player);
             }
             else
             {
@@ -69,44 +69,60 @@ public class SheetMusicOfferGump : BaseQuestGump
 {
     public override bool Singleton => true;
 
-    public SheetMusicOfferGump() : base(75, 25)
+    private SheetMusicOfferGump() : base(75, 25)
     {
-        Closable = false;
+    }
 
-        AddImage(349, 10, 0x24B0);
-        AddImageTiled(349, 130, 100, 120, 0x24B3);
-        AddImageTiled(149, 10, 200, 140, 0x24AF);
-        AddImageTiled(149, 300, 200, 140, 0x24B5);
-        AddImage(349, 300, 0x24B6);
-        AddImage(35, 10, 0x24AE);
-        AddImageTiled(35, 150, 120, 100, 0x24B1);
-        AddImage(35, 300, 0x24B4);
+    public static void DisplayTo(Mobile from)
+    {
+        if (from?.NetState == null)
+        {
+            return;
+        }
 
-        AddHtmlLocalized(110, 60, 200, 20, 1049069, White); // <STRONG>Conversation Event</STRONG>
+        from.SendGump(new SheetMusicOfferGump());
+    }
 
-        AddImage(65, 14, 0x2776);
-        AddImageTiled(81, 14, 349, 17, 0x2775);
-        AddImage(426, 14, 0x2778);
+    protected override void BuildLayout(ref DynamicGumpBuilder builder)
+    {
+        builder.SetNoClose();
 
-        AddImageTiled(50, 37, 400, 376, 0xA40);
-        AddAlphaRegion(50, 37, 400, 376);
+        builder.AddPage();
 
-        AddImage(0, 0, 0x28C8);
+        builder.AddImage(349, 10, 0x24B0);
+        builder.AddImageTiled(349, 130, 100, 120, 0x24B3);
+        builder.AddImageTiled(149, 10, 200, 140, 0x24AF);
+        builder.AddImageTiled(149, 300, 200, 140, 0x24B5);
+        builder.AddImage(349, 300, 0x24B6);
+        builder.AddImage(35, 10, 0x24AE);
+        builder.AddImageTiled(35, 150, 120, 100, 0x24B1);
+        builder.AddImage(35, 300, 0x24B4);
 
-        AddImageTiled(75, 90, 200, 1, 0x238D);
-        AddImage(75, 58, 0x2635);
-        AddImage(380, 45, 0xDF);
+        builder.AddHtmlLocalized(110, 60, 200, 20, 1049069, White); // <STRONG>Conversation Event</STRONG>
+
+        builder.AddImage(65, 14, 0x2776);
+        builder.AddImageTiled(81, 14, 349, 17, 0x2775);
+        builder.AddImage(426, 14, 0x2778);
+
+        builder.AddImageTiled(50, 37, 400, 376, 0xA40);
+        builder.AddAlphaRegion(50, 37, 400, 376);
+
+        builder.AddImage(0, 0, 0x28C8);
+
+        builder.AddImageTiled(75, 90, 200, 1, 0x238D);
+        builder.AddImage(75, 58, 0x2635);
+        builder.AddImage(380, 45, 0xDF);
 
         // Sure, I have some sheet music for a Gabriel Piete song. I'd be happy to sell you a copy for 10 gold.
-        AddHtmlLocalized(98, 140, 312, 200, 1055107, LightGreen, false, true);
+        builder.AddHtmlLocalized(98, 140, 312, 200, 1055107, LightGreen, false, true);
 
-        AddRadio(85, 350, 0x25F8, 0x25FB, true, 1);
-        AddHtmlLocalized(120, 356, 280, 20, 1014088, White); // I accept.
+        builder.AddRadio(85, 350, 0x25F8, 0x25FB, true, 1);
+        builder.AddHtmlLocalized(120, 356, 280, 20, 1014088, White); // I accept.
 
-        AddRadio(85, 385, 0x25F8, 0x25FB, false, 0);
-        AddHtmlLocalized(120, 391, 280, 20, 1049012, White); // No thanks, I decline.
+        builder.AddRadio(85, 385, 0x25F8, 0x25FB, false, 0);
+        builder.AddHtmlLocalized(120, 391, 280, 20, 1049012, White); // No thanks, I decline.
 
-        AddButton(340, 390, 0xF7, 0xF8, 1);
+        builder.AddButton(340, 390, 0xF7, 0xF8, 1);
     }
 
     public override void OnResponse(NetState sender, in RelayInfo info)

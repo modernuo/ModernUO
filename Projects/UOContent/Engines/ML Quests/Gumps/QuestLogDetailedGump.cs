@@ -3,51 +3,63 @@ using Server.Network;
 
 namespace Server.Engines.MLQuests.Gumps
 {
-    public class QuestLogDetailedGump : BaseQuestGump
+    public class QuestLogDetailedGump : BaseMLQuestGump
     {
-        private readonly bool m_CloseGumps;
-        private readonly MLQuestInstance m_Instance;
+        private readonly bool _closeGumps;
+        private readonly MLQuestInstance _instance;
 
         public override bool Singleton => true;
 
-        public QuestLogDetailedGump(MLQuestInstance instance, bool closeGumps = true)
+        private QuestLogDetailedGump(MLQuestInstance instance, bool closeGumps)
             : base(1046026) // Quest Log
         {
-            m_Instance = instance;
-            m_CloseGumps = closeGumps;
+            _instance = instance;
+            _closeGumps = closeGumps;
 
-            var pm = instance.Player;
-            var quest = instance.Quest;
-
-            if (closeGumps)
-            {
-                CloseOtherGumps(pm);
-            }
-
-            SetTitle(quest.Title);
+            SetTitle(instance.Quest.Title);
             RegisterButton(ButtonPosition.Left, ButtonGraphic.Resign, 1);
             RegisterButton(ButtonPosition.Right, ButtonGraphic.Okay, 2);
 
             SetPageCount(3);
+        }
 
-            BuildPage();
-            AddDescription(quest);
-
-            if (instance.Failed)                                    // only displayed on the first page
+        public static void DisplayTo(Mobile from, MLQuestInstance instance, bool closeGumps = true)
+        {
+            if (from?.NetState == null || instance == null)
             {
-                AddHtmlLocalized(160, 80, 250, 16, 500039, 0x3C00); // Failed!
+                return;
             }
 
-            BuildPage();
-            AddObjectivesProgress(instance);
+            if (closeGumps)
+            {
+                CloseOtherGumps(instance.Player);
+            }
 
-            BuildPage();
-            AddRewardsPage(quest);
+            from.SendGump(new QuestLogDetailedGump(instance, closeGumps));
+        }
+
+        protected override void BuildContent(ref DynamicGumpBuilder builder)
+        {
+            var quest = _instance.Quest;
+
+            BuildPage(ref builder);
+            AddDescription(ref builder, quest);
+
+            if (_instance.Failed)                                       // only displayed on the first page
+            {
+                builder.AddHtmlLocalized(160, 80, 250, 16, 500039, 0x3C00); // Failed!
+            }
+
+            BuildPage(ref builder);
+            AddObjectivesProgress(ref builder, _instance);
+
+            BuildPage(ref builder);
+            AddRewardsPage(ref builder, quest);
         }
 
         public override void OnResponse(NetState sender, in RelayInfo info)
         {
-            if (m_Instance.Removed)
+            if (_instance.Removed)
             {
                 return;
             }
@@ -57,17 +69,17 @@ namespace Server.Engines.MLQuests.Gumps
                 case 1: // Resign
                     {
                         // TODO: Custom reward loss protection? OSI doesn't have this
-                        // if (m_Instance.ClaimReward)
+                        // if (_instance.ClaimReward)
                         // pm.SendMessage( "You cannot cancel a quest with rewards pending." );
                         // else
 
-                        sender.Mobile.SendGump(new QuestCancelConfirmGump(m_Instance, m_CloseGumps));
+                        QuestCancelConfirmGump.DisplayTo(sender.Mobile, _instance, _closeGumps);
 
                         break;
                     }
                 case 2: // Okay
                     {
-                        sender.Mobile.SendGump(new QuestLogGump(m_Instance.Player, m_CloseGumps));
+                        QuestLogGump.DisplayTo(sender.Mobile, _instance.Player, _closeGumps);
 
                         break;
                     }

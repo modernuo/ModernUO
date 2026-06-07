@@ -57,9 +57,9 @@ public partial class InteriorDecorator : Item
             return;
         }
 
-        if (!from.HasGump<InternalGump>())
+        if (!from.HasGump<InteriorDecoratorGump>())
         {
-            from.SendGump(new InternalGump(this));
+            InteriorDecoratorGump.DisplayTo(from, this);
         }
 
         if (m_Command != DecorateCommand.None)
@@ -79,24 +79,36 @@ public partial class InteriorDecorator : Item
         return false;
     }
 
-    private class InternalGump : Gump
+    private class InteriorDecoratorGump : DynamicGump
     {
-        private readonly InteriorDecorator m_Decorator;
+        private readonly InteriorDecorator _decorator;
 
-        public InternalGump(InteriorDecorator decorator) : base(150, 50)
+        public override bool Singleton => true;
+
+        private InteriorDecoratorGump(InteriorDecorator decorator) : base(150, 50) => _decorator = decorator;
+
+        public static void DisplayTo(Mobile from, InteriorDecorator decorator)
         {
-            m_Decorator = decorator;
+            if (from?.NetState == null || decorator?.Deleted != false)
+            {
+                return;
+            }
 
-            AddBackground(0, 0, 200, 200, 2600);
+            from.SendGump(new InteriorDecoratorGump(decorator));
+        }
 
-            AddButton(50, 45, decorator.Command == DecorateCommand.Turn ? 2154 : 2152, 2154, 1);
-            AddHtmlLocalized(90, 50, 70, 40, 1018323); // Turn
+        protected override void BuildLayout(ref DynamicGumpBuilder builder)
+        {
+            builder.AddBackground(0, 0, 200, 200, 2600);
 
-            AddButton(50, 95, decorator.Command == DecorateCommand.Up ? 2154 : 2152, 2154, 2);
-            AddHtmlLocalized(90, 100, 70, 40, 1018324); // Up
+            builder.AddButton(50, 45, _decorator.Command == DecorateCommand.Turn ? 2154 : 2152, 2154, 1);
+            builder.AddHtmlLocalized(90, 50, 70, 40, 1018323); // Turn
 
-            AddButton(50, 145, decorator.Command == DecorateCommand.Down ? 2154 : 2152, 2154, 3);
-            AddHtmlLocalized(90, 150, 70, 40, 1018325); // Down
+            builder.AddButton(50, 95, _decorator.Command == DecorateCommand.Up ? 2154 : 2152, 2154, 2);
+            builder.AddHtmlLocalized(90, 100, 70, 40, 1018324); // Up
+
+            builder.AddButton(50, 145, _decorator.Command == DecorateCommand.Down ? 2154 : 2152, 2154, 3);
+            builder.AddHtmlLocalized(90, 150, 70, 40, 1018325); // Down
         }
 
         public override void OnResponse(NetState sender, in RelayInfo info)
@@ -111,9 +123,9 @@ public partial class InteriorDecorator : Item
 
             if (command != DecorateCommand.None)
             {
-                m_Decorator.Command = command;
-                sender.Mobile.SendGump(new InternalGump(m_Decorator));
-                sender.Mobile.Target = new InternalTarget(m_Decorator);
+                _decorator.Command = command;
+                DisplayTo(sender.Mobile, _decorator);
+                sender.Mobile.Target = new InternalTarget(_decorator);
             }
             else
             {
@@ -245,7 +257,7 @@ public partial class InteriorDecorator : Item
         {
             if (cancelType == TargetCancelType.Canceled)
             {
-                from.CloseGump<InternalGump>();
+                from.CloseGump<InteriorDecoratorGump>();
             }
         }
 

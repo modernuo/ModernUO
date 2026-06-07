@@ -42,7 +42,7 @@ public partial class ScrollOfAbraxus : QuestItem
     {
         if (IsChildOf(from.Backpack))
         {
-            from.SendGump(new ScrollOfAbraxusGump());
+            ScrollOfAbraxusGump.DisplayTo(from);
 
             if (from is PlayerMobile pm)
             {
@@ -66,14 +66,30 @@ public partial class ScrollOfAbraxus : QuestItem
     }
 }
 
-public class ScrollOfAbraxusGump : Gump
+public class ScrollOfAbraxusGump : StaticGump<ScrollOfAbraxusGump>
 {
-    public ScrollOfAbraxusGump() : base(150, 50)
-    {
-        AddPage(0);
+    public override bool Singleton => true;
 
-        AddImage(0, 0, 1228);
-        AddImage(340, 255, 9005);
+    private ScrollOfAbraxusGump() : base(150, 50)
+    {
+    }
+
+    public static void DisplayTo(Mobile from)
+    {
+        if (from?.NetState == null)
+        {
+            return;
+        }
+
+        from.SendGump(new ScrollOfAbraxusGump());
+    }
+
+    protected override void BuildLayout(ref StaticGumpBuilder builder)
+    {
+        builder.AddPage();
+
+        builder.AddImage(0, 0, 1228);
+        builder.AddImage(340, 255, 9005);
 
         /* Security at the Crystal Cave<BR><BR>
          *
@@ -111,6 +127,6 @@ public class ScrollOfAbraxusGump : Gump
          *
          * <I>- Frater Melkeer</I>
          */
-        AddHtmlLocalized(25, 36, 350, 210, 1060116, 1, false, true);
+        builder.AddHtmlLocalized(25, 36, 350, 210, 1060116, 1, false, true);
     }
 }

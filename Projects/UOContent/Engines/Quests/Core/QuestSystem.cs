@@ -244,7 +244,7 @@ namespace Server.Engines.Quests
 
         public virtual void SendOffer()
         {
-            From.SendGump(new QuestOfferGump(this));
+            QuestOfferGump.DisplayTo(From, this);
         }
 
         public virtual void GetContextMenuEntries(ref PooledRefList<ContextMenuEntry> list)
@@ -264,7 +264,7 @@ namespace Server.Engines.Quests
 
         public virtual void ShowQuestLogUpdated()
         {
-            From.SendGump(new QuestLogUpdatedGump(this));
+            QuestLogUpdatedGump.DisplayTo(From, this);
         }
 
         public virtual void ShowQuestLog()
@@ -277,13 +277,13 @@ namespace Server.Engines.Quests
                 gumps.Close<QuestConversationsGump>();
                 gumps.Close<QuestObjectivesGump>();
 
-                gumps.Send(new QuestObjectivesGump(Objectives));
+                QuestObjectivesGump.DisplayTo(From, Objectives);
 
                 var last = Objectives[^1];
 
                 if (last.Info != null)
                 {
-                    gumps.Send(new QuestItemInfoGump(last.Info));
+                    QuestItemInfoGump.DisplayTo(From, last.Info);
                 }
             }
         }
@@ -298,20 +298,20 @@ namespace Server.Engines.Quests
                 gumps.Close<QuestObjectivesGump>();
                 gumps.Close<QuestConversationsGump>();
 
-                gumps.Send(new QuestConversationsGump(Conversations));
+                QuestConversationsGump.DisplayTo(From, Conversations);
 
                 var last = Conversations[^1];
 
                 if (last.Info != null)
                 {
-                    From.SendGump(new QuestItemInfoGump(last.Info));
+                    QuestItemInfoGump.DisplayTo(From, last.Info);
                 }
             }
         }
 
         public virtual void BeginCancelQuest()
         {
-            From.SendGump(new QuestCancelGump(this));
+            QuestCancelGump.DisplayTo(From, this);
         }
 
         public virtual void EndCancelQuest(bool shouldCancel)
@@ -394,11 +394,19 @@ namespace Server.Engines.Quests
             var gumps = From.GetGumps();
             gumps.Close<QuestItemInfoGump>();
             gumps.Close<QuestObjectivesGump>();
-            gumps.Send(conv.Logged ? new QuestConversationsGump(Conversations) : new QuestConversationsGump(conv));
+
+            if (conv.Logged)
+            {
+                QuestConversationsGump.DisplayTo(From, Conversations);
+            }
+            else
+            {
+                QuestConversationsGump.DisplayTo(From, conv);
+            }
 
             if (conv.Info != null)
             {
-                From.SendGump(new QuestItemInfoGump(conv.Info));
+                QuestItemInfoGump.DisplayTo(From, conv.Info);
             }
         }
 
@@ -519,142 +527,166 @@ namespace Server.Engines.Quests
 
     public class QuestCancelGump : BaseQuestGump
     {
-        private readonly QuestSystem m_System;
+        private readonly QuestSystem _system;
 
-        public QuestCancelGump(QuestSystem system) : base(120, 50)
+        public override bool Singleton => true;
+
+        private QuestCancelGump(QuestSystem system) : base(120, 50) => _system = system;
+
+        public static void DisplayTo(Mobile from, QuestSystem system)
         {
-            m_System = system;
-
-            Closable = false;
-
-            AddPage(0);
-
-            AddImageTiled(0, 0, 348, 262, 2702);
-            AddAlphaRegion(0, 0, 348, 262);
-
-            AddImage(0, 15, 10152);
-            AddImageTiled(0, 30, 17, 200, 10151);
-            AddImage(0, 230, 10154);
-
-            AddImage(15, 0, 10252);
-            AddImageTiled(30, 0, 300, 17, 10250);
-            AddImage(315, 0, 10254);
-
-            AddImage(15, 244, 10252);
-            AddImageTiled(30, 244, 300, 17, 10250);
-            AddImage(315, 244, 10254);
-
-            AddImage(330, 15, 10152);
-            AddImageTiled(330, 30, 17, 200, 10151);
-            AddImage(330, 230, 10154);
-
-            AddImage(333, 2, 10006);
-            AddImage(333, 248, 10006);
-            AddImage(2, 248, 10006);
-            AddImage(2, 2, 10006);
-
-            AddHtmlLocalized(25, 22, 200, 20, 1049000, 32000); // Confirm Quest Cancellation
-            AddImage(25, 40, 3007);
-
-            if (system.IsTutorial)
+            if (from?.NetState == null || system == null)
             {
-                AddHtmlLocalized(
+                return;
+            }
+
+            from.SendGump(new QuestCancelGump(system));
+        }
+
+        protected override void BuildLayout(ref DynamicGumpBuilder builder)
+        {
+            builder.SetNoClose();
+
+            builder.AddPage();
+
+            builder.AddImageTiled(0, 0, 348, 262, 2702);
+            builder.AddAlphaRegion(0, 0, 348, 262);
+
+            builder.AddImage(0, 15, 10152);
+            builder.AddImageTiled(0, 30, 17, 200, 10151);
+            builder.AddImage(0, 230, 10154);
+
+            builder.AddImage(15, 0, 10252);
+            builder.AddImageTiled(30, 0, 300, 17, 10250);
+            builder.AddImage(315, 0, 10254);
+
+            builder.AddImage(15, 244, 10252);
+            builder.AddImageTiled(30, 244, 300, 17, 10250);
+            builder.AddImage(315, 244, 10254);
+
+            builder.AddImage(330, 15, 10152);
+            builder.AddImageTiled(330, 30, 17, 200, 10151);
+            builder.AddImage(330, 230, 10154);
+
+            builder.AddImage(333, 2, 10006);
+            builder.AddImage(333, 248, 10006);
+            builder.AddImage(2, 248, 10006);
+            builder.AddImage(2, 2, 10006);
+
+            builder.AddHtmlLocalized(25, 22, 200, 20, 1049000, 32000); // Confirm Quest Cancellation
+            builder.AddImage(25, 40, 3007);
+
+            if (_system.IsTutorial)
+            {
+                builder.AddHtmlLocalized(
                     25,
                     55,
                     300,
                     120,
                     1060836,
-                    White
+                    BaseQuestGump.White
                 ); // This quest will give you valuable information, skills and equipment that will help you advance in the game at a quicker pace.<BR><BR>Are you certain you wish to cancel at this time?
             }
             else
             {
-                AddHtmlLocalized(25, 60, 300, 20, 1049001, White); // You have chosen to abort your quest:
-                AddImage(25, 81, 0x25E7);
-                AddHtmlObject(48, 80, 280, 20, system.Name, DarkGreen, false, false);
+                builder.AddHtmlLocalized(25, 60, 300, 20, 1049001, BaseQuestGump.White); // You have chosen to abort your quest:
+                builder.AddImage(25, 81, 0x25E7);
+                BaseQuestGump.AddHtmlObject(ref builder, 48, 80, 280, 20, _system.Name, BaseQuestGump.DarkGreen, false, false);
 
-                AddHtmlLocalized(25, 120, 280, 20, 1049002, White); // Can this quest be restarted after quitting?
-                AddImage(25, 141, 0x25E7);
-                AddHtmlLocalized(
+                builder.AddHtmlLocalized(25, 120, 280, 20, 1049002, BaseQuestGump.White); // Can this quest be restarted after quitting?
+                builder.AddImage(25, 141, 0x25E7);
+                builder.AddHtmlLocalized(
                     48,
                     140,
                     280,
                     20,
-                    system.RestartDelay < TimeSpan.MaxValue ? 1049016 : 1049017,
-                    DarkGreen
+                    _system.RestartDelay < TimeSpan.MaxValue ? 1049016 : 1049017,
+                    BaseQuestGump.DarkGreen
                 ); // Yes/No
             }
 
-            AddRadio(25, 175, 9720, 9723, true, 1);
-            AddHtmlLocalized(60, 180, 280, 20, 1049005, White); // Yes, I really want to quit!
+            builder.AddRadio(25, 175, 9720, 9723, true, 1);
+            builder.AddHtmlLocalized(60, 180, 280, 20, 1049005, BaseQuestGump.White); // Yes, I really want to quit!
 
-            AddRadio(25, 210, 9720, 9723, false, 0);
-            AddHtmlLocalized(60, 215, 280, 20, 1049006, White); // No, I don't want to quit.
+            builder.AddRadio(25, 210, 9720, 9723, false, 0);
+            builder.AddHtmlLocalized(60, 215, 280, 20, 1049006, BaseQuestGump.White); // No, I don't want to quit.
 
-            AddButton(265, 220, 247, 248, 1);
+            builder.AddButton(265, 220, 247, 248, 1);
         }
 
         public override void OnResponse(NetState sender, in RelayInfo info)
         {
             if (info.ButtonID == 1)
             {
-                m_System.EndCancelQuest(info.IsSwitched(1));
+                _system.EndCancelQuest(info.IsSwitched(1));
             }
         }
     }
 
     public class QuestOfferGump : BaseQuestGump
     {
-        private readonly QuestSystem m_System;
+        private readonly QuestSystem _system;
 
-        public QuestOfferGump(QuestSystem system) : base(75, 25)
+        public override bool Singleton => true;
+
+        private QuestOfferGump(QuestSystem system) : base(75, 25) => _system = system;
+
+        public static void DisplayTo(Mobile from, QuestSystem system)
         {
-            m_System = system;
+            if (from?.NetState == null || system == null)
+            {
+                return;
+            }
 
-            Closable = false;
+            from.SendGump(new QuestOfferGump(system));
+        }
 
-            AddPage(0);
+        protected override void BuildLayout(ref DynamicGumpBuilder builder)
+        {
+            builder.SetNoClose();
 
-            AddImageTiled(50, 20, 400, 400, 2624);
-            AddAlphaRegion(50, 20, 400, 400);
+            builder.AddPage();
 
-            AddImage(90, 33, 9005);
-            AddHtmlLocalized(130, 45, 270, 20, 1049010, White); // Quest Offer
-            AddImageTiled(130, 65, 175, 1, 9101);
+            builder.AddImageTiled(50, 20, 400, 400, 2624);
+            builder.AddAlphaRegion(50, 20, 400, 400);
 
-            AddImage(140, 110, 1209);
-            AddHtmlObject(160, 108, 250, 20, system.Name, DarkGreen, false, false);
+            builder.AddImage(90, 33, 9005);
+            builder.AddHtmlLocalized(130, 45, 270, 20, 1049010, BaseQuestGump.White); // Quest Offer
+            builder.AddImageTiled(130, 65, 175, 1, 9101);
 
-            AddHtmlObject(98, 140, 312, 200, system.OfferMessage, LightGreen, false, true);
+            builder.AddImage(140, 110, 1209);
+            BaseQuestGump.AddHtmlObject(ref builder, 160, 108, 250, 20, _system.Name, BaseQuestGump.DarkGreen, false, false);
 
-            AddRadio(85, 350, 9720, 9723, true, 1);
-            AddHtmlLocalized(120, 356, 280, 20, 1049011, White); // I accept!
+            BaseQuestGump.AddHtmlObject(ref builder, 98, 140, 312, 200, _system.OfferMessage, BaseQuestGump.LightGreen, false, true);
 
-            AddRadio(85, 385, 9720, 9723, false, 0);
-            AddHtmlLocalized(120, 391, 280, 20, 1049012, White); // No thanks, I decline.
+            builder.AddRadio(85, 350, 9720, 9723, true, 1);
+            builder.AddHtmlLocalized(120, 356, 280, 20, 1049011, BaseQuestGump.White); // I accept!
 
-            AddButton(340, 390, 247, 248, 1);
+            builder.AddRadio(85, 385, 9720, 9723, false, 0);
+            builder.AddHtmlLocalized(120, 391, 280, 20, 1049012, BaseQuestGump.White); // No thanks, I decline.
 
-            AddImageTiled(50, 29, 30, 390, 10460);
-            AddImageTiled(34, 140, 17, 279, 9263);
+            builder.AddButton(340, 390, 247, 248, 1);
 
-            AddImage(48, 135, 10411);
-            AddImage(-16, 285, 10402);
-            AddImage(0, 10, 10421);
-            AddImage(25, 0, 10420);
+            builder.AddImageTiled(50, 29, 30, 390, 10460);
+            builder.AddImageTiled(34, 140, 17, 279, 9263);
 
-            AddImageTiled(83, 15, 350, 15, 10250);
+            builder.AddImage(48, 135, 10411);
+            builder.AddImage(-16, 285, 10402);
+            builder.AddImage(0, 10, 10421);
+            builder.AddImage(25, 0, 10420);
 
-            AddImage(34, 419, 10306);
-            AddImage(442, 419, 10304);
-            AddImageTiled(51, 419, 392, 17, 10101);
+            builder.AddImageTiled(83, 15, 350, 15, 10250);
 
-            AddImageTiled(415, 29, 44, 390, 2605);
-            AddImageTiled(415, 29, 30, 390, 10460);
-            AddImage(425, 0, 10441);
+            builder.AddImage(34, 419, 10306);
+            builder.AddImage(442, 419, 10304);
+            builder.AddImageTiled(51, 419, 392, 17, 10101);
 
-            AddImage(370, 50, 1417);
-            AddImage(379, 60, system.Picture);
+            builder.AddImageTiled(415, 29, 44, 390, 2605);
+            builder.AddImageTiled(415, 29, 30, 390, 10460);
+            builder.AddImage(425, 0, 10441);
+
+            builder.AddImage(370, 50, 1417);
+            builder.AddImage(379, 60, _system.Picture);
         }
 
         public override void OnResponse(NetState sender, in RelayInfo info)
@@ -663,17 +695,17 @@ namespace Server.Engines.Quests
             {
                 if (info.IsSwitched(1))
                 {
-                    m_System.Accept();
+                    _system.Accept();
                 }
                 else
                 {
-                    m_System.Decline();
+                    _system.Decline();
                 }
             }
         }
     }
 
-    public abstract class BaseQuestGump : Gump
+    public abstract class BaseQuestGump : DynamicGump
     {
         public const int Black = 0x0000;
         public const int White = 0x7FFF;
@@ -681,19 +713,29 @@ namespace Server.Engines.Quests
         public const int LightGreen = 90000;
         public const int Blue = 19777215;
 
-        public BaseQuestGump(int x, int y) : base(x, y)
+        protected BaseQuestGump(int x, int y) : base(x, y)
         {
         }
 
-        public void AddHtmlObject(int x, int y, int width, int height, object message, int color, bool back, bool scroll)
+        public static void AddHtmlObject(
+            ref DynamicGumpBuilder builder,
+            int x,
+            int y,
+            int width,
+            int height,
+            object message,
+            int color,
+            bool back,
+            bool scroll
+        )
         {
             if (message is int html)
             {
-                AddHtmlLocalized(x, y, width, height, html, color.C16216(), back, scroll);
+                builder.AddHtmlLocalized(x, y, width, height, html, color.C16216(), back, scroll);
             }
             else
             {
-                AddHtml(x, y, width, height, Html.Color($"{message}", color.C16216()), back, scroll);
+                builder.AddHtml(x, y, width, height, Html.Color($"{message}", color.C16216()), background: back, scrollbar: scroll);
             }
         }
     }

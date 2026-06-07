@@ -116,6 +116,29 @@ sb.AppendFormat("{0:N0} points, {1:N0} kills", score, kills);
 sb.Append($"{score:N0} points, {kills:N0} kills");
 ```
 
+## Interpolation Anti-Patterns (handler-aware APIs)
+
+Many APIs accept `ref RawInterpolatedStringHandler` (messages on `Mobile`/`Item`, `IPropertyList.Add`, `SpanWriter.WriteAscii`/`WriteLatin1`, gump `AddLabel`/`AddHtml`, `Html.Center`/`Color`/`Right`, etc.). The handler overload renders the interpolation directly into a pooled buffer with zero `string` allocation — but **only when the call-site argument is a `$"..."` literal directly in position**. These patterns silently defeat that selection. Flag any of them in messaging/gump/OPL code.
+
+| Pattern | Why bad | Fix |
+|---|---|---|
+| `Send(cond ? $"a" : $"b")` | Ternary unifies branches as `string` | `if/else` with two calls |
+| `Send(thing switch { 1 => $"a", _ => $"b" })` | Switch expr unifies as `string` | `switch` statement, call per arm |
+| `var s = $"foo {x}"; Send(s);` | Local typed `string`; ROS overload picked | Inline at call site |
+| `Send($"x {value.ToString()}")` | `.ToString()` allocates a `string` per call | Drop `.ToString()` — handler formats directly |
+| `Send($"x {td.String()}")` | `TextDefinition.String` allocates | Drop `.String()` (or pass `td` directly if API supports it) |
+| `Send($"x {a + b}")` | `string + string` allocates | Multiple holes: `Send($"x {a}{b}")` |
+| `Send(string.Format("x {0}", v))` | Format allocates | `Send($"x {v}")` |
+| `Send($"x {items.Aggregate(...)}")` | LINQ string ops allocate | `ValueStringBuilder` + pass span |
+
+For lowercase output, use the `:L` format specifier instead of `value.ToString().ToLowerInvariant()`:
+
+```csharp
+mob.SendMessage($"You earned a {rank:L} trophy!");          // "gold" not "Gold"
+```
+
+`:L` is recognized by `RawInterpolatedStringHandler.AppendFormatted<T>(T, string?)` and the `(ROS<char>, int, string?)` overload. Case-sensitive — use uppercase `:L`.
+
 ## Capacity Sizing Guide
 
 | Content | Recommended |
@@ -128,6 +151,7 @@ sb.Append($"{score:N0} points, {kills:N0} kills");
 | Unbounded (logs, file paths) | `Create()` |
 
 ## Related Docs
-- `dev-docs/string-handling.md` — full reference
+- `dev-docs/string-handling.md` — full reference (incl. interpolation anti-patterns + `:L` spec)
 - `dev-docs/code-standards.md` — memory management rules
 - `dev-docs/property-lists.md` — IPropertyList string interpolation (different handler)
+- `dev-docs/networking-packets.md` — player-facing message APIs and their handler overloads

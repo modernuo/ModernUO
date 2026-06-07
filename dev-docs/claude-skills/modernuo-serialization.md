@@ -337,8 +337,21 @@ public partial class MagicGem
 ## Version Migration
 Migration schemas are JSON files in `Projects/Server/Migrations/` and `Projects/UOContent/Migrations/`:
 - Format: `TypeName.vN.json`
-- Generated automatically by the serialization generator
+- Read by the serialization generator at compile time to produce `VXContent` types for `MigrateFrom`
 - Used for reading old save formats
+
+### Schema generator must be run after every version bump
+
+The `dotnet build` does **not** emit migration JSON files. After bumping `[SerializationGenerator(N)]` to `N+1`, run the schema generator tool to produce `TypeName.v{N+1}.json`. Commit the new JSON alongside the code change.
+
+```sh
+dotnet tool restore
+dotnet tool run ModernUOSchemaGenerator -- ModernUO.slnx
+```
+
+Verify the new `TypeName.v{N+1}.json` was created in the appropriate `Migrations/` folder. If the JSON is missing, future version bumps that need to migrate from this version will fail to compile (the generator can't build `VXContent` for a version with no schema on disk).
+
+Also available via the build tool: `dotnet run --project Projects/BuildTool -- --action migrate`.
 
 External reference: https://github.com/modernuo/SerializationGenerator
 

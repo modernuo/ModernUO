@@ -200,6 +200,18 @@ builder.AddHtmlLocalized(x, y, w, h, clilocNumber);   // Localized text
 builder.AddHtmlLocalized(x, y, w, h, clilocNumber, color);
 ```
 
+#### Interpolation in text
+
+Most text-accepting builders take a `ReadOnlySpan<char>` and have a `ref RawInterpolatedStringHandler` overload, so `$"..."` literals at the call site are zero-allocation. The same applies to `Html.Center`, `Html.Color`, `Html.Right` helpers used when wrapping text in HTML markup:
+
+```csharp
+// Zero allocation — interpolation handler renders directly into a pooled buffer
+builder.AddHtml(20, 20, 200, 100, $"<center>{Title}: {Score:N0}</center>");
+builder.AddLabel(20, 40, hue, $"You have {gold} gold");
+```
+
+Several call-site shapes silently defeat the handler overload selection (ternaries with interpolated branches, `.ToString()` inside holes, pre-built `var msg = $"..."` locals, etc.). See [`dev-docs/string-handling.md`](string-handling.md#interpolation-anti-patterns) for the full list and fixes — they apply equally inside `BuildLayout`.
+
 ### Interactive Elements
 ```csharp
 builder.AddButton(x, y, normalID, pressedID, buttonID);

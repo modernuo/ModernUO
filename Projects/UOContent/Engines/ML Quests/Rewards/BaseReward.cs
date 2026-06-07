@@ -12,9 +12,9 @@ namespace Server.Engines.MLQuests.Rewards
 
         protected virtual int LabelHeight => 16;
 
-        public void WriteToGump(Gump g, int x, ref int y)
+        public void WriteToGump(ref DynamicGumpBuilder builder, int x, ref int y)
         {
-            Name.AddHtmlText(g, x, y, 280, LabelHeight, false, false, 0x5F90, 0xBDE784);
+            Name.AddHtmlText(ref builder, x, y, 280, LabelHeight, false, false, 0x5F90, 0xBDE784);
         }
 
         public abstract void AddRewardItems(PlayerMobile pm, List<Item> rewards);

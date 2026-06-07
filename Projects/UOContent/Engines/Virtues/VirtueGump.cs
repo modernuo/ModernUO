@@ -7,7 +7,7 @@ namespace Server.Engines.Virtues;
 
 public delegate void OnVirtueUsed(PlayerMobile from);
 
-public class VirtueGump : Gump
+public class VirtueGump : DynamicGump
 {
     private static readonly Dictionary<int, OnVirtueUsed> _callbacks = new();
 
@@ -23,6 +23,19 @@ public class VirtueGump : Gump
         0x0543, 0x0547, 0x0061
     };
 
+    private readonly PlayerMobile _beheld;
+    private readonly PlayerMobile _beholder;
+
+    public override bool Singleton => true;
+
+    private VirtueGump(PlayerMobile beholder, PlayerMobile beheld) : base(0, 0)
+    {
+        _beholder = beholder;
+        _beheld = beheld;
+
+        Serial = beheld.Serial;
+    }
+
     public static void Register(int gumpID, OnVirtueUsed callback)
     {
         _callbacks[gumpID] = callback;
@@ -36,7 +49,7 @@ public class VirtueGump : Gump
         }
         else if (beholder.Map == beheld.Map && beholder.InRange(beheld, 12))
         {
-            beholder.SendGump(new VirtueGump(beholder, beheld), true);
+            beholder.SendGump(new VirtueGump(beholder, beheld));
         }
     }
 
@@ -78,35 +91,27 @@ public class VirtueGump : Gump
         RequestVirtueItem(beholder, beholder, virtueID);
     }
 
-    private readonly PlayerMobile _beheld;
-    private readonly PlayerMobile _beholder;
-
-    public VirtueGump(PlayerMobile beholder, PlayerMobile beheld) : base(0, 0)
+    protected override void BuildLayout(ref DynamicGumpBuilder builder)
     {
-        _beholder = beholder;
-        _beheld = beheld;
+        builder.AddPage();
 
-        Serial = beheld.Serial;
+        builder.AddImage(30, 40, 104);
 
-        AddPage(0);
+        builder.AddPage(1);
 
-        AddImage(30, 40, 104);
-
-        AddPage(1);
-
-        Add(new VirtueGumpItem(61, 71, 108, GetHueFor(0)));   // Humility
-        Add(new VirtueGumpItem(123, 46, 112, GetHueFor(4)));  // Valor
-        Add(new VirtueGumpItem(187, 70, 107, GetHueFor(5)));  // Honor
-        Add(new VirtueGumpItem(35, 135, 110, GetHueFor(1)));  // Sacrifice
-        Add(new VirtueGumpItem(211, 133, 105, GetHueFor(2))); // Compassion
-        Add(new VirtueGumpItem(61, 195, 111, GetHueFor(3)));  // Spirituality
-        Add(new VirtueGumpItem(186, 195, 109, GetHueFor(6))); // Justice
-        Add(new VirtueGumpItem(121, 221, 106, GetHueFor(7))); // Honesty
+        builder.AddImage(61, 71, 108, GetHueFor(0), "VirtueGumpItem");   // Humility
+        builder.AddImage(123, 46, 112, GetHueFor(4), "VirtueGumpItem");  // Valor
+        builder.AddImage(187, 70, 107, GetHueFor(5), "VirtueGumpItem");  // Honor
+        builder.AddImage(35, 135, 110, GetHueFor(1), "VirtueGumpItem");  // Sacrifice
+        builder.AddImage(211, 133, 105, GetHueFor(2), "VirtueGumpItem"); // Compassion
+        builder.AddImage(61, 195, 111, GetHueFor(3), "VirtueGumpItem");  // Spirituality
+        builder.AddImage(186, 195, 109, GetHueFor(6), "VirtueGumpItem"); // Justice
+        builder.AddImage(121, 221, 106, GetHueFor(7), "VirtueGumpItem"); // Honesty
 
         if (_beholder == _beheld)
         {
-            AddButton(57, 269, 2027, 2027, 1);
-            AddButton(186, 269, 2071, 2071, 2);
+            builder.AddButton(57, 269, 2027, 2027, 1);
+            builder.AddButton(186, 269, 2071, 2071, 2);
         }
     }
 
@@ -140,14 +145,7 @@ public class VirtueGump : Gump
     {
         if (info.ButtonID == 1 && _beholder == _beheld)
         {
-            _beholder.SendGump(new VirtueStatusGump(_beholder));
-        }
-    }
-
-    private class VirtueGumpItem : GumpImage
-    {
-        public VirtueGumpItem(int x, int y, int gumpID, int hue) : base(x, y, gumpID, hue, "VirtueGumpItem")
-        {
+            VirtueStatusGump.DisplayTo(_beholder);
         }
     }
 }

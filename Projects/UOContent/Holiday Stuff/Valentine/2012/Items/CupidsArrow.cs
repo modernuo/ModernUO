@@ -45,7 +45,7 @@ namespace Server.Items
             }
 
             from.SendLocalizedMessage(1152318); // You may not use this item out of season.
-            return false;
+            return true;
         }
 
         public override void OnSingleClick(Mobile from)

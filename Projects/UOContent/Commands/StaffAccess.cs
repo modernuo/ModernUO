@@ -85,7 +85,7 @@ public static class StaffAccess
 
         if ((originalAccessLevel ?? m.AccessLevel) < newAccessLevel)
         {
-            m.SendMessage($"You cannot set your staff access to {newAccessLevel.ToString()}.");
+            m.SendMessage($"You cannot set your staff access to {newAccessLevel}.");
             return;
         }
 
@@ -96,6 +96,6 @@ public static class StaffAccess
         }
 
         m.AccessLevel = newAccessLevel;
-        m.SendMessage($"Staff access set to {newAccessLevel.ToString()}.");
+        m.SendMessage($"Staff access set to {newAccessLevel}.");
     }
 }

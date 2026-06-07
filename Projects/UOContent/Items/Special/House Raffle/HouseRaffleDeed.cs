@@ -84,7 +84,7 @@ public partial class HouseRaffleDeed : Item
 
         if (IsChildOf(from.Backpack))
         {
-            from.SendGump(new WritOfLeaseGump(this));
+            WritOfLeaseGump.DisplayTo(from, this);
         }
         else
         {
@@ -92,32 +92,49 @@ public partial class HouseRaffleDeed : Item
         }
     }
 
-    private class WritOfLeaseGump : Gump
+    private class WritOfLeaseGump : DynamicGump
     {
+        private readonly HouseRaffleDeed _deed;
+
         public override bool Singleton => true;
 
-        public WritOfLeaseGump(HouseRaffleDeed deed) : base(150, 50)
+        private WritOfLeaseGump(HouseRaffleDeed deed) : base(150, 50)
         {
-            AddPage(0);
+            _deed = deed;
+        }
 
-            AddImage(0, 0, 9380);
-            AddImage(114, 0, 9381);
-            AddImage(171, 0, 9382);
-            AddImage(0, 140, 9383);
-            AddImage(114, 140, 9384);
-            AddImage(171, 140, 9385);
-            AddImage(0, 182, 9383);
-            AddImage(114, 182, 9384);
-            AddImage(171, 182, 9385);
-            AddImage(0, 224, 9383);
-            AddImage(114, 224, 9384);
-            AddImage(171, 224, 9385);
-            AddImage(0, 266, 9386);
-            AddImage(114, 266, 9387);
-            AddImage(171, 266, 9388);
+        public static void DisplayTo(Mobile from, HouseRaffleDeed deed)
+        {
+            if (from?.NetState == null || deed?.Deleted != false)
+            {
+                return;
+            }
 
-            AddHtmlLocalized(30, 48, 229, 20, 1150484, 200); // WRIT OF LEASE
-            AddHtml(28, 75, 231, 280, FormatDescription(deed), false, true);
+            from.SendGump(new WritOfLeaseGump(deed));
+        }
+
+        protected override void BuildLayout(ref DynamicGumpBuilder builder)
+        {
+            builder.AddPage();
+
+            builder.AddImage(0, 0, 9380);
+            builder.AddImage(114, 0, 9381);
+            builder.AddImage(171, 0, 9382);
+            builder.AddImage(0, 140, 9383);
+            builder.AddImage(114, 140, 9384);
+            builder.AddImage(171, 140, 9385);
+            builder.AddImage(0, 182, 9383);
+            builder.AddImage(114, 182, 9384);
+            builder.AddImage(171, 182, 9385);
+            builder.AddImage(0, 224, 9383);
+            builder.AddImage(114, 224, 9384);
+            builder.AddImage(171, 224, 9385);
+            builder.AddImage(0, 266, 9386);
+            builder.AddImage(114, 266, 9387);
+            builder.AddImage(171, 266, 9388);
+
+            builder.AddHtmlLocalized(30, 48, 229, 20, 1150484, 200); // WRIT OF LEASE
+            builder.AddHtml(28, 75, 231, 280, FormatDescription(_deed), background: false, scrollbar: true);
         }
 
         private static string FormatDescription(HouseRaffleDeed deed)

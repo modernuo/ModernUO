@@ -140,22 +140,25 @@ public class AnimalForm : NinjaSpell
                 RemoveContext(Caster, context);
                 Caster.Mana -= mana;
             }
+            // On OSI, casting while standing still always opens the selection menu; casting while
+            // moving quick-transforms into the last selected form without the menu.
+            else if (Caster is PlayerMobile && !_wasMoving && !CasterIsMoving())
+            {
+                Caster.SendGump(new AnimalFormGump(Caster, Entries, this));
+            }
             else
             {
-                var lastAnimalForm = GetLastAnimalForm(Caster);
-                if (Caster is PlayerMobile && lastAnimalForm == -1 && !_wasMoving && !CasterIsMoving())
-                {
-                    Caster.SendGump(new AnimalFormGump(Caster, Entries, this));
-                }
-                else if (Morph(Caster, lastAnimalForm) == MorphResult.Fail)
-                {
-                    DoFizzle();
-                }
-                else
+                var result = Morph(Caster, GetLastAnimalForm(Caster));
+                if (result == MorphResult.Success)
                 {
                     Caster.FixedParticles(0x3728, 10, 13, 2023, EffectLayer.Waist);
                     Caster.Mana -= mana;
                 }
+                else if (result == MorphResult.Fail)
+                {
+                    DoFizzle();
+                }
+                // MorphResult.NoSkill: Morph already messaged the requirement; consume no mana.
             }
         }
 
@@ -163,6 +166,11 @@ public class AnimalForm : NinjaSpell
     }
 
     public static int GetLastAnimalForm(Mobile m) => _lastAnimalForms.GetValueOrDefault(m, -1);
+
+    // Whether the caster currently meets the requirements (Ninjitsu skill + talisman) to select this form.
+    // Note: ReqSkill is on the 0-100 scale, so this must compare against Skill.Value, not Skill.Fixed (value x10).
+    public static bool CanSelectEntry(Mobile m, AnimalFormEntry entry) =>
+        m.Skills.Ninjitsu.Value >= entry.ReqSkill && BaseFormTalisman.EntryEnabled(m, entry.Type);
 
     public static MorphResult Morph(Mobile m, int entryID)
     {
@@ -386,12 +394,11 @@ public class AnimalForm : NinjaSpell
             builder.AddButton(10, 374, 0xFB1, 0xFB2, 0);
             builder.AddHtmlLocalized(45, 376, 450, 20, 1011012, 0x7FFF); // CANCEL
 
-            var ninjitsu = _caster.Skills[SkillName.Ninjitsu].Fixed;
             var current = 0;
 
             for (var i = 0; i < _entries.Length; ++i)
             {
-                var enabled = ninjitsu >= _entries[i].ReqSkill && BaseFormTalisman.EntryEnabled(_caster, _entries[i].Type);
+                var enabled = CanSelectEntry(_caster, _entries[i]);
 
                 var page = current / 10 + 1;
                 var pos = current % 10;
@@ -461,16 +468,21 @@ public class AnimalForm : NinjaSpell
             {
                 _caster.SendLocalizedMessage(1063108); // You cannot use this ability right now.
             }
-            else if (Morph(_caster, entryID) == MorphResult.Fail)
-            {
-                _caster.LocalOverheadMessage(MessageType.Regular, 0x3B2, 502632); // The spell fizzles.
-                _caster.FixedParticles(0x3735, 1, 30, 9503, EffectLayer.Waist);
-                _caster.PlaySound(0x5C);
-            }
             else
             {
-                _caster.FixedParticles(0x3728, 10, 13, 2023, EffectLayer.Waist);
-                _caster.Mana -= mana;
+                var result = Morph(_caster, entryID);
+                if (result == MorphResult.Success)
+                {
+                    _caster.FixedParticles(0x3728, 10, 13, 2023, EffectLayer.Waist);
+                    _caster.Mana -= mana;
+                }
+                else if (result == MorphResult.Fail)
+                {
+                    _caster.LocalOverheadMessage(MessageType.Regular, 0x3B2, 502632); // The spell fizzles.
+                    _caster.FixedParticles(0x3735, 1, 30, 9503, EffectLayer.Waist);
+                    _caster.PlaySound(0x5C);
+                }
+                // MorphResult.NoSkill: Morph already messaged the requirement; consume no mana.
             }
         }
     }

@@ -6,24 +6,36 @@ namespace Server.Gumps
 {
     public class GuildAdminCandidatesGump : GuildMobileListGump
     {
-        public GuildAdminCandidatesGump(Mobile from, Guild guild) : base(from, guild, true, guild.Candidates)
+        private GuildAdminCandidatesGump(Guild guild) : base(guild, true, guild.Candidates)
         {
         }
 
-        protected override void Design()
+        public static void DisplayTo(Mobile from, Guild guild)
         {
-            AddHtmlLocalized(20, 10, 400, 35, 1013075); // Accept or Refuse candidates for membership
+            if (from?.NetState == null || guild == null)
+            {
+                return;
+            }
 
-            AddButton(20, 400, 4005, 4007, 1);
-            AddHtmlLocalized(55, 400, 245, 30, 1013076); // Accept
+            GuildGump.EnsureClosed(from);
+            from.SendGump(new GuildAdminCandidatesGump(guild));
+        }
 
-            AddButton(300, 400, 4005, 4007, 2);
-            AddHtmlLocalized(335, 400, 100, 35, 1013077); // Refuse
+        protected override void BuildHeader(ref DynamicGumpBuilder builder)
+        {
+            builder.AddHtmlLocalized(20, 10, 400, 35, 1013075); // Accept or Refuse candidates for membership
+
+            builder.AddButton(20, 400, 4005, 4007, 1);
+            builder.AddHtmlLocalized(55, 400, 245, 30, 1013076); // Accept
+
+            builder.AddButton(300, 400, 4005, 4007, 2);
+            builder.AddHtmlLocalized(335, 400, 100, 35, 1013077); // Refuse
         }
 
         public override void OnResponse(NetState state, in RelayInfo info)
         {
-            if (GuildGump.BadLeader(m_Mobile, m_Guild))
+            var from = state.Mobile;
+            if (GuildGump.BadLeader(from, _guild))
             {
                 return;
             }
@@ -32,9 +44,7 @@ namespace Server.Gumps
             {
                 case 0:
                     {
-                        GuildGump.EnsureClosed(m_Mobile);
-                        m_Mobile.SendGump(new GuildmasterGump(m_Mobile, m_Guild));
-
+                        GuildmasterGump.DisplayTo(from, _guild);
                         break;
                     }
                 case 1: // Accept
@@ -45,13 +55,13 @@ namespace Server.Gumps
                         {
                             var index = switches[0];
 
-                            if (index >= 0 && index < m_List.Count)
+                            if (index >= 0 && index < _list.Count)
                             {
-                                var m = m_List[index];
+                                var m = _list[index];
 
                                 if (m?.Deleted == false)
                                 {
-                                    var guildState = PlayerState.Find(m_Guild.Leader);
+                                    var guildState = PlayerState.Find(_guild.Leader);
                                     var targetState = PlayerState.Find(m);
 
                                     var guildFaction = guildState?.Faction;
@@ -61,21 +71,18 @@ namespace Server.Gumps
                                     {
                                         if (guildFaction == null)
                                         {
-                                            m_Mobile.SendLocalizedMessage(
-                                                1013027
-                                            ); // That player cannot join a non-faction guild.
+                                            // That player cannot join a non-faction guild.
+                                            from.SendLocalizedMessage(1013027);
                                         }
                                         else if (targetFaction == null)
                                         {
-                                            m_Mobile.SendLocalizedMessage(
-                                                1013026
-                                            ); // That player must be in a faction before joining this guild.
+                                            // That player must be in a faction before joining this guild.
+                                            from.SendLocalizedMessage(1013026);
                                         }
                                         else
                                         {
-                                            m_Mobile.SendLocalizedMessage(
-                                                1013028
-                                            ); // That person has a different faction affiliation.
+                                            // That person has a different faction affiliation.
+                                            from.SendLocalizedMessage(1013028);
                                         }
 
                                         break;
@@ -84,24 +91,22 @@ namespace Server.Gumps
                                     if (targetState?.IsLeaving == true)
                                     {
                                         // OSI does this quite strangely, so we'll just do it this way
-                                        m_Mobile.SendMessage(
+                                        from.SendMessage(
                                             "That person is quitting their faction and so you may not recruit them."
                                         );
                                         break;
                                     }
 
-                                    m_Guild.Candidates.Remove(m);
-                                    m_Guild.Accepted.Add(m);
+                                    _guild.Candidates.Remove(m);
+                                    _guild.Accepted.Add(m);
 
-                                    GuildGump.EnsureClosed(m_Mobile);
-
-                                    if (m_Guild.Candidates.Count > 0)
+                                    if (_guild.Candidates.Count > 0)
                                     {
-                                        m_Mobile.SendGump(new GuildAdminCandidatesGump(m_Mobile, m_Guild));
+                                        DisplayTo(from, _guild);
                                     }
                                     else
                                     {
-                                        m_Mobile.SendGump(new GuildmasterGump(m_Mobile, m_Guild));
+                                        GuildmasterGump.DisplayTo(from, _guild);
                                     }
                                 }
                             }
@@ -117,23 +122,21 @@ namespace Server.Gumps
                         {
                             var index = switches[0];
 
-                            if (index >= 0 && index < m_List.Count)
+                            if (index >= 0 && index < _list.Count)
                             {
-                                var m = m_List[index];
+                                var m = _list[index];
 
                                 if (m?.Deleted == false)
                                 {
-                                    m_Guild.Candidates.Remove(m);
+                                    _guild.Candidates.Remove(m);
 
-                                    GuildGump.EnsureClosed(m_Mobile);
-
-                                    if (m_Guild.Candidates.Count > 0)
+                                    if (_guild.Candidates.Count > 0)
                                     {
-                                        m_Mobile.SendGump(new GuildAdminCandidatesGump(m_Mobile, m_Guild));
+                                        DisplayTo(from, _guild);
                                     }
                                     else
                                     {
-                                        m_Mobile.SendGump(new GuildmasterGump(m_Mobile, m_Guild));
+                                        GuildmasterGump.DisplayTo(from, _guild);
                                     }
                                 }
                             }

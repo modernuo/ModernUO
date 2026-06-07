@@ -261,49 +261,72 @@ public ref struct RawInterpolatedStringHandler
     }
     /// <summary>Writes the specified value to the handler.</summary>
     /// <param name="value">The value to write.</param>
-    /// <param name="format">The format string.</param>
+    /// <param name="format">
+    /// The format string. Pass <c>"L"</c> to lowercase the formatted hole's output
+    /// using <see cref="char.ToLowerInvariant(char)"/>; the underlying value's
+    /// <c>TryFormat</c>/<c>ToString</c> never sees <c>"L"</c>.
+    /// </param>
     public void AppendFormatted<T>(T value, string? format)
     {
+        var lowercase = format == "L";
+        if (lowercase)
+        {
+            format = null;
+        }
+
+        var startPos = _pos;
+
         // If there's a custom formatter, always use it.
         if (_hasCustomFormatter)
         {
             AppendCustomFormatter(value, format);
-            return;
-        }
-
-        // Check first for IFormattable, even though we'll prefer to use ISpanFormattable, as the latter
-        // requires the former.  For value types, it won't matter as the type checks devolve into
-        // JIT-time constants.  For reference types, they're more likely to implement IFormattable
-        // than they are to implement ISpanFormattable: if they don't implement either, we save an
-        // interface check over first checking for ISpanFormattable and then for IFormattable, and
-        // if it only implements IFormattable, we come out even: only if it implements both do we
-        // end up paying for an extra interface check.
-        string? s;
-        if (value is IFormattable)
-        {
-            // If the value can format itself directly into our buffer, do so.
-            if (value is ISpanFormattable)
-            {
-                int charsWritten;
-                while (!((ISpanFormattable)value).TryFormat(_chars[_pos..], out charsWritten, format, _provider)) // constrained call avoiding boxing for value types
-                {
-                    Grow();
-                }
-
-                _pos += charsWritten;
-                return;
-            }
-
-            s = ((IFormattable)value).ToString(format, _provider); // constrained call avoiding boxing for value types
         }
         else
         {
-            s = value?.ToString();
+            // Check first for IFormattable, even though we'll prefer to use ISpanFormattable, as the latter
+            // requires the former.  For value types, it won't matter as the type checks devolve into
+            // JIT-time constants.  For reference types, they're more likely to implement IFormattable
+            // than they are to implement ISpanFormattable: if they don't implement either, we save an
+            // interface check over first checking for ISpanFormattable and then for IFormattable, and
+            // if it only implements IFormattable, we come out even: only if it implements both do we
+            // end up paying for an extra interface check.
+            string? s;
+            if (value is IFormattable)
+            {
+                // If the value can format itself directly into our buffer, do so.
+                if (value is ISpanFormattable)
+                {
+                    int charsWritten;
+                    while (!((ISpanFormattable)value).TryFormat(_chars[_pos..], out charsWritten, format, _provider)) // constrained call avoiding boxing for value types
+                    {
+                        Grow();
+                    }
+
+                    _pos += charsWritten;
+
+                    if (lowercase)
+                    {
+                        LowercaseRange(_chars.Slice(startPos, _pos - startPos));
+                    }
+                    return;
+                }
+
+                s = ((IFormattable)value).ToString(format, _provider); // constrained call avoiding boxing for value types
+            }
+            else
+            {
+                s = value?.ToString();
+            }
+
+            if (s is not null)
+            {
+                AppendStringDirect(s);
+            }
         }
 
-        if (s is not null)
+        if (lowercase)
         {
-            AppendStringDirect(s);
+            LowercaseRange(_chars.Slice(startPos, _pos - startPos));
         }
     }
 
@@ -354,9 +377,14 @@ public ref struct RawInterpolatedStringHandler
     /// <summary>Writes the specified string of chars to the handler.</summary>
     /// <param name="value">The span to write.</param>
     /// <param name="alignment">Minimum number of characters that should be written for this value.  If the value is negative, it indicates left-aligned and the required minimum is the absolute value.</param>
-    /// <param name="format">The format string.</param>
+    /// <param name="format">
+    /// The format string. Pass <c>"L"</c> to lowercase the value's chars (only the
+    /// value range, not any alignment padding) using <see cref="char.ToLowerInvariant(char)"/>.
+    /// </param>
     public void AppendFormatted(ReadOnlySpan<char> value, int alignment = 0, string? format = null)
     {
+        var lowercase = format == "L";
+
         var leftAlign = false;
         if (alignment < 0)
         {
@@ -369,7 +397,12 @@ public ref struct RawInterpolatedStringHandler
         {
             // The value is as large or larger than the required amount of padding,
             // so just write the value.
+            var startPos = _pos;
             AppendFormatted(value);
+            if (lowercase)
+            {
+                LowercaseRange(_chars.Slice(startPos, _pos - startPos));
+            }
             return;
         }
 
@@ -377,8 +410,13 @@ public ref struct RawInterpolatedStringHandler
         EnsureCapacityForAdditionalChars(value.Length + paddingRequired);
         if (leftAlign)
         {
+            var valueStart = _pos;
             value.CopyTo(_chars[_pos..]);
             _pos += value.Length;
+            if (lowercase)
+            {
+                LowercaseRange(_chars.Slice(valueStart, _pos - valueStart));
+            }
             _chars.Slice(_pos, paddingRequired).Fill(' ');
             _pos += paddingRequired;
         }
@@ -386,8 +424,13 @@ public ref struct RawInterpolatedStringHandler
         {
             _chars.Slice(_pos, paddingRequired).Fill(' ');
             _pos += paddingRequired;
+            var valueStart = _pos;
             value.CopyTo(_chars[_pos..]);
             _pos += value.Length;
+            if (lowercase)
+            {
+                LowercaseRange(_chars.Slice(valueStart, _pos - valueStart));
+            }
         }
     }
     #endregion
@@ -520,6 +563,32 @@ public ref struct RawInterpolatedStringHandler
 
             _pos += paddingNeeded;
         }
+    }
+
+    /// <summary>
+    /// Lowercases the chars in <see cref="_chars"/> in the half-open range <c>[start, end)</c>
+    /// using the BCL's vectorized <see cref="MemoryExtensions.ToLowerInvariant(ReadOnlySpan{char}, Span{char})"/>.
+    /// Copies through a stackalloc temp for ranges up to 256 chars, otherwise rents from
+    /// <see cref="STArrayPool{T}.Shared"/>. The BCL overload throws on overlapping source/destination
+    /// spans, so a temp is always required; running one big SIMD pass beats chunking on long inputs
+    /// and avoids splitting surrogate pairs at chunk boundaries.
+    /// </summary>
+    private static void LowercaseRange(Span<char> dest)
+    {
+        if (dest.Length <= MinimumArrayPoolLength)
+        {
+            Span<char> temp = stackalloc char[MinimumArrayPoolLength];
+            var t = temp[..dest.Length];
+            dest.CopyTo(t);
+            ((ReadOnlySpan<char>)t).ToLowerInvariant(dest);
+            return;
+        }
+
+        var rented = STArrayPool<char>.Shared.Rent(dest.Length);
+        var rentedSlice = rented.AsSpan(0, dest.Length);
+        dest.CopyTo(rentedSlice);
+        ((ReadOnlySpan<char>)rentedSlice).ToLowerInvariant(dest);
+        STArrayPool<char>.Shared.Return(rented);
     }
 
     /// <summary>Ensures <see cref="_chars"/> has the capacity to store <paramref name="additionalChars"/> beyond <see cref="_pos"/>.</summary>

@@ -62,7 +62,7 @@ public abstract class BaseGuild : ISerializable
 
     public abstract void OnDelete(Mobile mob);
 
-    public static BaseGuild FindByName(string name)
+    public static BaseGuild FindByName(ReadOnlySpan<char> name)
     {
         foreach (var g in World.Guilds.Values)
         {
@@ -75,7 +75,7 @@ public abstract class BaseGuild : ISerializable
         return null;
     }
 
-    public static BaseGuild FindByAbbrev(string abbr)
+    public static BaseGuild FindByAbbrev(ReadOnlySpan<char> abbr)
     {
         foreach (var g in World.Guilds.Values)
         {
@@ -88,19 +88,29 @@ public abstract class BaseGuild : ISerializable
         return null;
     }
 
-    public static HashSet<BaseGuild> Search(string find)
+    public static HashSet<BaseGuild> Search(ReadOnlySpan<char> find)
     {
-        var words = find.ToLower().Split(' ');
         var results = new HashSet<BaseGuild>();
+        find = find.Trim();
+        if (find.IsEmpty)
+        {
+            return results;
+        }
 
         foreach (var g in World.Guilds.Values)
         {
-            var name = g.Name;
+            var name = g.Name.AsSpan();
 
             var all = true;
-            foreach (var t in words)
+            foreach (var wordRange in find.Split(' '))
             {
-                if (name.InsensitiveIndexOf(t) == -1)
+                var word = find[wordRange];
+                if (word.IsEmpty)
+                {
+                    continue;
+                }
+
+                if (name.InsensitiveContains(word))
                 {
                     all = false;
                     break;

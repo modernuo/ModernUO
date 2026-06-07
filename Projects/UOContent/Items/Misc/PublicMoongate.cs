@@ -84,7 +84,7 @@ public partial class PublicMoongate : Item
             return false;
         }
 
-        m.SendGump(new MoongateGump(m, this));
+        MoongateGump.DisplayTo(m, this);
 
         if (!m.Hidden || m.AccessLevel == AccessLevel.Player)
         {
@@ -176,13 +176,12 @@ public class PMEntry
 
 public class PMList
 {
-    public static PMList Trammel =
+    public static readonly PMList Trammel =
         new(
             1012000,
             1012012,
             Map.Trammel,
-            new[]
-            {
+            [
                 new PMEntry(new Point3D(4467, 1283, 5), 1012003),   // Moonglow
                 new PMEntry(new Point3D(1336, 1997, 5), 1012004),   // Britain
                 new PMEntry(new Point3D(1499, 3771, 5), 1012005),   // Jhelom
@@ -193,16 +192,15 @@ public class PMList
                 /* Dynamic Z for Magincia to support both old and new maps. */
                 new PMEntry(new Point3D(3563, 2139, Map.Trammel.GetAverageZ(3563, 2139)), 1012010), // (New) Magincia
                 new PMEntry(new Point3D(3450, 2677, 25), 1078098)                                   // New Haven
-            }
+            ]
         );
 
-    public static PMList Felucca =
+    public static readonly PMList Felucca =
         new(
             1012001,
             1012013,
             Map.Felucca,
-            new[]
-            {
+            [
                 new PMEntry(new Point3D(4467, 1283, 5), 1012003),   // Moonglow
                 new PMEntry(new Point3D(1336, 1997, 5), 1012004),   // Britain
                 new PMEntry(new Point3D(1499, 3771, 5), 1012005),   // Jhelom
@@ -213,16 +211,15 @@ public class PMList
                 /* Dynamic Z for Magincia to support both old and new maps. */
                 new PMEntry(new Point3D(3563, 2139, Map.Felucca.GetAverageZ(3563, 2139)), 1012010), // (New) Magincia
                 new PMEntry(new Point3D(2711, 2234, 0), 1019001)                                    // Buccaneer's Den
-            }
+            ]
         );
 
-    public static PMList Ilshenar =
+    public static readonly PMList Ilshenar =
         new(
             1012002,
             1012014,
             Map.Ilshenar,
-            new[]
-            {
+            [
                 new PMEntry(new Point3D(1215, 467, -13), 1012015),  // Compassion
                 new PMEntry(new Point3D(722, 1366, -60), 1012016),  // Honesty
                 new PMEntry(new Point3D(744, 724, -28), 1012017),   // Honor
@@ -232,72 +229,68 @@ public class PMList
                 new PMEntry(new Point3D(1532, 1340, -3), 1012021),  // Spirituality
                 new PMEntry(new Point3D(528, 216, -45), 1012022),   // Valor
                 new PMEntry(new Point3D(1721, 218, 96), 1019000)    // Chaos
-            }
+            ]
         );
 
-    public static PMList Malas =
+    public static readonly PMList Malas =
         new(
             1060643,
             1062039,
             Map.Malas,
-            new[]
-            {
+            [
                 new PMEntry(new Point3D(1015, 527, -65), 1060641), // Luna
                 new PMEntry(new Point3D(1997, 1386, -85), 1060642) // Umbra
-            }
+            ]
         );
 
-    public static PMList Tokuno =
+    public static readonly PMList Tokuno =
         new(
             1063258,
             1063415,
             Map.Tokuno,
-            new[]
-            {
+            [
                 new PMEntry(new Point3D(1169, 998, 41), 1063412), // Isamu-Jima
                 new PMEntry(new Point3D(802, 1204, 25), 1063413), // Makoto-Jima
                 new PMEntry(new Point3D(270, 628, 15), 1063414)   // Homare-Jima
-            }
+            ]
         );
 
-    public static PMList TerMur =
+    public static readonly PMList TerMur =
         new(
             1113602,
             1113604,
             Map.TerMur,
-            new[]
-            {
-                new PMEntry(new Point3D(850, 3525, -38), 1113603), // Royal City
-            }
+            [
+                new PMEntry(new Point3D(850, 3525, -38), 1113603) // Royal City
+            ]
         );
 
-    public static PMList TerMurEodon =
+    public static readonly PMList TerMurEodon =
         new(
             1113602,
             1113604,
             Map.TerMur,
-            new[]
-            {
+            [
                 new PMEntry(new Point3D(850, 3525, -38), 1113603), // Royal City
                 new PMEntry(new Point3D(719, 1863, 40), 1156262)   // Valley of Eodon
-            }
+            ]
         );
 
-    public static PMList[] NoTrammelLists = { Felucca };
-    public static PMList[] T2ALists = { Trammel, Felucca };
-    public static PMList[] T2AListsYoung = { Trammel };
-    public static PMList[] LBRLists = { Trammel, Felucca, Ilshenar };
-    public static PMList[] LBRListsYoung = { Trammel, Ilshenar };
-    public static PMList[] AOSLists = { Trammel, Felucca, Ilshenar, Malas };
-    public static PMList[] AOSListsYoung = { Trammel, Ilshenar, Malas };
-    public static PMList[] SELists = { Trammel, Felucca, Ilshenar, Malas, Tokuno };
-    public static PMList[] SEListsYoung = { Trammel, Ilshenar, Malas, Tokuno };
-    public static PMList[] SALists = { Trammel, Felucca, Ilshenar, Malas, Tokuno, TerMur };
-    public static PMList[] SAListsYoung = { Trammel, Ilshenar, Malas, Tokuno, TerMur };
-    public static PMList[] TOLLists = { Trammel, Felucca, Ilshenar, Malas, Tokuno, TerMurEodon };
-    public static PMList[] TOLListsYoung = { Trammel, Ilshenar, Malas, Tokuno, TerMurEodon };
-    public static PMList[] RedLists = { Felucca };
-    public static PMList[] SigilLists = { Felucca };
+    public static readonly PMList[] NoTrammelLists = [Felucca];
+    public static readonly PMList[] T2ALists = [Trammel, Felucca];
+    public static readonly PMList[] T2AListsYoung = [Trammel];
+    public static readonly PMList[] LBRLists = [Trammel, Felucca, Ilshenar];
+    public static readonly PMList[] LBRListsYoung = [Trammel, Ilshenar];
+    public static readonly PMList[] AOSLists = [Trammel, Felucca, Ilshenar, Malas];
+    public static readonly PMList[] AOSListsYoung = [Trammel, Ilshenar, Malas];
+    public static readonly PMList[] SELists = [Trammel, Felucca, Ilshenar, Malas, Tokuno];
+    public static readonly PMList[] SEListsYoung = [Trammel, Ilshenar, Malas, Tokuno];
+    public static readonly PMList[] SALists = [Trammel, Felucca, Ilshenar, Malas, Tokuno, TerMur];
+    public static readonly PMList[] SAListsYoung = [Trammel, Ilshenar, Malas, Tokuno, TerMur];
+    public static readonly PMList[] TOLLists = [Trammel, Felucca, Ilshenar, Malas, Tokuno, TerMurEodon];
+    public static readonly PMList[] TOLListsYoung = [Trammel, Ilshenar, Malas, Tokuno, TerMurEodon];
+    public static readonly PMList[] RedLists = [Felucca];
+    public static readonly PMList[] SigilLists = [Felucca];
 
     public PMList(int number, int selNumber, Map map, PMEntry[] entries)
     {
@@ -316,18 +309,27 @@ public class PMList
     public PMEntry[] Entries { get; }
 }
 
-public class MoongateGump : Gump
+public class MoongateGump : DynamicGump
 {
-    private PMList[] _lists;
-    private Mobile _mobile;
-    private Item _moongate;
+    private readonly PMList[] _lists;
+    private readonly PMList[] _tabOrder;
+    private readonly Item _moongate;
 
     public override bool Singleton => true;
 
-    public MoongateGump(Mobile mobile, Item moongate) : base(100, 100)
+    private MoongateGump(Item moongate, PMList[] lists, PMList[] tabOrder) : base(100, 100)
     {
-        _mobile = mobile;
         _moongate = moongate;
+        _lists = lists;
+        _tabOrder = tabOrder;
+    }
+
+    public static void DisplayTo(Mobile mobile, Item moongate)
+    {
+        if (mobile?.NetState == null || moongate == null || moongate.Deleted)
+        {
+            return;
+        }
 
         PMList[] checkLists;
 
@@ -376,71 +378,80 @@ public class MoongateGump : Gump
         }
 
         var mapCount = filteredBySelectedMaps.Count;
-        _lists = new PMList[mapCount];
-        for (var i = 0; i < mapCount; i++)
+        if (mapCount == 0)
         {
-            _lists[i] = filteredBySelectedMaps[i];
+            return;
         }
 
-        for (var i = 0; i < _lists.Length; ++i)
+        var lists = filteredBySelectedMaps.ToArray();
+        var tabOrder = filteredBySelectedMaps.ToArray();
+
+        for (var i = 0; i < lists.Length; ++i)
         {
-            if (_lists[i].Map == mobile.Map)
+            if (lists[i].Map == mobile.Map)
             {
-                (_lists[i], _lists[0]) = (_lists[0], _lists[i]);
+                (lists[i], lists[0]) = (lists[0], lists[i]);
                 break;
             }
         }
 
-        AddPage(0);
+        mobile.SendGump(new MoongateGump(moongate, lists, tabOrder));
+    }
 
-        AddBackground(0, 0, 380, 280, 5054);
+    protected override void BuildLayout(ref DynamicGumpBuilder builder)
+    {
+        builder.AddPage();
 
-        AddButton(10, 210, 4005, 4007, 1);
-        AddHtmlLocalized(45, 210, 140, 25, 1011036); // OKAY
+        builder.AddBackground(0, 0, 380, 280, 5054);
 
-        AddButton(10, 235, 4005, 4007, 0);
-        AddHtmlLocalized(45, 235, 140, 25, 1011012); // CANCEL
+        builder.AddButton(10, 210, 4005, 4007, 1);
+        builder.AddHtmlLocalized(45, 210, 140, 25, 1011036); // OKAY
 
-        AddHtmlLocalized(5, 5, 200, 20, 1012011); // Pick your destination:
+        builder.AddButton(10, 235, 4005, 4007, 0);
+        builder.AddHtmlLocalized(45, 235, 140, 25, 1011012); // CANCEL
 
-        for (var i = 0; i < filteredBySelectedMaps.Count; ++i)
+        builder.AddHtmlLocalized(5, 5, 200, 20, 1012011); // Pick your destination:
+
+        // Tab buttons on page 0 — rendered in original (pre-swap) order so the active map appears at its expected slot.
+        for (var i = 0; i < _tabOrder.Length; ++i)
         {
-            AddButton(10, 35 + i * 25, 2117, 2118, 0, GumpButtonType.Page, Array.IndexOf(_lists, filteredBySelectedMaps[i]) + 1);
-            AddHtmlLocalized(30, 35 + i * 25, 150, 20, filteredBySelectedMaps[i].Number);
+            builder.AddButton(10, 35 + i * 25, 2117, 2118, 0, GumpButtonType.Page, Array.IndexOf(_lists, _tabOrder[i]) + 1);
+            builder.AddHtmlLocalized(30, 35 + i * 25, 150, 20, _tabOrder[i].Number);
         }
 
         for (var i = 0; i < _lists.Length; ++i)
         {
-            RenderPage(i, filteredBySelectedMaps.IndexOf(_lists[i]));
+            RenderPage(ref builder, i, Array.IndexOf(_tabOrder, _lists[i]));
         }
     }
 
-    private void RenderPage(int index, int offset)
+    private void RenderPage(ref DynamicGumpBuilder builder, int index, int offset)
     {
         var list = _lists[index];
 
-        AddPage(index + 1);
+        builder.AddPage(index + 1);
 
-        AddButton(10, 35 + offset * 25, 2117, 2118, 0, GumpButtonType.Page, index + 1);
-        AddHtmlLocalized(30, 35 + offset * 25, 150, 20, list.SelNumber);
+        builder.AddButton(10, 35 + offset * 25, 2117, 2118, 0, GumpButtonType.Page, index + 1);
+        builder.AddHtmlLocalized(30, 35 + offset * 25, 150, 20, list.SelNumber);
 
         var entries = list.Entries;
 
         for (var i = 0; i < entries.Length; ++i)
         {
-            AddRadio(200, 35 + i * 25, 210, 211, false, index * 100 + i);
-            AddHtmlLocalized(225, 35 + i * 25, 150, 20, entries[i].Number);
+            builder.AddRadio(200, 35 + i * 25, 210, 211, false, index * 100 + i);
+            builder.AddHtmlLocalized(225, 35 + i * 25, 150, 20, entries[i].Number);
         }
     }
 
     public override void OnResponse(NetState state, in RelayInfo info)
     {
-        if (info.ButtonID == 0) // Cancel
+        if (info.ButtonID == 0 || _moongate.Deleted)
         {
             return;
         }
 
-        if (_mobile.Deleted || _moongate.Deleted || _mobile.Map == null)
+        var from = state.Mobile;
+        if (from.Map == null)
         {
             return;
         }
@@ -470,43 +481,40 @@ public class MoongateGump : Gump
 
         var entry = list.Entries[listEntry];
 
-        if (!_mobile.InRange(_moongate.GetWorldLocation(), 1) || _mobile.Map != _moongate.Map)
+        if (!from.InRange(_moongate.GetWorldLocation(), 1) || from.Map != _moongate.Map)
         {
-            _mobile.SendLocalizedMessage(1019002); // You are too far away to use the gate.
+            from.SendLocalizedMessage(1019002); // You are too far away to use the gate.
         }
-        else if (_mobile.Player && _mobile.Murderer && list.Map != Map.Felucca)
+        else if (from.Player && from.Murderer && list.Map != Map.Felucca ||
+                 Sigil.ExistsOn(from) && list.Map != Faction.Facet)
         {
-            _mobile.SendLocalizedMessage(1019004); // You are not allowed to travel there.
+            from.SendLocalizedMessage(1019004); // You are not allowed to travel there.
         }
-        else if (Sigil.ExistsOn(_mobile) && list.Map != Faction.Facet)
+        else if (from.Criminal)
         {
-            _mobile.SendLocalizedMessage(1019004); // You are not allowed to travel there.
+            from.SendLocalizedMessage(1005561, "", 0x22); // Thou'rt a criminal and cannot escape so easily.
         }
-        else if (_mobile.Criminal)
+        else if (SpellHelper.CheckCombat(from))
         {
-            _mobile.SendLocalizedMessage(1005561, "", 0x22); // Thou'rt a criminal and cannot escape so easily.
+            from.SendLocalizedMessage(1005564, "", 0x22); // Wouldst thou flee during the heat of battle??
         }
-        else if (SpellHelper.CheckCombat(_mobile))
+        else if (from.Spell != null)
         {
-            _mobile.SendLocalizedMessage(1005564, "", 0x22); // Wouldst thou flee during the heat of battle??
+            from.SendLocalizedMessage(1049616); // You are too busy to do that at the moment.
         }
-        else if (_mobile.Spell != null)
+        else if (from.Map == list.Map && from.InRange(entry.Location, 1))
         {
-            _mobile.SendLocalizedMessage(1049616); // You are too busy to do that at the moment.
-        }
-        else if (_mobile.Map == list.Map && _mobile.InRange(entry.Location, 1))
-        {
-            _mobile.SendLocalizedMessage(1019003); // You are already there.
+            from.SendLocalizedMessage(1019003); // You are already there.
         }
         else
         {
-            BaseCreature.TeleportPets(_mobile, entry.Location, list.Map);
+            BaseCreature.TeleportPets(from, entry.Location, list.Map);
 
-            _mobile.Combatant = null;
-            _mobile.Warmode = false;
-            _mobile.Hidden = true;
+            from.Combatant = null;
+            from.Warmode = false;
+            from.Hidden = true;
 
-            _mobile.MoveToWorld(entry.Location, list.Map);
+            from.MoveToWorld(entry.Location, list.Map);
 
             Effects.PlaySound(entry.Location, list.Map, 0x1FE);
         }

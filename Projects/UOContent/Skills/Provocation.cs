@@ -1,5 +1,6 @@
 using System;
 using Server.Items;
+using Server.Misc;
 using Server.Mobiles;
 using Server.Targeting;
 
@@ -50,6 +51,13 @@ namespace Server.SkillHandlers
                         from.SendLocalizedMessage(
                             1062488
                         ); // The instrument you are trying to play is no longer in your backpack!
+                    }
+                    else if (Notoriety.Compute(from, creature) == Notoriety.Innocent)
+                    {
+                        // Think not that I fail to see what thou art doing!
+                        creature.Say(501591);
+
+                        Titles.AwardKarma(from, -75, true);
                     }
                     else if (creature.Controlled)
                     {

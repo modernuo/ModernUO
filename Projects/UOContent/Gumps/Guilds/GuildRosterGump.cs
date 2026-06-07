@@ -5,29 +5,40 @@ namespace Server.Gumps
 {
     public class GuildRosterGump : GuildMobileListGump
     {
-        public GuildRosterGump(Mobile from, Guild guild) : base(from, guild, false, guild.Members)
+        private GuildRosterGump(Guild guild) : base(guild, false, guild.Members)
         {
         }
 
-        protected override void Design()
+        public static void DisplayTo(Mobile from, Guild guild)
         {
-            AddHtml(20, 10, 500, 35, $"<center>{m_Guild.Name}</center>");
+            if (from?.NetState == null || guild == null)
+            {
+                return;
+            }
 
-            AddButton(20, 400, 4005, 4007, 1);
-            AddHtmlLocalized(55, 400, 300, 35, 1011120); // Return to the main menu.
+            GuildGump.EnsureClosed(from);
+            from.SendGump(new GuildRosterGump(guild));
+        }
+
+        protected override void BuildHeader(ref DynamicGumpBuilder builder)
+        {
+            builder.AddHtml(20, 10, 500, 35, $"<center>{_guild.Name}</center>");
+
+            builder.AddButton(20, 400, 4005, 4007, 1);
+            builder.AddHtmlLocalized(55, 400, 300, 35, 1011120); // Return to the main menu.
         }
 
         public override void OnResponse(NetState state, in RelayInfo info)
         {
-            if (GuildGump.BadMember(m_Mobile, m_Guild))
+            var from = state.Mobile;
+            if (GuildGump.BadMember(from, _guild))
             {
                 return;
             }
 
             if (info.ButtonID == 1)
             {
-                GuildGump.EnsureClosed(m_Mobile);
-                m_Mobile.SendGump(new GuildGump(m_Mobile, m_Guild));
+                GuildGump.DisplayTo(from, _guild);
             }
         }
     }

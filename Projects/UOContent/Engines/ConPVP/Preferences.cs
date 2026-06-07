@@ -174,42 +174,56 @@ namespace Server.Engines.ConPVP
         }
     }
 
-    public class PreferencesGump : Gump
+    public class PreferencesGump : DynamicGump
     {
-        private readonly PreferencesEntry m_Entry;
-        private int m_ColumnX = 12;
+        private readonly PreferencesEntry _entry;
+        private int _columnX;
 
         public override bool Singleton => true;
 
-        public PreferencesGump(Mobile from, Preferences prefs) : base(50, 50)
-        {
-            m_Entry = prefs.Find(from);
+        private PreferencesGump(PreferencesEntry entry) : base(50, 50) => _entry = entry;
 
-            if (m_Entry == null)
+        public static void DisplayTo(Mobile from, Preferences prefs)
+        {
+            if (from?.NetState == null || prefs == null)
             {
                 return;
             }
 
+            var entry = prefs.Find(from);
+
+            if (entry == null)
+            {
+                return;
+            }
+
+            from.SendGump(new PreferencesGump(entry));
+        }
+
+        protected override void BuildLayout(ref DynamicGumpBuilder builder)
+        {
+            _columnX = 12;
+
             var arenas = Arena.Arenas;
 
-            AddPage(0);
+            builder.AddPage();
 
             var height = 12 + 20 + arenas.Count * 31 + 24 + 12;
 
-            AddBackground(0, 0, 499 + 40 - 365, height, 0x2436);
+            builder.AddBackground(0, 0, 499 + 40 - 365, height, 0x2436);
 
             for (var i = 1; i < arenas.Count; i += 2)
             {
-                AddImageTiled(12, 32 + i * 31, 475 + 40 - 365, 30, 0x2430);
+                builder.AddImageTiled(12, 32 + i * 31, 475 + 40 - 365, 30, 0x2430);
             }
 
-            AddAlphaRegion(10, 10, 479 + 40 - 365, height - 20);
+            builder.AddAlphaRegion(10, 10, 479 + 40 - 365, height - 20);
 
-            AddColumnHeader(35, null);
-            AddColumnHeader(115, "Arena");
+            AddColumnHeader(ref builder, 35, null);
+            AddColumnHeader(ref builder, 115, "Arena");
 
-            AddButton(499 + 40 - 365 - 12 - 63 - 4 - 63, height - 12 - 24, 247, 248, 1);
-            AddButton(499 + 40 - 365 - 12 - 63, height - 12 - 24, 241, 242, 2);
+            builder.AddButton(499 + 40 - 365 - 12 - 63 - 4 - 63, height - 12 - 24, 247, 248, 1);
+            builder.AddButton(499 + 40 - 365 - 12 - 63, height - 12 - 24, 241, 242, 2);
 
             for (var i = 0; i < arenas.Count; ++i)
             {
@@ -222,16 +236,16 @@ namespace Server.Engines.ConPVP
 
                 var color = 0xCCFFCC;
 
-                AddCheck(x + 3, y + 1, 9730, 9727, m_Entry.Disliked.Contains(name), i);
+                builder.AddCheckbox(x + 3, y + 1, 9730, 9727, _entry.Disliked.Contains(name), i);
                 x += 35;
 
-                AddBorderedText(x + 5, y + 5, 115 - 5, name, color, 0);
+                AddBorderedText(ref builder, x + 5, y + 5, 115 - 5, name, color, 0);
             }
         }
 
         public override void OnResponse(NetState sender, in RelayInfo info)
         {
-            if (m_Entry == null)
+            if (_entry == null)
             {
                 return;
             }
@@ -241,7 +255,7 @@ namespace Server.Engines.ConPVP
                 return;
             }
 
-            m_Entry.Disliked.Clear();
+            _entry.Disliked.Clear();
 
             var arenas = Arena.Arenas;
 
@@ -251,32 +265,32 @@ namespace Server.Engines.ConPVP
 
                 if (idx >= 0 && idx < arenas.Count)
                 {
-                    m_Entry.Disliked.Add(arenas[idx].Name);
+                    _entry.Disliked.Add(arenas[idx].Name);
                 }
             }
         }
 
-        private void AddBorderedText(int x, int y, int width, string text, int color, int borderColor)
+        private static void AddBorderedText(ref DynamicGumpBuilder builder, int x, int y, int width, string text, int color, int borderColor)
         {
-            AddColoredText(x, y, width, text, color);
+            AddColoredText(ref builder, x, y, width, text, color);
         }
 
-        private void AddColoredText(int x, int y, int width, string text, int color)
+        private static void AddColoredText(ref DynamicGumpBuilder builder, int x, int y, int width, string text, int color)
         {
-            AddHtml(x, y, width, 20, color == 0 ? text : text.Color(color));
+            builder.AddHtml(x, y, width, 20, color == 0 ? text : text.Color(color));
         }
 
-        private void AddColumnHeader(int width, string name)
+        private void AddColumnHeader(ref DynamicGumpBuilder builder, int width, string name)
         {
-            AddBackground(m_ColumnX, 12, width, 20, 0x242C);
-            AddImageTiled(m_ColumnX + 2, 14, width - 4, 16, 0x2430);
+            builder.AddBackground(_columnX, 12, width, 20, 0x242C);
+            builder.AddImageTiled(_columnX + 2, 14, width - 4, 16, 0x2430);
 
             if (name != null)
             {
-                AddBorderedText(m_ColumnX, 13, width, name.Center(), 0xFFFFFF, 0);
+                AddBorderedText(ref builder, _columnX, 13, width, name.Center(), 0xFFFFFF, 0);
             }
 
-            m_ColumnX += width;
+            _columnX += width;
         }
     }
 }

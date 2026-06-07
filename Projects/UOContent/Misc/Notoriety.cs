@@ -297,22 +297,25 @@ namespace Server.Misc
                 }
             }
 
-            if (target.Owner is BaseCreature creature)
+            // BaseCreatures are deleted on death, so target.Owner is null after a server restart.
+            // The OwnerWasBaseCreature flag is the persisted snapshot that survives the live mobile.
+            var creature = target.Owner as BaseCreature;
+
+            if (target.OwnerWasBaseCreature || creature != null)
             {
                 if (srcFaction != null && trgFaction != null && srcFaction != trgFaction && source.Map == Faction.Facet)
                 {
                     return Notoriety.Enemy;
                 }
 
-                if (CheckHouseFlag(source, creature, target.Location, target.Map))
+                if (creature != null && CheckHouseFlag(source, creature, target.Location, target.Map))
                 {
                     return Notoriety.CanBeAttacked;
                 }
 
                 var actual = Notoriety.CanBeAttacked;
 
-                if (target.Murderer || body.IsMonster && IsSummoned(creature) ||
-                    creature.IsAnimatedDead)
+                if (target.Murderer || body.IsMonster && target.OwnerWasSummoned || target.OwnerWasAnimatedDead)
                 {
                     actual = Notoriety.Murderer;
                 }

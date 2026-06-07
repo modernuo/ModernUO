@@ -2,8 +2,6 @@ namespace Server.Gumps;
 
 public static class PropsConfig
 {
-    public const bool OldStyle = false;
-
     public const int GumpOffsetX = 30;
     public const int GumpOffsetY = 30;
 
@@ -13,14 +11,15 @@ public static class PropsConfig
     public const int OffsetGumpID = 0x0A40; // Pure black
 
     // Light off-white, textured : Dark navy blue, textured
-    public const int HeaderGumpID = OldStyle ? 0x0BBC : 0x0E14;
+    public const int HeaderGumpID = 0x0E14;
 
     public const int EntryGumpID = 0x0BBC;                   // Light offwhite, textured
     public const int BackGumpID = 0x13BE;                    // Gray slate/stoney
-    public const int SetGumpID = OldStyle ? 0x0000 : 0x0E14; // Empty : Dark navy blue, textured
+    public const int SetGumpID = 0x0E14; // Empty : Dark navy blue, textured
 
     public const int SetWidth = 20;
-    public const int SetOffsetX = OldStyle ? 4 : 2, SetOffsetY = 2;
+    public const int SetOffsetX = 2;
+    public const int SetOffsetY = 2;
     public const int SetButtonID1 = 0x15E1; // Arrow pointing right
     public const int SetButtonID2 = 0x15E5; // " pressed
 
@@ -39,7 +38,4 @@ public static class PropsConfig
     public const int EntryHeight = 20;
     public const int BorderSize = 10;
     public const int ApplySize = 30;
-
-    public const bool PrevLabel = false;
-    public const bool NextLabel = false;
 }

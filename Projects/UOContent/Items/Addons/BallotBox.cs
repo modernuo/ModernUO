@@ -83,102 +83,119 @@ namespace Server.Items
             }
             else
             {
-                var isOwner = IsOwner(from);
-                from.SendGump(new InternalGump(this, isOwner));
+                BallotBoxGump.DisplayTo(from, this, IsOwner(from));
             }
         }
 
-        private class InternalGump : Gump
+        private class BallotBoxGump : DynamicGump
         {
-            private readonly BallotBox m_Box;
+            private readonly BallotBox _box;
+            private readonly bool _isOwner;
 
-            public InternalGump(BallotBox box, bool isOwner) : base(110, 70)
+            public override bool Singleton => true;
+
+            private BallotBoxGump(BallotBox box, bool isOwner) : base(110, 70)
             {
-                m_Box = box;
+                _box = box;
+                _isOwner = isOwner;
+            }
 
-                AddBackground(0, 0, 400, 350, 0xA28);
-
-                if (isOwner)
+            public static void DisplayTo(Mobile from, BallotBox box, bool isOwner)
+            {
+                if (from?.NetState == null || box?.Deleted != false)
                 {
-                    AddHtmlLocalized(0, 15, 400, 35, 1011000); // <center>Ballot Box Owner's Menu</center>
+                    return;
+                }
+
+                from.SendGump(new BallotBoxGump(box, isOwner));
+            }
+
+            protected override void BuildLayout(ref DynamicGumpBuilder builder)
+            {
+                builder.AddPage();
+                builder.AddBackground(0, 0, 400, 350, 0xA28);
+
+                if (_isOwner)
+                {
+                    builder.AddHtmlLocalized(0, 15, 400, 35, 1011000); // <center>Ballot Box Owner's Menu</center>
                 }
                 else
                 {
-                    AddHtmlLocalized(0, 15, 400, 35, 1011001); // <center>Ballot Box -- Vote Here!</center>
+                    builder.AddHtmlLocalized(0, 15, 400, 35, 1011001); // <center>Ballot Box -- Vote Here!</center>
                 }
 
-                AddHtmlLocalized(0, 50, 400, 35, 1011002); // <center>Topic</center>
+                builder.AddHtmlLocalized(0, 50, 400, 35, 1011002); // <center>Topic</center>
 
-                var lineCount = box.Topic.Length;
-                AddBackground(25, 90, 350, Math.Max(20 * lineCount, 20), 0x1400);
+                var lineCount = _box.Topic.Length;
+                builder.AddBackground(25, 90, 350, Math.Max(20 * lineCount, 20), 0x1400);
 
                 for (var i = 0; i < lineCount; i++)
                 {
-                    var line = box.Topic[i];
+                    var line = _box.Topic[i];
 
                     if (!string.IsNullOrEmpty(line))
                     {
-                        AddLabelCropped(30, 90 + i * 20, 340, 20, 0x3E3, line);
+                        builder.AddLabelCropped(30, 90 + i * 20, 340, 20, 0x3E3, line);
                     }
                 }
 
-                var yesCount = box.Yes.Count;
-                var noCount = box.No.Count;
+                var yesCount = _box.Yes.Count;
+                var noCount = _box.No.Count;
                 var totalVotes = yesCount + noCount;
 
-                AddHtmlLocalized(0, 215, 400, 35, 1011003); // <center>votes</center>
+                builder.AddHtmlLocalized(0, 215, 400, 35, 1011003); // <center>votes</center>
 
-                if (!isOwner)
+                if (!_isOwner)
                 {
-                    AddButton(20, 240, 0xFA5, 0xFA7, 3);
+                    builder.AddButton(20, 240, 0xFA5, 0xFA7, 3);
                 }
 
-                AddHtmlLocalized(55, 242, 25, 35, 1011004); // aye:
-                AddLabel(78, 242, 0x0, $"[{yesCount}]");
+                builder.AddHtmlLocalized(55, 242, 25, 35, 1011004); // aye:
+                builder.AddLabel(78, 242, 0x0, $"[{yesCount}]");
 
-                if (!isOwner)
+                if (!_isOwner)
                 {
-                    AddButton(20, 275, 0xFA5, 0xFA7, 4);
+                    builder.AddButton(20, 275, 0xFA5, 0xFA7, 4);
                 }
 
-                AddHtmlLocalized(55, 277, 25, 35, 1011005); // nay:
-                AddLabel(78, 277, 0x0, $"[{noCount}]");
+                builder.AddHtmlLocalized(55, 277, 25, 35, 1011005); // nay:
+                builder.AddLabel(78, 277, 0x0, $"[{noCount}]");
 
                 if (totalVotes > 0)
                 {
-                    AddImageTiled(130, 242, yesCount * 225 / totalVotes, 10, 0xD6);
-                    AddImageTiled(130, 277, noCount * 225 / totalVotes, 10, 0xD6);
+                    builder.AddImageTiled(130, 242, yesCount * 225 / totalVotes, 10, 0xD6);
+                    builder.AddImageTiled(130, 277, noCount * 225 / totalVotes, 10, 0xD6);
                 }
 
-                AddButton(45, 305, 0xFA5, 0xFA7, 0);
-                AddHtmlLocalized(80, 308, 40, 35, 1011008); // done
+                builder.AddButton(45, 305, 0xFA5, 0xFA7, 0);
+                builder.AddHtmlLocalized(80, 308, 40, 35, 1011008); // done
 
-                if (isOwner)
+                if (_isOwner)
                 {
-                    AddButton(120, 305, 0xFA5, 0xFA7, 1);
-                    AddHtmlLocalized(155, 308, 100, 35, 1011006); // change topic
+                    builder.AddButton(120, 305, 0xFA5, 0xFA7, 1);
+                    builder.AddHtmlLocalized(155, 308, 100, 35, 1011006); // change topic
 
-                    AddButton(240, 305, 0xFA5, 0xFA7, 2);
-                    AddHtmlLocalized(275, 308, 300, 100, 1011007); // reset votes
+                    builder.AddButton(240, 305, 0xFA5, 0xFA7, 2);
+                    builder.AddHtmlLocalized(275, 308, 300, 100, 1011007); // reset votes
                 }
             }
 
             public override void OnResponse(NetState sender, in RelayInfo info)
             {
-                if (m_Box.Deleted || info.ButtonID == 0)
+                if (_box.Deleted || info.ButtonID == 0)
                 {
                     return;
                 }
 
                 var from = sender.Mobile;
 
-                if (from.Map != m_Box.Map || !from.InRange(m_Box.GetWorldLocation(), 2))
+                if (from.Map != _box.Map || !from.InRange(_box.GetWorldLocation(), 2))
                 {
                     from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
                     return;
                 }
 
-                var isOwner = m_Box.IsOwner(from);
+                var isOwner = _box.IsOwner(from);
 
                 switch (info.ButtonID)
                 {
@@ -186,15 +203,15 @@ namespace Server.Items
                         {
                             if (isOwner)
                             {
-                                m_Box.ClearTopic();
-                                m_Box.ClearVotes();
+                                _box.ClearTopic();
+                                _box.ClearVotes();
 
                                 from.SendLocalizedMessage(
                                     500370,
                                     "",
                                     0x35
                                 ); // Enter a line of text for your ballot, and hit ENTER. Hit ESC after the last line is entered.
-                                from.Prompt = new TopicPrompt(m_Box);
+                                from.Prompt = new TopicPrompt(_box);
                             }
 
                             break;
@@ -203,7 +220,7 @@ namespace Server.Items
                         {
                             if (isOwner)
                             {
-                                m_Box.ClearVotes();
+                                _box.ClearVotes();
                                 from.SendLocalizedMessage(500371); // Votes zeroed out.
                             }
 
@@ -213,13 +230,13 @@ namespace Server.Items
                         {
                             if (!isOwner)
                             {
-                                if (m_Box.HasVoted(from))
+                                if (_box.HasVoted(from))
                                 {
                                     from.SendLocalizedMessage(500374); // You have already voted on this ballot.
                                 }
                                 else
                                 {
-                                    m_Box.AddToYes(from);
+                                    _box.AddToYes(from);
                                     from.SendLocalizedMessage(500373); // Your vote has been registered.
                                 }
                             }
@@ -230,13 +247,13 @@ namespace Server.Items
                         {
                             if (!isOwner)
                             {
-                                if (m_Box.HasVoted(from))
+                                if (_box.HasVoted(from))
                                 {
                                     from.SendLocalizedMessage(500374); // You have already voted on this ballot.
                                 }
                                 else
                                 {
-                                    m_Box.AddToNo(from);
+                                    _box.AddToNo(from);
                                     from.SendLocalizedMessage(500373); // Your vote has been registered.
                                 }
                             }
@@ -245,7 +262,7 @@ namespace Server.Items
                         }
                     default:
                         {
-                            from.SendGump(new InternalGump(m_Box, isOwner));
+                            DisplayTo(from, _box, isOwner);
                             break;
                         }
                 }
@@ -254,52 +271,52 @@ namespace Server.Items
 
         private class TopicPrompt : Prompt
         {
-            private readonly BallotBox m_Box;
+            private readonly BallotBox _box;
 
-            public TopicPrompt(BallotBox box) => m_Box = box;
+            public TopicPrompt(BallotBox box) => _box = box;
 
             public override void OnResponse(Mobile from, string text)
             {
-                if (m_Box.Deleted || !m_Box.IsOwner(from))
+                if (_box.Deleted || !_box.IsOwner(from))
                 {
                     return;
                 }
 
-                if (from.Map != m_Box.Map || !from.InRange(m_Box.GetWorldLocation(), 2))
+                if (from.Map != _box.Map || !from.InRange(_box.GetWorldLocation(), 2))
                 {
                     from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
                     return;
                 }
 
-                m_Box.AddLineToTopic(text.TrimEnd());
+                _box.AddLineToTopic(text.TrimEnd());
 
-                if (m_Box.Topic.Length < MaxTopicLines)
+                if (_box.Topic.Length < MaxTopicLines)
                 {
                     from.SendLocalizedMessage(500377, "", 0x35); // Next line or ESC to finish:
-                    from.Prompt = new TopicPrompt(m_Box);
+                    from.Prompt = new TopicPrompt(_box);
                 }
                 else
                 {
                     from.SendLocalizedMessage(500376, "", 0x35); // Ballot entry complete.
-                    from.SendGump(new InternalGump(m_Box, true));
+                    BallotBoxGump.DisplayTo(from, _box, true);
                 }
             }
 
             public override void OnCancel(Mobile from)
             {
-                if (m_Box.Deleted || !m_Box.IsOwner(from))
+                if (_box.Deleted || !_box.IsOwner(from))
                 {
                     return;
                 }
 
-                if (from.Map != m_Box.Map || !from.InRange(m_Box.GetWorldLocation(), 2))
+                if (from.Map != _box.Map || !from.InRange(_box.GetWorldLocation(), 2))
                 {
                     from.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1019045); // I can't reach that.
                     return;
                 }
 
                 from.SendLocalizedMessage(500376, "", 0x35); // Ballot entry complete.
-                from.SendGump(new InternalGump(m_Box, true));
+                BallotBoxGump.DisplayTo(from, _box, true);
             }
         }
     }

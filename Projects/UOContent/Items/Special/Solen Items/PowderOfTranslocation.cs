@@ -88,11 +88,11 @@ public partial class PowderOfTranslocation : Item
                         // The ~1_translocationItem~ glows with green energy and absorbs magical power from the powder.
                         if (_transItemName.Number > 0)
                         {
-                            item.SendLocalizedMessageTo(from, 1054139, $"#{_transItemName.Number}", 0x43);
+                            item.SendLocalizedMessageTo(from, 1054139, 0x43, $"#{_transItemName.Number}");
                         }
                         else if (_transItemName.String != null)
                         {
-                            item.SendLocalizedMessageTo(from, 1054139, _transItemName.String, 0x43);
+                            item.SendLocalizedMessageTo(from, 1054139, 0x43, _transItemName.String);
                         }
                     }
                 }

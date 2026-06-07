@@ -27,7 +27,7 @@ public partial class TournamentBracketItem : Item
 
             if (tourney != null)
             {
-                from.SendGump(new TournamentBracketGump(from, tourney, TourneyBracketGumpType.Index), true);
+                TournamentBracketGump.DisplayTo(from, tourney, TourneyBracketGumpType.Index);
             }
         }
     }

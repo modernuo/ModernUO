@@ -2,7 +2,17 @@ $ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
 
 $toolBinary = Join-Path (Join-Path $repoRoot 'tools') 'build-tool.exe'
+$stampFile = Join-Path (Join-Path $repoRoot 'tools') '.build-tool-commit'
 $buildToolProject = Join-Path (Join-Path (Join-Path $repoRoot 'Projects') 'BuildTool') 'BuildTool.csproj'
+
+function Get-BuildToolCommit {
+    try {
+        $hash = & git -C $repoRoot log -1 --format=%H -- Projects/BuildTool/ 2>$null
+        if ($LASTEXITCODE -eq 0 -and $hash) { return $hash.Trim() }
+    }
+    catch { }
+    return $null
+}
 
 function Get-BuildToolFromRelease {
     try {
@@ -27,6 +37,12 @@ function Get-BuildToolFromRelease {
         }
 
         Invoke-WebRequest -Uri $asset.browser_download_url -OutFile $toolBinary -TimeoutSec 60
+
+        $commitHash = Get-BuildToolCommit
+        if ($null -ne $commitHash) {
+            Set-Content -Path $stampFile -Value $commitHash -NoNewline
+        }
+
         return $true
     }
     catch {
@@ -44,10 +60,29 @@ function Test-DotNetAvailable {
     }
 }
 
-# Try native binary first
+# Try native binary first (with staleness check)
 if (Test-Path $toolBinary) {
-    & $toolBinary @args
-    exit $LASTEXITCODE
+    $currentCommit = Get-BuildToolCommit
+    if ($null -ne $currentCommit -and (Test-Path $stampFile)) {
+        $storedCommit = (Get-Content $stampFile -Raw).Trim()
+        if ($currentCommit -eq $storedCommit) {
+            & $toolBinary @args
+            exit $LASTEXITCODE
+        }
+        else {
+            Write-Host "Build tool source has changed, updating..." -ForegroundColor Yellow
+            Remove-Item $toolBinary -Force
+        }
+    }
+    elseif ($null -eq $currentCommit) {
+        # Not in a git repo — use binary as-is
+        & $toolBinary @args
+        exit $LASTEXITCODE
+    }
+    else {
+        # Binary exists but no stamp — re-download to establish tracking
+        Remove-Item $toolBinary -Force
+    }
 }
 
 # Try to download native binary

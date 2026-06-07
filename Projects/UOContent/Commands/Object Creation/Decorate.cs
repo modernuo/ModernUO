@@ -885,6 +885,77 @@ namespace Server.Commands
                     kt.ItemID = m_ItemID;
                 }
             }
+            else if (item is InteractionTeleporter itp)
+            {
+                itp.ItemID = m_ItemID;
+                
+                for (var i = 0; i < m_Params.Length; ++i)
+                {
+                    if (m_Params[i].StartsWithOrdinal("PointDest"))
+                    {
+                        var indexOf = m_Params[i].IndexOfOrdinal('=');
+
+                        if (indexOf >= 0)
+                        {
+                            itp.PointDest = Point3D.Parse(m_Params[i][++indexOf..]);
+                        }
+                    }
+                    else if (m_Params[i].StartsWithOrdinal("MapDest"))
+                    {
+                        var indexOf = m_Params[i].IndexOfOrdinal('=');
+
+                        if (indexOf >= 0)
+                        {
+                            itp.MapDest = Map.Parse(m_Params[i][++indexOf..]);
+                        }
+                    }
+                    else if (m_Params[i].StartsWithOrdinal("SourceEffect"))
+                    {
+                        var indexOf = m_Params[i].IndexOfOrdinal('=');
+
+                        if (indexOf >= 0)
+                        {
+                            itp.SourceEffect = Utility.ToBoolean(m_Params[i][++indexOf..]);
+                        }
+                    }
+                    else if (m_Params[i].StartsWithOrdinal("DestEffect"))
+                    {
+                        var indexOf = m_Params[i].IndexOfOrdinal('=');
+
+                        if (indexOf >= 0)
+                        {
+                            itp.DestEffect = Utility.ToBoolean(m_Params[i][++indexOf..]);
+                        }
+                    }
+                    else if (m_Params[i].StartsWithOrdinal("SoundID"))
+                    {
+                        var indexOf = m_Params[i].IndexOfOrdinal('=');
+
+                        if (indexOf >= 0)
+                        {
+                            itp.SoundID = Utility.ToInt32(m_Params[i].AsSpan()[++indexOf..]);
+                        }
+                    }
+                    else if (m_Params[i].StartsWithOrdinal("Delay"))
+                    {
+                        var indexOf = m_Params[i].IndexOfOrdinal('=');
+
+                        if (indexOf >= 0)
+                        {
+                            itp.Delay = TimeSpan.Parse(m_Params[i][++indexOf..]);
+                        }
+                    }
+                    else if (m_Params[i].StartsWithOrdinal("Name"))
+                    {
+                        var indexOf = m_Params[i].IndexOfOrdinal('=');
+
+                        if (indexOf >= 0)
+                        {
+                            item.Name = m_Params[i][++indexOf..];
+                        }
+                    }
+                }
+            }
             else if (item is Teleporter tp)
             {
                 for (var i = 0; i < m_Params.Length; ++i)

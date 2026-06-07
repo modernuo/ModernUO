@@ -4,6 +4,7 @@ using ModernUO.Serialization;
 using Server.Engines.ConPVP;
 using Server.Factions;
 using Server.Gumps;
+using Server.Misc;
 using Server.Mobiles;
 using Server.Targeting;
 
@@ -442,6 +443,11 @@ public class BandageContext : Timer
         {
             Healer.CheckSkill(secondarySkill, 0.0, 120.0);
             Healer.CheckSkill(primarySkill, 0.0, 120.0);
+        }
+
+        if (Healer != Patient && Patient.Karma > 0)
+        {
+            Titles.AwardKarma(Healer, Patient.Karma / 5, true);
         }
     }
 

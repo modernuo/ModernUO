@@ -44,34 +44,34 @@ namespace Server.Engines.MLQuests.Objectives
             return label - 1078872;
         }
 
-        public override void WriteToGump(Gump g, ref int y)
+        public override void WriteToGump(ref DynamicGumpBuilder builder, ref int y)
         {
             if (ShowDetailed)
             {
                 var amount = DesiredAmount.ToString();
 
-                g.AddHtmlLocalized(98, y, 350, 16, 1072205, 0x5F90); // Obtain
-                g.AddLabel(143, y, 0x481, amount);
+                builder.AddHtmlLocalized(98, y, 350, 16, 1072205, 0x5F90); // Obtain
+                builder.AddLabel(143, y, 0x481, amount);
 
                 if (Name.Number > 0)
                 {
-                    g.AddHtmlLocalized(143 + amount.Length * 15, y, 190, 18, Name.Number, 0x77BF);
-                    g.AddItem(350, y, LabelToItemID(Name.Number));
+                    builder.AddHtmlLocalized(143 + amount.Length * 15, y, 190, 18, Name.Number, 0x77BF);
+                    builder.AddItem(350, y, LabelToItemID(Name.Number));
                 }
                 else if (Name.String != null)
                 {
-                    g.AddLabel(143 + amount.Length * 15, y, 0x481, Name.String);
+                    builder.AddLabel(143 + amount.Length * 15, y, 0x481, Name.String);
                 }
             }
             else
             {
                 if (Name.Number > 0)
                 {
-                    g.AddHtmlLocalized(98, y, 312, 32, Name.Number, 0x5F90);
+                    builder.AddHtmlLocalized(98, y, 312, 32, Name.Number, 0x5F90);
                 }
                 else if (Name.String != null)
                 {
-                    g.AddLabel(98, y, 0x481, Name.String);
+                    builder.AddLabel(98, y, 0x481, Name.String);
                 }
             }
 
@@ -199,21 +199,21 @@ namespace Server.Engines.MLQuests.Objectives
             // No message
         }
 
-        public override void WriteToGump(Gump g, ref int y)
+        public override void WriteToGump(ref DynamicGumpBuilder builder, ref int y)
         {
-            Objective.WriteToGump(g, ref y);
+            Objective.WriteToGump(ref builder, ref y);
             y -= 16;
 
             if (Objective.ShowDetailed)
             {
-                base.WriteToGump(g, ref y);
+                base.WriteToGump(ref builder, ref y);
 
-                g.AddHtmlLocalized(103, y, 120, 16, 3000087, 0x5F90); // Total
-                g.AddLabel(223, y, 0x481, GetCurrentTotal().ToString());
+                builder.AddHtmlLocalized(103, y, 120, 16, 3000087, 0x5F90); // Total
+                builder.AddLabel(223, y, 0x481, $"{GetCurrentTotal()}");
                 y += 16;
 
-                g.AddHtmlLocalized(103, y, 120, 16, 1074782, 0x5F90); // Return to
-                g.AddLabel(223, y, 0x481, QuesterNameAttribute.GetQuesterNameFor(Instance.QuesterType));
+                builder.AddHtmlLocalized(103, y, 120, 16, 1074782, 0x5F90); // Return to
+                builder.AddLabel(223, y, 0x481, QuesterNameAttribute.GetQuesterNameFor(Instance.QuesterType));
                 y += 16;
             }
         }

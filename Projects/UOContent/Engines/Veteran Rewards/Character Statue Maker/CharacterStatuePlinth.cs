@@ -77,7 +77,7 @@ public partial class CharacterStatuePlinth : Static, IAddon
     {
         if (_statue != null)
         {
-            from.SendGump(new CharacterPlinthGump(_statue));
+            CharacterPlinthGump.DisplayTo(from, _statue);
         }
     }
 
@@ -98,31 +98,40 @@ public partial class CharacterStatuePlinth : Static, IAddon
         }
     }
 
-    private class CharacterPlinthGump : Gump
+    private class CharacterPlinthGump : DynamicGump
     {
-        public CharacterPlinthGump(CharacterStatue statue) : base(60, 30)
-        {
-            Closable = true;
-            Disposable = true;
-            Draggable = true;
-            Resizable = false;
+        private readonly CharacterStatue _statue;
 
-            AddPage(0);
-            AddImage(0, 0, 0x24F4);
-            AddHtml(55, 50, 150, 20, statue.Name);
-            AddHtml(55, 75, 150, 20, statue.SculptedOn.ToString());
-            AddHtmlLocalized(55, 100, 150, 20, GetTypeNumber(statue.StatueType), 0);
+        public override bool Singleton => true;
+
+        private CharacterPlinthGump(CharacterStatue statue) : base(60, 30) => _statue = statue;
+
+        public static void DisplayTo(Mobile from, CharacterStatue statue)
+        {
+            if (from?.NetState == null || statue == null || statue.Deleted)
+            {
+                return;
+            }
+
+            from.SendGump(new CharacterPlinthGump(statue));
         }
 
-        public static int GetTypeNumber(StatueType type)
+        protected override void BuildLayout(ref DynamicGumpBuilder builder)
         {
-            return type switch
+            builder.AddPage();
+            builder.AddImage(0, 0, 0x24F4);
+            builder.AddHtml(55, 50, 150, 20, _statue.Name);
+            builder.AddHtml(55, 75, 150, 20, _statue.SculptedOn.ToString());
+            builder.AddHtmlLocalized(55, 100, 150, 20, GetTypeNumber(_statue.StatueType), 0);
+        }
+
+        public static int GetTypeNumber(StatueType type) =>
+            type switch
             {
                 StatueType.Marble => 1076181,
                 StatueType.Jade   => 1076180,
                 StatueType.Bronze => 1076230,
                 _                 => 1076181
             };
-        }
     }
 }
