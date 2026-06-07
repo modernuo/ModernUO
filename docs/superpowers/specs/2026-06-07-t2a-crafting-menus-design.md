@@ -51,11 +51,11 @@ Full source list in §13.
 | Crafting used the **generic `0x7C` Open-Dialog menu** (server→client) + **`0x7D` 13-byte response** (client→server), *not* a craft-specific protocol. These already exist in ModernUO (`OutgoingMenuPackets`, `IncomingPlayerPackets`). | High | Jerrith/torfo, POLserver, Wolfpack, MUO code |
 | `0x7D` is fixed 13 bytes: cmd(1) + dialogID(4) + menuid(2) + **1-based index(2)** + model(2) + hue(2). MUO converts index to 0-based on receipt. | High | torfo, POL, Wolfpack, MUO code |
 | Tool skills: **double-click tool → skill-filtered item-list menu → target the resource** (e.g. ingots). Available items scale with skill. | High | UOSA (period OSI text), UOSA wiki |
-| Tinkered jewelry = ingots + **one targeted, *unstacked* gem; exactly one gem per piece**; gem type names the product ("a diamond necklace"). | High | UOSA, UOGuide |
+| Tinkered jewelry = ingots + a targeted gem; gem **type** names the product ("a diamond necklace"). *(Gem **count**: UOSA reconstruction said single/unstacked, but ModernUO implements the T2A **stacked-gem** behavior — full targeted stack consumed and named by count. See D4 / §9.)* | High (type) · Authority (count) | UOSA, UOGuide + shard authority |
 | **Inscription is tool-less** — spellbook (must already contain the spell) + blank scroll + reagents, invoked from the **skill list**, not a tool double-click. | High | UOSA, UOGuide |
 | Inscription consumption: **reagents + blank scroll always consumed on success *and* failure; mana only on success.** Magery gates which circles are available; **Inscription** governs success. | High | UOSA (+4 corroborating) |
 | **Maker's mark + exceptional are tied to GM / near-GM skill**; a GM crafting an exceptional item appends "crafted by (name)". | High | **Primary OSI patch note 1998-11-10** |
-| The packet menus were replaced by the **universal gump in Publish 14 (2001-11-30)** — covering 9 skills incl. Cooking. The claim that this coincided with **UOR was explicitly refuted**. | High | uo.com, UOGuide |
+| The packet menus were replaced by the **universal gump in Publish 14 (2001-11-30)**. The claim that this coincided with **UOR was explicitly refuted**. | High | uo.com, UOGuide |
 
 ### What research could NOT establish (open questions)
 
@@ -77,8 +77,8 @@ Where Jack's code outruns or contradicts the record, these are the resolved call
 | D1 | **Half-resources on failure** for non-scroll crafts (`if (isFailure && !Core.UOTD) amounts[i] -= amounts[i]/2`) | Unconfirmed for non-scroll | **Keep** Jack's half-on-failure (pre-UOTD), documented as best-known T2A reconstruction, not OSI-confirmed. |
 | D2 | **"Make Last"** via targeting the tool (`T2ACraftToolTarget`) | Likely Publish-14 (gump) feature; no T2A evidence | **Keep as QoL**, explicitly flagged in-doc as a non-authentic convenience layered on the T2A flow. |
 | D3 | **Hue-aware tailoring** (targeted hue → product; only matching-hue consumed) | Unverified | **Keep**, flagged as reconstruction. Already plumbed through `CraftItem`. |
-| D4 | **Jewelry ingot counts** (Jack: 2 IronIngot for all pieces) | Specific per-type split refuted; UOGuide general "2 ingots + 1 gem" stands | **Keep** 2 ingots + 1 gem; the only reliable fact is *one gem per piece*. |
-| D5 | **Skill scope** | Publish 14 lists 9 incl. Cooking; T2A tool-menu cooking weakly supported | **8 skills, exclude Cooking** (smith, tailor, tinker, carpentry, alchemy, fletching, inscription, cartography). Document Cooking as deliberate exclusion. |
+| D4 | **Jewelry gem count & naming** — how many gems a piece consumes and how it's named | UOSA reconstruction said *single unstacked* gem; Jack's code **deliberately** consumes 1 but names by stack size | **Override (shard authority):** implement the **stacked-gem** mechanic — the player targets a gem stack (up to a full stack, ~60000); the **entire targeted stack is consumed** and the piece is named by count ("a 1000 diamond ring"). Metal cost stays **2 ingots**. This corrects Jack's intentional "consume 1, name by stack" choice. See §9. |
+| D5 | **Skill scope** | T2A had no crafting menu for cooking | **8 skills** (smith, tailor, tinker, carpentry, alchemy, fletching, inscription, cartography). Cooking is out of scope — it had no T2A packet menu. |
 
 These decisions are intentionally conservative-to-Jack: we preserve his working mechanics and label the unverified ones, rather than re-litigate behavior that plays correctly on T2A shards.
 
@@ -162,7 +162,7 @@ Each menu is an `ItemListMenu` with a private `Category` enum; entries carry a `
 ### 6.3 Tinkering (`TinkeringMenu`)
 - Resource targeting: `Log/Board` → Wood, `BaseIngot` → ingots, `Keg` → keg.
 - Categories: Main, Wood, Tools, Parts, Utensils, Traps, Misc, Jewelry → {Necklaces, Earrings, Rings}, Keg.
-- **Jewelry gem targeting (D4):** selecting a jewelry leaf clears `context.PendingGemType/Count`, then prompts `GemSelectTarget`; on target, `BaseJewel.GetGemType` resolves the gem, stores pending type/count, and crafts. **One gem consumed** in `BaseJewel.OnCraft`. Metal-color retention disabled when `!Core.UOTD`. AOS gem-resource jewelry recipes are skipped under the flag; T2A ingot-based jewelry added instead (Gold/Silver Necklace/Earrings/Ring, WeddingRing).
+- **Jewelry gem targeting (D4):** selecting a jewelry leaf clears `context.PendingGemType/Count`, then prompts `GemSelectTarget`; on target, `BaseJewel.GetGemType` resolves the gem type and `GemSelectTarget` captures the **full targeted stack size** (`gemItem.Amount`) into `context.PendingGemCount`. `BaseJewel.OnCraft` then **consumes that entire count** and stores it as `GemCount`, so the piece is named by quantity ("a 1000 diamond ring"). Metal-color retention disabled when `!Core.UOTD`. AOS gem-resource jewelry recipes are skipped under the flag; T2A ingot-based jewelry added instead (Gold/Silver Necklace/Earrings/Ring, WeddingRing).
 
 ### 6.4 Carpentry (`CarpentryMenu`)
 - Wood resource targeting. Categories: Main, Furniture, Containers, Weapons, Instruments, Misc, Addons.
@@ -222,11 +222,13 @@ Per confirmed research, **inscription is tool-less** in T2A (and we extend the s
 ## 9. Jewelry, gems & serialization
 
 - `BaseJewel` serialization **bumped v4 → v5**: `+ [SerializableField(7)] int _gemCount`. Migration `MigrateFrom(V4Content)` defaults `_gemCount = 0`; migration JSON `Server.Items.BaseJewel.v5.json` adds the `GemCount` property. `WeddingRing` is new (`SerializationGenerator(0)`).
-- `OnCraft`: reads `context.PendingGemType/Count`, consumes **exactly one** gem (`ConsumeTotal(gemItemType, 1)`), sets `GemType`/`GemCount`, clears the pending context.
-- `OnSingleClick` (T2A): "a ring with a sapphire" / "a ring with 3 sapphires" via `GetGemName` (pluralized).
+- `GemSelectTarget` captures the **full targeted stack** (`gemItem.Amount`, up to ~60000) into `context.PendingGemCount`.
+- `OnCraft`: reads `context.PendingGemType/Count`, **consumes the full count** (`ConsumeTotal(gemItemType, PendingGemCount)`), sets `GemType`/`GemCount`, clears the pending context.
+  - **⚠ Jack's branch deliberately consumes only `1`** (`ConsumeTotal(gemItemType, 1)`) while naming the piece by the full stack count — i.e. it names a "1000 diamond ring" but pockets 999 diamonds. **This must change (B3a):** consume `PendingGemCount`, and verify the gems are reachable before crafting (fail with a message if not, so the piece isn't named for gems that weren't consumed).
+- `OnSingleClick` (T2A): "a ring with a sapphire" / "a ring with 1000 sapphires" via `GetGemName` (pluralized) and `_gemCount` (serialized field 7 — count persists across save/load).
 - Helpers: `GetGemType(Item)`, `GetGemItemType(GemType)`, `GetGemName(GemType, plural)`.
 
-> **Bug to fix (B3):** `GetGemItemType` returns null for unknown gems → `ConsumeTotal(null,1)` fails silently with no player feedback. Add a guard + message.
+> **Bug to fix (B3):** `GetGemItemType` returns null for unknown gems → `ConsumeTotal(null, …)` fails silently with no player feedback. Add a guard + message.
 
 ---
 
@@ -243,6 +245,7 @@ From the implementation audit; fix as part of building the definitive branch:
 - **B1 — `InscriptionMenu._spellIds`** static cache grows unbounded. Bounded (one entry per spell type, finite) → acceptable; document, no action required.
 - **B2 — Hue filtering scope:** tailoring hue-filters only the *primary* resource; secondaries (e.g. ingots in mixed items) consume normally. Confirm this is intended (D3) and document.
 - **B3 — `GetGemItemType` null-safety** (see §9).
+- **B3a — Gem consumption count (must fix, per D4):** `OnCraft` deliberately consumes only 1 gem but names the piece by the full targeted stack (`GemCount`). It must consume `PendingGemCount` and verify availability so the name matches what was consumed. (See §9.)
 - **B4 — Make-Last jewelry path:** `T2ACraftToolTarget` re-prompts `GemSelectTarget`; if the player cancels, flow returns to menu rather than crafting. Confirm acceptable; document the cancel behavior.
 - **B5 — `GemSelectTarget` timeout/cancel:** `OnTargetCancel` reopens the menu (no loop). Confirm.
 - **AI-1 — Verify inscription consumption** matches the confirmed invariant (§8).
@@ -266,7 +269,7 @@ From the implementation audit; fix as part of building the definitive branch:
 - Menu filtering hides un-craftable items (skill + materials, sub-container resources).
 - Cartography consumes **blank maps only** (flag on) but **maps and scrolls** (flag off).
 - Tailoring consumes only the targeted-hue cloth/leather.
-- Jewelry consumes exactly **one** gem per craft.
+- Jewelry consumes the **full targeted gem stack** and is named by count ("a 1000 diamond ring"); count persists across save/load (B3a).
 - Maker's-mark prompt appears for exceptional items.
 - Failed non-scroll craft consumes **half** resources (D1).
 - Inscription: reagents + scroll consumed on success and failure; mana only on success (AI-1).
@@ -312,5 +315,5 @@ From the implementation audit; fix as part of building the definitive branch:
 | D1 Failure cost | Keep half-on-failure (flagged reconstruction) |
 | D2 Make-Last | Keep as QoL (flagged anachronism) |
 | D3 Tailoring hue | Keep (flagged reconstruction) |
-| D4 Jewelry | 2 ingots + 1 gem; one gem per piece |
-| D5 Scope | 8 skills, exclude Cooking |
+| D4 Jewelry | Stacked gems: consume full targeted stack (~60000 max), name by count; 2 ingots metal (corrects Jack's deliberate consume-1) |
+| D5 Scope | 8 skills (cooking had no T2A menu) |
