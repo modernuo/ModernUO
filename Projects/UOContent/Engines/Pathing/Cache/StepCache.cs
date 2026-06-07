@@ -22,7 +22,7 @@ public sealed class StepCache
     private readonly Dictionary<long, StepChunk> _chunks = new();
     // Parallel list of keys for O(1) random sampling during eviction. Kept in lockstep
     // with _chunks: append on Miss_NotBuilt, swap-and-pop on eviction.
-    private readonly List<long> _keysList = new();
+    private readonly List<long> _keysList = [];
 
     // Second-touch promotion tracker. A chunk's first miss within the window returns
     // Fallthrough_NotBuilt; the caller takes the slow path. The Nth DISTINCT-FIND miss
@@ -38,7 +38,6 @@ public sealed class StepCache
     // Generation counter incremented by BeginFindGeneration(). Sentinel 0 = "no Find started
     // yet"; treated as a distinct generation per call so callers that bypass BeginFindGeneration
     // (single-call tests, BakeMap with threshold=1) get sensible behavior.
-    private uint _findGeneration;
 
     private struct ChunkMissState
     {
@@ -93,12 +92,16 @@ public sealed class StepCache
     /// </summary>
     public void BeginFindGeneration()
     {
-        unchecked { _findGeneration++; }
-        if (_findGeneration == 0) { _findGeneration = 1; }
+        unchecked { CurrentFindGeneration++; }
+
+        if (CurrentFindGeneration == 0)
+        {
+            CurrentFindGeneration = 1;
+        }
     }
 
     /// <summary>Test-only: read the current Find generation.</summary>
-    internal uint CurrentFindGeneration => _findGeneration;
+    internal uint CurrentFindGeneration { get; private set; }
 
     /// <summary>
     /// Pack (mapId, chunkX, chunkY) into a single long key.
@@ -107,7 +110,7 @@ public sealed class StepCache
     internal static long EncodeKey(int mapId, int chunkX, int chunkY) =>
         ((long)(mapId & 0xFFFF) << 32) | ((long)(chunkX & 0xFFFF) << 16) | (long)(chunkY & 0xFFFF);
 
-    public CacheStats GetStats() => new CacheStats(
+    public CacheStats GetStats() => new(
         residentChunks: _chunks.Count,
         hits: _hits,
         missesNotBuilt: _missesNotBuilt,
@@ -142,7 +145,7 @@ public sealed class StepCache
         _chunks.Clear();
         _keysList.Clear();
         _chunkMissTracker.Clear();
-        _findGeneration = 0;
+        CurrentFindGeneration = 0;
         _hits = 0;
         _missesNotBuilt = 0;
         _missesDirtyRebuild = 0;
@@ -193,10 +196,17 @@ public sealed class StepCache
         // and the bake would write an empty file. Force eager build for the duration.
         var prevThreshold = MissPromotionThreshold;
         MissPromotionThreshold = 1;
+        var startTick = Core.TickCount;
         try
         {
             var chunkCols = (map.Width + ChunkSize - 1) / ChunkSize;
             var chunkRows = (map.Height + ChunkSize - 1) / ChunkSize;
+            var logEvery = Math.Max(1, chunkRows / 32);
+
+            logger.Information(
+                "PathBake map {MapId}: walking {Cols}x{Rows} = {Total} chunks (synchronous; no eviction during the walk)...",
+                mapId, chunkCols, chunkRows, chunkCols * chunkRows
+            );
 
             for (var cy = 0; cy < chunkRows; cy++)
             {
@@ -206,7 +216,21 @@ public sealed class StepCache
                     // whether the query returns Hit or Fallthrough_SourceZMismatch.
                     TryGetMask(map, cx * ChunkSize, cy * ChunkSize, sourceZ: 0);
                 }
+
+                if ((cy + 1) % logEvery == 0 || cy == chunkRows - 1)
+                {
+                    logger.Information(
+                        "PathBake map {MapId}: row {Row}/{Rows} ({Pct}%), {Resident} chunks resident, {Elapsed:F1}s, {HeapMB} MB heap",
+                        mapId, cy + 1, chunkRows, (cy + 1) * 100 / chunkRows,
+                        _chunks.Count, (Core.TickCount - startTick) / 1000.0, GC.GetTotalMemory(false) >> 20
+                    );
+                }
             }
+
+            logger.Information(
+                "PathBake map {MapId}: walk complete in {Elapsed:F1}s, writing {Resident} chunks to disk...",
+                mapId, (Core.TickCount - startTick) / 1000.0, _chunks.Count
+            );
         }
         finally
         {
@@ -610,7 +634,7 @@ public sealed class StepCache
         // Environment.TickCount, not Core.TickCount: tests/bench fixtures may not advance
         // the game-loop tick. The promotion window is wall-clock anyway.
         var now = (uint)Environment.TickCount;
-        var gen = _findGeneration;
+        var gen = CurrentFindGeneration;
 
         if (_chunkMissTracker.TryGetValue(chunkKey, out var state))
         {

@@ -128,12 +128,6 @@ internal static class StepCacheFile
         + 8 * StepChunk.CellsPerChunk       // WalkZ[8]
         + 8 * StepChunk.CellsPerChunk;      // SwimZ[8]
 
-    /// <summary>Swim-layer trailer overhead when present: per-cell SourceZ + Mask + 8×Z arrays.</summary>
-    private const int SwimLayerOverhead = 10 * StepChunk.CellsPerChunk;
-
-    /// <summary>Strata trailer overhead when present: 256×u16 offset table + u32 data length.</summary>
-    private const int StrataTrailerOverhead = StepChunk.CellsPerChunk * sizeof(ushort) + sizeof(uint);
-
     /// <summary>
     /// Byte offset of the IndexOffset u64 within the header
     /// (Magic+Version+MapId+Fingerprint+BakeTimestamp+ChunkCount = 32). Patched after chunks land.
@@ -415,14 +409,17 @@ internal static class StepCacheFile
     internal static sbyte DecodeZ(sbyte predict, sbyte residual) => unchecked((sbyte)(predict + residual));
 
     /// <summary>
-    /// The 16 base directional-Z arrays in canonical order: walk N..NW (indices 0-7),
-    /// then swim N..NW (8-15). Index d uses WalkMask (d &lt; 8) or WetMask (d &gt;= 8)
-    /// with direction bit (d &amp; 7). Allocates a 16-slot reference array (bake/read time only).
+    /// The base directional-Z array for direction index d in canonical order: walk N..NW (0-7),
+    /// then swim N..NW (8-15). Index d uses WalkMask (d &lt; 8) or WetMask (d &gt;= 8) with
+    /// direction bit (d &amp; 7).
     /// </summary>
-    private static sbyte[][] GetBaseZArrays(StepChunk c) => new[]
+    private static sbyte[] GetBaseZArray(StepChunk c, int d) => d switch
     {
-        c.WalkZN, c.WalkZNE, c.WalkZE, c.WalkZSE, c.WalkZS, c.WalkZSW, c.WalkZW, c.WalkZNW,
-        c.SwimZN, c.SwimZNE, c.SwimZE, c.SwimZSE, c.SwimZS, c.SwimZSW, c.SwimZW, c.SwimZNW,
+        0  => c.WalkZN,  1  => c.WalkZNE, 2  => c.WalkZE,  3  => c.WalkZSE,
+        4  => c.WalkZS,  5  => c.WalkZSW, 6  => c.WalkZW,  7  => c.WalkZNW,
+        8  => c.SwimZN,  9  => c.SwimZNE, 10 => c.SwimZE,  11 => c.SwimZSE,
+        12 => c.SwimZS,  13 => c.SwimZSW, 14 => c.SwimZW,  15 => c.SwimZNW,
+        _  => throw new ArgumentOutOfRangeException(nameof(d))
     };
 
     /// <summary>
@@ -507,11 +504,10 @@ internal static class StepCacheFile
         // Predictive-Z: each base directional Z array is stored as a masked residual against
         // SourceZ. Bit d of ZArrayMask is set only when array d differs from its prediction
         // somewhere; cleared arrays are omitted and rebuilt from mask+SourceZ at read.
-        var zArrays = GetBaseZArrays(chunk);
         ushort zArrayMask = 0;
         for (var d = 0; d < 16; d++)
         {
-            var z = zArrays[d];
+            var z = GetBaseZArray(chunk, d);
             var dirMask = d < 8 ? chunk.WalkMask : chunk.WetMask;
             var bit = d & 7;
             for (var cell = 0; cell < StepChunk.CellsPerChunk; cell++)
@@ -536,7 +532,7 @@ internal static class StepCacheFile
             {
                 continue;
             }
-            var z = zArrays[d];
+            var z = GetBaseZArray(chunk, d);
             var dirMask = d < 8 ? chunk.WalkMask : chunk.WetMask;
             var bit = d & 7;
             for (var cell = 0; cell < StepChunk.CellsPerChunk; cell++)
@@ -621,11 +617,10 @@ internal static class StepCacheFile
 
         // Predictive-Z reconstruction: present arrays carry residuals (z = predict + residual);
         // absent arrays are synthesized from mask+SourceZ (z = predict, residual implicitly 0).
-        var zArrays = GetBaseZArrays(chunk);
         Span<sbyte> residual = stackalloc sbyte[StepChunk.CellsPerChunk];
         for (var d = 0; d < 16; d++)
         {
-            var z = zArrays[d];
+            var z = GetBaseZArray(chunk, d);
             var dirMask = d < 8 ? chunk.WalkMask : chunk.WetMask;
             var bit = d & 7;
             if ((zArrayMask >> d & 1) != 0)

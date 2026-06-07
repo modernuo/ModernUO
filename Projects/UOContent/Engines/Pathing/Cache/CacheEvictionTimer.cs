@@ -22,7 +22,7 @@ public class CacheEvictionTimer : Timer
         _instance.Start();
     }
 
-    private CacheEvictionTimer() : base(TimeSpan.FromSeconds(60), TimeSpan.FromSeconds(60)) { }
+    private CacheEvictionTimer() : base(TimeSpan.FromSeconds(120), TimeSpan.FromSeconds(120)) { }
 
     protected override void OnTick()
     {

@@ -242,8 +242,8 @@ public static class StepProbe
     /// </summary>
     public static int ComputeStandingZ(Map map, int x, int y, int locZ)
     {
-        GetStaticStartZ(map, x, y, locZ, canSwim: false, cantWalk: false,
-            out _, out _, out var zCenter);
+        GetStaticStartZ(map, x, y, locZ, canSwim: false, cantWalk: false, out _, out _, out var zCenter);
+
         return zCenter;
     }
 
@@ -255,11 +255,7 @@ public static class StepProbe
     /// </summary>
     public static int ComputeSwimStandingZ(Map map, int x, int y)
     {
-        if (map == null || map == Map.Internal)
-        {
-            return int.MinValue;
-        }
-        if (x < 0 || y < 0 || x >= map.Width || y >= map.Height)
+        if (map == null || map == Map.Internal || x < 0 || y < 0 || x >= map.Width || y >= map.Height)
         {
             return int.MinValue;
         }
@@ -290,8 +286,7 @@ public static class StepProbe
     /// Mirrors GetStartZ from MovementImpl, parameterized by canSwim / cantWalk.
     /// </summary>
     private static void GetStaticStartZ(
-        Map map, int x, int y, int locZ, bool canSwim, bool cantWalk,
-        out int zLow, out int zTop, out int zCenter
+        Map map, int x, int y, int locZ, bool canSwim, bool cantWalk, out int zLow, out int zTop, out int zCenter
     )
     {
         var landTile = map.Tiles.GetLandTile(x, y);
@@ -300,8 +295,7 @@ public static class StepProbe
 
         // Mirrors MovementImpl: impassable + swim on water is OK; otherwise block on
         // cantWalk or impassable.
-        var landBlocks = (cantWalk || impassable)
-            && !(impassable && canSwim && (flags & TileFlag.Wet) != 0);
+        var landBlocks = (cantWalk || impassable) && !(impassable && canSwim && (flags & TileFlag.Wet) != 0);
 
         map.GetAverageZ(x, y, out var landZ, out var landCenter, out var landTop);
 
@@ -356,8 +350,7 @@ public static class StepProbe
     /// Items and mobile collision phases are omitted.
     /// </summary>
     private static bool CheckStaticStep(
-        Map map, int x, int y, int startZ, int startTop, bool canSwim, bool cantWalk,
-        out int newZ
+        Map map, int x, int y, int startZ, int startTop, bool canSwim, bool cantWalk, out int newZ
     )
     {
         newZ = 0;
@@ -371,8 +364,7 @@ public static class StepProbe
         var flags = TileData.LandTable[landTile.ID & TileData.MaxLandValue].Flags;
         var impassable = (flags & TileFlag.Impassable) != 0;
 
-        var landBlocks = (cantWalk || impassable)
-            && !(impassable && canSwim && (flags & TileFlag.Wet) != 0);
+        var landBlocks = (cantWalk || impassable) && !(impassable && canSwim && (flags & TileFlag.Wet) != 0);
 
         var considerLand = !landTile.Ignored;
 
