@@ -93,27 +93,9 @@ internal static class StepCacheFile
     public const uint FormatVersion = 8;
 
     /// <summary>
-    /// Lowest format version this binary can load. Files below this version are treated as
-    /// missing (silently rejected) — a subsequent SaveToFile / BakeMap overwrites them with
-    /// the current FormatVersion. Bumped to 3 when the swim layer landed (v2 had no swim
-    /// layer). Bumped to 4 when the baker switched to clearance-aware standable-surface
-    /// strata: v3 bakes anchored every cell at the land average and so missed walkable
-    /// static-over-land surfaces (sewer/dungeon walkways, bridges, upper building floors),
-    /// producing ~98% source-Z fallthroughs on those routes. The on-disk layout is
-    /// unchanged; only the strata population differs, so the bump exists purely to force a
-    /// one-time re-bake of stale v3 files on first boot under the new binary. Bumped to 5 for
-    /// uniform-chunk elision: each record now begins with a Kind byte (0 = Full, 2 = Uniform);
-    /// a fully-uniform chunk (no strata, no swim layer, all 19 base arrays constant) stores
-    /// one cell's worth of data (~28 bytes) instead of the full record. Bumped to 6 for
-    /// predictive-Z residuals: each base directional Z array is stored as a masked residual
-    /// against SourceZ (a ZArrayMask u16 flags which arrays are present); arrays matching their
-    /// prediction are omitted and synthesized at read. v5 files are rejected and re-baked once.
-    /// Bumped to 7 for per-chunk compression: each chunk record is libdeflate-compressed
-    /// independently (random access preserved) behind a u32 uncompressed-length prefix; tiny
-    /// records that do not shrink are stored raw. v6 files are rejected and re-baked once.
-    /// Bumped to 8 for index compaction: the trailer drops the per-chunk file offset (derived by
-    /// cumulative record length in write order) and packs the chunk key to u32, shrinking each
-    /// index entry from 20 to 8 bytes. v7 files are rejected and re-baked once.
+    /// Lowest format version this binary can load. Files below it are treated as missing
+    /// (silently rejected) and overwritten by the next SaveToFile / BakeMap. The cache is
+    /// fully regenerable, so a format bump just forces a one-time re-bake of stale files.
     /// </summary>
     public const uint MinSupportedVersion = 8;
 
@@ -272,11 +254,8 @@ internal static class StepCacheFile
         w.Write(chunkCount);
         w.Write(0UL); // IndexOffset placeholder, patched after chunks
 
-        // Per-chunk compression: each record is built uncompressed into `recordScratch`, then
-        // libdeflate-compressed into `compScratch` and framed as [u32 uncompressedLen][payload].
-        // Reuse the cached per-thread VeryHigh compressor (construction allocates native state).
-        // libdeflate is not thread-safe, but bake runs single-threaded. VeryHigh is the best-ratio
-        // level and its slow compression is irrelevant offline (decompression is what's hot, ~1.8us).
+        // Each record is built uncompressed into recordScratch, then libdeflate-compressed into
+        // compScratch and framed as [u32 uncompressedLen][payload].
         var packer = Deflate.Maximum;
         var recordScratch = new byte[BytesPerChunkBase + 1024];
         var compScratch = new byte[packer.MaxPackSize(recordScratch.Length)];
@@ -800,9 +779,7 @@ internal static class StepCacheFile
             }
             else
             {
-                // Decompression is level-independent, so reuse the shared per-thread binding
-                // rather than allocating a native decompressor per reader. The cache is read on
-                // the single game thread; libdeflate's non-thread-safety is satisfied by ThreadStatic.
+                // Decompression is level-independent, so reuse the shared per-thread binding.
                 var result = Deflate.Standard.Unpack(
                     _bodyBuffer.AsSpan(0, uncompressedLen),
                     _buffer.AsSpan(sizeof(uint), payloadLen),

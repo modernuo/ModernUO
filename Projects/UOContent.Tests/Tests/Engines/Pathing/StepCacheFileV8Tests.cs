@@ -8,8 +8,6 @@ namespace Server.Tests.Pathfinding;
 
 // v8 = compact index on top of the v7 compression format. The trailer drops the per-chunk file
 // offset (reconstructed by cumulative record length in write order) and packs the key to u32.
-// These tests focus on the multi-chunk case — single-chunk round-trips (covered by v6/v7 tests)
-// never exercise cumulative offset reconstruction, which is the only new risk here.
 [Collection("Sequential Pathfinding Tests")]
 public class StepCacheFileV8Tests
 {
