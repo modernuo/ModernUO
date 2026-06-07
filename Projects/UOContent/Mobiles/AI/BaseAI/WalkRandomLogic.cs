@@ -38,6 +38,17 @@ public abstract partial class BaseAI
         }
     }
 
+    // Idle wander for controlled pets. Routes through the same CheckMove/CanMoveNow/CheckIdle
+    // gate that non-controlled DoActionWander uses, so idling pets take the gentle 15-25s
+    // CheckIdle rest periods instead of shuffling every AI tick.
+    public void WalkRandomIdle()
+    {
+        if (CheckMove() && CanMoveNow(out _) && !Mobile.CheckIdle())
+        {
+            WalkRandomInHome(3, 2, 1);
+        }
+    }
+
     public virtual void WalkRandomInHome(int chanceToNotMove, int chanceToDir, int steps)
     {
         if (Mobile.Deleted || Mobile.DisallowAllMoves)

@@ -19,7 +19,7 @@ namespace Server.Mobiles;
 
 public abstract partial class BaseAI
 {
-    public virtual void OnCurrentOrderChanged()
+    public virtual void OnCurrentOrderChanged(OrderType previous)
     {
         if (Mobile.Deleted || Mobile.ControlMaster?.Deleted != false)
         {
@@ -49,8 +49,9 @@ public abstract partial class BaseAI
                 }
             case OrderType.Stop:
                 {
-                    HandleStopOrder();
-                    break;
+                    // Stop is resolved into another order; it never rests as the active order.
+                    ResolveStop(previous);
+                    return;
                 }
             case OrderType.Transfer:
                 {
@@ -80,6 +81,49 @@ public abstract partial class BaseAI
             case OrderType.Rename:
                 {
                     HandleRenameOrder();
+                    break;
+                }
+        }
+
+        // A freshly issued standing command becomes the persistent fallback and (re)anchors
+        // Home. Skipped while resuming a fallback so a resume never re-anchors. See
+        // ResumePersistentOrder.
+        if (!_resolvingOrder && Mobile.ControlOrder is OrderType.Stay or OrderType.Follow or OrderType.Guard)
+        {
+            SetPersistentOrder(Mobile.ControlOrder);
+        }
+    }
+
+    // "Stop" cancels the active order, mapping to a resting order based on what the pet was
+    // doing: Attack/Come/etc. -> resume the persistent command; Follow/Guard -> cancel to idle
+    // (None) where it stands; Stay -> remain staying at its post.
+    private void ResolveStop(OrderType previous)
+    {
+        _commandIssuer?.RevealingAction();
+        _commandIssuer = null;
+        Mobile.ControlTarget = null;
+
+        switch (previous)
+        {
+            case OrderType.Stay:
+                {
+                    _resolvingOrder = true;
+                    Mobile.ControlOrder = OrderType.Stay; // remain staying; anchor untouched
+                    _resolvingOrder = false;
+                    break;
+                }
+            case OrderType.Follow:
+            case OrderType.Guard:
+                {
+                    SetPersistentOrder(OrderType.None); // cancel standing order; anchor = current
+                    _resolvingOrder = true;
+                    Mobile.ControlOrder = OrderType.None; // idle
+                    _resolvingOrder = false;
+                    break;
+                }
+            default: // Attack / Come / Drop / None / etc. -> resume the standing order
+                {
+                    ResumePersistentOrder();
                     break;
                 }
         }
@@ -178,24 +222,8 @@ public abstract partial class BaseAI
         Mobile.Warmode = false;
         Mobile.Combatant = null;
         Mobile.PlaySound(Mobile.GetIdleSound());
-        Mobile.Home = Mobile.Location;
         _commandIssuer = null;
-    }
-
-    private void HandleStopOrder()
-    {
-        if (Mobile.ControlMaster?.Alive != true)
-        {
-            return;
-        }
-
-        _commandIssuer?.RevealingAction();
-        Mobile.ControlTarget = null;
-        Mobile.FocusMob = null;
-        Mobile.Warmode = false;
-        Mobile.Combatant = null;
-        Mobile.PlaySound(Mobile.GetIdleSound());
-        _commandIssuer = null;
+        // Home (the stay anchor) is owned by SetPersistentOrder, not this handler.
     }
 
     private void HandleReleaseOrder()
