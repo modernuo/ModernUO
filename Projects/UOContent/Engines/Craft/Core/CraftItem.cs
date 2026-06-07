@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Server.Collections;
 using Server.Commands;
 using Server.Factions;
 using Server.Gumps;
@@ -1259,7 +1260,7 @@ namespace Server.Engines.Craft
         private static bool ConsumeHuedAmount(Container pack, Type type, int hue, int amount)
         {
             var remaining = amount;
-            var toDelete = new List<Item>();
+            using var toDelete = PooledRefList<Item>.Create();
 
             foreach (var item in pack.FindItems(true))
             {
@@ -1569,7 +1570,6 @@ namespace Server.Engines.Craft
             {
                 if (tool?.Deleted == false && tool.UsesRemaining > 0)
                 {
-                    // ShowCraftMenu(from, craftSystem, tool, 1044153);
                     from.SendAsciiMessage("You lack the required skill to craft this item.");
                 }
                 else

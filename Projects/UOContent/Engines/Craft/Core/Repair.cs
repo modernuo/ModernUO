@@ -483,7 +483,6 @@ namespace Server.Engines.Craft
 
                 if (!usingDeed)
                 {
-                    m_CraftSystem.GetContext(from);
                     if (ContentFeatureFlags.T2ACraftMenus)
                     {
                         from.SendLocalizedMessage(number);
