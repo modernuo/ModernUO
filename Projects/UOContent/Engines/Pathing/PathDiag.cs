@@ -2,7 +2,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using Server.Engines.Pathing.Cache;
-using Server.PathAlgorithms.BitmapAStar;
+using Server.PathAlgorithms;
 using Server.Targeting;
 
 namespace Server.Engines.Pathing;

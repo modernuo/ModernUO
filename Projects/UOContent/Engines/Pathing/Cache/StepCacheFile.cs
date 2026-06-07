@@ -234,9 +234,7 @@ internal static class StepCacheFile
         // chunks add another ~2.5 KB (swim layer) but they're a small fraction of any
         // map; the writer grows on overflow so under-estimating just causes a few
         // realloc/copy cycles during the bake — not a correctness issue.
-        var capacity = HeaderSize
-                       + (BytesPerChunkBase + 256) * (int)chunkCount
-                       + IndexEntryBytes * (int)chunkCount;
+        var capacity = HeaderSize + (BytesPerChunkBase + 256) * (int)chunkCount + IndexEntryBytes * (int)chunkCount;
         var buffer = new byte[capacity];
         var w = new BufferWriter(buffer, prefixStr: false);
 

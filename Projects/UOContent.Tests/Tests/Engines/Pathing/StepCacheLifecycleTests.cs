@@ -499,7 +499,7 @@ public class StepCacheLifecycleTests
             // Build 5 distinct chunks by querying different sectors.
             for (var i = 0; i < 5; i++)
             {
-                var x = 1500 + (i * 16);
+                var x = 1500 + i * 16;
                 var y = 1600;
                 cache.TryGetMask(map, x, y, 10);
                 System.Threading.Thread.Sleep(2); // ensure LastTouchedTicks differs

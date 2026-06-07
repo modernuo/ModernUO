@@ -48,8 +48,8 @@ public class StepCacheFileV6Tests
         for (var i = 0; i < StepChunk.CellsPerChunk; i++)
         {
             c.WalkMask[i] = (byte)(i & 0xFF);
-            c.WetMask[i] = (byte)((~i) & 0xFF);
-            c.SourceZ[i] = (sbyte)(baseZ + (i % 7) - 3); // varies, mostly != 0
+            c.WetMask[i] = (byte)(~i & 0xFF);
+            c.SourceZ[i] = (sbyte)(baseZ + i % 7 - 3); // varies, mostly != 0
         }
         SetFlatDirectional(c);
         return c;
@@ -78,9 +78,9 @@ public class StepCacheFileV6Tests
         {
             c.WalkMask[i] = (byte)(i & 0xFF);
             c.WetMask[i] = (byte)((i * 7) & 0xFF);
-            c.SourceZ[i] = (sbyte)((i % 40) - 20);
-            c.WalkZN[i] = (sbyte)(c.SourceZ[i] + (i % 3));
-            c.SwimZS[i] = (sbyte)(c.SourceZ[i] - (i % 2));
+            c.SourceZ[i] = (sbyte)(i % 40 - 20);
+            c.WalkZN[i] = (sbyte)(c.SourceZ[i] + i % 3);
+            c.SwimZS[i] = (sbyte)(c.SourceZ[i] - i % 2);
         }
         return c;
     }
@@ -91,10 +91,10 @@ public class StepCacheFileV6Tests
         c.AllocateSwimLayer();
         for (var i = 0; i < StepChunk.CellsPerChunk; i++)
         {
-            c.SwimSourceZ[i] = (sbyte)((i % 30) - 15);
+            c.SwimSourceZ[i] = (sbyte)(i % 30 - 15);
             c.SwimMask[i] = (byte)((i * 5) & 0xFF);
             c.SwimZN_Layer[i] = (sbyte)(i % 7);
-            c.SwimZNW_Layer[i] = (sbyte)(-(i % 4));
+            c.SwimZNW_Layer[i] = (sbyte)-(i % 4);
         }
         return c;
     }

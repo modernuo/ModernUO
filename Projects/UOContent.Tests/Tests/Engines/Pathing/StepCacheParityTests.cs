@@ -83,10 +83,11 @@ public class StepCacheParityTests
                     wetCells++;
                 }
 
-                if (lookup.WalkZ_N != baker.WalkZ_N || lookup.WalkZ_NE != baker.WalkZ_NE
-                    || lookup.WalkZ_E != baker.WalkZ_E || lookup.WalkZ_SE != baker.WalkZ_SE
-                    || lookup.WalkZ_S != baker.WalkZ_S || lookup.WalkZ_SW != baker.WalkZ_SW
-                    || lookup.WalkZ_W != baker.WalkZ_W || lookup.WalkZ_NW != baker.WalkZ_NW)
+                if (lookup.WalkZ_N != baker.WalkZ_N
+                    || lookup.WalkZ_NE != baker.WalkZ_NE || lookup.WalkZ_E != baker.WalkZ_E
+                    || lookup.WalkZ_SE != baker.WalkZ_SE || lookup.WalkZ_S != baker.WalkZ_S
+                    || lookup.WalkZ_SW != baker.WalkZ_SW || lookup.WalkZ_W != baker.WalkZ_W
+                    || lookup.WalkZ_NW != baker.WalkZ_NW)
                 {
                     disagreements++;
                     _output.WriteLine($"Z DIFF @ ({x},{y}) cache=({lookup.WalkZ_N},{lookup.WalkZ_NE},{lookup.WalkZ_E},{lookup.WalkZ_SE},{lookup.WalkZ_S},{lookup.WalkZ_SW},{lookup.WalkZ_W},{lookup.WalkZ_NW}) baker=({baker.WalkZ_N},{baker.WalkZ_NE},{baker.WalkZ_E},{baker.WalkZ_SE},{baker.WalkZ_S},{baker.WalkZ_SW},{baker.WalkZ_W},{baker.WalkZ_NW})");

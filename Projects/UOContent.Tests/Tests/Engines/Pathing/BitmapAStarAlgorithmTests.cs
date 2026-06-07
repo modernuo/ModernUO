@@ -1,6 +1,6 @@
 using Server.Engines.Pathing.Cache;
 using Server.Mobiles;
-using Server.PathAlgorithms.BitmapAStar;
+using Server.PathAlgorithms;
 using Server.Systems.FeatureFlags;
 using Xunit;
 using Xunit.Abstractions;
@@ -121,7 +121,7 @@ public class BitmapAStarAlgorithmTests
         var y = sy;
         foreach (var dir in result)
         {
-            Server.Movement.Movement.Offset(dir, ref x, ref y);
+            Movement.Movement.Offset(dir, ref x, ref y);
             Assert.False(x == blockX && y == blockY,
                 $"path traversed blocker cell ({blockX},{blockY})");
         }
@@ -180,7 +180,7 @@ public class BitmapAStarAlgorithmTests
         var y = sy;
         foreach (var dir in result)
         {
-            Server.Movement.Movement.Offset(dir, ref x, ref y);
+            Movement.Movement.Offset(dir, ref x, ref y);
             Assert.False(x == blockX && y == blockY,
                 $"path traversed item-blocker cell ({blockX},{blockY})");
         }

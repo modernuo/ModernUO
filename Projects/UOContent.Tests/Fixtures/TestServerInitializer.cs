@@ -5,6 +5,7 @@ using System.Threading;
 using Server.Items;
 using Server.Misc;
 using Server.Movement;
+using Server.PathAlgorithms;
 using Server.Tests.Maps;
 
 namespace Server.Tests;
@@ -55,6 +56,12 @@ internal static class TestServerInitializer
             SkillsInfo.Configure();
             Server.Network.NetState.Configure();
             TestMapDefinitions.ConfigureTestMapDefinitions();
+
+            // Production runs every static Configure() via AssemblyHandler.Invoke("Configure");
+            // the fixture calls a curated subset, so configure the pathfinding singleton here so
+            // BitmapAStarAlgorithm.Instance carries its configured MaxSearchNodes before any test
+            // calls Find. ServerConfiguration is already loaded above, so the setting resolves.
+            BitmapAStarAlgorithm.Configure();
 
             World.Configure();
             Timer.Init(0);
