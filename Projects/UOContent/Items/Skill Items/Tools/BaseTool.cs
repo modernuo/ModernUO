@@ -1,8 +1,8 @@
 using System;
 using ModernUO.Serialization;
 using Server.Engines.Craft;
+using Server.Engines.Craft.T2A;
 using Server.Network;
-using Server.Systems.FeatureFlags;
 
 namespace Server.Items;
 
@@ -159,9 +159,9 @@ public abstract partial class BaseTool : Item, IUsesRemaining, ICraftable
             {
                 from.SendLocalizedMessage(num);
             }
-            else if (ContentFeatureFlags.T2ACraftMenus)
+            else if (T2ACraftSystem.Enabled)
             {
-                from.Target = new Engines.Craft.T2A.T2ACraftToolTarget(this, system);
+                from.Target = new T2ACraftToolTarget(this, system);
                 from.SendAsciiMessage("Target this tool to make last item, or any other target to begin crafting.");
             }
             else

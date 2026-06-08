@@ -1,5 +1,5 @@
+using Server.Engines.Craft.T2A;
 using Server.Network;
-using Server.Systems.FeatureFlags;
 
 namespace Server
 {
@@ -13,7 +13,7 @@ namespace Server
             Mobile.VisibleDamageType = visibleDamage ? VisibleDamageType.Related : VisibleDamageType.None;
             Mobile.GuildClickMessage = ServerConfiguration.GetSetting("guildClickMessage", !Core.AOS);
             Mobile.AsciiClickMessage = ServerConfiguration.GetSetting("asciiClickMessage", !Core.AOS);
-            ContentFeatureFlags.T2ACraftMenus = ServerConfiguration.GetOrUpdateSetting("t2aCraftMenus", !Core.UOTD);
+            T2ACraftSystem.Enabled = ServerConfiguration.GetSetting("t2aCraftMenus", !Core.UOTD);
 
             Mobile.ActionDelay = ServerConfiguration.GetSetting("actionDelay", Core.AOS ? 1000 : 500);
 

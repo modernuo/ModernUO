@@ -48,15 +48,6 @@ public static class FeatureFlagManager
         logger.Information(
             "Feature Flag system initialized with {FlagCount} flags, {GumpBlockCount} gump blocks, {ItemBlockCount} item blocks, {SkillBlockCount} skill blocks, {SpellBlockCount} spell blocks",
             _flags.Count, _gumpBlocks.Count, _itemBlocks.Count, CountActiveSkillBlocks(), CountActiveSpellBlocks());
-
-        if (ContentFeatureFlags.T2ACraftMenus && Core.UOTD)
-        {
-            logger.Warning(
-                "T2ACraftMenus is enabled but the expansion is UO:TD or later (Core.UOTD=true). " +
-                "T2A packet crafting menus are intended for pre-UO:TD eras; era-specific mechanics " +
-                "(half-resources-on-failure, tinkering metal-color suppression) will not apply."
-            );
-        }
     }
 
     private static int CountActiveSkillBlocks()
@@ -986,7 +977,6 @@ public static class FeatureFlagManager
             "passive_detect_hidden"  => ContentFeatureFlags.PassiveDetectHidden = enabled,
             "young_player_system"      => ContentFeatureFlags.YoungPlayerSystem = enabled,
             "bitmap_pathfinding_cache" => ContentFeatureFlags.BitmapPathfindingCache = enabled,
-            "t2a_craft_menus"          => ContentFeatureFlags.T2ACraftMenus = enabled,
         };
     }
 

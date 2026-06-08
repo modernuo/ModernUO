@@ -1,8 +1,8 @@
 using System;
+using Server.Engines.Craft.T2A;
 using Server.Factions;
 using Server.Gumps;
 using Server.Items;
-using Server.Systems.FeatureFlags;
 using Server.Targeting;
 
 namespace Server.Engines.Craft;
@@ -378,7 +378,7 @@ public class DefTinkering : CraftSystem
             SetNeededExpansion(index, Expansion.SE);
         }
 
-        if (!ContentFeatureFlags.T2ACraftMenus)
+        if (!T2ACraftSystem.Enabled)
         {
             // AOS+ jewelry with gem resources
             AddJewelrySet(GemType.StarSapphire, typeof(StarSapphire));

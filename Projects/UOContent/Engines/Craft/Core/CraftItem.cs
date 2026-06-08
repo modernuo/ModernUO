@@ -7,7 +7,7 @@ using Server.Gumps;
 using Server.Items;
 using Server.Logging;
 using Server.Mobiles;
-using Server.Systems.FeatureFlags;
+using Server.Engines.Craft.T2A;
 
 namespace Server.Engines.Craft
 {
@@ -85,7 +85,7 @@ namespace Server.Engines.Craft
             ];
 
             // Gump-based crafting allows blank scrolls as a substitute for blank maps in cartography
-            if (!ContentFeatureFlags.T2ACraftMenus)
+            if (!T2ACraftSystem.Enabled)
             {
                 types.Add([typeof(BlankMap), typeof(BlankScroll)]);
             }
@@ -939,7 +939,7 @@ namespace Server.Engines.Craft
             if (!allRequiredSkills || chance <= 0.0)
             {
                 from.EndAction<CraftSystem>();
-                if (ContentFeatureFlags.T2ACraftMenus)
+                if (T2ACraftSystem.Enabled)
                 {
                     from.SendAsciiMessage("You lack the required skill to craft this item.");
                 }
@@ -1545,7 +1545,7 @@ namespace Server.Engines.Craft
                 }
                 else if (tool?.Deleted == false && tool.UsesRemaining > 0)
                 {
-                    if (ContentFeatureFlags.T2ACraftMenus)
+                    if (T2ACraftSystem.Enabled)
                     {
                         if (num > 0)
                         {
@@ -1755,7 +1755,7 @@ namespace Server.Engines.Craft
 
                     num = craftSystem.PlayEndingEffect(from, false, true, toolBroken, endquality, false, this);
 
-                    if (ContentFeatureFlags.T2ACraftMenus)
+                    if (T2ACraftSystem.Enabled)
                     {
                         if (tool?.Deleted == false && tool.UsesRemaining > 0)
                         {
@@ -1927,7 +1927,7 @@ namespace Server.Engines.Craft
 
                 // T2A menus always prompt for maker's mark (no auto-mark/don't-mark options)
                 if (makersMark &&
-                    (ContentFeatureFlags.T2ACraftMenus || context.MarkOption == CraftMarkOption.PromptForMark))
+                    (T2ACraftSystem.Enabled || context.MarkOption == CraftMarkOption.PromptForMark))
                 {
                     m_From.SendGump(
                         new QueryMakersMarkGump(
@@ -1963,7 +1963,7 @@ namespace Server.Engines.Craft
 
         public static void ShowCraftMenu(Mobile from, CraftSystem system, BaseTool tool, TextDefinition message = null)
         {
-            if (ContentFeatureFlags.T2ACraftMenus)
+            if (T2ACraftSystem.Enabled)
             {
                 // T2A: Don't reopen menu. Player double-clicks tool to restart.
                 if (message != null)

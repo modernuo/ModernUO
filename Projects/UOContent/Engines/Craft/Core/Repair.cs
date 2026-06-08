@@ -1,8 +1,8 @@
 using System;
+using Server.Engines.Craft.T2A;
 using Server.Gumps;
 using Server.Items;
 using Server.Mobiles;
-using Server.Systems.FeatureFlags;
 using Server.Targeting;
 
 namespace Server.Engines.Craft
@@ -483,7 +483,7 @@ namespace Server.Engines.Craft
 
                 if (!usingDeed)
                 {
-                    if (ContentFeatureFlags.T2ACraftMenus)
+                    if (T2ACraftSystem.Enabled)
                     {
                         from.SendLocalizedMessage(number);
                         CraftItem.ShowCraftMenu(from, m_CraftSystem, m_Tool);

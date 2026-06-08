@@ -3,16 +3,21 @@
 using System;
 using Server.Items;
 using Server.Menus.ItemLists;
-using Server.Systems.FeatureFlags;
 using Server.Targeting;
 
 namespace Server.Engines.Craft.T2A;
 
 public static class T2ACraftSystem
 {
+    /// <summary>
+    /// Whether T2A packet-based crafting menus are active. Set once at startup from the
+    /// "t2aCraftMenus" server setting (default: !Core.UOTD). Not flippable at runtime.
+    /// </summary>
+    public static bool Enabled { get; set; }
+
     public static void ShowMenu(Mobile from, CraftSystem craftSystem, BaseTool tool, Item preTarget = null)
     {
-        if (!ContentFeatureFlags.T2ACraftMenus)
+        if (!Enabled)
         {
             return;
         }

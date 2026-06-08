@@ -1,8 +1,8 @@
 using System;
 using Server.Engines.BulkOrders;
+using Server.Engines.Craft.T2A;
 using Server.Items;
 using Server.Spells;
-using Server.Systems.FeatureFlags;
 
 namespace Server.Engines.Craft;
 
@@ -40,7 +40,7 @@ public class DefInscription : CraftSystem
 
     public static CraftSystem CraftSystem { get; private set; }
 
-    public override bool RequiresTool => !ContentFeatureFlags.T2ACraftMenus;
+    public override bool RequiresTool => !T2ACraftSystem.Enabled;
 
     public override double GetChanceAtMin(CraftItem item) => 0.0;
 

@@ -1,7 +1,6 @@
 using System;
 using Server.Engines.Craft;
 using Server.Engines.Craft.T2A;
-using Server.Systems.FeatureFlags;
 
 namespace Server.SkillHandlers;
 
@@ -14,7 +13,7 @@ public static class Cartography
 
     public static TimeSpan OnUse(Mobile m)
     {
-        if (!ContentFeatureFlags.T2ACraftMenus)
+        if (!T2ACraftSystem.Enabled)
         {
             m.SendLocalizedMessage(1046444); // Use a mapmaker's pen to draw maps.
             return TimeSpan.Zero;
