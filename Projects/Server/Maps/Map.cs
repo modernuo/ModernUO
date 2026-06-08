@@ -1875,6 +1875,12 @@ public sealed partial class Map : IComparable<Map>, ISpanFormattable, ISpanParsa
 
         internal List<BaseMulti> Multis => _multis ?? m_DefaultMultiList;
 
+        // Cheap public "does this sector currently contain any multi" check. MultisVersion can't
+        // answer this (it counts enter AND leave, so a place-then-remove leaves it non-zero with
+        // zero multis). Used by the pathfinding step cache to route multi-covered cells to the
+        // live movement path instead of the static-only chunk cache.
+        public bool HasMultis => _multis is { Count: > 0 };
+
         public int MultisVersion => _multisVersion;
 
         internal ref readonly ValueLinkList<Mobile> Mobiles => ref _mobiles;

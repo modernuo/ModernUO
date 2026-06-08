@@ -20,7 +20,7 @@ namespace Server.Engines.Pathing.Cache;
 ///
 ///   Header (40 bytes):
 ///     u32   Magic           = 0x42575300 ('SWB\0')
-///     u32   Version         = current FormatVersion (8)
+///     u32   Version         = current FormatVersion (9)
 ///     u32   MapId
 ///     u64   Fingerprint     XxHash3 over (1) LandTable + ItemTable flags AND (2) the
 ///                           on-disk bytes of mapX.mul / .uop, staidxX.mul, staticsX.mul.
@@ -42,7 +42,7 @@ namespace Server.Engines.Pathing.Cache;
 ///   Record body (after inflate — the v6 layout):
 ///     u16    ChunkX
 ///     u16    ChunkY
-///     u32    BuiltMultisVersion
+///     u32    BuiltMultisVersion  (reserved since v9 — always 0; chunks are static-only)
 ///     u8     Kind            0 = Full; 2 = Uniform
 ///     // Uniform (Kind == 2): ~28-byte record — all 256 cells share these single values:
 ///     byte   walkMask, wetMask;  sbyte sourceZ;  sbyte walkZ_N..NW (8);  sbyte swimZ_N..NW (8)
@@ -90,14 +90,20 @@ namespace Server.Engines.Pathing.Cache;
 internal static class StepCacheFile
 {
     public const uint Magic = 0x42575300; // 'SWB\0'
-    public const uint FormatVersion = 8;
+
+    // v9: chunks are STATIC-ONLY (land + statics.mul, no multis). v8 and earlier baked multis
+    // (houses/boats) into chunks, which is unsafe to persist — multis are dynamic, and the
+    // BuiltMultisVersion they were tagged with is a non-persisted session counter. Bumping the
+    // version rejects those old files so they re-bake static-only. The BuiltMultisVersion record
+    // field is retained as a reserved (always-0) u32 to avoid a layout change.
+    public const uint FormatVersion = 9;
 
     /// <summary>
     /// Lowest format version this binary can load. Files below it are treated as missing
     /// (silently rejected) and overwritten by the next SaveToFile / BakeMap. The cache is
     /// fully regenerable, so a format bump just forces a one-time re-bake of stale files.
     /// </summary>
-    public const uint MinSupportedVersion = 8;
+    public const uint MinSupportedVersion = 9;
 
     // Per-chunk record discriminator (first byte after BuiltMultisVersion). 1 is reserved.
     private const byte KindFull = 0;

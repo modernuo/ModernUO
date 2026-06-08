@@ -161,6 +161,7 @@ public static class PathCacheCommands
         from.SendMessage($"  builds={stats.BuildsTotal} hits={stats.Hits}");
         from.SendMessage($"  miss(notBuilt)={stats.MissesNotBuilt} miss(dirty)={stats.MissesDirtyRebuild}");
         from.SendMessage($"  fallthru(multiZ)={stats.FallthroughMultiZ} fallthru(offMap)={stats.FallthroughOffMap} fallthru(srcZ)={stats.FallthroughSourceZMismatch}");
+        from.SendMessage($"  fallthru(multi)={stats.FallthroughMulti} fallthru(notBuilt)={stats.FallthroughNotBuilt}");
         from.SendMessage($"  evictions(lruCap)={stats.EvictionsByLruCap}");
     }
 

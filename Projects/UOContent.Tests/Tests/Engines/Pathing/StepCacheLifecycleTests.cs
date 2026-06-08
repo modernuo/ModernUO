@@ -1,4 +1,7 @@
+using System.Collections.Generic;
+using System.Reflection;
 using Server.Engines.Pathing.Cache;
+using Server.Items;
 using Xunit;
 
 namespace Server.Tests.Pathfinding;
@@ -205,42 +208,49 @@ public class StepCacheLifecycleTests
     }
 
     [Fact]
-    public void MultisVersion_Bump_TriggersDirtyRebuild()
+    public void MultiCoveredCell_AndHalo_RouteToFallthrough()
     {
         var cache = StepCache.Instance;
         cache.Clear();
-        cache.MissPromotionThreshold = 2;
+        cache.MissPromotionThreshold = 1; // eager build so a multi-free cell serves immediately
 
         var map = Map.Maps[1];
-        var sector = map.GetRealSector(1500 >> 4, 1600 >> 4);
 
-        // First touch defers (Fallthrough_NotBuilt); second touch promotes and builds.
-        Assert.Equal(CacheHitKind.Fallthrough_NotBuilt, cache.TryGetMask(map, 1500, 1600, 10).HitKind);
-        Assert.Equal(CacheHitKind.Miss_NotBuilt, cache.TryGetMask(map, 1500, 1600, 10).HitKind);
+        // A cell far from any multi serves from the static cache.
+        Assert.True(cache.TryGetMask(map, 1500, 1600, 10).IsHit);
 
-        // Bump _multisVersion via reflection.
-        var versionField = typeof(Map.Sector).GetField(
-            "_multisVersion",
-            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance
-        );
-        Assert.NotNull(versionField);
-        var current = (int)versionField.GetValue(sector);
-        versionField.SetValue(sector, current + 1);
+        // Inject a multi into an isolated sector. Sector.HasMultis only checks Count > 0, so a
+        // single-entry list is enough to mark the sector as multi-bearing — the fallthrough
+        // decision never dereferences the multi, so no real BaseMulti instance is needed.
+        const int mx = 2000;
+        const int my = 2000;
+        var sx = mx >> 4;
+        var sy = my >> 4;
+        var sector = map.GetRealSector(sx, sy);
+        var multisField = typeof(Map.Sector).GetField("_multis", BindingFlags.NonPublic | BindingFlags.Instance);
+        Assert.NotNull(multisField);
+        var original = multisField.GetValue(sector);
+        try
+        {
+            multisField.SetValue(sector, new List<BaseMulti> { null });
 
-        // Third query: detects version mismatch, rebuilds.
-        Assert.Equal(CacheHitKind.Miss_DirtyRebuild, cache.TryGetMask(map, 1500, 1600, 10).HitKind);
+            // Cell inside the multi sector → routed to the live path.
+            Assert.Equal(CacheHitKind.Fallthrough_Multi, cache.TryGetMask(map, mx, my, 0).HitKind);
 
-        var stats = cache.GetStats();
-        Assert.Equal(1L, stats.MissesDirtyRebuild);
-        Assert.Equal(2L, stats.BuildsTotal);
+            // Cell in the adjacent sector but on the shared boundary → caught by the 1-cell halo
+            // (its mask would otherwise propose an edge into the multi sector).
+            var boundaryX = sx * 16 - 1; // last tile of sector sx-1; halo (x+1) reaches into sx
+            Assert.Equal(CacheHitKind.Fallthrough_Multi, cache.TryGetMask(map, boundaryX, my, 0).HitKind);
 
-        // Mutual-exclusivity invariant: hits + miss-builds + dirty-rebuilds = served-result count.
-        // Three calls returned an answer; two were "served from a build" (Miss_NotBuilt + Miss_DirtyRebuild),
-        // and the first was a Fallthrough_NotBuilt (no build, slow-path signal).
-        Assert.Equal(2L, stats.MissesNotBuilt + stats.MissesDirtyRebuild + stats.Hits);
-        Assert.Equal(1L, stats.FallthroughNotBuilt);
-        Assert.Equal(0L, stats.FallthroughMultiZ);
-        Assert.Equal(0L, stats.FallthroughOffMap);
+            // Two tiles out → interior of the multi-free sector, unaffected.
+            Assert.NotEqual(CacheHitKind.Fallthrough_Multi, cache.TryGetMask(map, sx * 16 - 2, my, 0).HitKind);
+
+            Assert.True(cache.GetStats().FallthroughMulti >= 2);
+        }
+        finally
+        {
+            multisField.SetValue(sector, original);
+        }
     }
 
     [Fact]
