@@ -189,14 +189,13 @@ internal static class StepCacheFile
     /// tile data shifted (client patch) OR the map data was rewritten (CentredSharp / UOFiddler
     /// edit). The .mul format has no built-in CRC; this is the only way to detect those mutations.
     ///
-    /// IMPORTANT: this hashes the FILES, never the in-memory <see cref="TileData.LandTable"/> /
+    /// IMPORTANT: hash the FILES, never the in-memory <see cref="TileData.LandTable"/> /
     /// <see cref="TileData.ItemTable"/>. The server patches those tables at runtime (ItemFixes,
-    /// LOSBlocker, PotionKeg, CTF, ...) at nondeterministic lifecycle points, so a fingerprint
-    /// over the live tables depended on WHEN it was taken — a runtime [PathBake stamped one value
-    /// and the next startup's Initialize() recomputed a different one, re-baking on every boot.
-    /// Hashing the file is the true "did the client's tile data change?" signal and is lifecycle-
-    /// stable. (Server-side tile patches are applied identically every boot and intentionally do
-    /// NOT invalidate the cache; a dev who changes one should [PathCacheClear or bump the format.)
+    /// LOSBlocker, PotionKeg, CTF, ...) at nondeterministic lifecycle points, so a fingerprint over
+    /// the live tables varies with WHEN it is taken; the file hash is the only lifecycle-stable
+    /// "did the client's tile data change?" signal. Server-side tile patches are applied identically
+    /// every boot and intentionally do NOT invalidate the cache — change one and you must
+    /// [PathCacheClear or bump the format.
     /// </summary>
     public static ulong ComputeFingerprint(int mapId)
     {

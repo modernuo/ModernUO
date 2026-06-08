@@ -578,8 +578,8 @@ public sealed class StepCache
             }
         }
 
-        // A resident chunk is static-only and never goes stale from multis (multi-covered cells
-        // fall through to the live path above), so there is no dirty-rebuild check here any more.
+        // A resident chunk is static-only — it never goes stale from multis (multi-covered cells
+        // fall through to the live path above).
         chunk.LastTouchedTicks = Core.TickCount;
 
         var cellIndex = ((y - (chunkY << 4)) << 4) | (x - (chunkX << 4));
@@ -725,9 +725,8 @@ public sealed class StepCache
         {
             return null;
         }
-        // Static-only chunks are always valid once the file fingerprint matched at open time —
-        // there's no multi version to re-check (multi-covered cells fall through before reaching
-        // here). May still return null when the file simply doesn't contain this chunk.
+        // Static-only chunks are valid once the file fingerprint matched at open time; multi-covered
+        // cells fall through before reaching here. Returns null when the file lacks this chunk.
         return reader.TryReadChunk(chunkX, chunkY);
     }
 
