@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
+using Server.Collections;
 using Server.Commands;
 using Server.Factions;
 using Server.Gumps;
 using Server.Items;
 using Server.Logging;
 using Server.Mobiles;
+using Server.Engines.Craft.T2A;
 
 namespace Server.Engines.Craft
 {
@@ -59,25 +61,37 @@ namespace Server.Engines.Craft
             0x192C, 0x192D, 0x192E, 0x129F, 0x1930, 0x1931, 0x1932, 0x1934
         };
 
-        private static readonly Type[][] m_TypesTable =
+        private static readonly Type[][] m_TypesTable = InitTypesTable();
+
+        private static Type[][] InitTypesTable()
         {
-            new[] { typeof(Log), typeof(Board) },
-            new[] { typeof(HeartwoodLog), typeof(HeartwoodBoard) },
-            new[] { typeof(BloodwoodLog), typeof(BloodwoodBoard) },
-            new[] { typeof(FrostwoodLog), typeof(FrostwoodBoard) },
-            new[] { typeof(OakLog), typeof(OakBoard) },
-            new[] { typeof(AshLog), typeof(AshBoard) },
-            new[] { typeof(YewLog), typeof(YewBoard) },
-            new[] { typeof(Leather), typeof(Hides) },
-            new[] { typeof(SpinedLeather), typeof(SpinedHides) },
-            new[] { typeof(HornedLeather), typeof(HornedHides) },
-            new[] { typeof(BarbedLeather), typeof(BarbedHides) },
-            new[] { typeof(BlankMap), typeof(BlankScroll) },
-            new[] { typeof(Cloth), typeof(UncutCloth) },
-            new[] { typeof(CheeseWheel), typeof(CheeseWedge) },
-            new[] { typeof(Pumpkin), typeof(SmallPumpkin) },
-            new[] { typeof(WoodenBowlOfPeas), typeof(PewterBowlOfPeas) }
-        };
+            List<Type[]> types =
+            [
+                [typeof(Log), typeof(Board)],
+                [typeof(HeartwoodLog), typeof(HeartwoodBoard)],
+                [typeof(BloodwoodLog), typeof(BloodwoodBoard)],
+                [typeof(FrostwoodLog), typeof(FrostwoodBoard)],
+                [typeof(OakLog), typeof(OakBoard)],
+                [typeof(AshLog), typeof(AshBoard)],
+                [typeof(YewLog), typeof(YewBoard)],
+                [typeof(Leather), typeof(Hides)],
+                [typeof(SpinedLeather), typeof(SpinedHides)],
+                [typeof(HornedLeather), typeof(HornedHides)],
+                [typeof(BarbedLeather), typeof(BarbedHides)],
+                [typeof(Cloth), typeof(UncutCloth)],
+                [typeof(CheeseWheel), typeof(CheeseWedge)],
+                [typeof(Pumpkin), typeof(SmallPumpkin)],
+                [typeof(WoodenBowlOfPeas), typeof(PewterBowlOfPeas)]
+            ];
+
+            // Gump-based crafting allows blank scrolls as a substitute for blank maps in cartography
+            if (!T2ACraftSystem.Enabled)
+            {
+                types.Add([typeof(BlankMap), typeof(BlankScroll)]);
+            }
+
+            return types.ToArray();
+        }
 
         private static readonly Type[] m_ColoredItemTable =
         {
@@ -668,6 +682,10 @@ namespace Server.Engines.Craft
                 {
                     amounts[i] = 0;
                 }
+                else if (isFailure && !Core.UOTD)
+                {
+                    amounts[i] -= amounts[i] / 2;
+                }
             }
 
             // We adjust the amount of each resource to consume the max possible
@@ -921,14 +939,22 @@ namespace Server.Engines.Craft
             if (!allRequiredSkills || chance <= 0.0)
             {
                 from.EndAction<CraftSystem>();
-                from.SendGump(
-                    new CraftGump(
-                        from,
-                        craftSystem,
-                        tool,
-                        1044153 // You don't have the required skills to attempt this item.
-                    )
-                );
+                if (T2ACraftSystem.Enabled)
+                {
+                    from.SendAsciiMessage("You lack the required skill to craft this item.");
+                }
+                else
+                {
+                    from.SendGump(
+                        new CraftGump(
+                            from,
+                            craftSystem,
+                            tool,
+                            1044153 // You don't have the required skills to attempt this item.
+                        )
+                    );
+                }
+
                 return;
             }
 
@@ -951,7 +977,7 @@ namespace Server.Engines.Craft
             if (badCraft > 0)
             {
                 from.EndAction<CraftSystem>();
-                from.SendGump(new CraftGump(from, craftSystem, tool, badCraft));
+                ShowCraftMenu(from, craftSystem, tool, badCraft);
                 return;
             }
 
@@ -962,7 +988,7 @@ namespace Server.Engines.Craft
             if (!ConsumeRes(from, typeRes, craftSystem, ref resHue, ref maxAmount, ConsumeType.None, ref message))
             {
                 from.EndAction<CraftSystem>();
-                from.SendGump(new CraftGump(from, craftSystem, tool, message));
+                ShowCraftMenu(from, craftSystem, tool, message);
                 return;
             }
 
@@ -971,7 +997,7 @@ namespace Server.Engines.Craft
             if (!ConsumeAttributes(from, ref message, false))
             {
                 from.EndAction<CraftSystem>();
-                from.SendGump(new CraftGump(from, craftSystem, tool, message));
+                ShowCraftMenu(from, craftSystem, tool, message);
                 return;
             }
 
@@ -984,6 +1010,293 @@ namespace Server.Engines.Craft
             var iRandom = Utility.Random(iMax);
             iRandom += iMin + 1;
             new InternalTimer(from, craftSystem, this, typeRes, tool, iRandom).Start();
+        }
+
+        /// <summary>
+        /// Hue-aware craft entry point. Used by tailoring to carry the targeted resource hue
+        /// through the craft timer to CompleteCraft, ensuring only matching-hue resources are consumed.
+        /// </summary>
+        public void Craft(Mobile from, CraftSystem craftSystem, Type typeRes, BaseTool tool, int resHue)
+        {
+            if (!from.BeginAction<CraftSystem>())
+            {
+                from.SendLocalizedMessage(500119); // You must wait to perform another action
+                return;
+            }
+
+            if (RequiredExpansion != Expansion.None && from.NetState?.SupportsExpansion(RequiredExpansion) != true)
+            {
+                from.EndAction<CraftSystem>();
+                from.SendGump(
+                    new CraftGump(
+                        from,
+                        craftSystem,
+                        tool,
+                        RequiredExpansionMessage(RequiredExpansion)
+                    )
+                );
+                return;
+            }
+
+            var chance = GetSuccessChance(from, typeRes, craftSystem, false, out var allRequiredSkills);
+
+            if (!allRequiredSkills || chance <= 0.0)
+            {
+                from.EndAction<CraftSystem>();
+                from.SendAsciiMessage("You lack the required skill to craft this item.");
+                return;
+            }
+
+            if (Recipe != null && (from as PlayerMobile)?.HasRecipe(Recipe) == false)
+            {
+                from.EndAction<CraftSystem>();
+                from.SendGump(
+                    new CraftGump(
+                        from,
+                        craftSystem,
+                        tool,
+                        1072847 // You must learn that recipe from a scroll.
+                    )
+                );
+                return;
+            }
+
+            var badCraft = craftSystem.CanCraft(from, tool, ItemType);
+
+            if (badCraft > 0)
+            {
+                from.EndAction<CraftSystem>();
+                ShowCraftMenu(from, craftSystem, tool, badCraft);
+                return;
+            }
+
+            // Dry run: check hued resources are available
+            if (!CheckHuedRes(from, typeRes, craftSystem, resHue))
+            {
+                from.EndAction<CraftSystem>();
+                // You don't have the resources required to make that item.
+                from.SendLocalizedMessage(502925);
+                return;
+            }
+
+            TextDefinition message = null;
+            if (!ConsumeAttributes(from, ref message, false))
+            {
+                from.EndAction<CraftSystem>();
+                ShowCraftMenu(from, craftSystem, tool, message);
+                return;
+            }
+
+            var context = craftSystem.GetContext(from);
+            context?.OnMade(this);
+
+            var iMin = craftSystem.MinCraftEffect;
+            var iMax = craftSystem.MaxCraftEffect - iMin + 1;
+            var iRandom = Utility.Random(iMax);
+            iRandom += iMin + 1;
+            new InternalTimer(from, craftSystem, this, typeRes, tool, iRandom, resHue).Start();
+        }
+
+        /// <summary>
+        /// Checks if the backpack has enough of the specified resource type matching the target hue.
+        /// Used as a dry-run check before starting the craft timer.
+        /// </summary>
+        private bool CheckHuedRes(Mobile from, Type typeRes, CraftSystem craftSystem, int targetHue)
+        {
+            var ourPack = from.Backpack;
+            if (ourPack == null)
+            {
+                return false;
+            }
+
+            var resCol = UseSubRes2 ? craftSystem.CraftSubRes2 : craftSystem.CraftSubRes;
+
+            for (var i = 0; i < Resources.Count; i++)
+            {
+                var craftRes = Resources[i];
+                var baseType = craftRes.ItemType;
+
+                // Resource mutation
+                if (baseType == resCol.ResType && typeRes != null)
+                {
+                    baseType = typeRes;
+                }
+
+                // For the primary resource, count only items matching the target hue
+                if (targetHue >= 0 && i == 0)
+                {
+                    var amount = GetHuedAmount(ourPack, baseType, targetHue);
+                    if (amount < craftRes.Amount)
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    if (ourPack.GetAmount(baseType) < craftRes.Amount)
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Consumes resources from the backpack, restricting the primary resource to items matching the target hue.
+        /// Returns true on success. On success, the exact targetHue is used as the resHue output.
+        /// </summary>
+        private bool ConsumeHuedRes(
+            Mobile from, Type typeRes, CraftSystem craftSystem, int targetHue,
+            ref int resHue, ConsumeType consumeType
+        )
+        {
+            var ourPack = from.Backpack;
+            if (ourPack == null)
+            {
+                return false;
+            }
+
+            if (NeedHeat && !Find(from, m_HeatSources))
+            {
+                return false;
+            }
+
+            if (NeedOven && !Find(from, m_Ovens))
+            {
+                return false;
+            }
+
+            if (NeedMill && !Find(from, m_Mills))
+            {
+                return false;
+            }
+
+            var resCol = UseSubRes2 ? craftSystem.CraftSubRes2 : craftSystem.CraftSubRes;
+
+            for (var i = 0; i < Resources.Count; i++)
+            {
+                var craftRes = Resources[i];
+                var baseType = craftRes.ItemType;
+                var amount = craftRes.Amount;
+
+                // Resource mutation
+                if (baseType == resCol.ResType && typeRes != null)
+                {
+                    baseType = typeRes;
+
+                    var subResource = resCol.SearchFor(baseType);
+                    if (subResource != null && from.Skills[craftSystem.MainSkill].Base < subResource.RequiredSkill)
+                    {
+                        return false;
+                    }
+                }
+
+                if (consumeType == ConsumeType.Half)
+                {
+                    amount = Math.Max(1, amount / 2);
+                }
+
+                // For the primary resource, filter by hue
+                if (targetHue >= 0 && i == 0)
+                {
+                    if (consumeType == ConsumeType.None)
+                    {
+                        // Dry run: just check amount
+                        if (GetHuedAmount(ourPack, baseType, targetHue) < amount)
+                        {
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        // Actual consumption: consume only matching-hue items
+                        if (!ConsumeHuedAmount(ourPack, baseType, targetHue, amount))
+                        {
+                            return false;
+                        }
+                    }
+                }
+                else
+                {
+                    // Non-hued resource: normal consumption
+                    if (consumeType == ConsumeType.None)
+                    {
+                        if (ourPack.GetAmount(baseType) < amount)
+                        {
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        if (!ourPack.ConsumeTotal(baseType, amount))
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+
+            resHue = targetHue;
+            return true;
+        }
+
+        private static int GetHuedAmount(Container pack, Type type, int hue)
+        {
+            var total = 0;
+
+            foreach (var item in pack.FindItems(true))
+            {
+                if (item.Hue == hue && type.IsInstanceOfType(item))
+                {
+                    total += item.Amount;
+                }
+            }
+
+            return total;
+        }
+
+        private static bool ConsumeHuedAmount(Container pack, Type type, int hue, int amount)
+        {
+            var remaining = amount;
+            using var toDelete = PooledRefList<Item>.Create();
+
+            foreach (var item in pack.FindItems(true))
+            {
+                if (remaining <= 0)
+                {
+                    break;
+                }
+
+                if (item.Hue != hue || !type.IsInstanceOfType(item))
+                {
+                    continue;
+                }
+
+                if (item.Amount <= remaining)
+                {
+                    remaining -= item.Amount;
+                    toDelete.Add(item);
+                }
+                else
+                {
+                    item.Amount -= remaining;
+                    remaining = 0;
+                }
+            }
+
+            if (remaining > 0)
+            {
+                return false;
+            }
+
+            for (var i = 0; i < toDelete.Count; i++)
+            {
+                toDelete[i].Delete();
+            }
+
+            return true;
         }
 
         private static TextDefinition RequiredExpansionMessage(Expansion expansion)
@@ -1007,7 +1320,7 @@ namespace Server.Engines.Craft
             {
                 if (tool?.Deleted == false && tool.UsesRemaining > 0)
                 {
-                    from.SendGump(new CraftGump(from, craftSystem, tool, badCraft));
+                    ShowCraftMenu(from, craftSystem, tool, badCraft);
                 }
                 else
                 {
@@ -1036,7 +1349,7 @@ namespace Server.Engines.Craft
             {
                 if (tool?.Deleted == false && tool.UsesRemaining > 0)
                 {
-                    from.SendGump(new CraftGump(from, craftSystem, tool, checkMessage));
+                    ShowCraftMenu(from, craftSystem, tool, checkMessage);
                 }
                 else if (checkMessage.Number > 0)
                 {
@@ -1076,7 +1389,7 @@ namespace Server.Engines.Craft
                 {
                     if (tool?.Deleted == false && tool.UsesRemaining > 0)
                     {
-                        from.SendGump(new CraftGump(from, craftSystem, tool, message));
+                        ShowCraftMenu(from, craftSystem, tool, message);
                     }
                     else if (message != null)
                     {
@@ -1093,29 +1406,32 @@ namespace Server.Engines.Craft
                     return;
                 }
 
-                tool.UsesRemaining--;
-
-                if (craftSystem is DefBlacksmithy)
+                if (tool != null)
                 {
-                    var hammer = from.FindItemOnLayer<AncientSmithyHammer>(Layer.OneHanded);
-                    if (hammer != null && hammer != tool)
+                    tool.UsesRemaining--;
+
+                    if (craftSystem is DefBlacksmithy)
                     {
-                        hammer.UsesRemaining--;
-                        if (hammer.UsesRemaining < 1)
+                        var hammer = from.FindItemOnLayer<AncientSmithyHammer>(Layer.OneHanded);
+                        if (hammer != null && hammer != tool)
                         {
-                            hammer.Delete();
+                            hammer.UsesRemaining--;
+                            if (hammer.UsesRemaining < 1)
+                            {
+                                hammer.Delete();
+                            }
                         }
                     }
-                }
 
-                if (tool.UsesRemaining < 1 && tool.BreakOnDepletion)
-                {
-                    toolBroken = true;
-                }
+                    if (tool.UsesRemaining < 1 && tool.BreakOnDepletion)
+                    {
+                        toolBroken = true;
+                    }
 
-                if (toolBroken)
-                {
-                    tool.Delete();
+                    if (toolBroken)
+                    {
+                        tool.Delete();
+                    }
                 }
 
                 Item item;
@@ -1229,7 +1545,18 @@ namespace Server.Engines.Craft
                 }
                 else if (tool?.Deleted == false && tool.UsesRemaining > 0)
                 {
-                    from.SendGump(new CraftGump(from, craftSystem, tool, num));
+                    if (T2ACraftSystem.Enabled)
+                    {
+                        if (num > 0)
+                        {
+                            from.SendLocalizedMessage(num);
+                        }
+                        ShowCraftMenu(from, craftSystem, tool);
+                    }
+                    else
+                    {
+                        ShowCraftMenu(from, craftSystem, tool, num);
+                    }
                 }
                 else if (num > 0)
                 {
@@ -1243,13 +1570,12 @@ namespace Server.Engines.Craft
             {
                 if (tool?.Deleted == false && tool.UsesRemaining > 0)
                 {
-                    from.SendGump(new CraftGump(from, craftSystem, tool, 1044153));
+                    from.SendAsciiMessage("You lack the required skill to craft this item.");
                 }
                 else
                 {
                     from.SendLocalizedMessage(1044153); // You don't have the required skills to attempt this item.
                 }
-
                 return;
             }
 
@@ -1260,7 +1586,7 @@ namespace Server.Engines.Craft
             {
                 if (tool?.Deleted == false && tool.UsesRemaining > 0)
                 {
-                    from.SendGump(new CraftGump(from, craftSystem, tool, message));
+                    ShowCraftMenu(from, craftSystem, tool, message);
                 }
                 else if (message != null)
                 {
@@ -1277,24 +1603,226 @@ namespace Server.Engines.Craft
                 return;
             }
 
-            tool.UsesRemaining--;
-
-            if (tool.UsesRemaining < 1 && tool.BreakOnDepletion)
+            if (tool != null)
             {
-                toolBroken = true;
-            }
+                tool.UsesRemaining--;
 
-            if (toolBroken)
-            {
-                tool.Delete();
+                if (tool.UsesRemaining < 1 && tool.BreakOnDepletion)
+                {
+                    toolBroken = true;
+                }
+
+                if (toolBroken)
+                {
+                    tool.Delete();
+                }
             }
 
             // SkillCheck failed.
             num = craftSystem.PlayEndingEffect(from, true, true, toolBroken, endquality, false, this);
 
-            if (!tool.Deleted && tool.UsesRemaining > 0)
+            if (tool?.Deleted == false && tool.UsesRemaining > 0)
             {
-                from.SendGump(new CraftGump(from, craftSystem, tool, num));
+                ShowCraftMenu(from, craftSystem, tool, num);
+            }
+            else if (num > 0)
+            {
+                from.SendLocalizedMessage(num);
+            }
+        }
+
+        /// <summary>
+        /// Hue-aware CompleteCraft. Uses ConsumeHuedRes to consume only resources matching
+        /// the target hue, and applies that hue to the crafted item.
+        /// </summary>
+        public void CompleteCraft(
+            int quality, bool makersMark, Mobile from, CraftSystem craftSystem, Type typeRes,
+            BaseTool tool, CustomCraft customCraft, int targetHue
+        )
+        {
+            var badCraft = craftSystem.CanCraft(from, tool, ItemType);
+
+            if (badCraft > 0)
+            {
+                if (tool?.Deleted == false && tool.UsesRemaining > 0)
+                {
+                    ShowCraftMenu(from, craftSystem, tool, badCraft);
+                }
+                else
+                {
+                    from.SendLocalizedMessage(badCraft);
+                }
+
+                return;
+            }
+
+            // Dry-run check with hue filtering
+            var checkResHue = 0;
+            if (!ConsumeHuedRes(from, typeRes, craftSystem, targetHue, ref checkResHue, ConsumeType.None))
+            {
+                if (tool?.Deleted == false && tool.UsesRemaining > 0)
+                {
+                    // You don't have the resources required to make that item.
+                    ShowCraftMenu(from, craftSystem, tool, 502925);
+                }
+                else
+                {
+                    from.SendLocalizedMessage(502925);
+                }
+
+                return;
+            }
+
+            TextDefinition checkMessage = null;
+            if (!ConsumeAttributes(from, ref checkMessage, false))
+            {
+                return;
+            }
+
+            var toolBroken = false;
+            var endquality = 1;
+            var resHue = 0;
+            var num = 0;
+
+            if (CheckSkills(from, typeRes, craftSystem, ref quality, out var allRequiredSkills))
+            {
+                var consumeType = UseAllRes ? ConsumeType.Half : ConsumeType.All;
+
+                if (!ConsumeHuedRes(from, typeRes, craftSystem, targetHue, ref resHue, consumeType))
+                {
+                    if (tool?.Deleted == false && tool.UsesRemaining > 0)
+                    {
+                        ShowCraftMenu(from, craftSystem, tool, 502925);
+                    }
+                    else
+                    {
+                        from.SendLocalizedMessage(502925);
+                    }
+
+                    return;
+                }
+
+                if (tool != null)
+                {
+                    tool.UsesRemaining--;
+
+                    if (craftSystem is DefBlacksmithy)
+                    {
+                        var hammer = from.FindItemOnLayer<AncientSmithyHammer>(Layer.OneHanded);
+                        if (hammer != null && hammer != tool)
+                        {
+                            hammer.UsesRemaining--;
+                            if (hammer.UsesRemaining < 1)
+                            {
+                                hammer.Delete();
+                            }
+                        }
+                    }
+
+                    if (tool.UsesRemaining < 1 && tool.BreakOnDepletion)
+                    {
+                        toolBroken = true;
+                    }
+
+                    if (toolBroken)
+                    {
+                        tool.Delete();
+                    }
+                }
+
+                Item item;
+                if (customCraft != null)
+                {
+                    item = customCraft.CompleteCraft(out num);
+                }
+                else
+                {
+                    item = ItemType.CreateInstance<Item>();
+                }
+
+                if (item != null)
+                {
+                    if (item is ICraftable craftable)
+                    {
+                        endquality = craftable.OnCraft(quality, makersMark, from, craftSystem, typeRes, tool, this, resHue);
+                    }
+                    else if (item.Hue == 0)
+                    {
+                        item.Hue = resHue;
+                    }
+
+                    from.AddToBackpack(item);
+
+                    num = craftSystem.PlayEndingEffect(from, false, true, toolBroken, endquality, false, this);
+
+                    if (T2ACraftSystem.Enabled)
+                    {
+                        if (tool?.Deleted == false && tool.UsesRemaining > 0)
+                        {
+                            if (num > 0)
+                            {
+                                from.SendLocalizedMessage(num);
+                            }
+
+                            ShowCraftMenu(from, craftSystem, tool);
+                        }
+                        else if (num > 0)
+                        {
+                            from.SendLocalizedMessage(num);
+                        }
+                    }
+                    else if (tool?.Deleted == false && tool.UsesRemaining > 0)
+                    {
+                        ShowCraftMenu(from, craftSystem, tool, num);
+                    }
+                    else if (num > 0)
+                    {
+                        from.SendLocalizedMessage(num);
+                    }
+
+                    return;
+                }
+            }
+
+            if (!allRequiredSkills)
+            {
+                if (tool?.Deleted == false && tool.UsesRemaining > 0)
+                {
+                    from.SendAsciiMessage("You lack the required skill to craft this item.");
+                }
+                else
+                {
+                    from.SendLocalizedMessage(1044153);
+                }
+
+                return;
+            }
+
+            var failConsumeType = UseAllRes ? ConsumeType.Half : ConsumeType.All;
+
+            // Failure: consume resources (half on failure)
+            ConsumeHuedRes(from, typeRes, craftSystem, targetHue, ref resHue, failConsumeType);
+
+            if (tool != null)
+            {
+                tool.UsesRemaining--;
+
+                if (tool.UsesRemaining < 1 && tool.BreakOnDepletion)
+                {
+                    toolBroken = true;
+                }
+
+                if (toolBroken)
+                {
+                    tool.Delete();
+                }
+            }
+
+            num = craftSystem.PlayEndingEffect(from, true, true, toolBroken, endquality, false, this);
+
+            if (tool?.Deleted == false && tool.UsesRemaining > 0)
+            {
+                ShowCraftMenu(from, craftSystem, tool, num);
             }
             else if (num > 0)
             {
@@ -1310,11 +1838,12 @@ namespace Server.Engines.Craft
             private readonly int m_iCountMax;
             private readonly BaseTool m_Tool;
             private readonly Type m_TypeRes;
+            private readonly int m_ResHue;
             private int m_iCount;
 
             public InternalTimer(
                 Mobile from, CraftSystem craftSystem, CraftItem craftItem, Type typeRes, BaseTool tool,
-                int iCountMax
+                int iCountMax, int resHue = -1
             ) : base(TimeSpan.Zero, TimeSpan.FromSeconds(craftSystem.Delay), iCountMax)
             {
                 m_From = from;
@@ -1324,6 +1853,7 @@ namespace Server.Engines.Craft
                 m_CraftSystem = craftSystem;
                 m_TypeRes = typeRes;
                 m_Tool = tool;
+                m_ResHue = resHue;
             }
 
             protected override void OnTick()
@@ -1346,7 +1876,7 @@ namespace Server.Engines.Craft
                 {
                     if (m_Tool?.Deleted == false && m_Tool.UsesRemaining > 0)
                     {
-                        m_From.SendGump(new CraftGump(m_From, m_CraftSystem, m_Tool, badCraft));
+                        ShowCraftMenu(m_From, m_CraftSystem, m_Tool, badCraft);
                     }
                     else
                     {
@@ -1395,7 +1925,9 @@ namespace Server.Engines.Craft
                     makersMark = m_CraftItem.IsMarkable(m_CraftItem.ItemType);
                 }
 
-                if (makersMark && context.MarkOption == CraftMarkOption.PromptForMark)
+                // T2A menus always prompt for maker's mark (no auto-mark/don't-mark options)
+                if (makersMark &&
+                    (T2ACraftSystem.Enabled || context.MarkOption == CraftMarkOption.PromptForMark))
                 {
                     m_From.SendGump(
                         new QueryMakersMarkGump(
@@ -1403,7 +1935,8 @@ namespace Server.Engines.Craft
                             m_CraftItem,
                             m_CraftSystem,
                             m_TypeRes,
-                            m_Tool
+                            m_Tool,
+                            m_ResHue
                         )
                     );
                 }
@@ -1414,9 +1947,41 @@ namespace Server.Engines.Craft
                         makersMark = false;
                     }
 
-                    m_CraftItem.CompleteCraft(quality, makersMark, m_From, m_CraftSystem, m_TypeRes, m_Tool, null);
+                    if (m_ResHue >= 0)
+                    {
+                        m_CraftItem.CompleteCraft(
+                            quality, makersMark, m_From, m_CraftSystem, m_TypeRes, m_Tool, null, m_ResHue
+                        );
+                    }
+                    else
+                    {
+                        m_CraftItem.CompleteCraft(quality, makersMark, m_From, m_CraftSystem, m_TypeRes, m_Tool, null);
+                    }
                 }
             }
+        }
+
+        public static void ShowCraftMenu(Mobile from, CraftSystem system, BaseTool tool, TextDefinition message = null)
+        {
+            if (T2ACraftSystem.Enabled)
+            {
+                // T2A: Don't reopen menu. Player double-clicks tool to restart.
+                if (message != null)
+                {
+                    if (message.Number > 0)
+                    {
+                        from.SendLocalizedMessage(message.Number);
+                    }
+                    else if (!string.IsNullOrEmpty(message.String))
+                    {
+                        from.SendMessage(message.String);
+                    }
+                }
+
+                return;
+            }
+
+            from.SendGump(new CraftGump(from, system, tool, message));
         }
     }
 }

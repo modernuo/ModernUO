@@ -673,7 +673,6 @@ public class CraftGump : DynamicGump
                                 }
 
                                 context.DoNotColor = !context.DoNotColor;
-
                                 _from.SendGump(new CraftGump(_from, _craftSystem, _tool, null, _page));
 
                                 break;
