@@ -69,7 +69,7 @@ Tool skills select the working resource **before** the menu opens. `T2ACraftTool
 Targeting hued cloth/leather makes the craft consume **only matching-hue** material for the primary resource. Implemented by the `CraftItem.Craft(..., resHue)` overload and `CheckHuedRes`/`ConsumeHuedRes`/`GetHuedAmount`/`ConsumeHuedAmount`; the hue rides the `InternalTimer` (`m_ResHue`) into the hue-aware `CompleteCraft` overload, which sets `context.LastHue`. Secondary resources (e.g. ingots in mixed items) are consumed normally. This affects **consumption only**.
 
 ### How crafted items get their color
-A crafted item's color comes from its **`CraftResource`**, not from the consumed item's (dyed) hue: `OnCraft` sets `Resource = CraftResources.GetFromType(resourceType)` and armor/clothing then take `Hue = CraftResources.GetHue(Resource)`. So dyeing raw leather/cloth does **not** tint the crafted piece (plain `Leather` maps to `RegularLeather`, hue 0). Color is conveyed by special resource *types* — colored **ingots/ore** (→ colored metal armor/weapons) and AOS+ special **leather/hides/scales**.
+A crafted item's color comes from its **`CraftResource`**, not from the consumed item's (dyed) hue: `OnCraft` sets `Resource = CraftResources.GetFromType(resourceType)` and armor/clothing then take `Hue = CraftResources.GetHue(Resource)`. So dyeing raw leather/cloth does **not** tint the crafted piece (plain `Leather` maps to `RegularLeather`, hue 0) — **leather, cloth, and wood never produce colored items in T2A**. The only color-bearing resource in T2A is **colored ingots/ore** (→ colored metal armor and shields). Colored/special leather, hides, and scales that convey color via `CraftResource` are an **AOS+** addition and don't exist in the T2A era.
 
 Era gating differs by item:
 - **`BaseArmor`** / **`BaseClothing`**: set `Resource` (and thus color) in **all eras** — colored-ore armor is colored even in T2A (authentic).
@@ -131,7 +131,7 @@ Because the toggle's default **is** `!Core.UOTD` and there is no runtime overrid
 Decided in the design spec §4; faithful to Jack's research except where shard authority overrode:
 - **Make-last** — kept as QoL though it post-dates the T2A packet menus.
 - **Half-on-failure** for non-scroll crafts — best-known reconstruction, not OSI-confirmed.
-- **Hue-aware tailoring** — reconstruction, unverified by primary sources.
+- **Hue-aware tailoring** — matching-hue *consumption* only (does **not** color the product); reconstruction, unverified by primary sources.
 - **Stacked-gem jewelry** — the full targeted stack is consumed and named by count (shard-authoritative; overrides both the "single gem" reconstruction and Jack's deliberate "consume 1, name by stack").
 - **Cooking** — out of scope (no T2A crafting menu existed for it).
 
