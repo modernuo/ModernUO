@@ -141,7 +141,11 @@ several-minutes cost. Wiring:
   defining `public static void ConfigurePrompts()` and self-gating on first-boot state.
 - The bake runs in the later `Invoke("Initialize")` phase (after the tile matrix + world load,
   which the bake walks).
-- Staleness uses `StepCache.ComputeLiveFingerprint` vs `StepCache.TryReadFingerprintFromFile`.
+- Staleness is decided by the `.swb` fingerprint, which `StepCacheFile.OpenForLazy` validates at
+  open time (hash of `tiledata.mul` + the per-map `.mul`/`.uop` files — never the in-memory
+  `TileData` tables, which the server patches at runtime). `Configure` opens a reader for every
+  up-to-date file; the bake in `Initialize` then skips any map where `StepCache.HasLazyReader` is
+  already true, so the fingerprint is computed once per boot, not twice.
 
 ## Configuration levers
 

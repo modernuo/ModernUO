@@ -163,21 +163,6 @@ public sealed class StepCache
     private readonly Dictionary<int, StepCacheFile.LazyReader> _lazyReaders = new();
 
     /// <summary>
-    /// Combined XxHash3 fingerprint of the running server's TileData flag tables AND
-    /// the per-map .mul / .uop file contents (mapX.mul, staidxX.mul, staticsX.mul).
-    /// Public surface for tooling (benchmark fixtures, bake utilities) that wants to
-    /// detect a stale .swb file without round-tripping through the lazy-open path.
-    /// </summary>
-    public static ulong ComputeLiveFingerprint(int mapId) => StepCacheFile.ComputeFingerprint(mapId);
-
-    /// <summary>
-    /// Peek at a .swb file's stored fingerprint field without parsing the rest of the
-    /// header. Returns false on missing file, bad magic, or wrong version.
-    /// </summary>
-    public static bool TryReadFingerprintFromFile(string path, out ulong fingerprint) =>
-        StepCacheFile.TryReadFingerprint(path, out fingerprint);
-
-    /// <summary>
     /// Walk every chunk in <paramref name="mapId"/>, populate the resident set, then
     /// save to <paramref name="path"/>. Returns the number of chunks written.
     /// Designed for offline / fixture use; blocks the calling thread for many seconds
@@ -366,6 +351,15 @@ public sealed class StepCache
     /// Number of .swb readers currently open. Mostly for tests / telemetry.
     /// </summary>
     public int OpenLazyReaderCount => _lazyReaders.Count;
+
+    /// <summary>
+    /// True if a valid .swb reader is open for <paramref name="mapId"/>. A reader only opens via
+    /// <see cref="TryOpenLazyReader"/> after <see cref="StepCacheFile.OpenForLazy"/> validates the
+    /// file's fingerprint against the live tile data, so "has reader" already means "present and
+    /// up-to-date" — the boot prebake uses this to skip baking maps that don't need it, instead of
+    /// recomputing the fingerprint a second time.
+    /// </summary>
+    public bool HasLazyReader(int mapId) => _lazyReaders.ContainsKey(mapId);
 
     /// <summary>Test-only diagnostic: does the lazy reader for <paramref name="mapId"/> hold an offset for (chunkX, chunkY)?</summary>
     internal bool LazyReaderHasChunk(int mapId, int chunkX, int chunkY) =>
