@@ -57,6 +57,13 @@ internal static class TestServerInitializer
             Server.Network.NetState.Configure();
             TestMapDefinitions.ConfigureTestMapDefinitions();
 
+            // TileData's static cctor short-circuits when running under xUnit
+            // (see Server/TileData.cs:295). Force-load via reflection so LandTable/ItemTable
+            // flags are populated before anything that reads TileData (MultiData, MovementImpl,
+            // CheckMovement). Without this, TileData.MaxItemValue is 0 at MultiData.Configure()
+            // time, causing every MCL tile ID to be masked to 0 and stored as ID=0 in Tiles[x][y].
+            ForceLoadTileData();
+
             // Production runs every static Configure() via AssemblyHandler.Invoke("Configure");
             // the fixture calls a curated subset, so configure the pathfinding singleton here so
             // BitmapAStarAlgorithm.Instance carries its configured MaxSearchNodes before any test
@@ -77,12 +84,6 @@ internal static class TestServerInitializer
             World.Load();
             World.ExitSerializationThreads();
             DecayScheduler.Configure();
-
-            // TileData's static cctor short-circuits when running under xUnit
-            // (see Server/TileData.cs:295). Force-load via reflection so LandTable/ItemTable
-            // flags are populated; without this, every tile reads as flag=None and
-            // MovementImpl.CheckMovement treats everything as walkable.
-            ForceLoadTileData();
 
             VerifyTrammelTileDataLoaded();
 
