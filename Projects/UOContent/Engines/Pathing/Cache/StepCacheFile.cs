@@ -177,38 +177,31 @@ internal static class StepCacheFile
     }
 
     /// <summary>
-    /// Combined XxHash3 fingerprint over (1) the loaded TileData flag tables and (2) the
+    /// Combined XxHash3 fingerprint over (1) the on-disk <c>tiledata.mul</c> file and (2) the
     /// per-map .mul / .uop file contents (via <see cref="TileMatrix.MapFilesFingerprint"/>).
-    /// Bake files carry this hash so a load can refuse to populate the cache when EITHER
-    /// tile flags shifted (client patch) OR the map data was rewritten (CentredSharp /
-    /// UOFiddler edit). The .mul format has no built-in CRC; this is the only way to
-    /// detect those mutations.
+    /// Bake files carry this hash so a load can refuse to populate the cache when EITHER the
+    /// tile data shifted (client patch) OR the map data was rewritten (CentredSharp / UOFiddler
+    /// edit). The .mul format has no built-in CRC; this is the only way to detect those mutations.
+    ///
+    /// IMPORTANT: this hashes the FILES, never the in-memory <see cref="TileData.LandTable"/> /
+    /// <see cref="TileData.ItemTable"/>. The server patches those tables at runtime (ItemFixes,
+    /// LOSBlocker, PotionKeg, CTF, ...) at nondeterministic lifecycle points, so a fingerprint
+    /// over the live tables depended on WHEN it was taken — a runtime [PathBake stamped one value
+    /// and the next startup's Initialize() recomputed a different one, re-baking on every boot.
+    /// Hashing the file is the true "did the client's tile data change?" signal and is lifecycle-
+    /// stable. (Server-side tile patches are applied identically every boot and intentionally do
+    /// NOT invalidate the cache; a dev who changes one should [PathCacheClear or bump the format.)
     /// </summary>
     public static ulong ComputeFingerprint(int mapId)
     {
         var hasher = HashUtility.CreateXxHash3();
 
-        // TileData flag tables — same projection trick as before: just the Flags ulong
-        // from each entry, written little-endian into a contiguous byte buffer. The
-        // struct itself has a string Name (reference) whose object identity isn't
-        // stable across runs, so MemoryMarshal.Cast over the whole struct would drift.
-        var landTable = TileData.LandTable;
-        var itemTable = TileData.ItemTable;
-        var bytes = new byte[(landTable.Length + itemTable.Length) * sizeof(ulong)];
-        var span = bytes.AsSpan();
+        // (1) tiledata.mul — hashed once, cached. The authoritative source for tile flags/heights.
+        Span<byte> tileDataBytes = stackalloc byte[sizeof(ulong)];
+        BinaryPrimitives.WriteUInt64LittleEndian(tileDataBytes, TileDataFileFingerprint());
+        hasher.Append(tileDataBytes);
 
-        for (var i = 0; i < landTable.Length; i++)
-        {
-            BinaryPrimitives.WriteUInt64LittleEndian(span[(i * 8)..], (ulong)landTable[i].Flags);
-        }
-        var itemOffset = landTable.Length * 8;
-        for (var i = 0; i < itemTable.Length; i++)
-        {
-            BinaryPrimitives.WriteUInt64LittleEndian(span[(itemOffset + i * 8)..], (ulong)itemTable[i].Flags);
-        }
-        hasher.Append(bytes);
-
-        // Map files (mapX.mul / .uop, staidxX.mul, staticsX.mul). TileMatrix already
+        // (2) Map files (mapX.mul / .uop, staidxX.mul, staticsX.mul). TileMatrix already
         // streamed them through XxHash3 once at construction; mix the result in.
         var map = Map.Maps[mapId];
         if (map != null && map != Map.Internal && map.Tiles != null)
@@ -219,6 +212,35 @@ internal static class StepCacheFile
         }
 
         return hasher.GetCurrentHashAsUInt64();
+    }
+
+    private static ulong _tileDataFileFingerprint;
+    private static bool _tileDataFileFingerprintComputed;
+
+    /// <summary>
+    /// XxHash3 over the raw <c>tiledata.mul</c> bytes, computed once and cached — the file never
+    /// changes during a run. Mirrors <see cref="TileMatrix.MapFilesFingerprint"/> for the map
+    /// files. Returns 0 if the file can't be found (the server can't run without it anyway, so
+    /// this only matters in stripped test hosts, where 0 is a fine deterministic constant).
+    /// </summary>
+    private static ulong TileDataFileFingerprint()
+    {
+        if (_tileDataFileFingerprintComputed)
+        {
+            return _tileDataFileFingerprint;
+        }
+
+        var path = Core.FindDataFile("tiledata.mul", false);
+        if (path != null)
+        {
+            using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+            var hasher = HashUtility.CreateXxHash3();
+            hasher.Append(fs);
+            _tileDataFileFingerprint = hasher.GetCurrentHashAsUInt64();
+        }
+
+        _tileDataFileFingerprintComputed = true;
+        return _tileDataFileFingerprint;
     }
 
     /// <summary>
