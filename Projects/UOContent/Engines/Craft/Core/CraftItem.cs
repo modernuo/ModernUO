@@ -1238,7 +1238,7 @@ namespace Server.Engines.Craft
                 }
             }
 
-            resHue = targetHue;
+            resHue = RetainsColorFrom(craftSystem, typeRes) ? targetHue : 0;
             return true;
         }
 
