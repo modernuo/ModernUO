@@ -114,6 +114,49 @@ public class StepCacheFileTests
         Assert.Equal(0, cache.OpenLazyReaderCount);
     }
 
+    /// <summary>
+    /// HasLazyReader is the boot prebake's skip predicate (PathCacheCommands.Initialize): a map
+    /// with an open, fingerprint-valid reader needs no bake. Lock the open/clear contract.
+    /// </summary>
+    [Fact]
+    public void HasLazyReader_TracksOpenAndClear()
+    {
+        var cache = StepCache.Instance;
+        cache.Clear();
+
+        var map = Map.Maps[1];
+        Assert.NotNull(map);
+        Assert.False(cache.HasLazyReader(map.MapID));
+
+        // Build + save a chunk so there's a valid .swb to open.
+        cache.MissPromotionThreshold = 1;
+        Span<sbyte> surfZ = stackalloc sbyte[16];
+        Assert.True(StepProbe.ComputeStandableSurfaceZs(map, 1500, 1600, surfZ) > 0);
+        cache.TryGetMask(map, 1500, 1600, surfZ[0]);
+
+        var path = Path.Combine(Path.GetTempPath(), $"step-cache-haslazy-{Guid.NewGuid():N}.swb");
+        try
+        {
+            Assert.True(cache.SaveToFile(path, map.MapID) > 0);
+            cache.Clear();
+            Assert.False(cache.HasLazyReader(map.MapID));
+
+            Assert.True(cache.TryOpenLazyReader(path, map.MapID));
+            Assert.True(cache.HasLazyReader(map.MapID)); // open → true
+
+            cache.Clear();
+            Assert.False(cache.HasLazyReader(map.MapID)); // clear closes the reader → false
+        }
+        finally
+        {
+            cache.Clear();
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+        }
+    }
+
     [Fact]
     public void TryOpenLazyReader_BadMagic_ReturnsFalse()
     {

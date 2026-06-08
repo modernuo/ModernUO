@@ -83,9 +83,14 @@ public static class PathCacheCommands
     /// <summary>
     /// Auto-invoked by <c>AssemblyHandler.Invoke("Initialize")</c> after the tile matrix and
     /// world are loaded. When <see cref="PrebakeSetting"/> is set, bakes any map whose
-    /// <c>.swb</c> is missing or stale (its tile-data fingerprint no longer matches), so the
-    /// first pathfind on each region is already warm. A fresh cache makes this a no-op, so only
-    /// first boot — or a client/map update that changes the fingerprint — pays the cost.
+    /// <c>.swb</c> is missing or stale, so the first pathfind on each region is already warm. A
+    /// fresh cache makes this a no-op, so only first boot — or a client/map update that changes
+    /// the fingerprint — pays the cost.
+    ///
+    /// Validity is decided by <see cref="StepCache.HasLazyReader"/>: <see cref="Configure"/> runs
+    /// <see cref="AutoLoadAtStartup"/> in the earlier Configure phase, opening (and fingerprint-
+    /// validating) a reader for every up-to-date <c>.swb</c>. So a map with an open reader is
+    /// already good and we skip it — no need to recompute the fingerprint a second time here.
     /// </summary>
     public static void Initialize()
     {
@@ -103,12 +108,12 @@ public static class PathCacheCommands
                 continue;
             }
 
-            var path = PathFor(map.MapID);
-            var live = StepCache.ComputeLiveFingerprint(map.MapID);
-            if (StepCache.TryReadFingerprintFromFile(path, out var onDisk) && onDisk == live)
+            if (StepCache.Instance.HasLazyReader(map.MapID))
             {
-                continue; // .swb already matches the current tile data
+                continue; // AutoLoadAtStartup already opened a fingerprint-valid .swb for this map
             }
+
+            var path = PathFor(map.MapID);
 
             logger.Information(
                 "PathBake: pre-baking map {MapId} (pathfinding.prebakeMaps) — this can take several minutes...",
@@ -156,6 +161,7 @@ public static class PathCacheCommands
         from.SendMessage($"  builds={stats.BuildsTotal} hits={stats.Hits}");
         from.SendMessage($"  miss(notBuilt)={stats.MissesNotBuilt} miss(dirty)={stats.MissesDirtyRebuild}");
         from.SendMessage($"  fallthru(multiZ)={stats.FallthroughMultiZ} fallthru(offMap)={stats.FallthroughOffMap} fallthru(srcZ)={stats.FallthroughSourceZMismatch}");
+        from.SendMessage($"  fallthru(multi)={stats.FallthroughMulti} fallthru(notBuilt)={stats.FallthroughNotBuilt}");
         from.SendMessage($"  evictions(lruCap)={stats.EvictionsByLruCap}");
     }
 

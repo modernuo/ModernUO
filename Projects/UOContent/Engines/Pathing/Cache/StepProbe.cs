@@ -5,8 +5,11 @@ namespace Server.Engines.Pathing.Cache;
 
 /// <summary>
 /// Computes static-only walkability for a single cell — the per-cell, per-direction
-/// "can step" mask and destination Z, based purely on land + statics + multis. Mirrors
-/// <see cref="MovementImpl"/>.Check minus the item and mobile collision phases.
+/// "can step" mask and destination Z, based purely on land + statics.mul tiles (NOT
+/// multis). Mirrors <see cref="MovementImpl"/>.Check minus the item and mobile collision
+/// phases. Multis (houses, boats) are intentionally excluded: they're dynamic content, so
+/// cells they cover route to the live movement path via <see cref="StepCache"/>'s
+/// multi-halo fallthrough rather than being baked into the static chunk cache.
 /// </summary>
 /// <remarks>
 /// Bakes two rule sets per cell: walker (canSwim=false, cantWalk=false) and swim-only
@@ -56,7 +59,7 @@ public static class StepProbe
             zs[count++] = landCenter;
         }
 
-        foreach (var tile in map.Tiles.GetStaticAndMultiTiles(x, y))
+        foreach (var tile in map.Tiles.GetStaticTiles(x, y))
         {
             if (count >= zs.Length)
             {
@@ -141,7 +144,7 @@ public static class StepProbe
             cand[count++] = landCenter;
         }
 
-        foreach (var tile in map.Tiles.GetStaticAndMultiTiles(x, y))
+        foreach (var tile in map.Tiles.GetStaticTiles(x, y))
         {
             if (count >= cand.Length)
             {
@@ -270,7 +273,7 @@ public static class StepProbe
         }
 
         // Otherwise scan statics for a wet surface.
-        foreach (var tile in map.Tiles.GetStaticAndMultiTiles(x, y))
+        foreach (var tile in map.Tiles.GetStaticTiles(x, y))
         {
             var data = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
             if (data.Wet)
@@ -312,7 +315,7 @@ public static class StepProbe
             isSet = true;
         }
 
-        foreach (var tile in map.Tiles.GetStaticAndMultiTiles(x, y))
+        foreach (var tile in map.Tiles.GetStaticTiles(x, y))
         {
             var id = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
             var calcTop = tile.Z + id.CalcHeight;
@@ -377,7 +380,7 @@ public static class StepProbe
 
         int testTop;
 
-        foreach (var tile in map.Tiles.GetStaticAndMultiTiles(x, y))
+        foreach (var tile in map.Tiles.GetStaticTiles(x, y))
         {
             var itemData = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
             var notWater = !itemData.Wet;

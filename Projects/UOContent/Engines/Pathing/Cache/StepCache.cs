@@ -54,6 +54,7 @@ public sealed class StepCache
     private long _fallthroughOffMap;
     private long _fallthroughSourceZMismatch;
     private long _fallthroughNotBuilt;
+    private long _fallthroughMulti;
     private long _evictionsByLruCap;
     private long _buildsTotal;
 
@@ -119,6 +120,7 @@ public sealed class StepCache
         fallthroughOffMap: _fallthroughOffMap,
         fallthroughSourceZMismatch: _fallthroughSourceZMismatch,
         fallthroughNotBuilt: _fallthroughNotBuilt,
+        fallthroughMulti: _fallthroughMulti,
         evictionsByLruCap: _evictionsByLruCap,
         buildsTotal: _buildsTotal
     );
@@ -153,6 +155,7 @@ public sealed class StepCache
         _fallthroughOffMap = 0;
         _fallthroughSourceZMismatch = 0;
         _fallthroughNotBuilt = 0;
+        _fallthroughMulti = 0;
         _evictionsByLruCap = 0;
         _buildsTotal = 0;
     }
@@ -161,21 +164,6 @@ public sealed class StepCache
     // fetched on demand from the file when ResolveMissingChunk fires; resident memory
     // stays bounded by MaxResidentChunks regardless of file size.
     private readonly Dictionary<int, StepCacheFile.LazyReader> _lazyReaders = new();
-
-    /// <summary>
-    /// Combined XxHash3 fingerprint of the running server's TileData flag tables AND
-    /// the per-map .mul / .uop file contents (mapX.mul, staidxX.mul, staticsX.mul).
-    /// Public surface for tooling (benchmark fixtures, bake utilities) that wants to
-    /// detect a stale .swb file without round-tripping through the lazy-open path.
-    /// </summary>
-    public static ulong ComputeLiveFingerprint(int mapId) => StepCacheFile.ComputeFingerprint(mapId);
-
-    /// <summary>
-    /// Peek at a .swb file's stored fingerprint field without parsing the rest of the
-    /// header. Returns false on missing file, bad magic, or wrong version.
-    /// </summary>
-    public static bool TryReadFingerprintFromFile(string path, out ulong fingerprint) =>
-        StepCacheFile.TryReadFingerprint(path, out fingerprint);
 
     /// <summary>
     /// Walk every chunk in <paramref name="mapId"/>, populate the resident set, then
@@ -367,6 +355,15 @@ public sealed class StepCache
     /// </summary>
     public int OpenLazyReaderCount => _lazyReaders.Count;
 
+    /// <summary>
+    /// True if a valid .swb reader is open for <paramref name="mapId"/>. A reader only opens via
+    /// <see cref="TryOpenLazyReader"/> after <see cref="StepCacheFile.OpenForLazy"/> validates the
+    /// file's fingerprint against the live tile data, so "has reader" already means "present and
+    /// up-to-date" — the boot prebake uses this to skip baking maps that don't need it, instead of
+    /// recomputing the fingerprint a second time.
+    /// </summary>
+    public bool HasLazyReader(int mapId) => _lazyReaders.ContainsKey(mapId);
+
     /// <summary>Test-only diagnostic: does the lazy reader for <paramref name="mapId"/> hold an offset for (chunkX, chunkY)?</summary>
     internal bool LazyReaderHasChunk(int mapId, int chunkX, int chunkY) =>
         _lazyReaders.TryGetValue(mapId, out var r) && r.Has(chunkX, chunkY);
@@ -451,6 +448,41 @@ public sealed class StepCache
     private const int ChunkSize = 16;
 
     /// <summary>
+    /// True if a multi (house / boat) covers (x, y) or any of its 8 neighbours. Multi-covered
+    /// cells — plus the 1-cell halo, because a cell's mask encodes the edges TO its neighbours, so
+    /// a neighbouring wall must block those edges — are served by the live movement path, not the
+    /// static chunk cache. Cheap: an interior cell checks only its own sector (chunk == sector);
+    /// only edge/corner cells additionally check the adjacent sector(s) the halo reaches.
+    /// </summary>
+    private static bool MultiInfluence(Map map, int x, int y)
+    {
+        var sx = x >> 4;
+        var sy = y >> 4;
+        if (map.GetRealSector(sx, sy).HasMultis)
+        {
+            return true;
+        }
+
+        var west = (x & 15) == 0;
+        var east = (x & 15) == 15;
+        var north = (y & 15) == 0;
+        var south = (y & 15) == 15;
+        if (!(west || east || north || south))
+        {
+            return false; // interior cell — its whole halo is inside the (multi-free) own sector
+        }
+
+        return west && map.GetRealSector(sx - 1, sy).HasMultis
+            || east && map.GetRealSector(sx + 1, sy).HasMultis
+            || north && map.GetRealSector(sx, sy - 1).HasMultis
+            || south && map.GetRealSector(sx, sy + 1).HasMultis
+            || west && north && map.GetRealSector(sx - 1, sy - 1).HasMultis
+            || east && north && map.GetRealSector(sx + 1, sy - 1).HasMultis
+            || west && south && map.GetRealSector(sx - 1, sy + 1).HasMultis
+            || east && south && map.GetRealSector(sx + 1, sy + 1).HasMultis;
+    }
+
+    /// <summary>
     /// Hot-path query. Returns the cached mask + 8 destination Z values + hit kind.
     /// Inspect <see cref="StepMask.IsHit"/> to decide whether to use the result or fall
     /// back to the slow path.
@@ -480,6 +512,19 @@ public sealed class StepCache
                 0,
                 0,
                 CacheHitKind.Fallthrough_OffMap
+            );
+        }
+
+        // Multis (houses, boats) are not baked into the static chunk cache (they're dynamic
+        // content). If a multi covers this cell or its 1-cell halo, route to the live movement
+        // path, which is fully multi-aware. Gated on Sector.HasMultis, so the multi-free majority
+        // of the map pays a single (interior) sector lookup.
+        if (MultiInfluence(map, x, y))
+        {
+            _fallthroughMulti++;
+            return new StepMask(
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                CacheHitKind.Fallthrough_Multi
             );
         }
 
@@ -532,19 +577,9 @@ public sealed class StepCache
                 );
             }
         }
-        else
-        {
-            var sector = map.GetRealSector(chunkX, chunkY);
-            if (chunk.BuiltMultisVersion != sector.MultisVersion)
-            {
-                chunk = BuildChunk(map, chunkX, chunkY);
-                _chunks[key] = chunk;
-                hitKindResult = CacheHitKind.Miss_DirtyRebuild;
-                // _missesDirtyRebuild++ deferred to the outcome switch below so a
-                // multi-Z fallthrough on a freshly dirty-rebuilt chunk doesn't double-count.
-            }
-        }
 
+        // A resident chunk is static-only — it never goes stale from multis (multi-covered cells
+        // fall through to the live path above).
         chunk.LastTouchedTicks = Core.TickCount;
 
         var cellIndex = ((y - (chunkY << 4)) << 4) | (x - (chunkX << 4));
@@ -690,13 +725,9 @@ public sealed class StepCache
         {
             return null;
         }
-        var loaded = reader.TryReadChunk(chunkX, chunkY);
-        if (loaded == null)
-        {
-            return null;
-        }
-        var sector = map.GetRealSector(chunkX, chunkY);
-        return loaded.BuiltMultisVersion == sector.MultisVersion ? loaded : null;
+        // Static-only chunks are valid once the file fingerprint matched at open time; multi-covered
+        // cells fall through before reaching here. Returns null when the file lacks this chunk.
+        return reader.TryReadChunk(chunkX, chunkY);
     }
 
     /// <summary>
@@ -805,8 +836,6 @@ public sealed class StepCache
     private StepChunk BuildChunk(Map map, int chunkX, int chunkY)
     {
         var chunk = new StepChunk();
-        var sector = map.GetRealSector(chunkX, chunkY);
-        chunk.BuiltMultisVersion = sector.MultisVersion;
 
         var baseX = chunkX << 4;
         var baseY = chunkY << 4;
