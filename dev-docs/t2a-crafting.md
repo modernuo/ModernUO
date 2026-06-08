@@ -10,15 +10,15 @@ This document covers ModernUO's **T2A-era crafting menus** — the pre-UO:Third-
 
 In the T2A era (≈1998–2001, before Publish 14 on 2001-11-30), UO crafting did not use gumps. The server sent the generic `0x7C` "Open Dialog" menu packet and the client replied with the 13-byte `0x7D` response. Double-clicking a crafting tool opened a **skill-and-material-filtered item-list menu**; the player picked a category/item and targeted a resource, and the item was made.
 
-ModernUO reproduces this behind a feature flag. When `ContentFeatureFlags.T2ACraftMenus` is **off** (default), crafting uses the normal `CraftGump`. When **on**, the same `CraftSystem`/`CraftItem` definitions are presented through packet menus instead.
+ModernUO reproduces this behind a single startup-read toggle. When `T2ACraftSystem.Enabled` is `false`, crafting uses the normal `CraftGump`. When `true`, the same `CraftSystem`/`CraftItem` definitions are presented through packet menus instead. The value is read once at startup from the `t2aCraftMenus` server setting (default `!Core.UOTD`), so a pre-UO:TD shard gets the T2A menus automatically and a UO:TD-or-later shard gets gumps — with no runtime/admin toggle.
 
 The wire-level menu packets (`0x7C`/`0x7D`) already exist in the engine (`Projects/Server/Network/Packets/OutgoingMenuPackets.cs`, `Projects/UOContent/Network/Packets/IncomingPlayerPackets.cs`) and in `Server.Menus.ItemLists.ItemListMenu` / `Server.Menus.Questions.QuestionMenu`. The T2A feature is a *consumer* of that existing infrastructure, not a new protocol.
 
 ## Activation
 
-Feature flag: `ContentFeatureFlags.T2ACraftMenus` (config key `"t2a_craft_menus"`, default off). Toggle through the feature-flag config/admin like any other flag; `FeatureFlagManager.SyncStaticFlag` maps the key to the static bool.
+Toggle: `T2ACraftSystem.Enabled` (static). It is set once in `ExpansionConfiguration.Configure()` from `ServerConfiguration.GetSetting("t2aCraftMenus", !Core.UOTD)` — a read-only setting (the default is **not** written back to the config file). It is intentionally **not** a runtime feature flag and cannot be flipped in-game by admins; change it via the `t2aCraftMenus` server setting and restart.
 
-**Intended deployment:** a T2A shard runs a pre-UO:TD expansion (so `Core.UOTD == false`) **and** enables `T2ACraftMenus`. The flag controls the *UI system*; the expansion/era controls *mechanics* (see [Gating model](#gating-model-flag-vs-era)). `FeatureFlagManager.Initialize()` logs a warning if the flag is enabled while `Core.UOTD == true`, because era mechanics won't apply.
+**Intended deployment:** because the default is `!Core.UOTD`, a pre-UO:TD shard gets T2A menus and the matching era mechanics automatically. The toggle controls the *UI system*; the expansion/era (`Core.UOTD`) controls *mechanics* (see [Gating model](#gating-model-toggle-vs-era)). Since the default tracks the era and there is no runtime override, the two cannot drift into an incoherent combination.
 
 ## Architecture
 
@@ -39,7 +39,7 @@ All T2A-specific code lives under `Projects/UOContent/Engines/Craft/T2A/`.
 
 ```
 BaseTool.OnDoubleClick
-  └─ if ContentFeatureFlags.T2ACraftMenus:
+  └─ if T2ACraftSystem.Enabled:
         from.Target = new T2ACraftToolTarget(tool, system)
         "Target this tool to make last item, or any other target to begin crafting."
         ├─ target == tool      → make-last (repeat context.LastMade; jewelry re-prompts the gem)
@@ -75,19 +75,19 @@ Tinkered jewelry consumes ingots + a targeted gem **stack**. The player targets 
 `CraftItem.ConsumeRes` reduces each resource by half on a failed craft when `!Core.UOTD` (`amounts[i] -= amounts[i] / 2`). Note integer division: amount-1 resources (e.g. each inscription reagent + the single blank scroll) are fully consumed, matching the confirmed scroll-scribing rule; multi-unit resources (e.g. runebook's 8 blank scrolls) lose half.
 
 ### Tool-less skills
-`DefInscription` and `DefCartography` override `RequiresTool => !ContentFeatureFlags.T2ACraftMenus`, and `CanCraft` wraps tool validation in `if (RequiresTool)`. Inscription is invoked from the skill list (`Inscribe.cs` → `T2AInscribeTarget`: blank scroll opens the menu, recall rune crafts a runebook, a book enters the copy flow); cartography from `Cartography.cs`. `CraftItem` tool-null guards prevent `UsesRemaining` decrement when there is no tool.
+`DefInscription` and `DefCartography` override `RequiresTool => !T2ACraftSystem.Enabled`, and `CanCraft` wraps tool validation in `if (RequiresTool)`. Inscription is invoked from the skill list (`Inscribe.cs` → `T2AInscribeTarget`: blank scroll opens the menu, recall rune crafts a runebook, a book enters the copy flow); cartography from `Cartography.cs`. `CraftItem` tool-null guards prevent `UsesRemaining` decrement when there is no tool.
 
 ### Maker's mark
 Under T2A the system **always prompts** for the maker's mark (no auto/never toggle): `CompleteCraft` gates on `makersMark && (T2ACraftMenus || context.MarkOption == PromptForMark)`, using the shared `QueryMakersMarkGump` (the old `QueryMakersMarkMenu` was removed). Exceptional + mark are tied to GM/near-GM skill, as in the era.
 
-## Gating model (flag vs era)
+## Gating model (toggle vs era)
 
 | Switch | Meaning | Governs |
 |---|---|---|
-| `ContentFeatureFlags.T2ACraftMenus` | "Use packet menus instead of gumps." | Menu routing, `ShowCraftMenu` (message vs gump), tool-less inscription/cartography, jewelry gem-targeting flow, always-prompt maker's mark, `BlankMap`/`BlankScroll` equivalence suppression. |
+| `T2ACraftSystem.Enabled` (from `t2aCraftMenus` setting, default `!Core.UOTD`) | "Use packet menus instead of gumps." | Menu routing, `ShowCraftMenu` (message vs gump), tool-less inscription/cartography, jewelry gem-targeting flow, always-prompt maker's mark, `BlankMap`/`BlankScroll` equivalence suppression. |
 | `Core.UOTD` (expansion/era) | T2A↔UO:TD era boundary (`false` = T2A or earlier). | Era mechanics: half-on-failure, tinkering metal-color suppression, pre-AOS recipe availability. |
 
-They are independent by design (the flag is testable and a shard can opt into the UI separately), but intended to move together. `FeatureFlagManager.Initialize()` warns on the incoherent combination (flag on + `Core.UOTD` true).
+Because the toggle's default **is** `!Core.UOTD` and there is no runtime override, the two move together by construction — a pre-UO:TD shard gets both the menus and the era mechanics, and there is no incoherent "menus on / UO:TD era" combination to guard against. An operator can still force the setting explicitly (e.g. menus on a later era) via `t2aCraftMenus`, but that is a deliberate, restart-time choice.
 
 ## Extending: add a craftable to a T2A menu
 
@@ -111,7 +111,7 @@ They are independent by design (the flag is testable and a shard can opt into th
 - Skills: `Projects/UOContent/Skills/{Inscribe,Cartography}.cs`
 - Items: `Projects/UOContent/Items/Jewels/{BaseJewel,Ring}.cs` (+ `Migrations/Server.Items.BaseJewel.v5.json`)
 - Tool entry: `Projects/UOContent/Items/Skill Items/Tools/BaseTool.cs`
-- Flag: `Projects/UOContent/Engines/FeatureFlags/{ContentFeatureFlags,FeatureFlagManager}.cs`
+- Toggle: `T2ACraftSystem.Enabled` (in `Engines/Craft/T2A/T2ACraftSystem.cs`), set from `Projects/UOContent/Configuration/ExpansionConfiguration.cs` via `ServerConfiguration.GetSetting("t2aCraftMenus", !Core.UOTD)`
 - Engine menus (additive): `Projects/Server/Menus/{BaseMenu,ItemListMenu,QuestionMenu}.cs`; response: `Projects/UOContent/Network/Packets/IncomingPlayerPackets.cs`
 - Tests: `Projects/UOContent.Tests/Tests/Items/Jewels/T2AJewelGemCraftTests.cs`
 
