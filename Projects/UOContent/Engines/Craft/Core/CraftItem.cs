@@ -382,11 +382,6 @@ namespace Server.Engines.Craft
                 return false;
             }
 
-            if (!Core.AOS && (typeof(BaseLeather).IsAssignableFrom(type) || typeof(BaseHides).IsAssignableFrom(type)))
-            {
-                return false;
-            }
-
             var inResourceTable = false;
 
             for (var i = 0; !inResourceTable && i < m_ColoredResourceTable.Length; ++i)
@@ -1243,7 +1238,7 @@ namespace Server.Engines.Craft
                 }
             }
 
-            resHue = RetainsColorFrom(craftSystem, typeRes) ? targetHue : 0;
+            resHue = targetHue;
             return true;
         }
 
