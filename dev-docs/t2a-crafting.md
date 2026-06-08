@@ -2,10 +2,6 @@
 
 This document covers ModernUO's **T2A-era crafting menus** — the pre-UO:Third-Dawn, packet-based item-list crafting UI that replaces the modern gump crafting interface when enabled. It is the developer/AI reference for how the system is wired, how to extend it, and how it deviates from authentic T2A behavior.
 
-> Design rationale, historical research, and decision log live in
-> `docs/superpowers/specs/2026-06-07-t2a-crafting-menus-design.md`.
-> Player-facing usage and quality-of-life notes live in `docs/t2a-crafting/` (not committed).
-
 ## Overview
 
 In the T2A era (≈1998–2001, before Publish 14 on 2001-11-30), UO crafting did not use gumps. The server sent the generic `0x7C` "Open Dialog" menu packet and the client replied with the 13-byte `0x7D` response. Double-clicking a crafting tool opened a **skill-and-material-filtered item-list menu**; the player picked a category/item and targeted a resource, and the item was made.
@@ -139,8 +135,6 @@ Decided in the design spec §4; faithful to Jack's research except where shard a
 
 | Topic | File |
 |---|---|
-| Design rationale, research, decisions | `docs/superpowers/specs/2026-06-07-t2a-crafting-menus-design.md` |
-| Player guide & QoL (uncommitted) | `docs/t2a-crafting/` |
 | Serialization | `dev-docs/serialization.md` |
 | Networking & packets | `dev-docs/networking-packets.md` |
 | Era & expansion handling | `dev-docs/era-expansion.md` |
