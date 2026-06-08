@@ -63,6 +63,12 @@ internal static class TestServerInitializer
             // calls Find. ServerConfiguration is already loaded above, so the setting resolves.
             BitmapAStarAlgorithm.Configure();
 
+            // Multi component lists (multi.mul / MultiCollection.uop). Production invokes this via
+            // AssemblyHandler.Invoke("Configure"); the curated fixture subset must call it so that
+            // BaseMulti.Components (MultiData.GetComponents) returns real footprints instead of
+            // MultiComponentList.Empty. Required by the Multi pathfinding tests.
+            MultiData.Configure();
+
             World.Configure();
             Timer.Init(0);
             RaceDefinitions.Configure();
