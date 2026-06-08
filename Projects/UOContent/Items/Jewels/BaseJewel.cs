@@ -218,7 +218,7 @@ public abstract partial class BaseJewel : Item, ICraftable, IAosItem
 
     public override void OnSingleClick(Mobile from)
     {
-        if (ContentFeatureFlags.T2ACraftMenus)
+        if (!Core.UOTD)
         {
             OnSingleClickPreUOTD(from);
             return;
@@ -230,32 +230,32 @@ public abstract partial class BaseJewel : Item, ICraftable, IAosItem
     public virtual void OnSingleClickPreUOTD(Mobile from)
     {
         var plural = _gemCount > 1;
-        var itemName = Name ?? Localization.GetText(base.LabelNumber)?.ToLowerInvariant() ?? "jewelry";
-
-        string article;
-        if (this is WeddingRing || (ItemData.Flags & TileFlag.ArticleA) != 0)
+        string name;
+        if (this is WeddingRing)
         {
-            article = "a ";
-        }
-        else if ((ItemData.Flags & TileFlag.ArticleAn) != 0)
-        {
-            article = "an ";
+            name = $"a {Name}";
         }
         else
         {
-            article = string.Empty;
+            name = Name;
+
+            if (name == null)
+            {
+                var articleAnName = (TileData.ItemTable[ItemID].Flags & TileFlag.ArticleAn) != 0;
+                name = $"{(articleAnName ? "an" : "a")} {Localization.GetText(LabelNumber).ToLowerInvariant()}";
+            }
         }
 
         if (_gemType != GemType.None && _gemCount > 0)
         {
             var gemName = GetGemName(_gemType, plural);
             LabelTo(from, plural
-                ? $"{article}{itemName} with {_gemCount} {gemName}"
-                : $"{article}{itemName} with a {gemName}");
+                ? $"{name} with {_gemCount} {gemName}"
+                : $"{name} with {gemName}");
         }
         else
         {
-            LabelTo(from, $"{article}{itemName}");
+            LabelTo(from, name);
         }
     }
 
@@ -263,25 +263,25 @@ public abstract partial class BaseJewel : Item, ICraftable, IAosItem
     private static string GetGemName(GemType type, bool plural = false) => type switch
     {
         GemType.StarSapphire when plural => "star sapphires",
-        GemType.StarSapphire             => "star sapphire",
+        GemType.StarSapphire             => "a star sapphire",
         GemType.Emerald      when plural => "emeralds",
-        GemType.Emerald                  => "emerald",
+        GemType.Emerald                  => "an emerald",
         GemType.Sapphire     when plural => "sapphires",
-        GemType.Sapphire                 => "sapphire",
+        GemType.Sapphire                 => "a sapphire",
         GemType.Ruby         when plural => "rubies",
-        GemType.Ruby                     => "ruby",
+        GemType.Ruby                     => "a ruby",
         GemType.Citrine      when plural => "citrines",
-        GemType.Citrine                  => "citrine",
+        GemType.Citrine                  => "a citrine",
         GemType.Amethyst     when plural => "amethysts",
-        GemType.Amethyst                 => "amethyst",
+        GemType.Amethyst                 => "an amethyst",
         GemType.Tourmaline   when plural => "tourmalines",
-        GemType.Tourmaline               => "tourmaline",
+        GemType.Tourmaline               => "a tourmaline",
         GemType.Amber        when plural => "ambers",
-        GemType.Amber                    => "amber",
+        GemType.Amber                    => "an amber",
         GemType.Diamond      when plural => "diamonds",
-        GemType.Diamond                  => "diamond",
+        GemType.Diamond                  => "a diamond",
         _                    when plural => "gems",
-        _                                => "gem"
+        _                                => "a gem"
     };
 
     internal static GemType GetGemType(Item item) => item switch
