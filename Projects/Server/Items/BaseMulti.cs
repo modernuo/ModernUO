@@ -19,6 +19,24 @@ using ModernUO.Serialization;
 
 namespace Server.Items;
 
+/// <summary>
+/// Whether a multi instance's footprint is eligible for the pathfinding interior-mask cache
+/// (Server.Engines.Pathing.Cache.MultiMaskCache). Stored on
+/// <see cref="BaseMulti.PathInteriorCacheState"/>; recomputed when it is <see cref="Unknown"/>
+/// (e.g. after a move resets it).
+/// </summary>
+public enum MultiInteriorCacheState : byte
+{
+    /// <summary>Not yet determined; recompute on next use.</summary>
+    Unknown = 0,
+
+    /// <summary>Whole footprint terrain is below the floor → interior cells may serve from the cache.</summary>
+    Clean = 1,
+
+    /// <summary>Terrain intrudes into the footprint → fall back to live synthesis.</summary>
+    Dirty = 2
+}
+
 [SerializationGenerator(0, false)]
 public abstract partial class BaseMulti : Item
 {
@@ -66,17 +84,16 @@ public abstract partial class BaseMulti : Item
     public virtual MultiComponentList Components => MultiData.GetComponents(ItemID);
 
     /// <summary>
-    /// Pathfinding interior-mask cache gate (Server.Engines.Pathing.Cache.MultiMaskCache):
-    /// 0 = unknown (recompute), 1 = clean (whole footprint terrain below the floor → interior cells
-    /// may serve from the shared per-multiID cache), 2 = dirty (terrain intrudes → live-synth).
-    /// Reset on move because the footprint's terrain relationship changes.
+    /// Pathfinding interior-mask cache gate (Server.Engines.Pathing.Cache.MultiMaskCache).
+    /// Reset to <see cref="MultiInteriorCacheState.Unknown"/> on move because the footprint's
+    /// terrain relationship changes.
     /// </summary>
-    public byte PathInteriorCacheState { get; set; }
+    public MultiInteriorCacheState PathInteriorCacheState { get; set; }
 
     public override void OnLocationChange(Point3D oldLocation)
     {
         base.OnLocationChange(oldLocation);
-        PathInteriorCacheState = 0;
+        PathInteriorCacheState = MultiInteriorCacheState.Unknown;
     }
 
     public override int GetMaxUpdateRange() => 22;

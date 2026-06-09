@@ -42,12 +42,13 @@ public sealed class MultiMaskCache
         // Per-instance footprint cleanliness (computed once, stored on the multi; reset on move).
         // Clean ⇒ no terrain intrusion anywhere in the footprint ⇒ interior cells are exact from the
         // shared per-multiID cache. Dirty ⇒ degrade to the live synthesizer (never serve a wrong mask).
-        if (multi.PathInteriorCacheState == 0)
+        if (multi.PathInteriorCacheState == MultiInteriorCacheState.Unknown)
         {
-            multi.PathInteriorCacheState = ComputeFootprintClean(map, multi) ? (byte)1 : (byte)2;
+            multi.PathInteriorCacheState =
+                ComputeFootprintClean(map, multi) ? MultiInteriorCacheState.Clean : MultiInteriorCacheState.Dirty;
         }
 
-        if (multi.PathInteriorCacheState != 1)
+        if (multi.PathInteriorCacheState != MultiInteriorCacheState.Clean)
         {
             return LiveSynth(map, x, y, sourceZ);
         }
