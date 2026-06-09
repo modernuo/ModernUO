@@ -222,6 +222,27 @@ public class MultiMaskCacheTests
     }
 
     [Fact]
+    public void PathInteriorCacheState_ResetsOnItemIdChange()
+    {
+        var map = Map.Maps[MapId];
+        var multi = new TestMulti(GuildHouseId);
+        try
+        {
+            multi.MoveToWorld(new Point3D(PlaceX, PlaceY, 0), map);
+            multi.PathInteriorCacheState = MultiInteriorCacheState.Clean;
+
+            // Changing ItemID swaps the footprint (e.g. a boat changing heading), so the gate must
+            // reset to recompute cleanliness for the new shape.
+            multi.ItemID = 0x7A; // Tower
+            Assert.Equal(MultiInteriorCacheState.Unknown, multi.PathInteriorCacheState);
+        }
+        finally
+        {
+            multi.Delete();
+        }
+    }
+
+    [Fact]
     public void ComputeFootprintClean_TrueAtNormalPlacement_FalseWhenSunk()
     {
         // (PlaceX,PlaceY) is a cluttered spot whose footprint overlaps tall map statics, so a guild

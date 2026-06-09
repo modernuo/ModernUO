@@ -33,11 +33,14 @@ public sealed class MultiMaskCache
     public StepMask GetMask(Map map, int x, int y, sbyte sourceZ)
     {
         if (!TryResolveCoveringMulti(map, x, y, out var multi, out var lx, out var ly)
-            || multi is HouseFoundation       // runtime-mutable design
-            || multi is BaseBoat)             // mover; ~no interior cells, avoids move churn
+            || multi is HouseFoundation)      // runtime-mutable per-instance DesignState MCL
         {
             return LiveSynth(map, x, y, sourceZ);
         }
+
+        // Boats are cached too: their per-multiID deck masks are movement-invariant (built once per
+        // heading), and the per-instance clean gate below + the ItemID/location/map resets keep a
+        // moving/turning boat correct. Narrow boats have little interior; wide galleons gain a lot.
 
         // Per-instance footprint cleanliness (computed once, stored on the multi; reset on move).
         // Clean ⇒ no terrain intrusion anywhere in the footprint ⇒ interior cells are exact from the

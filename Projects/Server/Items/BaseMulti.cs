@@ -53,6 +53,10 @@ public abstract partial class BaseMulti : Item
                 Map?.OnLeave(this);
                 base.ItemID = value;
                 Map?.OnEnter(this);
+
+                // The footprint shape changes with ItemID (e.g. a boat's heading swaps the MCL), so
+                // the pathfinding interior-cache clean/dirty status must be recomputed.
+                PathInteriorCacheState = MultiInteriorCacheState.Unknown;
             }
         }
     }
@@ -85,10 +89,10 @@ public abstract partial class BaseMulti : Item
 
     /// <summary>
     /// Pathfinding interior-mask cache gate (Server.Engines.Pathing.Cache.MultiMaskCache).
-    /// Reset to <see cref="MultiInteriorCacheState.Unknown"/> on a location OR map change, because the
-    /// footprint's world terrain — and therefore its clean/dirty status — depends on both. Subclasses
-    /// that override <see cref="OnLocationChange"/> / <see cref="OnMapChange"/> MUST call base for the
-    /// reset to fire.
+    /// Reset to <see cref="MultiInteriorCacheState.Unknown"/> whenever the footprint's world-terrain
+    /// relationship can change — a location change, a map change, or an ItemID change (e.g. a boat's
+    /// heading swaps the MCL). Subclasses that override <see cref="OnLocationChange"/> /
+    /// <see cref="OnMapChange"/> MUST call base for the reset to fire.
     /// </summary>
     public MultiInteriorCacheState PathInteriorCacheState { get; set; }
 
