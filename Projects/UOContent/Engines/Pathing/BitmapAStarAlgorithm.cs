@@ -353,7 +353,22 @@ public class BitmapAStarAlgorithm : PathAlgorithm
 
         if (!lookup.IsHit)
         {
-            return GetSuccessorsSlowPath(m, map, px, py, p3D, vals);
+            // Multi-covered cells: synthesize a multi-aware mask in ONE pass (over land + statics +
+            // house/boat component tiles) instead of the slow path's 8x per-cell CheckMovement.
+            // Fliers and cache-off already returned at the top of GetSuccessors, so this only runs
+            // for cacheable walkers/swimmers. The synthesized mask flows through the SAME
+            // capability-overlay + diagonal corner-cut + dynamic-obstacle loop below as a static hit.
+            if (lookup.HitKind == CacheHitKind.Fallthrough_Multi)
+            {
+                // Multi-covered cell: the per-multiID interior cache serves a ~20 ns lookup for
+                // interior cells (and records the right counter); it falls back internally to the
+                // Phase-2 live synthesizer for perimeter / terrain-dirty / foundation cells.
+                lookup = MultiMaskCache.Instance.GetMask(map, p3D.X, p3D.Y, (sbyte)p3D.Z);
+            }
+            else
+            {
+                return GetSuccessorsSlowPath(m, map, px, py, p3D, vals);
+            }
         }
 
         // Capability overlay: walking allowed unless cantWalk; swimming allowed if canSwim.

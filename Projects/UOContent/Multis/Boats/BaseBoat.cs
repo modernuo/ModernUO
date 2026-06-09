@@ -371,52 +371,27 @@ namespace Server.Multis
 
         public override void OnLocationChange(Point3D old)
         {
-            if (TillerMan != null)
-            {
-                TillerMan.Location = new Point3D(
-                    X + (TillerMan.X - old.X),
-                    Y + (TillerMan.Y - old.Y),
-                    Z + (TillerMan.Z - old.Z)
-                );
-            }
+            base.OnLocationChange(old);
 
-            if (Hold != null)
-            {
-                Hold.Location = new Point3D(X + (Hold.X - old.X), Y + (Hold.Y - old.Y), Z + (Hold.Z - old.Z));
-            }
+            TillerMan?.Location = new Point3D(
+                X + (TillerMan.X - old.X),
+                Y + (TillerMan.Y - old.Y),
+                Z + (TillerMan.Z - old.Z)
+            );
 
-            if (PPlank != null)
-            {
-                PPlank.Location = new Point3D(X + (PPlank.X - old.X), Y + (PPlank.Y - old.Y), Z + (PPlank.Z - old.Z));
-            }
-
-            if (SPlank != null)
-            {
-                SPlank.Location = new Point3D(X + (SPlank.X - old.X), Y + (SPlank.Y - old.Y), Z + (SPlank.Z - old.Z));
-            }
+            Hold?.Location = new Point3D(X + (Hold.X - old.X), Y + (Hold.Y - old.Y), Z + (Hold.Z - old.Z));
+            PPlank?.Location = new Point3D(X + (PPlank.X - old.X), Y + (PPlank.Y - old.Y), Z + (PPlank.Z - old.Z));
+            SPlank?.Location = new Point3D(X + (SPlank.X - old.X), Y + (SPlank.Y - old.Y), Z + (SPlank.Z - old.Z));
         }
 
         public override void OnMapChange()
         {
-            if (TillerMan != null)
-            {
-                TillerMan.Map = Map;
-            }
+            base.OnMapChange();
 
-            if (Hold != null)
-            {
-                Hold.Map = Map;
-            }
-
-            if (PPlank != null)
-            {
-                PPlank.Map = Map;
-            }
-
-            if (SPlank != null)
-            {
-                SPlank.Map = Map;
-            }
+            TillerMan?.Map = Map;
+            Hold?.Map = Map;
+            PPlank?.Map = Map;
+            SPlank?.Map = Map;
         }
 
         public bool CanCommand(Mobile m) => true;

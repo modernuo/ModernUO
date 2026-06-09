@@ -55,10 +55,16 @@ public sealed class StepCache
     private long _fallthroughSourceZMismatch;
     private long _fallthroughNotBuilt;
     private long _fallthroughMulti;
+    private long _multiLocalHits;
+    private long _multiMaskCacheHits;
     private long _evictionsByLruCap;
     private long _buildsTotal;
 
     private StepCache() { }
+
+    public void RecordMultiLocalHit() => _multiLocalHits++;
+
+    public void RecordMultiMaskCacheHit() => _multiMaskCacheHits++;
 
     /// <summary>Hard cap on resident chunk count. Default 8192. Override for tests / ops.</summary>
     public int MaxResidentChunks { get; set; } = 8192;
@@ -121,6 +127,8 @@ public sealed class StepCache
         fallthroughSourceZMismatch: _fallthroughSourceZMismatch,
         fallthroughNotBuilt: _fallthroughNotBuilt,
         fallthroughMulti: _fallthroughMulti,
+        multiLocalHits: _multiLocalHits,
+        multiMaskCacheHits: _multiMaskCacheHits,
         evictionsByLruCap: _evictionsByLruCap,
         buildsTotal: _buildsTotal
     );
@@ -134,6 +142,7 @@ public sealed class StepCache
     {
         ClearResidentChunks();
         CloseLazyReaders();
+        MultiMaskCache.Instance.Clear();
     }
 
     /// <summary>
@@ -156,6 +165,8 @@ public sealed class StepCache
         _fallthroughSourceZMismatch = 0;
         _fallthroughNotBuilt = 0;
         _fallthroughMulti = 0;
+        _multiLocalHits = 0;
+        _multiMaskCacheHits = 0;
         _evictionsByLruCap = 0;
         _buildsTotal = 0;
     }
