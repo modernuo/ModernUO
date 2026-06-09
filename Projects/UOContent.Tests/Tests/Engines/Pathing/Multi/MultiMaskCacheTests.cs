@@ -120,4 +120,38 @@ public class MultiMaskCacheTests
         // Floor at/below ground → terrain reaches the envelope → guard fails.
         Assert.False(MultiMaskCache.TerrainTopBelow(map, PlaceX, PlaceY, (sbyte)(ground - 50)));
     }
+
+    [Fact]
+    public void PathThroughHouseInterior_IncrementsMultiMaskCacheHits()
+    {
+        var map = Map.Maps[MapId];
+        map.GetAverageZ(PlaceX, PlaceY, out _, out var z, out _);
+        var houseLoc = new Point3D(PlaceX, PlaceY, (sbyte)z);
+        var multi = new TestMulti(GuildHouseId);
+        var cacheWas = Server.Systems.FeatureFlags.ContentFeatureFlags.BitmapPathfindingCache;
+        Server.Systems.FeatureFlags.ContentFeatureFlags.BitmapPathfindingCache = true;
+        var mover = MultiTestSupport.GetWalkerOracle(map, new Point3D(PlaceX, PlaceY + 10, (sbyte)z));
+        try
+        {
+            multi.MoveToWorld(houseLoc, map);
+            StepCache.Instance.Clear();
+
+            var start = new Point3D(PlaceX, PlaceY + 10, (sbyte)z);
+            var goal = new Point3D(PlaceX, PlaceY - 10, (sbyte)z);
+            // First pass builds the interior cache (live synth); second pass should hit it.
+            Server.PathAlgorithms.BitmapAStarAlgorithm.Instance.Find(mover, map, start, goal);
+
+            var before = StepCache.Instance.GetStats().MultiMaskCacheHits;
+            Server.PathAlgorithms.BitmapAStarAlgorithm.Instance.Find(mover, map, start, goal);
+            var after = StepCache.Instance.GetStats().MultiMaskCacheHits;
+
+            Assert.True(after > before, $"expected MultiMaskCacheHits to increase, before={before} after={after}");
+        }
+        finally
+        {
+            mover.Delete();
+            multi.Delete();
+            Server.Systems.FeatureFlags.ContentFeatureFlags.BitmapPathfindingCache = cacheWas;
+        }
+    }
 }

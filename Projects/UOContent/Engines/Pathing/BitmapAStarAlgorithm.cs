@@ -360,8 +360,10 @@ public class BitmapAStarAlgorithm : PathAlgorithm
             // capability-overlay + diagonal corner-cut + dynamic-obstacle loop below as a static hit.
             if (lookup.HitKind == CacheHitKind.Fallthrough_Multi)
             {
-                lookup = StepProbe.ComputeMultiMaskAt(map, p3D.X, p3D.Y, (sbyte)p3D.Z);
-                StepCache.Instance.RecordMultiLocalHit();
+                // Multi-covered cell: the per-multiID interior cache serves a ~20 ns lookup for
+                // interior cells (and records the right counter); it falls back internally to the
+                // Phase-2 live synthesizer for perimeter / terrain-dirty / foundation cells.
+                lookup = MultiMaskCache.Instance.GetMask(map, p3D.X, p3D.Y, (sbyte)p3D.Z);
             }
             else
             {
