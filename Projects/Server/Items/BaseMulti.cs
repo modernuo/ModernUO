@@ -65,6 +65,20 @@ public abstract partial class BaseMulti : Item
 
     public virtual MultiComponentList Components => MultiData.GetComponents(ItemID);
 
+    /// <summary>
+    /// Pathfinding interior-mask cache gate (Server.Engines.Pathing.Cache.MultiMaskCache):
+    /// 0 = unknown (recompute), 1 = clean (whole footprint terrain below the floor → interior cells
+    /// may serve from the shared per-multiID cache), 2 = dirty (terrain intrudes → live-synth).
+    /// Reset on move because the footprint's terrain relationship changes.
+    /// </summary>
+    public byte PathInteriorCacheState { get; set; }
+
+    public override void OnLocationChange(Point3D oldLocation)
+    {
+        base.OnLocationChange(oldLocation);
+        PathInteriorCacheState = 0;
+    }
+
     public override int GetMaxUpdateRange() => 22;
 
     public override int GetUpdateRange(Mobile m) => 22;
