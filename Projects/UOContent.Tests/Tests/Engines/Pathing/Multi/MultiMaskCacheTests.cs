@@ -1,4 +1,5 @@
 using Server.Engines.Pathing.Cache;
+using Server.Items;
 using Xunit;
 
 namespace Server.Tests.Pathfinding;
@@ -195,6 +196,28 @@ public class MultiMaskCacheTests
             mover.Delete();
             multi.Delete();
             Server.Systems.FeatureFlags.ContentFeatureFlags.BitmapPathfindingCache = cacheWas;
+        }
+    }
+
+    [Fact]
+    public void PathInteriorCacheState_ResetsOnMove()
+    {
+        var map = Map.Maps[MapId];
+        var multi = new TestMulti(GuildHouseId);
+        try
+        {
+            multi.MoveToWorld(new Point3D(PlaceX, PlaceY, 0), map);
+            multi.PathInteriorCacheState = MultiInteriorCacheState.Clean;
+
+            // A move changes the footprint's world terrain, so the gate must reset to Unknown and
+            // recompute on next use. (BaseMulti.OnLocationChange does this; subclasses like BaseHouse
+            // and BaseBoat must call base for it to fire — this pins that contract.)
+            multi.MoveToWorld(new Point3D(PlaceX + 8, PlaceY + 8, 0), map);
+            Assert.Equal(MultiInteriorCacheState.Unknown, multi.PathInteriorCacheState);
+        }
+        finally
+        {
+            multi.Delete();
         }
     }
 

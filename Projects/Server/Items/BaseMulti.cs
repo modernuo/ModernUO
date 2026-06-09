@@ -85,14 +85,22 @@ public abstract partial class BaseMulti : Item
 
     /// <summary>
     /// Pathfinding interior-mask cache gate (Server.Engines.Pathing.Cache.MultiMaskCache).
-    /// Reset to <see cref="MultiInteriorCacheState.Unknown"/> on move because the footprint's
-    /// terrain relationship changes.
+    /// Reset to <see cref="MultiInteriorCacheState.Unknown"/> on a location OR map change, because the
+    /// footprint's world terrain — and therefore its clean/dirty status — depends on both. Subclasses
+    /// that override <see cref="OnLocationChange"/> / <see cref="OnMapChange"/> MUST call base for the
+    /// reset to fire.
     /// </summary>
     public MultiInteriorCacheState PathInteriorCacheState { get; set; }
 
     public override void OnLocationChange(Point3D oldLocation)
     {
         base.OnLocationChange(oldLocation);
+        PathInteriorCacheState = MultiInteriorCacheState.Unknown;
+    }
+
+    public override void OnMapChange()
+    {
+        base.OnMapChange();
         PathInteriorCacheState = MultiInteriorCacheState.Unknown;
     }
 
