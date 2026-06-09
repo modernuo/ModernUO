@@ -17,6 +17,39 @@ public sealed class TestMulti : BaseMulti
     }
 }
 
+/// <summary>Default walker body, shared across pathfinding test fixtures.</summary>
+public sealed class WalkerStub : Mobile
+{
+    public WalkerStub() => Body = 0xC9;
+}
+
+/// <summary>
+/// Shared helpers for placing/probing multis in pathfinding tests.
+/// </summary>
+public static class MultiTestSupport
+{
+    // A default-walker oracle mobile (CanSwim=false, CantWalk=false) placed in-world so MovementImpl
+    // state reads are valid. Caller MUST Delete() it (do it in a finally).
+    public static Mobile GetWalkerOracle(Map map, Point3D loc)
+    {
+        var w = new WalkerStub();
+        w.MoveToWorld(loc, map);
+        return w;
+    }
+
+    public static bool HasMultiTileAt(BaseMulti multi, int wx, int wy)
+    {
+        var mcl = multi.Components;
+        var lx = wx - multi.X + mcl.Center.X;
+        var ly = wy - multi.Y + mcl.Center.Y;
+        if (lx < 0 || ly < 0 || lx >= mcl.Width || ly >= mcl.Height)
+        {
+            return false;
+        }
+        return mcl.Tiles[lx][ly].Length > 0;
+    }
+}
+
 /// <summary>
 /// Helpers that derive expected geometry from a multi's MCL art at runtime, so tests
 /// encode no hardcoded cell coordinates and survive art-data changes.

@@ -190,6 +190,16 @@ public static class StepProbe
         ComputeMaskCore(map, x, y, sourceZ, includeMultis: false);
 
     /// <summary>
+    /// Multi-aware counterpart to <see cref="ComputeMaskAt"/>: synthesizes the full 8-direction
+    /// walkability mask for a cell covered by (or adjacent to) a multi, folding house/boat component
+    /// tiles into the surface/step logic via GetStaticAndMultiTiles. Replaces the slow path's 8x
+    /// per-cell CheckMovement for Fallthrough_Multi cells. Item/mobile collision is still handled by
+    /// the caller's dynamic-obstacle pass.
+    /// </summary>
+    public static StepMask ComputeMultiMaskAt(Map map, int x, int y, sbyte sourceZ) =>
+        ComputeMaskCore(map, x, y, sourceZ, includeMultis: true);
+
+    /// <summary>
     /// Shared per-cell 8-direction mask builder. With includeMultis=false this reproduces the
     /// static-only bake (land + statics.mul). With includeMultis=true it also folds in multi
     /// (house/boat) component tiles via GetStaticAndMultiTiles — the multi-aware synthesizer used
