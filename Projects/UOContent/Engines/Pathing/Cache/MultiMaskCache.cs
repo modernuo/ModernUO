@@ -31,9 +31,22 @@ public sealed class MultiMaskCache
     public StepMask GetMask(Map map, int x, int y, sbyte sourceZ)
     {
         if (!TryResolveCoveringMulti(map, x, y, out var multi, out var lx, out var ly)
-            || multi is HouseFoundation)
+            || multi is HouseFoundation       // runtime-mutable design
+            || multi is BaseBoat)             // mover; ~no interior cells, avoids move churn
         {
-            // No covering multi (defensive) or a runtime-mutable foundation → live, no cache.
+            return LiveSynth(map, x, y, sourceZ);
+        }
+
+        // Per-instance footprint cleanliness (computed once, stored on the multi; reset on move).
+        // Clean ⇒ no terrain intrusion anywhere in the footprint ⇒ interior cells are exact from the
+        // shared per-multiID cache. Dirty ⇒ degrade to the live synthesizer (never serve a wrong mask).
+        if (multi.PathInteriorCacheState == 0)
+        {
+            multi.PathInteriorCacheState = ComputeFootprintClean(map, multi) ? (byte)1 : (byte)2;
+        }
+
+        if (multi.PathInteriorCacheState != 1)
+        {
             return LiveSynth(map, x, y, sourceZ);
         }
 
@@ -43,26 +56,15 @@ public sealed class MultiMaskCache
 
         if (state == MultiLocalMask.CellState.Cached)
         {
-            // Reconstruct the floor Z in the world frame for THIS placement (int; avoids a silent
-            // sbyte wrap when a different instance serves a cell cached at another instance's Z).
+            // Footprint is clean, so only the source-Z match matters (terrain can't intrude).
             var worldFloorZ = local.FloorZAt(lx, ly) + multi.Z;
-            // KNOWN LIMITATION (cross-instance neighbour terrain): the cached mask is the multi's
-            // terrain-free transition; serving it is exact only if terrain stays below the floor at
-            // this cell AND its 8 neighbours (CheckStaticStep reads neighbour terrain). We guard only
-            // the centre cell here for speed. For legitimately-placed fixed multis this is always
-            // satisfied — house/boat placement requires flat, clear footprints, so the whole 3x3 sits
-            // above terrain. It can only diverge for a contrived placement (e.g. a GM forcing a multi
-            // onto a slope so a covered neighbour's land/static rises above the floor); such a cell
-            // would serve this instance's clean mask instead of live-synthesizing. See the Phase-3
-            // design risk list; the airtight fix (serve-time 3x3 guard, or a per-instance
-            // footprint-clean flag) is deferred pending a perf/complexity decision.
-            if (Math.Abs(sourceZ - worldFloorZ) <= StepHeight && TerrainTopBelow(map, x, y, (sbyte)worldFloorZ))
+            if (Math.Abs(sourceZ - worldFloorZ) <= StepHeight)
             {
                 StepCache.Instance.RecordMultiMaskCacheHit();
                 return ToWorldZ(local.MaskAt(lx, ly), multi.Z);
             }
 
-            return LiveSynth(map, x, y, sourceZ); // guard failed this placement → live
+            return LiveSynth(map, x, y, sourceZ);
         }
 
         if (state == MultiLocalMask.CellState.NonInterior)
@@ -70,15 +72,13 @@ public sealed class MultiMaskCache
             return LiveSynth(map, x, y, sourceZ);
         }
 
-        // Unknown → classify + (if interior + clean) build & cache.
+        // Unknown → classify + (if interior) build & cache. No per-cell terrain guard needed: the
+        // instance is clean, so every interior cell's 3x3 terrain is below the floor.
         var mask = LiveSynth(map, x, y, sourceZ);
         if (IsInteriorLocalCell(mcl, lx, ly)
-            && TerrainTopBelow(map, x, y, sourceZ)
             && TryToLocalZ(mask, multi.Z, out var localMask)
             && sourceZ - multi.Z is >= sbyte.MinValue and <= sbyte.MaxValue)
         {
-            // Record this sourceZ as the cell's reference floor Z (an interior floor cell is reached
-            // at the floor Z); later expansions are validated against it within StepHeight above.
             local.SetCached(lx, ly, localMask, (sbyte)(sourceZ - multi.Z));
         }
         else

@@ -124,20 +124,26 @@ public class MultiMaskCacheTests
     [Fact]
     public void PathThroughHouseInterior_IncrementsMultiMaskCacheHits()
     {
+        // (PlaceX,PlaceY)=(1480,1620) is cluttered (footprint overlaps tall map statics → dirty), so it
+        // would never serve the interior cache under the footprint-clean gate. Use a known flat/clear
+        // spot so a house there is footprint-clean and its interior cells serve from the cache.
+        const int CleanX = 1560;
+        const int CleanY = 1616;
+
         var map = Map.Maps[MapId];
-        map.GetAverageZ(PlaceX, PlaceY, out _, out var z, out _);
-        var houseLoc = new Point3D(PlaceX, PlaceY, (sbyte)z);
+        map.GetAverageZ(CleanX, CleanY, out _, out var z, out _);
+        var houseLoc = new Point3D(CleanX, CleanY, (sbyte)z);
         var multi = new TestMulti(GuildHouseId);
         var cacheWas = Server.Systems.FeatureFlags.ContentFeatureFlags.BitmapPathfindingCache;
         Server.Systems.FeatureFlags.ContentFeatureFlags.BitmapPathfindingCache = true;
-        var mover = MultiTestSupport.GetWalkerOracle(map, new Point3D(PlaceX, PlaceY + 10, (sbyte)z));
+        var mover = MultiTestSupport.GetWalkerOracle(map, new Point3D(CleanX, CleanY + 10, (sbyte)z));
         try
         {
             multi.MoveToWorld(houseLoc, map);
             StepCache.Instance.Clear();
 
-            var start = new Point3D(PlaceX, PlaceY + 10, (sbyte)z);
-            var goal = new Point3D(PlaceX, PlaceY - 10, (sbyte)z);
+            var start = new Point3D(CleanX, CleanY + 10, (sbyte)z);
+            var goal = new Point3D(CleanX, CleanY - 10, (sbyte)z);
             // First pass builds the interior cache (live synth); second pass should hit it.
             Server.PathAlgorithms.BitmapAStarAlgorithm.Instance.Find(mover, map, start, goal);
 
@@ -146,6 +152,39 @@ public class MultiMaskCacheTests
             var after = StepCache.Instance.GetStats().MultiMaskCacheHits;
 
             Assert.True(after > before, $"expected MultiMaskCacheHits to increase, before={before} after={after}");
+        }
+        finally
+        {
+            mover.Delete();
+            multi.Delete();
+            Server.Systems.FeatureFlags.ContentFeatureFlags.BitmapPathfindingCache = cacheWas;
+        }
+    }
+
+    [Fact]
+    public void ClutteredHouse_DoesNotServeCache_ButStillPaths()
+    {
+        var map = Map.Maps[MapId];
+        map.GetAverageZ(PlaceX, PlaceY, out _, out var z, out _);
+        var multi = new TestMulti(GuildHouseId);
+        var cacheWas = Server.Systems.FeatureFlags.ContentFeatureFlags.BitmapPathfindingCache;
+        Server.Systems.FeatureFlags.ContentFeatureFlags.BitmapPathfindingCache = true;
+        var mover = MultiTestSupport.GetWalkerOracle(map, new Point3D(PlaceX, PlaceY + 10, (sbyte)z));
+        try
+        {
+            // (1480,1620) overlaps tall map statics → footprint dirty → cache must NOT serve.
+            multi.MoveToWorld(new Point3D(PlaceX, PlaceY, (sbyte)z), map);
+            StepCache.Instance.Clear();
+
+            var start = new Point3D(PlaceX, PlaceY + 10, (sbyte)z);
+            var goal = new Point3D(PlaceX, PlaceY - 10, (sbyte)z);
+            Server.PathAlgorithms.BitmapAStarAlgorithm.Instance.Find(mover, map, start, goal); // warm
+            var before = StepCache.Instance.GetStats().MultiMaskCacheHits;
+            var path = Server.PathAlgorithms.BitmapAStarAlgorithm.Instance.Find(mover, map, start, goal);
+            var after = StepCache.Instance.GetStats().MultiMaskCacheHits;
+
+            Assert.NotNull(path);          // pathfinding still works (degraded to live-synth)
+            Assert.Equal(before, after);   // dirty footprint → zero cache serves
         }
         finally
         {
