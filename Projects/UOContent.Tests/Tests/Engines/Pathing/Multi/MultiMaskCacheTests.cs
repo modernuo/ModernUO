@@ -154,4 +154,33 @@ public class MultiMaskCacheTests
             Server.Systems.FeatureFlags.ContentFeatureFlags.BitmapPathfindingCache = cacheWas;
         }
     }
+
+    [Fact]
+    public void ComputeFootprintClean_TrueAtNormalPlacement_FalseWhenSunk()
+    {
+        // (PlaceX,PlaceY) is a cluttered spot whose footprint overlaps tall map statics, so a guild
+        // house there is never footprint-clean. Use a known flat/clear spot for the clean assertion.
+        const int CleanX = 1560;
+        const int CleanY = 1616;
+
+        StepCache.Instance.Clear();
+        var map = Map.Maps[MapId];
+        map.GetAverageZ(CleanX, CleanY, out _, out var ground, out _);
+
+        var normal = new TestMulti(GuildHouseId);
+        var sunk = new TestMulti(GuildHouseId);
+        try
+        {
+            normal.MoveToWorld(new Point3D(CleanX, CleanY, (sbyte)ground), map);
+            Assert.True(MultiMaskCache.ComputeFootprintClean(map, normal));
+
+            sunk.MoveToWorld(new Point3D(CleanX + 60, CleanY, (sbyte)(ground - 40)), map);
+            Assert.False(MultiMaskCache.ComputeFootprintClean(map, sunk));
+        }
+        finally
+        {
+            normal.Delete();
+            sunk.Delete();
+        }
+    }
 }

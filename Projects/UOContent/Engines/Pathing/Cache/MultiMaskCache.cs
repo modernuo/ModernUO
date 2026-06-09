@@ -210,6 +210,74 @@ public sealed class MultiMaskCache
         return true;
     }
 
+    /// <summary>Highest terrain (land + statics) top at (x,y). Building block for the cleanliness check.</summary>
+    public static int TerrainTop(Map map, int x, int y)
+    {
+        map.GetAverageZ(x, y, out _, out _, out var top);
+        foreach (var tile in map.Tiles.GetStaticTiles(x, y))
+        {
+            var data = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
+            var t = tile.Z + data.CalcHeight;
+            if (t > top)
+            {
+                top = t;
+            }
+        }
+
+        return top;
+    }
+
+    /// <summary>
+    /// True iff the multi's WHOLE footprint terrain sits below its lowest standable floor — i.e.
+    /// maxTerrain &lt; minFloor over all covered cells. When true, no covered cell's terrain (nor any
+    /// neighbour's) can intrude into a creature's floor envelope, so interior cells of this design are
+    /// safe to serve from the shared per-multiID cache for THIS instance. One-time per instance.
+    /// </summary>
+    public static bool ComputeFootprintClean(Map map, BaseMulti multi)
+    {
+        var mcl = multi.Components;
+        var minFloorLocal = int.MaxValue;
+        var maxTerrain = int.MinValue;
+
+        for (var lx = 0; lx < mcl.Width; lx++)
+        {
+            for (var ly = 0; ly < mcl.Height; ly++)
+            {
+                var col = mcl.Tiles[lx][ly];
+                if (col.Length == 0)
+                {
+                    continue; // uncovered local cell
+                }
+
+                foreach (var tile in col)
+                {
+                    var data = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
+                    if (data.Surface && !data.Impassable)
+                    {
+                        var top = tile.Z + data.CalcHeight;
+                        if (top < minFloorLocal)
+                        {
+                            minFloorLocal = top;
+                        }
+                    }
+                }
+
+                var terrain = TerrainTop(map, multi.X + mcl.Min.X + lx, multi.Y + mcl.Min.Y + ly);
+                if (terrain > maxTerrain)
+                {
+                    maxTerrain = terrain;
+                }
+            }
+        }
+
+        if (minFloorLocal == int.MaxValue)
+        {
+            return false; // no standable floor anywhere → don't cache (defensive)
+        }
+
+        return maxTerrain < minFloorLocal + multi.Z;
+    }
+
     /// <summary>Inverse of <see cref="TryToLocalZ"/>: add multiZ back to recover world Zs.</summary>
     public static StepMask ToWorldZ(StepMask local, int multiZ)
     {
