@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Server.Items;
 using Server.Multis;
@@ -67,6 +68,54 @@ public sealed class MultiMaskCache
         }
 
         return true;
+    }
+
+    /// <summary>
+    /// Converts a world-frame mask's per-direction Zs to local Z (subtract multiZ). Returns false
+    /// if any local Z doesn't fit sbyte (caller must then NOT cache the cell — rare; only when
+    /// |multiZ| is large enough to push a world Z out of range). Mask (walk/wet) bits are copied.
+    /// </summary>
+    public static bool TryToLocalZ(StepMask world, int multiZ, out StepMask local)
+    {
+        local = default;
+        Span<sbyte> w = stackalloc sbyte[8];
+        Span<sbyte> s = stackalloc sbyte[8];
+        for (var d = 0; d < 8; d++)
+        {
+            var lw = world.GetWalkZ((Direction)d) - multiZ;
+            var ls = world.GetSwimZ((Direction)d) - multiZ;
+            if (lw < sbyte.MinValue || lw > sbyte.MaxValue || ls < sbyte.MinValue || ls > sbyte.MaxValue)
+            {
+                return false;
+            }
+            w[d] = (sbyte)lw;
+            s[d] = (sbyte)ls;
+        }
+
+        local = new StepMask(
+            world.WalkMask, world.WetMask,
+            w[0], w[1], w[2], w[3], w[4], w[5], w[6], w[7],
+            s[0], s[1], s[2], s[3], s[4], s[5], s[6], s[7]
+        );
+        return true;
+    }
+
+    /// <summary>Inverse of <see cref="TryToLocalZ"/>: add multiZ back to recover world Zs.</summary>
+    public static StepMask ToWorldZ(StepMask local, int multiZ)
+    {
+        Span<sbyte> w = stackalloc sbyte[8];
+        Span<sbyte> s = stackalloc sbyte[8];
+        for (var d = 0; d < 8; d++)
+        {
+            w[d] = (sbyte)(local.GetWalkZ((Direction)d) + multiZ);
+            s[d] = (sbyte)(local.GetSwimZ((Direction)d) + multiZ);
+        }
+
+        return new StepMask(
+            local.WalkMask, local.WetMask,
+            w[0], w[1], w[2], w[3], w[4], w[5], w[6], w[7],
+            s[0], s[1], s[2], s[3], s[4], s[5], s[6], s[7]
+        );
     }
 }
 

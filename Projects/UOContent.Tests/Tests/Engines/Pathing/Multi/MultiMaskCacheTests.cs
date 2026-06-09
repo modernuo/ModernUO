@@ -74,4 +74,37 @@ public class MultiMaskCacheTests
             multi.Delete();
         }
     }
+
+    [Fact]
+    public void LocalWorldZ_RoundTrips_AndPreservesMasks()
+    {
+        var world = new StepMask(
+            walkMask: 0b1010_1010, wetMask: 0b0101_0101,
+            walkZN: 10, walkZNE: 11, walkZE: 12, walkZSE: 13, walkZS: 14, walkZSW: 15, walkZW: 16, walkZNW: 17,
+            swimZN: -1, swimZNE: -2, swimZE: -3, swimZSE: -4, swimZS: -5, swimZSW: -6, swimZW: -7, swimZNW: -8
+        );
+        const int multiZ = 7;
+
+        Assert.True(MultiMaskCache.TryToLocalZ(world, multiZ, out var local));
+        var back = MultiMaskCache.ToWorldZ(local, multiZ);
+
+        Assert.Equal(world.WalkMask, back.WalkMask);
+        Assert.Equal(world.WetMask, back.WetMask);
+        for (var d = 0; d < 8; d++)
+        {
+            Assert.Equal(world.GetWalkZ((Direction)d), back.GetWalkZ((Direction)d));
+            Assert.Equal(world.GetSwimZ((Direction)d), back.GetSwimZ((Direction)d));
+        }
+    }
+
+    [Fact]
+    public void TryToLocalZ_RejectsOverflow()
+    {
+        var world = new StepMask(
+            walkMask: 0xFF, wetMask: 0,
+            walkZN: 100, walkZNE: 0, walkZE: 0, walkZSE: 0, walkZS: 0, walkZSW: 0, walkZW: 0, walkZNW: 0,
+            swimZN: 0, swimZNE: 0, swimZE: 0, swimZSE: 0, swimZS: 0, swimZSW: 0, swimZW: 0, swimZNW: 0
+        );
+        Assert.False(MultiMaskCache.TryToLocalZ(world, -100, out _));
+    }
 }
