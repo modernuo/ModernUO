@@ -45,6 +45,29 @@ public sealed class MultiMaskCache
         lx = ly = 0;
         return false;
     }
+
+    /// <summary>
+    /// True iff local cell (lx,ly) and all 8 neighbours are covered by the multi (have MCL tiles).
+    /// Such a cell's 8-direction transition is fully determined by the multi (no terrain neighbour),
+    /// so its mask is position-invariant. A pure function of the MCL.
+    /// </summary>
+    public static bool IsInteriorLocalCell(MultiComponentList mcl, int lx, int ly)
+    {
+        for (var dy = -1; dy <= 1; dy++)
+        {
+            for (var dx = -1; dx <= 1; dx++)
+            {
+                var nx = lx + dx;
+                var ny = ly + dy;
+                if (nx < 0 || ny < 0 || nx >= mcl.Width || ny >= mcl.Height || mcl.Tiles[nx][ny].Length == 0)
+                {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
 }
 
 /// <summary>

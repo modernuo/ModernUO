@@ -36,4 +36,42 @@ public class MultiMaskCacheTests
             multi.Delete();
         }
     }
+
+    [Fact]
+    public void IsInteriorLocalCell_TrueDeepInside_FalseAtEdge()
+    {
+        var multi = new TestMulti(GuildHouseId);
+        try
+        {
+            var mcl = multi.Components;
+
+            var foundInterior = false;
+            var foundEdge = false;
+            for (var ly = 0; ly < mcl.Height && (!foundInterior || !foundEdge); ly++)
+            {
+                for (var lx = 0; lx < mcl.Width; lx++)
+                {
+                    if (mcl.Tiles[lx][ly].Length == 0)
+                    {
+                        continue;
+                    }
+                    if (MultiMaskCache.IsInteriorLocalCell(mcl, lx, ly))
+                    {
+                        foundInterior = true;
+                    }
+                    else
+                    {
+                        foundEdge = true;
+                    }
+                }
+            }
+
+            Assert.True(foundInterior, "a guild house must have at least one interior cell");
+            Assert.True(foundEdge, "a guild house must have at least one edge/perimeter cell");
+        }
+        finally
+        {
+            multi.Delete();
+        }
+    }
 }
