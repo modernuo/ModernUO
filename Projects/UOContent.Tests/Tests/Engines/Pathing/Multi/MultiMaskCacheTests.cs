@@ -107,4 +107,17 @@ public class MultiMaskCacheTests
         );
         Assert.False(MultiMaskCache.TryToLocalZ(world, -100, out _));
     }
+
+    [Fact]
+    public void TerrainTopBelow_TrueWhenFloorWellAboveGround()
+    {
+        StepCache.Instance.Clear();
+        var map = Map.Maps[MapId];
+        map.GetAverageZ(PlaceX, PlaceY, out _, out var ground, out _);
+
+        // Floor far above ground → terrain is below → guard passes.
+        Assert.True(MultiMaskCache.TerrainTopBelow(map, PlaceX, PlaceY, (sbyte)(ground + 50)));
+        // Floor at/below ground → terrain reaches the envelope → guard fails.
+        Assert.False(MultiMaskCache.TerrainTopBelow(map, PlaceX, PlaceY, (sbyte)(ground - 50)));
+    }
 }

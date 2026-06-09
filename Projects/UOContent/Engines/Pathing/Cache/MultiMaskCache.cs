@@ -100,6 +100,32 @@ public sealed class MultiMaskCache
         return true;
     }
 
+    /// <summary>
+    /// True iff all terrain (land + statics) at (x,y) sits strictly below <paramref name="floorZ"/>,
+    /// so a creature standing on the multi floor never sees terrain in its envelope and the cached
+    /// (terrain-free) mask is exact. Cheap: one land-top read + the cell's static-tile array scan.
+    /// </summary>
+    public static bool TerrainTopBelow(Map map, int x, int y, sbyte floorZ)
+    {
+        map.GetAverageZ(x, y, out _, out _, out var landTop);
+        if (landTop >= floorZ)
+        {
+            return false;
+        }
+
+        foreach (var tile in map.Tiles.GetStaticTiles(x, y))
+        {
+            var data = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
+            var top = tile.Z + data.CalcHeight;
+            if (top >= floorZ)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     /// <summary>Inverse of <see cref="TryToLocalZ"/>: add multiZ back to recover world Zs.</summary>
     public static StepMask ToWorldZ(StepMask local, int multiZ)
     {
