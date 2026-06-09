@@ -20,7 +20,7 @@ public sealed class MultiMaskCache
 
     private const int StepHeight = 2;
 
-    private readonly Dictionary<int, MultiLocalMask> _byMultiId = new();
+    private readonly Dictionary<int, MultiLocalMask> _byMultiId = [];
 
     public void Clear() => _byMultiId.Clear();
 
