@@ -8132,6 +8132,9 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     public void SayTo(Mobile to, int number, string args = "") =>
         to.NetState.SendMessageLocalized(Serial, Body, MessageType.Regular, SpeechHue, 3, number, Name, args);
 
+    public void SayTo(Mobile to, int number, int hue, string args = "") =>
+        to.NetState.SendMessageLocalized(Serial, Body, MessageType.Regular, hue, 3, number, Name, args);
+
     public bool SendHuePicker(HuePicker p)
     {
         if (m_NetState != null)
