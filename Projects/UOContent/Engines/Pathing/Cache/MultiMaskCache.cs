@@ -43,8 +43,10 @@ public sealed class MultiMaskCache
 
         if (state == MultiLocalMask.CellState.Cached)
         {
-            var worldFloorZ = (sbyte)(local.FloorZAt(lx, ly) + multi.Z);
-            if (Math.Abs(sourceZ - worldFloorZ) <= StepHeight && TerrainTopBelow(map, x, y, worldFloorZ))
+            // Reconstruct the floor Z in the world frame for THIS placement (int; avoids a silent
+            // sbyte wrap when a different instance serves a cell cached at another instance's Z).
+            var worldFloorZ = local.FloorZAt(lx, ly) + multi.Z;
+            if (Math.Abs(sourceZ - worldFloorZ) <= StepHeight && TerrainTopBelow(map, x, y, (sbyte)worldFloorZ))
             {
                 StepCache.Instance.RecordMultiMaskCacheHit();
                 return ToWorldZ(local.MaskAt(lx, ly), multi.Z);
@@ -65,6 +67,8 @@ public sealed class MultiMaskCache
             && TryToLocalZ(mask, multi.Z, out var localMask)
             && sourceZ - multi.Z is >= sbyte.MinValue and <= sbyte.MaxValue)
         {
+            // Record this sourceZ as the cell's reference floor Z (an interior floor cell is reached
+            // at the floor Z); later expansions are validated against it within StepHeight above.
             local.SetCached(lx, ly, localMask, (sbyte)(sourceZ - multi.Z));
         }
         else
