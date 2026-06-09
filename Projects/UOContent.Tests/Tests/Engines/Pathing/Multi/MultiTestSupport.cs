@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using Server;
+using Server.Engines.Pathing.Cache;
 using Server.Items;
+using Xunit;
+using CalcMoves = Server.Movement.Movement;
 
 namespace Server.Tests.Pathfinding;
 
@@ -47,6 +50,88 @@ public static class MultiTestSupport
             return false;
         }
         return mcl.Tiles[lx][ly].Length > 0;
+    }
+
+    /// <summary>
+    /// Sweeps the multi's footprint + 1-cell halo and asserts the multi mask synthesizer
+    /// (<see cref="StepProbe.ComputeMultiMaskAt"/>) agrees with the <c>CheckMovement</c> oracle
+    /// for all 8 directions at every cell, including the exact forward walk-Z on allowed moves.
+    /// Creates its own walker oracle internally and Delete()s it; the caller owns the multi.
+    /// </summary>
+    public static void AssertSynthesizerMatchesCheckMovement(BaseMulti multi, Map map)
+    {
+        var loc = new Point3D(multi.X, multi.Y, multi.Z);
+        var mover = GetWalkerOracle(map, loc);
+        try
+        {
+            var cells = MultiArt.FootprintWithHalo(multi);
+            Assert.NotEmpty(cells);
+
+            var touchedMulti = 0;
+            var sawWalkable = 0;
+            var sawBlocked = 0;
+
+            foreach (var c in cells)
+            {
+                var sourceZ = (sbyte)loc.Z;
+                var p = new Point3D(c.X, c.Y, sourceZ);
+
+                if (HasMultiTileAt(multi, c.X, c.Y))
+                {
+                    touchedMulti++;
+                }
+
+                var mask = StepProbe.ComputeMultiMaskAt(map, c.X, c.Y, sourceZ);
+
+                for (var d = 0; d < 8; d++)
+                {
+                    var dir = (Direction)d;
+                    var expectWalk = CalcMoves.CheckMovement(mover, map, p, dir, out var expectZ);
+
+                    // The synthesizer reports the raw forward-cell step per direction and does NOT
+                    // apply diagonal corner-cutting — by design, the caller ANDs the partner cells.
+                    // CheckMovement (the oracle) DOES corner-cut. Replicate the caller's corner-cut
+                    // on the mask so we compare like-for-like. The walker is not a player, so the
+                    // diagonal is blocked only when BOTH orthogonal partner cells are blocked.
+                    var forwardWalk = (mask.WalkMask & (1 << d)) != 0;
+                    var gotWalk = forwardWalk;
+                    var isDiagonal = (d & 0x1) == 0x1;
+                    if (forwardWalk && isDiagonal)
+                    {
+                        var leftBit = (d - 1) & 0x7;
+                        var rightBit = (d + 1) & 0x7;
+                        var leftWalk = (mask.WalkMask & (1 << leftBit)) != 0;
+                        var rightWalk = (mask.WalkMask & (1 << rightBit)) != 0;
+                        if (!leftWalk && !rightWalk)
+                        {
+                            gotWalk = false;
+                        }
+                    }
+
+                    Assert.Equal(expectWalk, gotWalk);
+
+                    if (expectWalk)
+                    {
+                        // Z is taken from the forward cell only; corner-cut never alters newZ when
+                        // the move is allowed.
+                        Assert.Equal((sbyte)expectZ, mask.GetWalkZ(dir));
+                        sawWalkable++;
+                    }
+                    else
+                    {
+                        sawBlocked++;
+                    }
+                }
+            }
+
+            Assert.True(touchedMulti > 0, "sweep touched no multi-covered cells");
+            Assert.True(sawWalkable > 0, "sweep observed no walkable transitions");
+            Assert.True(sawBlocked > 0, "sweep observed no blocked transitions");
+        }
+        finally
+        {
+            mover.Delete();
+        }
     }
 }
 
