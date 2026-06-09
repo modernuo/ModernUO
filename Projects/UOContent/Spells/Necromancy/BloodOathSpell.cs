@@ -17,9 +17,8 @@ public class BloodOathSpell : NecromancerSpell, ITargetingSpell<Mobile>
         Reagent.DaemonBlood
     );
 
-    // Keyed by BOTH participants (caster and target) -> shared timer, so the oath can be resolved
-    // and removed from either side in O(1). Required for the death/delete hooks to break the oath
-    // immediately instead of waiting for the next poll.
+    // Keyed by BOTH participants (caster and target) -> shared timer, so the oath resolves and
+    // removes from either side. Required so the death/delete events can break it from either mobile.
     private static readonly Dictionary<Mobile, ExpireTimer> _table = new();
 
     public BloodOathSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
@@ -161,8 +160,8 @@ public class BloodOathSpell : NecromancerSpell, ITargetingSpell<Mobile>
         public Mobile Caster { get; }
         public Mobile Target { get; }
 
-        // Single-shot: fire once when the oath expires and clean up. Death/delete of either
-        // party is handled separately by the OnPlayerEnd/OnCreatureEnd event handlers.
+        // Single-shot: fire once when the oath expires. Death or deletion of either party is
+        // handled separately by the OnCurseEnds event handler.
         public ExpireTimer(Mobile caster, Mobile target, TimeSpan delay) : base(delay)
         {
             Caster = caster;
