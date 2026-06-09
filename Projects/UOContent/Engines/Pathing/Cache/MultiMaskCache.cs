@@ -46,6 +46,16 @@ public sealed class MultiMaskCache
             // Reconstruct the floor Z in the world frame for THIS placement (int; avoids a silent
             // sbyte wrap when a different instance serves a cell cached at another instance's Z).
             var worldFloorZ = local.FloorZAt(lx, ly) + multi.Z;
+            // KNOWN LIMITATION (cross-instance neighbour terrain): the cached mask is the multi's
+            // terrain-free transition; serving it is exact only if terrain stays below the floor at
+            // this cell AND its 8 neighbours (CheckStaticStep reads neighbour terrain). We guard only
+            // the centre cell here for speed. For legitimately-placed fixed multis this is always
+            // satisfied — house/boat placement requires flat, clear footprints, so the whole 3x3 sits
+            // above terrain. It can only diverge for a contrived placement (e.g. a GM forcing a multi
+            // onto a slope so a covered neighbour's land/static rises above the floor); such a cell
+            // would serve this instance's clean mask instead of live-synthesizing. See the Phase-3
+            // design risk list; the airtight fix (serve-time 3x3 guard, or a per-instance
+            // footprint-clean flag) is deferred pending a perf/complexity decision.
             if (Math.Abs(sourceZ - worldFloorZ) <= StepHeight && TerrainTopBelow(map, x, y, (sbyte)worldFloorZ))
             {
                 StepCache.Instance.RecordMultiMaskCacheHit();
