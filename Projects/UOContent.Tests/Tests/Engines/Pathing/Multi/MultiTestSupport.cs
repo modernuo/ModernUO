@@ -27,6 +27,24 @@ public sealed class WalkerStub : Mobile
 }
 
 /// <summary>
+/// Stand-in for a customizable foundation: Components is a swappable MCL, exactly the
+/// runtime-mutation shape HouseFoundation uses (it replaces its MCL wholesale on redesign
+/// commit). Lets the test change the footprint and assert the engine reflects it without
+/// driving full house placement/customization.
+/// </summary>
+public sealed class SwappableFoundation : BaseMulti
+{
+    private MultiComponentList _mcl;
+
+    public SwappableFoundation(int baseMultiID) : base(baseMultiID) =>
+        _mcl = MultiData.GetComponents(baseMultiID);
+
+    public override MultiComponentList Components => _mcl;
+
+    public void Redesign(MultiComponentList replacement) => _mcl = replacement;
+}
+
+/// <summary>
 /// Shared helpers for placing/probing multis in pathfinding tests.
 /// </summary>
 public static class MultiTestSupport

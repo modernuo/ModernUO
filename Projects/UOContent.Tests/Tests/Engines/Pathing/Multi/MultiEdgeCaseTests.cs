@@ -1,17 +1,12 @@
 using Server.Engines.Pathing.Cache;
 using Server.Items;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Server.Tests.Pathfinding;
 
 [Collection("Sequential Pathfinding Tests")]
 public class MultiEdgeCaseTests
 {
-    private readonly ITestOutputHelper _output;
-
-    public MultiEdgeCaseTests(ITestOutputHelper output) => _output = output;
-
     private const int MapId = 1; // Trammel
     private const int GuildHouseId = 0x74;
 
@@ -47,6 +42,14 @@ public class MultiEdgeCaseTests
         {
             multiA.MoveToWorld(locA, map);
             multiB.MoveToWorld(locB, map);
+
+            // Non-vacuity: prove the two footprints actually intersect at the chosen 3-tile
+            // separation. The per-sweep touchedMulti guard only proves each multi touched its OWN
+            // footprint; without this, "overlapping" would be an unverified comment.
+            var overlap = MultiArt.FootprintCells(multiA);
+            var setB = new System.Collections.Generic.HashSet<MultiArt.Cell>(MultiArt.FootprintCells(multiB));
+            overlap.RemoveAll(c => !setB.Contains(c));
+            Assert.NotEmpty(overlap); // the two footprints must actually intersect, else the test is meaningless
 
             // The synthesizer must match the oracle over BOTH footprints (each sweep crosses
             // the shared, doubly-covered cells).
@@ -151,22 +154,5 @@ public class MultiEdgeCaseTests
         {
             multi.Delete();
         }
-    }
-
-    /// <summary>
-    /// Stand-in for a customizable foundation: Components is a swappable MCL, exactly the
-    /// runtime-mutation shape HouseFoundation uses (it replaces its MCL wholesale on redesign
-    /// commit).
-    /// </summary>
-    private sealed class SwappableFoundation : BaseMulti
-    {
-        private MultiComponentList _mcl;
-
-        public SwappableFoundation(int baseMultiID) : base(baseMultiID) =>
-            _mcl = MultiData.GetComponents(baseMultiID);
-
-        public override MultiComponentList Components => _mcl;
-
-        public void Redesign(MultiComponentList replacement) => _mcl = replacement;
     }
 }
