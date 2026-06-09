@@ -23,6 +23,76 @@ public sealed class MultiMaskCache
     public void Clear() => _byMultiId.Clear();
 
     /// <summary>
+    /// Returns the multi-aware StepMask for a covered cell (x,y,sourceZ). Serves a cached interior
+    /// mask when available and the guards pass (counted as a MultiMaskCacheHit); otherwise falls
+    /// back to the Phase-2 live synthesizer ComputeMultiMaskAt (counted as a MultiLocalHit), caching
+    /// the result if the cell is interior and clean. Always returns a usable mask (HitKind == Hit).
+    /// </summary>
+    public StepMask GetMask(Map map, int x, int y, sbyte sourceZ)
+    {
+        if (!TryResolveCoveringMulti(map, x, y, out var multi, out var lx, out var ly)
+            || multi is HouseFoundation)
+        {
+            // No covering multi (defensive) or a runtime-mutable foundation → live, no cache.
+            return LiveSynth(map, x, y, sourceZ);
+        }
+
+        var mcl = multi.Components;
+        var local = GetOrCreate(multi.ItemID & 0x3FFF, mcl.Width, mcl.Height);
+        var state = local.GetState(lx, ly);
+
+        if (state == MultiLocalMask.CellState.Cached)
+        {
+            var worldFloorZ = (sbyte)(local.FloorZAt(lx, ly) + multi.Z);
+            if (Math.Abs(sourceZ - worldFloorZ) <= StepHeight && TerrainTopBelow(map, x, y, worldFloorZ))
+            {
+                StepCache.Instance.RecordMultiMaskCacheHit();
+                return ToWorldZ(local.MaskAt(lx, ly), multi.Z);
+            }
+
+            return LiveSynth(map, x, y, sourceZ); // guard failed this placement → live
+        }
+
+        if (state == MultiLocalMask.CellState.NonInterior)
+        {
+            return LiveSynth(map, x, y, sourceZ);
+        }
+
+        // Unknown → classify + (if interior + clean) build & cache.
+        var mask = LiveSynth(map, x, y, sourceZ);
+        if (IsInteriorLocalCell(mcl, lx, ly)
+            && TerrainTopBelow(map, x, y, sourceZ)
+            && TryToLocalZ(mask, multi.Z, out var localMask)
+            && sourceZ - multi.Z is >= sbyte.MinValue and <= sbyte.MaxValue)
+        {
+            local.SetCached(lx, ly, localMask, (sbyte)(sourceZ - multi.Z));
+        }
+        else
+        {
+            local.SetNonInterior(lx, ly);
+        }
+
+        return mask;
+    }
+
+    private static StepMask LiveSynth(Map map, int x, int y, sbyte sourceZ)
+    {
+        StepCache.Instance.RecordMultiLocalHit();
+        return StepProbe.ComputeMultiMaskAt(map, x, y, sourceZ);
+    }
+
+    private MultiLocalMask GetOrCreate(int key, int width, int height)
+    {
+        if (!_byMultiId.TryGetValue(key, out var m))
+        {
+            m = new MultiLocalMask(width, height);
+            _byMultiId[key] = m;
+        }
+
+        return m;
+    }
+
+    /// <summary>
     /// Finds the multi covering (x,y) and the local cell indices into its MCL. Mirrors
     /// Map.StaticTileEnumerator / BaseMulti.Contains. Returns false if no multi covers the cell.
     /// </summary>
