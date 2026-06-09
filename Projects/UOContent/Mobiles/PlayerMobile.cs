@@ -2824,13 +2824,10 @@ namespace Server.Mobiles
             // If the blood oath caster will die then damage is not reflected back to the attacker
             if (hasBloodOath && Alive && !Deleted && !IsDeadBondedPet)
             {
-                // In some expansions resisting spells reduces reflect dmg from monster blood oath
-                var resistReflectedDamage = !from.Player && Core.ML && !Core.HS
-                    ? (from.Skills.MagicResist.Value * 0.5 + 10) / 100
-                    : 0;
-
-                // Reflect damage to the attacker
-                from.Damage((int)(amount * (1.0 - resistReflectedDamage)), this);
+                // Reflect the attacker's original damage back to them, attributed to the caster.
+                // The caster is a player, so the Publish 48 resist mitigation does not apply
+                // (it only reduces reflected damage from creature casters).
+                from.Damage(BloodOathSpell.ComputeReflectedDamage(amount, 0, applyResistMitigation: false), this);
             }
         }
 
