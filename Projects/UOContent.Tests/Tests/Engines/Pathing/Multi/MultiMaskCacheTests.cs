@@ -140,6 +140,8 @@ public class MultiMaskCacheTests
         try
         {
             multi.MoveToWorld(houseLoc, map);
+            Assert.True(MultiMaskCache.ComputeFootprintClean(map, multi),
+                "precondition: (1560,1616) must be footprint-clean for the cache to serve");
             StepCache.Instance.Clear();
 
             var start = new Point3D(CleanX, CleanY + 10, (sbyte)z);
@@ -174,6 +176,8 @@ public class MultiMaskCacheTests
         {
             // (1480,1620) overlaps tall map statics → footprint dirty → cache must NOT serve.
             multi.MoveToWorld(new Point3D(PlaceX, PlaceY, (sbyte)z), map);
+            Assert.False(MultiMaskCache.ComputeFootprintClean(map, multi),
+                "precondition: (1480,1620) must be footprint-dirty for this test to be meaningful");
             StepCache.Instance.Clear();
 
             var start = new Point3D(PlaceX, PlaceY + 10, (sbyte)z);

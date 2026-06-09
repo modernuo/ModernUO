@@ -8,9 +8,11 @@ namespace Server.Engines.Pathing.Cache;
 /// <summary>
 /// Warm, in-memory cache of per-multiID local-frame walkability masks for INTERIOR multi cells
 /// (cell + all 8 neighbours covered by the multi → terrain-neighbour-free → position-invariant).
-/// Wraps the Phase-2 synthesizer: GetMask serves a cached mask when a cell is interior and the
-/// guards pass, else falls back to StepProbe.ComputeMultiMaskAt. Fixed multis only (keyed by
-/// multiID &amp; 0x3FFF); HouseFoundation uses the live path.
+/// Wraps the Phase-2 synthesizer (StepProbe.ComputeMultiMaskAt). Cleanliness is decided ONCE per
+/// instance (BaseMulti.PathInteriorCacheState, via ComputeFootprintClean): a clean instance — whole
+/// footprint terrain below the floor — serves interior cells from the shared per-multiID cache;
+/// dirty instances, boats (movers), and HouseFoundation (runtime-mutable) fall back to live-synth.
+/// Keyed by multiID &amp; 0x3FFF.
 /// </summary>
 public sealed class MultiMaskCache
 {
