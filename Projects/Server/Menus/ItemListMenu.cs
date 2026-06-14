@@ -4,11 +4,12 @@ namespace Server.Menus.ItemLists;
 
 public class ItemListEntry
 {
-    public ItemListEntry(string name, int itemID, int hue = 0)
+    public ItemListEntry(string name, int itemID, int hue = 0, int craftIndex = 0)
     {
         Name = name?.Trim() ?? "";
         ItemID = itemID;
         Hue = hue;
+        CraftIndex = craftIndex;
     }
 
     public string Name { get; }
@@ -16,43 +17,25 @@ public class ItemListEntry
     public int ItemID { get; }
 
     public int Hue { get; }
+
+    public int CraftIndex { get; }
 }
 
-public class ItemListMenu : IMenu
+public class ItemListMenu : BaseMenu
 {
-    private static int m_NextSerial;
-
     public ItemListMenu(string question, ItemListEntry[] entries)
     {
         Question = question.Trim();
         Entries = entries;
-
-        do
-        {
-            Serial = m_NextSerial++;
-            Serial &= 0x7FFFFFFF;
-        } while (Serial == 0);
-
-        Serial = (int)((uint)Serial | 0x80000000);
     }
 
     public string Question { get; }
 
     public ItemListEntry[] Entries { get; set; }
 
-    public int Serial { get; }
+    public override int EntryLength => Entries.Length;
 
-    public int EntryLength => Entries.Length;
-
-    public virtual void OnCancel(NetState state)
-    {
-    }
-
-    public virtual void OnResponse(NetState state, int index)
-    {
-    }
-
-    public void SendTo(NetState state)
+    public override void SendTo(NetState state)
     {
         state.AddMenu(this);
         state.SendDisplayItemListMenu(this);

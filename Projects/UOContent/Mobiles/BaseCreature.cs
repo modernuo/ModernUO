@@ -1479,6 +1479,10 @@ namespace Server.Mobiles
         {
             var oldHits = Hits;
 
+            // Blood oath reflects the original damage the attacker dealt, before other modifiers.
+            var hasBloodOath = from != null && BloodOathSpell.GetBloodOath(from) == this;
+            var reflectedDamage = hasBloodOath ? amount : 0;
+
             if (Core.AOS && !Summoned && Controlled && Utility.RandomDouble() < 0.2)
             {
                 amount = (int)(amount * BonusPetDamageScalar);
@@ -1489,13 +1493,23 @@ namespace Server.Mobiles
                 amount = (int)(amount * 1.25);
             }
 
-            if (from != null && BloodOathSpell.GetBloodOath(from) == this)
+            if (hasBloodOath)
             {
-                amount = (int)(amount * 1.1);
-                from.Damage(amount, from);
+                amount = (int)(amount * 1.2);
             }
 
             base.Damage(amount, from, informMount);
+
+            // If the blood oath caster will die then damage is not reflected back to the attacker.
+            if (hasBloodOath && Alive && !Deleted && !IsDeadBondedPet)
+            {
+                // Reflect the original damage back to the attacker, attributed to the caster.
+                // The caster is a creature, so the Publish 48 (SA+) resist mitigation applies.
+                from.Damage(
+                    BloodOathSpell.ComputeReflectedDamage(reflectedDamage, from.Skills.MagicResist.Value, Core.SA),
+                    this
+                );
+            }
 
             if (SubdueBeforeTame && !Controlled && oldHits > HitsMax / 10 && Hits <= HitsMax / 10)
             {

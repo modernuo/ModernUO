@@ -10,7 +10,7 @@ namespace Server.Tests;
 /// Shared server initialization logic for test fixtures.
 /// Ensures the server is only initialized once across all test collections.
 /// </summary>
-public static class TestServerInitializer
+internal static class TestServerInitializer
 {
     private const string DefaultDataDirectory = @"C:\Ultima Online Classic";
     private static bool _initialized;

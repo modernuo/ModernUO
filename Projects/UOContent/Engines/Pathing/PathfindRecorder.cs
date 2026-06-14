@@ -31,18 +31,15 @@ public static class PathfindRecorder
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(PathfindRecorder));
 
-    private static bool _enabled;
-    private static string _outputPath;
     private static StreamWriter _writer;
-    private static long _recordsWritten;
 
-    public static bool Enabled => _enabled;
-    public static string OutputPath => _outputPath;
-    public static long RecordsWritten => _recordsWritten;
+    public static bool Enabled { get; private set; }
+    public static string OutputPath { get; set; }
+    public static long RecordsWritten { get; private set; }
 
     public static void Configure()
     {
-        _outputPath = ServerConfiguration.GetOrUpdateSetting(
+        OutputPath = ServerConfiguration.GetOrUpdateSetting(
             "pathfinding.recorder.path",
             Path.Combine(Core.BaseDirectory, "Data", "Pathfinding", "recordings", "pathfinds.jsonl")
         );
@@ -61,7 +58,7 @@ public static class PathfindRecorder
     /// </summary>
     public static void SetEnabled(bool enabled)
     {
-        if (enabled == _enabled)
+        if (enabled == Enabled)
         {
             return;
         }
@@ -70,22 +67,22 @@ public static class PathfindRecorder
         {
             try
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(_outputPath) ?? ".");
-                var stream = new FileStream(_outputPath, FileMode.Append, FileAccess.Write, FileShare.Read);
+                Directory.CreateDirectory(Path.GetDirectoryName(OutputPath) ?? ".");
+                var stream = new FileStream(OutputPath, FileMode.Append, FileAccess.Write, FileShare.Read);
                 _writer = new StreamWriter(stream, new UTF8Encoding(false));
-                _enabled = true;
-                logger.Information("PathfindRecorder enabled, writing to {Path}", _outputPath);
+                Enabled = true;
+                logger.Information("PathfindRecorder enabled, writing to {Path}", OutputPath);
             }
             catch (IOException ex)
             {
-                logger.Warning(ex, "PathfindRecorder: failed to open {Path} for write", _outputPath);
+                logger.Warning(ex, "PathfindRecorder: failed to open {Path} for write", OutputPath);
                 _writer = null;
-                _enabled = false;
+                Enabled = false;
             }
         }
         else
         {
-            _enabled = false;
+            Enabled = false;
             try
             {
                 _writer?.Flush();
@@ -93,10 +90,10 @@ public static class PathfindRecorder
             }
             catch (IOException ex)
             {
-                logger.Warning(ex, "PathfindRecorder: error closing {Path}", _outputPath);
+                logger.Warning(ex, "PathfindRecorder: error closing {Path}", OutputPath);
             }
             _writer = null;
-            logger.Information("PathfindRecorder disabled ({Count} records this session)", _recordsWritten);
+            logger.Information("PathfindRecorder disabled ({Count} records this session)", RecordsWritten);
         }
     }
 
@@ -113,7 +110,7 @@ public static class PathfindRecorder
         }
         catch (IOException ex)
         {
-            logger.Warning(ex, "PathfindRecorder: flush failed for {Path}", _outputPath);
+            logger.Warning(ex, "PathfindRecorder: flush failed for {Path}", OutputPath);
         }
     }
 
@@ -124,7 +121,7 @@ public static class PathfindRecorder
     /// </summary>
     public static void RecordIfEnabled(Mobile m, Map map, Point3D start, Point3D goal)
     {
-        if (!_enabled || _writer == null || m == null || map == null)
+        if (!Enabled || _writer == null || m == null || map == null)
         {
             return;
         }
@@ -159,7 +156,7 @@ public static class PathfindRecorder
             vsb.Append(canMoveOverObstacles ? "true" : "false");
             vsb.Append("}\n");
             _writer.Write(vsb.AsSpan());
-            _recordsWritten++;
+            RecordsWritten++;
         }
         catch (IOException ex)
         {

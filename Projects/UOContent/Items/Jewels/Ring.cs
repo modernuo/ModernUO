@@ -33,3 +33,16 @@ public partial class SilverRing : BaseRing
 
     public override double DefaultWeight => 0.1;
 }
+
+[SerializationGenerator(0, false)]
+public partial class WeddingRing : BaseRing
+{
+    public override string DefaultName => "wedding ring";
+
+    [Constructible]
+    public WeddingRing() : base(0x108a)
+    {
+    }
+
+    public override double DefaultWeight => 0.1;
+}

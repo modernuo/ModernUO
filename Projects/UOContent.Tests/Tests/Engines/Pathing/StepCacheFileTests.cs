@@ -55,7 +55,7 @@ public class StepCacheFileTests
             expected[i] = cache.TryGetMask(map, x, y, standZ[i]);
         }
 
-        var path = Path.Combine(Path.GetTempPath(), $"step-cache-roundtrip-{System.Guid.NewGuid():N}.swb");
+        var path = Path.Combine(Path.GetTempPath(), $"step-cache-roundtrip-{Guid.NewGuid():N}.swb");
         try
         {
             var written = cache.SaveToFile(path, map.MapID);
@@ -109,9 +109,52 @@ public class StepCacheFileTests
         var cache = StepCache.Instance;
         cache.Clear();
 
-        var path = Path.Combine(Path.GetTempPath(), $"step-cache-missing-{System.Guid.NewGuid():N}.swb");
+        var path = Path.Combine(Path.GetTempPath(), $"step-cache-missing-{Guid.NewGuid():N}.swb");
         Assert.False(cache.TryOpenLazyReader(path, mapId: 1));
         Assert.Equal(0, cache.OpenLazyReaderCount);
+    }
+
+    /// <summary>
+    /// HasLazyReader is the boot prebake's skip predicate (PathCacheCommands.Initialize): a map
+    /// with an open, fingerprint-valid reader needs no bake. Lock the open/clear contract.
+    /// </summary>
+    [Fact]
+    public void HasLazyReader_TracksOpenAndClear()
+    {
+        var cache = StepCache.Instance;
+        cache.Clear();
+
+        var map = Map.Maps[1];
+        Assert.NotNull(map);
+        Assert.False(cache.HasLazyReader(map.MapID));
+
+        // Build + save a chunk so there's a valid .swb to open.
+        cache.MissPromotionThreshold = 1;
+        Span<sbyte> surfZ = stackalloc sbyte[16];
+        Assert.True(StepProbe.ComputeStandableSurfaceZs(map, 1500, 1600, surfZ) > 0);
+        cache.TryGetMask(map, 1500, 1600, surfZ[0]);
+
+        var path = Path.Combine(Path.GetTempPath(), $"step-cache-haslazy-{Guid.NewGuid():N}.swb");
+        try
+        {
+            Assert.True(cache.SaveToFile(path, map.MapID) > 0);
+            cache.Clear();
+            Assert.False(cache.HasLazyReader(map.MapID));
+
+            Assert.True(cache.TryOpenLazyReader(path, map.MapID));
+            Assert.True(cache.HasLazyReader(map.MapID)); // open → true
+
+            cache.Clear();
+            Assert.False(cache.HasLazyReader(map.MapID)); // clear closes the reader → false
+        }
+        finally
+        {
+            cache.Clear();
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+        }
     }
 
     [Fact]
@@ -120,7 +163,7 @@ public class StepCacheFileTests
         var cache = StepCache.Instance;
         cache.Clear();
 
-        var path = Path.Combine(Path.GetTempPath(), $"step-cache-badmagic-{System.Guid.NewGuid():N}.swb");
+        var path = Path.Combine(Path.GetTempPath(), $"step-cache-badmagic-{Guid.NewGuid():N}.swb");
         try
         {
             File.WriteAllBytes(path, new byte[]
@@ -150,7 +193,7 @@ public class StepCacheFileTests
         var map = Map.Maps[1];
         cache.TryGetMask(map, 1500, 1600, sourceZ: 10);
 
-        var path = Path.Combine(Path.GetTempPath(), $"step-cache-stalehash-{System.Guid.NewGuid():N}.swb");
+        var path = Path.Combine(Path.GetTempPath(), $"step-cache-stalehash-{Guid.NewGuid():N}.swb");
         try
         {
             cache.SaveToFile(path, map.MapID);
@@ -193,7 +236,7 @@ public class StepCacheFileTests
         Assert.NotNull(map);
 
         // Populate a handful of chunks.
-        var coords = new (int, int)[]
+        var coords = new[]
         {
             (1500, 1600), (1516, 1600), (1500, 1616), (1516, 1616), (1532, 1600)
         };
@@ -202,7 +245,7 @@ public class StepCacheFileTests
             cache.TryGetMask(map, x, y, sourceZ: 10);
         }
 
-        var path = Path.Combine(Path.GetTempPath(), $"step-cache-lazy-{System.Guid.NewGuid():N}.swb");
+        var path = Path.Combine(Path.GetTempPath(), $"step-cache-lazy-{Guid.NewGuid():N}.swb");
         try
         {
             Assert.Equal(coords.Length, cache.SaveToFile(path, map.MapID));
@@ -269,7 +312,7 @@ public class StepCacheFileTests
         chunk.SwimZE_Layer[cellIndex]  = -7;
         chunk.SwimZSE_Layer[cellIndex] = -7;
 
-        var path = Path.Combine(Path.GetTempPath(), $"step-cache-swim-{System.Guid.NewGuid():N}.swb");
+        var path = Path.Combine(Path.GetTempPath(), $"step-cache-swim-{Guid.NewGuid():N}.swb");
         try
         {
             Assert.Equal(1, cache.SaveToFile(path, map.MapID));
@@ -314,7 +357,7 @@ public class StepCacheFileTests
         var map = Map.Maps[1];
         Assert.NotNull(map);
 
-        var coords = new (int, int)[]
+        var coords = new[]
         {
             (1500, 1600), (1516, 1600), (1500, 1616), (1516, 1616), (1532, 1600)
         };
@@ -323,7 +366,7 @@ public class StepCacheFileTests
             cache.TryGetMask(map, x, y, sourceZ: 10);
         }
 
-        var path = Path.Combine(Path.GetTempPath(), $"step-cache-preload-{System.Guid.NewGuid():N}.swb");
+        var path = Path.Combine(Path.GetTempPath(), $"step-cache-preload-{Guid.NewGuid():N}.swb");
         try
         {
             Assert.Equal(coords.Length, cache.SaveToFile(path, map.MapID));
@@ -369,7 +412,7 @@ public class StepCacheFileTests
 
         // Build + save one chunk.
         cache.TryGetMask(map, 1500, 1600, sourceZ: 10);
-        var path = Path.Combine(Path.GetTempPath(), $"step-cache-bypass-{System.Guid.NewGuid():N}.swb");
+        var path = Path.Combine(Path.GetTempPath(), $"step-cache-bypass-{Guid.NewGuid():N}.swb");
         try
         {
             Assert.Equal(1, cache.SaveToFile(path, map.MapID));

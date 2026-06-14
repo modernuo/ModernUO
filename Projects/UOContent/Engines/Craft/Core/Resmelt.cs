@@ -1,5 +1,4 @@
 using Server.Ethics;
-using Server.Gumps;
 using Server.Items;
 using Server.Targeting;
 
@@ -20,7 +19,7 @@ namespace Server.Engines.Craft
 
             if (num > 0 && num != 1044267)
             {
-                from.SendGump(new CraftGump(from, craftSystem, tool, num));
+                CraftItem.ShowCraftMenu(from, craftSystem, tool, num);
             }
             else
             {
@@ -142,7 +141,7 @@ namespace Server.Engines.Craft
                         }
                     }
 
-                    from.SendGump(new CraftGump(from, m_CraftSystem, m_Tool, num));
+                    CraftItem.ShowCraftMenu(from, m_CraftSystem, m_Tool, num);
                 }
                 else
                 {
@@ -173,7 +172,7 @@ namespace Server.Engines.Craft
                         _                   => 1044272
                     };
 
-                    from.SendGump(new CraftGump(from, m_CraftSystem, m_Tool, message));
+                    CraftItem.ShowCraftMenu(from, m_CraftSystem, m_Tool, message);
                 }
             }
         }

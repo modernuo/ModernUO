@@ -116,12 +116,36 @@ up front (~16 B/chunk); individual chunks are fetched on demand and remain LRU-c
 file buys is **zero first-pathfind-after-boot latency** for a region (chunks reload from file
 instead of being rebuilt by the runtime baker).
 
-**Disk cost is large — measured, not the stale ~25 MB some older notes claim:** Trammel
-(`1.swb`) is **~565 MB**. Felucca is comparable; all six facets together are on the order of
-**~1.5–2 GB**. Baking is therefore a heavy, opt-in operation for serious shards with disk to
-spare — **do not ship `.swb` files, and do not bake by default.** (If that footprint seems
-wrong for what it stores, the file format is worth auditing separately — it is far above what
-the format's design notes projected.)
+**Disk cost (current, format v8):** the size-reduction roadmap (§ `.swb` size reduction) took
+Trammel from ~565 MB to **17.9 MB**; the other facets are smaller, so all six together are on the
+order of **tens of MB** — not the ~1.5–2 GB the uncompressed v2 format cost. Baking is now cheap
+enough to **offer by prompt at first boot** (below) rather than being a heavy opt-in-only step.
+Still don't *ship* prebaked `.swb` files (they're tile-data-version-specific and regenerate from
+the client files anyway).
+
+### First-boot pre-bake prompt
+
+On the **first boot** (right after map selection) an interactive prompt offers to pre-bake the
+`.swb` cache for the selected maps. The answer is stored in `modernuo.json` as
+**`pathfinding.prebakeMaps`** (default **false**), so it is asked exactly once; headless/CI boots
+(redirected input) skip the prompt and default to off — operators can set the flag directly.
+
+When the flag is set, `PathCacheCommands.Initialize()` bakes, at startup, any map whose `.swb` is
+missing or **stale** (its tile-data fingerprint no longer matches — e.g. after a client/map
+update). A fresh cache is a no-op, so only the first boot (or a post-update boot) pays the
+several-minutes cost. Wiring:
+
+- The prompt runs in a dedicated `AssemblyHandler.Invoke("ConfigurePrompts")` startup phase —
+  after assemblies load (so content can register prompts) but **before Serilog starts**, so the
+  console prompt is not interleaved with the async console sink. Any class can participate by
+  defining `public static void ConfigurePrompts()` and self-gating on first-boot state.
+- The bake runs in the later `Invoke("Initialize")` phase (after the tile matrix + world load,
+  which the bake walks).
+- Staleness is decided by the `.swb` fingerprint, which `StepCacheFile.OpenForLazy` validates at
+  open time (hash of `tiledata.mul` + the per-map `.mul`/`.uop` files — never the in-memory
+  `TileData` tables, which the server patches at runtime). `Configure` opens a reader for every
+  up-to-date file; the bake in `Initialize` then skips any map where `StepCache.HasLazyReader` is
+  already true, so the fingerprint is computed once per boot, not twice.
 
 ## Configuration levers
 
@@ -131,6 +155,7 @@ the format's design notes projected.)
 | `bitmap_pathfinding_cache` feature flag (`ContentFeatureFlags.BitmapPathfindingCache`, `Server.Systems.FeatureFlags`) | `FeatureFlagManager` | `true` | Off → `BitmapAStar` routes straight to the slow path with **no cache probe and no warming memory**. ≈ old FastAStar at ~1×. |
 | `pathfinding.maxResidentChunks` | `PathCacheCommands.Configure` | 8192 (~40 MB) | LRU cap on resident chunks = the warming-memory ceiling. Lower it (e.g. 512–1024 ≈ 2.5–5 MB) on small shards. |
 | `pathfinding.maxSearchNodes` | `PathCacheCommands.Configure` → `BitmapAStarAlgorithm.MaxSearchNodes` | 1000 | A* per-Find node-expansion budget. See limits above; ~1000 is the sweet spot. |
+| `pathfinding.prebakeMaps` | `PathCacheCommands` (first-boot prompt + `Initialize`) | `false` | When set, bakes any missing/stale `.swb` for the selected maps at startup (fingerprint-gated, so a fresh cache is a no-op). Set interactively by the first-boot prompt. |
 | `PathFollower` `RepathDelay` | `PathFollower.cs` (const) | 2 s | Throttle: a moving goal re-`Find`s at most ~once per 2 s; a stationary reachable goal is pathed once and reused until arrival. Not a setting (compile-time). |
 
 ### Default configuration (recommended)
@@ -146,7 +171,7 @@ that care about first-pathfind-after-boot latency and can spend ~1.5–2 GB of d
 | `bitmap_pathfinding_cache = false` | ≈1× (old FastAStar) | **0** cache RAM | 0 |
 | Cache on, `maxResidentChunks` low (~512) | ~2–5× on hot regions | ~few MB | 0 |
 | Cache on, default cap (8192) | 2–5× warm | ~40 MB plateau | 0 |
-| Cache on + baked `.swb` | + zero first-pathfind-after-boot latency | ~40 MB + index | **~1.5–2 GB** |
+| Cache on + baked `.swb` | + zero first-pathfind-after-boot latency | ~40 MB + index | **~tens of MB** (v8) |
 
 The key point for RAM-starved boxes: **disabling the cache is not a regression** — it's the old
 FastAStar behavior at ~1× with zero warming memory (the slow path does the same per-cell work,

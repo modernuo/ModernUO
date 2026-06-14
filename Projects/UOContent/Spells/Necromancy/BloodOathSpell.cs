@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.CodeGeneratedEvents;
 using Server.Engines.BuffIcons;
 using Server.Mobiles;
 using Server.Targeting;
@@ -16,7 +17,8 @@ public class BloodOathSpell : NecromancerSpell, ITargetingSpell<Mobile>
         Reagent.DaemonBlood
     );
 
-    private static readonly Dictionary<Mobile, Mobile> _oathTable = new();
+    // Keyed by BOTH participants (caster and target) -> shared timer, so the oath resolves and
+    // removes from either side. Required so the death/delete events can break it from either mobile.
     private static readonly Dictionary<Mobile, ExpireTimer> _table = new();
 
     public BloodOathSpell(Mobile caster, Item scroll = null) : base(caster, scroll, _info)
@@ -39,11 +41,11 @@ public class BloodOathSpell : NecromancerSpell, ITargetingSpell<Mobile>
         {
             Caster.SendLocalizedMessage(1060508); // You can't curse that.
         }
-        else if (_oathTable.ContainsKey(Caster))
+        else if (_table.ContainsKey(Caster))
         {
             Caster.SendLocalizedMessage(1061607); // You are already bonded in a Blood Oath.
         }
-        else if (_oathTable.ContainsKey(m))
+        else if (_table.ContainsKey(m))
         {
             if (m.Player)
             {
@@ -60,16 +62,11 @@ public class BloodOathSpell : NecromancerSpell, ITargetingSpell<Mobile>
 
             /* Temporarily creates a dark pact between the caster and the target.
              * Any damage dealt by the target to the caster is increased, but the target receives the same amount of damage.
-             * The effect lasts for ((Spirit Speak skill level - target's Resist Magic skill level) / 80 ) + 8 seconds.
+             * The effect lasts for ((Spirit Speak skill level - target's Resist Magic skill level) / 8) + 8 seconds.
              *
-             * NOTE: The above algorithm must be fixed point, it should be:
-             * ((ss-rm)/8)+8
+             * NOTE: The in-game tooltip (and UOGuide) display /80 due to a fixed-point bug.
+             * The actual OSI formula is /8, matching RunUO/ServUO.
              */
-
-            RemoveCurse(m);
-
-            _oathTable[Caster] = Caster;
-            _oathTable[m] = Caster;
 
             m.Spell?.OnCasterHurt();
 
@@ -81,16 +78,11 @@ public class BloodOathSpell : NecromancerSpell, ITargetingSpell<Mobile>
             m.FixedParticles(0x375A, 1, 17, 9919, 33, 7, EffectLayer.Waist);
             m.FixedParticles(0x3728, 1, 13, 9502, 33, 7, (EffectLayer)255);
 
-            var duration = TimeSpan.FromSeconds((GetDamageSkill(Caster) - GetResistSkill(m)) / 80 + 8);
+            var duration = TimeSpan.FromSeconds(GetDurationSeconds(GetDamageSkill(Caster), GetResistSkill(m)));
             m.CheckSkill(SkillName.MagicResist, 0.0, 120.0); // Skill check for gain
 
-            var timer = new ExpireTimer(Caster, m, duration);
-            timer.Start();
+            RegisterOath(Caster, m, duration);
 
-            (Caster as PlayerMobile)?.AddBuff(new BuffInfo(BuffIcon.BloodOathCaster, 1075659, duration, m.Name));
-            (m as PlayerMobile)?.AddBuff(new BuffInfo(BuffIcon.BloodOathCurse, 1075661, duration, Caster.Name));
-
-            _table[m] = timer;
             HarmfulSpell(m);
         }
     }
@@ -100,25 +92,51 @@ public class BloodOathSpell : NecromancerSpell, ITargetingSpell<Mobile>
         Caster.Target = new SpellTarget<Mobile>(this, TargetFlags.Harmful);
     }
 
-    public static bool RemoveCurse(Mobile target)
+    // ((Spirit Speak - Resisting Spells) / 8) + 8 seconds.
+    internal static double GetDurationSeconds(double damageSkill, double resistSkill) =>
+        (damageSkill - resistSkill) / 8 + 8;
+
+    // The attacker takes the original (un-bonused) damage reflected back. Publish 48 lets the
+    // attacker's Resisting Spells reduce the reflected damage, but only against creature casters.
+    internal static int ComputeReflectedDamage(int originalDamage, double attackerMagicResist, bool applyResistMitigation)
     {
-        if (!_table.Remove(target, out var timer))
+        if (!applyResistMitigation)
+        {
+            return originalDamage;
+        }
+
+        // ((Resisting Spells * 10) / 20) + 10 = percentage of damage resisted
+        var resisted = (attackerMagicResist * 0.5 + 10) / 100;
+        return (int)(originalDamage * (1.0 - resisted));
+    }
+
+    internal static void RegisterOath(Mobile caster, Mobile target, TimeSpan duration)
+    {
+        var timer = new ExpireTimer(caster, target, duration);
+        _table[caster] = timer;
+        _table[target] = timer;
+        timer.Start();
+
+        (caster as PlayerMobile)?.AddBuff(new BuffInfo(BuffIcon.BloodOathCaster, 1075659, duration, target.Name));
+        (target as PlayerMobile)?.AddBuff(new BuffInfo(BuffIcon.BloodOathCurse, 1075661, duration, caster.Name));
+    }
+
+    public static bool RemoveCurse(Mobile m)
+    {
+        if (m == null || !_table.TryGetValue(m, out var timer))
         {
             return false;
         }
 
         var caster = timer.Caster;
-        if (_oathTable.Remove(caster))
-        {
-            caster.SendLocalizedMessage(1061620); // Your Blood Oath has been broken.
-        }
-
-        if (_oathTable.Remove(target))
-        {
-            target.SendLocalizedMessage(1061620); // Your Blood Oath has been broken.
-        }
+        var target = timer.Target;
 
         timer.Stop();
+        _table.Remove(caster);
+        _table.Remove(target);
+
+        caster.SendLocalizedMessage(1061620); // Your Blood Oath has been broken.
+        target.SendLocalizedMessage(1061620); // Your Blood Oath has been broken.
 
         (caster as PlayerMobile)?.RemoveBuff(BuffIcon.BloodOathCaster);
         (target as PlayerMobile)?.RemoveBuff(BuffIcon.BloodOathCurse);
@@ -127,31 +145,29 @@ public class BloodOathSpell : NecromancerSpell, ITargetingSpell<Mobile>
     }
 
     public static Mobile GetBloodOath(Mobile m) =>
-        m == null || _oathTable.TryGetValue(m, out var oath) && oath == m ? null : oath;
+        m != null && _table.TryGetValue(m, out var timer) && timer.Target == m ? timer.Caster : null;
+
+    // Death or deletion of either participant breaks the oath immediately. RemoveCurse resolves the
+    // shared timer from either the caster or the target key, so a single call per mobile is enough.
+    [OnEvent(nameof(PlayerMobile.PlayerDeathEvent))]
+    [OnEvent(nameof(PlayerMobile.PlayerDeletedEvent))]
+    [OnEvent(nameof(BaseCreature.CreatureDeathEvent))]
+    [OnEvent(nameof(BaseCreature.CreatureDeletedEvent))]
+    public static void OnCurseEnds(Mobile m) => RemoveCurse(m);
 
     private class ExpireTimer : Timer
     {
-        private readonly Mobile _target;
-        private readonly DateTime _end;
-
         public Mobile Caster { get; }
+        public Mobile Target { get; }
 
-        public ExpireTimer(Mobile caster, Mobile target, TimeSpan delay) : base(
-            TimeSpan.FromSeconds(1.0),
-            TimeSpan.FromSeconds(1.0)
-        )
+        // Single-shot: fire once when the oath expires. Death or deletion of either party is
+        // handled separately by the OnCurseEnds event handler.
+        public ExpireTimer(Mobile caster, Mobile target, TimeSpan delay) : base(delay)
         {
             Caster = caster;
-            _target = target;
-            _end = Core.Now + delay;
+            Target = target;
         }
 
-        protected override void OnTick()
-        {
-            if (Caster.Deleted || _target.Deleted || !Caster.Alive || !_target.Alive || Core.Now >= _end)
-            {
-                RemoveCurse(_target);
-            }
-        }
+        protected override void OnTick() => RemoveCurse(Target);
     }
 }

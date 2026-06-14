@@ -10,22 +10,11 @@ public class PathfindRecorderTests
     private static string NewTempPath() =>
         Path.Combine(Path.GetTempPath(), $"pathfind-recorder-{System.Guid.NewGuid():N}.jsonl");
 
-    /// <summary>
-    /// Reflection-set the static _outputPath without going through Configure (which
-    /// reads from server.cfg) so tests don't poison the project's server.cfg.
-    /// </summary>
-    private static void OverrideOutputPath(string path)
-    {
-        typeof(PathfindRecorder).GetField("_outputPath",
-            System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic)!
-            .SetValue(null, path);
-    }
-
     [Fact]
     public void Disabled_RecordIfEnabled_DoesNothing()
     {
         var path = NewTempPath();
-        OverrideOutputPath(path);
+        PathfindRecorder.OutputPath = path;
         PathfindRecorder.SetEnabled(false);
 
         try
@@ -52,7 +41,7 @@ public class PathfindRecorderTests
     public void Enabled_RecordIfEnabled_WritesValidJsonlLine()
     {
         var path = NewTempPath();
-        OverrideOutputPath(path);
+        PathfindRecorder.OutputPath = path;
         PathfindRecorder.SetEnabled(true);
 
         try
@@ -95,7 +84,7 @@ public class PathfindRecorderTests
     public void Enabled_RecordsCapabilityFlagsFromBaseCreature()
     {
         var path = NewTempPath();
-        OverrideOutputPath(path);
+        PathfindRecorder.OutputPath = path;
         PathfindRecorder.SetEnabled(true);
 
         try
@@ -130,7 +119,7 @@ public class PathfindRecorderTests
     public void SetEnabled_TogglingTwice_IsIdempotent()
     {
         var path = NewTempPath();
-        OverrideOutputPath(path);
+        PathfindRecorder.OutputPath = path;
 
         try
         {
@@ -155,9 +144,6 @@ public class PathfindRecorderTests
 
     private sealed class RecorderStub : Server.Mobiles.BaseCreature
     {
-        public RecorderStub(Serial serial) : base(serial)
-        {
-            Body = 0xC9;
-        }
+        public RecorderStub(Serial serial) : base(serial) => Body = 0xC9;
     }
 }

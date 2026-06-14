@@ -149,7 +149,7 @@ jobs:
           sha256sum build-tool-* > checksums-sha256.txt
 
       - name: Create or update release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: build-tool-latest
           name: Build Tool (Latest)

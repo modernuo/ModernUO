@@ -1556,6 +1556,8 @@ namespace Server.Multis
 
         public override void OnMapChange()
         {
+            base.OnMapChange();
+
             if (LockDowns == null)
             {
                 return;
@@ -1627,6 +1629,8 @@ namespace Server.Multis
 
         public override void OnLocationChange(Point3D oldLocation)
         {
+            base.OnLocationChange(oldLocation);
+
             if (LockDowns == null)
             {
                 return;

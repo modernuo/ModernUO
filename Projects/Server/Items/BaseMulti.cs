@@ -19,6 +19,24 @@ using ModernUO.Serialization;
 
 namespace Server.Items;
 
+/// <summary>
+/// Whether a multi instance's footprint is eligible for the pathfinding interior-mask cache
+/// (Server.Engines.Pathing.Cache.MultiMaskCache). Stored on
+/// <see cref="BaseMulti.PathInteriorCacheState"/>; recomputed when it is <see cref="Unknown"/>
+/// (e.g. after a move resets it).
+/// </summary>
+public enum MultiInteriorCacheState : byte
+{
+    /// <summary>Not yet determined; recompute on next use.</summary>
+    Unknown = 0,
+
+    /// <summary>Whole footprint terrain is below the floor → interior cells may serve from the cache.</summary>
+    Clean = 1,
+
+    /// <summary>Terrain intrudes into the footprint → fall back to live synthesis.</summary>
+    Dirty = 2
+}
+
 [SerializationGenerator(0, false)]
 public abstract partial class BaseMulti : Item
 {
@@ -35,6 +53,10 @@ public abstract partial class BaseMulti : Item
                 Map?.OnLeave(this);
                 base.ItemID = value;
                 Map?.OnEnter(this);
+
+                // The footprint shape changes with ItemID (e.g. a boat's heading swaps the MCL), so
+                // the pathfinding interior-cache clean/dirty status must be recomputed.
+                PathInteriorCacheState = MultiInteriorCacheState.Unknown;
             }
         }
     }
@@ -64,6 +86,27 @@ public abstract partial class BaseMulti : Item
     public virtual bool AllowsRelativeDrop => false;
 
     public virtual MultiComponentList Components => MultiData.GetComponents(ItemID);
+
+    /// <summary>
+    /// Pathfinding interior-mask cache gate (Server.Engines.Pathing.Cache.MultiMaskCache).
+    /// Reset to <see cref="MultiInteriorCacheState.Unknown"/> whenever the footprint's world-terrain
+    /// relationship can change — a location change, a map change, or an ItemID change (e.g. a boat's
+    /// heading swaps the MCL). Subclasses that override <see cref="OnLocationChange"/> /
+    /// <see cref="OnMapChange"/> MUST call base for the reset to fire.
+    /// </summary>
+    public MultiInteriorCacheState PathInteriorCacheState { get; set; }
+
+    public override void OnLocationChange(Point3D oldLocation)
+    {
+        base.OnLocationChange(oldLocation);
+        PathInteriorCacheState = MultiInteriorCacheState.Unknown;
+    }
+
+    public override void OnMapChange()
+    {
+        base.OnMapChange();
+        PathInteriorCacheState = MultiInteriorCacheState.Unknown;
+    }
 
     public override int GetMaxUpdateRange() => 22;
 

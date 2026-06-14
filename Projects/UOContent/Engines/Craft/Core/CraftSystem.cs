@@ -54,6 +54,8 @@ namespace Server.Engines.Craft
 
         public virtual CraftECA ECA => CraftECA.ChanceMinusSixty;
 
+        public virtual bool RequiresTool => true;
+
         public bool Resmelt { get; set; }
 
         public bool Repair { get; set; }
@@ -100,6 +102,17 @@ namespace Server.Engines.Craft
             if (CraftItems.SearchFor(type) != null)
             {
                 realCraftItem.Craft(from, this, typeRes, tool);
+            }
+        }
+
+        public void CreateItem(
+            Mobile from, Type type, Type typeRes, BaseTool tool, CraftItem realCraftItem, int hue
+        )
+        {
+            // Verify if the type is in the list of the craftable item
+            if (CraftItems.SearchFor(type) != null)
+            {
+                realCraftItem.Craft(from, this, typeRes, tool, hue);
             }
         }
 

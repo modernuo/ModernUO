@@ -18,9 +18,9 @@ public class StepCacheFileV8Tests
         {
             c.WalkMask[i] = (byte)((i + seed) & 0xFF);
             c.WetMask[i] = (byte)((i * 7 + seed) & 0xFF);
-            c.SourceZ[i] = (sbyte)(((i + seed) % 40) - 20);
-            c.WalkZN[i] = (sbyte)(c.SourceZ[i] + (i % 3));
-            c.SwimZS[i] = (sbyte)(c.SourceZ[i] - (i % 2));
+            c.SourceZ[i] = (sbyte)((i + seed) % 40 - 20);
+            c.WalkZN[i] = (sbyte)(c.SourceZ[i] + i % 3);
+            c.SwimZS[i] = (sbyte)(c.SourceZ[i] - i % 2);
         }
         return c;
     }

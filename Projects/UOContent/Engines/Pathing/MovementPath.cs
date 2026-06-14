@@ -4,7 +4,6 @@ using Server.Engines.Pathing;
 using Server.Engines.Pathing.Cache;
 using Server.Items;
 using Server.PathAlgorithms;
-using Server.PathAlgorithms.BitmapAStar;
 using Server.Spells;
 using Server.Targeting;
 

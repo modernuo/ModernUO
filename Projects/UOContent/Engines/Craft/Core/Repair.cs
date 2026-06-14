@@ -1,5 +1,5 @@
 using System;
-using Server.Gumps;
+using Server.Engines.Craft.T2A;
 using Server.Items;
 using Server.Mobiles;
 using Server.Targeting;
@@ -482,8 +482,15 @@ namespace Server.Engines.Craft
 
                 if (!usingDeed)
                 {
-                    var context = m_CraftSystem.GetContext(from);
-                    from.SendGump(new CraftGump(from, m_CraftSystem, m_Tool, number));
+                    if (T2ACraftSystem.Enabled)
+                    {
+                        from.SendLocalizedMessage(number);
+                        CraftItem.ShowCraftMenu(from, m_CraftSystem, m_Tool);
+                    }
+                    else
+                    {
+                        CraftItem.ShowCraftMenu(from, m_CraftSystem, m_Tool, number);
+                    }
                 }
                 else
                 {
