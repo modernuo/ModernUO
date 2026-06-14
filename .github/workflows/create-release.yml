@@ -19,7 +19,7 @@ jobs:
       with:
         global-json-file: global.json
     - name: Compute version
-      uses: dotnet/nbgv@v0.5.1
+      uses: dotnet/nbgv@v0.5.2
       id: nbgv
     - name: Push version tag
       run: |
@@ -28,7 +28,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
     - name: Create Release
-      uses: softprops/action-gh-release@v2
+      uses: softprops/action-gh-release@v3
       with:
         tag_name: ${{ steps.nbgv.outputs.Version }}
         name: ${{ steps.nbgv.outputs.Version }}
