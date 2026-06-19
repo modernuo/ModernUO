@@ -536,8 +536,6 @@ namespace Server.Mobiles
             set => SetFlag(PlayerFlag.RefuseTrades, value);
         }
 
-        public Dictionary<Type, int> RecoverableAmmo { get; set; }
-
         [CommandProperty(AccessLevel.GameMaster)]
         public DateTime AcceleratedStart { get; set; }
 
@@ -2381,11 +2379,6 @@ namespace Server.Mobiles
             ReceivedHonorContext?.OnTargetDamaged(from, amount);
             SentHonorContext?.OnSourceDamaged(from, amount);
 
-            if (willKill && from is PlayerMobile mobile)
-            {
-                Timer.StartTimer(TimeSpan.FromSeconds(10), mobile.RecoverAmmo);
-            }
-
             base.OnDamage(amount, from, willKill);
         }
 
@@ -2403,14 +2396,6 @@ namespace Server.Mobiles
                 {
                     deathRobe.Delete();
                 }
-            }
-        }
-
-        public override void OnWarmodeChanged()
-        {
-            if (!Warmode)
-            {
-                Timer.StartTimer(TimeSpan.FromSeconds(10), RecoverAmmo);
             }
         }
 
@@ -2464,8 +2449,6 @@ namespace Server.Mobiles
 
             ReceivedHonorContext?.OnTargetKilled();
             SentHonorContext?.OnSourceKilled();
-
-            RecoverAmmo();
 
             return base.OnBeforeDeath();
         }
@@ -3727,50 +3710,6 @@ namespace Server.Mobiles
             AutoStabled = null;
         }
 
-        public void RecoverAmmo()
-        {
-            if (!Core.SE || !Alive || RecoverableAmmo == null)
-            {
-                return;
-            }
-
-            foreach (var kvp in RecoverableAmmo)
-            {
-                if (kvp.Value > 0)
-                {
-                    Item ammo = null;
-
-                    try
-                    {
-                        ammo = kvp.Key.CreateInstance<Item>();
-                    }
-                    catch
-                    {
-                        // ignored
-                    }
-
-                    if (ammo == null)
-                    {
-                        continue;
-                    }
-
-                    ammo.Amount = kvp.Value;
-
-                    var name = ammo.Name ?? ammo switch
-                    {
-                        Arrow _ => $"arrow{(ammo.Amount != 1 ? "s" : "")}",
-                        Bolt _ => $"bolt{(ammo.Amount != 1 ? "s" : "")}",
-                        _ => $"#{ammo.LabelNumber}"
-                    };
-
-                    PlaceInBackpack(ammo);
-                    SendLocalizedMessage(1073504, $"{ammo.Amount}\t{name}"); // You recover ~1_NUM~ ~2_AMMO~.
-                }
-            }
-
-            RecoverableAmmo.Clear();
-        }
-
         private static int GetInsuranceCost(Item item) => 600;
 
         private void ToggleItemInsurance()
@@ -4171,6 +4110,8 @@ namespace Server.Mobiles
         {
             ReceivedHonorContext?.Cancel();
             SentHonorContext?.Cancel();
+
+            AmmoRecovery.Forget(this);
 
             if (Stabled != null)
             {

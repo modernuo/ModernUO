@@ -1623,16 +1623,9 @@ namespace Server.Mobiles
 
             ReceivedHonorContext?.OnTargetDamaged(from, amount);
 
-            if (!willKill)
+            if (!willKill && CanBeDistracted && ControlOrder == OrderType.Follow)
             {
-                if (CanBeDistracted && ControlOrder == OrderType.Follow)
-                {
-                    CheckDistracted(from);
-                }
-            }
-            else if (from is PlayerMobile mobile)
-            {
-                Timer.StartTimer(TimeSpan.FromSeconds(10), mobile.RecoverAmmo);
+                CheckDistracted(from);
             }
 
             base.OnDamage(amount, from, willKill);
