@@ -127,12 +127,20 @@ namespace Server.Items
 
                 ammo.Amount = amount;
 
-                var name = ammo.Name ?? ammo switch
+                var name = ammo.Name;
+                if (name == null)
                 {
-                    Arrow _ => $"arrow{(ammo.Amount != 1 ? "s" : "")}",
-                    Bolt _  => $"bolt{(ammo.Amount != 1 ? "s" : "")}",
-                    _       => $"#{ammo.LabelNumber}"
-                };
+                    var label = ammo.LabelNumber;
+
+                    // Arrow (1023903/1023904) and bolt (1027163/1027164) name clilocs keep their plural form
+                    // two entries above the singular, so bump the label when recovering more than one.
+                    if (ammo.Amount != 1 && label is 1023903 or 1023904 or 1027163 or 1027164)
+                    {
+                        label += 2;
+                    }
+
+                    name = $"#{label}";
+                }
 
                 player.PlaceInBackpack(ammo);
                 player.SendLocalizedMessage(1073504, $"{ammo.Amount}\t{name}"); // You recover ~1_NUM~ ~2_AMMO~.
