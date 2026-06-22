@@ -155,6 +155,7 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
 
     public void Add(ReadOnlySpan<char> argument) => InternalAdd(GetStringNumber(), argument);
     public void Add(int number, ReadOnlySpan<char> argument) => InternalAdd(number, argument);
+    public OplTextBlock TextBlock() => new(this);
 
     private void InternalAdd(int number, ReadOnlySpan<char> chars)
     {
