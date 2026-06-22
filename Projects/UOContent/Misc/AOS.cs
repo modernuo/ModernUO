@@ -493,6 +493,131 @@ namespace Server
             set => this[AosAttribute.IncreasedKarmaLoss] = value;
         }
 
+        public void GetProperties(IPropertyList list, int damageBonus = 0, int hitChanceBonus = 0, int luckBonus = 0)
+        {
+            int prop;
+
+            if ((prop = WeaponDamage + damageBonus) != 0)
+            {
+                list.Add(1060401, prop); // damage increase ~1_val~%
+            }
+
+            if ((prop = DefendChance) != 0)
+            {
+                list.Add(1060408, prop); // defense chance increase ~1_val~%
+            }
+
+            if ((prop = BonusDex) != 0)
+            {
+                list.Add(1060409, prop); // dexterity bonus ~1_val~
+            }
+
+            if ((prop = EnhancePotions) != 0)
+            {
+                list.Add(1060411, prop); // enhance potions ~1_val~%
+            }
+
+            if ((prop = CastRecovery) != 0)
+            {
+                list.Add(1060412, prop); // faster cast recovery ~1_val~
+            }
+
+            if ((prop = CastSpeed) != 0)
+            {
+                list.Add(1060413, prop); // faster casting ~1_val~
+            }
+
+            if ((prop = AttackChance + hitChanceBonus) != 0)
+            {
+                list.Add(1060415, prop); // hit chance increase ~1_val~%
+            }
+
+            if ((prop = BonusHits) != 0)
+            {
+                list.Add(1060431, prop); // hit point increase ~1_val~
+            }
+
+            if ((prop = BonusInt) != 0)
+            {
+                list.Add(1060432, prop); // intelligence bonus ~1_val~
+            }
+
+            if ((prop = LowerManaCost) != 0)
+            {
+                list.Add(1060433, prop); // lower mana cost ~1_val~%
+            }
+
+            if ((prop = LowerRegCost) != 0)
+            {
+                list.Add(1060434, prop); // lower reagent cost ~1_val~%
+            }
+
+            if ((prop = Luck + luckBonus) != 0)
+            {
+                list.Add(1060436, prop); // luck ~1_val~
+            }
+
+            if ((prop = BonusMana) != 0)
+            {
+                list.Add(1060439, prop); // mana increase ~1_val~
+            }
+
+            if ((prop = RegenMana) != 0)
+            {
+                list.Add(1060440, prop); // mana regeneration ~1_val~
+            }
+
+            if (NightSight != 0)
+            {
+                list.Add(1060441); // night sight
+            }
+
+            if ((prop = ReflectPhysical) != 0)
+            {
+                list.Add(1060442, prop); // reflect physical damage ~1_val~%
+            }
+
+            if ((prop = RegenStam) != 0)
+            {
+                list.Add(1060443, prop); // stamina regeneration ~1_val~
+            }
+
+            if ((prop = RegenHits) != 0)
+            {
+                list.Add(1060444, prop); // hit point regeneration ~1_val~
+            }
+
+            if (SpellChanneling != 0)
+            {
+                list.Add(1060482); // spell channeling
+            }
+
+            if ((prop = SpellDamage) != 0)
+            {
+                list.Add(1060483, prop); // spell damage increase ~1_val~%
+            }
+
+            if ((prop = BonusStam) != 0)
+            {
+                list.Add(1060484, prop); // stamina increase ~1_val~
+            }
+
+            if ((prop = BonusStr) != 0)
+            {
+                list.Add(1060485, prop); // strength bonus ~1_val~
+            }
+
+            if ((prop = WeaponSpeed) != 0)
+            {
+                list.Add(1060486, prop); // swing speed increase ~1_val~%
+            }
+
+            if (Core.ML && (prop = IncreasedKarmaLoss) != 0)
+            {
+                list.Add(1075210, prop); // Increased Karma Loss ~1val~%
+            }
+        }
+
         public static int GetValue(Mobile m, AosAttribute attribute)
         {
             if (!Core.AOS)
