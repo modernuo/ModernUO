@@ -1198,9 +1198,17 @@ namespace Server
             return value;
         }
 
-        public void GetProperties(IPropertyList list)
+        // lowerStatReq is passed in because consumers compute it differently: armor folds in the
+        // resource's ArmorLowerRequirements via GetLowerStatReq(), clothing reads it raw. Emitted in
+        // cliloc order (1060435) ahead of MageArmor/SelfRepair.
+        public void GetProperties(IPropertyList list, int lowerStatReq = 0)
         {
             int prop;
+
+            if (lowerStatReq != 0)
+            {
+                list.Add(1060435, lowerStatReq); // lower requirements ~1_val~%
+            }
 
             if (MageArmor != 0)
             {

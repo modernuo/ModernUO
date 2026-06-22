@@ -754,12 +754,7 @@ namespace Server.Items
                 list.Add(1061078, prop); // artifact rarity ~1_val~
             }
 
-            ClothingAttributes.GetProperties(list);
-
-            if ((prop = ClothingAttributes.LowerStatReq) != 0)
-            {
-                list.Add(1060435, prop); // lower requirements ~1_val~%
-            }
+            ClothingAttributes.GetProperties(list, lowerStatReq: ClothingAttributes.LowerStatReq);
 
             Attributes.GetProperties(list);
 
