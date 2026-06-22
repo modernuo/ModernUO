@@ -1010,6 +1010,101 @@ namespace Server
             return value;
         }
 
+        public void GetProperties(IPropertyList list)
+        {
+            int prop;
+
+            if (UseBestSkill != 0)
+            {
+                list.Add(1060400); // use best weapon skill
+            }
+
+            if ((prop = HitColdArea) != 0)
+            {
+                list.Add(1060416, prop); // hit cold area ~1_val~%
+            }
+
+            if ((prop = HitDispel) != 0)
+            {
+                list.Add(1060417, prop); // hit dispel ~1_val~%
+            }
+
+            if ((prop = HitEnergyArea) != 0)
+            {
+                list.Add(1060418, prop); // hit energy area ~1_val~%
+            }
+
+            if ((prop = HitFireArea) != 0)
+            {
+                list.Add(1060419, prop); // hit fire area ~1_val~%
+            }
+
+            if ((prop = HitFireball) != 0)
+            {
+                list.Add(1060420, prop); // hit fireball ~1_val~%
+            }
+
+            if ((prop = HitHarm) != 0)
+            {
+                list.Add(1060421, prop); // hit harm ~1_val~%
+            }
+
+            if ((prop = HitLeechHits) != 0)
+            {
+                list.Add(1060422, prop); // hit life leech ~1_val~%
+            }
+
+            if ((prop = HitLightning) != 0)
+            {
+                list.Add(1060423, prop); // hit lightning ~1_val~%
+            }
+
+            if ((prop = HitLowerAttack) != 0)
+            {
+                list.Add(1060424, prop); // hit lower attack ~1_val~%
+            }
+
+            if ((prop = HitLowerDefend) != 0)
+            {
+                list.Add(1060425, prop); // hit lower defense ~1_val~%
+            }
+
+            if ((prop = HitMagicArrow) != 0)
+            {
+                list.Add(1060426, prop); // hit magic arrow ~1_val~%
+            }
+
+            if ((prop = HitLeechMana) != 0)
+            {
+                list.Add(1060427, prop); // hit mana leech ~1_val~%
+            }
+
+            if ((prop = HitPhysicalArea) != 0)
+            {
+                list.Add(1060428, prop); // hit physical area ~1_val~%
+            }
+
+            if ((prop = HitPoisonArea) != 0)
+            {
+                list.Add(1060429, prop); // hit poison area ~1_val~%
+            }
+
+            if ((prop = HitLeechStam) != 0)
+            {
+                list.Add(1060430, prop); // hit stamina leech ~1_val~%
+            }
+
+            if ((prop = MageWeapon) != 0)
+            {
+                list.Add(1060438, 30 - prop); // mage weapon -~1_val~ skill
+            }
+
+            if ((prop = SelfRepair) != 0)
+            {
+                list.Add(1060450, prop); // self repair ~1_val~
+            }
+        }
+
         public override string ToString() => "...";
     }
 
