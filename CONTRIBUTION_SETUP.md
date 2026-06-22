@@ -317,51 +317,53 @@ If the focused test requires UOContent initialization and local game data is una
 
 ## Phase III — Implementation
 
-Phase III is complete. The fix is implemented, tested, and ready to open as a pull request.
+Phase III is complete. The fix is implemented, tested, pushed, and open as a **draft pull request** — [modernuo/ModernUO#2498](https://github.com/modernuo/ModernUO/pull/2498).
 
 ### Implementation Notes
 
 The fix is **data-only**, exactly as planned in Phase II — no engine code was touched. I added shop-specific `NoHousingRegion` child regions to `Distribution/Data/regions.json`, following the existing New Haven / Haven shop pattern. The region engine already resolves a child region over its parent town (`Region.CompareTo` / `Region.Find`), so the only missing piece was the static data.
 
-Scope for this first PR (the issue thread explicitly supports doing this "by steps"): **four major towns — Britain, Trinsic, Vesper, and Minoc — on both Trammel and Felucca.**
+The work started as a Britain-first slice (the issue thread explicitly supports doing this "by steps") and grew to the full scope the issue title asks for — **regions for all vendor shops**:
 
-- **104 new shop regions** total (52 per facet: Britain 16, Trinsic 13, Vesper 14, Minoc 9).
-- Each region represents one shop **trade** (Bakery, Butcher, Blacksmith, Bowyer, Tinker, Tailor, Mage, Provisioner, Jeweler, Bank, Healer, Carpenter, Scribe, Bard, Tanner, Docks). Where a town has several buildings of the same trade, the region carries one tight footprint rectangle per vendor spawner.
-- Footprints are derived from the actual vendor spawn coordinates in `Distribution/Data/Spawns/shared/{trammel,felucca}/Vendors.json`, sized as small boxes centered on each vendor and clipped to stay inside the parent town polygon.
-- Each region uses `"$type": "NoHousingRegion"`, `"Priority": 50`, and `"Parent": { "Name": "<Town>", "Map": "<Facet>" }`, matching the existing shop entries. Names follow the existing convention (e.g. `the Britain Bakery`, `the Minoc Bank`).
+- **394 new shop regions** across **23 towns** on **all 6 facets** (Trammel, Felucca, Ilshenar, Malas, Tokuno, TerMur). Towns covered: Britain, Trinsic, Vesper, Minoc, Cove, Yew, Skara Brae, Jhelom, Moonglow, Magincia, Nujel'm, Ocllo, Serpent's Hold, Buccaneer's Den, Delucia, Papua, Wind (Trammel/Felucca); Gargoyle City and Reg Volon (Ilshenar); Luna and Umbra (Malas); Zento (Tokuno); and Royal City (TerMur).
+- Each region represents one shop **trade** (Bakery, Butcher, Blacksmith, Bowyer, Tinker, Tailor, Mage, Provisioner, Jeweler, Bank, Healer, Carpenter, Scribe, Bard, Tanner, Docks, etc.). Where a town has several buildings of the same trade, the region carries one tight footprint rectangle per vendor spawner.
+- Footprints are derived from the actual vendor spawn coordinates in `Distribution/Data/Spawns/**/Vendors.json`, sized as small boxes centered on each vendor and clipped to stay inside the parent town polygon. They were produced by a generator that reads the spawn data, clusters vendors by trade per town, and emits non-overlapping footprints — then validated programmatically (see Testing Strategy).
+- Every region uses `"$type": "NoHousingRegion"`, `"Priority": 50`, and `"Parent": { "Name": "<Town>", "Map": "<Facet>" }`, matching the existing shop entries. Names follow the existing convention (e.g. `the Britain Bakery`, `the Minoc Bank`, `the Luna Tailor`).
+- **Nested towns are handled.** A few towns are themselves child regions (e.g. Jhelom sits under `Jhelom Islands`). Shops still nest correctly because resolution returns the deepest child; both the generator and the tests walk the full ancestor chain rather than assuming a town is top-level.
 - **Taverns/inns were intentionally excluded.** Every tavern/inn vendor already stands inside the town's existing unnamed `NoLogoutDelay` region (the inn no-logout zone). Adding an overlapping equal-priority "Tavern" region would create ambiguous resolution or shadow the inn logout behavior, so taverns are left as future work.
 
 Reusing the engine as-is: `NoHousingRegion` is already registered for region JSON in `Projects/UOContent/Regions/RegionJsonRegistration.cs`, so no new region class was needed and `RegionJsonSerializer` / `Region` were not modified.
 
 ### Code Changes
 
-- **Branch:** [`fix-issue-1052`](https://github.com/Jynx-hub/ModernUO/tree/fix-issue-1052)
+- **Branch:** [`fix-issue-1052`](https://github.com/Jynx-hub/ModernUO/tree/fix-issue-1052) (pushed; in sync with `origin`).
+- **Draft PR:** [modernuo/ModernUO#2498 — feat(regions): create regions for all vendor shops (#1052)](https://github.com/modernuo/ModernUO/pull/2498)
 - **Files changed:**
-  - `Distribution/Data/regions.json` — added the 104 shop regions.
+  - `Distribution/Data/regions.json` — added the 394 shop regions.
   - `Projects/Server.Tests/Tests/Regions/VendorShopRegionTests.cs` — new CI-safe test (note: this lives in `Server.Tests`, not `UOContent.Tests` as Phase II guessed, because the region/JSON infrastructure lives there and that project copies `Distribution/Data` and runs without client files).
-- **Commits:**
+- **Commits** (Conventional Commits style — `feat(regions):`, `test(regions):`):
   - [`b9cd4fd`](https://github.com/Jynx-hub/ModernUO/commit/b9cd4fd86e91c94889ab36547a0ef5fcc5224c0e) — feat(regions): add Britain vendor shop regions (Trammel + Felucca)
   - [`28d96bf`](https://github.com/Jynx-hub/ModernUO/commit/28d96bf35fef66b42d7f981e52d9eac1579d265c) — feat(regions): add Trinsic vendor shop regions (Trammel + Felucca)
   - [`72f0af4`](https://github.com/Jynx-hub/ModernUO/commit/72f0af4fbd0f63ff103e2a29ff5e6eff7e8e20be) — feat(regions): add Vesper vendor shop regions (Trammel + Felucca)
   - [`419c501`](https://github.com/Jynx-hub/ModernUO/commit/419c501800b4ad60e7eefae5035c11253b422f8a) — feat(regions): add Minoc vendor shop regions (Trammel + Felucca)
   - [`7a2f303`](https://github.com/Jynx-hub/ModernUO/commit/7a2f303224908f8b23b2095f0864f5bd520b60ea) — test(regions): verify vendor shops resolve to shop-specific regions
-
-Commits follow the repo's Conventional Commits style (`feat(regions):`, `test(regions):`).
+  - [`0cb400c`](https://github.com/Jynx-hub/ModernUO/commit/0cb400c6ab185b91d7fc041006628166d0c50f16) — feat(regions): add vendor shop regions for all remaining towns
+  - [`c709faf`](https://github.com/Jynx-hub/ModernUO/commit/c709faf3bba4737349a18ce6a846c98f8666ca2f) — test(regions): cover new vendor shop regions and nested-town parents
 
 ### Testing Strategy
 
 `VendorShopRegionTests.cs` is a pure data-validation test (xUnit). It parses `Data/regions.json` — copied next to the test assembly by the project's `CopyData` build target — with `System.Text.Json`, so it needs **no client map files** and runs cleanly in CI. This mirrors the original Node.js reproduction in C#. It covers:
 
-1. **Resolution (the fix):** a `[Theory]` over known vendor coordinates (the reproduced Britain coords plus samples from each new town/facet) asserts that exactly one new shop region covers the point, that it is the expected shop, and that the parent town region still contains the point (proving the nesting is intact).
+1. **Resolution (the fix):** a `[Theory]` of **26 sample cases** over known vendor coordinates (the reproduced Britain coords plus samples spanning every facet — Trammel, Felucca, Ilshenar, Malas, Tokuno, TerMur — and the nested-town case Jhelom) asserts that exactly one new shop region covers the point, that it is the expected shop, and that the parent town region still contains the point (proving the nesting is intact).
 2. **Structure:** every new shop region has a non-empty area, a `Parent` that resolves to a region on the same map, and a name that is unique per map.
-3. **No overlaps:** new shop regions do not overlap any other region (apart from their parent town), guarding against loose or misplaced footprints.
+3. **No overlaps:** new shop regions do not overlap any other region except their **ancestor chain** (parent town and that town's own parents, e.g. `Jhelom Islands`), guarding against loose or misplaced footprints while allowing legitimate child-over-parent nesting.
 
 Results:
 
-- `dotnet test --filter VendorShopRegion` → **14 passed, 0 failed.**
-- Full `Server.Tests` suite → **705 passed, 17 skipped** (skips require client tile data, unrelated), **0 failed** — no regressions.
+- `dotnet test --filter VendorShopRegion` → **28 passed, 0 failed** (26 theory cases + 2 facts).
+- Full `Server.Tests` suite → **719 passed, 17 skipped** (skips require client tile data, unrelated), **0 failed** — no regressions.
 - Solution compiles with **0 warnings / 0 errors** (`Server`, `UOContent`, `Application`, `Server.Tests`).
-- Re-ran the Phase II reproduction, extended to all four towns: the sampled coordinates now resolve to e.g. `the Britain Bakery [NoHousingRegion]` instead of `Britain [TownRegion]`.
+- Re-ran the Phase II reproduction, extended across all towns/facets: the sampled coordinates now resolve to e.g. `the Britain Bakery [NoHousingRegion]` instead of `Britain [TownRegion]`.
 
 ### Challenges Faced
 
@@ -372,7 +374,7 @@ Results:
 ### Out of Scope (follow-ups noted for the PR)
 
 - Wiring these regions into `FillableContent.Acquire()` (see the `// TODO: Replace with vendor shop regions and a fallback override.` at `FillableContent.cs:96`), which is the mechanic that motivates the issue.
-- Remaining towns and the Malas / Ilshenar / Tokuno / TerMur facets.
 - Tavern/inn shop classification and a dedicated `VendorShopRegion` type (only needed once game logic consumes a per-shop content tag).
+- Maintainer refinement of individual footprints — they are derived conservatively from spawn coordinates rather than client map art, and are open to correction.
 
 **Phase III Complete.**
