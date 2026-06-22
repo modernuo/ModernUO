@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using System.IO;
 using System.Collections.Generic;
 using Server.Collections;
@@ -57,8 +58,51 @@ public class AddonGenerator
         }
         """;
 
-    // TODO: .NET 9 - Use search values
-    // private static SearchValues<string> _templatePlaceholders = SearchValues.Create("{serverItemsNamespace}", "{namespace}", "{name}", "{components}");
+    private static readonly SearchValues<string> _templatePlaceholders = SearchValues.Create(["{serverItemsNamespace}", "{namespace}", "{name}", "{components}"], StringComparison.Ordinal);
+
+    private static string ExpandTemplate(
+        ReadOnlySpan<char> serverItemsNamespace,
+        ReadOnlySpan<char> ns,
+        ReadOnlySpan<char> name,
+        ReadOnlySpan<char> components
+    )
+    {
+        using var output = ValueStringBuilder.Create();
+
+        var remaining = _template.AsSpan();
+
+        int index;
+        while ((index = remaining.IndexOfAny(_templatePlaceholders)) >= 0)
+        {
+            output.Append(remaining[..index]);
+
+            var placeholder = remaining[index..];
+            if (placeholder.StartsWith("{serverItemsNamespace}"))
+            {
+                output.Append(serverItemsNamespace);
+                remaining = placeholder["{serverItemsNamespace}".Length..];
+            }
+            else if (placeholder.StartsWith("{namespace}"))
+            {
+                output.Append(ns);
+                remaining = placeholder["{namespace}".Length..];
+            }
+            else if (placeholder.StartsWith("{name}"))
+            {
+                output.Append(name);
+                remaining = placeholder["{name}".Length..];
+            }
+            else // {components}
+            {
+                output.Append(components);
+                remaining = placeholder["{components}".Length..];
+            }
+        }
+
+        output.Append(remaining);
+
+        return output.ToString();
+    }
 
     public static void Configure()
     {
@@ -275,9 +319,9 @@ public class AddonGenerator
             sb.Append("            )\n");
         }
 
-        var output = _template.Replace("{name}", name);
-        output = output.Replace("{namespace}", ns);
-        output = output.Replace("{components}", sb.ToString());
+        // Only pull in Server.Items when the generated addon lives in a different namespace.
+        var serverItemsNamespace = ns == "Server.Items" ? "" : "\nusing Server.Items;";
+        var output = ExpandTemplate(serverItemsNamespace, ns, name, sb.AsSpan());
 
         var path = Path.Combine(_outputDirectory, $"{name}Addon.cs");
 
