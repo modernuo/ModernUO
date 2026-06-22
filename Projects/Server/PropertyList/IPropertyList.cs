@@ -13,6 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
 using System.Runtime.CompilerServices;
 using Server.Text;
 
@@ -30,6 +31,9 @@ public interface IPropertyList : ISelfInterpolatedStringHandler
 
     /** Convenience method for $"{text}". */
     public void Add(string text);
+
+    public void Add(ReadOnlySpan<char> argument);
+    public void Add(int number, ReadOnlySpan<char> argument);
 
     /** Convenience method for $"{value}". */
     public void Add(int number, int value);

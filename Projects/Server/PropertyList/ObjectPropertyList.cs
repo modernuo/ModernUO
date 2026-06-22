@@ -153,6 +153,40 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
     public void AddLocalized(int value) => InternalAdd(GetStringNumber(), $"{value:#}");
     public void AddLocalized(int number, int value) => InternalAdd(number, $"{value:#}");
 
+    public void Add(ReadOnlySpan<char> argument) => InternalAdd(GetStringNumber(), argument);
+    public void Add(int number, ReadOnlySpan<char> argument) => InternalAdd(number, argument);
+
+    private void InternalAdd(int number, ReadOnlySpan<char> chars)
+    {
+        if (number == 0)
+        {
+            return;
+        }
+
+        if (Header == 0)
+        {
+            Header = number;
+            HeaderArgs = chars.ToString();
+        }
+
+        AddHash(number);
+        AddHash(string.GetHashCode(chars, StringComparison.Ordinal));
+
+        var strLength = chars.Length * 2;
+        var length = _bufferPos + 6 + strLength;
+        while (length > _buffer.Length)
+        {
+            Flush();
+        }
+
+        var writer = new SpanWriter(_buffer.AsSpan(_bufferPos));
+        writer.Write(number);
+        writer.Write((ushort)strLength);
+        writer.Write(chars, TextEncoding.UnicodeLE);
+
+        _bufferPos += writer.BytesWritten;
+    }
+
     private int GetStringNumber() => _stringNumbers[_stringNumbersIndex++ % _stringNumbers.Length];
 
     // String Interpolation
