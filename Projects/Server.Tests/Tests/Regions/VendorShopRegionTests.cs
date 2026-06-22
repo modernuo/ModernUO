@@ -16,7 +16,12 @@ namespace Server.Tests.Regions;
 // region nested under the town instead of only the broad town region.
 public class VendorShopRegionTests
 {
-    private static readonly string[] ShopTowns = { "Britain", "Trinsic", "Vesper", "Minoc" };
+    private static readonly string[] ShopTowns =
+    {
+        "Britain", "Buccaneer's Den", "Cove", "Delucia", "Gargoyle City", "Jhelom", "Luna",
+        "Magincia", "Minoc", "Moonglow", "Nujel'm", "Ocllo", "Papua", "Reg Volon", "Royal City",
+        "Serpent's Hold", "Skara Brae", "Trinsic", "Umbra", "Vesper", "Wind", "Yew", "Zento"
+    };
 
     private static readonly JsonSerializerOptions Options = new()
     {
@@ -59,7 +64,23 @@ public class VendorShopRegionTests
         new object[] { "Trammel", "Vesper", 2881, 684, "the Vesper Bank" },
         new object[] { "Trammel", "Minoc", 2503, 552, "the Minoc Bank" },
         new object[] { "Trammel", "Minoc", 2471, 564, "the Minoc Blacksmith" },
-        new object[] { "Felucca", "Minoc", 2503, 552, "the Minoc Bank" }
+        new object[] { "Felucca", "Minoc", 2503, 552, "the Minoc Bank" },
+        // Towns added to cover all remaining vendor shops across every facet (issue #1052).
+        // Jhelom is a TownRegion nested under "Jhelom Islands" — exercises the non-null-parent path.
+        new object[] { "Trammel", "Jhelom", 1354, 3754, "the Jhelom Blacksmith" },
+        new object[] { "Felucca", "Jhelom", 1364, 3732, "the Jhelom Bakery" },
+        new object[] { "Trammel", "Moonglow", 4409, 1111, "the Moonglow Mage" },
+        new object[] { "Trammel", "Skara Brae", 562, 2148, "the Skara Brae Ranger" },
+        new object[] { "Felucca", "Ocllo", 3665, 2531, "the Ocllo Bard" },
+        new object[] { "Trammel", "Magincia", 3703, 2249, "the Magincia Merchant" },
+        new object[] { "Felucca", "Buccaneer's Den", 2659, 2194, "the Buccaneer's Den Thief Guild" },
+        new object[] { "Trammel", "Yew", 570, 969, "the Yew Bowyer" },
+        new object[] { "Ilshenar", "Gargoyle City", 840, 571, "the Gargoyle City Mage" },
+        new object[] { "Malas", "Luna", 976, 527, "the Luna Tailor" },
+        new object[] { "Malas", "Umbra", 2045, 1397, "the Umbra Jeweler" },
+        new object[] { "Tokuno", "Zento", 739, 1223, "the Zento Carpenter" },
+        new object[] { "TerMur", "Royal City", 783, 3491, "the Royal City Healer" },
+        new object[] { "Trammel", "Serpent's Hold", 3031, 3350, "the Serpent's Hold Warrior" }
     };
 
     [Theory]
@@ -80,7 +101,9 @@ public class VendorShopRegionTests
         Assert.Equal(expectedShop, matches[0]);
 
         // The shop is genuinely nested under the town: the parent town region also contains the point.
-        var townRegion = all.Single(r => r.Name == town && r.Map == map && r.Parent == null);
+        // (Matched by type, not by Parent == null — some towns, e.g. Jhelom, are themselves nested
+        // under a larger region such as "Jhelom Islands".)
+        var townRegion = all.Single(r => r.Name == town && r.Map == map && r.Type == "TownRegion");
         Assert.True(
             ContainsAny(townRegion.Area, x, y),
             $"The {town} ({map}) town region should also contain {x},{y}"
@@ -119,9 +142,15 @@ public class VendorShopRegionTests
     {
         var all = LoadRegions();
         var shops = VendorShops(all);
+        var parentOf = BuildParentLookup(all);
 
         foreach (var shop in shops)
         {
+            // A shop may overlap any ANCESTOR region (its parent town and that town's own
+            // parents, e.g. "Jhelom Islands"): Region.Find resolves to the deepest child, so
+            // the shop still wins. Only overlaps with siblings/unrelated regions are bugs.
+            var ancestors = Ancestors(parentOf, shop.Map, shop.Parent.Name);
+
             foreach (var other in all)
             {
                 if (ReferenceEquals(other, shop) || other.Map != shop.Map || other.Area == null)
@@ -129,8 +158,7 @@ public class VendorShopRegionTests
                     continue;
                 }
 
-                // Overlapping the parent town region is expected (the shop is nested inside it).
-                if (other.Name == shop.Parent.Name && other.Parent == null)
+                if (other.Name != null && ancestors.Contains((other.Map, other.Name)))
                 {
                     continue;
                 }
@@ -147,6 +175,37 @@ public class VendorShopRegionTests
                 }
             }
         }
+    }
+
+    // (Map, Name) -> parent (Map, Name), for walking a region's ancestor chain.
+    private static Dictionary<(string Map, string Name), (string Map, string Name)?> BuildParentLookup(
+        List<RegionData> all
+    )
+    {
+        var map = new Dictionary<(string Map, string Name), (string Map, string Name)?>();
+        foreach (var r in all)
+        {
+            if (r.Name != null)
+            {
+                map[(r.Map, r.Name)] = r.Parent != null ? (r.Parent.Map, r.Parent.Name) : null;
+            }
+        }
+
+        return map;
+    }
+
+    private static HashSet<(string Map, string Name)> Ancestors(
+        Dictionary<(string Map, string Name), (string Map, string Name)?> parentOf, string map, string name
+    )
+    {
+        var set = new HashSet<(string Map, string Name)>();
+        (string Map, string Name)? cur = (map, name);
+        while (cur != null && set.Add(cur.Value))
+        {
+            cur = parentOf.TryGetValue(cur.Value, out var p) ? p : null;
+        }
+
+        return set;
     }
 
     private sealed class RegionData
