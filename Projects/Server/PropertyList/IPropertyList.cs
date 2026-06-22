@@ -29,9 +29,6 @@ public interface IPropertyList : ISelfInterpolatedStringHandler
     /** Convenience method for $"{argument}". */
     public void Add(int number, string argument);
 
-    /** Convenience method for $"{text}". */
-    public void Add(string text);
-
     /** Convenience method for span-based text without allocating a string. */
     public void Add(ReadOnlySpan<char> argument);
 

@@ -148,7 +148,6 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
     }
 
     public void Add(int number, string? arguments) => InternalAdd(number, $"{arguments}");
-    public void Add(string argument) => InternalAdd(GetStringNumber(), $"{argument}");
     public void Add(int number, int value) => InternalAdd(number, $"{value}");
     public void AddLocalized(int value) => InternalAdd(GetStringNumber(), $"{value:#}");
     public void AddLocalized(int number, int value) => InternalAdd(number, $"{value:#}");

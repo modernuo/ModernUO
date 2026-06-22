@@ -23,11 +23,11 @@ namespace Server;
 // Use with `using var block = list.TextBlock();`. ref struct: single-threaded OPL build only.
 public ref struct OplTextBlock
 {
-    private readonly ObjectPropertyList _list;
+    private readonly IPropertyList _list;
     internal ValueStringBuilder _builder;
     private bool _any;
 
-    internal OplTextBlock(ObjectPropertyList list)
+    internal OplTextBlock(IPropertyList list)
     {
         _list = list;
         _builder = ValueStringBuilder.Create();

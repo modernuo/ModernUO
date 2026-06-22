@@ -37,13 +37,15 @@ public class ObjectPropertyListSpanAddTests
     }
 
     [Fact]
-    public void SpanAdd_ProducesSameBytesAsStringAdd()
+    public void SpanAdd_ProducesSameBytesAsStringArgument()
     {
+        // Add(int, string) routes through the interpolation InternalAdd; Add(int, ReadOnlySpan<char>)
+        // through the span InternalAdd. Both must produce identical bytes and hash.
         var fromString = new ObjectPropertyList(null);
-        fromString.Add("Hello World");
+        fromString.Add(1070722, "Hello World");
 
         var fromSpan = new ObjectPropertyList(null);
-        fromSpan.Add("Hello World".AsSpan());
+        fromSpan.Add(1070722, "Hello World".AsSpan());
 
         Assert.Equal(Decode(fromString), Decode(fromSpan));
         Assert.Equal(fromString.Hash, fromSpan.Hash);
