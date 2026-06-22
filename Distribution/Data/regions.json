@@ -533,6 +533,122 @@
     "Music": "Trinsic"
   },
   {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Trinsic", "Map": "Felucca" },
+    "Name": "the Trinsic Bakery",
+    "Priority": 50,
+    "Area": [{"x1": 1876, "y1": 2798, "x2": 1884, "y2": 2806}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Trinsic", "Map": "Felucca" },
+    "Name": "the Trinsic Butcher",
+    "Priority": 50,
+    "Area": [{"x1": 1986, "y1": 2885, "x2": 1994, "y2": 2893}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Trinsic", "Map": "Felucca" },
+    "Name": "the Trinsic Blacksmith",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1891, "y1": 2649, "x2": 1899, "y2": 2657},
+      {"x1": 1931, "y1": 2762, "x2": 1939, "y2": 2770}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Trinsic", "Map": "Felucca" },
+    "Name": "the Trinsic Tinker",
+    "Priority": 50,
+    "Area": [{"x1": 1844, "y1": 2676, "x2": 1852, "y2": 2684}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Trinsic", "Map": "Felucca" },
+    "Name": "the Trinsic Tailor",
+    "Priority": 50,
+    "Area": [{"x1": 1977, "y1": 2834, "x2": 1985, "y2": 2842}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Trinsic", "Map": "Felucca" },
+    "Name": "the Trinsic Mage",
+    "Priority": 50,
+    "Area": [{"x1": 1842, "y1": 2711, "x2": 1850, "y2": 2719}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Trinsic", "Map": "Felucca" },
+    "Name": "the Trinsic Provisioner",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1846, "y1": 2792, "x2": 1854, "y2": 2800},
+      {"x1": 1848, "y1": 2827, "x2": 1856, "y2": 2835}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Trinsic", "Map": "Felucca" },
+    "Name": "the Trinsic Jeweler",
+    "Priority": 50,
+    "Area": [{"x1": 1893, "y1": 2801, "x2": 1901, "y2": 2809}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Trinsic", "Map": "Felucca" },
+    "Name": "the Trinsic Bank",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1893, "y1": 2680, "x2": 1901, "y2": 2688},
+      {"x1": 1809, "y1": 2821, "x2": 1816, "y2": 2829}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Trinsic", "Map": "Felucca" },
+    "Name": "the Trinsic Healer",
+    "Priority": 50,
+    "Area": [{"x1": 1907, "y1": 2801, "x2": 1915, "y2": 2809}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Trinsic", "Map": "Felucca" },
+    "Name": "the Trinsic Scribe",
+    "Priority": 50,
+    "Area": [{"x1": 1998, "y1": 2717, "x2": 2006, "y2": 2725}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Trinsic", "Map": "Felucca" },
+    "Name": "the Trinsic Tanner",
+    "Priority": 50,
+    "Area": [{"x1": 1987, "y1": 2863, "x2": 1995, "y2": 2871}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Trinsic", "Map": "Felucca" },
+    "Name": "the Trinsic Docks",
+    "Priority": 50,
+    "Area": [
+      {"x1": 2022, "y1": 2841, "x2": 2030, "y2": 2849},
+      {"x1": 2068, "y1": 2852, "x2": 2076, "y2": 2860}
+    ]
+  },
+  {
     "$type": "TownRegion",
     "NoLogoutDelay": true,
     "Map": "Felucca",
@@ -2341,6 +2457,122 @@
     ],
     "GoLocation": {"x": 1867, "y": 2780, "z": 0},
     "Music": "Trinsic"
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Trinsic", "Map": "Trammel" },
+    "Name": "the Trinsic Bakery",
+    "Priority": 50,
+    "Area": [{"x1": 1876, "y1": 2798, "x2": 1884, "y2": 2806}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Trinsic", "Map": "Trammel" },
+    "Name": "the Trinsic Butcher",
+    "Priority": 50,
+    "Area": [{"x1": 1986, "y1": 2885, "x2": 1994, "y2": 2893}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Trinsic", "Map": "Trammel" },
+    "Name": "the Trinsic Blacksmith",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1891, "y1": 2649, "x2": 1899, "y2": 2657},
+      {"x1": 1931, "y1": 2762, "x2": 1939, "y2": 2770}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Trinsic", "Map": "Trammel" },
+    "Name": "the Trinsic Tinker",
+    "Priority": 50,
+    "Area": [{"x1": 1844, "y1": 2676, "x2": 1852, "y2": 2684}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Trinsic", "Map": "Trammel" },
+    "Name": "the Trinsic Tailor",
+    "Priority": 50,
+    "Area": [{"x1": 1977, "y1": 2834, "x2": 1985, "y2": 2842}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Trinsic", "Map": "Trammel" },
+    "Name": "the Trinsic Mage",
+    "Priority": 50,
+    "Area": [{"x1": 1842, "y1": 2711, "x2": 1850, "y2": 2719}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Trinsic", "Map": "Trammel" },
+    "Name": "the Trinsic Provisioner",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1846, "y1": 2792, "x2": 1854, "y2": 2800},
+      {"x1": 1848, "y1": 2827, "x2": 1856, "y2": 2835}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Trinsic", "Map": "Trammel" },
+    "Name": "the Trinsic Jeweler",
+    "Priority": 50,
+    "Area": [{"x1": 1893, "y1": 2801, "x2": 1901, "y2": 2809}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Trinsic", "Map": "Trammel" },
+    "Name": "the Trinsic Bank",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1893, "y1": 2680, "x2": 1901, "y2": 2688},
+      {"x1": 1809, "y1": 2821, "x2": 1816, "y2": 2829}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Trinsic", "Map": "Trammel" },
+    "Name": "the Trinsic Healer",
+    "Priority": 50,
+    "Area": [{"x1": 1907, "y1": 2801, "x2": 1915, "y2": 2809}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Trinsic", "Map": "Trammel" },
+    "Name": "the Trinsic Scribe",
+    "Priority": 50,
+    "Area": [{"x1": 1998, "y1": 2717, "x2": 2006, "y2": 2725}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Trinsic", "Map": "Trammel" },
+    "Name": "the Trinsic Tanner",
+    "Priority": 50,
+    "Area": [{"x1": 1987, "y1": 2863, "x2": 1995, "y2": 2871}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Trinsic", "Map": "Trammel" },
+    "Name": "the Trinsic Docks",
+    "Priority": 50,
+    "Area": [
+      {"x1": 2022, "y1": 2841, "x2": 2030, "y2": 2849},
+      {"x1": 2068, "y1": 2852, "x2": 2076, "y2": 2860}
+    ]
   },
   {
     "$type": "TownRegion",
