@@ -1198,6 +1198,21 @@ namespace Server
             return value;
         }
 
+        public void GetProperties(IPropertyList list)
+        {
+            int prop;
+
+            if (MageArmor != 0)
+            {
+                list.Add(1060437); // mage armor
+            }
+
+            if ((prop = SelfRepair) != 0)
+            {
+                list.Add(1060450, prop); // self repair ~1_val~
+            }
+        }
+
         public override string ToString() => "...";
     }
 
