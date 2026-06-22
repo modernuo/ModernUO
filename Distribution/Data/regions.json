@@ -475,6 +475,84 @@
     "Music": "Minoc"
   },
   {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Minoc", "Map": "Felucca" },
+    "Name": "the Minoc Butcher",
+    "Priority": 50,
+    "Area": [{"x1": 2434, "y1": 406, "x2": 2442, "y2": 414}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Minoc", "Map": "Felucca" },
+    "Name": "the Minoc Blacksmith",
+    "Priority": 50,
+    "Area": [
+      {"x1": 2467, "y1": 560, "x2": 2475, "y2": 568},
+      {"x1": 2529, "y1": 568, "x2": 2537, "y2": 576}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Minoc", "Map": "Felucca" },
+    "Name": "the Minoc Tinker",
+    "Priority": 50,
+    "Area": [{"x1": 2457, "y1": 453, "x2": 2465, "y2": 461}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Minoc", "Map": "Felucca" },
+    "Name": "the Minoc Provisioner",
+    "Priority": 50,
+    "Area": [
+      {"x1": 2446, "y1": 424, "x2": 2454, "y2": 432},
+      {"x1": 2522, "y1": 542, "x2": 2530, "y2": 550}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Minoc", "Map": "Felucca" },
+    "Name": "the Minoc Bank",
+    "Priority": 50,
+    "Area": [{"x1": 2499, "y1": 548, "x2": 2507, "y2": 556}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Minoc", "Map": "Felucca" },
+    "Name": "the Minoc Healer",
+    "Priority": 50,
+    "Area": [{"x1": 2573, "y1": 595, "x2": 2581, "y2": 603}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Minoc", "Map": "Felucca" },
+    "Name": "the Minoc Carpenter",
+    "Priority": 50,
+    "Area": [{"x1": 2509, "y1": 473, "x2": 2517, "y2": 481}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Minoc", "Map": "Felucca" },
+    "Name": "the Minoc Bard",
+    "Priority": 50,
+    "Area": [{"x1": 2420, "y1": 551, "x2": 2428, "y2": 559}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Minoc", "Map": "Felucca" },
+    "Name": "the Minoc Tanner",
+    "Priority": 50,
+    "Area": [{"x1": 2518, "y1": 520, "x2": 2526, "y2": 528}]
+  },
+  {
     "$type": "TownRegion",
     "NoLogoutDelay": true,
     "Map": "Felucca",
@@ -2051,6 +2129,84 @@
     ],
     "GoLocation": {"x": 2466, "y": 544, "z": 0},
     "Music": "Minoc"
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Minoc", "Map": "Trammel" },
+    "Name": "the Minoc Butcher",
+    "Priority": 50,
+    "Area": [{"x1": 2434, "y1": 406, "x2": 2442, "y2": 414}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Minoc", "Map": "Trammel" },
+    "Name": "the Minoc Blacksmith",
+    "Priority": 50,
+    "Area": [
+      {"x1": 2467, "y1": 560, "x2": 2475, "y2": 568},
+      {"x1": 2529, "y1": 568, "x2": 2537, "y2": 576}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Minoc", "Map": "Trammel" },
+    "Name": "the Minoc Tinker",
+    "Priority": 50,
+    "Area": [{"x1": 2457, "y1": 453, "x2": 2465, "y2": 461}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Minoc", "Map": "Trammel" },
+    "Name": "the Minoc Provisioner",
+    "Priority": 50,
+    "Area": [
+      {"x1": 2446, "y1": 424, "x2": 2454, "y2": 432},
+      {"x1": 2522, "y1": 542, "x2": 2530, "y2": 550}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Minoc", "Map": "Trammel" },
+    "Name": "the Minoc Bank",
+    "Priority": 50,
+    "Area": [{"x1": 2499, "y1": 548, "x2": 2507, "y2": 556}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Minoc", "Map": "Trammel" },
+    "Name": "the Minoc Healer",
+    "Priority": 50,
+    "Area": [{"x1": 2573, "y1": 595, "x2": 2581, "y2": 603}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Minoc", "Map": "Trammel" },
+    "Name": "the Minoc Carpenter",
+    "Priority": 50,
+    "Area": [{"x1": 2509, "y1": 473, "x2": 2517, "y2": 481}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Minoc", "Map": "Trammel" },
+    "Name": "the Minoc Bard",
+    "Priority": 50,
+    "Area": [{"x1": 2420, "y1": 551, "x2": 2428, "y2": 559}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Minoc", "Map": "Trammel" },
+    "Name": "the Minoc Tanner",
+    "Priority": 50,
+    "Area": [{"x1": 2518, "y1": 520, "x2": 2526, "y2": 528}]
   },
   {
     "$type": "TownRegion",
