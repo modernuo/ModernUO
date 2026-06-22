@@ -131,6 +131,167 @@
     "Music": "Britain1"
   },
   {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Britain", "Map": "Felucca" },
+    "Name": "the Britain Bakery",
+    "Priority": 50,
+    "Area": [{"x1": 1446, "y1": 1613, "x2": 1454, "y2": 1621}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Britain", "Map": "Felucca" },
+    "Name": "the Britain Butcher",
+    "Priority": 50,
+    "Area": [{"x1": 1445, "y1": 1719, "x2": 1453, "y2": 1727}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Britain", "Map": "Felucca" },
+    "Name": "the Britain Blacksmith",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1416, "y1": 1543, "x2": 1422, "y2": 1551},
+      {"x1": 1358, "y1": 1570, "x2": 1366, "y2": 1578},
+      {"x1": 1477, "y1": 1580, "x2": 1485, "y2": 1588},
+      {"x1": 1443, "y1": 1643, "x2": 1451, "y2": 1651},
+      {"x1": 1633, "y1": 1689, "x2": 1641, "y2": 1697},
+      {"x1": 1345, "y1": 1774, "x2": 1353, "y2": 1782}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Britain", "Map": "Felucca" },
+    "Name": "the Britain Bowyer",
+    "Priority": 50,
+    "Area": [{"x1": 1466, "y1": 1574, "x2": 1474, "y2": 1582}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Britain", "Map": "Felucca" },
+    "Name": "the Britain Tinker",
+    "Priority": 50,
+    "Area": [{"x1": 1418, "y1": 1650, "x2": 1426, "y2": 1658}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Britain", "Map": "Felucca" },
+    "Name": "the Britain Tailor",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1385, "y1": 1584, "x2": 1392, "y2": 1592},
+      {"x1": 1543, "y1": 1655, "x2": 1551, "y2": 1663},
+      {"x1": 1463, "y1": 1682, "x2": 1471, "y2": 1690}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Britain", "Map": "Felucca" },
+    "Name": "the Britain Mage",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1481, "y1": 1546, "x2": 1489, "y2": 1554},
+      {"x1": 1586, "y1": 1650, "x2": 1594, "y2": 1658},
+      {"x1": 1494, "y1": 1655, "x2": 1502, "y2": 1663},
+      {"x1": 1401, "y1": 1806, "x2": 1409, "y2": 1814}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Britain", "Map": "Felucca" },
+    "Name": "the Britain Provisioner",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1465, "y1": 1664, "x2": 1473, "y2": 1672},
+      {"x1": 1598, "y1": 1708, "x2": 1606, "y2": 1716}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Britain", "Map": "Felucca" },
+    "Name": "the Britain Jeweler",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1646, "y1": 1638, "x2": 1654, "y2": 1646},
+      {"x1": 1447, "y1": 1675, "x2": 1455, "y2": 1683}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Britain", "Map": "Felucca" },
+    "Name": "the Britain Bank",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1646, "y1": 1604, "x2": 1654, "y2": 1612},
+      {"x1": 1421, "y1": 1686, "x2": 1429, "y2": 1694}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Britain", "Map": "Felucca" },
+    "Name": "the Britain Healer",
+    "Priority": 50,
+    "Area": [{"x1": 1467, "y1": 1607, "x2": 1475, "y2": 1615}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Britain", "Map": "Felucca" },
+    "Name": "the Britain Carpenter",
+    "Priority": 50,
+    "Area": [{"x1": 1426, "y1": 1593, "x2": 1434, "y2": 1601}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Britain", "Map": "Felucca" },
+    "Name": "the Britain Scribe",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1405, "y1": 1586, "x2": 1413, "y2": 1594},
+      {"x1": 1490, "y1": 1711, "x2": 1498, "y2": 1719}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Britain", "Map": "Felucca" },
+    "Name": "the Britain Bard",
+    "Priority": 50,
+    "Area": [{"x1": 1451, "y1": 1553, "x2": 1459, "y2": 1561}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Britain", "Map": "Felucca" },
+    "Name": "the Britain Tanner",
+    "Priority": 50,
+    "Area": [{"x1": 1427, "y1": 1608, "x2": 1435, "y2": 1616}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Felucca",
+    "Parent": { "Name": "Britain", "Map": "Felucca" },
+    "Name": "the Britain Docks",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1432, "y1": 1748, "x2": 1440, "y2": 1756},
+      {"x1": 1416, "y1": 1750, "x2": 1420, "y2": 1758},
+      {"x1": 1434, "y1": 1757, "x2": 1442, "y2": 1765},
+      {"x1": 1466, "y1": 1761, "x2": 1474, "y2": 1769}
+    ]
+  },
+  {
     "$type": "TownRegion",
     "NoLogoutDelay": true,
     "Map": "Felucca",
@@ -1300,6 +1461,167 @@
     ],
     "GoLocation": {"x": 1495, "y": 1629, "z": 10},
     "Music": "Britain1"
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Britain", "Map": "Trammel" },
+    "Name": "the Britain Bakery",
+    "Priority": 50,
+    "Area": [{"x1": 1446, "y1": 1613, "x2": 1454, "y2": 1621}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Britain", "Map": "Trammel" },
+    "Name": "the Britain Butcher",
+    "Priority": 50,
+    "Area": [{"x1": 1445, "y1": 1719, "x2": 1453, "y2": 1727}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Britain", "Map": "Trammel" },
+    "Name": "the Britain Blacksmith",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1416, "y1": 1543, "x2": 1422, "y2": 1551},
+      {"x1": 1358, "y1": 1570, "x2": 1366, "y2": 1578},
+      {"x1": 1477, "y1": 1580, "x2": 1485, "y2": 1588},
+      {"x1": 1443, "y1": 1643, "x2": 1451, "y2": 1651},
+      {"x1": 1633, "y1": 1689, "x2": 1641, "y2": 1697},
+      {"x1": 1345, "y1": 1774, "x2": 1353, "y2": 1782}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Britain", "Map": "Trammel" },
+    "Name": "the Britain Bowyer",
+    "Priority": 50,
+    "Area": [{"x1": 1466, "y1": 1574, "x2": 1474, "y2": 1582}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Britain", "Map": "Trammel" },
+    "Name": "the Britain Tinker",
+    "Priority": 50,
+    "Area": [{"x1": 1418, "y1": 1650, "x2": 1426, "y2": 1658}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Britain", "Map": "Trammel" },
+    "Name": "the Britain Tailor",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1385, "y1": 1584, "x2": 1392, "y2": 1592},
+      {"x1": 1543, "y1": 1655, "x2": 1551, "y2": 1663},
+      {"x1": 1463, "y1": 1682, "x2": 1471, "y2": 1690}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Britain", "Map": "Trammel" },
+    "Name": "the Britain Mage",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1481, "y1": 1546, "x2": 1489, "y2": 1554},
+      {"x1": 1586, "y1": 1650, "x2": 1594, "y2": 1658},
+      {"x1": 1494, "y1": 1655, "x2": 1502, "y2": 1663},
+      {"x1": 1401, "y1": 1806, "x2": 1409, "y2": 1814}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Britain", "Map": "Trammel" },
+    "Name": "the Britain Provisioner",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1465, "y1": 1664, "x2": 1473, "y2": 1672},
+      {"x1": 1598, "y1": 1708, "x2": 1606, "y2": 1716}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Britain", "Map": "Trammel" },
+    "Name": "the Britain Jeweler",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1646, "y1": 1638, "x2": 1654, "y2": 1646},
+      {"x1": 1447, "y1": 1675, "x2": 1455, "y2": 1683}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Britain", "Map": "Trammel" },
+    "Name": "the Britain Bank",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1646, "y1": 1604, "x2": 1654, "y2": 1612},
+      {"x1": 1421, "y1": 1686, "x2": 1429, "y2": 1694}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Britain", "Map": "Trammel" },
+    "Name": "the Britain Healer",
+    "Priority": 50,
+    "Area": [{"x1": 1467, "y1": 1607, "x2": 1475, "y2": 1615}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Britain", "Map": "Trammel" },
+    "Name": "the Britain Carpenter",
+    "Priority": 50,
+    "Area": [{"x1": 1426, "y1": 1593, "x2": 1434, "y2": 1601}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Britain", "Map": "Trammel" },
+    "Name": "the Britain Scribe",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1405, "y1": 1586, "x2": 1413, "y2": 1594},
+      {"x1": 1490, "y1": 1711, "x2": 1498, "y2": 1719}
+    ]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Britain", "Map": "Trammel" },
+    "Name": "the Britain Bard",
+    "Priority": 50,
+    "Area": [{"x1": 1451, "y1": 1553, "x2": 1459, "y2": 1561}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Britain", "Map": "Trammel" },
+    "Name": "the Britain Tanner",
+    "Priority": 50,
+    "Area": [{"x1": 1427, "y1": 1608, "x2": 1435, "y2": 1616}]
+  },
+  {
+    "$type": "NoHousingRegion",
+    "Map": "Trammel",
+    "Parent": { "Name": "Britain", "Map": "Trammel" },
+    "Name": "the Britain Docks",
+    "Priority": 50,
+    "Area": [
+      {"x1": 1432, "y1": 1748, "x2": 1440, "y2": 1756},
+      {"x1": 1416, "y1": 1750, "x2": 1420, "y2": 1758},
+      {"x1": 1434, "y1": 1757, "x2": 1442, "y2": 1765},
+      {"x1": 1466, "y1": 1761, "x2": 1474, "y2": 1769}
+    ]
   },
   {
     "$type": "TownRegion",
