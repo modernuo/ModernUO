@@ -1,5 +1,6 @@
 using System;
 using System.Buffers.Binary;
+using System.Collections.Generic;
 using System.Text;
 using Server;
 using Xunit;
@@ -14,7 +15,7 @@ public class ObjectPropertyListSpanAddTests
     {
         opl.Terminate();
         var buffer = opl.Buffer;
-        var entries = new System.Collections.Generic.List<(int, string)>();
+        var entries = new List<(int, string)>();
         var pos = 15; // header is 15 bytes
         while (true)
         {
