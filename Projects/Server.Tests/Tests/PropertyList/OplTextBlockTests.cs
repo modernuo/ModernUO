@@ -85,4 +85,24 @@ public class OplTextBlockTests
 
         Assert.Equal((1042971, "Luck Bonus: +5%"), Decode(opl)[0]);
     }
+
+    [Fact]
+    public void LongContent_SplitsIntoMultipleEntriesUnderCap()
+    {
+        var opl = new ObjectPropertyList(null);
+        using (var block = opl.TextBlock())
+        {
+            for (var i = 0; i < 10; i++)
+            {
+                block.Add(new string((char)('a' + i), 100).AsSpan());
+            }
+        }
+
+        var entries = Decode(opl);
+        Assert.True(entries.Length > 1, "expected the long block to chunk into multiple entries");
+        foreach (var (_, arg) in entries)
+        {
+            Assert.True(arg.Length <= ObjectPropertyList.MaxArgumentLength);
+        }
+    }
 }

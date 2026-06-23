@@ -61,4 +61,44 @@ public class ObjectPropertyListSpanAddTests
         Assert.Single(entries);
         Assert.Equal((1070722, "Custom"), entries[0]);
     }
+
+    [Fact]
+    public void Add_TruncatesArgumentOverMaxLength()
+    {
+        var oversized = new string('x', ObjectPropertyList.MaxArgumentLength + 50);
+
+        var opl = new ObjectPropertyList(null);
+        opl.Add(1070722, oversized.AsSpan());
+
+        var entries = Decode(opl);
+        Assert.Single(entries);
+        Assert.Equal(ObjectPropertyList.MaxArgumentLength, entries[0].arg.Length);
+    }
+
+    [Fact]
+    public void AddChunked_SplitsAtNewlinesSoNoEntryExceedsCap()
+    {
+        // 10 lines x 100 chars joined by '\n' (~1009 chars), well over the cap.
+        var lines = new string[10];
+        for (var i = 0; i < lines.Length; i++)
+        {
+            lines[i] = new string((char)('a' + i), 100);
+        }
+
+        var text = string.Join("\n", lines);
+
+        var opl = new ObjectPropertyList(null);
+        opl.AddChunked(text.AsSpan());
+
+        var entries = Decode(opl);
+        Assert.True(entries.Length > 1, "expected multiple chunks");
+        foreach (var (_, arg) in entries)
+        {
+            Assert.True(arg.Length <= ObjectPropertyList.MaxArgumentLength);
+        }
+
+        // AddChunked breaks only at '\n' (dropping that '\n'), so rejoining with '\n' is lossless.
+        var rejoined = string.Join("\n", Array.ConvertAll(entries, e => e.arg));
+        Assert.Equal(text, rejoined);
+    }
 }

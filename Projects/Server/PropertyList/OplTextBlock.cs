@@ -19,7 +19,9 @@ using Server.Text;
 
 namespace Server;
 
-// Accumulates '\n'-joined free-text lines and emits ONE cycling passthrough entry on dispose.
+// Accumulates '\n'-joined free-text lines and emits them on dispose via AddChunked, which splits
+// into as many cycling passthrough entries as needed so no single OPL property exceeds the legacy
+// client's per-property buffer (ObjectPropertyList.MaxArgumentLength).
 // Use with `using var block = list.TextBlock();`. ref struct: single-threaded OPL build only.
 public ref struct OplTextBlock
 {
@@ -63,7 +65,9 @@ public ref struct OplTextBlock
         if (_any)
         {
             // Strip the trailing '\n' (Length >= 2 whenever _any: content + separator).
-            _list.Add(_builder.AsSpan(0, _builder.Length - 1));
+            // AddChunked splits across multiple properties so a long block never overflows the
+            // legacy client's per-property tooltip buffer.
+            _list.AddChunked(_builder.AsSpan(0, _builder.Length - 1));
         }
 
         _builder.Dispose();

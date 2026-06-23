@@ -35,6 +35,9 @@ public interface IPropertyList : ISelfInterpolatedStringHandler
     /** Convenience method for span-based text without allocating a string. */
     public void Add(int number, ReadOnlySpan<char> argument);
 
+    /** Emits newline-joined text across multiple properties so none exceeds the legacy client's per-property buffer. */
+    public void AddChunked(ReadOnlySpan<char> text);
+
     /** Convenience method for $"{value}". */
     public void Add(int number, int value);
 
