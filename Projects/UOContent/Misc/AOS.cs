@@ -1010,7 +1010,9 @@ namespace Server
             return value;
         }
 
-        public void GetProperties(IPropertyList list)
+        // lowerStatReq is passed in because the weapon folds the resource's lower-requirements into
+        // GetLowerStatReq(); emitted in cliloc order (1060435) between the Hit* block and MageWeapon.
+        public void GetProperties(IPropertyList list, int lowerStatReq = 0)
         {
             int prop;
 
@@ -1092,6 +1094,11 @@ namespace Server
             if ((prop = HitLeechStam) != 0)
             {
                 list.Add(1060430, prop); // hit stamina leech ~1_val~%
+            }
+
+            if (lowerStatReq != 0)
+            {
+                list.Add(1060435, lowerStatReq); // lower requirements ~1_val~%
             }
 
             if ((prop = MageWeapon) != 0)

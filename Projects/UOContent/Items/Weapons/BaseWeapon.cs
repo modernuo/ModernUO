@@ -2998,12 +2998,7 @@ public abstract partial class BaseWeapon
             list.Add(1072792); // Balanced
         }
 
-        WeaponAttributes.GetProperties(list);
-
-        if ((prop = GetLowerStatReq()) != 0)
-        {
-            list.Add(1060435, prop); // lower requirements ~1_val~%
-        }
+        WeaponAttributes.GetProperties(list, lowerStatReq: GetLowerStatReq());
 
         if (ImmolatingWeaponSpell.IsImmolating(this))
         {
