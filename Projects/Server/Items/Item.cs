@@ -536,6 +536,14 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
         }
     }
 
+    // SendMobileIncoming (0x78) sends only the first item per layer (it dedupes via the
+    // `layers` span). Equipment Layer comes from tiledata, so e.g. a two-handed weapon and a
+    // shield both resolve to Layer.TwoHanded; a later same-layer item sent on its own via
+    // EquipUpdate (0x2E) or its OPL would leave the client holding two items on one equipment
+    // slot (a use-after-free on the legacy 2D client when that slot is later torn down).
+    // Returns true if this equipped item is such a later duplicate and must not be sent alone.
+    public bool IsDupedEquipLayer() => m_Parent is Mobile m && m.FindItemOnLayer(m_Layer) != this;
+
     public List<Item> Items => LookupItems() ?? EmptyItems;
 
     public int LookupContainerVersion() => (this as Container)?._version ?? LookupCompactInfo()?.Version ?? 0;
@@ -1384,6 +1392,14 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
                 }
             }
 
+            return;
+        }
+
+        // A second item sharing an equipment layer is omitted by SendMobileIncoming (0x78);
+        // sending it on its own via EquipUpdate/OPL would leave the client with two items on
+        // one slot. Skip the per-client sends entirely for the dupe.
+        if (IsDupedEquipLayer())
+        {
             return;
         }
 

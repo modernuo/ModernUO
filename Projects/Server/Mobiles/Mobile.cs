@@ -5187,14 +5187,18 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
             }
             else if (item.Parent is Mobile)
             {
-                state.SendEquipUpdate(item);
+                // Don't re-show a duped-layer item on its own (see Item.IsDupedEquipLayer).
+                if (!item.IsDupedEquipLayer())
+                {
+                    state.SendEquipUpdate(item);
+                }
             }
             else
             {
                 item.SendInfoTo(state);
             }
 
-            if (item.Parent != null)
+            if (item.Parent != null && !item.IsDupedEquipLayer())
             {
                 item.SendOPLPacketTo(state);
             }
