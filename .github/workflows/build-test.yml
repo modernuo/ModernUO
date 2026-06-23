@@ -34,7 +34,7 @@ jobs:
             name: MacOS 26
 
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
       with:
         fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
     - name: Install .NET
@@ -96,7 +96,7 @@ jobs:
       - name: Install Prerequisites using apt
         run: apt-get update -y && apt-get install -y curl libicu-dev libdeflate-dev zstd libargon2-dev tzdata liburing-dev
         if: ${{ matrix.packageManager == 'apt' }}
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
       - name: Install .NET

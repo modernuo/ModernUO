@@ -32,7 +32,7 @@ jobs:
             artifact: build-tool-linux-arm64
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0 # Full clone required for Nerdbank.GitVersioning
 
@@ -115,7 +115,7 @@ jobs:
       contents: write
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Move tag to current commit
         run: |
