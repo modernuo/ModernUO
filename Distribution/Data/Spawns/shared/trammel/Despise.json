@@ -1,702 +1,1395 @@
-﻿[
+[
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "0c1a2c73-e451-4e78-8fff-e320bb67ea7d",
     "name": "Spawner (105)",
-    "location": [5420, 746, 5],
+    "location": [
+      5420,
+      746,
+      5
+    ],
     "map": "Trammel",
     "count": 10,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 18,
+    "spawnBounds": {
+      "x1": 5402,
+      "y1": 728,
+      "z1": -128,
+      "x2": 5439,
+      "y2": 765,
+      "z2": 128
+    },
     "walkingRange": 25,
     "entries": [
-      { "name": "EarthElemental", "maxCount": 4, "probability": 100 },
-      { "name": "Ettin", "maxCount": 6, "probability": 100 }
+      {
+        "name": "EarthElemental",
+        "maxCount": 4,
+        "probability": 100
+      },
+      {
+        "name": "Ettin",
+        "maxCount": 6,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "0c46651c-0760-476e-8ebe-d51ca00006bf",
     "name": "Spawner (105)",
-    "location": [5426, 791, 60],
+    "location": [
+      5426,
+      791,
+      60
+    ],
     "map": "Trammel",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 12,
+    "spawnBounds": {
+      "x1": 5414,
+      "y1": 779,
+      "z1": -128,
+      "x2": 5439,
+      "y2": 804,
+      "z2": 128
+    },
     "walkingRange": 25,
     "entries": [
-      { "name": "Troll", "maxCount": 3, "probability": 100 }
+      {
+        "name": "Troll",
+        "maxCount": 3,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "0de2bfd4-ccb8-4e8c-88b7-e234eb2f5122",
     "name": "Spawner (105)",
-    "location": [5483, 711, 15],
+    "location": [
+      5483,
+      711,
+      15
+    ],
     "map": "Trammel",
     "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 12,
+    "spawnBounds": {
+      "x1": 5471,
+      "y1": 699,
+      "z1": -128,
+      "x2": 5496,
+      "y2": 724,
+      "z2": 128
+    },
     "walkingRange": 25,
     "entries": [
-      { "name": "Ettin", "maxCount": 4, "probability": 100 }
+      {
+        "name": "Ettin",
+        "maxCount": 4,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "193bc157-aeb6-4e74-88e4-11e980858cec",
     "name": "Spawner (105)",
-    "location": [5564, 821, 45],
+    "location": [
+      5564,
+      821,
+      45
+    ],
     "map": "Trammel",
     "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 5,
+    "spawnBounds": {
+      "x1": 5559,
+      "y1": 816,
+      "z1": -128,
+      "x2": 5570,
+      "y2": 827,
+      "z2": 128
+    },
     "walkingRange": 5,
     "entries": [
-      { "name": "TreasureChestLevel4", "maxCount": 2, "probability": 100 }
+      {
+        "name": "TreasureChestLevel4",
+        "maxCount": 2,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "1eb2840b-690f-4f10-80d0-00a7e8d22a07",
     "name": "Spawner (105)",
-    "location": [5475, 748, 5],
+    "location": [
+      5475,
+      748,
+      5
+    ],
     "map": "Trammel",
     "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 12,
+    "spawnBounds": {
+      "x1": 5463,
+      "y1": 736,
+      "z1": -128,
+      "x2": 5488,
+      "y2": 761,
+      "z2": 128
+    },
     "walkingRange": 25,
     "entries": [
-      { "name": "EarthElemental", "maxCount": 3, "probability": 100 },
-      { "name": "Ettin", "maxCount": 2, "probability": 100 }
+      {
+        "name": "EarthElemental",
+        "maxCount": 3,
+        "probability": 100
+      },
+      {
+        "name": "Ettin",
+        "maxCount": 2,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "20ae1a8a-90cd-4046-819f-f7eae50c6b24",
     "name": "Spawner (105)",
-    "location": [5405, 576, 61],
+    "location": [
+      5405,
+      576,
+      61
+    ],
     "map": "Trammel",
     "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 12,
+    "spawnBounds": {
+      "x1": 5393,
+      "y1": 564,
+      "z1": -128,
+      "x2": 5418,
+      "y2": 589,
+      "z2": 128
+    },
     "walkingRange": 25,
     "entries": [
-      { "name": "Lizardman", "maxCount": 5, "probability": 100 }
+      {
+        "name": "Lizardman",
+        "maxCount": 5,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "20f0fb49-eaea-4b6b-a14d-0868d204ceaf",
     "name": "Spawner (105)",
-    "location": [5441, 680, 20],
+    "location": [
+      5441,
+      680,
+      20
+    ],
     "map": "Trammel",
     "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 12,
+    "spawnBounds": {
+      "x1": 5429,
+      "y1": 668,
+      "z1": -128,
+      "x2": 5454,
+      "y2": 693,
+      "z2": 128
+    },
     "walkingRange": 25,
     "entries": [
-      { "name": "EarthElemental", "maxCount": 6, "probability": 100 }
+      {
+        "name": "EarthElemental",
+        "maxCount": 6,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "25b5c0ec-29bf-4618-b857-9e68e23fa088",
     "name": "Spawner (105)",
-    "location": [5398, 996, 5],
+    "location": [
+      5398,
+      996,
+      5
+    ],
     "map": "Trammel",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 15,
+    "spawnBounds": {
+      "x1": 5383,
+      "y1": 981,
+      "z1": -128,
+      "x2": 5414,
+      "y2": 1012,
+      "z2": 128
+    },
     "walkingRange": 25,
     "entries": [
-      { "name": "AcidElemental", "maxCount": 3, "probability": 100 }
+      {
+        "name": "AcidElemental",
+        "maxCount": 3,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "2fbd19bb-2caa-494d-ac09-70784915cc6e",
     "name": "Spawner (105)",
-    "location": [5590, 871, 45],
+    "location": [
+      5590,
+      871,
+      45
+    ],
     "map": "Trammel",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 20,
+    "spawnBounds": {
+      "x1": 5570,
+      "y1": 851,
+      "z1": -128,
+      "x2": 5611,
+      "y2": 892,
+      "z2": 128
+    },
     "walkingRange": 35,
     "entries": [
-      { "name": "Ogre", "maxCount": 3, "probability": 100 }
+      {
+        "name": "Ogre",
+        "maxCount": 3,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "306d0efd-88fc-4880-a46d-d2f9e5b04ec7",
     "name": "Spawner (105)",
-    "location": [5487, 902, 30],
+    "location": [
+      5487,
+      902,
+      30
+    ],
     "map": "Trammel",
     "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 15,
+    "spawnBounds": {
+      "x1": 5472,
+      "y1": 887,
+      "z1": -128,
+      "x2": 5503,
+      "y2": 918,
+      "z2": 128
+    },
     "walkingRange": 25,
     "entries": [
-      { "name": "Ettin", "maxCount": 4, "probability": 100 }
+      {
+        "name": "Ettin",
+        "maxCount": 4,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "312b70e0-4afc-411d-8f1a-d902ea0f9e16",
     "name": "Spawner (105)",
-    "location": [5504, 597, 45],
+    "location": [
+      5504,
+      597,
+      45
+    ],
     "map": "Trammel",
     "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 12,
+    "spawnBounds": {
+      "x1": 5492,
+      "y1": 585,
+      "z1": -128,
+      "x2": 5517,
+      "y2": 610,
+      "z2": 128
+    },
     "walkingRange": 25,
     "entries": [
-      { "name": "Lizardman", "maxCount": 5, "probability": 100 }
+      {
+        "name": "Lizardman",
+        "maxCount": 5,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "36aa83bc-3e2a-42f8-bdeb-0ee9cb004a64",
     "name": "Spawner (105)",
-    "location": [5490, 676, 20],
+    "location": [
+      5490,
+      676,
+      20
+    ],
     "map": "Trammel",
     "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 12,
+    "spawnBounds": {
+      "x1": 5478,
+      "y1": 664,
+      "z1": -128,
+      "x2": 5503,
+      "y2": 689,
+      "z2": 128
+    },
     "walkingRange": 25,
     "entries": [
-      { "name": "Ettin", "maxCount": 4, "probability": 100 }
+      {
+        "name": "Ettin",
+        "maxCount": 4,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "39d6eab1-27c8-4f51-b3d7-4befdbd17478",
     "name": "Spawner (105)",
-    "location": [5410, 611, 45],
+    "location": [
+      5410,
+      611,
+      45
+    ],
     "map": "Trammel",
     "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 12,
+    "spawnBounds": {
+      "x1": 5398,
+      "y1": 599,
+      "z1": -128,
+      "x2": 5423,
+      "y2": 624,
+      "z2": 128
+    },
     "walkingRange": 25,
     "entries": [
-      { "name": "Lizardman", "maxCount": 5, "probability": 100 }
+      {
+        "name": "Lizardman",
+        "maxCount": 5,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "3e8b1378-fe18-4c3b-9e86-5b35a30a1c6f",
     "name": "Spawner (105)",
-    "location": [5482, 791, 60],
+    "location": [
+      5482,
+      791,
+      60
+    ],
     "map": "Trammel",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 12,
+    "spawnBounds": {
+      "x1": 5470,
+      "y1": 779,
+      "z1": -128,
+      "x2": 5495,
+      "y2": 804,
+      "z2": 128
+    },
     "walkingRange": 25,
     "entries": [
-      { "name": "Troll", "maxCount": 3, "probability": 100 }
+      {
+        "name": "Troll",
+        "maxCount": 3,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "41a2d01b-14a5-4b87-a4fc-85053f7ae31a",
     "name": "Spawner (105)",
-    "location": [5460, 526, 60],
+    "location": [
+      5460,
+      526,
+      60
+    ],
     "map": "Trammel",
     "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 12,
+    "spawnBounds": {
+      "x1": 5448,
+      "y1": 514,
+      "z1": -128,
+      "x2": 5473,
+      "y2": 539,
+      "z2": 128
+    },
     "walkingRange": 25,
     "entries": [
-      { "name": "Lizardman", "maxCount": 5, "probability": 100 }
+      {
+        "name": "Lizardman",
+        "maxCount": 5,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "462a3304-fa2a-4473-99f4-438e9f55886e",
     "name": "Spawner (105)",
-    "location": [5439, 851, 45],
+    "location": [
+      5439,
+      851,
+      45
+    ],
     "map": "Trammel",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 12,
+    "spawnBounds": {
+      "x1": 5427,
+      "y1": 839,
+      "z1": -128,
+      "x2": 5452,
+      "y2": 864,
+      "z2": 128
+    },
     "walkingRange": 25,
     "entries": [
-      { "name": "Troll", "maxCount": 3, "probability": 100 }
+      {
+        "name": "Troll",
+        "maxCount": 3,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "4f3cb4cd-569f-4ad1-9343-e7fe4eb4775a",
     "name": "Spawner (105)",
-    "location": [5464, 600, 45],
+    "location": [
+      5464,
+      600,
+      45
+    ],
     "map": "Trammel",
     "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 12,
+    "spawnBounds": {
+      "x1": 5452,
+      "y1": 588,
+      "z1": -128,
+      "x2": 5477,
+      "y2": 613,
+      "z2": 128
+    },
     "walkingRange": 25,
     "entries": [
-      { "name": "Lizardman", "maxCount": 5, "probability": 100 }
+      {
+        "name": "Lizardman",
+        "maxCount": 5,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "5329add2-7d3f-4884-8b4c-61dd7b78d29b",
     "name": "Spawner (105)",
-    "location": [5593, 794, 60],
+    "location": [
+      5593,
+      794,
+      60
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 5,
+    "spawnBounds": {
+      "x1": 5588,
+      "y1": 789,
+      "z1": -128,
+      "x2": 5599,
+      "y2": 800,
+      "z2": 128
+    },
     "walkingRange": 5,
     "entries": [
-      { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 }
+      {
+        "name": "TreasureChestLevel2",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "5e82bdcb-378c-4879-af67-03ecc96f3ff0",
     "name": "Spawner (105)",
-    "location": [5391, 905, 30],
+    "location": [
+      5391,
+      905,
+      30
+    ],
     "map": "Trammel",
     "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 15,
+    "spawnBounds": {
+      "x1": 5376,
+      "y1": 890,
+      "z1": -128,
+      "x2": 5407,
+      "y2": 921,
+      "z2": 128
+    },
     "walkingRange": 25,
     "entries": [
-      { "name": "Ettin", "maxCount": 4, "probability": 100 }
+      {
+        "name": "Ettin",
+        "maxCount": 4,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "60ec080d-a3a9-44a8-b00c-e1d1bb81818f",
     "name": "Spawner (105)",
-    "location": [5394, 525, 65],
+    "location": [
+      5394,
+      525,
+      65
+    ],
     "map": "Trammel",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 5,
+    "spawnBounds": {
+      "x1": 5389,
+      "y1": 520,
+      "z1": -128,
+      "x2": 5400,
+      "y2": 531,
+      "z2": 128
+    },
     "walkingRange": 5,
     "entries": [
-      { "name": "TreasureChestLevel1", "maxCount": 1, "probability": 100 },
-      { "name": "TreasureChestLevel2", "maxCount": 2, "probability": 100 }
+      {
+        "name": "TreasureChestLevel1",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "TreasureChestLevel2",
+        "maxCount": 2,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "68d435c5-668c-4af0-a9fd-5e9c3e2002d0",
     "name": "Spawner (105)",
-    "location": [5532, 787, 60],
+    "location": [
+      5532,
+      787,
+      60
+    ],
     "map": "Trammel",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 15,
+    "spawnBounds": {
+      "x1": 5517,
+      "y1": 772,
+      "z1": -128,
+      "x2": 5548,
+      "y2": 803,
+      "z2": 128
+    },
     "walkingRange": 25,
     "entries": [
-      { "name": "Ogre", "maxCount": 3, "probability": 100 }
+      {
+        "name": "Ogre",
+        "maxCount": 3,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "6c3fc410-6d7c-4e7e-80fb-62d05f146e28",
     "name": "Spawner (105)",
-    "location": [5503, 529, 60],
+    "location": [
+      5503,
+      529,
+      60
+    ],
     "map": "Trammel",
     "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 12,
+    "spawnBounds": {
+      "x1": 5491,
+      "y1": 517,
+      "z1": -128,
+      "x2": 5516,
+      "y2": 542,
+      "z2": 128
+    },
     "walkingRange": 25,
     "entries": [
-      { "name": "Lizardman", "maxCount": 5, "probability": 100 },
-      { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 },
-      { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }
+      {
+        "name": "Lizardman",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "TreasureChestLevel2",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "TreasureChestLevel3",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "6eb7ccc4-5d54-4e56-b637-4726b2606957",
     "name": "Spawner (105)",
-    "location": [5386, 612, 45],
+    "location": [
+      5386,
+      612,
+      45
+    ],
     "map": "Trammel",
     "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 12,
+    "spawnBounds": {
+      "x1": 5374,
+      "y1": 600,
+      "z1": -128,
+      "x2": 5399,
+      "y2": 625,
+      "z2": 128
+    },
     "walkingRange": 25,
     "entries": [
-      { "name": "Lizardman", "maxCount": 5, "probability": 100 },
-      { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 },
-      { "name": "TreasureChestLevel3", "maxCount": 2, "probability": 100 }
+      {
+        "name": "Lizardman",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "TreasureChestLevel2",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "TreasureChestLevel3",
+        "maxCount": 2,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "77392dd3-f72b-43fa-b5b4-9ce81858fe4f",
     "name": "Spawner (105)",
-    "location": [5411, 541, 60],
+    "location": [
+      5411,
+      541,
+      60
+    ],
     "map": "Trammel",
     "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 12,
+    "spawnBounds": {
+      "x1": 5399,
+      "y1": 529,
+      "z1": -128,
+      "x2": 5424,
+      "y2": 554,
+      "z2": 128
+    },
     "walkingRange": 25,
     "entries": [
-      { "name": "Lizardman", "maxCount": 5, "probability": 100 }
+      {
+        "name": "Lizardman",
+        "maxCount": 5,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "8ecf5903-3e52-48af-8a3e-3deececd5314",
     "name": "Spawner (105)",
-    "location": [5546, 888, 30],
+    "location": [
+      5546,
+      888,
+      30
+    ],
     "map": "Trammel",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 8,
+    "spawnBounds": {
+      "x1": 5538,
+      "y1": 880,
+      "z1": -128,
+      "x2": 5555,
+      "y2": 897,
+      "z2": 128
+    },
     "walkingRange": 8,
     "entries": [
-      { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 },
-      { "name": "TreasureChestLevel3", "maxCount": 2, "probability": 100 }
+      {
+        "name": "TreasureChestLevel2",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "TreasureChestLevel3",
+        "maxCount": 2,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "90882c2e-a2b4-4c37-905e-b87f5ed61a60",
     "name": "Spawner (105)",
-    "location": [5390, 587, 45],
+    "location": [
+      5390,
+      587,
+      45
+    ],
     "map": "Trammel",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 5,
+    "spawnBounds": {
+      "x1": 5385,
+      "y1": 582,
+      "z1": -128,
+      "x2": 5396,
+      "y2": 593,
+      "z2": 128
+    },
     "walkingRange": 5,
     "entries": [
-      { "name": "TreasureChestLevel1", "maxCount": 1, "probability": 100 },
-      { "name": "TreasureChestLevel2", "maxCount": 2, "probability": 100 }
+      {
+        "name": "TreasureChestLevel1",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "TreasureChestLevel2",
+        "maxCount": 2,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "9a3db886-d50c-4e9c-b241-c3a0c5ee9e98",
     "name": "Spawner (105)",
-    "location": [5470, 860, 45],
+    "location": [
+      5470,
+      860,
+      45
+    ],
     "map": "Trammel",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 12,
+    "spawnBounds": {
+      "x1": 5458,
+      "y1": 848,
+      "z1": -128,
+      "x2": 5483,
+      "y2": 873,
+      "z2": 128
+    },
     "walkingRange": 25,
     "entries": [
-      { "name": "Troll", "maxCount": 3, "probability": 100 }
+      {
+        "name": "Troll",
+        "maxCount": 3,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "9ed82ee8-dd07-43ef-a454-a1dd5e964fa7",
     "name": "Spawner (105)",
-    "location": [5507, 656, 20],
+    "location": [
+      5507,
+      656,
+      20
+    ],
     "map": "Trammel",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 5,
+    "spawnBounds": {
+      "x1": 5502,
+      "y1": 651,
+      "z1": -128,
+      "x2": 5513,
+      "y2": 662,
+      "z2": 128
+    },
     "walkingRange": 5,
     "entries": [
-      { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 },
-      { "name": "TreasureChestLevel3", "maxCount": 2, "probability": 100 }
+      {
+        "name": "TreasureChestLevel2",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "TreasureChestLevel3",
+        "maxCount": 2,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "9fcd5ea5-3722-49ef-8d15-8c6f86f1d10c",
     "name": "Spawner (105)",
-    "location": [5505, 747, 5],
+    "location": [
+      5505,
+      747,
+      5
+    ],
     "map": "Trammel",
     "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 18,
+    "spawnBounds": {
+      "x1": 5487,
+      "y1": 729,
+      "z1": -128,
+      "x2": 5524,
+      "y2": 766,
+      "z2": 128
+    },
     "walkingRange": 25,
     "entries": [
-      { "name": "EarthElemental", "maxCount": 3, "probability": 100 },
-      { "name": "Ettin", "maxCount": 2, "probability": 100 }
+      {
+        "name": "EarthElemental",
+        "maxCount": 3,
+        "probability": 100
+      },
+      {
+        "name": "Ettin",
+        "maxCount": 2,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "ac09482f-cf78-4b67-849e-81d969044806",
     "name": "Spawner (105)",
-    "location": [5385, 703, 15],
+    "location": [
+      5385,
+      703,
+      15
+    ],
     "map": "Trammel",
     "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 15,
+    "spawnBounds": {
+      "x1": 5370,
+      "y1": 688,
+      "z1": -128,
+      "x2": 5401,
+      "y2": 719,
+      "z2": 128
+    },
     "walkingRange": 25,
     "entries": [
-      { "name": "Ettin", "maxCount": 4, "probability": 100 }
+      {
+        "name": "Ettin",
+        "maxCount": 4,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "b7c5f3ca-e60d-4623-b31c-86583932aa77",
     "name": "Spawner (105)",
-    "location": [5426, 943, 20],
+    "location": [
+      5426,
+      943,
+      20
+    ],
     "map": "Trammel",
     "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 15,
+    "spawnBounds": {
+      "x1": 5411,
+      "y1": 928,
+      "z1": -128,
+      "x2": 5442,
+      "y2": 959,
+      "z2": 128
+    },
     "walkingRange": 25,
     "entries": [
-      { "name": "Ettin", "maxCount": 4, "probability": 100 }
+      {
+        "name": "Ettin",
+        "maxCount": 4,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "cab315f4-6eaf-4772-a991-c2f4ee6c5284",
     "name": "Spawner (105)",
-    "location": [5471, 973, 15],
+    "location": [
+      5471,
+      973,
+      15
+    ],
     "map": "Trammel",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 18,
+    "spawnBounds": {
+      "x1": 5453,
+      "y1": 955,
+      "z1": -128,
+      "x2": 5490,
+      "y2": 992,
+      "z2": 128
+    },
     "walkingRange": 25,
     "entries": [
-      { "name": "Cyclops", "maxCount": 3, "probability": 100 }
+      {
+        "name": "Cyclops",
+        "maxCount": 3,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "cd736cc2-c0d3-4259-bbe2-949af88f94e7",
     "name": "Spawner (105)",
-    "location": [5504, 939, 20],
+    "location": [
+      5504,
+      939,
+      20
+    ],
     "map": "Trammel",
     "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 15,
+    "spawnBounds": {
+      "x1": 5489,
+      "y1": 924,
+      "z1": -128,
+      "x2": 5520,
+      "y2": 955,
+      "z2": 128
+    },
     "walkingRange": 25,
     "entries": [
-      { "name": "Ettin", "maxCount": 4, "probability": 100 }
+      {
+        "name": "Ettin",
+        "maxCount": 4,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "cf63c3f7-751e-498b-bc4f-3e185280593b",
     "name": "Spawner (105)",
-    "location": [5557, 828, 45],
+    "location": [
+      5557,
+      828,
+      45
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 7,
+    "spawnBounds": {
+      "x1": 5550,
+      "y1": 821,
+      "z1": -128,
+      "x2": 5565,
+      "y2": 836,
+      "z2": 128
+    },
     "walkingRange": 7,
     "entries": [
-      { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }
+      {
+        "name": "TreasureChestLevel3",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "d35770ae-714d-4f38-b2ea-ce1e4320a82e",
     "name": "Spawner (105)",
-    "location": [5387, 697, 15],
+    "location": [
+      5387,
+      697,
+      15
+    ],
     "map": "Trammel",
     "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 5,
+    "spawnBounds": {
+      "x1": 5382,
+      "y1": 692,
+      "z1": -128,
+      "x2": 5393,
+      "y2": 703,
+      "z2": 128
+    },
     "walkingRange": 5,
     "entries": [
-      { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 },
-      { "name": "TreasureChestLevel3", "maxCount": 4, "probability": 100 }
+      {
+        "name": "TreasureChestLevel2",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "TreasureChestLevel3",
+        "maxCount": 4,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "d710fdd3-1600-4436-a76b-7062ab33aa72",
     "name": "Spawner (105)",
-    "location": [5391, 660, 20],
+    "location": [
+      5391,
+      660,
+      20
+    ],
     "map": "Trammel",
     "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 12,
+    "spawnBounds": {
+      "x1": 5379,
+      "y1": 648,
+      "z1": -128,
+      "x2": 5404,
+      "y2": 673,
+      "z2": 128
+    },
     "walkingRange": 25,
     "entries": [
-      { "name": "Ettin", "maxCount": 4, "probability": 100 }
+      {
+        "name": "Ettin",
+        "maxCount": 4,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "d88f3a9b-067f-48cc-ba7f-636f89d9445e",
     "name": "Spawner (105)",
-    "location": [5605, 799, 60],
+    "location": [
+      5605,
+      799,
+      60
+    ],
     "map": "Trammel",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 10,
+    "spawnBounds": {
+      "x1": 5595,
+      "y1": 789,
+      "z1": -128,
+      "x2": 5616,
+      "y2": 810,
+      "z2": 128
+    },
     "walkingRange": 10,
     "entries": [
-      { "name": "TreasureChestLevel3", "maxCount": 3, "probability": 100 }
+      {
+        "name": "TreasureChestLevel3",
+        "maxCount": 3,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "de0083f1-6b11-411b-8875-f94bbd11846b",
     "name": "Spawner (105)",
-    "location": [5558, 824, 45],
+    "location": [
+      5558,
+      824,
+      45
+    ],
     "map": "Trammel",
     "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 12,
+    "spawnBounds": {
+      "x1": 5546,
+      "y1": 812,
+      "z1": -128,
+      "x2": 5571,
+      "y2": 837,
+      "z2": 128
+    },
     "walkingRange": 25,
     "entries": [
-      { "name": "OgreLord", "maxCount": 5, "probability": 100 }
+      {
+        "name": "OgreLord",
+        "maxCount": 5,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "e6a67238-55d8-4735-8ac3-7efcc25d3193",
     "name": "Spawner (105)",
-    "location": [5604, 789, 60],
+    "location": [
+      5604,
+      789,
+      60
+    ],
     "map": "Trammel",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 15,
+    "spawnBounds": {
+      "x1": 5589,
+      "y1": 774,
+      "z1": -128,
+      "x2": 5620,
+      "y2": 805,
+      "z2": 128
+    },
     "walkingRange": 25,
     "entries": [
-      { "name": "Ogre", "maxCount": 3, "probability": 100 }
+      {
+        "name": "Ogre",
+        "maxCount": 3,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "e6b0982f-8c36-4bc7-be61-f5fb371fd66f",
     "name": "Spawner (105)",
-    "location": [5528, 902, 30],
+    "location": [
+      5528,
+      902,
+      30
+    ],
     "map": "Trammel",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 15,
+    "spawnBounds": {
+      "x1": 5513,
+      "y1": 887,
+      "z1": -128,
+      "x2": 5544,
+      "y2": 918,
+      "z2": 128
+    },
     "walkingRange": 25,
     "entries": [
-      { "name": "Ogre", "maxCount": 3, "probability": 100 }
+      {
+        "name": "Ogre",
+        "maxCount": 3,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "e9e70e19-7819-454d-8641-1fab82224c65",
     "name": "Spawner (105)",
-    "location": [5397, 995, 5],
+    "location": [
+      5397,
+      995,
+      5
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 10,
+    "spawnBounds": {
+      "x1": 5387,
+      "y1": 985,
+      "z1": -128,
+      "x2": 5408,
+      "y2": 1006,
+      "z2": 128
+    },
     "walkingRange": 10,
     "entries": [
-      { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }
+      {
+        "name": "TreasureChestLevel3",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "f9357ebd-0256-47bb-b849-2add953fab65",
     "name": "Spawner (105)",
-    "location": [5398, 995, 5],
+    "location": [
+      5398,
+      995,
+      5
+    ],
     "map": "Trammel",
     "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 10,
+    "spawnBounds": {
+      "x1": 5388,
+      "y1": 985,
+      "z1": -128,
+      "x2": 5409,
+      "y2": 1006,
+      "z2": 128
+    },
     "walkingRange": 10,
     "entries": [
-      { "name": "TreasureChestLevel4", "maxCount": 2, "probability": 100 }
+      {
+        "name": "TreasureChestLevel4",
+        "maxCount": 2,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "ff5edaf2-353f-4e22-8d77-75ba2cb489be",
     "name": "Spawner (105)",
-    "location": [5435, 589, 47],
+    "location": [
+      5435,
+      589,
+      47
+    ],
     "map": "Trammel",
     "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 12,
+    "spawnBounds": {
+      "x1": 5423,
+      "y1": 577,
+      "z1": -128,
+      "x2": 5448,
+      "y2": 602,
+      "z2": 128
+    },
     "walkingRange": 25,
     "entries": [
-      { "name": "Lizardman", "maxCount": 5, "probability": 100 }
+      {
+        "name": "Lizardman",
+        "maxCount": 5,
+        "probability": 100
+      }
     ]
   }
 ]

@@ -1,410 +1,1454 @@
-﻿[
+[
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "85bca9f2-2bf4-4400-ac33-e72e379d2bb0",
     "name": "Spawner (2126)",
-    "location": [3607, 2417, 45],
+    "location": [
+      3607,
+      2417,
+      45
+    ],
     "map": "Trammel",
     "count": 19,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 50,
+    "spawnBounds": {
+      "x1": 3557,
+      "y1": 2367,
+      "z1": -128,
+      "x2": 3658,
+      "y2": 2468,
+      "z2": 128
+    },
     "walkingRange": 50,
     "entries": [
-      { "name": "Boar", "maxCount": 7, "probability": 100 },
-      { "name": "Cougar", "maxCount": 7, "probability": 100 },
-      { "name": "Goat", "maxCount": 7, "probability": 100 },
-      { "name": "Horse", "maxCount": 7, "probability": 100 },
-      { "name": "Panther", "maxCount": 7, "probability": 100 },
-      { "name": "Pig", "maxCount": 7, "probability": 100 },
-      { "name": "Sheep", "maxCount": 7, "probability": 100 },
-      { "name": "BlackBear", "maxCount": 5, "probability": 100 },
-      { "name": "GrizzlyBear", "maxCount": 5, "probability": 100 },
-      { "name": "BrownBear", "maxCount": 5, "probability": 100 },
-      { "name": "TimberWolf", "maxCount": 5, "probability": 100 },
-      { "name": "GreyWolf", "maxCount": 5, "probability": 100 },
-      { "name": "WanderingHealer", "maxCount": 1, "probability": 100 },
-      { "name": "Bird", "maxCount": 2, "probability": 100 },
-      { "name": "Eagle", "maxCount": 2, "probability": 100 },
-      { "name": "GreatHart", "maxCount": 2, "probability": 100 },
-      { "name": "Hind", "maxCount": 2, "probability": 100 },
-      { "name": "Bull", "maxCount": 2, "probability": 100 },
-      { "name": "Cow", "maxCount": 2, "probability": 100 }
+      {
+        "name": "Boar",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Cougar",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Goat",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Horse",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Panther",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Pig",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Sheep",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "BlackBear",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "GrizzlyBear",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "BrownBear",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "TimberWolf",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "GreyWolf",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "WanderingHealer",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Bird",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Eagle",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "GreatHart",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Hind",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Bull",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Cow",
+        "maxCount": 2,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "2828aaaa-15bc-48ca-8200-b30244c9e88f",
     "name": "Spawner (2126)",
-    "location": [3555, 2525, 13],
+    "location": [
+      3555,
+      2525,
+      13
+    ],
     "map": "Trammel",
     "count": 19,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 50,
+    "spawnBounds": {
+      "x1": 3505,
+      "y1": 2475,
+      "z1": -128,
+      "x2": 3606,
+      "y2": 2576,
+      "z2": 128
+    },
     "walkingRange": 50,
     "entries": [
-      { "name": "Boar", "maxCount": 7, "probability": 100 },
-      { "name": "Cougar", "maxCount": 7, "probability": 100 },
-      { "name": "Goat", "maxCount": 7, "probability": 100 },
-      { "name": "Horse", "maxCount": 7, "probability": 100 },
-      { "name": "Panther", "maxCount": 7, "probability": 100 },
-      { "name": "Pig", "maxCount": 7, "probability": 100 },
-      { "name": "Sheep", "maxCount": 7, "probability": 100 },
-      { "name": "BlackBear", "maxCount": 5, "probability": 100 },
-      { "name": "GrizzlyBear", "maxCount": 5, "probability": 100 },
-      { "name": "BrownBear", "maxCount": 5, "probability": 100 },
-      { "name": "TimberWolf", "maxCount": 5, "probability": 100 },
-      { "name": "GreyWolf", "maxCount": 5, "probability": 100 },
-      { "name": "WanderingHealer", "maxCount": 1, "probability": 100 },
-      { "name": "Bird", "maxCount": 2, "probability": 100 },
-      { "name": "Eagle", "maxCount": 2, "probability": 100 },
-      { "name": "GreatHart", "maxCount": 2, "probability": 100 },
-      { "name": "Hind", "maxCount": 2, "probability": 100 },
-      { "name": "Bull", "maxCount": 2, "probability": 100 },
-      { "name": "Cow", "maxCount": 2, "probability": 100 }
+      {
+        "name": "Boar",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Cougar",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Goat",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Horse",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Panther",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Pig",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Sheep",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "BlackBear",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "GrizzlyBear",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "BrownBear",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "TimberWolf",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "GreyWolf",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "WanderingHealer",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Bird",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Eagle",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "GreatHart",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Hind",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Bull",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Cow",
+        "maxCount": 2,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "bf2cf539-4f86-4a2c-81a2-6d09d6a36dee",
     "name": "Spawner (2126)",
-    "location": [3506, 2477, 28],
+    "location": [
+      3506,
+      2477,
+      28
+    ],
     "map": "Trammel",
     "count": 19,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 50,
+    "spawnBounds": {
+      "x1": 3456,
+      "y1": 2427,
+      "z1": -128,
+      "x2": 3557,
+      "y2": 2528,
+      "z2": 128
+    },
     "walkingRange": 50,
     "entries": [
-      { "name": "Boar", "maxCount": 7, "probability": 100 },
-      { "name": "Cougar", "maxCount": 7, "probability": 100 },
-      { "name": "Goat", "maxCount": 7, "probability": 100 },
-      { "name": "Horse", "maxCount": 7, "probability": 100 },
-      { "name": "Panther", "maxCount": 7, "probability": 100 },
-      { "name": "Pig", "maxCount": 7, "probability": 100 },
-      { "name": "Sheep", "maxCount": 7, "probability": 100 },
-      { "name": "BlackBear", "maxCount": 5, "probability": 100 },
-      { "name": "GrizzlyBear", "maxCount": 5, "probability": 100 },
-      { "name": "BrownBear", "maxCount": 5, "probability": 100 },
-      { "name": "TimberWolf", "maxCount": 5, "probability": 100 },
-      { "name": "GreyWolf", "maxCount": 5, "probability": 100 },
-      { "name": "WanderingHealer", "maxCount": 1, "probability": 100 },
-      { "name": "Bird", "maxCount": 2, "probability": 100 },
-      { "name": "Eagle", "maxCount": 2, "probability": 100 },
-      { "name": "GreatHart", "maxCount": 2, "probability": 100 },
-      { "name": "Hind", "maxCount": 2, "probability": 100 },
-      { "name": "Bull", "maxCount": 2, "probability": 100 },
-      { "name": "Cow", "maxCount": 2, "probability": 100 }
+      {
+        "name": "Boar",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Cougar",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Goat",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Horse",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Panther",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Pig",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Sheep",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "BlackBear",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "GrizzlyBear",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "BrownBear",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "TimberWolf",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "GreyWolf",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "WanderingHealer",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Bird",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Eagle",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "GreatHart",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Hind",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Bull",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Cow",
+        "maxCount": 2,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "335130b1-2341-4f80-88b6-1a2b1261d158",
     "name": "Spawner (2126)",
-    "location": [3452, 2563, 32],
+    "location": [
+      3452,
+      2563,
+      32
+    ],
     "map": "Trammel",
     "count": 19,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 50,
+    "spawnBounds": {
+      "x1": 3402,
+      "y1": 2513,
+      "z1": -128,
+      "x2": 3503,
+      "y2": 2614,
+      "z2": 128
+    },
     "walkingRange": 50,
     "entries": [
-      { "name": "Boar", "maxCount": 7, "probability": 100 },
-      { "name": "Cougar", "maxCount": 7, "probability": 100 },
-      { "name": "Goat", "maxCount": 7, "probability": 100 },
-      { "name": "Horse", "maxCount": 7, "probability": 100 },
-      { "name": "Panther", "maxCount": 7, "probability": 100 },
-      { "name": "Pig", "maxCount": 7, "probability": 100 },
-      { "name": "Sheep", "maxCount": 7, "probability": 100 },
-      { "name": "BlackBear", "maxCount": 5, "probability": 100 },
-      { "name": "GrizzlyBear", "maxCount": 5, "probability": 100 },
-      { "name": "BrownBear", "maxCount": 5, "probability": 100 },
-      { "name": "TimberWolf", "maxCount": 5, "probability": 100 },
-      { "name": "GreyWolf", "maxCount": 5, "probability": 100 },
-      { "name": "WanderingHealer", "maxCount": 1, "probability": 100 },
-      { "name": "Bird", "maxCount": 2, "probability": 100 },
-      { "name": "Eagle", "maxCount": 2, "probability": 100 },
-      { "name": "GreatHart", "maxCount": 2, "probability": 100 },
-      { "name": "Hind", "maxCount": 2, "probability": 100 },
-      { "name": "Bull", "maxCount": 2, "probability": 100 },
-      { "name": "Cow", "maxCount": 2, "probability": 100 }
+      {
+        "name": "Boar",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Cougar",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Goat",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Horse",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Panther",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Pig",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Sheep",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "BlackBear",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "GrizzlyBear",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "BrownBear",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "TimberWolf",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "GreyWolf",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "WanderingHealer",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Bird",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Eagle",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "GreatHart",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Hind",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Bull",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Cow",
+        "maxCount": 2,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "21e1d3a4-1447-4e38-9b17-70a49c7b9093",
     "name": "Spawner (2126)",
-    "location": [3429, 2650, 43],
+    "location": [
+      3429,
+      2650,
+      43
+    ],
     "map": "Trammel",
     "count": 19,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 50,
+    "spawnBounds": {
+      "x1": 3379,
+      "y1": 2600,
+      "z1": -128,
+      "x2": 3480,
+      "y2": 2701,
+      "z2": 128
+    },
     "walkingRange": 50,
     "entries": [
-      { "name": "Boar", "maxCount": 7, "probability": 100 },
-      { "name": "Cougar", "maxCount": 7, "probability": 100 },
-      { "name": "Goat", "maxCount": 7, "probability": 100 },
-      { "name": "Horse", "maxCount": 7, "probability": 100 },
-      { "name": "Panther", "maxCount": 7, "probability": 100 },
-      { "name": "Pig", "maxCount": 7, "probability": 100 },
-      { "name": "Sheep", "maxCount": 7, "probability": 100 },
-      { "name": "BlackBear", "maxCount": 5, "probability": 100 },
-      { "name": "GrizzlyBear", "maxCount": 5, "probability": 100 },
-      { "name": "BrownBear", "maxCount": 5, "probability": 100 },
-      { "name": "TimberWolf", "maxCount": 5, "probability": 100 },
-      { "name": "GreyWolf", "maxCount": 5, "probability": 100 },
-      { "name": "WanderingHealer", "maxCount": 1, "probability": 100 },
-      { "name": "Bird", "maxCount": 2, "probability": 100 },
-      { "name": "Eagle", "maxCount": 2, "probability": 100 },
-      { "name": "GreatHart", "maxCount": 2, "probability": 100 },
-      { "name": "Hind", "maxCount": 2, "probability": 100 },
-      { "name": "Bull", "maxCount": 2, "probability": 100 },
-      { "name": "Cow", "maxCount": 2, "probability": 100 }
+      {
+        "name": "Boar",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Cougar",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Goat",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Horse",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Panther",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Pig",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Sheep",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "BlackBear",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "GrizzlyBear",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "BrownBear",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "TimberWolf",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "GreyWolf",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "WanderingHealer",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Bird",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Eagle",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "GreatHart",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Hind",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Bull",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Cow",
+        "maxCount": 2,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "37fab5a5-6dcf-4ea0-9bcf-cee7546a8788",
     "name": "Spawner (2126)",
-    "location": [3449, 2737, 49],
+    "location": [
+      3449,
+      2737,
+      49
+    ],
     "map": "Trammel",
     "count": 19,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 50,
+    "spawnBounds": {
+      "x1": 3399,
+      "y1": 2687,
+      "z1": -128,
+      "x2": 3500,
+      "y2": 2788,
+      "z2": 128
+    },
     "walkingRange": 50,
     "entries": [
-      { "name": "Boar", "maxCount": 7, "probability": 100 },
-      { "name": "Cougar", "maxCount": 7, "probability": 100 },
-      { "name": "Goat", "maxCount": 7, "probability": 100 },
-      { "name": "Horse", "maxCount": 7, "probability": 100 },
-      { "name": "Panther", "maxCount": 7, "probability": 100 },
-      { "name": "Pig", "maxCount": 7, "probability": 100 },
-      { "name": "Sheep", "maxCount": 7, "probability": 100 },
-      { "name": "BlackBear", "maxCount": 5, "probability": 100 },
-      { "name": "GrizzlyBear", "maxCount": 5, "probability": 100 },
-      { "name": "BrownBear", "maxCount": 5, "probability": 100 },
-      { "name": "TimberWolf", "maxCount": 5, "probability": 100 },
-      { "name": "GreyWolf", "maxCount": 5, "probability": 100 },
-      { "name": "WanderingHealer", "maxCount": 1, "probability": 100 },
-      { "name": "Bird", "maxCount": 2, "probability": 100 },
-      { "name": "Eagle", "maxCount": 2, "probability": 100 },
-      { "name": "GreatHart", "maxCount": 2, "probability": 100 },
-      { "name": "Hind", "maxCount": 2, "probability": 100 },
-      { "name": "Bull", "maxCount": 2, "probability": 100 },
-      { "name": "Cow", "maxCount": 2, "probability": 100 }
+      {
+        "name": "Boar",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Cougar",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Goat",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Horse",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Panther",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Pig",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Sheep",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "BlackBear",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "GrizzlyBear",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "BrownBear",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "TimberWolf",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "GreyWolf",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "WanderingHealer",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Bird",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Eagle",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "GreatHart",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Hind",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Bull",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Cow",
+        "maxCount": 2,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "85d1ae4d-d1dd-431f-a749-7ba9e19b7adc",
     "name": "Spawner (2126)",
-    "location": [3736, 2512, 35],
+    "location": [
+      3736,
+      2512,
+      35
+    ],
     "map": "Trammel",
     "count": 19,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 50,
+    "spawnBounds": {
+      "x1": 3686,
+      "y1": 2462,
+      "z1": -128,
+      "x2": 3787,
+      "y2": 2563,
+      "z2": 128
+    },
     "walkingRange": 50,
     "entries": [
-      { "name": "Boar", "maxCount": 7, "probability": 100 },
-      { "name": "Cougar", "maxCount": 7, "probability": 100 },
-      { "name": "Goat", "maxCount": 7, "probability": 100 },
-      { "name": "Horse", "maxCount": 7, "probability": 100 },
-      { "name": "Panther", "maxCount": 7, "probability": 100 },
-      { "name": "Pig", "maxCount": 7, "probability": 100 },
-      { "name": "Sheep", "maxCount": 7, "probability": 100 },
-      { "name": "BlackBear", "maxCount": 5, "probability": 100 },
-      { "name": "GrizzlyBear", "maxCount": 5, "probability": 100 },
-      { "name": "BrownBear", "maxCount": 5, "probability": 100 },
-      { "name": "TimberWolf", "maxCount": 5, "probability": 100 },
-      { "name": "GreyWolf", "maxCount": 5, "probability": 100 },
-      { "name": "WanderingHealer", "maxCount": 1, "probability": 100 },
-      { "name": "Bird", "maxCount": 2, "probability": 100 },
-      { "name": "Eagle", "maxCount": 2, "probability": 100 },
-      { "name": "GreatHart", "maxCount": 2, "probability": 100 },
-      { "name": "Hind", "maxCount": 2, "probability": 100 },
-      { "name": "Bull", "maxCount": 2, "probability": 100 },
-      { "name": "Cow", "maxCount": 2, "probability": 100 }
+      {
+        "name": "Boar",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Cougar",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Goat",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Horse",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Panther",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Pig",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Sheep",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "BlackBear",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "GrizzlyBear",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "BrownBear",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "TimberWolf",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "GreyWolf",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "WanderingHealer",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Bird",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Eagle",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "GreatHart",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Hind",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Bull",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Cow",
+        "maxCount": 2,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "03dcb299-f89d-4554-8700-c389b70b560e",
     "name": "Spawner (2126)",
-    "location": [3718, 2736, 38],
+    "location": [
+      3718,
+      2736,
+      38
+    ],
     "map": "Trammel",
     "count": 19,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 50,
+    "spawnBounds": {
+      "x1": 3668,
+      "y1": 2686,
+      "z1": -128,
+      "x2": 3769,
+      "y2": 2787,
+      "z2": 128
+    },
     "walkingRange": 50,
     "entries": [
-      { "name": "Boar", "maxCount": 7, "probability": 100 },
-      { "name": "Cougar", "maxCount": 7, "probability": 100 },
-      { "name": "Goat", "maxCount": 7, "probability": 100 },
-      { "name": "Horse", "maxCount": 7, "probability": 100 },
-      { "name": "Panther", "maxCount": 7, "probability": 100 },
-      { "name": "Pig", "maxCount": 7, "probability": 100 },
-      { "name": "Sheep", "maxCount": 7, "probability": 100 },
-      { "name": "BlackBear", "maxCount": 5, "probability": 100 },
-      { "name": "GrizzlyBear", "maxCount": 5, "probability": 100 },
-      { "name": "BrownBear", "maxCount": 5, "probability": 100 },
-      { "name": "TimberWolf", "maxCount": 5, "probability": 100 },
-      { "name": "GreyWolf", "maxCount": 5, "probability": 100 },
-      { "name": "WanderingHealer", "maxCount": 1, "probability": 100 },
-      { "name": "Bird", "maxCount": 2, "probability": 100 },
-      { "name": "Eagle", "maxCount": 2, "probability": 100 },
-      { "name": "GreatHart", "maxCount": 2, "probability": 100 },
-      { "name": "Hind", "maxCount": 2, "probability": 100 },
-      { "name": "Bull", "maxCount": 2, "probability": 100 },
-      { "name": "Cow", "maxCount": 2, "probability": 100 }
+      {
+        "name": "Boar",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Cougar",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Goat",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Horse",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Panther",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Pig",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Sheep",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "BlackBear",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "GrizzlyBear",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "BrownBear",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "TimberWolf",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "GreyWolf",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "WanderingHealer",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Bird",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Eagle",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "GreatHart",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Hind",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Bull",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Cow",
+        "maxCount": 2,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "4415e8ab-b437-46d7-a245-8056c9611fa4",
     "name": "Spawner (2126)",
-    "location": [3654, 2866, 61],
+    "location": [
+      3654,
+      2866,
+      61
+    ],
     "map": "Trammel",
     "count": 19,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 50,
+    "spawnBounds": {
+      "x1": 3604,
+      "y1": 2816,
+      "z1": -128,
+      "x2": 3705,
+      "y2": 2917,
+      "z2": 128
+    },
     "walkingRange": 50,
     "entries": [
-      { "name": "Boar", "maxCount": 7, "probability": 100 },
-      { "name": "Cougar", "maxCount": 7, "probability": 100 },
-      { "name": "Goat", "maxCount": 7, "probability": 100 },
-      { "name": "Horse", "maxCount": 7, "probability": 100 },
-      { "name": "Panther", "maxCount": 7, "probability": 100 },
-      { "name": "Pig", "maxCount": 7, "probability": 100 },
-      { "name": "Sheep", "maxCount": 7, "probability": 100 },
-      { "name": "BlackBear", "maxCount": 5, "probability": 100 },
-      { "name": "GrizzlyBear", "maxCount": 5, "probability": 100 },
-      { "name": "BrownBear", "maxCount": 5, "probability": 100 },
-      { "name": "TimberWolf", "maxCount": 5, "probability": 100 },
-      { "name": "GreyWolf", "maxCount": 5, "probability": 100 },
-      { "name": "WanderingHealer", "maxCount": 1, "probability": 100 },
-      { "name": "Bird", "maxCount": 2, "probability": 100 },
-      { "name": "Eagle", "maxCount": 2, "probability": 100 },
-      { "name": "GreatHart", "maxCount": 2, "probability": 100 },
-      { "name": "Hind", "maxCount": 2, "probability": 100 },
-      { "name": "Bull", "maxCount": 2, "probability": 100 },
-      { "name": "Cow", "maxCount": 2, "probability": 100 }
+      {
+        "name": "Boar",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Cougar",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Goat",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Horse",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Panther",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Pig",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Sheep",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "BlackBear",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "GrizzlyBear",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "BrownBear",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "TimberWolf",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "GreyWolf",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "WanderingHealer",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Bird",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Eagle",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "GreatHart",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Hind",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Bull",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Cow",
+        "maxCount": 2,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "363b94f4-e1ba-474a-ab21-76e457b14abf",
     "name": "Spawner (2126)",
-    "location": [3662, 2802, 51],
+    "location": [
+      3662,
+      2802,
+      51
+    ],
     "map": "Trammel",
     "count": 19,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 50,
+    "spawnBounds": {
+      "x1": 3612,
+      "y1": 2752,
+      "z1": -128,
+      "x2": 3713,
+      "y2": 2853,
+      "z2": 128
+    },
     "walkingRange": 50,
     "entries": [
-      { "name": "Boar", "maxCount": 7, "probability": 100 },
-      { "name": "Cougar", "maxCount": 7, "probability": 100 },
-      { "name": "Goat", "maxCount": 7, "probability": 100 },
-      { "name": "Horse", "maxCount": 7, "probability": 100 },
-      { "name": "Panther", "maxCount": 7, "probability": 100 },
-      { "name": "Pig", "maxCount": 7, "probability": 100 },
-      { "name": "Sheep", "maxCount": 7, "probability": 100 },
-      { "name": "BlackBear", "maxCount": 5, "probability": 100 },
-      { "name": "GrizzlyBear", "maxCount": 5, "probability": 100 },
-      { "name": "BrownBear", "maxCount": 5, "probability": 100 },
-      { "name": "TimberWolf", "maxCount": 5, "probability": 100 },
-      { "name": "GreyWolf", "maxCount": 5, "probability": 100 },
-      { "name": "WanderingHealer", "maxCount": 1, "probability": 100 },
-      { "name": "Bird", "maxCount": 2, "probability": 100 },
-      { "name": "Eagle", "maxCount": 2, "probability": 100 },
-      { "name": "GreatHart", "maxCount": 2, "probability": 100 },
-      { "name": "Hind", "maxCount": 2, "probability": 100 },
-      { "name": "Bull", "maxCount": 2, "probability": 100 },
-      { "name": "Cow", "maxCount": 2, "probability": 100 }
+      {
+        "name": "Boar",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Cougar",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Goat",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Horse",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Panther",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Pig",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Sheep",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "BlackBear",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "GrizzlyBear",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "BrownBear",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "TimberWolf",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "GreyWolf",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "WanderingHealer",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Bird",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Eagle",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "GreatHart",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Hind",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Bull",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Cow",
+        "maxCount": 2,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "8d4ae520-6345-40f2-b7cb-3bb2e98d2219",
     "name": "Spawner (2126)",
-    "location": [3596, 2804, 51],
+    "location": [
+      3596,
+      2804,
+      51
+    ],
     "map": "Trammel",
     "count": 19,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 50,
+    "spawnBounds": {
+      "x1": 3546,
+      "y1": 2754,
+      "z1": -128,
+      "x2": 3647,
+      "y2": 2855,
+      "z2": 128
+    },
     "walkingRange": 50,
     "entries": [
-      { "name": "Boar", "maxCount": 7, "probability": 100 },
-      { "name": "Cougar", "maxCount": 7, "probability": 100 },
-      { "name": "Goat", "maxCount": 7, "probability": 100 },
-      { "name": "Horse", "maxCount": 7, "probability": 100 },
-      { "name": "Panther", "maxCount": 7, "probability": 100 },
-      { "name": "Pig", "maxCount": 7, "probability": 100 },
-      { "name": "Sheep", "maxCount": 7, "probability": 100 },
-      { "name": "BlackBear", "maxCount": 5, "probability": 100 },
-      { "name": "GrizzlyBear", "maxCount": 5, "probability": 100 },
-      { "name": "BrownBear", "maxCount": 5, "probability": 100 },
-      { "name": "TimberWolf", "maxCount": 5, "probability": 100 },
-      { "name": "GreyWolf", "maxCount": 5, "probability": 100 },
-      { "name": "WanderingHealer", "maxCount": 1, "probability": 100 },
-      { "name": "Bird", "maxCount": 2, "probability": 100 },
-      { "name": "Eagle", "maxCount": 2, "probability": 100 },
-      { "name": "GreatHart", "maxCount": 2, "probability": 100 },
-      { "name": "Hind", "maxCount": 2, "probability": 100 },
-      { "name": "Bull", "maxCount": 2, "probability": 100 },
-      { "name": "Cow", "maxCount": 2, "probability": 100 }
+      {
+        "name": "Boar",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Cougar",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Goat",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Horse",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Panther",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Pig",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Sheep",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "BlackBear",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "GrizzlyBear",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "BrownBear",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "TimberWolf",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "GreyWolf",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "WanderingHealer",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Bird",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Eagle",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "GreatHart",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Hind",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Bull",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Cow",
+        "maxCount": 2,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "1105d916-9527-4d49-8ca2-54e4ca61a342",
     "name": "Spawner (2126)",
-    "location": [3546, 2812, 13],
+    "location": [
+      3546,
+      2812,
+      13
+    ],
     "map": "Trammel",
     "count": 19,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 50,
+    "spawnBounds": {
+      "x1": 3496,
+      "y1": 2762,
+      "z1": -128,
+      "x2": 3597,
+      "y2": 2863,
+      "z2": 128
+    },
     "walkingRange": 50,
     "entries": [
-      { "name": "Boar", "maxCount": 7, "probability": 100 },
-      { "name": "Cougar", "maxCount": 7, "probability": 100 },
-      { "name": "Goat", "maxCount": 7, "probability": 100 },
-      { "name": "Horse", "maxCount": 7, "probability": 100 },
-      { "name": "Panther", "maxCount": 7, "probability": 100 },
-      { "name": "Pig", "maxCount": 7, "probability": 100 },
-      { "name": "Sheep", "maxCount": 7, "probability": 100 },
-      { "name": "BlackBear", "maxCount": 5, "probability": 100 },
-      { "name": "GrizzlyBear", "maxCount": 5, "probability": 100 },
-      { "name": "BrownBear", "maxCount": 5, "probability": 100 },
-      { "name": "TimberWolf", "maxCount": 5, "probability": 100 },
-      { "name": "GreyWolf", "maxCount": 5, "probability": 100 },
-      { "name": "WanderingHealer", "maxCount": 1, "probability": 100 },
-      { "name": "Bird", "maxCount": 2, "probability": 100 },
-      { "name": "Eagle", "maxCount": 2, "probability": 100 },
-      { "name": "GreatHart", "maxCount": 2, "probability": 100 },
-      { "name": "Hind", "maxCount": 2, "probability": 100 },
-      { "name": "Bull", "maxCount": 2, "probability": 100 },
-      { "name": "Cow", "maxCount": 2, "probability": 100 }
+      {
+        "name": "Boar",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Cougar",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Goat",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Horse",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Panther",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Pig",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Sheep",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "BlackBear",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "GrizzlyBear",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "BrownBear",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "TimberWolf",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "GreyWolf",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "WanderingHealer",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Bird",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Eagle",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "GreatHart",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Hind",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Bull",
+        "maxCount": 2,
+        "probability": 100
+      },
+      {
+        "name": "Cow",
+        "maxCount": 2,
+        "probability": 100
+      }
     ]
   }
 ]

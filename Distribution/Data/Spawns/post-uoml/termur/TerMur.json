@@ -1,1267 +1,3142 @@
-﻿[
+[
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "910e07be-fd79-4608-9990-5b860c14f95f",
     "name": "Spawner (602)",
-    "location": [1109, 3744, -34],
+    "location": [
+      1109,
+      3744,
+      -34
+    ],
     "map": "TerMur",
     "count": 18,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 50,
+    "spawnBounds": {
+      "x1": 1059,
+      "y1": 3694,
+      "z1": -128,
+      "x2": 1160,
+      "y2": 3795,
+      "z2": 128
+    },
     "walkingRange": 50,
     "entries": [
-      { "name": "GiantBlackWidow", "maxCount": 18, "probability": 100 },
-      { "name": "GiantSpider", "maxCount": 18, "probability": 100 }
+      {
+        "name": "GiantBlackWidow",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "GiantSpider",
+        "maxCount": 18,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "e93d2519-a992-406d-84db-c246d4c9e68c",
     "name": "Spawner (602)",
-    "location": [1088, 3732, -43],
+    "location": [
+      1088,
+      3732,
+      -43
+    ],
     "map": "TerMur",
     "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 5,
+    "spawnBounds": {
+      "x1": 1083,
+      "y1": 3727,
+      "z1": -128,
+      "x2": 1094,
+      "y2": 3738,
+      "z2": 128
+    },
     "walkingRange": 5,
     "entries": [
-      { "name": "TrapdoorSpider", "maxCount": 2, "probability": 100 }
+      {
+        "name": "TrapdoorSpider",
+        "maxCount": 2,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "5de9c1d3-274e-418f-8d1f-01357fa82fa4",
     "name": "Spawner (602)",
-    "location": [1126, 3714, -43],
+    "location": [
+      1126,
+      3714,
+      -43
+    ],
     "map": "TerMur",
     "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 5,
+    "spawnBounds": {
+      "x1": 1121,
+      "y1": 3709,
+      "z1": -128,
+      "x2": 1132,
+      "y2": 3720,
+      "z2": 128
+    },
     "walkingRange": 5,
     "entries": [
-      { "name": "TrapdoorSpider", "maxCount": 2, "probability": 100 }
+      {
+        "name": "TrapdoorSpider",
+        "maxCount": 2,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "88ee3368-50a1-458c-9c99-8fb7ceddf079",
     "name": "Spawner (602)",
-    "location": [1134, 3483, -42],
+    "location": [
+      1134,
+      3483,
+      -42
+    ],
     "map": "TerMur",
     "count": 18,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 100,
+    "spawnBounds": {
+      "x1": 1034,
+      "y1": 3383,
+      "z1": -128,
+      "x2": 1235,
+      "y2": 3584,
+      "z2": 128
+    },
     "walkingRange": 100,
     "entries": [
-      { "name": "ChickenLizard", "maxCount": 18, "probability": 100 },
-      { "name": "GreaterMongbat", "maxCount": 18, "probability": 100 },
-      { "name": "Mongbat", "maxCount": 18, "probability": 100 },
-      { "name": "RuddyBoura", "maxCount": 18, "probability": 100 },
-      { "name": "SilverSerpent", "maxCount": 18, "probability": 100 },
-      { "name": "Slith", "maxCount": 18, "probability": 100 },
-      { "name": "Bird", "maxCount": 18, "probability": 100 }
+      {
+        "name": "ChickenLizard",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "GreaterMongbat",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Mongbat",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "RuddyBoura",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "SilverSerpent",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Slith",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Bird",
+        "maxCount": 18,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "dd1b50db-06cc-4ab8-b1ae-7eb6d7ebeb03",
     "name": "Spawner (602)",
-    "location": [1118, 3416, -42],
+    "location": [
+      1118,
+      3416,
+      -42
+    ],
     "map": "TerMur",
     "count": 15,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 100,
+    "spawnBounds": {
+      "x1": 1018,
+      "y1": 3316,
+      "z1": -128,
+      "x2": 1219,
+      "y2": 3517,
+      "z2": 128
+    },
     "walkingRange": 100,
     "entries": [
-      { "name": "ChickenLizard", "maxCount": 15, "probability": 100 },
-      { "name": "GreaterMongbat", "maxCount": 15, "probability": 100 },
-      { "name": "Mongbat", "maxCount": 15, "probability": 100 },
-      { "name": "SilverSerpent", "maxCount": 15, "probability": 100 },
-      { "name": "Slith", "maxCount": 15, "probability": 100 },
-      { "name": "Bird", "maxCount": 15, "probability": 100 }
+      {
+        "name": "ChickenLizard",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "GreaterMongbat",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Mongbat",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "SilverSerpent",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Slith",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Bird",
+        "maxCount": 15,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "17ea295b-36bd-43e1-aa63-81d61bb7db98",
     "name": "Spawner (602)",
-    "location": [1112, 3624, -45],
+    "location": [
+      1112,
+      3624,
+      -45
+    ],
     "map": "TerMur",
     "count": 15,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 100,
+    "spawnBounds": {
+      "x1": 1012,
+      "y1": 3524,
+      "z1": -128,
+      "x2": 1213,
+      "y2": 3725,
+      "z2": 128
+    },
     "walkingRange": 100,
     "entries": [
-      { "name": "Rabbit", "maxCount": 15, "probability": 100 },
-      { "name": "Bird", "maxCount": 15, "probability": 100 }
+      {
+        "name": "Rabbit",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Bird",
+        "maxCount": 15,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "38fa4d5b-ab23-455a-9b32-3cfae24dacf1",
     "name": "Spawner (602)",
-    "location": [1036, 3670, 0],
+    "location": [
+      1036,
+      3670,
+      0
+    ],
     "map": "TerMur",
     "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 30,
+    "spawnBounds": {
+      "x1": 1006,
+      "y1": 3640,
+      "z1": -128,
+      "x2": 1067,
+      "y2": 3701,
+      "z2": 128
+    },
     "walkingRange": 30,
     "entries": [
-      { "name": "Skree", "maxCount": 8, "probability": 100 },
-      { "name": "Snake", "maxCount": 8, "probability": 100 }
+      {
+        "name": "Skree",
+        "maxCount": 8,
+        "probability": 100
+      },
+      {
+        "name": "Snake",
+        "maxCount": 8,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "08c6d785-3e69-4343-a48e-54e876e09863",
     "name": "Spawner (602)",
-    "location": [1012, 3652, -30],
+    "location": [
+      1012,
+      3652,
+      -30
+    ],
     "map": "TerMur",
     "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 30,
+    "spawnBounds": {
+      "x1": 982,
+      "y1": 3622,
+      "z1": -128,
+      "x2": 1043,
+      "y2": 3683,
+      "z2": 128
+    },
     "walkingRange": 30,
     "entries": [
-      { "name": "Skree", "maxCount": 5, "probability": 100 },
-      { "name": "Snake", "maxCount": 5, "probability": 100 }
+      {
+        "name": "Skree",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "Snake",
+        "maxCount": 5,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "ae84b446-e1a6-4df6-84b7-487218c2ffc0",
     "name": "Spawner (602)",
-    "location": [996, 3406, -43],
+    "location": [
+      996,
+      3406,
+      -43
+    ],
     "map": "TerMur",
     "count": 19,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 50,
+    "spawnBounds": {
+      "x1": 946,
+      "y1": 3356,
+      "z1": -128,
+      "x2": 1047,
+      "y2": 3457,
+      "z2": 128
+    },
     "walkingRange": 50,
     "entries": [
-      { "name": "Hind", "maxCount": 19, "probability": 100 },
-      { "name": "Horse", "maxCount": 19, "probability": 100 },
-      { "name": "JackRabbit", "maxCount": 19, "probability": 100 },
-      { "name": "Rabbit", "maxCount": 19, "probability": 100 },
-      { "name": "Mongbat", "maxCount": 19, "probability": 100 },
-      { "name": "Rat", "maxCount": 19, "probability": 100 },
-      { "name": "RidableLlama", "maxCount": 19, "probability": 100 },
-      { "name": "Snake", "maxCount": 19, "probability": 100 },
-      { "name": "TimberWolf", "maxCount": 19, "probability": 100 },
-      { "name": "ChickenLizard", "maxCount": 19, "probability": 100 }
+      {
+        "name": "Hind",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "Horse",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "JackRabbit",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "Rabbit",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "Mongbat",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "RidableLlama",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "Snake",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "TimberWolf",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "ChickenLizard",
+        "maxCount": 19,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "f6d1d4f5-6a84-430b-bbef-8b248d6b7c34",
     "name": "Spawner (602)",
-    "location": [851, 3642, -43],
+    "location": [
+      851,
+      3642,
+      -43
+    ],
     "map": "TerMur",
     "count": 19,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 50,
+    "spawnBounds": {
+      "x1": 801,
+      "y1": 3592,
+      "z1": -128,
+      "x2": 902,
+      "y2": 3693,
+      "z2": 128
+    },
     "walkingRange": 50,
     "entries": [
-      { "name": "Hind", "maxCount": 19, "probability": 100 },
-      { "name": "Horse", "maxCount": 19, "probability": 100 },
-      { "name": "JackRabbit", "maxCount": 19, "probability": 100 },
-      { "name": "Rabbit", "maxCount": 19, "probability": 100 },
-      { "name": "Mongbat", "maxCount": 19, "probability": 100 },
-      { "name": "Rat", "maxCount": 19, "probability": 100 },
-      { "name": "RidableLlama", "maxCount": 19, "probability": 100 },
-      { "name": "Snake", "maxCount": 19, "probability": 100 },
-      { "name": "TimberWolf", "maxCount": 19, "probability": 100 },
-      { "name": "ChickenLizard", "maxCount": 19, "probability": 100 }
+      {
+        "name": "Hind",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "Horse",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "JackRabbit",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "Rabbit",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "Mongbat",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "RidableLlama",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "Snake",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "TimberWolf",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "ChickenLizard",
+        "maxCount": 19,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "1faffedd-40e4-4dcf-b944-418dbd7f1300",
     "name": "Spawner (602)",
-    "location": [934, 3564, -43],
+    "location": [
+      934,
+      3564,
+      -43
+    ],
     "map": "TerMur",
     "count": 19,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 50,
+    "spawnBounds": {
+      "x1": 884,
+      "y1": 3514,
+      "z1": -128,
+      "x2": 985,
+      "y2": 3615,
+      "z2": 128
+    },
     "walkingRange": 50,
     "entries": [
-      { "name": "Hind", "maxCount": 19, "probability": 100 },
-      { "name": "Horse", "maxCount": 19, "probability": 100 },
-      { "name": "JackRabbit", "maxCount": 19, "probability": 100 },
-      { "name": "Rabbit", "maxCount": 19, "probability": 100 },
-      { "name": "Mongbat", "maxCount": 19, "probability": 100 },
-      { "name": "Rat", "maxCount": 19, "probability": 100 },
-      { "name": "RidableLlama", "maxCount": 19, "probability": 100 },
-      { "name": "Snake", "maxCount": 19, "probability": 100 },
-      { "name": "TimberWolf", "maxCount": 19, "probability": 100 },
-      { "name": "ChickenLizard", "maxCount": 19, "probability": 100 }
+      {
+        "name": "Hind",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "Horse",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "JackRabbit",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "Rabbit",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "Mongbat",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "RidableLlama",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "Snake",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "TimberWolf",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "ChickenLizard",
+        "maxCount": 19,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "f76c2cff-e0c9-4b37-a7f8-9463975f34ac",
     "name": "Spawner (602)",
-    "location": [965, 3489, -43],
+    "location": [
+      965,
+      3489,
+      -43
+    ],
     "map": "TerMur",
     "count": 19,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 50,
+    "spawnBounds": {
+      "x1": 915,
+      "y1": 3439,
+      "z1": -128,
+      "x2": 1016,
+      "y2": 3540,
+      "z2": 128
+    },
     "walkingRange": 50,
     "entries": [
-      { "name": "Hind", "maxCount": 19, "probability": 100 },
-      { "name": "Horse", "maxCount": 19, "probability": 100 },
-      { "name": "JackRabbit", "maxCount": 19, "probability": 100 },
-      { "name": "Rabbit", "maxCount": 19, "probability": 100 },
-      { "name": "Mongbat", "maxCount": 19, "probability": 100 },
-      { "name": "Rat", "maxCount": 19, "probability": 100 },
-      { "name": "RidableLlama", "maxCount": 19, "probability": 100 },
-      { "name": "Snake", "maxCount": 19, "probability": 100 },
-      { "name": "TimberWolf", "maxCount": 19, "probability": 100 },
-      { "name": "ChickenLizard", "maxCount": 19, "probability": 100 }
+      {
+        "name": "Hind",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "Horse",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "JackRabbit",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "Rabbit",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "Mongbat",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "RidableLlama",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "Snake",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "TimberWolf",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "ChickenLizard",
+        "maxCount": 19,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "56b271ca-0fcc-4ea4-9c2d-7b5aeec0d532",
     "name": "Spawner (602)",
-    "location": [858, 3532, -43],
+    "location": [
+      858,
+      3532,
+      -43
+    ],
     "map": "TerMur",
     "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 40,
+    "spawnBounds": {
+      "x1": 818,
+      "y1": 3492,
+      "z1": -128,
+      "x2": 899,
+      "y2": 3573,
+      "z2": 128
+    },
     "walkingRange": 40,
     "entries": [
-      { "name": "Rabbit", "maxCount": 6, "probability": 100 },
-      { "name": "Bird", "maxCount": 6, "probability": 100 }
+      {
+        "name": "Rabbit",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "Bird",
+        "maxCount": 6,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "3b6298d3-c9f3-40df-af03-20af1ed36ad5",
     "name": "Spawner (602)",
-    "location": [981, 3318, -42],
+    "location": [
+      981,
+      3318,
+      -42
+    ],
     "map": "TerMur",
     "count": 9,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 50,
+    "spawnBounds": {
+      "x1": 931,
+      "y1": 3268,
+      "z1": -128,
+      "x2": 1032,
+      "y2": 3369,
+      "z2": 128
+    },
     "walkingRange": 50,
     "entries": [
-      { "name": "Rabbit", "maxCount": 9, "probability": 100 },
-      { "name": "Bird", "maxCount": 9, "probability": 100 }
+      {
+        "name": "Rabbit",
+        "maxCount": 9,
+        "probability": 100
+      },
+      {
+        "name": "Bird",
+        "maxCount": 9,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "869aeec5-52eb-4041-ab43-5d943d05055f",
     "name": "Spawner (602)",
-    "location": [881, 3344, -43],
+    "location": [
+      881,
+      3344,
+      -43
+    ],
     "map": "TerMur",
     "count": 9,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 50,
+    "spawnBounds": {
+      "x1": 831,
+      "y1": 3294,
+      "z1": -128,
+      "x2": 932,
+      "y2": 3395,
+      "z2": 128
+    },
     "walkingRange": 50,
     "entries": [
-      { "name": "Rabbit", "maxCount": 9, "probability": 100 },
-      { "name": "Bird", "maxCount": 9, "probability": 100 }
+      {
+        "name": "Rabbit",
+        "maxCount": 9,
+        "probability": 100
+      },
+      {
+        "name": "Bird",
+        "maxCount": 9,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "46785472-bc5c-4563-8a5b-2ea1c0f9f465",
     "name": "Spawner (602)",
-    "location": [1073, 3322, -42],
+    "location": [
+      1073,
+      3322,
+      -42
+    ],
     "map": "TerMur",
     "count": 18,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 50,
+    "spawnBounds": {
+      "x1": 1023,
+      "y1": 3272,
+      "z1": -128,
+      "x2": 1124,
+      "y2": 3373,
+      "z2": 128
+    },
     "walkingRange": 50,
     "entries": [
-      { "name": "SewerRat", "maxCount": 18, "probability": 100 },
-      { "name": "GreaterMongbat", "maxCount": 18, "probability": 100 },
-      { "name": "Mongbat", "maxCount": 18, "probability": 100 },
-      { "name": "RuddyBoura", "maxCount": 18, "probability": 100 },
-      { "name": "SilverSerpent", "maxCount": 18, "probability": 100 },
-      { "name": "Slith", "maxCount": 18, "probability": 100 },
-      { "name": "ToxicSlith", "maxCount": 18, "probability": 100 },
-      { "name": "Bird", "maxCount": 18, "probability": 100 }
+      {
+        "name": "SewerRat",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "GreaterMongbat",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Mongbat",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "RuddyBoura",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "SilverSerpent",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Slith",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "ToxicSlith",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Bird",
+        "maxCount": 18,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "5f076796-65bf-4d41-88f3-78dacfab04b8",
     "name": "Spawner (602)",
-    "location": [981, 3574, -43],
+    "location": [
+      981,
+      3574,
+      -43
+    ],
     "map": "TerMur",
     "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 40,
+    "spawnBounds": {
+      "x1": 941,
+      "y1": 3534,
+      "z1": -128,
+      "x2": 1022,
+      "y2": 3615,
+      "z2": 128
+    },
     "walkingRange": 40,
     "entries": [
-      { "name": "Rabbit", "maxCount": 6, "probability": 100 },
-      { "name": "Bird", "maxCount": 6, "probability": 100 }
+      {
+        "name": "Rabbit",
+        "maxCount": 6,
+        "probability": 100
+      },
+      {
+        "name": "Bird",
+        "maxCount": 6,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "55507c03-3ae8-43ba-a2c5-7e8ecd7a3457",
     "name": "Spawner (602)",
-    "location": [909, 3235, 38],
+    "location": [
+      909,
+      3235,
+      38
+    ],
     "map": "TerMur",
     "count": 19,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 50,
+    "spawnBounds": {
+      "x1": 859,
+      "y1": 3185,
+      "z1": -128,
+      "x2": 960,
+      "y2": 3286,
+      "z2": 128
+    },
     "walkingRange": 50,
     "entries": [
-      { "name": "Rabbit", "maxCount": 19, "probability": 100 },
-      { "name": "Rat", "maxCount": 19, "probability": 100 },
-      { "name": "TimberWolf", "maxCount": 19, "probability": 100 },
-      { "name": "HighPlainsBoura", "maxCount": 19, "probability": 100 },
-      { "name": "Hind", "maxCount": 19, "probability": 100 },
-      { "name": "Horse", "maxCount": 19, "probability": 100 },
-      { "name": "JackRabbit", "maxCount": 19, "probability": 100 },
-      { "name": "KepetchAmbusher", "maxCount": 19, "probability": 100 }
+      {
+        "name": "Rabbit",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "TimberWolf",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "HighPlainsBoura",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "Hind",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "Horse",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "JackRabbit",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "KepetchAmbusher",
+        "maxCount": 19,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "6d62246c-b5a5-4a2a-8f8a-3a9d54387e8a",
     "name": "Spawner (602)",
-    "location": [802, 3231, 40],
+    "location": [
+      802,
+      3231,
+      40
+    ],
     "map": "TerMur",
     "count": 19,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 50,
+    "spawnBounds": {
+      "x1": 752,
+      "y1": 3181,
+      "z1": -128,
+      "x2": 853,
+      "y2": 3282,
+      "z2": 128
+    },
     "walkingRange": 50,
     "entries": [
-      { "name": "Rabbit", "maxCount": 19, "probability": 100 },
-      { "name": "Rat", "maxCount": 19, "probability": 100 },
-      { "name": "TimberWolf", "maxCount": 19, "probability": 100 },
-      { "name": "HighPlainsBoura", "maxCount": 19, "probability": 100 },
-      { "name": "Hind", "maxCount": 19, "probability": 100 },
-      { "name": "Horse", "maxCount": 19, "probability": 100 },
-      { "name": "JackRabbit", "maxCount": 19, "probability": 100 },
-      { "name": "KepetchAmbusher", "maxCount": 19, "probability": 100 }
+      {
+        "name": "Rabbit",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "TimberWolf",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "HighPlainsBoura",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "Hind",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "Horse",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "JackRabbit",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "KepetchAmbusher",
+        "maxCount": 19,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "572149ff-9542-42c1-92b9-99b71d8f2579",
     "name": "Spawner (602)",
-    "location": [679, 3248, 38],
+    "location": [
+      679,
+      3248,
+      38
+    ],
     "map": "TerMur",
     "count": 16,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 50,
+    "spawnBounds": {
+      "x1": 629,
+      "y1": 3198,
+      "z1": -128,
+      "x2": 730,
+      "y2": 3299,
+      "z2": 128
+    },
     "walkingRange": 50,
     "entries": [
-      { "name": "Rabbit", "maxCount": 16, "probability": 100 },
-      { "name": "Rat", "maxCount": 16, "probability": 100 },
-      { "name": "Hind", "maxCount": 16, "probability": 100 },
-      { "name": "Horse", "maxCount": 16, "probability": 100 },
-      { "name": "JackRabbit", "maxCount": 16, "probability": 100 }
+      {
+        "name": "Rabbit",
+        "maxCount": 16,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 16,
+        "probability": 100
+      },
+      {
+        "name": "Hind",
+        "maxCount": 16,
+        "probability": 100
+      },
+      {
+        "name": "Horse",
+        "maxCount": 16,
+        "probability": 100
+      },
+      {
+        "name": "JackRabbit",
+        "maxCount": 16,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "c05a8e56-f166-414e-babc-dcc1d14221c4",
     "name": "Spawner (602)",
-    "location": [588, 3267, 37],
+    "location": [
+      588,
+      3267,
+      37
+    ],
     "map": "TerMur",
     "count": 19,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 50,
+    "spawnBounds": {
+      "x1": 538,
+      "y1": 3217,
+      "z1": -128,
+      "x2": 639,
+      "y2": 3318,
+      "z2": 128
+    },
     "walkingRange": 50,
     "entries": [
-      { "name": "Rabbit", "maxCount": 19, "probability": 100 },
-      { "name": "Rat", "maxCount": 19, "probability": 100 },
-      { "name": "TimberWolf", "maxCount": 19, "probability": 100 },
-      { "name": "HighPlainsBoura", "maxCount": 19, "probability": 100 },
-      { "name": "Hind", "maxCount": 19, "probability": 100 },
-      { "name": "Horse", "maxCount": 19, "probability": 100 },
-      { "name": "JackRabbit", "maxCount": 19, "probability": 100 },
-      { "name": "KepetchAmbusher", "maxCount": 19, "probability": 100 }
+      {
+        "name": "Rabbit",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "TimberWolf",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "HighPlainsBoura",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "Hind",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "Horse",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "JackRabbit",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "KepetchAmbusher",
+        "maxCount": 19,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "1a1cad72-ebdf-4491-a623-66d87bc45538",
     "name": "Spawner (602)",
-    "location": [521, 3355, 38],
+    "location": [
+      521,
+      3355,
+      38
+    ],
     "map": "TerMur",
     "count": 18,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 50,
+    "spawnBounds": {
+      "x1": 471,
+      "y1": 3305,
+      "z1": -128,
+      "x2": 572,
+      "y2": 3406,
+      "z2": 128
+    },
     "walkingRange": 50,
     "entries": [
-      { "name": "ChickenLizard", "maxCount": 18, "probability": 100 },
-      { "name": "Hind", "maxCount": 18, "probability": 100 },
-      { "name": "Horse", "maxCount": 18, "probability": 100 },
-      { "name": "SilverSerpent", "maxCount": 18, "probability": 100 },
-      { "name": "Rabbit", "maxCount": 18, "probability": 100 },
-      { "name": "Bird", "maxCount": 18, "probability": 100 }
+      {
+        "name": "ChickenLizard",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Hind",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Horse",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "SilverSerpent",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Rabbit",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Bird",
+        "maxCount": 18,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "e23908dc-858c-4ec1-a41a-474fd7e9730d",
     "name": "Spawner (602)",
-    "location": [511, 3273, 36],
+    "location": [
+      511,
+      3273,
+      36
+    ],
     "map": "TerMur",
     "count": 15,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 40,
+    "spawnBounds": {
+      "x1": 471,
+      "y1": 3233,
+      "z1": -128,
+      "x2": 552,
+      "y2": 3314,
+      "z2": 128
+    },
     "walkingRange": 40,
     "entries": [
-      { "name": "Hind", "maxCount": 15, "probability": 100 },
-      { "name": "Rabbit", "maxCount": 15, "probability": 100 },
-      { "name": "Bird", "maxCount": 15, "probability": 100 }
+      {
+        "name": "Hind",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Rabbit",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Bird",
+        "maxCount": 15,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "955417f2-d918-4c43-93a6-346ca6fb4bbc",
     "name": "Spawner (602)",
-    "location": [547, 3421, 37],
+    "location": [
+      547,
+      3421,
+      37
+    ],
     "map": "TerMur",
     "count": 18,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 50,
+    "spawnBounds": {
+      "x1": 497,
+      "y1": 3371,
+      "z1": -128,
+      "x2": 598,
+      "y2": 3472,
+      "z2": 128
+    },
     "walkingRange": 50,
     "entries": [
-      { "name": "ChickenLizard", "maxCount": 18, "probability": 100 },
-      { "name": "Hind", "maxCount": 18, "probability": 100 },
-      { "name": "Horse", "maxCount": 18, "probability": 100 },
-      { "name": "SilverSerpent", "maxCount": 18, "probability": 100 },
-      { "name": "Rabbit", "maxCount": 18, "probability": 100 },
-      { "name": "Bird", "maxCount": 18, "probability": 100 }
+      {
+        "name": "ChickenLizard",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Hind",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Horse",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "SilverSerpent",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Rabbit",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Bird",
+        "maxCount": 18,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "ebbbc910-1d0f-4180-8e7a-544d819906b8",
     "name": "Spawner (602)",
-    "location": [571, 3506, 38],
+    "location": [
+      571,
+      3506,
+      38
+    ],
     "map": "TerMur",
     "count": 15,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 30,
+    "spawnBounds": {
+      "x1": 541,
+      "y1": 3476,
+      "z1": -128,
+      "x2": 602,
+      "y2": 3537,
+      "z2": 128
+    },
     "walkingRange": 30,
     "entries": [
-      { "name": "Hind", "maxCount": 15, "probability": 100 },
-      { "name": "Rabbit", "maxCount": 15, "probability": 100 },
-      { "name": "Bird", "maxCount": 15, "probability": 100 }
+      {
+        "name": "Hind",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Rabbit",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Bird",
+        "maxCount": 15,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "153e658a-818b-4ed3-80d0-8b5f99193b6e",
     "name": "Spawner (602)",
-    "location": [1169, 3338, -42],
+    "location": [
+      1169,
+      3338,
+      -42
+    ],
     "map": "TerMur",
     "count": 18,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 50,
+    "spawnBounds": {
+      "x1": 1119,
+      "y1": 3288,
+      "z1": -128,
+      "x2": 1220,
+      "y2": 3389,
+      "z2": 128
+    },
     "walkingRange": 50,
     "entries": [
-      { "name": "SewerRat", "maxCount": 18, "probability": 100 },
-      { "name": "GreaterMongbat", "maxCount": 18, "probability": 100 },
-      { "name": "Mongbat", "maxCount": 18, "probability": 100 },
-      { "name": "RuddyBoura", "maxCount": 18, "probability": 100 },
-      { "name": "SilverSerpent", "maxCount": 18, "probability": 100 },
-      { "name": "Slith", "maxCount": 18, "probability": 100 },
-      { "name": "Bird", "maxCount": 18, "probability": 100 }
+      {
+        "name": "SewerRat",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "GreaterMongbat",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Mongbat",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "RuddyBoura",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "SilverSerpent",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Slith",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Bird",
+        "maxCount": 18,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "18cef512-871f-4ff0-b21d-54e22e6197bc",
     "name": "Spawner (602)",
-    "location": [689, 3711, -43],
+    "location": [
+      689,
+      3711,
+      -43
+    ],
     "map": "TerMur",
     "count": 19,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 50,
+    "spawnBounds": {
+      "x1": 639,
+      "y1": 3661,
+      "z1": -128,
+      "x2": 740,
+      "y2": 3762,
+      "z2": 128
+    },
     "walkingRange": 50,
     "entries": [
-      { "name": "Rabbit", "maxCount": 19, "probability": 100 },
-      { "name": "Bird", "maxCount": 19, "probability": 100 },
-      { "name": "Rat", "maxCount": 19, "probability": 100 },
-      { "name": "SewerRat", "maxCount": 19, "probability": 100 },
-      { "name": "Snake", "maxCount": 19, "probability": 100 }
+      {
+        "name": "Rabbit",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "Bird",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "SewerRat",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "Snake",
+        "maxCount": 19,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "8745bf7c-2b8b-45ae-b992-7de9c58d14fc",
     "name": "Spawner (602)",
-    "location": [761, 3650, -43],
+    "location": [
+      761,
+      3650,
+      -43
+    ],
     "map": "TerMur",
     "count": 19,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 50,
+    "spawnBounds": {
+      "x1": 711,
+      "y1": 3600,
+      "z1": -128,
+      "x2": 812,
+      "y2": 3701,
+      "z2": 128
+    },
     "walkingRange": 50,
     "entries": [
-      { "name": "Rabbit", "maxCount": 19, "probability": 100 },
-      { "name": "Bird", "maxCount": 19, "probability": 100 },
-      { "name": "Rat", "maxCount": 19, "probability": 100 },
-      { "name": "SewerRat", "maxCount": 19, "probability": 100 },
-      { "name": "Snake", "maxCount": 19, "probability": 100 }
+      {
+        "name": "Rabbit",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "Bird",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "SewerRat",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "Snake",
+        "maxCount": 19,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "97c2ed7b-69c7-43db-8ccb-8591ecd90316",
     "name": "Spawner (602)",
-    "location": [616, 3684, -43],
+    "location": [
+      616,
+      3684,
+      -43
+    ],
     "map": "TerMur",
     "count": 10,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 30,
+    "spawnBounds": {
+      "x1": 586,
+      "y1": 3654,
+      "z1": -128,
+      "x2": 647,
+      "y2": 3715,
+      "z2": 128
+    },
     "walkingRange": 30,
     "entries": [
-      { "name": "Reaper", "maxCount": 10, "probability": 100 },
-      { "name": "Rat", "maxCount": 10, "probability": 100 },
-      { "name": "Bird", "maxCount": 10, "probability": 100 }
+      {
+        "name": "Reaper",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Bird",
+        "maxCount": 10,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "990f3875-b9e4-4060-8e14-7f2c4b9a69a2",
     "name": "Spawner (602)",
-    "location": [668, 3831, -31],
+    "location": [
+      668,
+      3831,
+      -31
+    ],
     "map": "TerMur",
     "count": 18,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 40,
+    "spawnBounds": {
+      "x1": 628,
+      "y1": 3791,
+      "z1": -128,
+      "x2": 709,
+      "y2": 3872,
+      "z2": 128
+    },
     "walkingRange": 40,
     "entries": [
-      { "name": "Raptor", "maxCount": 18, "probability": 100 },
-      { "name": "Bird", "maxCount": 18, "probability": 100 },
-      { "name": "Rat", "maxCount": 18, "probability": 100 },
-      { "name": "Mongbat", "maxCount": 18, "probability": 100 }
+      {
+        "name": "Raptor",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Bird",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Mongbat",
+        "maxCount": 18,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "0b5d810e-182e-4d7c-9a79-2dfb3ba8e5f3",
     "name": "Spawner (602)",
-    "location": [680, 3788, -43],
+    "location": [
+      680,
+      3788,
+      -43
+    ],
     "map": "TerMur",
     "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 5,
+    "spawnBounds": {
+      "x1": 675,
+      "y1": 3783,
+      "z1": -128,
+      "x2": 686,
+      "y2": 3794,
+      "z2": 128
+    },
     "walkingRange": 5,
     "entries": [
-      { "name": "TrapdoorSpider", "maxCount": 2, "probability": 100 }
+      {
+        "name": "TrapdoorSpider",
+        "maxCount": 2,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "8151255d-cede-4c52-bacc-fc3a1a434c45",
     "name": "Spawner (602)",
-    "location": [760, 3810, -42],
+    "location": [
+      760,
+      3810,
+      -42
+    ],
     "map": "TerMur",
     "count": 18,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 50,
+    "spawnBounds": {
+      "x1": 710,
+      "y1": 3760,
+      "z1": -128,
+      "x2": 811,
+      "y2": 3861,
+      "z2": 128
+    },
     "walkingRange": 50,
     "entries": [
-      { "name": "Horse", "maxCount": 18, "probability": 100 },
-      { "name": "Mongbat", "maxCount": 18, "probability": 100 },
-      { "name": "Raptor", "maxCount": 18, "probability": 100 },
-      { "name": "Skree", "maxCount": 18, "probability": 100 },
-      { "name": "Rat", "maxCount": 18, "probability": 100 },
-      { "name": "Bird", "maxCount": 18, "probability": 100 }
+      {
+        "name": "Horse",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Mongbat",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Raptor",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Skree",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Bird",
+        "maxCount": 18,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "1017634b-fad7-41ee-a13c-ec15dc0e5ae9",
     "name": "Spawner (602)",
-    "location": [826, 3762, -43],
+    "location": [
+      826,
+      3762,
+      -43
+    ],
     "map": "TerMur",
     "count": 18,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 50,
+    "spawnBounds": {
+      "x1": 776,
+      "y1": 3712,
+      "z1": -128,
+      "x2": 877,
+      "y2": 3813,
+      "z2": 128
+    },
     "walkingRange": 50,
     "entries": [
-      { "name": "Horse", "maxCount": 18, "probability": 100 },
-      { "name": "Mongbat", "maxCount": 18, "probability": 100 },
-      { "name": "Raptor", "maxCount": 18, "probability": 100 },
-      { "name": "Skree", "maxCount": 18, "probability": 100 },
-      { "name": "Rat", "maxCount": 18, "probability": 100 },
-      { "name": "Bird", "maxCount": 18, "probability": 100 },
-      { "name": "ToxicSlith", "maxCount": 18, "probability": 100 }
+      {
+        "name": "Horse",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Mongbat",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Raptor",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Skree",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Bird",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "ToxicSlith",
+        "maxCount": 18,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "e2817ac3-8c77-4901-af5f-d51f0ceb7f7d",
     "name": "Spawner (602)",
-    "location": [795, 3827, -19],
+    "location": [
+      795,
+      3827,
+      -19
+    ],
     "map": "TerMur",
     "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 5,
+    "spawnBounds": {
+      "x1": 790,
+      "y1": 3822,
+      "z1": -128,
+      "x2": 801,
+      "y2": 3833,
+      "z2": 128
+    },
     "walkingRange": 5,
     "entries": [
-      { "name": "TrapdoorSpider", "maxCount": 2, "probability": 100 }
+      {
+        "name": "TrapdoorSpider",
+        "maxCount": 2,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "54228f45-e935-4df1-8d50-e15ec557d110",
     "name": "Spawner (602)",
-    "location": [799, 3863, 48],
+    "location": [
+      799,
+      3863,
+      48
+    ],
     "map": "TerMur",
     "count": 18,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 50,
+    "spawnBounds": {
+      "x1": 749,
+      "y1": 3813,
+      "z1": -128,
+      "x2": 850,
+      "y2": 3914,
+      "z2": 128
+    },
     "walkingRange": 50,
     "entries": [
-      { "name": "Horse", "maxCount": 18, "probability": 100 },
-      { "name": "Mongbat", "maxCount": 18, "probability": 100 },
-      { "name": "Raptor", "maxCount": 18, "probability": 100 },
-      { "name": "Skree", "maxCount": 18, "probability": 100 },
-      { "name": "Rat", "maxCount": 18, "probability": 100 },
-      { "name": "Bird", "maxCount": 18, "probability": 100 },
-      { "name": "ToxicSlith", "maxCount": 18, "probability": 100 }
+      {
+        "name": "Horse",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Mongbat",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Raptor",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Skree",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Bird",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "ToxicSlith",
+        "maxCount": 18,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "91a9c0fa-51f3-4726-aeb1-25a03911fffa",
     "name": "Spawner (602)",
-    "location": [763, 3991, -42],
+    "location": [
+      763,
+      3991,
+      -42
+    ],
     "map": "TerMur",
     "count": 18,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 50,
+    "spawnBounds": {
+      "x1": 713,
+      "y1": 3941,
+      "z1": -128,
+      "x2": 814,
+      "y2": 4042,
+      "z2": 128
+    },
     "walkingRange": 50,
     "entries": [
-      { "name": "GreaterMongbat", "maxCount": 18, "probability": 100 },
-      { "name": "Mongbat", "maxCount": 18, "probability": 100 },
-      { "name": "Raptor", "maxCount": 18, "probability": 100 },
-      { "name": "SilverSerpent", "maxCount": 18, "probability": 100 },
-      { "name": "Bird", "maxCount": 18, "probability": 100 },
-      { "name": "Rabbit", "maxCount": 18, "probability": 100 }
+      {
+        "name": "GreaterMongbat",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Mongbat",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Raptor",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "SilverSerpent",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Bird",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Rabbit",
+        "maxCount": 18,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "866bde45-dd02-4eef-b6c4-143bf3b6c31a",
     "name": "Spawner (602)",
-    "location": [1129, 3163, -42],
+    "location": [
+      1129,
+      3163,
+      -42
+    ],
     "map": "TerMur",
     "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 40,
+    "spawnBounds": {
+      "x1": 1089,
+      "y1": 3123,
+      "z1": -128,
+      "x2": 1170,
+      "y2": 3204,
+      "z2": 128
+    },
     "walkingRange": 40,
     "entries": [
-      { "name": "SewerRat", "maxCount": 7, "probability": 100 },
-      { "name": "GreaterMongbat", "maxCount": 7, "probability": 100 },
-      { "name": "Mongbat", "maxCount": 7, "probability": 100 },
-      { "name": "Slith", "maxCount": 7, "probability": 100 },
-      { "name": "Bird", "maxCount": 7, "probability": 100 }
+      {
+        "name": "SewerRat",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "GreaterMongbat",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Mongbat",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Slith",
+        "maxCount": 7,
+        "probability": 100
+      },
+      {
+        "name": "Bird",
+        "maxCount": 7,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "08ce21d5-67cc-46c7-a827-68048f38e3ef",
     "name": "Spawner (602)",
-    "location": [687, 3917, -43],
+    "location": [
+      687,
+      3917,
+      -43
+    ],
     "map": "TerMur",
     "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 5,
+    "spawnBounds": {
+      "x1": 682,
+      "y1": 3912,
+      "z1": -128,
+      "x2": 693,
+      "y2": 3923,
+      "z2": 128
+    },
     "walkingRange": 5,
     "entries": [
-      { "name": "TrapdoorSpider", "maxCount": 2, "probability": 100 }
+      {
+        "name": "TrapdoorSpider",
+        "maxCount": 2,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "63140eed-b7f0-4ca9-87f5-5caeff3b6607",
     "name": "Spawner (602)",
-    "location": [641, 3922, -43],
+    "location": [
+      641,
+      3922,
+      -43
+    ],
     "map": "TerMur",
     "count": 18,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 50,
+    "spawnBounds": {
+      "x1": 591,
+      "y1": 3872,
+      "z1": -128,
+      "x2": 692,
+      "y2": 3973,
+      "z2": 128
+    },
     "walkingRange": 50,
     "entries": [
-      { "name": "GreaterMongbat", "maxCount": 18, "probability": 100 },
-      { "name": "Mongbat", "maxCount": 18, "probability": 100 },
-      { "name": "Raptor", "maxCount": 18, "probability": 100 },
-      { "name": "SilverSerpent", "maxCount": 18, "probability": 100 },
-      { "name": "Bird", "maxCount": 18, "probability": 100 },
-      { "name": "Rabbit", "maxCount": 18, "probability": 100 }
+      {
+        "name": "GreaterMongbat",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Mongbat",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Raptor",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "SilverSerpent",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Bird",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Rabbit",
+        "maxCount": 18,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "5216666c-6c47-4d72-9818-510a88ea6edc",
     "name": "Spawner (602)",
-    "location": [1065, 2996, 74],
+    "location": [
+      1065,
+      2996,
+      74
+    ],
     "map": "TerMur",
     "count": 16,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 40,
+    "spawnBounds": {
+      "x1": 1025,
+      "y1": 2956,
+      "z1": -128,
+      "x2": 1106,
+      "y2": 3037,
+      "z2": 128
+    },
     "walkingRange": 40,
     "entries": [
-      { "name": "CoralSnake", "maxCount": 16, "probability": 100 },
-      { "name": "DesertOstard", "maxCount": 16, "probability": 100 },
-      { "name": "KepetchAmbusher", "maxCount": 16, "probability": 100 },
-      { "name": "SandVortex", "maxCount": 16, "probability": 100 },
-      { "name": "Scorpion", "maxCount": 16, "probability": 100 }
+      {
+        "name": "CoralSnake",
+        "maxCount": 16,
+        "probability": 100
+      },
+      {
+        "name": "DesertOstard",
+        "maxCount": 16,
+        "probability": 100
+      },
+      {
+        "name": "KepetchAmbusher",
+        "maxCount": 16,
+        "probability": 100
+      },
+      {
+        "name": "SandVortex",
+        "maxCount": 16,
+        "probability": 100
+      },
+      {
+        "name": "Scorpion",
+        "maxCount": 16,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "089d3262-1c31-4f80-aa13-d2d5383f0535",
     "name": "Spawner (602)",
-    "location": [1099, 3010, 50],
+    "location": [
+      1099,
+      3010,
+      50
+    ],
     "map": "TerMur",
     "count": 1,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 3,
+    "spawnBounds": {
+      "x1": 1096,
+      "y1": 3007,
+      "z1": -128,
+      "x2": 1103,
+      "y2": 3014,
+      "z2": 128
+    },
     "walkingRange": 3,
     "entries": [
-      { "name": "ToxicSlith", "maxCount": 1, "probability": 100 }
+      {
+        "name": "ToxicSlith",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "c1db00c8-9759-4f55-8ac4-f7557a6b9242",
     "name": "Spawner (602)",
-    "location": [1053, 2971, 50],
+    "location": [
+      1053,
+      2971,
+      50
+    ],
     "map": "TerMur",
     "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 3,
+    "spawnBounds": {
+      "x1": 1050,
+      "y1": 2968,
+      "z1": -128,
+      "x2": 1057,
+      "y2": 2975,
+      "z2": 128
+    },
     "walkingRange": 3,
     "entries": [
-      { "name": "ToxicSlith", "maxCount": 2, "probability": 100 }
+      {
+        "name": "ToxicSlith",
+        "maxCount": 2,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "a7437a00-ed2e-4acc-9375-b234ceffd92a",
     "name": "Spawner (602)",
-    "location": [1062, 3026, 50],
+    "location": [
+      1062,
+      3026,
+      50
+    ],
     "map": "TerMur",
     "count": 1,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 3,
+    "spawnBounds": {
+      "x1": 1059,
+      "y1": 3023,
+      "z1": -128,
+      "x2": 1066,
+      "y2": 3030,
+      "z2": 128
+    },
     "walkingRange": 3,
     "entries": [
-      { "name": "ToxicSlith", "maxCount": 1, "probability": 100 }
+      {
+        "name": "ToxicSlith",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "d0e61272-a938-4b64-8713-3bac2356f1c7",
     "name": "Spawner (602)",
-    "location": [762, 3073, 105],
+    "location": [
+      762,
+      3073,
+      105
+    ],
     "map": "TerMur",
     "count": 20,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 60,
+    "spawnBounds": {
+      "x1": 702,
+      "y1": 3013,
+      "z1": -128,
+      "x2": 823,
+      "y2": 3134,
+      "z2": 128
+    },
     "walkingRange": 60,
     "entries": [
-      { "name": "Rabbit", "maxCount": 20, "probability": 100 },
-      { "name": "Bird", "maxCount": 20, "probability": 100 },
-      { "name": "RuddyBoura", "maxCount": 20, "probability": 100 },
-      { "name": "SilverSerpent", "maxCount": 20, "probability": 100 },
-      { "name": "Slith", "maxCount": 20, "probability": 100 },
-      { "name": "StoneSlith", "maxCount": 20, "probability": 100 },
-      { "name": "TimberWolf", "maxCount": 20, "probability": 100 },
-      { "name": "FeralTreefellow", "maxCount": 20, "probability": 100 }
+      {
+        "name": "Rabbit",
+        "maxCount": 20,
+        "probability": 100
+      },
+      {
+        "name": "Bird",
+        "maxCount": 20,
+        "probability": 100
+      },
+      {
+        "name": "RuddyBoura",
+        "maxCount": 20,
+        "probability": 100
+      },
+      {
+        "name": "SilverSerpent",
+        "maxCount": 20,
+        "probability": 100
+      },
+      {
+        "name": "Slith",
+        "maxCount": 20,
+        "probability": 100
+      },
+      {
+        "name": "StoneSlith",
+        "maxCount": 20,
+        "probability": 100
+      },
+      {
+        "name": "TimberWolf",
+        "maxCount": 20,
+        "probability": 100
+      },
+      {
+        "name": "FeralTreefellow",
+        "maxCount": 20,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "27b77304-78cf-43bd-9ea3-076c491369a4",
     "name": "Spawner (602)",
-    "location": [917, 3088, 37],
+    "location": [
+      917,
+      3088,
+      37
+    ],
     "map": "TerMur",
     "count": 20,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 60,
+    "spawnBounds": {
+      "x1": 857,
+      "y1": 3028,
+      "z1": -128,
+      "x2": 978,
+      "y2": 3149,
+      "z2": 128
+    },
     "walkingRange": 60,
     "entries": [
-      { "name": "Rabbit", "maxCount": 20, "probability": 100 },
-      { "name": "Bird", "maxCount": 20, "probability": 100 },
-      { "name": "RuddyBoura", "maxCount": 20, "probability": 100 },
-      { "name": "SilverSerpent", "maxCount": 20, "probability": 100 },
-      { "name": "Slith", "maxCount": 20, "probability": 100 },
-      { "name": "StoneSlith", "maxCount": 20, "probability": 100 },
-      { "name": "TimberWolf", "maxCount": 20, "probability": 100 },
-      { "name": "FeralTreefellow", "maxCount": 20, "probability": 100 }
+      {
+        "name": "Rabbit",
+        "maxCount": 20,
+        "probability": 100
+      },
+      {
+        "name": "Bird",
+        "maxCount": 20,
+        "probability": 100
+      },
+      {
+        "name": "RuddyBoura",
+        "maxCount": 20,
+        "probability": 100
+      },
+      {
+        "name": "SilverSerpent",
+        "maxCount": 20,
+        "probability": 100
+      },
+      {
+        "name": "Slith",
+        "maxCount": 20,
+        "probability": 100
+      },
+      {
+        "name": "StoneSlith",
+        "maxCount": 20,
+        "probability": 100
+      },
+      {
+        "name": "TimberWolf",
+        "maxCount": 20,
+        "probability": 100
+      },
+      {
+        "name": "FeralTreefellow",
+        "maxCount": 20,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "150f4f85-b244-48a4-a46f-d5b3c56951c6",
     "name": "Spawner (602)",
-    "location": [839, 3086, 83],
+    "location": [
+      839,
+      3086,
+      83
+    ],
     "map": "TerMur",
     "count": 20,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 60,
+    "spawnBounds": {
+      "x1": 779,
+      "y1": 3026,
+      "z1": -128,
+      "x2": 900,
+      "y2": 3147,
+      "z2": 128
+    },
     "walkingRange": 60,
     "entries": [
-      { "name": "Rabbit", "maxCount": 20, "probability": 100 },
-      { "name": "Bird", "maxCount": 20, "probability": 100 },
-      { "name": "RuddyBoura", "maxCount": 20, "probability": 100 },
-      { "name": "SilverSerpent", "maxCount": 20, "probability": 100 },
-      { "name": "Slith", "maxCount": 20, "probability": 100 },
-      { "name": "StoneSlith", "maxCount": 20, "probability": 100 },
-      { "name": "TimberWolf", "maxCount": 20, "probability": 100 },
-      { "name": "FeralTreefellow", "maxCount": 20, "probability": 100 }
+      {
+        "name": "Rabbit",
+        "maxCount": 20,
+        "probability": 100
+      },
+      {
+        "name": "Bird",
+        "maxCount": 20,
+        "probability": 100
+      },
+      {
+        "name": "RuddyBoura",
+        "maxCount": 20,
+        "probability": 100
+      },
+      {
+        "name": "SilverSerpent",
+        "maxCount": 20,
+        "probability": 100
+      },
+      {
+        "name": "Slith",
+        "maxCount": 20,
+        "probability": 100
+      },
+      {
+        "name": "StoneSlith",
+        "maxCount": 20,
+        "probability": 100
+      },
+      {
+        "name": "TimberWolf",
+        "maxCount": 20,
+        "probability": 100
+      },
+      {
+        "name": "FeralTreefellow",
+        "maxCount": 20,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "9f18de9c-4862-4940-a2b2-ea02d78c2a69",
     "name": "Spawner (602)",
-    "location": [817, 2960, 76],
+    "location": [
+      817,
+      2960,
+      76
+    ],
     "map": "TerMur",
     "count": 18,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 60,
+    "spawnBounds": {
+      "x1": 757,
+      "y1": 2900,
+      "z1": -128,
+      "x2": 878,
+      "y2": 3021,
+      "z2": 128
+    },
     "walkingRange": 60,
     "entries": [
-      { "name": "HighPlainsBoura", "maxCount": 18, "probability": 100 },
-      { "name": "Horse", "maxCount": 18, "probability": 100 },
-      { "name": "StoneSlith", "maxCount": 18, "probability": 100 },
-      { "name": "Bird", "maxCount": 18, "probability": 100 },
-      { "name": "Rabbit", "maxCount": 18, "probability": 100 }
+      {
+        "name": "HighPlainsBoura",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Horse",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "StoneSlith",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Bird",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Rabbit",
+        "maxCount": 18,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "4b7fcf89-dc47-4a59-8da2-bda0f810beeb",
     "name": "Spawner (602)",
-    "location": [1106, 3138, -43],
+    "location": [
+      1106,
+      3138,
+      -43
+    ],
     "map": "TerMur",
     "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 10,
+    "spawnBounds": {
+      "x1": 1096,
+      "y1": 3128,
+      "z1": -128,
+      "x2": 1117,
+      "y2": 3149,
+      "z2": 128
+    },
     "walkingRange": 10,
     "entries": [
-      { "name": "ToxicSlith", "maxCount": 4, "probability": 100 },
-      { "name": "Slith", "maxCount": 4, "probability": 100 }
+      {
+        "name": "ToxicSlith",
+        "maxCount": 4,
+        "probability": 100
+      },
+      {
+        "name": "Slith",
+        "maxCount": 4,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "743c46bb-a95f-4a7b-8a7f-4c4c0473fe38",
     "name": "Spawner (602)",
-    "location": [861, 2923, 38],
+    "location": [
+      861,
+      2923,
+      38
+    ],
     "map": "TerMur",
     "count": 18,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 60,
+    "spawnBounds": {
+      "x1": 801,
+      "y1": 2863,
+      "z1": -128,
+      "x2": 922,
+      "y2": 2984,
+      "z2": 128
+    },
     "walkingRange": 60,
     "entries": [
-      { "name": "HighPlainsBoura", "maxCount": 18, "probability": 100 },
-      { "name": "Horse", "maxCount": 18, "probability": 100 },
-      { "name": "StoneSlith", "maxCount": 18, "probability": 100 },
-      { "name": "Bird", "maxCount": 18, "probability": 100 },
-      { "name": "Rabbit", "maxCount": 18, "probability": 100 }
+      {
+        "name": "HighPlainsBoura",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Horse",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "StoneSlith",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Bird",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Rabbit",
+        "maxCount": 18,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "de473023-c4ad-43f6-b9bd-b84d281234e8",
     "name": "Spawner (602)",
-    "location": [648, 3131, 38],
+    "location": [
+      648,
+      3131,
+      38
+    ],
     "map": "TerMur",
     "count": 19,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 55,
+    "spawnBounds": {
+      "x1": 593,
+      "y1": 3076,
+      "z1": -128,
+      "x2": 704,
+      "y2": 3187,
+      "z2": 128
+    },
     "walkingRange": 55,
     "entries": [
-      { "name": "Hind", "maxCount": 19, "probability": 100 },
-      { "name": "Horse", "maxCount": 19, "probability": 100 },
-      { "name": "Rat", "maxCount": 19, "probability": 100 },
-      { "name": "Slith", "maxCount": 19, "probability": 100 },
-      { "name": "TimberWolf", "maxCount": 19, "probability": 100 },
-      { "name": "Bird", "maxCount": 19, "probability": 100 },
-      { "name": "Rabbit", "maxCount": 19, "probability": 100 }
+      {
+        "name": "Hind",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "Horse",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "Slith",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "TimberWolf",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "Bird",
+        "maxCount": 19,
+        "probability": 100
+      },
+      {
+        "name": "Rabbit",
+        "maxCount": 19,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "7ad064f2-fb54-47c6-ba74-7d36d9425ea6",
     "name": "Spawner (602)",
-    "location": [622, 3045, 35],
+    "location": [
+      622,
+      3045,
+      35
+    ],
     "map": "TerMur",
     "count": 15,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 100,
+    "spawnBounds": {
+      "x1": 522,
+      "y1": 2945,
+      "z1": -128,
+      "x2": 723,
+      "y2": 3146,
+      "z2": 128
+    },
     "walkingRange": 100,
     "entries": [
-      { "name": "Bird", "maxCount": 15, "probability": 100 },
-      { "name": "Eagle", "maxCount": 15, "probability": 100 }
+      {
+        "name": "Bird",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Eagle",
+        "maxCount": 15,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "10d3d73f-7f91-4eed-bd56-fc5805653892",
     "name": "Spawner (602)",
-    "location": [685, 2901, 36],
+    "location": [
+      685,
+      2901,
+      36
+    ],
     "map": "TerMur",
     "count": 18,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 50,
+    "spawnBounds": {
+      "x1": 635,
+      "y1": 2851,
+      "z1": -128,
+      "x2": 736,
+      "y2": 2952,
+      "z2": 128
+    },
     "walkingRange": 50,
     "entries": [
-      { "name": "GiantRat", "maxCount": 18, "probability": 100 },
-      { "name": "ToxicSlith", "maxCount": 18, "probability": 100 },
-      { "name": "Rat", "maxCount": 18, "probability": 100 },
-      { "name": "Bird", "maxCount": 18, "probability": 100 }
+      {
+        "name": "GiantRat",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "ToxicSlith",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 18,
+        "probability": 100
+      },
+      {
+        "name": "Bird",
+        "maxCount": 18,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "f1c797af-4863-4b66-8169-795330712f08",
     "name": "Spawner (602)",
-    "location": [562, 2942, 36],
+    "location": [
+      562,
+      2942,
+      36
+    ],
     "map": "TerMur",
     "count": 16,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 40,
+    "spawnBounds": {
+      "x1": 522,
+      "y1": 2902,
+      "z1": -128,
+      "x2": 603,
+      "y2": 2983,
+      "z2": 128
+    },
     "walkingRange": 40,
     "entries": [
-      { "name": "Kepetch", "maxCount": 16, "probability": 100 },
-      { "name": "SilverSerpent", "maxCount": 16, "probability": 100 },
-      { "name": "Treefellow", "maxCount": 16, "probability": 100 },
-      { "name": "Bird", "maxCount": 16, "probability": 100 }
+      {
+        "name": "Kepetch",
+        "maxCount": 16,
+        "probability": 100
+      },
+      {
+        "name": "SilverSerpent",
+        "maxCount": 16,
+        "probability": 100
+      },
+      {
+        "name": "Treefellow",
+        "maxCount": 16,
+        "probability": 100
+      },
+      {
+        "name": "Bird",
+        "maxCount": 16,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "fc314f2e-f697-4a0b-8bb0-f7dd51c1ed2a",
     "name": "Spawner (602)",
-    "location": [486, 3211, 38],
+    "location": [
+      486,
+      3211,
+      38
+    ],
     "map": "TerMur",
     "count": 14,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 35,
+    "spawnBounds": {
+      "x1": 451,
+      "y1": 3176,
+      "z1": -128,
+      "x2": 522,
+      "y2": 3247,
+      "z2": 128
+    },
     "walkingRange": 35,
     "entries": [
-      { "name": "Hind", "maxCount": 14, "probability": 100 },
-      { "name": "Bird", "maxCount": 14, "probability": 100 },
-      { "name": "Rabbit", "maxCount": 14, "probability": 100 }
+      {
+        "name": "Hind",
+        "maxCount": 14,
+        "probability": 100
+      },
+      {
+        "name": "Bird",
+        "maxCount": 14,
+        "probability": 100
+      },
+      {
+        "name": "Rabbit",
+        "maxCount": 14,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "4182343a-a4c0-4bc5-b07a-2e71cb1d3d97",
     "name": "Spawner (602)",
-    "location": [426, 3190, 38],
+    "location": [
+      426,
+      3190,
+      38
+    ],
     "map": "TerMur",
     "count": 17,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 50,
+    "spawnBounds": {
+      "x1": 376,
+      "y1": 3140,
+      "z1": -128,
+      "x2": 477,
+      "y2": 3241,
+      "z2": 128
+    },
     "walkingRange": 50,
     "entries": [
-      { "name": "Kepetch", "maxCount": 17, "probability": 100 },
-      { "name": "Rat", "maxCount": 17, "probability": 100 },
-      { "name": "Snake", "maxCount": 17, "probability": 100 },
-      { "name": "StoneSlith", "maxCount": 17, "probability": 100 },
-      { "name": "Bird", "maxCount": 17, "probability": 100 }
+      {
+        "name": "Kepetch",
+        "maxCount": 17,
+        "probability": 100
+      },
+      {
+        "name": "Rat",
+        "maxCount": 17,
+        "probability": 100
+      },
+      {
+        "name": "Snake",
+        "maxCount": 17,
+        "probability": 100
+      },
+      {
+        "name": "StoneSlith",
+        "maxCount": 17,
+        "probability": 100
+      },
+      {
+        "name": "Bird",
+        "maxCount": 17,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "a340eb44-bdd5-4ae8-a316-570d801cc0d3",
     "name": "Spawner (602)",
-    "location": [354, 3283, 57],
+    "location": [
+      354,
+      3283,
+      57
+    ],
     "map": "TerMur",
     "count": 9,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 50,
+    "spawnBounds": {
+      "x1": 304,
+      "y1": 3233,
+      "z1": -128,
+      "x2": 405,
+      "y2": 3334,
+      "z2": 128
+    },
     "walkingRange": 50,
     "entries": [
-      { "name": "Bird", "maxCount": 9, "probability": 100 },
-      { "name": "Rabbit", "maxCount": 9, "probability": 100 }
+      {
+        "name": "Bird",
+        "maxCount": 9,
+        "probability": 100
+      },
+      {
+        "name": "Rabbit",
+        "maxCount": 9,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "f5ea0039-e107-461c-8091-21561b83f1d8",
     "name": "Spawner (602)",
-    "location": [453, 3632, 37],
+    "location": [
+      453,
+      3632,
+      37
+    ],
     "map": "TerMur",
     "count": 14,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 60,
+    "spawnBounds": {
+      "x1": 393,
+      "y1": 3572,
+      "z1": -128,
+      "x2": 514,
+      "y2": 3693,
+      "z2": 128
+    },
     "walkingRange": 60,
     "entries": [
-      { "name": "Bird", "maxCount": 14, "probability": 100 },
-      { "name": "Rabbit", "maxCount": 14, "probability": 100 }
+      {
+        "name": "Bird",
+        "maxCount": 14,
+        "probability": 100
+      },
+      {
+        "name": "Rabbit",
+        "maxCount": 14,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "80ecee75-df9e-462a-ac4c-695f0941b8fb",
     "name": "Spawner (602)",
-    "location": [387, 3524, 38],
+    "location": [
+      387,
+      3524,
+      38
+    ],
     "map": "TerMur",
     "count": 14,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 50,
+    "spawnBounds": {
+      "x1": 337,
+      "y1": 3474,
+      "z1": -128,
+      "x2": 438,
+      "y2": 3575,
+      "z2": 128
+    },
     "walkingRange": 50,
     "entries": [
-      { "name": "Bird", "maxCount": 14, "probability": 100 },
-      { "name": "Rabbit", "maxCount": 14, "probability": 100 }
+      {
+        "name": "Bird",
+        "maxCount": 14,
+        "probability": 100
+      },
+      {
+        "name": "Rabbit",
+        "maxCount": 14,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "0b95e3c9-d94c-478c-9179-0ee10faad038",
     "name": "Spawner (602)",
-    "location": [1130, 3240, -42],
+    "location": [
+      1130,
+      3240,
+      -42
+    ],
     "map": "TerMur",
     "count": 10,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 50,
+    "spawnBounds": {
+      "x1": 1080,
+      "y1": 3190,
+      "z1": -128,
+      "x2": 1181,
+      "y2": 3291,
+      "z2": 128
+    },
     "walkingRange": 50,
     "entries": [
-      { "name": "SewerRat", "maxCount": 10, "probability": 100 },
-      { "name": "GreaterMongbat", "maxCount": 10, "probability": 100 },
-      { "name": "Mongbat", "maxCount": 10, "probability": 100 },
-      { "name": "SilverSerpent", "maxCount": 10, "probability": 100 },
-      { "name": "Slith", "maxCount": 10, "probability": 100 },
-      { "name": "Bird", "maxCount": 10, "probability": 100 }
+      {
+        "name": "SewerRat",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "GreaterMongbat",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Mongbat",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "SilverSerpent",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Slith",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Bird",
+        "maxCount": 10,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "6eff3e1c-0886-4c54-b7d6-0b01477deca7",
     "name": "Spawner (602)",
-    "location": [1054, 3215, 38],
+    "location": [
+      1054,
+      3215,
+      38
+    ],
     "map": "TerMur",
     "count": 10,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 50,
+    "spawnBounds": {
+      "x1": 1004,
+      "y1": 3165,
+      "z1": -128,
+      "x2": 1105,
+      "y2": 3266,
+      "z2": 128
+    },
     "walkingRange": 50,
     "entries": [
-      { "name": "SewerRat", "maxCount": 10, "probability": 100 },
-      { "name": "GreaterMongbat", "maxCount": 10, "probability": 100 },
-      { "name": "Mongbat", "maxCount": 10, "probability": 100 },
-      { "name": "Bird", "maxCount": 10, "probability": 100 }
+      {
+        "name": "SewerRat",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "GreaterMongbat",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Mongbat",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "Bird",
+        "maxCount": 10,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "b928e0bb-64e8-442d-bd4f-c058e9bde1c2",
     "name": "Spawner (602)",
-    "location": [1057, 3167, 38],
+    "location": [
+      1057,
+      3167,
+      38
+    ],
     "map": "TerMur",
     "count": 15,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 50,
+    "spawnBounds": {
+      "x1": 1007,
+      "y1": 3117,
+      "z1": -128,
+      "x2": 1108,
+      "y2": 3218,
+      "z2": 128
+    },
     "walkingRange": 50,
     "entries": [
-      { "name": "SewerRat", "maxCount": 15, "probability": 100 },
-      { "name": "GreaterMongbat", "maxCount": 15, "probability": 100 },
-      { "name": "Mongbat", "maxCount": 15, "probability": 100 },
-      { "name": "Slith", "maxCount": 15, "probability": 100 },
-      { "name": "Bird", "maxCount": 15, "probability": 100 }
+      {
+        "name": "SewerRat",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "GreaterMongbat",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Mongbat",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Slith",
+        "maxCount": 15,
+        "probability": 100
+      },
+      {
+        "name": "Bird",
+        "maxCount": 15,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "979cdd74-3b3d-419b-9cf2-d7721332883d",
     "name": "Spawner (602)",
-    "location": [1186, 3558, -42],
+    "location": [
+      1186,
+      3558,
+      -42
+    ],
     "map": "TerMur",
     "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 40,
+    "spawnBounds": {
+      "x1": 1146,
+      "y1": 3518,
+      "z1": -128,
+      "x2": 1227,
+      "y2": 3599,
+      "z2": 128
+    },
     "walkingRange": 40,
     "entries": [
-      { "name": "Hind", "maxCount": 5, "probability": 100 },
-      { "name": "LowlandBoura", "maxCount": 5, "probability": 100 },
-      { "name": "Horse", "maxCount": 5, "probability": 100 },
-      { "name": "Snake", "maxCount": 5, "probability": 100 }
+      {
+        "name": "Hind",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "LowlandBoura",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "Horse",
+        "maxCount": 5,
+        "probability": 100
+      },
+      {
+        "name": "Snake",
+        "maxCount": 5,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "4383a8fc-ec81-4ae6-b57e-f28ef51d26a1",
     "name": "Spawner (602)",
-    "location": [35, 99, -5],
+    "location": [
+      35,
+      99,
+      -5
+    ],
     "map": "TerMur",
     "count": 10,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 15,
+    "spawnBounds": {
+      "x1": 20,
+      "y1": 84,
+      "z1": -128,
+      "x2": 51,
+      "y2": 115,
+      "z2": 128
+    },
     "walkingRange": 15,
     "entries": [
-      { "name": "UndeadGuardian", "maxCount": 10, "probability": 100 },
-      { "name": "SilverSerpent", "maxCount": 10, "probability": 100 }
+      {
+        "name": "UndeadGuardian",
+        "maxCount": 10,
+        "probability": 100
+      },
+      {
+        "name": "SilverSerpent",
+        "maxCount": 10,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "2841721d-dcb8-41ce-84ed-ec8fca926424",
     "name": "Spawner (602)",
-    "location": [35, 159, 0],
+    "location": [
+      35,
+      159,
+      0
+    ],
     "map": "TerMur",
     "count": 13,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 40,
+    "spawnBounds": {
+      "x1": -5,
+      "y1": 119,
+      "z1": -128,
+      "x2": 76,
+      "y2": 200,
+      "z2": 128
+    },
     "walkingRange": 40,
     "entries": [
-      { "name": "undeadguardian", "maxCount": 13, "probability": 100 },
-      { "name": "gargoyleshade", "maxCount": 13, "probability": 100 },
-      { "name": "putridundeadguardian", "maxCount": 13, "probability": 100 }
+      {
+        "name": "undeadguardian",
+        "maxCount": 13,
+        "probability": 100
+      },
+      {
+        "name": "gargoyleshade",
+        "maxCount": 13,
+        "probability": 100
+      },
+      {
+        "name": "putridundeadguardian",
+        "maxCount": 13,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "600fd870-3e98-44cf-9650-3e5e80977bc5",
     "name": "Spawner (602)",
-    "location": [143, 158, -20],
+    "location": [
+      143,
+      158,
+      -20
+    ],
     "map": "TerMur",
     "count": 1,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 5,
+    "spawnBounds": {
+      "x1": 138,
+      "y1": 153,
+      "z1": -128,
+      "x2": 149,
+      "y2": 164,
+      "z2": 128
+    },
     "walkingRange": 5,
     "entries": [
-      { "name": "Niporailem", "maxCount": 1, "probability": 100 }
+      {
+        "name": "Niporailem",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   }
 ]

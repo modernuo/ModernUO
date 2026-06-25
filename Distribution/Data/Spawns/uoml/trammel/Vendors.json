@@ -1,354 +1,733 @@
-﻿[
+[
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "011fc0f3-9e98-44ed-ab77-e0669247aacf",
     "name": "Spawner (2125)",
-    "location": [3645, 2617, 0],
+    "location": [
+      3645,
+      2617,
+      0
+    ],
     "map": "Trammel",
     "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 0,
+    "spawnBounds": {
+      "x1": 3645,
+      "y1": 2617,
+      "z1": 0,
+      "x2": 3646,
+      "y2": 2618,
+      "z2": 0
+    },
     "walkingRange": 5,
     "entries": [
-      { "name": "Blacksmith", "maxCount": 1, "probability": 100 },
-      { "name": "BlacksmithGuildmaster", "maxCount": 1, "probability": 100 }
+      {
+        "name": "Blacksmith",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "BlacksmithGuildmaster",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "19ecf802-ce51-4125-b13a-efb0afd02cbf",
     "name": "Spawner (2125)",
-    "location": [3667, 2506, 0],
+    "location": [
+      3667,
+      2506,
+      0
+    ],
     "map": "Trammel",
     "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 0,
+    "spawnBounds": {
+      "x1": 3667,
+      "y1": 2506,
+      "z1": 0,
+      "x2": 3668,
+      "y2": 2507,
+      "z2": 0
+    },
     "walkingRange": 5,
     "entries": [
-      { "name": "Tinker", "maxCount": 1, "probability": 100 },
-      { "name": "TinkerGuildmaster", "maxCount": 1, "probability": 100 }
+      {
+        "name": "Tinker",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "TinkerGuildmaster",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "56140e6f-fc52-49b6-bf74-fe782454a95a",
     "name": "Spawner (2125)",
-    "location": [3655, 2665, -2],
+    "location": [
+      3655,
+      2665,
+      -2
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 0,
+    "spawnBounds": {
+      "x1": 3655,
+      "y1": 2665,
+      "z1": -2,
+      "x2": 3656,
+      "y2": 2666,
+      "z2": -2
+    },
     "walkingRange": 5,
     "entries": [
-      { "name": "Fisherman", "maxCount": 1, "probability": 100 }
+      {
+        "name": "Fisherman",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "625f9122-d16c-4e4e-9d33-bfd367428140",
     "name": "Spawner (2125)",
-    "location": [3615, 2476, 0],
+    "location": [
+      3615,
+      2476,
+      0
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 0,
+    "spawnBounds": {
+      "x1": 3615,
+      "y1": 2476,
+      "z1": 0,
+      "x2": 3616,
+      "y2": 2477,
+      "z2": 0
+    },
     "walkingRange": 5,
     "entries": [
-      { "name": "Scribe", "maxCount": 1, "probability": 100 }
+      {
+        "name": "Scribe",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "d6745c4f-710a-4fc4-b39a-bc54123feac8",
     "name": "Spawner (2125)",
-    "location": [3693, 2509, 0],
+    "location": [
+      3693,
+      2509,
+      0
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 0,
+    "spawnBounds": {
+      "x1": 3693,
+      "y1": 2509,
+      "z1": 0,
+      "x2": 3694,
+      "y2": 2510,
+      "z2": 0
+    },
     "walkingRange": 5,
     "entries": [
-      { "name": "ThiefGuildmaster", "maxCount": 1, "probability": 100 }
+      {
+        "name": "ThiefGuildmaster",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "43797a84-5e69-45b3-87b6-122e033083e1",
     "name": "Spawner (2125)",
-    "location": [3665, 2581, 0],
+    "location": [
+      3665,
+      2581,
+      0
+    ],
     "map": "Trammel",
     "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 0,
+    "spawnBounds": {
+      "x1": 3665,
+      "y1": 2581,
+      "z1": 0,
+      "x2": 3666,
+      "y2": 2582,
+      "z2": 0
+    },
     "walkingRange": 5,
     "entries": [
-      { "name": "Healer", "maxCount": 1, "probability": 100 },
-      { "name": "HealerGuildmaster", "maxCount": 1, "probability": 100 }
+      {
+        "name": "Healer",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "HealerGuildmaster",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "e022aca5-1733-4cbc-b444-2bc16d30cf13",
     "name": "Spawner (2125)",
-    "location": [3673, 2595, 0],
+    "location": [
+      3673,
+      2595,
+      0
+    ],
     "map": "Trammel",
     "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 0,
+    "spawnBounds": {
+      "x1": 3673,
+      "y1": 2595,
+      "z1": 0,
+      "x2": 3674,
+      "y2": 2596,
+      "z2": 0
+    },
     "walkingRange": 5,
     "entries": [
-      { "name": "Provisioner", "maxCount": 1, "probability": 100 },
-      { "name": "Cobbler", "maxCount": 1, "probability": 100 }
+      {
+        "name": "Provisioner",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Cobbler",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "ca72a646-61b9-41a7-988f-8bcf55f63745",
     "name": "Spawner (2125)",
-    "location": [3632, 2573, 0],
+    "location": [
+      3632,
+      2573,
+      0
+    ],
     "map": "Trammel",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 0,
+    "spawnBounds": {
+      "x1": 3632,
+      "y1": 2573,
+      "z1": 0,
+      "x2": 3633,
+      "y2": 2574,
+      "z2": 0
+    },
     "walkingRange": 5,
     "entries": [
-      { "name": "Mage", "maxCount": 1, "probability": 100 },
-      { "name": "Alchemist", "maxCount": 1, "probability": 100 },
-      { "name": "MageGuildmaster", "maxCount": 1, "probability": 100 }
+      {
+        "name": "Mage",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Alchemist",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "MageGuildmaster",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "6ed9b012-4871-4674-a39c-c71f94ca6bc0",
     "name": "Spawner (2125)",
-    "location": [3633, 2635, 0],
+    "location": [
+      3633,
+      2635,
+      0
+    ],
     "map": "Trammel",
     "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 0,
+    "spawnBounds": {
+      "x1": 3633,
+      "y1": 2635,
+      "z1": 0,
+      "x2": 3634,
+      "y2": 2636,
+      "z2": 0
+    },
     "walkingRange": 5,
     "entries": [
-      { "name": "Shipwright", "maxCount": 1, "probability": 100 },
-      { "name": "Mapmaker", "maxCount": 1, "probability": 100 }
+      {
+        "name": "Shipwright",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Mapmaker",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "64838953-eca4-4076-9c4a-6b8d53dc6da4",
     "name": "Spawner (2125)",
-    "location": [3754, 2704, 40],
+    "location": [
+      3754,
+      2704,
+      40
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 0,
+    "spawnBounds": {
+      "x1": 3754,
+      "y1": 2704,
+      "z1": 40,
+      "x2": 3755,
+      "y2": 2705,
+      "z2": 40
+    },
     "walkingRange": 5,
     "entries": [
-      { "name": "MinerGuildmaster", "maxCount": 1, "probability": 100 }
+      {
+        "name": "MinerGuildmaster",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "4391a5e3-0060-49e3-bb90-6bdcbf56f863",
     "name": "Spawner (2125)",
-    "location": [3714, 2651, 20],
+    "location": [
+      3714,
+      2651,
+      20
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 0,
+    "spawnBounds": {
+      "x1": 3714,
+      "y1": 2651,
+      "z1": 20,
+      "x2": 3715,
+      "y2": 2652,
+      "z2": 20
+    },
     "walkingRange": 5,
     "entries": [
-      { "name": "Butcher", "maxCount": 1, "probability": 100 }
+      {
+        "name": "Butcher",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "85b91e45-a5ec-46df-9286-89b0f4a602a4",
     "name": "Spawner (2125)",
-    "location": [3740, 2692, 40],
+    "location": [
+      3740,
+      2692,
+      40
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 0,
+    "spawnBounds": {
+      "x1": 3740,
+      "y1": 2692,
+      "z1": 40,
+      "x2": 3741,
+      "y2": 2693,
+      "z2": 40
+    },
     "walkingRange": 5,
     "entries": [
-      { "name": "WarriorGuildmaster", "maxCount": 1, "probability": 100 }
+      {
+        "name": "WarriorGuildmaster",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "5156ee52-c3e4-42b0-ac5e-8d84b49cacb8",
     "name": "Spawner (2125)",
-    "location": [3620, 2617, 0],
+    "location": [
+      3620,
+      2617,
+      0
+    ],
     "map": "Trammel",
     "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 0,
+    "spawnBounds": {
+      "x1": 3620,
+      "y1": 2617,
+      "z1": 0,
+      "x2": 3621,
+      "y2": 2618,
+      "z2": 0
+    },
     "walkingRange": 5,
     "entries": [
-      { "name": "Banker", "maxCount": 1, "probability": 100 },
-      { "name": "Minter", "maxCount": 1, "probability": 100 }
+      {
+        "name": "Banker",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Minter",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "d952003f-99e5-4cf4-bea7-06265ffd2dfb",
     "name": "Spawner (2125)",
-    "location": [3628, 2540, 0],
+    "location": [
+      3628,
+      2540,
+      0
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 0,
+    "spawnBounds": {
+      "x1": 3628,
+      "y1": 2540,
+      "z1": 0,
+      "x2": 3629,
+      "y2": 2541,
+      "z2": 0
+    },
     "walkingRange": 5,
     "entries": [
-      { "name": "Baker", "maxCount": 1, "probability": 100 }
+      {
+        "name": "Baker",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "20e39658-8433-437e-b7fc-d2ea491189f6",
     "name": "Spawner (2125)",
-    "location": [3687, 2477, 0],
+    "location": [
+      3687,
+      2477,
+      0
+    ],
     "map": "Trammel",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 0,
+    "spawnBounds": {
+      "x1": 3687,
+      "y1": 2477,
+      "z1": 0,
+      "x2": 3688,
+      "y2": 2478,
+      "z2": 0
+    },
     "walkingRange": 5,
     "entries": [
-      { "name": "Tailor", "maxCount": 1, "probability": 100 },
-      { "name": "Weaver", "maxCount": 1, "probability": 100 },
-      { "name": "TailorGuildmaster", "maxCount": 1, "probability": 100 }
+      {
+        "name": "Tailor",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Weaver",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "TailorGuildmaster",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "0ef8d67e-4e4c-4a53-ab5e-2474e573f096",
     "name": "Spawner (2125)",
-    "location": [3668, 2652, 0],
+    "location": [
+      3668,
+      2652,
+      0
+    ],
     "map": "Trammel",
     "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 0,
+    "spawnBounds": {
+      "x1": 3668,
+      "y1": 2652,
+      "z1": 0,
+      "x2": 3669,
+      "y2": 2653,
+      "z2": 0
+    },
     "walkingRange": 5,
     "entries": [
-      { "name": "TavernKeeper", "maxCount": 1, "probability": 100 },
-      { "name": "Waiter", "maxCount": 1, "probability": 100 },
-      { "name": "Cook", "maxCount": 1, "probability": 100 },
-      { "name": "Barkeeper", "maxCount": 1, "probability": 100 }
+      {
+        "name": "TavernKeeper",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Waiter",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Cook",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Barkeeper",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "dfa29c8c-8888-4752-a063-f8161f01f569",
     "name": "Spawner (2125)",
-    "location": [3661, 2531, 0],
+    "location": [
+      3661,
+      2531,
+      0
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 0,
+    "spawnBounds": {
+      "x1": 3661,
+      "y1": 2531,
+      "z1": 0,
+      "x2": 3662,
+      "y2": 2532,
+      "z2": 0
+    },
     "walkingRange": 5,
     "entries": [
-      { "name": "BardGuildmaster", "maxCount": 1, "probability": 100 }
+      {
+        "name": "BardGuildmaster",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "d753713d-6bf9-47fe-b4f1-58b6f304ad5b",
     "name": "Spawner (2125)",
-    "location": [3594, 2595, 0],
+    "location": [
+      3594,
+      2595,
+      0
+    ],
     "map": "Trammel",
     "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 0,
+    "spawnBounds": {
+      "x1": 3594,
+      "y1": 2595,
+      "z1": 0,
+      "x2": 3595,
+      "y2": 2596,
+      "z2": 0
+    },
     "walkingRange": 5,
     "entries": [
-      { "name": "Blacksmith", "maxCount": 1, "probability": 100 },
-      { "name": "BlacksmithGuildmaster", "maxCount": 1, "probability": 100 }
+      {
+        "name": "Blacksmith",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "BlacksmithGuildmaster",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "98ef6eb6-72ea-43a5-b2ea-8c153f6135d3",
     "name": "Spawner (2125)",
-    "location": [3671, 2615, 0],
+    "location": [
+      3671,
+      2615,
+      0
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 0,
+    "spawnBounds": {
+      "x1": 3671,
+      "y1": 2615,
+      "z1": 0,
+      "x2": 3672,
+      "y2": 2616,
+      "z2": 0
+    },
     "walkingRange": 5,
     "entries": [
-      { "name": "InnKeeper", "maxCount": 1, "probability": 100 }
+      {
+        "name": "InnKeeper",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "5294b511-5759-452f-8009-94157b248961",
     "name": "Spawner (2125)",
-    "location": [3745, 2585, 40],
+    "location": [
+      3745,
+      2585,
+      40
+    ],
     "map": "Trammel",
     "count": 1,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 0,
+    "spawnBounds": {
+      "x1": 3745,
+      "y1": 2585,
+      "z1": 40,
+      "x2": 3746,
+      "y2": 2586,
+      "z2": 40
+    },
     "walkingRange": 5,
     "entries": [
-      { "name": "Bowyer", "maxCount": 1, "probability": 100 }
+      {
+        "name": "Bowyer",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "bd1d8c55-7a8a-465a-a8ff-f47adad641c6",
     "name": "Spawner (2125)",
-    "location": [3642, 2504, 0],
+    "location": [
+      3642,
+      2504,
+      0
+    ],
     "map": "Trammel",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "homeRange": 0,
+    "spawnBounds": {
+      "x1": 3642,
+      "y1": 2504,
+      "z1": 0,
+      "x2": 3643,
+      "y2": 2505,
+      "z2": 0
+    },
     "walkingRange": 5,
     "entries": [
-      { "name": "Carpenter", "maxCount": 1, "probability": 100 },
-      { "name": "Architect", "maxCount": 1, "probability": 100 },
-      { "name": "RealEstateBroker", "maxCount": 1, "probability": 100 }
+      {
+        "name": "Carpenter",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "Architect",
+        "maxCount": 1,
+        "probability": 100
+      },
+      {
+        "name": "RealEstateBroker",
+        "maxCount": 1,
+        "probability": 100
+      }
     ]
   }
 ]

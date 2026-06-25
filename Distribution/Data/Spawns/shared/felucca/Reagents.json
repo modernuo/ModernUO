@@ -1,1382 +1,3962 @@
-﻿[
+[
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "0034e4c4-162c-4569-bd5d-9faef725ecd5",
     "name": "Spawner (229)",
-    "location": [2054, 516, 0],
+    "location": [
+      2054,
+      516,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 1854,
+      "y1": 316,
+      "z1": -128,
+      "x2": 2255,
+      "y2": 717,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "046e36ec-faf1-4f5f-8f8f-4cf50e2ba3ef",
     "name": "Spawner (229)",
-    "location": [1938, 1408, 0],
+    "location": [
+      1938,
+      1408,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 1738,
+      "y1": 1208,
+      "z1": -128,
+      "x2": 2139,
+      "y2": 1609,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "065cdc7b-b2ce-4339-b45c-c96f4a734723",
     "name": "Spawner (229)",
-    "location": [5618, 2744, 0],
+    "location": [
+      5618,
+      2744,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 5418,
+      "y1": 2544,
+      "z1": -128,
+      "x2": 5819,
+      "y2": 2945,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "0b3ccf5f-b1e6-4cd7-a1f7-b4662fe4ff9a",
     "name": "Spawner (229)",
-    "location": [1070, 2320, 0],
+    "location": [
+      1070,
+      2320,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 870,
+      "y1": 2120,
+      "z1": -128,
+      "x2": 1271,
+      "y2": 2521,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "0b82556d-2f5d-4fa0-b53e-fc95ed035b3f",
     "name": "Spawner (229)",
-    "location": [1286, 504, 0],
+    "location": [
+      1286,
+      504,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 1086,
+      "y1": 304,
+      "z1": -128,
+      "x2": 1487,
+      "y2": 705,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "0d10ddc0-6866-4c69-945e-830fe9fa18c5",
     "name": "Spawner (229)",
-    "location": [5674, 3120, 0],
+    "location": [
+      5674,
+      3120,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 5474,
+      "y1": 2920,
+      "z1": -128,
+      "x2": 5875,
+      "y2": 3321,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "11579f1f-1437-48f9-9061-a409f8468750",
     "name": "Spawner (229)",
-    "location": [1566, 1140, 0],
+    "location": [
+      1566,
+      1140,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 1366,
+      "y1": 940,
+      "z1": -128,
+      "x2": 1767,
+      "y2": 1341,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "16af2efe-3319-4812-9089-2fe793653f21",
     "name": "Spawner (229)",
-    "location": [1114, 1416, 0],
+    "location": [
+      1114,
+      1416,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 914,
+      "y1": 1216,
+      "z1": -128,
+      "x2": 1315,
+      "y2": 1617,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "1853a130-1967-4711-bb38-522e045b5820",
     "name": "Spawner (229)",
-    "location": [1514, 1584, 0],
+    "location": [
+      1514,
+      1584,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 1314,
+      "y1": 1384,
+      "z1": -128,
+      "x2": 1715,
+      "y2": 1785,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "1bafedf2-97d4-484d-9ef3-4597666765ce",
     "name": "Spawner (229)",
-    "location": [2854, 816, 0],
+    "location": [
+      2854,
+      816,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 2654,
+      "y1": 616,
+      "z1": -128,
+      "x2": 3055,
+      "y2": 1017,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "21879949-0b91-42cc-ad2d-7b616b27ad05",
     "name": "Spawner (229)",
-    "location": [342, 1464, 0],
+    "location": [
+      342,
+      1464,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 142,
+      "y1": 1264,
+      "z1": -128,
+      "x2": 543,
+      "y2": 1665,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "2fe931f6-6f60-411c-a235-dcc4b9cb9fc2",
     "name": "Spawner (229)",
-    "location": [1934, 2328, 0],
+    "location": [
+      1934,
+      2328,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 1734,
+      "y1": 2128,
+      "z1": -128,
+      "x2": 2135,
+      "y2": 2529,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "36a65d30-bbb1-4476-9336-302ca764c41b",
     "name": "Spawner (229)",
-    "location": [1658, 236, 0],
+    "location": [
+      1658,
+      236,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 1458,
+      "y1": 36,
+      "z1": -128,
+      "x2": 1859,
+      "y2": 437,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "39aee7f8-373f-4191-b349-f5c9bb367abd",
     "name": "Spawner (229)",
-    "location": [2930, 3476, 0],
+    "location": [
+      2930,
+      3476,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 2730,
+      "y1": 3276,
+      "z1": -128,
+      "x2": 3131,
+      "y2": 3677,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "3a6221c9-7105-4707-aaa1-8e9005016a6b",
     "name": "Spawner (229)",
-    "location": [718, 1180, 0],
+    "location": [
+      718,
+      1180,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 518,
+      "y1": 980,
+      "z1": -128,
+      "x2": 919,
+      "y2": 1381,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "3c91dce8-087c-4dff-96bf-6d2f32ff57b9",
     "name": "Spawner (229)",
-    "location": [2750, 368, 0],
+    "location": [
+      2750,
+      368,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 2550,
+      "y1": 168,
+      "z1": -128,
+      "x2": 2951,
+      "y2": 569,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "3fe88456-6018-41e4-b9af-a129a1025651",
     "name": "Spawner (229)",
-    "location": [3602, 2948, 0],
+    "location": [
+      3602,
+      2948,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 3402,
+      "y1": 2748,
+      "z1": -128,
+      "x2": 3803,
+      "y2": 3149,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "40ea761c-a1da-48b7-9663-0571df9a28cc",
     "name": "Spawner (229)",
-    "location": [1078, 2772, 0],
+    "location": [
+      1078,
+      2772,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 878,
+      "y1": 2572,
+      "z1": -128,
+      "x2": 1279,
+      "y2": 2973,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "4144faa9-61d4-47fa-be5c-665e94989f9c",
     "name": "Spawner (229)",
-    "location": [1466, 3032, 0],
+    "location": [
+      1466,
+      3032,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 1266,
+      "y1": 2832,
+      "z1": -128,
+      "x2": 1667,
+      "y2": 3233,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "4394742a-5799-4d8c-9d29-11753415b5b5",
     "name": "Spawner (229)",
-    "location": [1122, 3524, 0],
+    "location": [
+      1122,
+      3524,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 922,
+      "y1": 3324,
+      "z1": -128,
+      "x2": 1323,
+      "y2": 3725,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "450db427-aea5-48a7-95f4-36f2e64d4aec",
     "name": "Spawner (229)",
-    "location": [2374, 652, 0],
+    "location": [
+      2374,
+      652,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 2174,
+      "y1": 452,
+      "z1": -128,
+      "x2": 2575,
+      "y2": 853,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "472b629a-65dc-4e26-a728-19a1dc715740",
     "name": "Spawner (229)",
-    "location": [4590, 1448, 0],
+    "location": [
+      4590,
+      1448,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 4390,
+      "y1": 1248,
+      "z1": -128,
+      "x2": 4791,
+      "y2": 1649,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "4f547881-9057-4530-bacd-f2d8b8d3918a",
     "name": "Spawner (229)",
-    "location": [2522, 84, 0],
+    "location": [
+      2522,
+      84,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 2322,
+      "y1": -116,
+      "z1": -128,
+      "x2": 2723,
+      "y2": 285,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "50c090e2-807c-4a99-a467-a0430a8cc232",
     "name": "Spawner (229)",
-    "location": [2734, 2168, 0],
+    "location": [
+      2734,
+      2168,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 2534,
+      "y1": 1968,
+      "z1": -128,
+      "x2": 2935,
+      "y2": 2369,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "51190b84-1742-4bea-ab6e-9387c4ff0efa",
     "name": "Spawner (229)",
-    "location": [4426, 1028, 0],
+    "location": [
+      4426,
+      1028,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 4226,
+      "y1": 828,
+      "z1": -128,
+      "x2": 4627,
+      "y2": 1229,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "54855ff6-f02b-4bc4-a803-455719541850",
     "name": "Spawner (229)",
-    "location": [5934, 3436, 0],
+    "location": [
+      5934,
+      3436,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 5734,
+      "y1": 3236,
+      "z1": -128,
+      "x2": 6135,
+      "y2": 3637,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "54bb9a76-f991-425d-9b3a-20310659b1dd",
     "name": "Spawner (229)",
-    "location": [702, 1752, 0],
+    "location": [
+      702,
+      1752,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 502,
+      "y1": 1552,
+      "z1": -128,
+      "x2": 903,
+      "y2": 1953,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "59cfb257-99a9-4a1d-9220-8aeb3712dd60",
     "name": "Spawner (229)",
-    "location": [3538, 2536, 0],
+    "location": [
+      3538,
+      2536,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 3338,
+      "y1": 2336,
+      "z1": -128,
+      "x2": 3739,
+      "y2": 2737,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "6813adda-8875-4603-9a78-57aab7688e56",
     "name": "Spawner (229)",
-    "location": [5326, 2492, 0],
+    "location": [
+      5326,
+      2492,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 5126,
+      "y1": 2292,
+      "z1": -128,
+      "x2": 5527,
+      "y2": 2693,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "6a796506-6692-420c-bc95-cd7fcf99d1b9",
     "name": "Spawner (229)",
-    "location": [2062, 964, 0],
+    "location": [
+      2062,
+      964,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 1862,
+      "y1": 764,
+      "z1": -128,
+      "x2": 2263,
+      "y2": 1165,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "7a28f716-9fa0-4686-ad8c-ca1e7ab1a9e3",
     "name": "Spawner (229)",
-    "location": [1582, 2028, 0],
+    "location": [
+      1582,
+      2028,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 1382,
+      "y1": 1828,
+      "z1": -128,
+      "x2": 1783,
+      "y2": 2229,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "7eaf59ab-e769-4772-aaa3-06d741e424ae",
     "name": "Spawner (229)",
-    "location": [1490, 2472, 0],
+    "location": [
+      1490,
+      2472,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 1290,
+      "y1": 2272,
+      "z1": -128,
+      "x2": 1691,
+      "y2": 2673,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "821fbdbf-ae39-4073-adb0-17e2e9ee87aa",
     "name": "Spawner (229)",
-    "location": [2082, 60, 0],
+    "location": [
+      2082,
+      60,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 1882,
+      "y1": -140,
+      "z1": -128,
+      "x2": 2283,
+      "y2": 261,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "8255d504-90e7-4ca3-a2bd-1cdfc72983f7",
     "name": "Spawner (229)",
-    "location": [1846, 3260, 0],
+    "location": [
+      1846,
+      3260,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 1646,
+      "y1": 3060,
+      "z1": -128,
+      "x2": 2047,
+      "y2": 3461,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "8553a096-7a8e-4f69-accf-401bfef947fb",
     "name": "Spawner (229)",
-    "location": [5474, 3904, 0],
+    "location": [
+      5474,
+      3904,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 5274,
+      "y1": 3704,
+      "z1": -128,
+      "x2": 5675,
+      "y2": 4105,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "870cd346-44a3-45cd-b8f2-b65543021467",
     "name": "Spawner (229)",
-    "location": [3198, 504, 0],
+    "location": [
+      3198,
+      504,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 2998,
+      "y1": 304,
+      "z1": -128,
+      "x2": 3399,
+      "y2": 705,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "8c69fc76-ecf7-4282-84c1-9fa5cecda213",
     "name": "Spawner (229)",
-    "location": [2474, 3956, 0],
+    "location": [
+      2474,
+      3956,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 2274,
+      "y1": 3756,
+      "z1": -128,
+      "x2": 2675,
+      "y2": 4157,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "96d35be0-ba86-4f2e-8c27-2ef75a684c93",
     "name": "Spawner (229)",
-    "location": [5926, 3888, 0],
+    "location": [
+      5926,
+      3888,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 5726,
+      "y1": 3688,
+      "z1": -128,
+      "x2": 6127,
+      "y2": 4089,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "9b42e3cb-2224-4516-9fe2-165a19bcda3d",
     "name": "Spawner (229)",
-    "location": [366, 900, 0],
+    "location": [
+      366,
+      900,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 166,
+      "y1": 700,
+      "z1": -128,
+      "x2": 567,
+      "y2": 1101,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "9f1da2ac-4a31-415d-99c6-76921de812b0",
     "name": "Spawner (229)",
-    "location": [4282, 3700, 0],
+    "location": [
+      4282,
+      3700,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 4082,
+      "y1": 3500,
+      "z1": -128,
+      "x2": 4483,
+      "y2": 3901,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "ab7cf0fc-e53d-4f1b-a6f6-7c9bc21df8df",
     "name": "Spawner (229)",
-    "location": [1694, 688, 0],
+    "location": [
+      1694,
+      688,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 1494,
+      "y1": 488,
+      "z1": -128,
+      "x2": 1895,
+      "y2": 889,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "abb85eaf-f92e-41a0-a6cf-8c0bfab71e30",
     "name": "Spawner (229)",
-    "location": [642, 2216, 0],
+    "location": [
+      642,
+      2216,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 442,
+      "y1": 2016,
+      "z1": -128,
+      "x2": 843,
+      "y2": 2417,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "b0d2917b-3296-4811-bf68-c9eb6fac7f2b",
     "name": "Spawner (229)",
-    "location": [5234, 3068, 0],
+    "location": [
+      5234,
+      3068,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 5034,
+      "y1": 2868,
+      "z1": -128,
+      "x2": 5435,
+      "y2": 3269,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "b229c260-ee7d-4aab-bacf-3e974e2e8934",
     "name": "Spawner (229)",
-    "location": [4166, 584, 0],
+    "location": [
+      4166,
+      584,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 3966,
+      "y1": 384,
+      "z1": -128,
+      "x2": 4367,
+      "y2": 785,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "b745dd5f-b8ef-4950-baef-569e80994036",
     "name": "Spawner (229)",
-    "location": [2226, 3532, 0],
+    "location": [
+      2226,
+      3532,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 2026,
+      "y1": 3332,
+      "z1": -128,
+      "x2": 2427,
+      "y2": 3733,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "b89e1c55-2a8a-4e42-aa92-5718f3699c0f",
     "name": "Spawner (229)",
-    "location": [746, 636, 0],
+    "location": [
+      746,
+      636,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 546,
+      "y1": 436,
+      "z1": -128,
+      "x2": 947,
+      "y2": 837,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "c012739f-6a97-413c-b2bd-249fd2b7e51f",
     "name": "Spawner (229)",
-    "location": [1410, 3796, 0],
+    "location": [
+      1410,
+      3796,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 1210,
+      "y1": 3596,
+      "z1": -128,
+      "x2": 1611,
+      "y2": 3997,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "c4d5ac68-9b53-488f-94bd-6e6d1dec3493",
     "name": "Spawner (229)",
-    "location": [5462, 3452, 0],
+    "location": [
+      5462,
+      3452,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 5262,
+      "y1": 3252,
+      "z1": -128,
+      "x2": 5663,
+      "y2": 3653,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "cd38b465-2ed5-4634-ae0a-e8b2ab38c2d4",
     "name": "Spawner (229)",
-    "location": [2490, 1096, 0],
+    "location": [
+      2490,
+      1096,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 2290,
+      "y1": 896,
+      "z1": -128,
+      "x2": 2691,
+      "y2": 1297,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "cdd876a8-1378-4ccd-8f12-9cdac9c3487a",
     "name": "Spawner (229)",
-    "location": [4570, 3340, 0],
+    "location": [
+      4570,
+      3340,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 4370,
+      "y1": 3140,
+      "z1": -128,
+      "x2": 4771,
+      "y2": 3541,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "d233e91c-82d3-4130-a747-2be35a3c7e55",
     "name": "Spawner (229)",
-    "location": [1134, 964, 0],
+    "location": [
+      1134,
+      964,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 934,
+      "y1": 764,
+      "z1": -128,
+      "x2": 1335,
+      "y2": 1165,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "d276b701-845a-4648-ba54-fde4f1a7d725",
     "name": "Spawner (229)",
-    "location": [3994, 328, 0],
+    "location": [
+      3994,
+      328,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 3794,
+      "y1": 128,
+      "z1": -128,
+      "x2": 4195,
+      "y2": 529,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "d3bf2b6e-3947-4a69-9600-04527ef88ff1",
     "name": "Spawner (229)",
-    "location": [3130, 116, 0],
+    "location": [
+      3130,
+      116,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 2930,
+      "y1": -84,
+      "z1": -128,
+      "x2": 3331,
+      "y2": 317,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "dbc82493-6b0c-46a7-a243-e0cb875f4bcf",
     "name": "Spawner (229)",
-    "location": [5966, 2456, 0],
+    "location": [
+      5966,
+      2456,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 5766,
+      "y1": 2256,
+      "z1": -128,
+      "x2": 6167,
+      "y2": 2657,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "dd4c385d-b00e-47ab-a6bc-f2cb490c9567",
     "name": "Spawner (229)",
-    "location": [6042, 2916, 0],
+    "location": [
+      6042,
+      2916,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 5842,
+      "y1": 2716,
+      "z1": -128,
+      "x2": 6243,
+      "y2": 3117,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "e0199ccf-a3a0-4888-9939-42b7a5ad553a",
     "name": "Spawner (229)",
-    "location": [1150, 1876, 0],
+    "location": [
+      1150,
+      1876,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 950,
+      "y1": 1676,
+      "z1": -128,
+      "x2": 1351,
+      "y2": 2077,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "e17f7124-9255-4f70-94b4-c6716544873d",
     "name": "Spawner (229)",
-    "location": [3674, 1216, 0],
+    "location": [
+      3674,
+      1216,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 3474,
+      "y1": 1016,
+      "z1": -128,
+      "x2": 3875,
+      "y2": 1417,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "f229444f-13ea-4dba-aa0e-d0a4bd0887ee",
     "name": "Spawner (229)",
-    "location": [1850, 2796, 0],
+    "location": [
+      1850,
+      2796,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 1650,
+      "y1": 2596,
+      "z1": -128,
+      "x2": 2051,
+      "y2": 2997,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "f5544628-f982-40f3-b44a-f5db0507a62e",
     "name": "Spawner (229)",
-    "location": [4710, 3796, 0],
+    "location": [
+      4710,
+      3796,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 4510,
+      "y1": 3596,
+      "z1": -128,
+      "x2": 4911,
+      "y2": 3997,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "f55cc26e-f8f2-47cc-9af0-ccd026d9a18d",
     "name": "Spawner (229)",
-    "location": [3714, 2152, 0],
+    "location": [
+      3714,
+      2152,
+      0
+    ],
     "map": "Felucca",
     "count": 160,
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "homeRange": 200,
+    "spawnBounds": {
+      "x1": 3514,
+      "y1": 1952,
+      "z1": -128,
+      "x2": 3915,
+      "y2": 2353,
+      "z2": 128
+    },
     "walkingRange": 200,
     "entries": [
-      { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
-      { "name": "Bloodmoss", "maxCount": 160, "probability": 100 },
-      { "name": "SpidersSilk", "maxCount": 160, "probability": 100 },
-      { "name": "SulfurousAsh", "maxCount": 160, "probability": 100 },
-      { "name": "Garlic", "maxCount": 160, "probability": 100 },
-      { "name": "Ginseng", "maxCount": 160, "probability": 100 },
-      { "name": "Nightshade", "maxCount": 160, "probability": 100 },
-      { "name": "MandrakeRoot", "maxCount": 160, "probability": 100 }
+      {
+        "name": "BlackPearl",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Bloodmoss",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SpidersSilk",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "SulfurousAsh",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Garlic",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Ginseng",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "Nightshade",
+        "maxCount": 160,
+        "probability": 100
+      },
+      {
+        "name": "MandrakeRoot",
+        "maxCount": 160,
+        "probability": 100
+      }
     ]
   }
 ]
