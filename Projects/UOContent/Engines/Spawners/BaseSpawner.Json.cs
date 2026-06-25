@@ -37,6 +37,14 @@ public abstract partial class BaseSpawner
     private protected Point3D _jsonLocation;
     private protected Map _jsonMap;
 
+    // --- Import-placement accessors (not serialized; read by ImportSpawnersCommand after STJ deserialization) ---
+
+    [JsonIgnore]
+    public Point3D ImportLocation => _jsonLocation;
+
+    [JsonIgnore]
+    public Map ImportMap => _jsonMap;
+
     // --- Always-written fields ---
 
     [JsonInclude]
