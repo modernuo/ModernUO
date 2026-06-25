@@ -22,6 +22,7 @@ using Server.Mobiles;
 namespace Server.Engines.Spawners;
 
 [SerializationGenerator(0)]
+[JsonDiscoverableType]
 public partial class ProximitySpawner : Spawner
 {
     [SerializableField(0)]
@@ -37,6 +38,7 @@ public partial class ProximitySpawner : Spawner
     private bool _instantFlag;
 
     [Constructible(AccessLevel.Developer)]
+    [System.Text.Json.Serialization.JsonConstructor]
     public ProximitySpawner()
     {
     }
