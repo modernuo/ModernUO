@@ -6,6 +6,7 @@ using Server.Json;
 namespace Server.Engines.Spawners;
 
 [SerializationGenerator(1)]
+[JsonDiscoverableType]
 public partial class Spawner : BaseSpawner
 {
     /// <summary>
@@ -36,6 +37,7 @@ public partial class Spawner : BaseSpawner
     }
 
     [Constructible(AccessLevel.Developer)]
+    [System.Text.Json.Serialization.JsonConstructor]
     public Spawner()
     {
     }

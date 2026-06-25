@@ -84,6 +84,7 @@ internal static class TestServerInitializer
             World.Load();
             World.ExitSerializationThreads();
             DecayScheduler.Configure();
+            Server.Engines.Spawners.SpawnerJsonSerializer.Configure();
 
             VerifyTrammelTileDataLoaded();
 

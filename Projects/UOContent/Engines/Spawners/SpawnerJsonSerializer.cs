@@ -1,0 +1,170 @@
+/*************************************************************************
+ * ModernUO                                                              *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
+ * Email: hi@modernuo.com                                                *
+ * File: SpawnerJsonSerializer.cs                                        *
+ *                                                                       *
+ * This program is free software: you can redistribute it and/or modify  *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ *                                                                       *
+ * You should have received a copy of the GNU General Public License     *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
+ *************************************************************************/
+
+using System;
+using System.Collections.Generic;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Text.Json.Serialization.Metadata;
+using Server.Json;
+using Server.Logging;
+
+namespace Server.Engines.Spawners;
+
+public static class SpawnerJsonSerializer
+{
+    private static readonly ILogger logger = LogFactory.GetLogger(typeof(SpawnerJsonSerializer));
+
+    private static JsonDerivedType[] _derivedTypes = Array.Empty<JsonDerivedType>();
+    private static JsonSerializerOptions _options;
+
+    /// <summary>
+    /// Invoked automatically during the Configure bootstrap phase
+    /// (AssemblyHandler.Invoke("Configure")). Discovers every concrete BaseSpawner subclass
+    /// marked with [JsonDiscoverableType] and registers it for STJ polymorphism.
+    /// </summary>
+    public static void Configure()
+    {
+        var discovered = new List<JsonDerivedType>();
+        var byDiscriminator = new Dictionary<string, Type>();
+
+        foreach (var asm in AssemblyHandler.Assemblies)
+        {
+            Collect(AssemblyHandler.GetTypeCache(asm).Types, discovered, byDiscriminator);
+        }
+
+        Collect(AssemblyHandler.GetTypeCache(Core.Assembly).Types, discovered, byDiscriminator);
+
+        _derivedTypes = discovered.ToArray();
+        _options = null; // force rebuild with the discovered types
+
+        logger.Information("Discovered {Count} spawner JSON type(s)", _derivedTypes.Length);
+    }
+
+    private static void Collect(Type[] types, List<JsonDerivedType> discovered, Dictionary<string, Type> byDiscriminator)
+    {
+        for (var i = 0; i < types.Length; i++)
+        {
+            var type = types[i];
+            if (type.IsAbstract || !type.IsAssignableTo(typeof(BaseSpawner)))
+            {
+                continue;
+            }
+
+            var attr = (JsonDiscoverableTypeAttribute)Attribute.GetCustomAttribute(
+                type, typeof(JsonDiscoverableTypeAttribute), false);
+            if (attr == null)
+            {
+                continue;
+            }
+
+            if (!IsJsonConstructible(type))
+            {
+                throw new Exception(
+                    $"Spawner type '{type.FullName}' is marked [JsonDiscoverableType] but System.Text.Json cannot construct it. " +
+                    "Add a public parameterless constructor marked [JsonConstructor]."
+                );
+            }
+
+            var discriminator = attr.Discriminator ?? type.Name;
+            if (byDiscriminator.TryGetValue(discriminator, out var existing))
+            {
+                throw new Exception(
+                    $"Spawner JSON discriminator '{discriminator}' is claimed by both '{existing.FullName}' and " +
+                    $"'{type.FullName}'. Set an explicit discriminator via [JsonDiscoverableType(\"...\")] on one."
+                );
+            }
+
+            byDiscriminator[discriminator] = type;
+            discovered.Add(new JsonDerivedType(type, discriminator));
+        }
+    }
+
+    private static bool IsJsonConstructible(Type type)
+    {
+        foreach (var ctor in type.GetConstructors())
+        {
+            if (ctor.GetParameters().Length == 0)
+            {
+                return true;
+            }
+
+            if (Attribute.IsDefined(ctor, typeof(JsonConstructorAttribute)))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static JsonSerializerOptions Options =>
+        _options ??= new JsonSerializerOptions(JsonConfig.GetOptions(new TextDefinitionConverterFactory()))
+        {
+            TypeInfoResolver = new DefaultJsonTypeInfoResolver
+            {
+                Modifiers =
+                {
+                    AddPolymorphism,
+                    PruneToJsonProperties,
+                    AddOnDeserialized
+                }
+            }
+        };
+
+    private static void AddPolymorphism(JsonTypeInfo typeInfo)
+    {
+        if (typeInfo.Type != typeof(BaseSpawner))
+        {
+            return;
+        }
+
+        typeInfo.PolymorphismOptions = new JsonPolymorphismOptions();
+        for (var i = 0; i < _derivedTypes.Length; i++)
+        {
+            typeInfo.PolymorphismOptions.DerivedTypes.Add(_derivedTypes[i]);
+        }
+    }
+
+    // Spawners are Items with many public engine properties STJ would otherwise (de)serialize.
+    // Keep ONLY properties explicitly annotated with [JsonPropertyName] (our shadow properties).
+    private static void PruneToJsonProperties(JsonTypeInfo typeInfo)
+    {
+        if (!typeInfo.Type.IsAssignableTo(typeof(BaseSpawner)))
+        {
+            return;
+        }
+
+        for (var i = typeInfo.Properties.Count - 1; i >= 0; i--)
+        {
+            var provider = typeInfo.Properties[i].AttributeProvider;
+            var keep = provider?.IsDefined(typeof(JsonPropertyNameAttribute), true) ?? false;
+            if (!keep)
+            {
+                typeInfo.Properties.RemoveAt(i);
+            }
+        }
+    }
+
+    private static void AddOnDeserialized(JsonTypeInfo typeInfo)
+    {
+        if (!typeInfo.Type.IsAssignableTo(typeof(BaseSpawner)))
+        {
+            return;
+        }
+
+        typeInfo.OnDeserialized = static o => ((BaseSpawner)o).OnAfterJsonDeserialize();
+    }
+}
