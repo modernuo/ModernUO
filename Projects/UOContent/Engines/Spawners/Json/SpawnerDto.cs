@@ -51,8 +51,18 @@ public abstract record SpawnerDto
     public virtual BaseSpawner ToSpawner()
     {
         var spawner = CreateEmpty();
-        spawner.ApplyDto(this);
-        return spawner;
+        try
+        {
+            spawner.ApplyDto(this);
+            return spawner;
+        }
+        catch
+        {
+            // CreateEmpty already registered the Item in the world; if population throws,
+            // delete it here so no orphan can escape (the import catch can't reach it).
+            spawner.Delete();
+            throw;
+        }
     }
 }
 
@@ -66,12 +76,20 @@ public sealed record SpawnerDataDto : SpawnerDto
     public override BaseSpawner ToSpawner()
     {
         var spawner = (Spawner)base.ToSpawner();
-        if (SpawnBounds is { } bounds && bounds != default)
+        try
         {
-            spawner.SpawnBounds = bounds;
-        }
+            if (SpawnBounds is { } bounds && bounds != default)
+            {
+                spawner.SpawnBounds = bounds;
+            }
 
-        return spawner;
+            return spawner;
+        }
+        catch
+        {
+            spawner.Delete();
+            throw;
+        }
     }
 }
 
@@ -85,8 +103,16 @@ public sealed record RegionSpawnerDto : SpawnerDto
     public override BaseSpawner ToSpawner()
     {
         var spawner = (RegionSpawner)base.ToSpawner();
-        spawner.SpawnRegion = Server.Region.Find(Region, Map) as BaseRegion;
-        return spawner;
+        try
+        {
+            spawner.SpawnRegion = Server.Region.Find(Region, Map) as BaseRegion;
+            return spawner;
+        }
+        catch
+        {
+            spawner.Delete();
+            throw;
+        }
     }
 }
 
@@ -103,14 +129,22 @@ public sealed record ProximitySpawnerDto : SpawnerDto
     public override BaseSpawner ToSpawner()
     {
         var spawner = (ProximitySpawner)base.ToSpawner();
-        if (SpawnBounds is { } bounds && bounds != default)
+        try
         {
-            spawner.SpawnBounds = bounds;
-        }
+            if (SpawnBounds is { } bounds && bounds != default)
+            {
+                spawner.SpawnBounds = bounds;
+            }
 
-        spawner.TriggerRange = TriggerRange;
-        spawner.SpawnMessage = SpawnMessage;
-        spawner.InstantFlag = Instant;
-        return spawner;
+            spawner.TriggerRange = TriggerRange;
+            spawner.SpawnMessage = SpawnMessage;
+            spawner.InstantFlag = Instant;
+            return spawner;
+        }
+        catch
+        {
+            spawner.Delete();
+            throw;
+        }
     }
 }
