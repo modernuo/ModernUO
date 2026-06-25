@@ -1,9 +1,77 @@
 # Remove `DynamicJson`, migrate spawners to typed System.Text.Json
 
 - **Date:** 2026-06-25
-- **Status:** Approved (design); implementation plan pending
+- **Status:** Approved (design); **revised mid-implementation — see §0 Revision**
 - **Author:** Kamron Batman (with Claude)
 - **Scope:** `Projects/Server/Json/`, `Projects/UOContent/Engines/Spawners/`, `Distribution/Data/Spawns/`
+
+## 0. Revision (2026-06-25): Approach A → B (DTO records)
+
+The original design (§5 below) made each live spawner `Item` the STJ deserialization
+target via inert shadow properties + an `OnAfterJsonDeserialize` hook ("Approach A").
+During implementation (after Tasks 1–7 of the v1 plan) we hit a structural flaw:
+
+> **STJ constructs each spawner `Item` — registered in `World` at `Map.Internal` — as it
+> streams the JSON, *before* the data is validated.** A `JsonException` mid-array (or any
+> converter / post-construct failure) leaves already-constructed spawner Items orphaned in
+> the world with no reference to delete them. On a malformed/hand-edited spawn file this is
+> a **world-save leak**, and it cannot be fully closed while the `Item` is the deserialization
+> target (even per-element deserialization constructs the Item before a property failure).
+
+**Resolution — Approach B:** deserialize to a **plain `record` DTO** (no `Item`, no world
+registration), validate by virtue of a successful parse, then construct the real spawner via
+a factory. A parse failure is now pure GC — zero world state touched. This supersedes §5's
+"shadow property" mechanism. Decisions D1–D5 stand; the `$type` discriminator, auto-discovery,
+the `[JsonDiscoverableType]` marker, exact sparse output (now via nullable DTO properties +
+`WhenWritingNull`), legacy `homeRange` read, and the data migration are all unchanged. Only
+the *binding mechanism* changes. Note: the regions #1400 "DTOs are pure overhead" lesson does
+**not** transfer — a `Region` is itself a POCO, whereas a spawner is an `Item` with a world
+lifecycle, so the DTO is what keeps STJ away from world state rather than redundant ceremony.
+
+### 0.1 Approach B architecture (authoritative; supersedes §5.1–5.4)
+
+**Polymorphic DTO hierarchy** (`Projects/UOContent/Engines/Spawners/Json/`), one DTO per
+spawner type, each carrying the `[JsonDiscoverableType]` marker:
+
+- `abstract record SpawnerDto` — the common `BaseSpawner` JSON fields (guid, location, map,
+  count, name, minDelay, maxDelay, team, walkingRange, **homeRange** [legacy read],
+  spawnLocationIsHome, spawnPositionMode, maxSpawnAttempts, entries). Sparse fields are
+  nullable (`int?`, `TimeSpan?`, …) so `WhenWritingNull` omits domain-defaults, matching
+  today's `ToJson` exactly. Declares `abstract BaseSpawner CreateEmpty()` (constructs the
+  right empty `Item`) and a concrete `BaseSpawner ToSpawner()` that calls `CreateEmpty()`,
+  applies the common fields (the former `OnAfterJsonDeserialize` body: `InitSpawn`, entries,
+  `homeRange`→`spawnBounds`), and returns the live spawner.
+- `record SpawnerDataDto : SpawnerDto` (`$type` = `"Spawner"`) — adds `spawnBounds`.
+- `record RegionSpawnerDto : SpawnerDto` (`$type` = `"RegionSpawner"`) — adds `region`
+  (resolved against the DTO's `map` in `ToSpawner`).
+- `record ProximitySpawnerDto : SpawnerDto` (`$type` = `"ProximitySpawner"`) — adds
+  `spawnBounds`, `triggerRange`, `spawnMessage`, `instant`.
+
+Each concrete DTO overrides `CreateEmpty()` and extends `ToSpawner()` to apply its extra
+fields (calling base first).
+
+**Symmetric export mapping** lives on the spawner as `virtual SpawnerDto BaseSpawner.ToDto()`
+(each concrete spawner overrides it). This keeps extensibility open and symmetric: a custom
+spawner type ships a paired DTO (`[JsonDiscoverableType]` + `ToSpawner`) and overrides
+`ToDto()` — no central registry, no closed switch. Export builds a `List<SpawnerDto>` by
+calling `ToDto()` on each spawner; STJ writes `$type` via polymorphism. Import deserializes
+`List<SpawnerDto>` then calls `ToSpawner()` per element.
+
+**`SpawnerJsonSerializer` simplifies.** It now discovers `[JsonDiscoverableType]` types
+assignable to **`SpawnerDto`** (not `BaseSpawner`) and wires STJ polymorphism on the
+`SpawnerDto` root. The **property-pruning resolver modifier and the `OnDeserialized` hook
+are removed** — a DTO record exposes only its declared JSON properties, and `ToSpawner()`
+is invoked explicitly by the importer rather than by STJ. Discovery, collision/constructibility
+validation, and the discriminator rules are unchanged.
+
+**Import cleanup contract becomes trivial and complete.** DTO deserialization never
+constructs an `Item`; a malformed file fails as GC-only. `ToSpawner()` constructs exactly
+one `Item` per validated DTO, under our control: the importer places it (`MoveToWorld` +
+`Respawn`) or, on a `ToSpawner`/placement failure, `Delete()`s the single referenced spawner.
+No mid-array orphan is possible.
+
+The remainder of §5 (data migration §5.5, deletion §5.6) is unchanged. §6–§11 stand, with
+"shadow property" read as "DTO property" and `OnAfterJsonDeserialize` read as `ToSpawner()`.
 
 ## 1. Problem
 
