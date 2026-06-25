@@ -26,13 +26,19 @@ public class LegacyHomeRangeTests
         ]
         """;
 
-        var rt = JsonSerializer.Deserialize<List<BaseSpawner>>(legacy, SpawnerJsonSerializer.Options);
-        var s = Assert.IsType<Spawner>(Assert.Single(rt));
+        var dtos = JsonSerializer.Deserialize<List<SpawnerDto>>(legacy, SpawnerJsonSerializer.Options);
+        var dto = Assert.Single(dtos);
+        var s = Assert.IsType<Spawner>(dto.ToSpawner());
 
-        // homeRange 3 -> Rectangle3D(100-3, 200-3, -128, 7, 7, 256)
-        Assert.Equal(new Rectangle3D(97, 197, -128, 7, 7, 256), s.SpawnBounds);
-
-        s.Delete();
+        try
+        {
+            // homeRange 3 -> Rectangle3D(100-3, 200-3, -128, 7, 7, 256)
+            Assert.Equal(new Rectangle3D(97, 197, -128, 7, 7, 256), s.SpawnBounds);
+        }
+        finally
+        {
+            s.Delete();
+        }
     }
 
     [Fact]
@@ -51,12 +57,18 @@ public class LegacyHomeRangeTests
         ]
         """;
 
-        var rt = JsonSerializer.Deserialize<List<BaseSpawner>>(legacy, SpawnerJsonSerializer.Options);
-        var s = Assert.IsType<Spawner>(Assert.Single(rt));
+        var dtos = JsonSerializer.Deserialize<List<SpawnerDto>>(legacy, SpawnerJsonSerializer.Options);
+        var dto = Assert.Single(dtos);
+        var s = Assert.IsType<Spawner>(dto.ToSpawner());
 
-        // homeRange 0 -> Rectangle3D(100, 200, 5, 1, 1, 0)
-        Assert.Equal(new Rectangle3D(100, 200, 5, 1, 1, 0), s.SpawnBounds);
-
-        s.Delete();
+        try
+        {
+            // homeRange 0 -> Rectangle3D(100, 200, 5, 1, 1, 0)
+            Assert.Equal(new Rectangle3D(100, 200, 5, 1, 1, 0), s.SpawnBounds);
+        }
+        finally
+        {
+            s.Delete();
+        }
     }
 }

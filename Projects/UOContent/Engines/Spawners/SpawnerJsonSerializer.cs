@@ -32,7 +32,7 @@ public static class SpawnerJsonSerializer
 
     /// <summary>
     /// Invoked automatically during the Configure bootstrap phase
-    /// (AssemblyHandler.Invoke("Configure")). Discovers every concrete BaseSpawner subclass
+    /// (AssemblyHandler.Invoke("Configure")). Discovers every concrete SpawnerDto subclass
     /// marked with [JsonDiscoverableType] and registers it for STJ polymorphism.
     /// </summary>
     public static void Configure()
@@ -58,7 +58,7 @@ public static class SpawnerJsonSerializer
         for (var i = 0; i < types.Length; i++)
         {
             var type = types[i];
-            if (type.IsAbstract || !type.IsAssignableTo(typeof(BaseSpawner)))
+            if (type.IsAbstract || !type.IsAssignableTo(typeof(SpawnerDto)))
             {
                 continue;
             }
@@ -73,8 +73,8 @@ public static class SpawnerJsonSerializer
             if (!IsJsonConstructible(type))
             {
                 throw new Exception(
-                    $"Spawner type '{type.FullName}' is marked [JsonDiscoverableType] but System.Text.Json cannot construct it. " +
-                    "Add a public parameterless constructor marked [JsonConstructor]."
+                    $"SpawnerDto type '{type.FullName}' is marked [JsonDiscoverableType] but System.Text.Json cannot construct it. " +
+                    "Add a public parameterless constructor or use a record with init-only properties."
                 );
             }
 
@@ -117,16 +117,14 @@ public static class SpawnerJsonSerializer
             {
                 Modifiers =
                 {
-                    AddPolymorphism,
-                    PruneToJsonProperties,
-                    AddOnDeserialized
+                    AddPolymorphism
                 }
             }
         };
 
     private static void AddPolymorphism(JsonTypeInfo typeInfo)
     {
-        if (typeInfo.Type != typeof(BaseSpawner))
+        if (typeInfo.Type != typeof(SpawnerDto))
         {
             return;
         }
@@ -136,35 +134,5 @@ public static class SpawnerJsonSerializer
         {
             typeInfo.PolymorphismOptions.DerivedTypes.Add(_derivedTypes[i]);
         }
-    }
-
-    // Spawners are Items with many public engine properties STJ would otherwise (de)serialize.
-    // Keep ONLY properties explicitly annotated with [JsonPropertyName] (our shadow properties).
-    private static void PruneToJsonProperties(JsonTypeInfo typeInfo)
-    {
-        if (!typeInfo.Type.IsAssignableTo(typeof(BaseSpawner)))
-        {
-            return;
-        }
-
-        for (var i = typeInfo.Properties.Count - 1; i >= 0; i--)
-        {
-            var provider = typeInfo.Properties[i].AttributeProvider;
-            var keep = provider?.IsDefined(typeof(JsonPropertyNameAttribute), true) ?? false;
-            if (!keep)
-            {
-                typeInfo.Properties.RemoveAt(i);
-            }
-        }
-    }
-
-    private static void AddOnDeserialized(JsonTypeInfo typeInfo)
-    {
-        if (!typeInfo.Type.IsAssignableTo(typeof(BaseSpawner)))
-        {
-            return;
-        }
-
-        typeInfo.OnDeserialized = static o => ((BaseSpawner)o).OnAfterJsonDeserialize();
     }
 }

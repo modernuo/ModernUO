@@ -120,6 +120,9 @@ public abstract partial class BaseSpawner : Item, ISpawner
     [CommandProperty(AccessLevel.Developer)]
     public abstract Rectangle3D SpawnBounds { get; set; }
 
+    /// <summary>Builds the JSON DTO for this spawner (export path).</summary>
+    public abstract SpawnerDto ToDto();
+
     /// <summary>
     /// If true, the home location of the spawn is the location where it spawned
     /// If false, the home location of the spawn is the location of the spawner

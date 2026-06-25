@@ -66,7 +66,7 @@ public class ExportSpawnersCommand : BaseCommand
 
         NetState.FlushAll();
 
-        var spawnRecords = new List<BaseSpawner>(list.Count);
+        var spawnRecords = new List<SpawnerDto>(list.Count);
         for (var i = 0; i < list.Count; i++)
         {
             // Not a spawner, not on a valid map, or is in a container
@@ -83,7 +83,7 @@ public class ExportSpawnersCommand : BaseCommand
                 continue;
             }
 
-            spawnRecords.Add(spawner);
+            spawnRecords.Add(spawner.ToDto());
         }
 
         if (spawnRecords.Count == 0)

@@ -207,10 +207,11 @@ public static class ImportSpawnersCommand
         ref int totalFailures
     )
     {
-        List<BaseSpawner> spawners;
+        List<SpawnerDto> dtos;
         try
         {
-            spawners = JsonConfig.Deserialize<List<BaseSpawner>>(file.FullName, SpawnerJsonSerializer.Options);
+            // DTO deserialization constructs NO world objects — a malformed file fails as GC only.
+            dtos = JsonConfig.Deserialize<List<SpawnerDto>>(file.FullName, SpawnerJsonSerializer.Options);
         }
         catch (JsonException)
         {
@@ -220,7 +221,7 @@ public static class ImportSpawnersCommand
             return;
         }
 
-        if (spawners == null || spawners.Count == 0)
+        if (dtos == null || dtos.Count == 0)
         {
             from?.SendMessage($"GenerateSpawners: Skipping empty spawner file {file.Name}");
             logger.Information("{User} is skipping empty spawner file {File}", from, file.FullName);
@@ -228,16 +229,27 @@ public static class ImportSpawnersCommand
         }
 
         using var queue = PooledRefQueue<Item>.Create();
-        for (var i = 0; i < spawners.Count; i++)
+        for (var i = 0; i < dtos.Count; i++)
         {
-            var spawner = spawners[i];
-            var location = spawner.ImportLocation;
-            var map = spawner.ImportMap;
+            var dto = dtos[i];
+            var location = dto.Location;
+            var map = dto.Map;
 
             if (map == null || map == Map.Internal)
             {
-                logger.Error("Spawner {Guid} ({Index}) has no valid map; skipping.", spawner.Guid, i);
-                spawner.Delete();
+                logger.Error("Spawner {Guid} ({Index}) has no valid map; skipping.", dto.Guid, i);
+                totalFailures++;
+                continue;
+            }
+
+            BaseSpawner spawner;
+            try
+            {
+                spawner = dto.ToSpawner(); // constructs the single Item, now referenced
+            }
+            catch (Exception ex)
+            {
+                TraceException(ex, $"Failed to build spawner {dto.Guid}.");
                 totalFailures++;
                 continue;
             }
