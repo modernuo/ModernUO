@@ -23,9 +23,11 @@ public class RegionSpawnerRoundTripTests
         );
         region.Register();
 
+        RegionSpawner spawner = null;
+        RegionSpawner s = null;
         try
         {
-            var spawner = new RegionSpawner("Fisherman") { SpawnRegion = region };
+            spawner = new RegionSpawner("Fisherman") { SpawnRegion = region };
             spawner.MoveToWorld(new Point3D(1416, 1683, 0), Map.Felucca);
 
             var json = JsonSerializer.Serialize<List<BaseSpawner>>(
@@ -34,14 +36,13 @@ public class RegionSpawnerRoundTripTests
             Assert.Contains(region.Name, json);
 
             var rt = JsonSerializer.Deserialize<List<BaseSpawner>>(json, SpawnerJsonSerializer.Options);
-            var s = Assert.IsType<RegionSpawner>(Assert.Single(rt));
+            s = Assert.IsType<RegionSpawner>(Assert.Single(rt));
             Assert.Equal(region.Name, s.SpawnRegion?.Name);
-
-            s.Delete();
-            spawner.Delete();
         }
         finally
         {
+            s?.Delete();
+            spawner?.Delete();
             region.Unregister();
         }
     }
