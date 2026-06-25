@@ -14,9 +14,7 @@
  *************************************************************************/
 
 using System;
-using System.Text.Json;
 using ModernUO.Serialization;
-using Server.Json;
 using Server.Mobiles;
 
 namespace Server.Engines.Spawners;
@@ -64,28 +62,9 @@ public partial class ProximitySpawner : Spawner
         InstantFlag = instantFlag;
     }
 
-    public ProximitySpawner(DynamicJson json, JsonSerializerOptions options) : base(json, options)
-    {
-        json.GetProperty("triggerRange", options, out int triggerRange);
-        json.GetProperty("spawnMessage", options, out TextDefinition spawnMessage);
-        json.GetProperty("instant", options, out bool instant);
-
-        TriggerRange = triggerRange;
-        SpawnMessage = spawnMessage;
-        InstantFlag = instant;
-    }
-
     public override string DefaultName => "Proximity Spawner";
 
     public override bool HandlesOnMovement => Running;
-
-    public override void ToJson(DynamicJson json, JsonSerializerOptions options)
-    {
-        base.ToJson(json, options);
-        json.SetProperty("triggerRange", options, TriggerRange);
-        json.SetProperty("spawnMessage", options, SpawnMessage);
-        json.SetProperty("instant", options, InstantFlag);
-    }
 
     public override void DoTimer(TimeSpan delay)
     {
