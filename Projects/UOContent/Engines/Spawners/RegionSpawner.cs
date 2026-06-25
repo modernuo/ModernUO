@@ -22,6 +22,7 @@ using Server.Regions;
 namespace Server.Engines.Spawners;
 
 [SerializationGenerator(0)]
+[JsonDiscoverableType]
 public partial class RegionSpawner : Spawner
 {
     [SerializableField(0, getter: "private", setter: "private")]
@@ -32,6 +33,7 @@ public partial class RegionSpawner : Spawner
     public override Region Region => _spawnRegion;
 
     [Constructible(AccessLevel.Developer)]
+    [System.Text.Json.Serialization.JsonConstructor]
     public RegionSpawner()
     {
     }
