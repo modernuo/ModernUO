@@ -70,26 +70,35 @@ public static class SpawnerJsonSerializer
                 continue;
             }
 
-            if (!IsJsonConstructible(type))
-            {
-                throw new Exception(
-                    $"SpawnerDto type '{type.FullName}' is marked [JsonDiscoverableType] but System.Text.Json cannot construct it. " +
-                    "Add a public parameterless constructor or use a record with init-only properties."
-                );
-            }
-
-            var discriminator = attr.Discriminator ?? type.Name;
-            if (byDiscriminator.TryGetValue(discriminator, out var existing))
-            {
-                throw new Exception(
-                    $"Spawner JSON discriminator '{discriminator}' is claimed by both '{existing.FullName}' and " +
-                    $"'{type.FullName}'. Set an explicit discriminator via [JsonDiscoverableType(\"...\")] on one."
-                );
-            }
-
+            var (discriminator, derived) = Validate(type, byDiscriminator);
             byDiscriminator[discriminator] = type;
-            discovered.Add(new JsonDerivedType(type, discriminator));
+            discovered.Add(derived);
         }
+    }
+
+    internal static (string discriminator, JsonDerivedType derived) Validate(
+        Type type, Dictionary<string, Type> byDiscriminator)
+    {
+        if (!IsJsonConstructible(type))
+        {
+            throw new Exception(
+                $"SpawnerDto type '{type.FullName}' is marked [JsonDiscoverableType] but System.Text.Json cannot construct it. " +
+                "Add a public parameterless constructor or use a record with init-only properties."
+            );
+        }
+
+        var attr = (JsonDiscoverableTypeAttribute)Attribute.GetCustomAttribute(
+            type, typeof(JsonDiscoverableTypeAttribute), false);
+        var discriminator = attr?.Discriminator ?? type.Name;
+        if (byDiscriminator.TryGetValue(discriminator, out var existing))
+        {
+            throw new Exception(
+                $"Spawner JSON discriminator '{discriminator}' is claimed by both '{existing.FullName}' and " +
+                $"'{type.FullName}'. Set an explicit discriminator via [JsonDiscoverableType(\"...\")] on one."
+            );
+        }
+
+        return (discriminator, new JsonDerivedType(type, discriminator));
     }
 
     private static bool IsJsonConstructible(Type type)
