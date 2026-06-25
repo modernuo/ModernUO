@@ -66,9 +66,7 @@ public class ExportSpawnersCommand : BaseCommand
 
         NetState.FlushAll();
 
-        var options = JsonConfig.GetOptions(new TextDefinitionConverterFactory());
-
-        var spawnRecords = new List<DynamicJson>(list.Count);
+        var spawnRecords = new List<BaseSpawner>(list.Count);
         for (var i = 0; i < list.Count; i++)
         {
             // Not a spawner, not on a valid map, or is in a container
@@ -85,9 +83,7 @@ public class ExportSpawnersCommand : BaseCommand
                 continue;
             }
 
-            var dynamicJson = DynamicJson.Create(spawner.GetType());
-            spawner.ToJson(dynamicJson, options);
-            spawnRecords.Add(dynamicJson);
+            spawnRecords.Add(spawner);
         }
 
         if (spawnRecords.Count == 0)
@@ -98,7 +94,7 @@ public class ExportSpawnersCommand : BaseCommand
 
         e.Mobile.SendMessage("Exporting spawners...");
 
-        JsonConfig.Serialize(path, spawnRecords, options);
+        JsonConfig.Serialize(path, spawnRecords, SpawnerJsonSerializer.Options);
 
         e.Mobile.SendMessage($"Spawners exported to {path}");
     }
