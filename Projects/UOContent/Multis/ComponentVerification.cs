@@ -13,6 +13,13 @@ public static class ComponentVerification
     private static int[] _multiTable;
     private static bool _loaded;
 
+    // housing.bin stores each component's feature mask in the client's feature-flag bit space, which
+    // tags pre-AOS base pieces (e.g. sandstone) with low bits - notably T2A (0x1) - that HousingFlags
+    // does not model. CheckValidity validates against HousingFlags, so strip everything except the
+    // housing-tier bits when loading: base pieces collapse to 0 (always valid, exactly as walls.txt
+    // encodes them) while AOS/SE/ML/... line up unchanged.
+    private const int HousingTierMask = (int)HousingFlags.HousingEJ;
+
     public static bool IsItemValid(int itemID)
     {
         EnsureLoaded();
@@ -93,7 +100,7 @@ public static class ComponentVerification
             {
                 reader.ReadUInt32LE(); // category_id
                 reader.ReadUInt32LE(); // subcategory_id
-                var featureMask = (int)reader.ReadUInt32LE();
+                var featureMask = (int)reader.ReadUInt32LE() & HousingTierMask;
                 reader.ReadUInt32LE(); // cliloc_id
 
                 // fields_1

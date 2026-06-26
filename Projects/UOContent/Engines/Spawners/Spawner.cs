@@ -1,7 +1,5 @@
 using System;
-using System.Text.Json;
 using ModernUO.Serialization;
-using Server.Json;
 
 namespace Server.Engines.Spawners;
 
@@ -55,25 +53,6 @@ public partial class Spawner : BaseSpawner
         params ReadOnlySpan<string> spawnedNames
     ) : base(amount, minDelay, maxDelay, team, spawnBounds, spawnedNames)
     {
-    }
-
-    public Spawner(DynamicJson json, JsonSerializerOptions options) : base(json, options)
-    {
-        // Read spawnBounds (not in BaseSpawner to allow RegionSpawner to skip it)
-        if (json.GetProperty("spawnBounds", options, out Rectangle3D spawnBounds))
-        {
-            SpawnBounds = spawnBounds;
-        }
-    }
-
-    public override void ToJson(DynamicJson json, JsonSerializerOptions options)
-    {
-        base.ToJson(json, options);
-
-        if (SpawnBounds != default)
-        {
-            json.SetProperty("spawnBounds", options, SpawnBounds);
-        }
     }
 
     public override Region Region => Region.Find(Location, Map);

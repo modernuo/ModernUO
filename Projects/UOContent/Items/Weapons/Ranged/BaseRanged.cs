@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using ModernUO.Serialization;
 using Server.Mobiles;
 using Server.Network;
@@ -20,8 +19,6 @@ namespace Server.Items
         [InvalidateProperties]
         [SerializedCommandProperty(AccessLevel.GameMaster)]
         private int _velocity;
-
-        private TimerExecutionToken _recoveryTimerToken;
 
         public BaseRanged(int itemID) : base(itemID)
         {
@@ -144,29 +141,8 @@ namespace Server.Items
                 {
                     if (attacker is PlayerMobile pm)
                     {
-                        var ammo = AmmoType;
-
-                        if (ammo != null)
-                        {
-                            pm.RecoverableAmmo ??= new Dictionary<Type, int>();
-                            pm.RecoverableAmmo.TryGetValue(ammo, out var result);
-                            pm.RecoverableAmmo[ammo] = result + 1;
-                        }
-
-                        if (!pm.Warmode)
-                        {
-                            if (!_recoveryTimerToken.Running)
-                            {
-                                Timer.StartTimer(TimeSpan.FromSeconds(10),
-                                    () =>
-                                    {
-                                        _recoveryTimerToken.Cancel();
-                                        pm.RecoverAmmo();
-                                    },
-                                    out _recoveryTimerToken
-                                );
-                            }
-                        }
+                        // Bank the spent ammo; it is gathered back up once the archer disengages.
+                        AmmoRecovery.Bank(pm, AmmoType);
                     }
                 }
                 else

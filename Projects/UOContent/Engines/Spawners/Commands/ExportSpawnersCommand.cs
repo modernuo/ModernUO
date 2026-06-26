@@ -17,7 +17,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Server.Commands.Generic;
-using Server.Json;
 using Server.Network;
 
 namespace Server.Engines.Spawners;
@@ -66,9 +65,7 @@ public class ExportSpawnersCommand : BaseCommand
 
         NetState.FlushAll();
 
-        var options = JsonConfig.GetOptions(new TextDefinitionConverterFactory());
-
-        var spawnRecords = new List<DynamicJson>(list.Count);
+        var spawnRecords = new List<SpawnerDto>(list.Count);
         for (var i = 0; i < list.Count; i++)
         {
             // Not a spawner, not on a valid map, or is in a container
@@ -85,9 +82,7 @@ public class ExportSpawnersCommand : BaseCommand
                 continue;
             }
 
-            var dynamicJson = DynamicJson.Create(spawner.GetType());
-            spawner.ToJson(dynamicJson, options);
-            spawnRecords.Add(dynamicJson);
+            spawnRecords.Add(spawner.ToDto());
         }
 
         if (spawnRecords.Count == 0)
@@ -98,7 +93,9 @@ public class ExportSpawnersCommand : BaseCommand
 
         e.Mobile.SendMessage("Exporting spawners...");
 
-        JsonConfig.Serialize(path, spawnRecords, options);
+        // Compact layout (UTF-8, no BOM, LF) keeps re-exports diff-friendly.
+        PathUtility.EnsureDirectory(Path.GetDirectoryName(path));
+        File.WriteAllText(path, SpawnerJsonSerializer.SerializeCompact(spawnRecords));
 
         e.Mobile.SendMessage($"Spawners exported to {path}");
     }

@@ -1,6 +1,6 @@
-﻿[
+[
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "8c2124f4-e175-4198-8cf8-9cf64804fc22",
     "name": "Spawner (408)",
     "location": [98, 1656, 0],
@@ -24,7 +24,7 @@
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "eaa69fa3-4076-4fc5-950a-fe175713bbd3",
     "name": "Spawner (408)",
     "location": [104, 1655, 0],
