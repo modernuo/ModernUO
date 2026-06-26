@@ -20,17 +20,17 @@ public partial class RegionSpawner
     // RegionSpawner spawns from region rectangles, so it writes neither homeRange nor spawnBounds.
     public override SpawnerDto ToDto() => new RegionSpawnerDto
     {
-        Guid = DtoGuid,
+        Guid = Guid,
         Name = DtoName,
         Location = Location,
         Map = Map,
         Count = Count,
-        MinDelay = DtoMinDelay,
-        MaxDelay = DtoMaxDelay,
-        Team = DtoTeam,
+        MinDelay = MinDelay,
+        MaxDelay = MaxDelay,
+        Team = Team,
         WalkingRange = DtoWalkingRange,
         Entries = Entries,
-        SpawnLocationIsHome = DtoSpawnLocationIsHome,
+        SpawnLocationIsHome = SpawnLocationIsHome,
         SpawnPositionMode = DtoSpawnPositionMode,
         MaxSpawnAttempts = DtoMaxSpawnAttempts,
         Region = SpawnRegion?.Name

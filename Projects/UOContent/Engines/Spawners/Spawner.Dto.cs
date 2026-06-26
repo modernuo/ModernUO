@@ -22,17 +22,17 @@ public partial class Spawner
         var homeRange = DtoHomeRange;
         return new SpawnerDataDto
         {
-            Guid = DtoGuid,
+            Guid = Guid,
             Name = DtoName,
             Location = Location,
             Map = Map,
             Count = Count,
-            MinDelay = DtoMinDelay,
-            MaxDelay = DtoMaxDelay,
-            Team = DtoTeam,
+            MinDelay = MinDelay,
+            MaxDelay = MaxDelay,
+            Team = Team,
             WalkingRange = DtoWalkingRange,
             Entries = Entries,
-            SpawnLocationIsHome = DtoSpawnLocationIsHome,
+            SpawnLocationIsHome = SpawnLocationIsHome,
             SpawnPositionMode = DtoSpawnPositionMode,
             MaxSpawnAttempts = DtoMaxSpawnAttempts,
             HomeRange = homeRange,

@@ -78,23 +78,30 @@ public abstract partial class BaseSpawner
         );
     }
 
-    // Export helpers. Options use WhenWritingDefault, so optional fields are omitted at their CLR
-    // default; helpers below map non-CLR-default "omit" values onto the default so they drop out.
-    private protected Guid DtoGuid => _guid;
-    private protected string DtoName => string.IsNullOrEmpty(Name) ? null : Name;
-    private protected TimeSpan DtoMinDelay => _minDelay;
-    private protected TimeSpan DtoMaxDelay => _maxDelay;
-    private protected int DtoTeam => _team;
+    private protected string DtoName
+    {
+        get
+        {
+            var name = Name;
+            return string.IsNullOrEmpty(name) || name == DefaultName ? null : name;
+        }
+    }
+
+    // Export helpers for values whose ToDto form differs from the public property. Options use
+    // WhenWritingDefault, so non-CLR-default "omit" values are mapped onto the default to drop out.
+    // Fields with a plain matching public property (Guid/MinDelay/MaxDelay/Team/SpawnLocationIsHome)
+    // are referenced directly in ToDto and need no helper.
+
+    // The public WalkingRange property is computed (falls back to HomeRange), so it cannot be used
+    // here without losing the raw -1 round-trip.
     private protected int DtoWalkingRange => _walkingRange;
-    private protected bool DtoSpawnLocationIsHome => _spawnLocationIsHome;
 
     // Abandoned is a transient "gave up" runtime state, not persisted -> map to Automatic (omitted).
     private protected SpawnPositionMode DtoSpawnPositionMode =>
         _spawnPositionMode == SpawnPositionMode.Abandoned ? SpawnPositionMode.Automatic : _spawnPositionMode;
 
     // Runtime treats 0 identically to DefaultMaxSpawnAttempts(10) -> map the default to 0 (omitted).
-    private protected int DtoMaxSpawnAttempts =>
-        _maxSpawnAttempts == DefaultMaxSpawnAttempts ? 0 : _maxSpawnAttempts;
+    private protected int DtoMaxSpawnAttempts => _maxSpawnAttempts == DefaultMaxSpawnAttempts ? 0 : _maxSpawnAttempts;
 
     // The homeRange radius if SpawnBounds is EXACTLY what that radius reconstructs (square, centered,
     // standard z/depth) so the round-trip is lossless; otherwise -1 (write spawnBounds instead).
