@@ -175,7 +175,10 @@ public class Rectangle3DConverter : JsonConverter<Rectangle3D>
 
     public override void Write(Utf8JsonWriter writer, Rectangle3D value, JsonSerializerOptions options)
     {
-        var writeZ = value.Start.Z is > sbyte.MinValue and < sbyte.MaxValue || value.End.Z is > sbyte.MinValue and < sbyte.MaxValue;
+        // Omit z only for the exact full-range sentinel DeserializeObj reconstructs when z is absent
+        // (z1 == -128, z2 == 127). Any other z must be written, otherwise it round-trips to that
+        // sentinel and is corrupted (e.g. a homeRange-style z1=-128/z2=128 would lose a z-level).
+        var writeZ = value.Start.Z != sbyte.MinValue || value.End.Z != sbyte.MaxValue;
 
         writer.WriteStartObject();
         writer.WritePropertyName("x1");
