@@ -4,50 +4,50 @@ namespace Server.Engines.Chat
 {
     public class Channel
     {
-        private readonly List<ChatUser> m_Banned;
-        private readonly List<ChatUser> m_Moderators;
-        private readonly List<ChatUser> m_Users;
-        private readonly List<ChatUser> m_Voices;
-        private string m_Name;
-        private string m_Password;
-        private bool m_VoiceRestricted;
+        private readonly List<ChatUser> _Banned;
+        private readonly List<ChatUser> _Moderators;
+        private readonly List<ChatUser> _Users;
+        private readonly List<ChatUser> _Voices;
+        private string _Name;
+        private string _Password;
+        private bool _VoiceRestricted;
 
         public Channel(string name)
         {
-            m_Name = name;
+            _Name = name;
 
-            m_Users = new List<ChatUser>();
-            m_Banned = new List<ChatUser>();
-            m_Moderators = new List<ChatUser>();
-            m_Voices = new List<ChatUser>();
+            _Users = new List<ChatUser>();
+            _Banned = new List<ChatUser>();
+            _Moderators = new List<ChatUser>();
+            _Voices = new List<ChatUser>();
         }
 
-        public Channel(string name, string password) : this(name) => m_Password = password;
+        public Channel(string name, string password) : this(name) => _Password = password;
 
         public string Name
         {
-            get => m_Name;
+            get => _Name;
             set
             {
-                SendCommand(ChatCommand.RemoveChannel, m_Name);
-                m_Name = value;
-                SendCommand(ChatCommand.AddChannel, m_Name);
-                SendCommand(ChatCommand.JoinedChannel, m_Name);
+                SendCommand(ChatCommand.RemoveChannel, _Name);
+                _Name = value;
+                SendCommand(ChatCommand.AddChannel, _Name);
+                SendCommand(ChatCommand.JoinedChannel, _Name);
             }
         }
 
         public string Password
         {
-            get => m_Password;
-            set => m_Password = (value?.Trim()).DefaultIfNullOrEmpty(null);
+            get => _Password;
+            set => _Password = (value?.Trim()).DefaultIfNullOrEmpty(null);
         }
 
         public bool VoiceRestricted
         {
-            get => m_VoiceRestricted;
+            get => _VoiceRestricted;
             set
             {
-                m_VoiceRestricted = value;
+                _VoiceRestricted = value;
 
                 if (value)
                 {
@@ -63,20 +63,13 @@ namespace Server.Engines.Chat
         }
 
         public bool AlwaysAvailable { get; set; }
-
         public static List<Channel> Channels { get; } = new();
-
-        public bool Contains(ChatUser user) => m_Users.Contains(user);
-
-        public bool IsBanned(ChatUser user) => m_Banned.Contains(user);
-
-        public bool CanTalk(ChatUser user) => !m_VoiceRestricted || m_Voices.Contains(user) || m_Moderators.Contains(user);
-
-        public bool IsModerator(ChatUser user) => m_Moderators.Contains(user);
-
-        public bool IsVoiced(ChatUser user) => m_Voices.Contains(user);
-
-        public bool ValidatePassword(string password) => m_Password?.InsensitiveEquals(password) != false;
+        public bool Contains(ChatUser user) => _Users.Contains(user);
+        public bool IsBanned(ChatUser user) => _Banned.Contains(user);
+        public bool CanTalk(ChatUser user) => !_VoiceRestricted || _Voices.Contains(user) || _Moderators.Contains(user);
+        public bool IsModerator(ChatUser user) => _Moderators.Contains(user);
+        public bool IsVoiced(ChatUser user) => _Voices.Contains(user);
+        public bool ValidatePassword(string password) => _Password?.InsensitiveEquals(password) != false;
 
         public bool ValidateModerator(ChatUser user)
         {
@@ -104,7 +97,7 @@ namespace Server.Engines.Chat
         {
             if (Contains(user))
             {
-                user.SendMessage(46, m_Name); // You are already in the conference '%1'.
+                user.SendMessage(46, _Name); // You are already in the conference '%1'.
                 return true;
             }
 
@@ -122,14 +115,14 @@ namespace Server.Engines.Chat
 
             user.CurrentChannel?.RemoveUser(user); // Remove them from their current channel first
 
-            ChatSystem.SendCommandTo(user.Mobile, ChatCommand.JoinedChannel, m_Name);
+            ChatSystem.SendCommandTo(user.Mobile, ChatCommand.JoinedChannel, _Name);
 
             SendCommand(ChatCommand.AddUserToChannel, user.GetColorCharacter() + user.Username);
 
-            m_Users.Add(user);
+            _Users.Add(user);
             user.CurrentChannel = this;
 
-            if (user.Mobile.AccessLevel >= AccessLevel.GameMaster || !AlwaysAvailable && m_Users.Count == 1)
+            if (user.Mobile.AccessLevel >= AccessLevel.GameMaster || !AlwaysAvailable && _Users.Count == 1)
             {
                 AddModerator(user);
             }
@@ -143,23 +136,23 @@ namespace Server.Engines.Chat
         {
             if (Contains(user))
             {
-                m_Users.Remove(user);
+                _Users.Remove(user);
                 user.CurrentChannel = null;
 
-                if (m_Moderators.Contains(user))
+                if (_Moderators.Contains(user))
                 {
-                    m_Moderators.Remove(user);
+                    _Moderators.Remove(user);
                 }
 
-                if (m_Voices.Contains(user))
+                if (_Voices.Contains(user))
                 {
-                    m_Voices.Remove(user);
+                    _Voices.Remove(user);
                 }
 
                 SendCommand(ChatCommand.RemoveUserFromChannel, user, user.Username);
                 ChatSystem.SendCommandTo(user.Mobile, ChatCommand.LeaveChannel);
 
-                if (m_Users.Count == 0 && !AlwaysAvailable)
+                if (!AlwaysAvailable && _Users.Count == 0)
                 {
                     RemoveChannel(this);
                 }
@@ -173,9 +166,9 @@ namespace Server.Engines.Chat
                 return;
             }
 
-            if (!m_Banned.Contains(user))
+            if (!_Banned.Contains(user))
             {
-                m_Banned.Add(user);
+                _Banned.Add(user);
             }
 
             Kick(user, moderator, true);
@@ -183,9 +176,9 @@ namespace Server.Engines.Chat
 
         public void RemoveBan(ChatUser user)
         {
-            if (m_Banned.Contains(user))
+            if (_Banned.Contains(user))
             {
-                m_Banned.Remove(user);
+                _Banned.Remove(user);
             }
         }
 
@@ -242,7 +235,7 @@ namespace Server.Engines.Chat
 
             if (!IsBanned(user) && !IsModerator(user) && !IsVoiced(user))
             {
-                m_Voices.Add(user);
+                _Voices.Add(user);
 
                 if (moderator != null)
                 {
@@ -264,7 +257,7 @@ namespace Server.Engines.Chat
 
             if (!IsModerator(user) && IsVoiced(user))
             {
-                m_Voices.Remove(user);
+                _Voices.Remove(user);
 
                 if (moderator != null)
                 {
@@ -291,10 +284,10 @@ namespace Server.Engines.Chat
 
             if (IsVoiced(user))
             {
-                m_Voices.Remove(user);
+                _Voices.Remove(user);
             }
 
-            m_Moderators.Add(user);
+            _Moderators.Add(user);
 
             if (moderator != null)
             {
@@ -314,7 +307,7 @@ namespace Server.Engines.Chat
 
             if (IsModerator(user))
             {
-                m_Moderators.Remove(user);
+                _Moderators.Remove(user);
 
                 if (moderator != null)
                 {
@@ -333,31 +326,31 @@ namespace Server.Engines.Chat
 
         public void SendMessage(int number, ChatUser initiator, string param1 = null, string param2 = null)
         {
-            for (var i = 0; i < m_Users.Count; ++i)
+            for (var i = _Users.Count - 1; i >= 0; --i)
             {
-                var user = m_Users[i];
+            var user = _Users[i];
 
-                if (user == initiator)
-                {
-                    continue;
-                }
+            if (user == initiator)
+            {
+                continue;
+            }
 
-                if (user.CheckOnline())
-                {
-                    user.SendMessage(number, param1, param2);
-                }
-                else if (!Contains(user))
-                {
-                    --i;
-                }
+            if (user.CheckOnline())
+            {
+                user.SendMessage(number, param1, param2);
+            }
+            else
+            {
+                RemoveUser(user);
+            }
             }
         }
 
         public void SendIgnorableMessage(int number, ChatUser from, string param1, string param2)
         {
-            for (var i = 0; i < m_Users.Count; ++i)
+            for (var i = _Users.Count - 1; i >= 0; --i)
             {
-                var user = m_Users[i];
+                var user = _Users[i];
 
                 if (user.IsIgnored(from))
                 {
@@ -368,9 +361,9 @@ namespace Server.Engines.Chat
                 {
                     user.SendMessage(number, from.Mobile, param1, param2);
                 }
-                else if (!Contains(user))
+                else
                 {
-                    --i;
+                    RemoveUser(user);
                 }
             }
         }
@@ -382,9 +375,9 @@ namespace Server.Engines.Chat
 
         public void SendCommand(ChatCommand command, ChatUser initiator, string param1 = null, string param2 = null)
         {
-            for (var i = 0; i < m_Users.Count; ++i)
+            for (var i = _Users.Count - 1; i >= 0; --i)
             {
-                var user = m_Users[i];
+                var user = _Users[i];
 
                 if (user == initiator)
                 {
@@ -395,18 +388,18 @@ namespace Server.Engines.Chat
                 {
                     ChatSystem.SendCommandTo(user.Mobile, command, param1, param2);
                 }
-                else if (!Contains(user))
+                else
                 {
-                    --i;
+                    RemoveUser(user);
                 }
             }
         }
 
         public void SendUsersTo(ChatUser to)
         {
-            for (var i = 0; i < m_Users.Count; ++i)
+            for (var i = 0; i < _Users.Count; ++i)
             {
-                var user = m_Users[i];
+                var user = _Users[i];
 
                 ChatSystem.SendCommandTo(to.Mobile, ChatCommand.AddUserToChannel, user.GetColorCharacter() + user.Username);
             }
@@ -452,12 +445,12 @@ namespace Server.Engines.Chat
                 return;
             }
 
-            if (Channels.Contains(channel) && channel.m_Users.Count == 0)
+            if (Channels.Contains(channel) && channel._Users.Count == 0)
             {
                 ChatUser.GlobalSendCommand(ChatCommand.RemoveChannel, channel.Name);
 
-                channel.m_Moderators.Clear();
-                channel.m_Voices.Clear();
+                channel._Moderators.Clear();
+                channel._Voices.Clear();
 
                 Channels.Remove(channel);
             }
@@ -469,7 +462,7 @@ namespace Server.Engines.Chat
             {
                 var channel = Channels[i];
 
-                if (channel.m_Name == name)
+                if (channel._Name == name)
                 {
                     return channel;
                 }
@@ -478,6 +471,9 @@ namespace Server.Engines.Chat
             return null;
         }
 
+        // currently, all chat is combined to a single webhook
+        // all static channels will be captured
+        // also captures player created channels
         public static void Initialize()
         {
             AddStaticChannel("Newbie Help");

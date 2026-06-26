@@ -12,9 +12,7 @@ namespace Server.Engines.Chat
         }
 
         public bool RequireModerator { get; }
-
         public bool RequireConference { get; }
-
         public OnChatAction Callback { get; }
     }
 }
