@@ -123,7 +123,7 @@ public static class SpawnerJsonSerializer
     }
 
     public static JsonSerializerOptions Options =>
-        _options ??= new JsonSerializerOptions(JsonConfig.GetOptions(new TextDefinitionConverterFactory()))
+        _options ??= new JsonSerializerOptions(JsonConfig.GetOptions())
         {
             // Optional fields omit at default; mandatory ones force-write via [JsonIgnore(Never)].
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault,
