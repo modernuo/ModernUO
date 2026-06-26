@@ -122,11 +122,15 @@ public static class SpawnerJsonSerializer
     public static JsonSerializerOptions Options =>
         _options ??= new JsonSerializerOptions(JsonConfig.GetOptions(new TextDefinitionConverterFactory()))
         {
+            // Optional DTO fields are omitted at their CLR default; mandatory fields force-write with
+            // [JsonIgnore(Condition = Never)]. (homeRange is special-cased below since 0 is valid.)
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault,
             TypeInfoResolver = new DefaultJsonTypeInfoResolver
             {
                 Modifiers =
                 {
-                    AddPolymorphism
+                    AddPolymorphism,
+                    ConfigureHomeRange
                 }
             }
         };
@@ -142,6 +146,24 @@ public static class SpawnerJsonSerializer
         for (var i = 0; i < _derivedTypes.Length; i++)
         {
             typeInfo.PolymorphismOptions.DerivedTypes.Add(_derivedTypes[i]);
+        }
+    }
+
+    // homeRange uses -1 as the "absent" sentinel (a real radius is >= 0, and 0 is a valid radius that
+    // WhenWritingDefault could not emit). Write it only when it represents a real homeRange square.
+    private static void ConfigureHomeRange(JsonTypeInfo typeInfo)
+    {
+        if (!typeInfo.Type.IsAssignableTo(typeof(SpawnerDto)))
+        {
+            return;
+        }
+
+        for (var i = 0; i < typeInfo.Properties.Count; i++)
+        {
+            if (typeInfo.Properties[i].Name == "homeRange")
+            {
+                typeInfo.Properties[i].ShouldSerialize = static (_, value) => value is int hr && hr >= 0;
+            }
         }
     }
 }

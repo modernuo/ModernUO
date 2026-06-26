@@ -17,24 +17,29 @@ namespace Server.Engines.Spawners;
 
 public partial class ProximitySpawner
 {
-    public override SpawnerDto ToDto() => new ProximitySpawnerDto
+    public override SpawnerDto ToDto()
     {
-        Guid = DtoGuid,
-        Location = Location,
-        Map = Map,
-        Count = Count,
-        Name = DtoName,
-        MinDelay = DtoMinDelay,
-        MaxDelay = DtoMaxDelay,
-        Team = DtoTeam,
-        WalkingRange = DtoWalkingRange,
-        SpawnLocationIsHome = DtoSpawnLocationIsHome,
-        SpawnPositionMode = DtoSpawnPositionMode,
-        MaxSpawnAttempts = DtoMaxSpawnAttempts,
-        Entries = Entries,
-        SpawnBounds = SpawnBounds == default ? null : SpawnBounds,
-        TriggerRange = TriggerRange,
-        SpawnMessage = SpawnMessage,
-        Instant = InstantFlag
-    };
+        var homeRange = DtoHomeRange;
+        return new ProximitySpawnerDto
+        {
+            Guid = DtoGuid,
+            Name = DtoName,
+            Location = Location,
+            Map = Map,
+            Count = Count,
+            MinDelay = DtoMinDelay,
+            MaxDelay = DtoMaxDelay,
+            Team = DtoTeam,
+            WalkingRange = DtoWalkingRange,
+            Entries = Entries,
+            SpawnLocationIsHome = DtoSpawnLocationIsHome,
+            SpawnPositionMode = DtoSpawnPositionMode,
+            MaxSpawnAttempts = DtoMaxSpawnAttempts,
+            HomeRange = homeRange,
+            SpawnBounds = homeRange >= 0 ? default : SpawnBounds,
+            TriggerRange = TriggerRange,
+            SpawnMessage = SpawnMessage,
+            Instant = InstantFlag
+        };
+    }
 }

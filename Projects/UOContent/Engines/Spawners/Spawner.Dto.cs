@@ -17,21 +17,26 @@ namespace Server.Engines.Spawners;
 
 public partial class Spawner
 {
-    public override SpawnerDto ToDto() => new SpawnerDataDto
+    public override SpawnerDto ToDto()
     {
-        Guid = DtoGuid,
-        Location = Location,
-        Map = Map,
-        Count = Count,
-        Name = DtoName,
-        MinDelay = DtoMinDelay,
-        MaxDelay = DtoMaxDelay,
-        Team = DtoTeam,
-        WalkingRange = DtoWalkingRange,
-        SpawnLocationIsHome = DtoSpawnLocationIsHome,
-        SpawnPositionMode = DtoSpawnPositionMode,
-        MaxSpawnAttempts = DtoMaxSpawnAttempts,
-        Entries = Entries,
-        SpawnBounds = SpawnBounds == default ? null : SpawnBounds
-    };
+        var homeRange = DtoHomeRange;
+        return new SpawnerDataDto
+        {
+            Guid = DtoGuid,
+            Name = DtoName,
+            Location = Location,
+            Map = Map,
+            Count = Count,
+            MinDelay = DtoMinDelay,
+            MaxDelay = DtoMaxDelay,
+            Team = DtoTeam,
+            WalkingRange = DtoWalkingRange,
+            Entries = Entries,
+            SpawnLocationIsHome = DtoSpawnLocationIsHome,
+            SpawnPositionMode = DtoSpawnPositionMode,
+            MaxSpawnAttempts = DtoMaxSpawnAttempts,
+            HomeRange = homeRange,
+            SpawnBounds = homeRange >= 0 ? default : SpawnBounds
+        };
+    }
 }

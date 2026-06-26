@@ -12,12 +12,13 @@ namespace UOContent.Tests.Engines.Spawners.Json;
 public class SpawnerDtoRoundTripTests
 {
     [Fact]
-    public void Spawner_RoundTrips_ThroughDto()
+    public void Spawner_NonSquareBounds_WritesSpawnBounds_RoundTrips()
     {
         Spawner original = null;
         BaseSpawner rebuilt = null;
         try
         {
+            // Bounds centered on (102,102), placed at (105,105) -> not a homeRange square.
             original = new Spawner(2, TimeSpan.FromMinutes(3), TimeSpan.FromMinutes(7), 0,
                 new Rectangle3D(100, 100, 0, 5, 5, 0), "Fisherman");
             original.MoveToWorld(new Point3D(105, 105, 0), Map.Felucca);
@@ -25,6 +26,8 @@ public class SpawnerDtoRoundTripTests
             var json = JsonSerializer.Serialize(new List<SpawnerDto> { original.ToDto() }, SpawnerJsonSerializer.Options);
             Assert.Contains("\"$type\": \"Spawner\"", json);
             Assert.Contains("\"count\": 2", json);
+            Assert.Contains("spawnBounds", json);
+            Assert.DoesNotContain("homeRange", json);
 
             var dtos = JsonSerializer.Deserialize<List<SpawnerDto>>(json, SpawnerJsonSerializer.Options);
             rebuilt = Assert.Single(dtos).ToSpawner();
@@ -42,18 +45,52 @@ public class SpawnerDtoRoundTripTests
     }
 
     [Fact]
-    public void Spawner_OmitsDomainDefaults()
+    public void Spawner_HomeRangeSquare_WritesHomeRange_RoundTrips()
+    {
+        Spawner original = null;
+        BaseSpawner rebuilt = null;
+        try
+        {
+            original = new Spawner("Fisherman");
+            original.MoveToWorld(new Point3D(200, 200, 0), Map.Felucca);
+            // Exactly what homeRange 5 reconstructs (centered square, standard z/depth).
+            original.SpawnBounds = new Rectangle3D(195, 195, -128, 11, 11, 256);
+
+            var json = JsonSerializer.Serialize(new List<SpawnerDto> { original.ToDto() }, SpawnerJsonSerializer.Options);
+            Assert.Contains("\"homeRange\": 5", json);
+            Assert.DoesNotContain("spawnBounds", json);
+
+            var dtos = JsonSerializer.Deserialize<List<SpawnerDto>>(json, SpawnerJsonSerializer.Options);
+            rebuilt = Assert.Single(dtos).ToSpawner();
+            Assert.Equal(new Rectangle3D(195, 195, -128, 11, 11, 256), rebuilt.SpawnBounds);
+        }
+        finally
+        {
+            rebuilt?.Delete();
+            original?.Delete();
+        }
+    }
+
+    [Fact]
+    public void Spawner_WritesMandatory_OmitsOptionalDefaults()
     {
         Spawner original = null;
         try
         {
+            // Default delays (5/10), team 0, default maxSpawnAttempts.
             original = new Spawner("Fisherman");
             original.MoveToWorld(new Point3D(110, 110, 0), Map.Felucca);
             var json = JsonSerializer.Serialize(new List<SpawnerDto> { original.ToDto() }, SpawnerJsonSerializer.Options);
-            Assert.DoesNotContain("minDelay", json);
-            Assert.DoesNotContain("maxDelay", json);
+
+            // Mandatory — always written, even at default.
+            Assert.Contains("\"guid\":", json);
+            Assert.Contains("minDelay", json);
+            Assert.Contains("maxDelay", json);
+
+            // Optional defaults — omitted.
             Assert.DoesNotContain("\"team\"", json);
             Assert.DoesNotContain("maxSpawnAttempts", json);
+            Assert.DoesNotContain("spawnLocationIsHome", json);
         }
         finally
         {
@@ -75,6 +112,8 @@ public class SpawnerDtoRoundTripTests
             var json = JsonSerializer.Serialize(new List<SpawnerDto> { original.ToDto() }, SpawnerJsonSerializer.Options);
             Assert.Contains("\"$type\": \"RegionSpawner\"", json);
             Assert.Contains("DtoTestRegion", json);
+            Assert.DoesNotContain("homeRange", json);
+            Assert.DoesNotContain("spawnBounds", json);
 
             var dtos = JsonSerializer.Deserialize<List<SpawnerDto>>(json, SpawnerJsonSerializer.Options);
             rebuilt = Assert.Single(dtos).ToSpawner();

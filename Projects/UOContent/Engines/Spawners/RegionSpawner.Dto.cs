@@ -17,21 +17,22 @@ namespace Server.Engines.Spawners;
 
 public partial class RegionSpawner
 {
+    // RegionSpawner spawns from region rectangles, so it writes neither homeRange nor spawnBounds.
     public override SpawnerDto ToDto() => new RegionSpawnerDto
     {
         Guid = DtoGuid,
+        Name = DtoName,
         Location = Location,
         Map = Map,
         Count = Count,
-        Name = DtoName,
         MinDelay = DtoMinDelay,
         MaxDelay = DtoMaxDelay,
         Team = DtoTeam,
         WalkingRange = DtoWalkingRange,
+        Entries = Entries,
         SpawnLocationIsHome = DtoSpawnLocationIsHome,
         SpawnPositionMode = DtoSpawnPositionMode,
         MaxSpawnAttempts = DtoMaxSpawnAttempts,
-        Entries = Entries,
         Region = SpawnRegion?.Name
     };
 }
