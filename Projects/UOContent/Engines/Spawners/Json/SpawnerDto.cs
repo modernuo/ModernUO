@@ -33,43 +33,73 @@ namespace Server.Engines.Spawners;
 public abstract record SpawnerDto
 {
     // --- Mandatory: always written (overrides the options' WhenWritingDefault) ---
-    [JsonPropertyName("guid")][JsonPropertyOrder(0)][JsonIgnore(Condition = JsonIgnoreCondition.Never)]
+    [JsonPropertyName("guid")]
+    [JsonPropertyOrder(0)]
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public Guid Guid { get; init; }
 
-    [JsonPropertyName("name")][JsonPropertyOrder(1)]
+    [JsonPropertyName("name")]
+    [JsonPropertyOrder(1)]
     public string Name { get; init; }
 
-    [JsonPropertyName("location")][JsonPropertyOrder(2)][JsonIgnore(Condition = JsonIgnoreCondition.Never)]
+    [JsonPropertyName("location")]
+    [JsonPropertyOrder(2)]
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonConverter(typeof(Point3DArrayConverter))]
     public Point3D Location { get; init; }
 
-    [JsonPropertyName("map")][JsonPropertyOrder(3)][JsonIgnore(Condition = JsonIgnoreCondition.Never)]
+    [JsonPropertyName("map")]
+    [JsonPropertyOrder(3)]
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public Map Map { get; init; }
 
-    [JsonPropertyName("count")][JsonPropertyOrder(4)][JsonIgnore(Condition = JsonIgnoreCondition.Never)]
+    [JsonPropertyName("count")]
+    [JsonPropertyOrder(4)]
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public int Count { get; init; }
 
-    [JsonPropertyName("minDelay")][JsonPropertyOrder(5)][JsonIgnore(Condition = JsonIgnoreCondition.Never)]
+    [JsonPropertyName("minDelay")]
+    [JsonPropertyOrder(5)]
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public TimeSpan MinDelay { get; init; }
 
-    [JsonPropertyName("maxDelay")][JsonPropertyOrder(6)][JsonIgnore(Condition = JsonIgnoreCondition.Never)]
+    [JsonPropertyName("maxDelay")]
+    [JsonPropertyOrder(6)]
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public TimeSpan MaxDelay { get; init; }
 
     // --- Optional: omitted at default via WhenWritingDefault (spawnBounds/region are on subtypes, order 8) ---
-    [JsonPropertyName("team")][JsonPropertyOrder(7)] public int Team { get; init; }
-    [JsonPropertyName("walkingRange")][JsonPropertyOrder(9)] public int WalkingRange { get; init; }
+    [JsonPropertyName("team")]
+    [JsonPropertyOrder(7)]
+    public int Team { get; init; }
 
-    [JsonPropertyName("entries")][JsonPropertyOrder(10)][JsonIgnore(Condition = JsonIgnoreCondition.Never)]
+    [JsonPropertyName("walkingRange")]
+    [JsonPropertyOrder(9)]
+    public int WalkingRange { get; init; }
+
+    [JsonPropertyName("entries")]
+    [JsonPropertyOrder(10)]
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public List<SpawnerEntry> Entries { get; init; }
 
-    [JsonPropertyName("spawnLocationIsHome")][JsonPropertyOrder(11)] public bool SpawnLocationIsHome { get; init; }
-    [JsonPropertyName("spawnPositionMode")][JsonPropertyOrder(12)] public SpawnPositionMode SpawnPositionMode { get; init; }
-    [JsonPropertyName("maxSpawnAttempts")][JsonPropertyOrder(13)] public int MaxSpawnAttempts { get; init; }
+    [JsonPropertyName("spawnLocationIsHome")]
+    [JsonPropertyOrder(11)]
+    public bool SpawnLocationIsHome { get; init; }
+
+    [JsonPropertyName("spawnPositionMode")]
+    [JsonPropertyOrder(12)]
+    public SpawnPositionMode SpawnPositionMode { get; init; }
+
+    [JsonPropertyName("maxSpawnAttempts")]
+    [JsonPropertyOrder(13)]
+    public int MaxSpawnAttempts { get; init; }
 
     // Compact square-bounds form. -1 = "not a homeRange square" (use spawnBounds instead). Written
     // only when >= 0 (SpawnerJsonSerializer sets ShouldSerialize: hr >= 0, since 0 is a valid radius
     // that WhenWritingDefault cannot emit). On read it reconstructs SpawnBounds in ApplyDto.
-    [JsonPropertyName("homeRange")][JsonPropertyOrder(8)] public int HomeRange { get; init; } = -1;
+    [JsonPropertyName("homeRange")]
+    [JsonPropertyOrder(8)]
+    public int HomeRange { get; init; } = -1;
 
     /// <summary>Constructs the empty concrete spawner Item for this DTO.</summary>
     protected abstract BaseSpawner CreateEmpty();
@@ -96,7 +126,9 @@ public abstract record SpawnerDto
 [JsonDiscoverableType("Spawner")]
 public sealed record SpawnerDataDto : SpawnerDto
 {
-    [JsonPropertyName("spawnBounds")][JsonPropertyOrder(8)] public Rectangle3D SpawnBounds { get; init; }
+    [JsonPropertyName("spawnBounds")]
+    [JsonPropertyOrder(8)]
+    public Rectangle3D SpawnBounds { get; init; }
 
     protected override BaseSpawner CreateEmpty() => new Spawner();
 
@@ -123,7 +155,9 @@ public sealed record SpawnerDataDto : SpawnerDto
 [JsonDiscoverableType("RegionSpawner")]
 public sealed record RegionSpawnerDto : SpawnerDto
 {
-    [JsonPropertyName("region")][JsonPropertyOrder(8)] public string Region { get; init; }
+    [JsonPropertyName("region")]
+    [JsonPropertyOrder(8)]
+    public string Region { get; init; }
 
     protected override BaseSpawner CreateEmpty() => new RegionSpawner();
 
@@ -146,10 +180,21 @@ public sealed record RegionSpawnerDto : SpawnerDto
 [JsonDiscoverableType("ProximitySpawner")]
 public sealed record ProximitySpawnerDto : SpawnerDto
 {
-    [JsonPropertyName("spawnBounds")][JsonPropertyOrder(8)] public Rectangle3D SpawnBounds { get; init; }
-    [JsonPropertyName("triggerRange")][JsonPropertyOrder(14)] public int TriggerRange { get; init; }
-    [JsonPropertyName("spawnMessage")][JsonPropertyOrder(15)] public TextDefinition SpawnMessage { get; init; }
-    [JsonPropertyName("instant")][JsonPropertyOrder(16)] public bool Instant { get; init; }
+    [JsonPropertyName("spawnBounds")]
+    [JsonPropertyOrder(8)]
+    public Rectangle3D SpawnBounds { get; init; }
+
+    [JsonPropertyName("triggerRange")]
+    [JsonPropertyOrder(14)]
+    public int TriggerRange { get; init; }
+
+    [JsonPropertyName("spawnMessage")]
+    [JsonPropertyOrder(15)]
+    public TextDefinition SpawnMessage { get; init; }
+
+    [JsonPropertyName("instant")]
+    [JsonPropertyOrder(16)]
+    public bool Instant { get; init; }
 
     protected override BaseSpawner CreateEmpty() => new ProximitySpawner();
 
