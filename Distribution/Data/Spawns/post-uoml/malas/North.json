@@ -9,7 +9,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1080, "y1": 491, "z1": -128, "x2": 1159, "y2": 570, "z2": 128 },
+    "homeRange": 39,
     "walkingRange": 60,
     "entries": [
       { "name": "Bird", "maxCount": 10, "probability": 100 },
@@ -28,7 +28,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1574, "y1": 559, "z1": -128, "x2": 1775, "y2": 760, "z2": 128 },
+    "homeRange": 100,
     "walkingRange": 120,
     "entries": [
       { "name": "CrystalElemental", "maxCount": 3, "probability": 100 },
@@ -49,7 +49,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1334, "y1": 507, "z1": -128, "x2": 1535, "y2": 708, "z2": 128 },
+    "homeRange": 100,
     "walkingRange": 120,
     "entries": [
       { "name": "CrystalElemental", "maxCount": 3, "probability": 100 },
@@ -70,7 +70,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1094, "y1": 538, "z1": -128, "x2": 1295, "y2": 739, "z2": 128 },
+    "homeRange": 100,
     "walkingRange": 120,
     "entries": [
       { "name": "CrystalElemental", "maxCount": 4, "probability": 100 },
@@ -91,7 +91,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 860, "y1": 296, "z1": -128, "x2": 981, "y2": 417, "z2": 128 },
+    "homeRange": 60,
     "walkingRange": 70,
     "entries": [
       { "name": "CrystalElemental", "maxCount": 4, "probability": 100 },

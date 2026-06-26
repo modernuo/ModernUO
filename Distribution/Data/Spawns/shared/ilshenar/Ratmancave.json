@@ -9,7 +9,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1194, "y1": 1464, "z1": -128, "x2": 1255, "y2": 1525, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "SkeletalKnight", "maxCount": 5, "probability": 100 },
@@ -27,7 +27,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1166, "y1": 1506, "z1": -128, "x2": 1177, "y2": 1517, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 5,
     "entries": [
       { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 },
@@ -44,7 +44,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1260, "y1": 1469, "z1": -128, "x2": 1361, "y2": 1570, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Ratman", "maxCount": 7, "probability": 100 },
@@ -62,7 +62,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1194, "y1": 1494, "z1": -128, "x2": 1255, "y2": 1555, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "SkeletalKnight", "maxCount": 5, "probability": 100 },
@@ -80,7 +80,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1171, "y1": 1502, "z1": -128, "x2": 1192, "y2": 1523, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "SkeletalDragon", "maxCount": 1, "probability": 100 }

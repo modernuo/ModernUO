@@ -9,7 +9,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 7021, "y1": 399, "z1": -128, "x2": 7042, "y2": 420, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "Alelle", "maxCount": 1, "probability": 100 },
@@ -26,7 +26,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3805, "y1": 1207, "z1": -128, "x2": 3826, "y2": 1228, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "EscortableMage", "maxCount": 3, "probability": 100 },
@@ -44,7 +44,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 626, "y1": 863, "z1": -128, "x2": 629, "y2": 866, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 5,
     "entries": [
       { "name": "TownCrier", "maxCount": 1, "probability": 100 }
@@ -60,7 +60,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1828, "y1": 2810, "z1": -128, "x2": 1831, "y2": 2813, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 5,
     "entries": [
       { "name": "TownCrier", "maxCount": 1, "probability": 100 }
@@ -76,7 +76,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1661, "y1": 1610, "z1": -128, "x2": 1664, "y2": 1613, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 5,
     "entries": [
       { "name": "TownCrier", "maxCount": 1, "probability": 100 }
@@ -92,7 +92,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2883, "y1": 691, "z1": -128, "x2": 2886, "y2": 694, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 1,
     "entries": [
       { "name": "TreasureChestLevel2", "maxCount": 2, "probability": 100 },
@@ -109,7 +109,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4388, "y1": 1039, "z1": -128, "x2": 4409, "y2": 1060, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "EscortableMage", "maxCount": 3, "probability": 100 },
@@ -127,7 +127,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3651, "y1": 2618, "z1": -128, "x2": 3654, "y2": 2621, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 5,
     "entries": [
       { "name": "TownCrier", "maxCount": 1, "probability": 100 }
@@ -143,7 +143,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2058, "y1": 2844, "z1": -128, "x2": 2079, "y2": 2865, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "EscortableMage", "maxCount": 3, "probability": 100 },
@@ -161,7 +161,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1420, "y1": 1697, "z1": -128, "x2": 1423, "y2": 1700, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 5,
     "entries": [
       { "name": "TownCrier", "maxCount": 1, "probability": 100 }
@@ -177,7 +177,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 7002, "y1": 355, "z1": -128, "x2": 7019, "y2": 372, "z2": 128 },
+    "homeRange": 8,
     "walkingRange": 8,
     "entries": [
       { "name": "athialon", "maxCount": 1, "probability": 100 }
@@ -193,7 +193,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4450, "y1": 1152, "z1": -128, "x2": 4453, "y2": 1155, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 5,
     "entries": [
       { "name": "TownCrier", "maxCount": 1, "probability": 100 }
@@ -209,7 +209,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1811, "y1": 2832, "z1": -128, "x2": 1816, "y2": 2837, "z2": 128 },
+    "homeRange": 2,
     "walkingRange": 2,
     "entries": [
       { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 },
@@ -226,7 +226,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3635, "y1": 2651, "z1": -128, "x2": 3656, "y2": 2672, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "EscortableMage", "maxCount": 3, "probability": 100 },
@@ -244,7 +244,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1473, "y1": 1750, "z1": -128, "x2": 1494, "y2": 1771, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "EscortableMage", "maxCount": 3, "probability": 100 },
@@ -262,7 +262,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2253, "y1": 1206, "z1": -128, "x2": 2256, "y2": 1209, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 5,
     "entries": [
       { "name": "TownCrier", "maxCount": 1, "probability": 100 }
@@ -278,7 +278,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3031, "y1": 817, "z1": -128, "x2": 3052, "y2": 838, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "EscortableMage", "maxCount": 3, "probability": 100 },
@@ -296,7 +296,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1400, "y1": 1623, "z1": 28, "x2": 1401, "y2": 1624, "z2": 28 },
+    "homeRange": 0,
     "walkingRange": 1,
     "entries": [
       { "name": "OrderGuard", "maxCount": 1, "probability": 100 }
@@ -312,7 +312,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3720, "y1": 2160, "z1": -128, "x2": 3723, "y2": 2163, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 5,
     "entries": [
       { "name": "TownCrier", "maxCount": 1, "probability": 100 }
@@ -328,7 +328,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5684, "y1": 3147, "z1": -128, "x2": 5687, "y2": 3150, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 5,
     "entries": [
       { "name": "TownCrier", "maxCount": 1, "probability": 100 }
@@ -344,7 +344,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3739, "y1": 1394, "z1": -128, "x2": 3760, "y2": 1415, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "EscortableMage", "maxCount": 3, "probability": 100 },
@@ -362,7 +362,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 7078, "y1": 363, "z1": -128, "x2": 7087, "y2": 372, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": 4,
     "entries": [
       { "name": "Olaeni", "maxCount": 1, "probability": 100 }
@@ -378,7 +378,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 7047, "y1": 332, "z1": -128, "x2": 7060, "y2": 345, "z2": 128 },
+    "homeRange": 6,
     "walkingRange": 6,
     "entries": [
       { "name": "aneen", "maxCount": 1, "probability": 100 },
@@ -395,7 +395,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 7059, "y1": 346, "z1": -128, "x2": 7068, "y2": 355, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": 4,
     "entries": [
       { "name": "Bolaevin", "maxCount": 1, "probability": 100 },
@@ -412,7 +412,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1389, "y1": 3733, "z1": -128, "x2": 1410, "y2": 3754, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "HireBard", "maxCount": 5, "probability": 100 },
@@ -437,7 +437,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2890, "y1": 3473, "z1": -128, "x2": 2893, "y2": 3476, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 5,
     "entries": [
       { "name": "TownCrier", "maxCount": 1, "probability": 100 }
@@ -453,7 +453,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1362, "y1": 3906, "z1": -128, "x2": 1383, "y2": 3927, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "EscortableMage", "maxCount": 3, "probability": 100 },
@@ -471,7 +471,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2514, "y1": 556, "z1": -128, "x2": 2517, "y2": 559, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 5,
     "entries": [
       { "name": "TownCrier", "maxCount": 1, "probability": 100 }
@@ -487,7 +487,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3664, "y1": 2281, "z1": -128, "x2": 3685, "y2": 2302, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "EscortableMage", "maxCount": 3, "probability": 100 },
@@ -505,7 +505,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2894, "y1": 685, "z1": -128, "x2": 2897, "y2": 688, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 5,
     "entries": [
       { "name": "TownCrier", "maxCount": 1, "probability": 100 }
@@ -521,7 +521,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2984, "y1": 3441, "z1": -128, "x2": 3005, "y2": 3462, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "EscortableMage", "maxCount": 3, "probability": 100 },
@@ -539,7 +539,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2873, "y1": 691, "z1": -128, "x2": 2876, "y2": 694, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 1,
     "entries": [
       { "name": "TreasureChestLevel1", "maxCount": 1, "probability": 100 },
@@ -556,7 +556,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5289, "y1": 3986, "z1": -128, "x2": 5292, "y2": 3989, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 5,
     "entries": [
       { "name": "TownCrier", "maxCount": 1, "probability": 100 }
@@ -572,7 +572,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1400, "y1": 1628, "z1": 28, "x2": 1401, "y2": 1629, "z2": 28 },
+    "homeRange": 0,
     "walkingRange": 1,
     "entries": [
       { "name": "OrderGuard", "maxCount": 1, "probability": 100 }
@@ -588,7 +588,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 7082, "y1": 379, "z1": -128, "x2": 7099, "y2": 396, "z2": 128 },
+    "homeRange": 8,
     "walkingRange": 8,
     "entries": [
       { "name": "Aluniol", "maxCount": 1, "probability": 100 },
@@ -605,7 +605,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3772, "y1": 1307, "z1": -128, "x2": 3775, "y2": 1310, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 5,
     "entries": [
       { "name": "TownCrier", "maxCount": 1, "probability": 100 }
@@ -621,7 +621,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 563, "y1": 2236, "z1": -128, "x2": 584, "y2": 2257, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "EscortableMage", "maxCount": 3, "probability": 100 },
@@ -639,7 +639,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1913, "y1": 2686, "z1": -128, "x2": 1916, "y2": 2689, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 5,
     "entries": [
       { "name": "TownCrier", "maxCount": 1, "probability": 100 }
@@ -655,7 +655,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 7036, "y1": 370, "z1": -128, "x2": 7061, "y2": 395, "z2": 128 },
+    "homeRange": 12,
     "walkingRange": 12,
     "entries": [
       { "name": "abbein", "maxCount": 1, "probability": 100 },
@@ -676,7 +676,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6981, "y1": 334, "z1": -128, "x2": 6998, "y2": 351, "z2": 128 },
+    "homeRange": 8,
     "walkingRange": 8,
     "entries": [
       { "name": "Tyeelor", "maxCount": 1, "probability": 100 }
@@ -692,7 +692,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1116, "y1": 3678, "z1": -128, "x2": 1137, "y2": 3699, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "EscortableMage", "maxCount": 3, "probability": 100 },
@@ -710,7 +710,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 621, "y1": 873, "z1": -128, "x2": 642, "y2": 894, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "EscortableMage", "maxCount": 3, "probability": 100 },
@@ -728,7 +728,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2873, "y1": 673, "z1": -128, "x2": 2878, "y2": 678, "z2": 128 },
+    "homeRange": 2,
     "walkingRange": 2,
     "entries": [
       { "name": "TreasureChestLevel1", "maxCount": 6, "probability": 100 }
@@ -744,7 +744,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1521, "y1": 1457, "z1": 15, "x2": 1522, "y2": 1458, "z2": 15 },
+    "homeRange": 0,
     "walkingRange": 1,
     "entries": [
       { "name": "ChaosGuard", "maxCount": 1, "probability": 100 }
@@ -760,7 +760,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1525, "y1": 1457, "z1": 15, "x2": 1526, "y2": 1458, "z2": 15 },
+    "homeRange": 0,
     "walkingRange": 1,
     "entries": [
       { "name": "ChaosGuard", "maxCount": 1, "probability": 100 }
@@ -776,7 +776,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 663, "y1": 2225, "z1": -128, "x2": 684, "y2": 2246, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "EscortableMage", "maxCount": 3, "probability": 100 },
@@ -794,7 +794,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1329, "y1": 3777, "z1": -128, "x2": 1332, "y2": 3780, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 5,
     "entries": [
       { "name": "TownCrier", "maxCount": 1, "probability": 100 }
@@ -810,7 +810,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 602, "y1": 2140, "z1": -128, "x2": 605, "y2": 2143, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 5,
     "entries": [
       { "name": "TownCrier", "maxCount": 1, "probability": 100 }

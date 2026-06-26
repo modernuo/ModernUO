@@ -9,7 +9,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 330, "y1": 1915, "z1": -128, "x2": 341, "y2": 1926, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 5,
     "entries": [
       { "name": "Miasma", "maxCount": 1, "probability": 100 }
@@ -25,7 +25,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 346, "y1": 1908, "z1": -128, "x2": 387, "y2": 1949, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Drake", "maxCount": 4, "probability": 100 },
@@ -44,7 +44,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 377, "y1": 1908, "z1": -128, "x2": 388, "y2": 1919, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 5,
     "entries": [
       { "name": "Meraktus", "maxCount": 0, "probability": 100 }
@@ -60,7 +60,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 412, "y1": 1908, "z1": -128, "x2": 443, "y2": 1939, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 15,
     "entries": [
       { "name": "MinotaurCaptain", "maxCount": 6, "probability": 100 },
@@ -80,7 +80,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 347, "y1": 1888, "z1": -128, "x2": 368, "y2": 1909, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "Rend", "maxCount": 1, "probability": 100 }
@@ -96,7 +96,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 410, "y1": 1892, "z1": -128, "x2": 421, "y2": 1903, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 5,
     "entries": [
       { "name": "Pyre", "maxCount": 1, "probability": 100 }
@@ -112,7 +112,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 380, "y1": 1873, "z1": -128, "x2": 401, "y2": 1894, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "Eagle", "maxCount": 8, "probability": 100 },
@@ -131,7 +131,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 335, "y1": 1898, "z1": -128, "x2": 376, "y2": 1939, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Reptalon", "maxCount": 6, "probability": 100 },
@@ -148,7 +148,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 327, "y1": 1868, "z1": -128, "x2": 368, "y2": 1909, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "flurry", "maxCount": 4, "probability": 100 },
@@ -167,7 +167,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 372, "y1": 1897, "z1": -128, "x2": 413, "y2": 1938, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "MinotaurScout", "maxCount": 11, "probability": 100 },
@@ -189,7 +189,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 324, "y1": 1879, "z1": -128, "x2": 349, "y2": 1904, "z2": 128 },
+    "homeRange": 12,
     "walkingRange": 12,
     "entries": [
       { "name": "Minotaur", "maxCount": 5, "probability": 100 },
@@ -206,7 +206,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1730, "y1": 978, "z1": -128, "x2": 1755, "y2": 1003, "z2": 128 },
+    "homeRange": 12,
     "walkingRange": 12,
     "entries": [
       { "name": "Scorpion", "maxCount": 6, "probability": 100 },
@@ -223,7 +223,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 334, "y1": 1898, "z1": -128, "x2": 359, "y2": 1923, "z2": 128 },
+    "homeRange": 12,
     "walkingRange": 12,
     "entries": [
       { "name": "TropicalBird", "maxCount": 6, "probability": 100 },
@@ -240,7 +240,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 374, "y1": 1922, "z1": -128, "x2": 395, "y2": 1943, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "Minotaur", "maxCount": 3, "probability": 100 },
@@ -257,7 +257,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1725, "y1": 975, "z1": -128, "x2": 1756, "y2": 1006, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 15,
     "entries": [
       { "name": "WanderingHealer", "maxCount": 1, "probability": 100 }
@@ -273,7 +273,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 333, "y1": 1933, "z1": -128, "x2": 364, "y2": 1964, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 15,
     "entries": [
       { "name": "TropicalBird", "maxCount": 12, "probability": 100 },
@@ -293,7 +293,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 336, "y1": 1949, "z1": -128, "x2": 357, "y2": 1970, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "Squirrel", "maxCount": 4, "probability": 100 },

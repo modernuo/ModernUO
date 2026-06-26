@@ -9,7 +9,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1274, "y1": 776, "z1": -128, "x2": 1285, "y2": 787, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 5,
     "entries": [
       { "name": "Ridgeback", "maxCount": 2, "probability": 100 }
@@ -25,7 +25,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1083, "y1": 467, "z1": -128, "x2": 1134, "y2": 518, "z2": 128 },
+    "homeRange": 25,
     "walkingRange": 25,
     "entries": [
       { "name": "Hind", "maxCount": 2, "probability": 100 },
@@ -44,7 +44,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1507, "y1": 531, "z1": -128, "x2": 1528, "y2": 552, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "Lich", "maxCount": 2, "probability": 100 }
@@ -60,7 +60,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1705, "y1": 218, "z1": -128, "x2": 1726, "y2": 239, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "StoneHarpy", "maxCount": 3, "probability": 100 },
@@ -78,7 +78,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1181, "y1": 686, "z1": -128, "x2": 1202, "y2": 707, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "SavageRider", "maxCount": 1, "probability": 100 }
@@ -94,7 +94,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1497, "y1": 538, "z1": -128, "x2": 1538, "y2": 579, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 35,
     "entries": [
       { "name": "Skeleton", "maxCount": 6, "probability": 100 }
@@ -110,7 +110,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1640, "y1": 219, "z1": -128, "x2": 1691, "y2": 270, "z2": 128 },
+    "homeRange": 25,
     "walkingRange": 25,
     "entries": [
       { "name": "EarthElemental", "maxCount": 3, "probability": 100 },
@@ -127,7 +127,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1224, "y1": 750, "z1": -128, "x2": 1245, "y2": 771, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "SavageShaman", "maxCount": 1, "probability": 100 }
@@ -143,7 +143,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1085, "y1": 517, "z1": -128, "x2": 1136, "y2": 568, "z2": 128 },
+    "homeRange": 25,
     "walkingRange": 25,
     "entries": [
       { "name": "Hind", "maxCount": 2, "probability": 100 },
@@ -162,7 +162,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1288, "y1": 751, "z1": -128, "x2": 1297, "y2": 760, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": 4,
     "entries": [
       { "name": "Savage", "maxCount": 1, "probability": 100 }
@@ -178,7 +178,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1348, "y1": 1031, "z1": -128, "x2": 1379, "y2": 1062, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 30,
     "entries": [
       { "name": "EtherealWarrior", "maxCount": 4, "probability": 100 }
@@ -194,7 +194,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1203, "y1": 709, "z1": -128, "x2": 1224, "y2": 730, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "Savage", "maxCount": 3, "probability": 100 },
@@ -211,7 +211,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1193, "y1": 752, "z1": -128, "x2": 1214, "y2": 773, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "Savage", "maxCount": 3, "probability": 100 }
@@ -227,7 +227,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1031, "y1": 502, "z1": -128, "x2": 1062, "y2": 533, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 15,
     "entries": [
       { "name": "SavageRider", "maxCount": 3, "probability": 100 },
@@ -244,7 +244,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1241, "y1": 693, "z1": -128, "x2": 1262, "y2": 714, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "Savage", "maxCount": 3, "probability": 100 }
@@ -260,7 +260,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1101, "y1": 512, "z1": -128, "x2": 1132, "y2": 543, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 15,
     "entries": [
       { "name": "Savage", "maxCount": 1, "probability": 100 },
@@ -277,7 +277,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1156, "y1": 663, "z1": -128, "x2": 1167, "y2": 674, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 5,
     "entries": [
       { "name": "Savage", "maxCount": 1, "probability": 100 }
@@ -293,7 +293,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1233, "y1": 722, "z1": -128, "x2": 1254, "y2": 743, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "Savage", "maxCount": 1, "probability": 100 },
@@ -311,7 +311,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1177, "y1": 687, "z1": -128, "x2": 1186, "y2": 696, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": 4,
     "entries": [
       { "name": "Savage", "maxCount": 1, "probability": 100 }
@@ -327,7 +327,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 757, "y1": 1005, "z1": -128, "x2": 878, "y2": 1126, "z2": 128 },
+    "homeRange": 60,
     "walkingRange": 70,
     "entries": [
       { "name": "Ogre", "maxCount": 5, "probability": 100 },
@@ -347,7 +347,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1083, "y1": 467, "z1": -128, "x2": 1134, "y2": 518, "z2": 128 },
+    "homeRange": 25,
     "walkingRange": 25,
     "entries": [
       { "name": "Bird", "maxCount": 3, "probability": 100 }
@@ -363,7 +363,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1221, "y1": 684, "z1": -128, "x2": 1242, "y2": 705, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "Savage", "maxCount": 2, "probability": 100 },
@@ -380,7 +380,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1165, "y1": 1173, "z1": -128, "x2": 1196, "y2": 1204, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 15,
     "entries": [
       { "name": "Snake", "maxCount": 5, "probability": 100 }
@@ -396,7 +396,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1502, "y1": 537, "z1": -128, "x2": 1533, "y2": 568, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 30,
     "entries": [
       { "name": "Spectre", "maxCount": 6, "probability": 100 },
@@ -414,7 +414,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1186, "y1": 691, "z1": -128, "x2": 1197, "y2": 702, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 7,
     "entries": [
       { "name": "Savage", "maxCount": 1, "probability": 100 }
@@ -430,7 +430,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1085, "y1": 517, "z1": -128, "x2": 1136, "y2": 568, "z2": 128 },
+    "homeRange": 25,
     "walkingRange": 25,
     "entries": [
       { "name": "Bird", "maxCount": 3, "probability": 100 }
@@ -446,7 +446,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1264, "y1": 718, "z1": -128, "x2": 1285, "y2": 739, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "Savage", "maxCount": 1, "probability": 100 }
@@ -462,7 +462,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1169, "y1": 1177, "z1": -128, "x2": 1194, "y2": 1202, "z2": 128 },
+    "homeRange": 12,
     "walkingRange": 12,
     "entries": [
       { "name": "GiantSerpent", "maxCount": 1, "probability": 100 }
@@ -478,7 +478,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1204, "y1": 734, "z1": -128, "x2": 1225, "y2": 755, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "Savage", "maxCount": 4, "probability": 100 }
@@ -494,7 +494,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1496, "y1": 537, "z1": -128, "x2": 1537, "y2": 578, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 35,
     "entries": [
       { "name": "Ghoul", "maxCount": 2, "probability": 100 },
@@ -511,7 +511,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1273, "y1": 763, "z1": -128, "x2": 1288, "y2": 778, "z2": 128 },
+    "homeRange": 7,
     "walkingRange": 7,
     "entries": [
       { "name": "Savage", "maxCount": 1, "probability": 100 }
@@ -527,7 +527,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1502, "y1": 537, "z1": -128, "x2": 1533, "y2": 568, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 30,
     "entries": [
       { "name": "SkeletalKnight", "maxCount": 3, "probability": 100 },
@@ -546,7 +546,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1513, "y1": 537, "z1": -128, "x2": 1522, "y2": 546, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": 10,
     "entries": [
       { "name": "LichLord", "maxCount": 1, "probability": 100 }
@@ -562,7 +562,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1613, "y1": 280, "z1": -128, "x2": 1674, "y2": 341, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 50,
     "entries": [
       { "name": "Phoenix", "maxCount": 2, "probability": 100 },
@@ -583,7 +583,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1183, "y1": 681, "z1": -128, "x2": 1192, "y2": 690, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": 4,
     "entries": [
       { "name": "Savage", "maxCount": 1, "probability": 100 }
@@ -599,7 +599,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1252, "y1": 748, "z1": -128, "x2": 1273, "y2": 769, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "Savage", "maxCount": 4, "probability": 100 }
@@ -615,7 +615,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1102, "y1": 1087, "z1": -128, "x2": 1153, "y2": 1138, "z2": 128 },
+    "homeRange": 25,
     "walkingRange": 35,
     "entries": [
       { "name": "DireWolf", "maxCount": 7, "probability": 100 },
@@ -632,7 +632,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1613, "y1": 280, "z1": -128, "x2": 1674, "y2": 341, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 50,
     "entries": [
       { "name": "Succubus", "maxCount": 2, "probability": 100 },
@@ -649,7 +649,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1039, "y1": 510, "z1": -128, "x2": 1054, "y2": 525, "z2": 128 },
+    "homeRange": 7,
     "walkingRange": 10,
     "entries": [
       { "name": "SavageShaman", "maxCount": 4, "probability": 100 }
@@ -665,7 +665,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1163, "y1": 1098, "z1": -128, "x2": 1244, "y2": 1179, "z2": 128 },
+    "homeRange": 40,
     "walkingRange": 55,
     "entries": [
       { "name": "MeerWarrior", "maxCount": 16, "probability": 100 },

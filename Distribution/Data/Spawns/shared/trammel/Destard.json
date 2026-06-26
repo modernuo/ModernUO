@@ -9,7 +9,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5239, "y1": 781, "z1": -128, "x2": 5300, "y2": 842, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 50,
     "entries": [
       { "name": "Dragon", "maxCount": 1, "probability": 100 },
@@ -27,7 +27,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5111, "y1": 804, "z1": -128, "x2": 5172, "y2": 865, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 50,
     "entries": [
       { "name": "Drake", "maxCount": 1, "probability": 100 },
@@ -45,7 +45,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5342, "y1": 924, "z1": -128, "x2": 5363, "y2": 945, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "WaterElemental", "maxCount": 4, "probability": 100 }
@@ -61,7 +61,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5127, "y1": 844, "z1": -128, "x2": 5178, "y2": 895, "z2": 128 },
+    "homeRange": 25,
     "walkingRange": 50,
     "entries": [
       { "name": "Drake", "maxCount": 1, "probability": 100 },
@@ -79,7 +79,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5179, "y1": 935, "z1": -128, "x2": 5240, "y2": 996, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 50,
     "entries": [
       { "name": "Dragon", "maxCount": 1, "probability": 100 },
@@ -97,7 +97,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5264, "y1": 812, "z1": -128, "x2": 5325, "y2": 873, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 50,
     "entries": [
       { "name": "WaterElemental", "maxCount": 4, "probability": 100 }
@@ -113,7 +113,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5217, "y1": 926, "z1": -128, "x2": 5278, "y2": 987, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 50,
     "entries": [
       { "name": "Dragon", "maxCount": 1, "probability": 100 },
@@ -130,7 +130,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5219, "y1": 831, "z1": -128, "x2": 5240, "y2": 852, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 },
@@ -147,7 +147,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5231, "y1": 935, "z1": -128, "x2": 5252, "y2": 956, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 },
@@ -164,7 +164,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5113, "y1": 802, "z1": -128, "x2": 5194, "y2": 883, "z2": 128 },
+    "homeRange": 40,
     "walkingRange": 40,
     "entries": [
       { "name": "TreasureChestLevel4", "maxCount": 4, "probability": 100 },
@@ -182,7 +182,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5133, "y1": 976, "z1": -128, "x2": 5154, "y2": 997, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 },
@@ -199,7 +199,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5141, "y1": 920, "z1": -128, "x2": 5182, "y2": 961, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 50,
     "entries": [
       { "name": "GiantSerpent", "maxCount": 6, "probability": 100 }
@@ -215,7 +215,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5165, "y1": 986, "z1": -128, "x2": 5206, "y2": 1027, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 50,
     "entries": [
       { "name": "AncientWyrm", "maxCount": 1, "probability": 100 }
@@ -231,7 +231,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5116, "y1": 890, "z1": -128, "x2": 5167, "y2": 941, "z2": 128 },
+    "homeRange": 25,
     "walkingRange": 25,
     "entries": [
       { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 },
@@ -248,7 +248,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5139, "y1": 806, "z1": -128, "x2": 5200, "y2": 867, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 50,
     "entries": [
       { "name": "Daemon", "maxCount": 2, "probability": 100 },
@@ -265,7 +265,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5196, "y1": 796, "z1": -128, "x2": 5257, "y2": 857, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 50,
     "entries": [
       { "name": "Dragon", "maxCount": 1, "probability": 100 },
@@ -283,7 +283,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5220, "y1": 839, "z1": -128, "x2": 5281, "y2": 900, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 50,
     "entries": [
       { "name": "GiantSerpent", "maxCount": 6, "probability": 100 }
@@ -299,7 +299,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5254, "y1": 896, "z1": -128, "x2": 5315, "y2": 957, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 50,
     "entries": [
       { "name": "Dragon", "maxCount": 1, "probability": 100 },
@@ -317,7 +317,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5310, "y1": 973, "z1": -128, "x2": 5325, "y2": 988, "z2": 128 },
+    "homeRange": 7,
     "walkingRange": 7,
     "entries": [
       { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 },
@@ -334,7 +334,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5137, "y1": 977, "z1": -128, "x2": 5178, "y2": 1018, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 50,
     "entries": [
       { "name": "Wyvern", "maxCount": 3, "probability": 100 },
@@ -352,7 +352,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5134, "y1": 892, "z1": -128, "x2": 5165, "y2": 923, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 20,
     "entries": [
       { "name": "Wyvern", "maxCount": 1, "probability": 100 },
@@ -370,7 +370,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5191, "y1": 775, "z1": -128, "x2": 5216, "y2": 800, "z2": 128 },
+    "homeRange": 12,
     "walkingRange": 25,
     "entries": [
       { "name": "WaterElemental", "maxCount": 4, "probability": 100 }
@@ -386,7 +386,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5277, "y1": 785, "z1": -128, "x2": 5338, "y2": 846, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 50,
     "entries": [
       { "name": "Drake", "maxCount": 1, "probability": 100 },
@@ -403,7 +403,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5184, "y1": 887, "z1": -128, "x2": 5245, "y2": 948, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 50,
     "entries": [
       { "name": "Dragon", "maxCount": 1, "probability": 100 },
@@ -421,7 +421,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5173, "y1": 997, "z1": -128, "x2": 5194, "y2": 1018, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 },
@@ -438,7 +438,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5198, "y1": 771, "z1": -128, "x2": 5213, "y2": 786, "z2": 128 },
+    "homeRange": 7,
     "walkingRange": 7,
     "entries": [
       { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }
@@ -454,7 +454,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5131, "y1": 958, "z1": -128, "x2": 5152, "y2": 979, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "FireElemental", "maxCount": 1, "probability": 100 }
@@ -470,7 +470,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5250, "y1": 925, "z1": -128, "x2": 5311, "y2": 986, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 50,
     "entries": [
       { "name": "Dragon", "maxCount": 1, "probability": 100 },

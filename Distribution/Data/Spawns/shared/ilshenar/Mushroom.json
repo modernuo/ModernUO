@@ -9,7 +9,7 @@
     "minDelay": "00:02:00",
     "maxDelay": "00:05:00",
     "team": 0,
-    "spawnBounds": { "x1": 1411, "y1": 1494, "z1": -128, "x2": 1420, "y2": 1503, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": 4,
     "entries": [
       { "name": "MushroomTrap", "maxCount": 4, "probability": 100 }
@@ -25,7 +25,7 @@
     "minDelay": "00:02:00",
     "maxDelay": "00:05:00",
     "team": 0,
-    "spawnBounds": { "x1": 1434, "y1": 1509, "z1": -128, "x2": 1455, "y2": 1530, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "MushroomTrap", "maxCount": 4, "probability": 100 }
@@ -41,7 +41,7 @@
     "minDelay": "00:02:00",
     "maxDelay": "00:05:00",
     "team": 0,
-    "spawnBounds": { "x1": 1454, "y1": 1485, "z1": -128, "x2": 1475, "y2": 1506, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "MushroomTrap", "maxCount": 4, "probability": 100 }
@@ -57,7 +57,7 @@
     "minDelay": "00:02:00",
     "maxDelay": "00:05:00",
     "team": 0,
-    "spawnBounds": { "x1": 1431, "y1": 1522, "z1": -128, "x2": 1452, "y2": 1543, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "MushroomTrap", "maxCount": 4, "probability": 100 }

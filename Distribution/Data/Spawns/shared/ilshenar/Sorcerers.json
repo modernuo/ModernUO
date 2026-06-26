@@ -9,7 +9,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 328, "y1": 40, "z1": -128, "x2": 345, "y2": 57, "z2": 128 },
+    "homeRange": 8,
     "walkingRange": 10,
     "entries": [
       { "name": "Gargoyle", "maxCount": 2, "probability": 100 }
@@ -25,7 +25,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 145, "y1": 11, "z1": -128, "x2": 166, "y2": 32, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 15,
     "entries": [
       { "name": "Balron", "maxCount": 2, "probability": 100 },
@@ -42,7 +42,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 328, "y1": 29, "z1": -128, "x2": 345, "y2": 46, "z2": 128 },
+    "homeRange": 8,
     "walkingRange": 10,
     "entries": [
       { "name": "Gargoyle", "maxCount": 2, "probability": 100 }
@@ -58,7 +58,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 249, "y1": 15, "z1": -128, "x2": 260, "y2": 26, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 10,
     "entries": [
       { "name": "BloodElemental", "maxCount": 1, "probability": 100 }
@@ -74,7 +74,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 417, "y1": 85, "z1": -128, "x2": 438, "y2": 106, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 15,
     "entries": [
       { "name": "Skeleton", "maxCount": 4, "probability": 100 },
@@ -91,7 +91,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 271, "y1": 10, "z1": -128, "x2": 292, "y2": 31, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 15,
     "entries": [
       { "name": "ElderGazer", "maxCount": 1, "probability": 100 },
@@ -109,7 +109,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 457, "y1": 11, "z1": -128, "x2": 468, "y2": 22, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 15,
     "entries": [
       { "name": "HeadlessOne", "maxCount": 2, "probability": 100 },
@@ -126,7 +126,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 113, "y1": 94, "z1": -128, "x2": 154, "y2": 135, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 25,
     "entries": [
       { "name": "BoneKnight", "maxCount": 1, "probability": 100 },
@@ -143,7 +143,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 295, "y1": 10, "z1": -128, "x2": 316, "y2": 31, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "DullCopperElemental", "maxCount": 5, "probability": 100 }
@@ -159,7 +159,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 123, "y1": 104, "z1": -128, "x2": 144, "y2": 125, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "BloodElemental", "maxCount": 1, "probability": 100 }
@@ -175,7 +175,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 199, "y1": 52, "z1": -128, "x2": 230, "y2": 83, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 40,
     "entries": [
       { "name": "Imp", "maxCount": 4, "probability": 100 }
@@ -191,7 +191,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 448, "y1": 63, "z1": -128, "x2": 463, "y2": 78, "z2": 128 },
+    "homeRange": 7,
     "walkingRange": 10,
     "entries": [
       { "name": "AcidElemental", "maxCount": 5, "probability": 100 },
@@ -209,7 +209,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 384, "y1": 59, "z1": -128, "x2": 405, "y2": 80, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 15,
     "entries": [
       { "name": "Shade", "maxCount": 2, "probability": 100 },
@@ -226,7 +226,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 94, "y1": 29, "z1": -128, "x2": 125, "y2": 60, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 20,
     "entries": [
       { "name": "BoneMagi", "maxCount": 4, "probability": 100 },
@@ -244,7 +244,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 437, "y1": 9, "z1": -128, "x2": 458, "y2": 30, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 25,
     "entries": [
       { "name": "Gargoyle", "maxCount": 3, "probability": 100 },
@@ -263,7 +263,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 150, "y1": 49, "z1": -128, "x2": 171, "y2": 70, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "BloodElemental", "maxCount": 1, "probability": 100 }
@@ -279,7 +279,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 426, "y1": 11, "z1": -128, "x2": 437, "y2": 22, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 15,
     "entries": [
       { "name": "HeadlessOne", "maxCount": 2, "probability": 100 },
@@ -296,7 +296,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 231, "y1": 41, "z1": -128, "x2": 246, "y2": 56, "z2": 128 },
+    "homeRange": 7,
     "walkingRange": 10,
     "entries": [
       { "name": "Balron", "maxCount": 1, "probability": 100 },
@@ -313,7 +313,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 133, "y1": 60, "z1": -128, "x2": 154, "y2": 81, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "EvilMageLord", "maxCount": 1, "probability": 100 }
@@ -329,7 +329,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 340, "y1": 32, "z1": -128, "x2": 361, "y2": 53, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "BloodElemental", "maxCount": 1, "probability": 100 }
@@ -345,7 +345,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 457, "y1": 11, "z1": -128, "x2": 468, "y2": 22, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 15,
     "entries": [
       { "name": "EarthElemental", "maxCount": 2, "probability": 100 }
@@ -361,7 +361,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 52, "y1": 55, "z1": -128, "x2": 83, "y2": 86, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 15,
     "entries": [
       { "name": "LichLord", "maxCount": 2, "probability": 100 },
@@ -378,7 +378,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 290, "y1": 72, "z1": -128, "x2": 331, "y2": 113, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "LichLord", "maxCount": 2, "probability": 100 }
@@ -394,7 +394,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 328, "y1": 34, "z1": -128, "x2": 345, "y2": 51, "z2": 128 },
+    "homeRange": 8,
     "walkingRange": 15,
     "entries": [
       { "name": "Lich", "maxCount": 1, "probability": 100 },
@@ -411,7 +411,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 378, "y1": 24, "z1": -128, "x2": 389, "y2": 35, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 10,
     "entries": [
       { "name": "BloodElemental", "maxCount": 1, "probability": 100 }
@@ -427,7 +427,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 136, "y1": 73, "z1": -128, "x2": 157, "y2": 94, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "BloodElemental", "maxCount": 1, "probability": 100 }
@@ -443,7 +443,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 291, "y1": 71, "z1": -128, "x2": 332, "y2": 112, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "PoisonElemental", "maxCount": 1, "probability": 100 },
@@ -460,7 +460,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 268, "y1": 43, "z1": -128, "x2": 289, "y2": 64, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "HellHound", "maxCount": 6, "probability": 100 },
@@ -477,7 +477,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 156, "y1": 5, "z1": -128, "x2": 165, "y2": 14, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": 5,
     "entries": [
       { "name": "Efreet", "maxCount": 2, "probability": 100 }
@@ -493,7 +493,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 247, "y1": 69, "z1": -128, "x2": 278, "y2": 100, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 15,
     "entries": [
       { "name": "Gargoyle", "maxCount": 2, "probability": 100 },
@@ -511,7 +511,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 247, "y1": 69, "z1": -128, "x2": 278, "y2": 100, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 25,
     "entries": [
       { "name": "Shade", "maxCount": 1, "probability": 100 },
@@ -529,7 +529,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 402, "y1": 42, "z1": -128, "x2": 453, "y2": 93, "z2": 128 },
+    "homeRange": 25,
     "walkingRange": 25,
     "entries": [
       { "name": "Zombie", "maxCount": 2, "probability": 100 }

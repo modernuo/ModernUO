@@ -9,7 +9,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6517, "y1": 135, "z1": -128, "x2": 6526, "y2": 144, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": 4,
     "entries": [
       { "name": "Wisp", "maxCount": 1, "probability": 100 }
@@ -25,7 +25,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6526, "y1": 135, "z1": -128, "x2": 6535, "y2": 144, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": 4,
     "entries": [
       { "name": "Wisp", "maxCount": 1, "probability": 100 }
@@ -41,7 +41,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6551, "y1": 105, "z1": -128, "x2": 6582, "y2": 136, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 15,
     "entries": [
       { "name": "CrystalVortex", "maxCount": 7, "probability": 100 },
@@ -58,7 +58,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6568, "y1": 85, "z1": -128, "x2": 6577, "y2": 94, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": 4,
     "entries": [
       { "name": "CrystalHydra", "maxCount": 2, "probability": 100 }
@@ -74,7 +74,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6505, "y1": 172, "z1": -128, "x2": 6514, "y2": 181, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": 4,
     "entries": [
       { "name": "UnfrozenMummy", "maxCount": 2, "probability": 100 }
@@ -90,7 +90,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6502, "y1": 163, "z1": -128, "x2": 6519, "y2": 180, "z2": 128 },
+    "homeRange": 8,
     "walkingRange": 8,
     "entries": [
       { "name": "Protector", "maxCount": 3, "probability": 100 }
@@ -106,7 +106,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6532, "y1": 75, "z1": -128, "x2": 6541, "y2": 84, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": 4,
     "entries": [
       { "name": "CrystalDaemon", "maxCount": 1, "probability": 100 }
@@ -122,7 +122,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6503, "y1": 180, "z1": -128, "x2": 6506, "y2": 183, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 1,
     "entries": [
       { "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 }
@@ -138,7 +138,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6528, "y1": 75, "z1": -128, "x2": 6537, "y2": 84, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": 4,
     "entries": [
       { "name": "CrystalDaemon", "maxCount": 1, "probability": 100 }
@@ -154,7 +154,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6470, "y1": 96, "z1": -128, "x2": 6481, "y2": 107, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 5,
     "entries": [
       { "name": "ShadowWisp", "maxCount": 5, "probability": 100 }
@@ -170,7 +170,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6543, "y1": 87, "z1": -128, "x2": 6552, "y2": 96, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": 4,
     "entries": [
       { "name": "CrystalDaemon", "maxCount": 1, "probability": 100 }
@@ -186,7 +186,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6520, "y1": 164, "z1": -128, "x2": 6551, "y2": 195, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 15,
     "entries": [
       { "name": "CrystalWisp", "maxCount": 5, "probability": 100 },
@@ -205,7 +205,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6530, "y1": 174, "z1": -128, "x2": 6539, "y2": 183, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": 4,
     "entries": [
       { "name": "CrystalWisp", "maxCount": 2, "probability": 100 }
@@ -221,7 +221,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6502, "y1": 120, "z1": -10, "x2": 6503, "y2": 121, "z2": -10 },
+    "homeRange": 0,
     "walkingRange": 0,
     "entries": [
       { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }
@@ -237,7 +237,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6545, "y1": 149, "z1": -128, "x2": 6562, "y2": 166, "z2": 128 },
+    "homeRange": 8,
     "walkingRange": 8,
     "entries": [
       { "name": "CrystalLatticeSeeker", "maxCount": 3, "probability": 100 }
@@ -253,7 +253,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6470, "y1": 70, "z1": -128, "x2": 6479, "y2": 79, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": 4,
     "entries": [
       { "name": "Rat", "maxCount": 9, "probability": 100 },
@@ -270,7 +270,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6468, "y1": 164, "z1": -128, "x2": 6489, "y2": 185, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "Wisp", "maxCount": 6, "probability": 100 },
@@ -287,7 +287,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6502, "y1": 146, "z1": -128, "x2": 6513, "y2": 157, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 5,
     "entries": [
       { "name": "Protector", "maxCount": 3, "probability": 100 }
@@ -303,7 +303,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6573, "y1": 178, "z1": -128, "x2": 6584, "y2": 189, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 5,
     "entries": [
       { "name": "Ferret", "maxCount": 2, "probability": 100 }
@@ -319,7 +319,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6537, "y1": 140, "z1": -128, "x2": 6568, "y2": 171, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 15,
     "entries": [
       { "name": "Wisp", "maxCount": 5, "probability": 100 },
@@ -338,7 +338,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6572, "y1": 87, "z1": -128, "x2": 6581, "y2": 96, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": 4,
     "entries": [
       { "name": "CrystalSeaSerpent", "maxCount": 2, "probability": 100 }

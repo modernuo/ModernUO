@@ -9,7 +9,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6396, "y1": 427, "z1": -128, "x2": 6437, "y2": 468, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "PlagueBeast", "maxCount": 8, "probability": 100 },
@@ -28,7 +28,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6252, "y1": 422, "z1": -128, "x2": 6333, "y2": 503, "z2": 128 },
+    "homeRange": 40,
     "walkingRange": 40,
     "entries": [
       { "name": "ChaosDaemon", "maxCount": 7, "probability": 100 },
@@ -48,7 +48,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6234, "y1": 337, "z1": -128, "x2": 6265, "y2": 368, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 15,
     "entries": [
       { "name": "AcidElemental", "maxCount": 6, "probability": 100 },
@@ -69,7 +69,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6280, "y1": 348, "z1": -128, "x2": 6291, "y2": 359, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 5,
     "entries": [
       { "name": "PoisonElemental", "maxCount": 1, "probability": 100 }
@@ -85,7 +85,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6386, "y1": 360, "z1": -128, "x2": 6423, "y2": 397, "z2": 128 },
+    "homeRange": 18,
     "walkingRange": 18,
     "entries": [
       { "name": "AcidElemental", "maxCount": 2, "probability": 100 },
@@ -104,7 +104,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6290, "y1": 387, "z1": -128, "x2": 6307, "y2": 404, "z2": 128 },
+    "homeRange": 8,
     "walkingRange": 8,
     "entries": [
       { "name": "EarthElemental", "maxCount": 2, "probability": 100 },
@@ -121,7 +121,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6245, "y1": 566, "z1": -128, "x2": 6346, "y2": 667, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Daemon", "maxCount": 6, "probability": 100 },
@@ -145,7 +145,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6299, "y1": 328, "z1": -128, "x2": 6340, "y2": 369, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "EarthElemental", "maxCount": 5, "probability": 100 },
@@ -168,7 +168,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6354, "y1": 550, "z1": -128, "x2": 6415, "y2": 611, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "InterredGrizzle", "maxCount": 4, "probability": 100 },
@@ -192,7 +192,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6343, "y1": 390, "z1": -128, "x2": 6364, "y2": 411, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "EarthElemental", "maxCount": 4, "probability": 100 },
@@ -209,7 +209,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6334, "y1": 435, "z1": -128, "x2": 6375, "y2": 476, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "PlagueBeast", "maxCount": 5, "probability": 100 },
@@ -228,7 +228,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6436, "y1": 513, "z1": -128, "x2": 6497, "y2": 574, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Balron", "maxCount": 6, "probability": 100 },
@@ -252,7 +252,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6318, "y1": 507, "z1": -128, "x2": 6339, "y2": 528, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "PoisonElemental", "maxCount": 4, "probability": 100 }
@@ -268,7 +268,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6393, "y1": 333, "z1": -128, "x2": 6444, "y2": 384, "z2": 128 },
+    "homeRange": 25,
     "walkingRange": 25,
     "entries": [
       { "name": "PlagueSpawn", "maxCount": 12, "probability": 100 },

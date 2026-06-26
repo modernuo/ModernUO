@@ -9,7 +9,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2155, "y1": 95, "z1": -128, "x2": 2256, "y2": 196, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Unicorn", "maxCount": 3, "probability": 100 }
@@ -25,7 +25,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1442, "y1": 307, "z1": -128, "x2": 1523, "y2": 388, "z2": 128 },
+    "homeRange": 40,
     "walkingRange": 60,
     "entries": [
       { "name": "Bird", "maxCount": 2, "probability": 100 },
@@ -46,7 +46,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1234, "y1": 260, "z1": -128, "x2": 1315, "y2": 341, "z2": 128 },
+    "homeRange": 40,
     "walkingRange": 40,
     "entries": [
       { "name": "Bird", "maxCount": 2, "probability": 100 },
@@ -67,7 +67,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2231, "y1": 235, "z1": -128, "x2": 2352, "y2": 356, "z2": 128 },
+    "homeRange": 60,
     "walkingRange": 60,
     "entries": [
       { "name": "GoreFiend", "maxCount": 6, "probability": 100 }
@@ -83,7 +83,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2101, "y1": 577, "z1": -128, "x2": 2142, "y2": 618, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Bird", "maxCount": 2, "probability": 100 },
@@ -104,7 +104,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 746, "y1": 94, "z1": -128, "x2": 787, "y2": 135, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Bird", "maxCount": 2, "probability": 100 },
@@ -125,7 +125,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1690, "y1": 383, "z1": -128, "x2": 1731, "y2": 424, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 40,
     "entries": [
       { "name": "Bird", "maxCount": 2, "probability": 100 },
@@ -146,7 +146,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1639, "y1": 92, "z1": -128, "x2": 1680, "y2": 133, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Bird", "maxCount": 2, "probability": 100 },
@@ -167,7 +167,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1940, "y1": 620, "z1": -128, "x2": 2021, "y2": 701, "z2": 128 },
+    "homeRange": 40,
     "walkingRange": 40,
     "entries": [
       { "name": "Bird", "maxCount": 2, "probability": 100 },
@@ -188,7 +188,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1829, "y1": 440, "z1": -128, "x2": 1910, "y2": 521, "z2": 128 },
+    "homeRange": 40,
     "walkingRange": 40,
     "entries": [
       { "name": "Bird", "maxCount": 2, "probability": 100 },
@@ -209,7 +209,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1990, "y1": 460, "z1": -128, "x2": 2071, "y2": 541, "z2": 128 },
+    "homeRange": 40,
     "walkingRange": 70,
     "entries": [
       { "name": "Bird", "maxCount": 2, "probability": 100 },
@@ -230,7 +230,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1341, "y1": 300, "z1": -128, "x2": 1422, "y2": 381, "z2": 128 },
+    "homeRange": 40,
     "walkingRange": 40,
     "entries": [
       { "name": "Bird", "maxCount": 2, "probability": 100 },
@@ -251,7 +251,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1117, "y1": 203, "z1": -128, "x2": 1158, "y2": 244, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 40,
     "entries": [
       { "name": "Bird", "maxCount": 2, "probability": 100 },
@@ -272,7 +272,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1186, "y1": 171, "z1": -128, "x2": 1227, "y2": 212, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 40,
     "entries": [
       { "name": "Bird", "maxCount": 2, "probability": 100 },
@@ -293,7 +293,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1547, "y1": 346, "z1": -128, "x2": 1628, "y2": 427, "z2": 128 },
+    "homeRange": 40,
     "walkingRange": 40,
     "entries": [
       { "name": "Bird", "maxCount": 2, "probability": 100 },
@@ -314,7 +314,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2173, "y1": 495, "z1": -128, "x2": 2294, "y2": 616, "z2": 128 },
+    "homeRange": 60,
     "walkingRange": 60,
     "entries": [
       { "name": "Bird", "maxCount": 2, "probability": 100 },
@@ -335,7 +335,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1003, "y1": 172, "z1": -128, "x2": 1044, "y2": 213, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Bird", "maxCount": 2, "probability": 100 },

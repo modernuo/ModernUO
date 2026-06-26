@@ -9,7 +9,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 796, "y1": 1021, "z1": -128, "x2": 897, "y2": 1122, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -43,7 +43,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2462, "y1": 1016, "z1": -128, "x2": 2563, "y2": 1117, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -77,7 +77,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1265, "y1": 2142, "z1": -128, "x2": 1366, "y2": 2243, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -111,7 +111,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1645, "y1": 759, "z1": -128, "x2": 1746, "y2": 860, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -145,7 +145,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1616, "y1": 1240, "z1": -128, "x2": 1717, "y2": 1341, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -179,7 +179,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2138, "y1": 1936, "z1": -128, "x2": 2239, "y2": 2037, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -213,7 +213,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1037, "y1": 2351, "z1": -128, "x2": 1138, "y2": 2452, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -247,7 +247,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1532, "y1": 2672, "z1": -128, "x2": 1633, "y2": 2773, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -281,7 +281,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4460, "y1": 1212, "z1": -128, "x2": 4561, "y2": 1313, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -315,7 +315,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4642, "y1": 3444, "z1": -128, "x2": 4743, "y2": 3545, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -349,7 +349,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1748, "y1": 1421, "z1": -128, "x2": 1849, "y2": 1522, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -383,7 +383,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1817, "y1": 1194, "z1": -128, "x2": 1918, "y2": 1295, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -417,7 +417,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 837, "y1": 1173, "z1": -128, "x2": 938, "y2": 1274, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -451,7 +451,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2685, "y1": 367, "z1": -128, "x2": 2786, "y2": 468, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -485,7 +485,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2317, "y1": 698, "z1": -128, "x2": 2418, "y2": 799, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -519,7 +519,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1337, "y1": 1973, "z1": -128, "x2": 1438, "y2": 2074, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -553,7 +553,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 675, "y1": 1433, "z1": -128, "x2": 776, "y2": 1534, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -587,7 +587,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1409, "y1": 1913, "z1": -128, "x2": 1510, "y2": 2014, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -621,7 +621,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 732, "y1": 1106, "z1": -128, "x2": 833, "y2": 1207, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -655,7 +655,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2622, "y1": 764, "z1": -128, "x2": 2723, "y2": 865, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -689,7 +689,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1122, "y1": 924, "z1": -128, "x2": 1223, "y2": 1025, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -723,7 +723,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 901, "y1": 492, "z1": -128, "x2": 1002, "y2": 593, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -757,7 +757,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1179, "y1": 1605, "z1": -128, "x2": 1280, "y2": 1706, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -791,7 +791,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 845, "y1": 780, "z1": -128, "x2": 946, "y2": 881, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -825,7 +825,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1477, "y1": 2559, "z1": -128, "x2": 1578, "y2": 2660, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -859,7 +859,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1376, "y1": 2565, "z1": -128, "x2": 1477, "y2": 2666, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -893,7 +893,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4286, "y1": 1080, "z1": -128, "x2": 4387, "y2": 1181, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -927,7 +927,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2604, "y1": 2236, "z1": -128, "x2": 2705, "y2": 2337, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -961,7 +961,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1665, "y1": 2257, "z1": -128, "x2": 1766, "y2": 2358, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -995,7 +995,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1552, "y1": 2376, "z1": -128, "x2": 1653, "y2": 2477, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -1029,7 +1029,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4562, "y1": 3374, "z1": -128, "x2": 4663, "y2": 3475, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -1063,7 +1063,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2288, "y1": 939, "z1": -128, "x2": 2389, "y2": 1040, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -1097,7 +1097,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3505, "y1": 2475, "z1": -128, "x2": 3606, "y2": 2576, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -1131,7 +1131,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1123, "y1": 2053, "z1": -128, "x2": 1224, "y2": 2154, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -1165,7 +1165,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4334, "y1": 1168, "z1": -128, "x2": 4435, "y2": 1269, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -1199,7 +1199,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1172, "y1": 2328, "z1": -128, "x2": 1273, "y2": 2429, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -1233,7 +1233,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4582, "y1": 1114, "z1": -128, "x2": 4683, "y2": 1215, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -1267,7 +1267,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 927, "y1": 1588, "z1": -128, "x2": 1028, "y2": 1689, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -1301,7 +1301,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3496, "y1": 2762, "z1": -128, "x2": 3597, "y2": 2863, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -1335,7 +1335,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 961, "y1": 1895, "z1": -128, "x2": 1062, "y2": 1996, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -1369,7 +1369,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1042, "y1": 960, "z1": -128, "x2": 1143, "y2": 1061, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -1403,7 +1403,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1649, "y1": 2510, "z1": -128, "x2": 1750, "y2": 2611, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -1437,7 +1437,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3604, "y1": 2816, "z1": -128, "x2": 3705, "y2": 2917, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -1471,7 +1471,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1674, "y1": 2731, "z1": -128, "x2": 1775, "y2": 2832, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -1505,7 +1505,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2838, "y1": 341, "z1": -128, "x2": 2939, "y2": 442, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -1539,7 +1539,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2736, "y1": 2232, "z1": -128, "x2": 2837, "y2": 2333, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -1573,7 +1573,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1448, "y1": 1990, "z1": -128, "x2": 1549, "y2": 2091, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -1607,7 +1607,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2764, "y1": 442, "z1": -128, "x2": 2865, "y2": 543, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -1641,7 +1641,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 509, "y1": 2031, "z1": -128, "x2": 610, "y2": 2132, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -1675,7 +1675,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 890, "y1": 978, "z1": -128, "x2": 991, "y2": 1079, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -1709,7 +1709,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 435, "y1": 1348, "z1": -128, "x2": 536, "y2": 1449, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -1743,7 +1743,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 801, "y1": 1720, "z1": -128, "x2": 902, "y2": 1821, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -1777,7 +1777,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1908, "y1": 1255, "z1": -128, "x2": 2009, "y2": 1356, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -1811,7 +1811,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1513, "y1": 2227, "z1": -128, "x2": 1614, "y2": 2328, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -1845,7 +1845,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4540, "y1": 1276, "z1": -128, "x2": 4641, "y2": 1377, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -1879,7 +1879,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3342, "y1": 374, "z1": -128, "x2": 3443, "y2": 475, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -1913,7 +1913,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1815, "y1": 1329, "z1": -128, "x2": 1916, "y2": 1430, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -1947,7 +1947,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1844, "y1": 2892, "z1": -128, "x2": 1945, "y2": 2993, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -1981,7 +1981,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4494, "y1": 1078, "z1": -128, "x2": 4595, "y2": 1179, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -2015,7 +2015,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2896, "y1": 2118, "z1": -128, "x2": 2997, "y2": 2219, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -2049,7 +2049,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3456, "y1": 2427, "z1": -128, "x2": 3557, "y2": 2528, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -2083,7 +2083,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1007, "y1": 715, "z1": -128, "x2": 1108, "y2": 816, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -2117,7 +2117,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1172, "y1": 2449, "z1": -128, "x2": 1273, "y2": 2550, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -2151,7 +2151,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4396, "y1": 3656, "z1": -128, "x2": 4497, "y2": 3757, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -2185,7 +2185,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1584, "y1": 2595, "z1": -128, "x2": 1685, "y2": 2696, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -2219,7 +2219,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1659, "y1": 1942, "z1": -128, "x2": 1760, "y2": 2043, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -2253,7 +2253,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1453, "y1": 2157, "z1": -128, "x2": 1554, "y2": 2258, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -2287,7 +2287,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2445, "y1": 928, "z1": -128, "x2": 2546, "y2": 1029, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -2321,7 +2321,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1338, "y1": 734, "z1": -128, "x2": 1439, "y2": 835, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -2355,7 +2355,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 949, "y1": 1789, "z1": -128, "x2": 1050, "y2": 1890, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -2389,7 +2389,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3600, "y1": 2030, "z1": -128, "x2": 3701, "y2": 2131, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -2423,7 +2423,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1102, "y1": 762, "z1": -128, "x2": 1203, "y2": 863, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -2457,7 +2457,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2533, "y1": 943, "z1": -128, "x2": 2634, "y2": 1044, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -2491,7 +2491,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3399, "y1": 2687, "z1": -128, "x2": 3500, "y2": 2788, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -2525,7 +2525,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2593, "y1": 678, "z1": -128, "x2": 2694, "y2": 779, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -2559,7 +2559,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1284, "y1": 2261, "z1": -128, "x2": 1385, "y2": 2362, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -2593,7 +2593,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2368, "y1": 949, "z1": -128, "x2": 2469, "y2": 1050, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -2627,7 +2627,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2698, "y1": 610, "z1": -128, "x2": 2799, "y2": 711, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -2661,7 +2661,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2618, "y1": 970, "z1": -128, "x2": 2719, "y2": 1071, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -2695,7 +2695,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 755, "y1": 526, "z1": -128, "x2": 856, "y2": 627, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -2729,7 +2729,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4510, "y1": 3454, "z1": -128, "x2": 4611, "y2": 3555, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -2763,7 +2763,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3122, "y1": 614, "z1": -128, "x2": 3223, "y2": 715, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -2797,7 +2797,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 755, "y1": 1520, "z1": -128, "x2": 856, "y2": 1621, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -2831,7 +2831,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 698, "y1": 619, "z1": -128, "x2": 799, "y2": 720, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -2865,7 +2865,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3156, "y1": 316, "z1": -128, "x2": 3257, "y2": 417, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -2899,7 +2899,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 826, "y1": 1589, "z1": -128, "x2": 927, "y2": 1690, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -2933,7 +2933,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2814, "y1": 100, "z1": -128, "x2": 2915, "y2": 201, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -2967,7 +2967,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3557, "y1": 2367, "z1": -128, "x2": 3658, "y2": 2468, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -3001,7 +3001,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1495, "y1": 763, "z1": -128, "x2": 1596, "y2": 864, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -3035,7 +3035,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1600, "y1": 2746, "z1": -128, "x2": 1701, "y2": 2847, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -3069,7 +3069,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 752, "y1": 1230, "z1": -128, "x2": 853, "y2": 1331, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -3103,7 +3103,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3668, "y1": 2686, "z1": -128, "x2": 3769, "y2": 2787, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -3137,7 +3137,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4490, "y1": 1404, "z1": -128, "x2": 4591, "y2": 1505, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -3171,7 +3171,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3402, "y1": 2513, "z1": -128, "x2": 3503, "y2": 2614, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -3205,7 +3205,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4276, "y1": 996, "z1": -128, "x2": 4377, "y2": 1097, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -3239,7 +3239,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1578, "y1": 2284, "z1": -128, "x2": 1679, "y2": 2385, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -3273,7 +3273,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1774, "y1": 2977, "z1": -128, "x2": 1875, "y2": 3078, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -3307,7 +3307,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1882, "y1": 3075, "z1": -128, "x2": 1983, "y2": 3176, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -3341,7 +3341,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 908, "y1": 2024, "z1": -128, "x2": 1009, "y2": 2125, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -3375,7 +3375,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1923, "y1": 701, "z1": -128, "x2": 2024, "y2": 802, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -3409,7 +3409,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 833, "y1": 2079, "z1": -128, "x2": 934, "y2": 2180, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -3443,7 +3443,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1719, "y1": 1280, "z1": -128, "x2": 1820, "y2": 1381, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -3477,7 +3477,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4542, "y1": 1374, "z1": -128, "x2": 4643, "y2": 1475, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -3511,7 +3511,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2366, "y1": 1122, "z1": -128, "x2": 2467, "y2": 1223, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -3545,7 +3545,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 924, "y1": 324, "z1": -128, "x2": 1025, "y2": 425, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -3579,7 +3579,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 974, "y1": 1194, "z1": -128, "x2": 1075, "y2": 1295, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -3613,7 +3613,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1476, "y1": 910, "z1": -128, "x2": 1577, "y2": 1011, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -3647,7 +3647,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 967, "y1": 1676, "z1": -128, "x2": 1068, "y2": 1777, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -3681,7 +3681,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 573, "y1": 1278, "z1": -128, "x2": 674, "y2": 1379, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -3715,7 +3715,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3379, "y1": 2600, "z1": -128, "x2": 3480, "y2": 2701, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -3749,7 +3749,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4420, "y1": 1380, "z1": -128, "x2": 4521, "y2": 1481, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -3783,7 +3783,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4398, "y1": 1284, "z1": -128, "x2": 4499, "y2": 1385, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -3817,7 +3817,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1218, "y1": 1968, "z1": -128, "x2": 1319, "y2": 2069, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -3851,7 +3851,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2035, "y1": 608, "z1": -128, "x2": 2136, "y2": 709, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -3885,7 +3885,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 414, "y1": 2009, "z1": -128, "x2": 515, "y2": 2110, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -3919,7 +3919,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 714, "y1": 772, "z1": -128, "x2": 815, "y2": 873, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -3953,7 +3953,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 997, "y1": 1021, "z1": -128, "x2": 1098, "y2": 1122, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -3987,7 +3987,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3344, "y1": 578, "z1": -128, "x2": 3445, "y2": 679, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -4021,7 +4021,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 348, "y1": 1255, "z1": -128, "x2": 449, "y2": 1356, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -4055,7 +4055,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3558, "y1": 2090, "z1": -128, "x2": 3659, "y2": 2191, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -4089,7 +4089,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2463, "y1": 732, "z1": -128, "x2": 2564, "y2": 833, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -4123,7 +4123,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1436, "y1": 1251, "z1": -128, "x2": 1537, "y2": 1352, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -4157,7 +4157,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4418, "y1": 956, "z1": -128, "x2": 4519, "y2": 1057, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -4191,7 +4191,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 968, "y1": 579, "z1": -128, "x2": 1069, "y2": 680, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -4225,7 +4225,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 869, "y1": 1668, "z1": -128, "x2": 970, "y2": 1769, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -4259,7 +4259,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1455, "y1": 2395, "z1": -128, "x2": 1556, "y2": 2496, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -4293,7 +4293,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 887, "y1": 693, "z1": -128, "x2": 988, "y2": 794, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -4327,7 +4327,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2504, "y1": 1092, "z1": -128, "x2": 2605, "y2": 1193, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -4361,7 +4361,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 970, "y1": 1310, "z1": -128, "x2": 1071, "y2": 1411, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -4395,7 +4395,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 840, "y1": 607, "z1": -128, "x2": 941, "y2": 708, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -4429,7 +4429,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3612, "y1": 2752, "z1": -128, "x2": 3713, "y2": 2853, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -4463,7 +4463,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1678, "y1": 641, "z1": -128, "x2": 1779, "y2": 742, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -4497,7 +4497,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3546, "y1": 2754, "z1": -128, "x2": 3647, "y2": 2855, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -4531,7 +4531,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3242, "y1": 520, "z1": -128, "x2": 3343, "y2": 621, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -4565,7 +4565,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4428, "y1": 3168, "z1": -128, "x2": 4529, "y2": 3269, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -4599,7 +4599,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 160, "y1": 1397, "z1": -128, "x2": 261, "y2": 1498, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -4633,7 +4633,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1181, "y1": 1412, "z1": -128, "x2": 1282, "y2": 1513, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -4667,7 +4667,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4476, "y1": 936, "z1": -128, "x2": 4577, "y2": 1037, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -4701,7 +4701,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 677, "y1": 1344, "z1": -128, "x2": 778, "y2": 1445, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -4735,7 +4735,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2715, "y1": 704, "z1": -128, "x2": 2816, "y2": 805, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -4769,7 +4769,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2864, "y1": 497, "z1": -128, "x2": 2965, "y2": 598, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -4803,7 +4803,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 961, "y1": 846, "z1": -128, "x2": 1062, "y2": 947, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -4837,7 +4837,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1389, "y1": 2054, "z1": -128, "x2": 1490, "y2": 2155, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -4871,7 +4871,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1301, "y1": 1309, "z1": -128, "x2": 1402, "y2": 1410, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -4905,7 +4905,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1013, "y1": 491, "z1": -128, "x2": 1114, "y2": 592, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -4939,7 +4939,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2024, "y1": 1922, "z1": -128, "x2": 2125, "y2": 2023, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -4973,7 +4973,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 914, "y1": 2164, "z1": -128, "x2": 1015, "y2": 2265, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -5007,7 +5007,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3042, "y1": 492, "z1": -128, "x2": 3143, "y2": 593, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -5041,7 +5041,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2239, "y1": 867, "z1": -128, "x2": 2340, "y2": 968, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -5075,7 +5075,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 866, "y1": 1109, "z1": -128, "x2": 967, "y2": 1210, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -5109,7 +5109,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2072, "y1": 2058, "z1": -128, "x2": 2173, "y2": 2159, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -5143,7 +5143,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1677, "y1": 2652, "z1": -128, "x2": 1778, "y2": 2753, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -5177,7 +5177,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1581, "y1": 590, "z1": -128, "x2": 1682, "y2": 691, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -5211,7 +5211,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 943, "y1": 1080, "z1": -128, "x2": 1044, "y2": 1181, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -5245,7 +5245,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4632, "y1": 3612, "z1": -128, "x2": 4733, "y2": 3713, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -5279,7 +5279,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1020, "y1": 2019, "z1": -128, "x2": 1121, "y2": 2120, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -5313,7 +5313,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1807, "y1": 550, "z1": -128, "x2": 1908, "y2": 651, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -5347,7 +5347,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2694, "y1": 1964, "z1": -128, "x2": 2795, "y2": 2065, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -5381,7 +5381,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2619, "y1": 872, "z1": -128, "x2": 2720, "y2": 973, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -5415,7 +5415,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1834, "y1": 685, "z1": -128, "x2": 1935, "y2": 786, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -5449,7 +5449,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3182, "y1": 460, "z1": -128, "x2": 3283, "y2": 561, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -5483,7 +5483,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 805, "y1": 884, "z1": -128, "x2": 906, "y2": 985, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -5517,7 +5517,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1327, "y1": 1861, "z1": -128, "x2": 1428, "y2": 1962, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -5551,7 +5551,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 918, "y1": 2426, "z1": -128, "x2": 1019, "y2": 2527, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -5585,7 +5585,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1675, "y1": 1397, "z1": -128, "x2": 1776, "y2": 1498, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -5619,7 +5619,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 944, "y1": 2311, "z1": -128, "x2": 1045, "y2": 2412, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -5653,7 +5653,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 721, "y1": 963, "z1": -128, "x2": 822, "y2": 1064, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -5687,7 +5687,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2948, "y1": 3540, "z1": -128, "x2": 3049, "y2": 3641, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -5721,7 +5721,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2764, "y1": 3450, "z1": -128, "x2": 2865, "y2": 3551, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -5755,7 +5755,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1481, "y1": 2301, "z1": -128, "x2": 1582, "y2": 2402, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -5789,7 +5789,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 639, "y1": 703, "z1": -128, "x2": 740, "y2": 804, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -5823,7 +5823,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2638, "y1": 474, "z1": -128, "x2": 2739, "y2": 575, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -5857,7 +5857,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1562, "y1": 2476, "z1": -128, "x2": 1663, "y2": 2577, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -5891,7 +5891,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 784, "y1": 701, "z1": -128, "x2": 885, "y2": 802, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -5925,7 +5925,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3686, "y1": 2462, "z1": -128, "x2": 3787, "y2": 2563, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -5959,7 +5959,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1752, "y1": 445, "z1": -128, "x2": 1853, "y2": 546, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -5993,7 +5993,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 955, "y1": 2597, "z1": -128, "x2": 1056, "y2": 2698, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -6027,7 +6027,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1672, "y1": 2385, "z1": -128, "x2": 1773, "y2": 2486, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },
@@ -6061,7 +6061,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3026, "y1": 100, "z1": -128, "x2": 3127, "y2": 201, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Boar", "maxCount": 7, "probability": 100 },

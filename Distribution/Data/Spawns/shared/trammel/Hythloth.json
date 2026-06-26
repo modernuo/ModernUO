@@ -9,7 +9,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5965, "y1": 69, "z1": -128, "x2": 5968, "y2": 72, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 1,
     "entries": [
       { "name": "TreasureChestLevel1", "maxCount": 1, "probability": 100 }
@@ -25,7 +25,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5961, "y1": 216, "z1": -128, "x2": 5964, "y2": 219, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 1,
     "entries": [
       { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 }
@@ -41,7 +41,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6023, "y1": 189, "z1": -128, "x2": 6044, "y2": 210, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "Daemon", "maxCount": 2, "probability": 100 },
@@ -58,7 +58,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5944, "y1": 77, "z1": -128, "x2": 5947, "y2": 80, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 1,
     "entries": [
       { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 }
@@ -74,7 +74,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5942, "y1": 213, "z1": -128, "x2": 5967, "y2": 238, "z2": 128 },
+    "homeRange": 12,
     "walkingRange": 20,
     "entries": [
       { "name": "Gargoyle", "maxCount": 4, "probability": 100 },
@@ -91,7 +91,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6107, "y1": 35, "z1": -128, "x2": 6110, "y2": 38, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 1,
     "entries": [
       { "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 }
@@ -107,7 +107,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6123, "y1": 158, "z1": -128, "x2": 6126, "y2": 161, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 1,
     "entries": [
       { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }
@@ -123,7 +123,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6032, "y1": 204, "z1": -128, "x2": 6035, "y2": 207, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 1,
     "entries": [
       { "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 }
@@ -139,7 +139,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5905, "y1": 81, "z1": -128, "x2": 5926, "y2": 102, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "Imp", "maxCount": 2, "probability": 100 },
@@ -156,7 +156,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6107, "y1": 65, "z1": -128, "x2": 6110, "y2": 68, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 1,
     "entries": [
       { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 }
@@ -172,7 +172,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6042, "y1": 146, "z1": -128, "x2": 6063, "y2": 167, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "Daemon", "maxCount": 2, "probability": 100 },
@@ -190,7 +190,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5913, "y1": 38, "z1": -128, "x2": 5934, "y2": 59, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "Imp", "maxCount": 1, "probability": 100 },
@@ -207,7 +207,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6057, "y1": 152, "z1": -128, "x2": 6060, "y2": 155, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 1,
     "entries": [
       { "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 }
@@ -223,7 +223,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5908, "y1": 225, "z1": -128, "x2": 5929, "y2": 246, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "Daemon", "maxCount": 2, "probability": 100 },
@@ -240,7 +240,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5977, "y1": 184, "z1": -128, "x2": 5980, "y2": 187, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 1,
     "entries": [
       { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 }
@@ -256,7 +256,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6080, "y1": 43, "z1": -128, "x2": 6083, "y2": 46, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 1,
     "entries": [
       { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }
@@ -272,7 +272,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6096, "y1": 35, "z1": -128, "x2": 6099, "y2": 38, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 1,
     "entries": [
       { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }
@@ -288,7 +288,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6124, "y1": 220, "z1": -128, "x2": 6127, "y2": 223, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 1,
     "entries": [
       { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }
@@ -304,7 +304,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5980, "y1": 83, "z1": -128, "x2": 5983, "y2": 86, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 1,
     "entries": [
       { "name": "TreasureChestLevel1", "maxCount": 1, "probability": 100 }
@@ -320,7 +320,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5930, "y1": 97, "z1": -128, "x2": 5951, "y2": 118, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "Gargoyle", "maxCount": 2, "probability": 100 }
@@ -336,7 +336,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6076, "y1": 168, "z1": -128, "x2": 6097, "y2": 189, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "Balron", "maxCount": 1, "probability": 100 },
@@ -354,7 +354,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6040, "y1": 229, "z1": -128, "x2": 6043, "y2": 232, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 1,
     "entries": [
       { "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 }
@@ -370,7 +370,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5908, "y1": 213, "z1": -128, "x2": 5929, "y2": 234, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "Gargoyle", "maxCount": 4, "probability": 100 }
@@ -386,7 +386,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5969, "y1": 168, "z1": -128, "x2": 5972, "y2": 171, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 1,
     "entries": [
       { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 }
@@ -402,7 +402,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5928, "y1": 76, "z1": -128, "x2": 5931, "y2": 79, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 1,
     "entries": [
       { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 }
@@ -418,7 +418,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5916, "y1": 92, "z1": -128, "x2": 5919, "y2": 95, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 1,
     "entries": [
       { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 }
@@ -434,7 +434,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6084, "y1": 144, "z1": -128, "x2": 6105, "y2": 165, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "Imp", "maxCount": 1, "probability": 100 },
@@ -452,7 +452,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5920, "y1": 80, "z1": -128, "x2": 5923, "y2": 83, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 1,
     "entries": [
       { "name": "TreasureChestLevel1", "maxCount": 1, "probability": 100 }
@@ -468,7 +468,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6089, "y1": 41, "z1": -128, "x2": 6110, "y2": 62, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "Gargoyle", "maxCount": 2, "probability": 100 }
@@ -484,7 +484,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6059, "y1": 157, "z1": -128, "x2": 6062, "y2": 160, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 1,
     "entries": [
       { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }
@@ -500,7 +500,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5961, "y1": 74, "z1": -128, "x2": 5974, "y2": 87, "z2": 128 },
+    "homeRange": 6,
     "walkingRange": 6,
     "entries": [
       { "name": "TreasureChestLevel1", "maxCount": 1, "probability": 100 },
@@ -517,7 +517,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6045, "y1": 198, "z1": -128, "x2": 6048, "y2": 201, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 1,
     "entries": [
       { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }
@@ -533,7 +533,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5996, "y1": 144, "z1": -128, "x2": 5999, "y2": 147, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 1,
     "entries": [
       { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 }
@@ -549,7 +549,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6063, "y1": 95, "z1": -128, "x2": 6066, "y2": 98, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 1,
     "entries": [
       { "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 }
@@ -565,7 +565,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5988, "y1": 185, "z1": -128, "x2": 5991, "y2": 188, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 1,
     "entries": [
       { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }
@@ -581,7 +581,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6096, "y1": 57, "z1": -128, "x2": 6117, "y2": 78, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "Gargoyle", "maxCount": 2, "probability": 100 }
@@ -597,7 +597,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5936, "y1": 65, "z1": -128, "x2": 5957, "y2": 86, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "Imp", "maxCount": 2, "probability": 100 },
@@ -614,7 +614,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5951, "y1": 159, "z1": -128, "x2": 5972, "y2": 180, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "Imp", "maxCount": 2, "probability": 100 },
@@ -631,7 +631,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5946, "y1": 135, "z1": -128, "x2": 5967, "y2": 156, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "Gargoyle", "maxCount": 2, "probability": 100 }
@@ -647,7 +647,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6112, "y1": 91, "z1": -128, "x2": 6115, "y2": 94, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 1,
     "entries": [
       { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }
@@ -663,7 +663,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5978, "y1": 25, "z1": -128, "x2": 5981, "y2": 28, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 1,
     "entries": [
       { "name": "TreasureChestLevel1", "maxCount": 1, "probability": 100 }
@@ -679,7 +679,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6044, "y1": 35, "z1": -128, "x2": 6065, "y2": 56, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "Gazer", "maxCount": 1, "probability": 100 },
@@ -697,7 +697,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6106, "y1": 76, "z1": -128, "x2": 6127, "y2": 97, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "FireGargoyle", "maxCount": 2, "probability": 100 }
@@ -713,7 +713,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5925, "y1": 229, "z1": -128, "x2": 5928, "y2": 232, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 1,
     "entries": [
       { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }
@@ -729,7 +729,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5944, "y1": 16, "z1": -128, "x2": 5965, "y2": 37, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "Imp", "maxCount": 2, "probability": 100 },
@@ -746,7 +746,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5936, "y1": 64, "z1": -128, "x2": 5939, "y2": 67, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 1,
     "entries": [
       { "name": "TreasureChestLevel1", "maxCount": 1, "probability": 100 }
@@ -762,7 +762,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6085, "y1": 44, "z1": -128, "x2": 6088, "y2": 47, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 1,
     "entries": [
       { "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 }
@@ -778,7 +778,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5960, "y1": 70, "z1": -128, "x2": 5981, "y2": 91, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "Imp", "maxCount": 2, "probability": 100 },
@@ -795,7 +795,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6040, "y1": 221, "z1": -128, "x2": 6043, "y2": 224, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 1,
     "entries": [
       { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }
@@ -811,7 +811,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5983, "y1": 34, "z1": -128, "x2": 5988, "y2": 39, "z2": 128 },
+    "homeRange": 2,
     "walkingRange": 2,
     "entries": [
       { "name": "TreasureChestLevel1", "maxCount": 2, "probability": 100 }
@@ -827,7 +827,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5984, "y1": 86, "z1": -128, "x2": 6005, "y2": 107, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "Gargoyle", "maxCount": 2, "probability": 100 },
@@ -844,7 +844,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5957, "y1": 64, "z1": -128, "x2": 5960, "y2": 67, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 1,
     "entries": [
       { "name": "TreasureChestLevel1", "maxCount": 1, "probability": 100 }
@@ -860,7 +860,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5982, "y1": 24, "z1": -128, "x2": 5985, "y2": 27, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 1,
     "entries": [
       { "name": "TreasureChestLevel1", "maxCount": 1, "probability": 100 }
@@ -876,7 +876,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5988, "y1": 24, "z1": -128, "x2": 5991, "y2": 27, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 1,
     "entries": [
       { "name": "TreasureChestLevel1", "maxCount": 1, "probability": 100 }
@@ -892,7 +892,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6116, "y1": 80, "z1": -128, "x2": 6119, "y2": 83, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 1,
     "entries": [
       { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 }
@@ -908,7 +908,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6054, "y1": 86, "z1": -128, "x2": 6075, "y2": 107, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "Daemon", "maxCount": 2, "probability": 100 },
@@ -926,7 +926,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5971, "y1": 85, "z1": -128, "x2": 5974, "y2": 88, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 1,
     "entries": [
       { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 }
@@ -942,7 +942,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6071, "y1": 73, "z1": -128, "x2": 6092, "y2": 94, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "Gargoyle", "maxCount": 2, "probability": 100 }
@@ -958,7 +958,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6120, "y1": 165, "z1": -128, "x2": 6123, "y2": 168, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 1,
     "entries": [
       { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 }
@@ -974,7 +974,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6106, "y1": 69, "z1": -128, "x2": 6109, "y2": 72, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 1,
     "entries": [
       { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }
@@ -990,7 +990,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5985, "y1": 52, "z1": -128, "x2": 6006, "y2": 73, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "FireGargoyle", "maxCount": 2, "probability": 100 }
@@ -1006,7 +1006,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6057, "y1": 91, "z1": -128, "x2": 6060, "y2": 94, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 1,
     "entries": [
       { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }
@@ -1022,7 +1022,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5901, "y1": 45, "z1": -128, "x2": 5922, "y2": 66, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 25,
     "entries": [
       { "name": "Imp", "maxCount": 2, "probability": 100 },
@@ -1039,7 +1039,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5938, "y1": 39, "z1": -128, "x2": 5959, "y2": 60, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "Imp", "maxCount": 1, "probability": 100 },
@@ -1056,7 +1056,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5974, "y1": 191, "z1": -128, "x2": 5999, "y2": 216, "z2": 128 },
+    "homeRange": 12,
     "walkingRange": 25,
     "entries": [
       { "name": "Gazer", "maxCount": 3, "probability": 100 },
@@ -1073,7 +1073,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5982, "y1": 168, "z1": -128, "x2": 5985, "y2": 171, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 1,
     "entries": [
       { "name": "TreasureChestLevel1", "maxCount": 1, "probability": 100 }
@@ -1089,7 +1089,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5989, "y1": 35, "z1": -128, "x2": 5992, "y2": 38, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 1,
     "entries": [
       { "name": "TreasureChestLevel1", "maxCount": 1, "probability": 100 }
@@ -1105,7 +1105,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6097, "y1": 27, "z1": -128, "x2": 6118, "y2": 48, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "Balron", "maxCount": 1, "probability": 100 }
@@ -1121,7 +1121,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5904, "y1": 185, "z1": -128, "x2": 5925, "y2": 206, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "Imp", "maxCount": 2, "probability": 100 },
@@ -1138,7 +1138,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6119, "y1": 228, "z1": -128, "x2": 6122, "y2": 231, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 1,
     "entries": [
       { "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 }
@@ -1154,7 +1154,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6112, "y1": 160, "z1": -128, "x2": 6133, "y2": 181, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "ElderGazer", "maxCount": 1, "probability": 100 },
@@ -1172,7 +1172,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6091, "y1": 186, "z1": -128, "x2": 6094, "y2": 189, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 1,
     "entries": [
       { "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 }
@@ -1188,7 +1188,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6086, "y1": 185, "z1": -128, "x2": 6089, "y2": 188, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 1,
     "entries": [
       { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }
@@ -1204,7 +1204,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6074, "y1": 56, "z1": -128, "x2": 6095, "y2": 77, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "Gargoyle", "maxCount": 2, "probability": 100 }
@@ -1220,7 +1220,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5991, "y1": 146, "z1": -128, "x2": 5994, "y2": 149, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 1,
     "entries": [
       { "name": "TreasureChestLevel1", "maxCount": 1, "probability": 100 }
@@ -1236,7 +1236,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5907, "y1": 146, "z1": -128, "x2": 5928, "y2": 167, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "Gargoyle", "maxCount": 2, "probability": 100 }
@@ -1252,7 +1252,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5982, "y1": 136, "z1": -128, "x2": 6003, "y2": 157, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "Daemon", "maxCount": 2, "probability": 100 }
@@ -1268,7 +1268,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6109, "y1": 209, "z1": -128, "x2": 6130, "y2": 230, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "Daemon", "maxCount": 2, "probability": 100 },
@@ -1286,7 +1286,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6048, "y1": 183, "z1": -128, "x2": 6069, "y2": 204, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "Gargoyle", "maxCount": 2, "probability": 100 }
@@ -1302,7 +1302,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5935, "y1": 165, "z1": -128, "x2": 5956, "y2": 186, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "Imp", "maxCount": 2, "probability": 100 },
@@ -1319,7 +1319,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5967, "y1": 39, "z1": -128, "x2": 5988, "y2": 60, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "Imp", "maxCount": 1, "probability": 100 },

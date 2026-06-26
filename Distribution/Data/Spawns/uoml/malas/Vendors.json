@@ -9,7 +9,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1051, "y1": 1434, "z1": -85, "x2": 1052, "y2": 1435, "z2": -85 },
+    "homeRange": 0,
     "walkingRange": 5,
     "entries": [
       { "name": "TavernKeeper", "maxCount": 1, "probability": 100 },

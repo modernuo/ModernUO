@@ -9,7 +9,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 81, "y1": 525, "z1": -128, "x2": 112, "y2": 556, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 20,
     "entries": [
       { "name": "FanDancer", "maxCount": 1, "probability": 100 },
@@ -26,7 +26,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 153, "y1": 595, "z1": -128, "x2": 194, "y2": 636, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "HordeMinion", "maxCount": 2, "probability": 100 },
@@ -45,7 +45,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 110, "y1": 405, "z1": -128, "x2": 131, "y2": 426, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "HordeMinion", "maxCount": 2, "probability": 100 },
@@ -62,7 +62,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 129, "y1": 646, "z1": -128, "x2": 140, "y2": 657, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 5,
     "entries": [
       { "name": "FanDancer", "maxCount": 2, "probability": 100 },
@@ -80,7 +80,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 74, "y1": 516, "z1": -128, "x2": 85, "y2": 527, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 10,
     "entries": [
       { "name": "HeadlessOne", "maxCount": 3, "probability": 100 }
@@ -96,7 +96,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 142, "y1": 641, "z1": -128, "x2": 153, "y2": 652, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 5,
     "entries": [
       { "name": "HeadlessOne", "maxCount": 2, "probability": 100 },
@@ -113,7 +113,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 44, "y1": 468, "z1": -128, "x2": 85, "y2": 509, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Daemon", "maxCount": 2, "probability": 100 },
@@ -131,7 +131,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 962, "y1": 203, "z1": -128, "x2": 993, "y2": 234, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 15,
     "entries": [
       { "name": "FanDancer", "maxCount": 4, "probability": 100 }
@@ -147,7 +147,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 63, "y1": 531, "z1": -128, "x2": 94, "y2": 562, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 15,
     "entries": [
       { "name": "Daemon", "maxCount": 1, "probability": 100 },
@@ -165,7 +165,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 100, "y1": 639, "z1": -128, "x2": 121, "y2": 660, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "FanDancer", "maxCount": 1, "probability": 100 },
@@ -183,7 +183,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 113, "y1": 377, "z1": -128, "x2": 134, "y2": 398, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "HeadlessOne", "maxCount": 4, "probability": 100 }
@@ -199,7 +199,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 68, "y1": 312, "z1": -128, "x2": 109, "y2": 353, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "FanDancer", "maxCount": 4, "probability": 100 }
@@ -215,7 +215,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 95, "y1": 525, "z1": -128, "x2": 126, "y2": 556, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 15,
     "entries": [
       { "name": "Daemon", "maxCount": 1, "probability": 100 },
@@ -233,7 +233,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 101, "y1": 342, "z1": -128, "x2": 122, "y2": 363, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "HordeMinion", "maxCount": 2, "probability": 100 },
@@ -250,7 +250,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 155, "y1": 640, "z1": -128, "x2": 196, "y2": 681, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "HordeMinion", "maxCount": 3, "probability": 100 },
@@ -268,7 +268,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 86, "y1": 665, "z1": -128, "x2": 127, "y2": 706, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "HellHound", "maxCount": 1, "probability": 100 },
@@ -285,7 +285,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 89, "y1": 377, "z1": -128, "x2": 110, "y2": 398, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "HeadlessOne", "maxCount": 4, "probability": 100 }
@@ -301,7 +301,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 77, "y1": 447, "z1": -128, "x2": 118, "y2": 488, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "HordeMinion", "maxCount": 2, "probability": 100 },
@@ -319,7 +319,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 122, "y1": 672, "z1": -128, "x2": 163, "y2": 713, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "FanDancer", "maxCount": 2, "probability": 100 }
@@ -335,7 +335,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 80, "y1": 479, "z1": -128, "x2": 121, "y2": 520, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Daemon", "maxCount": 1, "probability": 100 },
@@ -352,7 +352,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 45, "y1": 351, "z1": -128, "x2": 96, "y2": 402, "z2": 128 },
+    "homeRange": 25,
     "walkingRange": 30,
     "entries": [
       { "name": "FanDancer", "maxCount": 3, "probability": 100 },

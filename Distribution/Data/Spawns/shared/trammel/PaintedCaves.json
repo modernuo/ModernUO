@@ -9,7 +9,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6249, "y1": 850, "z1": -128, "x2": 6310, "y2": 911, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Cat", "maxCount": 6, "probability": 100 },
@@ -30,7 +30,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6245, "y1": 849, "z1": -128, "x2": 6306, "y2": 910, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Troglodyte", "maxCount": 3, "probability": 100 },

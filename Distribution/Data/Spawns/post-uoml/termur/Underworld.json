@@ -9,7 +9,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1127, "y1": 1202, "z1": -2, "x2": 1128, "y2": 1203, "z2": -2 },
+    "homeRange": 0,
     "walkingRange": -1,
     "entries": [
       { "name": "genericguard", "maxCount": 1, "probability": 100 }
@@ -25,7 +25,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1130, "y1": 1202, "z1": -2, "x2": 1131, "y2": 1203, "z2": -2 },
+    "homeRange": 0,
     "walkingRange": -1,
     "entries": [
       { "name": "genericguard", "maxCount": 1, "probability": 100 }
@@ -41,7 +41,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1124, "y1": 1161, "z1": -128, "x2": 1133, "y2": 1170, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": -1,
     "entries": [
       { "name": "Garamon", "maxCount": 1, "probability": 100 }
@@ -57,7 +57,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1104, "y1": 1149, "z1": -128, "x2": 1113, "y2": 1158, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": -1,
     "entries": [
       { "name": "gremlin", "maxCount": 1, "probability": 100 }
@@ -73,7 +73,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1103, "y1": 1162, "z1": -128, "x2": 1118, "y2": 1177, "z2": 128 },
+    "homeRange": 7,
     "walkingRange": 10,
     "entries": [
       { "name": "Slime", "maxCount": 10, "probability": 100 }
@@ -89,7 +89,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1090, "y1": 1182, "z1": -128, "x2": 1105, "y2": 1197, "z2": 128 },
+    "homeRange": 7,
     "walkingRange": 10,
     "entries": [
       { "name": "acidslug", "maxCount": 25, "probability": 100 }
@@ -105,7 +105,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1023, "y1": 1169, "z1": -128, "x2": 1056, "y2": 1202, "z2": 128 },
+    "homeRange": 16,
     "walkingRange": 20,
     "entries": [
       { "name": "bloodworm", "maxCount": 3, "probability": 100 },
@@ -122,7 +122,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1048, "y1": 1125, "z1": -128, "x2": 1069, "y2": 1146, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 15,
     "entries": [
       { "name": "rotworm", "maxCount": 1, "probability": 100 }
@@ -138,7 +138,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1054, "y1": 1096, "z1": -128, "x2": 1075, "y2": 1117, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 25,
     "entries": [
       { "name": "Kraken", "maxCount": 2, "probability": 100 }
@@ -154,7 +154,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1139, "y1": 1173, "z1": -128, "x2": 1168, "y2": 1202, "z2": 128 },
+    "homeRange": 14,
     "walkingRange": 20,
     "entries": [
       { "name": "rotworm", "maxCount": 3, "probability": 100 }
@@ -170,7 +170,7 @@
     "minDelay": "00:00:01",
     "maxDelay": "00:00:01",
     "team": 0,
-    "spawnBounds": { "x1": 1180, "y1": 1179, "z1": -128, "x2": 1195, "y2": 1194, "z2": 128 },
+    "homeRange": 7,
     "walkingRange": 20,
     "entries": [
       { "name": "WaterElemental", "maxCount": 1, "probability": 100 }
@@ -186,7 +186,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1053, "y1": 1149, "z1": -128, "x2": 1074, "y2": 1170, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "rotworm", "maxCount": 3, "probability": 100 },
@@ -204,7 +204,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1140, "y1": 1118, "z1": -128, "x2": 1165, "y2": 1143, "z2": 128 },
+    "homeRange": 12,
     "walkingRange": 20,
     "entries": [
       { "name": "rotworm", "maxCount": 1, "probability": 100 }
@@ -220,7 +220,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1117, "y1": 1128, "z1": -128, "x2": 1126, "y2": 1137, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": -1,
     "entries": [
       { "name": "FiddlingTobin", "maxCount": 1, "probability": 100 }
@@ -236,7 +236,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1146, "y1": 959, "z1": -128, "x2": 1155, "y2": 968, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": -1,
     "entries": [
       { "name": "NevilleBrightwhistle", "maxCount": 1, "probability": 100 }
@@ -252,7 +252,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1104, "y1": 1082, "z1": -128, "x2": 1113, "y2": 1091, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": -1,
     "entries": [
       { "name": "tanglingroots", "maxCount": 2, "probability": 100 }
@@ -268,7 +268,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1085, "y1": 1066, "z1": -128, "x2": 1106, "y2": 1087, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": -1,
     "entries": [
       { "name": "tanglingroots", "maxCount": 3, "probability": 100 }
@@ -284,7 +284,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1085, "y1": 1124, "z1": -128, "x2": 1094, "y2": 1133, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": -1,
     "entries": [
       { "name": "Gretchen", "maxCount": 1, "probability": 100 }
@@ -300,7 +300,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1100, "y1": 1124, "z1": -128, "x2": 1109, "y2": 1133, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": -1,
     "entries": [
       { "name": "ElderDugan", "maxCount": 1, "probability": 100 }
@@ -316,7 +316,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1131, "y1": 1128, "z1": -128, "x2": 1140, "y2": 1137, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": -1,
     "entries": [
       { "name": "QuartermasterFlint", "maxCount": 1, "probability": 100 }
@@ -332,7 +332,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1001, "y1": 1104, "z1": -128, "x2": 1030, "y2": 1133, "z2": 128 },
+    "homeRange": 14,
     "walkingRange": 25,
     "entries": [
       { "name": "Shade", "maxCount": 8, "probability": 100 },
@@ -357,7 +357,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1010, "y1": 1075, "z1": -128, "x2": 1035, "y2": 1100, "z2": 128 },
+    "homeRange": 12,
     "walkingRange": 20,
     "entries": [
       { "name": "Wraith", "maxCount": 3, "probability": 100 },
@@ -382,7 +382,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1034, "y1": 1067, "z1": -128, "x2": 1045, "y2": 1078, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 10,
     "entries": [
       { "name": "GreaterPoisonElemental", "maxCount": 1, "probability": 100 }
@@ -398,7 +398,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1175, "y1": 1006, "z1": -128, "x2": 1208, "y2": 1039, "z2": 128 },
+    "homeRange": 16,
     "walkingRange": 20,
     "entries": [
       { "name": "GrayGoblin", "maxCount": 8, "probability": 100 },
@@ -415,7 +415,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1170, "y1": 988, "z1": -128, "x2": 1185, "y2": 1003, "z2": 128 },
+    "homeRange": 7,
     "walkingRange": 15,
     "entries": [
       { "name": "GrayGoblinKeeper", "maxCount": 2, "probability": 100 },
@@ -432,7 +432,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1211, "y1": 1042, "z1": -128, "x2": 1226, "y2": 1057, "z2": 128 },
+    "homeRange": 7,
     "walkingRange": 20,
     "entries": [
       { "name": "GrayGoblinMage", "maxCount": 2, "probability": 100 },
@@ -449,7 +449,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1168, "y1": 961, "z1": -128, "x2": 1189, "y2": 982, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 15,
     "entries": [
       { "name": "GrayGoblin", "maxCount": 2, "probability": 100 }
@@ -465,7 +465,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1209, "y1": 1021, "z1": -128, "x2": 1220, "y2": 1032, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 15,
     "entries": [
       { "name": "GrayGoblin", "maxCount": 2, "probability": 100 }
@@ -481,7 +481,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1192, "y1": 1046, "z1": -128, "x2": 1207, "y2": 1061, "z2": 128 },
+    "homeRange": 7,
     "walkingRange": 20,
     "entries": [
       { "name": "GrayGoblinMage", "maxCount": 3, "probability": 100 },
@@ -498,7 +498,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1200, "y1": 1037, "z1": -128, "x2": 1209, "y2": 1046, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": -1,
     "entries": [
       { "name": "Jaacar", "maxCount": 1, "probability": 100 }
@@ -514,7 +514,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1185, "y1": 985, "z1": -128, "x2": 1194, "y2": 994, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": -1,
     "entries": [
       { "name": "Barreraak", "maxCount": 1, "probability": 100 }
@@ -530,7 +530,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1193, "y1": 969, "z1": -128, "x2": 1224, "y2": 1000, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 20,
     "entries": [
       { "name": "wolfspider", "maxCount": 8, "probability": 100 },
@@ -547,7 +547,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1207, "y1": 1064, "z1": -128, "x2": 1228, "y2": 1085, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 15,
     "entries": [
       { "name": "Lich", "maxCount": 1, "probability": 100 },
@@ -569,7 +569,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1038, "y1": 846, "z1": -128, "x2": 1069, "y2": 877, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 20,
     "entries": [
       { "name": "NavreyNightEyes", "maxCount": 1, "probability": 100 }
@@ -585,7 +585,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1079, "y1": 987, "z1": -128, "x2": 1110, "y2": 1018, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 15,
     "entries": [
       { "name": "WolfSpider", "maxCount": 8, "probability": 100 },
@@ -602,7 +602,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1109, "y1": 993, "z1": -128, "x2": 1140, "y2": 1024, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 20,
     "entries": [
       { "name": "WolfSpider", "maxCount": 9, "probability": 100 },
@@ -619,7 +619,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1140, "y1": 986, "z1": -128, "x2": 1155, "y2": 1001, "z2": 128 },
+    "homeRange": 7,
     "walkingRange": 7,
     "entries": [
       { "name": "IronBeetle", "maxCount": 1, "probability": 100 }
@@ -635,7 +635,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1028, "y1": 1022, "z1": -128, "x2": 1041, "y2": 1035, "z2": 128 },
+    "homeRange": 6,
     "walkingRange": 10,
     "entries": [
       { "name": "GreenGoblinAlchemist", "maxCount": 3, "probability": 100 },
@@ -653,7 +653,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1012, "y1": 1019, "z1": -128, "x2": 1019, "y2": 1026, "z2": 128 },
+    "homeRange": 3,
     "walkingRange": 10,
     "entries": [
       { "name": "GreenGoblinAlchemist", "maxCount": 2, "probability": 100 }
@@ -669,7 +669,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1010, "y1": 996, "z1": -128, "x2": 1019, "y2": 1005, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": -1,
     "entries": [
       { "name": "Xenrr", "maxCount": 1, "probability": 100 },
@@ -686,7 +686,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1027, "y1": 997, "z1": -128, "x2": 1042, "y2": 1012, "z2": 128 },
+    "homeRange": 7,
     "walkingRange": 15,
     "entries": [
       { "name": "GreenGoblin", "maxCount": 3, "probability": 100 },
@@ -703,7 +703,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1020, "y1": 1014, "z1": -128, "x2": 1029, "y2": 1023, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": 10,
     "entries": [
       { "name": "rotworm", "maxCount": 4, "probability": 100 }
@@ -719,7 +719,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1009, "y1": 970, "z1": -128, "x2": 1022, "y2": 983, "z2": 128 },
+    "homeRange": 6,
     "walkingRange": 10,
     "entries": [
       { "name": "Vernix", "maxCount": 1, "probability": 100 },
@@ -737,7 +737,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1027, "y1": 959, "z1": -128, "x2": 1062, "y2": 994, "z2": 128 },
+    "homeRange": 17,
     "walkingRange": 25,
     "entries": [
       { "name": "GreenGoblinAlchemist", "maxCount": 12, "probability": 100 },

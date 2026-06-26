@@ -32,7 +32,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 702, "y1": 1099, "z1": -128, "x2": 743, "y2": 1140, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Skeleton", "maxCount": 10, "probability": 100 }
@@ -48,7 +48,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1349, "y1": 1455, "z1": -128, "x2": 1390, "y2": 1496, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 30,
     "entries": [
       { "name": "Spectre", "maxCount": 2, "probability": 100 },
@@ -136,7 +136,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3397, "y1": 2642, "z1": -128, "x2": 3418, "y2": 2663, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 15,
     "entries": [
       { "name": "Zombie", "maxCount": 4, "probability": 100 },

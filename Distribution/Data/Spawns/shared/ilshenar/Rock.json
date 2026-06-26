@@ -9,7 +9,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2089, "y1": 51, "z1": -128, "x2": 2100, "y2": 62, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 10,
     "entries": [
       { "name": "Executioner", "maxCount": 1, "probability": 100 }
@@ -25,7 +25,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2150, "y1": 19, "z1": -128, "x2": 2161, "y2": 30, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 10,
     "entries": [
       { "name": "PoisonElemental", "maxCount": 2, "probability": 100 },
@@ -42,7 +42,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2120, "y1": 132, "z1": -128, "x2": 2131, "y2": 143, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 10,
     "entries": [
       { "name": "Lich", "maxCount": 1, "probability": 100 }
@@ -58,7 +58,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2178, "y1": 300, "z1": -128, "x2": 2199, "y2": 321, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 15,
     "entries": [
       { "name": "Skeleton", "maxCount": 3, "probability": 100 },
@@ -76,7 +76,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2133, "y1": 92, "z1": -128, "x2": 2144, "y2": 103, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 10,
     "entries": [
       { "name": "ElderGazer", "maxCount": 1, "probability": 100 }
@@ -92,7 +92,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2178, "y1": 80, "z1": -128, "x2": 2189, "y2": 91, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 10,
     "entries": [
       { "name": "EvilMage", "maxCount": 1, "probability": 100 },
@@ -109,7 +109,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2180, "y1": 163, "z1": -128, "x2": 2191, "y2": 174, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 10,
     "entries": [
       { "name": "TreasureChestLevel4", "maxCount": 1, "probability": 100 }
@@ -125,7 +125,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2202, "y1": 108, "z1": -128, "x2": 2213, "y2": 119, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 10,
     "entries": [
       { "name": "StoneGargoyle", "maxCount": 1, "probability": 100 }
@@ -141,7 +141,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2224, "y1": 138, "z1": -128, "x2": 2235, "y2": 149, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 10,
     "entries": [
       { "name": "EvilMage", "maxCount": 2, "probability": 100 },
@@ -158,7 +158,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2116, "y1": 88, "z1": -128, "x2": 2133, "y2": 105, "z2": 128 },
+    "homeRange": 8,
     "walkingRange": 15,
     "entries": [
       { "name": "PoisonElemental", "maxCount": 2, "probability": 100 },
@@ -176,7 +176,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2215, "y1": 70, "z1": -128, "x2": 2226, "y2": 81, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 10,
     "entries": [
       { "name": "AcidElemental", "maxCount": 1, "probability": 100 }
@@ -192,7 +192,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2149, "y1": 158, "z1": -128, "x2": 2160, "y2": 169, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 10,
     "entries": [
       { "name": "Lich", "maxCount": 1, "probability": 100 }
@@ -208,7 +208,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2122, "y1": 24, "z1": -128, "x2": 2133, "y2": 35, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 10,
     "entries": [
       { "name": "HellHound", "maxCount": 1, "probability": 100 },
@@ -225,7 +225,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2120, "y1": 160, "z1": -128, "x2": 2131, "y2": 171, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 10,
     "entries": [
       { "name": "EvilMage", "maxCount": 2, "probability": 100 },

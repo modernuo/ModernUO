@@ -9,7 +9,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2044, "y1": 830, "z1": -128, "x2": 2059, "y2": 845, "z2": 128 },
+    "homeRange": 7,
     "walkingRange": 15,
     "entries": [
       { "name": "Imp", "maxCount": 4, "probability": 100 }
@@ -25,7 +25,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2135, "y1": 901, "z1": -128, "x2": 2156, "y2": 922, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "Balron", "maxCount": 1, "probability": 100 }
@@ -41,7 +41,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2073, "y1": 901, "z1": -128, "x2": 2094, "y2": 922, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "Balron", "maxCount": 1, "probability": 100 }
@@ -57,7 +57,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2136, "y1": 941, "z1": -128, "x2": 2157, "y2": 962, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 15,
     "entries": [
       { "name": "Daemon", "maxCount": 1, "probability": 100 }
@@ -73,7 +73,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2083, "y1": 861, "z1": -128, "x2": 2098, "y2": 876, "z2": 128 },
+    "homeRange": 7,
     "walkingRange": 15,
     "entries": [
       { "name": "HellCat", "maxCount": 3, "probability": 100 }
@@ -89,7 +89,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2160, "y1": 910, "z1": -128, "x2": 2181, "y2": 931, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 32,
     "entries": [
       { "name": "BloodElemental", "maxCount": 1, "probability": 100 }
@@ -105,7 +105,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2098, "y1": 1002, "z1": -128, "x2": 2129, "y2": 1033, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 30,
     "entries": [
       { "name": "Succubus", "maxCount": 2, "probability": 100 },
@@ -122,7 +122,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2131, "y1": 861, "z1": -128, "x2": 2146, "y2": 876, "z2": 128 },
+    "homeRange": 7,
     "walkingRange": 7,
     "entries": [
       { "name": "BloodElemental", "maxCount": 1, "probability": 100 }
@@ -138,7 +138,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2170, "y1": 851, "z1": -128, "x2": 2185, "y2": 866, "z2": 128 },
+    "homeRange": 7,
     "walkingRange": 15,
     "entries": [
       { "name": "Imp", "maxCount": 4, "probability": 100 }
@@ -154,7 +154,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2048, "y1": 897, "z1": -128, "x2": 2069, "y2": 918, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "BloodElemental", "maxCount": 1, "probability": 100 }
@@ -170,7 +170,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2043, "y1": 852, "z1": -128, "x2": 2058, "y2": 867, "z2": 128 },
+    "homeRange": 7,
     "walkingRange": 15,
     "entries": [
       { "name": "HellCat", "maxCount": 2, "probability": 100 }
@@ -186,7 +186,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2073, "y1": 941, "z1": -128, "x2": 2094, "y2": 962, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 15,
     "entries": [
       { "name": "Daemon", "maxCount": 1, "probability": 100 }
@@ -202,7 +202,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2100, "y1": 902, "z1": -128, "x2": 2131, "y2": 933, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 15,
     "entries": [
       { "name": "Balron", "maxCount": 1, "probability": 100 }
@@ -218,7 +218,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2104, "y1": 941, "z1": -128, "x2": 2125, "y2": 962, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 15,
     "entries": [
       { "name": "Daemon", "maxCount": 1, "probability": 100 }
@@ -234,7 +234,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2099, "y1": 831, "z1": -128, "x2": 2130, "y2": 862, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 30,
     "entries": [
       { "name": "Imp", "maxCount": 4, "probability": 100 }
@@ -250,7 +250,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2131, "y1": 861, "z1": -128, "x2": 2146, "y2": 876, "z2": 128 },
+    "homeRange": 7,
     "walkingRange": 15,
     "entries": [
       { "name": "Imp", "maxCount": 4, "probability": 100 }
@@ -266,7 +266,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2048, "y1": 922, "z1": -128, "x2": 2069, "y2": 943, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "BloodElemental", "maxCount": 1, "probability": 100 }
@@ -282,7 +282,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2170, "y1": 829, "z1": -128, "x2": 2185, "y2": 844, "z2": 128 },
+    "homeRange": 7,
     "walkingRange": 15,
     "entries": [
       { "name": "Imp", "maxCount": 4, "probability": 100 }

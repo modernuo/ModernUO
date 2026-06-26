@@ -9,7 +9,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1631, "y1": 592, "z1": -128, "x2": 1672, "y2": 633, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "TimberWolf", "maxCount": 3, "probability": 100 }

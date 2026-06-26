@@ -9,7 +9,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 592, "y1": 837, "z1": -128, "x2": 633, "y2": 878, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Crane", "maxCount": 2, "probability": 100 }
@@ -25,7 +25,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 560, "y1": 1150, "z1": -128, "x2": 601, "y2": 1191, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Llama", "maxCount": 8, "probability": 100 },
@@ -43,7 +43,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 854, "y1": 951, "z1": -128, "x2": 895, "y2": 992, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Crane", "maxCount": 4, "probability": 100 }
@@ -59,7 +59,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 442, "y1": 306, "z1": -128, "x2": 503, "y2": 367, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Gaman", "maxCount": 8, "probability": 100 },
@@ -76,7 +76,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 388, "y1": 433, "z1": -128, "x2": 449, "y2": 494, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "DireWolf", "maxCount": 8, "probability": 100 },
@@ -101,7 +101,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 826, "y1": 294, "z1": -128, "x2": 887, "y2": 355, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "Horse", "maxCount": 8, "probability": 100 },
@@ -124,7 +124,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1146, "y1": 671, "z1": -128, "x2": 1207, "y2": 732, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "MountainGoat", "maxCount": 4, "probability": 100 }
@@ -140,7 +140,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 981, "y1": 479, "z1": -128, "x2": 1042, "y2": 540, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "Horse", "maxCount": 8, "probability": 100 },
@@ -163,7 +163,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 863, "y1": 1101, "z1": -128, "x2": 904, "y2": 1142, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Crane", "maxCount": 4, "probability": 100 },
@@ -181,7 +181,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 351, "y1": 481, "z1": -128, "x2": 412, "y2": 542, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Bird", "maxCount": 2, "probability": 100 },
@@ -201,7 +201,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 958, "y1": 305, "z1": -128, "x2": 1019, "y2": 366, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "Horse", "maxCount": 8, "probability": 100 },
@@ -224,7 +224,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1061, "y1": 867, "z1": -128, "x2": 1122, "y2": 928, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Dog", "maxCount": 4, "probability": 100 },
@@ -243,7 +243,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 552, "y1": 1191, "z1": -128, "x2": 593, "y2": 1232, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Goat", "maxCount": 8, "probability": 100 },
@@ -262,7 +262,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1062, "y1": 994, "z1": -128, "x2": 1123, "y2": 1055, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Gaman", "maxCount": 4, "probability": 100 },
@@ -280,7 +280,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 484, "y1": 1022, "z1": -128, "x2": 525, "y2": 1063, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Crane", "maxCount": 3, "probability": 100 }
@@ -296,7 +296,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 580, "y1": 1178, "z1": -128, "x2": 621, "y2": 1219, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Goat", "maxCount": 8, "probability": 100 },
@@ -315,7 +315,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 576, "y1": 1269, "z1": -128, "x2": 617, "y2": 1310, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Bird", "maxCount": 8, "probability": 100 },
@@ -334,7 +334,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 704, "y1": 811, "z1": -128, "x2": 745, "y2": 852, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "JackRabbit", "maxCount": 4, "probability": 100 },
@@ -351,7 +351,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1044, "y1": 776, "z1": -128, "x2": 1105, "y2": 837, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Crane", "maxCount": 4, "probability": 100 },
@@ -369,7 +369,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 160, "y1": 826, "z1": -128, "x2": 221, "y2": 887, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Gaman", "maxCount": 6, "probability": 100 }
@@ -385,7 +385,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 867, "y1": 1052, "z1": -128, "x2": 908, "y2": 1093, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Bird", "maxCount": 4, "probability": 100 }
@@ -401,7 +401,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 896, "y1": 1100, "z1": -128, "x2": 937, "y2": 1141, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Crane", "maxCount": 4, "probability": 100 },
@@ -420,7 +420,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 887, "y1": 1123, "z1": -128, "x2": 928, "y2": 1164, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Crane", "maxCount": 4, "probability": 100 },
@@ -439,7 +439,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 180, "y1": 1055, "z1": -128, "x2": 241, "y2": 1116, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Crane", "maxCount": 12, "probability": 100 },
@@ -460,7 +460,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 202, "y1": 1086, "z1": -128, "x2": 263, "y2": 1147, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Crane", "maxCount": 12, "probability": 100 },
@@ -481,7 +481,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 277, "y1": 542, "z1": -128, "x2": 338, "y2": 603, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Bird", "maxCount": 2, "probability": 100 },
@@ -503,7 +503,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1114, "y1": 637, "z1": -128, "x2": 1175, "y2": 698, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "MountainGoat", "maxCount": 4, "probability": 100 }
@@ -519,7 +519,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 755, "y1": 1107, "z1": -128, "x2": 796, "y2": 1148, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "RidableLlama", "maxCount": 4, "probability": 100 },
@@ -538,7 +538,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 162, "y1": 984, "z1": -128, "x2": 223, "y2": 1045, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Crane", "maxCount": 8, "probability": 100 },
@@ -555,7 +555,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 750, "y1": 855, "z1": -128, "x2": 791, "y2": 896, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Crane", "maxCount": 4, "probability": 100 },
@@ -573,7 +573,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1092, "y1": 471, "z1": -128, "x2": 1153, "y2": 532, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "BrownBear", "maxCount": 8, "probability": 100 },
@@ -593,7 +593,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1151, "y1": 517, "z1": -128, "x2": 1212, "y2": 578, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "RidableLlama", "maxCount": 8, "probability": 100 },
@@ -616,7 +616,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1103, "y1": 1006, "z1": -128, "x2": 1164, "y2": 1067, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Gaman", "maxCount": 4, "probability": 100 },
@@ -638,7 +638,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 514, "y1": 1169, "z1": -128, "x2": 555, "y2": 1210, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Crane", "maxCount": 8, "probability": 100 },
@@ -656,7 +656,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 702, "y1": 896, "z1": -128, "x2": 743, "y2": 937, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Crane", "maxCount": 6, "probability": 100 },
@@ -673,7 +673,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1058, "y1": 950, "z1": -128, "x2": 1119, "y2": 1011, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Crane", "maxCount": 4, "probability": 100 },
@@ -690,7 +690,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 413, "y1": 372, "z1": -128, "x2": 474, "y2": 433, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "DireWolf", "maxCount": 8, "probability": 100 },
@@ -714,7 +714,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1009, "y1": 922, "z1": -128, "x2": 1070, "y2": 983, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Crane", "maxCount": 4, "probability": 100 }
@@ -730,7 +730,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 424, "y1": 344, "z1": -128, "x2": 485, "y2": 405, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Gaman", "maxCount": 8, "probability": 100 },
@@ -747,7 +747,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 176, "y1": 861, "z1": -128, "x2": 237, "y2": 922, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Gaman", "maxCount": 1, "probability": 100 },
@@ -771,7 +771,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 221, "y1": 1044, "z1": -128, "x2": 282, "y2": 1105, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Crane", "maxCount": 12, "probability": 100 },
@@ -792,7 +792,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 665, "y1": 871, "z1": -128, "x2": 706, "y2": 912, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Crane", "maxCount": 4, "probability": 100 },
@@ -810,7 +810,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 255, "y1": 1126, "z1": -128, "x2": 316, "y2": 1187, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Crane", "maxCount": 12, "probability": 100 },
@@ -831,7 +831,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1109, "y1": 969, "z1": -128, "x2": 1170, "y2": 1030, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Gaman", "maxCount": 4, "probability": 100 },
@@ -852,7 +852,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 930, "y1": 263, "z1": -128, "x2": 991, "y2": 324, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Horse", "maxCount": 8, "probability": 100 },
@@ -875,7 +875,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 663, "y1": 837, "z1": -128, "x2": 704, "y2": 878, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "JackRabbit", "maxCount": 4, "probability": 100 }
@@ -891,7 +891,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 334, "y1": 535, "z1": -128, "x2": 395, "y2": 596, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Gaman", "maxCount": 3, "probability": 100 },
@@ -909,7 +909,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 813, "y1": 888, "z1": -128, "x2": 854, "y2": 929, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Crane", "maxCount": 4, "probability": 100 }
@@ -925,7 +925,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 541, "y1": 1081, "z1": -128, "x2": 582, "y2": 1122, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "GreyWolf", "maxCount": 8, "probability": 100 },
@@ -943,7 +943,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1315, "y1": 745, "z1": -128, "x2": 1376, "y2": 806, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Gaman", "maxCount": 2, "probability": 100 },
@@ -961,7 +961,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 875, "y1": 301, "z1": -128, "x2": 936, "y2": 362, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "Horse", "maxCount": 8, "probability": 100 },
@@ -984,7 +984,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1225, "y1": 836, "z1": -128, "x2": 1286, "y2": 897, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Gaman", "maxCount": 2, "probability": 100 },
@@ -1002,7 +1002,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1200, "y1": 792, "z1": -128, "x2": 1261, "y2": 853, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Gaman", "maxCount": 1, "probability": 100 },
@@ -1021,7 +1021,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 926, "y1": 675, "z1": -128, "x2": 987, "y2": 736, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "Horse", "maxCount": 8, "probability": 100 },
@@ -1044,7 +1044,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 827, "y1": 346, "z1": -128, "x2": 888, "y2": 407, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "Horse", "maxCount": 8, "probability": 100 },
@@ -1067,7 +1067,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 546, "y1": 1267, "z1": -128, "x2": 587, "y2": 1308, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Bird", "maxCount": 8, "probability": 100 },
@@ -1085,7 +1085,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 751, "y1": 804, "z1": -128, "x2": 792, "y2": 845, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Bird", "maxCount": 4, "probability": 100 }
@@ -1101,7 +1101,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1200, "y1": 865, "z1": -128, "x2": 1261, "y2": 926, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Gaman", "maxCount": 1, "probability": 100 },
@@ -1121,7 +1121,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 243, "y1": 576, "z1": -128, "x2": 304, "y2": 637, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Gaman", "maxCount": 2, "probability": 100 },
@@ -1143,7 +1143,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 326, "y1": 373, "z1": -128, "x2": 387, "y2": 434, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "DireWolf", "maxCount": 8, "probability": 100 },
@@ -1167,7 +1167,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 624, "y1": 1122, "z1": -128, "x2": 665, "y2": 1163, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "DireWolf", "maxCount": 6, "probability": 100 },
@@ -1185,7 +1185,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1167, "y1": 821, "z1": -128, "x2": 1228, "y2": 882, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Gaman", "maxCount": 1, "probability": 100 },
@@ -1205,7 +1205,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 599, "y1": 480, "z1": -128, "x2": 660, "y2": 541, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "MountainGoat", "maxCount": 1, "probability": 100 },
@@ -1226,7 +1226,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 859, "y1": 1018, "z1": -128, "x2": 900, "y2": 1059, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Gaman", "maxCount": 4, "probability": 100 },
@@ -1244,7 +1244,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1071, "y1": 802, "z1": -128, "x2": 1132, "y2": 863, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Crane", "maxCount": 4, "probability": 100 },
@@ -1262,7 +1262,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 543, "y1": 1113, "z1": -128, "x2": 584, "y2": 1154, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "RidableLlama", "maxCount": 8, "probability": 100 },
@@ -1280,7 +1280,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 657, "y1": 409, "z1": -128, "x2": 718, "y2": 470, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Sheep", "maxCount": 8, "probability": 100 },
@@ -1301,7 +1301,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 741, "y1": 198, "z1": -128, "x2": 802, "y2": 259, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "Horse", "maxCount": 8, "probability": 100 },
@@ -1324,7 +1324,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 535, "y1": 417, "z1": -128, "x2": 596, "y2": 478, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Sheep", "maxCount": 8, "probability": 100 },
@@ -1344,7 +1344,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 389, "y1": 499, "z1": -128, "x2": 450, "y2": 560, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Gaman", "maxCount": 8, "probability": 100 },
@@ -1361,7 +1361,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 726, "y1": 794, "z1": -128, "x2": 767, "y2": 835, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Crane", "maxCount": 2, "probability": 100 }
@@ -1377,7 +1377,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 914, "y1": 1213, "z1": -128, "x2": 955, "y2": 1254, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Crane", "maxCount": 4, "probability": 100 }
@@ -1393,7 +1393,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1147, "y1": 972, "z1": -128, "x2": 1208, "y2": 1033, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Bird", "maxCount": 2, "probability": 100 },
@@ -1410,7 +1410,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 113, "y1": 101, "z1": -128, "x2": 174, "y2": 162, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Gaman", "maxCount": 8, "probability": 100 }
@@ -1426,7 +1426,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 527, "y1": 1220, "z1": -128, "x2": 568, "y2": 1261, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Bird", "maxCount": 8, "probability": 100 },
@@ -1445,7 +1445,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 213, "y1": 1001, "z1": -128, "x2": 274, "y2": 1062, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Crane", "maxCount": 12, "probability": 100 },
@@ -1466,7 +1466,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 116, "y1": 79, "z1": -128, "x2": 177, "y2": 140, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Bird", "maxCount": 2, "probability": 100 },
@@ -1488,7 +1488,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 922, "y1": 1150, "z1": -128, "x2": 963, "y2": 1191, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Crane", "maxCount": 4, "probability": 100 },
@@ -1506,7 +1506,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 505, "y1": 1243, "z1": -128, "x2": 546, "y2": 1284, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Crane", "maxCount": 8, "probability": 100 },
@@ -1524,7 +1524,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 925, "y1": 798, "z1": -128, "x2": 986, "y2": 859, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Crane", "maxCount": 4, "probability": 100 },
@@ -1542,7 +1542,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 782, "y1": 188, "z1": -128, "x2": 843, "y2": 249, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Horse", "maxCount": 8, "probability": 100 },
@@ -1565,7 +1565,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 530, "y1": 1072, "z1": -128, "x2": 571, "y2": 1113, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "RidableLlama", "maxCount": 8, "probability": 100 },
@@ -1583,7 +1583,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1042, "y1": 449, "z1": -128, "x2": 1083, "y2": 490, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "DireWolf", "maxCount": 4, "probability": 100 },
@@ -1600,7 +1600,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 191, "y1": 938, "z1": -128, "x2": 252, "y2": 999, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Gaman", "maxCount": 2, "probability": 100 },
@@ -1624,7 +1624,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 859, "y1": 486, "z1": -128, "x2": 920, "y2": 547, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "MountainGoat", "maxCount": 4, "probability": 100 },
@@ -1643,7 +1643,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 513, "y1": 971, "z1": -128, "x2": 554, "y2": 1012, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Bird", "maxCount": 2, "probability": 100 }
@@ -1659,7 +1659,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 326, "y1": 675, "z1": -128, "x2": 387, "y2": 736, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "BrownBear", "maxCount": 1, "probability": 100 },
@@ -1683,7 +1683,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1269, "y1": 784, "z1": -128, "x2": 1330, "y2": 845, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Gaman", "maxCount": 2, "probability": 100 },
@@ -1701,7 +1701,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1103, "y1": 927, "z1": -128, "x2": 1164, "y2": 988, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Gaman", "maxCount": 4, "probability": 100 },
@@ -1721,7 +1721,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1177, "y1": 1007, "z1": -128, "x2": 1238, "y2": 1068, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Gaman", "maxCount": 4, "probability": 100 },
@@ -1739,7 +1739,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 506, "y1": 869, "z1": -128, "x2": 547, "y2": 910, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Bird", "maxCount": 4, "probability": 100 }
@@ -1755,7 +1755,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 488, "y1": 299, "z1": -128, "x2": 549, "y2": 360, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Gaman", "maxCount": 8, "probability": 100 }
@@ -1771,7 +1771,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 937, "y1": 725, "z1": -128, "x2": 998, "y2": 786, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "RidableLlama", "maxCount": 8, "probability": 100 },
@@ -1794,7 +1794,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1282, "y1": 674, "z1": -128, "x2": 1343, "y2": 735, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Gaman", "maxCount": 2, "probability": 100 },
@@ -1812,7 +1812,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 968, "y1": 626, "z1": -128, "x2": 1029, "y2": 687, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "Horse", "maxCount": 8, "probability": 100 },
@@ -1835,7 +1835,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1205, "y1": 476, "z1": -128, "x2": 1266, "y2": 537, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "RidableLlama", "maxCount": 8, "probability": 100 },
@@ -1858,7 +1858,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1233, "y1": 724, "z1": -128, "x2": 1294, "y2": 785, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Gaman", "maxCount": 2, "probability": 100 },
@@ -1876,7 +1876,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 997, "y1": 532, "z1": -128, "x2": 1058, "y2": 593, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "BrownBear", "maxCount": 8, "probability": 100 },
@@ -1898,7 +1898,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 615, "y1": 946, "z1": -128, "x2": 656, "y2": 987, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "JackRabbit", "maxCount": 4, "probability": 100 },
@@ -1915,7 +1915,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1026, "y1": 874, "z1": -128, "x2": 1087, "y2": 935, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Crane", "maxCount": 4, "probability": 100 }
@@ -1931,7 +1931,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 707, "y1": 1051, "z1": -128, "x2": 748, "y2": 1092, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Horse", "maxCount": 6, "probability": 100 },
@@ -1949,7 +1949,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1281, "y1": 747, "z1": -128, "x2": 1342, "y2": 808, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Gaman", "maxCount": 2, "probability": 100 },
@@ -1967,7 +1967,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 467, "y1": 423, "z1": -128, "x2": 528, "y2": 484, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Crane", "maxCount": 2, "probability": 100 }
@@ -1983,7 +1983,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 793, "y1": 249, "z1": -128, "x2": 854, "y2": 310, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Horse", "maxCount": 8, "probability": 100 },
@@ -2006,7 +2006,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1197, "y1": 1052, "z1": -128, "x2": 1258, "y2": 1113, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Crane", "maxCount": 4, "probability": 100 },
@@ -2023,7 +2023,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 374, "y1": 562, "z1": -128, "x2": 435, "y2": 623, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Gaman", "maxCount": 2, "probability": 100 },
@@ -2042,7 +2042,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 538, "y1": 842, "z1": -128, "x2": 579, "y2": 883, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "JackRabbit", "maxCount": 4, "probability": 100 },
@@ -2059,7 +2059,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1104, "y1": 675, "z1": -128, "x2": 1165, "y2": 736, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "MountainGoat", "maxCount": 4, "probability": 100 },
@@ -2076,7 +2076,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 593, "y1": 521, "z1": -128, "x2": 654, "y2": 582, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "MountainGoat", "maxCount": 2, "probability": 100 },
@@ -2097,7 +2097,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 547, "y1": 1140, "z1": -128, "x2": 588, "y2": 1181, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "DireWolf", "maxCount": 8, "probability": 100 },
@@ -2115,7 +2115,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1168, "y1": 911, "z1": -128, "x2": 1229, "y2": 972, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Gaman", "maxCount": 2, "probability": 100 },
@@ -2133,7 +2133,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 893, "y1": 1035, "z1": -128, "x2": 934, "y2": 1076, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Crane", "maxCount": 4, "probability": 100 },
@@ -2150,7 +2150,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 347, "y1": 605, "z1": -128, "x2": 408, "y2": 666, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "BrownBear", "maxCount": 1, "probability": 100 },
@@ -2174,7 +2174,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 228, "y1": 548, "z1": -128, "x2": 259, "y2": 579, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 15,
     "entries": [
       { "name": "Crane", "maxCount": 2, "probability": 100 }
@@ -2190,7 +2190,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1228, "y1": 501, "z1": -128, "x2": 1289, "y2": 562, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Bird", "maxCount": 4, "probability": 100 }
@@ -2206,7 +2206,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 891, "y1": 1005, "z1": -128, "x2": 932, "y2": 1046, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "JackRabbit", "maxCount": 4, "probability": 100 },
@@ -2223,7 +2223,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 472, "y1": 502, "z1": -128, "x2": 533, "y2": 563, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "MountainGoat", "maxCount": 2, "probability": 100 },
@@ -2244,7 +2244,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 831, "y1": 305, "z1": -128, "x2": 892, "y2": 366, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "Crane", "maxCount": 4, "probability": 100 }
@@ -2260,7 +2260,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1022, "y1": 1000, "z1": -128, "x2": 1083, "y2": 1061, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Crane", "maxCount": 4, "probability": 100 }
@@ -2276,7 +2276,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 891, "y1": 563, "z1": -128, "x2": 952, "y2": 624, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "MountainGoat", "maxCount": 4, "probability": 100 },
@@ -2293,7 +2293,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1235, "y1": 897, "z1": -128, "x2": 1296, "y2": 958, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Gaman", "maxCount": 4, "probability": 100 },
@@ -2312,7 +2312,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 571, "y1": 990, "z1": -128, "x2": 612, "y2": 1031, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "JackRabbit", "maxCount": 4, "probability": 100 },
@@ -2329,7 +2329,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 867, "y1": 1266, "z1": -128, "x2": 908, "y2": 1307, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Goat", "maxCount": 4, "probability": 100 },
@@ -2346,7 +2346,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 998, "y1": 788, "z1": -128, "x2": 1059, "y2": 849, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Crane", "maxCount": 4, "probability": 100 },
@@ -2363,7 +2363,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 162, "y1": 740, "z1": -128, "x2": 223, "y2": 801, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "Bird", "maxCount": 8, "probability": 100 },
@@ -2380,7 +2380,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1075, "y1": 509, "z1": -128, "x2": 1136, "y2": 570, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "RidableLlama", "maxCount": 8, "probability": 100 },
@@ -2403,7 +2403,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 626, "y1": 381, "z1": -128, "x2": 687, "y2": 442, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Sheep", "maxCount": 8, "probability": 100 },
@@ -2423,7 +2423,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 772, "y1": 900, "z1": -128, "x2": 813, "y2": 941, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "JackRabbit", "maxCount": 4, "probability": 100 }
@@ -2439,7 +2439,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 536, "y1": 400, "z1": -128, "x2": 597, "y2": 461, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Bird", "maxCount": 8, "probability": 100 },
@@ -2457,7 +2457,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 925, "y1": 361, "z1": -128, "x2": 986, "y2": 422, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "Horse", "maxCount": 8, "probability": 100 },
@@ -2480,7 +2480,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 28, "y1": 74, "z1": -128, "x2": 89, "y2": 135, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "BrownBear", "maxCount": 1, "probability": 100 },
@@ -2504,7 +2504,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 755, "y1": 273, "z1": -128, "x2": 816, "y2": 334, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "Horse", "maxCount": 8, "probability": 100 },
@@ -2527,7 +2527,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1044, "y1": 499, "z1": -128, "x2": 1105, "y2": 560, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "BrownBear", "maxCount": 8, "probability": 100 },
@@ -2548,7 +2548,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 919, "y1": 559, "z1": -128, "x2": 980, "y2": 620, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "RidableLlama", "maxCount": 8, "probability": 100 },
@@ -2571,7 +2571,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 978, "y1": 230, "z1": -128, "x2": 1039, "y2": 291, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Horse", "maxCount": 8, "probability": 100 },
@@ -2593,7 +2593,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 690, "y1": 1095, "z1": -128, "x2": 731, "y2": 1136, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "GreyWolf", "maxCount": 6, "probability": 100 },
@@ -2610,7 +2610,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 871, "y1": 234, "z1": -128, "x2": 932, "y2": 295, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Horse", "maxCount": 8, "probability": 100 },
@@ -2633,7 +2633,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1259, "y1": 813, "z1": -128, "x2": 1320, "y2": 874, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Gaman", "maxCount": 2, "probability": 100 },
@@ -2651,7 +2651,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1174, "y1": 606, "z1": -128, "x2": 1195, "y2": 627, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "MountainGoat", "maxCount": 3, "probability": 100 }
@@ -2667,7 +2667,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 838, "y1": 630, "z1": -128, "x2": 899, "y2": 691, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "Bird", "maxCount": 4, "probability": 100 }
@@ -2683,7 +2683,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 463, "y1": 348, "z1": -128, "x2": 524, "y2": 409, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Gaman", "maxCount": 8, "probability": 100 },
@@ -2700,7 +2700,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1148, "y1": 1046, "z1": -128, "x2": 1209, "y2": 1107, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Crane", "maxCount": 4, "probability": 100 }
@@ -2716,7 +2716,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 429, "y1": 453, "z1": -128, "x2": 490, "y2": 514, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Gaman", "maxCount": 8, "probability": 100 }
@@ -2732,7 +2732,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 991, "y1": 267, "z1": -128, "x2": 1052, "y2": 328, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Horse", "maxCount": 8, "probability": 100 },
@@ -2754,7 +2754,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 521, "y1": 514, "z1": -128, "x2": 582, "y2": 575, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "MountainGoat", "maxCount": 2, "probability": 100 },
@@ -2775,7 +2775,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 475, "y1": 444, "z1": -128, "x2": 536, "y2": 505, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Sheep", "maxCount": 3, "probability": 100 },
@@ -2794,7 +2794,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 832, "y1": 460, "z1": -128, "x2": 893, "y2": 521, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Bird", "maxCount": 4, "probability": 100 },
@@ -2812,7 +2812,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 178, "y1": 906, "z1": -128, "x2": 239, "y2": 967, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Gaman", "maxCount": 1, "probability": 100 },
@@ -2836,7 +2836,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 919, "y1": 1179, "z1": -128, "x2": 960, "y2": 1220, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Crane", "maxCount": 4, "probability": 100 }
@@ -2852,7 +2852,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 864, "y1": 1132, "z1": -128, "x2": 905, "y2": 1173, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Sheep", "maxCount": 4, "probability": 100 },
@@ -2870,7 +2870,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 497, "y1": 363, "z1": -128, "x2": 558, "y2": 424, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Gaman", "maxCount": 8, "probability": 100 }
@@ -2886,7 +2886,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 251, "y1": 1176, "z1": -128, "x2": 272, "y2": 1197, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 30,
     "entries": [
       { "name": "Crane", "maxCount": 4, "probability": 100 }
@@ -2902,7 +2902,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1367, "y1": 872, "z1": -128, "x2": 1388, "y2": 893, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 30,
     "entries": [
       { "name": "Llama", "maxCount": 2, "probability": 100 },
@@ -2919,7 +2919,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1225, "y1": 774, "z1": -128, "x2": 1286, "y2": 835, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Gaman", "maxCount": 4, "probability": 100 },
@@ -2937,7 +2937,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 692, "y1": 409, "z1": -128, "x2": 713, "y2": 430, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "Crane", "maxCount": 3, "probability": 100 }
@@ -2953,7 +2953,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 911, "y1": 176, "z1": -128, "x2": 972, "y2": 237, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Horse", "maxCount": 8, "probability": 100 },
@@ -2976,7 +2976,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1045, "y1": 688, "z1": -128, "x2": 1086, "y2": 729, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "MountainGoat", "maxCount": 2, "probability": 100 }
@@ -2992,7 +2992,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 294, "y1": 634, "z1": -128, "x2": 355, "y2": 695, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "BrownBear", "maxCount": 1, "probability": 100 },
@@ -3016,7 +3016,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 774, "y1": 870, "z1": -128, "x2": 815, "y2": 911, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Crane", "maxCount": 4, "probability": 100 }
@@ -3032,7 +3032,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 297, "y1": 574, "z1": -128, "x2": 358, "y2": 635, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Gaman", "maxCount": 2, "probability": 100 },
@@ -3051,7 +3051,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 660, "y1": 967, "z1": -128, "x2": 701, "y2": 1008, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Bird", "maxCount": 2, "probability": 100 }
@@ -3067,7 +3067,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 155, "y1": 1016, "z1": -128, "x2": 216, "y2": 1077, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Crane", "maxCount": 12, "probability": 100 },
@@ -3086,7 +3086,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 248, "y1": 612, "z1": -128, "x2": 329, "y2": 693, "z2": 128 },
+    "homeRange": 40,
     "walkingRange": 40,
     "entries": [
       { "name": "Gaman", "maxCount": 8, "probability": 100 }
@@ -3102,7 +3102,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1111, "y1": 864, "z1": -128, "x2": 1172, "y2": 925, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Gaman", "maxCount": 1, "probability": 100 },
@@ -3123,7 +3123,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 763, "y1": 338, "z1": -128, "x2": 824, "y2": 399, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "Horse", "maxCount": 8, "probability": 100 },
@@ -3146,7 +3146,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 354, "y1": 430, "z1": -128, "x2": 415, "y2": 491, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "DireWolf", "maxCount": 8, "probability": 100 },
@@ -3171,7 +3171,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 881, "y1": 613, "z1": -128, "x2": 942, "y2": 674, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "RidableLlama", "maxCount": 8, "probability": 100 },
@@ -3194,7 +3194,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 817, "y1": 1055, "z1": -128, "x2": 858, "y2": 1096, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Crane", "maxCount": 4, "probability": 100 }
@@ -3210,7 +3210,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1277, "y1": 529, "z1": -128, "x2": 1338, "y2": 590, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "TimberWolf", "maxCount": 8, "probability": 100 },
@@ -3228,7 +3228,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 504, "y1": 1034, "z1": -128, "x2": 545, "y2": 1075, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Bird", "maxCount": 2, "probability": 100 }
@@ -3244,7 +3244,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 915, "y1": 501, "z1": -128, "x2": 956, "y2": 542, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Bird", "maxCount": 3, "probability": 100 },

@@ -9,7 +9,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5402, "y1": 728, "z1": -128, "x2": 5439, "y2": 765, "z2": 128 },
+    "homeRange": 18,
     "walkingRange": 25,
     "entries": [
       { "name": "EarthElemental", "maxCount": 4, "probability": 100 },
@@ -26,7 +26,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5414, "y1": 779, "z1": -128, "x2": 5439, "y2": 804, "z2": 128 },
+    "homeRange": 12,
     "walkingRange": 25,
     "entries": [
       { "name": "Troll", "maxCount": 3, "probability": 100 }
@@ -42,7 +42,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5471, "y1": 699, "z1": -128, "x2": 5496, "y2": 724, "z2": 128 },
+    "homeRange": 12,
     "walkingRange": 25,
     "entries": [
       { "name": "Ettin", "maxCount": 4, "probability": 100 }
@@ -58,7 +58,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5559, "y1": 816, "z1": -128, "x2": 5570, "y2": 827, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 5,
     "entries": [
       { "name": "TreasureChestLevel4", "maxCount": 2, "probability": 100 }
@@ -74,7 +74,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5463, "y1": 736, "z1": -128, "x2": 5488, "y2": 761, "z2": 128 },
+    "homeRange": 12,
     "walkingRange": 25,
     "entries": [
       { "name": "EarthElemental", "maxCount": 3, "probability": 100 },
@@ -91,7 +91,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5393, "y1": 564, "z1": -128, "x2": 5418, "y2": 589, "z2": 128 },
+    "homeRange": 12,
     "walkingRange": 25,
     "entries": [
       { "name": "Lizardman", "maxCount": 5, "probability": 100 }
@@ -107,7 +107,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5429, "y1": 668, "z1": -128, "x2": 5454, "y2": 693, "z2": 128 },
+    "homeRange": 12,
     "walkingRange": 25,
     "entries": [
       { "name": "EarthElemental", "maxCount": 6, "probability": 100 }
@@ -123,7 +123,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5383, "y1": 981, "z1": -128, "x2": 5414, "y2": 1012, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 25,
     "entries": [
       { "name": "AcidElemental", "maxCount": 3, "probability": 100 }
@@ -139,7 +139,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5570, "y1": 851, "z1": -128, "x2": 5611, "y2": 892, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 35,
     "entries": [
       { "name": "Ogre", "maxCount": 3, "probability": 100 }
@@ -155,7 +155,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5472, "y1": 887, "z1": -128, "x2": 5503, "y2": 918, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 25,
     "entries": [
       { "name": "Ettin", "maxCount": 4, "probability": 100 }
@@ -171,7 +171,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5492, "y1": 585, "z1": -128, "x2": 5517, "y2": 610, "z2": 128 },
+    "homeRange": 12,
     "walkingRange": 25,
     "entries": [
       { "name": "Lizardman", "maxCount": 5, "probability": 100 }
@@ -187,7 +187,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5478, "y1": 664, "z1": -128, "x2": 5503, "y2": 689, "z2": 128 },
+    "homeRange": 12,
     "walkingRange": 25,
     "entries": [
       { "name": "Ettin", "maxCount": 4, "probability": 100 }
@@ -203,7 +203,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5398, "y1": 599, "z1": -128, "x2": 5423, "y2": 624, "z2": 128 },
+    "homeRange": 12,
     "walkingRange": 25,
     "entries": [
       { "name": "Lizardman", "maxCount": 5, "probability": 100 }
@@ -219,7 +219,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5470, "y1": 779, "z1": -128, "x2": 5495, "y2": 804, "z2": 128 },
+    "homeRange": 12,
     "walkingRange": 25,
     "entries": [
       { "name": "Troll", "maxCount": 3, "probability": 100 }
@@ -235,7 +235,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5448, "y1": 514, "z1": -128, "x2": 5473, "y2": 539, "z2": 128 },
+    "homeRange": 12,
     "walkingRange": 25,
     "entries": [
       { "name": "Lizardman", "maxCount": 5, "probability": 100 }
@@ -251,7 +251,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5427, "y1": 839, "z1": -128, "x2": 5452, "y2": 864, "z2": 128 },
+    "homeRange": 12,
     "walkingRange": 25,
     "entries": [
       { "name": "Troll", "maxCount": 3, "probability": 100 }
@@ -267,7 +267,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5452, "y1": 588, "z1": -128, "x2": 5477, "y2": 613, "z2": 128 },
+    "homeRange": 12,
     "walkingRange": 25,
     "entries": [
       { "name": "Lizardman", "maxCount": 5, "probability": 100 }
@@ -283,7 +283,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5588, "y1": 789, "z1": -128, "x2": 5599, "y2": 800, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 5,
     "entries": [
       { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 }
@@ -299,7 +299,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5376, "y1": 890, "z1": -128, "x2": 5407, "y2": 921, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 25,
     "entries": [
       { "name": "Ettin", "maxCount": 4, "probability": 100 }
@@ -315,7 +315,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5389, "y1": 520, "z1": -128, "x2": 5400, "y2": 531, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 5,
     "entries": [
       { "name": "TreasureChestLevel1", "maxCount": 1, "probability": 100 },
@@ -332,7 +332,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5517, "y1": 772, "z1": -128, "x2": 5548, "y2": 803, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 25,
     "entries": [
       { "name": "Ogre", "maxCount": 3, "probability": 100 }
@@ -348,7 +348,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5491, "y1": 517, "z1": -128, "x2": 5516, "y2": 542, "z2": 128 },
+    "homeRange": 12,
     "walkingRange": 25,
     "entries": [
       { "name": "Lizardman", "maxCount": 5, "probability": 100 },
@@ -366,7 +366,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5374, "y1": 600, "z1": -128, "x2": 5399, "y2": 625, "z2": 128 },
+    "homeRange": 12,
     "walkingRange": 25,
     "entries": [
       { "name": "Lizardman", "maxCount": 5, "probability": 100 },
@@ -384,7 +384,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5399, "y1": 529, "z1": -128, "x2": 5424, "y2": 554, "z2": 128 },
+    "homeRange": 12,
     "walkingRange": 25,
     "entries": [
       { "name": "Lizardman", "maxCount": 5, "probability": 100 }
@@ -400,7 +400,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5538, "y1": 880, "z1": -128, "x2": 5555, "y2": 897, "z2": 128 },
+    "homeRange": 8,
     "walkingRange": 8,
     "entries": [
       { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 },
@@ -417,7 +417,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5385, "y1": 582, "z1": -128, "x2": 5396, "y2": 593, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 5,
     "entries": [
       { "name": "TreasureChestLevel1", "maxCount": 1, "probability": 100 },
@@ -434,7 +434,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5458, "y1": 848, "z1": -128, "x2": 5483, "y2": 873, "z2": 128 },
+    "homeRange": 12,
     "walkingRange": 25,
     "entries": [
       { "name": "Troll", "maxCount": 3, "probability": 100 }
@@ -450,7 +450,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5502, "y1": 651, "z1": -128, "x2": 5513, "y2": 662, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 5,
     "entries": [
       { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 },
@@ -467,7 +467,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5487, "y1": 729, "z1": -128, "x2": 5524, "y2": 766, "z2": 128 },
+    "homeRange": 18,
     "walkingRange": 25,
     "entries": [
       { "name": "EarthElemental", "maxCount": 3, "probability": 100 },
@@ -484,7 +484,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5370, "y1": 688, "z1": -128, "x2": 5401, "y2": 719, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 25,
     "entries": [
       { "name": "Ettin", "maxCount": 4, "probability": 100 }
@@ -500,7 +500,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5411, "y1": 928, "z1": -128, "x2": 5442, "y2": 959, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 25,
     "entries": [
       { "name": "Ettin", "maxCount": 4, "probability": 100 }
@@ -516,7 +516,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5453, "y1": 955, "z1": -128, "x2": 5490, "y2": 992, "z2": 128 },
+    "homeRange": 18,
     "walkingRange": 25,
     "entries": [
       { "name": "Cyclops", "maxCount": 3, "probability": 100 }
@@ -532,7 +532,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5489, "y1": 924, "z1": -128, "x2": 5520, "y2": 955, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 25,
     "entries": [
       { "name": "Ettin", "maxCount": 4, "probability": 100 }
@@ -548,7 +548,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5550, "y1": 821, "z1": -128, "x2": 5565, "y2": 836, "z2": 128 },
+    "homeRange": 7,
     "walkingRange": 7,
     "entries": [
       { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }
@@ -564,7 +564,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5382, "y1": 692, "z1": -128, "x2": 5393, "y2": 703, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 5,
     "entries": [
       { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 },
@@ -581,7 +581,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5379, "y1": 648, "z1": -128, "x2": 5404, "y2": 673, "z2": 128 },
+    "homeRange": 12,
     "walkingRange": 25,
     "entries": [
       { "name": "Ettin", "maxCount": 4, "probability": 100 }
@@ -597,7 +597,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5595, "y1": 789, "z1": -128, "x2": 5616, "y2": 810, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "TreasureChestLevel3", "maxCount": 3, "probability": 100 }
@@ -613,7 +613,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5546, "y1": 812, "z1": -128, "x2": 5571, "y2": 837, "z2": 128 },
+    "homeRange": 12,
     "walkingRange": 25,
     "entries": [
       { "name": "OgreLord", "maxCount": 5, "probability": 100 }
@@ -629,7 +629,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5589, "y1": 774, "z1": -128, "x2": 5620, "y2": 805, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 25,
     "entries": [
       { "name": "Ogre", "maxCount": 3, "probability": 100 }
@@ -645,7 +645,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5513, "y1": 887, "z1": -128, "x2": 5544, "y2": 918, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 25,
     "entries": [
       { "name": "Ogre", "maxCount": 3, "probability": 100 }
@@ -661,7 +661,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5387, "y1": 985, "z1": -128, "x2": 5408, "y2": 1006, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }
@@ -677,7 +677,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5388, "y1": 985, "z1": -128, "x2": 5409, "y2": 1006, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "TreasureChestLevel4", "maxCount": 2, "probability": 100 }
@@ -693,7 +693,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5423, "y1": 577, "z1": -128, "x2": 5448, "y2": 602, "z2": 128 },
+    "homeRange": 12,
     "walkingRange": 25,
     "entries": [
       { "name": "Lizardman", "maxCount": 5, "probability": 100 }

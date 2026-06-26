@@ -9,7 +9,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 896, "y1": 115, "z1": -128, "x2": 957, "y2": 176, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "PolarBear", "maxCount": 8, "probability": 100 },
@@ -27,7 +27,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 849, "y1": 98, "z1": -128, "x2": 910, "y2": 159, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "PolarBear", "maxCount": 8, "probability": 100 },
@@ -45,7 +45,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 884, "y1": 25, "z1": -128, "x2": 945, "y2": 86, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "PolarBear", "maxCount": 8, "probability": 100 },
@@ -63,7 +63,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 917, "y1": 73, "z1": -128, "x2": 978, "y2": 134, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "PolarBear", "maxCount": 8, "probability": 100 },
@@ -81,7 +81,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 946, "y1": 114, "z1": -128, "x2": 1007, "y2": 175, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "PolarBear", "maxCount": 8, "probability": 100 },

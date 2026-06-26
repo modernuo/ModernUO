@@ -9,7 +9,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2167, "y1": 1200, "z1": -128, "x2": 2188, "y2": 1221, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "LadyLissith", "maxCount": 2, "probability": 100 },
@@ -26,7 +26,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2151, "y1": 1161, "z1": -128, "x2": 2192, "y2": 1202, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "CuSidhe", "maxCount": 8, "probability": 100 },
@@ -46,7 +46,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2186, "y1": 1200, "z1": -128, "x2": 2227, "y2": 1241, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "CuSidhe", "maxCount": 2, "probability": 100 }
@@ -62,7 +62,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2216, "y1": 1210, "z1": -128, "x2": 2233, "y2": 1227, "z2": 128 },
+    "homeRange": 8,
     "walkingRange": 8,
     "entries": [
       { "name": "Swoop", "maxCount": 1, "probability": 100 }
@@ -78,7 +78,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2162, "y1": 1261, "z1": -128, "x2": 2173, "y2": 1272, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 5,
     "entries": [
       { "name": "Malefic", "maxCount": 3, "probability": 100 }
@@ -94,7 +94,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2182, "y1": 1155, "z1": -128, "x2": 2233, "y2": 1206, "z2": 128 },
+    "homeRange": 25,
     "walkingRange": 25,
     "entries": [
       { "name": "CuSidhe", "maxCount": 12, "probability": 100 },
@@ -114,7 +114,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2132, "y1": 1211, "z1": -128, "x2": 2143, "y2": 1222, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 5,
     "entries": [
       { "name": "Silk", "maxCount": 4, "probability": 100 }
@@ -130,7 +130,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2152, "y1": 1201, "z1": -128, "x2": 2163, "y2": 1212, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 5,
     "entries": [
       { "name": "Virulent", "maxCount": 3, "probability": 100 }
@@ -146,7 +146,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2155, "y1": 1181, "z1": -128, "x2": 2172, "y2": 1198, "z2": 128 },
+    "homeRange": 8,
     "walkingRange": 8,
     "entries": [
       { "name": "Changeling", "maxCount": 2, "probability": 100 }
@@ -162,7 +162,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2129, "y1": 1169, "z1": -128, "x2": 2140, "y2": 1180, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 5,
     "entries": [
       { "name": "Gnaw", "maxCount": 5, "probability": 100 },
@@ -179,7 +179,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2172, "y1": 1224, "z1": -128, "x2": 2183, "y2": 1235, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 5,
     "entries": [
       { "name": "GiantBlackWidow", "maxCount": 4, "probability": 100 }
@@ -195,7 +195,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2118, "y1": 1192, "z1": -128, "x2": 2159, "y2": 1233, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Quagmire", "maxCount": 8, "probability": 100 },
@@ -213,7 +213,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2160, "y1": 1237, "z1": -128, "x2": 2181, "y2": 1258, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "Malefic", "maxCount": 4, "probability": 100 },
@@ -230,7 +230,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2149, "y1": 1213, "z1": -128, "x2": 2170, "y2": 1234, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "Corpser", "maxCount": 5, "probability": 100 },

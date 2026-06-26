@@ -9,7 +9,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1173, "y1": 3597, "z1": -128, "x2": 1194, "y2": 3618, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "Chicken", "maxCount": 5, "probability": 100 },
@@ -27,7 +27,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 665, "y1": 929, "z1": -128, "x2": 686, "y2": 950, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 15,
     "entries": [
       { "name": "Sheep", "maxCount": 15, "probability": 100 }
@@ -43,7 +43,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2516, "y1": 572, "z1": -128, "x2": 2617, "y2": 673, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Bird", "maxCount": 3, "probability": 100 },
@@ -62,7 +62,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1385, "y1": 3950, "z1": -128, "x2": 1486, "y2": 4051, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Bird", "maxCount": 5, "probability": 100 },
@@ -81,7 +81,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1300, "y1": 3675, "z1": -128, "x2": 1501, "y2": 3876, "z2": 128 },
+    "homeRange": 100,
     "walkingRange": 100,
     "entries": [
       { "name": "Bird", "maxCount": 10, "probability": 100 },
@@ -100,7 +100,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6990, "y1": 370, "z1": -128, "x2": 7015, "y2": 395, "z2": 128 },
+    "homeRange": 12,
     "walkingRange": 20,
     "entries": [
       { "name": "Bird", "maxCount": 5, "probability": 100 }
@@ -116,7 +116,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1430, "y1": 1538, "z1": -128, "x2": 1671, "y2": 1779, "z2": 128 },
+    "homeRange": 120,
     "walkingRange": 120,
     "entries": [
       { "name": "Bird", "maxCount": 15, "probability": 100 },
@@ -135,7 +135,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 820, "y1": 2343, "z1": -128, "x2": 841, "y2": 2364, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 15,
     "entries": [
       { "name": "Chicken", "maxCount": 3, "probability": 100 },
@@ -153,7 +153,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 376, "y1": 802, "z1": -128, "x2": 697, "y2": 1123, "z2": 128 },
+    "homeRange": 160,
     "walkingRange": 160,
     "entries": [
       { "name": "Bird", "maxCount": 20, "probability": 100 },
@@ -172,7 +172,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1105, "y1": 1552, "z1": -128, "x2": 1266, "y2": 1713, "z2": 128 },
+    "homeRange": 80,
     "walkingRange": 80,
     "entries": [
       { "name": "Chicken", "maxCount": 5, "probability": 100 }
@@ -188,7 +188,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5118, "y1": 135, "z1": -128, "x2": 5149, "y2": 166, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 15,
     "entries": [
       { "name": "Daemon", "maxCount": 3, "probability": 100 }
@@ -204,7 +204,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1136, "y1": 1743, "z1": -128, "x2": 1297, "y2": 1904, "z2": 128 },
+    "homeRange": 80,
     "walkingRange": 80,
     "entries": [
       { "name": "Chicken", "maxCount": 5, "probability": 100 }
@@ -220,7 +220,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 7053, "y1": 400, "z1": -128, "x2": 7074, "y2": 421, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "MiniatureMushroom", "maxCount": 6, "probability": 100 }
@@ -236,7 +236,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2192, "y1": 1147, "z1": -128, "x2": 2293, "y2": 1248, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Bird", "maxCount": 4, "probability": 100 },
@@ -255,7 +255,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1314, "y1": 1816, "z1": -128, "x2": 1325, "y2": 1827, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 10,
     "entries": [
       { "name": "Cow", "maxCount": 7, "probability": 100 }
@@ -271,7 +271,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 550, "y1": 1229, "z1": -128, "x2": 571, "y2": 1250, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "Chicken", "maxCount": 2, "probability": 100 }
@@ -287,7 +287,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1117, "y1": 3573, "z1": -128, "x2": 1138, "y2": 3594, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "Chicken", "maxCount": 5, "probability": 100 },
@@ -305,7 +305,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1314, "y1": 1805, "z1": -128, "x2": 1325, "y2": 1816, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 10,
     "entries": [
       { "name": "Cow", "maxCount": 7, "probability": 100 }
@@ -321,7 +321,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3701, "y1": 2622, "z1": -128, "x2": 3752, "y2": 2673, "z2": 128 },
+    "homeRange": 25,
     "walkingRange": 25,
     "entries": [
       { "name": "Chicken", "maxCount": 10, "probability": 100 }
@@ -337,7 +337,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 7034, "y1": 419, "z1": -128, "x2": 7055, "y2": 440, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "MiniatureMushroom", "maxCount": 4, "probability": 100 }
@@ -353,7 +353,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 7024, "y1": 397, "z1": -128, "x2": 7049, "y2": 422, "z2": 128 },
+    "homeRange": 12,
     "walkingRange": 12,
     "entries": [
       { "name": "Bird", "maxCount": 3, "probability": 100 }
@@ -369,7 +369,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5175, "y1": 3920, "z1": -128, "x2": 5336, "y2": 4081, "z2": 128 },
+    "homeRange": 80,
     "walkingRange": 80,
     "entries": [
       { "name": "Bird", "maxCount": 6, "probability": 100 },
@@ -388,7 +388,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2637, "y1": 2168, "z1": -128, "x2": 2738, "y2": 2269, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Bird", "maxCount": 4, "probability": 100 },
@@ -407,7 +407,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1104, "y1": 3589, "z1": -128, "x2": 1205, "y2": 3690, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Bird", "maxCount": 4, "probability": 100 },
@@ -426,7 +426,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2218, "y1": 1146, "z1": -128, "x2": 2229, "y2": 1157, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 5,
     "entries": [
       { "name": "Chicken", "maxCount": 1, "probability": 100 }
@@ -442,7 +442,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4624, "y1": 1292, "z1": -128, "x2": 4645, "y2": 1313, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "Chicken", "maxCount": 5, "probability": 100 },
@@ -460,7 +460,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 7069, "y1": 369, "z1": -128, "x2": 7094, "y2": 394, "z2": 128 },
+    "homeRange": 12,
     "walkingRange": 12,
     "entries": [
       { "name": "Bird", "maxCount": 3, "probability": 100 }
@@ -476,7 +476,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3664, "y1": 2155, "z1": -128, "x2": 3765, "y2": 2256, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Bird", "maxCount": 6, "probability": 100 },
@@ -495,7 +495,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1260, "y1": 1710, "z1": -128, "x2": 1421, "y2": 1871, "z2": 128 },
+    "homeRange": 80,
     "walkingRange": 80,
     "entries": [
       { "name": "Bird", "maxCount": 5, "probability": 100 },
@@ -514,7 +514,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 7042, "y1": 376, "z1": -128, "x2": 7063, "y2": 397, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "MiniatureMushroom", "maxCount": 6, "probability": 100 }
@@ -530,7 +530,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1259, "y1": 1708, "z1": -128, "x2": 1420, "y2": 1869, "z2": 128 },
+    "homeRange": 80,
     "walkingRange": 80,
     "entries": [
       { "name": "Chicken", "maxCount": 5, "probability": 100 }
@@ -546,7 +546,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6997, "y1": 350, "z1": -128, "x2": 7018, "y2": 371, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "MiniatureMushroom", "maxCount": 2, "probability": 100 }
@@ -562,7 +562,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4417, "y1": 1446, "z1": -128, "x2": 4428, "y2": 1457, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 5,
     "entries": [
       { "name": "Chicken", "maxCount": 1, "probability": 100 }
@@ -578,7 +578,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6997, "y1": 372, "z1": -128, "x2": 7018, "y2": 393, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "MiniatureMushroom", "maxCount": 6, "probability": 100 }
@@ -594,7 +594,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3539, "y1": 1078, "z1": -128, "x2": 3860, "y2": 1399, "z2": 128 },
+    "homeRange": 160,
     "walkingRange": 160,
     "entries": [
       { "name": "Bird", "maxCount": 18, "probability": 100 },
@@ -613,7 +613,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2632, "y1": 2068, "z1": -128, "x2": 2733, "y2": 2169, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Bird", "maxCount": 5, "probability": 100 },
@@ -632,7 +632,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 7077, "y1": 372, "z1": -128, "x2": 7098, "y2": 393, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "MiniatureMushroom", "maxCount": 2, "probability": 100 }
@@ -648,7 +648,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1817, "y1": 2640, "z1": -128, "x2": 2058, "y2": 2881, "z2": 128 },
+    "homeRange": 120,
     "walkingRange": 120,
     "entries": [
       { "name": "Bird", "maxCount": 12, "probability": 100 },
@@ -667,7 +667,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2804, "y1": 806, "z1": -128, "x2": 3005, "y2": 1007, "z2": 128 },
+    "homeRange": 100,
     "walkingRange": 100,
     "entries": [
       { "name": "Bird", "maxCount": 10, "probability": 100 },
@@ -686,7 +686,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 678, "y1": 997, "z1": -128, "x2": 699, "y2": 1018, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "Chicken", "maxCount": 2, "probability": 100 }
@@ -702,7 +702,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5149, "y1": 190, "z1": -128, "x2": 5180, "y2": 221, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 15,
     "entries": [
       { "name": "LichLord", "maxCount": 1, "probability": 100 },
@@ -719,7 +719,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2872, "y1": 3336, "z1": -128, "x2": 3073, "y2": 3537, "z2": 128 },
+    "homeRange": 100,
     "walkingRange": 100,
     "entries": [
       { "name": "Bird", "maxCount": 12, "probability": 100 },
@@ -738,7 +738,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5229, "y1": 208, "z1": -128, "x2": 5270, "y2": 249, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Dragon", "maxCount": 1, "probability": 100 },
@@ -755,7 +755,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2839, "y1": 646, "z1": -128, "x2": 3040, "y2": 847, "z2": 128 },
+    "homeRange": 100,
     "walkingRange": 100,
     "entries": [
       { "name": "Bird", "maxCount": 10, "probability": 100 },
@@ -774,7 +774,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 538, "y1": 2125, "z1": -128, "x2": 679, "y2": 2266, "z2": 128 },
+    "homeRange": 70,
     "walkingRange": 70,
     "entries": [
       { "name": "Bird", "maxCount": 8, "probability": 100 },
@@ -793,7 +793,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4368, "y1": 1045, "z1": -128, "x2": 4509, "y2": 1186, "z2": 128 },
+    "homeRange": 70,
     "walkingRange": 70,
     "entries": [
       { "name": "Bird", "maxCount": 12, "probability": 100 },
@@ -812,7 +812,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 372, "y1": 1182, "z1": -128, "x2": 393, "y2": 1203, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "Chicken", "maxCount": 2, "probability": 100 }
@@ -828,7 +828,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5626, "y1": 3111, "z1": -128, "x2": 5827, "y2": 3312, "z2": 128 },
+    "homeRange": 100,
     "walkingRange": 100,
     "entries": [
       { "name": "Bird", "maxCount": 12, "probability": 100 },
@@ -847,7 +847,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3667, "y1": 2061, "z1": -128, "x2": 3768, "y2": 2162, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Bird", "maxCount": 6, "probability": 100 },
@@ -866,7 +866,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 808, "y1": 2259, "z1": -128, "x2": 829, "y2": 2280, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 15,
     "entries": [
       { "name": "Chicken", "maxCount": 3, "probability": 100 },
@@ -884,7 +884,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6976, "y1": 374, "z1": -128, "x2": 6997, "y2": 395, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "MiniatureMushroom", "maxCount": 4, "probability": 100 }
@@ -900,7 +900,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1137, "y1": 1745, "z1": -128, "x2": 1298, "y2": 1906, "z2": 128 },
+    "homeRange": 80,
     "walkingRange": 80,
     "entries": [
       { "name": "Bird", "maxCount": 5, "probability": 100 },
@@ -919,7 +919,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6983, "y1": 335, "z1": -128, "x2": 7084, "y2": 436, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Bird", "maxCount": 10, "probability": 100 }
@@ -935,7 +935,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3602, "y1": 2461, "z1": -128, "x2": 3703, "y2": 2562, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Bird", "maxCount": 4, "probability": 100 },
@@ -954,7 +954,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4564, "y1": 1473, "z1": -128, "x2": 4571, "y2": 1480, "z2": 128 },
+    "homeRange": 3,
     "walkingRange": 3,
     "entries": [
       { "name": "Chicken", "maxCount": 2, "probability": 100 }
@@ -970,7 +970,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6982, "y1": 335, "z1": -128, "x2": 7003, "y2": 356, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "MiniatureMushroom", "maxCount": 2, "probability": 100 }
@@ -986,7 +986,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 7022, "y1": 401, "z1": -128, "x2": 7043, "y2": 422, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "MiniatureMushroom", "maxCount": 4, "probability": 100 }
@@ -1002,7 +1002,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 7025, "y1": 377, "z1": -128, "x2": 7046, "y2": 398, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "MiniatureMushroom", "maxCount": 6, "probability": 100 }
@@ -1018,7 +1018,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 7028, "y1": 404, "z1": -128, "x2": 7069, "y2": 445, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Bird", "maxCount": 5, "probability": 100 }
@@ -1034,7 +1034,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6987, "y1": 340, "z1": -128, "x2": 7012, "y2": 365, "z2": 128 },
+    "homeRange": 12,
     "walkingRange": 12,
     "entries": [
       { "name": "Bird", "maxCount": 3, "probability": 100 }
@@ -1050,7 +1050,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2422, "y1": 384, "z1": -128, "x2": 2523, "y2": 485, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Bird", "maxCount": 5, "probability": 100 },
@@ -1069,7 +1069,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 7035, "y1": 370, "z1": -128, "x2": 7060, "y2": 395, "z2": 128 },
+    "homeRange": 12,
     "walkingRange": 12,
     "entries": [
       { "name": "Bird", "maxCount": 5, "probability": 100 }
@@ -1085,7 +1085,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5252, "y1": 3997, "z1": -128, "x2": 5283, "y2": 4028, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 15,
     "entries": [
       { "name": "Chicken", "maxCount": 5, "probability": 100 },
@@ -1104,7 +1104,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 666, "y1": 1168, "z1": -128, "x2": 687, "y2": 1189, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 15,
     "entries": [
       { "name": "Sheep", "maxCount": 15, "probability": 100 }
@@ -1120,7 +1120,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 803, "y1": 2154, "z1": -128, "x2": 824, "y2": 2175, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 15,
     "entries": [
       { "name": "Chicken", "maxCount": 3, "probability": 100 },
@@ -1138,7 +1138,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3594, "y1": 2544, "z1": -128, "x2": 3755, "y2": 2705, "z2": 128 },
+    "homeRange": 80,
     "walkingRange": 80,
     "entries": [
       { "name": "Bird", "maxCount": 10, "probability": 100 },
@@ -1157,7 +1157,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2411, "y1": 472, "z1": -128, "x2": 2552, "y2": 613, "z2": 128 },
+    "homeRange": 70,
     "walkingRange": 70,
     "entries": [
       { "name": "Bird", "maxCount": 5, "probability": 100 },
@@ -1176,7 +1176,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 560, "y1": 1089, "z1": -128, "x2": 581, "y2": 1110, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 15,
     "entries": [
       { "name": "Sheep", "maxCount": 15, "probability": 100 }
@@ -1192,7 +1192,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1106, "y1": 1553, "z1": -128, "x2": 1267, "y2": 1714, "z2": 128 },
+    "homeRange": 80,
     "walkingRange": 80,
     "entries": [
       { "name": "Bird", "maxCount": 7, "probability": 100 },

@@ -9,7 +9,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3594, "y1": 2544, "z1": -128, "x2": 3755, "y2": 2705, "z2": 128 },
+    "homeRange": 80,
     "walkingRange": 80,
     "entries": [
       { "name": "Bird", "maxCount": 10, "probability": 100 },
@@ -28,7 +28,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3701, "y1": 2622, "z1": -128, "x2": 3752, "y2": 2673, "z2": 128 },
+    "homeRange": 25,
     "walkingRange": 25,
     "entries": [
       { "name": "Chicken", "maxCount": 10, "probability": 100 }
@@ -44,7 +44,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3602, "y1": 2461, "z1": -128, "x2": 3703, "y2": 2562, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Bird", "maxCount": 4, "probability": 100 },

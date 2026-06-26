@@ -9,7 +9,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 499, "y1": 586, "z1": -128, "x2": 506, "y2": 593, "z2": 128 },
+    "homeRange": 3,
     "walkingRange": 3,
     "entries": [
       { "name": "WanderingHealer", "maxCount": 1, "probability": 100 }
@@ -25,7 +25,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 756, "y1": 1302, "z1": 25, "x2": 757, "y2": 1303, "z2": 25 },
+    "homeRange": 0,
     "walkingRange": 4,
     "entries": [
       { "name": "Armorer", "maxCount": 1, "probability": 100 }
@@ -41,7 +41,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1174, "y1": 982, "z1": -128, "x2": 1181, "y2": 989, "z2": 128 },
+    "homeRange": 3,
     "walkingRange": 3,
     "entries": [
       { "name": "WanderingHealer", "maxCount": 1, "probability": 100 }
@@ -57,7 +57,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 724, "y1": 1297, "z1": 25, "x2": 725, "y2": 1298, "z2": 25 },
+    "homeRange": 0,
     "walkingRange": 4,
     "entries": [
       { "name": "Jeweler", "maxCount": 1, "probability": 100 }
@@ -73,7 +73,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 695, "y1": 1297, "z1": 25, "x2": 696, "y2": 1298, "z2": 25 },
+    "homeRange": 0,
     "walkingRange": 4,
     "entries": [
       { "name": "Mage", "maxCount": 1, "probability": 100 }
@@ -89,7 +89,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 691, "y1": 1264, "z1": 47, "x2": 692, "y2": 1265, "z2": 47 },
+    "homeRange": 0,
     "walkingRange": 4,
     "entries": [
       { "name": "Mapmaker", "maxCount": 1, "probability": 100 }
@@ -105,7 +105,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 789, "y1": 1278, "z1": 25, "x2": 790, "y2": 1279, "z2": 25 },
+    "homeRange": 0,
     "walkingRange": 4,
     "entries": [
       { "name": "AnimalTrainer", "maxCount": 1, "probability": 100 }
@@ -121,7 +121,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 773, "y1": 1248, "z1": 26, "x2": 774, "y2": 1249, "z2": 26 },
+    "homeRange": 0,
     "walkingRange": 4,
     "entries": [
       { "name": "Blacksmith", "maxCount": 1, "probability": 100 }
@@ -137,7 +137,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 689, "y1": 1255, "z1": 25, "x2": 690, "y2": 1256, "z2": 25 },
+    "homeRange": 0,
     "walkingRange": 4,
     "entries": [
       { "name": "Scribe", "maxCount": 1, "probability": 100 }
@@ -153,7 +153,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 702, "y1": 1298, "z1": 25, "x2": 703, "y2": 1299, "z2": 25 },
+    "homeRange": 0,
     "walkingRange": 4,
     "entries": [
       { "name": "Alchemist", "maxCount": 1, "probability": 100 }
@@ -169,7 +169,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 683, "y1": 1298, "z1": 25, "x2": 684, "y2": 1299, "z2": 25 },
+    "homeRange": 0,
     "walkingRange": 4,
     "entries": [
       { "name": "Herbalist", "maxCount": 1, "probability": 100 }
@@ -185,7 +185,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 679, "y1": 1207, "z1": 25, "x2": 680, "y2": 1208, "z2": 25 },
+    "homeRange": 0,
     "walkingRange": 0,
     "entries": [
       { "name": "InnKeeper", "maxCount": 1, "probability": 100 }
@@ -201,7 +201,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 692, "y1": 1213, "z1": 25, "x2": 693, "y2": 1214, "z2": 25 },
+    "homeRange": 0,
     "walkingRange": 4,
     "entries": [
       { "name": "TavernKeeper", "maxCount": 1, "probability": 100 }
@@ -217,7 +217,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 730, "y1": 1282, "z1": 25, "x2": 731, "y2": 1283, "z2": 25 },
+    "homeRange": 0,
     "walkingRange": 4,
     "entries": [
       { "name": "Provisioner", "maxCount": 1, "probability": 100 }
@@ -233,7 +233,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 223, "y1": 783, "z1": -128, "x2": 230, "y2": 790, "z2": 128 },
+    "homeRange": 3,
     "walkingRange": 3,
     "entries": [
       { "name": "WanderingHealer", "maxCount": 1, "probability": 100 }
@@ -249,7 +249,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 675, "y1": 1196, "z1": -128, "x2": 796, "y2": 1317, "z2": 128 },
+    "homeRange": 60,
     "walkingRange": 80,
     "entries": [
       { "name": "Noble", "maxCount": 10, "probability": 100 },
@@ -269,7 +269,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 720, "y1": 1213, "z1": 45, "x2": 721, "y2": 1214, "z2": 45 },
+    "homeRange": 0,
     "walkingRange": 4,
     "entries": [
       { "name": "Tinker", "maxCount": 1, "probability": 100 }
@@ -285,7 +285,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 760, "y1": 244, "z1": -128, "x2": 767, "y2": 251, "z2": 128 },
+    "homeRange": 3,
     "walkingRange": 3,
     "entries": [
       { "name": "WanderingHealer", "maxCount": 1, "probability": 100 }
@@ -301,7 +301,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 742, "y1": 1304, "z1": 25, "x2": 743, "y2": 1305, "z2": 25 },
+    "homeRange": 0,
     "walkingRange": 4,
     "entries": [
       { "name": "Armorer", "maxCount": 1, "probability": 100 }
@@ -317,7 +317,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 295, "y1": 635, "z1": -128, "x2": 300, "y2": 640, "z2": 128 },
+    "homeRange": 2,
     "walkingRange": 2,
     "entries": [
       { "name": "WanderingHealer", "maxCount": 1, "probability": 100 }
@@ -333,7 +333,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 245, "y1": 1086, "z1": -128, "x2": 252, "y2": 1093, "z2": 128 },
+    "homeRange": 3,
     "walkingRange": 3,
     "entries": [
       { "name": "WanderingHealer", "maxCount": 1, "probability": 100 }
@@ -349,7 +349,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 781, "y1": 1219, "z1": 25, "x2": 782, "y2": 1220, "z2": 25 },
+    "homeRange": 0,
     "walkingRange": 4,
     "entries": [
       { "name": "Healer", "maxCount": 1, "probability": 100 }
@@ -365,7 +365,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 661, "y1": 1209, "z1": 25, "x2": 662, "y2": 1210, "z2": 25 },
+    "homeRange": 0,
     "walkingRange": 4,
     "entries": [
       { "name": "Blacksmith", "maxCount": 1, "probability": 100 }
@@ -381,7 +381,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 668, "y1": 1254, "z1": 25, "x2": 669, "y2": 1255, "z2": 25 },
+    "homeRange": 0,
     "walkingRange": 4,
     "entries": [
       { "name": "BardGuildmaster", "maxCount": 1, "probability": 100 }
@@ -397,7 +397,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 745, "y1": 1299, "z1": -128, "x2": 754, "y2": 1308, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": 4,
     "entries": [
       { "name": "Armorer", "maxCount": 1, "probability": 100 },
@@ -414,7 +414,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 366, "y1": 426, "z1": -128, "x2": 377, "y2": 437, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 5,
     "entries": [
       { "name": "WanderingHealer", "maxCount": 1, "probability": 100 }
@@ -430,7 +430,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 669, "y1": 1266, "z1": 47, "x2": 670, "y2": 1267, "z2": 47 },
+    "homeRange": 0,
     "walkingRange": 4,
     "entries": [
       { "name": "Shipwright", "maxCount": 1, "probability": 100 }
@@ -446,7 +446,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1149, "y1": 933, "z1": -128, "x2": 1156, "y2": 940, "z2": 128 },
+    "homeRange": 3,
     "walkingRange": 3,
     "entries": [
       { "name": "WanderingHealer", "maxCount": 1, "probability": 100 }
@@ -462,7 +462,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 732, "y1": 1256, "z1": 30, "x2": 733, "y2": 1257, "z2": 30 },
+    "homeRange": 0,
     "walkingRange": 0,
     "entries": [
       { "name": "TownCrier", "maxCount": 1, "probability": 100 }
@@ -478,7 +478,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 396, "y1": 546, "z1": -128, "x2": 403, "y2": 553, "z2": 128 },
+    "homeRange": 3,
     "walkingRange": 3,
     "entries": [
       { "name": "WanderingHealer", "maxCount": 1, "probability": 100 }
@@ -494,7 +494,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1108, "y1": 492, "z1": -128, "x2": 1115, "y2": 499, "z2": 128 },
+    "homeRange": 3,
     "walkingRange": 3,
     "entries": [
       { "name": "WanderingHealer", "maxCount": 1, "probability": 100 }
@@ -510,7 +510,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 720, "y1": 1211, "z1": 25, "x2": 721, "y2": 1212, "z2": 25 },
+    "homeRange": 0,
     "walkingRange": 4,
     "entries": [
       { "name": "Tanner", "maxCount": 1, "probability": 100 }
@@ -526,7 +526,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 739, "y1": 1223, "z1": 45, "x2": 740, "y2": 1224, "z2": 45 },
+    "homeRange": 0,
     "walkingRange": 4,
     "entries": [
       { "name": "Carpenter", "maxCount": 1, "probability": 100 }
@@ -542,7 +542,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1218, "y1": 491, "z1": -128, "x2": 1225, "y2": 498, "z2": 128 },
+    "homeRange": 3,
     "walkingRange": 3,
     "entries": [
       { "name": "WanderingHealer", "maxCount": 1, "probability": 100 }
@@ -558,7 +558,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 779, "y1": 1259, "z1": 26, "x2": 780, "y2": 1260, "z2": 26 },
+    "homeRange": 0,
     "walkingRange": 4,
     "entries": [
       { "name": "Weaponsmith", "maxCount": 1, "probability": 100 }
@@ -574,7 +574,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 893, "y1": 517, "z1": -128, "x2": 898, "y2": 522, "z2": 128 },
+    "homeRange": 2,
     "walkingRange": 2,
     "entries": [
       { "name": "WanderingHealer", "maxCount": 1, "probability": 100 }
@@ -590,7 +590,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 974, "y1": 233, "z1": -128, "x2": 985, "y2": 244, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 5,
     "entries": [
       { "name": "WanderingHealer", "maxCount": 1, "probability": 100 }
@@ -606,7 +606,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 703, "y1": 1262, "z1": 25, "x2": 704, "y2": 1263, "z2": 25 },
+    "homeRange": 0,
     "walkingRange": 10,
     "entries": [
       { "name": "Baker", "maxCount": 1, "probability": 100 },
@@ -624,7 +624,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 555, "y1": 531, "z1": -128, "x2": 562, "y2": 538, "z2": 128 },
+    "homeRange": 3,
     "walkingRange": 3,
     "entries": [
       { "name": "WanderingHealer", "maxCount": 1, "probability": 100 }
@@ -640,7 +640,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 729, "y1": 1249, "z1": 25, "x2": 730, "y2": 1250, "z2": 25 },
+    "homeRange": 0,
     "walkingRange": 4,
     "entries": [
       { "name": "Banker", "maxCount": 1, "probability": 100 }
@@ -656,7 +656,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 806, "y1": 1308, "z1": 25, "x2": 807, "y2": 1309, "z2": 25 },
+    "homeRange": 0,
     "walkingRange": 4,
     "entries": [
       { "name": "Weaponsmith", "maxCount": 1, "probability": 100 }
@@ -672,7 +672,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 744, "y1": 1210, "z1": 25, "x2": 745, "y2": 1211, "z2": 25 },
+    "homeRange": 0,
     "walkingRange": 4,
     "entries": [
       { "name": "Weaver", "maxCount": 1, "probability": 100 }
@@ -688,7 +688,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 744, "y1": 1219, "z1": 25, "x2": 745, "y2": 1220, "z2": 25 },
+    "homeRange": 0,
     "walkingRange": 4,
     "entries": [
       { "name": "Tailor", "maxCount": 1, "probability": 100 }
@@ -704,7 +704,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 662, "y1": 1210, "z1": 25, "x2": 663, "y2": 1211, "z2": 25 },
+    "homeRange": 0,
     "walkingRange": 4,
     "entries": [
       { "name": "Blacksmith", "maxCount": 1, "probability": 100 }
@@ -720,7 +720,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 671, "y1": 1261, "z1": -128, "x2": 680, "y2": 1270, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": 4,
     "entries": [
       { "name": "Bard", "maxCount": 1, "probability": 100 }
@@ -736,7 +736,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 781, "y1": 1301, "z1": 26, "x2": 782, "y2": 1302, "z2": 26 },
+    "homeRange": 0,
     "walkingRange": 4,
     "entries": [
       { "name": "Bowyer", "maxCount": 1, "probability": 100 }
@@ -752,7 +752,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1163, "y1": 799, "z1": -128, "x2": 1170, "y2": 806, "z2": 128 },
+    "homeRange": 3,
     "walkingRange": 3,
     "entries": [
       { "name": "WanderingHealer", "maxCount": 1, "probability": 100 }

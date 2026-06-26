@@ -9,7 +9,7 @@
     "minDelay": "00:00:00",
     "maxDelay": "00:01:00",
     "team": 0,
-    "spawnBounds": { "x1": 6047, "y1": 1468, "z1": -128, "x2": 6052, "y2": 1473, "z2": 128 },
+    "homeRange": 2,
     "walkingRange": 15,
     "entries": [
       { "name": "SewerRat", "maxCount": 2, "probability": 100 },
@@ -27,7 +27,7 @@
     "minDelay": "00:00:00",
     "maxDelay": "00:01:00",
     "team": 0,
-    "spawnBounds": { "x1": 6047, "y1": 1458, "z1": -128, "x2": 6058, "y2": 1469, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 25,
     "entries": [
       { "name": "Alligator", "maxCount": 8, "probability": 100 }
@@ -43,7 +43,7 @@
     "minDelay": "00:00:00",
     "maxDelay": "00:01:00",
     "team": 0,
-    "spawnBounds": { "x1": 6090, "y1": 1446, "z1": -128, "x2": 6095, "y2": 1451, "z2": 128 },
+    "homeRange": 2,
     "walkingRange": 15,
     "entries": [
       { "name": "SewerRat", "maxCount": 2, "probability": 100 },
@@ -61,7 +61,7 @@
     "minDelay": "00:00:00",
     "maxDelay": "00:01:00",
     "team": 0,
-    "spawnBounds": { "x1": 6047, "y1": 1445, "z1": -128, "x2": 6052, "y2": 1450, "z2": 128 },
+    "homeRange": 2,
     "walkingRange": 15,
     "entries": [
       { "name": "SewerRat", "maxCount": 2, "probability": 100 },
@@ -79,7 +79,7 @@
     "minDelay": "00:00:00",
     "maxDelay": "00:01:00",
     "team": 0,
-    "spawnBounds": { "x1": 6113, "y1": 1489, "z1": -128, "x2": 6118, "y2": 1494, "z2": 128 },
+    "homeRange": 2,
     "walkingRange": 15,
     "entries": [
       { "name": "SewerRat", "maxCount": 2, "probability": 100 },
@@ -97,7 +97,7 @@
     "minDelay": "00:00:00",
     "maxDelay": "00:01:00",
     "team": 0,
-    "spawnBounds": { "x1": 6104, "y1": 1467, "z1": -128, "x2": 6113, "y2": 1476, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": 10,
     "entries": [
       { "name": "Alligator", "maxCount": 2, "probability": 100 }
@@ -113,7 +113,7 @@
     "minDelay": "00:00:00",
     "maxDelay": "00:01:00",
     "team": 0,
-    "spawnBounds": { "x1": 6089, "y1": 1489, "z1": -128, "x2": 6094, "y2": 1494, "z2": 128 },
+    "homeRange": 2,
     "walkingRange": 15,
     "entries": [
       { "name": "SewerRat", "maxCount": 2, "probability": 100 },
@@ -131,7 +131,7 @@
     "minDelay": "00:00:00",
     "maxDelay": "00:01:00",
     "team": 0,
-    "spawnBounds": { "x1": 6083, "y1": 1439, "z1": -128, "x2": 6092, "y2": 1448, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": 10,
     "entries": [
       { "name": "Alligator", "maxCount": 2, "probability": 100 }
@@ -147,7 +147,7 @@
     "minDelay": "00:00:00",
     "maxDelay": "00:01:00",
     "team": 0,
-    "spawnBounds": { "x1": 6037, "y1": 1436, "z1": -128, "x2": 6042, "y2": 1441, "z2": 128 },
+    "homeRange": 2,
     "walkingRange": 15,
     "entries": [
       { "name": "SewerRat", "maxCount": 2, "probability": 100 },
@@ -165,7 +165,7 @@
     "minDelay": "00:00:00",
     "maxDelay": "00:01:00",
     "team": 0,
-    "spawnBounds": { "x1": 6110, "y1": 1460, "z1": -128, "x2": 6115, "y2": 1465, "z2": 128 },
+    "homeRange": 2,
     "walkingRange": 15,
     "entries": [
       { "name": "SewerRat", "maxCount": 2, "probability": 100 },
@@ -183,7 +183,7 @@
     "minDelay": "00:00:00",
     "maxDelay": "00:01:00",
     "team": 0,
-    "spawnBounds": { "x1": 6073, "y1": 1488, "z1": -128, "x2": 6082, "y2": 1497, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": 10,
     "entries": [
       { "name": "Alligator", "maxCount": 2, "probability": 100 }
@@ -199,7 +199,7 @@
     "minDelay": "00:00:00",
     "maxDelay": "00:01:00",
     "team": 0,
-    "spawnBounds": { "x1": 6046, "y1": 1485, "z1": -128, "x2": 6051, "y2": 1490, "z2": 128 },
+    "homeRange": 2,
     "walkingRange": 15,
     "entries": [
       { "name": "SewerRat", "maxCount": 2, "probability": 100 },
@@ -217,7 +217,7 @@
     "minDelay": "00:00:00",
     "maxDelay": "00:01:00",
     "team": 0,
-    "spawnBounds": { "x1": 6063, "y1": 1457, "z1": -128, "x2": 6068, "y2": 1462, "z2": 128 },
+    "homeRange": 2,
     "walkingRange": 15,
     "entries": [
       { "name": "SewerRat", "maxCount": 2, "probability": 100 },
@@ -235,7 +235,7 @@
     "minDelay": "00:00:00",
     "maxDelay": "00:01:00",
     "team": 0,
-    "spawnBounds": { "x1": 6085, "y1": 1478, "z1": -128, "x2": 6096, "y2": 1489, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 25,
     "entries": [
       { "name": "Alligator", "maxCount": 8, "probability": 100 }
@@ -251,7 +251,7 @@
     "minDelay": "00:00:00",
     "maxDelay": "00:01:00",
     "team": 0,
-    "spawnBounds": { "x1": 6059, "y1": 1488, "z1": -128, "x2": 6064, "y2": 1493, "z2": 128 },
+    "homeRange": 2,
     "walkingRange": 15,
     "entries": [
       { "name": "SewerRat", "maxCount": 2, "probability": 100 },
@@ -269,7 +269,7 @@
     "minDelay": "00:00:00",
     "maxDelay": "00:01:00",
     "team": 0,
-    "spawnBounds": { "x1": 6032, "y1": 1465, "z1": -128, "x2": 6037, "y2": 1470, "z2": 128 },
+    "homeRange": 2,
     "walkingRange": 15,
     "entries": [
       { "name": "SewerRat", "maxCount": 2, "probability": 100 },
@@ -287,7 +287,7 @@
     "minDelay": "00:00:00",
     "maxDelay": "00:01:00",
     "team": 0,
-    "spawnBounds": { "x1": 6105, "y1": 1450, "z1": -128, "x2": 6110, "y2": 1455, "z2": 128 },
+    "homeRange": 2,
     "walkingRange": 15,
     "entries": [
       { "name": "SewerRat", "maxCount": 2, "probability": 100 },
@@ -305,7 +305,7 @@
     "minDelay": "00:00:00",
     "maxDelay": "00:01:00",
     "team": 0,
-    "spawnBounds": { "x1": 6057, "y1": 1436, "z1": -128, "x2": 6062, "y2": 1441, "z2": 128 },
+    "homeRange": 2,
     "walkingRange": 15,
     "entries": [
       { "name": "SewerRat", "maxCount": 2, "probability": 100 },
@@ -323,7 +323,7 @@
     "minDelay": "00:00:00",
     "maxDelay": "00:01:00",
     "team": 0,
-    "spawnBounds": { "x1": 6033, "y1": 1490, "z1": -128, "x2": 6042, "y2": 1499, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": 10,
     "entries": [
       { "name": "Alligator", "maxCount": 2, "probability": 100 }
@@ -339,7 +339,7 @@
     "minDelay": "00:00:00",
     "maxDelay": "00:01:00",
     "team": 0,
-    "spawnBounds": { "x1": 6039, "y1": 1484, "z1": -128, "x2": 6044, "y2": 1489, "z2": 128 },
+    "homeRange": 2,
     "walkingRange": 15,
     "entries": [
       { "name": "SewerRat", "maxCount": 2, "probability": 100 },
@@ -357,7 +357,7 @@
     "minDelay": "00:00:00",
     "maxDelay": "00:01:00",
     "team": 0,
-    "spawnBounds": { "x1": 6083, "y1": 1469, "z1": -128, "x2": 6086, "y2": 1472, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 15,
     "entries": [
       { "name": "SewerRat", "maxCount": 2, "probability": 100 },

@@ -9,7 +9,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 760, "y1": 1464, "z1": -128, "x2": 791, "y2": 1495, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 15,
     "entries": [
       { "name": "Balron", "maxCount": 2, "probability": 100 }
@@ -25,7 +25,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 878, "y1": 1558, "z1": -128, "x2": 899, "y2": 1579, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 15,
     "entries": [
       { "name": "EvilMage", "maxCount": 1, "probability": 100 },
@@ -42,7 +42,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 885, "y1": 1531, "z1": -128, "x2": 898, "y2": 1544, "z2": 128 },
+    "homeRange": 6,
     "walkingRange": 10,
     "entries": [
       { "name": "RottingCorpse", "maxCount": 1, "probability": 100 }
@@ -58,7 +58,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 849, "y1": 1560, "z1": -128, "x2": 862, "y2": 1573, "z2": 128 },
+    "homeRange": 6,
     "walkingRange": 10,
     "entries": [
       { "name": "Shade", "maxCount": 1, "probability": 100 }
@@ -74,7 +74,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 957, "y1": 1547, "z1": -128, "x2": 972, "y2": 1562, "z2": 128 },
+    "homeRange": 7,
     "walkingRange": 10,
     "entries": [
       { "name": "LichLord", "maxCount": 1, "probability": 100 }
@@ -90,7 +90,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 926, "y1": 1549, "z1": -128, "x2": 947, "y2": 1570, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 25,
     "entries": [
       { "name": "Balron", "maxCount": 1, "probability": 100 }
@@ -106,7 +106,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 934, "y1": 1487, "z1": -128, "x2": 945, "y2": 1498, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 10,
     "entries": [
       { "name": "Imp", "maxCount": 1, "probability": 100 }
@@ -122,7 +122,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 952, "y1": 1470, "z1": -128, "x2": 973, "y2": 1491, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 15,
     "entries": [
       { "name": "Wraith", "maxCount": 4, "probability": 100 },
@@ -140,7 +140,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 735, "y1": 1440, "z1": -128, "x2": 816, "y2": 1521, "z2": 128 },
+    "homeRange": 40,
     "walkingRange": 40,
     "entries": [
       { "name": "Imp", "maxCount": 5, "probability": 100 }
@@ -156,7 +156,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 773, "y1": 1477, "z1": -128, "x2": 780, "y2": 1484, "z2": 128 },
+    "homeRange": 3,
     "walkingRange": 3,
     "entries": [
       { "name": "TreasureChestLevel1", "maxCount": 9, "probability": 100 },
@@ -175,7 +175,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 849, "y1": 1561, "z1": -128, "x2": 862, "y2": 1574, "z2": 128 },
+    "homeRange": 6,
     "walkingRange": 6,
     "entries": [
       { "name": "SkeletalMage", "maxCount": 1, "probability": 100 }
@@ -191,7 +191,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 817, "y1": 1469, "z1": -128, "x2": 838, "y2": 1490, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 15,
     "entries": [
       { "name": "Shade", "maxCount": 2, "probability": 100 },
@@ -209,7 +209,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 952, "y1": 1523, "z1": -128, "x2": 967, "y2": 1538, "z2": 128 },
+    "homeRange": 7,
     "walkingRange": 10,
     "entries": [
       { "name": "Lich", "maxCount": 1, "probability": 100 },
@@ -228,7 +228,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 865, "y1": 1525, "z1": -128, "x2": 878, "y2": 1538, "z2": 128 },
+    "homeRange": 6,
     "walkingRange": 10,
     "entries": [
       { "name": "EvilMage", "maxCount": 3, "probability": 100 }
@@ -244,7 +244,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 846, "y1": 1493, "z1": -128, "x2": 857, "y2": 1504, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 20,
     "entries": [
       { "name": "RottingCorpse", "maxCount": 1, "probability": 100 }
@@ -260,7 +260,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 876, "y1": 1459, "z1": -128, "x2": 901, "y2": 1484, "z2": 128 },
+    "homeRange": 12,
     "walkingRange": 20,
     "entries": [
       { "name": "Shade", "maxCount": 3, "probability": 100 },
@@ -278,7 +278,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 641, "y1": 1495, "z1": -128, "x2": 722, "y2": 1576, "z2": 128 },
+    "homeRange": 40,
     "walkingRange": 60,
     "entries": [
       { "name": "Wisp", "maxCount": 20, "probability": 100 }
@@ -294,7 +294,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 985, "y1": 1497, "z1": -128, "x2": 1016, "y2": 1528, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 15,
     "entries": [
       { "name": "Titan", "maxCount": 2, "probability": 100 },
@@ -311,7 +311,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 934, "y1": 1526, "z1": -128, "x2": 945, "y2": 1537, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 10,
     "entries": [
       { "name": "Imp", "maxCount": 2, "probability": 100 }
@@ -327,7 +327,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 891, "y1": 1497, "z1": -128, "x2": 912, "y2": 1518, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "EvilMageLord", "maxCount": 2, "probability": 100 }
@@ -343,7 +343,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 955, "y1": 1496, "z1": -128, "x2": 968, "y2": 1509, "z2": 128 },
+    "homeRange": 6,
     "walkingRange": 10,
     "entries": [
       { "name": "Ettin", "maxCount": 2, "probability": 100 }

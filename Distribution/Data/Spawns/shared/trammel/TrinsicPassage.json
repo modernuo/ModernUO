@@ -9,7 +9,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5989, "y1": 1317, "z1": -128, "x2": 6010, "y2": 1338, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "DreadSpider", "maxCount": 2, "probability": 100 },
@@ -29,7 +29,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5946, "y1": 1300, "z1": -128, "x2": 5967, "y2": 1321, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "DreadSpider", "maxCount": 2, "probability": 100 },
@@ -49,7 +49,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5902, "y1": 1316, "z1": -128, "x2": 5923, "y2": 1337, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "DreadSpider", "maxCount": 2, "probability": 100 },
@@ -69,7 +69,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5966, "y1": 1377, "z1": -128, "x2": 5987, "y2": 1398, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "DreadSpider", "maxCount": 2, "probability": 100 },
@@ -89,7 +89,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5930, "y1": 1346, "z1": -128, "x2": 5951, "y2": 1367, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "DreadSpider", "maxCount": 2, "probability": 100 },
@@ -109,7 +109,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5914, "y1": 1301, "z1": -128, "x2": 5917, "y2": 1304, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 1,
     "entries": [
       { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 },

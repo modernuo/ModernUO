@@ -9,7 +9,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6525, "y1": 838, "z1": -128, "x2": 6546, "y2": 859, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "Abscess", "maxCount": 4, "probability": 100 },
@@ -27,7 +27,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6513, "y1": 874, "z1": -128, "x2": 6524, "y2": 885, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 5,
     "entries": [
       { "name": "InsaneDryad", "maxCount": 1, "probability": 100 }
@@ -43,7 +43,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6484, "y1": 892, "z1": -128, "x2": 6495, "y2": 903, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 5,
     "entries": [
       { "name": "InsaneDryad", "maxCount": 1, "probability": 100 }
@@ -59,7 +59,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6478, "y1": 830, "z1": -128, "x2": 6559, "y2": 911, "z2": 128 },
+    "homeRange": 40,
     "walkingRange": 40,
     "entries": [
       { "name": "Thrasher", "maxCount": 9, "probability": 100 },
@@ -81,7 +81,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6478, "y1": 836, "z1": -128, "x2": 6549, "y2": 907, "z2": 128 },
+    "homeRange": 35,
     "walkingRange": 35,
     "entries": [
       { "name": "GiantSerpent", "maxCount": 17, "probability": 100 },
@@ -102,7 +102,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6497, "y1": 833, "z1": -128, "x2": 6518, "y2": 854, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "Tangle", "maxCount": 8, "probability": 100 },
@@ -124,7 +124,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6575, "y1": 868, "z1": -128, "x2": 6596, "y2": 889, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "Harpy", "maxCount": 7, "probability": 100 },
@@ -142,7 +142,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6535, "y1": 867, "z1": -128, "x2": 6546, "y2": 878, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 5,
     "entries": [
       { "name": "InsaneDryad", "maxCount": 1, "probability": 100 }

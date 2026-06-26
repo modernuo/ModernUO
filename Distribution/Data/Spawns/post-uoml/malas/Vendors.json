@@ -9,7 +9,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1050, "y1": 1434, "z1": -85, "x2": 1051, "y2": 1435, "z2": -85 },
+    "homeRange": 0,
     "walkingRange": 5,
     "entries": [
       { "name": "Waiter", "maxCount": 1, "probability": 100 },
@@ -27,7 +27,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1038, "y1": 1440, "z1": -128, "x2": 1047, "y2": 1449, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": 6,
     "entries": [
       { "name": "AnimalTrainer", "maxCount": 1, "probability": 100 },

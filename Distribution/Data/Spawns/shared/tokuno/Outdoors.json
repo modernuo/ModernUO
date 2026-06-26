@@ -9,7 +9,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 182, "y1": 616, "z1": -128, "x2": 243, "y2": 677, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "BoneMagi", "maxCount": 8, "probability": 100 },
@@ -30,7 +30,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1006, "y1": 336, "z1": -128, "x2": 1067, "y2": 397, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ronin", "maxCount": 4, "probability": 100 }
@@ -46,7 +46,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 228, "y1": 505, "z1": -128, "x2": 269, "y2": 546, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "DeathwatchBeetle", "maxCount": 6, "probability": 100 },
@@ -63,7 +63,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 488, "y1": 447, "z1": -128, "x2": 549, "y2": 508, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "BakeKitsune", "maxCount": 4, "probability": 100 }
@@ -79,7 +79,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 354, "y1": 800, "z1": -128, "x2": 395, "y2": 841, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "RaiJu", "maxCount": 3, "probability": 100 }
@@ -95,7 +95,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 155, "y1": 1016, "z1": -128, "x2": 216, "y2": 1077, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Kappa", "maxCount": 12, "probability": 100 },
@@ -114,7 +114,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 950, "y1": 248, "z1": -128, "x2": 1011, "y2": 309, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ronin", "maxCount": 4, "probability": 100 },
@@ -131,7 +131,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 326, "y1": 692, "z1": -128, "x2": 387, "y2": 753, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "YomotsuWarrior", "maxCount": 4, "probability": 100 }
@@ -147,7 +147,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 162, "y1": 984, "z1": -128, "x2": 223, "y2": 1045, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Kappa", "maxCount": 8, "probability": 100 },
@@ -165,7 +165,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 510, "y1": 313, "z1": -128, "x2": 571, "y2": 374, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "TsukiWolf", "maxCount": 4, "probability": 100 }
@@ -181,7 +181,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1059, "y1": 561, "z1": -128, "x2": 1066, "y2": 568, "z2": 128 },
+    "homeRange": 3,
     "walkingRange": 3,
     "entries": [
       { "name": "Reaper", "maxCount": 1, "probability": 100 }
@@ -197,7 +197,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 902, "y1": 334, "z1": -128, "x2": 963, "y2": 395, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "DeathwatchBeetle", "maxCount": 8, "probability": 100 },
@@ -215,7 +215,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 180, "y1": 1055, "z1": -128, "x2": 241, "y2": 1116, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Kappa", "maxCount": 12, "probability": 100 },
@@ -235,7 +235,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 442, "y1": 403, "z1": -128, "x2": 503, "y2": 464, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "TsukiWolf", "maxCount": 8, "probability": 100 }
@@ -251,7 +251,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1228, "y1": 501, "z1": -128, "x2": 1289, "y2": 562, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Reaper", "maxCount": 4, "probability": 100 }
@@ -267,7 +267,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 151, "y1": 558, "z1": -128, "x2": 212, "y2": 619, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "Ronin", "maxCount": 4, "probability": 100 }
@@ -283,7 +283,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1252, "y1": 868, "z1": -128, "x2": 1313, "y2": 929, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Oni", "maxCount": 2, "probability": 100 }
@@ -299,7 +299,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 740, "y1": 921, "z1": -128, "x2": 781, "y2": 962, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "DeathwatchBeetleHatchling", "maxCount": 4, "probability": 100 },
@@ -316,7 +316,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1046, "y1": 834, "z1": -128, "x2": 1107, "y2": 895, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "GiantSpider", "maxCount": 4, "probability": 100 },
@@ -333,7 +333,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 150, "y1": 556, "z1": -128, "x2": 211, "y2": 617, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "BoneMagi", "maxCount": 8, "probability": 100 },
@@ -354,7 +354,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1004, "y1": 263, "z1": -128, "x2": 1065, "y2": 324, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ronin", "maxCount": 4, "probability": 100 },
@@ -371,7 +371,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 854, "y1": 951, "z1": -128, "x2": 895, "y2": 992, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "DeathwatchBeetleHatchling", "maxCount": 4, "probability": 100 }
@@ -387,7 +387,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 328, "y1": 366, "z1": -128, "x2": 389, "y2": 427, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "Ronin", "maxCount": 8, "probability": 100 }
@@ -403,7 +403,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 632, "y1": 465, "z1": -128, "x2": 693, "y2": 526, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "BakeKitsune", "maxCount": 4, "probability": 100 }
@@ -419,7 +419,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 986, "y1": 262, "z1": -128, "x2": 1047, "y2": 323, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ronin", "maxCount": 4, "probability": 100 },
@@ -436,7 +436,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 932, "y1": 173, "z1": -128, "x2": 993, "y2": 234, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ronin", "maxCount": 4, "probability": 100 },
@@ -454,7 +454,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 568, "y1": 992, "z1": -128, "x2": 609, "y2": 1033, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "DeathwatchBeetleHatchling", "maxCount": 4, "probability": 100 }
@@ -470,7 +470,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 613, "y1": 510, "z1": -128, "x2": 674, "y2": 571, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "BakeKitsune", "maxCount": 4, "probability": 100 },
@@ -487,7 +487,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1025, "y1": 857, "z1": -128, "x2": 1086, "y2": 918, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Kappa", "maxCount": 4, "probability": 100 }
@@ -503,7 +503,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 689, "y1": 857, "z1": -128, "x2": 730, "y2": 898, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "DeathwatchBeetleHatchling", "maxCount": 4, "probability": 100 }
@@ -519,7 +519,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 759, "y1": 246, "z1": -128, "x2": 820, "y2": 307, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "RuneBeetle", "maxCount": 4, "probability": 100 },
@@ -536,7 +536,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 619, "y1": 379, "z1": -128, "x2": 680, "y2": 440, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "RaiJu", "maxCount": 2, "probability": 100 }
@@ -552,7 +552,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 884, "y1": 25, "z1": -128, "x2": 945, "y2": 86, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "IceElemental", "maxCount": 2, "probability": 100 },
@@ -574,7 +574,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 660, "y1": 936, "z1": -128, "x2": 701, "y2": 977, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Skeleton", "maxCount": 6, "probability": 100 }
@@ -590,7 +590,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 768, "y1": 347, "z1": -128, "x2": 829, "y2": 408, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "RuneBeetle", "maxCount": 4, "probability": 100 },
@@ -607,7 +607,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1142, "y1": 505, "z1": -128, "x2": 1203, "y2": 566, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Reaper", "maxCount": 4, "probability": 100 },
@@ -624,7 +624,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1315, "y1": 851, "z1": -128, "x2": 1376, "y2": 912, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Kappa", "maxCount": 4, "probability": 100 }
@@ -640,7 +640,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 869, "y1": 241, "z1": -128, "x2": 930, "y2": 302, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ronin", "maxCount": 4, "probability": 100 },
@@ -657,7 +657,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 385, "y1": 321, "z1": -128, "x2": 446, "y2": 382, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "Ronin", "maxCount": 8, "probability": 100 }
@@ -673,7 +673,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 202, "y1": 1086, "z1": -128, "x2": 263, "y2": 1147, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Kappa", "maxCount": 12, "probability": 100 },
@@ -693,7 +693,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 296, "y1": 424, "z1": -128, "x2": 357, "y2": 485, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "Ronin", "maxCount": 8, "probability": 100 }
@@ -709,7 +709,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 680, "y1": 806, "z1": -128, "x2": 721, "y2": 847, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Orc", "maxCount": 4, "probability": 100 }
@@ -725,7 +725,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 946, "y1": 114, "z1": -128, "x2": 1007, "y2": 175, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "IceElemental", "maxCount": 2, "probability": 100 },
@@ -747,7 +747,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 228, "y1": 679, "z1": -128, "x2": 289, "y2": 740, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "YomotsuWarrior", "maxCount": 6, "probability": 100 }
@@ -763,7 +763,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 921, "y1": 379, "z1": -128, "x2": 982, "y2": 440, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "DeathwatchBeetle", "maxCount": 8, "probability": 100 },
@@ -781,7 +781,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 843, "y1": 296, "z1": -128, "x2": 904, "y2": 357, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "RuneBeetle", "maxCount": 4, "probability": 100 },
@@ -799,7 +799,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1306, "y1": 780, "z1": -128, "x2": 1367, "y2": 841, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "EliteNinja", "maxCount": 1, "probability": 100 }
@@ -815,7 +815,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 908, "y1": 692, "z1": -128, "x2": 969, "y2": 753, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "KazeKemono", "maxCount": 4, "probability": 100 }
@@ -831,7 +831,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 581, "y1": 910, "z1": -128, "x2": 622, "y2": 951, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "SkeletalMage", "maxCount": 4, "probability": 100 },
@@ -848,7 +848,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1151, "y1": 454, "z1": -128, "x2": 1212, "y2": 515, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "TsukiWolf", "maxCount": 4, "probability": 100 }
@@ -864,7 +864,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 896, "y1": 115, "z1": -128, "x2": 957, "y2": 176, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "IceElemental", "maxCount": 2, "probability": 100 },
@@ -886,7 +886,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 918, "y1": 217, "z1": -128, "x2": 979, "y2": 278, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ronin", "maxCount": 4, "probability": 100 },
@@ -904,7 +904,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1261, "y1": 665, "z1": -128, "x2": 1322, "y2": 726, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "LesserHiryu", "maxCount": 2, "probability": 100 },
@@ -921,7 +921,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1075, "y1": 825, "z1": -128, "x2": 1136, "y2": 886, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "GiantSpider", "maxCount": 4, "probability": 100 },
@@ -938,7 +938,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 862, "y1": 622, "z1": -128, "x2": 923, "y2": 683, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "KazeKemono", "maxCount": 8, "probability": 100 }
@@ -954,7 +954,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 811, "y1": 296, "z1": -128, "x2": 872, "y2": 357, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "RuneBeetle", "maxCount": 6, "probability": 100 },
@@ -973,7 +973,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 497, "y1": 363, "z1": -128, "x2": 558, "y2": 424, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Kappa", "maxCount": 8, "probability": 100 },
@@ -990,7 +990,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 550, "y1": 820, "z1": -128, "x2": 591, "y2": 861, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "DeathwatchBeetle", "maxCount": 4, "probability": 100 }
@@ -1006,7 +1006,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 504, "y1": 914, "z1": -128, "x2": 545, "y2": 955, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "DeathwatchBeetle", "maxCount": 2, "probability": 100 }
@@ -1022,7 +1022,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1184, "y1": 501, "z1": -128, "x2": 1245, "y2": 562, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "TsukiWolf", "maxCount": 4, "probability": 100 }
@@ -1038,7 +1038,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 663, "y1": 837, "z1": -128, "x2": 704, "y2": 878, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Orc", "maxCount": 4, "probability": 100 }
@@ -1054,7 +1054,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 949, "y1": 447, "z1": -128, "x2": 1010, "y2": 508, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "DeathwatchBeetle", "maxCount": 8, "probability": 100 },
@@ -1072,7 +1072,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 831, "y1": 305, "z1": -128, "x2": 892, "y2": 366, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "Kappa", "maxCount": 4, "probability": 100 },
@@ -1089,7 +1089,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1263, "y1": 834, "z1": -128, "x2": 1324, "y2": 895, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "LesserHiryu", "maxCount": 2, "probability": 100 }
@@ -1105,7 +1105,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1034, "y1": 999, "z1": -128, "x2": 1095, "y2": 1060, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Kappa", "maxCount": 8, "probability": 100 },
@@ -1122,7 +1122,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 877, "y1": 364, "z1": -128, "x2": 938, "y2": 425, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "DeathwatchBeetle", "maxCount": 8, "probability": 100 },
@@ -1140,7 +1140,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 953, "y1": 418, "z1": -128, "x2": 1014, "y2": 479, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "DeathwatchBeetle", "maxCount": 8, "probability": 100 },
@@ -1158,7 +1158,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 377, "y1": 369, "z1": -128, "x2": 438, "y2": 430, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "Ronin", "maxCount": 8, "probability": 100 }
@@ -1174,7 +1174,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 293, "y1": 344, "z1": -128, "x2": 354, "y2": 405, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "Ronin", "maxCount": 8, "probability": 100 }
@@ -1190,7 +1190,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 395, "y1": 413, "z1": -128, "x2": 456, "y2": 474, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "Ronin", "maxCount": 8, "probability": 100 }
@@ -1206,7 +1206,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 127, "y1": 655, "z1": -128, "x2": 188, "y2": 716, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "BoneMagi", "maxCount": 8, "probability": 100 },
@@ -1227,7 +1227,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 541, "y1": 520, "z1": -128, "x2": 602, "y2": 581, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "BakeKitsune", "maxCount": 8, "probability": 100 },
@@ -1244,7 +1244,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 191, "y1": 938, "z1": -128, "x2": 252, "y2": 999, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Mongbat", "maxCount": 8, "probability": 100 }
@@ -1260,7 +1260,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 469, "y1": 500, "z1": -128, "x2": 530, "y2": 561, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "LesserHiryu", "maxCount": 6, "probability": 100 },
@@ -1278,7 +1278,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1028, "y1": 769, "z1": -128, "x2": 1089, "y2": 830, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Kappa", "maxCount": 4, "probability": 100 }
@@ -1294,7 +1294,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1114, "y1": 637, "z1": -128, "x2": 1175, "y2": 698, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "HellHound", "maxCount": 4, "probability": 100 },
@@ -1312,7 +1312,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 515, "y1": 898, "z1": -128, "x2": 556, "y2": 939, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "DeathwatchBeetle", "maxCount": 2, "probability": 100 }
@@ -1328,7 +1328,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 810, "y1": 684, "z1": -128, "x2": 871, "y2": 745, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "KazeKemono", "maxCount": 8, "probability": 100 },
@@ -1345,7 +1345,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 496, "y1": 526, "z1": -128, "x2": 557, "y2": 587, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "BakeKitsune", "maxCount": 8, "probability": 100 },
@@ -1363,7 +1363,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 921, "y1": 437, "z1": -128, "x2": 982, "y2": 498, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "DeathwatchBeetle", "maxCount": 8, "probability": 100 },
@@ -1381,7 +1381,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 251, "y1": 1176, "z1": -128, "x2": 272, "y2": 1197, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 30,
     "entries": [
       { "name": "Kappa", "maxCount": 4, "probability": 100 }
@@ -1397,7 +1397,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1120, "y1": 1042, "z1": -128, "x2": 1181, "y2": 1103, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "DeathwatchBeetle", "maxCount": 8, "probability": 100 },
@@ -1414,7 +1414,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 917, "y1": 73, "z1": -128, "x2": 978, "y2": 134, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "IceElemental", "maxCount": 2, "probability": 100 },
@@ -1436,7 +1436,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 255, "y1": 1126, "z1": -128, "x2": 316, "y2": 1187, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Kappa", "maxCount": 12, "probability": 100 },
@@ -1456,7 +1456,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 853, "y1": 574, "z1": -128, "x2": 914, "y2": 635, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Hiryu", "maxCount": 1, "probability": 100 }
@@ -1472,7 +1472,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 938, "y1": 723, "z1": -128, "x2": 999, "y2": 784, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "TsukiWolf", "maxCount": 4, "probability": 100 }
@@ -1488,7 +1488,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 647, "y1": 923, "z1": -128, "x2": 688, "y2": 964, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "DeathwatchBeetleHatchling", "maxCount": 4, "probability": 100 },
@@ -1505,7 +1505,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 702, "y1": 896, "z1": -128, "x2": 743, "y2": 937, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "DeathwatchBeetle", "maxCount": 6, "probability": 100 }
@@ -1521,7 +1521,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 552, "y1": 475, "z1": -128, "x2": 613, "y2": 536, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "BakeKitsune", "maxCount": 8, "probability": 100 },
@@ -1540,7 +1540,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1064, "y1": 444, "z1": -128, "x2": 1105, "y2": 485, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Yamandon", "maxCount": 1, "probability": 100 }
@@ -1556,7 +1556,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 978, "y1": 216, "z1": -128, "x2": 1039, "y2": 277, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ronin", "maxCount": 4, "probability": 100 },
@@ -1573,7 +1573,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1184, "y1": 622, "z1": -128, "x2": 1245, "y2": 683, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "HellHound", "maxCount": 4, "probability": 100 },
@@ -1591,7 +1591,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1291, "y1": 817, "z1": -128, "x2": 1352, "y2": 878, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "EliteNinja", "maxCount": 1, "probability": 100 }
@@ -1607,7 +1607,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 918, "y1": 492, "z1": -128, "x2": 979, "y2": 553, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ronin", "maxCount": 4, "probability": 100 }
@@ -1623,7 +1623,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 221, "y1": 1044, "z1": -128, "x2": 282, "y2": 1105, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Kappa", "maxCount": 12, "probability": 100 },
@@ -1643,7 +1643,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 717, "y1": 833, "z1": -128, "x2": 758, "y2": 874, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "DeathwatchBeetleHatchling", "maxCount": 4, "probability": 100 }
@@ -1659,7 +1659,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 216, "y1": 738, "z1": -128, "x2": 277, "y2": 799, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "EarthElemental", "maxCount": 6, "probability": 100 },
@@ -1676,7 +1676,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 624, "y1": 985, "z1": -128, "x2": 665, "y2": 1026, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "DeathwatchBeetleHatchling", "maxCount": 4, "probability": 100 },
@@ -1693,7 +1693,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 799, "y1": 924, "z1": -128, "x2": 840, "y2": 965, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Orc", "maxCount": 4, "probability": 100 },
@@ -1710,7 +1710,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 463, "y1": 348, "z1": -128, "x2": 524, "y2": 409, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Kappa", "maxCount": 8, "probability": 100 },
@@ -1727,7 +1727,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1039, "y1": 556, "z1": -128, "x2": 1046, "y2": 563, "z2": 128 },
+    "homeRange": 3,
     "walkingRange": 3,
     "entries": [
       { "name": "Reaper", "maxCount": 1, "probability": 100 }
@@ -1743,7 +1743,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1090, "y1": 1069, "z1": -128, "x2": 1151, "y2": 1130, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "DeathwatchBeetle", "maxCount": 8, "probability": 100 },
@@ -1762,7 +1762,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 243, "y1": 576, "z1": -128, "x2": 304, "y2": 637, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Mongbat", "maxCount": 8, "probability": 100 }
@@ -1778,7 +1778,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 976, "y1": 827, "z1": -128, "x2": 1037, "y2": 888, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "GiantSpider", "maxCount": 4, "probability": 100 },
@@ -1795,7 +1795,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 886, "y1": 195, "z1": -128, "x2": 947, "y2": 256, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ronin", "maxCount": 4, "probability": 100 },
@@ -1813,7 +1813,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 170, "y1": 773, "z1": -128, "x2": 231, "y2": 834, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "YomotsuWarrior", "maxCount": 6, "probability": 100 }
@@ -1829,7 +1829,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 772, "y1": 900, "z1": -128, "x2": 813, "y2": 941, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "DeathwatchBeetleHatchling", "maxCount": 4, "probability": 100 }
@@ -1845,7 +1845,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 969, "y1": 550, "z1": -128, "x2": 1030, "y2": 611, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "KazeKemono", "maxCount": 4, "probability": 100 },
@@ -1862,7 +1862,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 695, "y1": 216, "z1": -128, "x2": 756, "y2": 277, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "RuneBeetle", "maxCount": 4, "probability": 100 },
@@ -1879,7 +1879,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 789, "y1": 178, "z1": -128, "x2": 850, "y2": 239, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "RuneBeetle", "maxCount": 4, "probability": 100 },
@@ -1897,7 +1897,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 618, "y1": 846, "z1": -128, "x2": 659, "y2": 887, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "DeathwatchBeetleHatchling", "maxCount": 4, "probability": 100 },
@@ -1914,7 +1914,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 93, "y1": 617, "z1": -128, "x2": 154, "y2": 678, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "BoneMagi", "maxCount": 8, "probability": 100 },
@@ -1935,7 +1935,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1116, "y1": 486, "z1": -128, "x2": 1177, "y2": 547, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "TsukiWolf", "maxCount": 4, "probability": 100 }
@@ -1951,7 +1951,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 709, "y1": 914, "z1": -128, "x2": 750, "y2": 955, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "DeathwatchBeetleHatchling", "maxCount": 6, "probability": 100 }
@@ -1967,7 +1967,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 783, "y1": 941, "z1": -128, "x2": 824, "y2": 982, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "DeathwatchBeetleHatchling", "maxCount": 4, "probability": 100 }
@@ -1983,7 +1983,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 794, "y1": 250, "z1": -128, "x2": 855, "y2": 311, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "RuneBeetle", "maxCount": 4, "probability": 100 },
@@ -2001,7 +2001,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1031, "y1": 453, "z1": -128, "x2": 1072, "y2": 494, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "TsukiWolf", "maxCount": 8, "probability": 100 }
@@ -2017,7 +2017,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 564, "y1": 332, "z1": -128, "x2": 625, "y2": 393, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "TsukiWolf", "maxCount": 8, "probability": 100 }
@@ -2033,7 +2033,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 178, "y1": 611, "z1": -128, "x2": 239, "y2": 672, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "Ronin", "maxCount": 4, "probability": 100 }
@@ -2049,7 +2049,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 849, "y1": 98, "z1": -128, "x2": 910, "y2": 159, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "IceElemental", "maxCount": 2, "probability": 100 },
@@ -2071,7 +2071,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 646, "y1": 876, "z1": -128, "x2": 687, "y2": 917, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "DeathwatchBeetleHatchling", "maxCount": 4, "probability": 100 },
@@ -2088,7 +2088,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 962, "y1": 353, "z1": -128, "x2": 1023, "y2": 414, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "DeathwatchBeetle", "maxCount": 8, "probability": 100 },
@@ -2106,7 +2106,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1166, "y1": 477, "z1": -128, "x2": 1227, "y2": 538, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Reaper", "maxCount": 4, "probability": 100 },
@@ -2123,7 +2123,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 862, "y1": 361, "z1": -128, "x2": 923, "y2": 422, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "DeathwatchBeetle", "maxCount": 8, "probability": 100 },
@@ -2141,7 +2141,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 518, "y1": 542, "z1": -128, "x2": 539, "y2": 563, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "LesserHiryu", "maxCount": 1, "probability": 100 }
@@ -2157,7 +2157,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 751, "y1": 959, "z1": -128, "x2": 792, "y2": 1000, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "DeathwatchBeetleHatchling", "maxCount": 4, "probability": 100 }
@@ -2173,7 +2173,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 513, "y1": 971, "z1": -128, "x2": 554, "y2": 1012, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "DeathwatchBeetle", "maxCount": 2, "probability": 100 }
@@ -2189,7 +2189,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 129, "y1": 658, "z1": -128, "x2": 190, "y2": 719, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "Ronin", "maxCount": 4, "probability": 100 }
@@ -2205,7 +2205,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 160, "y1": 826, "z1": -128, "x2": 221, "y2": 887, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "YomotsuWarrior", "maxCount": 6, "probability": 100 },
@@ -2222,7 +2222,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 888, "y1": 409, "z1": -128, "x2": 949, "y2": 470, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "DeathwatchBeetle", "maxCount": 8, "probability": 100 },
@@ -2240,7 +2240,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 162, "y1": 740, "z1": -128, "x2": 223, "y2": 801, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "Mongbat", "maxCount": 8, "probability": 100 }
@@ -2256,7 +2256,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 218, "y1": 898, "z1": -128, "x2": 279, "y2": 959, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "YomotsuWarrior", "maxCount": 6, "probability": 100 },
@@ -2273,7 +2273,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 648, "y1": 966, "z1": -128, "x2": 689, "y2": 1007, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Orc", "maxCount": 4, "probability": 100 },
@@ -2290,7 +2290,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 536, "y1": 400, "z1": -128, "x2": 597, "y2": 461, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "TsukiWolf", "maxCount": 8, "probability": 100 }
@@ -2306,7 +2306,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 705, "y1": 803, "z1": -128, "x2": 746, "y2": 844, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "DeathwatchBeetleHatchling", "maxCount": 4, "probability": 100 }
@@ -2322,7 +2322,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 982, "y1": 601, "z1": -128, "x2": 1043, "y2": 662, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "LesserHiryu", "maxCount": 1, "probability": 100 }
@@ -2338,7 +2338,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 735, "y1": 159, "z1": -128, "x2": 796, "y2": 220, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "RuneBeetle", "maxCount": 4, "probability": 100 },
@@ -2355,7 +2355,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1146, "y1": 671, "z1": -128, "x2": 1207, "y2": 732, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "HellHound", "maxCount": 4, "probability": 100 },
@@ -2373,7 +2373,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1104, "y1": 675, "z1": -128, "x2": 1165, "y2": 736, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "HellHound", "maxCount": 4, "probability": 100 },
@@ -2392,7 +2392,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 94, "y1": 616, "z1": -128, "x2": 155, "y2": 677, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "Ronin", "maxCount": 4, "probability": 100 }
@@ -2408,7 +2408,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 330, "y1": 436, "z1": -128, "x2": 391, "y2": 497, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "Ronin", "maxCount": 8, "probability": 100 }
@@ -2424,7 +2424,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1314, "y1": 744, "z1": -128, "x2": 1375, "y2": 805, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "LesserHiryu", "maxCount": 2, "probability": 100 }
@@ -2440,7 +2440,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1367, "y1": 872, "z1": -128, "x2": 1388, "y2": 893, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 30,
     "entries": [
       { "name": "LavaSerpent", "maxCount": 4, "probability": 100 }
@@ -2456,7 +2456,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 739, "y1": 122, "z1": -128, "x2": 800, "y2": 183, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "RuneBeetle", "maxCount": 4, "probability": 100 },
@@ -2474,7 +2474,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 354, "y1": 430, "z1": -128, "x2": 415, "y2": 491, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Mongbat", "maxCount": 8, "probability": 100 }
@@ -2490,7 +2490,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1174, "y1": 606, "z1": -128, "x2": 1195, "y2": 627, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "LavaSerpent", "maxCount": 3, "probability": 100 }
@@ -2506,7 +2506,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 743, "y1": 199, "z1": -128, "x2": 804, "y2": 260, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "RuneBeetle", "maxCount": 4, "probability": 100 },
@@ -2523,7 +2523,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 171, "y1": 701, "z1": -128, "x2": 232, "y2": 762, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "YomotsuWarrior", "maxCount": 6, "probability": 100 }
@@ -2539,7 +2539,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1217, "y1": 761, "z1": -128, "x2": 1278, "y2": 822, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "LesserHiryu", "maxCount": 2, "probability": 100 }
@@ -2555,7 +2555,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 542, "y1": 964, "z1": -128, "x2": 583, "y2": 1005, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "DeathwatchBeetleHatchling", "maxCount": 4, "probability": 100 },
@@ -2572,7 +2572,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 799, "y1": 882, "z1": -128, "x2": 840, "y2": 923, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Orc", "maxCount": 4, "probability": 100 },
@@ -2589,7 +2589,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1154, "y1": 807, "z1": -128, "x2": 1215, "y2": 868, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "LesserHiryu", "maxCount": 2, "probability": 100 }
@@ -2605,7 +2605,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 487, "y1": 483, "z1": -128, "x2": 548, "y2": 544, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "BakeKitsune", "maxCount": 4, "probability": 100 }
@@ -2621,7 +2621,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 967, "y1": 377, "z1": -128, "x2": 1028, "y2": 438, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "DeathwatchBeetle", "maxCount": 8, "probability": 100 },
@@ -2639,7 +2639,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 178, "y1": 906, "z1": -128, "x2": 239, "y2": 967, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Mongbat", "maxCount": 4, "probability": 100 }
@@ -2655,7 +2655,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1042, "y1": 449, "z1": -128, "x2": 1083, "y2": 490, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "DireWolf", "maxCount": 4, "probability": 100 },
@@ -2672,7 +2672,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1291, "y1": 589, "z1": -128, "x2": 1352, "y2": 650, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "RevenantLion", "maxCount": 8, "probability": 100 },
@@ -2692,7 +2692,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 254, "y1": 393, "z1": -128, "x2": 315, "y2": 454, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "Ronin", "maxCount": 8, "probability": 100 }
@@ -2708,7 +2708,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 668, "y1": 959, "z1": -128, "x2": 709, "y2": 1000, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Orc", "maxCount": 4, "probability": 100 },
@@ -2725,7 +2725,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1255, "y1": 543, "z1": -128, "x2": 1316, "y2": 604, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "TsukiWolf", "maxCount": 8, "probability": 100 }
@@ -2741,7 +2741,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 156, "y1": 504, "z1": -128, "x2": 217, "y2": 565, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "Ronin", "maxCount": 4, "probability": 100 }
@@ -2757,7 +2757,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 877, "y1": 262, "z1": -128, "x2": 938, "y2": 323, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "RuneBeetle", "maxCount": 4, "probability": 100 },
@@ -2775,7 +2775,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 722, "y1": 992, "z1": -128, "x2": 763, "y2": 1033, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "DeathwatchBeetleHatchling", "maxCount": 6, "probability": 100 }
@@ -2791,7 +2791,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 506, "y1": 869, "z1": -128, "x2": 547, "y2": 910, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "DeathwatchBeetle", "maxCount": 4, "probability": 100 }
@@ -2807,7 +2807,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 599, "y1": 961, "z1": -128, "x2": 640, "y2": 1002, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "DeathwatchBeetleHatchling", "maxCount": 4, "probability": 100 },
@@ -2824,7 +2824,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 492, "y1": 543, "z1": -128, "x2": 513, "y2": 564, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "Oni", "maxCount": 1, "probability": 100 }
@@ -2840,7 +2840,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 213, "y1": 1001, "z1": -128, "x2": 274, "y2": 1062, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Kappa", "maxCount": 12, "probability": 100 },
@@ -2860,7 +2860,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1022, "y1": 946, "z1": -128, "x2": 1083, "y2": 1007, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Kappa", "maxCount": 8, "probability": 100 },
@@ -2877,7 +2877,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 424, "y1": 344, "z1": -128, "x2": 485, "y2": 405, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Kappa", "maxCount": 8, "probability": 100 },
@@ -2894,7 +2894,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 901, "y1": 803, "z1": -128, "x2": 962, "y2": 864, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Kappa", "maxCount": 4, "probability": 100 }
@@ -2910,7 +2910,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 592, "y1": 868, "z1": -128, "x2": 633, "y2": 909, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Skeleton", "maxCount": 4, "probability": 100 },
@@ -2929,7 +2929,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1062, "y1": 950, "z1": -128, "x2": 1123, "y2": 1011, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Kappa", "maxCount": 4, "probability": 100 }
@@ -2945,7 +2945,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 496, "y1": 269, "z1": -128, "x2": 557, "y2": 330, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Yamandon", "maxCount": 1, "probability": 100 }
@@ -2961,7 +2961,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1167, "y1": 783, "z1": -128, "x2": 1228, "y2": 844, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Hiryu", "maxCount": 1, "probability": 100 }
@@ -2977,7 +2977,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 442, "y1": 306, "z1": -128, "x2": 503, "y2": 367, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "TsukiWolf", "maxCount": 8, "probability": 100 }
@@ -2993,7 +2993,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 235, "y1": 376, "z1": -128, "x2": 296, "y2": 437, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "EliteNinja", "maxCount": 1, "probability": 100 }
@@ -3009,7 +3009,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 950, "y1": 785, "z1": -128, "x2": 1011, "y2": 846, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "GiantSpider", "maxCount": 4, "probability": 100 },
@@ -3027,7 +3027,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1062, "y1": 533, "z1": -128, "x2": 1123, "y2": 594, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "TsukiWolf", "maxCount": 4, "probability": 100 }
@@ -3043,7 +3043,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1313, "y1": 624, "z1": -128, "x2": 1374, "y2": 685, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "LesserHiryu", "maxCount": 2, "probability": 100 }
@@ -3059,7 +3059,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 823, "y1": 356, "z1": -128, "x2": 884, "y2": 417, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "Kappa", "maxCount": 4, "probability": 100 },
@@ -3076,7 +3076,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 891, "y1": 563, "z1": -128, "x2": 952, "y2": 624, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "MountainGoat", "maxCount": 4, "probability": 100 },
@@ -3093,7 +3093,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1185, "y1": 1056, "z1": -128, "x2": 1246, "y2": 1117, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Kappa", "maxCount": 8, "probability": 100 }
@@ -3109,7 +3109,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 695, "y1": 811, "z1": -128, "x2": 736, "y2": 852, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Orc", "maxCount": 4, "probability": 100 }
@@ -3125,7 +3125,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 751, "y1": 804, "z1": -128, "x2": 792, "y2": 845, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "DeathwatchBeetleHatchling", "maxCount": 4, "probability": 100 }
@@ -3141,7 +3141,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 561, "y1": 933, "z1": -128, "x2": 602, "y2": 974, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Skeleton", "maxCount": 4, "probability": 100 },
@@ -3160,7 +3160,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 491, "y1": 936, "z1": -128, "x2": 532, "y2": 977, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "DeathwatchBeetle", "maxCount": 2, "probability": 100 }
@@ -3176,7 +3176,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 524, "y1": 446, "z1": -128, "x2": 585, "y2": 507, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "BakeKitsune", "maxCount": 4, "probability": 100 }
@@ -3192,7 +3192,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 176, "y1": 861, "z1": -128, "x2": 237, "y2": 922, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Mongbat", "maxCount": 4, "probability": 100 }
@@ -3208,7 +3208,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1056, "y1": 880, "z1": -128, "x2": 1117, "y2": 941, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Kappa", "maxCount": 4, "probability": 100 },
@@ -3225,7 +3225,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 900, "y1": 375, "z1": -128, "x2": 961, "y2": 436, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "DeathwatchBeetle", "maxCount": 8, "probability": 100 },
@@ -3243,7 +3243,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 388, "y1": 433, "z1": -128, "x2": 449, "y2": 494, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Mongbat", "maxCount": 8, "probability": 100 }
@@ -3259,7 +3259,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 585, "y1": 526, "z1": -128, "x2": 646, "y2": 587, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "BakeKitsune", "maxCount": 8, "probability": 100 },
@@ -3277,7 +3277,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 647, "y1": 416, "z1": -128, "x2": 708, "y2": 477, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "RevenantLion", "maxCount": 4, "probability": 100 },
@@ -3295,7 +3295,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 607, "y1": 327, "z1": -128, "x2": 668, "y2": 388, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "RevenantLion", "maxCount": 4, "probability": 100 }
@@ -3311,7 +3311,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1281, "y1": 746, "z1": -128, "x2": 1342, "y2": 807, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Hiryu", "maxCount": 1, "probability": 100 }
@@ -3327,7 +3327,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 991, "y1": 772, "z1": -128, "x2": 1052, "y2": 833, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "GiantSpider", "maxCount": 4, "probability": 100 },
@@ -3344,7 +3344,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 897, "y1": 421, "z1": -128, "x2": 958, "y2": 482, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "DeathwatchBeetle", "maxCount": 8, "probability": 100 },
@@ -3362,7 +3362,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 168, "y1": 894, "z1": -128, "x2": 229, "y2": 955, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "YomotsuWarrior", "maxCount": 6, "probability": 100 },
@@ -3379,7 +3379,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 264, "y1": 718, "z1": -128, "x2": 325, "y2": 779, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "YomotsuWarrior", "maxCount": 6, "probability": 100 }
@@ -3395,7 +3395,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 750, "y1": 855, "z1": -128, "x2": 791, "y2": 896, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "DeathwatchBeetleHatchling", "maxCount": 4, "probability": 100 }
@@ -3411,7 +3411,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 126, "y1": 543, "z1": -128, "x2": 207, "y2": 624, "z2": 128 },
+    "homeRange": 40,
     "walkingRange": 40,
     "entries": [
       { "name": "Yamandon", "maxCount": 1, "probability": 100 }
@@ -3427,7 +3427,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 774, "y1": 870, "z1": -128, "x2": 815, "y2": 911, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Orc", "maxCount": 4, "probability": 100 },
@@ -3444,7 +3444,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 553, "y1": 913, "z1": -128, "x2": 594, "y2": 954, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Skeleton", "maxCount": 4, "probability": 100 },
@@ -3463,7 +3463,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1324, "y1": 670, "z1": -128, "x2": 1385, "y2": 731, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "EliteNinja", "maxCount": 1, "probability": 100 }
@@ -3479,7 +3479,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 902, "y1": 655, "z1": -128, "x2": 963, "y2": 716, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "KazeKemono", "maxCount": 4, "probability": 100 }
@@ -3495,7 +3495,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1056, "y1": 422, "z1": -128, "x2": 1117, "y2": 483, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "DeathwatchBeetle", "maxCount": 4, "probability": 100 },
@@ -3513,7 +3513,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1075, "y1": 723, "z1": -128, "x2": 1136, "y2": 784, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "HellCat", "maxCount": 4, "probability": 100 },
@@ -3530,7 +3530,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 259, "y1": 447, "z1": -128, "x2": 320, "y2": 508, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "EliteNinja", "maxCount": 1, "probability": 100 }

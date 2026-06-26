@@ -9,7 +9,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 69, "y1": 677, "z1": -128, "x2": 90, "y2": 698, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "FireElemental", "maxCount": 1, "probability": 100 },
@@ -26,7 +26,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 44, "y1": 708, "z1": -128, "x2": 65, "y2": 729, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "FireElemental", "maxCount": 1, "probability": 100 },
@@ -43,7 +43,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 100, "y1": 701, "z1": -128, "x2": 131, "y2": 732, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 15,
     "entries": [
       { "name": "FireElemental", "maxCount": 3, "probability": 100 },
@@ -60,7 +60,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 121, "y1": 68, "z1": -128, "x2": 142, "y2": 89, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "FireElemental", "maxCount": 1, "probability": 100 },
@@ -77,7 +77,7 @@
     "minDelay": "00:10:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 20, "y1": 659, "z1": -128, "x2": 81, "y2": 720, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 15,
     "entries": [
       { "name": "AncientWyrm", "maxCount": 1, "probability": 100 }
@@ -93,7 +93,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 67, "y1": 703, "z1": -128, "x2": 98, "y2": 734, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 15,
     "entries": [
       { "name": "FireElemental", "maxCount": 2, "probability": 100 },

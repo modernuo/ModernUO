@@ -9,7 +9,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5715, "y1": 1383, "z1": -128, "x2": 5730, "y2": 1398, "z2": 128 },
+    "homeRange": 7,
     "walkingRange": 7,
     "entries": [
       { "name": "TreasureChestLevel3", "maxCount": 2, "probability": 100 }
@@ -25,7 +25,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5777, "y1": 1376, "z1": -128, "x2": 5798, "y2": 1397, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "HellCat", "maxCount": 1, "probability": 100 }
@@ -41,7 +41,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5656, "y1": 1412, "z1": 0, "x2": 5657, "y2": 1413, "z2": 0 },
+    "homeRange": 0,
     "walkingRange": 10,
     "entries": [
       { "name": "EvilMageLord", "maxCount": 1, "probability": 100 }
@@ -57,7 +57,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5707, "y1": 1323, "z1": -128, "x2": 5728, "y2": 1344, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "LavaLizard", "maxCount": 1, "probability": 100 },
@@ -74,7 +74,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5683, "y1": 1405, "z1": -128, "x2": 5704, "y2": 1426, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "Slime", "maxCount": 1, "probability": 100 },
@@ -92,7 +92,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5857, "y1": 1299, "z1": -128, "x2": 5878, "y2": 1320, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "HellCat", "maxCount": 1, "probability": 100 },
@@ -109,7 +109,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5638, "y1": 1439, "z1": 0, "x2": 5639, "y2": 1440, "z2": 0 },
+    "homeRange": 0,
     "walkingRange": 40,
     "entries": [
       { "name": "EvilMageLord", "maxCount": 1, "probability": 100 }
@@ -125,7 +125,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5728, "y1": 1376, "z1": -128, "x2": 5735, "y2": 1383, "z2": 128 },
+    "homeRange": 3,
     "walkingRange": 7,
     "entries": [
       { "name": "Lich", "maxCount": 3, "probability": 100 },
@@ -142,7 +142,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5849, "y1": 1331, "z1": -128, "x2": 5870, "y2": 1352, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "FireElemental", "maxCount": 1, "probability": 100 }
@@ -158,7 +158,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5684, "y1": 1287, "z1": -128, "x2": 5715, "y2": 1318, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 15,
     "entries": [
       { "name": "FireElemental", "maxCount": 1, "probability": 100 }
@@ -174,7 +174,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5668, "y1": 1330, "z1": -128, "x2": 5689, "y2": 1351, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 30,
     "entries": [
       { "name": "HellHound", "maxCount": 1, "probability": 100 },
@@ -191,7 +191,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5640, "y1": 1400, "z1": -128, "x2": 5647, "y2": 1407, "z2": 128 },
+    "homeRange": 3,
     "walkingRange": 3,
     "entries": [
       { "name": "EvilMage", "maxCount": 1, "probability": 100 }
@@ -207,7 +207,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5649, "y1": 1375, "z1": -128, "x2": 5660, "y2": 1386, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 5,
     "entries": [
       { "name": "EvilMage", "maxCount": 1, "probability": 100 }
@@ -243,7 +243,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5648, "y1": 1440, "z1": -128, "x2": 5655, "y2": 1447, "z2": 128 },
+    "homeRange": 3,
     "walkingRange": 5,
     "entries": [
       { "name": "EvilMage", "maxCount": 1, "probability": 100 }
@@ -259,7 +259,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5707, "y1": 1458, "z1": -128, "x2": 5722, "y2": 1473, "z2": 128 },
+    "homeRange": 7,
     "walkingRange": 7,
     "entries": [
       { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 }
@@ -275,7 +275,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5641, "y1": 1433, "z1": -128, "x2": 5646, "y2": 1438, "z2": 128 },
+    "homeRange": 2,
     "walkingRange": 2,
     "entries": [
       { "name": "TreasureChestLevel4", "maxCount": 2, "probability": 100 }
@@ -291,7 +291,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5646, "y1": 1438, "z1": -128, "x2": 5649, "y2": 1441, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 15,
     "entries": [
       { "name": "EvilMage", "maxCount": 1, "probability": 100 }
@@ -307,7 +307,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5827, "y1": 1443, "z1": -128, "x2": 5878, "y2": 1494, "z2": 128 },
+    "homeRange": 25,
     "walkingRange": 30,
     "entries": [
       { "name": "LavaSnake", "maxCount": 1, "probability": 100 }
@@ -323,7 +323,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5648, "y1": 1417, "z1": -128, "x2": 5653, "y2": 1422, "z2": 128 },
+    "homeRange": 2,
     "walkingRange": 5,
     "entries": [
       { "name": "EvilMage", "maxCount": 1, "probability": 100 }
@@ -339,7 +339,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5684, "y1": 1382, "z1": -128, "x2": 5695, "y2": 1393, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 10,
     "entries": [
       { "name": "EvilMageLord", "maxCount": 1, "probability": 100 }
@@ -355,7 +355,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5688, "y1": 1344, "z1": -128, "x2": 5695, "y2": 1351, "z2": 128 },
+    "homeRange": 3,
     "walkingRange": 3,
     "entries": [
       { "name": "Daemon", "maxCount": 2, "probability": 100 }
@@ -371,7 +371,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5808, "y1": 1369, "z1": -128, "x2": 5829, "y2": 1390, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "FireElemental", "maxCount": 1, "probability": 100 }
@@ -387,7 +387,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5674, "y1": 1433, "z1": -128, "x2": 5685, "y2": 1444, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 5,
     "entries": [
       { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 }
@@ -403,7 +403,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5820, "y1": 1289, "z1": -128, "x2": 5851, "y2": 1320, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 30,
     "entries": [
       { "name": "FireElemental", "maxCount": 4, "probability": 100 },
@@ -421,7 +421,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5670, "y1": 1428, "z1": -128, "x2": 5691, "y2": 1449, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "EvilMageLord", "maxCount": 2, "probability": 100 }
@@ -437,7 +437,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5720, "y1": 1288, "z1": -128, "x2": 5727, "y2": 1295, "z2": 128 },
+    "homeRange": 3,
     "walkingRange": 3,
     "entries": [
       { "name": "FireElemental", "maxCount": 2, "probability": 100 }
@@ -453,7 +453,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5799, "y1": 1322, "z1": -128, "x2": 5820, "y2": 1343, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "LavaSnake", "maxCount": 1, "probability": 100 }
@@ -469,7 +469,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5649, "y1": 1406, "z1": -128, "x2": 5654, "y2": 1411, "z2": 128 },
+    "homeRange": 2,
     "walkingRange": 3,
     "entries": [
       { "name": "HellHound", "maxCount": 1, "probability": 100 }
@@ -485,7 +485,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5708, "y1": 1458, "z1": -128, "x2": 5723, "y2": 1473, "z2": 128 },
+    "homeRange": 7,
     "walkingRange": 7,
     "entries": [
       { "name": "TreasureChestLevel3", "maxCount": 2, "probability": 100 }
@@ -501,7 +501,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5707, "y1": 1455, "z1": -128, "x2": 5728, "y2": 1476, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 15,
     "entries": [
       { "name": "FireElemental", "maxCount": 3, "probability": 100 }
@@ -517,7 +517,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5785, "y1": 1446, "z1": -128, "x2": 5796, "y2": 1457, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 15,
     "entries": [
       { "name": "Efreet", "maxCount": 1, "probability": 100 },
@@ -536,7 +536,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5734, "y1": 1461, "z1": -128, "x2": 5755, "y2": 1482, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 15,
     "entries": [
       { "name": "FireElemental", "maxCount": 3, "probability": 100 },
@@ -555,7 +555,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5648, "y1": 1432, "z1": -128, "x2": 5655, "y2": 1439, "z2": 128 },
+    "homeRange": 3,
     "walkingRange": 5,
     "entries": [
       { "name": "EvilMage", "maxCount": 1, "probability": 100 }
@@ -571,7 +571,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5648, "y1": 1432, "z1": -128, "x2": 5653, "y2": 1437, "z2": 128 },
+    "homeRange": 2,
     "walkingRange": 2,
     "entries": [
       { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }
@@ -587,7 +587,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5649, "y1": 1416, "z1": -128, "x2": 5654, "y2": 1421, "z2": 128 },
+    "homeRange": 2,
     "walkingRange": 3,
     "entries": [
       { "name": "EvilMage", "maxCount": 1, "probability": 100 },
@@ -604,7 +604,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5723, "y1": 1423, "z1": -128, "x2": 5744, "y2": 1444, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "GiantRat", "maxCount": 1, "probability": 100 },
@@ -622,7 +622,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5640, "y1": 1432, "z1": -128, "x2": 5647, "y2": 1439, "z2": 128 },
+    "homeRange": 3,
     "walkingRange": 5,
     "entries": [
       { "name": "EvilMage", "maxCount": 1, "probability": 100 }
@@ -660,7 +660,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5849, "y1": 1377, "z1": -128, "x2": 5870, "y2": 1398, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "LavaLizard", "maxCount": 1, "probability": 100 }
@@ -676,7 +676,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5826, "y1": 1354, "z1": -128, "x2": 5847, "y2": 1375, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "LavaSnake", "maxCount": 1, "probability": 100 }
@@ -692,7 +692,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5827, "y1": 1443, "z1": -128, "x2": 5878, "y2": 1494, "z2": 128 },
+    "homeRange": 25,
     "walkingRange": 30,
     "entries": [
       { "name": "Lich", "maxCount": 4, "probability": 100 },
@@ -714,7 +714,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5777, "y1": 1417, "z1": -128, "x2": 5798, "y2": 1438, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "LavaLizard", "maxCount": 1, "probability": 100 }
@@ -730,7 +730,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5727, "y1": 1292, "z1": -128, "x2": 5738, "y2": 1303, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 20,
     "entries": [
       { "name": "HellHound", "maxCount": 1, "probability": 100 }
@@ -746,7 +746,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5685, "y1": 1424, "z1": -128, "x2": 5706, "y2": 1445, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "Slime", "maxCount": 1, "probability": 100 }
@@ -762,7 +762,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5649, "y1": 1400, "z1": -128, "x2": 5654, "y2": 1405, "z2": 128 },
+    "homeRange": 2,
     "walkingRange": 3,
     "entries": [
       { "name": "EvilMage", "maxCount": 1, "probability": 100 }
@@ -778,7 +778,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5737, "y1": 1310, "z1": -128, "x2": 5758, "y2": 1331, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "FireElemental", "maxCount": 1, "probability": 100 },
@@ -795,7 +795,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5699, "y1": 1354, "z1": -128, "x2": 5720, "y2": 1375, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "HellHound", "maxCount": 6, "probability": 100 }
@@ -811,7 +811,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5674, "y1": 1434, "z1": -128, "x2": 5685, "y2": 1445, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 5,
     "entries": [
       { "name": "TreasureChestLevel3", "maxCount": 2, "probability": 100 }
@@ -827,7 +827,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5716, "y1": 1383, "z1": -128, "x2": 5731, "y2": 1398, "z2": 128 },
+    "homeRange": 7,
     "walkingRange": 7,
     "entries": [
       { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 }

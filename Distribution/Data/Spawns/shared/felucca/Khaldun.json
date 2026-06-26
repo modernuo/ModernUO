@@ -9,7 +9,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5445, "y1": 1372, "z1": -128, "x2": 5506, "y2": 1433, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "SpectralArmour", "maxCount": 2, "probability": 100 }
@@ -25,7 +25,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5395, "y1": 1292, "z1": -128, "x2": 5436, "y2": 1333, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "ShadowFiend", "maxCount": 1, "probability": 100 }
@@ -41,7 +41,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5422, "y1": 1391, "z1": -128, "x2": 5463, "y2": 1432, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Zombie", "maxCount": 1, "probability": 100 }
@@ -57,7 +57,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5471, "y1": 1350, "z1": -128, "x2": 5512, "y2": 1391, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Skeleton", "maxCount": 3, "probability": 100 }
@@ -73,7 +73,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5485, "y1": 1296, "z1": -128, "x2": 5526, "y2": 1337, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Cursed", "maxCount": 3, "probability": 100 }
@@ -89,7 +89,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5469, "y1": 1381, "z1": -128, "x2": 5530, "y2": 1442, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "ShadowFiend", "maxCount": 2, "probability": 100 }
@@ -105,7 +105,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5482, "y1": 1287, "z1": -128, "x2": 5503, "y2": 1308, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "Zombie", "maxCount": 2, "probability": 100 }
@@ -121,7 +121,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5445, "y1": 1429, "z1": -128, "x2": 5486, "y2": 1470, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "SkeletalMage", "maxCount": 1, "probability": 100 }
@@ -137,7 +137,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5526, "y1": 1335, "z1": -128, "x2": 5547, "y2": 1356, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "KhaldunZealot", "maxCount": 1, "probability": 100 }
@@ -153,7 +153,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5604, "y1": 1342, "z1": -128, "x2": 5607, "y2": 1345, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 20,
     "entries": [
       { "name": "HarrowerTentacles", "maxCount": 1, "probability": 100 }
@@ -169,7 +169,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5413, "y1": 1465, "z1": -128, "x2": 5454, "y2": 1506, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Skeleton", "maxCount": 2, "probability": 100 }
@@ -185,7 +185,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5398, "y1": 1430, "z1": -128, "x2": 5439, "y2": 1471, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Skeleton", "maxCount": 2, "probability": 100 }
@@ -201,7 +201,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5383, "y1": 1312, "z1": -128, "x2": 5424, "y2": 1353, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Skeleton", "maxCount": 2, "probability": 100 }
@@ -217,7 +217,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5511, "y1": 1387, "z1": -128, "x2": 5532, "y2": 1408, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "ShadowFiend", "maxCount": 1, "probability": 100 }
@@ -233,7 +233,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5429, "y1": 1419, "z1": -128, "x2": 5490, "y2": 1480, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "KhaldunSummoner", "maxCount": 1, "probability": 100 }
@@ -249,7 +249,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5392, "y1": 1310, "z1": -128, "x2": 5433, "y2": 1351, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "BoneKnight", "maxCount": 1, "probability": 100 }
@@ -265,7 +265,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5380, "y1": 1377, "z1": -128, "x2": 5421, "y2": 1418, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "KhaldunZealot", "maxCount": 1, "probability": 100 }
@@ -281,7 +281,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5482, "y1": 1284, "z1": -128, "x2": 5503, "y2": 1305, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "SkeletalKnight", "maxCount": 2, "probability": 100 }
@@ -297,7 +297,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5375, "y1": 1350, "z1": -128, "x2": 5416, "y2": 1391, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Cursed", "maxCount": 1, "probability": 100 }
@@ -313,7 +313,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5526, "y1": 1341, "z1": -128, "x2": 5547, "y2": 1362, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "KhaldunSummoner", "maxCount": 1, "probability": 100 }
@@ -329,7 +329,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5564, "y1": 1301, "z1": -128, "x2": 5575, "y2": 1312, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 10,
     "entries": [
       { "name": "ShadowFiend", "maxCount": 1, "probability": 100 }
@@ -345,7 +345,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5395, "y1": 1311, "z1": -128, "x2": 5436, "y2": 1352, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Zombie", "maxCount": 1, "probability": 100 }
@@ -361,7 +361,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5519, "y1": 1294, "z1": -128, "x2": 5580, "y2": 1355, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Cursed", "maxCount": 3, "probability": 100 }
@@ -377,7 +377,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5389, "y1": 1288, "z1": -128, "x2": 5410, "y2": 1309, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "SkeletalKnight", "maxCount": 1, "probability": 100 }
@@ -393,7 +393,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5425, "y1": 1336, "z1": -128, "x2": 5446, "y2": 1357, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "ShadowFiend", "maxCount": 1, "probability": 100 }
@@ -409,7 +409,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5376, "y1": 1351, "z1": -128, "x2": 5417, "y2": 1392, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Zombie", "maxCount": 2, "probability": 100 }
@@ -425,7 +425,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5405, "y1": 1431, "z1": -128, "x2": 5446, "y2": 1472, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Zombie", "maxCount": 2, "probability": 100 }
@@ -441,7 +441,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5440, "y1": 1431, "z1": -128, "x2": 5481, "y2": 1472, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "KhaldunZealot", "maxCount": 1, "probability": 100 }
@@ -457,7 +457,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5424, "y1": 1390, "z1": -128, "x2": 5465, "y2": 1431, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "SkeletalKnight", "maxCount": 1, "probability": 100 }
@@ -473,7 +473,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5438, "y1": 1425, "z1": -128, "x2": 5479, "y2": 1466, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "AncientLich", "maxCount": 1, "probability": 100 }
@@ -489,7 +489,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5382, "y1": 1410, "z1": -128, "x2": 5423, "y2": 1451, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Zombie", "maxCount": 2, "probability": 100 }
@@ -505,7 +505,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5400, "y1": 1335, "z1": -128, "x2": 5441, "y2": 1376, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "TavaraSewel", "maxCount": 1, "probability": 100 }
@@ -521,7 +521,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5453, "y1": 1416, "z1": -128, "x2": 5514, "y2": 1477, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "ShadowFiend", "maxCount": 2, "probability": 100 }
@@ -537,7 +537,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5402, "y1": 1335, "z1": -128, "x2": 5443, "y2": 1376, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Zombie", "maxCount": 1, "probability": 100 }
@@ -553,7 +553,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5465, "y1": 1414, "z1": -128, "x2": 5506, "y2": 1455, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Zombie", "maxCount": 1, "probability": 100 }
@@ -569,7 +569,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5539, "y1": 1322, "z1": -128, "x2": 5560, "y2": 1343, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 30,
     "entries": [
       { "name": "AncientLich", "maxCount": 1, "probability": 100 }
@@ -585,7 +585,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5519, "y1": 1281, "z1": -128, "x2": 5560, "y2": 1322, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 30,
     "entries": [
       { "name": "Cursed", "maxCount": 4, "probability": 100 }
@@ -601,7 +601,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5380, "y1": 1408, "z1": -128, "x2": 5421, "y2": 1449, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "KhaldunSummoner", "maxCount": 1, "probability": 100 }
@@ -617,7 +617,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5447, "y1": 1361, "z1": -128, "x2": 5458, "y2": 1372, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 10,
     "entries": [
       { "name": "GrimmochDrummel", "maxCount": 1, "probability": 100 }
@@ -633,7 +633,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5400, "y1": 1455, "z1": -128, "x2": 5461, "y2": 1516, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "ShadowFiend", "maxCount": 3, "probability": 100 }
@@ -649,7 +649,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5438, "y1": 1283, "z1": -128, "x2": 5479, "y2": 1324, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "LysanderGathenwale", "maxCount": 1, "probability": 100 }
@@ -665,7 +665,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5405, "y1": 1464, "z1": -128, "x2": 5446, "y2": 1505, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "BoneMagi", "maxCount": 2, "probability": 100 }
@@ -681,7 +681,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5384, "y1": 1411, "z1": -128, "x2": 5425, "y2": 1452, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "ShadowFiend", "maxCount": 1, "probability": 100 }
@@ -697,7 +697,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5373, "y1": 1349, "z1": -128, "x2": 5414, "y2": 1390, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "ShadowFiend", "maxCount": 1, "probability": 100 }
@@ -713,7 +713,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5470, "y1": 1347, "z1": -128, "x2": 5511, "y2": 1388, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "SpectralArmour", "maxCount": 1, "probability": 100 }
@@ -729,7 +729,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5505, "y1": 1276, "z1": -128, "x2": 5546, "y2": 1317, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "ShadowFiend", "maxCount": 2, "probability": 100 }
@@ -745,7 +745,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5388, "y1": 1289, "z1": -128, "x2": 5409, "y2": 1310, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "MorgBergen", "maxCount": 1, "probability": 100 }

@@ -9,7 +9,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5827, "y1": 1982, "z1": -128, "x2": 5848, "y2": 2003, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 15,
     "entries": [
       { "name": "Beetle", "maxCount": 2, "probability": 100 }
@@ -25,7 +25,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5671, "y1": 1876, "z1": -128, "x2": 5692, "y2": 1897, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 50,
     "entries": [
       { "name": "RedSolenWarrior", "maxCount": 1, "probability": 100 }
@@ -41,7 +41,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5821, "y1": 1900, "z1": -128, "x2": 5842, "y2": 1921, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 15,
     "entries": [
       { "name": "Beetle", "maxCount": 2, "probability": 100 }
@@ -57,7 +57,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5651, "y1": 1959, "z1": -128, "x2": 5692, "y2": 2000, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 30,
     "entries": [
       { "name": "RedSolenWarrior", "maxCount": 1, "probability": 100 }
@@ -73,7 +73,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5743, "y1": 1918, "z1": -128, "x2": 5754, "y2": 1929, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 20,
     "entries": [
       { "name": "RedSolenWarrior", "maxCount": 1, "probability": 100 }
@@ -89,7 +89,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5712, "y1": 1810, "z1": -128, "x2": 5733, "y2": 1831, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "RedSolenWorker", "maxCount": 1, "probability": 100 }
@@ -105,7 +105,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5689, "y1": 1830, "z1": -128, "x2": 5698, "y2": 1839, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": 20,
     "entries": [
       { "name": "RedSolenWorker", "maxCount": 1, "probability": 100 }
@@ -121,7 +121,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5892, "y1": 1780, "z1": -128, "x2": 5933, "y2": 1821, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 30,
     "entries": [
       { "name": "RedSolenWorker", "maxCount": 1, "probability": 100 }
@@ -137,7 +137,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5845, "y1": 1922, "z1": -128, "x2": 5866, "y2": 1943, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "RedSolenWarrior", "maxCount": 2, "probability": 100 }
@@ -153,7 +153,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5853, "y1": 1948, "z1": -128, "x2": 5874, "y2": 1969, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 25,
     "entries": [
       { "name": "RedSolenWarrior", "maxCount": 2, "probability": 100 }
@@ -169,7 +169,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5808, "y1": 1874, "z1": -128, "x2": 5823, "y2": 1889, "z2": 128 },
+    "homeRange": 7,
     "walkingRange": 20,
     "entries": [
       { "name": "RedSolenWarrior", "maxCount": 1, "probability": 100 }
@@ -185,7 +185,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5683, "y1": 1971, "z1": -128, "x2": 5724, "y2": 2012, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 35,
     "entries": [
       { "name": "RedSolenWarrior", "maxCount": 2, "probability": 100 }
@@ -201,7 +201,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5703, "y1": 2009, "z1": -128, "x2": 5734, "y2": 2040, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 25,
     "entries": [
       { "name": "RedSolenWorker", "maxCount": 2, "probability": 100 }
@@ -217,7 +217,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5895, "y1": 1976, "z1": -128, "x2": 5926, "y2": 2007, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 25,
     "entries": [
       { "name": "RedSolenWorker", "maxCount": 3, "probability": 100 }
@@ -233,7 +233,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5846, "y1": 2008, "z1": -128, "x2": 5867, "y2": 2029, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "RedSolenWorker", "maxCount": 1, "probability": 100 }
@@ -249,7 +249,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5874, "y1": 1910, "z1": -128, "x2": 5895, "y2": 1931, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "AntLion", "maxCount": 1, "probability": 100 }
@@ -265,7 +265,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5699, "y1": 1864, "z1": -128, "x2": 5720, "y2": 1885, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 50,
     "entries": [
       { "name": "RedSolenWarrior", "maxCount": 1, "probability": 100 }
@@ -281,7 +281,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5866, "y1": 2008, "z1": -128, "x2": 5887, "y2": 2029, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "RedSolenWorker", "maxCount": 1, "probability": 100 }
@@ -297,7 +297,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5815, "y1": 1958, "z1": -128, "x2": 5836, "y2": 1979, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 25,
     "entries": [
       { "name": "RedSolenWorker", "maxCount": 2, "probability": 100 }
@@ -313,7 +313,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5698, "y1": 1801, "z1": -128, "x2": 5711, "y2": 1814, "z2": 128 },
+    "homeRange": 6,
     "walkingRange": 20,
     "entries": [
       { "name": "RedSolenWorker", "maxCount": 1, "probability": 100 }
@@ -329,7 +329,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5752, "y1": 1947, "z1": -128, "x2": 5783, "y2": 1978, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 50,
     "entries": [
       { "name": "DreadSpider", "maxCount": 2, "probability": 100 }
@@ -345,7 +345,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5837, "y1": 1809, "z1": -128, "x2": 5858, "y2": 1830, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 25,
     "entries": [
       { "name": "RedSolenWorker", "maxCount": 2, "probability": 100 }
@@ -361,7 +361,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3208, "y1": 492, "z1": -128, "x2": 3229, "y2": 513, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "BlackSolenInfiltratorQueen", "maxCount": 1, "probability": 100 },
@@ -378,7 +378,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5645, "y1": 1782, "z1": -128, "x2": 5696, "y2": 1833, "z2": 128 },
+    "homeRange": 25,
     "walkingRange": 30,
     "entries": [
       { "name": "RedSolenWorker", "maxCount": 2, "probability": 100 }
@@ -394,7 +394,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5877, "y1": 1830, "z1": -128, "x2": 5898, "y2": 1851, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 25,
     "entries": [
       { "name": "AntLion", "maxCount": 1, "probability": 100 }
@@ -410,7 +410,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5828, "y1": 2009, "z1": -128, "x2": 5849, "y2": 2030, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "RedSolenWorker", "maxCount": 1, "probability": 100 }
@@ -426,7 +426,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5819, "y1": 1788, "z1": -128, "x2": 5840, "y2": 1809, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 15,
     "entries": [
       { "name": "RedSolenWorker", "maxCount": 1, "probability": 100 }
@@ -442,7 +442,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5655, "y1": 1858, "z1": -128, "x2": 5676, "y2": 1879, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "AntLion", "maxCount": 3, "probability": 100 }
@@ -458,7 +458,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5746, "y1": 1847, "z1": -128, "x2": 5767, "y2": 1868, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 50,
     "entries": [
       { "name": "RedSolenWarrior", "maxCount": 1, "probability": 100 }
@@ -474,7 +474,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1357, "y1": 890, "z1": -128, "x2": 1366, "y2": 899, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": 8,
     "entries": [
       { "name": "BlackSolenInfiltratorQueen", "maxCount": 1, "probability": 100 },
@@ -491,7 +491,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5726, "y1": 1929, "z1": -128, "x2": 5747, "y2": 1950, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "RedSolenQueen", "maxCount": 1, "probability": 100 },
@@ -508,7 +508,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5772, "y1": 2011, "z1": -128, "x2": 5793, "y2": 2032, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 25,
     "entries": [
       { "name": "AntLion", "maxCount": 1, "probability": 100 }
@@ -524,7 +524,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5905, "y1": 1827, "z1": -128, "x2": 5936, "y2": 1858, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 30,
     "entries": [
       { "name": "RedSolenWorker", "maxCount": 2, "probability": 100 }
@@ -540,7 +540,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5788, "y1": 1953, "z1": -128, "x2": 5809, "y2": 1974, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 35,
     "entries": [
       { "name": "RedSolenWorker", "maxCount": 2, "probability": 100 }
@@ -556,7 +556,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5772, "y1": 1783, "z1": -128, "x2": 5793, "y2": 1804, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "RedSolenWarrior", "maxCount": 1, "probability": 100 }
@@ -572,7 +572,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1930, "y1": 3251, "z1": -128, "x2": 1951, "y2": 3272, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "BlackSolenInfiltratorQueen", "maxCount": 1, "probability": 100 },
@@ -589,7 +589,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5667, "y1": 1840, "z1": -128, "x2": 5680, "y2": 1853, "z2": 128 },
+    "homeRange": 6,
     "walkingRange": 20,
     "entries": [
       { "name": "RedSolenWorker", "maxCount": 1, "probability": 100 }
@@ -605,7 +605,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5789, "y1": 1847, "z1": -128, "x2": 5810, "y2": 1868, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "RedSolenWarrior", "maxCount": 2, "probability": 100 }
@@ -621,7 +621,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5689, "y1": 1911, "z1": -128, "x2": 5710, "y2": 1932, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 30,
     "entries": [
       { "name": "RedSolenWarrior", "maxCount": 2, "probability": 100 }
@@ -637,7 +637,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5697, "y1": 1833, "z1": -128, "x2": 5718, "y2": 1854, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "AntLion", "maxCount": 1, "probability": 100 }
@@ -653,7 +653,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5863, "y1": 1788, "z1": -128, "x2": 5884, "y2": 1809, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 15,
     "entries": [
       { "name": "RedSolenWorker", "maxCount": 2, "probability": 100 },
@@ -670,7 +670,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5766, "y1": 2009, "z1": -128, "x2": 5787, "y2": 2030, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "RedSolenWorker", "maxCount": 1, "probability": 100 }

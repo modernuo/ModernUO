@@ -9,7 +9,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 863, "y1": 1831, "z1": -128, "x2": 924, "y2": 1892, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 8, "probability": 100 },
@@ -28,7 +28,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1007, "y1": 1295, "z1": -128, "x2": 1068, "y2": 1356, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Orc", "maxCount": 6, "probability": 100 },
@@ -45,7 +45,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 839, "y1": 1671, "z1": -128, "x2": 870, "y2": 1702, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 20,
     "entries": [
       { "name": "Brigand", "maxCount": 7, "probability": 100 }
@@ -61,7 +61,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1803, "y1": 1215, "z1": -128, "x2": 1864, "y2": 1276, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Mongbat", "maxCount": 3, "probability": 100 },
@@ -78,7 +78,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 807, "y1": 331, "z1": -128, "x2": 868, "y2": 392, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 8, "probability": 100 },
@@ -101,7 +101,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2169, "y1": 1361, "z1": -128, "x2": 2200, "y2": 1392, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 30,
     "entries": [
       { "name": "SavageShaman", "maxCount": 1, "probability": 100 },
@@ -122,7 +122,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 2296, "y1": 626, "z1": -128, "x2": 2357, "y2": 687, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 8, "probability": 100 },
@@ -145,7 +145,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1845, "y1": 876, "z1": -128, "x2": 1906, "y2": 937, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "GiantSpider", "maxCount": 2, "probability": 100 },
@@ -162,7 +162,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1028, "y1": 2742, "z1": -128, "x2": 1289, "y2": 3003, "z2": 128 },
+    "homeRange": 130,
     "walkingRange": 130,
     "entries": [
       { "name": "AcidElemental", "maxCount": 24, "probability": 100 },
@@ -192,7 +192,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1864, "y1": 167, "z1": -128, "x2": 1925, "y2": 228, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 2, "probability": 100 },
@@ -209,7 +209,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 2408, "y1": 3884, "z1": -128, "x2": 2469, "y2": 3945, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Alligator", "maxCount": 8, "probability": 100 },
@@ -229,7 +229,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 809, "y1": 376, "z1": -128, "x2": 870, "y2": 437, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 2, "probability": 100 },
@@ -246,7 +246,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1121, "y1": 2939, "z1": -128, "x2": 1162, "y2": 2980, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Savage", "maxCount": 2, "probability": 100 },
@@ -264,7 +264,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4489, "y1": 1360, "z1": -128, "x2": 4498, "y2": 1369, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": 10,
     "entries": [
       { "name": "GiantSerpent", "maxCount": 1, "probability": 100 },
@@ -285,7 +285,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1274, "y1": 1383, "z1": -128, "x2": 1335, "y2": 1444, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Harpy", "maxCount": 5, "probability": 100 },
@@ -305,7 +305,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 152, "y1": 1398, "z1": -128, "x2": 213, "y2": 1459, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 2, "probability": 100 },
@@ -331,7 +331,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1860, "y1": 2240, "z1": -128, "x2": 1921, "y2": 2301, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Alligator", "maxCount": 6, "probability": 100 },
@@ -352,7 +352,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1090, "y1": 2652, "z1": -128, "x2": 1131, "y2": 2693, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "HeadlessOne", "maxCount": 3, "probability": 100 },
@@ -372,7 +372,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1941, "y1": 3263, "z1": -128, "x2": 2242, "y2": 3564, "z2": 128 },
+    "homeRange": 150,
     "walkingRange": 150,
     "entries": [
       { "name": "Orc", "maxCount": 10, "probability": 100 },
@@ -393,7 +393,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1405, "y1": 1887, "z1": -128, "x2": 1466, "y2": 1948, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 5, "probability": 100 },
@@ -413,7 +413,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2037, "y1": 959, "z1": -128, "x2": 2098, "y2": 1020, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AcidElemental", "maxCount": 3, "probability": 100 },
@@ -443,7 +443,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4515, "y1": 1354, "z1": -128, "x2": 4524, "y2": 1363, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": 15,
     "entries": [
       { "name": "Alligator", "maxCount": 1, "probability": 100 },
@@ -463,7 +463,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1885, "y1": 3020, "z1": -128, "x2": 1946, "y2": 3081, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 4, "probability": 100 },
@@ -483,7 +483,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1214, "y1": 1344, "z1": -128, "x2": 1275, "y2": 1405, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Harpy", "maxCount": 5, "probability": 100 },
@@ -503,7 +503,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1878, "y1": 184, "z1": -128, "x2": 1939, "y2": 245, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 2, "probability": 100 },
@@ -520,7 +520,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1808, "y1": 927, "z1": -128, "x2": 1869, "y2": 988, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "GiantSpider", "maxCount": 2, "probability": 100 },
@@ -537,7 +537,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 2503, "y1": 210, "z1": -128, "x2": 2564, "y2": 271, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 7, "probability": 100 },
@@ -560,7 +560,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1610, "y1": 1401, "z1": -128, "x2": 1671, "y2": 1462, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Mongbat", "maxCount": 3, "probability": 100 },
@@ -577,7 +577,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2298, "y1": 37, "z1": -128, "x2": 2359, "y2": 98, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 9, "probability": 100 },
@@ -602,7 +602,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1511, "y1": 1865, "z1": -128, "x2": 1572, "y2": 1926, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 5, "probability": 100 },
@@ -622,7 +622,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 2455, "y1": 161, "z1": -128, "x2": 2516, "y2": 222, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 7, "probability": 100 },
@@ -645,7 +645,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1917, "y1": 882, "z1": -128, "x2": 1978, "y2": 943, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "GiantSpider", "maxCount": 2, "probability": 100 },
@@ -662,7 +662,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 4489, "y1": 3067, "z1": -128, "x2": 4550, "y2": 3128, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Orc", "maxCount": 10, "probability": 100 }
@@ -678,7 +678,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 2398, "y1": 692, "z1": -128, "x2": 2459, "y2": 753, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 8, "probability": 100 },
@@ -701,7 +701,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1991, "y1": 2283, "z1": -128, "x2": 2052, "y2": 2344, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Alligator", "maxCount": 6, "probability": 100 },
@@ -722,7 +722,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4426, "y1": 1375, "z1": -128, "x2": 4487, "y2": 1436, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "TimberWolf", "maxCount": 7, "probability": 100 }
@@ -738,7 +738,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1029, "y1": 1136, "z1": -128, "x2": 1090, "y2": 1197, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 11, "probability": 100 },
@@ -765,7 +765,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1796, "y1": 2220, "z1": -128, "x2": 1857, "y2": 2281, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Alligator", "maxCount": 6, "probability": 100 },
@@ -786,7 +786,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 1576, "y1": 472, "z1": -128, "x2": 1697, "y2": 593, "z2": 128 },
+    "homeRange": 60,
     "walkingRange": 60,
     "entries": [
       { "name": "AirElemental", "maxCount": 1, "probability": 100 },
@@ -805,7 +805,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1842, "y1": 1317, "z1": -128, "x2": 1903, "y2": 1378, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 7, "probability": 100 },
@@ -827,7 +827,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1847, "y1": 1485, "z1": -128, "x2": 1908, "y2": 1546, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 7, "probability": 100 },
@@ -849,7 +849,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2039, "y1": 998, "z1": -128, "x2": 2100, "y2": 1059, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AcidElemental", "maxCount": 3, "probability": 100 },
@@ -879,7 +879,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 3933, "y1": 478, "z1": -128, "x2": 3994, "y2": 539, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "PolarBear", "maxCount": 4, "probability": 100 },
@@ -898,7 +898,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 3416, "y1": 183, "z1": -128, "x2": 3477, "y2": 244, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 5, "probability": 100 },
@@ -918,7 +918,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 869, "y1": 1821, "z1": -128, "x2": 930, "y2": 1882, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ghoul", "maxCount": 7, "probability": 100 },
@@ -941,7 +941,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 941, "y1": 1278, "z1": -128, "x2": 1002, "y2": 1339, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 6, "probability": 100 },
@@ -962,7 +962,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 1827, "y1": 531, "z1": -128, "x2": 1948, "y2": 652, "z2": 128 },
+    "homeRange": 60,
     "walkingRange": 60,
     "entries": [
       { "name": "AirElemental", "maxCount": 1, "probability": 100 },
@@ -981,7 +981,7 @@
     "minDelay": "00:45:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 2102, "y1": 3370, "z1": -128, "x2": 2105, "y2": 3373, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 10,
     "entries": [
       { "name": "OrcCamp", "maxCount": 1, "probability": 100 },
@@ -998,7 +998,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1282, "y1": 583, "z1": -128, "x2": 1343, "y2": 644, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 11, "probability": 100 },
@@ -1025,7 +1025,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4522, "y1": 1417, "z1": -128, "x2": 4583, "y2": 1478, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "GreatHart", "maxCount": 2, "probability": 100 },
@@ -1042,7 +1042,7 @@
     "minDelay": "00:45:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 1063, "y1": 2487, "z1": -128, "x2": 1066, "y2": 2490, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 10,
     "entries": [
       { "name": "OrcCamp", "maxCount": 1, "probability": 100 },
@@ -1059,7 +1059,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 2050, "y1": 370, "z1": -128, "x2": 2111, "y2": 431, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 3, "probability": 100 },
@@ -1077,7 +1077,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 239, "y1": 1444, "z1": -128, "x2": 300, "y2": 1505, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 2, "probability": 100 },
@@ -1103,7 +1103,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 2065, "y1": 2322, "z1": -128, "x2": 2126, "y2": 2383, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Alligator", "maxCount": 6, "probability": 100 },
@@ -1124,7 +1124,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1125, "y1": 2211, "z1": -128, "x2": 1166, "y2": 2252, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 30,
     "entries": [
       { "name": "Daemon", "maxCount": 4, "probability": 100 }
@@ -1159,7 +1159,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 2063, "y1": 117, "z1": -128, "x2": 2124, "y2": 178, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 3, "probability": 100 },
@@ -1177,7 +1177,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 2349, "y1": 624, "z1": -128, "x2": 2410, "y2": 685, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 8, "probability": 100 },
@@ -1200,7 +1200,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4425, "y1": 1328, "z1": -128, "x2": 4486, "y2": 1389, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "TimberWolf", "maxCount": 7, "probability": 100 }
@@ -1216,7 +1216,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1012, "y1": 821, "z1": -128, "x2": 1023, "y2": 832, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 5,
     "entries": [
       { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 },
@@ -1255,7 +1255,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 2399, "y1": 660, "z1": -128, "x2": 2460, "y2": 721, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 8, "probability": 100 },
@@ -1278,7 +1278,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 2028, "y1": 57, "z1": -128, "x2": 2089, "y2": 118, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 2, "probability": 100 },
@@ -1295,7 +1295,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 450, "y1": 1611, "z1": -128, "x2": 511, "y2": 1672, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 7, "probability": 100 },
@@ -1317,7 +1317,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1007, "y1": 1295, "z1": -128, "x2": 1068, "y2": 1356, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 6, "probability": 100 },
@@ -1338,7 +1338,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 486, "y1": 1555, "z1": -128, "x2": 547, "y2": 1616, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 7, "probability": 100 },
@@ -1360,7 +1360,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4520, "y1": 1379, "z1": -128, "x2": 4581, "y2": 1440, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "GreatHart", "maxCount": 2, "probability": 100 },
@@ -1377,7 +1377,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 2339, "y1": 3400, "z1": -128, "x2": 2400, "y2": 3461, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Alligator", "maxCount": 8, "probability": 100 },
@@ -1397,7 +1397,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 2079, "y1": 79, "z1": -128, "x2": 2140, "y2": 140, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 3, "probability": 100 },
@@ -1415,7 +1415,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 2519, "y1": 56, "z1": -128, "x2": 2580, "y2": 117, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 7, "probability": 100 },
@@ -1438,7 +1438,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 930, "y1": 880, "z1": -128, "x2": 991, "y2": 941, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 11, "probability": 100 },
@@ -1465,7 +1465,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 1622, "y1": 1370, "z1": -128, "x2": 1683, "y2": 1431, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Gargoyle", "maxCount": 4, "probability": 100 },
@@ -1482,7 +1482,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1983, "y1": 809, "z1": -128, "x2": 2044, "y2": 870, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "GiantSpider", "maxCount": 2, "probability": 100 },
@@ -1499,7 +1499,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2018, "y1": 1036, "z1": -128, "x2": 2079, "y2": 1097, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AcidElemental", "maxCount": 3, "probability": 100 },
@@ -1529,7 +1529,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 2059, "y1": 2987, "z1": -128, "x2": 2120, "y2": 3048, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 4, "probability": 100 },
@@ -1549,7 +1549,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 2315, "y1": 646, "z1": -128, "x2": 2376, "y2": 707, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 8, "probability": 100 },
@@ -1572,7 +1572,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 2473, "y1": 3563, "z1": -128, "x2": 2534, "y2": 3624, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Alligator", "maxCount": 8, "probability": 100 },
@@ -1592,7 +1592,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 4123, "y1": 571, "z1": -128, "x2": 4184, "y2": 632, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "PolarBear", "maxCount": 4, "probability": 100 },
@@ -1611,7 +1611,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 2994, "y1": 3536, "z1": -128, "x2": 3055, "y2": 3597, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Alligator", "maxCount": 7, "probability": 100 },
@@ -1633,7 +1633,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1012, "y1": 994, "z1": -128, "x2": 1073, "y2": 1055, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 11, "probability": 100 },
@@ -1660,7 +1660,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 2083, "y1": 191, "z1": -128, "x2": 2144, "y2": 252, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 3, "probability": 100 },
@@ -1678,7 +1678,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1677, "y1": 3279, "z1": -128, "x2": 1978, "y2": 3580, "z2": 128 },
+    "homeRange": 150,
     "walkingRange": 150,
     "entries": [
       { "name": "Orc", "maxCount": 10, "probability": 100 },
@@ -1699,7 +1699,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1696, "y1": 1332, "z1": -128, "x2": 1757, "y2": 1393, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 7, "probability": 100 },
@@ -1721,7 +1721,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1807, "y1": 2304, "z1": -128, "x2": 1868, "y2": 2365, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Alligator", "maxCount": 6, "probability": 100 },
@@ -1742,7 +1742,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 1571, "y1": 590, "z1": -128, "x2": 1692, "y2": 711, "z2": 128 },
+    "homeRange": 60,
     "walkingRange": 60,
     "entries": [
       { "name": "AirElemental", "maxCount": 1, "probability": 100 },
@@ -1761,7 +1761,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 4577, "y1": 3450, "z1": -128, "x2": 4638, "y2": 3511, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Orc", "maxCount": 10, "probability": 100 }
@@ -1777,7 +1777,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4489, "y1": 1360, "z1": -128, "x2": 4498, "y2": 1369, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": 10,
     "entries": [
       { "name": "Horse", "maxCount": 1, "probability": 100 },
@@ -1794,7 +1794,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1053, "y1": 753, "z1": -128, "x2": 1114, "y2": 814, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 11, "probability": 100 },
@@ -1821,7 +1821,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 111, "y1": 1337, "z1": -128, "x2": 172, "y2": 1398, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 2, "probability": 100 },
@@ -1847,7 +1847,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 791, "y1": 1908, "z1": -128, "x2": 852, "y2": 1969, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ghoul", "maxCount": 7, "probability": 100 },
@@ -1870,7 +1870,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1610, "y1": 1401, "z1": -128, "x2": 1671, "y2": 1462, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 7, "probability": 100 },
@@ -1892,7 +1892,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2315, "y1": 82, "z1": -128, "x2": 2376, "y2": 143, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 9, "probability": 100 },
@@ -1917,7 +1917,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 2047, "y1": 404, "z1": -128, "x2": 2108, "y2": 465, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 3, "probability": 100 },
@@ -1935,7 +1935,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 2004, "y1": 16, "z1": -128, "x2": 2065, "y2": 77, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 2, "probability": 100 },
@@ -1952,7 +1952,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 1757, "y1": 1250, "z1": -128, "x2": 1818, "y2": 1311, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Gargoyle", "maxCount": 4, "probability": 100 },
@@ -1969,7 +1969,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 393, "y1": 1565, "z1": -128, "x2": 454, "y2": 1626, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 5, "probability": 100 },
@@ -1989,7 +1989,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 3297, "y1": 314, "z1": -128, "x2": 3358, "y2": 375, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 5, "probability": 100 },
@@ -2009,7 +2009,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 811, "y1": 314, "z1": -128, "x2": 872, "y2": 375, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 2, "probability": 100 },
@@ -2026,7 +2026,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 511, "y1": 1615, "z1": -128, "x2": 572, "y2": 1676, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 7, "probability": 100 },
@@ -2048,7 +2048,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1449, "y1": 2064, "z1": -128, "x2": 1510, "y2": 2125, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 5, "probability": 100 },
@@ -2068,7 +2068,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1504, "y1": 1911, "z1": -128, "x2": 1565, "y2": 1972, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 5, "probability": 100 },
@@ -2088,7 +2088,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 1443, "y1": 199, "z1": -128, "x2": 1504, "y2": 260, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 3, "probability": 100 },
@@ -2106,7 +2106,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1012, "y1": 1890, "z1": -128, "x2": 1073, "y2": 1951, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 9, "probability": 100 },
@@ -2130,7 +2130,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1781, "y1": 3055, "z1": -128, "x2": 2082, "y2": 3356, "z2": 128 },
+    "homeRange": 150,
     "walkingRange": 150,
     "entries": [
       { "name": "Orc", "maxCount": 10, "probability": 100 },
@@ -2151,7 +2151,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 1295, "y1": 1041, "z1": -128, "x2": 1356, "y2": 1102, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Troll", "maxCount": 10, "probability": 100 }
@@ -2167,7 +2167,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4502, "y1": 1354, "z1": -128, "x2": 4511, "y2": 1363, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": 10,
     "entries": [
       { "name": "BrownBear", "maxCount": 1, "probability": 100 },
@@ -2192,7 +2192,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2005, "y1": 988, "z1": -128, "x2": 2066, "y2": 1049, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AcidElemental", "maxCount": 3, "probability": 100 },
@@ -2222,7 +2222,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1474, "y1": 1977, "z1": -128, "x2": 1535, "y2": 2038, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 5, "probability": 100 },
@@ -2242,7 +2242,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 4699, "y1": 3455, "z1": -128, "x2": 4760, "y2": 3516, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Orc", "maxCount": 10, "probability": 100 }
@@ -2258,7 +2258,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 3142, "y1": 670, "z1": -128, "x2": 3203, "y2": 731, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 5, "probability": 100 },
@@ -2280,7 +2280,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1993, "y1": 1022, "z1": -128, "x2": 2054, "y2": 1083, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AcidElemental", "maxCount": 3, "probability": 100 },
@@ -2310,7 +2310,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 3330, "y1": 188, "z1": -128, "x2": 3391, "y2": 249, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 5, "probability": 100 },
@@ -2330,7 +2330,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 2116, "y1": 148, "z1": -128, "x2": 2177, "y2": 209, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 3, "probability": 100 },
@@ -2348,7 +2348,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1485, "y1": 3103, "z1": -128, "x2": 1786, "y2": 3404, "z2": 128 },
+    "homeRange": 150,
     "walkingRange": 150,
     "entries": [
       { "name": "Orc", "maxCount": 10, "probability": 100 },
@@ -2369,7 +2369,7 @@
     "minDelay": "00:45:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 1041, "y1": 1393, "z1": -128, "x2": 1044, "y2": 1396, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 10,
     "entries": [
       { "name": "OrcCamp", "maxCount": 1, "probability": 100 },
@@ -2386,7 +2386,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1919, "y1": 794, "z1": -128, "x2": 1980, "y2": 855, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "GiantSpider", "maxCount": 2, "probability": 100 },
@@ -2403,7 +2403,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1956, "y1": 1433, "z1": -128, "x2": 2017, "y2": 1494, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 7, "probability": 100 },
@@ -2425,7 +2425,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 2490, "y1": 3953, "z1": -128, "x2": 2551, "y2": 4014, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Alligator", "maxCount": 8, "probability": 100 },
@@ -2445,7 +2445,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1935, "y1": 130, "z1": -128, "x2": 1996, "y2": 191, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 2, "probability": 100 },
@@ -2462,7 +2462,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 2003, "y1": 44, "z1": -128, "x2": 2064, "y2": 105, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 2, "probability": 100 },
@@ -2479,7 +2479,7 @@
     "minDelay": "00:45:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 1529, "y1": 998, "z1": -128, "x2": 1532, "y2": 1001, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 10,
     "entries": [
       { "name": "OrcCamp", "maxCount": 1, "probability": 100 },
@@ -2496,7 +2496,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1386, "y1": 1962, "z1": -128, "x2": 1447, "y2": 2023, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 5, "probability": 100 },
@@ -2516,7 +2516,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 2519, "y1": 106, "z1": -128, "x2": 2580, "y2": 167, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 7, "probability": 100 },
@@ -2539,7 +2539,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1345, "y1": 1300, "z1": -128, "x2": 1406, "y2": 1361, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Harpy", "maxCount": 5, "probability": 100 },
@@ -2559,7 +2559,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 1882, "y1": 1253, "z1": -128, "x2": 1943, "y2": 1314, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Gargoyle", "maxCount": 4, "probability": 100 },
@@ -2576,7 +2576,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1782, "y1": 1284, "z1": -128, "x2": 1843, "y2": 1345, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 7, "probability": 100 },
@@ -2598,7 +2598,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1196, "y1": 419, "z1": -128, "x2": 1257, "y2": 480, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 11, "probability": 100 },
@@ -2625,7 +2625,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 2079, "y1": 2959, "z1": -128, "x2": 2140, "y2": 3020, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 4, "probability": 100 },
@@ -2645,7 +2645,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 2983, "y1": 3561, "z1": -128, "x2": 3044, "y2": 3622, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Alligator", "maxCount": 7, "probability": 100 },
@@ -2667,7 +2667,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1861, "y1": 196, "z1": -128, "x2": 1922, "y2": 257, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 2, "probability": 100 },
@@ -2684,7 +2684,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 917, "y1": 388, "z1": -128, "x2": 978, "y2": 449, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 2, "probability": 100 },
@@ -2711,7 +2711,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4582, "y1": 1388, "z1": -128, "x2": 4643, "y2": 1449, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "GreatHart", "maxCount": 2, "probability": 100 },
@@ -2728,7 +2728,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4575, "y1": 1335, "z1": -128, "x2": 4636, "y2": 1396, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "GreatHart", "maxCount": 2, "probability": 100 },
@@ -2745,7 +2745,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1939, "y1": 1379, "z1": -128, "x2": 2000, "y2": 1440, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 7, "probability": 100 },
@@ -2767,7 +2767,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 4176, "y1": 441, "z1": -128, "x2": 4237, "y2": 502, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "PolarBear", "maxCount": 4, "probability": 100 },
@@ -2786,7 +2786,7 @@
     "minDelay": "00:45:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 2547, "y1": 1172, "z1": -128, "x2": 2550, "y2": 1175, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 10,
     "entries": [
       { "name": "OrcCamp", "maxCount": 1, "probability": 100 },
@@ -2803,7 +2803,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2003, "y1": 906, "z1": -128, "x2": 2064, "y2": 967, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AcidElemental", "maxCount": 3, "probability": 100 },
@@ -2833,7 +2833,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 587, "y1": 1296, "z1": -128, "x2": 648, "y2": 1357, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 3, "probability": 100 },
@@ -2851,7 +2851,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 1132, "y1": 674, "z1": -128, "x2": 1193, "y2": 735, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 3, "probability": 100 },
@@ -2869,7 +2869,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1839, "y1": 235, "z1": -128, "x2": 1900, "y2": 296, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 2, "probability": 100 },
@@ -2886,7 +2886,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1853, "y1": 797, "z1": -128, "x2": 1914, "y2": 858, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "GiantSpider", "maxCount": 2, "probability": 100 },
@@ -2903,7 +2903,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1201, "y1": 162, "z1": -128, "x2": 1262, "y2": 223, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 11, "probability": 100 },
@@ -2930,7 +2930,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1803, "y1": 1215, "z1": -128, "x2": 1864, "y2": 1276, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 7, "probability": 100 },
@@ -2952,7 +2952,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1885, "y1": 2355, "z1": -128, "x2": 1946, "y2": 2416, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Alligator", "maxCount": 6, "probability": 100 },
@@ -2973,7 +2973,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1150, "y1": 707, "z1": -128, "x2": 1211, "y2": 768, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 11, "probability": 100 },
@@ -3000,7 +3000,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4425, "y1": 1404, "z1": -128, "x2": 4486, "y2": 1465, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "TimberWolf", "maxCount": 7, "probability": 100 }
@@ -3016,7 +3016,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 629, "y1": 1288, "z1": -128, "x2": 690, "y2": 1349, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 11, "probability": 100 },
@@ -3043,7 +3043,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1050, "y1": 1933, "z1": -128, "x2": 1111, "y2": 1994, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 9, "probability": 100 },
@@ -3067,7 +3067,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 1689, "y1": 414, "z1": -128, "x2": 1810, "y2": 535, "z2": 128 },
+    "homeRange": 60,
     "walkingRange": 60,
     "entries": [
       { "name": "AirElemental", "maxCount": 1, "probability": 100 },
@@ -3086,7 +3086,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 821, "y1": 465, "z1": -128, "x2": 882, "y2": 526, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 8, "probability": 100 },
@@ -3109,7 +3109,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1417, "y1": 2008, "z1": -128, "x2": 1478, "y2": 2069, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 5, "probability": 100 },
@@ -3129,7 +3129,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 1064, "y1": 3452, "z1": -128, "x2": 1125, "y2": 3513, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Lizardman", "maxCount": 8, "probability": 100 },
@@ -3146,7 +3146,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 1769, "y1": 1364, "z1": -128, "x2": 1830, "y2": 1425, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Gargoyle", "maxCount": 4, "probability": 100 },
@@ -3163,7 +3163,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 2159, "y1": 268, "z1": -128, "x2": 2220, "y2": 329, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 3, "probability": 100 },
@@ -3181,7 +3181,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 2448, "y1": 70, "z1": -128, "x2": 2509, "y2": 131, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 7, "probability": 100 },
@@ -3204,7 +3204,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1469, "y1": 2575, "z1": -128, "x2": 1770, "y2": 2876, "z2": 128 },
+    "homeRange": 150,
     "walkingRange": 150,
     "entries": [
       { "name": "Orc", "maxCount": 10, "probability": 100 },
@@ -3224,7 +3224,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 3432, "y1": 106, "z1": -128, "x2": 3493, "y2": 167, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 5, "probability": 100 },
@@ -3244,7 +3244,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1461, "y1": 208, "z1": -128, "x2": 1522, "y2": 269, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 11, "probability": 100 },
@@ -3271,7 +3271,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1847, "y1": 1485, "z1": -128, "x2": 1908, "y2": 1546, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Mongbat", "maxCount": 3, "probability": 100 },
@@ -3288,7 +3288,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 1219, "y1": 2000, "z1": -128, "x2": 1280, "y2": 2061, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 2, "probability": 100 },
@@ -3309,7 +3309,7 @@
     "minDelay": "00:45:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 1151, "y1": 3470, "z1": -128, "x2": 1154, "y2": 3473, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 10,
     "entries": [
       { "name": "OrcCamp", "maxCount": 1, "probability": 100 },
@@ -3326,7 +3326,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 960, "y1": 690, "z1": -128, "x2": 965, "y2": 695, "z2": 128 },
+    "homeRange": 2,
     "walkingRange": 5,
     "entries": [
       { "name": "Wraith", "maxCount": 1, "probability": 100 },
@@ -3344,7 +3344,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 934, "y1": 335, "z1": -128, "x2": 995, "y2": 396, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 2, "probability": 100 },
@@ -3371,7 +3371,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2321, "y1": 118, "z1": -128, "x2": 2382, "y2": 179, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 9, "probability": 100 },
@@ -3396,7 +3396,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 3143, "y1": 741, "z1": -128, "x2": 3204, "y2": 802, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 5, "probability": 100 },
@@ -3418,7 +3418,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 388, "y1": 1635, "z1": -128, "x2": 449, "y2": 1696, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 7, "probability": 100 },
@@ -3440,7 +3440,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1885, "y1": 898, "z1": -128, "x2": 1946, "y2": 959, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "GiantSpider", "maxCount": 2, "probability": 100 },
@@ -3457,7 +3457,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4585, "y1": 1439, "z1": -128, "x2": 4646, "y2": 1500, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "GreatHart", "maxCount": 2, "probability": 100 },
@@ -3474,7 +3474,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 862, "y1": 1933, "z1": -128, "x2": 923, "y2": 1994, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ghoul", "maxCount": 7, "probability": 100 },
@@ -3497,7 +3497,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1837, "y1": 2932, "z1": -128, "x2": 1898, "y2": 2993, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 4, "probability": 100 },
@@ -3517,7 +3517,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1238, "y1": 744, "z1": -128, "x2": 1299, "y2": 805, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 11, "probability": 100 },
@@ -3544,7 +3544,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1772, "y1": 1476, "z1": -128, "x2": 1833, "y2": 1537, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 7, "probability": 100 },
@@ -3566,7 +3566,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 2004, "y1": 78, "z1": -128, "x2": 2065, "y2": 139, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 2, "probability": 100 },
@@ -3583,7 +3583,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2049, "y1": 988, "z1": -128, "x2": 2110, "y2": 1049, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AcidElemental", "maxCount": 3, "probability": 100 },
@@ -3613,7 +3613,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 1663, "y1": 623, "z1": -128, "x2": 1784, "y2": 744, "z2": 128 },
+    "homeRange": 60,
     "walkingRange": 60,
     "entries": [
       { "name": "AirElemental", "maxCount": 1, "probability": 100 },
@@ -3632,7 +3632,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 4132, "y1": 365, "z1": -128, "x2": 4193, "y2": 426, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "PolarBear", "maxCount": 4, "probability": 100 },
@@ -3651,7 +3651,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 810, "y1": 1033, "z1": -128, "x2": 871, "y2": 1094, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 3, "probability": 100 },
@@ -3669,7 +3669,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 1117, "y1": 3494, "z1": -128, "x2": 1178, "y2": 3555, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Lizardman", "maxCount": 8, "probability": 100 },
@@ -3686,7 +3686,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 393, "y1": 1565, "z1": -128, "x2": 454, "y2": 1626, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 7, "probability": 100 },
@@ -3708,7 +3708,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1010, "y1": 701, "z1": -128, "x2": 1021, "y2": 712, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 5,
     "entries": [
       { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 },
@@ -3725,7 +3725,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 4184, "y1": 625, "z1": -128, "x2": 4245, "y2": 686, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "PolarBear", "maxCount": 4, "probability": 100 },
@@ -3744,7 +3744,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 4060, "y1": 295, "z1": -128, "x2": 4121, "y2": 356, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "PolarBear", "maxCount": 4, "probability": 100 },
@@ -3763,7 +3763,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 127, "y1": 1457, "z1": -128, "x2": 188, "y2": 1518, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 2, "probability": 100 },
@@ -3789,7 +3789,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1953, "y1": 1487, "z1": -128, "x2": 2014, "y2": 1548, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 7, "probability": 100 },
@@ -3811,7 +3811,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 2047, "y1": 2275, "z1": -128, "x2": 2108, "y2": 2336, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Alligator", "maxCount": 6, "probability": 100 },
@@ -3832,7 +3832,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1696, "y1": 1332, "z1": -128, "x2": 1757, "y2": 1393, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Mongbat", "maxCount": 3, "probability": 100 },
@@ -3849,7 +3849,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1285, "y1": 2111, "z1": -128, "x2": 1586, "y2": 2412, "z2": 128 },
+    "homeRange": 150,
     "walkingRange": 150,
     "entries": [
       { "name": "Orc", "maxCount": 10, "probability": 100 },
@@ -3869,7 +3869,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 3983, "y1": 209, "z1": -128, "x2": 4044, "y2": 270, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "PolarBear", "maxCount": 4, "probability": 100 },
@@ -3888,7 +3888,7 @@
     "minDelay": "00:45:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 820, "y1": 674, "z1": -128, "x2": 823, "y2": 677, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 10,
     "entries": [
       { "name": "OrcCamp", "maxCount": 1, "probability": 100 },
@@ -3905,7 +3905,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 3292, "y1": 241, "z1": -128, "x2": 3353, "y2": 302, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 5, "probability": 100 },
@@ -3925,7 +3925,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1377, "y1": 1251, "z1": -128, "x2": 1438, "y2": 1312, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Harpy", "maxCount": 5, "probability": 100 },
@@ -3945,7 +3945,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1843, "y1": 2396, "z1": -128, "x2": 1904, "y2": 2457, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Alligator", "maxCount": 6, "probability": 100 },
@@ -3966,7 +3966,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 2003, "y1": 3011, "z1": -128, "x2": 2064, "y2": 3072, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 4, "probability": 100 },
@@ -3986,7 +3986,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 1683, "y1": 529, "z1": -128, "x2": 1804, "y2": 650, "z2": 128 },
+    "homeRange": 60,
     "walkingRange": 60,
     "entries": [
       { "name": "AirElemental", "maxCount": 1, "probability": 100 },
@@ -4005,7 +4005,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 486, "y1": 1555, "z1": -128, "x2": 547, "y2": 1616, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 5, "probability": 100 },
@@ -4025,7 +4025,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 3360, "y1": 229, "z1": -128, "x2": 3421, "y2": 290, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 5, "probability": 100 },
@@ -4045,7 +4045,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2201, "y1": 1377, "z1": -128, "x2": 2206, "y2": 1382, "z2": 128 },
+    "homeRange": 2,
     "walkingRange": 2,
     "entries": [
       { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 },
@@ -4062,7 +4062,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 785, "y1": 1573, "z1": -128, "x2": 846, "y2": 1634, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "GiantSpider", "maxCount": 5, "probability": 100 },
@@ -4082,7 +4082,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 3352, "y1": 250, "z1": -128, "x2": 3413, "y2": 311, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 5, "probability": 100 },
@@ -4102,7 +4102,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1773, "y1": 2951, "z1": -128, "x2": 1834, "y2": 3012, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 4, "probability": 100 },
@@ -4122,7 +4122,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1836, "y1": 3010, "z1": -128, "x2": 1897, "y2": 3071, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 4, "probability": 100 },
@@ -4142,7 +4142,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 2591, "y1": 69, "z1": -128, "x2": 2652, "y2": 130, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 7, "probability": 100 },
@@ -4165,7 +4165,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 1101, "y1": 3385, "z1": -128, "x2": 1162, "y2": 3446, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Lizardman", "maxCount": 8, "probability": 100 },
@@ -4182,7 +4182,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1861, "y1": 2301, "z1": -128, "x2": 1922, "y2": 2362, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Alligator", "maxCount": 6, "probability": 100 },
@@ -4203,7 +4203,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 1950, "y1": 802, "z1": -128, "x2": 2011, "y2": 863, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "EarthElemental", "maxCount": 4, "probability": 100 },
@@ -4220,7 +4220,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1917, "y1": 2264, "z1": -128, "x2": 1978, "y2": 2325, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Alligator", "maxCount": 6, "probability": 100 },
@@ -4241,7 +4241,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4527, "y1": 1359, "z1": -128, "x2": 4536, "y2": 1368, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": 15,
     "entries": [
       { "name": "Mummy", "maxCount": 1, "probability": 100 },
@@ -4260,7 +4260,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4526, "y1": 1383, "z1": -128, "x2": 4535, "y2": 1392, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": 10,
     "entries": [
       { "name": "Ghoul", "maxCount": 1, "probability": 100 },
@@ -4280,7 +4280,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 775, "y1": 453, "z1": -128, "x2": 836, "y2": 514, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 2, "probability": 100 },
@@ -4297,7 +4297,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1495, "y1": 2023, "z1": -128, "x2": 1556, "y2": 2084, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 5, "probability": 100 },
@@ -4317,7 +4317,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 706, "y1": 1908, "z1": -128, "x2": 767, "y2": 1969, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ghoul", "maxCount": 7, "probability": 100 },
@@ -4340,7 +4340,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 974, "y1": 1339, "z1": -128, "x2": 1035, "y2": 1400, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 6, "probability": 100 },
@@ -4361,7 +4361,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1265, "y1": 298, "z1": -128, "x2": 1326, "y2": 359, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 11, "probability": 100 },
@@ -4388,7 +4388,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 2424, "y1": 218, "z1": -128, "x2": 2485, "y2": 279, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 7, "probability": 100 },
@@ -4411,7 +4411,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 711, "y1": 1808, "z1": -128, "x2": 772, "y2": 1869, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 8, "probability": 100 },
@@ -4430,7 +4430,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 1750, "y1": 587, "z1": -128, "x2": 1871, "y2": 708, "z2": 128 },
+    "homeRange": 60,
     "walkingRange": 60,
     "entries": [
       { "name": "AirElemental", "maxCount": 1, "probability": 100 },
@@ -4449,7 +4449,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1914, "y1": 72, "z1": -128, "x2": 1975, "y2": 133, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 5, "probability": 100 },
@@ -4469,7 +4469,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1113, "y1": 150, "z1": -128, "x2": 1174, "y2": 211, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 11, "probability": 100 },
@@ -4496,7 +4496,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 2044, "y1": 3039, "z1": -128, "x2": 2105, "y2": 3100, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 4, "probability": 100 },
@@ -4516,7 +4516,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 727, "y1": 1371, "z1": -128, "x2": 788, "y2": 1432, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Lich", "maxCount": 8, "probability": 100 }
@@ -4532,7 +4532,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 159, "y1": 1314, "z1": -128, "x2": 220, "y2": 1375, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 2, "probability": 100 },
@@ -4558,7 +4558,7 @@
     "minDelay": "00:45:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 2539, "y1": 129, "z1": -128, "x2": 2542, "y2": 132, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 10,
     "entries": [
       { "name": "OrcCamp", "maxCount": 1, "probability": 100 },
@@ -4575,7 +4575,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 4628, "y1": 3346, "z1": -128, "x2": 4689, "y2": 3407, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Orc", "maxCount": 10, "probability": 100 }
@@ -4591,7 +4591,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1842, "y1": 1317, "z1": -128, "x2": 1903, "y2": 1378, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Mongbat", "maxCount": 3, "probability": 100 },
@@ -4608,7 +4608,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 450, "y1": 1611, "z1": -128, "x2": 511, "y2": 1672, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 5, "probability": 100 },
@@ -4628,7 +4628,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 4431, "y1": 3076, "z1": -128, "x2": 4492, "y2": 3137, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "OrcishMage", "maxCount": 5, "probability": 100 }
@@ -4644,7 +4644,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1882, "y1": 1272, "z1": -128, "x2": 1943, "y2": 1333, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Mongbat", "maxCount": 3, "probability": 100 },
@@ -4661,7 +4661,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1940, "y1": 3022, "z1": -128, "x2": 2001, "y2": 3083, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 4, "probability": 100 },
@@ -4681,7 +4681,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1192, "y1": 1388, "z1": -128, "x2": 1253, "y2": 1449, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Harpy", "maxCount": 5, "probability": 100 },
@@ -4701,7 +4701,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1970, "y1": 111, "z1": -128, "x2": 2031, "y2": 172, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 2, "probability": 100 },
@@ -4718,7 +4718,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2325, "y1": 149, "z1": -128, "x2": 2386, "y2": 210, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 9, "probability": 100 },
@@ -4743,7 +4743,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4587, "y1": 3562, "z1": -128, "x2": 4604, "y2": 3579, "z2": 128 },
+    "homeRange": 8,
     "walkingRange": 8,
     "entries": [
       { "name": "TreasureChestLevel3", "maxCount": 3, "probability": 100 },
@@ -4760,7 +4760,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1050, "y1": 2236, "z1": -128, "x2": 1091, "y2": 2277, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 30,
     "entries": [
       { "name": "Imp", "maxCount": 4, "probability": 100 }
@@ -4776,7 +4776,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1882, "y1": 1272, "z1": -128, "x2": 1943, "y2": 1333, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 7, "probability": 100 },
@@ -4798,7 +4798,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1331, "y1": 1362, "z1": -128, "x2": 1392, "y2": 1423, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Harpy", "maxCount": 5, "probability": 100 },
@@ -4818,7 +4818,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1117, "y1": 1018, "z1": -128, "x2": 1178, "y2": 1079, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 11, "probability": 100 },
@@ -4845,7 +4845,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1030, "y1": 1345, "z1": -128, "x2": 1091, "y2": 1406, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 6, "probability": 100 },
@@ -4866,7 +4866,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1184, "y1": 587, "z1": -128, "x2": 1245, "y2": 648, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 11, "probability": 100 },
@@ -4893,7 +4893,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1270, "y1": 1451, "z1": -128, "x2": 1331, "y2": 1512, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Harpy", "maxCount": 5, "probability": 100 },
@@ -4913,7 +4913,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1937, "y1": 1266, "z1": -128, "x2": 1998, "y2": 1327, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Mongbat", "maxCount": 3, "probability": 100 },
@@ -4930,7 +4930,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1916, "y1": 156, "z1": -128, "x2": 1977, "y2": 217, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 2, "probability": 100 },
@@ -4947,7 +4947,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1014, "y1": 819, "z1": -128, "x2": 1019, "y2": 824, "z2": 128 },
+    "homeRange": 2,
     "walkingRange": 10,
     "entries": [
       { "name": "Lich", "maxCount": 1, "probability": 100 }
@@ -4963,7 +4963,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 926, "y1": 422, "z1": -128, "x2": 987, "y2": 483, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 2, "probability": 100 },
@@ -4990,7 +4990,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 1100, "y1": 800, "z1": -128, "x2": 1161, "y2": 861, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 3, "probability": 100 },
@@ -5008,7 +5008,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1938, "y1": 2316, "z1": -128, "x2": 1999, "y2": 2377, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Alligator", "maxCount": 6, "probability": 100 },
@@ -5029,7 +5029,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1772, "y1": 1476, "z1": -128, "x2": 1833, "y2": 1537, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Mongbat", "maxCount": 3, "probability": 100 },
@@ -5046,7 +5046,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 819, "y1": 1232, "z1": -128, "x2": 880, "y2": 1293, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 11, "probability": 100 },
@@ -5073,7 +5073,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 624, "y1": 1494, "z1": -128, "x2": 645, "y2": 1515, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 15,
     "entries": [
       { "name": "Orc", "maxCount": 3, "probability": 100 },
@@ -5091,7 +5091,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4481, "y1": 1383, "z1": -128, "x2": 4490, "y2": 1392, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": 15,
     "entries": [
       { "name": "Alligator", "maxCount": 2, "probability": 100 },
@@ -5110,7 +5110,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1782, "y1": 3006, "z1": -128, "x2": 1843, "y2": 3067, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 4, "probability": 100 },
@@ -5130,7 +5130,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1353, "y1": 1919, "z1": -128, "x2": 1414, "y2": 1980, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 5, "probability": 100 },
@@ -5150,7 +5150,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 1170, "y1": 603, "z1": -128, "x2": 1231, "y2": 664, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 3, "probability": 100 },
@@ -5168,7 +5168,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 2108, "y1": 293, "z1": -128, "x2": 2169, "y2": 354, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 3, "probability": 100 },
@@ -5186,7 +5186,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1161, "y1": 258, "z1": -128, "x2": 1222, "y2": 319, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 11, "probability": 100 },
@@ -5213,7 +5213,7 @@
     "minDelay": "00:45:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 2043, "y1": 2322, "z1": -128, "x2": 2046, "y2": 2325, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 10,
     "entries": [
       { "name": "OrcCamp", "maxCount": 1, "probability": 100 },
@@ -5230,7 +5230,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 3986, "y1": 489, "z1": -128, "x2": 4147, "y2": 650, "z2": 128 },
+    "homeRange": 80,
     "walkingRange": 80,
     "entries": [
       { "name": "PolarBear", "maxCount": 8, "probability": 100 },
@@ -5249,7 +5249,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1596, "y1": 236, "z1": -128, "x2": 1657, "y2": 297, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 2, "probability": 100 },
@@ -5275,7 +5275,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1501, "y1": 2263, "z1": -128, "x2": 1802, "y2": 2564, "z2": 128 },
+    "homeRange": 150,
     "walkingRange": 150,
     "entries": [
       { "name": "Orc", "maxCount": 10, "probability": 100 },
@@ -5295,7 +5295,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 549, "y1": 1275, "z1": -128, "x2": 610, "y2": 1336, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 11, "probability": 100 },
@@ -5322,7 +5322,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4536, "y1": 1329, "z1": -128, "x2": 4597, "y2": 1390, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "GreatHart", "maxCount": 2, "probability": 100 },
@@ -5339,7 +5339,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 1110, "y1": 2057, "z1": -128, "x2": 1171, "y2": 2118, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 2, "probability": 100 },
@@ -5360,7 +5360,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 1008, "y1": 1119, "z1": -128, "x2": 1069, "y2": 1180, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 3, "probability": 100 },
@@ -5378,7 +5378,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 1307, "y1": 263, "z1": -128, "x2": 1368, "y2": 324, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 3, "probability": 100 },
@@ -5396,7 +5396,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2008, "y1": 993, "z1": -128, "x2": 2069, "y2": 1054, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AcidElemental", "maxCount": 3, "probability": 100 },
@@ -5426,7 +5426,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1881, "y1": 2904, "z1": -128, "x2": 1942, "y2": 2965, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 4, "probability": 100 },
@@ -5446,7 +5446,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 983, "y1": 950, "z1": -128, "x2": 1044, "y2": 1011, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 3, "probability": 100 },
@@ -5464,7 +5464,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 3138, "y1": 599, "z1": -128, "x2": 3199, "y2": 660, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 5, "probability": 100 },
@@ -5486,7 +5486,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1415, "y1": 1335, "z1": -128, "x2": 1476, "y2": 1396, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Harpy", "maxCount": 5, "probability": 100 },
@@ -5506,7 +5506,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 199, "y1": 1389, "z1": -128, "x2": 260, "y2": 1450, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 2, "probability": 100 },
@@ -5532,7 +5532,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 624, "y1": 1452, "z1": -128, "x2": 645, "y2": 1473, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 15,
     "entries": [
       { "name": "Orc", "maxCount": 3, "probability": 100 },
@@ -5550,7 +5550,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1444, "y1": 1267, "z1": -128, "x2": 1505, "y2": 1328, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Harpy", "maxCount": 5, "probability": 100 },
@@ -5570,7 +5570,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 3352, "y1": 345, "z1": -128, "x2": 3413, "y2": 406, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 5, "probability": 100 },
@@ -5590,7 +5590,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1067, "y1": 940, "z1": -128, "x2": 1128, "y2": 1001, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 11, "probability": 100 },
@@ -5617,7 +5617,7 @@
     "minDelay": "00:45:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 2348, "y1": 721, "z1": -128, "x2": 2351, "y2": 724, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 10,
     "entries": [
       { "name": "OrcCamp", "maxCount": 1, "probability": 100 },
@@ -5634,7 +5634,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 2077, "y1": 328, "z1": -128, "x2": 2138, "y2": 389, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 3, "probability": 100 },
@@ -5652,7 +5652,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 2107, "y1": 241, "z1": -128, "x2": 2168, "y2": 302, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 3, "probability": 100 },
@@ -5670,7 +5670,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 1173, "y1": 472, "z1": -128, "x2": 1234, "y2": 533, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 3, "probability": 100 },
@@ -5688,7 +5688,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1237, "y1": 2959, "z1": -128, "x2": 1538, "y2": 3260, "z2": 128 },
+    "homeRange": 150,
     "walkingRange": 150,
     "entries": [
       { "name": "Orc", "maxCount": 10, "probability": 100 },
@@ -5709,7 +5709,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4494, "y1": 1390, "z1": -128, "x2": 4503, "y2": 1399, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": 10,
     "entries": [
       { "name": "BrownBear", "maxCount": 1, "probability": 100 },
@@ -5736,7 +5736,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 248, "y1": 1325, "z1": -128, "x2": 309, "y2": 1386, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 2, "probability": 100 },
@@ -5762,7 +5762,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 636, "y1": 1795, "z1": -128, "x2": 697, "y2": 1856, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 8, "probability": 100 },
@@ -5781,7 +5781,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 4234, "y1": 695, "z1": -128, "x2": 4295, "y2": 756, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "PolarBear", "maxCount": 4, "probability": 100 },
@@ -5800,7 +5800,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1924, "y1": 2873, "z1": -128, "x2": 1985, "y2": 2934, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 4, "probability": 100 },
@@ -5820,7 +5820,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1331, "y1": 492, "z1": -128, "x2": 1392, "y2": 553, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 11, "probability": 100 },
@@ -5847,7 +5847,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1195, "y1": 2175, "z1": -128, "x2": 1236, "y2": 2216, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 30,
     "entries": [
       { "name": "Imp", "maxCount": 4, "probability": 100 }
@@ -5863,7 +5863,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1093, "y1": 2287, "z1": -128, "x2": 1394, "y2": 2588, "z2": 128 },
+    "homeRange": 150,
     "walkingRange": 150,
     "entries": [
       { "name": "Orc", "maxCount": 10, "probability": 100 },
@@ -5883,7 +5883,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1949, "y1": 855, "z1": -128, "x2": 2010, "y2": 916, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "GiantSpider", "maxCount": 2, "probability": 100 },
@@ -5900,7 +5900,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1819, "y1": 2885, "z1": -128, "x2": 1880, "y2": 2946, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 4, "probability": 100 },
@@ -5920,7 +5920,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1310, "y1": 1238, "z1": -128, "x2": 1371, "y2": 1299, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Harpy", "maxCount": 5, "probability": 100 },
@@ -5940,7 +5940,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 2936, "y1": 3561, "z1": -128, "x2": 2997, "y2": 3622, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Alligator", "maxCount": 7, "probability": 100 },
@@ -5962,7 +5962,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1729, "y1": 229, "z1": -128, "x2": 1790, "y2": 290, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 2, "probability": 100 },
@@ -5988,7 +5988,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1937, "y1": 1266, "z1": -128, "x2": 1998, "y2": 1327, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 7, "probability": 100 },
@@ -6010,7 +6010,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 1771, "y1": 389, "z1": -128, "x2": 1892, "y2": 510, "z2": 128 },
+    "homeRange": 60,
     "walkingRange": 60,
     "entries": [
       { "name": "AirElemental", "maxCount": 1, "probability": 100 },
@@ -6029,7 +6029,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 909, "y1": 2311, "z1": -128, "x2": 1210, "y2": 2612, "z2": 128 },
+    "homeRange": 150,
     "walkingRange": 150,
     "entries": [
       { "name": "Orc", "maxCount": 10, "probability": 100 },
@@ -6049,7 +6049,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1662, "y1": 1433, "z1": -128, "x2": 1723, "y2": 1494, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 7, "probability": 100 },
@@ -6071,7 +6071,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 1819, "y1": 923, "z1": -128, "x2": 1880, "y2": 984, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "EarthElemental", "maxCount": 4, "probability": 100 },
@@ -6088,7 +6088,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 1154, "y1": 187, "z1": -128, "x2": 1215, "y2": 248, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 3, "probability": 100 },
@@ -6106,7 +6106,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 779, "y1": 1585, "z1": -128, "x2": 840, "y2": 1646, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 6, "probability": 100 },
@@ -6123,7 +6123,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1162, "y1": 928, "z1": -128, "x2": 1223, "y2": 989, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 11, "probability": 100 },
@@ -6150,7 +6150,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 1270, "y1": 577, "z1": -128, "x2": 1331, "y2": 638, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 3, "probability": 100 },
@@ -6168,7 +6168,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4464, "y1": 1396, "z1": -128, "x2": 4525, "y2": 1457, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "TimberWolf", "maxCount": 7, "probability": 100 }
@@ -6184,7 +6184,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1799, "y1": 844, "z1": -128, "x2": 1860, "y2": 905, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "GiantSpider", "maxCount": 2, "probability": 100 },
@@ -6201,7 +6201,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 3404, "y1": 286, "z1": -128, "x2": 3465, "y2": 347, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 5, "probability": 100 },
@@ -6221,7 +6221,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4571, "y1": 3582, "z1": -128, "x2": 4622, "y2": 3633, "z2": 128 },
+    "homeRange": 25,
     "walkingRange": 50,
     "entries": [
       { "name": "Daemon", "maxCount": 1, "probability": 100 },
@@ -6238,7 +6238,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1275, "y1": 1296, "z1": -128, "x2": 1336, "y2": 1357, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Harpy", "maxCount": 5, "probability": 100 },
@@ -6258,7 +6258,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 944, "y1": 1156, "z1": -128, "x2": 1005, "y2": 1217, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 11, "probability": 100 },
@@ -6285,7 +6285,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 999, "y1": 1939, "z1": -128, "x2": 1060, "y2": 2000, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 9, "probability": 100 },
@@ -6309,7 +6309,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 838, "y1": 458, "z1": -128, "x2": 899, "y2": 519, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 2, "probability": 100 },
@@ -6326,7 +6326,7 @@
     "minDelay": "00:45:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 4479, "y1": 1438, "z1": -128, "x2": 4482, "y2": 1441, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 10,
     "entries": [
       { "name": "OrcCamp", "maxCount": 1, "probability": 100 },
@@ -6343,7 +6343,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 793, "y1": 930, "z1": -128, "x2": 854, "y2": 991, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 11, "probability": 100 },
@@ -6370,7 +6370,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1331, "y1": 245, "z1": -128, "x2": 1392, "y2": 306, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 11, "probability": 100 },
@@ -6397,7 +6397,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 2113, "y1": 3923, "z1": -128, "x2": 2174, "y2": 3984, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Alligator", "maxCount": 8, "probability": 100 },
@@ -6417,7 +6417,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1892, "y1": 143, "z1": -128, "x2": 1953, "y2": 204, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 2, "probability": 100 },
@@ -6434,7 +6434,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4507, "y1": 1390, "z1": -128, "x2": 4516, "y2": 1399, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": 10,
     "entries": [
       { "name": "IceSerpent", "maxCount": 1, "probability": 100 },
@@ -6455,7 +6455,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 3890, "y1": 257, "z1": -128, "x2": 3951, "y2": 318, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "PolarBear", "maxCount": 4, "probability": 100 },
@@ -6474,7 +6474,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 2432, "y1": 695, "z1": -128, "x2": 2493, "y2": 756, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 8, "probability": 100 },
@@ -6497,7 +6497,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 814, "y1": 1205, "z1": -128, "x2": 875, "y2": 1266, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 3, "probability": 100 },
@@ -6515,7 +6515,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1146, "y1": 2938, "z1": -128, "x2": 1187, "y2": 2979, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "Savage", "maxCount": 2, "probability": 100 },
@@ -6533,7 +6533,7 @@
     "minDelay": "00:45:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 1870, "y1": 1075, "z1": -128, "x2": 1873, "y2": 1078, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 10,
     "entries": [
       { "name": "OrcCamp", "maxCount": 1, "probability": 100 },
@@ -6550,7 +6550,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 2559, "y1": 174, "z1": -128, "x2": 2620, "y2": 235, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 7, "probability": 100 },
@@ -6573,7 +6573,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 698, "y1": 1212, "z1": -128, "x2": 759, "y2": 1273, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 11, "probability": 100 },
@@ -6600,7 +6600,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1900, "y1": 834, "z1": -128, "x2": 1961, "y2": 895, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "GiantSpider", "maxCount": 2, "probability": 100 },
@@ -6617,7 +6617,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1822, "y1": 811, "z1": -128, "x2": 1883, "y2": 872, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "GiantSpider", "maxCount": 2, "probability": 100 },
@@ -6634,7 +6634,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 703, "y1": 1907, "z1": -128, "x2": 764, "y2": 1968, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 8, "probability": 100 },
@@ -6653,7 +6653,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 2933, "y1": 3587, "z1": -128, "x2": 2994, "y2": 3648, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Alligator", "maxCount": 7, "probability": 100 },
@@ -6675,7 +6675,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1836, "y1": 908, "z1": -128, "x2": 1897, "y2": 969, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "GiantSpider", "maxCount": 2, "probability": 100 },
@@ -6692,7 +6692,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 818, "y1": 887, "z1": -128, "x2": 879, "y2": 948, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 3, "probability": 100 },
@@ -6710,7 +6710,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 1725, "y1": 1444, "z1": -128, "x2": 1786, "y2": 1505, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Gargoyle", "maxCount": 4, "probability": 100 },
@@ -6727,7 +6727,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 1128, "y1": 3427, "z1": -128, "x2": 1189, "y2": 3488, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Lizardman", "maxCount": 8, "probability": 100 },
@@ -6744,7 +6744,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1150, "y1": 1324, "z1": -128, "x2": 1211, "y2": 1385, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Harpy", "maxCount": 5, "probability": 100 },
@@ -6764,7 +6764,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 210, "y1": 1413, "z1": -128, "x2": 271, "y2": 1474, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 2, "probability": 100 },
@@ -6790,7 +6790,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 4583, "y1": 3242, "z1": -128, "x2": 4644, "y2": 3303, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Orc", "maxCount": 10, "probability": 100 }
@@ -6806,7 +6806,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1832, "y1": 1404, "z1": -128, "x2": 1893, "y2": 1465, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 7, "probability": 100 },
@@ -6828,7 +6828,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 1236, "y1": 1952, "z1": -128, "x2": 1297, "y2": 2013, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 2, "probability": 100 },
@@ -6849,7 +6849,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 2438, "y1": 114, "z1": -128, "x2": 2499, "y2": 175, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 7, "probability": 100 },
@@ -6872,7 +6872,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1963, "y1": 1000, "z1": -128, "x2": 2024, "y2": 1061, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AcidElemental", "maxCount": 3, "probability": 100 },
@@ -6902,7 +6902,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1811, "y1": 2970, "z1": -128, "x2": 1872, "y2": 3031, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 4, "probability": 100 },
@@ -6922,7 +6922,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1025, "y1": 1412, "z1": -128, "x2": 1086, "y2": 1473, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Orc", "maxCount": 6, "probability": 100 },
@@ -6939,7 +6939,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1767, "y1": 1363, "z1": -128, "x2": 1828, "y2": 1424, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Mongbat", "maxCount": 3, "probability": 100 },
@@ -6956,7 +6956,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 957, "y1": 695, "z1": -128, "x2": 1018, "y2": 756, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ghoul", "maxCount": 3, "probability": 100 },
@@ -6997,7 +6997,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1652, "y1": 222, "z1": -128, "x2": 1713, "y2": 283, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 2, "probability": 100 },
@@ -7023,7 +7023,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1832, "y1": 1404, "z1": -128, "x2": 1893, "y2": 1465, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Mongbat", "maxCount": 3, "probability": 100 },
@@ -7040,7 +7040,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 971, "y1": 757, "z1": -128, "x2": 1032, "y2": 818, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ghoul", "maxCount": 3, "probability": 100 },
@@ -7060,7 +7060,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 974, "y1": 1339, "z1": -128, "x2": 1035, "y2": 1400, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Orc", "maxCount": 6, "probability": 100 },
@@ -7077,7 +7077,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4570, "y1": 3549, "z1": -128, "x2": 4621, "y2": 3600, "z2": 128 },
+    "homeRange": 25,
     "walkingRange": 50,
     "entries": [
       { "name": "Daemon", "maxCount": 3, "probability": 100 }
@@ -7093,7 +7093,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4509, "y1": 1369, "z1": -128, "x2": 4516, "y2": 1376, "z2": 128 },
+    "homeRange": 3,
     "walkingRange": 10,
     "entries": [
       { "name": "RottingCorpse", "maxCount": 1, "probability": 100 },
@@ -7113,7 +7113,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 3898, "y1": 363, "z1": -128, "x2": 3959, "y2": 424, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "PolarBear", "maxCount": 4, "probability": 100 },
@@ -7132,7 +7132,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 3410, "y1": 375, "z1": -128, "x2": 3471, "y2": 436, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 5, "probability": 100 },
@@ -7152,7 +7152,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1926, "y1": 18, "z1": -128, "x2": 1987, "y2": 79, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 5, "probability": 100 },
@@ -7172,7 +7172,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 775, "y1": 433, "z1": -128, "x2": 836, "y2": 494, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 8, "probability": 100 },
@@ -7195,7 +7195,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1774, "y1": 217, "z1": -128, "x2": 1835, "y2": 278, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 2, "probability": 100 },
@@ -7221,7 +7221,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4593, "y1": 3545, "z1": -128, "x2": 4644, "y2": 3596, "z2": 128 },
+    "homeRange": 25,
     "walkingRange": 50,
     "entries": [
       { "name": "Dragon", "maxCount": 1, "probability": 100 },
@@ -7238,7 +7238,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 1037, "y1": 2087, "z1": -128, "x2": 1098, "y2": 2148, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 2, "probability": 100 },
@@ -7259,7 +7259,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1025, "y1": 1412, "z1": -128, "x2": 1086, "y2": 1473, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 6, "probability": 100 },
@@ -7280,7 +7280,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1535, "y1": 2985, "z1": -128, "x2": 1656, "y2": 3106, "z2": 128 },
+    "homeRange": 60,
     "walkingRange": 100,
     "entries": [
       { "name": "Orc", "maxCount": 5, "probability": 100 },
@@ -7301,7 +7301,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4509, "y1": 1377, "z1": -128, "x2": 4516, "y2": 1384, "z2": 128 },
+    "homeRange": 3,
     "walkingRange": 10,
     "entries": [
       { "name": "Ghoul", "maxCount": 1, "probability": 100 },
@@ -7321,7 +7321,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1960, "y1": 946, "z1": -128, "x2": 2021, "y2": 1007, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AcidElemental", "maxCount": 3, "probability": 100 },
@@ -7351,7 +7351,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 202, "y1": 1320, "z1": -128, "x2": 263, "y2": 1381, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 2, "probability": 100 },
@@ -7377,7 +7377,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1195, "y1": 1447, "z1": -128, "x2": 1256, "y2": 1508, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Harpy", "maxCount": 5, "probability": 100 },
@@ -7397,7 +7397,7 @@
     "minDelay": "00:45:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 3169, "y1": 671, "z1": -128, "x2": 3172, "y2": 674, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 10,
     "entries": [
       { "name": "OrcCamp", "maxCount": 1, "probability": 100 },
@@ -7414,7 +7414,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 1202, "y1": 2063, "z1": -128, "x2": 1263, "y2": 2124, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 2, "probability": 100 },
@@ -7435,7 +7435,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 3012, "y1": 3560, "z1": -128, "x2": 3073, "y2": 3621, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Alligator", "maxCount": 7, "probability": 100 },
@@ -7457,7 +7457,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1966, "y1": 43, "z1": -128, "x2": 2027, "y2": 104, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 5, "probability": 100 },
@@ -7477,7 +7477,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1782, "y1": 1284, "z1": -128, "x2": 1843, "y2": 1345, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Mongbat", "maxCount": 3, "probability": 100 },
@@ -7494,7 +7494,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1210, "y1": 1287, "z1": -128, "x2": 1271, "y2": 1348, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Harpy", "maxCount": 5, "probability": 100 },
@@ -7514,7 +7514,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2113, "y1": 3038, "z1": -128, "x2": 2174, "y2": 3099, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 7, "probability": 100 },
@@ -7536,7 +7536,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1957, "y1": 792, "z1": -128, "x2": 2018, "y2": 853, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "GiantSpider", "maxCount": 2, "probability": 100 },
@@ -7553,7 +7553,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1052, "y1": 2175, "z1": -128, "x2": 1093, "y2": 2216, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 30,
     "entries": [
       { "name": "Imp", "maxCount": 4, "probability": 100 }
@@ -7569,7 +7569,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 789, "y1": 1811, "z1": -128, "x2": 850, "y2": 1872, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 8, "probability": 100 },
@@ -7588,7 +7588,7 @@
     "minDelay": "00:45:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 787, "y1": 1893, "z1": -128, "x2": 790, "y2": 1896, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 10,
     "entries": [
       { "name": "OrcCamp", "maxCount": 1, "probability": 100 },
@@ -7605,7 +7605,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1136, "y1": 788, "z1": -128, "x2": 1197, "y2": 849, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 11, "probability": 100 },
@@ -7632,7 +7632,7 @@
     "minDelay": "00:45:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 1938, "y1": 1309, "z1": -128, "x2": 1941, "y2": 1312, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 10,
     "entries": [
       { "name": "OrcCamp", "maxCount": 1, "probability": 100 },
@@ -7649,7 +7649,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 623, "y1": 1474, "z1": -128, "x2": 644, "y2": 1495, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "Orc", "maxCount": 8, "probability": 100 },
@@ -7669,7 +7669,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 642, "y1": 1795, "z1": -128, "x2": 703, "y2": 1856, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ghoul", "maxCount": 7, "probability": 100 },
@@ -7692,7 +7692,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 2324, "y1": 3473, "z1": -128, "x2": 2385, "y2": 3534, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Alligator", "maxCount": 8, "probability": 100 },
@@ -7712,7 +7712,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 1772, "y1": 457, "z1": -128, "x2": 1893, "y2": 578, "z2": 128 },
+    "homeRange": 60,
     "walkingRange": 60,
     "entries": [
       { "name": "AirElemental", "maxCount": 1, "probability": 100 },
@@ -7731,7 +7731,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4507, "y1": 1390, "z1": -128, "x2": 4516, "y2": 1399, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": 10,
     "entries": [
       { "name": "FrostSpider", "maxCount": 1, "probability": 100 },
@@ -7748,7 +7748,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 2345, "y1": 695, "z1": -128, "x2": 2406, "y2": 756, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 8, "probability": 100 },
@@ -7771,7 +7771,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4474, "y1": 1428, "z1": -128, "x2": 4535, "y2": 1489, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "TimberWolf", "maxCount": 7, "probability": 100 }
@@ -7787,7 +7787,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 991, "y1": 1385, "z1": -128, "x2": 1052, "y2": 1446, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Orc", "maxCount": 6, "probability": 100 },
@@ -7804,7 +7804,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 2289, "y1": 561, "z1": -128, "x2": 2350, "y2": 622, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 8, "probability": 100 },
@@ -7827,7 +7827,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 763, "y1": 1058, "z1": -128, "x2": 824, "y2": 1119, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 11, "probability": 100 },
@@ -7854,7 +7854,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1998, "y1": 957, "z1": -128, "x2": 2059, "y2": 1018, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AcidElemental", "maxCount": 3, "probability": 100 },
@@ -7884,7 +7884,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2342, "y1": 180, "z1": -128, "x2": 2403, "y2": 241, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 9, "probability": 100 },
@@ -7909,7 +7909,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1868, "y1": 1235, "z1": -128, "x2": 1929, "y2": 1296, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Mongbat", "maxCount": 3, "probability": 100 },
@@ -7926,7 +7926,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1092, "y1": 688, "z1": -128, "x2": 1153, "y2": 749, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 11, "probability": 100 },
@@ -7953,7 +7953,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1277, "y1": 2375, "z1": -128, "x2": 1578, "y2": 2676, "z2": 128 },
+    "homeRange": 150,
     "walkingRange": 150,
     "entries": [
       { "name": "Orc", "maxCount": 10, "probability": 100 },
@@ -7973,7 +7973,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1868, "y1": 1235, "z1": -128, "x2": 1929, "y2": 1296, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 7, "probability": 100 },
@@ -7995,7 +7995,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1693, "y1": 222, "z1": -128, "x2": 1754, "y2": 283, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 2, "probability": 100 },
@@ -8021,7 +8021,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 991, "y1": 1385, "z1": -128, "x2": 1052, "y2": 1446, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 6, "probability": 100 },
@@ -8042,7 +8042,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 768, "y1": 1905, "z1": -128, "x2": 829, "y2": 1966, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 8, "probability": 100 },
@@ -8061,7 +8061,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4499, "y1": 1381, "z1": -128, "x2": 4502, "y2": 1384, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 10,
     "entries": [
       { "name": "Cat", "maxCount": 1, "probability": 100 },
@@ -8081,7 +8081,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1246, "y1": 401, "z1": -128, "x2": 1307, "y2": 462, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 11, "probability": 100 },
@@ -8108,7 +8108,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1196, "y1": 2239, "z1": -128, "x2": 1237, "y2": 2280, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 30,
     "entries": [
       { "name": "Imp", "maxCount": 4, "probability": 100 }
@@ -8124,7 +8124,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 4546, "y1": 3547, "z1": -128, "x2": 4597, "y2": 3598, "z2": 128 },
+    "homeRange": 25,
     "walkingRange": 50,
     "entries": [
       { "name": "Dragon", "maxCount": 1, "probability": 100 },
@@ -8141,7 +8141,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 511, "y1": 1615, "z1": -128, "x2": 572, "y2": 1676, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 5, "probability": 100 },
@@ -8161,7 +8161,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1767, "y1": 1363, "z1": -128, "x2": 1828, "y2": 1424, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 7, "probability": 100 },
@@ -8183,7 +8183,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2141, "y1": 1326, "z1": -128, "x2": 2202, "y2": 1387, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "SavageShaman", "maxCount": 1, "probability": 100 },
@@ -8204,7 +8204,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 941, "y1": 1278, "z1": -128, "x2": 1002, "y2": 1339, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Orc", "maxCount": 6, "probability": 100 },
@@ -8221,7 +8221,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 1254, "y1": 403, "z1": -128, "x2": 1315, "y2": 464, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 3, "probability": 100 },
@@ -8239,7 +8239,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 2085, "y1": 18, "z1": -128, "x2": 2146, "y2": 79, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 3, "probability": 100 },
@@ -8257,7 +8257,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 1445, "y1": 1928, "z1": -128, "x2": 1506, "y2": 1989, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 5, "probability": 100 },
@@ -8277,7 +8277,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 879, "y1": 1145, "z1": -128, "x2": 940, "y2": 1206, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 11, "probability": 100 },
@@ -8304,7 +8304,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 388, "y1": 1635, "z1": -128, "x2": 449, "y2": 1696, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 5, "probability": 100 },
@@ -8324,7 +8324,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 174, "y1": 1453, "z1": -128, "x2": 235, "y2": 1514, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 2, "probability": 100 },
@@ -8350,7 +8350,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 3899, "y1": 205, "z1": -128, "x2": 3960, "y2": 266, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "PolarBear", "maxCount": 4, "probability": 100 },
@@ -8369,7 +8369,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 729, "y1": 1798, "z1": -128, "x2": 790, "y2": 1859, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ghoul", "maxCount": 7, "probability": 100 },
@@ -8392,7 +8392,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 4546, "y1": 3326, "z1": -128, "x2": 4607, "y2": 3387, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Orc", "maxCount": 10, "probability": 100 }
@@ -8408,7 +8408,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 578, "y1": 1672, "z1": -128, "x2": 639, "y2": 1733, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Wisp", "maxCount": 8, "probability": 100 }
@@ -8424,7 +8424,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2153, "y1": 1368, "z1": -128, "x2": 2158, "y2": 1373, "z2": 128 },
+    "homeRange": 2,
     "walkingRange": 2,
     "entries": [
       { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 },
@@ -8441,7 +8441,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1662, "y1": 1433, "z1": -128, "x2": 1723, "y2": 1494, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Mongbat", "maxCount": 3, "probability": 100 },
@@ -8458,7 +8458,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 1875, "y1": 853, "z1": -128, "x2": 1936, "y2": 914, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "EarthElemental", "maxCount": 4, "probability": 100 },
@@ -8475,7 +8475,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2147, "y1": 3004, "z1": -128, "x2": 2208, "y2": 3065, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 7, "probability": 100 },
@@ -8497,7 +8497,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 2629, "y1": 117, "z1": -128, "x2": 2690, "y2": 178, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 7, "probability": 100 },
@@ -8520,7 +8520,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 849, "y1": 1926, "z1": -128, "x2": 910, "y2": 1987, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 8, "probability": 100 },
@@ -8539,7 +8539,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1030, "y1": 1345, "z1": -128, "x2": 1091, "y2": 1406, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Orc", "maxCount": 6, "probability": 100 },
@@ -8556,7 +8556,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 1059, "y1": 2003, "z1": -128, "x2": 1120, "y2": 2064, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Ettin", "maxCount": 2, "probability": 100 },
@@ -8577,7 +8577,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 970, "y1": 300, "z1": -128, "x2": 1031, "y2": 361, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "AirElemental", "maxCount": 2, "probability": 100 },
@@ -8604,7 +8604,7 @@
     "minDelay": "00:20:00",
     "maxDelay": "00:20:00",
     "team": 0,
-    "spawnBounds": { "x1": 4027, "y1": 270, "z1": -128, "x2": 4088, "y2": 331, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "PolarBear", "maxCount": 4, "probability": 100 },

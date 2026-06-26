@@ -9,7 +9,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:15:00",
     "team": 0,
-    "spawnBounds": { "x1": 1352, "y1": 1205, "z1": -128, "x2": 1393, "y2": 1246, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 40,
     "entries": [
       { "name": "OrcBrute", "maxCount": 1, "probability": 100 },
@@ -29,7 +29,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:15:00",
     "team": 0,
-    "spawnBounds": { "x1": 1360, "y1": 592, "z1": -128, "x2": 1369, "y2": 601, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": 15,
     "entries": [
       { "name": "Orc", "maxCount": 2, "probability": 100 },
@@ -47,7 +47,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:15:00",
     "team": 0,
-    "spawnBounds": { "x1": 1201, "y1": 696, "z1": -128, "x2": 1210, "y2": 705, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": 20,
     "entries": [
       { "name": "Orc", "maxCount": 2, "probability": 100 },
@@ -65,7 +65,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:15:00",
     "team": 0,
-    "spawnBounds": { "x1": 1253, "y1": 1322, "z1": -128, "x2": 1262, "y2": 1331, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": 15,
     "entries": [
       { "name": "Orc", "maxCount": 2, "probability": 100 },
@@ -83,7 +83,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:15:00",
     "team": 0,
-    "spawnBounds": { "x1": 1339, "y1": 1192, "z1": -128, "x2": 1348, "y2": 1201, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": 4,
     "entries": [
       { "name": "Orc", "maxCount": 2, "probability": 100 }
@@ -99,7 +99,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:15:00",
     "team": 0,
-    "spawnBounds": { "x1": 907, "y1": 190, "z1": -128, "x2": 916, "y2": 199, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": 15,
     "entries": [
       { "name": "Orc", "maxCount": 2, "probability": 100 },
@@ -117,7 +117,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:15:00",
     "team": 0,
-    "spawnBounds": { "x1": 1594, "y1": 1815, "z1": -128, "x2": 1603, "y2": 1824, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": 15,
     "entries": [
       { "name": "Orc", "maxCount": 2, "probability": 100 },
@@ -135,7 +135,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:15:00",
     "team": 0,
-    "spawnBounds": { "x1": 1661, "y1": 352, "z1": -128, "x2": 1670, "y2": 361, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": 25,
     "entries": [
       { "name": "Orc", "maxCount": 2, "probability": 100 },
@@ -153,7 +153,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:15:00",
     "team": 0,
-    "spawnBounds": { "x1": 1302, "y1": 1205, "z1": -128, "x2": 1343, "y2": 1246, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 40,
     "entries": [
       { "name": "OrcBrute", "maxCount": 1, "probability": 100 },
@@ -173,7 +173,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:15:00",
     "team": 0,
-    "spawnBounds": { "x1": 1339, "y1": 1244, "z1": -128, "x2": 1348, "y2": 1253, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": 4,
     "entries": [
       { "name": "Orc", "maxCount": 2, "probability": 100 }

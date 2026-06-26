@@ -9,7 +9,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 780, "y1": 738, "z1": -128, "x2": 811, "y2": 769, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 15,
     "entries": [
       { "name": "Hydra", "maxCount": 8, "probability": 100 }
@@ -25,7 +25,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 740, "y1": 734, "z1": -128, "x2": 751, "y2": 745, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 5,
     "entries": [
       { "name": "MaddeningHorror", "maxCount": 1, "probability": 100 }
@@ -41,7 +41,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 729, "y1": 455, "z1": -128, "x2": 770, "y2": 496, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "SlasherOfVeils", "maxCount": 1, "probability": 100 }
@@ -57,7 +57,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 316, "y1": 149, "z1": -128, "x2": 337, "y2": 170, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "StygianDragon", "maxCount": 1, "probability": 100 }
@@ -73,7 +73,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 691, "y1": 695, "z1": -128, "x2": 742, "y2": 746, "z2": 128 },
+    "homeRange": 25,
     "walkingRange": 25,
     "entries": [
       { "name": "Snake", "maxCount": 24, "probability": 100 },
@@ -93,7 +93,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 972, "y1": 317, "z1": -128, "x2": 1013, "y2": 358, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "GreaterMongbat", "maxCount": 35, "probability": 100 },
@@ -113,7 +113,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 964, "y1": 473, "z1": -128, "x2": 1001, "y2": 510, "z2": 128 },
+    "homeRange": 18,
     "walkingRange": 18,
     "entries": [
       { "name": "ClanChitterAssistant", "maxCount": 15, "probability": 100 },
@@ -131,7 +131,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 963, "y1": 473, "z1": -128, "x2": 1000, "y2": 510, "z2": 128 },
+    "homeRange": 18,
     "walkingRange": 18,
     "entries": [
       { "name": "ClockworkScorpion", "maxCount": 16, "probability": 100 }
@@ -147,7 +147,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 899, "y1": 482, "z1": -128, "x2": 940, "y2": 523, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "ClanRibbonSupplicant", "maxCount": 15, "probability": 100 },
@@ -165,7 +165,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 898, "y1": 482, "z1": -128, "x2": 939, "y2": 523, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "ClanRibbonPlagueRat", "maxCount": 15, "probability": 100 }
@@ -181,7 +181,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 929, "y1": 535, "z1": -128, "x2": 970, "y2": 576, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "ClanScratchScrounger", "maxCount": 15, "probability": 100 },
@@ -199,7 +199,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 930, "y1": 535, "z1": -128, "x2": 971, "y2": 576, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "ClanScratchSavageWolf", "maxCount": 18, "probability": 100 }
@@ -215,7 +215,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 949, "y1": 136, "z1": -128, "x2": 1000, "y2": 187, "z2": 128 },
+    "homeRange": 25,
     "walkingRange": 25,
     "entries": [
       { "name": "FireAnt", "maxCount": 18, "probability": 100 },
@@ -238,7 +238,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 556, "y1": 790, "z1": -128, "x2": 607, "y2": 841, "z2": 128 },
+    "homeRange": 25,
     "walkingRange": 25,
     "entries": [
       { "name": "EnslavedGrayGoblin", "maxCount": 30, "probability": 100 },
@@ -261,7 +261,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 506, "y1": 746, "z1": -128, "x2": 547, "y2": 787, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "LavaLizard", "maxCount": 25, "probability": 100 },
@@ -285,7 +285,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 502, "y1": 623, "z1": -128, "x2": 571, "y2": 692, "z2": 128 },
+    "homeRange": 34,
     "walkingRange": 34,
     "entries": [
       { "name": "Skeleton", "maxCount": 35, "probability": 100 },
@@ -307,7 +307,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 566, "y1": 870, "z1": -128, "x2": 637, "y2": 941, "z2": 128 },
+    "homeRange": 35,
     "walkingRange": 35,
     "entries": [
       { "name": "LavaLizard", "maxCount": 38, "probability": 100 },
@@ -330,7 +330,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 803, "y1": 912, "z1": -128, "x2": 834, "y2": 943, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 15,
     "entries": [
       { "name": "Medusa", "maxCount": 1, "probability": 100 }
@@ -346,7 +346,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 649, "y1": 544, "z1": -128, "x2": 720, "y2": 615, "z2": 128 },
+    "homeRange": 35,
     "walkingRange": 35,
     "entries": [
       { "name": "CorrosiveSlime", "maxCount": 32, "probability": 100 },
@@ -366,7 +366,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 405, "y1": 673, "z1": -128, "x2": 476, "y2": 744, "z2": 128 },
+    "homeRange": 35,
     "walkingRange": 35,
     "entries": [
       { "name": "Pixie", "maxCount": 30, "probability": 100 },
@@ -385,7 +385,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 649, "y1": 803, "z1": -128, "x2": 700, "y2": 854, "z2": 128 },
+    "homeRange": 25,
     "walkingRange": 25,
     "entries": [
       { "name": "Skeleton", "maxCount": 30, "probability": 100 },
@@ -408,7 +408,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 867, "y1": 257, "z1": -128, "x2": 908, "y2": 298, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 20,
     "entries": [
       { "name": "FairyDragon", "maxCount": 35, "probability": 100 },

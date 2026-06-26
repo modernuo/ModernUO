@@ -9,7 +9,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1097, "y1": 697, "z1": -128, "x2": 1100, "y2": 700, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 5,
     "entries": [
       { "name": "GolemController", "maxCount": 1, "probability": 100 },
@@ -26,7 +26,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1066, "y1": 645, "z1": -128, "x2": 1079, "y2": 658, "z2": 128 },
+    "homeRange": 6,
     "walkingRange": 6,
     "entries": [
       { "name": "JukaWarrior", "maxCount": 1, "probability": 100 }
@@ -42,7 +42,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1086, "y1": 697, "z1": -128, "x2": 1097, "y2": 708, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 10,
     "entries": [
       { "name": "Golem", "maxCount": 1, "probability": 100 }
@@ -58,7 +58,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1081, "y1": 697, "z1": -128, "x2": 1092, "y2": 708, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 5,
     "entries": [
       { "name": "GolemController", "maxCount": 2, "probability": 100 }

@@ -9,7 +9,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5200, "y1": 662, "z1": -128, "x2": 5225, "y2": 687, "z2": 128 },
+    "homeRange": 12,
     "walkingRange": 25,
     "entries": [
       { "name": "Ghoul", "maxCount": 1, "probability": 100 },
@@ -28,7 +28,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5209, "y1": 563, "z1": -128, "x2": 5230, "y2": 584, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 25,
     "entries": [
       { "name": "Ghoul", "maxCount": 3, "probability": 100 },
@@ -47,7 +47,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5182, "y1": 685, "z1": -128, "x2": 5203, "y2": 706, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "Ghoul", "maxCount": 1, "probability": 100 },
@@ -64,7 +64,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5157, "y1": 561, "z1": -128, "x2": 5170, "y2": 574, "z2": 128 },
+    "homeRange": 6,
     "walkingRange": 25,
     "entries": [
       { "name": "Mummy", "maxCount": 1, "probability": 100 },
@@ -82,7 +82,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5297, "y1": 536, "z1": -128, "x2": 5318, "y2": 557, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 25,
     "entries": [
       { "name": "Ghoul", "maxCount": 1, "probability": 100 },
@@ -101,7 +101,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5265, "y1": 688, "z1": -128, "x2": 5270, "y2": 693, "z2": 128 },
+    "homeRange": 2,
     "walkingRange": 35,
     "entries": [
       { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 },
@@ -119,7 +119,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5297, "y1": 665, "z1": -128, "x2": 5318, "y2": 686, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 25,
     "entries": [
       { "name": "Ghoul", "maxCount": 2, "probability": 100 },
@@ -136,7 +136,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5321, "y1": 569, "z1": -128, "x2": 5326, "y2": 574, "z2": 128 },
+    "homeRange": 2,
     "walkingRange": 2,
     "entries": [
       { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 },
@@ -153,7 +153,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5306, "y1": 740, "z1": -128, "x2": 5323, "y2": 757, "z2": 128 },
+    "homeRange": 8,
     "walkingRange": 25,
     "entries": [
       { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 },
@@ -173,7 +173,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5289, "y1": 593, "z1": -128, "x2": 5310, "y2": 614, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 25,
     "entries": [
       { "name": "Ghoul", "maxCount": 1, "probability": 100 },
@@ -192,7 +192,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5141, "y1": 708, "z1": -128, "x2": 5162, "y2": 729, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 25,
     "entries": [
       { "name": "Ghoul", "maxCount": 1, "probability": 100 },
@@ -211,7 +211,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5209, "y1": 542, "z1": -128, "x2": 5230, "y2": 563, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 25,
     "entries": [
       { "name": "Ghoul", "maxCount": 3, "probability": 100 },
@@ -230,7 +230,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5308, "y1": 568, "z1": -128, "x2": 5329, "y2": 589, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 25,
     "entries": [
       { "name": "Ghoul", "maxCount": 1, "probability": 100 },
@@ -250,7 +250,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5180, "y1": 645, "z1": -128, "x2": 5201, "y2": 666, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 25,
     "entries": [
       { "name": "Lich", "maxCount": 2, "probability": 100 }
@@ -266,7 +266,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5332, "y1": 572, "z1": -128, "x2": 5353, "y2": 593, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 25,
     "entries": [
       { "name": "BoneKnight", "maxCount": 4, "probability": 100 },
@@ -283,7 +283,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5310, "y1": 698, "z1": -128, "x2": 5331, "y2": 719, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 25,
     "entries": [
       { "name": "Lich", "maxCount": 2, "probability": 100 }
@@ -299,7 +299,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5178, "y1": 567, "z1": -128, "x2": 5195, "y2": 584, "z2": 128 },
+    "homeRange": 8,
     "walkingRange": 12,
     "entries": [
       { "name": "WaterElemental", "maxCount": 2, "probability": 100 }
@@ -315,7 +315,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5147, "y1": 739, "z1": -128, "x2": 5154, "y2": 746, "z2": 128 },
+    "homeRange": 3,
     "walkingRange": 15,
     "entries": [
       { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 },
@@ -333,7 +333,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5137, "y1": 545, "z1": -128, "x2": 5154, "y2": 562, "z2": 128 },
+    "homeRange": 8,
     "walkingRange": 35,
     "entries": [
       { "name": "Skeleton", "maxCount": 2, "probability": 100 },
@@ -350,7 +350,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5276, "y1": 532, "z1": -128, "x2": 5297, "y2": 553, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 25,
     "entries": [
       { "name": "Ghoul", "maxCount": 1, "probability": 100 },
@@ -369,7 +369,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5160, "y1": 668, "z1": -128, "x2": 5181, "y2": 689, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 25,
     "entries": [
       { "name": "Ghoul", "maxCount": 1, "probability": 100 },
@@ -388,7 +388,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5140, "y1": 591, "z1": -128, "x2": 5155, "y2": 606, "z2": 128 },
+    "homeRange": 7,
     "walkingRange": 25,
     "entries": [
       { "name": "Skeleton", "maxCount": 2, "probability": 100 },
@@ -405,7 +405,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5204, "y1": 719, "z1": -128, "x2": 5235, "y2": 750, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 25,
     "entries": [
       { "name": "Lich", "maxCount": 4, "probability": 100 }
@@ -421,7 +421,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5173, "y1": 717, "z1": -128, "x2": 5194, "y2": 738, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "Ghoul", "maxCount": 1, "probability": 100 },
@@ -438,7 +438,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5204, "y1": 523, "z1": -128, "x2": 5221, "y2": 540, "z2": 128 },
+    "homeRange": 8,
     "walkingRange": 25,
     "entries": [
       { "name": "Skeleton", "maxCount": 2, "probability": 100 },
@@ -455,7 +455,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5317, "y1": 532, "z1": -128, "x2": 5338, "y2": 553, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 25,
     "entries": [
       { "name": "Ghoul", "maxCount": 1, "probability": 100 },
@@ -474,7 +474,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5140, "y1": 572, "z1": -128, "x2": 5155, "y2": 587, "z2": 128 },
+    "homeRange": 7,
     "walkingRange": 25,
     "entries": [
       { "name": "Skeleton", "maxCount": 2, "probability": 100 },
@@ -491,7 +491,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5137, "y1": 614, "z1": -128, "x2": 5154, "y2": 631, "z2": 128 },
+    "homeRange": 8,
     "walkingRange": 25,
     "entries": [
       { "name": "Skeleton", "maxCount": 2, "probability": 100 },
@@ -508,7 +508,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5270, "y1": 665, "z1": -128, "x2": 5291, "y2": 686, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 25,
     "entries": [
       { "name": "FireElemental", "maxCount": 2, "probability": 100 }
@@ -524,7 +524,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5169, "y1": 585, "z1": -128, "x2": 5206, "y2": 622, "z2": 128 },
+    "homeRange": 18,
     "walkingRange": 35,
     "entries": [
       { "name": "Mummy", "maxCount": 1, "probability": 100 },
@@ -542,7 +542,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5307, "y1": 611, "z1": -128, "x2": 5338, "y2": 642, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 25,
     "entries": [
       { "name": "Ghoul", "maxCount": 1, "probability": 100 },
@@ -562,7 +562,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5273, "y1": 573, "z1": -128, "x2": 5294, "y2": 594, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 25,
     "entries": [
       { "name": "Ghoul", "maxCount": 2, "probability": 100 },
@@ -579,7 +579,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5124, "y1": 646, "z1": -128, "x2": 5155, "y2": 677, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 25,
     "entries": [
       { "name": "Ghoul", "maxCount": 1, "probability": 100 },
@@ -598,7 +598,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5138, "y1": 611, "z1": -128, "x2": 5153, "y2": 626, "z2": 128 },
+    "homeRange": 7,
     "walkingRange": 7,
     "entries": [
       { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 },
@@ -615,7 +615,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5289, "y1": 617, "z1": -128, "x2": 5302, "y2": 630, "z2": 128 },
+    "homeRange": 6,
     "walkingRange": 10,
     "entries": [
       { "name": "BoneMagi", "maxCount": 3, "probability": 100 }
@@ -631,7 +631,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5181, "y1": 539, "z1": -128, "x2": 5194, "y2": 552, "z2": 128 },
+    "homeRange": 6,
     "walkingRange": 25,
     "entries": [
       { "name": "Skeleton", "maxCount": 2, "probability": 100 }

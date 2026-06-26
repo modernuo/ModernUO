@@ -9,7 +9,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5453, "y1": 1968, "z1": -128, "x2": 5468, "y2": 1983, "z2": 128 },
+    "homeRange": 7,
     "walkingRange": 7,
     "entries": [
       { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 },
@@ -26,7 +26,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5459, "y1": 2009, "z1": -128, "x2": 5480, "y2": 2030, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 25,
     "entries": [
       { "name": "Slime", "maxCount": 5, "probability": 100 }
@@ -42,7 +42,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5404, "y1": 1925, "z1": -128, "x2": 5419, "y2": 1940, "z2": 128 },
+    "homeRange": 7,
     "walkingRange": 7,
     "entries": [
       { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 },
@@ -60,7 +60,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5431, "y1": 1967, "z1": -128, "x2": 5442, "y2": 1978, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 5,
     "entries": [
       { "name": "Corpser", "maxCount": 3, "probability": 100 }
@@ -76,7 +76,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2503, "y1": 852, "z1": -128, "x2": 2524, "y2": 873, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 25,
     "entries": [
       { "name": "Skeleton", "maxCount": 4, "probability": 100 }
@@ -92,7 +92,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5383, "y1": 2007, "z1": -128, "x2": 5394, "y2": 2018, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 5,
     "entries": [
       { "name": "Gazer", "maxCount": 2, "probability": 100 }
@@ -108,7 +108,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5583, "y1": 2007, "z1": -128, "x2": 5604, "y2": 2028, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "HeadlessOne", "maxCount": 2, "probability": 100 }
@@ -124,7 +124,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5581, "y1": 1888, "z1": -128, "x2": 5612, "y2": 1919, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 25,
     "entries": [
       { "name": "Mummy", "maxCount": 1, "probability": 100 },
@@ -146,7 +146,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5388, "y1": 1916, "z1": -128, "x2": 5399, "y2": 1927, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 5,
     "entries": [
       { "name": "Corpser", "maxCount": 3, "probability": 100 }
@@ -162,7 +162,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5414, "y1": 1974, "z1": -128, "x2": 5445, "y2": 2005, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 25,
     "entries": [
       { "name": "Gazer", "maxCount": 2, "probability": 100 },
@@ -179,7 +179,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5483, "y1": 1983, "z1": -128, "x2": 5514, "y2": 2014, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 30,
     "entries": [
       { "name": "Harpy", "maxCount": 8, "probability": 100 },
@@ -196,7 +196,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5567, "y1": 1996, "z1": -128, "x2": 5588, "y2": 2017, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "HeadlessOne", "maxCount": 2, "probability": 100 }
@@ -212,7 +212,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5385, "y1": 1909, "z1": -128, "x2": 5390, "y2": 1914, "z2": 128 },
+    "homeRange": 2,
     "walkingRange": 2,
     "entries": [
       { "name": "TreasureChestLevel1", "maxCount": 1, "probability": 100 },
@@ -229,7 +229,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5442, "y1": 1956, "z1": -128, "x2": 5473, "y2": 1987, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 25,
     "entries": [
       { "name": "Gazer", "maxCount": 4, "probability": 100 },
@@ -247,7 +247,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5464, "y1": 2025, "z1": -128, "x2": 5485, "y2": 2046, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 25,
     "entries": [
       { "name": "GiantSpider", "maxCount": 2, "probability": 100 },
@@ -264,7 +264,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5440, "y1": 2019, "z1": -128, "x2": 5457, "y2": 2036, "z2": 128 },
+    "homeRange": 8,
     "walkingRange": 8,
     "entries": [
       { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 },
@@ -281,7 +281,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5498, "y1": 1997, "z1": -128, "x2": 5509, "y2": 2008, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 5,
     "entries": [
       { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 },
@@ -298,7 +298,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5430, "y1": 2015, "z1": -128, "x2": 5461, "y2": 2046, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 15,
     "entries": [
       { "name": "WaterElemental", "maxCount": 2, "probability": 100 }
@@ -314,7 +314,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5568, "y1": 1848, "z1": -128, "x2": 5591, "y2": 1871, "z2": 128 },
+    "homeRange": 11,
     "walkingRange": 25,
     "entries": [
       { "name": "Lich", "maxCount": 7, "probability": 100 },
@@ -332,7 +332,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5607, "y1": 1830, "z1": -128, "x2": 5624, "y2": 1847, "z2": 128 },
+    "homeRange": 8,
     "walkingRange": 25,
     "entries": [
       { "name": "BoneKnight", "maxCount": 3, "probability": 100 },
@@ -353,7 +353,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5448, "y1": 1900, "z1": -128, "x2": 5459, "y2": 1911, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 25,
     "entries": [
       { "name": "HeadlessOne", "maxCount": 4, "probability": 100 }
@@ -369,7 +369,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5420, "y1": 1987, "z1": -128, "x2": 5431, "y2": 1998, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 5,
     "entries": [
       { "name": "Corpser", "maxCount": 2, "probability": 100 }
@@ -385,7 +385,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5403, "y1": 1990, "z1": -128, "x2": 5424, "y2": 2011, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 },
@@ -402,7 +402,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5450, "y1": 1889, "z1": -128, "x2": 5455, "y2": 1894, "z2": 128 },
+    "homeRange": 2,
     "walkingRange": 2,
     "entries": [
       { "name": "TreasureChestLevel1", "maxCount": 1, "probability": 100 },
@@ -419,7 +419,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5462, "y1": 1867, "z1": -128, "x2": 5483, "y2": 1888, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 25,
     "entries": [
       { "name": "Harpy", "maxCount": 6, "probability": 100 }
@@ -435,7 +435,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5412, "y1": 1970, "z1": -128, "x2": 5423, "y2": 1981, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 5,
     "entries": [
       { "name": "Corpser", "maxCount": 3, "probability": 100 }
@@ -451,7 +451,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2483, "y1": 873, "z1": -128, "x2": 2504, "y2": 894, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 25,
     "entries": [
       { "name": "Skeleton", "maxCount": 4, "probability": 100 }
@@ -467,7 +467,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5436, "y1": 1911, "z1": -128, "x2": 5451, "y2": 1926, "z2": 128 },
+    "homeRange": 7,
     "walkingRange": 30,
     "entries": [
       { "name": "StoneHarpy", "maxCount": 2, "probability": 100 }
@@ -483,7 +483,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2470, "y1": 853, "z1": -128, "x2": 2491, "y2": 874, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 25,
     "entries": [
       { "name": "Skeleton", "maxCount": 4, "probability": 100 }
@@ -499,7 +499,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5501, "y1": 1805, "z1": -128, "x2": 5508, "y2": 1812, "z2": 128 },
+    "homeRange": 3,
     "walkingRange": 12,
     "entries": [
       { "name": "RottingCorpse", "maxCount": 1, "probability": 100 },
@@ -517,7 +517,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5548, "y1": 2015, "z1": -128, "x2": 5569, "y2": 2036, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "HeadlessOne", "maxCount": 2, "probability": 100 }
@@ -533,7 +533,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5609, "y1": 1853, "z1": -128, "x2": 5626, "y2": 1870, "z2": 128 },
+    "homeRange": 8,
     "walkingRange": 25,
     "entries": [
       { "name": "BoneKnight", "maxCount": 3, "probability": 100 },
@@ -552,7 +552,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5545, "y1": 1888, "z1": -128, "x2": 5576, "y2": 1919, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 25,
     "entries": [
       { "name": "Mummy", "maxCount": 1, "probability": 100 },
@@ -574,7 +574,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5545, "y1": 1828, "z1": -128, "x2": 5576, "y2": 1859, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 40,
     "entries": [
       { "name": "Mummy", "maxCount": 1, "probability": 100 },
@@ -596,7 +596,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5425, "y1": 2008, "z1": -128, "x2": 5456, "y2": 2039, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 25,
     "entries": [
       { "name": "GiantSpider", "maxCount": 2, "probability": 100 },
@@ -613,7 +613,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5453, "y1": 1810, "z1": -128, "x2": 5470, "y2": 1827, "z2": 128 },
+    "homeRange": 8,
     "walkingRange": 8,
     "entries": [
       { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 },
@@ -630,7 +630,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5401, "y1": 1891, "z1": -128, "x2": 5422, "y2": 1912, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "Gazer", "maxCount": 2, "probability": 100 },
@@ -647,7 +647,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5545, "y1": 1861, "z1": -128, "x2": 5576, "y2": 1892, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 25,
     "entries": [
       { "name": "Mummy", "maxCount": 1, "probability": 100 },
@@ -669,7 +669,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5513, "y1": 1793, "z1": -128, "x2": 5544, "y2": 1824, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 30,
     "entries": [
       { "name": "Mummy", "maxCount": 1, "probability": 100 },
@@ -691,7 +691,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5395, "y1": 1932, "z1": -128, "x2": 5406, "y2": 1943, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 5,
     "entries": [
       { "name": "Corpser", "maxCount": 3, "probability": 100 }
@@ -707,7 +707,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5464, "y1": 1982, "z1": -128, "x2": 5483, "y2": 2001, "z2": 128 },
+    "homeRange": 9,
     "walkingRange": 25,
     "entries": [
       { "name": "GiantSpider", "maxCount": 2, "probability": 100 },
@@ -724,7 +724,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5408, "y1": 1866, "z1": -128, "x2": 5429, "y2": 1887, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 30,
     "entries": [
       { "name": "Gazer", "maxCount": 4, "probability": 100 },
@@ -741,7 +741,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2446, "y1": 851, "z1": -128, "x2": 2467, "y2": 872, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 25,
     "entries": [
       { "name": "Skeleton", "maxCount": 4, "probability": 100 }
@@ -757,7 +757,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5394, "y1": 1854, "z1": -128, "x2": 5405, "y2": 1865, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 5,
     "entries": [
       { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 },
@@ -774,7 +774,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5595, "y1": 1867, "z1": -128, "x2": 5612, "y2": 1884, "z2": 128 },
+    "homeRange": 8,
     "walkingRange": 25,
     "entries": [
       { "name": "BoneKnight", "maxCount": 3, "probability": 100 },
@@ -793,7 +793,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5432, "y1": 1779, "z1": -128, "x2": 5473, "y2": 1820, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 30,
     "entries": [
       { "name": "Dragon", "maxCount": 1, "probability": 100 },

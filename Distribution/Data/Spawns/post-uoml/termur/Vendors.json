@@ -9,7 +9,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 976, "y1": 3881, "z1": -42, "x2": 977, "y2": 3882, "z2": -42 },
+    "homeRange": 0,
     "walkingRange": 5,
     "entries": [
       { "name": "Baker", "maxCount": 1, "probability": 100 }
@@ -25,7 +25,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1010, "y1": 3883, "z1": -42, "x2": 1011, "y2": 3884, "z2": -42 },
+    "homeRange": 0,
     "walkingRange": 5,
     "entries": [
       { "name": "Blacksmith", "maxCount": 1, "probability": 100 },
@@ -42,7 +42,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1013, "y1": 3913, "z1": -42, "x2": 1014, "y2": 3914, "z2": -42 },
+    "homeRange": 0,
     "walkingRange": 5,
     "entries": [
       { "name": "Healer", "maxCount": 1, "probability": 100 },
@@ -59,7 +59,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 977, "y1": 3909, "z1": -42, "x2": 978, "y2": 3910, "z2": -42 },
+    "homeRange": 0,
     "walkingRange": 5,
     "entries": [
       { "name": "Tinker", "maxCount": 1, "probability": 100 },
@@ -76,7 +76,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 943, "y1": 3924, "z1": -42, "x2": 944, "y2": 3925, "z2": -42 },
+    "homeRange": 0,
     "walkingRange": 5,
     "entries": [
       { "name": "InnKeeper", "maxCount": 1, "probability": 100 }
@@ -92,7 +92,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1020, "y1": 3884, "z1": -42, "x2": 1021, "y2": 3885, "z2": -42 },
+    "homeRange": 0,
     "walkingRange": 5,
     "entries": [
       { "name": "Blacksmith", "maxCount": 1, "probability": 100 },
@@ -109,7 +109,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 740, "y1": 3466, "z1": -19, "x2": 741, "y2": 3467, "z2": -19 },
+    "homeRange": 0,
     "walkingRange": 5,
     "entries": [
       { "name": "InnKeeper", "maxCount": 1, "probability": 100 }
@@ -125,7 +125,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 772, "y1": 3467, "z1": -20, "x2": 773, "y2": 3468, "z2": -20 },
+    "homeRange": 0,
     "walkingRange": 5,
     "entries": [
       { "name": "Scribe", "maxCount": 1, "probability": 100 }
@@ -141,7 +141,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 773, "y1": 3478, "z1": -20, "x2": 774, "y2": 3479, "z2": -20 },
+    "homeRange": 0,
     "walkingRange": 5,
     "entries": [
       { "name": "Herbalist", "maxCount": 1, "probability": 100 },
@@ -159,7 +159,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 772, "y1": 3490, "z1": -20, "x2": 773, "y2": 3491, "z2": -20 },
+    "homeRange": 0,
     "walkingRange": 5,
     "entries": [
       { "name": "Mage", "maxCount": 1, "probability": 100 },
@@ -177,7 +177,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 783, "y1": 3491, "z1": -20, "x2": 784, "y2": 3492, "z2": -20 },
+    "homeRange": 0,
     "walkingRange": 5,
     "entries": [
       { "name": "Healer", "maxCount": 1, "probability": 100 },
@@ -194,7 +194,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 797, "y1": 3494, "z1": 0, "x2": 798, "y2": 3495, "z2": 0 },
+    "homeRange": 0,
     "walkingRange": 5,
     "entries": [
       { "name": "Provisioner", "maxCount": 1, "probability": 100 },
@@ -211,7 +211,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 805, "y1": 3491, "z1": -20, "x2": 806, "y2": 3492, "z2": -20 },
+    "homeRange": 0,
     "walkingRange": 5,
     "entries": [
       { "name": "Baker", "maxCount": 1, "probability": 100 }
@@ -227,7 +227,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 817, "y1": 3456, "z1": -10, "x2": 818, "y2": 3457, "z2": -10 },
+    "homeRange": 0,
     "walkingRange": 5,
     "entries": [
       { "name": "Butcher", "maxCount": 1, "probability": 100 }
@@ -243,7 +243,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 817, "y1": 3438, "z1": 0, "x2": 818, "y2": 3439, "z2": 0 },
+    "homeRange": 0,
     "walkingRange": 5,
     "entries": [
       { "name": "Carpenter", "maxCount": 1, "probability": 100 },
@@ -261,7 +261,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 817, "y1": 3426, "z1": 0, "x2": 818, "y2": 3427, "z2": 0 },
+    "homeRange": 0,
     "walkingRange": 5,
     "entries": [
       { "name": "Tinker", "maxCount": 1, "probability": 100 },
@@ -278,7 +278,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 816, "y1": 3419, "z1": 0, "x2": 817, "y2": 3420, "z2": 0 },
+    "homeRange": 0,
     "walkingRange": 5,
     "entries": [
       { "name": "Blacksmith", "maxCount": 1, "probability": 100 },
@@ -295,7 +295,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 805, "y1": 3397, "z1": 0, "x2": 806, "y2": 3398, "z2": 0 },
+    "homeRange": 0,
     "walkingRange": 5,
     "entries": [
       { "name": "Tailor", "maxCount": 1, "probability": 100 },
@@ -313,7 +313,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 804, "y1": 3387, "z1": 0, "x2": 805, "y2": 3388, "z2": 0 },
+    "homeRange": 0,
     "walkingRange": 5,
     "entries": [
       { "name": "Tanner", "maxCount": 1, "probability": 100 },
@@ -330,7 +330,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 851, "y1": 3404, "z1": -20, "x2": 852, "y2": 3405, "z2": -20 },
+    "homeRange": 0,
     "walkingRange": 5,
     "entries": [
       { "name": "AnimalTrainer", "maxCount": 1, "probability": 100 }
@@ -346,7 +346,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 833, "y1": 3439, "z1": -20, "x2": 834, "y2": 3440, "z2": -20 },
+    "homeRange": 0,
     "walkingRange": 5,
     "entries": [
       { "name": "Banker", "maxCount": 1, "probability": 100 },
@@ -363,7 +363,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 843, "y1": 3439, "z1": -20, "x2": 844, "y2": 3440, "z2": -20 },
+    "homeRange": 0,
     "walkingRange": 5,
     "entries": [
       { "name": "Banker", "maxCount": 1, "probability": 100 },
@@ -380,7 +380,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 702, "y1": 3435, "z1": -20, "x2": 703, "y2": 3436, "z2": -20 },
+    "homeRange": 0,
     "walkingRange": 5,
     "entries": [
       { "name": "Tailor", "maxCount": 1, "probability": 100 },
@@ -397,7 +397,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 727, "y1": 3425, "z1": -20, "x2": 728, "y2": 3426, "z2": -20 },
+    "homeRange": 0,
     "walkingRange": 5,
     "entries": [
       { "name": "Armorer", "maxCount": 1, "probability": 100 },
@@ -414,7 +414,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 715, "y1": 3446, "z1": -20, "x2": 716, "y2": 3447, "z2": -20 },
+    "homeRange": 0,
     "walkingRange": 5,
     "entries": [
       { "name": "Farmer", "maxCount": 1, "probability": 100 },
@@ -431,7 +431,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 713, "y1": 3438, "z1": -20, "x2": 714, "y2": 3439, "z2": -20 },
+    "homeRange": 0,
     "walkingRange": 5,
     "entries": [
       { "name": "TavernKeeper", "maxCount": 1, "probability": 100 },
@@ -449,7 +449,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 794, "y1": 3446, "z1": -10, "x2": 795, "y2": 3447, "z2": -10 },
+    "homeRange": 0,
     "walkingRange": 5,
     "entries": [
       { "name": "Farmer", "maxCount": 1, "probability": 100 },
@@ -466,7 +466,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 779, "y1": 3431, "z1": -10, "x2": 780, "y2": 3432, "z2": -10 },
+    "homeRange": 0,
     "walkingRange": 5,
     "entries": [
       { "name": "Jeweler", "maxCount": 1, "probability": 100 }
@@ -482,7 +482,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 842, "y1": 3453, "z1": -18, "x2": 843, "y2": 3454, "z2": -18 },
+    "homeRange": 0,
     "walkingRange": 4,
     "entries": [
       { "name": "TownCrier", "maxCount": 1, "probability": 100 }

@@ -9,7 +9,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1917, "y1": 181, "z1": -128, "x2": 1948, "y2": 212, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 20,
     "entries": [
       { "name": "GolemController", "maxCount": 2, "probability": 100 },
@@ -26,7 +26,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1985, "y1": 57, "z1": -128, "x2": 2006, "y2": 78, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "GolemController", "maxCount": 1, "probability": 100 }
@@ -42,7 +42,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2053, "y1": 173, "z1": -128, "x2": 2074, "y2": 194, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 15,
     "entries": [
       { "name": "GargoyleEnforcer", "maxCount": 1, "probability": 100 }
@@ -58,7 +58,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1964, "y1": 177, "z1": -128, "x2": 1995, "y2": 208, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 20,
     "entries": [
       { "name": "ExodusOverseer", "maxCount": 2, "probability": 100 },
@@ -75,7 +75,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1970, "y1": 29, "z1": -128, "x2": 1991, "y2": 50, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 15,
     "entries": [
       { "name": "ExodusOverseer", "maxCount": 3, "probability": 100 },
@@ -93,7 +93,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1874, "y1": 96, "z1": -128, "x2": 1915, "y2": 137, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 30,
     "entries": [
       { "name": "GolemController", "maxCount": 2, "probability": 100 },
@@ -110,7 +110,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2022, "y1": 174, "z1": -128, "x2": 2043, "y2": 195, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 15,
     "entries": [
       { "name": "GargoyleEnforcer", "maxCount": 1, "probability": 100 }
@@ -126,7 +126,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1886, "y1": 62, "z1": -128, "x2": 1907, "y2": 83, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 15,
     "entries": [
       { "name": "GargoyleDestroyer", "maxCount": 1, "probability": 100 }
@@ -142,7 +142,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1885, "y1": 150, "z1": -128, "x2": 1906, "y2": 171, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 15,
     "entries": [
       { "name": "GargoyleDestroyer", "maxCount": 1, "probability": 100 }
@@ -158,7 +158,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2034, "y1": 77, "z1": -128, "x2": 2055, "y2": 98, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 15,
     "entries": [
       { "name": "ExodusMinion", "maxCount": 2, "probability": 100 },
@@ -175,7 +175,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1950, "y1": 86, "z1": -128, "x2": 2011, "y2": 147, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "EnslavedGargoyle", "maxCount": 2, "probability": 100 },
@@ -192,7 +192,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1922, "y1": 154, "z1": -128, "x2": 1943, "y2": 175, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 15,
     "entries": [
       { "name": "GolemController", "maxCount": 1, "probability": 100 }
@@ -208,7 +208,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2061, "y1": 106, "z1": -128, "x2": 2082, "y2": 127, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 15,
     "entries": [
       { "name": "GolemController", "maxCount": 2, "probability": 100 },
@@ -225,7 +225,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2034, "y1": 133, "z1": -128, "x2": 2055, "y2": 154, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 15,
     "entries": [
       { "name": "GolemController", "maxCount": 3, "probability": 100 },
@@ -243,7 +243,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1954, "y1": 154, "z1": -128, "x2": 1975, "y2": 175, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 15,
     "entries": [
       { "name": "GolemController", "maxCount": 1, "probability": 100 }
@@ -259,7 +259,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1921, "y1": 57, "z1": -128, "x2": 1942, "y2": 78, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 15,
     "entries": [
       { "name": "GolemController", "maxCount": 1, "probability": 100 }
@@ -275,7 +275,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1917, "y1": 20, "z1": -128, "x2": 1948, "y2": 51, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 20,
     "entries": [
       { "name": "GolemController", "maxCount": 2, "probability": 100 },
@@ -292,7 +292,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1924, "y1": 101, "z1": -128, "x2": 1955, "y2": 132, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 25,
     "entries": [
       { "name": "ExodusMinion", "maxCount": 1, "probability": 100 }
@@ -308,7 +308,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2048, "y1": 153, "z1": -128, "x2": 2069, "y2": 174, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 15,
     "entries": [
       { "name": "GargoyleEnforcer", "maxCount": 2, "probability": 100 },
@@ -325,7 +325,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2021, "y1": 38, "z1": -128, "x2": 2042, "y2": 59, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 15,
     "entries": [
       { "name": "GargoyleEnforcer", "maxCount": 1, "probability": 100 }
@@ -341,7 +341,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 2028, "y1": 57, "z1": -128, "x2": 2049, "y2": 78, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 15,
     "entries": [
       { "name": "GargoyleDestroyer", "maxCount": 1, "probability": 100 }
@@ -357,7 +357,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1986, "y1": 154, "z1": -128, "x2": 2007, "y2": 175, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 15,
     "entries": [
       { "name": "GolemController", "maxCount": 1, "probability": 100 }

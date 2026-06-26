@@ -9,7 +9,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5201, "y1": 3251, "z1": -128, "x2": 5302, "y2": 3352, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Hind", "maxCount": 2, "probability": 100 },
@@ -27,7 +27,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5200, "y1": 3351, "z1": -128, "x2": 5301, "y2": 3452, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "BrownBear", "maxCount": 6, "probability": 100 },
@@ -52,7 +52,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5573, "y1": 3825, "z1": -128, "x2": 5674, "y2": 3926, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Hind", "maxCount": 1, "probability": 100 },
@@ -73,7 +73,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5868, "y1": 3925, "z1": -128, "x2": 5969, "y2": 4026, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Rat", "maxCount": 1, "probability": 100 },
@@ -92,7 +92,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5838, "y1": 2445, "z1": -128, "x2": 5889, "y2": 2496, "z2": 128 },
+    "homeRange": 25,
     "walkingRange": 25,
     "entries": [
       { "name": "Wyvern", "maxCount": 6, "probability": 100 }
@@ -108,7 +108,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5770, "y1": 3625, "z1": -128, "x2": 5871, "y2": 3726, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Hind", "maxCount": 1, "probability": 100 },
@@ -129,7 +129,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5836, "y1": 2649, "z1": -128, "x2": 5841, "y2": 2654, "z2": 128 },
+    "homeRange": 2,
     "walkingRange": 75,
     "entries": [
       { "name": "Imp", "maxCount": 1, "probability": 100 },
@@ -150,7 +150,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5473, "y1": 3626, "z1": -128, "x2": 5574, "y2": 3727, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Gazer", "maxCount": 1, "probability": 100 },
@@ -171,7 +171,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5770, "y1": 3725, "z1": -128, "x2": 5871, "y2": 3826, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Rat", "maxCount": 1, "probability": 100 },
@@ -190,7 +190,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5201, "y1": 3251, "z1": -128, "x2": 5302, "y2": 3352, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "BrownBear", "maxCount": 6, "probability": 100 },
@@ -215,7 +215,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5669, "y1": 2707, "z1": -128, "x2": 5790, "y2": 2828, "z2": 128 },
+    "homeRange": 60,
     "walkingRange": 70,
     "entries": [
       { "name": "Imp", "maxCount": 8, "probability": 100 },
@@ -236,7 +236,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5574, "y1": 3925, "z1": -128, "x2": 5675, "y2": 4026, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Hind", "maxCount": 1, "probability": 100 },
@@ -257,7 +257,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5869, "y1": 3825, "z1": -128, "x2": 5970, "y2": 3926, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Hind", "maxCount": 1, "probability": 100 },
@@ -278,7 +278,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5871, "y1": 3727, "z1": -128, "x2": 5972, "y2": 3828, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "BrownBear", "maxCount": 3, "probability": 100 },
@@ -303,7 +303,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5628, "y1": 3109, "z1": -128, "x2": 5829, "y2": 3310, "z2": 128 },
+    "homeRange": 100,
     "walkingRange": 100,
     "entries": [
       { "name": "SwampDragon", "maxCount": 7, "probability": 100 }
@@ -319,7 +319,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5168, "y1": 3736, "z1": -128, "x2": 5269, "y2": 3837, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Mongbat", "maxCount": 4, "probability": 100 },
@@ -336,7 +336,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5671, "y1": 3826, "z1": -128, "x2": 5772, "y2": 3927, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "BrownBear", "maxCount": 3, "probability": 100 },
@@ -361,7 +361,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5471, "y1": 3825, "z1": -128, "x2": 5572, "y2": 3926, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Hind", "maxCount": 1, "probability": 100 },
@@ -382,7 +382,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5626, "y1": 3323, "z1": -128, "x2": 5887, "y2": 3584, "z2": 128 },
+    "homeRange": 130,
     "walkingRange": 130,
     "entries": [
       { "name": "Gorilla", "maxCount": 10, "probability": 100 },
@@ -402,7 +402,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5151, "y1": 3112, "z1": -128, "x2": 5252, "y2": 3213, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "BrownBear", "maxCount": 6, "probability": 100 },
@@ -427,7 +427,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5972, "y1": 2824, "z1": -128, "x2": 6073, "y2": 2925, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "BrownBear", "maxCount": 3, "probability": 100 },
@@ -452,7 +452,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5740, "y1": 2612, "z1": -128, "x2": 5791, "y2": 2663, "z2": 128 },
+    "homeRange": 25,
     "walkingRange": 30,
     "entries": [
       { "name": "OphidianArchmage", "maxCount": 3, "probability": 100 },
@@ -472,7 +472,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5517, "y1": 2585, "z1": -128, "x2": 5598, "y2": 2666, "z2": 128 },
+    "homeRange": 40,
     "walkingRange": 40,
     "entries": [
       { "name": "Corpser", "maxCount": 3, "probability": 100 },
@@ -493,7 +493,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5767, "y1": 2317, "z1": -128, "x2": 5868, "y2": 2418, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 75,
     "entries": [
       { "name": "PolarBear", "maxCount": 4, "probability": 100 }
@@ -509,7 +509,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5193, "y1": 3498, "z1": -128, "x2": 5294, "y2": 3599, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Horse", "maxCount": 4, "probability": 100 },
@@ -530,7 +530,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5473, "y1": 3626, "z1": -128, "x2": 5574, "y2": 3727, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Rat", "maxCount": 1, "probability": 100 },
@@ -549,7 +549,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5143, "y1": 2338, "z1": -128, "x2": 5204, "y2": 2399, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 50,
     "entries": [
       { "name": "PolarBear", "maxCount": 3, "probability": 100 }
@@ -565,7 +565,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5972, "y1": 3921, "z1": -128, "x2": 6073, "y2": 4022, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Rat", "maxCount": 1, "probability": 100 },
@@ -584,7 +584,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5870, "y1": 3625, "z1": -128, "x2": 5971, "y2": 3726, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Rat", "maxCount": 1, "probability": 100 },
@@ -603,7 +603,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5868, "y1": 3925, "z1": -128, "x2": 5969, "y2": 4026, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Hind", "maxCount": 1, "probability": 100 },
@@ -624,7 +624,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5868, "y1": 3925, "z1": -128, "x2": 5969, "y2": 4026, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "BrownBear", "maxCount": 3, "probability": 100 },
@@ -649,7 +649,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5769, "y1": 3924, "z1": -128, "x2": 5870, "y2": 4025, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Rat", "maxCount": 1, "probability": 100 },
@@ -668,7 +668,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5671, "y1": 3826, "z1": -128, "x2": 5772, "y2": 3927, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Gazer", "maxCount": 1, "probability": 100 },
@@ -689,7 +689,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5770, "y1": 3625, "z1": -128, "x2": 5871, "y2": 3726, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Gazer", "maxCount": 1, "probability": 100 },
@@ -710,7 +710,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5871, "y1": 3727, "z1": -128, "x2": 5972, "y2": 3828, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Gazer", "maxCount": 1, "probability": 100 },
@@ -731,7 +731,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5870, "y1": 3625, "z1": -128, "x2": 5971, "y2": 3726, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Hind", "maxCount": 1, "probability": 100 },
@@ -752,7 +752,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5299, "y1": 3497, "z1": -128, "x2": 5400, "y2": 3598, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Horse", "maxCount": 4, "probability": 100 },
@@ -773,7 +773,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5770, "y1": 3725, "z1": -128, "x2": 5871, "y2": 3826, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Gazer", "maxCount": 1, "probability": 100 },
@@ -794,7 +794,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5427, "y1": 3074, "z1": -128, "x2": 5438, "y2": 3085, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 25,
     "entries": [
       { "name": "OphidianMatriarch", "maxCount": 1, "probability": 100 },
@@ -814,7 +814,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5671, "y1": 3925, "z1": -128, "x2": 5772, "y2": 4026, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Rat", "maxCount": 1, "probability": 100 },
@@ -833,7 +833,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5416, "y1": 3955, "z1": -128, "x2": 5517, "y2": 4056, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Rabbit", "maxCount": 20, "probability": 100 },
@@ -855,7 +855,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5672, "y1": 2601, "z1": -128, "x2": 5723, "y2": 2652, "z2": 128 },
+    "homeRange": 25,
     "walkingRange": 30,
     "entries": [
       { "name": "Wyvern", "maxCount": 2, "probability": 100 },
@@ -874,7 +874,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5510, "y1": 3236, "z1": -128, "x2": 5623, "y2": 3349, "z2": 128 },
+    "homeRange": 56,
     "walkingRange": 62,
     "entries": [
       { "name": "Gorilla", "maxCount": 5, "probability": 100 },
@@ -894,7 +894,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5871, "y1": 3727, "z1": -128, "x2": 5972, "y2": 3828, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Hind", "maxCount": 1, "probability": 100 },
@@ -915,7 +915,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5871, "y1": 3727, "z1": -128, "x2": 5972, "y2": 3828, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Rat", "maxCount": 1, "probability": 100 },
@@ -934,7 +934,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5671, "y1": 3625, "z1": -128, "x2": 5772, "y2": 3726, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Rat", "maxCount": 1, "probability": 100 },
@@ -953,7 +953,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5659, "y1": 2884, "z1": -128, "x2": 5790, "y2": 3015, "z2": 128 },
+    "homeRange": 65,
     "walkingRange": 75,
     "entries": [
       { "name": "LavaSnake", "maxCount": 15, "probability": 100 }
@@ -969,7 +969,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5379, "y1": 2515, "z1": -128, "x2": 5410, "y2": 2546, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 25,
     "entries": [
       { "name": "Cyclops", "maxCount": 5, "probability": 100 },
@@ -986,7 +986,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5571, "y1": 3725, "z1": -128, "x2": 5672, "y2": 3826, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Gazer", "maxCount": 1, "probability": 100 },
@@ -1007,7 +1007,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5672, "y1": 3726, "z1": -128, "x2": 5773, "y2": 3827, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Rat", "maxCount": 1, "probability": 100 },
@@ -1026,7 +1026,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5631, "y1": 2414, "z1": -128, "x2": 5792, "y2": 2575, "z2": 128 },
+    "homeRange": 80,
     "walkingRange": 80,
     "entries": [
       { "name": "Ettin", "maxCount": 2, "probability": 100 }
@@ -1042,7 +1042,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5749, "y1": 3916, "z1": -128, "x2": 5820, "y2": 3987, "z2": 128 },
+    "homeRange": 35,
     "walkingRange": 35,
     "entries": [
       { "name": "FrenziedOstard", "maxCount": 8, "probability": 100 }
@@ -1058,7 +1058,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5574, "y1": 3925, "z1": -128, "x2": 5675, "y2": 4026, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Gazer", "maxCount": 1, "probability": 100 },
@@ -1079,7 +1079,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5659, "y1": 2884, "z1": -128, "x2": 5790, "y2": 3015, "z2": 128 },
+    "homeRange": 65,
     "walkingRange": 75,
     "entries": [
       { "name": "HellHound", "maxCount": 8, "probability": 100 },
@@ -1100,7 +1100,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5571, "y1": 3725, "z1": -128, "x2": 5672, "y2": 3826, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "BrownBear", "maxCount": 3, "probability": 100 },
@@ -1125,7 +1125,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5769, "y1": 3924, "z1": -128, "x2": 5870, "y2": 4025, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Gazer", "maxCount": 1, "probability": 100 },
@@ -1146,7 +1146,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5968, "y1": 3623, "z1": -128, "x2": 6069, "y2": 3724, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Rat", "maxCount": 1, "probability": 100 },
@@ -1165,7 +1165,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5573, "y1": 3825, "z1": -128, "x2": 5674, "y2": 3926, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Rat", "maxCount": 1, "probability": 100 },
@@ -1184,7 +1184,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5671, "y1": 3826, "z1": -128, "x2": 5772, "y2": 3927, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Rat", "maxCount": 1, "probability": 100 },
@@ -1203,7 +1203,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5573, "y1": 3825, "z1": -128, "x2": 5674, "y2": 3926, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Gazer", "maxCount": 1, "probability": 100 },
@@ -1224,7 +1224,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5297, "y1": 3399, "z1": -128, "x2": 5398, "y2": 3500, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Horse", "maxCount": 4, "probability": 100 },
@@ -1245,7 +1245,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5671, "y1": 3826, "z1": -128, "x2": 5772, "y2": 3927, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Hind", "maxCount": 1, "probability": 100 },
@@ -1266,7 +1266,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5672, "y1": 3726, "z1": -128, "x2": 5773, "y2": 3827, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Gazer", "maxCount": 1, "probability": 100 },
@@ -1287,7 +1287,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5144, "y1": 3898, "z1": -128, "x2": 5175, "y2": 3929, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 10,
     "entries": [
       { "name": "Sheep", "maxCount": 7, "probability": 100 },
@@ -1306,7 +1306,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5972, "y1": 3723, "z1": -128, "x2": 6073, "y2": 3824, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Gazer", "maxCount": 1, "probability": 100 },
@@ -1327,7 +1327,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5574, "y1": 3925, "z1": -128, "x2": 5675, "y2": 4026, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Rat", "maxCount": 1, "probability": 100 },
@@ -1346,7 +1346,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5318, "y1": 3837, "z1": -128, "x2": 5419, "y2": 3938, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Mongbat", "maxCount": 4, "probability": 100 },
@@ -1363,7 +1363,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5968, "y1": 3623, "z1": -128, "x2": 6069, "y2": 3724, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "BrownBear", "maxCount": 3, "probability": 100 },
@@ -1388,7 +1388,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5573, "y1": 3626, "z1": -128, "x2": 5674, "y2": 3727, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "BrownBear", "maxCount": 3, "probability": 100 },
@@ -1413,7 +1413,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5471, "y1": 3725, "z1": -128, "x2": 5572, "y2": 3826, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "BrownBear", "maxCount": 3, "probability": 100 },
@@ -1438,7 +1438,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5672, "y1": 3726, "z1": -128, "x2": 5773, "y2": 3827, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Hind", "maxCount": 1, "probability": 100 },
@@ -1459,7 +1459,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5471, "y1": 3725, "z1": -128, "x2": 5572, "y2": 3826, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Gazer", "maxCount": 1, "probability": 100 },
@@ -1480,7 +1480,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5428, "y1": 3537, "z1": -128, "x2": 5529, "y2": 3638, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Hind", "maxCount": 1, "probability": 100 },
@@ -1501,7 +1501,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5770, "y1": 3725, "z1": -128, "x2": 5871, "y2": 3826, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Hind", "maxCount": 1, "probability": 100 },
@@ -1522,7 +1522,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5200, "y1": 3351, "z1": -128, "x2": 5301, "y2": 3452, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Hind", "maxCount": 2, "probability": 100 },
@@ -1540,7 +1540,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5471, "y1": 3825, "z1": -128, "x2": 5572, "y2": 3926, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "BrownBear", "maxCount": 3, "probability": 100 },
@@ -1565,7 +1565,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5565, "y1": 2870, "z1": -128, "x2": 5596, "y2": 2901, "z2": 128 },
+    "homeRange": 15,
     "walkingRange": 15,
     "entries": [
       { "name": "Gazer", "maxCount": 3, "probability": 100 },
@@ -1585,7 +1585,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5869, "y1": 3825, "z1": -128, "x2": 5970, "y2": 3926, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "BrownBear", "maxCount": 3, "probability": 100 },
@@ -1610,7 +1610,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5573, "y1": 3626, "z1": -128, "x2": 5674, "y2": 3727, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Rat", "maxCount": 1, "probability": 100 },
@@ -1629,7 +1629,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5143, "y1": 2338, "z1": -128, "x2": 5204, "y2": 2399, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 50,
     "entries": [
       { "name": "IceSerpent", "maxCount": 4, "probability": 100 },
@@ -1650,7 +1650,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5573, "y1": 3825, "z1": -128, "x2": 5674, "y2": 3926, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "BrownBear", "maxCount": 3, "probability": 100 },
@@ -1675,7 +1675,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5972, "y1": 2824, "z1": -128, "x2": 6073, "y2": 2925, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Rat", "maxCount": 1, "probability": 100 },
@@ -1694,7 +1694,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5770, "y1": 3625, "z1": -128, "x2": 5871, "y2": 3726, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Rat", "maxCount": 1, "probability": 100 },
@@ -1713,7 +1713,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5429, "y1": 3111, "z1": -128, "x2": 5480, "y2": 3162, "z2": 128 },
+    "homeRange": 25,
     "walkingRange": 25,
     "entries": [
       { "name": "TerathanMatriarch", "maxCount": 2, "probability": 100 },
@@ -1732,7 +1732,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5168, "y1": 3736, "z1": -128, "x2": 5269, "y2": 3837, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Rabbit", "maxCount": 20, "probability": 100 },
@@ -1754,7 +1754,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5767, "y1": 2317, "z1": -128, "x2": 5868, "y2": 2418, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 75,
     "entries": [
       { "name": "IceSerpent", "maxCount": 6, "probability": 100 },
@@ -1775,7 +1775,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5301, "y1": 3351, "z1": -128, "x2": 5402, "y2": 3452, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Hind", "maxCount": 2, "probability": 100 },
@@ -1793,7 +1793,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5972, "y1": 2824, "z1": -128, "x2": 6073, "y2": 2925, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Gazer", "maxCount": 1, "probability": 100 },
@@ -1814,7 +1814,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5510, "y1": 3093, "z1": -128, "x2": 5631, "y2": 3214, "z2": 128 },
+    "homeRange": 60,
     "walkingRange": 80,
     "entries": [
       { "name": "Gorilla", "maxCount": 6, "probability": 100 },
@@ -1834,7 +1834,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5311, "y1": 2319, "z1": -128, "x2": 5392, "y2": 2400, "z2": 128 },
+    "homeRange": 40,
     "walkingRange": 75,
     "entries": [
       { "name": "PolarBear", "maxCount": 5, "probability": 100 }
@@ -1850,7 +1850,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5671, "y1": 3625, "z1": -128, "x2": 5772, "y2": 3726, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Hind", "maxCount": 1, "probability": 100 },
@@ -1871,7 +1871,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5428, "y1": 3537, "z1": -128, "x2": 5529, "y2": 3638, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Gazer", "maxCount": 1, "probability": 100 },
@@ -1892,7 +1892,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5428, "y1": 3537, "z1": -128, "x2": 5529, "y2": 3638, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "BrownBear", "maxCount": 3, "probability": 100 },
@@ -1917,7 +1917,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5151, "y1": 3112, "z1": -128, "x2": 5252, "y2": 3213, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Hind", "maxCount": 2, "probability": 100 },
@@ -1935,7 +1935,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5972, "y1": 3723, "z1": -128, "x2": 6073, "y2": 3824, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Hind", "maxCount": 1, "probability": 100 },
@@ -1956,7 +1956,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5473, "y1": 3626, "z1": -128, "x2": 5574, "y2": 3727, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "BrownBear", "maxCount": 3, "probability": 100 },
@@ -1981,7 +1981,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5162, "y1": 3853, "z1": -128, "x2": 5227, "y2": 3918, "z2": 128 },
+    "homeRange": 32,
     "walkingRange": 45,
     "entries": [
       { "name": "Bull", "maxCount": 10, "probability": 100 },
@@ -1999,7 +1999,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5768, "y1": 3826, "z1": -128, "x2": 5869, "y2": 3927, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Rat", "maxCount": 1, "probability": 100 },
@@ -2018,7 +2018,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5485, "y1": 3066, "z1": -128, "x2": 5496, "y2": 3077, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 25,
     "entries": [
       { "name": "OphidianMatriarch", "maxCount": 1, "probability": 100 },
@@ -2038,7 +2038,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5870, "y1": 3625, "z1": -128, "x2": 5971, "y2": 3726, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Gazer", "maxCount": 1, "probability": 100 },
@@ -2059,7 +2059,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5770, "y1": 3625, "z1": -128, "x2": 5871, "y2": 3726, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "BrownBear", "maxCount": 3, "probability": 100 },
@@ -2084,7 +2084,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5471, "y1": 3825, "z1": -128, "x2": 5572, "y2": 3926, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Gazer", "maxCount": 1, "probability": 100 },
@@ -2105,7 +2105,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5301, "y1": 3351, "z1": -128, "x2": 5402, "y2": 3452, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "BrownBear", "maxCount": 6, "probability": 100 },
@@ -2130,7 +2130,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5869, "y1": 3825, "z1": -128, "x2": 5970, "y2": 3926, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Rat", "maxCount": 1, "probability": 100 },
@@ -2149,7 +2149,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5769, "y1": 3924, "z1": -128, "x2": 5870, "y2": 4025, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "BrownBear", "maxCount": 3, "probability": 100 },
@@ -2174,7 +2174,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5200, "y1": 3644, "z1": -128, "x2": 5241, "y2": 3685, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 25,
     "entries": [
       { "name": "BoneKnight", "maxCount": 3, "probability": 100 },
@@ -2195,7 +2195,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5461, "y1": 2321, "z1": -128, "x2": 5542, "y2": 2402, "z2": 128 },
+    "homeRange": 40,
     "walkingRange": 75,
     "entries": [
       { "name": "IceSerpent", "maxCount": 4, "probability": 100 },
@@ -2216,7 +2216,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5917, "y1": 2320, "z1": -128, "x2": 6018, "y2": 2421, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 75,
     "entries": [
       { "name": "IceSerpent", "maxCount": 6, "probability": 100 },
@@ -2237,7 +2237,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5669, "y1": 2707, "z1": -128, "x2": 5790, "y2": 2828, "z2": 128 },
+    "homeRange": 60,
     "walkingRange": 70,
     "entries": [
       { "name": "StoneGargoyle", "maxCount": 3, "probability": 100 },
@@ -2256,7 +2256,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5317, "y1": 3953, "z1": -128, "x2": 5418, "y2": 4054, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Mongbat", "maxCount": 4, "probability": 100 },
@@ -2273,7 +2273,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5671, "y1": 3925, "z1": -128, "x2": 5772, "y2": 4026, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Hind", "maxCount": 1, "probability": 100 },
@@ -2294,7 +2294,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5972, "y1": 3723, "z1": -128, "x2": 6073, "y2": 3824, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Rat", "maxCount": 1, "probability": 100 },
@@ -2313,7 +2313,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5473, "y1": 3626, "z1": -128, "x2": 5574, "y2": 3727, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Hind", "maxCount": 1, "probability": 100 },
@@ -2334,7 +2334,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5868, "y1": 3925, "z1": -128, "x2": 5969, "y2": 4026, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Gazer", "maxCount": 1, "probability": 100 },
@@ -2355,7 +2355,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5917, "y1": 2320, "z1": -128, "x2": 6018, "y2": 2421, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 75,
     "entries": [
       { "name": "PolarBear", "maxCount": 4, "probability": 100 }
@@ -2371,7 +2371,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5311, "y1": 2319, "z1": -128, "x2": 5392, "y2": 2400, "z2": 128 },
+    "homeRange": 40,
     "walkingRange": 75,
     "entries": [
       { "name": "IceSerpent", "maxCount": 4, "probability": 100 },
@@ -2392,7 +2392,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5441, "y1": 3069, "z1": -128, "x2": 5452, "y2": 3080, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 25,
     "entries": [
       { "name": "OphidianMatriarch", "maxCount": 1, "probability": 100 },
@@ -2412,7 +2412,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5671, "y1": 3625, "z1": -128, "x2": 5772, "y2": 3726, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "BrownBear", "maxCount": 3, "probability": 100 },
@@ -2437,7 +2437,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5768, "y1": 3826, "z1": -128, "x2": 5869, "y2": 3927, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "BrownBear", "maxCount": 3, "probability": 100 },
@@ -2462,7 +2462,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5762, "y1": 2583, "z1": -128, "x2": 5767, "y2": 2588, "z2": 128 },
+    "homeRange": 2,
     "walkingRange": 75,
     "entries": [
       { "name": "Imp", "maxCount": 2, "probability": 100 },
@@ -2479,7 +2479,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5769, "y1": 3924, "z1": -128, "x2": 5870, "y2": 4025, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Hind", "maxCount": 1, "probability": 100 },
@@ -2500,7 +2500,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5905, "y1": 3361, "z1": -128, "x2": 6066, "y2": 3522, "z2": 128 },
+    "homeRange": 80,
     "walkingRange": 90,
     "entries": [
       { "name": "GiantToad", "maxCount": 8, "probability": 100 },
@@ -2521,7 +2521,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5471, "y1": 3725, "z1": -128, "x2": 5572, "y2": 3826, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Rat", "maxCount": 1, "probability": 100 },
@@ -2540,7 +2540,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5905, "y1": 3361, "z1": -128, "x2": 6066, "y2": 3522, "z2": 128 },
+    "homeRange": 80,
     "walkingRange": 90,
     "entries": [
       { "name": "BullFrog", "maxCount": 15, "probability": 100 },
@@ -2559,7 +2559,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5573, "y1": 3626, "z1": -128, "x2": 5674, "y2": 3727, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Gazer", "maxCount": 1, "probability": 100 },
@@ -2580,7 +2580,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 6061, "y1": 2349, "z1": -128, "x2": 6122, "y2": 2410, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 60,
     "entries": [
       { "name": "IceSerpent", "maxCount": 6, "probability": 100 },
@@ -2601,7 +2601,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5574, "y1": 3925, "z1": -128, "x2": 5675, "y2": 4026, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "BrownBear", "maxCount": 3, "probability": 100 },
@@ -2626,7 +2626,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5428, "y1": 3537, "z1": -128, "x2": 5529, "y2": 3638, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Rat", "maxCount": 1, "probability": 100 },
@@ -2645,7 +2645,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5462, "y1": 3073, "z1": -128, "x2": 5473, "y2": 3084, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 25,
     "entries": [
       { "name": "OphidianMatriarch", "maxCount": 1, "probability": 100 },
@@ -2665,7 +2665,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5384, "y1": 3236, "z1": -128, "x2": 5497, "y2": 3349, "z2": 128 },
+    "homeRange": 56,
     "walkingRange": 62,
     "entries": [
       { "name": "Gorilla", "maxCount": 5, "probability": 100 },
@@ -2685,7 +2685,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5321, "y1": 3770, "z1": -128, "x2": 5422, "y2": 3871, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Rabbit", "maxCount": 20, "probability": 100 },
@@ -2707,7 +2707,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5972, "y1": 3921, "z1": -128, "x2": 6073, "y2": 4022, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Gazer", "maxCount": 1, "probability": 100 },
@@ -2728,7 +2728,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5571, "y1": 3725, "z1": -128, "x2": 5672, "y2": 3826, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Hind", "maxCount": 1, "probability": 100 },
@@ -2749,7 +2749,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5307, "y1": 2501, "z1": -128, "x2": 5608, "y2": 2802, "z2": 128 },
+    "homeRange": 150,
     "walkingRange": 150,
     "entries": [
       { "name": "StoneGargoyle", "maxCount": 3, "probability": 100 },
@@ -2768,7 +2768,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5571, "y1": 3725, "z1": -128, "x2": 5672, "y2": 3826, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Rat", "maxCount": 1, "probability": 100 },
@@ -2787,7 +2787,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5972, "y1": 3921, "z1": -128, "x2": 6073, "y2": 4022, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Hind", "maxCount": 1, "probability": 100 },
@@ -2808,7 +2808,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5972, "y1": 2824, "z1": -128, "x2": 6073, "y2": 2925, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Hind", "maxCount": 1, "probability": 100 },
@@ -2829,7 +2829,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5317, "y1": 3953, "z1": -128, "x2": 5418, "y2": 4054, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Rabbit", "maxCount": 20, "probability": 100 },
@@ -2851,7 +2851,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5770, "y1": 3725, "z1": -128, "x2": 5871, "y2": 3826, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "BrownBear", "maxCount": 3, "probability": 100 },
@@ -2876,7 +2876,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5200, "y1": 3399, "z1": -128, "x2": 5301, "y2": 3500, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Horse", "maxCount": 4, "probability": 100 },
@@ -2897,7 +2897,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5671, "y1": 3625, "z1": -128, "x2": 5772, "y2": 3726, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Gazer", "maxCount": 1, "probability": 100 },
@@ -2918,7 +2918,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5321, "y1": 3770, "z1": -128, "x2": 5422, "y2": 3871, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Mongbat", "maxCount": 4, "probability": 100 },
@@ -2935,7 +2935,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5573, "y1": 3626, "z1": -128, "x2": 5674, "y2": 3727, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Hind", "maxCount": 1, "probability": 100 },
@@ -2956,7 +2956,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5190, "y1": 3885, "z1": -128, "x2": 5211, "y2": 3906, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 20,
     "entries": [
       { "name": "Bull", "maxCount": 2, "probability": 100 },
@@ -2974,7 +2974,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5471, "y1": 3725, "z1": -128, "x2": 5572, "y2": 3826, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Hind", "maxCount": 1, "probability": 100 },
@@ -2995,7 +2995,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5495, "y1": 3914, "z1": -128, "x2": 5546, "y2": 3965, "z2": 128 },
+    "homeRange": 25,
     "walkingRange": 25,
     "entries": [
       { "name": "ForestOstard", "maxCount": 3, "probability": 100 },
@@ -3012,7 +3012,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5768, "y1": 3826, "z1": -128, "x2": 5869, "y2": 3927, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Gazer", "maxCount": 1, "probability": 100 },
@@ -3033,7 +3033,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5968, "y1": 3623, "z1": -128, "x2": 6069, "y2": 3724, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Hind", "maxCount": 1, "probability": 100 },
@@ -3054,7 +3054,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5403, "y1": 3072, "z1": -128, "x2": 5414, "y2": 3083, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 25,
     "entries": [
       { "name": "OphidianMatriarch", "maxCount": 1, "probability": 100 },
@@ -3074,7 +3074,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5416, "y1": 3955, "z1": -128, "x2": 5517, "y2": 4056, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Mongbat", "maxCount": 4, "probability": 100 },
@@ -3091,7 +3091,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5671, "y1": 3925, "z1": -128, "x2": 5772, "y2": 4026, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Gazer", "maxCount": 1, "probability": 100 },
@@ -3112,7 +3112,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5968, "y1": 3623, "z1": -128, "x2": 6069, "y2": 3724, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Gazer", "maxCount": 1, "probability": 100 },
@@ -3133,7 +3133,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5471, "y1": 3825, "z1": -128, "x2": 5572, "y2": 3926, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Rat", "maxCount": 1, "probability": 100 },
@@ -3152,7 +3152,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5972, "y1": 3921, "z1": -128, "x2": 6073, "y2": 4022, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "BrownBear", "maxCount": 3, "probability": 100 },
@@ -3177,7 +3177,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5768, "y1": 3826, "z1": -128, "x2": 5869, "y2": 3927, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Hind", "maxCount": 1, "probability": 100 },
@@ -3198,7 +3198,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5420, "y1": 2790, "z1": -128, "x2": 5621, "y2": 2991, "z2": 128 },
+    "homeRange": 100,
     "walkingRange": 100,
     "entries": [
       { "name": "StoneGargoyle", "maxCount": 3, "probability": 100 },
@@ -3217,7 +3217,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5420, "y1": 2790, "z1": -128, "x2": 5621, "y2": 2991, "z2": 128 },
+    "homeRange": 100,
     "walkingRange": 100,
     "entries": [
       { "name": "Imp", "maxCount": 10, "probability": 100 },
@@ -3238,7 +3238,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5307, "y1": 2501, "z1": -128, "x2": 5608, "y2": 2802, "z2": 128 },
+    "homeRange": 150,
     "walkingRange": 150,
     "entries": [
       { "name": "Imp", "maxCount": 15, "probability": 100 },
@@ -3259,7 +3259,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5869, "y1": 3825, "z1": -128, "x2": 5970, "y2": 3926, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Gazer", "maxCount": 1, "probability": 100 },
@@ -3280,7 +3280,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5870, "y1": 3625, "z1": -128, "x2": 5971, "y2": 3726, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "BrownBear", "maxCount": 3, "probability": 100 },
@@ -3305,7 +3305,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5461, "y1": 2321, "z1": -128, "x2": 5542, "y2": 2402, "z2": 128 },
+    "homeRange": 40,
     "walkingRange": 75,
     "entries": [
       { "name": "PolarBear", "maxCount": 5, "probability": 100 }
@@ -3321,7 +3321,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5318, "y1": 3837, "z1": -128, "x2": 5419, "y2": 3938, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Rabbit", "maxCount": 20, "probability": 100 },
@@ -3343,7 +3343,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5631, "y1": 2414, "z1": -128, "x2": 5792, "y2": 2575, "z2": 128 },
+    "homeRange": 80,
     "walkingRange": 80,
     "entries": [
       { "name": "Imp", "maxCount": 3, "probability": 100 },
@@ -3364,7 +3364,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5672, "y1": 3726, "z1": -128, "x2": 5773, "y2": 3827, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "BrownBear", "maxCount": 3, "probability": 100 },
@@ -3389,7 +3389,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5972, "y1": 3723, "z1": -128, "x2": 6073, "y2": 3824, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "BrownBear", "maxCount": 3, "probability": 100 },
@@ -3414,7 +3414,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5671, "y1": 3925, "z1": -128, "x2": 5772, "y2": 4026, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "BrownBear", "maxCount": 3, "probability": 100 },
@@ -3439,7 +3439,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 5202, "y1": 3609, "z1": -128, "x2": 5223, "y2": 3630, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 15,
     "entries": [
       { "name": "SavageRider", "maxCount": 3, "probability": 100 },

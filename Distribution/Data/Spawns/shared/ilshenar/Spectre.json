@@ -9,7 +9,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 1941, "y1": 1019, "z1": -128, "x2": 2022, "y2": 1100, "z2": 128 },
+    "homeRange": 40,
     "walkingRange": 40,
     "entries": [
       { "name": "Skeleton", "maxCount": 3, "probability": 100 },

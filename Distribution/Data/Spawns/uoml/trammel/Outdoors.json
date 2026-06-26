@@ -9,7 +9,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 3569, "y1": 2764, "z1": -128, "x2": 3670, "y2": 2865, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "HordeMinion", "maxCount": 17, "probability": 100 }
@@ -25,7 +25,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 3569, "y1": 2764, "z1": -128, "x2": 3670, "y2": 2865, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Mongbat", "maxCount": 17, "probability": 100 }
@@ -41,7 +41,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 3455, "y1": 2565, "z1": -128, "x2": 3516, "y2": 2626, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Brigand", "maxCount": 3, "probability": 100 },
@@ -64,7 +64,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 3396, "y1": 2691, "z1": -128, "x2": 3497, "y2": 2792, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Brigand", "maxCount": 7, "probability": 100 },
@@ -87,7 +87,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 3429, "y1": 2625, "z1": -128, "x2": 3490, "y2": 2686, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Brigand", "maxCount": 3, "probability": 100 },
@@ -110,7 +110,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 3349, "y1": 2663, "z1": -128, "x2": 3410, "y2": 2724, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Brigand", "maxCount": 3, "probability": 100 },
@@ -133,7 +133,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 3371, "y1": 2552, "z1": -128, "x2": 3452, "y2": 2633, "z2": 128 },
+    "homeRange": 40,
     "walkingRange": 40,
     "entries": [
       { "name": "Brigand", "maxCount": 6, "probability": 100 },
@@ -156,7 +156,7 @@
     "minDelay": "01:00:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 3414, "y1": 2453, "z1": -128, "x2": 3515, "y2": 2554, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Brigand", "maxCount": 7, "probability": 100 },
@@ -179,7 +179,7 @@
     "minDelay": "00:45:00",
     "maxDelay": "01:00:00",
     "team": 0,
-    "spawnBounds": { "x1": 3601, "y1": 2814, "z1": -128, "x2": 3604, "y2": 2817, "z2": 128 },
+    "homeRange": 1,
     "walkingRange": 10,
     "entries": [
       { "name": "OrcCamp", "maxCount": 1, "probability": 100 },

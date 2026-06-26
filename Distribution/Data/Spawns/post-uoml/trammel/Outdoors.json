@@ -9,7 +9,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3590, "y1": 2449, "z1": -128, "x2": 3711, "y2": 2570, "z2": 128 },
+    "homeRange": 60,
     "walkingRange": 60,
     "entries": [
       { "name": "Zombie", "maxCount": 70, "probability": 100 },
@@ -27,7 +27,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3588, "y1": 2440, "z1": -128, "x2": 3609, "y2": 2461, "z2": 128 },
+    "homeRange": 10,
     "walkingRange": 10,
     "entries": [
       { "name": "spellbinder", "maxCount": 4, "probability": 100 },
@@ -45,7 +45,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3629, "y1": 2619, "z1": -128, "x2": 3642, "y2": 2632, "z2": 128 },
+    "homeRange": 6,
     "walkingRange": 15,
     "entries": [
       { "name": "Skeleton", "maxCount": 7, "probability": 100 }
@@ -61,7 +61,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3643, "y1": 2619, "z1": -128, "x2": 3660, "y2": 2636, "z2": 128 },
+    "homeRange": 8,
     "walkingRange": 15,
     "entries": [
       { "name": "Skeleton", "maxCount": 10, "probability": 100 }
@@ -77,7 +77,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3617, "y1": 2586, "z1": -128, "x2": 3634, "y2": 2603, "z2": 128 },
+    "homeRange": 8,
     "walkingRange": 15,
     "entries": [
       { "name": "Zombie", "maxCount": 10, "probability": 100 }
@@ -93,7 +93,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3641, "y1": 2583, "z1": -128, "x2": 3658, "y2": 2600, "z2": 128 },
+    "homeRange": 8,
     "walkingRange": 15,
     "entries": [
       { "name": "Zombie", "maxCount": 10, "probability": 100 }
@@ -109,7 +109,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3614, "y1": 2610, "z1": -128, "x2": 3623, "y2": 2619, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": 4,
     "entries": [
       { "name": "Healer", "maxCount": 1, "probability": 100 }
@@ -125,7 +125,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3685, "y1": 2630, "z1": -128, "x2": 3766, "y2": 2711, "z2": 128 },
+    "homeRange": 40,
     "walkingRange": 40,
     "entries": [
       { "name": "Sheep", "maxCount": 10, "probability": 100 }
@@ -141,7 +141,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3687, "y1": 2563, "z1": -128, "x2": 3768, "y2": 2644, "z2": 128 },
+    "homeRange": 40,
     "walkingRange": 40,
     "entries": [
       { "name": "Sheep", "maxCount": 10, "probability": 100 }
@@ -157,7 +157,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3726, "y1": 2574, "z1": -128, "x2": 3751, "y2": 2599, "z2": 128 },
+    "homeRange": 12,
     "walkingRange": 12,
     "entries": [
       { "name": "Pumpkin", "maxCount": 40, "probability": 100 }
@@ -173,7 +173,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3705, "y1": 2565, "z1": -128, "x2": 3718, "y2": 2578, "z2": 128 },
+    "homeRange": 6,
     "walkingRange": 6,
     "entries": [
       { "name": "Pumpkin", "maxCount": 6, "probability": 100 }
@@ -189,7 +189,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3726, "y1": 2598, "z1": -128, "x2": 3751, "y2": 2623, "z2": 128 },
+    "homeRange": 12,
     "walkingRange": 12,
     "entries": [
       { "name": "Pumpkin", "maxCount": 40, "probability": 100 }
@@ -205,7 +205,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3711, "y1": 2607, "z1": -128, "x2": 3722, "y2": 2618, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 6,
     "entries": [
       { "name": "Pumpkin", "maxCount": 5, "probability": 100 }
@@ -221,7 +221,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3711, "y1": 2612, "z1": -128, "x2": 3722, "y2": 2623, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 6,
     "entries": [
       { "name": "Pumpkin", "maxCount": 5, "probability": 100 }
@@ -237,7 +237,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3711, "y1": 2619, "z1": -128, "x2": 3722, "y2": 2630, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 6,
     "entries": [
       { "name": "Pumpkin", "maxCount": 5, "probability": 100 }
@@ -253,7 +253,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3732, "y1": 2648, "z1": -128, "x2": 3757, "y2": 2673, "z2": 128 },
+    "homeRange": 12,
     "walkingRange": 12,
     "entries": [
       { "name": "Pumpkin", "maxCount": 50, "probability": 100 }
@@ -269,7 +269,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3711, "y1": 2627, "z1": -128, "x2": 3722, "y2": 2638, "z2": 128 },
+    "homeRange": 5,
     "walkingRange": 6,
     "entries": [
       { "name": "Pumpkin", "maxCount": 5, "probability": 100 }
@@ -285,7 +285,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3745, "y1": 2698, "z1": -128, "x2": 3758, "y2": 2711, "z2": 128 },
+    "homeRange": 6,
     "walkingRange": 6,
     "entries": [
       { "name": "Pumpkin", "maxCount": 12, "probability": 100 }
@@ -301,7 +301,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3705, "y1": 2663, "z1": -128, "x2": 3718, "y2": 2676, "z2": 128 },
+    "homeRange": 6,
     "walkingRange": 6,
     "entries": [
       { "name": "Pumpkin", "maxCount": 8, "probability": 100 }
@@ -317,7 +317,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3705, "y1": 2684, "z1": -128, "x2": 3718, "y2": 2697, "z2": 128 },
+    "homeRange": 6,
     "walkingRange": 6,
     "entries": [
       { "name": "Pumpkin", "maxCount": 8, "probability": 100 }
@@ -333,7 +333,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3705, "y1": 2673, "z1": -128, "x2": 3718, "y2": 2686, "z2": 128 },
+    "homeRange": 6,
     "walkingRange": 6,
     "entries": [
       { "name": "Pumpkin", "maxCount": 8, "probability": 100 }
@@ -349,7 +349,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3752, "y1": 2751, "z1": -128, "x2": 3793, "y2": 2792, "z2": 128 },
+    "homeRange": 20,
     "walkingRange": 30,
     "entries": [
       { "name": "Corpser", "maxCount": 2, "probability": 100 },
@@ -366,7 +366,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3346, "y1": 2595, "z1": -128, "x2": 3447, "y2": 2696, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 50,
     "entries": [
       { "name": "Mongbat", "maxCount": 14, "probability": 100 },
@@ -399,7 +399,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3702, "y1": 2480, "z1": -128, "x2": 3783, "y2": 2561, "z2": 128 },
+    "homeRange": 40,
     "walkingRange": 40,
     "entries": [
       { "name": "Mongbat", "maxCount": 12, "probability": 100 },
@@ -431,7 +431,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3373, "y1": 2542, "z1": -128, "x2": 3434, "y2": 2603, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 30,
     "entries": [
       { "name": "Mongbat", "maxCount": 6, "probability": 100 },
@@ -463,7 +463,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3643, "y1": 2375, "z1": -128, "x2": 3738, "y2": 2470, "z2": 128 },
+    "homeRange": 47,
     "walkingRange": 50,
     "entries": [
       { "name": "Mongbat", "maxCount": 12, "probability": 100 },
@@ -495,7 +495,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3590, "y1": 2385, "z1": -128, "x2": 3641, "y2": 2436, "z2": 128 },
+    "homeRange": 25,
     "walkingRange": 30,
     "entries": [
       { "name": "Mongbat", "maxCount": 6, "probability": 100 },
@@ -527,7 +527,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3509, "y1": 2369, "z1": -128, "x2": 3590, "y2": 2450, "z2": 128 },
+    "homeRange": 40,
     "walkingRange": 40,
     "entries": [
       { "name": "Mongbat", "maxCount": 10, "probability": 100 },
@@ -559,7 +559,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3458, "y1": 2364, "z1": -128, "x2": 3509, "y2": 2415, "z2": 128 },
+    "homeRange": 25,
     "walkingRange": 25,
     "entries": [
       { "name": "Mongbat", "maxCount": 6, "probability": 100 },
@@ -591,7 +591,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3545, "y1": 2493, "z1": -128, "x2": 3606, "y2": 2554, "z2": 128 },
+    "homeRange": 30,
     "walkingRange": 40,
     "entries": [
       { "name": "Mongbat", "maxCount": 6, "probability": 100 },
@@ -623,7 +623,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3499, "y1": 2434, "z1": -128, "x2": 3550, "y2": 2485, "z2": 128 },
+    "homeRange": 25,
     "walkingRange": 25,
     "entries": [
       { "name": "Mongbat", "maxCount": 6, "probability": 100 },
@@ -655,7 +655,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3457, "y1": 2434, "z1": -128, "x2": 3508, "y2": 2485, "z2": 128 },
+    "homeRange": 25,
     "walkingRange": 25,
     "entries": [
       { "name": "Mongbat", "maxCount": 6, "probability": 100 },
@@ -687,7 +687,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3411, "y1": 2461, "z1": -128, "x2": 3462, "y2": 2512, "z2": 128 },
+    "homeRange": 25,
     "walkingRange": 25,
     "entries": [
       { "name": "Mongbat", "maxCount": 6, "probability": 100 },
@@ -719,7 +719,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3400, "y1": 2684, "z1": -128, "x2": 3501, "y2": 2785, "z2": 128 },
+    "homeRange": 50,
     "walkingRange": 70,
     "entries": [
       { "name": "Mongbat", "maxCount": 36, "probability": 100 },
@@ -753,7 +753,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3696, "y1": 2695, "z1": -128, "x2": 3705, "y2": 2704, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": 4,
     "entries": [
       { "name": "BrigandCamp", "maxCount": 1, "probability": 100 }
@@ -769,7 +769,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3749, "y1": 2701, "z1": -128, "x2": 3758, "y2": 2710, "z2": 128 },
+    "homeRange": 4,
     "walkingRange": 4,
     "entries": [
       { "name": "BrigandCamp", "maxCount": 1, "probability": 100 }
@@ -785,7 +785,7 @@
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": { "x1": 3764, "y1": 2662, "z1": 62, "x2": 3765, "y2": 2663, "z2": 62 },
+    "homeRange": 0,
     "walkingRange": 0,
     "entries": [
       { "name": "BrigandCamp", "maxCount": 1, "probability": 100 }

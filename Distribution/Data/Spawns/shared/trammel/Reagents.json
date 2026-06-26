@@ -9,7 +9,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 4082, "y1": 3500, "z1": -128, "x2": 4483, "y2": 3901, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -32,7 +32,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 2550, "y1": 168, "z1": -128, "x2": 2951, "y2": 569, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -55,7 +55,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 2930, "y1": -84, "z1": -128, "x2": 3331, "y2": 317, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -78,7 +78,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 870, "y1": 2120, "z1": -128, "x2": 1271, "y2": 2521, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -101,7 +101,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 1882, "y1": -140, "z1": -128, "x2": 2283, "y2": 261, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -124,7 +124,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 5474, "y1": 2920, "z1": -128, "x2": 5875, "y2": 3321, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -147,7 +147,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 2274, "y1": 3756, "z1": -128, "x2": 2675, "y2": 4157, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -170,7 +170,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 1854, "y1": 316, "z1": -128, "x2": 2255, "y2": 717, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -193,7 +193,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 1494, "y1": 488, "z1": -128, "x2": 1895, "y2": 889, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -216,7 +216,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 1366, "y1": 940, "z1": -128, "x2": 1767, "y2": 1341, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -239,7 +239,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 2026, "y1": 3332, "z1": -128, "x2": 2427, "y2": 3733, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -262,7 +262,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 5726, "y1": 3688, "z1": -128, "x2": 6127, "y2": 4089, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -285,7 +285,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 2174, "y1": 452, "z1": -128, "x2": 2575, "y2": 853, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -308,7 +308,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 546, "y1": 436, "z1": -128, "x2": 947, "y2": 837, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -331,7 +331,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 1382, "y1": 1828, "z1": -128, "x2": 1783, "y2": 2229, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -354,7 +354,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 5734, "y1": 3236, "z1": -128, "x2": 6135, "y2": 3637, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -377,7 +377,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 502, "y1": 1552, "z1": -128, "x2": 903, "y2": 1953, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -400,7 +400,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 934, "y1": 764, "z1": -128, "x2": 1335, "y2": 1165, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -423,7 +423,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 4510, "y1": 3596, "z1": -128, "x2": 4911, "y2": 3997, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -446,7 +446,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 1210, "y1": 3596, "z1": -128, "x2": 1611, "y2": 3997, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -469,7 +469,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 5418, "y1": 2544, "z1": -128, "x2": 5819, "y2": 2945, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -492,7 +492,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 518, "y1": 980, "z1": -128, "x2": 919, "y2": 1381, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -515,7 +515,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 3474, "y1": 1016, "z1": -128, "x2": 3875, "y2": 1417, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -538,7 +538,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 3514, "y1": 1952, "z1": -128, "x2": 3915, "y2": 2353, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -561,7 +561,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 1734, "y1": 2128, "z1": -128, "x2": 2135, "y2": 2529, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -584,7 +584,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 5274, "y1": 3704, "z1": -128, "x2": 5675, "y2": 4105, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -607,7 +607,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 4370, "y1": 3140, "z1": -128, "x2": 4771, "y2": 3541, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -630,7 +630,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 1646, "y1": 3060, "z1": -128, "x2": 2047, "y2": 3461, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -653,7 +653,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 950, "y1": 1676, "z1": -128, "x2": 1351, "y2": 2077, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -676,7 +676,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 3402, "y1": 2748, "z1": -128, "x2": 3803, "y2": 3149, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -699,7 +699,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 1266, "y1": 2832, "z1": -128, "x2": 1667, "y2": 3233, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -722,7 +722,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 1290, "y1": 2272, "z1": -128, "x2": 1691, "y2": 2673, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -745,7 +745,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 914, "y1": 1216, "z1": -128, "x2": 1315, "y2": 1617, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -768,7 +768,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 2654, "y1": 616, "z1": -128, "x2": 3055, "y2": 1017, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -791,7 +791,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 166, "y1": 700, "z1": -128, "x2": 567, "y2": 1101, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -814,7 +814,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 5766, "y1": 2256, "z1": -128, "x2": 6167, "y2": 2657, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -837,7 +837,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 142, "y1": 1264, "z1": -128, "x2": 543, "y2": 1665, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -860,7 +860,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 5262, "y1": 3252, "z1": -128, "x2": 5663, "y2": 3653, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -883,7 +883,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 3338, "y1": 2336, "z1": -128, "x2": 3739, "y2": 2737, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -906,7 +906,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 878, "y1": 2572, "z1": -128, "x2": 1279, "y2": 2973, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -929,7 +929,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 1458, "y1": 36, "z1": -128, "x2": 1859, "y2": 437, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -952,7 +952,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 1086, "y1": 304, "z1": -128, "x2": 1487, "y2": 705, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -975,7 +975,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 4226, "y1": 828, "z1": -128, "x2": 4627, "y2": 1229, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -998,7 +998,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 5034, "y1": 2868, "z1": -128, "x2": 5435, "y2": 3269, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -1021,7 +1021,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 5126, "y1": 2292, "z1": -128, "x2": 5527, "y2": 2693, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -1044,7 +1044,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 2534, "y1": 1968, "z1": -128, "x2": 2935, "y2": 2369, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -1067,7 +1067,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 2998, "y1": 304, "z1": -128, "x2": 3399, "y2": 705, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -1090,7 +1090,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 2290, "y1": 896, "z1": -128, "x2": 2691, "y2": 1297, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -1113,7 +1113,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 4390, "y1": 1248, "z1": -128, "x2": 4791, "y2": 1649, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -1136,7 +1136,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 2730, "y1": 3276, "z1": -128, "x2": 3131, "y2": 3677, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -1159,7 +1159,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 5842, "y1": 2716, "z1": -128, "x2": 6243, "y2": 3117, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -1182,7 +1182,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 1738, "y1": 1208, "z1": -128, "x2": 2139, "y2": 1609, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -1205,7 +1205,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 3794, "y1": 128, "z1": -128, "x2": 4195, "y2": 529, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -1228,7 +1228,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 922, "y1": 3324, "z1": -128, "x2": 1323, "y2": 3725, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -1251,7 +1251,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 2322, "y1": -116, "z1": -128, "x2": 2723, "y2": 285, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -1274,7 +1274,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 1862, "y1": 764, "z1": -128, "x2": 2263, "y2": 1165, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -1297,7 +1297,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 442, "y1": 2016, "z1": -128, "x2": 843, "y2": 2417, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -1320,7 +1320,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 3966, "y1": 384, "z1": -128, "x2": 4367, "y2": 785, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -1343,7 +1343,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 1314, "y1": 1384, "z1": -128, "x2": 1715, "y2": 1785, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
@@ -1366,7 +1366,7 @@
     "minDelay": "00:11:00",
     "maxDelay": "00:23:00",
     "team": 0,
-    "spawnBounds": { "x1": 1650, "y1": 2596, "z1": -128, "x2": 2051, "y2": 2997, "z2": 128 },
+    "homeRange": 200,
     "walkingRange": 200,
     "entries": [
       { "name": "BlackPearl", "maxCount": 160, "probability": 100 },
