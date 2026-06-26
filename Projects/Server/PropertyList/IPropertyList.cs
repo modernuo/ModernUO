@@ -13,6 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
 using System.Runtime.CompilerServices;
 using Server.Text;
 
@@ -28,8 +29,17 @@ public interface IPropertyList : ISelfInterpolatedStringHandler
     /** Convenience method for $"{argument}". */
     public void Add(int number, string argument);
 
-    /** Convenience method for $"{text}". */
-    public void Add(string text);
+    /** Convenience method for span-based text without allocating a string. */
+    public void Add(ReadOnlySpan<char> argument);
+
+    /** Convenience method for span-based text without allocating a string. */
+    public void Add(int number, ReadOnlySpan<char> argument);
+
+    /** Emits newline-joined text across multiple properties so none exceeds the legacy client's per-property buffer. */
+    public void AddChunked(ReadOnlySpan<char> text);
+
+    /** Builder for variable-length multi-line free text; flushes via AddChunked on dispose. */
+    public OplTextBlock TextBlock();
 
     /** Convenience method for $"{value}". */
     public void Add(int number, int value);

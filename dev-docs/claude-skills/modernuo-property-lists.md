@@ -26,11 +26,14 @@ description: >
 ```csharp
 public interface IPropertyList
 {
-    void Add(int number);                    // Cliloc number only
-    void Add(int number, string argument);   // Cliloc with ~1_val~ arg
-    void Add(string text);                   // Raw string (uses internal cliloc)
-    void Add(int number, int value);         // Cliloc with int arg
-    void AddLocalized(int value);            // Cliloc number as value
+    void Add(int number);                     // Cliloc number only
+    void Add(int number, string argument);    // Cliloc with ~1_val~ arg
+    void Add(ReadOnlySpan<char> argument);    // Raw text, no string alloc (uses passthrough cliloc)
+    void Add(int number, ReadOnlySpan<char> argument);
+    void AddChunked(ReadOnlySpan<char> text); // Newline-joined text, split across properties
+    OplTextBlock TextBlock();                 // Builder that flushes via AddChunked on dispose
+    void Add(int number, int value);          // Cliloc with int arg
+    void AddLocalized(int value);             // Cliloc number as value
     void AddLocalized(int number, int value); // Cliloc wrapper for cliloc
 
     // String interpolation overloads
@@ -38,6 +41,9 @@ public interface IPropertyList
     void Add(int number, ref InterpolatedStringHandler handler);
 }
 ```
+
+> No `Add(string)` overload — pass a span (`text.AsSpan()`) or, preferably, an interpolated `$"..."`
+> literal so the handler formats straight into the pooled buffer.
 
 ## Patterns
 
@@ -177,6 +183,29 @@ public override void GetProperties(IPropertyList list)
 }
 ```
 
+### Multi-Line Free Text (`AddChunked` / `OplTextBlock`)
+
+For variable-length, free-form (non-cliloc) tooltip text — e.g. a consolidated attribute dump or
+staged ID text — **never emit it as one property**. The legacy 2D client copies each OPL property into
+a fixed ~512-char buffer; a longer property smashes the client heap and crashes it.
+`ObjectPropertyList.MaxArgumentLength` (504) is the safe per-property cap.
+
+Two safe APIs split `\n`-joined text across multiple passthrough-cliloc properties (each ≤ cap):
+
+```csharp
+// Already have a '\n'-joined string? Use the IPropertyList primitive directly:
+list.AddChunked(_description);
+
+// Building lines conditionally? Use the OplTextBlock builder (flushes via AddChunked on dispose):
+using var block = list.TextBlock();         // IPropertyList.TextBlock()
+block.Add($"Lower Parry Cap {cap}%");       // zero-alloc interpolated overload
+block.Add("Cannot be repaired".AsSpan());   // plain span, no string alloc
+```
+
+- Lines join with `\n`; empty lines are skipped; no lines → nothing emitted.
+- `block.Add($"...")` is a real `[InterpolatedStringHandler]` — same hole anti-patterns apply (no `.ToString()`, ternaries, concat).
+- `OplTextBlock` is a `ref struct` for the single-threaded build pass — always `using`, never store/await across it.
+
 ## Common Cliloc Numbers
 
 | Number | Text | Usage |
@@ -205,6 +234,7 @@ public override void GetProperties(IPropertyList list)
 - **Not using cliloc**: Raw strings don't get localized
 - **Excessive rebuilds**: Don't call `InvalidateProperties()` in tight loops
 - **Assuming tooltip support**: Check `ObjectPropertyList.Enabled` if needed
+- **One giant `Add()` for multi-line text**: A property over ~512 chars crashes the legacy 2D client. Use `AddChunked`/`OplTextBlock` for variable-length free text
 
 ## Real Examples
 - Item properties: `Projects/Server/Items/Item.cs` (AddNameProperties, GetProperties)
