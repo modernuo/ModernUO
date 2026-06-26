@@ -30,7 +30,7 @@ public static class SpawnerJsonSerializer
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(SpawnerJsonSerializer));
 
-    private static JsonDerivedType[] _derivedTypes = Array.Empty<JsonDerivedType>();
+    private static JsonDerivedType[] _derivedTypes;
     private static JsonSerializerOptions _options;
 
     /// <summary>
@@ -92,6 +92,7 @@ public static class SpawnerJsonSerializer
 
         var attr = (JsonDiscoverableTypeAttribute)Attribute.GetCustomAttribute(
             type, typeof(JsonDiscoverableTypeAttribute), false);
+
         var discriminator = attr?.Discriminator ?? type.Name;
         if (byDiscriminator.TryGetValue(discriminator, out var existing))
         {
@@ -169,8 +170,7 @@ public static class SpawnerJsonSerializer
     }
 
     // --- Compact writer (matches the on-disk spawn-file layout used by [ExportSpawners) ---
-
-    private const int CompactPrintWidth = 100;
+    private const int CompactPrintWidth = 125;
 
     private static readonly JsonSerializerOptions _scalarOptions = new()
     {
@@ -179,8 +179,8 @@ public static class SpawnerJsonSerializer
 
     /// <summary>
     /// Serializes to the compact spawn-file layout: a container is inline only when all its values
-    /// are scalars and the line fits within 100 columns; otherwise it expands (2-space indent).
-    /// UTF-8, LF, no BOM. Admin/cold path.
+    /// are scalars and the line fits within 125 characters; otherwise it expands (2-space indent).
+    /// UTF-8, LF. Admin/cold path.
     /// </summary>
     public static string SerializeCompact<T>(T value)
     {
