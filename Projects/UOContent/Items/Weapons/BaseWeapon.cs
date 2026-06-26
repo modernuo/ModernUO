@@ -2998,7 +2998,7 @@ public abstract partial class BaseWeapon
             list.Add(1072792); // Balanced
         }
 
-        WeaponAttributes.GetProperties(list, lowerStatReq: GetLowerStatReq());
+        WeaponAttributes.GetProperties(list);
 
         if (ImmolatingWeaponSpell.IsImmolating(this))
         {
@@ -3017,6 +3017,12 @@ public abstract partial class BaseWeapon
             luckBonus: GetLuckBonus()
         );
 
+        var lowerStatReq = GetLowerStatReq();
+        if (lowerStatReq != 0)
+        {
+            list.Add(1060435, lowerStatReq); // lower requirements ~1_val~%
+        }
+
         GetDamageTypes(
             null,
             out var phys,
@@ -3033,14 +3039,14 @@ public abstract partial class BaseWeapon
             list.Add(1060403, phys); // physical damage ~1_val~%
         }
 
-        if (fire != 0)
-        {
-            list.Add(1060405, fire); // fire damage ~1_val~%
-        }
-
         if (cold != 0)
         {
             list.Add(1060404, cold); // cold damage ~1_val~%
+        }
+
+        if (fire != 0)
+        {
+            list.Add(1060405, fire); // fire damage ~1_val~%
         }
 
         if (pois != 0)
@@ -3117,6 +3123,11 @@ public abstract partial class BaseWeapon
                 case SkillName.Archery:
                     {
                         list.Add(1061175); // skill required: archery
+                        break;
+                    }
+                case SkillName.Throwing:
+                    {
+                        list.Add(1112075); // skill required: throwing
                         break;
                     }
             }

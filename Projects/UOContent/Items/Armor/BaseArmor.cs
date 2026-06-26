@@ -1323,7 +1323,7 @@ namespace Server.Items
                 list.Add(1061078, prop); // artifact rarity ~1_val~
             }
 
-            ArmorAttributes.GetProperties(list, lowerStatReq: GetLowerStatReq());
+            ArmorAttributes.GetProperties(list);
 
             Attributes.GetProperties(list, luckBonus: GetLuckBonus());
 
@@ -1332,6 +1332,12 @@ namespace Server.Items
             if ((prop = GetDurabilityBonus()) > 0)
             {
                 list.Add(1060410, prop); // durability ~1_val~%
+            }
+
+            var lowerStatReq = GetLowerStatReq();
+            if (lowerStatReq != 0)
+            {
+                list.Add(1060435, lowerStatReq); // lower requirements ~1_val~%
             }
 
             if ((prop = ComputeStatReq(StatType.Str)) > 0)
