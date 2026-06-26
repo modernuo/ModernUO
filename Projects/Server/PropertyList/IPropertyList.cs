@@ -38,6 +38,9 @@ public interface IPropertyList : ISelfInterpolatedStringHandler
     /** Emits newline-joined text across multiple properties so none exceeds the legacy client's per-property buffer. */
     public void AddChunked(ReadOnlySpan<char> text);
 
+    /** Builder for variable-length multi-line free text; flushes via AddChunked on dispose. */
+    public OplTextBlock TextBlock();
+
     /** Convenience method for $"{value}". */
     public void Add(int number, int value);
 
