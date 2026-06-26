@@ -22,17 +22,14 @@ using Server.Regions;
 namespace Server.Engines.Spawners;
 
 /// <summary>
-/// Plain data carrier for spawner JSON. System.Text.Json deserializes into these records
-/// (never a live Item), so a malformed file fails as GC only. <see cref="ToSpawner"/> builds
-/// the real spawner from a fully-validated DTO. No nullable types: the serializer options use
-/// <c>WhenWritingDefault</c> so optional fields are omitted at their default, mandatory fields
-/// are force-written with <c>[JsonIgnore(Condition = Never)]</c>, and fields whose "omit" value
-/// is not the CLR default (maxSpawnAttempts, spawnPositionMode) are mapped to the default in
-/// the producing ToDto. <c>[JsonPropertyOrder]</c> preserves the on-disk field order.
+/// Plain data carrier for spawner JSON. STJ deserializes into these records (never a live Item),
+/// so a malformed file fails as GC only; <see cref="ToSpawner"/> builds the spawner from a
+/// validated DTO. Options use <c>WhenWritingDefault</c>; mandatory fields force-write via
+/// <c>[JsonIgnore(Condition = Never)]</c> and <c>[JsonPropertyOrder]</c> sets the on-disk order.
 /// </summary>
 public abstract record SpawnerDto
 {
-    // --- Mandatory: always written (overrides the options' WhenWritingDefault) ---
+    // Mandatory: always written.
     [JsonPropertyName("guid")]
     [JsonPropertyOrder(0)]
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
@@ -68,7 +65,7 @@ public abstract record SpawnerDto
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public TimeSpan MaxDelay { get; init; }
 
-    // --- Optional: omitted at default via WhenWritingDefault (spawnBounds/region are on subtypes, order 8) ---
+    // Optional: omitted at default (spawnBounds/region live on the subtypes at order 8).
     [JsonPropertyName("team")]
     [JsonPropertyOrder(7)]
     public int Team { get; init; }
@@ -94,9 +91,8 @@ public abstract record SpawnerDto
     [JsonPropertyOrder(13)]
     public int MaxSpawnAttempts { get; init; }
 
-    // Compact square-bounds form. -1 = "not a homeRange square" (use spawnBounds instead). Written
-    // only when >= 0 (SpawnerJsonSerializer sets ShouldSerialize: hr >= 0, since 0 is a valid radius
-    // that WhenWritingDefault cannot emit). On read it reconstructs SpawnBounds in ApplyDto.
+    // Compact square-bounds form, -1 when absent. Written only when >= 0 (ShouldSerialize, since 0
+    // is a valid radius WhenWritingDefault cannot emit); reconstructs SpawnBounds in ApplyDto.
     [JsonPropertyName("homeRange")]
     [JsonPropertyOrder(8)]
     public int HomeRange { get; init; } = -1;
@@ -115,8 +111,7 @@ public abstract record SpawnerDto
         }
         catch
         {
-            // CreateEmpty already registered the Item in the world; if population throws,
-            // delete it here so no orphan can escape (the import catch can't reach it).
+            // CreateEmpty registered the Item; delete it if population throws so no orphan escapes.
             spawner.Delete();
             throw;
         }

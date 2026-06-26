@@ -125,8 +125,7 @@ public static class SpawnerJsonSerializer
     public static JsonSerializerOptions Options =>
         _options ??= new JsonSerializerOptions(JsonConfig.GetOptions(new TextDefinitionConverterFactory()))
         {
-            // Optional DTO fields are omitted at their CLR default; mandatory fields force-write with
-            // [JsonIgnore(Condition = Never)]. (homeRange is special-cased below since 0 is valid.)
+            // Optional fields omit at default; mandatory ones force-write via [JsonIgnore(Never)].
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault,
             TypeInfoResolver = new DefaultJsonTypeInfoResolver
             {
@@ -152,8 +151,7 @@ public static class SpawnerJsonSerializer
         }
     }
 
-    // homeRange uses -1 as the "absent" sentinel (a real radius is >= 0, and 0 is a valid radius that
-    // WhenWritingDefault could not emit). Write it only when it represents a real homeRange square.
+    // homeRange writes only when >= 0 (0 is a valid radius WhenWritingDefault could not emit).
     private static void ConfigureHomeRange(JsonTypeInfo typeInfo)
     {
         if (!typeInfo.Type.IsAssignableTo(typeof(SpawnerDto)))
@@ -180,10 +178,9 @@ public static class SpawnerJsonSerializer
     };
 
     /// <summary>
-    /// Serializes <paramref name="value"/> (e.g. a <c>List&lt;SpawnerDto&gt;</c>) to the compact
-    /// spawn-file layout: a container renders inline only when all its values are scalars and the
-    /// line fits within 100 columns; otherwise it expands with 2-space indentation. UTF-8, LF, no
-    /// BOM. Admin/cold path — favors clarity over allocation.
+    /// Serializes to the compact spawn-file layout: a container is inline only when all its values
+    /// are scalars and the line fits within 100 columns; otherwise it expands (2-space indent).
+    /// UTF-8, LF, no BOM. Admin/cold path.
     /// </summary>
     public static string SerializeCompact<T>(T value)
     {

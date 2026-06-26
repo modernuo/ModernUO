@@ -87,24 +87,20 @@ public abstract partial class BaseSpawner
         }
     }
 
-    // Export helpers for values whose ToDto form differs from the public property. Options use
-    // WhenWritingDefault, so non-CLR-default "omit" values are mapped onto the default to drop out.
-    // Fields with a plain matching public property (Guid/MinDelay/MaxDelay/Team/SpawnLocationIsHome)
-    // are referenced directly in ToDto and need no helper.
+    // ToDto helpers for values whose export form differs from the public property. (Guid/MinDelay/
+    // MaxDelay/Team/SpawnLocationIsHome match their property and are referenced directly in ToDto.)
 
-    // The public WalkingRange property is computed (falls back to HomeRange), so it cannot be used
-    // here without losing the raw -1 round-trip.
+    // Raw field; the public WalkingRange is computed (falls back to HomeRange).
     private protected int DtoWalkingRange => _walkingRange;
 
-    // Abandoned is a transient "gave up" runtime state, not persisted -> map to Automatic (omitted).
+    // Abandoned is a transient runtime state, not persisted -> map to Automatic (omitted).
     private protected SpawnPositionMode DtoSpawnPositionMode =>
         _spawnPositionMode == SpawnPositionMode.Abandoned ? SpawnPositionMode.Automatic : _spawnPositionMode;
 
-    // Runtime treats 0 identically to DefaultMaxSpawnAttempts(10) -> map the default to 0 (omitted).
+    // Runtime treats 0 as DefaultMaxSpawnAttempts -> map the default to 0 (omitted).
     private protected int DtoMaxSpawnAttempts => _maxSpawnAttempts == DefaultMaxSpawnAttempts ? 0 : _maxSpawnAttempts;
 
-    // The homeRange radius if SpawnBounds is EXACTLY what that radius reconstructs (square, centered,
-    // standard z/depth) so the round-trip is lossless; otherwise -1 (write spawnBounds instead).
+    // The radius if SpawnBounds is exactly what it reconstructs (lossless square); otherwise -1.
     private protected int DtoHomeRange
     {
         get
