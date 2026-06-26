@@ -3,31 +3,16 @@
     "$type": "Spawner",
     "guid": "53f1207a-7347-4899-8c9d-020fdd199822",
     "name": "Spawner (126)",
-    "location": [
-      1651,
-      612,
-      22
-    ],
+    "location": [1651, 612, 22],
     "map": "Trammel",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 1631,
-      "y1": 592,
-      "z1": -128,
-      "x2": 1672,
-      "y2": 633,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 1631, "y1": 592, "z1": -128, "x2": 1672, "y2": 633, "z2": 128 },
     "walkingRange": 20,
     "entries": [
-      {
-        "name": "TimberWolf",
-        "maxCount": 3,
-        "probability": 100
-      }
+      { "name": "TimberWolf", "maxCount": 3, "probability": 100 }
     ]
   }
 ]

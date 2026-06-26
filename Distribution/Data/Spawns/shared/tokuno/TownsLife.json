@@ -3,1157 +3,520 @@
     "$type": "Spawner",
     "guid": "03f1632a-1fc5-4132-92a7-288b4baf9ae9",
     "name": "Spawner (503)",
-    "location": [
-      744,
-      1347,
-      25
-    ],
+    "location": [744, 1347, 25],
     "map": "Tokuno",
     "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 724,
-      "y1": 1327,
-      "z1": -128,
-      "x2": 765,
-      "y2": 1368,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 724, "y1": 1327, "z1": -128, "x2": 765, "y2": 1368, "z2": 128 },
     "walkingRange": 20,
     "entries": [
-      {
-        "name": "Sheep",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Dog",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Bird",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Rat",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "Sheep", "maxCount": 1, "probability": 100 },
+      { "name": "Dog", "maxCount": 1, "probability": 100 },
+      { "name": "Bird", "maxCount": 1, "probability": 100 },
+      { "name": "Rat", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "217af4ba-df3f-4134-b360-8f8f921e8a01",
     "name": "Spawner (503)",
-    "location": [
-      721,
-      1274,
-      25
-    ],
+    "location": [721, 1274, 25],
     "map": "Tokuno",
     "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 701,
-      "y1": 1254,
-      "z1": -128,
-      "x2": 742,
-      "y2": 1295,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 701, "y1": 1254, "z1": -128, "x2": 742, "y2": 1295, "z2": 128 },
     "walkingRange": 20,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 2,
-        "probability": 100
-      },
-      {
-        "name": "Dog",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Cat",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Rat",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Dog", "maxCount": 1, "probability": 100 },
+      { "name": "Cat", "maxCount": 1, "probability": 100 },
+      { "name": "Rat", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "366108fc-b366-4620-b8bb-4d04014d40b7",
     "name": "Spawner (503)",
-    "location": [
-      625,
-      1317,
-      25
-    ],
+    "location": [625, 1317, 25],
     "map": "Tokuno",
     "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 605,
-      "y1": 1297,
-      "z1": -128,
-      "x2": 646,
-      "y2": 1338,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 605, "y1": 1297, "z1": -128, "x2": 646, "y2": 1338, "z2": 128 },
     "walkingRange": 20,
     "entries": [
-      {
-        "name": "Crane",
-        "maxCount": 2,
-        "probability": 100
-      },
-      {
-        "name": "Goat",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Rabbit",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "Crane", "maxCount": 2, "probability": 100 },
+      { "name": "Goat", "maxCount": 1, "probability": 100 },
+      { "name": "Rabbit", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "3cc46920-b82d-4c3b-b622-611f7b416b66",
     "name": "Spawner (503)",
-    "location": [
-      803,
-      1338,
-      25
-    ],
+    "location": [803, 1338, 25],
     "map": "Tokuno",
     "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 783,
-      "y1": 1318,
-      "z1": -128,
-      "x2": 824,
-      "y2": 1359,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 783, "y1": 1318, "z1": -128, "x2": 824, "y2": 1359, "z2": 128 },
     "walkingRange": 20,
     "entries": [
-      {
-        "name": "Rat",
-        "maxCount": 2,
-        "probability": 100
-      },
-      {
-        "name": "Bird",
-        "maxCount": 2,
-        "probability": 100
-      }
+      { "name": "Rat", "maxCount": 2, "probability": 100 },
+      { "name": "Bird", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "3eced8bf-e4d6-484b-ae5f-6519e827a787",
     "name": "Spawner (503)",
-    "location": [
-      679,
-      1224,
-      25
-    ],
+    "location": [679, 1224, 25],
     "map": "Tokuno",
     "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 659,
-      "y1": 1204,
-      "z1": -128,
-      "x2": 700,
-      "y2": 1245,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 659, "y1": 1204, "z1": -128, "x2": 700, "y2": 1245, "z2": 128 },
     "walkingRange": 20,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 2,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "40d3a681-f9b5-4866-b6c2-93aa8d211660",
     "name": "Spawner (503)",
-    "location": [
-      834,
-      1351,
-      25
-    ],
+    "location": [834, 1351, 25],
     "map": "Tokuno",
     "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 814,
-      "y1": 1331,
-      "z1": -128,
-      "x2": 855,
-      "y2": 1372,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 814, "y1": 1331, "z1": -128, "x2": 855, "y2": 1372, "z2": 128 },
     "walkingRange": 20,
     "entries": [
-      {
-        "name": "Crane",
-        "maxCount": 4,
-        "probability": 100
-      }
+      { "name": "Crane", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "40d40ab7-a774-4443-8225-790b81878d3a",
     "name": "Spawner (503)",
-    "location": [
-      768,
-      1192,
-      25
-    ],
+    "location": [768, 1192, 25],
     "map": "Tokuno",
     "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 748,
-      "y1": 1172,
-      "z1": -128,
-      "x2": 789,
-      "y2": 1213,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 748, "y1": 1172, "z1": -128, "x2": 789, "y2": 1213, "z2": 128 },
     "walkingRange": 20,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Rat",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Cat",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Dog",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 1, "probability": 100 },
+      { "name": "Rat", "maxCount": 1, "probability": 100 },
+      { "name": "Cat", "maxCount": 1, "probability": 100 },
+      { "name": "Dog", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "42f392a2-faec-48fe-b8fa-44c394ce4f31",
     "name": "Spawner (503)",
-    "location": [
-      844,
-      1318,
-      25
-    ],
+    "location": [844, 1318, 25],
     "map": "Tokuno",
     "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 824,
-      "y1": 1298,
-      "z1": -128,
-      "x2": 865,
-      "y2": 1339,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 824, "y1": 1298, "z1": -128, "x2": 865, "y2": 1339, "z2": 128 },
     "walkingRange": 20,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Crane",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "JackRabbit",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Dog",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Pig",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 1, "probability": 100 },
+      { "name": "Crane", "maxCount": 1, "probability": 100 },
+      { "name": "JackRabbit", "maxCount": 1, "probability": 100 },
+      { "name": "Dog", "maxCount": 1, "probability": 100 },
+      { "name": "Pig", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "4400a7f9-33b7-4f12-993e-6370e8422577",
     "name": "Spawner (503)",
-    "location": [
-      812,
-      1222,
-      25
-    ],
+    "location": [812, 1222, 25],
     "map": "Tokuno",
     "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 792,
-      "y1": 1202,
-      "z1": -128,
-      "x2": 833,
-      "y2": 1243,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 792, "y1": 1202, "z1": -128, "x2": 833, "y2": 1243, "z2": 128 },
     "walkingRange": 20,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 2,
-        "probability": 100
-      },
-      {
-        "name": "Cat",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "JackRabbit",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Cat", "maxCount": 1, "probability": 100 },
+      { "name": "JackRabbit", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "59135bf6-67a7-42db-ae76-2d9d53ee8d6b",
     "name": "Spawner (503)",
-    "location": [
-      628,
-      1310,
-      25
-    ],
+    "location": [628, 1310, 25],
     "map": "Tokuno",
     "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 608,
-      "y1": 1290,
-      "z1": -128,
-      "x2": 649,
-      "y2": 1331,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 608, "y1": 1290, "z1": -128, "x2": 649, "y2": 1331, "z2": 128 },
     "walkingRange": 20,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 4,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "5a5e3558-be1a-49cc-a5cc-201c160e6c7b",
     "name": "Spawner (503)",
-    "location": [
-      711,
-      1322,
-      25
-    ],
+    "location": [711, 1322, 25],
     "map": "Tokuno",
     "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 691,
-      "y1": 1302,
-      "z1": -128,
-      "x2": 732,
-      "y2": 1343,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 691, "y1": 1302, "z1": -128, "x2": 732, "y2": 1343, "z2": 128 },
     "walkingRange": 20,
     "entries": [
-      {
-        "name": "Dog",
-        "maxCount": 2,
-        "probability": 100
-      },
-      {
-        "name": "Bird",
-        "maxCount": 2,
-        "probability": 100
-      },
-      {
-        "name": "Crane",
-        "maxCount": 2,
-        "probability": 100
-      },
-      {
-        "name": "Sheep",
-        "maxCount": 2,
-        "probability": 100
-      }
+      { "name": "Dog", "maxCount": 2, "probability": 100 },
+      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Crane", "maxCount": 2, "probability": 100 },
+      { "name": "Sheep", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "63828858-74cb-4daa-a2e3-d79928cd539d",
     "name": "Spawner (503)",
-    "location": [
-      630,
-      1225,
-      25
-    ],
+    "location": [630, 1225, 25],
     "map": "Tokuno",
     "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 610,
-      "y1": 1205,
-      "z1": -128,
-      "x2": 651,
-      "y2": 1246,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 610, "y1": 1205, "z1": -128, "x2": 651, "y2": 1246, "z2": 128 },
     "walkingRange": 20,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 3,
-        "probability": 100
-      },
-      {
-        "name": "Crane",
-        "maxCount": 3,
-        "probability": 100
-      },
-      {
-        "name": "Rabbit",
-        "maxCount": 2,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 3, "probability": 100 },
+      { "name": "Crane", "maxCount": 3, "probability": 100 },
+      { "name": "Rabbit", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "660e512a-833e-42d2-b13d-8d9aee2b8e68",
     "name": "Spawner (503)",
-    "location": [
-      667,
-      1343,
-      25
-    ],
+    "location": [667, 1343, 25],
     "map": "Tokuno",
     "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 647,
-      "y1": 1323,
-      "z1": -128,
-      "x2": 688,
-      "y2": 1364,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 647, "y1": 1323, "z1": -128, "x2": 688, "y2": 1364, "z2": 128 },
     "walkingRange": 20,
     "entries": [
-      {
-        "name": "Rabbit",
-        "maxCount": 4,
-        "probability": 100
-      }
+      { "name": "Rabbit", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "787cabab-33ea-4938-a32d-5f3443af22c4",
     "name": "Spawner (503)",
-    "location": [
-      712,
-      1238,
-      25
-    ],
+    "location": [712, 1238, 25],
     "map": "Tokuno",
     "count": 1,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 692,
-      "y1": 1218,
-      "z1": -128,
-      "x2": 733,
-      "y2": 1259,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 692, "y1": 1218, "z1": -128, "x2": 733, "y2": 1259, "z2": 128 },
     "walkingRange": 20,
     "entries": [
-      {
-        "name": "Cat",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "Cat", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "7c22ce54-d85a-48c0-8388-25f26d1c7904",
     "name": "Spawner (503)",
-    "location": [
-      756,
-      1236,
-      25
-    ],
+    "location": [756, 1236, 25],
     "map": "Tokuno",
     "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 736,
-      "y1": 1216,
-      "z1": -128,
-      "x2": 777,
-      "y2": 1257,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 736, "y1": 1216, "z1": -128, "x2": 777, "y2": 1257, "z2": 128 },
     "walkingRange": 20,
     "entries": [
-      {
-        "name": "Dog",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Cat",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Bird",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Rat",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "Dog", "maxCount": 1, "probability": 100 },
+      { "name": "Cat", "maxCount": 1, "probability": 100 },
+      { "name": "Bird", "maxCount": 1, "probability": 100 },
+      { "name": "Rat", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "8065872f-41df-44a9-b382-d5d16e9f31da",
     "name": "Spawner (503)",
-    "location": [
-      683,
-      1231,
-      25
-    ],
+    "location": [683, 1231, 25],
     "map": "Tokuno",
     "count": 1,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 663,
-      "y1": 1211,
-      "z1": -128,
-      "x2": 704,
-      "y2": 1252,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 663, "y1": 1211, "z1": -128, "x2": 704, "y2": 1252, "z2": 128 },
     "walkingRange": 20,
     "entries": [
-      {
-        "name": "Rat",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "Rat", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "8ca277a3-a47d-4c33-8470-60d67d1fb2c7",
     "name": "Spawner (503)",
-    "location": [
-      628,
-      1272,
-      25
-    ],
+    "location": [628, 1272, 25],
     "map": "Tokuno",
     "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 608,
-      "y1": 1252,
-      "z1": -128,
-      "x2": 649,
-      "y2": 1293,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 608, "y1": 1252, "z1": -128, "x2": 649, "y2": 1293, "z2": 128 },
     "walkingRange": 20,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 3,
-        "probability": 100
-      },
-      {
-        "name": "Cat",
-        "maxCount": 3,
-        "probability": 100
-      },
-      {
-        "name": "Dog",
-        "maxCount": 2,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 3, "probability": 100 },
+      { "name": "Cat", "maxCount": 3, "probability": 100 },
+      { "name": "Dog", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "962520ff-e7ec-4187-b385-5550af5428cb",
     "name": "Spawner (503)",
-    "location": [
-      844,
-      1198,
-      25
-    ],
+    "location": [844, 1198, 25],
     "map": "Tokuno",
     "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 824,
-      "y1": 1178,
-      "z1": -128,
-      "x2": 865,
-      "y2": 1219,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 824, "y1": 1178, "z1": -128, "x2": 865, "y2": 1219, "z2": 128 },
     "walkingRange": 20,
     "entries": [
-      {
-        "name": "Dog",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Rat",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Rabbit",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Horse",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Pig",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "Dog", "maxCount": 1, "probability": 100 },
+      { "name": "Rat", "maxCount": 1, "probability": 100 },
+      { "name": "Rabbit", "maxCount": 1, "probability": 100 },
+      { "name": "Horse", "maxCount": 1, "probability": 100 },
+      { "name": "Pig", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "9780bf47-bc15-4bdd-8dc6-0a5ec2abddea",
     "name": "Spawner (503)",
-    "location": [
-      740,
-      1284,
-      25
-    ],
+    "location": [740, 1284, 25],
     "map": "Tokuno",
     "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 720,
-      "y1": 1264,
-      "z1": -128,
-      "x2": 761,
-      "y2": 1305,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 720, "y1": 1264, "z1": -128, "x2": 761, "y2": 1305, "z2": 128 },
     "walkingRange": 20,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 2,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "9bf1fbe7-640a-44fe-89c5-b8771032d64b",
     "name": "Spawner (503)",
-    "location": [
-      807,
-      1287,
-      25
-    ],
+    "location": [807, 1287, 25],
     "map": "Tokuno",
     "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 787,
-      "y1": 1267,
-      "z1": -128,
-      "x2": 828,
-      "y2": 1308,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 787, "y1": 1267, "z1": -128, "x2": 828, "y2": 1308, "z2": 128 },
     "walkingRange": 20,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Dog",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Cat",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "JackRabbit",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 1, "probability": 100 },
+      { "name": "Dog", "maxCount": 1, "probability": 100 },
+      { "name": "Cat", "maxCount": 1, "probability": 100 },
+      { "name": "JackRabbit", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "ae3ea0e1-e260-4f24-a0f2-7a617cbe7bbe",
     "name": "Spawner (503)",
-    "location": [
-      713,
-      1351,
-      25
-    ],
+    "location": [713, 1351, 25],
     "map": "Tokuno",
     "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "spawnBounds": {
-      "start": {
-        "x": 693,
-        "y": 1331,
-        "z": -128
-      },
-      "end": {
-        "x": 733,
-        "y": 1371,
-        "z": 40
-      }
+      "start": { "x": 693, "y": 1331, "z": -128 },
+      "end": { "x": 733, "y": 1371, "z": 40 }
     },
     "walkingRange": 20,
     "entries": [
-      {
-        "name": "Crane",
-        "maxCount": 2,
-        "probability": 100
-      },
-      {
-        "name": "Cat",
-        "maxCount": 2,
-        "probability": 100
-      }
+      { "name": "Crane", "maxCount": 2, "probability": 100 },
+      { "name": "Cat", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "c7bce2da-6a6c-4d0f-9c79-70c5a2895962",
     "name": "Spawner (503)",
-    "location": [
-      853,
-      1287,
-      25
-    ],
+    "location": [853, 1287, 25],
     "map": "Tokuno",
     "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 833,
-      "y1": 1267,
-      "z1": -128,
-      "x2": 874,
-      "y2": 1308,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 833, "y1": 1267, "z1": -128, "x2": 874, "y2": 1308, "z2": 128 },
     "walkingRange": 20,
     "entries": [
-      {
-        "name": "Sheep",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Rat",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Bird",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Dog",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "Sheep", "maxCount": 1, "probability": 100 },
+      { "name": "Rat", "maxCount": 1, "probability": 100 },
+      { "name": "Bird", "maxCount": 1, "probability": 100 },
+      { "name": "Dog", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "cb8699ff-ca4c-44b1-9dd8-422e6e31fbbf",
     "name": "Spawner (503)",
-    "location": [
-      636,
-      1331,
-      25
-    ],
+    "location": [636, 1331, 25],
     "map": "Tokuno",
     "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 616,
-      "y1": 1311,
-      "z1": -128,
-      "x2": 657,
-      "y2": 1352,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 616, "y1": 1311, "z1": -128, "x2": 657, "y2": 1352, "z2": 128 },
     "walkingRange": 20,
     "entries": [
-      {
-        "name": "Rabbit",
-        "maxCount": 2,
-        "probability": 100
-      },
-      {
-        "name": "Pig",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Crane",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "Rabbit", "maxCount": 2, "probability": 100 },
+      { "name": "Pig", "maxCount": 1, "probability": 100 },
+      { "name": "Crane", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "d9dd4287-6d11-4e50-b4b1-834c431ee60b",
     "name": "Spawner (503)",
-    "location": [
-      710,
-      1350,
-      25
-    ],
+    "location": [710, 1350, 25],
     "map": "Tokuno",
     "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "spawnBounds": {
-      "start": {
-        "x": 690,
-        "y": 1330,
-        "z": -128
-      },
-      "end": {
-        "x": 730,
-        "y": 1370,
-        "z": 40
-      }
+      "start": { "x": 690, "y": 1330, "z": -128 },
+      "end": { "x": 730, "y": 1370, "z": 40 }
     },
     "walkingRange": 20,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 4,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "dbffb36b-2e05-4968-96f6-c8f53ddeb50a",
     "name": "Spawner (503)",
-    "location": [
-      706,
-      1208,
-      25
-    ],
+    "location": [706, 1208, 25],
     "map": "Tokuno",
     "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 686,
-      "y1": 1188,
-      "z1": -128,
-      "x2": 727,
-      "y2": 1229,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 686, "y1": 1188, "z1": -128, "x2": 727, "y2": 1229, "z2": 128 },
     "walkingRange": 20,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 2,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "df568bbb-9e8c-4594-a32b-85dd93540f10",
     "name": "Spawner (503)",
-    "location": [
-      770,
-      1344,
-      25
-    ],
+    "location": [770, 1344, 25],
     "map": "Tokuno",
     "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 750,
-      "y1": 1324,
-      "z1": -128,
-      "x2": 791,
-      "y2": 1365,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 750, "y1": 1324, "z1": -128, "x2": 791, "y2": 1365, "z2": 128 },
     "walkingRange": 20,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Goat",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Pig",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Horse",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 1, "probability": 100 },
+      { "name": "Goat", "maxCount": 1, "probability": 100 },
+      { "name": "Pig", "maxCount": 1, "probability": 100 },
+      { "name": "Horse", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "e828c6c6-2867-4d26-a77a-ab581c4a7dcc",
     "name": "Spawner (503)",
-    "location": [
-      843,
-      1247,
-      25
-    ],
+    "location": [843, 1247, 25],
     "map": "Tokuno",
     "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 823,
-      "y1": 1227,
-      "z1": -128,
-      "x2": 864,
-      "y2": 1268,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 823, "y1": 1227, "z1": -128, "x2": 864, "y2": 1268, "z2": 128 },
     "walkingRange": 20,
     "entries": [
-      {
-        "name": "Sheep",
-        "maxCount": 2,
-        "probability": 100
-      },
-      {
-        "name": "Pig",
-        "maxCount": 2,
-        "probability": 100
-      }
+      { "name": "Sheep", "maxCount": 2, "probability": 100 },
+      { "name": "Pig", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "f3688f98-8e8b-4100-8952-4f90020ab8ae",
     "name": "Spawner (503)",
-    "location": [
-      857,
-      1166,
-      25
-    ],
+    "location": [857, 1166, 25],
     "map": "Tokuno",
     "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 837,
-      "y1": 1146,
-      "z1": -128,
-      "x2": 878,
-      "y2": 1187,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 837, "y1": 1146, "z1": -128, "x2": 878, "y2": 1187, "z2": 128 },
     "walkingRange": 20,
     "entries": [
-      {
-        "name": "Sheep",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Rat",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Bird",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Dog",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "Sheep", "maxCount": 1, "probability": 100 },
+      { "name": "Rat", "maxCount": 1, "probability": 100 },
+      { "name": "Bird", "maxCount": 1, "probability": 100 },
+      { "name": "Dog", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "f4d88eea-fd00-4029-bf05-960a4a03a082",
     "name": "Spawner (503)",
-    "location": [
-      690,
-      1288,
-      25
-    ],
+    "location": [690, 1288, 25],
     "map": "Tokuno",
     "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 670,
-      "y1": 1268,
-      "z1": -128,
-      "x2": 711,
-      "y2": 1309,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 670, "y1": 1268, "z1": -128, "x2": 711, "y2": 1309, "z2": 128 },
     "walkingRange": 20,
     "entries": [
-      {
-        "name": "Dog",
-        "maxCount": 2,
-        "probability": 100
-      },
-      {
-        "name": "Rat",
-        "maxCount": 2,
-        "probability": 100
-      },
-      {
-        "name": "Cat",
-        "maxCount": 2,
-        "probability": 100
-      }
+      { "name": "Dog", "maxCount": 2, "probability": 100 },
+      { "name": "Rat", "maxCount": 2, "probability": 100 },
+      { "name": "Cat", "maxCount": 2, "probability": 100 }
     ]
   }
 ]

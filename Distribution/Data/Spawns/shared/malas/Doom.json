@@ -3,1547 +3,770 @@
     "$type": "Spawner",
     "guid": "0bb98d0c-0614-431b-a6ce-c30718f447c8",
     "name": "Spawner (401)",
-    "location": [
-      447,
-      25,
-      -1
-    ],
+    "location": [447, 25, -1],
     "map": "Malas",
     "count": 6,
     "minDelay": "00:01:00",
     "maxDelay": "00:02:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 437,
-      "y1": 15,
-      "z1": -128,
-      "x2": 458,
-      "y2": 36,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 437, "y1": 15, "z1": -128, "x2": 458, "y2": 36, "z2": 128 },
     "walkingRange": 10,
     "entries": [
-      {
-        "name": "Skeleton",
-        "maxCount": 6,
-        "probability": 100
-      }
+      { "name": "Skeleton", "maxCount": 6, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "0e708303-8a2d-4207-bdc3-d7f732e04efe",
     "name": "Spawner (401)",
-    "location": [
-      496,
-      75,
-      0
-    ],
+    "location": [496, 75, 0],
     "map": "Malas",
     "count": 3,
     "minDelay": "00:01:00",
     "maxDelay": "00:02:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 488,
-      "y1": 67,
-      "z1": -128,
-      "x2": 505,
-      "y2": 84,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 488, "y1": 67, "z1": -128, "x2": 505, "y2": 84, "z2": 128 },
     "walkingRange": 8,
     "entries": [
-      {
-        "name": "PatchworkSkeleton",
-        "maxCount": 3,
-        "probability": 100
-      }
+      { "name": "PatchworkSkeleton", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "1210b304-4b1a-47be-a503-9f490764d069",
     "name": "Spawner (401)",
-    "location": [
-      287,
-      81,
-      -1
-    ],
+    "location": [287, 81, -1],
     "map": "Malas",
     "count": 6,
     "minDelay": "00:01:00",
     "maxDelay": "00:02:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 257,
-      "y1": 51,
-      "z1": -128,
-      "x2": 318,
-      "y2": 112,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 257, "y1": 51, "z1": -128, "x2": 318, "y2": 112, "z2": 128 },
     "walkingRange": 30,
     "entries": [
-      {
-        "name": "Skeleton",
-        "maxCount": 6,
-        "probability": 100
-      }
+      { "name": "Skeleton", "maxCount": 6, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "13e0051b-bff0-4826-9e89-73ea9ec64e7a",
     "name": "Spawner (401)",
-    "location": [
-      320,
-      207,
-      -1
-    ],
+    "location": [320, 207, -1],
     "map": "Malas",
     "count": 2,
     "minDelay": "00:01:00",
     "maxDelay": "00:02:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 305,
-      "y1": 192,
-      "z1": -128,
-      "x2": 336,
-      "y2": 223,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 305, "y1": 192, "z1": -128, "x2": 336, "y2": 223, "z2": 128 },
     "walkingRange": 15,
     "entries": [
-      {
-        "name": "Lich",
-        "maxCount": 2,
-        "probability": 100
-      }
+      { "name": "Lich", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "182c0603-13fa-414f-849c-dcbde31a739a",
     "name": "Spawner (401)",
-    "location": [
-      479,
-      168,
-      -1
-    ],
+    "location": [479, 168, -1],
     "map": "Malas",
     "count": 4,
     "minDelay": "00:02:00",
     "maxDelay": "00:03:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 459,
-      "y1": 148,
-      "z1": -128,
-      "x2": 500,
-      "y2": 189,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 459, "y1": 148, "z1": -128, "x2": 500, "y2": 189, "z2": 128 },
     "walkingRange": 20,
     "entries": [
-      {
-        "name": "Devourer",
-        "maxCount": 3,
-        "probability": 100
-      },
-      {
-        "name": "BoneKnight",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "Devourer", "maxCount": 3, "probability": 100 },
+      { "name": "BoneKnight", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "20977621-9e81-4c25-b802-19fa12fc3633",
     "name": "Spawner (401)",
-    "location": [
-      323,
-      90,
-      -1
-    ],
+    "location": [323, 90, -1],
     "map": "Malas",
     "count": 9,
     "minDelay": "00:01:00",
     "maxDelay": "00:02:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 283,
-      "y1": 50,
-      "z1": -128,
-      "x2": 364,
-      "y2": 131,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 283, "y1": 50, "z1": -128, "x2": 364, "y2": 131, "z2": 128 },
     "walkingRange": 40,
     "entries": [
-      {
-        "name": "Skeleton",
-        "maxCount": 4,
-        "probability": 100
-      },
-      {
-        "name": "PatchworkSkeleton",
-        "maxCount": 5,
-        "probability": 100
-      }
+      { "name": "Skeleton", "maxCount": 4, "probability": 100 },
+      { "name": "PatchworkSkeleton", "maxCount": 5, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "218aaa26-c02b-4605-8c79-c9879523ea0b",
     "name": "Spawner (401)",
-    "location": [
-      356,
-      40,
-      -1
-    ],
+    "location": [356, 40, -1],
     "map": "Malas",
     "count": 6,
     "minDelay": "00:01:00",
     "maxDelay": "00:02:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 348,
-      "y1": 32,
-      "z1": -128,
-      "x2": 365,
-      "y2": 49,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 348, "y1": 32, "z1": -128, "x2": 365, "y2": 49, "z2": 128 },
     "walkingRange": 8,
     "entries": [
-      {
-        "name": "VampireBat",
-        "maxCount": 4,
-        "probability": 100
-      },
-      {
-        "name": "Skeleton",
-        "maxCount": 2,
-        "probability": 100
-      }
+      { "name": "VampireBat", "maxCount": 4, "probability": 100 },
+      { "name": "Skeleton", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "298afdb1-74fb-4668-9bc2-5f625a61caed",
     "name": "Spawner (401)",
-    "location": [
-      478,
-      206,
-      -1
-    ],
+    "location": [478, 206, -1],
     "map": "Malas",
     "count": 2,
     "minDelay": "00:01:00",
     "maxDelay": "00:02:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 458,
-      "y1": 186,
-      "z1": -128,
-      "x2": 499,
-      "y2": 227,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 458, "y1": 186, "z1": -128, "x2": 499, "y2": 227, "z2": 128 },
     "walkingRange": 20,
     "entries": [
-      {
-        "name": "RottingCorpse",
-        "maxCount": 2,
-        "probability": 100
-      }
+      { "name": "RottingCorpse", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "2a98c34c-cb3d-4d28-8c12-1a3cf7cc58ad",
     "name": "Spawner (401)",
-    "location": [
-      330,
-      136,
-      0
-    ],
+    "location": [330, 136, 0],
     "map": "Malas",
     "count": 2,
     "minDelay": "00:01:00",
     "maxDelay": "00:02:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 315,
-      "y1": 121,
-      "z1": -128,
-      "x2": 346,
-      "y2": 152,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 315, "y1": 121, "z1": -128, "x2": 346, "y2": 152, "z2": 128 },
     "walkingRange": 15,
     "entries": [
-      {
-        "name": "Lich",
-        "maxCount": 2,
-        "probability": 100
-      }
+      { "name": "Lich", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "2be25342-c032-406a-af47-8eb5994c0875",
     "name": "Spawner (401)",
-    "location": [
-      427,
-      256,
-      -1
-    ],
+    "location": [427, 256, -1],
     "map": "Malas",
     "count": 2,
     "minDelay": "00:01:00",
     "maxDelay": "00:02:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 417,
-      "y1": 246,
-      "z1": -128,
-      "x2": 438,
-      "y2": 267,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 417, "y1": 246, "z1": -128, "x2": 438, "y2": 267, "z2": 128 },
     "walkingRange": 30,
     "entries": [
-      {
-        "name": "RottingCorpse",
-        "maxCount": 2,
-        "probability": 100
-      }
+      { "name": "RottingCorpse", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "32a2e0d8-8246-42ff-8e13-c15b51a9f73f",
     "name": "Spawner (401)",
-    "location": [
-      470,
-      30,
-      -2
-    ],
+    "location": [470, 30, -2],
     "map": "Malas",
     "count": 6,
     "minDelay": "00:01:00",
     "maxDelay": "00:02:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 450,
-      "y1": 10,
-      "z1": -128,
-      "x2": 491,
-      "y2": 51,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 450, "y1": 10, "z1": -128, "x2": 491, "y2": 51, "z2": 128 },
     "walkingRange": 20,
     "entries": [
-      {
-        "name": "PatchworkSkeleton",
-        "maxCount": 4,
-        "probability": 100
-      },
-      {
-        "name": "Lich",
-        "maxCount": 2,
-        "probability": 100
-      }
+      { "name": "PatchworkSkeleton", "maxCount": 4, "probability": 100 },
+      { "name": "Lich", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "42bbf95d-6b39-4df6-a4f4-7a8d385b49ef",
     "name": "Spawner (401)",
-    "location": [
-      442,
-      205,
-      -1
-    ],
+    "location": [442, 205, -1],
     "map": "Malas",
     "count": 1,
     "minDelay": "00:20:00",
     "maxDelay": "00:40:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 412,
-      "y1": 175,
-      "z1": -128,
-      "x2": 473,
-      "y2": 236,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 412, "y1": 175, "z1": -128, "x2": 473, "y2": 236, "z2": 128 },
     "walkingRange": 30,
     "entries": [
-      {
-        "name": "BoneDemon",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "BoneDemon", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "48538f93-9afa-44c9-baab-b1c3612bdde5",
     "name": "Spawner (401)",
-    "location": [
-      356,
-      234,
-      -1
-    ],
+    "location": [356, 234, -1],
     "map": "Malas",
     "count": 3,
     "minDelay": "00:01:00",
     "maxDelay": "00:02:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 341,
-      "y1": 219,
-      "z1": -128,
-      "x2": 372,
-      "y2": 250,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 341, "y1": 219, "z1": -128, "x2": 372, "y2": 250, "z2": 128 },
     "walkingRange": 15,
     "entries": [
-      {
-        "name": "Devourer",
-        "maxCount": 3,
-        "probability": 100
-      }
+      { "name": "Devourer", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "5110399b-8443-448e-a68c-f59ac2303716",
     "name": "Spawner (401)",
-    "location": [
-      441,
-      78,
-      -1
-    ],
+    "location": [441, 78, -1],
     "map": "Malas",
     "count": 6,
     "minDelay": "00:01:00",
     "maxDelay": "00:02:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 411,
-      "y1": 48,
-      "z1": -128,
-      "x2": 472,
-      "y2": 109,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 411, "y1": 48, "z1": -128, "x2": 472, "y2": 109, "z2": 128 },
     "walkingRange": 30,
     "entries": [
-      {
-        "name": "PatchworkSkeleton",
-        "maxCount": 4,
-        "probability": 100
-      },
-      {
-        "name": "RottingCorpse",
-        "maxCount": 2,
-        "probability": 100
-      }
+      { "name": "PatchworkSkeleton", "maxCount": 4, "probability": 100 },
+      { "name": "RottingCorpse", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "55898d74-f2cf-4c30-953e-e5f3d9a3b5bf",
     "name": "Spawner (401)",
-    "location": [
-      278,
-      233,
-      0
-    ],
+    "location": [278, 233, 0],
     "map": "Malas",
     "count": 4,
     "minDelay": "00:01:00",
     "maxDelay": "00:02:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 248,
-      "y1": 203,
-      "z1": -128,
-      "x2": 309,
-      "y2": 264,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 248, "y1": 203, "z1": -128, "x2": 309, "y2": 264, "z2": 128 },
     "walkingRange": 30,
     "entries": [
-      {
-        "name": "PatchworkSkeleton",
-        "maxCount": 2,
-        "probability": 100
-      },
-      {
-        "name": "VampireBat",
-        "maxCount": 2,
-        "probability": 100
-      }
+      { "name": "PatchworkSkeleton", "maxCount": 2, "probability": 100 },
+      { "name": "VampireBat", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "59819649-f460-4934-ba36-a89a98aa13f2",
     "name": "Spawner (401)",
-    "location": [
-      320,
-      114,
-      -1
-    ],
+    "location": [320, 114, -1],
     "map": "Malas",
     "count": 7,
     "minDelay": "00:01:00",
     "maxDelay": "00:02:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 285,
-      "y1": 79,
-      "z1": -128,
-      "x2": 356,
-      "y2": 150,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 285, "y1": 79, "z1": -128, "x2": 356, "y2": 150, "z2": 128 },
     "walkingRange": 35,
     "entries": [
-      {
-        "name": "Zombie",
-        "maxCount": 7,
-        "probability": 100
-      }
+      { "name": "Zombie", "maxCount": 7, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "59d35721-49b5-4ff9-9c91-fad1b3d4b953",
     "name": "Spawner (401)",
-    "location": [
-      395,
-      33,
-      -1
-    ],
+    "location": [395, 33, -1],
     "map": "Malas",
     "count": 4,
     "minDelay": "00:01:00",
     "maxDelay": "00:02:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 387,
-      "y1": 25,
-      "z1": -128,
-      "x2": 404,
-      "y2": 42,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 387, "y1": 25, "z1": -128, "x2": 404, "y2": 42, "z2": 128 },
     "walkingRange": 8,
     "entries": [
-      {
-        "name": "VampireBat",
-        "maxCount": 4,
-        "probability": 100
-      }
+      { "name": "VampireBat", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "5bc9de9b-c7d7-4152-9fd1-19e57598100e",
     "name": "Spawner (401)",
-    "location": [
-      320,
-      114,
-      -1
-    ],
+    "location": [320, 114, -1],
     "map": "Malas",
     "count": 3,
     "minDelay": "00:01:00",
     "maxDelay": "00:02:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 295,
-      "y1": 89,
-      "z1": -128,
-      "x2": 346,
-      "y2": 140,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 295, "y1": 89, "z1": -128, "x2": 346, "y2": 140, "z2": 128 },
     "walkingRange": 25,
     "entries": [
-      {
-        "name": "Mummy",
-        "maxCount": 3,
-        "probability": 100
-      }
+      { "name": "Mummy", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "5c28d40c-81f7-428d-b661-6e272aeabf3d",
     "name": "Spawner (401)",
-    "location": [
-      480,
-      227,
-      -1
-    ],
+    "location": [480, 227, -1],
     "map": "Malas",
     "count": 2,
     "minDelay": "00:03:00",
     "maxDelay": "00:05:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 460,
-      "y1": 207,
-      "z1": -128,
-      "x2": 501,
-      "y2": 248,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 460, "y1": 207, "z1": -128, "x2": 501, "y2": 248, "z2": 128 },
     "walkingRange": 20,
     "entries": [
-      {
-        "name": "Lich",
-        "maxCount": 2,
-        "probability": 100
-      }
+      { "name": "Lich", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "613d79a6-10e0-4465-9937-142ee7e701b0",
     "name": "Spawner (401)",
-    "location": [
-      289,
-      154,
-      5
-    ],
+    "location": [289, 154, 5],
     "map": "Malas",
     "count": 1,
     "minDelay": "00:01:00",
     "maxDelay": "00:02:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 284,
-      "y1": 149,
-      "z1": -128,
-      "x2": 295,
-      "y2": 160,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 284, "y1": 149, "z1": -128, "x2": 295, "y2": 160, "z2": 128 },
     "walkingRange": 5,
     "entries": [
-      {
-        "name": "LichLord",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "LichLord", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "646d5241-162f-477e-a05c-17ba7eb95a83",
     "name": "Spawner (401)",
-    "location": [
-      379,
-      147,
-      -1
-    ],
+    "location": [379, 147, -1],
     "map": "Malas",
     "count": 20,
     "minDelay": "00:01:00",
     "maxDelay": "00:02:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 339,
-      "y1": 107,
-      "z1": -128,
-      "x2": 420,
-      "y2": 188,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 339, "y1": 107, "z1": -128, "x2": 420, "y2": 188, "z2": 128 },
     "walkingRange": 40,
     "entries": [
-      {
-        "name": "PatchworkSkeleton",
-        "maxCount": 10,
-        "probability": 100
-      },
-      {
-        "name": "VampireBat",
-        "maxCount": 10,
-        "probability": 100
-      }
+      { "name": "PatchworkSkeleton", "maxCount": 10, "probability": 100 },
+      { "name": "VampireBat", "maxCount": 10, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "6492e163-beb3-4abc-a674-921cbf5ba5df",
     "name": "Spawner (401)",
-    "location": [
-      356,
-      234,
-      -1
-    ],
+    "location": [356, 234, -1],
     "map": "Malas",
     "count": 3,
     "minDelay": "00:01:00",
     "maxDelay": "00:02:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 346,
-      "y1": 224,
-      "z1": -128,
-      "x2": 367,
-      "y2": 245,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 346, "y1": 224, "z1": -128, "x2": 367, "y2": 245, "z2": 128 },
     "walkingRange": 10,
     "entries": [
-      {
-        "name": "Skeleton",
-        "maxCount": 3,
-        "probability": 100
-      }
+      { "name": "Skeleton", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "693a953a-75cf-43df-9708-b781c8a04439",
     "name": "Spawner (401)",
-    "location": [
-      325,
-      172,
-      -1
-    ],
+    "location": [325, 172, -1],
     "map": "Malas",
     "count": 6,
     "minDelay": "00:01:00",
     "maxDelay": "00:02:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 290,
-      "y1": 137,
-      "z1": -128,
-      "x2": 361,
-      "y2": 208,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 290, "y1": 137, "z1": -128, "x2": 361, "y2": 208, "z2": 128 },
     "walkingRange": 35,
     "entries": [
-      {
-        "name": "PatchworkSkeleton",
-        "maxCount": 3,
-        "probability": 100
-      },
-      {
-        "name": "VampireBat",
-        "maxCount": 3,
-        "probability": 100
-      }
+      { "name": "PatchworkSkeleton", "maxCount": 3, "probability": 100 },
+      { "name": "VampireBat", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "74182f58-a286-4576-9615-f92bbd4e7b71",
     "name": "Spawner (401)",
-    "location": [
-      378,
-      236,
-      -1
-    ],
+    "location": [378, 236, -1],
     "map": "Malas",
     "count": 2,
     "minDelay": "00:01:00",
     "maxDelay": "00:02:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 370,
-      "y1": 228,
-      "z1": -128,
-      "x2": 387,
-      "y2": 245,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 370, "y1": 228, "z1": -128, "x2": 387, "y2": 245, "z2": 128 },
     "walkingRange": 8,
     "entries": [
-      {
-        "name": "Devourer",
-        "maxCount": 2,
-        "probability": 100
-      }
+      { "name": "Devourer", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "92450262-dc59-4666-b8bd-233fa481ddcb",
     "name": "Spawner (401)",
-    "location": [
-      400,
-      174,
-      -1
-    ],
+    "location": [400, 174, -1],
     "map": "Malas",
     "count": 1,
     "minDelay": "00:01:00",
     "maxDelay": "00:02:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 395,
-      "y1": 169,
-      "z1": -128,
-      "x2": 406,
-      "y2": 180,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 395, "y1": 169, "z1": -128, "x2": 406, "y2": 180, "z2": 128 },
     "walkingRange": 5,
     "entries": [
-      {
-        "name": "Lich",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "Lich", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "93ce2586-d403-49a2-acbb-034ef0ee797a",
     "name": "Spawner (401)",
-    "location": [
-      278,
-      233,
-      0
-    ],
+    "location": [278, 233, 0],
     "map": "Malas",
     "count": 3,
     "minDelay": "00:01:00",
     "maxDelay": "00:02:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 243,
-      "y1": 198,
-      "z1": -128,
-      "x2": 314,
-      "y2": 269,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 243, "y1": 198, "z1": -128, "x2": 314, "y2": 269, "z2": 128 },
     "walkingRange": 35,
     "entries": [
-      {
-        "name": "Devourer",
-        "maxCount": 3,
-        "probability": 100
-      }
+      { "name": "Devourer", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "968ff190-b606-41f5-8cf0-36e15d3fd7d4",
     "name": "Spawner (401)",
-    "location": [
-      382,
-      82,
-      -1
-    ],
+    "location": [382, 82, -1],
     "map": "Malas",
     "count": 6,
     "minDelay": "00:01:00",
     "maxDelay": "00:02:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 342,
-      "y1": 42,
-      "z1": -128,
-      "x2": 423,
-      "y2": 123,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 342, "y1": 42, "z1": -128, "x2": 423, "y2": 123, "z2": 128 },
     "walkingRange": 40,
     "entries": [
-      {
-        "name": "VampireBat",
-        "maxCount": 6,
-        "probability": 100
-      }
+      { "name": "VampireBat", "maxCount": 6, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "9e641eb9-2f8a-41ae-afb9-24a4b5879a0a",
     "name": "Spawner (401)",
-    "location": [
-      305,
-      28,
-      0
-    ],
+    "location": [305, 28, 0],
     "map": "Malas",
     "count": 4,
     "minDelay": "00:01:00",
     "maxDelay": "00:02:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 295,
-      "y1": 18,
-      "z1": -128,
-      "x2": 316,
-      "y2": 39,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 295, "y1": 18, "z1": -128, "x2": 316, "y2": 39, "z2": 128 },
     "walkingRange": 10,
     "entries": [
-      {
-        "name": "Gibberling",
-        "maxCount": 4,
-        "probability": 100
-      }
+      { "name": "Gibberling", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "a1434ffe-19f2-4076-b1ce-28e59dc9f627",
     "name": "Spawner (401)",
-    "location": [
-      496,
-      75,
-      0
-    ],
+    "location": [496, 75, 0],
     "map": "Malas",
     "count": 4,
     "minDelay": "00:01:00",
     "maxDelay": "00:02:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 486,
-      "y1": 65,
-      "z1": -128,
-      "x2": 507,
-      "y2": 86,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 486, "y1": 65, "z1": -128, "x2": 507, "y2": 86, "z2": 128 },
     "walkingRange": 10,
     "entries": [
-      {
-        "name": "VampireBat",
-        "maxCount": 4,
-        "probability": 100
-      }
+      { "name": "VampireBat", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "a42b1d2c-dcd4-4d43-aada-f5707a5f9e9f",
     "name": "Spawner (401)",
-    "location": [
-      468,
-      141,
-      -1
-    ],
+    "location": [468, 141, -1],
     "map": "Malas",
     "count": 2,
     "minDelay": "00:01:00",
     "maxDelay": "00:03:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 462,
-      "y1": 135,
-      "z1": -128,
-      "x2": 475,
-      "y2": 148,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 462, "y1": 135, "z1": -128, "x2": 475, "y2": 148, "z2": 128 },
     "walkingRange": 6,
     "entries": [
-      {
-        "name": "Lich",
-        "maxCount": 2,
-        "probability": 100
-      }
+      { "name": "Lich", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "a81f4ff2-ee77-4e1f-968d-335a0ecbe7b9",
     "name": "Spawner (401)",
-    "location": [
-      427,
-      256,
-      -1
-    ],
+    "location": [427, 256, -1],
     "map": "Malas",
     "count": 4,
     "minDelay": "00:01:00",
     "maxDelay": "00:02:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 397,
-      "y1": 226,
-      "z1": -128,
-      "x2": 458,
-      "y2": 287,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 397, "y1": 226, "z1": -128, "x2": 458, "y2": 287, "z2": 128 },
     "walkingRange": 30,
     "entries": [
-      {
-        "name": "LichLord",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "RestlessSoul",
-        "maxCount": 3,
-        "probability": 100
-      }
+      { "name": "LichLord", "maxCount": 1, "probability": 100 },
+      { "name": "RestlessSoul", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "b0f74ae9-9e85-4525-9903-6e69c2f818e4",
     "name": "Spawner (401)",
-    "location": [
-      309,
-      15,
-      0
-    ],
+    "location": [309, 15, 0],
     "map": "Malas",
     "count": 7,
     "minDelay": "00:01:00",
     "maxDelay": "00:02:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 299,
-      "y1": 5,
-      "z1": -128,
-      "x2": 320,
-      "y2": 26,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 299, "y1": 5, "z1": -128, "x2": 320, "y2": 26, "z2": 128 },
     "walkingRange": 10,
     "entries": [
-      {
-        "name": "Skeleton",
-        "maxCount": 4,
-        "probability": 100
-      },
-      {
-        "name": "BoneMagi",
-        "maxCount": 2,
-        "probability": 100
-      },
-      {
-        "name": "BoneKnight",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "Skeleton", "maxCount": 4, "probability": 100 },
+      { "name": "BoneMagi", "maxCount": 2, "probability": 100 },
+      { "name": "BoneKnight", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "bbfc66e4-a4fd-486a-960e-5cb7c64c2e72",
     "name": "Spawner (401)",
-    "location": [
-      456,
-      48,
-      -1
-    ],
+    "location": [456, 48, -1],
     "map": "Malas",
     "count": 12,
     "minDelay": "00:01:00",
     "maxDelay": "00:02:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 441,
-      "y1": 33,
-      "z1": -128,
-      "x2": 472,
-      "y2": 64,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 441, "y1": 33, "z1": -128, "x2": 472, "y2": 64, "z2": 128 },
     "walkingRange": 15,
     "entries": [
-      {
-        "name": "FleshGolem",
-        "maxCount": 6,
-        "probability": 100
-      },
-      {
-        "name": "Devourer",
-        "maxCount": 6,
-        "probability": 100
-      }
+      { "name": "FleshGolem", "maxCount": 6, "probability": 100 },
+      { "name": "Devourer", "maxCount": 6, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "c2ca4b73-4847-47ab-83de-c3f0abb570a9",
     "name": "Spawner (401)",
-    "location": [
-      493,
-      202,
-      -1
-    ],
+    "location": [493, 202, -1],
     "map": "Malas",
     "count": 6,
     "minDelay": "00:01:00",
     "maxDelay": "00:02:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 481,
-      "y1": 190,
-      "z1": -128,
-      "x2": 506,
-      "y2": 215,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 481, "y1": 190, "z1": -128, "x2": 506, "y2": 215, "z2": 128 },
     "walkingRange": 12,
     "entries": [
-      {
-        "name": "Skeleton",
-        "maxCount": 6,
-        "probability": 100
-      }
+      { "name": "Skeleton", "maxCount": 6, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "c85f6fd0-ad43-4e05-a43e-b49002b7f22c",
     "name": "Spawner (401)",
-    "location": [
-      372,
-      201,
-      -1
-    ],
+    "location": [372, 201, -1],
     "map": "Malas",
     "count": 4,
     "minDelay": "00:01:00",
     "maxDelay": "00:02:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 352,
-      "y1": 181,
-      "z1": -128,
-      "x2": 393,
-      "y2": 222,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 352, "y1": 181, "z1": -128, "x2": 393, "y2": 222, "z2": 128 },
     "walkingRange": 20,
     "entries": [
-      {
-        "name": "Skeleton",
-        "maxCount": 3,
-        "probability": 100
-      },
-      {
-        "name": "BoneKnight",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "Skeleton", "maxCount": 3, "probability": 100 },
+      { "name": "BoneKnight", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "cf26832d-8e20-4277-8491-91461dd2995e",
     "name": "Spawner (401)",
-    "location": [
-      487,
-      118,
-      -1
-    ],
+    "location": [487, 118, -1],
     "map": "Malas",
     "count": 5,
     "minDelay": "00:01:00",
     "maxDelay": "00:02:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 479,
-      "y1": 110,
-      "z1": -128,
-      "x2": 496,
-      "y2": 127,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 479, "y1": 110, "z1": -128, "x2": 496, "y2": 127, "z2": 128 },
     "walkingRange": 8,
     "entries": [
-      {
-        "name": "Skeleton",
-        "maxCount": 3,
-        "probability": 100
-      },
-      {
-        "name": "Mummy",
-        "maxCount": 2,
-        "probability": 100
-      }
+      { "name": "Skeleton", "maxCount": 3, "probability": 100 },
+      { "name": "Mummy", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "d03c82ab-0be4-4818-8708-14afba5d8eee",
     "name": "Spawner (401)",
-    "location": [
-      366,
-      13,
-      -1
-    ],
+    "location": [366, 13, -1],
     "map": "Malas",
     "count": 3,
     "minDelay": "00:01:00",
     "maxDelay": "00:02:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 356,
-      "y1": 3,
-      "z1": -128,
-      "x2": 377,
-      "y2": 24,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 356, "y1": 3, "z1": -128, "x2": 377, "y2": 24, "z2": 128 },
     "walkingRange": 10,
     "entries": [
-      {
-        "name": "Lich",
-        "maxCount": 3,
-        "probability": 100
-      }
+      { "name": "Lich", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "d5daa218-49a1-446c-a871-a7ebc77cacf9",
     "name": "Spawner (401)",
-    "location": [
-      480,
-      227,
-      -1
-    ],
+    "location": [480, 227, -1],
     "map": "Malas",
     "count": 3,
     "minDelay": "00:01:00",
     "maxDelay": "00:02:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 460,
-      "y1": 207,
-      "z1": -128,
-      "x2": 501,
-      "y2": 248,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 460, "y1": 207, "z1": -128, "x2": 501, "y2": 248, "z2": 128 },
     "walkingRange": 20,
     "entries": [
-      {
-        "name": "Skeleton",
-        "maxCount": 3,
-        "probability": 100
-      }
+      { "name": "Skeleton", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "d8a6cfe1-0e71-423a-94e9-4ad92ef8d73d",
     "name": "Spawner (401)",
-    "location": [
-      330,
-      136,
-      0
-    ],
+    "location": [330, 136, 0],
     "map": "Malas",
     "count": 1,
     "minDelay": "00:01:00",
     "maxDelay": "00:02:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 326,
-      "y1": 132,
-      "z1": -128,
-      "x2": 335,
-      "y2": 141,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 326, "y1": 132, "z1": -128, "x2": 335, "y2": 141, "z2": 128 },
     "walkingRange": 4,
     "entries": [
-      {
-        "name": "LichLord",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "LichLord", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "d99b3aa7-013c-4dd9-8258-ec68e91e6bf5",
     "name": "Spawner (401)",
-    "location": [
-      443,
-      128,
-      -1
-    ],
+    "location": [443, 128, -1],
     "map": "Malas",
     "count": 16,
     "minDelay": "00:01:00",
     "maxDelay": "00:02:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 403,
-      "y1": 88,
-      "z1": -128,
-      "x2": 484,
-      "y2": 169,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 403, "y1": 88, "z1": -128, "x2": 484, "y2": 169, "z2": 128 },
     "walkingRange": 40,
     "entries": [
-      {
-        "name": "PatchworkSkeleton",
-        "maxCount": 7,
-        "probability": 100
-      },
-      {
-        "name": "VampireBat",
-        "maxCount": 7,
-        "probability": 100
-      },
-      {
-        "name": "RottingCorpse",
-        "maxCount": 2,
-        "probability": 100
-      }
+      { "name": "PatchworkSkeleton", "maxCount": 7, "probability": 100 },
+      { "name": "VampireBat", "maxCount": 7, "probability": 100 },
+      { "name": "RottingCorpse", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "dcade1a7-1652-4eb7-a550-d9ed7a7449ac",
     "name": "Spawner (401)",
-    "location": [
-      442,
-      205,
-      -1
-    ],
+    "location": [442, 205, -1],
     "map": "Malas",
     "count": 11,
     "minDelay": "00:01:00",
     "maxDelay": "00:02:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 412,
-      "y1": 175,
-      "z1": -128,
-      "x2": 473,
-      "y2": 236,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 412, "y1": 175, "z1": -128, "x2": 473, "y2": 236, "z2": 128 },
     "walkingRange": 30,
     "entries": [
-      {
-        "name": "PatchworkSkeleton",
-        "maxCount": 6,
-        "probability": 100
-      },
-      {
-        "name": "VampireBat",
-        "maxCount": 5,
-        "probability": 100
-      }
+      { "name": "PatchworkSkeleton", "maxCount": 6, "probability": 100 },
+      { "name": "VampireBat", "maxCount": 5, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "e12bb836-80f3-4ce1-b068-9d2485922b0f",
     "name": "Spawner (401)",
-    "location": [
-      290,
-      28,
-      0
-    ],
+    "location": [290, 28, 0],
     "map": "Malas",
     "count": 4,
     "minDelay": "00:01:00",
     "maxDelay": "00:02:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 280,
-      "y1": 18,
-      "z1": -128,
-      "x2": 301,
-      "y2": 39,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 280, "y1": 18, "z1": -128, "x2": 301, "y2": 39, "z2": 128 },
     "walkingRange": 10,
     "entries": [
-      {
-        "name": "GoreFiend",
-        "maxCount": 4,
-        "probability": 100
-      }
+      { "name": "GoreFiend", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "e764f652-de2c-420f-8419-7d29a2d6cd9c",
     "name": "Spawner (401)",
-    "location": [
-      287,
-      81,
-      -1
-    ],
+    "location": [287, 81, -1],
     "map": "Malas",
     "count": 8,
     "minDelay": "00:01:00",
     "maxDelay": "00:02:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 247,
-      "y1": 41,
-      "z1": -128,
-      "x2": 328,
-      "y2": 122,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 247, "y1": 41, "z1": -128, "x2": 328, "y2": 122, "z2": 128 },
     "walkingRange": 40,
     "entries": [
-      {
-        "name": "VampireBat",
-        "maxCount": 6,
-        "probability": 100
-      },
-      {
-        "name": "RottingCorpse",
-        "maxCount": 2,
-        "probability": 100
-      }
+      { "name": "VampireBat", "maxCount": 6, "probability": 100 },
+      { "name": "RottingCorpse", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "f20c08f3-28e9-47a3-b24e-b31370ce2c18",
     "name": "Spawner (401)",
-    "location": [
-      447,
-      25,
-      -1
-    ],
+    "location": [447, 25, -1],
     "map": "Malas",
     "count": 2,
     "minDelay": "00:01:00",
     "maxDelay": "00:02:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 432,
-      "y1": 10,
-      "z1": -128,
-      "x2": 463,
-      "y2": 41,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 432, "y1": 10, "z1": -128, "x2": 463, "y2": 41, "z2": 128 },
     "walkingRange": 15,
     "entries": [
-      {
-        "name": "Lich",
-        "maxCount": 2,
-        "probability": 100
-      }
+      { "name": "Lich", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "f909d2a4-b3bf-4d0c-b07c-f36839c99209",
     "name": "Spawner (401)",
-    "location": [
-      479,
-      168,
-      -1
-    ],
+    "location": [479, 168, -1],
     "map": "Malas",
     "count": 5,
     "minDelay": "00:01:00",
     "maxDelay": "00:02:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 459,
-      "y1": 148,
-      "z1": -128,
-      "x2": 500,
-      "y2": 189,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 459, "y1": 148, "z1": -128, "x2": 500, "y2": 189, "z2": 128 },
     "walkingRange": 20,
     "entries": [
-      {
-        "name": "Skeleton",
-        "maxCount": 5,
-        "probability": 100
-      }
+      { "name": "Skeleton", "maxCount": 5, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "f9c8b1af-1ea5-466d-90a1-e956f8c8de31",
     "name": "Spawner (401)",
-    "location": [
-      266,
-      26,
-      0
-    ],
+    "location": [266, 26, 0],
     "map": "Malas",
     "count": 2,
     "minDelay": "00:01:00",
     "maxDelay": "00:02:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 261,
-      "y1": 21,
-      "z1": -128,
-      "x2": 272,
-      "y2": 32,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 261, "y1": 21, "z1": -128, "x2": 272, "y2": 32, "z2": 128 },
     "walkingRange": 8,
     "entries": [
-      {
-        "name": "LichLord",
-        "maxCount": 2,
-        "probability": 100
-      }
+      { "name": "LichLord", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "ff72dd04-bba5-4a6f-8899-d851b4c1fe88",
     "name": "Spawner (401)",
-    "location": [
-      480,
-      227,
-      -1
-    ],
+    "location": [480, 227, -1],
     "map": "Malas",
     "count": 1,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 460,
-      "y1": 207,
-      "z1": -128,
-      "x2": 501,
-      "y2": 248,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 460, "y1": 207, "z1": -128, "x2": 501, "y2": 248, "z2": 128 },
     "walkingRange": 20,
     "entries": [
-      {
-        "name": "LichLord",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "LichLord", "maxCount": 1, "probability": 100 }
     ]
   }
 ]

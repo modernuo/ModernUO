@@ -3,902 +3,347 @@
     "$type": "Spawner",
     "guid": "0c628980-8a6f-45e1-bdc8-ed7ea16765fd",
     "name": "Spawner (402)",
-    "location": [
-      2205,
-      145,
-      -90
-    ],
+    "location": [2205, 145, -90],
     "map": "Malas",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 2155,
-      "y1": 95,
-      "z1": -128,
-      "x2": 2256,
-      "y2": 196,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 2155, "y1": 95, "z1": -128, "x2": 2256, "y2": 196, "z2": 128 },
     "walkingRange": 50,
     "entries": [
-      {
-        "name": "Unicorn",
-        "maxCount": 3,
-        "probability": 100
-      }
+      { "name": "Unicorn", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "135a20a6-0885-4a61-9a55-a01593f3e874",
     "name": "Spawner (402)",
-    "location": [
-      1482,
-      347,
-      -50
-    ],
+    "location": [1482, 347, -50],
     "map": "Malas",
     "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 1442,
-      "y1": 307,
-      "z1": -128,
-      "x2": 1523,
-      "y2": 388,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 1442, "y1": 307, "z1": -128, "x2": 1523, "y2": 388, "z2": 128 },
     "walkingRange": 60,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 2,
-        "probability": 100
-      },
-      {
-        "name": "Walrus",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "SnowLeopard",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "WhiteWolf",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "IceSnake",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "PolarBear",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Walrus", "maxCount": 1, "probability": 100 },
+      { "name": "SnowLeopard", "maxCount": 1, "probability": 100 },
+      { "name": "WhiteWolf", "maxCount": 1, "probability": 100 },
+      { "name": "IceSnake", "maxCount": 1, "probability": 100 },
+      { "name": "PolarBear", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "2db6869c-b590-4f82-a5eb-edb7afdd18e4",
     "name": "Spawner (402)",
-    "location": [
-      1274,
-      300,
-      -50
-    ],
+    "location": [1274, 300, -50],
     "map": "Malas",
     "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 1234,
-      "y1": 260,
-      "z1": -128,
-      "x2": 1315,
-      "y2": 341,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 1234, "y1": 260, "z1": -128, "x2": 1315, "y2": 341, "z2": 128 },
     "walkingRange": 40,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 2,
-        "probability": 100
-      },
-      {
-        "name": "Walrus",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "SnowLeopard",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "WhiteWolf",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "IceSnake",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "PolarBear",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Walrus", "maxCount": 1, "probability": 100 },
+      { "name": "SnowLeopard", "maxCount": 1, "probability": 100 },
+      { "name": "WhiteWolf", "maxCount": 1, "probability": 100 },
+      { "name": "IceSnake", "maxCount": 1, "probability": 100 },
+      { "name": "PolarBear", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "2efda65d-ebc3-4251-b6a3-356d42cca581",
     "name": "Spawner (402)",
-    "location": [
-      2291,
-      295,
-      -90
-    ],
+    "location": [2291, 295, -90],
     "map": "Malas",
     "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 2231,
-      "y1": 235,
-      "z1": -128,
-      "x2": 2352,
-      "y2": 356,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 2231, "y1": 235, "z1": -128, "x2": 2352, "y2": 356, "z2": 128 },
     "walkingRange": 60,
     "entries": [
-      {
-        "name": "GoreFiend",
-        "maxCount": 6,
-        "probability": 100
-      }
+      { "name": "GoreFiend", "maxCount": 6, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "41a269ac-0492-4a16-bbc3-449c7efa9ef9",
     "name": "Spawner (402)",
-    "location": [
-      2121,
-      597,
-      -50
-    ],
+    "location": [2121, 597, -50],
     "map": "Malas",
     "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 2101,
-      "y1": 577,
-      "z1": -128,
-      "x2": 2142,
-      "y2": 618,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 2101, "y1": 577, "z1": -128, "x2": 2142, "y2": 618, "z2": 128 },
     "walkingRange": 20,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 2,
-        "probability": 100
-      },
-      {
-        "name": "Walrus",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "SnowLeopard",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "WhiteWolf",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "IceSnake",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "PolarBear",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Walrus", "maxCount": 1, "probability": 100 },
+      { "name": "SnowLeopard", "maxCount": 1, "probability": 100 },
+      { "name": "WhiteWolf", "maxCount": 1, "probability": 100 },
+      { "name": "IceSnake", "maxCount": 1, "probability": 100 },
+      { "name": "PolarBear", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "63d80004-20f7-48d8-bcc8-639a8d83c099",
     "name": "Spawner (402)",
-    "location": [
-      766,
-      114,
-      -90
-    ],
+    "location": [766, 114, -90],
     "map": "Malas",
     "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 746,
-      "y1": 94,
-      "z1": -128,
-      "x2": 787,
-      "y2": 135,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 746, "y1": 94, "z1": -128, "x2": 787, "y2": 135, "z2": 128 },
     "walkingRange": 20,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 2,
-        "probability": 100
-      },
-      {
-        "name": "Walrus",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "SnowLeopard",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "WhiteWolf",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "IceSnake",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "PolarBear",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Walrus", "maxCount": 1, "probability": 100 },
+      { "name": "SnowLeopard", "maxCount": 1, "probability": 100 },
+      { "name": "WhiteWolf", "maxCount": 1, "probability": 100 },
+      { "name": "IceSnake", "maxCount": 1, "probability": 100 },
+      { "name": "PolarBear", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "67b52f00-d808-4db4-91ca-9313330d0b40",
     "name": "Spawner (402)",
-    "location": [
-      1710,
-      403,
-      -50
-    ],
+    "location": [1710, 403, -50],
     "map": "Malas",
     "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 1690,
-      "y1": 383,
-      "z1": -128,
-      "x2": 1731,
-      "y2": 424,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 1690, "y1": 383, "z1": -128, "x2": 1731, "y2": 424, "z2": 128 },
     "walkingRange": 40,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 2,
-        "probability": 100
-      },
-      {
-        "name": "Walrus",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "SnowLeopard",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "WhiteWolf",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "IceSnake",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "PolarBear",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Walrus", "maxCount": 1, "probability": 100 },
+      { "name": "SnowLeopard", "maxCount": 1, "probability": 100 },
+      { "name": "WhiteWolf", "maxCount": 1, "probability": 100 },
+      { "name": "IceSnake", "maxCount": 1, "probability": 100 },
+      { "name": "PolarBear", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "6ef4d890-5038-4d39-977c-5eb15448543a",
     "name": "Spawner (402)",
-    "location": [
-      1659,
-      112,
-      -80
-    ],
+    "location": [1659, 112, -80],
     "map": "Malas",
     "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 1639,
-      "y1": 92,
-      "z1": -128,
-      "x2": 1680,
-      "y2": 133,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 1639, "y1": 92, "z1": -128, "x2": 1680, "y2": 133, "z2": 128 },
     "walkingRange": 20,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 2,
-        "probability": 100
-      },
-      {
-        "name": "Walrus",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "SnowLeopard",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "WhiteWolf",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "IceSnake",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "PolarBear",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Walrus", "maxCount": 1, "probability": 100 },
+      { "name": "SnowLeopard", "maxCount": 1, "probability": 100 },
+      { "name": "WhiteWolf", "maxCount": 1, "probability": 100 },
+      { "name": "IceSnake", "maxCount": 1, "probability": 100 },
+      { "name": "PolarBear", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "a1e3857a-952a-47c2-9311-d6bcc3806c45",
     "name": "Spawner (402)",
-    "location": [
-      1980,
-      660,
-      -50
-    ],
+    "location": [1980, 660, -50],
     "map": "Malas",
     "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 1940,
-      "y1": 620,
-      "z1": -128,
-      "x2": 2021,
-      "y2": 701,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 1940, "y1": 620, "z1": -128, "x2": 2021, "y2": 701, "z2": 128 },
     "walkingRange": 40,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 2,
-        "probability": 100
-      },
-      {
-        "name": "Walrus",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "SnowLeopard",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "WhiteWolf",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "IceSnake",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "PolarBear",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Walrus", "maxCount": 1, "probability": 100 },
+      { "name": "SnowLeopard", "maxCount": 1, "probability": 100 },
+      { "name": "WhiteWolf", "maxCount": 1, "probability": 100 },
+      { "name": "IceSnake", "maxCount": 1, "probability": 100 },
+      { "name": "PolarBear", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "a7be1139-619a-4d84-a98a-8ea04c550827",
     "name": "Spawner (402)",
-    "location": [
-      1869,
-      480,
-      -50
-    ],
+    "location": [1869, 480, -50],
     "map": "Malas",
     "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 1829,
-      "y1": 440,
-      "z1": -128,
-      "x2": 1910,
-      "y2": 521,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 1829, "y1": 440, "z1": -128, "x2": 1910, "y2": 521, "z2": 128 },
     "walkingRange": 40,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 2,
-        "probability": 100
-      },
-      {
-        "name": "Walrus",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "SnowLeopard",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "WhiteWolf",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "IceSnake",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "PolarBear",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Walrus", "maxCount": 1, "probability": 100 },
+      { "name": "SnowLeopard", "maxCount": 1, "probability": 100 },
+      { "name": "WhiteWolf", "maxCount": 1, "probability": 100 },
+      { "name": "IceSnake", "maxCount": 1, "probability": 100 },
+      { "name": "PolarBear", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "abaa8a2d-9997-4bff-b033-a9dfa78d46f9",
     "name": "Spawner (402)",
-    "location": [
-      2030,
-      500,
-      -50
-    ],
+    "location": [2030, 500, -50],
     "map": "Malas",
     "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 1990,
-      "y1": 460,
-      "z1": -128,
-      "x2": 2071,
-      "y2": 541,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 1990, "y1": 460, "z1": -128, "x2": 2071, "y2": 541, "z2": 128 },
     "walkingRange": 70,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 2,
-        "probability": 100
-      },
-      {
-        "name": "Walrus",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "SnowLeopard",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "WhiteWolf",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "IceSnake",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "PolarBear",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Walrus", "maxCount": 1, "probability": 100 },
+      { "name": "SnowLeopard", "maxCount": 1, "probability": 100 },
+      { "name": "WhiteWolf", "maxCount": 1, "probability": 100 },
+      { "name": "IceSnake", "maxCount": 1, "probability": 100 },
+      { "name": "PolarBear", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "b48ebb7a-8bfc-4c48-a0ab-f82ca41e38ac",
     "name": "Spawner (402)",
-    "location": [
-      1381,
-      340,
-      -50
-    ],
+    "location": [1381, 340, -50],
     "map": "Malas",
     "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 1341,
-      "y1": 300,
-      "z1": -128,
-      "x2": 1422,
-      "y2": 381,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 1341, "y1": 300, "z1": -128, "x2": 1422, "y2": 381, "z2": 128 },
     "walkingRange": 40,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 2,
-        "probability": 100
-      },
-      {
-        "name": "Walrus",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "SnowLeopard",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "WhiteWolf",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "IceSnake",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "PolarBear",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Walrus", "maxCount": 1, "probability": 100 },
+      { "name": "SnowLeopard", "maxCount": 1, "probability": 100 },
+      { "name": "WhiteWolf", "maxCount": 1, "probability": 100 },
+      { "name": "IceSnake", "maxCount": 1, "probability": 100 },
+      { "name": "PolarBear", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "b85a0fee-612e-4bd9-8489-28fbcdc60ef5",
     "name": "Spawner (402)",
-    "location": [
-      1137,
-      223,
-      -50
-    ],
+    "location": [1137, 223, -50],
     "map": "Malas",
     "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 1117,
-      "y1": 203,
-      "z1": -128,
-      "x2": 1158,
-      "y2": 244,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 1117, "y1": 203, "z1": -128, "x2": 1158, "y2": 244, "z2": 128 },
     "walkingRange": 40,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 2,
-        "probability": 100
-      },
-      {
-        "name": "Walrus",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "SnowLeopard",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "WhiteWolf",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "IceSnake",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "PolarBear",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Walrus", "maxCount": 1, "probability": 100 },
+      { "name": "SnowLeopard", "maxCount": 1, "probability": 100 },
+      { "name": "WhiteWolf", "maxCount": 1, "probability": 100 },
+      { "name": "IceSnake", "maxCount": 1, "probability": 100 },
+      { "name": "PolarBear", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "be2f76e8-a03b-42b9-b39c-c641f03ee091",
     "name": "Spawner (402)",
-    "location": [
-      1206,
-      191,
-      -50
-    ],
+    "location": [1206, 191, -50],
     "map": "Malas",
     "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 1186,
-      "y1": 171,
-      "z1": -128,
-      "x2": 1227,
-      "y2": 212,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 1186, "y1": 171, "z1": -128, "x2": 1227, "y2": 212, "z2": 128 },
     "walkingRange": 40,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 2,
-        "probability": 100
-      },
-      {
-        "name": "Walrus",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "SnowLeopard",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "WhiteWolf",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "IceSnake",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "PolarBear",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Walrus", "maxCount": 1, "probability": 100 },
+      { "name": "SnowLeopard", "maxCount": 1, "probability": 100 },
+      { "name": "WhiteWolf", "maxCount": 1, "probability": 100 },
+      { "name": "IceSnake", "maxCount": 1, "probability": 100 },
+      { "name": "PolarBear", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "dec6f03f-a79d-414a-8b8b-c46af723371a",
     "name": "Spawner (402)",
-    "location": [
-      1587,
-      386,
-      -50
-    ],
+    "location": [1587, 386, -50],
     "map": "Malas",
     "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 1547,
-      "y1": 346,
-      "z1": -128,
-      "x2": 1628,
-      "y2": 427,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 1547, "y1": 346, "z1": -128, "x2": 1628, "y2": 427, "z2": 128 },
     "walkingRange": 40,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 2,
-        "probability": 100
-      },
-      {
-        "name": "Walrus",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "SnowLeopard",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "WhiteWolf",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "IceSnake",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "PolarBear",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Walrus", "maxCount": 1, "probability": 100 },
+      { "name": "SnowLeopard", "maxCount": 1, "probability": 100 },
+      { "name": "WhiteWolf", "maxCount": 1, "probability": 100 },
+      { "name": "IceSnake", "maxCount": 1, "probability": 100 },
+      { "name": "PolarBear", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "e2af6c55-d320-4255-a85f-c694f8d9886b",
     "name": "Spawner (402)",
-    "location": [
-      2233,
-      555,
-      -90
-    ],
+    "location": [2233, 555, -90],
     "map": "Malas",
     "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 2173,
-      "y1": 495,
-      "z1": -128,
-      "x2": 2294,
-      "y2": 616,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 2173, "y1": 495, "z1": -128, "x2": 2294, "y2": 616, "z2": 128 },
     "walkingRange": 60,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 2,
-        "probability": 100
-      },
-      {
-        "name": "Walrus",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "SnowLeopard",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "WhiteWolf",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "IceSnake",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "PolarBear",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Walrus", "maxCount": 1, "probability": 100 },
+      { "name": "SnowLeopard", "maxCount": 1, "probability": 100 },
+      { "name": "WhiteWolf", "maxCount": 1, "probability": 100 },
+      { "name": "IceSnake", "maxCount": 1, "probability": 100 },
+      { "name": "PolarBear", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "e3f940e1-3225-416f-a9ba-717b28fb944a",
     "name": "Spawner (402)",
-    "location": [
-      1023,
-      192,
-      -50
-    ],
+    "location": [1023, 192, -50],
     "map": "Malas",
     "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 1003,
-      "y1": 172,
-      "z1": -128,
-      "x2": 1044,
-      "y2": 213,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 1003, "y1": 172, "z1": -128, "x2": 1044, "y2": 213, "z2": 128 },
     "walkingRange": 20,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 2,
-        "probability": 100
-      },
-      {
-        "name": "Walrus",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "SnowLeopard",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "WhiteWolf",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "IceSnake",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "PolarBear",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 2, "probability": 100 },
+      { "name": "Walrus", "maxCount": 1, "probability": 100 },
+      { "name": "SnowLeopard", "maxCount": 1, "probability": 100 },
+      { "name": "WhiteWolf", "maxCount": 1, "probability": 100 },
+      { "name": "IceSnake", "maxCount": 1, "probability": 100 },
+      { "name": "PolarBear", "maxCount": 1, "probability": 100 }
     ]
   }
 ]

@@ -3,1393 +3,700 @@
     "$type": "Spawner",
     "guid": "04207c29-fe38-4d43-a08d-8645a3a312e8",
     "name": "Spawner (205)",
-    "location": [
-      5441,
-      680,
-      20
-    ],
+    "location": [5441, 680, 20],
     "map": "Felucca",
     "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 5429,
-      "y1": 668,
-      "z1": -128,
-      "x2": 5454,
-      "y2": 693,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 5429, "y1": 668, "z1": -128, "x2": 5454, "y2": 693, "z2": 128 },
     "walkingRange": 25,
     "entries": [
-      {
-        "name": "EarthElemental",
-        "maxCount": 6,
-        "probability": 100
-      }
+      { "name": "EarthElemental", "maxCount": 6, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "05844644-3d42-4021-bb28-8114d8f7f064",
     "name": "Spawner (205)",
-    "location": [
-      5420,
-      746,
-      5
-    ],
+    "location": [5420, 746, 5],
     "map": "Felucca",
     "count": 10,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 5402,
-      "y1": 728,
-      "z1": -128,
-      "x2": 5439,
-      "y2": 765,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 5402, "y1": 728, "z1": -128, "x2": 5439, "y2": 765, "z2": 128 },
     "walkingRange": 25,
     "entries": [
-      {
-        "name": "EarthElemental",
-        "maxCount": 4,
-        "probability": 100
-      },
-      {
-        "name": "Ettin",
-        "maxCount": 6,
-        "probability": 100
-      }
+      { "name": "EarthElemental", "maxCount": 4, "probability": 100 },
+      { "name": "Ettin", "maxCount": 6, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "0a6bf903-a9a3-4252-a4a0-652d89fb9381",
     "name": "Spawner (205)",
-    "location": [
-      5528,
-      902,
-      30
-    ],
+    "location": [5528, 902, 30],
     "map": "Felucca",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 5513,
-      "y1": 887,
-      "z1": -128,
-      "x2": 5544,
-      "y2": 918,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 5513, "y1": 887, "z1": -128, "x2": 5544, "y2": 918, "z2": 128 },
     "walkingRange": 25,
     "entries": [
-      {
-        "name": "Ogre",
-        "maxCount": 3,
-        "probability": 100
-      }
+      { "name": "Ogre", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "11e8cbb5-45dd-4109-8606-54eb9bada453",
     "name": "Spawner (205)",
-    "location": [
-      5460,
-      526,
-      60
-    ],
+    "location": [5460, 526, 60],
     "map": "Felucca",
     "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 5448,
-      "y1": 514,
-      "z1": -128,
-      "x2": 5473,
-      "y2": 539,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 5448, "y1": 514, "z1": -128, "x2": 5473, "y2": 539, "z2": 128 },
     "walkingRange": 25,
     "entries": [
-      {
-        "name": "Lizardman",
-        "maxCount": 5,
-        "probability": 100
-      }
+      { "name": "Lizardman", "maxCount": 5, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "1855dd2e-81b1-4326-bc97-f3e50884e09a",
     "name": "Spawner (205)",
-    "location": [
-      5391,
-      905,
-      30
-    ],
+    "location": [5391, 905, 30],
     "map": "Felucca",
     "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 5376,
-      "y1": 890,
-      "z1": -128,
-      "x2": 5407,
-      "y2": 921,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 5376, "y1": 890, "z1": -128, "x2": 5407, "y2": 921, "z2": 128 },
     "walkingRange": 25,
     "entries": [
-      {
-        "name": "Ettin",
-        "maxCount": 4,
-        "probability": 100
-      }
+      { "name": "Ettin", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "1adcf3d5-536f-473d-af18-4ae23415ebba",
     "name": "Spawner (205)",
-    "location": [
-      5505,
-      747,
-      5
-    ],
+    "location": [5505, 747, 5],
     "map": "Felucca",
     "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 5487,
-      "y1": 729,
-      "z1": -128,
-      "x2": 5524,
-      "y2": 766,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 5487, "y1": 729, "z1": -128, "x2": 5524, "y2": 766, "z2": 128 },
     "walkingRange": 25,
     "entries": [
-      {
-        "name": "EarthElemental",
-        "maxCount": 3,
-        "probability": 100
-      },
-      {
-        "name": "Ettin",
-        "maxCount": 2,
-        "probability": 100
-      }
+      { "name": "EarthElemental", "maxCount": 3, "probability": 100 },
+      { "name": "Ettin", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "21b9e0f9-7627-4967-b7bf-5453be3e0266",
     "name": "Spawner (205)",
-    "location": [
-      5470,
-      860,
-      45
-    ],
+    "location": [5470, 860, 45],
     "map": "Felucca",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 5458,
-      "y1": 848,
-      "z1": -128,
-      "x2": 5483,
-      "y2": 873,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 5458, "y1": 848, "z1": -128, "x2": 5483, "y2": 873, "z2": 128 },
     "walkingRange": 25,
     "entries": [
-      {
-        "name": "Troll",
-        "maxCount": 3,
-        "probability": 100
-      }
+      { "name": "Troll", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "310b722e-fe5d-4692-97c7-956d15b76472",
     "name": "Spawner (205)",
-    "location": [
-      5482,
-      791,
-      60
-    ],
+    "location": [5482, 791, 60],
     "map": "Felucca",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 5470,
-      "y1": 779,
-      "z1": -128,
-      "x2": 5495,
-      "y2": 804,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 5470, "y1": 779, "z1": -128, "x2": 5495, "y2": 804, "z2": 128 },
     "walkingRange": 25,
     "entries": [
-      {
-        "name": "Troll",
-        "maxCount": 3,
-        "probability": 100
-      }
+      { "name": "Troll", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "38967322-06dc-48bc-bed1-6dd60661b1c0",
     "name": "Spawner (205)",
-    "location": [
-      5387,
-      697,
-      15
-    ],
+    "location": [5387, 697, 15],
     "map": "Felucca",
     "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 5382,
-      "y1": 692,
-      "z1": -128,
-      "x2": 5393,
-      "y2": 703,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 5382, "y1": 692, "z1": -128, "x2": 5393, "y2": 703, "z2": 128 },
     "walkingRange": 5,
     "entries": [
-      {
-        "name": "TreasureChestLevel2",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "TreasureChestLevel3",
-        "maxCount": 4,
-        "probability": 100
-      }
+      { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 },
+      { "name": "TreasureChestLevel3", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "38fe4fe8-2f5d-441f-8f4b-8f679a955e96",
     "name": "Spawner (205)",
-    "location": [
-      5546,
-      888,
-      30
-    ],
+    "location": [5546, 888, 30],
     "map": "Felucca",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 5538,
-      "y1": 880,
-      "z1": -128,
-      "x2": 5555,
-      "y2": 897,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 5538, "y1": 880, "z1": -128, "x2": 5555, "y2": 897, "z2": 128 },
     "walkingRange": 8,
     "entries": [
-      {
-        "name": "TreasureChestLevel2",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "TreasureChestLevel3",
-        "maxCount": 2,
-        "probability": 100
-      }
+      { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 },
+      { "name": "TreasureChestLevel3", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "3d6315d9-3968-4b92-b71a-99a12bab509e",
     "name": "Spawner (205)",
-    "location": [
-      5590,
-      871,
-      45
-    ],
+    "location": [5590, 871, 45],
     "map": "Felucca",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 5570,
-      "y1": 851,
-      "z1": -128,
-      "x2": 5611,
-      "y2": 892,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 5570, "y1": 851, "z1": -128, "x2": 5611, "y2": 892, "z2": 128 },
     "walkingRange": 35,
     "entries": [
-      {
-        "name": "Ogre",
-        "maxCount": 3,
-        "probability": 100
-      }
+      { "name": "Ogre", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "441cff6e-d90b-4a74-bd0a-b10165fd6eb4",
     "name": "Spawner (205)",
-    "location": [
-      5426,
-      943,
-      20
-    ],
+    "location": [5426, 943, 20],
     "map": "Felucca",
     "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 5411,
-      "y1": 928,
-      "z1": -128,
-      "x2": 5442,
-      "y2": 959,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 5411, "y1": 928, "z1": -128, "x2": 5442, "y2": 959, "z2": 128 },
     "walkingRange": 25,
     "entries": [
-      {
-        "name": "Ettin",
-        "maxCount": 4,
-        "probability": 100
-      }
+      { "name": "Ettin", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "4780e4d1-5a3a-4519-a8db-3cc6e77648c7",
     "name": "Spawner (205)",
-    "location": [
-      5398,
-      996,
-      5
-    ],
+    "location": [5398, 996, 5],
     "map": "Felucca",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 5383,
-      "y1": 981,
-      "z1": -128,
-      "x2": 5414,
-      "y2": 1012,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 5383, "y1": 981, "z1": -128, "x2": 5414, "y2": 1012, "z2": 128 },
     "walkingRange": 25,
     "entries": [
-      {
-        "name": "AcidElemental",
-        "maxCount": 3,
-        "probability": 100
-      }
+      { "name": "AcidElemental", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "4d00942a-33e2-4714-8d03-9d6a40778772",
     "name": "Spawner (205)",
-    "location": [
-      5390,
-      587,
-      45
-    ],
+    "location": [5390, 587, 45],
     "map": "Felucca",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 5385,
-      "y1": 582,
-      "z1": -128,
-      "x2": 5396,
-      "y2": 593,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 5385, "y1": 582, "z1": -128, "x2": 5396, "y2": 593, "z2": 128 },
     "walkingRange": 5,
     "entries": [
-      {
-        "name": "TreasureChestLevel1",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "TreasureChestLevel2",
-        "maxCount": 2,
-        "probability": 100
-      }
+      { "name": "TreasureChestLevel1", "maxCount": 1, "probability": 100 },
+      { "name": "TreasureChestLevel2", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "51d69140-0708-491e-9dbd-9c5d58349172",
     "name": "Spawner (205)",
-    "location": [
-      5504,
-      939,
-      20
-    ],
+    "location": [5504, 939, 20],
     "map": "Felucca",
     "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 5489,
-      "y1": 924,
-      "z1": -128,
-      "x2": 5520,
-      "y2": 955,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 5489, "y1": 924, "z1": -128, "x2": 5520, "y2": 955, "z2": 128 },
     "walkingRange": 25,
     "entries": [
-      {
-        "name": "Ettin",
-        "maxCount": 4,
-        "probability": 100
-      }
+      { "name": "Ettin", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "5c5b2844-5792-434b-9d9e-e5f607f32b6b",
     "name": "Spawner (205)",
-    "location": [
-      5439,
-      851,
-      45
-    ],
+    "location": [5439, 851, 45],
     "map": "Felucca",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 5427,
-      "y1": 839,
-      "z1": -128,
-      "x2": 5452,
-      "y2": 864,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 5427, "y1": 839, "z1": -128, "x2": 5452, "y2": 864, "z2": 128 },
     "walkingRange": 25,
     "entries": [
-      {
-        "name": "Troll",
-        "maxCount": 3,
-        "probability": 100
-      }
+      { "name": "Troll", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "6a01c304-d63d-4a59-8b00-d004329d1af7",
     "name": "Spawner (205)",
-    "location": [
-      5483,
-      711,
-      15
-    ],
+    "location": [5483, 711, 15],
     "map": "Felucca",
     "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 5471,
-      "y1": 699,
-      "z1": -128,
-      "x2": 5496,
-      "y2": 724,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 5471, "y1": 699, "z1": -128, "x2": 5496, "y2": 724, "z2": 128 },
     "walkingRange": 25,
     "entries": [
-      {
-        "name": "Ettin",
-        "maxCount": 4,
-        "probability": 100
-      }
+      { "name": "Ettin", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "6b94a3e0-7977-459b-bc5f-6c13ce0062ff",
     "name": "Spawner (205)",
-    "location": [
-      5405,
-      576,
-      61
-    ],
+    "location": [5405, 576, 61],
     "map": "Felucca",
     "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 5393,
-      "y1": 564,
-      "z1": -128,
-      "x2": 5418,
-      "y2": 589,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 5393, "y1": 564, "z1": -128, "x2": 5418, "y2": 589, "z2": 128 },
     "walkingRange": 25,
     "entries": [
-      {
-        "name": "Lizardman",
-        "maxCount": 5,
-        "probability": 100
-      }
+      { "name": "Lizardman", "maxCount": 5, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "70c7a94c-7535-432d-917a-640d0a6f47ff",
     "name": "Spawner (205)",
-    "location": [
-      5605,
-      799,
-      60
-    ],
+    "location": [5605, 799, 60],
     "map": "Felucca",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 5595,
-      "y1": 789,
-      "z1": -128,
-      "x2": 5616,
-      "y2": 810,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 5595, "y1": 789, "z1": -128, "x2": 5616, "y2": 810, "z2": 128 },
     "walkingRange": 10,
     "entries": [
-      {
-        "name": "TreasureChestLevel3",
-        "maxCount": 3,
-        "probability": 100
-      }
+      { "name": "TreasureChestLevel3", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "74032d64-a50f-4f99-ad45-3d9ad9f1d718",
     "name": "Spawner (205)",
-    "location": [
-      5410,
-      611,
-      45
-    ],
+    "location": [5410, 611, 45],
     "map": "Felucca",
     "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 5398,
-      "y1": 599,
-      "z1": -128,
-      "x2": 5423,
-      "y2": 624,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 5398, "y1": 599, "z1": -128, "x2": 5423, "y2": 624, "z2": 128 },
     "walkingRange": 25,
     "entries": [
-      {
-        "name": "Lizardman",
-        "maxCount": 5,
-        "probability": 100
-      }
+      { "name": "Lizardman", "maxCount": 5, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "74fc3f59-8ee2-4ee5-b246-ddf07c415ca5",
     "name": "Spawner (205)",
-    "location": [
-      5557,
-      828,
-      45
-    ],
+    "location": [5557, 828, 45],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 5550,
-      "y1": 821,
-      "z1": -128,
-      "x2": 5565,
-      "y2": 836,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 5550, "y1": 821, "z1": -128, "x2": 5565, "y2": 836, "z2": 128 },
     "walkingRange": 7,
     "entries": [
-      {
-        "name": "TreasureChestLevel3",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "7573ab39-270e-45f0-99db-4304837ef7bb",
     "name": "Spawner (205)",
-    "location": [
-      5487,
-      902,
-      30
-    ],
+    "location": [5487, 902, 30],
     "map": "Felucca",
     "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 5472,
-      "y1": 887,
-      "z1": -128,
-      "x2": 5503,
-      "y2": 918,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 5472, "y1": 887, "z1": -128, "x2": 5503, "y2": 918, "z2": 128 },
     "walkingRange": 25,
     "entries": [
-      {
-        "name": "Ettin",
-        "maxCount": 4,
-        "probability": 100
-      }
+      { "name": "Ettin", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "7c71f2a8-2d6b-40b8-8dca-9eca3aa54d47",
     "name": "Spawner (205)",
-    "location": [
-      5397,
-      995,
-      5
-    ],
+    "location": [5397, 995, 5],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 5387,
-      "y1": 985,
-      "z1": -128,
-      "x2": 5408,
-      "y2": 1006,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 5387, "y1": 985, "z1": -128, "x2": 5408, "y2": 1006, "z2": 128 },
     "walkingRange": 10,
     "entries": [
-      {
-        "name": "TreasureChestLevel3",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "7ec31075-3cef-4d6b-a20e-2c55540052fc",
     "name": "Spawner (205)",
-    "location": [
-      5391,
-      660,
-      20
-    ],
+    "location": [5391, 660, 20],
     "map": "Felucca",
     "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 5379,
-      "y1": 648,
-      "z1": -128,
-      "x2": 5404,
-      "y2": 673,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 5379, "y1": 648, "z1": -128, "x2": 5404, "y2": 673, "z2": 128 },
     "walkingRange": 25,
     "entries": [
-      {
-        "name": "Ettin",
-        "maxCount": 4,
-        "probability": 100
-      }
+      { "name": "Ettin", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "831675ca-f594-4e7e-bd6f-b0f15ed60bf0",
     "name": "Spawner (205)",
-    "location": [
-      5504,
-      597,
-      45
-    ],
+    "location": [5504, 597, 45],
     "map": "Felucca",
     "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 5492,
-      "y1": 585,
-      "z1": -128,
-      "x2": 5517,
-      "y2": 610,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 5492, "y1": 585, "z1": -128, "x2": 5517, "y2": 610, "z2": 128 },
     "walkingRange": 25,
     "entries": [
-      {
-        "name": "Lizardman",
-        "maxCount": 5,
-        "probability": 100
-      }
+      { "name": "Lizardman", "maxCount": 5, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "8e65ea3f-2bca-43cd-b6e2-916b8625d69b",
     "name": "Spawner (205)",
-    "location": [
-      5398,
-      995,
-      5
-    ],
+    "location": [5398, 995, 5],
     "map": "Felucca",
     "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 5388,
-      "y1": 985,
-      "z1": -128,
-      "x2": 5409,
-      "y2": 1006,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 5388, "y1": 985, "z1": -128, "x2": 5409, "y2": 1006, "z2": 128 },
     "walkingRange": 10,
     "entries": [
-      {
-        "name": "TreasureChestLevel4",
-        "maxCount": 2,
-        "probability": 100
-      }
+      { "name": "TreasureChestLevel4", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "93356ad6-8774-42cd-ab96-705c2d55e109",
     "name": "Spawner (205)",
-    "location": [
-      5604,
-      789,
-      60
-    ],
+    "location": [5604, 789, 60],
     "map": "Felucca",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 5589,
-      "y1": 774,
-      "z1": -128,
-      "x2": 5620,
-      "y2": 805,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 5589, "y1": 774, "z1": -128, "x2": 5620, "y2": 805, "z2": 128 },
     "walkingRange": 25,
     "entries": [
-      {
-        "name": "Ogre",
-        "maxCount": 3,
-        "probability": 100
-      }
+      { "name": "Ogre", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "9dbd8c5c-40d7-4908-8fbd-86cd1f149be0",
     "name": "Spawner (205)",
-    "location": [
-      5503,
-      529,
-      60
-    ],
+    "location": [5503, 529, 60],
     "map": "Felucca",
     "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 5491,
-      "y1": 517,
-      "z1": -128,
-      "x2": 5516,
-      "y2": 542,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 5491, "y1": 517, "z1": -128, "x2": 5516, "y2": 542, "z2": 128 },
     "walkingRange": 25,
     "entries": [
-      {
-        "name": "Lizardman",
-        "maxCount": 5,
-        "probability": 100
-      },
-      {
-        "name": "TreasureChestLevel2",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "TreasureChestLevel3",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "Lizardman", "maxCount": 5, "probability": 100 },
+      { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 },
+      { "name": "TreasureChestLevel3", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "9df386c1-05f8-4290-960b-8d0b6f0393ce",
     "name": "Spawner (205)",
-    "location": [
-      5593,
-      794,
-      60
-    ],
+    "location": [5593, 794, 60],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 5588,
-      "y1": 789,
-      "z1": -128,
-      "x2": 5599,
-      "y2": 800,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 5588, "y1": 789, "z1": -128, "x2": 5599, "y2": 800, "z2": 128 },
     "walkingRange": 5,
     "entries": [
-      {
-        "name": "TreasureChestLevel2",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "9e9bcade-4455-4c85-b7f2-4d9dc6e6c6f4",
     "name": "Spawner (205)",
-    "location": [
-      5394,
-      525,
-      65
-    ],
+    "location": [5394, 525, 65],
     "map": "Felucca",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 5389,
-      "y1": 520,
-      "z1": -128,
-      "x2": 5400,
-      "y2": 531,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 5389, "y1": 520, "z1": -128, "x2": 5400, "y2": 531, "z2": 128 },
     "walkingRange": 5,
     "entries": [
-      {
-        "name": "TreasureChestLevel1",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "TreasureChestLevel2",
-        "maxCount": 2,
-        "probability": 100
-      }
+      { "name": "TreasureChestLevel1", "maxCount": 1, "probability": 100 },
+      { "name": "TreasureChestLevel2", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "9f576fea-09aa-47fb-a3e4-a1b8369b650e",
     "name": "Spawner (205)",
-    "location": [
-      5386,
-      612,
-      45
-    ],
+    "location": [5386, 612, 45],
     "map": "Felucca",
     "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 5374,
-      "y1": 600,
-      "z1": -128,
-      "x2": 5399,
-      "y2": 625,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 5374, "y1": 600, "z1": -128, "x2": 5399, "y2": 625, "z2": 128 },
     "walkingRange": 25,
     "entries": [
-      {
-        "name": "Lizardman",
-        "maxCount": 5,
-        "probability": 100
-      },
-      {
-        "name": "TreasureChestLevel2",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "TreasureChestLevel3",
-        "maxCount": 2,
-        "probability": 100
-      }
+      { "name": "Lizardman", "maxCount": 5, "probability": 100 },
+      { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 },
+      { "name": "TreasureChestLevel3", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "b328679f-d212-49e8-8900-af2cd1f77b04",
     "name": "Spawner (205)",
-    "location": [
-      5564,
-      821,
-      45
-    ],
+    "location": [5564, 821, 45],
     "map": "Felucca",
     "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 5559,
-      "y1": 816,
-      "z1": -128,
-      "x2": 5570,
-      "y2": 827,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 5559, "y1": 816, "z1": -128, "x2": 5570, "y2": 827, "z2": 128 },
     "walkingRange": 5,
     "entries": [
-      {
-        "name": "TreasureChestLevel4",
-        "maxCount": 2,
-        "probability": 100
-      }
+      { "name": "TreasureChestLevel4", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "b453194c-94e8-4d58-87cc-3870d6292247",
     "name": "Spawner (205)",
-    "location": [
-      5507,
-      656,
-      20
-    ],
+    "location": [5507, 656, 20],
     "map": "Felucca",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 5502,
-      "y1": 651,
-      "z1": -128,
-      "x2": 5513,
-      "y2": 662,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 5502, "y1": 651, "z1": -128, "x2": 5513, "y2": 662, "z2": 128 },
     "walkingRange": 5,
     "entries": [
-      {
-        "name": "TreasureChestLevel2",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "TreasureChestLevel3",
-        "maxCount": 2,
-        "probability": 100
-      }
+      { "name": "TreasureChestLevel2", "maxCount": 1, "probability": 100 },
+      { "name": "TreasureChestLevel3", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "ba7fd9a9-bffc-4f04-8606-ae79b4bb830b",
     "name": "Spawner (205)",
-    "location": [
-      5411,
-      541,
-      60
-    ],
+    "location": [5411, 541, 60],
     "map": "Felucca",
     "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 5399,
-      "y1": 529,
-      "z1": -128,
-      "x2": 5424,
-      "y2": 554,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 5399, "y1": 529, "z1": -128, "x2": 5424, "y2": 554, "z2": 128 },
     "walkingRange": 25,
     "entries": [
-      {
-        "name": "Lizardman",
-        "maxCount": 5,
-        "probability": 100
-      }
+      { "name": "Lizardman", "maxCount": 5, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "bb7fc3f7-d80d-44c5-8a63-743a970f5842",
     "name": "Spawner (205)",
-    "location": [
-      5385,
-      703,
-      15
-    ],
+    "location": [5385, 703, 15],
     "map": "Felucca",
     "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 5370,
-      "y1": 688,
-      "z1": -128,
-      "x2": 5401,
-      "y2": 719,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 5370, "y1": 688, "z1": -128, "x2": 5401, "y2": 719, "z2": 128 },
     "walkingRange": 25,
     "entries": [
-      {
-        "name": "Ettin",
-        "maxCount": 4,
-        "probability": 100
-      }
+      { "name": "Ettin", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "c045d499-1fe2-4afa-be89-e8e5f3c6f4f8",
     "name": "Spawner (205)",
-    "location": [
-      5475,
-      748,
-      5
-    ],
+    "location": [5475, 748, 5],
     "map": "Felucca",
     "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 5463,
-      "y1": 736,
-      "z1": -128,
-      "x2": 5488,
-      "y2": 761,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 5463, "y1": 736, "z1": -128, "x2": 5488, "y2": 761, "z2": 128 },
     "walkingRange": 25,
     "entries": [
-      {
-        "name": "EarthElemental",
-        "maxCount": 3,
-        "probability": 100
-      },
-      {
-        "name": "Ettin",
-        "maxCount": 2,
-        "probability": 100
-      }
+      { "name": "EarthElemental", "maxCount": 3, "probability": 100 },
+      { "name": "Ettin", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "c739ce37-7e4b-4a3a-886b-4f45a049cde6",
     "name": "Spawner (205)",
-    "location": [
-      5558,
-      824,
-      45
-    ],
+    "location": [5558, 824, 45],
     "map": "Felucca",
     "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 5546,
-      "y1": 812,
-      "z1": -128,
-      "x2": 5571,
-      "y2": 837,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 5546, "y1": 812, "z1": -128, "x2": 5571, "y2": 837, "z2": 128 },
     "walkingRange": 25,
     "entries": [
-      {
-        "name": "OgreLord",
-        "maxCount": 5,
-        "probability": 100
-      }
+      { "name": "OgreLord", "maxCount": 5, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "c99bb2a1-1690-4656-95d7-d61b0c5640c8",
     "name": "Spawner (205)",
-    "location": [
-      5490,
-      676,
-      20
-    ],
+    "location": [5490, 676, 20],
     "map": "Felucca",
     "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 5478,
-      "y1": 664,
-      "z1": -128,
-      "x2": 5503,
-      "y2": 689,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 5478, "y1": 664, "z1": -128, "x2": 5503, "y2": 689, "z2": 128 },
     "walkingRange": 25,
     "entries": [
-      {
-        "name": "Ettin",
-        "maxCount": 4,
-        "probability": 100
-      }
+      { "name": "Ettin", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "cb91b20f-4aee-45c7-b70b-de22c9adcdae",
     "name": "Spawner (205)",
-    "location": [
-      5471,
-      973,
-      15
-    ],
+    "location": [5471, 973, 15],
     "map": "Felucca",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 5453,
-      "y1": 955,
-      "z1": -128,
-      "x2": 5490,
-      "y2": 992,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 5453, "y1": 955, "z1": -128, "x2": 5490, "y2": 992, "z2": 128 },
     "walkingRange": 25,
     "entries": [
-      {
-        "name": "Cyclops",
-        "maxCount": 3,
-        "probability": 100
-      }
+      { "name": "Cyclops", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "d58f315e-8fcf-4282-a4e4-5aaed9c19cd5",
     "name": "Spawner (205)",
-    "location": [
-      5532,
-      787,
-      60
-    ],
+    "location": [5532, 787, 60],
     "map": "Felucca",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 5517,
-      "y1": 772,
-      "z1": -128,
-      "x2": 5548,
-      "y2": 803,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 5517, "y1": 772, "z1": -128, "x2": 5548, "y2": 803, "z2": 128 },
     "walkingRange": 25,
     "entries": [
-      {
-        "name": "Ogre",
-        "maxCount": 3,
-        "probability": 100
-      }
+      { "name": "Ogre", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "f0922369-d73d-4c7e-a669-28812e0a0559",
     "name": "Spawner (205)",
-    "location": [
-      5435,
-      589,
-      47
-    ],
+    "location": [5435, 589, 47],
     "map": "Felucca",
     "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 5423,
-      "y1": 577,
-      "z1": -128,
-      "x2": 5448,
-      "y2": 602,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 5423, "y1": 577, "z1": -128, "x2": 5448, "y2": 602, "z2": 128 },
     "walkingRange": 25,
     "entries": [
-      {
-        "name": "Lizardman",
-        "maxCount": 5,
-        "probability": 100
-      }
+      { "name": "Lizardman", "maxCount": 5, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "f8f62c01-5bf8-41dc-ac7a-37cc7a97134b",
     "name": "Spawner (205)",
-    "location": [
-      5426,
-      791,
-      60
-    ],
+    "location": [5426, 791, 60],
     "map": "Felucca",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 5414,
-      "y1": 779,
-      "z1": -128,
-      "x2": 5439,
-      "y2": 804,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 5414, "y1": 779, "z1": -128, "x2": 5439, "y2": 804, "z2": 128 },
     "walkingRange": 25,
     "entries": [
-      {
-        "name": "Troll",
-        "maxCount": 3,
-        "probability": 100
-      }
+      { "name": "Troll", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "fb3ee679-fc60-4abb-b6b0-a809f77ca53b",
     "name": "Spawner (205)",
-    "location": [
-      5464,
-      600,
-      45
-    ],
+    "location": [5464, 600, 45],
     "map": "Felucca",
     "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 5452,
-      "y1": 588,
-      "z1": -128,
-      "x2": 5477,
-      "y2": 613,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 5452, "y1": 588, "z1": -128, "x2": 5477, "y2": 613, "z2": 128 },
     "walkingRange": 25,
     "entries": [
-      {
-        "name": "Lizardman",
-        "maxCount": 5,
-        "probability": 100
-      }
+      { "name": "Lizardman", "maxCount": 5, "probability": 100 }
     ]
   }
 ]

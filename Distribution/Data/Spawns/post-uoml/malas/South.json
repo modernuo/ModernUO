@@ -3,1974 +3,801 @@
     "$type": "Spawner",
     "guid": "27bdb175-d7c0-49c9-b389-b26fe028e58a",
     "name": "Spawner (404)",
-    "location": [
-      1920,
-      1124,
-      -90
-    ],
+    "location": [1920, 1124, -90],
     "map": "Malas",
     "count": 71,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 1800,
-      "y1": 1004,
-      "z1": -128,
-      "x2": 2041,
-      "y2": 1245,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 1800, "y1": 1004, "z1": -128, "x2": 2041, "y2": 1245, "z2": 128 },
     "walkingRange": 140,
     "entries": [
-      {
-        "name": "WanderingHealer",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Ghoul",
-        "maxCount": 15,
-        "probability": 100
-      },
-      {
-        "name": "Ogre",
-        "maxCount": 15,
-        "probability": 100
-      },
-      {
-        "name": "Reaper",
-        "maxCount": 15,
-        "probability": 100
-      },
-      {
-        "name": "Gargoyle",
-        "maxCount": 15,
-        "probability": 100
-      },
-      {
-        "name": "Harpy",
-        "maxCount": 15,
-        "probability": 100
-      },
-      {
-        "name": "EarthElemental",
-        "maxCount": 10,
-        "probability": 100
-      },
-      {
-        "name": "FireElemental",
-        "maxCount": 10,
-        "probability": 100
-      }
+      { "name": "WanderingHealer", "maxCount": 1, "probability": 100 },
+      { "name": "Ghoul", "maxCount": 15, "probability": 100 },
+      { "name": "Ogre", "maxCount": 15, "probability": 100 },
+      { "name": "Reaper", "maxCount": 15, "probability": 100 },
+      { "name": "Gargoyle", "maxCount": 15, "probability": 100 },
+      { "name": "Harpy", "maxCount": 15, "probability": 100 },
+      { "name": "EarthElemental", "maxCount": 10, "probability": 100 },
+      { "name": "FireElemental", "maxCount": 10, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "56c3146a-f634-4ee8-9dd8-65e7fb98f8e2",
     "name": "Spawner (404)",
-    "location": [
-      1920,
-      1124,
-      -90
-    ],
+    "location": [1920, 1124, -90],
     "map": "Malas",
     "count": 32,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 1800,
-      "y1": 1004,
-      "z1": -128,
-      "x2": 2041,
-      "y2": 1245,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 1800, "y1": 1004, "z1": -128, "x2": 2041, "y2": 1245, "z2": 128 },
     "walkingRange": 140,
     "entries": [
-      {
-        "name": "BrownBear",
-        "maxCount": 5,
-        "probability": 100
-      },
-      {
-        "name": "GrizzlyBear",
-        "maxCount": 5,
-        "probability": 100
-      },
-      {
-        "name": "BlackBear",
-        "maxCount": 5,
-        "probability": 100
-      },
-      {
-        "name": "Cougar",
-        "maxCount": 5,
-        "probability": 100
-      },
-      {
-        "name": "Panther",
-        "maxCount": 5,
-        "probability": 100
-      },
-      {
-        "name": "DireWolf",
-        "maxCount": 5,
-        "probability": 100
-      },
-      {
-        "name": "TimberWolf",
-        "maxCount": 5,
-        "probability": 100
-      },
-      {
-        "name": "GreyWolf",
-        "maxCount": 5,
-        "probability": 100
-      },
-      {
-        "name": "Bird",
-        "maxCount": 5,
-        "probability": 100
-      },
-      {
-        "name": "Eagle",
-        "maxCount": 5,
-        "probability": 100
-      },
-      {
-        "name": "JackRabbit",
-        "maxCount": 8,
-        "probability": 100
-      },
-      {
-        "name": "Rabbit",
-        "maxCount": 8,
-        "probability": 100
-      },
-      {
-        "name": "Hind",
-        "maxCount": 4,
-        "probability": 100
-      },
-      {
-        "name": "GreatHart",
-        "maxCount": 4,
-        "probability": 100
-      }
+      { "name": "BrownBear", "maxCount": 5, "probability": 100 },
+      { "name": "GrizzlyBear", "maxCount": 5, "probability": 100 },
+      { "name": "BlackBear", "maxCount": 5, "probability": 100 },
+      { "name": "Cougar", "maxCount": 5, "probability": 100 },
+      { "name": "Panther", "maxCount": 5, "probability": 100 },
+      { "name": "DireWolf", "maxCount": 5, "probability": 100 },
+      { "name": "TimberWolf", "maxCount": 5, "probability": 100 },
+      { "name": "GreyWolf", "maxCount": 5, "probability": 100 },
+      { "name": "Bird", "maxCount": 5, "probability": 100 },
+      { "name": "Eagle", "maxCount": 5, "probability": 100 },
+      { "name": "JackRabbit", "maxCount": 8, "probability": 100 },
+      { "name": "Rabbit", "maxCount": 8, "probability": 100 },
+      { "name": "Hind", "maxCount": 4, "probability": 100 },
+      { "name": "GreatHart", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "5286c49e-21e5-407a-a363-8ecf2ff5eafe",
     "name": "Spawner (404)",
-    "location": [
-      2266,
-      1218,
-      -85
-    ],
+    "location": [2266, 1218, -85],
     "map": "Malas",
     "count": 102,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 2116,
-      "y1": 1068,
-      "z1": -128,
-      "x2": 2417,
-      "y2": 1369,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 2116, "y1": 1068, "z1": -128, "x2": 2417, "y2": 1369, "z2": 128 },
     "walkingRange": 180,
     "entries": [
-      {
-        "name": "WanderingHealer",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Ghoul",
-        "maxCount": 25,
-        "probability": 100
-      },
-      {
-        "name": "Ogre",
-        "maxCount": 25,
-        "probability": 100
-      },
-      {
-        "name": "Reaper",
-        "maxCount": 25,
-        "probability": 100
-      },
-      {
-        "name": "Gargoyle",
-        "maxCount": 25,
-        "probability": 100
-      },
-      {
-        "name": "Harpy",
-        "maxCount": 25,
-        "probability": 100
-      },
-      {
-        "name": "Nightmare",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "WanderingHealer", "maxCount": 1, "probability": 100 },
+      { "name": "Ghoul", "maxCount": 25, "probability": 100 },
+      { "name": "Ogre", "maxCount": 25, "probability": 100 },
+      { "name": "Reaper", "maxCount": 25, "probability": 100 },
+      { "name": "Gargoyle", "maxCount": 25, "probability": 100 },
+      { "name": "Harpy", "maxCount": 25, "probability": 100 },
+      { "name": "Nightmare", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "695dcc16-4e4d-4b93-be25-05cf6ddf199c",
     "name": "Spawner (404)",
-    "location": [
-      2267,
-      1218,
-      -85
-    ],
+    "location": [2267, 1218, -85],
     "map": "Malas",
     "count": 32,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 2117,
-      "y1": 1068,
-      "z1": -128,
-      "x2": 2418,
-      "y2": 1369,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 2117, "y1": 1068, "z1": -128, "x2": 2418, "y2": 1369, "z2": 128 },
     "walkingRange": 180,
     "entries": [
-      {
-        "name": "BrownBear",
-        "maxCount": 5,
-        "probability": 100
-      },
-      {
-        "name": "GrizzlyBear",
-        "maxCount": 5,
-        "probability": 100
-      },
-      {
-        "name": "BlackBear",
-        "maxCount": 5,
-        "probability": 100
-      },
-      {
-        "name": "Cougar",
-        "maxCount": 5,
-        "probability": 100
-      },
-      {
-        "name": "Panther",
-        "maxCount": 5,
-        "probability": 100
-      },
-      {
-        "name": "DireWolf",
-        "maxCount": 5,
-        "probability": 100
-      },
-      {
-        "name": "TimberWolf",
-        "maxCount": 5,
-        "probability": 100
-      },
-      {
-        "name": "GreyWolf",
-        "maxCount": 5,
-        "probability": 100
-      },
-      {
-        "name": "Bird",
-        "maxCount": 5,
-        "probability": 100
-      },
-      {
-        "name": "Eagle",
-        "maxCount": 5,
-        "probability": 100
-      },
-      {
-        "name": "JackRabbit",
-        "maxCount": 8,
-        "probability": 100
-      },
-      {
-        "name": "Rabbit",
-        "maxCount": 8,
-        "probability": 100
-      },
-      {
-        "name": "Hind",
-        "maxCount": 4,
-        "probability": 100
-      },
-      {
-        "name": "GreatHart",
-        "maxCount": 4,
-        "probability": 100
-      }
+      { "name": "BrownBear", "maxCount": 5, "probability": 100 },
+      { "name": "GrizzlyBear", "maxCount": 5, "probability": 100 },
+      { "name": "BlackBear", "maxCount": 5, "probability": 100 },
+      { "name": "Cougar", "maxCount": 5, "probability": 100 },
+      { "name": "Panther", "maxCount": 5, "probability": 100 },
+      { "name": "DireWolf", "maxCount": 5, "probability": 100 },
+      { "name": "TimberWolf", "maxCount": 5, "probability": 100 },
+      { "name": "GreyWolf", "maxCount": 5, "probability": 100 },
+      { "name": "Bird", "maxCount": 5, "probability": 100 },
+      { "name": "Eagle", "maxCount": 5, "probability": 100 },
+      { "name": "JackRabbit", "maxCount": 8, "probability": 100 },
+      { "name": "Rabbit", "maxCount": 8, "probability": 100 },
+      { "name": "Hind", "maxCount": 4, "probability": 100 },
+      { "name": "GreatHart", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "bb4e40ab-96e4-4061-85e9-8011b42ed020",
     "name": "Spawner (404)",
-    "location": [
-      2303,
-      1258,
-      -86
-    ],
+    "location": [2303, 1258, -86],
     "map": "Malas",
     "count": 26,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 2233,
-      "y1": 1188,
-      "z1": -128,
-      "x2": 2374,
-      "y2": 1329,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 2233, "y1": 1188, "z1": -128, "x2": 2374, "y2": 1329, "z2": 128 },
     "walkingRange": 70,
     "entries": [
-      {
-        "name": "Corpser",
-        "maxCount": 6,
-        "probability": 100
-      },
-      {
-        "name": "Ogre",
-        "maxCount": 4,
-        "probability": 100
-      },
-      {
-        "name": "EarthElemental",
-        "maxCount": 4,
-        "probability": 100
-      },
-      {
-        "name": "FireElemental",
-        "maxCount": 4,
-        "probability": 100
-      },
-      {
-        "name": "Wraith",
-        "maxCount": 4,
-        "probability": 100
-      },
-      {
-        "name": "Zombie",
-        "maxCount": 4,
-        "probability": 100
-      },
-      {
-        "name": "Gorilla",
-        "maxCount": 4,
-        "probability": 100
-      }
+      { "name": "Corpser", "maxCount": 6, "probability": 100 },
+      { "name": "Ogre", "maxCount": 4, "probability": 100 },
+      { "name": "EarthElemental", "maxCount": 4, "probability": 100 },
+      { "name": "FireElemental", "maxCount": 4, "probability": 100 },
+      { "name": "Wraith", "maxCount": 4, "probability": 100 },
+      { "name": "Zombie", "maxCount": 4, "probability": 100 },
+      { "name": "Gorilla", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "3e41feda-8300-4fa4-ba72-6752d37486cd",
     "name": "Spawner (404)",
-    "location": [
-      2304,
-      1258,
-      -86
-    ],
+    "location": [2304, 1258, -86],
     "map": "Malas",
     "count": 21,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 2234,
-      "y1": 1188,
-      "z1": -128,
-      "x2": 2375,
-      "y2": 1329,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 2234, "y1": 1188, "z1": -128, "x2": 2375, "y2": 1329, "z2": 128 },
     "walkingRange": 70,
     "entries": [
-      {
-        "name": "Ettin",
-        "maxCount": 4,
-        "probability": 100
-      },
-      {
-        "name": "Reaper",
-        "maxCount": 4,
-        "probability": 100
-      },
-      {
-        "name": "HeadlessOne",
-        "maxCount": 4,
-        "probability": 100
-      },
-      {
-        "name": "Troll",
-        "maxCount": 4,
-        "probability": 100
-      },
-      {
-        "name": "Ghoul",
-        "maxCount": 4,
-        "probability": 100
-      },
-      {
-        "name": "WanderingHealer",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "Ettin", "maxCount": 4, "probability": 100 },
+      { "name": "Reaper", "maxCount": 4, "probability": 100 },
+      { "name": "HeadlessOne", "maxCount": 4, "probability": 100 },
+      { "name": "Troll", "maxCount": 4, "probability": 100 },
+      { "name": "Ghoul", "maxCount": 4, "probability": 100 },
+      { "name": "WanderingHealer", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "4b59baa2-7ce0-40a6-9c68-c6f2210f0869",
     "name": "Spawner (404)",
-    "location": [
-      1641,
-      1797,
-      -110
-    ],
+    "location": [1641, 1797, -110],
     "map": "Malas",
     "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 1541,
-      "y1": 1697,
-      "z1": -128,
-      "x2": 1742,
-      "y2": 1898,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 1541, "y1": 1697, "z1": -128, "x2": 1742, "y2": 1898, "z2": 128 },
     "walkingRange": 100,
     "entries": [
-      {
-        "name": "SandVortex",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Scorpion",
-        "maxCount": 2,
-        "probability": 100
-      },
-      {
-        "name": "Snake",
-        "maxCount": 4,
-        "probability": 100
-      },
-      {
-        "name": "DesertOstard",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "SandVortex", "maxCount": 1, "probability": 100 },
+      { "name": "Scorpion", "maxCount": 2, "probability": 100 },
+      { "name": "Snake", "maxCount": 4, "probability": 100 },
+      { "name": "DesertOstard", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "9aa39353-19ab-480a-9e96-6a7ba1485251",
     "name": "Spawner (404)",
-    "location": [
-      1899,
-      1609,
-      -110
-    ],
+    "location": [1899, 1609, -110],
     "map": "Malas",
     "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 1799,
-      "y1": 1509,
-      "z1": -128,
-      "x2": 2000,
-      "y2": 1710,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 1799, "y1": 1509, "z1": -128, "x2": 2000, "y2": 1710, "z2": 128 },
     "walkingRange": 100,
     "entries": [
-      {
-        "name": "SandVortex",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Scorpion",
-        "maxCount": 2,
-        "probability": 100
-      },
-      {
-        "name": "Snake",
-        "maxCount": 4,
-        "probability": 100
-      },
-      {
-        "name": "DesertOstard",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "SandVortex", "maxCount": 1, "probability": 100 },
+      { "name": "Scorpion", "maxCount": 2, "probability": 100 },
+      { "name": "Snake", "maxCount": 4, "probability": 100 },
+      { "name": "DesertOstard", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "6216b5d7-8c6f-420b-b615-54edf74cb173",
     "name": "Spawner (404)",
-    "location": [
-      1741,
-      1487,
-      -110
-    ],
+    "location": [1741, 1487, -110],
     "map": "Malas",
     "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 1641,
-      "y1": 1387,
-      "z1": -128,
-      "x2": 1842,
-      "y2": 1588,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 1641, "y1": 1387, "z1": -128, "x2": 1842, "y2": 1588, "z2": 128 },
     "walkingRange": 100,
     "entries": [
-      {
-        "name": "SandVortex",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Scorpion",
-        "maxCount": 2,
-        "probability": 100
-      },
-      {
-        "name": "Snake",
-        "maxCount": 4,
-        "probability": 100
-      },
-      {
-        "name": "DesertOstard",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "SandVortex", "maxCount": 1, "probability": 100 },
+      { "name": "Scorpion", "maxCount": 2, "probability": 100 },
+      { "name": "Snake", "maxCount": 4, "probability": 100 },
+      { "name": "DesertOstard", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "3f641570-9b47-44a3-859a-e9ab15dd4da8",
     "name": "Spawner (404)",
-    "location": [
-      1837,
-      1803,
-      -110
-    ],
+    "location": [1837, 1803, -110],
     "map": "Malas",
     "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 1737,
-      "y1": 1703,
-      "z1": -128,
-      "x2": 1938,
-      "y2": 1904,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 1737, "y1": 1703, "z1": -128, "x2": 1938, "y2": 1904, "z2": 128 },
     "walkingRange": 100,
     "entries": [
-      {
-        "name": "SandVortex",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Scorpion",
-        "maxCount": 2,
-        "probability": 100
-      },
-      {
-        "name": "Snake",
-        "maxCount": 4,
-        "probability": 100
-      },
-      {
-        "name": "DesertOstard",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "SandVortex", "maxCount": 1, "probability": 100 },
+      { "name": "Scorpion", "maxCount": 2, "probability": 100 },
+      { "name": "Snake", "maxCount": 4, "probability": 100 },
+      { "name": "DesertOstard", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "18a04411-aa44-46c4-9476-a77365090afa",
     "name": "Spawner (404)",
-    "location": [
-      1823,
-      1799,
-      -90
-    ],
+    "location": [1823, 1799, -90],
     "map": "Malas",
     "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "spawnBounds": {
-      "start": {
-        "x": 1819,
-        "y": 1795,
-        "z": -90
-      },
-      "end": {
-        "x": 1827,
-        "y": 1803,
-        "z": -75
-      }
+      "start": { "x": 1819, "y": 1795, "z": -90 },
+      "end": { "x": 1827, "y": 1803, "z": -75 }
     },
     "walkingRange": 15,
     "entries": [
-      {
-        "name": "SkeletalKnight",
-        "maxCount": 2,
-        "probability": 100
-      },
-      {
-        "name": "BoneKnight",
-        "maxCount": 2,
-        "probability": 100
-      },
-      {
-        "name": "Zombie",
-        "maxCount": 3,
-        "probability": 100
-      },
-      {
-        "name": "Skeleton",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Skeleton",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "sphynx",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "SkeletalKnight", "maxCount": 2, "probability": 100 },
+      { "name": "BoneKnight", "maxCount": 2, "probability": 100 },
+      { "name": "Zombie", "maxCount": 3, "probability": 100 },
+      { "name": "Skeleton", "maxCount": 1, "probability": 100 },
+      { "name": "Skeleton", "maxCount": 1, "probability": 100 },
+      { "name": "sphynx", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "4a2b88ce-b146-439d-917c-3f056775012e",
     "name": "Spawner (404)",
-    "location": [
-      1821,
-      1798,
-      -110
-    ],
+    "location": [1821, 1798, -110],
     "map": "Malas",
     "count": 9,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
     "spawnBounds": {
-      "start": {
-        "x": 1817,
-        "y": 1794,
-        "z": -110
-      },
-      "end": {
-        "x": 1825,
-        "y": 1802,
-        "z": -95
-      }
+      "start": { "x": 1817, "y": 1794, "z": -110 },
+      "end": { "x": 1825, "y": 1802, "z": -95 }
     },
     "walkingRange": 15,
     "entries": [
-      {
-        "name": "GiantRat",
-        "maxCount": 4,
-        "probability": 100
-      },
-      {
-        "name": "Mummy",
-        "maxCount": 2,
-        "probability": 100
-      },
-      {
-        "name": "Zombie",
-        "maxCount": 3,
-        "probability": 100
-      },
-      {
-        "name": "Skeleton",
-        "maxCount": 3,
-        "probability": 100
-      }
+      { "name": "GiantRat", "maxCount": 4, "probability": 100 },
+      { "name": "Mummy", "maxCount": 2, "probability": 100 },
+      { "name": "Zombie", "maxCount": 3, "probability": 100 },
+      { "name": "Skeleton", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "d91c089c-551a-4333-adbb-4ff82e82908f",
     "name": "Spawner (404)",
-    "location": [
-      1466,
-      1418,
-      -90
-    ],
+    "location": [1466, 1418, -90],
     "map": "Malas",
     "count": 33,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 1346,
-      "y1": 1298,
-      "z1": -128,
-      "x2": 1587,
-      "y2": 1539,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 1346, "y1": 1298, "z1": -128, "x2": 1587, "y2": 1539, "z2": 128 },
     "walkingRange": 150,
     "entries": [
-      {
-        "name": "Hind",
-        "maxCount": 10,
-        "probability": 100
-      },
-      {
-        "name": "GreatHart",
-        "maxCount": 10,
-        "probability": 100
-      },
-      {
-        "name": "VampireBat",
-        "maxCount": 10,
-        "probability": 100
-      },
-      {
-        "name": "SkitteringHopper",
-        "maxCount": 10,
-        "probability": 100
-      },
-      {
-        "name": "Treefellow",
-        "maxCount": 3,
-        "probability": 100
-      }
+      { "name": "Hind", "maxCount": 10, "probability": 100 },
+      { "name": "GreatHart", "maxCount": 10, "probability": 100 },
+      { "name": "VampireBat", "maxCount": 10, "probability": 100 },
+      { "name": "SkitteringHopper", "maxCount": 10, "probability": 100 },
+      { "name": "Treefellow", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "01e68ebc-8521-44bd-ada3-a96cf6dc7b8e",
     "name": "Spawner (404)",
-    "location": [
-      1477,
-      1241,
-      -85
-    ],
+    "location": [1477, 1241, -85],
     "map": "Malas",
     "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 1427,
-      "y1": 1191,
-      "z1": -128,
-      "x2": 1528,
-      "y2": 1292,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 1427, "y1": 1191, "z1": -128, "x2": 1528, "y2": 1292, "z2": 128 },
     "walkingRange": 70,
     "entries": [
-      {
-        "name": "Hind",
-        "maxCount": 2,
-        "probability": 100
-      },
-      {
-        "name": "GreatHart",
-        "maxCount": 2,
-        "probability": 100
-      },
-      {
-        "name": "VampireBat",
-        "maxCount": 3,
-        "probability": 100
-      },
-      {
-        "name": "SkitteringHopper",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Treefellow",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "Hind", "maxCount": 2, "probability": 100 },
+      { "name": "GreatHart", "maxCount": 2, "probability": 100 },
+      { "name": "VampireBat", "maxCount": 3, "probability": 100 },
+      { "name": "SkitteringHopper", "maxCount": 1, "probability": 100 },
+      { "name": "Treefellow", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "7a14417b-5b9c-4c46-978d-4f9aaf4ab2d8",
     "name": "Spawner (404)",
-    "location": [
-      1347,
-      1739,
-      -110
-    ],
+    "location": [1347, 1739, -110],
     "map": "Malas",
     "count": 11,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 1217,
-      "y1": 1609,
-      "z1": -128,
-      "x2": 1478,
-      "y2": 1870,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 1217, "y1": 1609, "z1": -128, "x2": 1478, "y2": 1870, "z2": 128 },
     "walkingRange": 130,
     "entries": [
-      {
-        "name": "Hind",
-        "maxCount": 3,
-        "probability": 100
-      },
-      {
-        "name": "GreatHart",
-        "maxCount": 3,
-        "probability": 100
-      },
-      {
-        "name": "VampireBat",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "SkitteringHopper",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Sheep",
-        "maxCount": 6,
-        "probability": 100
-      }
+      { "name": "Hind", "maxCount": 3, "probability": 100 },
+      { "name": "GreatHart", "maxCount": 3, "probability": 100 },
+      { "name": "VampireBat", "maxCount": 1, "probability": 100 },
+      { "name": "SkitteringHopper", "maxCount": 1, "probability": 100 },
+      { "name": "Sheep", "maxCount": 6, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "c5036af7-93ad-41b3-a29b-48b1e60393fe",
     "name": "Spawner (404)",
-    "location": [
-      1327,
-      1146,
-      -90
-    ],
+    "location": [1327, 1146, -90],
     "map": "Malas",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 1292,
-      "y1": 1111,
-      "z1": -128,
-      "x2": 1363,
-      "y2": 1182,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 1292, "y1": 1111, "z1": -128, "x2": 1363, "y2": 1182, "z2": 128 },
     "walkingRange": 70,
     "entries": [
-      {
-        "name": "Hind",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "GreatHart",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "VampireBat",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "SkitteringHopper",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "Hind", "maxCount": 1, "probability": 100 },
+      { "name": "GreatHart", "maxCount": 1, "probability": 100 },
+      { "name": "VampireBat", "maxCount": 1, "probability": 100 },
+      { "name": "SkitteringHopper", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "6d49d6f6-4054-4b02-a319-8be526aaefcf",
     "name": "Spawner (404)",
-    "location": [
-      1256,
-      1221,
-      -90
-    ],
+    "location": [1256, 1221, -90],
     "map": "Malas",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 1221,
-      "y1": 1186,
-      "z1": -128,
-      "x2": 1292,
-      "y2": 1257,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 1221, "y1": 1186, "z1": -128, "x2": 1292, "y2": 1257, "z2": 128 },
     "walkingRange": 70,
     "entries": [
-      {
-        "name": "Hind",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "GreatHart",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "VampireBat",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "SkitteringHopper",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "Hind", "maxCount": 1, "probability": 100 },
+      { "name": "GreatHart", "maxCount": 1, "probability": 100 },
+      { "name": "VampireBat", "maxCount": 1, "probability": 100 },
+      { "name": "SkitteringHopper", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "aa9e1655-d9ed-4fdc-99c9-ef04a9234b9b",
     "name": "Spawner (404)",
-    "location": [
-      1345,
-      1314,
-      -85
-    ],
+    "location": [1345, 1314, -85],
     "map": "Malas",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 1295,
-      "y1": 1264,
-      "z1": -128,
-      "x2": 1396,
-      "y2": 1365,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 1295, "y1": 1264, "z1": -128, "x2": 1396, "y2": 1365, "z2": 128 },
     "walkingRange": 70,
     "entries": [
-      {
-        "name": "Hind",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "GreatHart",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "VampireBat",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "SkitteringHopper",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "Hind", "maxCount": 1, "probability": 100 },
+      { "name": "GreatHart", "maxCount": 1, "probability": 100 },
+      { "name": "VampireBat", "maxCount": 1, "probability": 100 },
+      { "name": "SkitteringHopper", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "fad094bd-915f-49d1-a0c6-486029d25506",
     "name": "Spawner (404)",
-    "location": [
-      943,
-      1150,
-      -90
-    ],
+    "location": [943, 1150, -90],
     "map": "Malas",
     "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 933,
-      "y1": 1140,
-      "z1": -128,
-      "x2": 954,
-      "y2": 1161,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 933, "y1": 1140, "z1": -128, "x2": 954, "y2": 1161, "z2": 128 },
     "walkingRange": 20,
     "entries": [
-      {
-        "name": "Brigand",
-        "maxCount": 6,
-        "probability": 100
-      }
+      { "name": "Brigand", "maxCount": 6, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "c2cdce00-aaf5-40cc-b1f5-28c0d1364eff",
     "name": "Spawner (404)",
-    "location": [
-      900,
-      1494,
-      -90
-    ],
+    "location": [900, 1494, -90],
     "map": "Malas",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 874,
-      "y1": 1468,
-      "z1": -128,
-      "x2": 927,
-      "y2": 1521,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 874, "y1": 1468, "z1": -128, "x2": 927, "y2": 1521, "z2": 128 },
     "walkingRange": 26,
     "entries": [
-      {
-        "name": "Hind",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "GreatHart",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "VampireBat",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "SkitteringHopper",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "Hind", "maxCount": 1, "probability": 100 },
+      { "name": "GreatHart", "maxCount": 1, "probability": 100 },
+      { "name": "VampireBat", "maxCount": 1, "probability": 100 },
+      { "name": "SkitteringHopper", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "c5657dd4-3bbc-4557-a5bb-9a111c7e6763",
     "name": "Spawner (404)",
-    "location": [
-      829,
-      1474,
-      -85
-    ],
+    "location": [829, 1474, -85],
     "map": "Malas",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 799,
-      "y1": 1444,
-      "z1": -128,
-      "x2": 860,
-      "y2": 1505,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 799, "y1": 1444, "z1": -128, "x2": 860, "y2": 1505, "z2": 128 },
     "walkingRange": 30,
     "entries": [
-      {
-        "name": "Hind",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "GreatHart",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "VampireBat",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "SkitteringHopper",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "Hind", "maxCount": 1, "probability": 100 },
+      { "name": "GreatHart", "maxCount": 1, "probability": 100 },
+      { "name": "VampireBat", "maxCount": 1, "probability": 100 },
+      { "name": "SkitteringHopper", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "eb36fa8a-c49d-42b2-ac5a-246391bdb716",
     "name": "Spawner (404)",
-    "location": [
-      989,
-      1419,
-      -82
-    ],
+    "location": [989, 1419, -82],
     "map": "Malas",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 949,
-      "y1": 1379,
-      "z1": -128,
-      "x2": 1030,
-      "y2": 1460,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 949, "y1": 1379, "z1": -128, "x2": 1030, "y2": 1460, "z2": 128 },
     "walkingRange": 50,
     "entries": [
-      {
-        "name": "Hind",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "GreatHart",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "VampireBat",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "SkitteringHopper",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "Hind", "maxCount": 1, "probability": 100 },
+      { "name": "GreatHart", "maxCount": 1, "probability": 100 },
+      { "name": "VampireBat", "maxCount": 1, "probability": 100 },
+      { "name": "SkitteringHopper", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "e9f2158f-8b22-46cd-94ce-924a22b6dd65",
     "name": "Spawner (404)",
-    "location": [
-      913,
-      1335,
-      -90
-    ],
+    "location": [913, 1335, -90],
     "map": "Malas",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 877,
-      "y1": 1299,
-      "z1": -128,
-      "x2": 950,
-      "y2": 1372,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 877, "y1": 1299, "z1": -128, "x2": 950, "y2": 1372, "z2": 128 },
     "walkingRange": 36,
     "entries": [
-      {
-        "name": "Hind",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "GreatHart",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "VampireBat",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "SkitteringHopper",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "Hind", "maxCount": 1, "probability": 100 },
+      { "name": "GreatHart", "maxCount": 1, "probability": 100 },
+      { "name": "VampireBat", "maxCount": 1, "probability": 100 },
+      { "name": "SkitteringHopper", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "20e95aca-18d5-4862-a0cd-72e65f188dc4",
     "name": "Spawner (404)",
-    "location": [
-      881,
-      927,
-      -90
-    ],
+    "location": [881, 927, -90],
     "map": "Malas",
     "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 866,
-      "y1": 912,
-      "z1": -128,
-      "x2": 897,
-      "y2": 943,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 866, "y1": 912, "z1": -128, "x2": 897, "y2": 943, "z2": 128 },
     "walkingRange": 30,
     "entries": [
-      {
-        "name": "Pixie",
-        "maxCount": 6,
-        "probability": 100
-      }
+      { "name": "Pixie", "maxCount": 6, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "51a28e73-74fd-454b-8c02-5aeacd7f041b",
     "name": "Spawner (404)",
-    "location": [
-      882,
-      1000,
-      -90
-    ],
+    "location": [882, 1000, -90],
     "map": "Malas",
     "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 867,
-      "y1": 985,
-      "z1": -128,
-      "x2": 898,
-      "y2": 1016,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 867, "y1": 985, "z1": -128, "x2": 898, "y2": 1016, "z2": 128 },
     "walkingRange": 40,
     "entries": [
-      {
-        "name": "Pixie",
-        "maxCount": 6,
-        "probability": 100
-      }
+      { "name": "Pixie", "maxCount": 6, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "83ded31b-46a4-4d33-b340-abb593f01ea9",
     "name": "Spawner (404)",
-    "location": [
-      989,
-      1420,
-      -82
-    ],
+    "location": [989, 1420, -82],
     "map": "Malas",
     "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 974,
-      "y1": 1405,
-      "z1": -128,
-      "x2": 1005,
-      "y2": 1436,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 974, "y1": 1405, "z1": -128, "x2": 1005, "y2": 1436, "z2": 128 },
     "walkingRange": 40,
     "entries": [
-      {
-        "name": "Pixie",
-        "maxCount": 6,
-        "probability": 100
-      }
+      { "name": "Pixie", "maxCount": 6, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "0109ed70-dc93-4c76-9647-ef3565315a1b",
     "name": "Spawner (404)",
-    "location": [
-      1455,
-      1445,
-      -90
-    ],
+    "location": [1455, 1445, -90],
     "map": "Malas",
     "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 1445,
-      "y1": 1435,
-      "z1": -128,
-      "x2": 1466,
-      "y2": 1456,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 1445, "y1": 1435, "z1": -128, "x2": 1466, "y2": 1456, "z2": 128 },
     "walkingRange": 30,
     "entries": [
-      {
-        "name": "Pixie",
-        "maxCount": 6,
-        "probability": 100
-      }
+      { "name": "Pixie", "maxCount": 6, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "c3fa83a1-72e9-440b-9ddf-d8733e54e59f",
     "name": "Spawner (404)",
-    "location": [
-      1429,
-      1549,
-      -110
-    ],
+    "location": [1429, 1549, -110],
     "map": "Malas",
     "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 1414,
-      "y1": 1534,
-      "z1": -128,
-      "x2": 1445,
-      "y2": 1565,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 1414, "y1": 1534, "z1": -128, "x2": 1445, "y2": 1565, "z2": 128 },
     "walkingRange": 25,
     "entries": [
-      {
-        "name": "Pixie",
-        "maxCount": 6,
-        "probability": 100
-      }
+      { "name": "Pixie", "maxCount": 6, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "f18bf6f0-7dde-43f7-81f5-ac26393e48c0",
     "name": "Spawner (404)",
-    "location": [
-      1305,
-      1095,
-      -90
-    ],
+    "location": [1305, 1095, -90],
     "map": "Malas",
     "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 1290,
-      "y1": 1080,
-      "z1": -128,
-      "x2": 1321,
-      "y2": 1111,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 1290, "y1": 1080, "z1": -128, "x2": 1321, "y2": 1111, "z2": 128 },
     "walkingRange": 30,
     "entries": [
-      {
-        "name": "Pixie",
-        "maxCount": 6,
-        "probability": 100
-      }
+      { "name": "Pixie", "maxCount": 6, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "b49f301b-9378-489a-b999-51785a3307e9",
     "name": "Spawner (404)",
-    "location": [
-      790,
-      948,
-      -90
-    ],
+    "location": [790, 948, -90],
     "map": "Malas",
     "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 670,
-      "y1": 828,
-      "z1": -128,
-      "x2": 911,
-      "y2": 1069,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 670, "y1": 828, "z1": -128, "x2": 911, "y2": 1069, "z2": 128 },
     "walkingRange": 140,
     "entries": [
-      {
-        "name": "GreatHart",
-        "maxCount": 3,
-        "probability": 100
-      },
-      {
-        "name": "Hind",
-        "maxCount": 3,
-        "probability": 100
-      },
-      {
-        "name": "SkitteringHopper",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "VampireBat",
-        "maxCount": 2,
-        "probability": 100
-      }
+      { "name": "GreatHart", "maxCount": 3, "probability": 100 },
+      { "name": "Hind", "maxCount": 3, "probability": 100 },
+      { "name": "SkitteringHopper", "maxCount": 1, "probability": 100 },
+      { "name": "VampireBat", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "74e793f9-ab88-4c51-b713-203fe3ec3828",
     "name": "Spawner (404)",
-    "location": [
-      766,
-      1364,
-      -90
-    ],
+    "location": [766, 1364, -90],
     "map": "Malas",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 716,
-      "y1": 1314,
-      "z1": -128,
-      "x2": 817,
-      "y2": 1415,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 716, "y1": 1314, "z1": -128, "x2": 817, "y2": 1415, "z2": 128 },
     "walkingRange": 60,
     "entries": [
-      {
-        "name": "GreatHart",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Hind",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "SkitteringHopper",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "VampireBat",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "GreatHart", "maxCount": 1, "probability": 100 },
+      { "name": "Hind", "maxCount": 1, "probability": 100 },
+      { "name": "SkitteringHopper", "maxCount": 1, "probability": 100 },
+      { "name": "VampireBat", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "d5aa4b2a-02bd-4fab-ad78-6e0a2cd7c575",
     "name": "Spawner (404)",
-    "location": [
-      656,
-      1431,
-      -90
-    ],
+    "location": [656, 1431, -90],
     "map": "Malas",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 606,
-      "y1": 1381,
-      "z1": -128,
-      "x2": 707,
-      "y2": 1482,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 606, "y1": 1381, "z1": -128, "x2": 707, "y2": 1482, "z2": 128 },
     "walkingRange": 60,
     "entries": [
-      {
-        "name": "GreatHart",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Hind",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "SkitteringHopper",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "VampireBat",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "GreatHart", "maxCount": 1, "probability": 100 },
+      { "name": "Hind", "maxCount": 1, "probability": 100 },
+      { "name": "SkitteringHopper", "maxCount": 1, "probability": 100 },
+      { "name": "VampireBat", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "ff590783-b876-429c-aaad-e6096a86ea7e",
     "name": "Spawner (404)",
-    "location": [
-      805,
-      1232,
-      -90
-    ],
+    "location": [805, 1232, -90],
     "map": "Malas",
     "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 740,
-      "y1": 1167,
-      "z1": -128,
-      "x2": 871,
-      "y2": 1298,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 740, "y1": 1167, "z1": -128, "x2": 871, "y2": 1298, "z2": 128 },
     "walkingRange": 75,
     "entries": [
-      {
-        "name": "GreatHart",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Hind",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "SkitteringHopper",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "VampireBat",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "GreatHart", "maxCount": 1, "probability": 100 },
+      { "name": "Hind", "maxCount": 1, "probability": 100 },
+      { "name": "SkitteringHopper", "maxCount": 1, "probability": 100 },
+      { "name": "VampireBat", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "eeaacf1f-a83f-4ba0-86f3-1f39aff6a3ec",
     "name": "Spawner (404)",
-    "location": [
-      672,
-      1237,
-      -90
-    ],
+    "location": [672, 1237, -90],
     "map": "Malas",
     "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 622,
-      "y1": 1187,
-      "z1": -128,
-      "x2": 723,
-      "y2": 1288,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 622, "y1": 1187, "z1": -128, "x2": 723, "y2": 1288, "z2": 128 },
     "walkingRange": 60,
     "entries": [
-      {
-        "name": "GreatHart",
-        "maxCount": 2,
-        "probability": 100
-      },
-      {
-        "name": "Hind",
-        "maxCount": 2,
-        "probability": 100
-      },
-      {
-        "name": "SkitteringHopper",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "VampireBat",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "GreatHart", "maxCount": 2, "probability": 100 },
+      { "name": "Hind", "maxCount": 2, "probability": 100 },
+      { "name": "SkitteringHopper", "maxCount": 1, "probability": 100 },
+      { "name": "VampireBat", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "d0fe5086-d802-43d1-b62f-a81dbc603ca1",
     "name": "Spawner (404)",
-    "location": [
-      684,
-      1109,
-      -90
-    ],
+    "location": [684, 1109, -90],
     "map": "Malas",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 634,
-      "y1": 1059,
-      "z1": -128,
-      "x2": 735,
-      "y2": 1160,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 634, "y1": 1059, "z1": -128, "x2": 735, "y2": 1160, "z2": 128 },
     "walkingRange": 60,
     "entries": [
-      {
-        "name": "GreatHart",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Hind",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "SkitteringHopper",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "VampireBat",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "GreatHart", "maxCount": 1, "probability": 100 },
+      { "name": "Hind", "maxCount": 1, "probability": 100 },
+      { "name": "SkitteringHopper", "maxCount": 1, "probability": 100 },
+      { "name": "VampireBat", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "c30d468f-b35f-4aa5-a13f-773518810151",
     "name": "Spawner (404)",
-    "location": [
-      1079,
-      1440,
-      -90
-    ],
+    "location": [1079, 1440, -90],
     "map": "Malas",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 1044,
-      "y1": 1405,
-      "z1": -128,
-      "x2": 1115,
-      "y2": 1476,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 1044, "y1": 1405, "z1": -128, "x2": 1115, "y2": 1476, "z2": 128 },
     "walkingRange": 50,
     "entries": [
-      {
-        "name": "GreatHart",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Hind",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "SkitteringHopper",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "VampireBat",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "GreatHart", "maxCount": 1, "probability": 100 },
+      { "name": "Hind", "maxCount": 1, "probability": 100 },
+      { "name": "SkitteringHopper", "maxCount": 1, "probability": 100 },
+      { "name": "VampireBat", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "cf2df3ea-792b-4d9e-9723-b094b5654dcf",
     "name": "Spawner (404)",
-    "location": [
-      966,
-      1213,
-      -90
-    ],
+    "location": [966, 1213, -90],
     "map": "Malas",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 916,
-      "y1": 1163,
-      "z1": -128,
-      "x2": 1017,
-      "y2": 1264,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 916, "y1": 1163, "z1": -128, "x2": 1017, "y2": 1264, "z2": 128 },
     "walkingRange": 60,
     "entries": [
-      {
-        "name": "GreatHart",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Hind",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "SkitteringHopper",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "VampireBat",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "GreatHart", "maxCount": 1, "probability": 100 },
+      { "name": "Hind", "maxCount": 1, "probability": 100 },
+      { "name": "SkitteringHopper", "maxCount": 1, "probability": 100 },
+      { "name": "VampireBat", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "6651b803-1285-427b-93a5-c127957915bc",
     "name": "Spawner (404)",
-    "location": [
-      925,
-      1105,
-      -90
-    ],
+    "location": [925, 1105, -90],
     "map": "Malas",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 875,
-      "y1": 1055,
-      "z1": -128,
-      "x2": 976,
-      "y2": 1156,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 875, "y1": 1055, "z1": -128, "x2": 976, "y2": 1156, "z2": 128 },
     "walkingRange": 60,
     "entries": [
-      {
-        "name": "GreatHart",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Hind",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "SkitteringHopper",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "VampireBat",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "GreatHart", "maxCount": 1, "probability": 100 },
+      { "name": "Hind", "maxCount": 1, "probability": 100 },
+      { "name": "SkitteringHopper", "maxCount": 1, "probability": 100 },
+      { "name": "VampireBat", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "bfcc0baf-f539-440f-96b6-911679afc732",
     "name": "Spawner (404)",
-    "location": [
-      1049,
-      1332,
-      -90
-    ],
+    "location": [1049, 1332, -90],
     "map": "Malas",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 999,
-      "y1": 1282,
-      "z1": -128,
-      "x2": 1100,
-      "y2": 1383,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 999, "y1": 1282, "z1": -128, "x2": 1100, "y2": 1383, "z2": 128 },
     "walkingRange": 60,
     "entries": [
-      {
-        "name": "GreatHart",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Hind",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "SkitteringHopper",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "VampireBat",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "GreatHart", "maxCount": 1, "probability": 100 },
+      { "name": "Hind", "maxCount": 1, "probability": 100 },
+      { "name": "SkitteringHopper", "maxCount": 1, "probability": 100 },
+      { "name": "VampireBat", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "445e307b-72d4-4d2e-9284-14938e4dab15",
     "name": "Spawner (404)",
-    "location": [
-      1086,
-      1067,
-      -90
-    ],
+    "location": [1086, 1067, -90],
     "map": "Malas",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 1056,
-      "y1": 1037,
-      "z1": -128,
-      "x2": 1117,
-      "y2": 1098,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 1056, "y1": 1037, "z1": -128, "x2": 1117, "y2": 1098, "z2": 128 },
     "walkingRange": 60,
     "entries": [
-      {
-        "name": "GreatHart",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Hind",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "SkitteringHopper",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "VampireBat",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "GreatHart", "maxCount": 1, "probability": 100 },
+      { "name": "Hind", "maxCount": 1, "probability": 100 },
+      { "name": "SkitteringHopper", "maxCount": 1, "probability": 100 },
+      { "name": "VampireBat", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "375e8bd1-6823-442a-a125-2e2acf53edd9",
     "name": "Spawner (404)",
-    "location": [
-      1062,
-      988,
-      -90
-    ],
+    "location": [1062, 988, -90],
     "map": "Malas",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 1032,
-      "y1": 958,
-      "z1": -128,
-      "x2": 1093,
-      "y2": 1019,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 1032, "y1": 958, "z1": -128, "x2": 1093, "y2": 1019, "z2": 128 },
     "walkingRange": 60,
     "entries": [
-      {
-        "name": "GreatHart",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Hind",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "SkitteringHopper",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "VampireBat",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "GreatHart", "maxCount": 1, "probability": 100 },
+      { "name": "Hind", "maxCount": 1, "probability": 100 },
+      { "name": "SkitteringHopper", "maxCount": 1, "probability": 100 },
+      { "name": "VampireBat", "maxCount": 1, "probability": 100 }
     ]
   }
 ]

@@ -3,77 +3,35 @@
     "$type": "Spawner",
     "guid": "befc0201-8bec-432e-8ced-3ee5ceb57d09",
     "name": "Spawner (405)",
-    "location": [
-      1050,
-      1434,
-      -85
-    ],
+    "location": [1050, 1434, -85],
     "map": "Malas",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 1050,
-      "y1": 1434,
-      "z1": -85,
-      "x2": 1051,
-      "y2": 1435,
-      "z2": -85
-    },
+    "spawnBounds": { "x1": 1050, "y1": 1434, "z1": -85, "x2": 1051, "y2": 1435, "z2": -85 },
     "walkingRange": 5,
     "entries": [
-      {
-        "name": "Waiter",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Cook",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Barkeeper",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "Waiter", "maxCount": 1, "probability": 100 },
+      { "name": "Cook", "maxCount": 1, "probability": 100 },
+      { "name": "Barkeeper", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "d8e03ce8-cd76-433e-af76-0c0767290705",
     "name": "Spawner (405)",
-    "location": [
-      1042,
-      1444,
-      -90
-    ],
+    "location": [1042, 1444, -90],
     "map": "Malas",
     "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 1038,
-      "y1": 1440,
-      "z1": -128,
-      "x2": 1047,
-      "y2": 1449,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 1038, "y1": 1440, "z1": -128, "x2": 1047, "y2": 1449, "z2": 128 },
     "walkingRange": 6,
     "entries": [
-      {
-        "name": "AnimalTrainer",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Veterinarian",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "AnimalTrainer", "maxCount": 1, "probability": 100 },
+      { "name": "Veterinarian", "maxCount": 1, "probability": 100 }
     ]
   }
 ]

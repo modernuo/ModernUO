@@ -3,2629 +3,1202 @@
     "$type": "Spawner",
     "guid": "004f420b-8d77-487d-9864-cc4879439ee5",
     "name": "Spawner (222)",
-    "location": [
-      1183,
-      3607,
-      0
-    ],
+    "location": [1183, 3607, 0],
     "map": "Felucca",
     "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 1173,
-      "y1": 3597,
-      "z1": -128,
-      "x2": 1194,
-      "y2": 3618,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 1173, "y1": 3597, "z1": -128, "x2": 1194, "y2": 3618, "z2": 128 },
     "walkingRange": 10,
     "entries": [
-      {
-        "name": "Chicken",
-        "maxCount": 5,
-        "probability": 100
-      },
-      {
-        "name": "Cow",
-        "maxCount": 5,
-        "probability": 100
-      },
-      {
-        "name": "Sheep",
-        "maxCount": 5,
-        "probability": 100
-      }
+      { "name": "Chicken", "maxCount": 5, "probability": 100 },
+      { "name": "Cow", "maxCount": 5, "probability": 100 },
+      { "name": "Sheep", "maxCount": 5, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "016fd8f8-82f3-4109-9246-336705000145",
     "name": "Spawner (222)",
-    "location": [
-      675,
-      939,
-      0
-    ],
+    "location": [675, 939, 0],
     "map": "Felucca",
     "count": 15,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 665,
-      "y1": 929,
-      "z1": -128,
-      "x2": 686,
-      "y2": 950,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 665, "y1": 929, "z1": -128, "x2": 686, "y2": 950, "z2": 128 },
     "walkingRange": 15,
     "entries": [
-      {
-        "name": "Sheep",
-        "maxCount": 15,
-        "probability": 100
-      }
+      { "name": "Sheep", "maxCount": 15, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "05602f83-caa0-4822-b699-f4427d787aee",
     "name": "Spawner (222)",
-    "location": [
-      2566,
-      622,
-      0
-    ],
+    "location": [2566, 622, 0],
     "map": "Felucca",
     "count": 12,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 2516,
-      "y1": 572,
-      "z1": -128,
-      "x2": 2617,
-      "y2": 673,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 2516, "y1": 572, "z1": -128, "x2": 2617, "y2": 673, "z2": 128 },
     "walkingRange": 50,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 3,
-        "probability": 100
-      },
-      {
-        "name": "Cat",
-        "maxCount": 3,
-        "probability": 100
-      },
-      {
-        "name": "Dog",
-        "maxCount": 3,
-        "probability": 100
-      },
-      {
-        "name": "Rat",
-        "maxCount": 3,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 3, "probability": 100 },
+      { "name": "Cat", "maxCount": 3, "probability": 100 },
+      { "name": "Dog", "maxCount": 3, "probability": 100 },
+      { "name": "Rat", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "0a13d9f3-e379-4e9d-887f-2be3ed304042",
     "name": "Spawner (222)",
-    "location": [
-      1435,
-      4000,
-      0
-    ],
+    "location": [1435, 4000, 0],
     "map": "Felucca",
     "count": 20,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 1385,
-      "y1": 3950,
-      "z1": -128,
-      "x2": 1486,
-      "y2": 4051,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 1385, "y1": 3950, "z1": -128, "x2": 1486, "y2": 4051, "z2": 128 },
     "walkingRange": 50,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 5,
-        "probability": 100
-      },
-      {
-        "name": "Cat",
-        "maxCount": 5,
-        "probability": 100
-      },
-      {
-        "name": "Dog",
-        "maxCount": 5,
-        "probability": 100
-      },
-      {
-        "name": "Rat",
-        "maxCount": 5,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 5, "probability": 100 },
+      { "name": "Cat", "maxCount": 5, "probability": 100 },
+      { "name": "Dog", "maxCount": 5, "probability": 100 },
+      { "name": "Rat", "maxCount": 5, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "0a813be3-6c2d-4a5e-a5a2-d7fd2e90abdf",
     "name": "Spawner (222)",
-    "location": [
-      1400,
-      3775,
-      0
-    ],
+    "location": [1400, 3775, 0],
     "map": "Felucca",
     "count": 40,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 1300,
-      "y1": 3675,
-      "z1": -128,
-      "x2": 1501,
-      "y2": 3876,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 1300, "y1": 3675, "z1": -128, "x2": 1501, "y2": 3876, "z2": 128 },
     "walkingRange": 100,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 10,
-        "probability": 100
-      },
-      {
-        "name": "Cat",
-        "maxCount": 10,
-        "probability": 100
-      },
-      {
-        "name": "Dog",
-        "maxCount": 10,
-        "probability": 100
-      },
-      {
-        "name": "Rat",
-        "maxCount": 10,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 10, "probability": 100 },
+      { "name": "Cat", "maxCount": 10, "probability": 100 },
+      { "name": "Dog", "maxCount": 10, "probability": 100 },
+      { "name": "Rat", "maxCount": 10, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "0aa73630-f7ee-48c5-b61a-24b0d6a44941",
     "name": "Spawner (222)",
-    "location": [
-      7002,
-      382,
-      0
-    ],
+    "location": [7002, 382, 0],
     "map": "Felucca",
     "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 6990,
-      "y1": 370,
-      "z1": -128,
-      "x2": 7015,
-      "y2": 395,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 6990, "y1": 370, "z1": -128, "x2": 7015, "y2": 395, "z2": 128 },
     "walkingRange": 20,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 5,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 5, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "0b4c7ad8-a59f-4328-8630-817246fd7cd1",
     "name": "Spawner (222)",
-    "location": [
-      1550,
-      1658,
-      26
-    ],
+    "location": [1550, 1658, 26],
     "map": "Felucca",
     "count": 60,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 1430,
-      "y1": 1538,
-      "z1": -128,
-      "x2": 1671,
-      "y2": 1779,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 1430, "y1": 1538, "z1": -128, "x2": 1671, "y2": 1779, "z2": 128 },
     "walkingRange": 120,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 15,
-        "probability": 100
-      },
-      {
-        "name": "Cat",
-        "maxCount": 15,
-        "probability": 100
-      },
-      {
-        "name": "Dog",
-        "maxCount": 15,
-        "probability": 100
-      },
-      {
-        "name": "Rat",
-        "maxCount": 15,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 15, "probability": 100 },
+      { "name": "Cat", "maxCount": 15, "probability": 100 },
+      { "name": "Dog", "maxCount": 15, "probability": 100 },
+      { "name": "Rat", "maxCount": 15, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "0e4fee28-b3d1-42c8-8f95-4103c53f31e1",
     "name": "Spawner (222)",
-    "location": [
-      830,
-      2353,
-      0
-    ],
+    "location": [830, 2353, 0],
     "map": "Felucca",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 820,
-      "y1": 2343,
-      "z1": -128,
-      "x2": 841,
-      "y2": 2364,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 820, "y1": 2343, "z1": -128, "x2": 841, "y2": 2364, "z2": 128 },
     "walkingRange": 15,
     "entries": [
-      {
-        "name": "Chicken",
-        "maxCount": 3,
-        "probability": 100
-      },
-      {
-        "name": "Sheep",
-        "maxCount": 3,
-        "probability": 100
-      },
-      {
-        "name": "Cow",
-        "maxCount": 3,
-        "probability": 100
-      }
+      { "name": "Chicken", "maxCount": 3, "probability": 100 },
+      { "name": "Sheep", "maxCount": 3, "probability": 100 },
+      { "name": "Cow", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "107a8d24-1749-4236-a32a-e1e0c286360e",
     "name": "Spawner (222)",
-    "location": [
-      536,
-      962,
-      0
-    ],
+    "location": [536, 962, 0],
     "map": "Felucca",
     "count": 80,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 376,
-      "y1": 802,
-      "z1": -128,
-      "x2": 697,
-      "y2": 1123,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 376, "y1": 802, "z1": -128, "x2": 697, "y2": 1123, "z2": 128 },
     "walkingRange": 160,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 20,
-        "probability": 100
-      },
-      {
-        "name": "Cat",
-        "maxCount": 20,
-        "probability": 100
-      },
-      {
-        "name": "Dog",
-        "maxCount": 20,
-        "probability": 100
-      },
-      {
-        "name": "Rat",
-        "maxCount": 20,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 20, "probability": 100 },
+      { "name": "Cat", "maxCount": 20, "probability": 100 },
+      { "name": "Dog", "maxCount": 20, "probability": 100 },
+      { "name": "Rat", "maxCount": 20, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "11532176-a402-41bb-801d-b2f4fedff8ce",
     "name": "Spawner (222)",
-    "location": [
-      1185,
-      1632,
-      0
-    ],
+    "location": [1185, 1632, 0],
     "map": "Felucca",
     "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 1105,
-      "y1": 1552,
-      "z1": -128,
-      "x2": 1266,
-      "y2": 1713,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 1105, "y1": 1552, "z1": -128, "x2": 1266, "y2": 1713, "z2": 128 },
     "walkingRange": 80,
     "entries": [
-      {
-        "name": "Chicken",
-        "maxCount": 5,
-        "probability": 100
-      }
+      { "name": "Chicken", "maxCount": 5, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "13543563-3b10-42fa-9e48-94856ed4b3c8",
     "name": "Spawner (222)",
-    "location": [
-      5133,
-      150,
-      0
-    ],
+    "location": [5133, 150, 0],
     "map": "Felucca",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 5118,
-      "y1": 135,
-      "z1": -128,
-      "x2": 5149,
-      "y2": 166,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 5118, "y1": 135, "z1": -128, "x2": 5149, "y2": 166, "z2": 128 },
     "walkingRange": 15,
     "entries": [
-      {
-        "name": "Daemon",
-        "maxCount": 3,
-        "probability": 100
-      }
+      { "name": "Daemon", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "1ad9e818-3743-43df-8834-2bef8d35d69f",
     "name": "Spawner (222)",
-    "location": [
-      1216,
-      1823,
-      0
-    ],
+    "location": [1216, 1823, 0],
     "map": "Felucca",
     "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 1136,
-      "y1": 1743,
-      "z1": -128,
-      "x2": 1297,
-      "y2": 1904,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 1136, "y1": 1743, "z1": -128, "x2": 1297, "y2": 1904, "z2": 128 },
     "walkingRange": 80,
     "entries": [
-      {
-        "name": "Chicken",
-        "maxCount": 5,
-        "probability": 100
-      }
+      { "name": "Chicken", "maxCount": 5, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "1c30b2f9-fd07-4a84-9d98-21a9e0bf814e",
     "name": "Spawner (222)",
-    "location": [
-      7063,
-      410,
-      0
-    ],
+    "location": [7063, 410, 0],
     "map": "Felucca",
     "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 7053,
-      "y1": 400,
-      "z1": -128,
-      "x2": 7074,
-      "y2": 421,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 7053, "y1": 400, "z1": -128, "x2": 7074, "y2": 421, "z2": 128 },
     "walkingRange": 10,
     "entries": [
-      {
-        "name": "MiniatureMushroom",
-        "maxCount": 6,
-        "probability": 100
-      }
+      { "name": "MiniatureMushroom", "maxCount": 6, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "21be647c-e373-43a4-90c9-f24eeafafeda",
     "name": "Spawner (222)",
-    "location": [
-      2242,
-      1197,
-      0
-    ],
+    "location": [2242, 1197, 0],
     "map": "Felucca",
     "count": 16,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 2192,
-      "y1": 1147,
-      "z1": -128,
-      "x2": 2293,
-      "y2": 1248,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 2192, "y1": 1147, "z1": -128, "x2": 2293, "y2": 1248, "z2": 128 },
     "walkingRange": 50,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 4,
-        "probability": 100
-      },
-      {
-        "name": "Cat",
-        "maxCount": 4,
-        "probability": 100
-      },
-      {
-        "name": "Dog",
-        "maxCount": 4,
-        "probability": 100
-      },
-      {
-        "name": "Rat",
-        "maxCount": 4,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 4, "probability": 100 },
+      { "name": "Cat", "maxCount": 4, "probability": 100 },
+      { "name": "Dog", "maxCount": 4, "probability": 100 },
+      { "name": "Rat", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "22cd06b3-f02b-44f8-80cf-60c95ee4fcc4",
     "name": "Spawner (222)",
-    "location": [
-      1319,
-      1821,
-      0
-    ],
+    "location": [1319, 1821, 0],
     "map": "Felucca",
     "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 1314,
-      "y1": 1816,
-      "z1": -128,
-      "x2": 1325,
-      "y2": 1827,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 1314, "y1": 1816, "z1": -128, "x2": 1325, "y2": 1827, "z2": 128 },
     "walkingRange": 10,
     "entries": [
-      {
-        "name": "Cow",
-        "maxCount": 7,
-        "probability": 100
-      }
+      { "name": "Cow", "maxCount": 7, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "270c974f-1266-4c2e-80f1-d883e392c8c3",
     "name": "Spawner (222)",
-    "location": [
-      560,
-      1239,
-      0
-    ],
+    "location": [560, 1239, 0],
     "map": "Felucca",
     "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 550,
-      "y1": 1229,
-      "z1": -128,
-      "x2": 571,
-      "y2": 1250,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 550, "y1": 1229, "z1": -128, "x2": 571, "y2": 1250, "z2": 128 },
     "walkingRange": 10,
     "entries": [
-      {
-        "name": "Chicken",
-        "maxCount": 2,
-        "probability": 100
-      }
+      { "name": "Chicken", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "2db897d0-401a-4efe-8f40-ed186c60d376",
     "name": "Spawner (222)",
-    "location": [
-      1127,
-      3583,
-      0
-    ],
+    "location": [1127, 3583, 0],
     "map": "Felucca",
     "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 1117,
-      "y1": 3573,
-      "z1": -128,
-      "x2": 1138,
-      "y2": 3594,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 1117, "y1": 3573, "z1": -128, "x2": 1138, "y2": 3594, "z2": 128 },
     "walkingRange": 10,
     "entries": [
-      {
-        "name": "Chicken",
-        "maxCount": 5,
-        "probability": 100
-      },
-      {
-        "name": "Cow",
-        "maxCount": 5,
-        "probability": 100
-      },
-      {
-        "name": "Sheep",
-        "maxCount": 5,
-        "probability": 100
-      }
+      { "name": "Chicken", "maxCount": 5, "probability": 100 },
+      { "name": "Cow", "maxCount": 5, "probability": 100 },
+      { "name": "Sheep", "maxCount": 5, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "2e1c6a6c-b2b4-4946-ad62-a319330cef19",
     "name": "Spawner (222)",
-    "location": [
-      1319,
-      1810,
-      0
-    ],
+    "location": [1319, 1810, 0],
     "map": "Felucca",
     "count": 7,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 1314,
-      "y1": 1805,
-      "z1": -128,
-      "x2": 1325,
-      "y2": 1816,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 1314, "y1": 1805, "z1": -128, "x2": 1325, "y2": 1816, "z2": 128 },
     "walkingRange": 10,
     "entries": [
-      {
-        "name": "Cow",
-        "maxCount": 7,
-        "probability": 100
-      }
+      { "name": "Cow", "maxCount": 7, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "2ed2bfa6-08b9-4b93-bd1c-aa67f2ebde6a",
     "name": "Spawner (222)",
-    "location": [
-      3726,
-      2647,
-      0
-    ],
+    "location": [3726, 2647, 0],
     "map": "Felucca",
     "count": 10,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 3701,
-      "y1": 2622,
-      "z1": -128,
-      "x2": 3752,
-      "y2": 2673,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 3701, "y1": 2622, "z1": -128, "x2": 3752, "y2": 2673, "z2": 128 },
     "walkingRange": 25,
     "entries": [
-      {
-        "name": "Chicken",
-        "maxCount": 10,
-        "probability": 100
-      }
+      { "name": "Chicken", "maxCount": 10, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "34b6ad1f-4ab4-4eea-a295-36e62593cecf",
     "name": "Spawner (222)",
-    "location": [
-      7044,
-      429,
-      0
-    ],
+    "location": [7044, 429, 0],
     "map": "Felucca",
     "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 7034,
-      "y1": 419,
-      "z1": -128,
-      "x2": 7055,
-      "y2": 440,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 7034, "y1": 419, "z1": -128, "x2": 7055, "y2": 440, "z2": 128 },
     "walkingRange": 10,
     "entries": [
-      {
-        "name": "MiniatureMushroom",
-        "maxCount": 4,
-        "probability": 100
-      }
+      { "name": "MiniatureMushroom", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "3c8b3124-16ab-436f-9687-7ecf1c533563",
     "name": "Spawner (222)",
-    "location": [
-      7036,
-      409,
-      12
-    ],
+    "location": [7036, 409, 12],
     "map": "Felucca",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 7024,
-      "y1": 397,
-      "z1": -128,
-      "x2": 7049,
-      "y2": 422,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 7024, "y1": 397, "z1": -128, "x2": 7049, "y2": 422, "z2": 128 },
     "walkingRange": 12,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 3,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "425dfc37-404d-455d-8bf7-23a3f9857cad",
     "name": "Spawner (222)",
-    "location": [
-      5255,
-      4000,
-      37
-    ],
+    "location": [5255, 4000, 37],
     "map": "Felucca",
     "count": 24,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 5175,
-      "y1": 3920,
-      "z1": -128,
-      "x2": 5336,
-      "y2": 4081,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 5175, "y1": 3920, "z1": -128, "x2": 5336, "y2": 4081, "z2": 128 },
     "walkingRange": 80,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 6,
-        "probability": 100
-      },
-      {
-        "name": "Cat",
-        "maxCount": 6,
-        "probability": 100
-      },
-      {
-        "name": "Dog",
-        "maxCount": 6,
-        "probability": 100
-      },
-      {
-        "name": "Rat",
-        "maxCount": 6,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 6, "probability": 100 },
+      { "name": "Cat", "maxCount": 6, "probability": 100 },
+      { "name": "Dog", "maxCount": 6, "probability": 100 },
+      { "name": "Rat", "maxCount": 6, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "472a9125-a41e-4796-9eb5-63fff737a52a",
     "name": "Spawner (222)",
-    "location": [
-      2687,
-      2218,
-      0
-    ],
+    "location": [2687, 2218, 0],
     "map": "Felucca",
     "count": 16,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 2637,
-      "y1": 2168,
-      "z1": -128,
-      "x2": 2738,
-      "y2": 2269,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 2637, "y1": 2168, "z1": -128, "x2": 2738, "y2": 2269, "z2": 128 },
     "walkingRange": 50,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 4,
-        "probability": 100
-      },
-      {
-        "name": "Cat",
-        "maxCount": 4,
-        "probability": 100
-      },
-      {
-        "name": "Dog",
-        "maxCount": 4,
-        "probability": 100
-      },
-      {
-        "name": "Rat",
-        "maxCount": 4,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 4, "probability": 100 },
+      { "name": "Cat", "maxCount": 4, "probability": 100 },
+      { "name": "Dog", "maxCount": 4, "probability": 100 },
+      { "name": "Rat", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "48afa381-95b4-4fca-98be-b6ff50b46106",
     "name": "Spawner (222)",
-    "location": [
-      1154,
-      3639,
-      0
-    ],
+    "location": [1154, 3639, 0],
     "map": "Felucca",
     "count": 16,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 1104,
-      "y1": 3589,
-      "z1": -128,
-      "x2": 1205,
-      "y2": 3690,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 1104, "y1": 3589, "z1": -128, "x2": 1205, "y2": 3690, "z2": 128 },
     "walkingRange": 50,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 4,
-        "probability": 100
-      },
-      {
-        "name": "Cat",
-        "maxCount": 4,
-        "probability": 100
-      },
-      {
-        "name": "Dog",
-        "maxCount": 4,
-        "probability": 100
-      },
-      {
-        "name": "Rat",
-        "maxCount": 4,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 4, "probability": 100 },
+      { "name": "Cat", "maxCount": 4, "probability": 100 },
+      { "name": "Dog", "maxCount": 4, "probability": 100 },
+      { "name": "Rat", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "490ddc6d-d111-427d-b5cf-8e9f510d191f",
     "name": "Spawner (222)",
-    "location": [
-      2223,
-      1151,
-      0
-    ],
+    "location": [2223, 1151, 0],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 2218,
-      "y1": 1146,
-      "z1": -128,
-      "x2": 2229,
-      "y2": 1157,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 2218, "y1": 1146, "z1": -128, "x2": 2229, "y2": 1157, "z2": 128 },
     "walkingRange": 5,
     "entries": [
-      {
-        "name": "Chicken",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "Chicken", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "4c4303ac-98c9-41ae-a4ed-a286510232a9",
     "name": "Spawner (222)",
-    "location": [
-      4634,
-      1302,
-      0
-    ],
+    "location": [4634, 1302, 0],
     "map": "Felucca",
     "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 4624,
-      "y1": 1292,
-      "z1": -128,
-      "x2": 4645,
-      "y2": 1313,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 4624, "y1": 1292, "z1": -128, "x2": 4645, "y2": 1313, "z2": 128 },
     "walkingRange": 10,
     "entries": [
-      {
-        "name": "Chicken",
-        "maxCount": 5,
-        "probability": 100
-      },
-      {
-        "name": "Cow",
-        "maxCount": 5,
-        "probability": 100
-      },
-      {
-        "name": "Sheep",
-        "maxCount": 5,
-        "probability": 100
-      }
+      { "name": "Chicken", "maxCount": 5, "probability": 100 },
+      { "name": "Cow", "maxCount": 5, "probability": 100 },
+      { "name": "Sheep", "maxCount": 5, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "53d267c1-a427-4e36-be80-7a5cb96f4669",
     "name": "Spawner (222)",
-    "location": [
-      7081,
-      381,
-      0
-    ],
+    "location": [7081, 381, 0],
     "map": "Felucca",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 7069,
-      "y1": 369,
-      "z1": -128,
-      "x2": 7094,
-      "y2": 394,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 7069, "y1": 369, "z1": -128, "x2": 7094, "y2": 394, "z2": 128 },
     "walkingRange": 12,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 3,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "60755e38-7c07-4745-a61e-bd21ddfa841a",
     "name": "Spawner (222)",
-    "location": [
-      3714,
-      2205,
-      20
-    ],
+    "location": [3714, 2205, 20],
     "map": "Felucca",
     "count": 24,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 3664,
-      "y1": 2155,
-      "z1": -128,
-      "x2": 3765,
-      "y2": 2256,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 3664, "y1": 2155, "z1": -128, "x2": 3765, "y2": 2256, "z2": 128 },
     "walkingRange": 50,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 6,
-        "probability": 100
-      },
-      {
-        "name": "Cat",
-        "maxCount": 6,
-        "probability": 100
-      },
-      {
-        "name": "Dog",
-        "maxCount": 6,
-        "probability": 100
-      },
-      {
-        "name": "Rat",
-        "maxCount": 6,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 6, "probability": 100 },
+      { "name": "Cat", "maxCount": 6, "probability": 100 },
+      { "name": "Dog", "maxCount": 6, "probability": 100 },
+      { "name": "Rat", "maxCount": 6, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "6434f6cc-a8b9-4667-a3e7-5109384d6c75",
     "name": "Spawner (222)",
-    "location": [
-      1340,
-      1790,
-      15
-    ],
+    "location": [1340, 1790, 15],
     "map": "Felucca",
     "count": 20,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 1260,
-      "y1": 1710,
-      "z1": -128,
-      "x2": 1421,
-      "y2": 1871,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 1260, "y1": 1710, "z1": -128, "x2": 1421, "y2": 1871, "z2": 128 },
     "walkingRange": 80,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 5,
-        "probability": 100
-      },
-      {
-        "name": "Cat",
-        "maxCount": 5,
-        "probability": 100
-      },
-      {
-        "name": "Dog",
-        "maxCount": 5,
-        "probability": 100
-      },
-      {
-        "name": "Rat",
-        "maxCount": 5,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 5, "probability": 100 },
+      { "name": "Cat", "maxCount": 5, "probability": 100 },
+      { "name": "Dog", "maxCount": 5, "probability": 100 },
+      { "name": "Rat", "maxCount": 5, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "65aa9d17-8718-4d62-9dea-53f965b6a798",
     "name": "Spawner (222)",
-    "location": [
-      7052,
-      386,
-      0
-    ],
+    "location": [7052, 386, 0],
     "map": "Felucca",
     "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 7042,
-      "y1": 376,
-      "z1": -128,
-      "x2": 7063,
-      "y2": 397,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 7042, "y1": 376, "z1": -128, "x2": 7063, "y2": 397, "z2": 128 },
     "walkingRange": 10,
     "entries": [
-      {
-        "name": "MiniatureMushroom",
-        "maxCount": 6,
-        "probability": 100
-      }
+      { "name": "MiniatureMushroom", "maxCount": 6, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "6826cac3-d751-442e-9712-e56579d34015",
     "name": "Spawner (222)",
-    "location": [
-      1339,
-      1788,
-      15
-    ],
+    "location": [1339, 1788, 15],
     "map": "Felucca",
     "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 1259,
-      "y1": 1708,
-      "z1": -128,
-      "x2": 1420,
-      "y2": 1869,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 1259, "y1": 1708, "z1": -128, "x2": 1420, "y2": 1869, "z2": 128 },
     "walkingRange": 80,
     "entries": [
-      {
-        "name": "Chicken",
-        "maxCount": 5,
-        "probability": 100
-      }
+      { "name": "Chicken", "maxCount": 5, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "6f6053e2-9f9b-4e29-b3f6-f4675c82e68b",
     "name": "Spawner (222)",
-    "location": [
-      7007,
-      360,
-      0
-    ],
+    "location": [7007, 360, 0],
     "map": "Felucca",
     "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 6997,
-      "y1": 350,
-      "z1": -128,
-      "x2": 7018,
-      "y2": 371,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 6997, "y1": 350, "z1": -128, "x2": 7018, "y2": 371, "z2": 128 },
     "walkingRange": 10,
     "entries": [
-      {
-        "name": "MiniatureMushroom",
-        "maxCount": 2,
-        "probability": 100
-      }
+      { "name": "MiniatureMushroom", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "76958af8-18c3-4fcc-8624-be8ccfac900e",
     "name": "Spawner (222)",
-    "location": [
-      4422,
-      1451,
-      0
-    ],
+    "location": [4422, 1451, 0],
     "map": "Felucca",
     "count": 1,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 4417,
-      "y1": 1446,
-      "z1": -128,
-      "x2": 4428,
-      "y2": 1457,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 4417, "y1": 1446, "z1": -128, "x2": 4428, "y2": 1457, "z2": 128 },
     "walkingRange": 5,
     "entries": [
-      {
-        "name": "Chicken",
-        "maxCount": 1,
-        "probability": 100
-      }
+      { "name": "Chicken", "maxCount": 1, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "79c882ff-dab2-497a-9534-d3971b71734c",
     "name": "Spawner (222)",
-    "location": [
-      7007,
-      382,
-      0
-    ],
+    "location": [7007, 382, 0],
     "map": "Felucca",
     "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 6997,
-      "y1": 372,
-      "z1": -128,
-      "x2": 7018,
-      "y2": 393,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 6997, "y1": 372, "z1": -128, "x2": 7018, "y2": 393, "z2": 128 },
     "walkingRange": 10,
     "entries": [
-      {
-        "name": "MiniatureMushroom",
-        "maxCount": 6,
-        "probability": 100
-      }
+      { "name": "MiniatureMushroom", "maxCount": 6, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "7e7d8786-aeec-4481-acf8-7c65d6afa71c",
     "name": "Spawner (222)",
-    "location": [
-      3699,
-      1238,
-      0
-    ],
+    "location": [3699, 1238, 0],
     "map": "Felucca",
     "count": 72,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 3539,
-      "y1": 1078,
-      "z1": -128,
-      "x2": 3860,
-      "y2": 1399,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 3539, "y1": 1078, "z1": -128, "x2": 3860, "y2": 1399, "z2": 128 },
     "walkingRange": 160,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 18,
-        "probability": 100
-      },
-      {
-        "name": "Cat",
-        "maxCount": 18,
-        "probability": 100
-      },
-      {
-        "name": "Dog",
-        "maxCount": 18,
-        "probability": 100
-      },
-      {
-        "name": "Rat",
-        "maxCount": 18,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 18, "probability": 100 },
+      { "name": "Cat", "maxCount": 18, "probability": 100 },
+      { "name": "Dog", "maxCount": 18, "probability": 100 },
+      { "name": "Rat", "maxCount": 18, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "7ebf2c6a-3ecf-4da8-84dc-d0fe5bb38264",
     "name": "Spawner (222)",
-    "location": [
-      2682,
-      2118,
-      0
-    ],
+    "location": [2682, 2118, 0],
     "map": "Felucca",
     "count": 20,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 2632,
-      "y1": 2068,
-      "z1": -128,
-      "x2": 2733,
-      "y2": 2169,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 2632, "y1": 2068, "z1": -128, "x2": 2733, "y2": 2169, "z2": 128 },
     "walkingRange": 50,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 5,
-        "probability": 100
-      },
-      {
-        "name": "Cat",
-        "maxCount": 5,
-        "probability": 100
-      },
-      {
-        "name": "Dog",
-        "maxCount": 5,
-        "probability": 100
-      },
-      {
-        "name": "Rat",
-        "maxCount": 5,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 5, "probability": 100 },
+      { "name": "Cat", "maxCount": 5, "probability": 100 },
+      { "name": "Dog", "maxCount": 5, "probability": 100 },
+      { "name": "Rat", "maxCount": 5, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "832487b1-6929-4cfd-bf10-8f8901a6af24",
     "name": "Spawner (222)",
-    "location": [
-      7087,
-      382,
-      1
-    ],
+    "location": [7087, 382, 1],
     "map": "Felucca",
     "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 7077,
-      "y1": 372,
-      "z1": -128,
-      "x2": 7098,
-      "y2": 393,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 7077, "y1": 372, "z1": -128, "x2": 7098, "y2": 393, "z2": 128 },
     "walkingRange": 10,
     "entries": [
-      {
-        "name": "MiniatureMushroom",
-        "maxCount": 2,
-        "probability": 100
-      }
+      { "name": "MiniatureMushroom", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "88b89736-19fe-4265-a878-ae30fb1aa685",
     "name": "Spawner (222)",
-    "location": [
-      1937,
-      2760,
-      10
-    ],
+    "location": [1937, 2760, 10],
     "map": "Felucca",
     "count": 48,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 1817,
-      "y1": 2640,
-      "z1": -128,
-      "x2": 2058,
-      "y2": 2881,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 1817, "y1": 2640, "z1": -128, "x2": 2058, "y2": 2881, "z2": 128 },
     "walkingRange": 120,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 12,
-        "probability": 100
-      },
-      {
-        "name": "Cat",
-        "maxCount": 12,
-        "probability": 100
-      },
-      {
-        "name": "Dog",
-        "maxCount": 12,
-        "probability": 100
-      },
-      {
-        "name": "Rat",
-        "maxCount": 12,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 12, "probability": 100 },
+      { "name": "Cat", "maxCount": 12, "probability": 100 },
+      { "name": "Dog", "maxCount": 12, "probability": 100 },
+      { "name": "Rat", "maxCount": 12, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "8ff8d2d7-f679-42d4-b616-7e3006e18695",
     "name": "Spawner (222)",
-    "location": [
-      2904,
-      906,
-      0
-    ],
+    "location": [2904, 906, 0],
     "map": "Felucca",
     "count": 40,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 2804,
-      "y1": 806,
-      "z1": -128,
-      "x2": 3005,
-      "y2": 1007,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 2804, "y1": 806, "z1": -128, "x2": 3005, "y2": 1007, "z2": 128 },
     "walkingRange": 100,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 10,
-        "probability": 100
-      },
-      {
-        "name": "Cat",
-        "maxCount": 10,
-        "probability": 100
-      },
-      {
-        "name": "Dog",
-        "maxCount": 10,
-        "probability": 100
-      },
-      {
-        "name": "Rat",
-        "maxCount": 10,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 10, "probability": 100 },
+      { "name": "Cat", "maxCount": 10, "probability": 100 },
+      { "name": "Dog", "maxCount": 10, "probability": 100 },
+      { "name": "Rat", "maxCount": 10, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "9132b08c-8598-4130-9779-b2eeaf3b0df0",
     "name": "Spawner (222)",
-    "location": [
-      688,
-      1007,
-      0
-    ],
+    "location": [688, 1007, 0],
     "map": "Felucca",
     "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 678,
-      "y1": 997,
-      "z1": -128,
-      "x2": 699,
-      "y2": 1018,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 678, "y1": 997, "z1": -128, "x2": 699, "y2": 1018, "z2": 128 },
     "walkingRange": 10,
     "entries": [
-      {
-        "name": "Chicken",
-        "maxCount": 2,
-        "probability": 100
-      }
+      { "name": "Chicken", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "91ddce58-c241-4606-81e8-1d08cfb7de58",
     "name": "Spawner (222)",
-    "location": [
-      5164,
-      205,
-      15
-    ],
+    "location": [5164, 205, 15],
     "map": "Felucca",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 5149,
-      "y1": 190,
-      "z1": -128,
-      "x2": 5180,
-      "y2": 221,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 5149, "y1": 190, "z1": -128, "x2": 5180, "y2": 221, "z2": 128 },
     "walkingRange": 15,
     "entries": [
-      {
-        "name": "LichLord",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Lich",
-        "maxCount": 2,
-        "probability": 100
-      }
+      { "name": "LichLord", "maxCount": 1, "probability": 100 },
+      { "name": "Lich", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "96704675-d8b7-4772-9d44-1f334fa1d5bd",
     "name": "Spawner (222)",
-    "location": [
-      2972,
-      3436,
-      15
-    ],
+    "location": [2972, 3436, 15],
     "map": "Felucca",
     "count": 48,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 2872,
-      "y1": 3336,
-      "z1": -128,
-      "x2": 3073,
-      "y2": 3537,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 2872, "y1": 3336, "z1": -128, "x2": 3073, "y2": 3537, "z2": 128 },
     "walkingRange": 100,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 12,
-        "probability": 100
-      },
-      {
-        "name": "Cat",
-        "maxCount": 12,
-        "probability": 100
-      },
-      {
-        "name": "Dog",
-        "maxCount": 12,
-        "probability": 100
-      },
-      {
-        "name": "Rat",
-        "maxCount": 12,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 12, "probability": 100 },
+      { "name": "Cat", "maxCount": 12, "probability": 100 },
+      { "name": "Dog", "maxCount": 12, "probability": 100 },
+      { "name": "Rat", "maxCount": 12, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "97b2dcc3-dbbf-4bf5-89a2-47a112b9e4af",
     "name": "Spawner (222)",
-    "location": [
-      5249,
-      228,
-      15
-    ],
+    "location": [5249, 228, 15],
     "map": "Felucca",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 5229,
-      "y1": 208,
-      "z1": -128,
-      "x2": 5270,
-      "y2": 249,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 5229, "y1": 208, "z1": -128, "x2": 5270, "y2": 249, "z2": 128 },
     "walkingRange": 20,
     "entries": [
-      {
-        "name": "Dragon",
-        "maxCount": 1,
-        "probability": 100
-      },
-      {
-        "name": "Drake",
-        "maxCount": 2,
-        "probability": 100
-      }
+      { "name": "Dragon", "maxCount": 1, "probability": 100 },
+      { "name": "Drake", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "a5704357-3d9e-4895-ba9b-1148f0440001",
     "name": "Spawner (222)",
-    "location": [
-      2939,
-      746,
-      2
-    ],
+    "location": [2939, 746, 2],
     "map": "Felucca",
     "count": 40,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 2839,
-      "y1": 646,
-      "z1": -128,
-      "x2": 3040,
-      "y2": 847,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 2839, "y1": 646, "z1": -128, "x2": 3040, "y2": 847, "z2": 128 },
     "walkingRange": 100,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 10,
-        "probability": 100
-      },
-      {
-        "name": "Cat",
-        "maxCount": 10,
-        "probability": 100
-      },
-      {
-        "name": "Dog",
-        "maxCount": 10,
-        "probability": 100
-      },
-      {
-        "name": "Rat",
-        "maxCount": 10,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 10, "probability": 100 },
+      { "name": "Cat", "maxCount": 10, "probability": 100 },
+      { "name": "Dog", "maxCount": 10, "probability": 100 },
+      { "name": "Rat", "maxCount": 10, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "a8636c7c-90b3-4c44-8a8d-739728e3b44b",
     "name": "Spawner (222)",
-    "location": [
-      608,
-      2195,
-      0
-    ],
+    "location": [608, 2195, 0],
     "map": "Felucca",
     "count": 32,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 538,
-      "y1": 2125,
-      "z1": -128,
-      "x2": 679,
-      "y2": 2266,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 538, "y1": 2125, "z1": -128, "x2": 679, "y2": 2266, "z2": 128 },
     "walkingRange": 70,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 8,
-        "probability": 100
-      },
-      {
-        "name": "Cat",
-        "maxCount": 8,
-        "probability": 100
-      },
-      {
-        "name": "Dog",
-        "maxCount": 8,
-        "probability": 100
-      },
-      {
-        "name": "Rat",
-        "maxCount": 8,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 8, "probability": 100 },
+      { "name": "Cat", "maxCount": 8, "probability": 100 },
+      { "name": "Dog", "maxCount": 8, "probability": 100 },
+      { "name": "Rat", "maxCount": 8, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "a8a3de25-676d-4d86-9400-9a656c62dec1",
     "name": "Spawner (222)",
-    "location": [
-      4438,
-      1115,
-      0
-    ],
+    "location": [4438, 1115, 0],
     "map": "Felucca",
     "count": 48,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 4368,
-      "y1": 1045,
-      "z1": -128,
-      "x2": 4509,
-      "y2": 1186,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 4368, "y1": 1045, "z1": -128, "x2": 4509, "y2": 1186, "z2": 128 },
     "walkingRange": 70,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 12,
-        "probability": 100
-      },
-      {
-        "name": "Cat",
-        "maxCount": 12,
-        "probability": 100
-      },
-      {
-        "name": "Dog",
-        "maxCount": 12,
-        "probability": 100
-      },
-      {
-        "name": "Rat",
-        "maxCount": 12,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 12, "probability": 100 },
+      { "name": "Cat", "maxCount": 12, "probability": 100 },
+      { "name": "Dog", "maxCount": 12, "probability": 100 },
+      { "name": "Rat", "maxCount": 12, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "a8c66161-cf43-47a9-a3a3-c5dcbfa4fbd9",
     "name": "Spawner (222)",
-    "location": [
-      382,
-      1192,
-      0
-    ],
+    "location": [382, 1192, 0],
     "map": "Felucca",
     "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 372,
-      "y1": 1182,
-      "z1": -128,
-      "x2": 393,
-      "y2": 1203,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 372, "y1": 1182, "z1": -128, "x2": 393, "y2": 1203, "z2": 128 },
     "walkingRange": 10,
     "entries": [
-      {
-        "name": "Chicken",
-        "maxCount": 2,
-        "probability": 100
-      }
+      { "name": "Chicken", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "b09a16a0-6abb-420c-8995-24671b9183c6",
     "name": "Spawner (222)",
-    "location": [
-      5726,
-      3211,
-      -2
-    ],
+    "location": [5726, 3211, -2],
     "map": "Felucca",
     "count": 48,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 5626,
-      "y1": 3111,
-      "z1": -128,
-      "x2": 5827,
-      "y2": 3312,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 5626, "y1": 3111, "z1": -128, "x2": 5827, "y2": 3312, "z2": 128 },
     "walkingRange": 100,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 12,
-        "probability": 100
-      },
-      {
-        "name": "Cat",
-        "maxCount": 12,
-        "probability": 100
-      },
-      {
-        "name": "Dog",
-        "maxCount": 12,
-        "probability": 100
-      },
-      {
-        "name": "Rat",
-        "maxCount": 12,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 12, "probability": 100 },
+      { "name": "Cat", "maxCount": 12, "probability": 100 },
+      { "name": "Dog", "maxCount": 12, "probability": 100 },
+      { "name": "Rat", "maxCount": 12, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "b3d3fb31-99cc-4fa9-a5a3-0dd641081add",
     "name": "Spawner (222)",
-    "location": [
-      3717,
-      2111,
-      20
-    ],
+    "location": [3717, 2111, 20],
     "map": "Felucca",
     "count": 24,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 3667,
-      "y1": 2061,
-      "z1": -128,
-      "x2": 3768,
-      "y2": 2162,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 3667, "y1": 2061, "z1": -128, "x2": 3768, "y2": 2162, "z2": 128 },
     "walkingRange": 50,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 6,
-        "probability": 100
-      },
-      {
-        "name": "Cat",
-        "maxCount": 6,
-        "probability": 100
-      },
-      {
-        "name": "Dog",
-        "maxCount": 6,
-        "probability": 100
-      },
-      {
-        "name": "Rat",
-        "maxCount": 6,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 6, "probability": 100 },
+      { "name": "Cat", "maxCount": 6, "probability": 100 },
+      { "name": "Dog", "maxCount": 6, "probability": 100 },
+      { "name": "Rat", "maxCount": 6, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "ba72b0e5-a33d-437d-9028-5c4b71eea90c",
     "name": "Spawner (222)",
-    "location": [
-      818,
-      2269,
-      0
-    ],
+    "location": [818, 2269, 0],
     "map": "Felucca",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 808,
-      "y1": 2259,
-      "z1": -128,
-      "x2": 829,
-      "y2": 2280,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 808, "y1": 2259, "z1": -128, "x2": 829, "y2": 2280, "z2": 128 },
     "walkingRange": 15,
     "entries": [
-      {
-        "name": "Chicken",
-        "maxCount": 3,
-        "probability": 100
-      },
-      {
-        "name": "Sheep",
-        "maxCount": 3,
-        "probability": 100
-      },
-      {
-        "name": "Cow",
-        "maxCount": 3,
-        "probability": 100
-      }
+      { "name": "Chicken", "maxCount": 3, "probability": 100 },
+      { "name": "Sheep", "maxCount": 3, "probability": 100 },
+      { "name": "Cow", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "bf55508a-adf0-4dca-9e67-37c947b28064",
     "name": "Spawner (222)",
-    "location": [
-      6986,
-      384,
-      0
-    ],
+    "location": [6986, 384, 0],
     "map": "Felucca",
     "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 6976,
-      "y1": 374,
-      "z1": -128,
-      "x2": 6997,
-      "y2": 395,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 6976, "y1": 374, "z1": -128, "x2": 6997, "y2": 395, "z2": 128 },
     "walkingRange": 10,
     "entries": [
-      {
-        "name": "MiniatureMushroom",
-        "maxCount": 4,
-        "probability": 100
-      }
+      { "name": "MiniatureMushroom", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "c73dd6cb-2264-4b89-829e-717f741a58b0",
     "name": "Spawner (222)",
-    "location": [
-      1217,
-      1825,
-      0
-    ],
+    "location": [1217, 1825, 0],
     "map": "Felucca",
     "count": 20,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 1137,
-      "y1": 1745,
-      "z1": -128,
-      "x2": 1298,
-      "y2": 1906,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 1137, "y1": 1745, "z1": -128, "x2": 1298, "y2": 1906, "z2": 128 },
     "walkingRange": 80,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 5,
-        "probability": 100
-      },
-      {
-        "name": "Cat",
-        "maxCount": 5,
-        "probability": 100
-      },
-      {
-        "name": "Dog",
-        "maxCount": 5,
-        "probability": 100
-      },
-      {
-        "name": "Rat",
-        "maxCount": 5,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 5, "probability": 100 },
+      { "name": "Cat", "maxCount": 5, "probability": 100 },
+      { "name": "Dog", "maxCount": 5, "probability": 100 },
+      { "name": "Rat", "maxCount": 5, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "cb2d9013-b557-43c3-ab94-f69c92c68a89",
     "name": "Spawner (222)",
-    "location": [
-      7033,
-      385,
-      0
-    ],
+    "location": [7033, 385, 0],
     "map": "Felucca",
     "count": 10,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 6983,
-      "y1": 335,
-      "z1": -128,
-      "x2": 7084,
-      "y2": 436,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 6983, "y1": 335, "z1": -128, "x2": 7084, "y2": 436, "z2": 128 },
     "walkingRange": 50,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 10,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 10, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "cd07faea-cb76-402c-a145-cc4ca8277359",
     "name": "Spawner (222)",
-    "location": [
-      3652,
-      2511,
-      0
-    ],
+    "location": [3652, 2511, 0],
     "map": "Felucca",
     "count": 16,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 3602,
-      "y1": 2461,
-      "z1": -128,
-      "x2": 3703,
-      "y2": 2562,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 3602, "y1": 2461, "z1": -128, "x2": 3703, "y2": 2562, "z2": 128 },
     "walkingRange": 50,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 4,
-        "probability": 100
-      },
-      {
-        "name": "Cat",
-        "maxCount": 4,
-        "probability": 100
-      },
-      {
-        "name": "Dog",
-        "maxCount": 4,
-        "probability": 100
-      },
-      {
-        "name": "Rat",
-        "maxCount": 4,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 4, "probability": 100 },
+      { "name": "Cat", "maxCount": 4, "probability": 100 },
+      { "name": "Dog", "maxCount": 4, "probability": 100 },
+      { "name": "Rat", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "d1f89bea-7fed-494e-a03a-ebb7cc8fa3d2",
     "name": "Spawner (222)",
-    "location": [
-      4567,
-      1476,
-      0
-    ],
+    "location": [4567, 1476, 0],
     "map": "Felucca",
     "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 4564,
-      "y1": 1473,
-      "z1": -128,
-      "x2": 4571,
-      "y2": 1480,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 4564, "y1": 1473, "z1": -128, "x2": 4571, "y2": 1480, "z2": 128 },
     "walkingRange": 3,
     "entries": [
-      {
-        "name": "Chicken",
-        "maxCount": 2,
-        "probability": 100
-      }
+      { "name": "Chicken", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "d233e758-f2b9-4f55-8e65-1441e452f34e",
     "name": "Spawner (222)",
-    "location": [
-      6992,
-      345,
-      0
-    ],
+    "location": [6992, 345, 0],
     "map": "Felucca",
     "count": 2,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 6982,
-      "y1": 335,
-      "z1": -128,
-      "x2": 7003,
-      "y2": 356,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 6982, "y1": 335, "z1": -128, "x2": 7003, "y2": 356, "z2": 128 },
     "walkingRange": 10,
     "entries": [
-      {
-        "name": "MiniatureMushroom",
-        "maxCount": 2,
-        "probability": 100
-      }
+      { "name": "MiniatureMushroom", "maxCount": 2, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "d287da59-9954-4e44-b743-f859fdc73d1c",
     "name": "Spawner (222)",
-    "location": [
-      7032,
-      411,
-      7
-    ],
+    "location": [7032, 411, 7],
     "map": "Felucca",
     "count": 4,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 7022,
-      "y1": 401,
-      "z1": -128,
-      "x2": 7043,
-      "y2": 422,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 7022, "y1": 401, "z1": -128, "x2": 7043, "y2": 422, "z2": 128 },
     "walkingRange": 10,
     "entries": [
-      {
-        "name": "MiniatureMushroom",
-        "maxCount": 4,
-        "probability": 100
-      }
+      { "name": "MiniatureMushroom", "maxCount": 4, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "d4aab4aa-ae2e-4686-b282-39e05a6e0855",
     "name": "Spawner (222)",
-    "location": [
-      7035,
-      387,
-      0
-    ],
+    "location": [7035, 387, 0],
     "map": "Felucca",
     "count": 6,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 7025,
-      "y1": 377,
-      "z1": -128,
-      "x2": 7046,
-      "y2": 398,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 7025, "y1": 377, "z1": -128, "x2": 7046, "y2": 398, "z2": 128 },
     "walkingRange": 10,
     "entries": [
-      {
-        "name": "MiniatureMushroom",
-        "maxCount": 6,
-        "probability": 100
-      }
+      { "name": "MiniatureMushroom", "maxCount": 6, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "d53c7e28-e23d-48e5-a3cf-8cdd942ad988",
     "name": "Spawner (222)",
-    "location": [
-      7048,
-      424,
-      0
-    ],
+    "location": [7048, 424, 0],
     "map": "Felucca",
     "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 7028,
-      "y1": 404,
-      "z1": -128,
-      "x2": 7069,
-      "y2": 445,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 7028, "y1": 404, "z1": -128, "x2": 7069, "y2": 445, "z2": 128 },
     "walkingRange": 20,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 5,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 5, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "d8016c7e-7b98-4c9b-b7ae-4247f0e578d4",
     "name": "Spawner (222)",
-    "location": [
-      6999,
-      352,
-      0
-    ],
+    "location": [6999, 352, 0],
     "map": "Felucca",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 6987,
-      "y1": 340,
-      "z1": -128,
-      "x2": 7012,
-      "y2": 365,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 6987, "y1": 340, "z1": -128, "x2": 7012, "y2": 365, "z2": 128 },
     "walkingRange": 12,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 3,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "d9f8f4ae-ed8f-4888-88ba-14e7e0ab54e1",
     "name": "Spawner (222)",
-    "location": [
-      2472,
-      434,
-      15
-    ],
+    "location": [2472, 434, 15],
     "map": "Felucca",
     "count": 20,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 2422,
-      "y1": 384,
-      "z1": -128,
-      "x2": 2523,
-      "y2": 485,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 2422, "y1": 384, "z1": -128, "x2": 2523, "y2": 485, "z2": 128 },
     "walkingRange": 50,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 5,
-        "probability": 100
-      },
-      {
-        "name": "Cat",
-        "maxCount": 5,
-        "probability": 100
-      },
-      {
-        "name": "Dog",
-        "maxCount": 5,
-        "probability": 100
-      },
-      {
-        "name": "Rat",
-        "maxCount": 5,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 5, "probability": 100 },
+      { "name": "Cat", "maxCount": 5, "probability": 100 },
+      { "name": "Dog", "maxCount": 5, "probability": 100 },
+      { "name": "Rat", "maxCount": 5, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "da82a0d4-2ddc-44cf-9f7e-227dbb1a0bdc",
     "name": "Spawner (222)",
-    "location": [
-      7047,
-      382,
-      0
-    ],
+    "location": [7047, 382, 0],
     "map": "Felucca",
     "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 7035,
-      "y1": 370,
-      "z1": -128,
-      "x2": 7060,
-      "y2": 395,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 7035, "y1": 370, "z1": -128, "x2": 7060, "y2": 395, "z2": 128 },
     "walkingRange": 12,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 5,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 5, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "dcfdc32c-876a-4432-97ec-9d733f76578f",
     "name": "Spawner (222)",
-    "location": [
-      5267,
-      4012,
-      40
-    ],
+    "location": [5267, 4012, 40],
     "map": "Felucca",
     "count": 5,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 5252,
-      "y1": 3997,
-      "z1": -128,
-      "x2": 5283,
-      "y2": 4028,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 5252, "y1": 3997, "z1": -128, "x2": 5283, "y2": 4028, "z2": 128 },
     "walkingRange": 15,
     "entries": [
-      {
-        "name": "Chicken",
-        "maxCount": 5,
-        "probability": 100
-      },
-      {
-        "name": "Sheep",
-        "maxCount": 5,
-        "probability": 100
-      },
-      {
-        "name": "Cow",
-        "maxCount": 5,
-        "probability": 100
-      },
-      {
-        "name": "Bull",
-        "maxCount": 5,
-        "probability": 100
-      }
+      { "name": "Chicken", "maxCount": 5, "probability": 100 },
+      { "name": "Sheep", "maxCount": 5, "probability": 100 },
+      { "name": "Cow", "maxCount": 5, "probability": 100 },
+      { "name": "Bull", "maxCount": 5, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "e1129f66-8c08-407c-bcfa-56010a3a4519",
     "name": "Spawner (222)",
-    "location": [
-      676,
-      1178,
-      0
-    ],
+    "location": [676, 1178, 0],
     "map": "Felucca",
     "count": 15,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 666,
-      "y1": 1168,
-      "z1": -128,
-      "x2": 687,
-      "y2": 1189,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 666, "y1": 1168, "z1": -128, "x2": 687, "y2": 1189, "z2": 128 },
     "walkingRange": 15,
     "entries": [
-      {
-        "name": "Sheep",
-        "maxCount": 15,
-        "probability": 100
-      }
+      { "name": "Sheep", "maxCount": 15, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "e7061f73-946b-4058-be40-de5593cbd075",
     "name": "Spawner (222)",
-    "location": [
-      813,
-      2164,
-      0
-    ],
+    "location": [813, 2164, 0],
     "map": "Felucca",
     "count": 3,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 803,
-      "y1": 2154,
-      "z1": -128,
-      "x2": 824,
-      "y2": 2175,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 803, "y1": 2154, "z1": -128, "x2": 824, "y2": 2175, "z2": 128 },
     "walkingRange": 15,
     "entries": [
-      {
-        "name": "Chicken",
-        "maxCount": 3,
-        "probability": 100
-      },
-      {
-        "name": "Sheep",
-        "maxCount": 3,
-        "probability": 100
-      },
-      {
-        "name": "Cow",
-        "maxCount": 3,
-        "probability": 100
-      }
+      { "name": "Chicken", "maxCount": 3, "probability": 100 },
+      { "name": "Sheep", "maxCount": 3, "probability": 100 },
+      { "name": "Cow", "maxCount": 3, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "ec2ab142-9d54-4cd1-9fd9-5918ddc5593f",
     "name": "Spawner (222)",
-    "location": [
-      3674,
-      2624,
-      0
-    ],
+    "location": [3674, 2624, 0],
     "map": "Felucca",
     "count": 40,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 3594,
-      "y1": 2544,
-      "z1": -128,
-      "x2": 3755,
-      "y2": 2705,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 3594, "y1": 2544, "z1": -128, "x2": 3755, "y2": 2705, "z2": 128 },
     "walkingRange": 80,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 10,
-        "probability": 100
-      },
-      {
-        "name": "Cat",
-        "maxCount": 10,
-        "probability": 100
-      },
-      {
-        "name": "Dog",
-        "maxCount": 10,
-        "probability": 100
-      },
-      {
-        "name": "Rat",
-        "maxCount": 10,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 10, "probability": 100 },
+      { "name": "Cat", "maxCount": 10, "probability": 100 },
+      { "name": "Dog", "maxCount": 10, "probability": 100 },
+      { "name": "Rat", "maxCount": 10, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "f392c11b-1a43-4647-952c-99783a72e0fd",
     "name": "Spawner (222)",
-    "location": [
-      2481,
-      542,
-      0
-    ],
+    "location": [2481, 542, 0],
     "map": "Felucca",
     "count": 20,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 2411,
-      "y1": 472,
-      "z1": -128,
-      "x2": 2552,
-      "y2": 613,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 2411, "y1": 472, "z1": -128, "x2": 2552, "y2": 613, "z2": 128 },
     "walkingRange": 70,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 5,
-        "probability": 100
-      },
-      {
-        "name": "Cat",
-        "maxCount": 5,
-        "probability": 100
-      },
-      {
-        "name": "Dog",
-        "maxCount": 5,
-        "probability": 100
-      },
-      {
-        "name": "Rat",
-        "maxCount": 5,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 5, "probability": 100 },
+      { "name": "Cat", "maxCount": 5, "probability": 100 },
+      { "name": "Dog", "maxCount": 5, "probability": 100 },
+      { "name": "Rat", "maxCount": 5, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "f7e85f44-f68b-419a-859a-6c11cd6cabb6",
     "name": "Spawner (222)",
-    "location": [
-      570,
-      1099,
-      0
-    ],
+    "location": [570, 1099, 0],
     "map": "Felucca",
     "count": 15,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 560,
-      "y1": 1089,
-      "z1": -128,
-      "x2": 581,
-      "y2": 1110,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 560, "y1": 1089, "z1": -128, "x2": 581, "y2": 1110, "z2": 128 },
     "walkingRange": 15,
     "entries": [
-      {
-        "name": "Sheep",
-        "maxCount": 15,
-        "probability": 100
-      }
+      { "name": "Sheep", "maxCount": 15, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "f9528415-54f7-4b5b-9390-d0cc6e9ffb1f",
     "name": "Spawner (222)",
-    "location": [
-      1186,
-      1633,
-      0
-    ],
+    "location": [1186, 1633, 0],
     "map": "Felucca",
     "count": 28,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 1106,
-      "y1": 1553,
-      "z1": -128,
-      "x2": 1267,
-      "y2": 1714,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 1106, "y1": 1553, "z1": -128, "x2": 1267, "y2": 1714, "z2": 128 },
     "walkingRange": 80,
     "entries": [
-      {
-        "name": "Bird",
-        "maxCount": 7,
-        "probability": 100
-      },
-      {
-        "name": "Cat",
-        "maxCount": 7,
-        "probability": 100
-      },
-      {
-        "name": "Dog",
-        "maxCount": 7,
-        "probability": 100
-      },
-      {
-        "name": "Rat",
-        "maxCount": 7,
-        "probability": 100
-      }
+      { "name": "Bird", "maxCount": 7, "probability": 100 },
+      { "name": "Cat", "maxCount": 7, "probability": 100 },
+      { "name": "Dog", "maxCount": 7, "probability": 100 },
+      { "name": "Rat", "maxCount": 7, "probability": 100 }
     ]
   }
 ]

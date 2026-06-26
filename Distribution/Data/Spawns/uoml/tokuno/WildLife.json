@@ -3,205 +3,90 @@
     "$type": "Spawner",
     "guid": "4e6fb0ca-fe70-4eef-84e7-841ecf8dc448",
     "name": "Spawner (2505)",
-    "location": [
-      926,
-      145,
-      49
-    ],
+    "location": [926, 145, 49],
     "map": "Tokuno",
     "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 896,
-      "y1": 115,
-      "z1": -128,
-      "x2": 957,
-      "y2": 176,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 896, "y1": 115, "z1": -128, "x2": 957, "y2": 176, "z2": 128 },
     "walkingRange": 30,
     "entries": [
-      {
-        "name": "PolarBear",
-        "maxCount": 8,
-        "probability": 100
-      },
-      {
-        "name": "Walrus",
-        "maxCount": 8,
-        "probability": 100
-      },
-      {
-        "name": "SnowLeopard",
-        "maxCount": 8,
-        "probability": 100
-      }
+      { "name": "PolarBear", "maxCount": 8, "probability": 100 },
+      { "name": "Walrus", "maxCount": 8, "probability": 100 },
+      { "name": "SnowLeopard", "maxCount": 8, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "ebe89f8e-f0ac-4a42-9b01-f7fc624c4bd4",
     "name": "Spawner (2505)",
-    "location": [
-      879,
-      128,
-      44
-    ],
+    "location": [879, 128, 44],
     "map": "Tokuno",
     "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 849,
-      "y1": 98,
-      "z1": -128,
-      "x2": 910,
-      "y2": 159,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 849, "y1": 98, "z1": -128, "x2": 910, "y2": 159, "z2": 128 },
     "walkingRange": 30,
     "entries": [
-      {
-        "name": "PolarBear",
-        "maxCount": 8,
-        "probability": 100
-      },
-      {
-        "name": "Walrus",
-        "maxCount": 8,
-        "probability": 100
-      },
-      {
-        "name": "SnowLeopard",
-        "maxCount": 8,
-        "probability": 100
-      }
+      { "name": "PolarBear", "maxCount": 8, "probability": 100 },
+      { "name": "Walrus", "maxCount": 8, "probability": 100 },
+      { "name": "SnowLeopard", "maxCount": 8, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "c4dd55c7-4108-4f31-897c-f563f1639e2b",
     "name": "Spawner (2505)",
-    "location": [
-      914,
-      55,
-      36
-    ],
+    "location": [914, 55, 36],
     "map": "Tokuno",
     "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 884,
-      "y1": 25,
-      "z1": -128,
-      "x2": 945,
-      "y2": 86,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 884, "y1": 25, "z1": -128, "x2": 945, "y2": 86, "z2": 128 },
     "walkingRange": 30,
     "entries": [
-      {
-        "name": "PolarBear",
-        "maxCount": 8,
-        "probability": 100
-      },
-      {
-        "name": "Walrus",
-        "maxCount": 8,
-        "probability": 100
-      },
-      {
-        "name": "SnowLeopard",
-        "maxCount": 8,
-        "probability": 100
-      }
+      { "name": "PolarBear", "maxCount": 8, "probability": 100 },
+      { "name": "Walrus", "maxCount": 8, "probability": 100 },
+      { "name": "SnowLeopard", "maxCount": 8, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "f0063c43-6b87-44af-9255-a10aa29f60f0",
     "name": "Spawner (2505)",
-    "location": [
-      947,
-      103,
-      46
-    ],
+    "location": [947, 103, 46],
     "map": "Tokuno",
     "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 917,
-      "y1": 73,
-      "z1": -128,
-      "x2": 978,
-      "y2": 134,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 917, "y1": 73, "z1": -128, "x2": 978, "y2": 134, "z2": 128 },
     "walkingRange": 30,
     "entries": [
-      {
-        "name": "PolarBear",
-        "maxCount": 8,
-        "probability": 100
-      },
-      {
-        "name": "Walrus",
-        "maxCount": 8,
-        "probability": 100
-      },
-      {
-        "name": "SnowLeopard",
-        "maxCount": 8,
-        "probability": 100
-      }
+      { "name": "PolarBear", "maxCount": 8, "probability": 100 },
+      { "name": "Walrus", "maxCount": 8, "probability": 100 },
+      { "name": "SnowLeopard", "maxCount": 8, "probability": 100 }
     ]
   },
   {
     "$type": "Spawner",
     "guid": "c871b42a-1409-4899-a2fe-23299cd6c4ee",
     "name": "Spawner (2505)",
-    "location": [
-      976,
-      144,
-      35
-    ],
+    "location": [976, 144, 35],
     "map": "Tokuno",
     "count": 8,
     "minDelay": "00:05:00",
     "maxDelay": "00:10:00",
     "team": 0,
-    "spawnBounds": {
-      "x1": 946,
-      "y1": 114,
-      "z1": -128,
-      "x2": 1007,
-      "y2": 175,
-      "z2": 128
-    },
+    "spawnBounds": { "x1": 946, "y1": 114, "z1": -128, "x2": 1007, "y2": 175, "z2": 128 },
     "walkingRange": 30,
     "entries": [
-      {
-        "name": "PolarBear",
-        "maxCount": 8,
-        "probability": 100
-      },
-      {
-        "name": "Walrus",
-        "maxCount": 8,
-        "probability": 100
-      },
-      {
-        "name": "SnowLeopard",
-        "maxCount": 8,
-        "probability": 100
-      }
+      { "name": "PolarBear", "maxCount": 8, "probability": 100 },
+      { "name": "Walrus", "maxCount": 8, "probability": 100 },
+      { "name": "SnowLeopard", "maxCount": 8, "probability": 100 }
     ]
   }
 ]
