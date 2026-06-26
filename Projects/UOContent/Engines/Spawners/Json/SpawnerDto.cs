@@ -40,6 +40,7 @@ public abstract record SpawnerDto
     public string Name { get; init; }
 
     [JsonPropertyName("location")][JsonPropertyOrder(2)][JsonIgnore(Condition = JsonIgnoreCondition.Never)]
+    [JsonConverter(typeof(Point3DArrayConverter))]
     public Point3D Location { get; init; }
 
     [JsonPropertyName("map")][JsonPropertyOrder(3)][JsonIgnore(Condition = JsonIgnoreCondition.Never)]

@@ -94,7 +94,10 @@ public class ExportSpawnersCommand : BaseCommand
 
         e.Mobile.SendMessage("Exporting spawners...");
 
-        JsonConfig.Serialize(path, spawnRecords, SpawnerJsonSerializer.Options);
+        // Compact layout (homeRange/spawnBounds inline, entries expanded), UTF-8, no BOM, LF —
+        // keeps re-exports diff-friendly. (JsonConfig.Serialize would pretty-print and 4x the size.)
+        PathUtility.EnsureDirectory(Path.GetDirectoryName(path));
+        File.WriteAllText(path, SpawnerJsonSerializer.SerializeCompact(spawnRecords));
 
         e.Mobile.SendMessage($"Spawners exported to {path}");
     }

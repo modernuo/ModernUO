@@ -15,11 +15,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text.Encodings.Web;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
 using Server.Json;
 using Server.Logging;
+using Server.Text;
 
 namespace Server.Engines.Spawners;
 
@@ -164,6 +167,183 @@ public static class SpawnerJsonSerializer
             {
                 typeInfo.Properties[i].ShouldSerialize = static (_, value) => value is int hr && hr >= 0;
             }
+        }
+    }
+
+    // --- Compact writer (matches the on-disk spawn-file layout used by [ExportSpawners) ---
+
+    private const int CompactPrintWidth = 100;
+
+    private static readonly JsonSerializerOptions _scalarOptions = new()
+    {
+        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+    };
+
+    /// <summary>
+    /// Serializes <paramref name="value"/> (e.g. a <c>List&lt;SpawnerDto&gt;</c>) to the compact
+    /// spawn-file layout: a container renders inline only when all its values are scalars and the
+    /// line fits within 100 columns; otherwise it expands with 2-space indentation. UTF-8, LF, no
+    /// BOM. Admin/cold path — favors clarity over allocation.
+    /// </summary>
+    public static string SerializeCompact<T>(T value)
+    {
+        var node = JsonSerializer.SerializeToNode(value, Options);
+        var sb = ValueStringBuilder.Create();
+        try
+        {
+            WriteNode(node, ref sb, 0, 0);
+            sb.Append("\n");
+            return sb.ToString();
+        }
+        finally
+        {
+            sb.Dispose();
+        }
+    }
+
+    private static void WriteNode(JsonNode node, ref ValueStringBuilder sb, int indent, int column)
+    {
+        if (node is not JsonArray and not JsonObject)
+        {
+            sb.Append(node?.ToJsonString(_scalarOptions) ?? "null");
+            return;
+        }
+
+        if (AllScalarChildren(node))
+        {
+            var inline = Inline(node);
+            if (column + inline.Length <= CompactPrintWidth)
+            {
+                sb.Append(inline);
+                return;
+            }
+        }
+
+        var childIndent = indent + 1;
+        var childColumn = childIndent * 2;
+
+        if (node is JsonArray arr)
+        {
+            sb.Append("[\n");
+            for (var i = 0; i < arr.Count; i++)
+            {
+                sb.Append(' ', childColumn);
+                WriteNode(arr[i], ref sb, childIndent, childColumn);
+                sb.Append(i < arr.Count - 1 ? ",\n" : "\n");
+            }
+
+            sb.Append(' ', indent * 2);
+            sb.Append("]");
+            return;
+        }
+
+        var obj = (JsonObject)node;
+        sb.Append("{\n");
+        var index = 0;
+        var count = obj.Count;
+        foreach (var pair in obj)
+        {
+            sb.Append(' ', childColumn);
+            var prefix = $"\"{pair.Key}\": ";
+            sb.Append(prefix);
+            WriteNode(pair.Value, ref sb, childIndent, childColumn + prefix.Length);
+            sb.Append(++index < count ? ",\n" : "\n");
+        }
+
+        sb.Append(' ', indent * 2);
+        sb.Append("}");
+    }
+
+    private static bool AllScalarChildren(JsonNode node)
+    {
+        if (node is JsonArray arr)
+        {
+            foreach (var element in arr)
+            {
+                if (element is JsonArray or JsonObject)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        foreach (var pair in (JsonObject)node)
+        {
+            if (pair.Value is JsonArray or JsonObject)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static string Inline(JsonNode node)
+    {
+        var sb = ValueStringBuilder.Create();
+        try
+        {
+            AppendInline(node, ref sb);
+            return sb.ToString();
+        }
+        finally
+        {
+            sb.Dispose();
+        }
+    }
+
+    private static void AppendInline(JsonNode node, ref ValueStringBuilder sb)
+    {
+        switch (node)
+        {
+            case JsonArray arr:
+                {
+                    sb.Append("[");
+                    for (var i = 0; i < arr.Count; i++)
+                    {
+                        if (i > 0)
+                        {
+                            sb.Append(", ");
+                        }
+
+                        AppendInline(arr[i], ref sb);
+                    }
+
+                    sb.Append("]");
+                    break;
+                }
+            case JsonObject obj:
+                {
+                    if (obj.Count == 0)
+                    {
+                        sb.Append("{}");
+                        break;
+                    }
+
+                    sb.Append("{ ");
+                    var first = true;
+                    foreach (var pair in obj)
+                    {
+                        if (!first)
+                        {
+                            sb.Append(", ");
+                        }
+
+                        first = false;
+                        sb.Append("\"");
+                        sb.Append(pair.Key);
+                        sb.Append("\": ");
+                        AppendInline(pair.Value, ref sb);
+                    }
+
+                    sb.Append(" }");
+                    break;
+                }
+            default:
+                sb.Append(node?.ToJsonString(_scalarOptions) ?? "null");
+                break;
         }
     }
 }
