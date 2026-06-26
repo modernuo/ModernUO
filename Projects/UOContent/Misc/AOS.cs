@@ -493,6 +493,131 @@ namespace Server
             set => this[AosAttribute.IncreasedKarmaLoss] = value;
         }
 
+        public void GetProperties(IPropertyList list, int damageBonus = 0, int hitChanceBonus = 0, int luckBonus = 0)
+        {
+            int prop;
+
+            if ((prop = WeaponDamage + damageBonus) != 0)
+            {
+                list.Add(1060401, prop); // damage increase ~1_val~%
+            }
+
+            if ((prop = DefendChance) != 0)
+            {
+                list.Add(1060408, prop); // defense chance increase ~1_val~%
+            }
+
+            if ((prop = BonusDex) != 0)
+            {
+                list.Add(1060409, prop); // dexterity bonus ~1_val~
+            }
+
+            if ((prop = EnhancePotions) != 0)
+            {
+                list.Add(1060411, prop); // enhance potions ~1_val~%
+            }
+
+            if ((prop = CastRecovery) != 0)
+            {
+                list.Add(1060412, prop); // faster cast recovery ~1_val~
+            }
+
+            if ((prop = CastSpeed) != 0)
+            {
+                list.Add(1060413, prop); // faster casting ~1_val~
+            }
+
+            if ((prop = AttackChance + hitChanceBonus) != 0)
+            {
+                list.Add(1060415, prop); // hit chance increase ~1_val~%
+            }
+
+            if ((prop = BonusHits) != 0)
+            {
+                list.Add(1060431, prop); // hit point increase ~1_val~
+            }
+
+            if ((prop = BonusInt) != 0)
+            {
+                list.Add(1060432, prop); // intelligence bonus ~1_val~
+            }
+
+            if ((prop = LowerManaCost) != 0)
+            {
+                list.Add(1060433, prop); // lower mana cost ~1_val~%
+            }
+
+            if ((prop = LowerRegCost) != 0)
+            {
+                list.Add(1060434, prop); // lower reagent cost ~1_val~%
+            }
+
+            if ((prop = Luck + luckBonus) != 0)
+            {
+                list.Add(1060436, prop); // luck ~1_val~
+            }
+
+            if ((prop = BonusMana) != 0)
+            {
+                list.Add(1060439, prop); // mana increase ~1_val~
+            }
+
+            if ((prop = RegenMana) != 0)
+            {
+                list.Add(1060440, prop); // mana regeneration ~1_val~
+            }
+
+            if (NightSight != 0)
+            {
+                list.Add(1060441); // night sight
+            }
+
+            if ((prop = ReflectPhysical) != 0)
+            {
+                list.Add(1060442, prop); // reflect physical damage ~1_val~%
+            }
+
+            if ((prop = RegenStam) != 0)
+            {
+                list.Add(1060443, prop); // stamina regeneration ~1_val~
+            }
+
+            if ((prop = RegenHits) != 0)
+            {
+                list.Add(1060444, prop); // hit point regeneration ~1_val~
+            }
+
+            if (SpellChanneling != 0)
+            {
+                list.Add(1060482); // spell channeling
+            }
+
+            if ((prop = SpellDamage) != 0)
+            {
+                list.Add(1060483, prop); // spell damage increase ~1_val~%
+            }
+
+            if ((prop = BonusStam) != 0)
+            {
+                list.Add(1060484, prop); // stamina increase ~1_val~
+            }
+
+            if ((prop = BonusStr) != 0)
+            {
+                list.Add(1060485, prop); // strength bonus ~1_val~
+            }
+
+            if ((prop = WeaponSpeed) != 0)
+            {
+                list.Add(1060486, prop); // swing speed increase ~1_val~%
+            }
+
+            if (Core.ML && (prop = IncreasedKarmaLoss) != 0)
+            {
+                list.Add(1075210, prop); // Increased Karma Loss ~1val~%
+            }
+        }
+
         public static int GetValue(Mobile m, AosAttribute attribute)
         {
             if (!Core.AOS)
@@ -885,6 +1010,103 @@ namespace Server
             return value;
         }
 
+        // lowerStatReq is passed in because the weapon folds the resource's lower-requirements into
+        // GetLowerStatReq(); emitted in cliloc order (1060435) between the Hit* block and MageWeapon.
+        public void GetProperties(IPropertyList list)
+        {
+            int prop;
+
+            if (UseBestSkill != 0)
+            {
+                list.Add(1060400); // use best weapon skill
+            }
+
+            if ((prop = HitColdArea) != 0)
+            {
+                list.Add(1060416, prop); // hit cold area ~1_val~%
+            }
+
+            if ((prop = HitDispel) != 0)
+            {
+                list.Add(1060417, prop); // hit dispel ~1_val~%
+            }
+
+            if ((prop = HitEnergyArea) != 0)
+            {
+                list.Add(1060418, prop); // hit energy area ~1_val~%
+            }
+
+            if ((prop = HitFireArea) != 0)
+            {
+                list.Add(1060419, prop); // hit fire area ~1_val~%
+            }
+
+            if ((prop = HitFireball) != 0)
+            {
+                list.Add(1060420, prop); // hit fireball ~1_val~%
+            }
+
+            if ((prop = HitHarm) != 0)
+            {
+                list.Add(1060421, prop); // hit harm ~1_val~%
+            }
+
+            if ((prop = HitLeechHits) != 0)
+            {
+                list.Add(1060422, prop); // hit life leech ~1_val~%
+            }
+
+            if ((prop = HitLightning) != 0)
+            {
+                list.Add(1060423, prop); // hit lightning ~1_val~%
+            }
+
+            if ((prop = HitLowerAttack) != 0)
+            {
+                list.Add(1060424, prop); // hit lower attack ~1_val~%
+            }
+
+            if ((prop = HitLowerDefend) != 0)
+            {
+                list.Add(1060425, prop); // hit lower defense ~1_val~%
+            }
+
+            if ((prop = HitMagicArrow) != 0)
+            {
+                list.Add(1060426, prop); // hit magic arrow ~1_val~%
+            }
+
+            if ((prop = HitLeechMana) != 0)
+            {
+                list.Add(1060427, prop); // hit mana leech ~1_val~%
+            }
+
+            if ((prop = HitPhysicalArea) != 0)
+            {
+                list.Add(1060428, prop); // hit physical area ~1_val~%
+            }
+
+            if ((prop = HitPoisonArea) != 0)
+            {
+                list.Add(1060429, prop); // hit poison area ~1_val~%
+            }
+
+            if ((prop = HitLeechStam) != 0)
+            {
+                list.Add(1060430, prop); // hit stamina leech ~1_val~%
+            }
+
+            if ((prop = MageWeapon) != 0)
+            {
+                list.Add(1060438, 30 - prop); // mage weapon -~1_val~ skill
+            }
+
+            if ((prop = SelfRepair) != 0)
+            {
+                list.Add(1060450, prop); // self repair ~1_val~
+            }
+        }
+
         public override string ToString() => "...";
     }
 
@@ -976,6 +1198,24 @@ namespace Server
             }
 
             return value;
+        }
+
+        // lowerStatReq is passed in because consumers compute it differently: armor folds in the
+        // resource's ArmorLowerRequirements via GetLowerStatReq(), clothing reads it raw. Emitted in
+        // cliloc order (1060435) ahead of MageArmor/SelfRepair.
+        public void GetProperties(IPropertyList list)
+        {
+            int prop;
+
+            if (MageArmor != 0)
+            {
+                list.Add(1060437); // mage armor
+            }
+
+            if ((prop = SelfRepair) != 0)
+            {
+                list.Add(1060450, prop); // self repair ~1_val~
+            }
         }
 
         public override string ToString() => "...";
