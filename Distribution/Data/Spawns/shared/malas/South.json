@@ -1,6 +1,6 @@
-﻿[
+[
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "6bbb82e4-b0d1-4a23-a9da-5d35911ce762",
     "name": "Spawner (404)",
     "location": [2231, 1605, -95],

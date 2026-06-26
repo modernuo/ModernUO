@@ -190,6 +190,15 @@ public static class ImportSpawnersCommand
         }
     }
 
+    // Test seam: wraps ImportJsonSpawners without requiring a live Mobile (from = null is safe
+    // because from is only used in the JsonException path, which won't be hit for valid files).
+    internal static void ImportFile(FileInfo file, Dictionary<Guid, ISpawner> allSpawners)
+    {
+        var generated = 0;
+        var failures = 0;
+        ImportJsonSpawners(null, file, allSpawners, ref generated, ref failures);
+    }
+
     private static void ImportJsonSpawners(
         Mobile from,
         FileInfo file,
@@ -198,78 +207,89 @@ public static class ImportSpawnersCommand
         ref int totalFailures
     )
     {
-        var options = JsonConfig.GetOptions();
+        List<SpawnerDto> dtos;
         try
         {
-            var spawners = JsonConfig.Deserialize<List<DynamicJson>>(file.FullName);
-            if (spawners == null || spawners.Count == 0)
-            {
-                from.SendMessage($"GenerateSpawners: Skipping empty spawner file {file.Name}");
-                logger.Information("{User} is skipping empty spawner file {File}", from, file.FullName);
-                return;
-            }
-            
-            using var queue = PooledRefQueue<Item>.Create();
-            for (var i = 0; i < spawners.Count; i++)
-            {
-                var json = spawners[i];
-                var type = AssemblyHandler.FindTypeByName(json.Type);
-
-                if (type == null || !typeof(BaseSpawner).IsAssignableFrom(type))
-                {
-                    logger.Error($"Invalid spawner type {json.Type ?? "(-null-)"} ({i}).");
-                    totalFailures++;
-                    continue;
-                }
-
-                json.GetProperty("location", options, out Point3D location);
-                json.GetProperty("map", options, out Map map);
-
-                // Delete all spawners at this location.
-                // Probably shouldn't do this outside of migrations? Is there a better way to find/fix spawners?
-                foreach (var spawner in map.GetItemsAt<BaseSpawner>(location))
-                {
-                    if (spawner.GetType() == type)
-                    {
-                        queue.Enqueue(spawner);
-                        allSpawners.Remove(spawner.Guid);
-                    }
-                }
-
-                while (queue.Count > 0)
-                {
-                    queue.Dequeue().Delete();
-                }
-
-                try
-                {
-                    var spawner = type.CreateInstance<ISpawner>(json, options);
-
-                    spawner!.MoveToWorld(location, map);
-                    spawner!.Respawn();
-
-                    if (allSpawners.Remove(spawner.Guid, out var oldSpawner))
-                    {
-                        oldSpawner.Delete();
-                    }
-
-                    allSpawners.Add(spawner.Guid, spawner);
-                    totalGenerated++;
-                }
-                catch (Exception ex)
-                {
-                    json.GetProperty("guid", options, out Guid guid);
-                    TraceException(ex, $"Failed to generate spawner {guid}.");
-
-                    totalFailures++;
-                }
-            }
+            // DTO deserialization constructs NO world objects — a malformed file fails as GC only.
+            dtos = JsonConfig.Deserialize<List<SpawnerDto>>(file.FullName, SpawnerJsonSerializer.Options);
         }
         catch (JsonException)
         {
-            from.SendMessage(
+            from?.SendMessage(
                 $"GenerateSpawners: Exception parsing {file.FullName}, file may not be in the correct format."
             );
+            return;
+        }
+
+        if (dtos == null || dtos.Count == 0)
+        {
+            from?.SendMessage($"GenerateSpawners: Skipping empty spawner file {file.Name}");
+            logger.Information("{User} is skipping empty spawner file {File}", from, file.FullName);
+            return;
+        }
+
+        using var queue = PooledRefQueue<Item>.Create();
+        for (var i = 0; i < dtos.Count; i++)
+        {
+            var dto = dtos[i];
+            var location = dto.Location;
+            var map = dto.Map;
+
+            if (map == null || map == Map.Internal)
+            {
+                logger.Error("Spawner {Guid} ({Index}) has no valid map; skipping.", dto.Guid, i);
+                totalFailures++;
+                continue;
+            }
+
+            BaseSpawner spawner;
+            try
+            {
+                spawner = dto.ToSpawner(); // constructs the single Item, now referenced
+            }
+            catch (Exception ex)
+            {
+                TraceException(ex, $"Failed to build spawner {dto.Guid}.");
+                totalFailures++;
+                continue;
+            }
+
+            var type = spawner.GetType();
+
+            // Delete all existing spawners of the same concrete type at this location.
+            foreach (var existing in map.GetItemsAt<BaseSpawner>(location))
+            {
+                if (existing.GetType() == type && existing != spawner)
+                {
+                    queue.Enqueue(existing);
+                    allSpawners.Remove(existing.Guid);
+                }
+            }
+
+            while (queue.Count > 0)
+            {
+                queue.Dequeue().Delete();
+            }
+
+            try
+            {
+                spawner.MoveToWorld(location, map);
+                spawner.Respawn();
+
+                if (allSpawners.Remove(spawner.Guid, out var oldSpawner))
+                {
+                    oldSpawner.Delete();
+                }
+
+                allSpawners.Add(spawner.Guid, spawner);
+                totalGenerated++;
+            }
+            catch (Exception ex)
+            {
+                TraceException(ex, $"Failed to generate spawner {spawner.Guid}.");
+                spawner.Delete();
+                totalFailures++;
+            }
         }
     }
 

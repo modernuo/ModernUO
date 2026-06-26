@@ -14,9 +14,7 @@
  *************************************************************************/
 
 using System;
-using System.Text.Json;
 using ModernUO.Serialization;
-using Server.Json;
 using Server.Regions;
 
 namespace Server.Engines.Spawners;
@@ -50,15 +48,6 @@ public partial class RegionSpawner : Spawner
         params ReadOnlySpan<string> spawnedNames
     ) : base(amount, minDelay, maxDelay, team, spawnedNames: spawnedNames)
     {
-    }
-
-    public RegionSpawner(DynamicJson json, JsonSerializerOptions options) : base(json, options)
-    {
-        json.GetProperty("map", options, out Map map);
-        json.GetProperty("region", options, out string spawnRegion);
-
-        _spawnRegion = Region.Find(spawnRegion, map) as BaseRegion;
-        _spawnRegion?.InitRectangles();
     }
 
     [CommandProperty(AccessLevel.Developer)]
@@ -114,12 +103,6 @@ public partial class RegionSpawner : Spawner
         }
 
         return base.GetSpawnPosition(spawned, map);
-    }
-
-    public override void ToJson(DynamicJson json, JsonSerializerOptions options)
-    {
-        base.ToJson(json, options);
-        json.SetProperty("region", options, SpawnRegion.Name);
     }
 
     public override void GetSpawnerProperties(IPropertyList list)

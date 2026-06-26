@@ -1,6 +1,6 @@
-﻿[
+[
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "072beafe-a629-4c48-b5ff-b984254a5d46",
     "name": "Spawner (217)",
     "location": [6349, 89, -20],
@@ -27,7 +27,7 @@
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "1511b1c9-952f-4b34-a527-40c8458fd839",
     "name": "Spawner (217)",
     "location": [6263, 118, -10],
@@ -50,7 +50,7 @@
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "1be8d7aa-7b8d-48b2-a99e-7e8aadda47ae",
     "name": "Spawner (217)",
     "location": [6265, 48, -10],
@@ -87,7 +87,7 @@
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "36e62443-3909-4f76-b267-0ffe2138c841",
     "name": "Spawner (217)",
     "location": [6184, 29, 0],
@@ -107,7 +107,7 @@
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "584c49ef-3604-4c2a-a385-7fca422c604e",
     "name": "Spawner (217)",
     "location": [6187, 101, 0],
@@ -137,7 +137,7 @@
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "a03d9ae7-cc7d-41c7-83ad-fd30bdb1b5be",
     "name": "Spawner (217)",
     "location": [6189, 71, 0],
@@ -160,7 +160,7 @@
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "a976bf7f-b394-4429-92e9-b3dd47eae839",
     "name": "Spawner (217)",
     "location": [6191, 155, 0],
@@ -190,7 +190,7 @@
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "f96a5381-773a-4b5a-af6a-4cc8d2d08811",
     "name": "Spawner (217)",
     "location": [6168, 117, 0],

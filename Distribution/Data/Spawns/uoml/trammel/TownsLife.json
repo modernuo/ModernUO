@@ -1,6 +1,6 @@
-﻿[
+[
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "1ddbb313-bf13-4c9e-9116-3e67c835fbb9",
     "name": "Spawner (2122)",
     "location": [3674, 2624, 0],
@@ -19,7 +19,7 @@
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "988e7381-2448-4d37-b763-714f1078540b",
     "name": "Spawner (2122)",
     "location": [3726, 2647, 0],
@@ -35,7 +35,7 @@
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "b52ecefe-4f07-4bcd-9870-d01a0a1a41be",
     "name": "Spawner (2122)",
     "location": [3652, 2511, 0],

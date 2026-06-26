@@ -1,6 +1,6 @@
-﻿[
+[
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "6f75ce3a-5afe-4d59-8cea-521a9cab1c9a",
     "name": "Spawner (2402)",
     "location": [1674, 659, -84],
@@ -21,7 +21,7 @@
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "b2985f08-8004-4d85-8b11-e98cd205b584",
     "name": "Spawner (2402)",
     "location": [1434, 607, -89],
@@ -42,7 +42,7 @@
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "7ef09a35-9032-4c5c-8273-9cdeb13281f6",
     "name": "Spawner (2402)",
     "location": [1194, 638, -84],
@@ -63,7 +63,7 @@
     ]
   },
   {
-    "type": "Spawner",
+    "$type": "Spawner",
     "guid": "5a950bac-ad86-44ce-9c3f-b26ac67b1f63",
     "name": "Spawner (2402)",
     "location": [920, 356, -85],

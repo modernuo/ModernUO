@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Text.Json;
 using ModernUO.Serialization;
 using Server.Commands;
 using Server.Gumps;
 using Server.Items;
-using Server.Json;
 using Server.Logging;
 using Server.Mobiles;
 using static Server.Attributes;
@@ -119,6 +117,9 @@ public abstract partial class BaseSpawner : Item, ISpawner
     /// </summary>
     [CommandProperty(AccessLevel.Developer)]
     public abstract Rectangle3D SpawnBounds { get; set; }
+
+    /// <summary>Builds the JSON DTO for this spawner (export path).</summary>
+    public abstract SpawnerDto ToDto();
 
     /// <summary>
     /// If true, the home location of the spawn is the location where it spawned
@@ -294,67 +295,6 @@ public abstract partial class BaseSpawner : Item, ISpawner
         }
     }
 
-    public BaseSpawner(DynamicJson json, JsonSerializerOptions options) : base(0x1f13)
-    {
-        if (!json.GetProperty("guid", options, out _guid))
-        {
-            _guid = Guid.NewGuid();
-        }
-
-        if (json.GetProperty("name", options, out string name))
-        {
-            Name = name;
-        }
-
-        json.GetProperty("count", options, out int amount);
-        json.GetProperty("minDelay", options, DefaultMinDelay, out TimeSpan minDelay);
-        json.GetProperty("maxDelay", options, DefaultMaxDelay, out TimeSpan maxDelay);
-        json.GetProperty("team", options, out int team);
-        json.GetProperty("homeRange", options, -1, out int homeRange);
-        json.GetProperty("walkingRange", options, out _walkingRange);
-
-        // Handle legacy homeRange format (new spawnBounds format handled by derived classes)
-        if (homeRange >= 0 && json.GetProperty("location", options, out Point3D location))
-        {
-            int z;
-            int depth;
-            if (homeRange == 0)
-            {
-                z = location.Z;
-                depth = 0;
-            }
-            else
-            {
-                z = -128;
-                depth = 256;
-            }
-
-            // Fall back to homeRange with location for oldest format
-            // Note: Map not available during JSON loading, so use location.Z directly
-            SpawnBounds = new Rectangle3D(
-                location.X - homeRange,
-                location.Y - homeRange,
-                z,
-                homeRange * 2 + 1,
-                homeRange * 2 + 1,
-                depth
-            );
-        }
-
-        json.GetProperty("spawnLocationIsHome", options, out _spawnLocationIsHome);
-        json.GetProperty("spawnPositionMode", options, out _spawnPositionMode);
-        json.GetProperty("maxSpawnAttempts", options, DefaultMaxSpawnAttempts, out _maxSpawnAttempts);
-
-        InitSpawn(amount, minDelay, maxDelay, team, SpawnBounds);
-
-        json.GetProperty("entries", options, out List<SpawnerEntry> entries);
-
-        foreach (var entry in entries)
-        {
-            AddEntry(entry.SpawnedName, entry.SpawnedProbability, entry.SpawnedMaxCount, false, entry.Properties, entry.Parameters);
-        }
-    }
-
     public override string DefaultName => "Spawner";
     public bool IsFull => Spawned?.Count >= _count;
     public bool IsEmpty => Spawned?.Count == 0;
@@ -491,59 +431,6 @@ public abstract partial class BaseSpawner : Item, ISpawner
     {
         Stop();
         RemoveSpawns();
-    }
-
-    public virtual void ToJson(DynamicJson json, JsonSerializerOptions options)
-    {
-        json.Type = GetType().Name;
-
-        // Always required
-        json.SetProperty("guid", options, _guid);
-        json.SetProperty("location", options, Location);
-        json.SetProperty("map", options, Map);
-        json.SetProperty("count", options, Count);
-        json.SetProperty("entries", options, Entries);
-
-        // Only write if non-default
-        if (!string.IsNullOrEmpty(Name))
-        {
-            json.SetProperty("name", options, Name);
-        }
-
-        if (_minDelay != DefaultMinDelay)
-        {
-            json.SetProperty("minDelay", options, MinDelay);
-        }
-
-        if (_maxDelay != DefaultMaxDelay)
-        {
-            json.SetProperty("maxDelay", options, MaxDelay);
-        }
-
-        if (_team != 0)
-        {
-            json.SetProperty("team", options, Team);
-        }
-
-        if (_walkingRange != 0)
-        {
-            json.SetProperty("walkingRange", options, WalkingRange);
-        }
-
-        if (_spawnLocationIsHome)
-        {
-            json.SetProperty("spawnLocationIsHome", options, SpawnLocationIsHome);
-        }
-
-        if (_spawnPositionMode is not SpawnPositionMode.Automatic and not SpawnPositionMode.Abandoned)
-        {
-            json.SetProperty("spawnPositionMode", options, _spawnPositionMode);
-        }
-
-        if (_maxSpawnAttempts != DefaultMaxSpawnAttempts)
-        {
-            json.SetProperty("maxSpawnAttempts", options, _maxSpawnAttempts);
-        }
     }
 
     public virtual Point3D GetSpawnPosition(ISpawnable spawned, Map map)
