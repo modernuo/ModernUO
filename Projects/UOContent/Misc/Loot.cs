@@ -6,17 +6,6 @@ namespace Server
 {
     public static class Loot
     {
-        public static Type[] SAWeaponTypes { get; } =
-        {
-            typeof(DiscMace), typeof(GargishTalwar), typeof(DualPointedSpear),
-            typeof(GlassStaff), typeof(DualShortAxes), typeof(GlassSword)
-        };
-
-        public static Type[] SARangedWeaponTypes { get; } =
-        {
-            typeof(Boomerang), typeof(Cyclone), typeof(SoulGlaive)
-        };
-
         public static Type[] MLWeaponTypes { get; } =
         {
             typeof(AssassinSpike), typeof(DiamondMace), typeof(ElvenMachete),
@@ -385,18 +374,12 @@ namespace Server
             return Construct<BaseClothing>(ClothingTypes);
         }
 
-        private static readonly Type[][] _saRangedWeaponTypes = [SARangedWeaponTypes, AosRangedWeaponTypes, RangedWeaponTypes];
         private static readonly Type[][] _mlRangedWeaponTypes = [MLRangedWeaponTypes, AosRangedWeaponTypes, RangedWeaponTypes];
         private static readonly Type[][] _seRangedWeaponTypes = [SERangedWeaponTypes, AosRangedWeaponTypes, RangedWeaponTypes];
         private static readonly Type[][] _aosRangedWeaponTypes = [AosRangedWeaponTypes, RangedWeaponTypes];
 
-        public static BaseWeapon RandomRangedWeapon(bool inTokuno = false, bool isMondain = false, bool isStygian = false)
+        public static BaseWeapon RandomRangedWeapon(bool inTokuno = false, bool isMondain = false)
         {
-            if (Core.SA && isStygian)
-            {
-                return Construct<BaseWeapon>(_saRangedWeaponTypes);
-            }
-
             if (Core.ML && isMondain)
             {
                 return Construct<BaseWeapon>(_mlRangedWeaponTypes);
@@ -415,18 +398,12 @@ namespace Server
             return Construct<BaseWeapon>(RangedWeaponTypes);
         }
 
-        private static readonly Type[][] _saWeaponTypes = [SAWeaponTypes, AosWeaponTypes, WeaponTypes];
         private static readonly Type[][] _mlWeaponTypes = [MLWeaponTypes, AosWeaponTypes, WeaponTypes];
         private static readonly Type[][] _seWeaponTypes = [SEWeaponTypes, AosWeaponTypes, WeaponTypes];
         private static readonly Type[][] _aosWeaponTypes = [AosWeaponTypes, WeaponTypes];
 
-        public static BaseWeapon RandomWeapon(bool inTokuno = false, bool isMondain = false, bool isStygian = false)
+        public static BaseWeapon RandomWeapon(bool inTokuno = false, bool isMondain = false)
         {
-            if (Core.SA && isStygian)
-            {
-                return Construct<BaseWeapon>(_saWeaponTypes);
-            }
-
             if (Core.ML && isMondain)
             {
                 return Construct<BaseWeapon>(_mlWeaponTypes);
@@ -445,19 +422,13 @@ namespace Server
             return Construct<BaseWeapon>(WeaponTypes);
         }
 
-        private static readonly Type[][] _saWeaponOrJewelryTypes = [SAWeaponTypes, AosWeaponTypes, WeaponTypes, JewelryTypes];
         private static readonly Type[][] _mlWeaponOrJewelryTypes = [MLWeaponTypes, AosWeaponTypes, WeaponTypes, JewelryTypes];
         private static readonly Type[][] _seWeaponOrJewelryTypes = [SEWeaponTypes, AosWeaponTypes, WeaponTypes, JewelryTypes];
         private static readonly Type[][] _aosWeaponOrJewelryTypes = [AosWeaponTypes, WeaponTypes, JewelryTypes];
         private static readonly Type[][] _oldWeaponOrJewelryTypes = [WeaponTypes, JewelryTypes];
 
-        public static Item RandomWeaponOrJewelry(bool inTokuno = false, bool isMondain = false, bool isStygian = false)
+        public static Item RandomWeaponOrJewelry(bool inTokuno = false, bool isMondain = false)
         {
-            if (Core.SA && isStygian)
-            {
-                return Construct(_saWeaponOrJewelryTypes);
-            }
-
             if (Core.ML && isMondain)
             {
                 return Construct(_mlWeaponOrJewelryTypes);
@@ -605,12 +576,6 @@ namespace Server
             return Construct(_oldArmorOrHatOrShieldOrJewelryTypes);
         }
 
-        private static readonly Type[][] _saWeaponOrRangedOrArmorOrHatOrShieldTypes =
-        [
-            SAWeaponTypes, AosWeaponTypes, WeaponTypes, SARangedWeaponTypes, AosRangedWeaponTypes, RangedWeaponTypes,
-            ArmorTypes, AosHatTypes, HatTypes, AosShieldTypes, ShieldTypes
-        ];
-
         private static readonly Type[][] _mlWeaponOrRangedOrArmorOrHatOrShieldTypes =
         [
             MLWeaponTypes, AosWeaponTypes, WeaponTypes, MLRangedWeaponTypes, AosRangedWeaponTypes, RangedWeaponTypes,
@@ -634,13 +599,8 @@ namespace Server
             WeaponTypes, RangedWeaponTypes, ArmorTypes, HatTypes, ShieldTypes
         ];
 
-        public static Item RandomArmorOrShieldOrWeapon(bool inTokuno = false, bool isMondain = false, bool isStygian = false)
+        public static Item RandomArmorOrShieldOrWeapon(bool inTokuno = false, bool isMondain = false)
         {
-            if (Core.SA && isStygian)
-            {
-                return Construct(_saWeaponOrRangedOrArmorOrHatOrShieldTypes);
-            }
-
             if (Core.ML && isMondain)
             {
                 return Construct(_mlWeaponOrRangedOrArmorOrHatOrShieldTypes);
@@ -658,12 +618,6 @@ namespace Server
 
             return Construct(_oldWeaponOrRangedOrArmorOrHatOrShieldTypes);
         }
-
-        private static readonly Type[][] _saWeaponOrRangedOrArmorOrHatOrShieldOrJewelryTypes =
-        [
-            SAWeaponTypes, AosWeaponTypes, WeaponTypes, SARangedWeaponTypes, AosRangedWeaponTypes, RangedWeaponTypes,
-            ArmorTypes, AosHatTypes, HatTypes, AosShieldTypes, ShieldTypes, JewelryTypes
-        ];
 
         private static readonly Type[][] _mlWeaponOrRangedOrArmorOrHatOrShieldOrJewelryTypes =
         [
@@ -688,13 +642,8 @@ namespace Server
             WeaponTypes, RangedWeaponTypes, ArmorTypes, HatTypes, ShieldTypes, JewelryTypes
         ];
 
-        public static Item RandomArmorOrShieldOrWeaponOrJewelry(bool inTokuno = false, bool isMondain = false, bool isStygian = false)
+        public static Item RandomArmorOrShieldOrWeaponOrJewelry(bool inTokuno = false, bool isMondain = false)
         {
-            if (Core.SA && isStygian)
-            {
-                return Construct(_saWeaponOrRangedOrArmorOrHatOrShieldOrJewelryTypes);
-            }
-
             if (Core.ML && isMondain)
             {
                 return Construct(_mlWeaponOrRangedOrArmorOrHatOrShieldOrJewelryTypes);
