@@ -31,7 +31,9 @@ public abstract partial class BaseThrown : BaseRanged
                 return MaxThrowRange;
             }
 
-            var scaled = MaxThrowRange - 3 + (attacker.Str - AosStrengthReq) / divisor;
+            // Scale up from MinThrowRange so the base matches the clamp floor even if a
+            // subclass overrides MaxThrowRange to something other than MinThrowRange + 3.
+            var scaled = MinThrowRange + (attacker.Str - AosStrengthReq) / divisor;
             return Math.Clamp(scaled, MinThrowRange, MaxThrowRange);
         }
     }
