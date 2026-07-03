@@ -13,13 +13,19 @@ The system uses cliloc numbers (localized string IDs) with argument substitution
 Defined in `Projects/Server/PropertyList/IPropertyList.cs`:
 
 ```csharp
-public interface IPropertyList
+public interface IPropertyList : ISelfInterpolatedStringHandler
 {
-    void Add(int number);                    // Cliloc number only
-    void Add(int number, string argument);   // Cliloc with string argument
-    void Add(string text);                   // Raw string
-    void Add(int number, int value);         // Cliloc with int argument
-    void AddLocalized(int value);            // Cliloc number as argument value
+    void Reset();
+    void Terminate();
+
+    void Add(int number);                     // Cliloc number only
+    void Add(int number, string argument);    // Cliloc with string argument
+    void Add(ReadOnlySpan<char> argument);    // Raw text, no string allocation
+    void Add(int number, ReadOnlySpan<char> argument); // Cliloc with span argument
+    void AddChunked(ReadOnlySpan<char> text); // Newline-joined text split across properties
+    OplTextBlock TextBlock();                 // Builder that flushes via AddChunked on dispose
+    void Add(int number, int value);          // Cliloc with int argument
+    void AddLocalized(int value);             // Cliloc number as argument value
     void AddLocalized(int number, int value); // Cliloc with localized argument
 
     // String interpolation support
@@ -27,6 +33,9 @@ public interface IPropertyList
     void Add(int number, ref InterpolatedStringHandler handler);
 }
 ```
+
+> There is no `Add(string)` overload. Pass raw text as a span (`Add(text.AsSpan())`) or, ideally,
+> as an interpolated `$"..."` literal so the handler formats straight into the pooled buffer.
 
 ## GetProperties Override
 
@@ -141,6 +150,100 @@ If you don't know what text a cliloc number maps to (and therefore what argument
 - Placeholders in the text look like `~1_val~`, `~2_AMOUNT~`, etc.
 - Ask the user where their `cliloc.enu` file is located (typically in the UO client data directory)
 
+## Multi-Line Free Text: `AddChunked` and `OplTextBlock`
+
+Some tooltips need a block of **free-form text** (not cliloc lookups) whose length is variable and
+potentially large — e.g. a consolidated dump of every AOS attribute on an item, or staged
+identification text that grows as the item is identified. Emitting that as a single property is
+dangerous:
+
+> **The legacy 2D client copies each OPL property's text into a fixed ~512-char (1024-byte) buffer.**
+> A single property longer than that smashes an adjacent world object's vtable on the client heap and
+> crashes the client. `ObjectPropertyList.MaxArgumentLength = 504` is the safe per-property cap (a
+> multiple of 8, comfortably under the empirically confirmed ~510-char ceiling).
+
+Two APIs handle this safely. Both split the text at `\n` boundaries into as many OPL properties as
+needed, so no single property ever exceeds `MaxArgumentLength`. Each chunk is emitted through the
+cycling **passthrough clilocs** (`1042971`, `1070722`, `1114057`, `1114778`, `1114779` — each
+localized to a single `~1_val~`/`~1_NOTHING~` argument), which render the raw string verbatim.
+
+### `AddChunked` — the interface primitive
+
+`AddChunked(ReadOnlySpan<char>)` is on `IPropertyList`, so it works from any `GetProperties(IPropertyList list)`
+override. Give it `\n`-joined text; it breaks **only** at newlines:
+
+```csharp
+public override void GetProperties(IPropertyList list)
+{
+    base.GetProperties(list);
+
+    // _description may be hundreds of chars and contains embedded '\n's.
+    list.AddChunked(_description);
+}
+```
+
+Splitting only at `\n` means each line stays intact across the chunk boundary — a chunk is flushed at
+the last newline that keeps it under the cap. (A single line longer than `MaxArgumentLength` is the
+one case that still gets clamped; the engine logs a warning naming the offending entity and cliloc.)
+
+### `OplTextBlock` — the ergonomic builder
+
+`OplTextBlock` is a `ref struct` builder that accumulates `\n`-joined lines and calls `AddChunked` for
+you on dispose. Obtain it from `IPropertyList.TextBlock()` (so it works in any `GetProperties` override)
+and always scope it with `using` so the flush happens:
+
+```csharp
+using var block = list.TextBlock();
+
+// Zero-alloc interpolated overload — formats directly into the pooled buffer:
+block.Add($"Luck Bonus: +{luck}%");
+block.Add($"Damage: {min} - {max}");
+
+// Plain text as a span (no string allocation):
+block.Add("Cannot be repaired".AsSpan());
+```
+
+Behavior worth knowing:
+
+- **Lines join with `\n`**; the trailing separator is stripped before the single `AddChunked` flush on `Dispose()`.
+- **Empty lines are skipped** (`block.Add(ReadOnlySpan<char>.Empty)` is a no-op).
+- **No lines added → nothing is emitted** (no empty property, no wasted passthrough cliloc).
+- The `Add($"...")` overload is a dedicated `[InterpolatedStringHandler]`, so interpolation allocates no
+  intermediate strings — the same anti-patterns as `IPropertyList.Add($"...")` apply (no `.ToString()`
+  in holes, no ternaries/`string.Format`/concat — see [`string-handling.md`](string-handling.md#interpolation-anti-patterns)).
+- It is a `ref struct` tied to the single-threaded OPL build pass — never store it, capture it in a
+  closure, or use it across an `await`.
+
+### When to use which
+
+| Situation | Use |
+|---|---|
+| You already have a `\n`-joined string (e.g. a serialized description) | `list.AddChunked(text)` |
+| You're building several free-text lines conditionally | `using var block = list.TextBlock();` then `block.Add(...)` |
+| The content is a single short cliloc-backed property | Plain `list.Add(number, $"...")` — chunking is unnecessary |
+
+Real-world pattern (consolidated attribute lines, condensed from UOEvolution's `BaseWeapon`):
+
+```csharp
+public override void GetProperties(IPropertyList list)
+{
+    base.GetProperties(list);
+
+    using var block = list.TextBlock();
+
+    if (_attrs.HitLowerParryCap > 0)
+    {
+        block.Add($"Lower Parry Cap {_attrs.HitLowerParryCap}%");
+    }
+
+    if (_attrs.ParryBonusDamage > 0)
+    {
+        block.Add($"Parry Damage {_attrs.ParryBonusDamage}%");
+    }
+    // ...any number of optional lines; the block flushes safely on dispose.
+}
+```
+
 ## Common Cliloc Numbers
 
 | Number | Text | Usage |
@@ -207,6 +310,7 @@ Defined in `Projects/Server/PropertyList/ObjectPropertyList.cs`:
 - **String building**: Uses `STArrayPool<char>` for zero-GC string construction
 - **Global toggle**: `ObjectPropertyList.Enabled` can disable the entire system
 - **Lazy initialization**: Property lists are built on first access
+- **Per-property cap**: `MaxArgumentLength` (504) bounds each property's text so the legacy 2D client's fixed tooltip buffer can't overflow. `AddChunked`/`OplTextBlock` keep multi-line content under it; anything that slips through is clamped with a logged warning
 
 ### Update Flow
 1. `InvalidateProperties()` is called
