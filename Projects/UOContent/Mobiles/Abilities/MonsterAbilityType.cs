@@ -20,5 +20,6 @@ public enum MonsterAbilityType
     FanningFire, // Fire debuff
     RuneCorruption,
     FanThrow,
-    BloodBath
+    BloodBath,
+    TailSwipe
 }
