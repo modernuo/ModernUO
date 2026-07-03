@@ -6,7 +6,7 @@ namespace Server.Mobiles;
 [SerializationGenerator(0)]
 public partial class StoneSlith : BaseCreature
 {
-    private static readonly MonsterAbility[] _abilities = [MonsterAbilities.GraspingClaw];
+    private static readonly MonsterAbility[] _abilities = [MonsterAbilities.GraspingClaw, MonsterAbilities.TailSwipe];
 
     [Constructible]
     public StoneSlith() : base(AIType.AI_Melee)
@@ -40,9 +40,8 @@ public partial class StoneSlith : BaseCreature
         MinTameSkill = 65.1;
         ControlSlots = 2;
 
-        // TODO(SA-creatures): unported vs ServUO — SpecialAbility.TailSwipe (no ModernUO equivalent),
-        // DragonBlood carving, and the minor drops SlithEye / TatteredAncientScroll / AncientPotteryFragments
-        // (item classes not yet in ModernUO).
+        // TODO(SA-creatures): unported vs ServUO — DragonBlood carving, and the minor drops
+        // SlithEye / TatteredAncientScroll / AncientPotteryFragments (item classes not yet in ModernUO).
     }
 
     public override string CorpseName => "a slith corpse";

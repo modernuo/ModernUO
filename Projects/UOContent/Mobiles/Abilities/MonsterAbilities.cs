@@ -13,6 +13,7 @@ public static class MonsterAbilities
 
     // Resistance Debuffs
     public static GraspingClaw GraspingClaw => new();
+    public static TailSwipe TailSwipe => new();
     public static RuneCorruption RuneCorruption => new();
     public static FanningFire FanningFire => new(0.05, -10, 35, 45);
 
