@@ -25,9 +25,10 @@ public class MultiEdgeCaseTests
     /// <c>GetStaticAndMultiTiles</c> yields tiles from BOTH multis; the synthesizer must still
     /// agree with CheckMovement everywhere over the union footprint + halo.
     /// </summary>
-    [Fact]
+    [SkippableFact]
     public void OverlappingMultis_SynthesizerMatchesCheckMovement()
     {
+        TileDataRequirement.SkipIfMissing();
         StepCache.Instance.Clear();
         var map = Map.Maps[MapId];
 
@@ -75,9 +76,10 @@ public class MultiEdgeCaseTests
     /// blocks the rest — that vacuity is a fixture concern, not a synthesizer divergence (the
     /// synthesizer agrees with the oracle at every direction either way).
     /// </remarks>
-    [Fact]
+    [SkippableFact]
     public void BoatOverWater_SynthesizerMatchesCheckMovement()
     {
+        TileDataRequirement.SkipIfMissing();
         StepCache.Instance.Clear();
         var map = Map.Maps[MapId];
 
@@ -98,9 +100,10 @@ public class MultiEdgeCaseTests
     /// re-registration pattern HouseFoundation uses on commit) and assert the synthesizer reads
     /// the LIVE, post-redesign <c>Components</c> — i.e. it matches CheckMovement on the NEW shape.
     /// </summary>
-    [Fact]
+    [SkippableFact]
     public void RedesignedFoundation_SynthesizerMatchesNewFootprint()
     {
+        TileDataRequirement.SkipIfMissing();
         StepCache.Instance.Clear();
         var map = Map.Maps[MapId];
 
@@ -136,10 +139,11 @@ public class MultiEdgeCaseTests
     /// dungeon cave-wall corner; add InlineData rows here — the assertion already covers them by
     /// construction. (Left intentionally unhunted: do not invent tree/dungeon coords.)
     /// </summary>
-    [Theory]
+    [SkippableTheory]
     [InlineData(MapId, HouseX, HouseY)] // known-good open Trammel placement (passes today)
     public void UserSuppliedScenarios_SynthesizerMatchesCheckMovement(int mapId, int x, int y)
     {
+        TileDataRequirement.SkipIfMissing();
         StepCache.Instance.Clear();
         var map = Map.Maps[mapId];
 

@@ -17,9 +17,10 @@ public class FoundationRedesignTests
     private const int PlaceX = 1500;
     private const int PlaceY = 1600;
 
-    [Fact]
+    [SkippableFact]
     public void SwappingComponents_ChangesFootprint()
     {
+        TileDataRequirement.SkipIfMissing();
         var foundation = new SwappableFoundation(0x74); // GuildHouse footprint
         try
         {
@@ -38,9 +39,10 @@ public class FoundationRedesignTests
         }
     }
 
-    [Fact]
+    [SkippableFact]
     public void RedesignReRegistered_RoutesNewFootprintToLivePath()
     {
+        TileDataRequirement.SkipIfMissing();
         StepCache.Instance.Clear();
         var map = Map.Maps[MapId];
         Assert.NotNull(map);

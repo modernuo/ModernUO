@@ -54,9 +54,10 @@ public class StepCacheLifecycleTests
         Assert.Equal(1L, stats.FallthroughNotBuilt);
     }
 
-    [Fact]
+    [SkippableFact]
     public void TryGetMask_SecondTouchWithinWindow_PromotesAndBuilds()
     {
+        TileDataRequirement.SkipIfMissing();
         var cache = StepCache.Instance;
         cache.Clear();
         cache.MissPromotionThreshold = 2;
@@ -112,9 +113,10 @@ public class StepCacheLifecycleTests
         Assert.Equal(2L, cache.GetStats().FallthroughNotBuilt);
     }
 
-    [Fact]
+    [SkippableFact]
     public void TryGetMask_MultipleCallsInSameFindGeneration_StayInFallthrough()
     {
+        TileDataRequirement.SkipIfMissing();
         var cache = StepCache.Instance;
         cache.Clear();
         cache.MissPromotionThreshold = 2;
@@ -207,9 +209,10 @@ public class StepCacheLifecycleTests
         Assert.Equal((byte)0, lookup.WalkMask);
     }
 
-    [Fact]
+    [SkippableFact]
     public void MultiCoveredCell_AndHalo_RouteToFallthrough()
     {
+        TileDataRequirement.SkipIfMissing();
         var cache = StepCache.Instance;
         cache.Clear();
         cache.MissPromotionThreshold = 1; // eager build so a multi-free cell serves immediately

@@ -130,9 +130,10 @@ public class BitmapAStarAlgorithmTests
         blocker.Delete();
     }
 
-    [Fact]
+    [SkippableFact]
     public void DynamicObstaclePass_RejectsCellOccupiedByImpassableItem()
     {
+        TileDataRequirement.SkipIfMissing();
         StepCache.Instance.Clear();
         var map = Map.Maps[1];
         Assert.NotNull(map);

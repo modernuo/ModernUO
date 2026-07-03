@@ -176,9 +176,10 @@ public class ApproachTargetTests
         Assert.True(caught, "chaser must catch a target that walks away then stops");
     }
 
-    [Fact]
+    [SkippableFact]
     public void UnreachableTarget_GivesUp_AndIdles()
     {
+        TileDataRequirement.SkipIfMissing();
         var map = Map.Maps[1];
         Assert.NotNull(map);
         map.GetAverageZ(1500, 1601, out _, out var z, out _);
@@ -243,9 +244,10 @@ public class ApproachTargetTests
         Assert.True(stayedIdle, "after giving up, the creature must idle, not shuffle");
     }
 
-    [Fact]
+    [SkippableFact]
     public void WallBetween_RoutesAround_ReachesTarget()
     {
+        TileDataRequirement.SkipIfMissing();
         var map = Map.Maps[1];
         Assert.NotNull(map);
         map.GetAverageZ(1500, 1600, out _, out var z, out _);

@@ -14,11 +14,12 @@ public class StaticWalkabilityParityTests
         _output = output;
     }
 
-    [Theory]
+    [SkippableTheory]
     [InlineData("britain_inn_dense", 1480, 1610, 32)]
     [InlineData("trammel_open_plain", 1500, 1600, 32)]
     public void BakerMatchesCheckMovement(string label, int xStart, int yStart, int size)
     {
+        TileDataRequirement.SkipIfMissing();
         var map = Map.Maps[1];
         Assert.NotNull(map);
 

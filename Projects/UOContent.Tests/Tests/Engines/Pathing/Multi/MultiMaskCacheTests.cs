@@ -12,9 +12,10 @@ public class MultiMaskCacheTests
     private const int PlaceX = 1480;
     private const int PlaceY = 1620;
 
-    [Fact]
+    [SkippableFact]
     public void TryResolveCoveringMulti_FindsPlacedMulti_AndLocalIndices()
     {
+        TileDataRequirement.SkipIfMissing();
         StepCache.Instance.Clear();
         var map = Map.Maps[MapId];
         map.GetAverageZ(PlaceX, PlaceY, out _, out var z, out _);
@@ -38,9 +39,10 @@ public class MultiMaskCacheTests
         }
     }
 
-    [Fact]
+    [SkippableFact]
     public void IsInteriorLocalCell_TrueDeepInside_FalseAtEdge()
     {
+        TileDataRequirement.SkipIfMissing();
         var multi = new TestMulti(GuildHouseId);
         try
         {
@@ -122,9 +124,10 @@ public class MultiMaskCacheTests
         Assert.False(MultiMaskCache.TerrainTopBelow(map, PlaceX, PlaceY, (sbyte)(ground - 50)));
     }
 
-    [Fact]
+    [SkippableFact]
     public void PathThroughHouseInterior_IncrementsMultiMaskCacheHits()
     {
+        TileDataRequirement.SkipIfMissing();
         // (PlaceX,PlaceY)=(1480,1620) is cluttered (footprint overlaps tall map statics → dirty), so it
         // would never serve the interior cache under the footprint-clean gate. Use a known flat/clear
         // spot so a house there is footprint-clean and its interior cells serve from the cache.
@@ -242,9 +245,10 @@ public class MultiMaskCacheTests
         }
     }
 
-    [Fact]
+    [SkippableFact]
     public void ComputeFootprintClean_TrueAtNormalPlacement_FalseWhenSunk()
     {
+        TileDataRequirement.SkipIfMissing();
         // (PlaceX,PlaceY) is a cluttered spot whose footprint overlaps tall map statics, so a guild
         // house there is never footprint-clean. Use a known flat/clear spot for the clean assertion.
         const int CleanX = 1560;

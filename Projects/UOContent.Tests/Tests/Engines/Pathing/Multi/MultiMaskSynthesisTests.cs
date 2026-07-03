@@ -11,9 +11,10 @@ public class MultiMaskSynthesisTests
     private const int PlaceX = 1480;
     private const int PlaceY = 1620;
 
-    [Fact]
+    [SkippableFact]
     public void ComputeMultiMaskAt_MatchesCheckMovement_OverFootprintAndHalo()
     {
+        TileDataRequirement.SkipIfMissing();
         StepCache.Instance.Clear();
         var map = Map.Maps[MapId];
         map.GetAverageZ(PlaceX, PlaceY, out _, out var z, out _);

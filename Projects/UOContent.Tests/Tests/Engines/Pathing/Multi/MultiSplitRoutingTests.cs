@@ -17,9 +17,10 @@ public class MultiSplitRoutingTests
     private const int PlaceX = 1500;
     private const int PlaceY = 1600;
 
-    [Fact]
+    [SkippableFact]
     public void PlacedMulti_RoutesFootprintAndHalo_ToFallthroughMulti()
     {
+        TileDataRequirement.SkipIfMissing();
         StepCache.Instance.Clear();
         var map = Map.Maps[MapId];
         Assert.NotNull(map);
