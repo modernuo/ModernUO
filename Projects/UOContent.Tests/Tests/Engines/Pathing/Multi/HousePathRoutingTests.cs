@@ -22,9 +22,10 @@ public class HousePathRoutingTests
         public WalkerStub() => Body = 0xC9;
     }
 
-    [Fact]
+    [SkippableFact]
     public void PathAround_NeverTraversesAWallCell()
     {
+        TileDataRequirement.SkipIfMissing();
         StepCache.Instance.Clear();
         var prevThreshold = StepCache.Instance.MissPromotionThreshold;
         StepCache.Instance.MissPromotionThreshold = 1;
@@ -74,9 +75,10 @@ public class HousePathRoutingTests
         }
     }
 
-    [Fact]
+    [SkippableFact]
     public void Demolish_ReopensCoveredCells()
     {
+        TileDataRequirement.SkipIfMissing();
         StepCache.Instance.Clear();
         var map = Map.Maps[MapId];
         Assert.NotNull(map);

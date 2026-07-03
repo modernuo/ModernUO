@@ -111,9 +111,10 @@ public class StepCacheParityTests
     /// (Atlantic coast) and asserts at least one cell has a non-zero WetMask. Catches the
     /// failure mode where StepProbe silently bakes zero swim output everywhere.
     /// </summary>
-    [Fact]
+    [SkippableFact]
     public void SwimBake_ProducesWetCells_OnKnownWaterRegion()
     {
+        TileDataRequirement.SkipIfMissing();
         var map = Map.Maps[1];
         Assert.NotNull(map);
 

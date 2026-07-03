@@ -17,9 +17,10 @@ public class BoatPathTests
     private const int WaterX = 1450;
     private const int WaterY = 1770;
 
-    [Fact]
+    [SkippableFact]
     public void BoatDeck_HasWalkableSurfaceCells()
     {
+        TileDataRequirement.SkipIfMissing();
         StepCache.Instance.Clear();
         var map = Map.Maps[MapId];
 
@@ -44,9 +45,10 @@ public class BoatPathTests
         }
     }
 
-    [Fact]
+    [SkippableFact]
     public void BoatDeck_FootprintShape_IsPositionInvariant()
     {
+        TileDataRequirement.SkipIfMissing();
         // The property Phase 2's local-frame, movement-invariant boat cache must preserve:
         // the deck's covered-cell shape (in local coords) is identical at two world positions.
         var map = Map.Maps[MapId];

@@ -30,6 +30,13 @@ internal static class TestServerInitializer
     private static bool _initialized;
     private static readonly Lock _lock = new();
 
+    /// <summary>
+    /// True if the UO client tile data was found and loaded. When false (e.g. CI, where the
+    /// copyrighted client files are absent), tile/map/multi-dependent tests must skip rather than
+    /// fail. Guard such tests with <c>Skip.If(!TestServerInitializer.TileDataLoaded, ...)</c>.
+    /// </summary>
+    public static bool TileDataLoaded { get; private set; }
+
     public static void Initialize()
     {
         lock (_lock)
@@ -62,7 +69,10 @@ internal static class TestServerInitializer
             // flags are populated before anything that reads TileData (MultiData, MovementImpl,
             // CheckMovement). Without this, TileData.MaxItemValue is 0 at MultiData.Configure()
             // time, causing every MCL tile ID to be masked to 0 and stored as ID=0 in Tiles[x][y].
-            ForceLoadTileData();
+            // The copyrighted client files are absent on CI; when tiledata.mul is missing we skip
+            // the tile/map/multi-dependent bootstrap and leave TileDataLoaded false so those tests
+            // skip instead of failing the whole collection from the fixture constructor.
+            TileDataLoaded = TryForceLoadTileData();
 
             // Production runs every static Configure() via AssemblyHandler.Invoke("Configure");
             // the fixture calls a curated subset, so configure the pathfinding singleton here so
@@ -70,11 +80,15 @@ internal static class TestServerInitializer
             // calls Find. ServerConfiguration is already loaded above, so the setting resolves.
             BitmapAStarAlgorithm.Configure();
 
-            // Multi component lists (multi.mul / MultiCollection.uop). Production invokes this via
-            // AssemblyHandler.Invoke("Configure"); the curated fixture subset must call it so that
-            // BaseMulti.Components (MultiData.GetComponents) returns real footprints instead of
-            // MultiComponentList.Empty. Required by the Multi pathfinding tests.
-            MultiData.Configure();
+            if (TileDataLoaded)
+            {
+                // Multi component lists (multi.mul / MultiCollection.uop). Production invokes this via
+                // AssemblyHandler.Invoke("Configure"); the curated fixture subset must call it so that
+                // BaseMulti.Components (MultiData.GetComponents) returns real footprints instead of
+                // MultiComponentList.Empty. Required by the Multi pathfinding tests. Depends on the
+                // client files, so it only runs when tile data loaded.
+                MultiData.Configure();
+            }
 
             World.Configure();
             Timer.Init(0);
@@ -86,14 +100,23 @@ internal static class TestServerInitializer
             DecayScheduler.Configure();
             Server.Engines.Spawners.SpawnerJsonSerializer.Configure();
 
-            VerifyTrammelTileDataLoaded();
+            if (TileDataLoaded)
+            {
+                VerifyTrammelTileDataLoaded();
+            }
 
             _initialized = true;
         }
     }
 
-    private static void ForceLoadTileData()
+    private static bool TryForceLoadTileData()
     {
+        var tileDataPath = Core.FindDataFile("tiledata.mul", false);
+        if (string.IsNullOrEmpty(tileDataPath) || !File.Exists(tileDataPath))
+        {
+            return false;
+        }
+
         var loadMethod = typeof(TileData).GetMethod(
             "Load",
             BindingFlags.Static | BindingFlags.NonPublic
@@ -105,6 +128,7 @@ internal static class TestServerInitializer
             );
         }
         loadMethod.Invoke(null, null);
+        return true;
     }
 
     private static void VerifyTrammelTileDataLoaded()

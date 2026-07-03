@@ -124,9 +124,10 @@ public class StepProbeTests
         Assert.True(found, "Expected at least one fully-flat open cell in (1500..1532, 1600..1632)");
     }
 
-    [Fact]
+    [SkippableFact]
     public void ComputeMaskAt_BritainInnDense_HasCellWithBlockedDirections()
     {
+        TileDataRequirement.SkipIfMissing();
         // Invariant: inside the dense Britain inn region, at least one cell must have
         // at least one direction blocked by a static. Protects against a regression
         // where the baker reports everything as walkable (the original false-pass bug).
@@ -181,9 +182,10 @@ public class StepProbeTests
         }
     }
 
-    [Fact]
+    [SkippableFact]
     public void ComputeMaskAt_PinnedCell_TrammelOpenPlainOrigin()
     {
+        TileDataRequirement.SkipIfMissing();
         // PINNING test: locks specific output for Trammel (1500, 1600).
         // Cell at z=10 with mask 0xC1 (N + W + NW only walkable). The other five
         // directions are blocked by water (E/SE/S/SW are wet tiles, NE is shore).
@@ -214,9 +216,10 @@ public class StepProbeTests
         Assert.Equal((sbyte)10, result.GetWalkZ(Direction.Up));
     }
 
-    [Fact]
+    [SkippableFact]
     public void ComputeMaskAt_PinnedCell_BritainInnDenseOrigin()
     {
+        TileDataRequirement.SkipIfMissing();
         // PINNING test: locks specific output for Trammel (1480, 1610).
         // Cell at z=20 with mask 0x3F (N/NE/E/SE/S/SW walkable, W/NW blocked by
         // a wall to the west). All walkable directions stay flat at z=20.

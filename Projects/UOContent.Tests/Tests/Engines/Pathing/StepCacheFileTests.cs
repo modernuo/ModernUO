@@ -347,9 +347,10 @@ public class StepCacheFileTests
     /// to <see cref="LazyReader_DoesNotMaterializeUntilQueried"/> which proves the
     /// default lazy behavior.
     /// </summary>
-    [Fact]
+    [SkippableFact]
     public void TryOpenLazyReader_WithPreloadFlag_MaterializesAllChunksImmediately()
     {
+        TileDataRequirement.SkipIfMissing();
         var cache = StepCache.Instance;
         cache.Clear();
         cache.MissPromotionThreshold = 1;
@@ -401,9 +402,10 @@ public class StepCacheFileTests
         }
     }
 
-    [Fact]
+    [SkippableFact]
     public void LazyReaderHit_BypassesMissTrackerOnFirstTouch()
     {
+        TileDataRequirement.SkipIfMissing();
         var cache = StepCache.Instance;
         cache.Clear();
         cache.MissPromotionThreshold = 1; // eager build for save phase

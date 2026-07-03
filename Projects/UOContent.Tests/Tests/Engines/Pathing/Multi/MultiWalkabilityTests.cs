@@ -23,9 +23,10 @@ public class MultiWalkabilityTests
         public WalkerStub() => Body = 0xC9;
     }
 
-    [Fact]
+    [SkippableFact]
     public void WallCell_CannotBeEnteredFromAnyAdjacentCell()
     {
+        TileDataRequirement.SkipIfMissing();
         StepCache.Instance.Clear();
         var map = Map.Maps[MapId];
         map.GetAverageZ(PlaceX, PlaceY, out _, out var z, out _);
@@ -86,9 +87,10 @@ public class MultiWalkabilityTests
         }
     }
 
-    [Fact]
+    [SkippableFact]
     public void FloorCell_IsStandable()
     {
+        TileDataRequirement.SkipIfMissing();
         StepCache.Instance.Clear();
         var map = Map.Maps[MapId];
         map.GetAverageZ(PlaceX, PlaceY, out _, out var z, out _);
