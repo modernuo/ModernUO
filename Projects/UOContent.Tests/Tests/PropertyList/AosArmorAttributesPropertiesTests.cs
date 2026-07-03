@@ -62,7 +62,7 @@ public class AosArmorAttributesPropertiesTests
         var attrs = new AosArmorAttributes(null) { MageArmor = 1, LowerStatReq = 50 };
 
         var opl = new ObjectPropertyList(null);
-        attrs.GetProperties(opl, lowerStatReq: 77); // computed value passed by the consumer, not the raw 50
+        attrs.GetProperties(opl); // computed value passed by the consumer, not the raw 50
         var map = Decode(opl);
 
         Assert.Equal("77", map[1060435]); // emitted from the param, not the container's 50

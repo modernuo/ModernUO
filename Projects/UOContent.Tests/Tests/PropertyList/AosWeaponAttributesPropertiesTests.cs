@@ -65,7 +65,7 @@ public class AosWeaponAttributesPropertiesTests
         var attrs = new AosWeaponAttributes(null) { MageWeapon = 25 };
 
         var opl = new ObjectPropertyList(null);
-        attrs.GetProperties(opl, lowerStatReq: 40); // computed value passed by the weapon
+        attrs.GetProperties(opl); // computed value passed by the weapon
         var map = Decode(opl);
 
         Assert.Equal("40", map[1060435]); // lower requirements, in cliloc order before MageWeapon
