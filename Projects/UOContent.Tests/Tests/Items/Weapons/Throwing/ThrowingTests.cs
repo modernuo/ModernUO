@@ -350,6 +350,36 @@ public class ThrowingTests
         }
     }
 
+    /// <summary>Close-quarters mitigation uses RawDex, so a Dex debuff does not change the penalty.</summary>
+    [Fact]
+    public void ModifyHitChance_CloseQuarters_UsesRawDex_IgnoresStatMods()
+    {
+        var map = Map.Felucca;
+        var attacker = CreateMobile(map, new Point3D(5940, 500, 0));
+        var defender = CreateMobile(map, new Point3D(5941, 500, 0)); // distance 1
+        var weapon = new TestThrown();
+        try
+        {
+            attacker.Race = Race.Elf; // avoid Human JOAT skill floor
+            attacker.Skills.Throwing.BaseFixedPoint = 0;
+            attacker.RawDex = 40;
+            // RawDex-based mitigation = (0 + 40)/20 = 2.0 -> penalty = (12 - 2)/100 = 0.10
+            var baseline = weapon.TestModifyHitChance(attacker, defender, 0.8); // 0.70
+
+            attacker.AddStatMod(new StatMod(StatType.Dex, "curse", -30, TimeSpan.Zero)); // effective Dex 10
+            var withMod = weapon.TestModifyHitChance(attacker, defender, 0.8);
+
+            Assert.Equal(0.70, baseline, 10);
+            Assert.Equal(baseline, withMod, 10); // unchanged because RawDex is used
+        }
+        finally
+        {
+            attacker.Delete();
+            defender.Delete();
+            weapon.Delete();
+        }
+    }
+
     private static PlayerMobile CreateMobile(Map map, Point3D location)
     {
         var mobile = new PlayerMobile(World.NewMobile);

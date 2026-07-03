@@ -61,10 +61,10 @@ public abstract partial class BaseThrown : BaseRanged
 
         if (distance <= 1)
         {
-            // Close-quarters penalty: up to -12%, mitigated by (Throwing + Dex) / 20.
-            // At 240 combined (120 skill + 120 dex) the penalty is fully mitigated.
+            // Close-quarters penalty: up to -12%, mitigated by (Throwing + RawDex) / 20.
+            // At 240 combined (120 skill + 120 RawDex) the penalty is fully mitigated.
             var throwSkill = attacker.Skills[SkillName.Throwing].Value;
-            var mitigation = Math.Min(12.0, (throwSkill + attacker.Dex) / 20.0);
+            var mitigation = Math.Min(12.0, (throwSkill + attacker.RawDex) / 20.0);
             chance -= (12.0 - mitigation) / 100.0;
         }
         else if (distance < MinThrowRange)
