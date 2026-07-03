@@ -132,12 +132,12 @@ public abstract partial class BaseThrown : BaseRanged
 
     public virtual void Return(Mobile thrower, Mobile target, WorldLocation worldLocation)
     {
-        if (thrower == null)
+        if (thrower?.Deleted != false || thrower.Map == null || thrower.Map == Map.Internal)
         {
             return;
         }
 
-        if (target != null)
+        if (target?.Deleted == false)
         {
             target.MovingEffect(thrower, EffectID, 18, 1, false, false, Hue, 0);
         }
