@@ -14,30 +14,91 @@ public abstract partial class BaseThrown : BaseRanged
 
     public virtual int MaxThrowRange => MinThrowRange + 3;
 
+    // Dynamic max range scaled by attacker Strength, clamped to the weapon's throw band.
+    // At StrReq the effective range equals MinThrowRange; at 140 Str it reaches MaxThrowRange.
     public override int DefMaxRange
     {
         get
         {
-            var baseRange = MaxThrowRange;
+            if (Parent is not Mobile attacker)
+            {
+                return MaxThrowRange;
+            }
 
-            return Parent is Mobile attacker
-                ? baseRange - 3 + (attacker.Str - AosStrengthReq) / ((140 - AosStrengthReq) / 3)
-                : baseRange;
+            var divisor = (140 - AosStrengthReq) / 3;
+            if (divisor <= 0)
+            {
+                return MaxThrowRange;
+            }
+
+            // Scale up from MinThrowRange so the base matches the clamp floor even if a
+            // subclass overrides MaxThrowRange to something other than MinThrowRange + 3.
+            var scaled = MinThrowRange + (attacker.Str - AosStrengthReq) / divisor;
+            return Math.Clamp(scaled, MinThrowRange, MaxThrowRange);
         }
     }
 
     public override int EffectID => ItemID;
 
+    // Throwing weapons require no ammo — the weapon itself is the projectile.
     public override Type AmmoType => null;
-
     public override Item Ammo => null;
 
     public override int DefHitSound => 0x5D3;
     public override int DefMissSound => 0x5D4;
 
     public override SkillName DefSkill => SkillName.Throwing;
+    public override SkillName AccuracySkill => SkillName.Throwing;
 
     public override WeaponAnimation DefAnimation => WeaponAnimation.Throwing;
+
+    // Throwing-specific hit chance modifiers (applied via BaseWeapon.ModifyHitChance hook).
+    protected override double ModifyHitChance(Mobile attacker, Mobile defender, double chance)
+    {
+        // Use Chebyshev distance — consistent with all UO range mechanics.
+        var distance = Math.Max(
+            Math.Abs(attacker.X - defender.X),
+            Math.Abs(attacker.Y - defender.Y)
+        );
+
+        if (distance <= 1)
+        {
+            // Close-quarters penalty: up to -12%, mitigated by (Throwing + RawDex) / 20.
+            // At 240 combined (120 skill + 120 RawDex) the penalty is fully mitigated.
+            var throwSkill = attacker.Skills[SkillName.Throwing].Value;
+            var mitigation = Math.Min(12.0, (throwSkill + attacker.RawDex) / 20.0);
+            chance -= (12.0 - mitigation) / 100.0;
+        }
+        else if (distance < MinThrowRange)
+        {
+            // Below minimum throw range (but not melee): flat -12% hit chance.
+            chance -= 0.12;
+        }
+
+        // Shield penalty: equipping a shield while throwing reduces hit chance.
+        // Penalty = 1200 / Parry (capped at 90%), applied multiplicatively.
+        // High Parrying skill reduces the penalty significantly.
+        if (attacker.FindItemOnLayer<BaseShield>(Layer.TwoHanded) != null)
+        {
+            var parry = attacker.Skills[SkillName.Parry].Value;
+            var penalty = parry > 0.0 ? 1200.0 / parry : 90.0;
+            chance *= 1.0 - Math.Min(90.0, penalty) / 100.0;
+        }
+
+        return chance;
+    }
+
+    // Overthrow: a throw that reaches the edge of its (STR-scaled) range lands with 47% less
+    // damage, applied on top of all offensive bonuses. MaxRange is the dynamic DefMaxRange.
+    protected override int ModifyDamage(Mobile attacker, Mobile defender, int damage)
+    {
+        if (!attacker.InRange(defender.Location, MaxRange - 1))
+        {
+            damage = damage * 53 / 100;
+        }
+
+        return damage;
+    }
 
     public override bool OnFired(Mobile attacker, Mobile defender)
     {
@@ -73,12 +134,12 @@ public abstract partial class BaseThrown : BaseRanged
 
     public virtual void Return(Mobile thrower, Mobile target, WorldLocation worldLocation)
     {
-        if (thrower == null)
+        if (thrower?.Deleted != false || thrower.Map == null || thrower.Map == Map.Internal)
         {
             return;
         }
 
-        if (target != null)
+        if (target?.Deleted == false)
         {
             target.MovingEffect(thrower, EffectID, 18, 1, false, false, Hue, 0);
         }
@@ -101,5 +162,11 @@ public abstract partial class BaseThrown : BaseRanged
                 0x100
             );
         }
+    }
+
+    public override void GetProperties(IPropertyList list)
+    {
+        base.GetProperties(list);
+        list.Add(1149791, MinThrowRange); // Min Throw Range: ~1_val~
     }
 }

@@ -1357,6 +1357,8 @@ public abstract partial class BaseWeapon
 
         var chance = ourValue / (theirValue * 2.0) * 1.0 + (double)bonus / 100;
 
+        chance = ModifyHitChance(attacker, defender, chance);
+
         if (Core.AOS && chance < 0.02)
         {
             chance = 0.02;
@@ -1364,6 +1366,19 @@ public abstract partial class BaseWeapon
 
         return attacker.CheckSkill(atkSkill.SkillName, chance);
     }
+
+    /// <summary>
+    ///     Allows subclasses to modify the final hit chance before the dice roll.
+    ///     Called after all standard AOS bonuses are applied but before the 2% floor.
+    ///     Supports both additive adjustments (chance -= 0.12) and multiplicative ones (chance *= scalar).
+    /// </summary>
+    protected virtual double ModifyHitChance(Mobile attacker, Mobile defender, double chance) => chance;
+
+    /// <summary>
+    ///     Allows subclasses to modify the final post-bonus damage (e.g. range-based penalties)
+    ///     before defender mitigation is applied. Mirrors <see cref="ModifyHitChance" />.
+    /// </summary>
+    protected virtual int ModifyDamage(Mobile attacker, Mobile defender, int damage) => damage;
 
     public virtual TimeSpan GetDelay(Mobile m)
     {
@@ -1874,6 +1889,7 @@ public abstract partial class BaseWeapon
         percentageBonus = Math.Min(percentageBonus, 300);
 
         damage = AOS.Scale(damage, 100 + percentageBonus);
+        damage = ModifyDamage(attacker, defender, damage);
 
         var defLoc = new WorldLocation(defender);
         var bcAtt = attacker as BaseCreature;
