@@ -6,6 +6,17 @@ namespace Server
 {
     public static class Loot
     {
+        public static Type[] SAWeaponTypes { get; } =
+        {
+            typeof(DiscMace), typeof(GargishTalwar), typeof(DualPointedSpear),
+            typeof(GlassStaff), typeof(DualShortAxes), typeof(GlassSword)
+        };
+
+        public static Type[] SARangedWeaponTypes { get; } =
+        {
+            typeof(Boomerang), typeof(Cyclone), typeof(SoulGlaive)
+        };
+
         public static Type[] MLWeaponTypes { get; } =
         {
             typeof(AssassinSpike), typeof(DiamondMace), typeof(ElvenMachete),
@@ -374,12 +385,18 @@ namespace Server
             return Construct<BaseClothing>(ClothingTypes);
         }
 
+        private static readonly Type[][] _saRangedWeaponTypes = [SARangedWeaponTypes, AosRangedWeaponTypes, RangedWeaponTypes];
         private static readonly Type[][] _mlRangedWeaponTypes = [MLRangedWeaponTypes, AosRangedWeaponTypes, RangedWeaponTypes];
         private static readonly Type[][] _seRangedWeaponTypes = [SERangedWeaponTypes, AosRangedWeaponTypes, RangedWeaponTypes];
         private static readonly Type[][] _aosRangedWeaponTypes = [AosRangedWeaponTypes, RangedWeaponTypes];
 
-        public static BaseWeapon RandomRangedWeapon(bool inTokuno = false, bool isMondain = false)
+        public static BaseWeapon RandomRangedWeapon(bool inTokuno = false, bool isMondain = false, bool isStygian = false)
         {
+            if (Core.SA && isStygian)
+            {
+                return Construct<BaseWeapon>(_saRangedWeaponTypes);
+            }
+
             if (Core.ML && isMondain)
             {
                 return Construct<BaseWeapon>(_mlRangedWeaponTypes);
@@ -398,12 +415,18 @@ namespace Server
             return Construct<BaseWeapon>(RangedWeaponTypes);
         }
 
+        private static readonly Type[][] _saWeaponTypes = [SAWeaponTypes, AosWeaponTypes, WeaponTypes];
         private static readonly Type[][] _mlWeaponTypes = [MLWeaponTypes, AosWeaponTypes, WeaponTypes];
         private static readonly Type[][] _seWeaponTypes = [SEWeaponTypes, AosWeaponTypes, WeaponTypes];
         private static readonly Type[][] _aosWeaponTypes = [AosWeaponTypes, WeaponTypes];
 
-        public static BaseWeapon RandomWeapon(bool inTokuno = false, bool isMondain = false)
+        public static BaseWeapon RandomWeapon(bool inTokuno = false, bool isMondain = false, bool isStygian = false)
         {
+            if (Core.SA && isStygian)
+            {
+                return Construct<BaseWeapon>(_saWeaponTypes);
+            }
+
             if (Core.ML && isMondain)
             {
                 return Construct<BaseWeapon>(_mlWeaponTypes);
