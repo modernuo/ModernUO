@@ -86,15 +86,13 @@ public abstract partial class BaseThrown : BaseRanged
         return chance;
     }
 
-    // Overthrow penalty: -47% damage when target is beyond the attacker's current max range.
-    // MaxRange returns DefMaxRange (STR-scaled), so this reflects the dynamic per-attack value.
-    public override int ComputeDamage(Mobile attacker, Mobile defender)
+    // Overthrow: a throw that reaches the edge of its (STR-scaled) range lands with 47% less
+    // damage, applied on top of all offensive bonuses. MaxRange is the dynamic DefMaxRange.
+    protected override int ModifyDamage(Mobile attacker, Mobile defender, int damage)
     {
-        var damage = base.ComputeDamage(attacker, defender);
-
-        if (!attacker.InRange(defender.Location, MaxRange))
+        if (!attacker.InRange(defender.Location, MaxRange - 1))
         {
-            damage = (int)(damage * 0.53);
+            damage = damage * 53 / 100;
         }
 
         return damage;

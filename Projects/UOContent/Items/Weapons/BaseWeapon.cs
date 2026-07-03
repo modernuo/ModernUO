@@ -1374,6 +1374,12 @@ public abstract partial class BaseWeapon
     /// </summary>
     protected virtual double ModifyHitChance(Mobile attacker, Mobile defender, double chance) => chance;
 
+    /// <summary>
+    ///     Allows subclasses to modify the final post-bonus damage (e.g. range-based penalties)
+    ///     before defender mitigation is applied. Mirrors <see cref="ModifyHitChance" />.
+    /// </summary>
+    protected virtual int ModifyDamage(Mobile attacker, Mobile defender, int damage) => damage;
+
     public virtual TimeSpan GetDelay(Mobile m)
     {
         double speed = Speed;
@@ -1883,6 +1889,7 @@ public abstract partial class BaseWeapon
         percentageBonus = Math.Min(percentageBonus, 300);
 
         damage = AOS.Scale(damage, 100 + percentageBonus);
+        damage = ModifyDamage(attacker, defender, damage);
 
         var defLoc = new WorldLocation(defender);
         var bcAtt = attacker as BaseCreature;

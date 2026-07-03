@@ -19,6 +19,9 @@ public class ThrowingTests
 
         public double TestModifyHitChance(Mobile attacker, Mobile defender, double chance) =>
             ModifyHitChance(attacker, defender, chance);
+
+        public int TestModifyDamage(Mobile attacker, Mobile defender, int damage) =>
+            ModifyDamage(attacker, defender, damage);
     }
 
     // Hit chance modifiers
@@ -283,6 +286,62 @@ public class ThrowingTests
             attacker.RawStr = 10; // below StrReq 60
             attacker.AddItem(weapon);
             Assert.Equal(weapon.MinThrowRange, weapon.DefMaxRange); // 8, not 6
+        }
+        finally
+        {
+            weapon.Delete();
+            attacker.Delete();
+        }
+    }
+
+    /// <summary>At the outermost admissible tile (dist == MaxRange) a throw loses 47% damage.</summary>
+    [Fact]
+    public void ModifyDamage_AtMaxRange_Reduces47Percent()
+    {
+        var map = Map.Felucca;
+        var attacker = CreateMobile(map, new Point3D(5900, 500, 0));
+        var weapon = new TestThrown(); // MinThrowRange 4 -> MaxThrowRange 7
+        try
+        {
+            attacker.RawStr = 140;            // MaxRange == MaxThrowRange == 7
+            attacker.AddItem(weapon);
+            var defender = CreateMobile(map, new Point3D(5907, 500, 0)); // distance 7 == MaxRange
+            try
+            {
+                Assert.Equal(53, weapon.TestModifyDamage(attacker, defender, 100));
+            }
+            finally
+            {
+                defender.Delete();
+            }
+        }
+        finally
+        {
+            weapon.Delete();
+            attacker.Delete();
+        }
+    }
+
+    /// <summary>Inside max range, damage is unchanged.</summary>
+    [Fact]
+    public void ModifyDamage_WithinRange_NoChange()
+    {
+        var map = Map.Felucca;
+        var attacker = CreateMobile(map, new Point3D(5920, 500, 0));
+        var weapon = new TestThrown();
+        try
+        {
+            attacker.RawStr = 140; // MaxRange 7
+            attacker.AddItem(weapon);
+            var defender = CreateMobile(map, new Point3D(5925, 500, 0)); // distance 5 < 7
+            try
+            {
+                Assert.Equal(100, weapon.TestModifyDamage(attacker, defender, 100));
+            }
+            finally
+            {
+                defender.Delete();
+            }
         }
         finally
         {
