@@ -619,6 +619,9 @@ namespace Server
 
         private static bool IsMondain(Mobile m) => MondainsLegacy.IsMLRegion(m.Region);
 
+        // Stygian Abyss loot flavor: creatures in Ter Mur draw from the SA gear pools.
+        private static bool IsStygian(Mobile m) => m.Map == Map.TerMur;
+
         public Item Construct(Mobile from, int luckChance, bool spawning)
         {
             if (m_AtSpawnTime != spawning)
@@ -641,7 +644,7 @@ namespace Server
 
                 if (rnd < item.Chance)
                 {
-                    return Mutate(from, luckChance, item.Construct(IsInTokuno(from), IsMondain(from)));
+                    return Mutate(from, luckChance, item.Construct(IsInTokuno(from), IsMondain(from), IsStygian(from)));
                 }
 
                 rnd -= item.Chance;
@@ -970,18 +973,18 @@ namespace Server
             return Loot.RandomScroll(minCircle * 8, maxCircle * 8 + 7, SpellbookType.Regular);
         }
 
-        public Item Construct(bool inTokuno, bool isMondain)
+        public Item Construct(bool inTokuno, bool isMondain, bool isStygian)
         {
             try
             {
                 if (Type == typeof(BaseRanged))
                 {
-                    return Loot.RandomRangedWeapon(inTokuno, isMondain);
+                    return Loot.RandomRangedWeapon(inTokuno, isMondain, isStygian);
                 }
 
                 if (Type == typeof(BaseWeapon))
                 {
-                    return Loot.RandomWeapon(inTokuno, isMondain);
+                    return Loot.RandomWeapon(inTokuno, isMondain, isStygian);
                 }
 
                 if (Type == typeof(BaseArmor))
