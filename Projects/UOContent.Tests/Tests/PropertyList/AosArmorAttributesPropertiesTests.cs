@@ -55,17 +55,4 @@ public class AosArmorAttributesPropertiesTests
         Assert.False(map.ContainsKey(1060435)); // LowerStatReq NOT read from container
         Assert.False(map.ContainsKey(1060410)); // DurabilityBonus excluded
     }
-
-    [Fact]
-    public void EmitsLowerStatReqWhenPassed()
-    {
-        var attrs = new AosArmorAttributes(null) { MageArmor = 1, LowerStatReq = 50 };
-
-        var opl = new ObjectPropertyList(null);
-        attrs.GetProperties(opl); // computed value passed by the consumer, not the raw 50
-        var map = Decode(opl);
-
-        Assert.Equal("77", map[1060435]); // emitted from the param, not the container's 50
-        Assert.Equal("", map[1060437]);   // MageArmor still emitted
-    }
 }

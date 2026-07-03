@@ -1010,8 +1010,6 @@ namespace Server
             return value;
         }
 
-        // lowerStatReq is passed in because the weapon folds the resource's lower-requirements into
-        // GetLowerStatReq(); emitted in cliloc order (1060435) between the Hit* block and MageWeapon.
         public void GetProperties(IPropertyList list)
         {
             int prop;
@@ -1200,9 +1198,6 @@ namespace Server
             return value;
         }
 
-        // lowerStatReq is passed in because consumers compute it differently: armor folds in the
-        // resource's ArmorLowerRequirements via GetLowerStatReq(), clothing reads it raw. Emitted in
-        // cliloc order (1060435) ahead of MageArmor/SelfRepair.
         public void GetProperties(IPropertyList list)
         {
             int prop;

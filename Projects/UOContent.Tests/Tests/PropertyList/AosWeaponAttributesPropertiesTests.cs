@@ -56,19 +56,6 @@ public class AosWeaponAttributesPropertiesTests
         Assert.Equal("20", map[1060422]); // HitLeechHits
         Assert.Equal("5", map[1060438]);  // MageWeapon => 30 - 25
         Assert.Equal("3", map[1060450]);  // SelfRepair
-        Assert.False(map.ContainsKey(1060435)); // LowerStatReq not emitted without the param
-    }
-
-    [Fact]
-    public void EmitsLowerStatReqWhenPassed()
-    {
-        var attrs = new AosWeaponAttributes(null) { MageWeapon = 25 };
-
-        var opl = new ObjectPropertyList(null);
-        attrs.GetProperties(opl); // computed value passed by the weapon
-        var map = Decode(opl);
-
-        Assert.Equal("40", map[1060435]); // lower requirements, in cliloc order before MageWeapon
-        Assert.Equal("5", map[1060438]);  // MageWeapon still emitted
+        Assert.False(map.ContainsKey(1060435)); // LowerStatReq is emitted inline by the weapon, not by GetProperties
     }
 }

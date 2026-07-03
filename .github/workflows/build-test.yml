@@ -52,7 +52,12 @@ jobs:
     - name: Migration Changes
       run: git diff --exit-code ./**/Migrations/*.v*.json
     - name: Test
-      run: dotnet test --no-restore
+      run: |
+        dotnet test --logger trx --results-directory ./TestResults
+        if [ -z "$(find ./TestResults -name '*.trx' 2>/dev/null)" ]; then
+          echo "::error::No test result files were produced - no test projects ran. Failing to avoid masking failures."
+          exit 1
+        fi
 
   build-linux:
     runs-on: ubuntu-latest
@@ -106,4 +111,9 @@ jobs:
       - name: Build
         run: dotnet run --project Projects/BuildTool -- --config Release --skip-prereqs
       - name: Test
-        run: dotnet test --no-restore
+        run: |
+          dotnet test --logger trx --results-directory ./TestResults
+          if [ -z "$(find ./TestResults -name '*.trx' 2>/dev/null)" ]; then
+            echo "::error::No test result files were produced - no test projects ran. Failing to avoid masking failures."
+            exit 1
+          fi
