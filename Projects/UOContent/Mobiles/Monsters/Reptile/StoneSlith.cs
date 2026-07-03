@@ -9,7 +9,7 @@ public partial class StoneSlith : BaseCreature
     private static readonly MonsterAbility[] _abilities = [MonsterAbilities.GraspingClaw];
 
     [Constructible]
-    public StoneSlith() : base(AIType.AI_Melee, FightMode.Closest)
+    public StoneSlith() : base(AIType.AI_Melee)
     {
         Body = 734;
 
@@ -41,8 +41,8 @@ public partial class StoneSlith : BaseCreature
         ControlSlots = 2;
 
         // TODO(SA-creatures): unported vs ServUO — SpecialAbility.TailSwipe (no ModernUO equivalent),
-        // DragonBlood carving, HideType.Spined, and the minor drops SlithEye / TatteredAncientScroll /
-        // AncientPotteryFragments (item classes not yet in ModernUO).
+        // DragonBlood carving, and the minor drops SlithEye / TatteredAncientScroll / AncientPotteryFragments
+        // (item classes not yet in ModernUO).
     }
 
     public override string CorpseName => "a slith corpse";
@@ -50,6 +50,7 @@ public partial class StoneSlith : BaseCreature
 
     public override int Meat => 1;
     public override int Hides => 12;
+    public override HideType HideType => HideType.Spined;
 
     public override WeaponAbility GetWeaponAbility() => WeaponAbility.BleedAttack;
 

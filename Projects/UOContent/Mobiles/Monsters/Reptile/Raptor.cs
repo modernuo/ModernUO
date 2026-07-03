@@ -7,7 +7,7 @@ namespace Server.Mobiles;
 public partial class Raptor : BaseCreature
 {
     [Constructible]
-    public Raptor() : base(AIType.AI_Melee, FightMode.Closest)
+    public Raptor() : base(AIType.AI_Melee)
     {
         Body = 730;
 
@@ -40,8 +40,7 @@ public partial class Raptor : BaseCreature
 
         // TODO(SA-creatures): ServUO Raptors summon up to 2 "friend" raptors on entering combat
         // (InternalTimer/CheckFriends). Omitted pending a ModernUO timer/MonsterAbility adaptation.
-        // Also unported vs ServUO: the 25% AncientPotteryFragments corpse drop (item class not yet in
-        // ModernUO), PackInstinct.Ostard, and HideType.Horned (no ModernUO equivalent yet).
+        // Also unported vs ServUO: the 25% AncientPotteryFragments corpse drop (item class not yet in ModernUO).
     }
 
     public override string CorpseName => "a raptor corpse";
@@ -50,6 +49,8 @@ public partial class Raptor : BaseCreature
     public override int TreasureMapLevel => 3;
     public override int Meat => 7;
     public override int Hides => 11;
+    public override HideType HideType => HideType.Horned;
+    public override PackInstinct PackInstinct => PackInstinct.Ostard;
 
     public override WeaponAbility GetWeaponAbility() => WeaponAbility.BleedAttack;
 
