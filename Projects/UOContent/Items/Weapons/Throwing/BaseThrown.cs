@@ -14,17 +14,25 @@ public abstract partial class BaseThrown : BaseRanged
 
     public virtual int MaxThrowRange => MinThrowRange + 3;
 
-    // Dynamic max range scaled by attacker Strength.
+    // Dynamic max range scaled by attacker Strength, clamped to the weapon's throw band.
     // At StrReq the effective range equals MinThrowRange; at 140 Str it reaches MaxThrowRange.
     public override int DefMaxRange
     {
         get
         {
-            var baseRange = MaxThrowRange;
+            if (Parent is not Mobile attacker)
+            {
+                return MaxThrowRange;
+            }
 
-            return Parent is Mobile attacker
-                ? baseRange - 3 + (attacker.Str - AosStrengthReq) / ((140 - AosStrengthReq) / 3)
-                : baseRange;
+            var divisor = (140 - AosStrengthReq) / 3;
+            if (divisor <= 0)
+            {
+                return MaxThrowRange;
+            }
+
+            var scaled = MaxThrowRange - 3 + (attacker.Str - AosStrengthReq) / divisor;
+            return Math.Clamp(scaled, MinThrowRange, MaxThrowRange);
         }
     }
 

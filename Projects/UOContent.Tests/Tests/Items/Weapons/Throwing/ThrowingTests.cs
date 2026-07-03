@@ -350,6 +350,80 @@ public class ThrowingTests
         }
     }
 
+    // DefMaxRange STR scaling (uses SoulGlaive: StrReq 60, Min 8, Max 11)
+
+    [Fact]
+    public void DefMaxRange_AtStrReq_EqualsMinThrowRange()
+    {
+        var weapon = new SoulGlaive();
+        var attacker = CreateMobile(Map.Felucca, new Point3D(5800, 500, 0));
+        try
+        {
+            attacker.RawStr = 60; // == AosStrengthReq
+            attacker.AddItem(weapon);
+            Assert.Equal(weapon.MinThrowRange, weapon.DefMaxRange); // 8
+        }
+        finally
+        {
+            weapon.Delete();
+            attacker.Delete();
+        }
+    }
+
+    [Fact]
+    public void DefMaxRange_At140Str_EqualsMaxThrowRange()
+    {
+        var weapon = new SoulGlaive();
+        var attacker = CreateMobile(Map.Felucca, new Point3D(5810, 500, 0));
+        try
+        {
+            attacker.RawStr = 140;
+            attacker.AddItem(weapon);
+            Assert.Equal(weapon.MaxThrowRange, weapon.DefMaxRange); // 11
+        }
+        finally
+        {
+            weapon.Delete();
+            attacker.Delete();
+        }
+    }
+
+    [Fact]
+    public void DefMaxRange_AboveMaxStr_IsCappedAtMaxThrowRange()
+    {
+        var weapon = new SoulGlaive();
+        var attacker = CreateMobile(Map.Felucca, new Point3D(5820, 500, 0));
+        try
+        {
+            attacker.RawStr = 200; // uncapped formula would give 13
+            attacker.AddItem(weapon);
+            Assert.Equal(weapon.MaxThrowRange, weapon.DefMaxRange); // 11, not 13
+        }
+        finally
+        {
+            weapon.Delete();
+            attacker.Delete();
+        }
+    }
+
+    [Fact]
+    public void DefMaxRange_BelowStrReq_FlooredAtMinThrowRange()
+    {
+        var weapon = new SoulGlaive();
+        var attacker = CreateMobile(Map.Felucca, new Point3D(5830, 500, 0));
+        try
+        {
+            attacker.RawStr = 10; // below StrReq 60
+            attacker.AddItem(weapon);
+            Assert.Equal(weapon.MinThrowRange, weapon.DefMaxRange); // 8, not 6
+        }
+        finally
+        {
+            weapon.Delete();
+            attacker.Delete();
+        }
+    }
+
     private static PlayerMobile CreateMobile(Map map, Point3D location)
     {
         var mobile = new PlayerMobile(World.NewMobile);
