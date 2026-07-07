@@ -36,7 +36,7 @@ public class AddonGenerator
         [SerializationGenerator(0)]
         public class {name}Addon : BaseAddon
         {
-            public override BaseAddonDeed Deed => {name}AddonDeed();
+            public override BaseAddonDeed Deed => new {name}AddonDeed();
 
             [Constructible]
             public {name}Addon()
@@ -180,7 +180,7 @@ public class AddonGenerator
 
         var tiles = new Dictionary<Point2D, List<StaticTile>>();
 
-        if (statics)
+        if (statics || items)
         {
             for (var x = start.X; x <= end.X; x++)
             {
@@ -193,18 +193,28 @@ public class AddonGenerator
                     {
                         foreach (var item in map.GetItemsAt(x, y))
                         {
-                            if (range && item.Z >= min && item.Z <= max)
+                            // Placed Static items are captured (with hue/light) by the
+                            // GetItemsInBounds<Static> pass below; skip them here to avoid duplicates.
+                            if (item is Static)
+                            {
+                                continue;
+                            }
+
+                            if (!range || item.Z >= min && item.Z <= max)
                             {
                                 list.Add(new StaticTile((ushort)item.ItemID, (sbyte)item.Z));
                             }
                         }
                     }
 
-                    foreach (var staticTile in tileMatrix.GetStaticTiles(x, y))
+                    if (statics)
                     {
-                        if (range && staticTile.Z >= min && staticTile.Z <= max)
+                        foreach (var staticTile in tileMatrix.GetStaticTiles(x, y))
                         {
-                            list.Add(staticTile);
+                            if (!range || staticTile.Z >= min && staticTile.Z <= max)
+                            {
+                                list.Add(staticTile);
+                            }
                         }
                     }
 
@@ -294,29 +304,25 @@ public class AddonGenerator
             var light = (item.ItemData.Flags & TileFlag.LightSource) == TileFlag.LightSource ? item.Light : LightType.Empty;
             var hue = item.Hue;
 
-            sb.Append("            AddComponent(\n");
+            sb.Append($"            AddComponent(new AddonComponent({item.ItemID})");
             if (hue != 0 || light != LightType.Empty)
             {
-                sb.Append($"                new AddonComponent({item.ItemID})\n");
-                sb.Append("                    {\n");
+                sb.Append(" {");
                 if (light != LightType.Empty)
                 {
-                    sb.Append($"                        Light = LightType.{light},\n");
+                    sb.Append($" Light = LightType.{light}");
+                    if (hue != 0)
+                    {
+                        sb.Append($", Hue = {hue}");
+                    }
                 }
-                if (hue != 0)
+                else
                 {
-                    sb.Append($"                        Hue = {hue},\n");
+                    sb.Append($" Hue = {hue}");
                 }
-                sb.Append("                    },\n");
+                sb.Append(" }");
             }
-            else
-            {
-                sb.Append($"                new AddonComponent({item.ItemID}),\n");
-            }
-            sb.Append($"                {xOffset},\n");
-            sb.Append($"                {yOffset},\n");
-            sb.Append($"                {zOffset},\n");
-            sb.Append("            )\n");
+            sb.Append($", {xOffset}, {yOffset}, {zOffset});\n");
         }
 
         // Only pull in Server.Items when the generated addon lives in a different namespace.
@@ -387,11 +393,11 @@ public class AddonGenerator
             AddCheck(20, 135, 2510, 2511, _state.Range, 2);
             AddLabel(40, 135, LabelHue, "Specify Z Range");
 
-            AddLabel(50, 160, LabelHue, "Max");
+            AddLabel(50, 160, LabelHue, "Min");
             AddImageTiled(85, 175, 60, 1, 9304);
             AddTextEntry(85, 155, 60, 20, LabelHue, 2, _state.Min.ToString());
 
-            AddLabel(160, 160, LabelHue, "Min");
+            AddLabel(160, 160, LabelHue, "Max");
             AddImageTiled(200, 175, 60, 1, 9304);
             AddTextEntry(200, 155, 60, 20, LabelHue, 3, _state.Max.ToString());
 
