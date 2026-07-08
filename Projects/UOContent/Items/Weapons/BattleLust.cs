@@ -115,7 +115,7 @@ public static class BattleLust
         mobile.Map != null &&
         mobile.Map != Map.Internal &&
         mobile.Weapon is BaseWeapon weapon &&
-        weapon.WeaponAttributes.BattleLust != 0;
+        weapon.ExtendedWeaponAttributes.BattleLust != 0;
 
     private static int GetActiveAggressedCount(Mobile mobile)
     {

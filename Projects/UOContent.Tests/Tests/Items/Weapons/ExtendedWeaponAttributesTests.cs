@@ -1,0 +1,127 @@
+using System;
+using System.Reflection;
+using Server;
+using Server.Items;
+using Server.Mobiles;
+using Xunit;
+
+namespace UOContent.Tests;
+
+[Collection("Sequential UOContent Tests")]
+public class ExtendedWeaponAttributesTests
+{
+    [Fact]
+    public void AosWeaponAttribute_DoesNotExposeBaneOrBattleLust()
+    {
+        var names = Enum.GetNames<AosWeaponAttribute>();
+
+        Assert.DoesNotContain("Bane", names);
+        Assert.DoesNotContain("BattleLust", names);
+    }
+
+    [Fact]
+    public void ExtendedWeaponAttribute_UsesFreshLowBits()
+    {
+        Assert.Equal(0x00000001, (int)ExtendedWeaponAttribute.Bane);
+        Assert.Equal(0x00000002, (int)ExtendedWeaponAttribute.BattleLust);
+    }
+
+    [Fact]
+    public void NewWeapon_DefaultsExtendedWeaponAttributesEmpty()
+    {
+        var weapon = new TestKatana();
+
+        try
+        {
+            Assert.NotNull(weapon.ExtendedWeaponAttributes);
+            Assert.True(weapon.ExtendedWeaponAttributes.IsEmpty);
+            Assert.Equal(0, weapon.ExtendedWeaponAttributes.Bane);
+            Assert.Equal(0, weapon.ExtendedWeaponAttributes.BattleLust);
+        }
+        finally
+        {
+            weapon.Delete();
+        }
+    }
+
+    [Fact]
+    public void StormCaller_UsesExtendedBattleLustProperty()
+    {
+        var weapon = new StormCaller();
+
+        try
+        {
+            Assert.Equal(1, weapon.ExtendedWeaponAttributes.BattleLust);
+        }
+        finally
+        {
+            weapon.Delete();
+        }
+    }
+
+    [Fact]
+    public void ExtendedWeaponAttributes_AreStaffEditableThroughCommandProperties()
+    {
+        var containerProperty = typeof(BaseWeapon).GetProperty(nameof(BaseWeapon.ExtendedWeaponAttributes));
+        Assert.NotNull(containerProperty);
+        var containerCommandProperty = containerProperty.GetCustomAttribute<CommandPropertyAttribute>();
+        Assert.NotNull(containerCommandProperty);
+        Assert.True(containerCommandProperty.CanModify);
+
+        AssertStaffCommandProperty(nameof(ExtendedWeaponAttributes.Bane));
+        AssertStaffCommandProperty(nameof(ExtendedWeaponAttributes.BattleLust));
+    }
+
+    [Fact]
+    public void ExtendedWeaponAttributes_PersistBaneAndBattleLustThroughBaseWeaponSerialization()
+    {
+        var previousExpansion = Core.Expansion;
+        var weapon = new TestKatana();
+        var deserialized = new TestKatana();
+
+        try
+        {
+            Core.Expansion = Expansion.HS;
+            weapon.ExtendedWeaponAttributes.Bane = 1;
+            weapon.ExtendedWeaponAttributes.BattleLust = 1;
+
+            var writer = new BufferWriter(true);
+            weapon.Serialize(writer);
+            var buffer = new byte[writer.Position];
+            writer.Buffer.AsSpan(0, (int)writer.Position).CopyTo(buffer);
+
+            var reader = new BufferReader(buffer);
+            deserialized.Deserialize(reader);
+
+            Assert.Equal(buffer.Length, reader.Position);
+            Assert.Equal(1, deserialized.ExtendedWeaponAttributes.Bane);
+            Assert.Equal(1, deserialized.ExtendedWeaponAttributes.BattleLust);
+        }
+        finally
+        {
+            Core.Expansion = previousExpansion;
+            weapon.Delete();
+            deserialized.Delete();
+        }
+    }
+
+    private static void AssertStaffCommandProperty(string propertyName)
+    {
+        var property = typeof(ExtendedWeaponAttributes).GetProperty(propertyName);
+        Assert.NotNull(property);
+
+        var attribute = property.GetCustomAttribute<CommandPropertyAttribute>();
+        Assert.NotNull(attribute);
+        Assert.Equal(AccessLevel.GameMaster, attribute.ReadLevel);
+        Assert.Equal(AccessLevel.GameMaster, attribute.WriteLevel);
+    }
+
+    private class TestKatana : Katana
+    {
+        public override int ComputeDamage(Mobile attacker, Mobile defender) => 1;
+        public override int AbsorbDamage(Mobile attacker, Mobile defender, int damage) => damage;
+        public override void AddBlood(Mobile attacker, Mobile defender, int damage)
+        {
+        }
+    }
+}

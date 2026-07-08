@@ -15,19 +15,19 @@ public class BattleLustPropertyTests
     private static readonly DateTime TestNow = new(2035, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
     [Fact]
-    public void WeaponAttributes_StoresAndDupesBattleLust()
+    public void ExtendedWeaponAttributes_StoresAndDupesBattleLust()
     {
         var weapon = new TestKatana();
         var dupe = new TestKatana();
 
         try
         {
-            weapon.WeaponAttributes.BattleLust = 1;
+            weapon.ExtendedWeaponAttributes.BattleLust = 1;
 
             weapon.Dupe(dupe);
 
-            Assert.Equal(1, weapon.WeaponAttributes.BattleLust);
-            Assert.Equal(1, dupe.WeaponAttributes.BattleLust);
+            Assert.Equal(1, weapon.ExtendedWeaponAttributes.BattleLust);
+            Assert.Equal(1, dupe.ExtendedWeaponAttributes.BattleLust);
         }
         finally
         {
@@ -37,23 +37,23 @@ public class BattleLustPropertyTests
     }
 
     [Fact]
-    public void WeaponAttributes_GetProperties_GatesBattleLustTooltipToStygianAbyss()
+    public void ExtendedWeaponAttributes_GetProperties_GatesBattleLustTooltipToStygianAbyss()
     {
         var previousExpansion = Core.Expansion;
         var weapon = new TestKatana();
 
         try
         {
-            weapon.WeaponAttributes.BattleLust = 1;
+            weapon.ExtendedWeaponAttributes.BattleLust = 1;
 
             Core.Expansion = Expansion.ML;
             var preStygianAbyss = new RecordingPropertyList();
-            weapon.WeaponAttributes.GetProperties(preStygianAbyss);
+            weapon.ExtendedWeaponAttributes.GetProperties(preStygianAbyss);
             Assert.DoesNotContain(preStygianAbyss.Numbers, number => number == BattleLustCliloc);
 
             Core.Expansion = Expansion.SA;
             var stygianAbyss = new RecordingPropertyList();
-            weapon.WeaponAttributes.GetProperties(stygianAbyss);
+            weapon.ExtendedWeaponAttributes.GetProperties(stygianAbyss);
             Assert.Contains(stygianAbyss.Numbers, number => number == BattleLustCliloc);
         }
         finally
@@ -277,7 +277,7 @@ public class BattleLustPropertyTests
 
             ApplyDamage(disarmedWielder, source, BattleLust.DamageThreshold);
             Assert.Equal(1, BattleLust.GetPoints(disarmedWielder));
-            disarmedWeapon.WeaponAttributes.BattleLust = 0;
+            disarmedWeapon.ExtendedWeaponAttributes.BattleLust = 0;
             Assert.Equal(0, BattleLust.GetDamageBonus(disarmedWielder, source));
             Assert.Equal(0, BattleLust.GetPoints(disarmedWielder));
         }
@@ -345,8 +345,8 @@ public class BattleLustPropertyTests
             ApplyDamage(wielder, source, BattleLust.DamageThreshold);
             Assert.Equal(1, BattleLust.GetPoints(wielder));
 
-            weapon.WeaponAttributes.BattleLust = 0;
-            weapon.WeaponAttributes.BattleLust = 1;
+            weapon.ExtendedWeaponAttributes.BattleLust = 0;
+            weapon.ExtendedWeaponAttributes.BattleLust = 1;
 
             Assert.Equal(0, BattleLust.GetPoints(wielder));
         }
@@ -488,7 +488,7 @@ public class BattleLustPropertyTests
 
             BaseRunicTool.ApplyAttributesTo(weapon, false, 0, 25, 100, 100);
 
-            Assert.Equal(0, weapon.WeaponAttributes.BattleLust);
+            Assert.Equal(0, weapon.ExtendedWeaponAttributes.BattleLust);
         }
         finally
         {
@@ -500,7 +500,7 @@ public class BattleLustPropertyTests
     private static TestKatana EquipBattleLustWeapon(Mobile wielder)
     {
         var weapon = new TestKatana();
-        weapon.WeaponAttributes.BattleLust = 1;
+        weapon.ExtendedWeaponAttributes.BattleLust = 1;
         wielder.AddItem(weapon);
         return weapon;
     }
