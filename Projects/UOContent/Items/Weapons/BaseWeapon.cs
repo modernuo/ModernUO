@@ -2018,6 +2018,8 @@ public abstract partial class BaseWeapon
                           Bladeweave.BladeWeaving(attacker, out var bladeweavingAbi) &&
                           bladeweavingAbi is ArmorIgnore;
 
+        var baneDamage = GetBaneDamage(defender);
+
         var damageGiven = AOS.Damage(
             defender,
             attacker,
@@ -2033,6 +2035,11 @@ public abstract partial class BaseWeapon
             false,
             this is BaseRanged
         );
+
+        if (damageGiven > 0 && baneDamage > 0)
+        {
+            damageGiven += AOS.Damage(defender, attacker, baneDamage, false, 100, 0, 0, 0, 0);
+        }
 
         if (damageGiven > 0)
         {
@@ -2367,6 +2374,19 @@ public abstract partial class BaseWeapon
                 defender.Map
             );
         }
+    }
+
+    internal int GetBaneDamage(Mobile defender)
+    {
+        if (!Core.HS || WeaponAttributes.Bane == 0 || defender?.Deleted != false || defender.HitsMax <= 0 ||
+            defender.Hits / (double)defender.HitsMax >= 0.5)
+        {
+            return 0;
+        }
+
+        var potentialDamage = Math.Min(350.0, defender.HitsMax * 0.30);
+
+        return (int)(potentialDamage - defender.Hits / (double)defender.HitsMax * potentialDamage);
     }
 
     public virtual void GetDamageTypes(

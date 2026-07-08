@@ -779,7 +779,8 @@ namespace Server
         ResistEnergyBonus = 0x00200000,
         UseBestSkill = 0x00400000,
         MageWeapon = 0x00800000,
-        DurabilityBonus = 0x01000000
+        DurabilityBonus = 0x01000000,
+        Bane = 0x02000000
     }
 
     public sealed class AosWeaponAttributes : BaseAttributes
@@ -973,6 +974,13 @@ namespace Server
             set => this[AosWeaponAttribute.DurabilityBonus] = value;
         }
 
+        [CommandProperty(AccessLevel.GameMaster)]
+        public int Bane
+        {
+            get => this[AosWeaponAttribute.Bane];
+            set => this[AosWeaponAttribute.Bane] = value;
+        }
+
         public static int GetValue(Mobile m, AosWeaponAttribute attribute)
         {
             if (!Core.AOS)
@@ -1013,6 +1021,11 @@ namespace Server
         public void GetProperties(IPropertyList list)
         {
             int prop;
+
+            if (Core.HS && Bane != 0)
+            {
+                list.Add(1154671); // Bane
+            }
 
             if (UseBestSkill != 0)
             {
