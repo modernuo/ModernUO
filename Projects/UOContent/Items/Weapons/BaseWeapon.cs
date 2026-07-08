@@ -27,7 +27,7 @@ public interface ISlayer
     SlayerName Slayer2 { get; set; }
 }
 
-[SerializationGenerator(11, false)]
+[SerializationGenerator(12, false)]
 public abstract partial class BaseWeapon
     : Item, IWeapon, IFactionItem, ICraftable, ISlayer, IDurability, IAosItem, IIdentifiable
 {
@@ -200,6 +200,15 @@ public abstract partial class BaseWeapon
     [SerializableFieldDefault(31)]
     private ExtendedWeaponAttributes ExtendedWeaponAttributesDefaultValue() => new(this);
 
+    // Field 32 intentionally has no save flag; BaseWeapon's legacy save-flag mask is already at the high bit.
+    [SerializedIgnoreDupe]
+    [SerializableField(32, setter: "private")]
+    [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
+    private NegativeAttributes _negativeAttributes;
+
+    [SerializableFieldDefault(32)]
+    private NegativeAttributes NegativeAttributesDefaultValue() => new(this);
+
     private FactionItem m_FactionState;
     private SkillMod m_SkillMod, m_MageMod;
 
@@ -228,6 +237,7 @@ public abstract partial class BaseWeapon
         Attributes = new AosAttributes(this);
         WeaponAttributes = new AosWeaponAttributes(this);
         ExtendedWeaponAttributes = new ExtendedWeaponAttributes(this);
+        NegativeAttributes = new NegativeAttributes(this);
         SkillBonuses = new AosSkillBonuses(this);
         AosElementDamages = new AosElementAttributes(this);
     }
@@ -945,6 +955,7 @@ public abstract partial class BaseWeapon
         weap.Attributes = new AosAttributes(newItem, Attributes);
         weap.AosElementDamages = new AosElementAttributes(newItem, AosElementDamages);
         weap.ExtendedWeaponAttributes = new ExtendedWeaponAttributes(newItem, ExtendedWeaponAttributes);
+        weap.NegativeAttributes = new NegativeAttributes(newItem, NegativeAttributes);
         weap.SkillBonuses = new AosSkillBonuses(newItem, SkillBonuses);
         weap.WeaponAttributes = new AosWeaponAttributes(newItem, WeaponAttributes);
 
@@ -3062,6 +3073,7 @@ public abstract partial class BaseWeapon
             list.Add(1072792); // Balanced
         }
 
+        NegativeAttributes.GetProperties(list);
         ExtendedWeaponAttributes.GetProperties(list);
         WeaponAttributes.GetProperties(list);
 
@@ -3865,6 +3877,7 @@ public abstract partial class BaseWeapon
     private void AfterDeserialization()
     {
         _extendedWeaponAttributes ??= ExtendedWeaponAttributesDefaultValue();
+        _negativeAttributes ??= NegativeAttributesDefaultValue();
 
         var parentMobile = Parent as Mobile;
 

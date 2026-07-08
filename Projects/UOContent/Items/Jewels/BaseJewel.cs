@@ -18,7 +18,7 @@ public enum GemType
     Diamond
 }
 
-[SerializationGenerator(5, false)]
+[SerializationGenerator(6, false)]
 public abstract partial class BaseJewel : Item, ICraftable, IAosItem
 {
     [EncodedInt]
@@ -52,11 +52,20 @@ public abstract partial class BaseJewel : Item, ICraftable, IAosItem
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private int _gemCount;
 
+    [SerializedIgnoreDupe]
+    [SerializableField(8, setter: "private")]
+    [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
+    private NegativeAttributes _negativeAttributes;
+
+    [SerializableFieldDefault(8)]
+    private NegativeAttributes NegativeAttributesDefaultValue() => new(this);
+
     public BaseJewel(int itemID, Layer layer) : base(itemID)
     {
         _attributes = new AosAttributes(this);
         _resistances = new AosElementAttributes(this);
         _skillBonuses = new AosSkillBonuses(this);
+        NegativeAttributes = new NegativeAttributes(this);
         _resource = CraftResource.Iron;
         Hue = CraftResources.GetHue(_resource);
         _gemType = GemType.None;
@@ -321,6 +330,7 @@ public abstract partial class BaseJewel : Item, ICraftable, IAosItem
         jewel.Attributes = new AosAttributes(newItem, Attributes);
         jewel.Resistances = new AosElementAttributes(newItem, Resistances);
         jewel.SkillBonuses = new AosSkillBonuses(newItem, SkillBonuses);
+        jewel.NegativeAttributes = new NegativeAttributes(newItem, NegativeAttributes);
 
         // Set hue again because of resource
         jewel.Hue = Hue;
@@ -389,6 +399,7 @@ public abstract partial class BaseJewel : Item, ICraftable, IAosItem
             list.Add(1061078, prop); // artifact rarity ~1_val~
         }
 
+        NegativeAttributes.GetProperties(list);
         Attributes.GetProperties(list);
 
         AddResistanceProperties(list);
@@ -423,11 +434,27 @@ public abstract partial class BaseJewel : Item, ICraftable, IAosItem
         _resistances = content.Resistances;
         _skillBonuses = content.SkillBonuses;
         // _gemCount defaults to 0
+        _negativeAttributes = NegativeAttributesDefaultValue();
+    }
+
+    private void MigrateFrom(V5Content content)
+    {
+        _maxHitPoints = content.MaxHitPoints;
+        _hitPoints = content.HitPoints;
+        _resource = content.Resource;
+        _gemType = content.GemType;
+        _attributes = content.Attributes;
+        _resistances = content.Resistances;
+        _skillBonuses = content.SkillBonuses;
+        _gemCount = content.GemCount;
+        _negativeAttributes = NegativeAttributesDefaultValue();
     }
 
     [AfterDeserialization]
     private void AfterDeserialization()
     {
+        _negativeAttributes ??= NegativeAttributesDefaultValue();
+
         var m = Parent as Mobile;
 
         if (Core.AOS && m != null)
