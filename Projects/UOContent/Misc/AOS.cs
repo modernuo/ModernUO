@@ -1114,7 +1114,8 @@ namespace Server
     public enum ExtendedWeaponAttribute
     {
         Bane = 0x00000001,
-        BattleLust = 0x00000002
+        BattleLust = 0x00000002,
+        HitSparks = 0x00000004
     }
 
     public sealed class ExtendedWeaponAttributes : BaseAttributes
@@ -1157,6 +1158,13 @@ namespace Server
             }
         }
 
+        [CommandProperty(AccessLevel.GameMaster)]
+        public int HitSparks
+        {
+            get => this[ExtendedWeaponAttribute.HitSparks];
+            set => this[ExtendedWeaponAttribute.HitSparks] = value;
+        }
+
         public void GetProperties(IPropertyList list)
         {
             if (Core.HS && Bane != 0)
@@ -1167,6 +1175,11 @@ namespace Server
             if (Core.SA && BattleLust != 0)
             {
                 list.Add(1113710); // Battle Lust
+            }
+
+            if (Core.TOL && HitSparks != 0)
+            {
+                list.Add(1157326, HitSparks); // Sparks ~1_val~%
             }
         }
 

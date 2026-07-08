@@ -2278,6 +2278,11 @@ public abstract partial class BaseWeapon
                     DoLowerDefense(attacker, defender);
                 }
             }
+
+            if (a == null && move == null)
+            {
+                Sparks.TryProcOnNormalHit(attacker, defender, ExtendedWeaponAttributes.HitSparks);
+            }
         }
 
         bcAtt?.OnGaveMeleeAttack(defender, damage);
