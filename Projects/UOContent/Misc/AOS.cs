@@ -237,6 +237,7 @@ namespace Server
             }
 
             m.Damage(totalDamage, from);
+            BattleLust.OnDamageTaken(m, from, totalDamage);
             return totalDamage;
         }
 
@@ -780,7 +781,8 @@ namespace Server
         UseBestSkill = 0x00400000,
         MageWeapon = 0x00800000,
         DurabilityBonus = 0x01000000,
-        Bane = 0x02000000
+        Bane = 0x02000000,
+        BattleLust = 0x04000000
     }
 
     public sealed class AosWeaponAttributes : BaseAttributes
@@ -981,6 +983,13 @@ namespace Server
             set => this[AosWeaponAttribute.Bane] = value;
         }
 
+        [CommandProperty(AccessLevel.GameMaster)]
+        public int BattleLust
+        {
+            get => this[AosWeaponAttribute.BattleLust];
+            set => this[AosWeaponAttribute.BattleLust] = value;
+        }
+
         public static int GetValue(Mobile m, AosWeaponAttribute attribute)
         {
             if (!Core.AOS)
@@ -1025,6 +1034,11 @@ namespace Server
             if (Core.HS && Bane != 0)
             {
                 list.Add(1154671); // Bane
+            }
+
+            if (Core.SA && BattleLust != 0)
+            {
+                list.Add(1113710); // Battle Lust
             }
 
             if (UseBestSkill != 0)

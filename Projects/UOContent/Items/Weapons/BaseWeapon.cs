@@ -1886,6 +1886,8 @@ public abstract partial class BaseWeapon
             percentageBonus += talisman.Killer.DamageBonus(defender);
         }
 
+        percentageBonus += BattleLust.GetDamageBonus(attacker, defender);
+
         percentageBonus = Math.Min(percentageBonus, 300);
 
         damage = AOS.Scale(damage, 100 + percentageBonus);
