@@ -45,6 +45,21 @@ public class ExtendedWeaponAttributesTests
     }
 
     [Fact]
+    public void StormCaller_UsesExtendedBattleLustProperty()
+    {
+        var weapon = new StormCaller();
+
+        try
+        {
+            Assert.Equal(1, weapon.ExtendedWeaponAttributes.BattleLust);
+        }
+        finally
+        {
+            weapon.Delete();
+        }
+    }
+
+    [Fact]
     public void ExtendedWeaponAttributes_AreStaffEditableThroughCommandProperties()
     {
         var containerProperty = typeof(BaseWeapon).GetProperty(nameof(BaseWeapon.ExtendedWeaponAttributes));
