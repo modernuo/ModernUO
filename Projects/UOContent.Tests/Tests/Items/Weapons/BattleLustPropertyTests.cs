@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Server;
 using Server.Items;
+using Server.Mobiles;
 using Server.Text;
 using Xunit;
 
@@ -99,6 +100,7 @@ public class BattleLustPropertyTests
         var wielder = CreateMobile(hitsMax: 5000, hits: 5000);
         var source = CreateMobile(location: new Point3D(6201, 500, 0));
         var deletedSource = CreateMobile(location: new Point3D(6202, 500, 0));
+        var deadSource = CreateDeadPlayerMobile(new Point3D(6203, 500, 0));
         var weapon = EquipBattleLustWeapon(wielder);
 
         try
@@ -123,6 +125,10 @@ public class BattleLustPropertyTests
             Assert.Equal(0, BattleLust.GetPoints(wielder));
 
             Core._now = Core._now.AddSeconds(2);
+            ApplyDamage(wielder, deadSource, BattleLust.DamageThreshold);
+            Assert.Equal(0, BattleLust.GetPoints(wielder));
+
+            Core._now = Core._now.AddSeconds(2);
             ApplyDamage(wielder, source, BattleLust.DamageThreshold);
             Assert.Equal(1, BattleLust.GetPoints(wielder));
         }
@@ -135,6 +141,38 @@ public class BattleLustPropertyTests
             wielder.Delete();
             source.Delete();
             deletedSource.Delete();
+            deadSource.Delete();
+        }
+    }
+
+    [Fact]
+    public void DamageTaken_DoesNotGainWhenMobileDamageAppliesNoHitPointLoss()
+    {
+        var previousExpansion = Core.Expansion;
+        var previousNow = Core._now;
+        var wielder = CreateMobile(hitsMax: 5000, hits: 5000);
+        var source = CreateMobile(location: new Point3D(6201, 500, 0));
+        var weapon = EquipBattleLustWeapon(wielder);
+
+        try
+        {
+            Core.Expansion = Expansion.SA;
+            Core._now = TestNow;
+            wielder.Blessed = true;
+
+            ApplyDamage(wielder, source, BattleLust.DamageThreshold);
+
+            Assert.Equal(5000, wielder.Hits);
+            Assert.Equal(0, BattleLust.GetPoints(wielder));
+        }
+        finally
+        {
+            Core.Expansion = previousExpansion;
+            Core._now = previousNow;
+            BattleLust.Clear(wielder);
+            weapon.Delete();
+            wielder.Delete();
+            source.Delete();
         }
     }
 
@@ -253,6 +291,105 @@ public class BattleLustPropertyTests
             disarmedWeapon.Delete();
             deadWielder.Delete();
             disarmedWielder.Delete();
+            source.Delete();
+        }
+    }
+
+    [Fact]
+    public void RuntimeContext_ClearsOnWeaponLossEvenIfReequippedBeforeLazyCleanup()
+    {
+        var previousExpansion = Core.Expansion;
+        var previousNow = Core._now;
+        var wielder = CreateMobile();
+        var source = CreateMobile(location: new Point3D(6201, 500, 0));
+        var weapon = EquipBattleLustWeapon(wielder);
+
+        try
+        {
+            Core.Expansion = Expansion.SA;
+            Core._now = TestNow;
+
+            ApplyDamage(wielder, source, BattleLust.DamageThreshold);
+            Assert.Equal(1, BattleLust.GetPoints(wielder));
+
+            wielder.RemoveItem(weapon);
+            wielder.AddItem(weapon);
+
+            Assert.Equal(0, BattleLust.GetPoints(wielder));
+        }
+        finally
+        {
+            Core.Expansion = previousExpansion;
+            Core._now = previousNow;
+            BattleLust.Clear(wielder);
+            weapon.Delete();
+            wielder.Delete();
+            source.Delete();
+        }
+    }
+
+    [Fact]
+    public void RuntimeContext_ClearsWhenBattleLustPropertyIsRemovedEvenIfRestoredBeforeLazyCleanup()
+    {
+        var previousExpansion = Core.Expansion;
+        var previousNow = Core._now;
+        var wielder = CreateMobile();
+        var source = CreateMobile(location: new Point3D(6201, 500, 0));
+        var weapon = EquipBattleLustWeapon(wielder);
+
+        try
+        {
+            Core.Expansion = Expansion.SA;
+            Core._now = TestNow;
+
+            ApplyDamage(wielder, source, BattleLust.DamageThreshold);
+            Assert.Equal(1, BattleLust.GetPoints(wielder));
+
+            weapon.WeaponAttributes.BattleLust = 0;
+            weapon.WeaponAttributes.BattleLust = 1;
+
+            Assert.Equal(0, BattleLust.GetPoints(wielder));
+        }
+        finally
+        {
+            Core.Expansion = previousExpansion;
+            Core._now = previousNow;
+            BattleLust.Clear(wielder);
+            weapon.Delete();
+            wielder.Delete();
+            source.Delete();
+        }
+    }
+
+    [Fact]
+    public void RuntimeContext_ClearsOnInvalidMapEvenIfOwnerReturnsBeforeDecayTick()
+    {
+        var previousExpansion = Core.Expansion;
+        var previousNow = Core._now;
+        var wielder = CreateMobile();
+        var source = CreateMobile(location: new Point3D(6201, 500, 0));
+        var weapon = EquipBattleLustWeapon(wielder);
+
+        try
+        {
+            Core.Expansion = Expansion.SA;
+            Core._now = TestNow;
+
+            ApplyDamage(wielder, source, BattleLust.DamageThreshold);
+            Assert.Equal(1, BattleLust.GetPoints(wielder));
+
+            wielder.MoveToWorld(Point3D.Zero, Map.Internal);
+            wielder.MoveToWorld(new Point3D(6200, 500, 0), Map.Felucca);
+
+            Assert.Equal(0, BattleLust.GetPoints(wielder));
+        }
+        finally
+        {
+            Core.Expansion = previousExpansion;
+            Core._now = previousNow;
+            BattleLust.Clear(wielder);
+            weapon.Delete();
+            wielder.Delete();
             source.Delete();
         }
     }
@@ -397,6 +534,18 @@ public class BattleLustPropertyTests
         mobile.DefaultMobileInit();
         InitializeHits(mobile, hitsMax, hits);
         mobile.MoveToWorld(location == default ? new Point3D(6200, 500, 0) : location, Map.Felucca);
+        return mobile;
+    }
+
+    private static PlayerMobile CreateDeadPlayerMobile(Point3D location)
+    {
+        var mobile = new PlayerMobile(World.NewMobile);
+        mobile.DefaultMobileInit();
+        mobile.Player = true;
+        mobile.Hits = mobile.HitsMax;
+        mobile.MoveToWorld(location, Map.Felucca);
+        mobile.Body = mobile.Race.GhostBody(mobile);
+        Assert.False(mobile.Alive);
         return mobile;
     }
 

@@ -236,8 +236,9 @@ namespace Server
                 SpellHelper.DoLeech(totalDamage, from, m);
             }
 
+            var oldHits = m.Hits;
             m.Damage(totalDamage, from);
-            BattleLust.OnDamageTaken(m, from, totalDamage);
+            BattleLust.OnDamageTaken(m, from, Math.Max(0, oldHits - m.Hits));
             return totalDamage;
         }
 
@@ -987,7 +988,17 @@ namespace Server
         public int BattleLust
         {
             get => this[AosWeaponAttribute.BattleLust];
-            set => this[AosWeaponAttribute.BattleLust] = value;
+            set
+            {
+                var hadBattleLust = BattleLust != 0;
+
+                this[AosWeaponAttribute.BattleLust] = value;
+
+                if (hadBattleLust && value == 0 && Owner is BaseWeapon { Parent: Mobile m })
+                {
+                    Server.Items.BattleLust.Clear(m);
+                }
+            }
         }
 
         public static int GetValue(Mobile m, AosWeaponAttribute attribute)

@@ -1140,6 +1140,11 @@ public abstract partial class BaseWeapon
             return;
         }
 
+        if (WeaponAttributes.BattleLust != 0)
+        {
+            BattleLust.Clear(m);
+        }
+
         var serial = Serial;
 
         m.RemoveStatMod($"{serial}Str");
@@ -1174,6 +1179,16 @@ public abstract partial class BaseWeapon
         m.CheckStatTimers();
 
         m.Delta(MobileDelta.WeaponDamage);
+    }
+
+    public override void OnMapChange()
+    {
+        base.OnMapChange();
+
+        if ((Map == null || Map == Map.Internal) && Parent is Mobile m && WeaponAttributes.BattleLust != 0)
+        {
+            BattleLust.Clear(m);
+        }
     }
 
     public virtual SkillName GetUsedSkill(Mobile m, bool checkSkillAttrs)

@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using ModernUO.CodeGeneratedEvents;
+using Server.Mobiles;
 
 namespace Server.Items;
 
@@ -86,7 +88,11 @@ public static class BattleLust
         return context.Points;
     }
 
-    internal static void Clear(Mobile mobile)
+    [OnEvent(nameof(PlayerMobile.PlayerDeathEvent))]
+    [OnEvent(nameof(PlayerMobile.PlayerDeletedEvent))]
+    [OnEvent(nameof(BaseCreature.CreatureDeathEvent))]
+    [OnEvent(nameof(BaseCreature.CreatureDeletedEvent))]
+    public static void Clear(Mobile mobile)
     {
         if (mobile != null && _contexts.Remove(mobile, out var context))
         {
