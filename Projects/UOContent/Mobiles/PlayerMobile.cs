@@ -3710,7 +3710,17 @@ namespace Server.Mobiles
             AutoStabled = null;
         }
 
-        private static int GetInsuranceCost(Item item) => 600;
+        internal static int GetInsuranceCost(Item item)
+        {
+            var cost = 600;
+
+            if (NegativeAttributes.IsPrized(item))
+            {
+                cost *= 2;
+            }
+
+            return cost;
+        }
 
         private void ToggleItemInsurance()
         {

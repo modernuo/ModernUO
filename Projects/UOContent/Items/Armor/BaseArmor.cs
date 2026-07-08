@@ -12,7 +12,7 @@ using AMT = Server.Items.ArmorMaterialType;
 
 namespace Server.Items
 {
-    [SerializationGenerator(9, false)]
+    [SerializationGenerator(10, false)]
     public abstract partial class BaseArmor
         : Item, IScissorable, IFactionItem, ICraftable, IWearableDurability, IAosItem, IIdentifiable
     {
@@ -151,6 +151,17 @@ namespace Server.Items
         [SerializableFieldSaveFlag(24)]
         private bool ShouldSerializePlayerConstructed() => _playerConstructed;
 
+        [SerializedIgnoreDupe]
+        [SerializableField(25, setter: "private")]
+        [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
+        private NegativeAttributes _negativeAttributes;
+
+        [SerializableFieldSaveFlag(25)]
+        private bool ShouldSerializeNegativeAttributes() => !_negativeAttributes.IsEmpty;
+
+        [SerializableFieldDefault(25)]
+        private NegativeAttributes NegativeAttributesDefaultValue() => new(this);
+
         private FactionItem m_FactionState;
 
         public BaseArmor(int itemID) : base(itemID)
@@ -167,6 +178,7 @@ namespace Server.Items
 
             Attributes = new AosAttributes(this);
             ArmorAttributes = new AosArmorAttributes(this);
+            NegativeAttributes = new NegativeAttributes(this);
             SkillBonuses = new AosSkillBonuses(this);
         }
 
@@ -814,6 +826,7 @@ namespace Server.Items
 
             armor.Attributes = new AosAttributes(newItem, Attributes);
             armor.ArmorAttributes = new AosArmorAttributes(newItem, ArmorAttributes);
+            armor.NegativeAttributes = new NegativeAttributes(newItem, NegativeAttributes);
             armor.SkillBonuses = new AosSkillBonuses(newItem, SkillBonuses);
 
             // Set hue again because of resource
@@ -1031,6 +1044,8 @@ namespace Server.Items
         [AfterDeserialization]
         private void AfterDeserialization()
         {
+            _negativeAttributes ??= NegativeAttributesDefaultValue();
+
             var m = Parent as Mobile;
 
             if (Core.AOS && m != null)
@@ -1323,6 +1338,7 @@ namespace Server.Items
                 list.Add(1061078, prop); // artifact rarity ~1_val~
             }
 
+            NegativeAttributes.GetProperties(list);
             ArmorAttributes.GetProperties(list);
 
             Attributes.GetProperties(list, luckBonus: GetLuckBonus());

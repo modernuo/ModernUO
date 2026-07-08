@@ -1174,6 +1174,62 @@ namespace Server
     }
 
     [Flags]
+    public enum NegativeAttribute
+    {
+        Prized = 0x00000001
+    }
+
+    public sealed class NegativeAttributes : BaseAttributes
+    {
+        public NegativeAttributes(Item owner) : base(owner)
+        {
+        }
+
+        public NegativeAttributes(Item owner, NegativeAttributes other) : base(owner, other)
+        {
+        }
+
+        public int this[NegativeAttribute attribute]
+        {
+            get => GetValue((int)attribute);
+            set => SetValue((int)attribute, value);
+        }
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        public int Prized
+        {
+            get => this[NegativeAttribute.Prized];
+            set => this[NegativeAttribute.Prized] = value;
+        }
+
+        public static bool IsPrized(Item item)
+        {
+            if (!Core.HS)
+            {
+                return false;
+            }
+
+            return item switch
+            {
+                BaseWeapon weapon => weapon.NegativeAttributes.Prized != 0,
+                BaseArmor armor   => armor.NegativeAttributes.Prized != 0,
+                BaseJewel jewel   => jewel.NegativeAttributes.Prized != 0,
+                _                 => false
+            };
+        }
+
+        public void GetProperties(IPropertyList list)
+        {
+            if (Core.HS && Prized != 0)
+            {
+                list.Add(1154910); // Prized
+            }
+        }
+
+        public override string ToString() => "...";
+    }
+
+    [Flags]
     public enum AosArmorAttribute
     {
         LowerStatReq = 0x00000001,
