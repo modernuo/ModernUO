@@ -27,7 +27,7 @@ public interface ISlayer
     SlayerName Slayer2 { get; set; }
 }
 
-[SerializationGenerator(10, false)]
+[SerializationGenerator(11, false)]
 public abstract partial class BaseWeapon
     : Item, IWeapon, IFactionItem, ICraftable, ISlayer, IDurability, IAosItem, IIdentifiable
 {
@@ -191,6 +191,15 @@ public abstract partial class BaseWeapon
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool ShouldSerializeEngravedText() => !string.IsNullOrEmpty(_engravedText);
 
+    // Field 31 intentionally has no save flag; BaseWeapon's legacy save-flag mask is already at the high bit.
+    [SerializedIgnoreDupe]
+    [SerializableField(31, setter: "private")]
+    [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
+    private ExtendedWeaponAttributes _extendedWeaponAttributes;
+
+    [SerializableFieldDefault(31)]
+    private ExtendedWeaponAttributes ExtendedWeaponAttributesDefaultValue() => new(this);
+
     private FactionItem m_FactionState;
     private SkillMod m_SkillMod, m_MageMod;
 
@@ -218,6 +227,7 @@ public abstract partial class BaseWeapon
 
         Attributes = new AosAttributes(this);
         WeaponAttributes = new AosWeaponAttributes(this);
+        ExtendedWeaponAttributes = new ExtendedWeaponAttributes(this);
         SkillBonuses = new AosSkillBonuses(this);
         AosElementDamages = new AosElementAttributes(this);
     }
@@ -934,6 +944,7 @@ public abstract partial class BaseWeapon
 
         weap.Attributes = new AosAttributes(newItem, Attributes);
         weap.AosElementDamages = new AosElementAttributes(newItem, AosElementDamages);
+        weap.ExtendedWeaponAttributes = new ExtendedWeaponAttributes(newItem, ExtendedWeaponAttributes);
         weap.SkillBonuses = new AosSkillBonuses(newItem, SkillBonuses);
         weap.WeaponAttributes = new AosWeaponAttributes(newItem, WeaponAttributes);
 
@@ -1140,7 +1151,7 @@ public abstract partial class BaseWeapon
             return;
         }
 
-        if (WeaponAttributes.BattleLust != 0)
+        if (ExtendedWeaponAttributes.BattleLust != 0)
         {
             BattleLust.Clear(m);
         }
@@ -1185,7 +1196,7 @@ public abstract partial class BaseWeapon
     {
         base.OnMapChange();
 
-        if ((Map == null || Map == Map.Internal) && Parent is Mobile m && WeaponAttributes.BattleLust != 0)
+        if ((Map == null || Map == Map.Internal) && Parent is Mobile m && ExtendedWeaponAttributes.BattleLust != 0)
         {
             BattleLust.Clear(m);
         }
@@ -2395,7 +2406,7 @@ public abstract partial class BaseWeapon
 
     internal int GetBaneDamage(Mobile defender)
     {
-        if (!Core.HS || WeaponAttributes.Bane == 0 || defender?.Deleted != false || defender.HitsMax <= 0 ||
+        if (!Core.HS || ExtendedWeaponAttributes.Bane == 0 || defender?.Deleted != false || defender.HitsMax <= 0 ||
             defender.Hits / (double)defender.HitsMax >= 0.5)
         {
             return 0;
@@ -3051,6 +3062,7 @@ public abstract partial class BaseWeapon
             list.Add(1072792); // Balanced
         }
 
+        ExtendedWeaponAttributes.GetProperties(list);
         WeaponAttributes.GetProperties(list);
 
         if (ImmolatingWeaponSpell.IsImmolating(this))
@@ -3820,6 +3832,8 @@ public abstract partial class BaseWeapon
             WeaponAttributes.Deserialize(reader);
         }
 
+        ExtendedWeaponAttributes = new ExtendedWeaponAttributes(this);
+
         PlayerConstructed = GetSaveFlag(flags, OldSaveFlag.PlayerConstructed);
 
         SkillBonuses = new AosSkillBonuses(this);
@@ -3850,6 +3864,8 @@ public abstract partial class BaseWeapon
     [AfterDeserialization]
     private void AfterDeserialization()
     {
+        _extendedWeaponAttributes ??= ExtendedWeaponAttributesDefaultValue();
+
         var parentMobile = Parent as Mobile;
 
         if (UseSkillMod && _accuracyLevel != WeaponAccuracyLevel.Regular && parentMobile != null)

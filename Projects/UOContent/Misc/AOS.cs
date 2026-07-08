@@ -781,9 +781,7 @@ namespace Server
         ResistEnergyBonus = 0x00200000,
         UseBestSkill = 0x00400000,
         MageWeapon = 0x00800000,
-        DurabilityBonus = 0x01000000,
-        Bane = 0x02000000,
-        BattleLust = 0x04000000
+        DurabilityBonus = 0x01000000
     }
 
     public sealed class AosWeaponAttributes : BaseAttributes
@@ -977,30 +975,6 @@ namespace Server
             set => this[AosWeaponAttribute.DurabilityBonus] = value;
         }
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int Bane
-        {
-            get => this[AosWeaponAttribute.Bane];
-            set => this[AosWeaponAttribute.Bane] = value;
-        }
-
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int BattleLust
-        {
-            get => this[AosWeaponAttribute.BattleLust];
-            set
-            {
-                var hadBattleLust = BattleLust != 0;
-
-                this[AosWeaponAttribute.BattleLust] = value;
-
-                if (hadBattleLust && value == 0 && Owner is BaseWeapon { Parent: Mobile m })
-                {
-                    Server.Items.BattleLust.Clear(m);
-                }
-            }
-        }
-
         public static int GetValue(Mobile m, AosWeaponAttribute attribute)
         {
             if (!Core.AOS)
@@ -1041,16 +1015,6 @@ namespace Server
         public void GetProperties(IPropertyList list)
         {
             int prop;
-
-            if (Core.HS && Bane != 0)
-            {
-                list.Add(1154671); // Bane
-            }
-
-            if (Core.SA && BattleLust != 0)
-            {
-                list.Add(1113710); // Battle Lust
-            }
 
             if (UseBestSkill != 0)
             {
@@ -1140,6 +1104,69 @@ namespace Server
             if ((prop = SelfRepair) != 0)
             {
                 list.Add(1060450, prop); // self repair ~1_val~
+            }
+        }
+
+        public override string ToString() => "...";
+    }
+
+    [Flags]
+    public enum ExtendedWeaponAttribute
+    {
+        Bane = 0x00000001,
+        BattleLust = 0x00000002
+    }
+
+    public sealed class ExtendedWeaponAttributes : BaseAttributes
+    {
+        public ExtendedWeaponAttributes(Item owner) : base(owner)
+        {
+        }
+
+        public ExtendedWeaponAttributes(Item owner, ExtendedWeaponAttributes other) : base(owner, other)
+        {
+        }
+
+        public int this[ExtendedWeaponAttribute attribute]
+        {
+            get => GetValue((int)attribute);
+            set => SetValue((int)attribute, value);
+        }
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        public int Bane
+        {
+            get => this[ExtendedWeaponAttribute.Bane];
+            set => this[ExtendedWeaponAttribute.Bane] = value;
+        }
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        public int BattleLust
+        {
+            get => this[ExtendedWeaponAttribute.BattleLust];
+            set
+            {
+                var hadBattleLust = BattleLust != 0;
+
+                this[ExtendedWeaponAttribute.BattleLust] = value;
+
+                if (hadBattleLust && value == 0 && Owner is BaseWeapon { Parent: Mobile m })
+                {
+                    Server.Items.BattleLust.Clear(m);
+                }
+            }
+        }
+
+        public void GetProperties(IPropertyList list)
+        {
+            if (Core.HS && Bane != 0)
+            {
+                list.Add(1154671); // Bane
+            }
+
+            if (Core.SA && BattleLust != 0)
+            {
+                list.Add(1113710); // Battle Lust
             }
         }
 

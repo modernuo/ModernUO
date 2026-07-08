@@ -14,19 +14,19 @@ public class BanePropertyTests
     private const int BaneCliloc = 1154671;
 
     [Fact]
-    public void WeaponAttributes_StoresAndDupesBane()
+    public void ExtendedWeaponAttributes_StoresAndDupesBane()
     {
         var weapon = new TestKatana();
         var dupe = new TestKatana();
 
         try
         {
-            weapon.WeaponAttributes.Bane = 1;
+            weapon.ExtendedWeaponAttributes.Bane = 1;
 
             weapon.Dupe(dupe);
 
-            Assert.Equal(1, weapon.WeaponAttributes.Bane);
-            Assert.Equal(1, dupe.WeaponAttributes.Bane);
+            Assert.Equal(1, weapon.ExtendedWeaponAttributes.Bane);
+            Assert.Equal(1, dupe.ExtendedWeaponAttributes.Bane);
         }
         finally
         {
@@ -36,23 +36,23 @@ public class BanePropertyTests
     }
 
     [Fact]
-    public void WeaponAttributes_GetProperties_GatesBaneTooltipToHighSeas()
+    public void ExtendedWeaponAttributes_GetProperties_GatesBaneTooltipToHighSeas()
     {
         var previousExpansion = Core.Expansion;
         var weapon = new TestKatana();
 
         try
         {
-            weapon.WeaponAttributes.Bane = 1;
+            weapon.ExtendedWeaponAttributes.Bane = 1;
 
             Core.Expansion = Expansion.ML;
             var preHighSeas = new RecordingPropertyList();
-            weapon.WeaponAttributes.GetProperties(preHighSeas);
+            weapon.ExtendedWeaponAttributes.GetProperties(preHighSeas);
             Assert.DoesNotContain(preHighSeas.Numbers, number => number == BaneCliloc);
 
             Core.Expansion = Expansion.HS;
             var highSeas = new RecordingPropertyList();
-            weapon.WeaponAttributes.GetProperties(highSeas);
+            weapon.ExtendedWeaponAttributes.GetProperties(highSeas);
             Assert.Contains(highSeas.Numbers, number => number == BaneCliloc);
         }
         finally
@@ -77,7 +77,7 @@ public class BanePropertyTests
         try
         {
             Core.Expansion = Expansion.HS;
-            weapon.WeaponAttributes.Bane = 1;
+            weapon.ExtendedWeaponAttributes.Bane = 1;
 
             Assert.Equal(expected, weapon.GetBaneDamage(defender));
         }
@@ -100,7 +100,7 @@ public class BanePropertyTests
         try
         {
             Core.Expansion = Expansion.ML;
-            weapon.WeaponAttributes.Bane = 1;
+            weapon.ExtendedWeaponAttributes.Bane = 1;
             AddResistance(defender, ResistanceType.Physical, 70);
             var before = defender.Hits;
 
@@ -128,7 +128,7 @@ public class BanePropertyTests
         try
         {
             Core.Expansion = Expansion.HS;
-            weapon.WeaponAttributes.Bane = 1;
+            weapon.ExtendedWeaponAttributes.Bane = 1;
             AddResistance(defender, ResistanceType.Physical, 70);
             var before = defender.Hits;
 
@@ -156,7 +156,7 @@ public class BanePropertyTests
         try
         {
             Core.Expansion = Expansion.HS;
-            weapon.WeaponAttributes.Bane = 1;
+            weapon.ExtendedWeaponAttributes.Bane = 1;
             AddResistance(defender, ResistanceType.Physical, 70);
             var before = defender.Hits;
 
@@ -184,7 +184,7 @@ public class BanePropertyTests
         try
         {
             Core.Expansion = Expansion.HS;
-            weapon.WeaponAttributes.Bane = 1;
+            weapon.ExtendedWeaponAttributes.Bane = 1;
             weapon.AosElementDamages.Fire = 100;
             AddResistance(defender, ResistanceType.Physical, 70);
             AddResistance(defender, ResistanceType.Fire, 0);
@@ -214,7 +214,7 @@ public class BanePropertyTests
         try
         {
             Core.Expansion = Expansion.HS;
-            weapon.WeaponAttributes.Bane = 1;
+            weapon.ExtendedWeaponAttributes.Bane = 1;
             AddResistance(defender, ResistanceType.Physical, 70);
             var before = defender.Hits;
 
@@ -242,7 +242,7 @@ public class BanePropertyTests
         try
         {
             Core.Expansion = Expansion.HS;
-            weapon.WeaponAttributes.Bane = 1;
+            weapon.ExtendedWeaponAttributes.Bane = 1;
             AddResistance(defender, ResistanceType.Physical, 70);
             WeaponAbility.SetCurrentAbility(attacker, WeaponAbility.ArmorIgnore);
             var before = defender.Hits;
@@ -272,7 +272,7 @@ public class BanePropertyTests
         try
         {
             Core.Expansion = Expansion.HS;
-            weapon.WeaponAttributes.Bane = 1;
+            weapon.ExtendedWeaponAttributes.Bane = 1;
             AddResistance(defender, ResistanceType.Physical, 70);
             var before = defender.Hits;
 
@@ -300,7 +300,7 @@ public class BanePropertyTests
         try
         {
             Core.Expansion = Expansion.HS;
-            weapon.WeaponAttributes.Bane = 1;
+            weapon.ExtendedWeaponAttributes.Bane = 1;
             var before = defender.Hits;
 
             weapon.OnSwing(attacker, defender);
@@ -327,7 +327,7 @@ public class BanePropertyTests
         try
         {
             Core.Expansion = Expansion.HS;
-            weapon.WeaponAttributes.Bane = 1;
+            weapon.ExtendedWeaponAttributes.Bane = 1;
             AddResistance(defender, ResistanceType.Physical, 70);
             var before = defender.Hits;
 
@@ -357,7 +357,7 @@ public class BanePropertyTests
 
             BaseRunicTool.ApplyAttributesTo(weapon, false, 0, 25, 100, 100);
 
-            Assert.Equal(0, weapon.WeaponAttributes.Bane);
+            Assert.Equal(0, weapon.ExtendedWeaponAttributes.Bane);
         }
         finally
         {

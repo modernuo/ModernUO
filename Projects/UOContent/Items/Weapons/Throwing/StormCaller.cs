@@ -10,7 +10,7 @@ public partial class StormCaller : Boomerang
     {
         Hue = 456;
         //TODO Implement BattleLust
-        //WeaponAttributes.BattleLust = 1;
+        //ExtendedWeaponAttributes.BattleLust = 1;
         WeaponAttributes.HitLightning = 40;
         WeaponAttributes.HitLowerDefend = 30;
         Attributes.BonusStr = 5;
