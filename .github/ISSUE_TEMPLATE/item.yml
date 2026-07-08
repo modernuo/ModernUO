@@ -1,0 +1,222 @@
+name: "🎒 New Item"
+description: Create a new ticket for a new Ultima Online item, equipment piece, artifact, reward, resource, or rare
+title: "Item: <item name>"
+labels: ["ultima-online", "triage", "item"]
+
+body:
+  - type: input
+    id: name
+    attributes:
+      label: Item Name
+      description: The in-game item name as it should appear to players.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: item-categories
+    attributes:
+      label: Item Categories
+      multiple: true
+      options:
+        - Equipment
+        - Armor
+        - Weapons
+        - Shields
+        - Jewelry
+        - Talismans
+        - Clothing
+        - Item Sets
+        - Artifacts
+        - Veteran Rewards
+        - Craftables
+        - Resources
+        - Plants & Seeds
+        - Rares / Collectibles
+        - Containers
+        - Consumables
+        - Reagents
+        - Ammunition
+        - Tools
+        - Books / Scrolls
+        - Deeds
+        - House Add-ons / Decorations
+        - Quest Items
+        - Event Items
+        - Boats / Ship Items
+        - Unknown / Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: |
+        Describe the item, its role, and the intended player-facing behavior.
+    validations:
+      required: true
+
+  - type: textarea
+    id: references
+    attributes:
+      label: References
+      description: |
+        Add UO.com, UOGuide, Stratics, ServUO/RunUO, screenshots, or other related URLs.
+        Use one reference per line and note what each source proves when possible.
+      placeholder: |
+        https://uo.com/wiki/... — official wording, source, or publish note
+        https://www.uoguide.com/... — mechanic/history notes
+        https://github.com/ServUO/ServUO/... — engine precedent
+    validations:
+      required: false
+
+  - type: dropdown
+    id: era
+    attributes:
+      label: Initial Era
+      options:
+        - Classic (Pre-T2A)
+        - The Second Age (T2A)
+        - Renaissance (UOR)
+        - Third Dawn (TD)
+        - Lord Blackthorns Revenge (LBR)
+        - Age of Shadows (AOS)
+        - Samurai Empire (SE)
+        - Mondains Legacy (ML)
+        - Kingdom Reborn (KR)
+        - Stygian Abyss (SA)
+        - High Seas (HS)
+        - Time of Legends (TOL)
+        - New Legacy (NL)
+        - Unknown
+    validations:
+      required: true
+
+  - type: input
+    id: publish
+    attributes:
+      label: Initial Publish
+      description: What is the initial publish?
+      placeholder: unknown
+    validations:
+      required: false
+
+  - type: dropdown
+    id: source-availability
+    attributes:
+      label: Source / Availability
+      multiple: true
+      options:
+        - Monster Loot
+        - Boss / Champion / Peerless Drop
+        - Treasure Chest / Treasure Map
+        - Vendor
+        - Crafting
+        - Harvesting / Resource Gathering
+        - Quest Reward
+        - Event Reward
+        - Veteran Reward
+        - Artifact Drop
+        - Bulk Order Reward
+        - Plant System / Gardening
+        - Decoration / Static Placement
+        - Housing / Add-on
+        - Player Created
+        - Staff / GM Only
+        - Unknown
+    validations:
+      required: true
+
+  - type: dropdown
+    id: player-loops
+    attributes:
+      label: Player Loops
+      multiple: true
+      options:
+        - PvM
+        - PvP / Felucca Risk
+        - Economy / Trading
+        - Crafting
+        - Harvesting
+        - Housing / Decoration
+        - Gardening
+        - Quest / Narrative
+        - Event / Seasonal
+        - New Player Progression
+        - Veteran / Prestige
+        - Roleplay / Social
+        - Unknown
+    validations:
+      required: true
+
+  - type: textarea
+    id: item-mechanics
+    attributes:
+      label: Item Mechanics
+      description: |
+        Describe equip effects, use effects, charges, cooldowns, durability, decay, stackability, ownership, binding, blessed/cursed/newbied behavior, or other mechanics.
+    validations:
+      required: false
+
+  - type: textarea
+    id: equipment-details
+    attributes:
+      label: Equipment Details
+      description: |
+        If applicable, describe layer/slot, weapon speed/damage, armor rating/resists, required skills/stats/race, durability, repairability, and equip restrictions.
+      placeholder: |
+        Layer/slot:
+        Damage/speed or armor/resists:
+        Requirements:
+        Durability/repair:
+    validations:
+      required: false
+
+  - type: textarea
+    id: item-properties
+    attributes:
+      label: Item Properties / Set Bonuses
+      description: |
+        If applicable, list magical item properties, artifact properties, set pieces, set bonuses, intensity ranges, caps, and whether properties are fixed or generated.
+    validations:
+      required: false
+
+  - type: textarea
+    id: crafting-resources
+    attributes:
+      label: Crafting / Resources
+      description: |
+        If applicable, describe recipe, craft system, required resources, skill requirements, exceptional behavior, resource output, harvesting rules, or plant/seed growth rules.
+    validations:
+      required: false
+
+  - type: textarea
+    id: loot-rewards-economy
+    attributes:
+      label: Loot / Rewards / Economy
+      description: |
+        Describe drop source, rarity, tradeability, blessing/insurance impact, faucet/sink effect, vendor value, stack size, storage impact, and expected volume per day.
+    validations:
+      required: false
+
+  - type: textarea
+    id: presentation
+    attributes:
+      label: Client Presentation
+      description: |
+        Add item ID/art, hue, layer, cliloc name, tooltip lines, sound, animation, container art, gump art, or other client presentation notes.
+    validations:
+      required: false
+
+  - type: textarea
+    id: implementation-notes
+    attributes:
+      label: Implementation Notes / Repo Anchors
+      description: |
+        Add known classes, files, similar items, loot tables, craft definitions, reward stores, tests, or code anchors if known.
+      placeholder: |
+        Similar class:
+        Loot/craft/reward data:
+        Tests:
+    validations:
+      required: false

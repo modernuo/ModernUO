@@ -1,0 +1,284 @@
+name: "📜 New Quest"
+description: Create a new ticket for a new or changed Ultima Online quest, quest chain, objective, quest giver, reward, or access unlock
+title: "Quest: <quest name>"
+labels: ["ultima-online", "triage", "quest"]
+
+body:
+  - type: input
+    id: name
+    attributes:
+      label: Quest Name
+      description: The quest, quest chain, quest giver, access unlock, or objective name.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: request-type
+    attributes:
+      label: Request Type
+      multiple: true
+      options:
+        - New Quest
+        - Existing Quest Change
+        - Quest Chain
+        - Quest Objective
+        - Quest Giver / NPC
+        - Quest Reward
+        - Access Unlock / Context Flag
+        - Skill Training / New Haven
+        - Peerless / Dungeon Access
+        - Delivery / Collection Flow
+        - Escort Quest
+        - Quest Gump / UI
+        - Quest Config / Registration
+        - Parity / Migration Info
+        - Custom / Unknown
+    validations:
+      required: true
+
+  - type: dropdown
+    id: quest-system
+    attributes:
+      label: Quest System / Area
+      multiple: true
+      options:
+        - ML Quest System
+        - Classic Quest / Escort
+        - New Haven
+        - Heartwood
+        - Sanctuary
+        - Bedlam
+        - Blighted Grove
+        - The Citadel
+        - Twisted Weald
+        - Prism of Light
+        - Painted Caves
+        - Labyrinth
+        - Palace of Paroxysmus
+        - Tokuno
+        - Spellweaving
+        - Paladin / Chivalry
+        - Necromancer / Necromancy
+        - Peerless Access
+        - Event / Seasonal
+        - Custom / Unknown
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: |
+        Describe the quest, quest chain, access unlock, or quest system behavior and the intended player-facing result.
+    validations:
+      required: true
+
+  - type: textarea
+    id: references
+    attributes:
+      label: References
+      description: |
+        Add UO.com, UOGuide, Stratics, ServUO/RunUO, screenshots, gump captures, quest text, videos, or other related URLs.
+        Use one reference per line and note what each source proves when possible.
+      placeholder: |
+        https://uo.com/wiki/... — official quest, location, reward, or publish note
+        https://www.uoguide.com/... — objective, quest chain, NPC, reward, or history notes
+        https://github.com/ServUO/ServUO/... — engine or quest definition precedent
+    validations:
+      required: false
+
+  - type: dropdown
+    id: era
+    attributes:
+      label: Initial Era
+      options:
+        - Classic (Pre-T2A)
+        - The Second Age (T2A)
+        - Renaissance (UOR)
+        - Third Dawn (TD)
+        - Lord Blackthorns Revenge (LBR)
+        - Age of Shadows (AOS)
+        - Samurai Empire (SE)
+        - Mondains Legacy (ML)
+        - Kingdom Reborn (KR)
+        - Stygian Abyss (SA)
+        - High Seas (HS)
+        - Time of Legends (TOL)
+        - New Legacy (NL)
+        - Unknown
+    validations:
+      required: true
+
+  - type: input
+    id: publish
+    attributes:
+      label: Initial Publish
+      description: What is the initial publish?
+      placeholder: unknown
+    validations:
+      required: false
+
+  - type: dropdown
+    id: facets
+    attributes:
+      label: Facets / Maps
+      multiple: true
+      options:
+        - Felucca
+        - Trammel
+        - Ilshenar
+        - Malas
+        - Tokuno
+        - Ter Mur
+        - Eodon
+        - Internal / Custom
+        - Unknown
+    validations:
+      required: true
+
+  - type: textarea
+    id: quest-givers-locations
+    attributes:
+      label: Quest Givers / Locations
+      description: |
+        List quest giver NPCs, destination NPCs, regions, dungeons, towns, facets, coordinates, entrances, and where the quest should be offered or completed.
+      placeholder: |
+        Quest giver NPC/type:
+        Destination NPC/type:
+        Region/dungeon/town:
+        Coordinates:
+        Spawn/source:
+    validations:
+      required: true
+
+  - type: dropdown
+    id: player-loops
+    attributes:
+      label: Player Loops
+      multiple: true
+      options:
+        - Quest / Narrative
+        - PvM
+        - PvP / Felucca Risk
+        - New Player Progression
+        - Skill Training
+        - Dungeon / Access Unlock
+        - Peerless / Boss Encounter
+        - Crafting / Resources
+        - Economy / Rewards
+        - Travel / Exploration
+        - Taming / Pets
+        - Event / Seasonal
+        - Roleplay / Social
+        - Veteran / Prestige
+        - Unknown
+    validations:
+      required: true
+
+  - type: textarea
+    id: objectives-steps
+    attributes:
+      label: Objectives / Steps
+      description: |
+        Describe each objective and step: kill, deliver, obtain, collect, escort, gain skill, use item, speak to NPC, return/report back, or complete a chain stage.
+      placeholder: |
+        1. Accept from:
+        2. Objective(s):
+        3. Report back / turn-in:
+        4. Next chain quest:
+    validations:
+      required: true
+
+  - type: textarea
+    id: rewards-access
+    attributes:
+      label: Rewards / Access Unlocks
+      description: |
+        Describe rewards, item choices, gold, skill acceleration, titles, quest items, context flags, access unlocks, Spellweaving/SummonFey/SummonFiend/BedlamAccess-style flags, or no-reward behavior.
+    validations:
+      required: false
+
+  - type: textarea
+    id: prerequisites-repeatability
+    attributes:
+      label: Prerequisites / Repeatability / Chain Rules
+      description: |
+        Add quest prerequisites, race/faction/skill requirements, account limits, one-time/repeatable rules, cooldowns, ChainID, OneTime, MaxConcurrent, activation rules, and chain order.
+    validations:
+      required: false
+
+  - type: textarea
+    id: dialogue-gumps
+    attributes:
+      label: Dialogue / Gumps / Quest Log
+      description: |
+        Add offer text, refuse text, progress text, completion/report-back text, clilocs, QuestOfferGump, QuestConversationGump, QuestRewardGump, QuestLogGump, or detailed-log notes.
+    validations:
+      required: false
+
+  - type: textarea
+    id: mechanics-rules
+    attributes:
+      label: Mechanics / Rules / Edge Cases
+      description: |
+        Describe accept/decline/cancel behavior, report-back rules, quest item marking, delivery item refunds, failure/resign behavior, objective tracking, region checks, kill credit, escort pathing, and save/load behavior.
+    validations:
+      required: false
+
+  - type: textarea
+    id: items-mobiles-spawns
+    attributes:
+      label: Items / Mobiles / Spawns
+      description: |
+        List related quest items, reward items, required mobs, quest givers, destination NPCs, spawns, bosses, escortables, drop sources, and whether new item/mobile/spawn templates are also needed.
+    validations:
+      required: false
+
+  - type: textarea
+    id: economy-balance
+    attributes:
+      label: Economy / Balance Impact
+      description: |
+        Describe reward value, gold/item faucet impact, repeat farming risk, tradeability, blessing/insurance behavior, resource sinks, storage impact, and anti-farm or dupe concerns.
+    validations:
+      required: false
+
+  - type: textarea
+    id: config-data
+    attributes:
+      label: Quest Config / Data
+      description: |
+        If known, describe MLQuestSystem registration, MLQuests.cfg row, quester= override, MLQuestContext flags, MLQuestObjective types, activation, chain data, or migration source.
+      placeholder: |
+        Quest type:
+        MLQuests.cfg row:
+        quester=:
+        Objective types:
+        Context flags:
+    validations:
+      required: false
+
+  - type: textarea
+    id: presentation
+    attributes:
+      label: Client Presentation
+      description: |
+        Add cliloc names, quest log text, gump layout, item art, NPC body/hue/title, tooltip lines, sound, animation, map markers, or localization notes.
+    validations:
+      required: false
+
+  - type: textarea
+    id: implementation-notes
+    attributes:
+      label: Implementation Notes / Repo Anchors
+      description: |
+        Add known MLQuest classes, quest definition files, quester classes, objective classes, reward classes, MLQuests.cfg entries, tests, or code anchors if known.
+      placeholder: |
+        Quest definition:
+        Quest giver/mobile:
+        Item/reward classes:
+        Config row:
+        Tests:
+    validations:
+      required: false

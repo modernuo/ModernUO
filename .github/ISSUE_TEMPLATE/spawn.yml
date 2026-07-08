@@ -1,0 +1,225 @@
+name: "🧭 New Spawn"
+description: Create a new ticket for a new or changed Ultima Online spawn, spawn package, encounter placement, or world population rule
+title: "Spawn: <spawn name or location>"
+labels: ["ultima-online", "triage", "spawn"]
+
+body:
+  - type: input
+    id: name
+    attributes:
+      label: Spawn Name / Location
+      description: The player-facing spawn name, dungeon/region name, or location summary.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: spawn-type
+    attributes:
+      label: Spawn Type
+      multiple: true
+      options:
+        - Static Spawn Package
+        - Generic Spawner
+        - Mobile / Creature Spawn
+        - NPC / Vendor / Trainer Spawn
+        - Town / Guard / Civilian Spawn
+        - Dungeon Spawn
+        - Champion Spawn
+        - Boss / Peerless Encounter
+        - Quest Spawn
+        - Event / Seasonal Spawn
+        - Escort / Escortable NPC Spawn
+        - Resource / Harvest Spawn
+        - Treasure / Chest Spawn
+        - Ambient / Decorative Spawn
+        - Migration / Parity Spawn
+        - Custom / Unknown
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: |
+        Describe the spawn, what should appear, why it belongs there, and the intended player-facing behavior.
+    validations:
+      required: true
+
+  - type: textarea
+    id: references
+    attributes:
+      label: References
+      description: |
+        Add UO.com, UOGuide, Stratics, ServUO/RunUO, screenshots, map captures, spawn dumps, videos, or other related URLs.
+        Use one reference per line and note what each source proves when possible.
+      placeholder: |
+        https://uo.com/wiki/... — official location, dungeon, event, or publish note
+        https://www.uoguide.com/... — spawn area, creature list, mechanics, or history
+        https://github.com/ServUO/ServUO/... — engine or spawn-pack precedent
+    validations:
+      required: false
+
+  - type: dropdown
+    id: era
+    attributes:
+      label: Initial Era
+      options:
+        - Classic (Pre-T2A)
+        - The Second Age (T2A)
+        - Renaissance (UOR)
+        - Third Dawn (TD)
+        - Lord Blackthorns Revenge (LBR)
+        - Age of Shadows (AOS)
+        - Samurai Empire (SE)
+        - Mondains Legacy (ML)
+        - Kingdom Reborn (KR)
+        - Stygian Abyss (SA)
+        - High Seas (HS)
+        - Time of Legends (TOL)
+        - New Legacy (NL)
+        - Unknown
+    validations:
+      required: true
+
+  - type: input
+    id: publish
+    attributes:
+      label: Initial Publish
+      description: What is the initial publish?
+      placeholder: unknown
+    validations:
+      required: false
+
+  - type: dropdown
+    id: facets
+    attributes:
+      label: Facets / Maps
+      multiple: true
+      options:
+        - Felucca
+        - Trammel
+        - Ilshenar
+        - Malas
+        - Tokuno
+        - Ter Mur
+        - Eodon
+        - Internal / Custom
+        - Unknown
+    validations:
+      required: true
+
+  - type: textarea
+    id: region-location
+    attributes:
+      label: Region / Location / Coordinates
+      description: |
+        List the dungeon, town, region, facet, coordinates, bounds, Z range, entrance/exit points, and any nearby landmarks.
+      placeholder: |
+        Map/facet:
+        Region/dungeon/town:
+        Coordinates or bounds:
+        Z range:
+        Landmark/entrance:
+    validations:
+      required: true
+
+  - type: textarea
+    id: spawn-entries
+    attributes:
+      label: Spawn Entries
+      description: |
+        List each mobile, item, controller, chest, resource, or encounter entry with expected count, probability, home range, and grouping rules.
+      placeholder: |
+        - Type: Skeleton; count: 5; homeRange: 12; probability: 1.0
+        - Type: Zombie; count: 3; homeRange: 12; probability: 0.6
+    validations:
+      required: true
+
+  - type: textarea
+    id: spawn-timing-density
+    attributes:
+      label: Timing / Density / Range
+      description: |
+        Describe min/max delay, respawn timing, spawn count, home range, walking range, leash behavior, despawn rules, active hours, and population density.
+    validations:
+      required: false
+
+  - type: dropdown
+    id: player-loops
+    attributes:
+      label: Player Loops
+      multiple: true
+      options:
+        - PvM
+        - PvP / Felucca Risk
+        - Champion / Boss Encounter
+        - Quest / Narrative
+        - Event / Seasonal
+        - Taming / Pets
+        - Economy / Farming
+        - Crafting / Resources
+        - Treasure Hunting
+        - Travel / Exploration
+        - Town / Social
+        - New Player Progression
+        - Veteran / Prestige
+        - Staff / Operations
+        - Unknown
+    validations:
+      required: true
+
+  - type: textarea
+    id: mechanics-rules
+    attributes:
+      label: Mechanics / Region Rules
+      description: |
+        Describe aggro radius, AI behavior, spawn triggers, quest gates, region hooks, travel restrictions, notoriety/criminal rules, guard rules, pathing, and PvM/PvP differences.
+    validations:
+      required: false
+
+  - type: textarea
+    id: rewards-economy
+    attributes:
+      label: Rewards / Loot / Economy
+      description: |
+        Describe loot, gold/hour expectations, resource output, artifacts, Power Scrolls, quest rewards, vendor inventory, faucet/sink impact, and anti-farm concerns.
+    validations:
+      required: false
+
+  - type: textarea
+    id: safety-exploit-risk
+    attributes:
+      label: Safety / Exploit / Bot Risk
+      description: |
+        Note safe spots, stuck-pathing, line-of-sight abuse, house/teleport blocking, bot farming risk, lure risk, AFK farming risk, and rollback/monitoring needs.
+    validations:
+      required: false
+
+  - type: textarea
+    id: data-format
+    attributes:
+      label: Data Format / Era Profile
+      description: |
+        If known, describe the expected spawn package folder, JSON shape, era profile, spawner type, migration source, import command, or generation rule.
+      placeholder: |
+        Distribution/Data/Spawns/<era>/<facet>/...
+        type: GenericSpawner
+        era profile:
+        migration source:
+    validations:
+      required: false
+
+  - type: textarea
+    id: implementation-notes
+    attributes:
+      label: Implementation Notes / Repo Anchors
+      description: |
+        Add known classes, data files, similar spawn packages, regions, mobiles, tests, or code anchors if known.
+      placeholder: |
+        Similar spawn package:
+        Region file:
+        Mobile classes:
+        Tests:
+    validations:
+      required: false

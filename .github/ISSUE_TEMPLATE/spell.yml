@@ -1,0 +1,244 @@
+name: "✨ New Spell"
+description: Create a new ticket for a new Ultima Online spell, spell school entry, mastery, or magical ability
+title: "Spell: <spell name>"
+labels: ["ultima-online", "triage", "spell"]
+
+body:
+  - type: input
+    id: name
+    attributes:
+      label: Spell Name
+      description: The in-game spell name as it should appear to players.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: spell-school
+    attributes:
+      label: Spell School / Source
+      multiple: true
+      options:
+        - Magery
+        - Necromancy
+        - Chivalry
+        - Bushido
+        - Ninjitsu
+        - Spellweaving
+        - Mysticism
+        - Spell Mastery
+        - Bard Mastery
+        - Racial Ability
+        - Monster / NPC Spell
+        - Quest / Event Spell
+        - Custom / Unknown
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: |
+        Describe the spell, its role, and the intended player-facing behavior.
+    validations:
+      required: true
+
+  - type: textarea
+    id: references
+    attributes:
+      label: References
+      description: |
+        Add UO.com, UOGuide, Stratics, ServUO/RunUO, screenshots, videos, or other related URLs.
+        Use one reference per line and note what each source proves when possible.
+      placeholder: |
+        https://uo.com/wiki/... — official wording, source, or publish note
+        https://www.uoguide.com/... — mechanics, reagents, formulas, or history
+        https://github.com/ServUO/ServUO/... — engine precedent
+    validations:
+      required: false
+
+  - type: dropdown
+    id: era
+    attributes:
+      label: Initial Era
+      options:
+        - Classic (Pre-T2A)
+        - The Second Age (T2A)
+        - Renaissance (UOR)
+        - Third Dawn (TD)
+        - Lord Blackthorns Revenge (LBR)
+        - Age of Shadows (AOS)
+        - Samurai Empire (SE)
+        - Mondains Legacy (ML)
+        - Kingdom Reborn (KR)
+        - Stygian Abyss (SA)
+        - High Seas (HS)
+        - Time of Legends (TOL)
+        - New Legacy (NL)
+        - Unknown
+    validations:
+      required: true
+
+  - type: input
+    id: publish
+    attributes:
+      label: Initial Publish
+      description: What is the initial publish?
+      placeholder: unknown
+    validations:
+      required: false
+
+  - type: dropdown
+    id: spell-type
+    attributes:
+      label: Spell Type
+      multiple: true
+      options:
+        - Direct Damage
+        - Damage over Time
+        - Healing
+        - Cure / Cleanse
+        - Buff
+        - Debuff
+        - Summon
+        - Transformation
+        - Field / Ground Effect
+        - Area of Effect
+        - Travel / Teleport
+        - Utility
+        - Reveal / Detection
+        - Resource / Reagent Interaction
+        - Pet / Summon Interaction
+        - Quest / Event Mechanic
+        - Unknown
+    validations:
+      required: true
+
+  - type: dropdown
+    id: target-type
+    attributes:
+      label: Target Type
+      multiple: true
+      options:
+        - Self
+        - Ally
+        - Enemy Mobile
+        - Any Mobile
+        - Pet / Controlled Creature
+        - Summon
+        - Corpse
+        - Item
+        - Ground / Location
+        - Area / Radius
+        - Field Line
+        - Region
+        - No Target
+        - Unknown
+    validations:
+      required: true
+
+  - type: dropdown
+    id: player-loops
+    attributes:
+      label: Player Loops
+      multiple: true
+      options:
+        - PvM
+        - PvP / Felucca Risk
+        - PvP Group Combat
+        - Travel / Exploration
+        - Taming / Pets
+        - Summons / Followers
+        - Crafting / Inscription
+        - Economy / Reagents / Scrolls
+        - Quest / Narrative
+        - Event / Seasonal
+        - New Player Progression
+        - Veteran / Prestige
+        - Monster / NPC AI
+        - Unknown
+    validations:
+      required: true
+
+  - type: textarea
+    id: casting-requirements
+    attributes:
+      label: Casting Requirements / Costs
+      description: |
+        Add skill requirement, mana cost, reagents, tithing, focus, karma, spellbook/scroll requirements, cooldowns, cast time, recovery time, and interruption rules.
+      placeholder: |
+        Skill requirement:
+        Mana/tithing/focus cost:
+        Reagents:
+        Cast time / recovery:
+        Interrupt/fizzle rules:
+    validations:
+      required: false
+
+  - type: textarea
+    id: mechanics-pvm
+    attributes:
+      label: Game Mechanic (PvM)
+      description: |
+        Specify the spell behavior for player versus monsters, summons, pets, bosses, or NPC AI.
+    validations:
+      required: false
+
+  - type: textarea
+    id: mechanics-pvp
+    attributes:
+      label: Game Mechanic (PvP)
+      description: |
+        Specify player-versus-player behavior, counters, immunity, reflect/resist interaction, field rules, escape options, and group-combat risks.
+    validations:
+      required: false
+
+  - type: textarea
+    id: formula-values
+    attributes:
+      label: Formulas / Values / Duration
+      description: |
+        Add damage, healing, resist checks, skill scaling, stat scaling, radius, range, duration, cooldown, chance formulas, caps, and expected test values.
+    validations:
+      required: false
+
+  - type: textarea
+    id: restrictions
+    attributes:
+      label: Restrictions / Region Rules
+      description: |
+        Add mount restrictions, armor/weapon restrictions, housing/town/dungeon/facet limits, travel blocks, criminal/notoriety effects, safe-zone rules, and era gates.
+    validations:
+      required: false
+
+  - type: textarea
+    id: spellbook-scrolls-reagents
+    attributes:
+      label: Spellbook / Scrolls / Reagents
+      description: |
+        If applicable, describe spellbook entry, scroll item, inscription recipe, reagent consumption, focus item, icon position, or learn/unlock flow.
+    validations:
+      required: false
+
+  - type: textarea
+    id: presentation
+    attributes:
+      label: Client Presentation
+      description: |
+        Add cliloc name, spell icon, buff icon, particle effects, sounds, animations, overhead messages, gump entries, or tooltip notes.
+    validations:
+      required: false
+
+  - type: textarea
+    id: implementation-notes
+    attributes:
+      label: Implementation Notes / Repo Anchors
+      description: |
+        Add known classes, files, similar spells, spell IDs, registration gates, spellbook data, tests, or code anchors if known.
+      placeholder: |
+        Similar spell:
+        Spell ID / school slot:
+        Registration gate:
+        Tests:
+    validations:
+      required: false

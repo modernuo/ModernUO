@@ -1,0 +1,295 @@
+name: "⚙️ Engine / System"
+description: Create a new ticket for a new or changed Ultima Online engine, subsystem, controller, service, configuration, or cross-content system
+title: "System: <engine or system name>"
+labels: ["ultima-online", "triage", "system"]
+
+body:
+  - type: input
+    id: name
+    attributes:
+      label: Engine / System Name
+      description: The engine, subsystem, controller, service, configuration area, or cross-content system name.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: request-type
+    attributes:
+      label: Request Type
+      multiple: true
+      options:
+        - New Engine / System
+        - Existing System Change
+        - Bug / Regression
+        - Parity / Migration Info
+        - Configuration Setting
+        - Data File / Import / Export
+        - Persistence / Serialization
+        - Startup / Shutdown / Lifecycle
+        - Event Hook / EventSink
+        - Timer / Scheduler / Controller
+        - Command / Targeting / Staff Tool
+        - Gump / UI / Client Presentation
+        - Performance / Hot Path
+        - Security / Exploit / Staff Safety
+        - Tests / Tooling
+        - Documentation / Operator Runbook
+        - Custom / Unknown
+    validations:
+      required: true
+
+  - type: dropdown
+    id: system-area
+    attributes:
+      label: System Area
+      multiple: true
+      options:
+        - Core Server
+        - UOContent Engine
+        - RUOContent Custom System
+        - Configuration / JsonConfig
+        - Startup / Lifecycle
+        - World Save / Load
+        - Accounts / Access
+        - Networking / Packets
+        - Commands / Targeting
+        - Gumps / UI
+        - EventSink / Generated Events
+        - Timers / EventScheduler
+        - Serialization / Persistence
+        - Regions / Maps / Facets
+        - Spawns / Encounters
+        - Loot / Rewards
+        - Quests / Narrative
+        - Crafting / Economy
+        - Housing / Multis
+        - Vendors / Services
+        - Skills / Stats / Races
+        - Combat / Magic
+        - Items / Mobiles
+        - Monitoring / Logging
+        - Tests / Tooling
+        - Unknown / Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: |
+        Describe the engine/system behavior, problem, requested change, and the intended player-facing or operator-facing result.
+    validations:
+      required: true
+
+  - type: textarea
+    id: references
+    attributes:
+      label: References
+      description: |
+        Add UO.com, UOGuide, Stratics, ServUO/RunUO, ModernUO docs/code, screenshots, logs, traces, crash reports, or other related URLs.
+        Use one reference per line and note what each source proves when possible.
+      placeholder: |
+        https://uo.com/wiki/... — official mechanics, publish, or ruleset note
+        https://www.uoguide.com/... — mechanics/history context
+        https://github.com/ServUO/ServUO/... — engine/system precedent
+        Log/trace/crash ID — observed behavior or failure mode
+    validations:
+      required: false
+
+  - type: dropdown
+    id: era
+    attributes:
+      label: Initial Era / Ruleset
+      options:
+        - Classic (Pre-T2A)
+        - The Second Age (T2A)
+        - Renaissance (UOR)
+        - Third Dawn (TD)
+        - Lord Blackthorns Revenge (LBR)
+        - Age of Shadows (AOS)
+        - Samurai Empire (SE)
+        - Mondains Legacy (ML)
+        - Kingdom Reborn (KR)
+        - Stygian Abyss (SA)
+        - High Seas (HS)
+        - Time of Legends (TOL)
+        - New Legacy (NL)
+        - RebirthUO Custom
+        - Era-Independent / Infrastructure
+        - Unknown
+    validations:
+      required: true
+
+  - type: input
+    id: publish
+    attributes:
+      label: Initial Publish
+      description: What is the initial publish, release, or custom shard milestone?
+      placeholder: unknown
+    validations:
+      required: false
+
+  - type: dropdown
+    id: implementation-layer
+    attributes:
+      label: Implementation Layer
+      multiple: true
+      options:
+        - Projects/Server Core Engine
+        - Projects/UOContent Base Content
+        - Projects/RUOContent Shard Custom Layer
+        - Distribution/Data
+        - Distribution/Configuration
+        - Tests
+        - Tooling / Scripts
+        - Documentation
+        - Unknown / Needs Discovery
+    validations:
+      required: true
+
+  - type: dropdown
+    id: affected-loops
+    attributes:
+      label: Affected Gameplay / Operator Loops
+      multiple: true
+      options:
+        - PvM
+        - PvP / Felucca Risk
+        - Economy / Rewards
+        - Crafting / Resources
+        - Housing / Storage
+        - Skills / Stats / Progression
+        - Magic / Combat
+        - Quests / Events
+        - Spawns / Encounters
+        - Travel / Facets / Regions
+        - Vendors / Services
+        - New Player Progression
+        - Veteran / Prestige
+        - Client Presentation
+        - Staff Operations
+        - Server Stability
+        - Save / Restore / Deployment
+        - Unknown
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-expected-behavior
+    attributes:
+      label: Current / Expected Behavior
+      description: |
+        Describe current behavior, desired behavior, repro steps if this is a bug, and what should stay unchanged.
+      placeholder: |
+        Current:
+        Expected:
+        Repro / trigger:
+        Should not change:
+    validations:
+      required: true
+
+  - type: textarea
+    id: configuration-gates
+    attributes:
+      label: Configuration / Gates
+      description: |
+        Add config keys, default values, Core.* era gates, feature flags, ServerConfiguration/GetSetting/GetOrUpdateSetting use, modernuo.json settings, JsonConfig files, shard overrides, and operator-facing toggles.
+    validations:
+      required: false
+
+  - type: textarea
+    id: lifecycle-ownership
+    attributes:
+      label: Lifecycle / Ownership
+      description: |
+        Describe ConfigurePrompts, Configure, Initialize, CallPriority ordering, EventSink subscriptions, generated events, startup/shutdown, cleanup, ownership of static state, and whether the system can be disabled or reloaded.
+    validations:
+      required: false
+
+  - type: textarea
+    id: data-persistence
+    attributes:
+      label: Data / Persistence / Save Compatibility
+      description: |
+        Describe serialized fields, versioning, world save/load impact, migration needs, JSON/cfg data, source-generated serialization, backward compatibility, rollback behavior, and cleanup of saved entities or controllers.
+    validations:
+      required: false
+
+  - type: textarea
+    id: events-timers-threading
+    attributes:
+      label: Events / Timers / Threading
+      description: |
+        Describe EventSink hooks, generated events, Timer use, EventScheduler scheduling, async/threading expectations, single-threaded game-loop assumptions, cancellation, disposal, and hot-path constraints.
+    validations:
+      required: false
+
+  - type: textarea
+    id: admin-ui-tools
+    attributes:
+      label: Commands / Gumps / Admin Tools
+      description: |
+        Add staff commands, targeting flows, gumps, diagnostics, logging, audit trails, permissions/access levels, operator workflows, and any public/private communication boundaries.
+    validations:
+      required: false
+
+  - type: textarea
+    id: content-integration
+    attributes:
+      label: Content Integration
+      description: |
+        List related items, mobiles, regions, spawns, quests, loot tables, crafting definitions, housing/multi definitions, packets, gumps, clilocs, and data files that interact with this engine/system.
+    validations:
+      required: false
+
+  - type: textarea
+    id: performance-risk
+    attributes:
+      label: Performance / Scale Risk
+      description: |
+        Describe expected call frequency, hot paths, allocations, timers, dictionary/list sizes, world scans, save-time work, startup cost, network traffic, and stress cases.
+    validations:
+      required: false
+
+  - type: textarea
+    id: security-fairness-risk
+    attributes:
+      label: Security / Fairness / Exploit Risk
+      description: |
+        Describe exploit or dupe risk at a safe public level, staff advantage risk, permission boundaries, player-facing fairness, griefing/bot risk, economy abuse, and sensitive details that should stay out of public issue text.
+    validations:
+      required: false
+
+  - type: textarea
+    id: side-effects
+    attributes:
+      label: Side Effects / Balance Impact
+      description: |
+        Describe era/ruleset impact, PvP counterplay, PvM risk/reward, gold or item faucets/sinks, housing/storage impact, client compatibility, shard policy choices, and expected monitoring signals.
+    validations:
+      required: false
+
+  - type: textarea
+    id: testing-monitoring-rollback
+    attributes:
+      label: Testing / Monitoring / Rollback
+      description: |
+        Add focused tests, broad suites, manual verification, logs/metrics to monitor, backup/restore needs, rollback plan, feature disable plan, and post-publish checks.
+    validations:
+      required: false
+
+  - type: textarea
+    id: implementation-notes
+    attributes:
+      label: Implementation Notes / Repo Anchors
+      description: |
+        Add known classes, methods, data files, config files, tests, docs, or code anchors if known. Note whether Projects/Server core changes are required or whether UOContent/RUOContent can contain the work.
+      placeholder: |
+        Classes/methods:
+        Data/config files:
+        Tests:
+        Docs/runbook:
+        Core boundary:
+    validations:
+      required: false

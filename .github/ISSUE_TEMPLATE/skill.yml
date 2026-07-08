@@ -1,0 +1,280 @@
+name: "📈 New Skill"
+description: Create a new ticket for a new or changed Ultima Online skill, skill mechanic, stat interaction, or training flow
+title: "Skill: <skill name>"
+labels: ["ultima-online", "triage", "skill"]
+
+body:
+  - type: input
+    id: name
+    attributes:
+      label: Skill Name
+      description: The in-game skill name as it should appear to players.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: request-type
+    attributes:
+      label: Request Type
+      multiple: true
+      options:
+        - New Skill
+        - Existing Skill Change
+        - Skill Gain / Training
+        - Skill Cap / Power Scroll
+        - Stat Gain / Stat Cap
+        - Race Interaction
+        - Skill Mastery
+        - Tool / Item Interaction
+        - Vendor / Trainer
+        - Quest / Objective
+        - Client UI / Gump
+        - Custom / Unknown
+    validations:
+      required: true
+
+  - type: dropdown
+    id: skill-category
+    attributes:
+      label: Skill Category
+      multiple: true
+      options:
+        - Combat
+        - Healing / Veterinary
+        - Magical
+        - Bardic
+        - Rogue / Thieving / Stealth
+        - Creatures / Sensing
+        - Crafting
+        - Resource Gathering
+        - Trade / Economy
+        - Stat / Race System
+        - Removed / Legacy
+        - Custom / Unknown
+    validations:
+      required: true
+
+  - type: dropdown
+    id: affected-skills
+    attributes:
+      label: Affected Skill(s)
+      multiple: true
+      options:
+        - Alchemy
+        - Anatomy
+        - Animal Lore
+        - Animal Taming
+        - Archery
+        - Arms Lore
+        - Begging
+        - Blacksmithy
+        - Bowcraft / Fletching
+        - Bushido
+        - Camping
+        - Carpentry
+        - Cartography
+        - Chivalry
+        - Cooking
+        - Detecting Hidden
+        - Discordance
+        - Evaluating Intelligence
+        - Fencing
+        - Fishing
+        - Focus
+        - Forensic Evaluation
+        - Healing
+        - Herding
+        - Hiding
+        - Imbuing
+        - Inscription
+        - Item Identification
+        - Lockpicking
+        - Lumberjacking
+        - Mace Fighting
+        - Magery
+        - Meditation
+        - Mining
+        - Musicianship
+        - Mysticism
+        - Necromancy
+        - Ninjitsu
+        - Parrying
+        - Peacemaking
+        - Poisoning
+        - Provocation
+        - Remove Trap
+        - Resisting Spells
+        - Snooping
+        - Spellweaving
+        - Spirit Speak
+        - Stealing
+        - Stealth
+        - Swordsmanship
+        - Tactics
+        - Tailoring
+        - Taste Identification
+        - Throwing
+        - Tinkering
+        - Tracking
+        - Veterinary
+        - Wrestling
+        - Enticement (Removed / Legacy)
+        - New / Custom Skill
+        - Unknown
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: |
+        Describe the skill, skill change, training flow, or stat/race interaction and the intended player-facing behavior.
+    validations:
+      required: true
+
+  - type: textarea
+    id: references
+    attributes:
+      label: References
+      description: |
+        Add UO.com, UOGuide, Stratics, ServUO/RunUO, screenshots, videos, or other related URLs.
+        Use one reference per line and note what each source proves when possible.
+      placeholder: |
+        https://uo.com/wiki/... — official wording, source, or publish note
+        https://www.uoguide.com/Skills — skill category, mechanics, formulas, or history
+        https://github.com/ServUO/ServUO/... — engine precedent
+    validations:
+      required: false
+
+  - type: dropdown
+    id: era
+    attributes:
+      label: Initial Era
+      options:
+        - Classic (Pre-T2A)
+        - The Second Age (T2A)
+        - Renaissance (UOR)
+        - Third Dawn (TD)
+        - Lord Blackthorns Revenge (LBR)
+        - Age of Shadows (AOS)
+        - Samurai Empire (SE)
+        - Mondains Legacy (ML)
+        - Kingdom Reborn (KR)
+        - Stygian Abyss (SA)
+        - High Seas (HS)
+        - Time of Legends (TOL)
+        - New Legacy (NL)
+        - Unknown
+    validations:
+      required: true
+
+  - type: input
+    id: publish
+    attributes:
+      label: Initial Publish
+      description: What is the initial publish?
+      placeholder: unknown
+    validations:
+      required: false
+
+  - type: dropdown
+    id: player-loops
+    attributes:
+      label: Player Loops
+      multiple: true
+      options:
+        - PvM
+        - PvP / Felucca Risk
+        - Crafting
+        - Harvesting
+        - Economy / Trading
+        - Housing / Storage
+        - Taming / Pets
+        - Bard Support
+        - Thieving / Stealth
+        - Travel / Exploration
+        - Quest / Narrative
+        - New Player Progression
+        - Veteran / Prestige
+        - Monster / NPC AI
+        - Unknown
+    validations:
+      required: true
+
+  - type: textarea
+    id: skill-mechanics
+    attributes:
+      label: Skill Mechanics
+      description: |
+        Describe active use, passive effects, success/failure results, cooldowns, targeting, tools/items required, region/facet limits, and any PvM/PvP differences.
+    validations:
+      required: false
+
+  - type: textarea
+    id: gain-training
+    attributes:
+      label: Skill Gain / Training
+      description: |
+        Describe gain chance, difficulty bands, anti-macro rules, accelerated gain, New Haven-style objectives, trainer behavior, skill locks, and training limits.
+    validations:
+      required: false
+
+  - type: textarea
+    id: stats-caps
+    attributes:
+      label: Stats / Caps / Progression
+      description: |
+        Describe primary/secondary stat associations, stat gain, skill cap, Power Scrolls, Scrolls of Alacrity/Transcendence, total skill cap, or race-specific progression.
+    validations:
+      required: false
+
+  - type: textarea
+    id: formulas-values
+    attributes:
+      label: Formulas / Values / Test Cases
+      description: |
+        Add success formulas, skill ranges, stat values, cap values, timings, chance values, expected test values, and edge cases.
+    validations:
+      required: false
+
+  - type: textarea
+    id: items-tools-resources
+    attributes:
+      label: Items / Tools / Resources
+      description: |
+        If applicable, describe required tools, resources consumed or produced, skill scrolls, training items, crafting recipes, BODs, vendors, or loot/reward items.
+    validations:
+      required: false
+
+  - type: textarea
+    id: restrictions
+    attributes:
+      label: Restrictions / Era / Region Rules
+      description: |
+        Add expansion gates, race requirements, facet/map restrictions, town/guard/housing rules, criminal/notoriety effects, mount restrictions, and exploit/bot concerns.
+    validations:
+      required: false
+
+  - type: textarea
+    id: presentation
+    attributes:
+      label: Client Presentation
+      description: |
+        Add skill list category, skill title/cliloc, gump UI, context menu, messages, animations, sounds, buff icons, or tooltip notes.
+    validations:
+      required: false
+
+  - type: textarea
+    id: implementation-notes
+    attributes:
+      label: Implementation Notes / Repo Anchors
+      description: |
+        Add known classes, files, similar skills, skill IDs, skills.json data, tests, or code anchors if known.
+      placeholder: |
+        Similar skill:
+        Skill ID / category:
+        Data/config:
+        Tests:
+    validations:
+      required: false

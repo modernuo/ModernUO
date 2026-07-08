@@ -1,0 +1,211 @@
+name: "🐉 New Mobile"
+description: Create a new ticket for a new Ultima Online mobile, monster, or NPC
+title: "Mobile: <mobile name>"
+labels: ["ultima-online", "triage", "mobile"]
+
+body:
+  - type: input
+    id: name
+    attributes:
+      label: Mobile Name
+      description: The in-game creature or NPC name as it should appear to players.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: mobile-type
+    attributes:
+      label: Mobile Type
+      multiple: true
+      options:
+        - Monster
+        - Boss
+        - Champion Spawn Boss
+        - Animal
+        - Tameable Creature
+        - Town NPC
+        - Vendor
+        - Trainer
+        - Quest Giver
+        - Escortable NPC
+        - Decorative / Ambient
+        - Unknown
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: |
+        Describe the mobile, its role, and the intended player-facing behavior.
+    validations:
+      required: true
+
+  - type: textarea
+    id: references
+    attributes:
+      label: References
+      description: |
+        Add UO.com, UOGuide, Stratics, ServUO/RunUO, screenshots, or other related URLs.
+        Use one reference per line and note what each source proves when possible.
+      placeholder: |
+        https://uo.com/wiki/... — official wording or location
+        https://www.uoguide.com/... — mechanic/history notes
+        https://github.com/ServUO/ServUO/... — engine precedent
+    validations:
+      required: false
+
+  - type: dropdown
+    id: era
+    attributes:
+      label: Initial Era
+      options:
+        - Classic (Pre-T2A)
+        - The Second Age (T2A)
+        - Renaissance (UOR)
+        - Third Dawn (TD)
+        - Lord Blackthorns Revenge (LBR)
+        - Age of Shadows (AOS)
+        - Samurai Empire (SE)
+        - Mondains Legacy (ML)
+        - Kingdom Reborn (KR)
+        - Stygian Abyss (SA)
+        - High Seas (HS)
+        - Time of Legends (TOL)
+        - New Legacy (NL)
+        - Unknown
+    validations:
+      required: true
+
+  - type: input
+    id: publish
+    attributes:
+      label: Initial Publish
+      description: What is the initial publish?
+      placeholder: unknown
+    validations:
+      required: false
+
+  - type: dropdown
+    id: facets
+    attributes:
+      label: Facets / Maps
+      multiple: true
+      options:
+        - Felucca
+        - Trammel
+        - Ilshenar
+        - Malas
+        - Tokuno
+        - Ter Mur
+        - Eodon
+        - Internal / Custom
+        - Unknown
+    validations:
+      required: true
+
+  - type: textarea
+    id: spawn-locations
+    attributes:
+      label: Spawn Locations
+      description: |
+        List known spawn areas, dungeons, towns, regions, events, or quest locations.
+      placeholder: |
+        Dungeon/region:
+        Coordinates:
+        Spawn conditions:
+    validations:
+      required: false
+
+  - type: dropdown
+    id: player-loops
+    attributes:
+      label: Player Loops
+      multiple: true
+      options:
+        - PvM
+        - PvP / Felucca Risk
+        - Quest / Narrative
+        - Economy / Vendor
+        - Taming
+        - Champion / Boss Encounter
+        - Event / Seasonal
+        - Town / Social
+        - Unknown
+    validations:
+      required: true
+
+  - type: textarea
+    id: stats-skills
+    attributes:
+      label: Stats and Skills
+      description: |
+        Add expected STR/DEX/INT, hits/stam/mana, damage, resists, skills, fame, karma, virtual armor, or other stat data.
+      placeholder: |
+        STR/DEX/INT:
+        Hits/Stam/Mana:
+        Damage:
+        Resists:
+        Skills:
+        Fame/Karma:
+    validations:
+      required: false
+
+  - type: textarea
+    id: ai-behavior
+    attributes:
+      label: AI / Behavior / Mechanics
+      description: |
+        Describe AI type, combat behavior, special abilities, speech, movement, faction/notoriety, PvM/PvP differences, cooldowns, and counterplay.
+    validations:
+      required: false
+
+  - type: textarea
+    id: loot-rewards
+    attributes:
+      label: Loot / Rewards / Economy
+      description: |
+        Describe loot packs, gold, artifacts, quest rewards, vendor inventory, resource output, or why the mobile should have no rewards.
+    validations:
+      required: false
+
+  - type: textarea
+    id: taming-control
+    attributes:
+      label: Taming / Control
+      description: |
+        If applicable, describe taming skill, control slots, bonding, pack instinct, favorite food, pet abilities, and training rules.
+    validations:
+      required: false
+
+  - type: textarea
+    id: npc-services-dialogue
+    attributes:
+      label: NPC Services / Dialogue
+      description: |
+        If applicable, describe vendor services, trainer skills, quest dialogue, context menu entries, titles, greetings, or keywords.
+    validations:
+      required: false
+
+  - type: textarea
+    id: presentation
+    attributes:
+      label: Client Presentation
+      description: |
+        Add body ID, hue, sound, animation, paperdoll/equipment, cliloc names, title, or other client presentation notes.
+    validations:
+      required: false
+
+  - type: textarea
+    id: implementation-notes
+    attributes:
+      label: Implementation Notes / Repo Anchors
+      description: |
+        Add known classes, files, similar mobiles, spawn data, tests, or code anchors if known.
+      placeholder: |
+        Similar class:
+        Spawn data:
+        Tests:
+    validations:
+      required: false

@@ -1,0 +1,134 @@
+name: "✨ New Item Property"
+description: Create a new ticket for a new Ultima Online item property
+title: "Item Property: <property name>"
+labels: ["ultima-online", "triage", "item-property"]
+
+body:
+  - type: input
+    id: name
+    attributes:
+      label: Property Name
+      description: The in-game item property name as it should appear to players.
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: |
+        Describe the item property and its intended mechanic.
+    validations:
+      required: true
+
+  - type: textarea
+    id: references
+    attributes:
+      label: References
+      description: |
+        Add UO.com, UOGuide, Stratics, ServUO/RunUO, or other related URLs.
+        Use one reference per line and note what each source proves when possible.
+      placeholder: |
+        https://uo.com/wiki/ultima-online-wiki/items/magic-item-properties/ — official wording
+        https://www.uoguide.com/... — mechanic/history notes
+    validations:
+      required: false
+
+  - type: textarea
+    id: mechanic-pvm
+    attributes:
+      label: Game Mechanic (PvM)
+      description: |
+        Specify the mechanic for player versus monsters.
+    validations:
+      required: true
+
+  - type: textarea
+    id: mechanic-pvp
+    attributes:
+      label: Game Mechanic (PvP)
+      description: |
+        Specify the additional mechanic for player versus player.
+
+  - type: input
+    id: intensity-range
+    attributes:
+      label: Intensity Range
+      description: |
+        Possible intensity range, fixed values, or percentage values.
+    validations:
+      required: true
+
+  - type: input
+    id: imbue-weight
+    attributes:
+      label: Imbue Weight
+      description: Imbuing weight, "No", "N/A", or unknown.
+
+  - type: input
+    id: total-cap
+    attributes:
+      label: Total Cap
+      description: Total cap across equipment, "N/A", or unknown.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: found-on
+    attributes:
+      label: Found on
+      multiple: true
+      options:
+        - Armor
+        - Jewelry
+        - Shields
+        - Spellbooks
+        - Weapons
+        - Unknown
+    validations:
+      required: true
+
+  - type: dropdown
+    id: type
+    attributes:
+      label: Property Type
+      multiple: true
+      options:
+        - Persistent
+        - Hit
+        - Permanent
+        - Unknown
+    validations:
+      required: true
+
+  - type: dropdown
+    id: era
+    attributes:
+      label: Initial Era
+      options:
+        - Classic (Pre-T2A)
+        - The Second Age (T2A)
+        - Renaissance (UOR)
+        - Third Dawn (TD)
+        - Lord Blackthorns Revenge (LBR)
+        - Age of Shadows (AOS)
+        - Samurai Empire (SE)
+        - Mondains Legacy (ML)
+        - Kingdom Reborn (KR)
+        - Stygian Abyss (SA)
+        - High Seas (HS)
+        - Time of Legends (TOL)
+        - New Legacy (NL)
+        - Unknown
+        - Custom
+    validations:
+      required: true
+
+  - type: input
+    id: publish
+    attributes:
+      label: Initial Publish
+      description: What is the initial publish?
+      placeholder: unknown
+    validations:
+      required: false

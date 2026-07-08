@@ -1,0 +1,291 @@
+name: "🎉 New Event"
+description: Create a new ticket for a new or changed Ultima Online event, seasonal window, scheduled activity, encounter, live event, or event system behavior
+title: "Event: <event name>"
+labels: ["ultima-online", "triage", "event"]
+
+body:
+  - type: input
+    id: name
+    attributes:
+      label: Event Name
+      description: The event, seasonal window, live event, encounter, activity, or event system name.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: event-type
+    attributes:
+      label: Event Type
+      multiple: true
+      options:
+        - Seasonal / Holiday Event
+        - Live / GM Event
+        - Scheduled Recurring Event
+        - Daily / Weekly / Monthly Activity
+        - World Event
+        - Town Invasion
+        - Dungeon / Encounter Event
+        - Champion / Spawn Event
+        - Boss / Peerless Event
+        - Quest / Narrative Event
+        - PvP Event
+        - Crafting / Resource Event
+        - Vendor / Reward Event
+        - Decoration / Static Event
+        - Anniversary / Shard Event
+        - Maintenance / Reset Event
+        - Parity / Migration Info
+        - Custom / Unknown
+    validations:
+      required: true
+
+  - type: dropdown
+    id: event-system
+    attributes:
+      label: Event System / Scope
+      multiple: true
+      options:
+        - EventScheduler / Calendar
+        - EventSink / Game Hook
+        - Timer / Controller
+        - Spawn Package / Generic Spawner
+        - Region / Facet Rule
+        - Quest System
+        - Champion Spawn
+        - Peerless / Boss Encounter
+        - Vendor / Reward Store
+        - Crafting / Harvesting
+        - Decoration / Static Placement
+        - Gump / UI
+        - Staff Command / Tooling
+        - Data Migration / Parity
+        - Custom / Unknown
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: |
+        Describe the event, seasonal behavior, scheduled activity, encounter, or system behavior and the intended player-facing result.
+    validations:
+      required: true
+
+  - type: textarea
+    id: references
+    attributes:
+      label: References
+      description: |
+        Add UO.com, UOGuide, Stratics, ServUO/RunUO, screenshots, announcements, event notes, videos, or other related URLs.
+        Use one reference per line and note what each source proves when possible.
+      placeholder: |
+        https://uo.com/wiki/... — official event, reward, schedule, or publish note
+        https://www.uoguide.com/... — event mechanics, history, location, reward, or spawn notes
+        https://github.com/ServUO/ServUO/... — engine or event system precedent
+    validations:
+      required: false
+
+  - type: dropdown
+    id: era
+    attributes:
+      label: Initial Era
+      options:
+        - Classic (Pre-T2A)
+        - The Second Age (T2A)
+        - Renaissance (UOR)
+        - Third Dawn (TD)
+        - Lord Blackthorns Revenge (LBR)
+        - Age of Shadows (AOS)
+        - Samurai Empire (SE)
+        - Mondains Legacy (ML)
+        - Kingdom Reborn (KR)
+        - Stygian Abyss (SA)
+        - High Seas (HS)
+        - Time of Legends (TOL)
+        - New Legacy (NL)
+        - Unknown
+    validations:
+      required: true
+
+  - type: input
+    id: publish
+    attributes:
+      label: Initial Publish
+      description: What is the initial publish?
+      placeholder: unknown
+    validations:
+      required: false
+
+  - type: dropdown
+    id: facets
+    attributes:
+      label: Facets / Maps
+      multiple: true
+      options:
+        - Felucca
+        - Trammel
+        - Ilshenar
+        - Malas
+        - Tokuno
+        - Ter Mur
+        - Eodon
+        - Internal / Custom
+        - Unknown
+    validations:
+      required: true
+
+  - type: textarea
+    id: schedule-window
+    attributes:
+      label: Schedule / Duration
+      description: |
+        Describe start/end dates, time of day, timezone, recurrence, activation window, daily/weekly/monthly/yearly schedule, manual start/stop rules, and expected overlap behavior.
+      placeholder: |
+        Start:
+        End:
+        Timezone:
+        Recurrence:
+        Manual enable/disable:
+    validations:
+      required: true
+
+  - type: textarea
+    id: locations-regions
+    attributes:
+      label: Locations / Regions
+      description: |
+        List facets, towns, dungeons, regions, coordinates, entrances, safe zones, guard zones, event areas, and any region rule changes.
+      placeholder: |
+        Facet/map:
+        Region/town/dungeon:
+        Coordinates:
+        Region rules:
+    validations:
+      required: true
+
+  - type: dropdown
+    id: player-loops
+    attributes:
+      label: Player Loops
+      multiple: true
+      options:
+        - PvM
+        - PvP / Felucca Risk
+        - Quest / Narrative
+        - Spawns / Encounters
+        - Boss / Peerless
+        - Champion Spawn
+        - Crafting / Resources
+        - Harvesting
+        - Economy / Rewards
+        - Vendor / Token Store
+        - Housing / Decoration
+        - Travel / Exploration
+        - New Player Progression
+        - Veteran / Prestige
+        - Community / Social
+        - Staff Operations
+        - Unknown
+    validations:
+      required: true
+
+  - type: textarea
+    id: event-content
+    attributes:
+      label: Event Content / Components
+      description: |
+        Describe all event pieces: mobiles, spawns, items, quest steps, decorations, vendors, rewards, regions, gumps, commands, controllers, scripts, and data files.
+      placeholder: |
+        Mobiles/spawns:
+        Items/rewards:
+        Quests/objectives:
+        Vendors/stores:
+        Decorations/statics:
+        Commands/controllers:
+    validations:
+      required: true
+
+  - type: textarea
+    id: mechanics-rules
+    attributes:
+      label: Mechanics / Rules
+      description: |
+        Describe event objectives, scoring, participation, eligibility, entry/exit rules, phasing, cooldowns, reset behavior, death rules, region checks, kill credit, item marking, and completion conditions.
+    validations:
+      required: false
+
+  - type: textarea
+    id: rewards-economy
+    attributes:
+      label: Rewards / Loot / Economy
+      description: |
+        Describe loot tables, reward pools, token/currency flow, drop rates, reward caps, vendor prices, blessed/insured/tradeable behavior, resource faucets/sinks, gold/hour or item/hour impact, storage impact, and anti-farm or dupe concerns.
+    validations:
+      required: false
+
+  - type: textarea
+    id: pvp-pvm-safety
+    attributes:
+      label: PvP / PvM / Safety
+      description: |
+        Describe PvP flagging, Felucca risk, guard zones, party/group rules, solo viability, difficulty, spawn density, boss mechanics, counterplay, griefing risks, bot risks, safe-zone abuse, and exploit concerns.
+    validations:
+      required: false
+
+  - type: textarea
+    id: participation-access
+    attributes:
+      label: Participation / Access Rules
+      description: |
+        Add account limits, character limits, skill/race/faction requirements, quest gates, key/access items, cooldowns, repeatability, event opt-in/out, young-player handling, and shard custom policy.
+    validations:
+      required: false
+
+  - type: textarea
+    id: lifecycle-configuration
+    attributes:
+      label: Lifecycle / Configuration
+      description: |
+        If known, describe EventScheduler, ScheduledEvent, YearlyScheduledEvent, CallbackScheduledEvent, IRecurrencePattern, TimeZoneInfo, EventSink hooks, Timer use, Configure/Initialize registration, cleanup/Cancel(), restart behavior, save/load, and config flags.
+      placeholder: |
+        Scheduler/event type:
+        Timezone:
+        Registration:
+        Cleanup/cancel:
+        Save/load behavior:
+    validations:
+      required: false
+
+  - type: textarea
+    id: presentation
+    attributes:
+      label: Client Presentation
+      description: |
+        Add cliloc names, messages, announcement text, gumps, item art, mobile body/hue/title, static decoration, sounds, animations, map markers, web/Discord announcement needs, or localization notes.
+    validations:
+      required: false
+
+  - type: textarea
+    id: monitoring-rollback
+    attributes:
+      label: Monitoring / Rollback
+      description: |
+        Describe logging, staff commands, metrics to monitor, cleanup scripts, disable switches, rollback plan, cleanup after event end, and what should happen to spawned items/mobiles/rewards when the event ends.
+    validations:
+      required: false
+
+  - type: textarea
+    id: implementation-notes
+    attributes:
+      label: Implementation Notes / Repo Anchors
+      description: |
+        Add known event classes, scheduler classes, controller items, spawn data, region files, quest files, reward/item/mobile classes, config files, tests, or code anchors if known.
+      placeholder: |
+        Event/scheduler class:
+        Controller/spawn data:
+        Items/mobiles/rewards:
+        Regions/quests/gumps:
+        Tests:
+    validations:
+      required: false

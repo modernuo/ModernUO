@@ -1,0 +1,244 @@
+name: "🛠️ Crafting Info"
+description: Create a new ticket for a new or changed Ultima Online crafting recipe, resource, tool, BOD, recipe scroll, or crafting system info
+title: "Crafting: <recipe, resource, or system>"
+labels: ["ultima-online", "triage", "crafting"]
+
+body:
+  - type: input
+    id: name
+    attributes:
+      label: Crafting Entry Name
+      description: The recipe, resource, tool, reward, craft system, or crafting mechanic name.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: request-type
+    attributes:
+      label: Request Type
+      multiple: true
+      options:
+        - New Craftable Item
+        - Existing Recipe Change
+        - Crafting Resource / Subresource
+        - Recipe Scroll / Learned Recipe
+        - Runic Tool
+        - Bulk Order Deed (BOD)
+        - Tool / Station / Add-on
+        - Craft Gump / UI
+        - Success / Exceptional / Quality Formula
+        - Skill Requirement / Secondary Skill
+        - Vendor / Reward / Drop Source
+        - Harvesting Link
+        - Parity / Migration Info
+        - Custom / Unknown
+    validations:
+      required: true
+
+  - type: dropdown
+    id: craft-system
+    attributes:
+      label: Craft System / Skill
+      multiple: true
+      options:
+        - Alchemy
+        - Blacksmithy
+        - Bowcraft / Fletching
+        - Carpentry
+        - Cartography
+        - Cooking
+        - Inscription
+        - Tailoring
+        - Tinkering
+        - Imbuing
+        - Masonry
+        - Glassblowing
+        - Basket Weaving
+        - Bulk Orders
+        - Harvesting / Resource Gathering
+        - Vendor / Reward System
+        - Unknown / Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: |
+        Describe the crafting info, recipe, resource, tool, BOD, or system behavior and the intended player-facing result.
+    validations:
+      required: true
+
+  - type: textarea
+    id: references
+    attributes:
+      label: References
+      description: |
+        Add UO.com, UOGuide, Stratics, ServUO/RunUO, screenshots, gump captures, recipe lists, or other related URLs.
+        Use one reference per line and note what each source proves when possible.
+      placeholder: |
+        https://uo.com/wiki/... — official recipe, resource, reward, or publish note
+        https://www.uoguide.com/... — skill, recipe, BOD, resource, or history notes
+        https://github.com/ServUO/ServUO/... — engine or craft definition precedent
+    validations:
+      required: false
+
+  - type: dropdown
+    id: era
+    attributes:
+      label: Initial Era
+      options:
+        - Classic (Pre-T2A)
+        - The Second Age (T2A)
+        - Renaissance (UOR)
+        - Third Dawn (TD)
+        - Lord Blackthorns Revenge (LBR)
+        - Age of Shadows (AOS)
+        - Samurai Empire (SE)
+        - Mondains Legacy (ML)
+        - Kingdom Reborn (KR)
+        - Stygian Abyss (SA)
+        - High Seas (HS)
+        - Time of Legends (TOL)
+        - New Legacy (NL)
+        - Unknown
+    validations:
+      required: true
+
+  - type: input
+    id: publish
+    attributes:
+      label: Initial Publish
+      description: What is the initial publish?
+      placeholder: unknown
+    validations:
+      required: false
+
+  - type: dropdown
+    id: player-loops
+    attributes:
+      label: Player Loops
+      multiple: true
+      options:
+        - Crafting
+        - Harvesting / Resource Gathering
+        - Economy / Trading
+        - PvM Loot Source
+        - PvP / Felucca Risk
+        - Bulk Orders
+        - Vendor / Reward Loop
+        - Quest / Narrative
+        - Housing / Add-ons / Decoration
+        - New Player Progression
+        - Veteran / Prestige
+        - Event / Seasonal
+        - Unknown
+    validations:
+      required: true
+
+  - type: textarea
+    id: recipe-details
+    attributes:
+      label: Recipe / Crafting Details
+      description: |
+        Describe output item, craft category, recipe group, craft gump entry, recipe ID, cliloc/name, required expansion, and whether the recipe is normal, rare, quest, or learned.
+      placeholder: |
+        Output item:
+        Craft category / gump group:
+        Recipe ID:
+        Recipe rarity/source:
+        Required expansion:
+    validations:
+      required: true
+
+  - type: textarea
+    id: resources-requirements
+    attributes:
+      label: Resources / Requirements
+      description: |
+        List consumed resources, subresources, amounts, hue/material inheritance, required tools, stations, heat/oven/mill context, mana/stamina/hits cost, and any prerequisite items.
+      placeholder: |
+        Resources:
+        Subresources:
+        Tool/station:
+        Additional costs:
+    validations:
+      required: false
+
+  - type: textarea
+    id: skill-formulas
+    attributes:
+      label: Skill / Success / Exceptional Formulas
+      description: |
+        Add primary skill, secondary skills, min/max skill ranges, success chance, exceptional chance, quality behavior, maker's mark rules, and expected test values.
+    validations:
+      required: false
+
+  - type: textarea
+    id: output-properties
+    attributes:
+      label: Output Properties / Item Behavior
+      description: |
+        Describe durability, stackability, weight, hue, material bonuses, item properties, magical rolls, runic behavior, blessed/quest/newbied/bound behavior, repairability, and decay.
+    validations:
+      required: false
+
+  - type: textarea
+    id: recipe-scrolls-learning
+    attributes:
+      label: Recipe Scrolls / Learning
+      description: |
+        If applicable, describe recipe scroll ID, learning requirements, learned/unlearned craft gump state, drop source, quest source, satchel source, and duplicate-learning behavior.
+    validations:
+      required: false
+
+  - type: textarea
+    id: bod-rewards-vendors
+    attributes:
+      label: BODs / Rewards / Vendors
+      description: |
+        If applicable, describe Bulk Order Deed behavior, reward pools, vendor availability, trainer/vendor inventory, turn-in cooldowns, reward odds, and related economic sinks/sources.
+    validations:
+      required: false
+
+  - type: textarea
+    id: economy-balance
+    attributes:
+      label: Economy / Balance Impact
+      description: |
+        Describe resource faucet/sink impact, gold/hour or item/hour expectations, rarity, tradeability, insurance/blessing impact, storage impact, and anti-farm or dupe concerns.
+    validations:
+      required: false
+
+  - type: textarea
+    id: restrictions
+    attributes:
+      label: Restrictions / Era / Rules
+      description: |
+        Add expansion gates, race requirements, facet/map restrictions, quest gates, account limits, recipe rarity, recipe source limits, and exploit/bot concerns.
+    validations:
+      required: false
+
+  - type: textarea
+    id: presentation
+    attributes:
+      label: Client Presentation
+      description: |
+        Add craft gump group, cliloc names, item art, hue, tooltip lines, recipe scroll text, tool/add-on art, sounds, animations, or localization notes.
+    validations:
+      required: false
+
+  - type: textarea
+    id: implementation-notes
+    attributes:
+      label: Implementation Notes / Repo Anchors
+      description: |
+        Add known CraftSystem/Def*.cs files, CraftItem entries, SetNeededExpansion gates, Recipe IDs, resource classes, item classes, BOD profiles, tests, or code anchors if known.
+      placeholder: |
+        Craft definition:
+        Item/resource classes:
+        Recipe ID:
+        Tests:
+    validations:
+      required: false
