@@ -32,6 +32,7 @@ public partial class Torch : BaseEquipableLight
         if (parent is Mobile mobile && Burning)
         {
             MeerMage.StopEffect(mobile, true);
+            Swarm.ClearDefender(mobile);
         }
     }
 
@@ -42,6 +43,7 @@ public partial class Torch : BaseEquipableLight
         if (Parent is Mobile mobile && Burning)
         {
             MeerMage.StopEffect(mobile, true);
+            Swarm.ClearDefender(mobile);
         }
     }
 }
