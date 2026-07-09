@@ -1205,7 +1205,8 @@ namespace Server
     public enum NegativeAttribute
     {
         Prized = 0x00000001,
-        Massive = 0x00000002
+        Massive = 0x00000002,
+        Brittle = 0x00000004
     }
 
     public sealed class NegativeAttributes : BaseAttributes
@@ -1236,6 +1237,28 @@ namespace Server
         {
             get => Owner is BaseWeapon or BaseArmor ? this[NegativeAttribute.Massive] : 0;
             set => this[NegativeAttribute.Massive] = Owner is BaseWeapon or BaseArmor ? value : 0;
+        }
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        public int Brittle
+        {
+            get => Owner is BaseWeapon or BaseArmor ? this[NegativeAttribute.Brittle] : 0;
+            set => this[NegativeAttribute.Brittle] = Owner is BaseWeapon or BaseArmor ? value : 0;
+        }
+
+        public static bool IsBrittle(Item item)
+        {
+            if (!Core.HS)
+            {
+                return false;
+            }
+
+            return item switch
+            {
+                BaseWeapon weapon => weapon.NegativeAttributes.Brittle != 0,
+                BaseArmor armor   => armor.NegativeAttributes.Brittle != 0,
+                _                 => false
+            };
         }
 
         public static bool IsMassive(Item item)
@@ -1274,6 +1297,11 @@ namespace Server
             if (Core.HS && Prized != 0)
             {
                 list.Add(1154910); // Prized
+            }
+
+            if (Core.HS && Brittle != 0)
+            {
+                list.Add(1116209); // Brittle
             }
         }
 
