@@ -838,6 +838,11 @@ namespace Server.Items
 
         public int ComputeStatReq(StatType type)
         {
+            if (type == StatType.Str && NegativeAttributes.IsMassive(this))
+            {
+                return AOS.MassiveStrengthRequirement;
+            }
+
             var v = type switch
             {
                 StatType.Str => StrRequirement,
