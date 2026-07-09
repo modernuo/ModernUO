@@ -63,11 +63,18 @@ namespace Server.Items
             _table.TryGetValue(m, out var timer);
             timer?.Stop();
 
-            _table[m] = timer = new InternalTimer(from, m);
+            var bloodDrinker = CheckBloodDrinker(from);
+
+            _table[m] = timer = new InternalTimer(from, m, bloodDrinker);
             timer.Start();
         }
 
         public static void DoBleed(Mobile m, Mobile from, int level)
+        {
+            DoBleed(m, from, level, false);
+        }
+
+        internal static void DoBleed(Mobile m, Mobile from, int level, bool bloodDrinker)
         {
             if (m.Alive)
             {
@@ -79,7 +86,20 @@ namespace Server.Items
                 }
 
                 m.PlaySound(0x133);
+                var oldHits = m.Hits;
                 m.Damage(damage, from);
+                var applied = Math.Max(0, oldHits - m.Hits);
+
+                if (bloodDrinker && applied > 0 && from is { Deleted: false, Alive: true })
+                {
+                    var oldFromHits = from.Hits;
+                    from.Heal(applied, from, message: false);
+
+                    if (from.Hits > oldFromHits)
+                    {
+                        from.SendLocalizedMessage(1113606); // The blood drinker effect heals you.
+                    }
+                }
 
                 var blood = new Blood { ItemID = Utility.Random(0x122A, 5) };
                 blood.MoveToWorld(m.Location, m.Map);
@@ -105,20 +125,32 @@ namespace Server.Items
             }
         }
 
+        internal static bool CheckBloodDrinker(Mobile from)
+        {
+            if (!Core.SA || from?.Deleted != false || !from.Alive)
+            {
+                return false;
+            }
+
+            return from.Weapon is BaseWeapon weapon && weapon.ExtendedWeaponAttributes.BloodDrinker != 0;
+        }
+
         private class InternalTimer : Timer
         {
             private readonly Mobile m_From;
             private readonly Mobile m_Mobile;
+            private readonly bool m_BloodDrinker;
 
-            public InternalTimer(Mobile from, Mobile m) : base(TimeSpan.FromSeconds(2.0), TimeSpan.FromSeconds(2.0), 5)
+            public InternalTimer(Mobile from, Mobile m, bool bloodDrinker) : base(TimeSpan.FromSeconds(2.0), TimeSpan.FromSeconds(2.0), 5)
             {
                 m_From = from;
                 m_Mobile = m;
+                m_BloodDrinker = bloodDrinker;
             }
 
             protected override void OnTick()
             {
-                DoBleed(m_Mobile, m_From, 5 - Index);
+                DoBleed(m_Mobile, m_From, 5 - Index, m_BloodDrinker);
 
                 if (Index == 4)
                 {
