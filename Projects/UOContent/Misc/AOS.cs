@@ -1115,7 +1115,8 @@ namespace Server
     {
         Bane = 0x00000001,
         BattleLust = 0x00000002,
-        HitSparks = 0x00000004
+        HitSparks = 0x00000004,
+        BloodDrinker = 0x00000008
     }
 
     public sealed class ExtendedWeaponAttributes : BaseAttributes
@@ -1165,6 +1166,13 @@ namespace Server
             set => this[ExtendedWeaponAttribute.HitSparks] = value;
         }
 
+        [CommandProperty(AccessLevel.GameMaster)]
+        public int BloodDrinker
+        {
+            get => this[ExtendedWeaponAttribute.BloodDrinker];
+            set => this[ExtendedWeaponAttribute.BloodDrinker] = value;
+        }
+
         public void GetProperties(IPropertyList list)
         {
             if (Core.HS && Bane != 0)
@@ -1175,6 +1183,11 @@ namespace Server
             if (Core.SA && BattleLust != 0)
             {
                 list.Add(1113710); // Battle Lust
+            }
+
+            if (Core.SA && BloodDrinker != 0)
+            {
+                list.Add(1113591); // Blood Drinker
             }
 
             if (Core.TOL && HitSparks != 0)
