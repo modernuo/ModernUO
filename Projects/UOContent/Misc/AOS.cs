@@ -12,6 +12,7 @@ namespace Server
 {
     public static class AOS
     {
+        public const int CastingFocusChanceCap = 12;
         public const int MassiveStrengthRequirement = 125;
 
         public static void DisableStatInfluences()
@@ -1195,6 +1196,75 @@ namespace Server
             if (Core.TOL && HitSparks != 0)
             {
                 list.Add(1157326, HitSparks); // Sparks ~1_val~%
+            }
+        }
+
+        public override string ToString() => "...";
+    }
+
+    [Flags]
+    public enum AbsorptionAttribute
+    {
+        CastingFocus = 0x00000001
+    }
+
+    public sealed class AbsorptionAttributes : BaseAttributes
+    {
+        public AbsorptionAttributes(Item owner) : base(owner)
+        {
+        }
+
+        public AbsorptionAttributes(Item owner, AbsorptionAttributes other) : base(owner, other)
+        {
+        }
+
+        public int this[AbsorptionAttribute attribute]
+        {
+            get => GetValue((int)attribute);
+            set => SetValue((int)attribute, value);
+        }
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        public int CastingFocus
+        {
+            get => Owner is BaseArmor ? this[AbsorptionAttribute.CastingFocus] : 0;
+            set => this[AbsorptionAttribute.CastingFocus] = Owner is BaseArmor ? value : 0;
+        }
+
+        public static int GetValue(Mobile m, AbsorptionAttribute attribute)
+        {
+            if (!Core.SA)
+            {
+                return 0;
+            }
+
+            var items = m.Items;
+            var value = 0;
+
+            for (var i = 0; i < items.Count; ++i)
+            {
+                var obj = items[i];
+
+                if (obj is BaseArmor armor)
+                {
+                    var attrs = armor.AbsorptionAttributes;
+
+                    if (attrs != null)
+                    {
+                        value += attrs[attribute];
+                    }
+                }
+            }
+
+            return value;
+        }
+
+        public void GetProperties(IPropertyList list)
+        {
+            var castingFocus = CastingFocus;
+            if (Core.SA && castingFocus != 0)
+            {
+                list.Add(1113696, castingFocus); // Casting Focus ~1_val~%
             }
         }
 
