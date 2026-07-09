@@ -6,6 +6,8 @@ namespace Server.Items;
 [SerializationGenerator(0, false)]
 public partial class BaseShield : BaseArmor
 {
+    private int _lastParryChance;
+
     public BaseShield(int itemID) : base(itemID)
     {
     }
@@ -25,6 +27,45 @@ public partial class BaseShield : BaseArmor
             }
 
             return ar;
+        }
+    }
+
+    [CommandProperty(AccessLevel.GameMaster)]
+    public int LastParryChance
+    {
+        get => _lastParryChance;
+        set => SetLastParryChance(value);
+    }
+
+    private void SetLastParryChance(int value)
+    {
+        value = Math.Max(value, 0);
+
+        if (_lastParryChance == value)
+        {
+            return;
+        }
+
+        _lastParryChance = value;
+        InvalidateProperties();
+    }
+
+    private void ClearLastParryChance() => SetLastParryChance(0);
+
+    public override void OnRemoved(IEntity parent)
+    {
+        ClearLastParryChance();
+
+        base.OnRemoved(parent);
+    }
+
+    public override void GetProperties(IPropertyList list)
+    {
+        base.GetProperties(list);
+
+        if (Core.EJ && LastParryChance > 0)
+        {
+            list.Add(1158861, LastParryChance); // Last Parry Chance: ~1_val~%
         }
     }
 
