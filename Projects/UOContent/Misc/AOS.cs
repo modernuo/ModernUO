@@ -1132,7 +1132,8 @@ namespace Server
         BattleLust = 0x00000002,
         HitSparks = 0x00000004,
         BloodDrinker = 0x00000008,
-        HitSwarm = 0x00000010
+        HitSwarm = 0x00000010,
+        SplinteringWeapon = 0x00000020
     }
 
     public sealed class ExtendedWeaponAttributes : BaseAttributes
@@ -1196,6 +1197,13 @@ namespace Server
             set => this[ExtendedWeaponAttribute.HitSwarm] = value;
         }
 
+        [CommandProperty(AccessLevel.GameMaster)]
+        public int SplinteringWeapon
+        {
+            get => this[ExtendedWeaponAttribute.SplinteringWeapon];
+            set => this[ExtendedWeaponAttribute.SplinteringWeapon] = value;
+        }
+
         public void GetProperties(IPropertyList list)
         {
             if (Core.HS && Bane != 0)
@@ -1211,6 +1219,11 @@ namespace Server
             if (Core.SA && BloodDrinker != 0)
             {
                 list.Add(1113591); // Blood Drinker
+            }
+
+            if (Core.SA && SplinteringWeapon != 0)
+            {
+                list.Add(1112857, SplinteringWeapon); // splintering weapon ~1_val~%
             }
 
             if (Core.TOL && HitSparks != 0)
