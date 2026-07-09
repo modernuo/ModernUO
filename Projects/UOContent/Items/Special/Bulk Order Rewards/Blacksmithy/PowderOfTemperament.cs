@@ -86,6 +86,12 @@ public partial class PowderOfTemperament : Item, IUsesRemaining
                 return;
             }
 
+            if (NegativeAttributes.IsBrittle(item))
+            {
+                from.SendLocalizedMessage(1149799); // That cannot be used on brittle items.
+                return;
+            }
+
             if (!item.IsChildOf(from.Backpack) && (!Core.ML || item.Parent != from) ||
                 !_powder.IsChildOf(from.Backpack))
             {
