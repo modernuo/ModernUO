@@ -1,4 +1,5 @@
 using System;
+using Server.Spells.Mysticism;
 using Server.Targeting;
 
 namespace Server.Spells.First
@@ -19,7 +20,9 @@ namespace Server.Spells.First
 
         public override SpellCircle Circle => SpellCircle.First;
 
-        public override Type[] DelayedDamageSpellFamilyStacking => AOSNoDelayedDamageStackingSelf;
+        private static readonly Type[] _delayedDamageSpellFamilyStacking = Core.AOS ? [typeof(NetherBoltSpell)] : null;
+
+        public override Type[] DelayedDamageSpellFamilyStacking => _delayedDamageSpellFamilyStacking;
 
         public override bool DelayedDamage => true;
 
