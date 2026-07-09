@@ -2087,6 +2087,13 @@ public abstract partial class BaseWeapon
         if (damageGiven > 0)
         {
             var propertyBonus = move?.GetPropertyBonus(attacker) ?? 1.0;
+            var splintering = SplinteringWeapon.TryProcOnEligibleHit(
+                attacker,
+                defender,
+                this,
+                a,
+                ExtendedWeaponAttributes.SplinteringWeapon
+            );
 
             // Leech abilities
             if (Core.AOS)
@@ -2144,14 +2151,18 @@ public abstract partial class BaseWeapon
                 defender is Slime or AcidElemental;
 
             // Stratics says 50% chance, seems more like 4%..
-            if (isAcidMonster || Utility.Random(25) == 0)
+            if (isAcidMonster || splintering || Utility.Random(25) == 0)
             {
                 if (isAcidMonster)
                 {
                     attacker.LocalOverheadMessage(MessageType.Regular, 0x3B2, 500263); // *Acid blood scars your weapon!*
                 }
 
-                if (Core.AOS && WeaponAttributes.SelfRepair > Utility.Random(10))
+                if (splintering && _hitPoints > 0)
+                {
+                    HitPoints = Math.Max(0, _hitPoints - SplinteringWeapon.DurabilityLoss);
+                }
+                else if (Core.AOS && WeaponAttributes.SelfRepair > Utility.Random(10))
                 {
                     HitPoints += 2;
                 }
