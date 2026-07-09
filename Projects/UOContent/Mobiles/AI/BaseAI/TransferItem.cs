@@ -146,7 +146,7 @@ internal sealed partial class TransferItem : Item
 
         Delete();
 
-        if (!accepted || !_creature.SetControlMaster(to))
+        if (!accepted || _creature.Allured || !_creature.SetControlMaster(to))
         {
             return;
         }

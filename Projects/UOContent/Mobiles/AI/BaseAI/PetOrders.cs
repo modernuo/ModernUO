@@ -497,6 +497,15 @@ public abstract partial class BaseAI
         {
             this.DebugSayFormatted($"Beginning transfer with {to.Name}");
 
+            if (Mobile.Allured)
+            {
+                SendTransferRefusalMessages(from, to, 1043250, 1043251);
+                // 1043250: The pet refuses to be transferred because it will not obey you sufficiently.~3_BLANK~
+                // 1043251: The pet will not accept you as a master because it does not trust ~2_NAME~.~3_BLANK~
+                ResumePersistentOrder();
+                return true;
+            }
+
             var youngFrom = from is PlayerMobile mobile && mobile.Young;
             var youngTo = to is PlayerMobile playerMobile && playerMobile.Young;
 

@@ -251,6 +251,7 @@ namespace Server.Mobiles
         };
 
         private bool _summoned;
+        private bool _allured;
 
         private bool m_bTamable;
         private int m_ColdResistance;
@@ -493,6 +494,30 @@ namespace Server.Mobiles
         public virtual double BonusPetDamageScalar => 1.0;
 
         public virtual bool DeathAdderCharmable => false;
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        public bool Allured
+        {
+            get => _allured;
+            set
+            {
+                if (_allured == value)
+                {
+                    return;
+                }
+
+                _allured = value;
+
+                if (_allured)
+                {
+                    Loyalty = MaxLoyalty;
+                }
+
+                InvalidateProperties();
+            }
+        }
+
+        public virtual bool AllureImmune => BardImmune || IsInvulnerable;
 
         // TODO: Find the pub 31 tweaks to the DispelDifficulty and apply them of course.
         // at this skill level we dispel 50% chance
@@ -1843,7 +1868,7 @@ namespace Server.Mobiles
         {
             base.Serialize(writer);
 
-            writer.Write(20); // version
+            writer.Write(21); // version
 
             writer.Write((int)m_CurrentAI);
             writer.Write((int)m_DefaultAI);
@@ -1963,6 +1988,9 @@ namespace Server.Mobiles
 
             // Version 19
             writer.Write(HomeMap);
+
+            // Version 21
+            writer.Write(_allured);
         }
 
         public override void Deserialize(IGenericReader reader)
@@ -2164,6 +2192,11 @@ namespace Server.Mobiles
             if (version >= 19)
             {
                 HomeMap = reader.ReadMap();
+            }
+
+            if (version >= 21)
+            {
+                _allured = reader.ReadBool();
             }
 
             if (version <= 14 && m_Paragon && Hue == 0x31)
@@ -3471,6 +3504,7 @@ namespace Server.Mobiles
         {
             if (m == null)
             {
+                Allured = false;
                 ControlMaster = null;
                 Controlled = false;
                 ControlTarget = null;
@@ -5620,6 +5654,12 @@ namespace Server.Mobiles
                 else if (c.Controlled && c.Commandable)
                 {
                     c.OwnerAbandonTime = DateTime.MinValue;
+
+                    if (c.Allured)
+                    {
+                        c.Loyalty = BaseCreature.MaxLoyalty;
+                        continue;
+                    }
 
                     if (c.Map != Map.Internal)
                     {
