@@ -32,6 +32,8 @@ namespace Server.Spells.Second
 
         public override SpellCircle Circle => SpellCircle.Second;
 
+        public static bool HasEffect(Mobile m) => Registry.ContainsKey(m) || HasT2AProtection(m);
+
         public static bool HasT2AProtection(Mobile m) => _t2aTable?.ContainsKey(m) ?? false;
 
         public static void RemoveT2AProtection(Mobile m)
@@ -153,13 +155,13 @@ namespace Server.Spells.Second
         }
 
         [OnEvent(nameof(PlayerMobile.PlayerDeletedEvent))]
-        public static void EndProtection(Mobile m)
+        public static bool EndProtection(Mobile m)
         {
             RemoveT2AProtection(m);
 
             if (_table?.Remove(m, out var mods) != true)
             {
-                return;
+                return false;
             }
 
             Registry.Remove(m);
@@ -168,6 +170,7 @@ namespace Server.Spells.Second
             m.RemoveSkillMod(mods.Item2);
 
             (m as PlayerMobile)?.RemoveBuff(BuffIcon.Protection);
+            return true;
         }
 
         public override void OnCast()

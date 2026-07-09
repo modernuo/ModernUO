@@ -28,6 +28,8 @@ namespace Server.Spells.First
 
         public override SpellCircle Circle => SpellCircle.First;
 
+        public static bool HasAosEffect(Mobile m) => _table?.ContainsKey(m) == true;
+
         public static bool HasEffect(Mobile m) => _t2aTable?.ContainsKey(m) == true;
 
         public static void RemoveEffect(Mobile m)
@@ -256,13 +258,13 @@ namespace Server.Spells.First
         }
 
         [OnEvent(nameof(PlayerMobile.PlayerDeletedEvent))]
-        public static void EndArmor(Mobile m)
+        public static bool EndArmor(Mobile m)
         {
             RemoveEffect(m);
 
             if (_table?.Remove(m, out var mods) != true)
             {
-                return;
+                return false;
             }
 
             for (var i = 0; i < mods?.Length; ++i)
@@ -271,6 +273,7 @@ namespace Server.Spells.First
             }
 
             (m as PlayerMobile)?.RemoveBuff(BuffIcon.ReactiveArmor);
+            return true;
         }
     }
 }
