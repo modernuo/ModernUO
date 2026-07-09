@@ -26,6 +26,7 @@ public class ExtendedWeaponAttributesTests
         Assert.Equal(0x00000002, (int)ExtendedWeaponAttribute.BattleLust);
         Assert.Equal(0x00000004, (int)ExtendedWeaponAttribute.HitSparks);
         Assert.Equal(0x00000008, (int)ExtendedWeaponAttribute.BloodDrinker);
+        Assert.Equal(0x00000010, (int)ExtendedWeaponAttribute.HitSwarm);
     }
 
     [Fact]
@@ -41,6 +42,7 @@ public class ExtendedWeaponAttributesTests
             Assert.Equal(0, weapon.ExtendedWeaponAttributes.BattleLust);
             Assert.Equal(0, weapon.ExtendedWeaponAttributes.HitSparks);
             Assert.Equal(0, weapon.ExtendedWeaponAttributes.BloodDrinker);
+            Assert.Equal(0, weapon.ExtendedWeaponAttributes.HitSwarm);
         }
         finally
         {
@@ -76,6 +78,7 @@ public class ExtendedWeaponAttributesTests
         AssertStaffCommandProperty(nameof(ExtendedWeaponAttributes.BattleLust));
         AssertStaffCommandProperty(nameof(ExtendedWeaponAttributes.HitSparks));
         AssertStaffCommandProperty(nameof(ExtendedWeaponAttributes.BloodDrinker));
+        AssertStaffCommandProperty(nameof(ExtendedWeaponAttributes.HitSwarm));
     }
 
     [Fact]
@@ -92,6 +95,7 @@ public class ExtendedWeaponAttributesTests
             weapon.ExtendedWeaponAttributes.BattleLust = 1;
             weapon.ExtendedWeaponAttributes.HitSparks = 20;
             weapon.ExtendedWeaponAttributes.BloodDrinker = 1;
+            weapon.ExtendedWeaponAttributes.HitSwarm = 30;
 
             var writer = new BufferWriter(true);
             weapon.Serialize(writer);
@@ -106,6 +110,7 @@ public class ExtendedWeaponAttributesTests
             Assert.Equal(1, deserialized.ExtendedWeaponAttributes.BattleLust);
             Assert.Equal(20, deserialized.ExtendedWeaponAttributes.HitSparks);
             Assert.Equal(1, deserialized.ExtendedWeaponAttributes.BloodDrinker);
+            Assert.Equal(30, deserialized.ExtendedWeaponAttributes.HitSwarm);
         }
         finally
         {

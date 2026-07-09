@@ -76,6 +76,8 @@ namespace Server
             Fix(ref chaos);
             Fix(ref direct);
 
+            var firePostResistDamage = ignoreArmor ? damage * fire / 100 : 0;
+
             if (Core.ML && chaos > 0)
             {
                 switch (Utility.Random(5))
@@ -126,13 +128,16 @@ namespace Server
                 var resPois = m.PoisonResistance;
                 var resNrgy = m.EnergyResistance;
 
+                var fireDamageNumerator = damage * fire * (100 - resFire);
+
                 totalDamage = damage * phys * (100 - resPhys);
-                totalDamage += damage * fire * (100 - resFire);
+                totalDamage += fireDamageNumerator;
                 totalDamage += damage * cold * (100 - resCold);
                 totalDamage += damage * pois * (100 - resPois);
                 totalDamage += damage * nrgy * (100 - resNrgy);
 
                 totalDamage /= 10000;
+                firePostResistDamage = fireDamageNumerator / 10000;
 
                 if (Core.ML)
                 {
@@ -241,7 +246,14 @@ namespace Server
 
             var oldHits = m.Hits;
             m.Damage(totalDamage, from);
-            BattleLust.OnDamageTaken(m, from, Math.Max(0, oldHits - m.Hits));
+            var appliedDamage = Math.Max(0, oldHits - m.Hits);
+
+            if (firePostResistDamage > 0 && appliedDamage > 0)
+            {
+                Swarm.ClearDefender(m);
+            }
+
+            BattleLust.OnDamageTaken(m, from, appliedDamage);
             return totalDamage;
         }
 
@@ -1119,7 +1131,8 @@ namespace Server
         Bane = 0x00000001,
         BattleLust = 0x00000002,
         HitSparks = 0x00000004,
-        BloodDrinker = 0x00000008
+        BloodDrinker = 0x00000008,
+        HitSwarm = 0x00000010
     }
 
     public sealed class ExtendedWeaponAttributes : BaseAttributes
@@ -1176,6 +1189,13 @@ namespace Server
             set => this[ExtendedWeaponAttribute.BloodDrinker] = value;
         }
 
+        [CommandProperty(AccessLevel.GameMaster)]
+        public int HitSwarm
+        {
+            get => this[ExtendedWeaponAttribute.HitSwarm];
+            set => this[ExtendedWeaponAttribute.HitSwarm] = value;
+        }
+
         public void GetProperties(IPropertyList list)
         {
             if (Core.HS && Bane != 0)
@@ -1196,6 +1216,11 @@ namespace Server
             if (Core.TOL && HitSparks != 0)
             {
                 list.Add(1157326, HitSparks); // Sparks ~1_val~%
+            }
+
+            if (Core.TOL && HitSwarm != 0)
+            {
+                list.Add(1157325, HitSwarm); // Swarm ~1_val~%
             }
         }
 

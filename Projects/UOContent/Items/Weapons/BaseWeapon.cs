@@ -2286,6 +2286,7 @@ public abstract partial class BaseWeapon
             if (a == null && move == null)
             {
                 Sparks.TryProcOnNormalHit(attacker, defender, ExtendedWeaponAttributes.HitSparks);
+                Swarm.TryProcOnNormalHit(attacker, defender, ExtendedWeaponAttributes.HitSwarm);
             }
         }
 
