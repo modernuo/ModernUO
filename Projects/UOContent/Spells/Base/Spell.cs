@@ -88,10 +88,23 @@ namespace Server.Spells
             if (Caster.Player && IsCasting)
             {
                 var hasProtection = ProtectionSpell.Registry.TryGetValue(Caster, out var d);
-                if (!hasProtection || d < 1000 && d < Utility.Random(1000))
+                if (hasProtection && (d >= 1000 || d >= Utility.Random(1000)))
                 {
-                    Disturb(DisturbType.Hurt, false, true);
+                    return;
                 }
+
+                var castingFocus = Math.Min(
+                    AOS.CastingFocusChanceCap,
+                    AbsorptionAttributes.GetValue(Caster, AbsorptionAttribute.CastingFocus)
+                );
+
+                if (castingFocus > Utility.Random(100))
+                {
+                    Caster.SendLocalizedMessage(1113690); // You regain your focus and continue casting the spell.
+                    return;
+                }
+
+                Disturb(DisturbType.Hurt, false, true);
             }
         }
 

@@ -12,7 +12,7 @@ using AMT = Server.Items.ArmorMaterialType;
 
 namespace Server.Items
 {
-    [SerializationGenerator(10, false)]
+    [SerializationGenerator(11, false)]
     public abstract partial class BaseArmor
         : Item, IScissorable, IFactionItem, ICraftable, IWearableDurability, IAosItem, IIdentifiable
     {
@@ -162,6 +162,17 @@ namespace Server.Items
         [SerializableFieldDefault(25)]
         private NegativeAttributes NegativeAttributesDefaultValue() => new(this);
 
+        [SerializedIgnoreDupe]
+        [SerializableField(26, setter: "private")]
+        [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
+        private AbsorptionAttributes _absorptionAttributes;
+
+        [SerializableFieldSaveFlag(26)]
+        private bool ShouldSerializeAbsorptionAttributes() => !_absorptionAttributes.IsEmpty;
+
+        [SerializableFieldDefault(26)]
+        private AbsorptionAttributes AbsorptionAttributesDefaultValue() => new(this);
+
         private FactionItem m_FactionState;
 
         public BaseArmor(int itemID) : base(itemID)
@@ -179,6 +190,7 @@ namespace Server.Items
             Attributes = new AosAttributes(this);
             ArmorAttributes = new AosArmorAttributes(this);
             NegativeAttributes = new NegativeAttributes(this);
+            AbsorptionAttributes = new AbsorptionAttributes(this);
             SkillBonuses = new AosSkillBonuses(this);
         }
 
@@ -827,6 +839,7 @@ namespace Server.Items
             armor.Attributes = new AosAttributes(newItem, Attributes);
             armor.ArmorAttributes = new AosArmorAttributes(newItem, ArmorAttributes);
             armor.NegativeAttributes = new NegativeAttributes(newItem, NegativeAttributes);
+            armor.AbsorptionAttributes = new AbsorptionAttributes(newItem, AbsorptionAttributes);
             armor.SkillBonuses = new AosSkillBonuses(newItem, SkillBonuses);
 
             // Set hue again because of resource
@@ -1050,6 +1063,7 @@ namespace Server.Items
         private void AfterDeserialization()
         {
             _negativeAttributes ??= NegativeAttributesDefaultValue();
+            _absorptionAttributes ??= AbsorptionAttributesDefaultValue();
 
             var m = Parent as Mobile;
 
@@ -1344,6 +1358,7 @@ namespace Server.Items
             }
 
             NegativeAttributes.GetProperties(list);
+            AbsorptionAttributes.GetProperties(list);
             ArmorAttributes.GetProperties(list);
 
             Attributes.GetProperties(list, luckBonus: GetLuckBonus());
