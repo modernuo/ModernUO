@@ -1,0 +1,51 @@
+{
+  "version": 0,
+  "type": "Server.Items.HealingStone",
+  "properties": [
+    {
+      "name": "OwnerMobile",
+      "type": "Server.Mobile",
+      "rule": "SerializableInterfaceMigrationRule"
+    },
+    {
+      "name": "StoredLifeForce",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "MaximumLifeForce",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "HealingAvailable",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "MaximumHealing",
+      "type": "int",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    },
+    {
+      "name": "RechargeStarted",
+      "type": "System.DateTime",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

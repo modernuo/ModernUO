@@ -19,7 +19,9 @@ public abstract partial class BaseHealPotion : BasePotion
         var min = Scale(from, MinHeal);
         var max = Scale(from, MaxHeal);
 
-        from.Heal(Utility.RandomMinMax(min, max));
+        var healed = Utility.RandomMinMax(min, max);
+        from.Heal(healed);
+        HealingStone.OnPotionHealed(from);
     }
 
     public override bool CanDrink(Mobile from)

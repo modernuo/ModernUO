@@ -182,7 +182,7 @@ namespace Server.Spells
                 {
                     // Mysticism spells
                     Register(677, typeof(NetherBoltSpell));
-                    // Register(678, typeof(HealingStoneSpell));
+                    Register(678, typeof(HealingStoneSpell));
                     Register(679, typeof(PurgeMagicSpell));
                     // Register(680, typeof(EnchantSpell));
                     // Register(681, typeof(SleepSpell));
