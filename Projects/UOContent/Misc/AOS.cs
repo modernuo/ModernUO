@@ -5,6 +5,7 @@ using Server.Items;
 using Server.Mobiles;
 using Server.Spells;
 using Server.Spells.Fifth;
+using Server.Spells.Mysticism;
 using Server.Spells.Ninjitsu;
 using Server.Spells.Seventh;
 
@@ -247,6 +248,8 @@ namespace Server
             var oldHits = m.Hits;
             m.Damage(totalDamage, from);
             var appliedDamage = Math.Max(0, oldHits - m.Hits);
+
+            PurgeMagicSpell.OnMobileDamaged(from, m, appliedDamage);
 
             if (firePostResistDamage > 0 && appliedDamage > 0)
             {

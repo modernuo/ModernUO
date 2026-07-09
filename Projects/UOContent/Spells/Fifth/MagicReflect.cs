@@ -25,6 +25,8 @@ namespace Server.Spells.Fifth
 
         public override SpellCircle Circle => SpellCircle.Fifth;
 
+        public static bool HasEffect(Mobile m) => _table.ContainsKey(m);
+
         public override bool CheckCast()
         {
             if (Core.AOS)
@@ -157,11 +159,11 @@ namespace Server.Spells.Fifth
         }
 
         [OnEvent(nameof(PlayerMobile.PlayerDeletedEvent))]
-        public static void EndReflect(Mobile m)
+        public static bool EndReflect(Mobile m)
         {
             if (!_table.Remove(m, out var mods))
             {
-                return;
+                return false;
             }
 
             for (var i = 0; i < mods?.Length; ++i)
@@ -170,6 +172,7 @@ namespace Server.Spells.Fifth
             }
 
             (m as PlayerMobile)?.RemoveBuff(BuffIcon.MagicReflection);
+            return true;
         }
     }
 }

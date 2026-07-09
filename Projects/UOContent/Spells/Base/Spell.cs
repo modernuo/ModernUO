@@ -652,6 +652,8 @@ namespace Server.Spells
                 scalar = 1.0;
             }
 
+            Mysticism.PurgeMagicSpell.GetManaDisruptionScalar(Caster, ref scalar);
+
             // Lower Mana Cost = 40%
             var lmc = AosAttributes.GetValue(Caster, AosAttribute.LowerManaCost);
             if (lmc > 40)
