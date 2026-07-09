@@ -24,6 +24,7 @@ public class ExtendedWeaponAttributesTests
     {
         Assert.Equal(0x00000001, (int)ExtendedWeaponAttribute.Bane);
         Assert.Equal(0x00000002, (int)ExtendedWeaponAttribute.BattleLust);
+        Assert.Equal(0x00000004, (int)ExtendedWeaponAttribute.HitSparks);
     }
 
     [Fact]
@@ -37,6 +38,7 @@ public class ExtendedWeaponAttributesTests
             Assert.True(weapon.ExtendedWeaponAttributes.IsEmpty);
             Assert.Equal(0, weapon.ExtendedWeaponAttributes.Bane);
             Assert.Equal(0, weapon.ExtendedWeaponAttributes.BattleLust);
+            Assert.Equal(0, weapon.ExtendedWeaponAttributes.HitSparks);
         }
         finally
         {
@@ -70,6 +72,7 @@ public class ExtendedWeaponAttributesTests
 
         AssertStaffCommandProperty(nameof(ExtendedWeaponAttributes.Bane));
         AssertStaffCommandProperty(nameof(ExtendedWeaponAttributes.BattleLust));
+        AssertStaffCommandProperty(nameof(ExtendedWeaponAttributes.HitSparks));
     }
 
     [Fact]
@@ -84,6 +87,7 @@ public class ExtendedWeaponAttributesTests
             Core.Expansion = Expansion.HS;
             weapon.ExtendedWeaponAttributes.Bane = 1;
             weapon.ExtendedWeaponAttributes.BattleLust = 1;
+            weapon.ExtendedWeaponAttributes.HitSparks = 20;
 
             var writer = new BufferWriter(true);
             weapon.Serialize(writer);
@@ -96,6 +100,7 @@ public class ExtendedWeaponAttributesTests
             Assert.Equal(buffer.Length, reader.Position);
             Assert.Equal(1, deserialized.ExtendedWeaponAttributes.Bane);
             Assert.Equal(1, deserialized.ExtendedWeaponAttributes.BattleLust);
+            Assert.Equal(20, deserialized.ExtendedWeaponAttributes.HitSparks);
         }
         finally
         {
