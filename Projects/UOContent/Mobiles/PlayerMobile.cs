@@ -1361,7 +1361,7 @@ namespace Server.Mobiles
                         {
                             drop = true;
                         }
-                        else if (str < AOS.Scale(weapon.StrRequirement, 100 - weapon.GetLowerStatReq()))
+                        else if (str < weapon.ComputeStrengthRequirement())
                         {
                             drop = true;
                         }

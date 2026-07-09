@@ -1016,6 +1016,10 @@ public abstract partial class BaseWeapon
         return v;
     }
 
+    public int ComputeStrengthRequirement() => NegativeAttributes.IsMassive(this)
+        ? AOS.MassiveStrengthRequirement
+        : AOS.Scale(StrRequirement, 100 - GetLowerStatReq());
+
     public static void BlockEquip(Mobile m, TimeSpan duration)
     {
         if (m.BeginAction<BaseWeapon>())
@@ -1074,7 +1078,7 @@ public abstract partial class BaseWeapon
             return false;
         }
 
-        if (from.Str < AOS.Scale(StrRequirement, 100 - GetLowerStatReq()))
+        if (from.Str < ComputeStrengthRequirement())
         {
             from.SendLocalizedMessage(500213); // You are not strong enough to equip that.
             return false;
@@ -3167,7 +3171,7 @@ public abstract partial class BaseWeapon
             list.Add(1061169, MaxRange); // range ~1_val~
         }
 
-        var strReq = AOS.Scale(StrRequirement, 100 - GetLowerStatReq());
+        var strReq = ComputeStrengthRequirement();
 
         if (strReq > 0)
         {

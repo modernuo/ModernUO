@@ -12,6 +12,8 @@ namespace Server
 {
     public static class AOS
     {
+        public const int MassiveStrengthRequirement = 125;
+
         public static void DisableStatInfluences()
         {
             for (var i = 0; i < SkillInfo.Table.Length; ++i)
@@ -1202,7 +1204,8 @@ namespace Server
     [Flags]
     public enum NegativeAttribute
     {
-        Prized = 0x00000001
+        Prized = 0x00000001,
+        Massive = 0x00000002
     }
 
     public sealed class NegativeAttributes : BaseAttributes
@@ -1226,6 +1229,28 @@ namespace Server
         {
             get => this[NegativeAttribute.Prized];
             set => this[NegativeAttribute.Prized] = value;
+        }
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        public int Massive
+        {
+            get => Owner is BaseWeapon or BaseArmor ? this[NegativeAttribute.Massive] : 0;
+            set => this[NegativeAttribute.Massive] = Owner is BaseWeapon or BaseArmor ? value : 0;
+        }
+
+        public static bool IsMassive(Item item)
+        {
+            if (!Core.HS)
+            {
+                return false;
+            }
+
+            return item switch
+            {
+                BaseWeapon weapon => weapon.NegativeAttributes.Massive != 0,
+                BaseArmor armor   => armor.NegativeAttributes.Massive != 0,
+                _                 => false
+            };
         }
 
         public static bool IsPrized(Item item)
