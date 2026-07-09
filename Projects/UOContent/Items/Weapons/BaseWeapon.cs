@@ -211,6 +211,7 @@ public abstract partial class BaseWeapon
 
     private FactionItem m_FactionState;
     private SkillMod m_SkillMod, m_MageMod;
+    private int _lastParryChance;
 
     public BaseWeapon(int itemID) : base(itemID)
     {
@@ -245,6 +246,30 @@ public abstract partial class BaseWeapon
     public virtual bool UseSkillMod => !Core.AOS;
 
     public static bool InDoubleStrike { get; set; }
+
+    [CommandProperty(AccessLevel.GameMaster)]
+    public int LastParryChance
+    {
+        get => _lastParryChance;
+        set => SetLastParryChance(value);
+    }
+
+    private void SetLastParryChance(int value)
+    {
+        value = Math.Max(value, 0);
+
+        if (_lastParryChance == value)
+        {
+            return;
+        }
+
+        _lastParryChance = value;
+        InvalidateProperties();
+    }
+
+    private void ClearLastParryChance() => SetLastParryChance(0);
+
+    private static int GetLastParryChancePercentage(double chance) => Math.Max((int)(chance * 100), 0);
 
     public virtual int VirtualDamageBonus => 0;
 
@@ -1161,6 +1186,8 @@ public abstract partial class BaseWeapon
 
     public override void OnRemoved(IEntity parent)
     {
+        ClearLastParryChance();
+
         if (parent is not Mobile m)
         {
             return;
@@ -1593,7 +1620,14 @@ public abstract partial class BaseWeapon
                 chance = chance * (20 + defender.Dex) / 100;
             }
 
-            return defender.CheckSkill(SkillName.Parry, chance);
+            var success = defender.CheckSkill(SkillName.Parry, chance);
+
+            if (success)
+            {
+                shield.LastParryChance = GetLastParryChancePercentage(chance);
+            }
+
+            return success;
         }
 
         if (defender.Weapon is Fists or BaseRanged)
@@ -1634,11 +1668,25 @@ public abstract partial class BaseWeapon
 
         if (chance > aosChance)
         {
-            return defender.CheckSkill(SkillName.Parry, chance);
+            var success = defender.CheckSkill(SkillName.Parry, chance);
+
+            if (success && weapon != null)
+            {
+                weapon.LastParryChance = GetLastParryChancePercentage(chance);
+            }
+
+            return success;
         }
 
         // Only skillcheck if wielding a shield & there's no effect from Bushido
-        return aosChance > Utility.RandomDouble();
+        var fallbackSuccess = aosChance > Utility.RandomDouble();
+
+        if (fallbackSuccess && weapon != null)
+        {
+            weapon.LastParryChance = GetLastParryChancePercentage(aosChance);
+        }
+
+        return fallbackSuccess;
     }
 
     public virtual int AbsorbDamageAOS(Mobile attacker, Mobile defender, int damage)
@@ -3234,6 +3282,11 @@ public abstract partial class BaseWeapon
         if (_hitPoints >= 0 && _maxHitPoints > 0)
         {
             list.Add(1060639, $"{_hitPoints}\t{_maxHitPoints}"); // durability ~1_val~ / ~2_val~
+        }
+
+        if (Core.EJ && LastParryChance > 0 && this is not Fists and not BaseRanged)
+        {
+            list.Add(1158861, LastParryChance); // Last Parry Chance: ~1_val~%
         }
     }
 
