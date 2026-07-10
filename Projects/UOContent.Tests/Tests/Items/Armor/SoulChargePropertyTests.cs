@@ -242,6 +242,10 @@ public class SoulChargePropertyTests
         {
             Core.Expansion = Expansion.SA;
 
+            shield.ArmorAttributes.SoulCharge = 0;
+            AOS.Damage(defender, source, 100, false, 100, 0, 0, 0, 0);
+
+            shield.ArmorAttributes.SoulCharge = 50;
             AOS.Damage(defender, source, 0, false, 100, 0, 0, 0, 0);
             AOS.Damage(defender, source, 100, false, 100, 0, 0, 0, 0);
 
