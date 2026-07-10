@@ -321,7 +321,8 @@ namespace Server
         Luck = 0x00100000,
         SpellChanneling = 0x00200000,
         NightSight = 0x00400000,
-        IncreasedKarmaLoss = 0x00800000
+        IncreasedKarmaLoss = 0x00800000,
+        SpellFocusing = 0x01000000
     }
 
     public interface IAosItem
@@ -513,6 +514,13 @@ namespace Server
             set => this[AosAttribute.IncreasedKarmaLoss] = value;
         }
 
+        [CommandProperty(AccessLevel.GameMaster)]
+        public int SpellFocusing
+        {
+            get => this[AosAttribute.SpellFocusing];
+            set => this[AosAttribute.SpellFocusing] = value;
+        }
+
         public void GetProperties(IPropertyList list, int damageBonus = 0, int hitChanceBonus = 0, int luckBonus = 0)
         {
             int prop;
@@ -635,6 +643,11 @@ namespace Server
             if (Core.ML && (prop = IncreasedKarmaLoss) != 0)
             {
                 list.Add(1075210, prop); // Increased Karma Loss ~1val~%
+            }
+
+            if (SpellFocusing != 0)
+            {
+                list.Add(1150058); // Spell Focusing
             }
         }
 

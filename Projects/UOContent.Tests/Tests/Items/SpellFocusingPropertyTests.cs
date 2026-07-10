@@ -1,0 +1,142 @@
+using System;
+using System.Collections.Generic;
+using Server;
+using Server.Items;
+using Server.Text;
+using Xunit;
+
+namespace UOContent.Tests;
+
+[Collection("Sequential UOContent Tests")]
+public class SpellFocusingPropertyTests
+{
+    private const int SpellFocusingCliloc = 1150058;
+
+    [Fact]
+    public void AosAttributes_StoresAndDisplaysSpellFocusing()
+    {
+        var previousExpansion = Core.Expansion;
+        var item = new Katana();
+
+        try
+        {
+            Core.Expansion = Expansion.AOS;
+            item.Attributes.SpellFocusing = 1;
+
+            Assert.Equal(1, item.Attributes.SpellFocusing);
+
+            var properties = new RecordingPropertyList();
+            item.GetProperties(properties);
+
+            Assert.Contains(properties.Numbers, number => number == SpellFocusingCliloc);
+        }
+        finally
+        {
+            Core.Expansion = previousExpansion;
+            item.Delete();
+        }
+    }
+
+    [Fact]
+    public void AosAttributes_DoesNotDisplaySpellFocusingBeforeAos()
+    {
+        var previousExpansion = Core.Expansion;
+        var item = new Katana();
+
+        try
+        {
+            item.Attributes.SpellFocusing = 1;
+            Core.Expansion = Expansion.UOR;
+
+            var properties = new RecordingPropertyList();
+            item.GetProperties(properties);
+
+            Assert.DoesNotContain(properties.Numbers, number => number == SpellFocusingCliloc);
+        }
+        finally
+        {
+            Core.Expansion = previousExpansion;
+            item.Delete();
+        }
+    }
+
+    private sealed class RecordingPropertyList : IPropertyList
+    {
+        public List<int> Numbers { get; } = [];
+
+        public void Reset()
+        {
+        }
+
+        public void Terminate()
+        {
+        }
+
+        public void Add(int number) => Numbers.Add(number);
+        public void Add(int number, string argument) => Numbers.Add(number);
+        public void Add(ReadOnlySpan<char> argument)
+        {
+        }
+
+        public void Add(int number, ReadOnlySpan<char> argument) => Numbers.Add(number);
+        public void AddChunked(ReadOnlySpan<char> text)
+        {
+        }
+
+        public OplTextBlock TextBlock() => new(this);
+        public void Add(int number, int value) => Numbers.Add(number);
+        public void AddLocalized(int value)
+        {
+        }
+
+        public void AddLocalized(int number, int value) => Numbers.Add(number);
+        public void Add(ref IPropertyList.InterpolatedStringHandler handler)
+        {
+        }
+
+        public void Add(int number, ref IPropertyList.InterpolatedStringHandler handler) => Numbers.Add(number);
+        public void InitializeInterpolation(int literalLength, int formattedCount)
+        {
+        }
+
+        public void AppendLiteral(string value)
+        {
+        }
+
+        public void AppendFormatted<T>(T value)
+        {
+        }
+
+        public void AppendFormatted<T>(T value, string format)
+        {
+        }
+
+        public void AppendFormatted<T>(T value, int alignment)
+        {
+        }
+
+        public void AppendFormatted<T>(T value, int alignment, string format)
+        {
+        }
+
+        public void AppendFormatted(ReadOnlySpan<char> value)
+        {
+        }
+
+        public void AppendFormatted(ReadOnlySpan<char> value, int alignment, string format = null)
+        {
+        }
+
+        public void AppendFormatted(object value, int alignment = 0, string format = null)
+        {
+        }
+
+        public void AppendFormatted(string value)
+        {
+        }
+
+        public void AppendFormatted(string value, int alignment, string format = null)
+        {
+        }
+    }
+}
