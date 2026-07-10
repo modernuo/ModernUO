@@ -25,11 +25,13 @@ public class SpellFocusingSashTests
     public void SpellFocusingSash_HasArtifactStatsAndPropertyOrder()
     {
         var previousExpansion = Core.Expansion;
+        var caster = CreateMobile(player: true);
         var sash = new SpellFocusingSash();
 
         try
         {
             Core.Expansion = Expansion.SA;
+            caster.AddItem(sash);
             var list = new RecordingPropertyList();
             sash.GetProperties(list);
 
@@ -39,6 +41,8 @@ public class SpellFocusingSashTests
             Assert.Equal(10, sash.StrRequirement);
             Assert.Equal(255, sash.HitPoints);
             Assert.Equal(255, sash.MaxHitPoints);
+            Assert.Equal(1, AosAttributes.GetValue(caster, AosAttribute.BonusMana));
+            Assert.Equal(5, AosAttributes.GetValue(caster, AosAttribute.DefendChance));
             Assert.True(NegativeAttributes.IsBrittle(sash));
 
             var spellFocusingIndex = list.Entries.FindIndex(entry => entry.Number == SpellFocusingCliloc);
@@ -58,14 +62,17 @@ public class SpellFocusingSashTests
             var preStygianAbyss = new RecordingPropertyList();
             sash.GetProperties(preStygianAbyss);
             Assert.DoesNotContain(preStygianAbyss.Entries, entry => entry.Number == SpellFocusingCliloc);
-            Assert.Contains(preStygianAbyss.Entries, entry => entry.Number == ManaIncreaseCliloc && entry.Argument == "1");
-            Assert.Contains(preStygianAbyss.Entries, entry => entry.Number == DefendChanceCliloc && entry.Argument == "5");
+            Assert.DoesNotContain(preStygianAbyss.Entries, entry => entry.Number == ManaIncreaseCliloc);
+            Assert.DoesNotContain(preStygianAbyss.Entries, entry => entry.Number == DefendChanceCliloc);
+            Assert.Equal(0, AosAttributes.GetValue(caster, AosAttribute.BonusMana));
+            Assert.Equal(0, AosAttributes.GetValue(caster, AosAttribute.DefendChance));
             Assert.False(NegativeAttributes.IsBrittle(sash));
         }
         finally
         {
             Core.Expansion = previousExpansion;
             sash.Delete();
+            caster.Delete();
         }
     }
 
@@ -229,10 +236,15 @@ public class SpellFocusingSashTests
             Assert.True(SpellFocusing.TryGetDamageOffset(spell, caster, target, out var secondOffset));
             Assert.Equal(-24, secondOffset);
 
+            SpellFocusingSash.Clear(target);
+
+            Assert.True(SpellFocusing.TryGetDamageOffset(spell, caster, target, out var targetResetOffset));
+            Assert.Equal(-30, targetResetOffset);
+
             SpellFocusingSash.Clear(caster);
 
-            Assert.True(SpellFocusing.TryGetDamageOffset(spell, caster, target, out var resetOffset));
-            Assert.Equal(-30, resetOffset);
+            Assert.True(SpellFocusing.TryGetDamageOffset(spell, caster, target, out var casterResetOffset));
+            Assert.Equal(-30, casterResetOffset);
 
             target.Delete();
             Assert.False(SpellFocusing.TryGetDamageOffset(spell, caster, target, out _));
@@ -269,8 +281,12 @@ public class SpellFocusingSashTests
         {
             caster.AddItem(sash);
             var spell = new NonQualifyingSpell(caster);
+            var qualifyingSpell = new TestSpell(caster);
 
             Core.Expansion = Expansion.ML;
+            Assert.False(SpellFocusing.TryGetDamageOffset(qualifyingSpell, caster, target, out _));
+            Assert.Equal(0, AosAttributes.GetValue(caster, AosAttribute.BonusMana));
+            Assert.Equal(0, AosAttributes.GetValue(caster, AosAttribute.DefendChance));
             Assert.False(SpellFocusing.TryGetDamageOffset(spell, caster, target, out _));
 
             Core.Expansion = Expansion.SA;

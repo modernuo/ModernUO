@@ -616,7 +616,7 @@ namespace Server
             }
 
             // The SA event sash emits its fixed Mana/Defense lines in artifact order from AddNameProperties.
-            if ((Owner is not SpellFocusingSash || !Core.SA) && (prop = DefendChance) != 0)
+            if (Owner is not SpellFocusingSash && (prop = DefendChance) != 0)
             {
                 list.Add(1060408, prop); // defense chance increase ~1_val~%
             }
@@ -671,7 +671,7 @@ namespace Server
                 list.Add(1060436, prop); // luck ~1_val~
             }
 
-            if ((Owner is not SpellFocusingSash || !Core.SA) && (prop = BonusMana) != 0)
+            if (Owner is not SpellFocusingSash && (prop = BonusMana) != 0)
             {
                 list.Add(1060439, prop); // mana increase ~1_val~
             }
@@ -792,7 +792,7 @@ namespace Server
                 {
                     var attrs = clothing.Attributes;
 
-                    if (attrs != null)
+                    if (attrs != null && (clothing is not SpellFocusingSash || Core.SA))
                     {
                         value += attrs[attribute];
                     }

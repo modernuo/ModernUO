@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using ModernUO.CodeGeneratedEvents;
 using ModernUO.Serialization;
 using Server.Collections;
@@ -20,6 +21,8 @@ public partial class SpellFocusingSash : BaseMiddleTorso
     private const int BuffTitleCliloc = 1151391;
     private const int BuffSecondaryCliloc = 1151392;
     private const int SequenceLength = 21;
+
+    private static readonly HashSet<SpellFocusingSash> ActiveSashes = [];
 
     private Mobile _spellCastTarget;
     private int _spellCastCount;
@@ -149,9 +152,35 @@ public partial class SpellFocusingSash : BaseMiddleTorso
     [OnEvent(nameof(BaseCreature.CreatureDeletedEvent))]
     public static void Clear(Mobile mobile)
     {
-        if (mobile?.FindItemOnLayer(Layer.MiddleTorso) is SpellFocusingSash sash)
+        if (mobile == null)
+        {
+            return;
+        }
+
+        if (mobile.FindItemOnLayer(Layer.MiddleTorso) is SpellFocusingSash sash)
         {
             sash.ResetSequence(mobile);
+        }
+
+        if (ActiveSashes.Count == 0)
+        {
+            return;
+        }
+
+        using var sashes = PooledRefList<SpellFocusingSash>.Create();
+
+        foreach (var activeSash in ActiveSashes)
+        {
+            if (activeSash._spellCastTarget == mobile)
+            {
+                sashes.Add(activeSash);
+            }
+        }
+
+        for (var i = 0; i < sashes.Count; i++)
+        {
+            var activeSash = sashes[i];
+            activeSash.ResetSequence(activeSash.Parent as Mobile);
         }
     }
 
@@ -173,6 +202,7 @@ public partial class SpellFocusingSash : BaseMiddleTorso
 
             ResetSequence(caster);
             _spellCastTarget = target;
+            ActiveSashes.Add(this);
         }
 
         offset = GetDamageOffset(_spellCastCount, target.Player);
@@ -209,6 +239,7 @@ public partial class SpellFocusingSash : BaseMiddleTorso
 
     private void ResetSequence(Mobile caster)
     {
+        ActiveSashes.Remove(this);
         _spellCastTarget = null;
         _spellCastCount = 0;
 
