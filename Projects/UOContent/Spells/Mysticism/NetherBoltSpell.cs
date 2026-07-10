@@ -23,6 +23,8 @@ public class NetherBoltSpell : MysticSpell, ITargetingSpell<Mobile>
 
     public override SpellCircle Circle => SpellCircle.First;
 
+    public override bool SpellFocusingEligible => true;
+
     public override bool DelayedDamage => true;
 
     public override Type[] DelayedDamageSpellFamilyStacking => _delayedDamageSpellFamilyStacking;

@@ -20,6 +20,8 @@ public class BombardSpell : MysticSpell, ITargetingSpell<Mobile>
         }
 
     public override SpellCircle Circle => SpellCircle.Sixth;
+
+    public override bool SpellFocusingEligible => true;
     public override bool DelayedDamage => true;
 
     public override Type[] DelayedDamageSpellFamilyStacking => AOSNoDelayedDamageStackingSelf;

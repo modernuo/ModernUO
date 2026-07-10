@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Server.Engines.BuffIcons;
+using Server.Items;
 using Server.Misc;
 using Server.Mobiles;
 using Server.Targeting;
@@ -30,6 +31,8 @@ public class PainSpikeSpell : NecromancerSpell, ITargetingSpell<Mobile>
     public override int RequiredMana => 5;
 
     public override bool DelayedDamage => false;
+
+    public override bool SpellFocusingEligible => true;
 
     public static bool UnderEffect(Mobile m) => _table.ContainsKey(m);
 
@@ -76,6 +79,12 @@ public class PainSpikeSpell : NecromancerSpell, ITargetingSpell<Mobile>
 
             // TODO: Find a better way to do this
             StaminaSystem.DFA = DFAlgorithm.PainSpike;
+
+            if (SpellFocusingSash.TryGetDamageOffset(this, Caster, m, out var spellFocusingOffset))
+            {
+                damage = AOS.Scale((int)damage, 100 + spellFocusingOffset);
+            }
+
             m.Damage((int)damage, Caster, ignoreEvilOmen: true);
             SpellHelper.DoLeech((int)damage, Caster, m);
             StaminaSystem.DFA = DFAlgorithm.Standard;

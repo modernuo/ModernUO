@@ -20,6 +20,8 @@ namespace Server.Spells.Sixth
 
         public override SpellCircle Circle => SpellCircle.Sixth;
 
+        public override bool SpellFocusingEligible => true;
+
         public override Type[] DelayedDamageSpellFamilyStacking => AOSNoDelayedDamageStackingSelf;
 
         public override bool DelayedDamage => false;

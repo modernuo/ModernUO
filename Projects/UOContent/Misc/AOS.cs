@@ -1359,6 +1359,11 @@ namespace Server
 
         public static bool IsBrittle(Item item)
         {
+            if (item is SpellFocusingSash)
+            {
+                return Core.SA;
+            }
+
             if (!Core.HS)
             {
                 return false;

@@ -18,6 +18,8 @@ namespace Server.Spells.Third
 
         public override SpellCircle Circle => SpellCircle.Third;
 
+        public override bool SpellFocusingEligible => true;
+
         public override bool DelayedDamage => true;
 
         public void Target(Mobile m)

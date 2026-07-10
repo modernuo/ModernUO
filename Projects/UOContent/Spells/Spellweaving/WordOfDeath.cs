@@ -11,6 +11,8 @@ namespace Server.Spells.Spellweaving
         {
         }
 
+        public override bool SpellFocusingEligible => true;
+
         public override TimeSpan CastDelayBase => TimeSpan.FromSeconds(3.5);
 
         public override double RequiredSkill => 80.0;
