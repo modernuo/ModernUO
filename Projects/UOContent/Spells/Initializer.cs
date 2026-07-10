@@ -175,7 +175,7 @@ namespace Server.Spells
                     Register(612, typeof(EtherealVoyageSpell));
                     Register(613, typeof(WordOfDeathSpell));
                     Register(614, typeof(GiftOfLifeSpell));
-                    // Register(615, typeof(ArcaneEmpowermentSpell));
+                    Register(615, typeof(ArcaneEmpowermentSpell));
                 }
 
                 if (Core.SA)

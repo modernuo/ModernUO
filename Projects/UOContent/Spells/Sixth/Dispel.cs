@@ -1,6 +1,7 @@
 using Server.Items;
 using Server.Mobiles;
 using Server.Targeting;
+using Server.Spells.Spellweaving;
 
 namespace Server.Spells.Sixth
 {
@@ -33,7 +34,8 @@ namespace Server.Spells.Sixth
                 SpellHelper.Turn(Caster, m);
 
                 var dispelChance =
-                    (50.0 + 100 * (Caster.Skills.Magery.Value - bc.DispelDifficulty) / (bc.DispelFocus * 2)) / 100;
+                    (50.0 + 100 * (Caster.Skills.Magery.Value - ArcaneEmpowermentSpell.GetDispelDifficulty(bc)) /
+                        (bc.DispelFocus * 2)) / 100;
 
                 if (dispelChance > Utility.RandomDouble())
                 {

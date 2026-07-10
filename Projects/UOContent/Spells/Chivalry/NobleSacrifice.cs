@@ -102,7 +102,7 @@ namespace Server.Spells.Chivalry
                             var toHeal = Math.Clamp(ComputePowerValue(10) + Utility.RandomMinMax(0, 2), 8, 24);
 
                             Caster.DoBeneficial(m);
-                            m.Heal(toHeal, Caster);
+                            SpellHelper.Heal(toHeal, m, Caster);
                             sendEffect = true;
                         }
 

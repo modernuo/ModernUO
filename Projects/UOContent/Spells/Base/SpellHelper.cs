@@ -14,6 +14,7 @@ using Server.Spells.Fifth;
 using Server.Spells.Necromancy;
 using Server.Spells.Ninjitsu;
 using Server.Spells.Seventh;
+using Server.Spells.Spellweaving;
 using Server.Targeting;
 
 namespace Server
@@ -963,6 +964,8 @@ namespace Server.Spells
                     damageGiven = AOS.Scale(damageGiven, 100 + spellFocusingOffset);
                 }
 
+                ArcaneEmpowermentSpell.ApplySpellDamage(from, target, ref damageGiven);
+
                 target.Damage(damageGiven, from);
 
                 bcFrom?.OnDamageSpell(target, damageGiven);
@@ -1036,6 +1039,8 @@ namespace Server.Spells
                     dmg = AOS.Scale(dmg, 100 + spellFocusingOffset);
                 }
 
+                ArcaneEmpowermentSpell.ApplySpellDamage(from, target, ref dmg);
+
                 if (Feint.GetDamageReduction(from, target, out var feintReduction))
                 {
                     // example: 35 damage * 50 / 100 = 17 damage
@@ -1089,7 +1094,7 @@ namespace Server.Spells
         }
         public static void Heal(int amount, Mobile target, Mobile from, bool message = true)
         {
-            // TODO: All Healing *spells* go through ArcaneEmpowerment
+            ArcaneEmpowermentSpell.ApplyHealing(from, ref amount);
             target.Heal(amount, from, message);
         }
 
@@ -1124,6 +1129,8 @@ namespace Server.Spells
                 {
                     m_Damage = AOS.Scale(m_Damage, 100 + spellFocusingOffset);
                 }
+
+                ArcaneEmpowermentSpell.ApplySpellDamage(m_From, m_Target, ref m_Damage);
 
                 m_Target.Damage(m_Damage);
                 m_Spell?.RemoveDelayedDamageContext(m_Target);

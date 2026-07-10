@@ -602,7 +602,10 @@ namespace Server.Mobiles
 
         [CommandProperty(AccessLevel.GameMaster)]
         public override int HitsMax =>
-            HitsMaxSeed <= 0 ? Str : Math.Clamp(HitsMaxSeed + GetStatOffset(StatType.Str), 1, 65000);
+            ArcaneEmpowermentSpell.GetFollowerHitsMax(
+                this,
+                HitsMaxSeed <= 0 ? Str : Math.Clamp(HitsMaxSeed + GetStatOffset(StatType.Str), 1, 65000)
+            );
 
         [CommandProperty(AccessLevel.GameMaster)]
         public int HitsMaxSeed { get; set; } = -1;
@@ -4177,6 +4180,7 @@ namespace Server.Mobiles
         public virtual void AlterSpellDamageTo(Mobile to, ref int damage)
         {
             TriggerAbilityAlterDamage(MonsterAbilityTrigger.GiveSpellDamage, to, ref damage);
+            ArcaneEmpowermentSpell.AlterFollowerSpellDamageTo(this, to, ref damage);
         }
 
         public virtual void AlterMeleeDamageFrom(Mobile from, ref int damage)
@@ -4187,6 +4191,7 @@ namespace Server.Mobiles
         public virtual void AlterMeleeDamageTo(Mobile to, ref int damage)
         {
             TriggerAbilityAlterDamage(MonsterAbilityTrigger.GiveMeleeDamage, to, ref damage);
+            ArcaneEmpowermentSpell.AlterFollowerMeleeDamageTo(this, ref damage);
         }
 
         public virtual bool CheckFoodPreference(Item f) =>
