@@ -22,7 +22,7 @@ public abstract class MysticSpell : Spell
         {
             var circle = (int)Circle;
 
-            if (Scroll != null)
+            if (Scroll != null && Scroll is not SpellStone)
             {
                 circle -= 2;
             }

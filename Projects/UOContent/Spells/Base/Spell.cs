@@ -760,7 +760,8 @@ namespace Server.Spells
             {
                 DoFizzle();
             }
-            else if (Scroll != null && Scroll is not Runebook &&
+            else if (Scroll != null && Scroll is not Runebook && Scroll is not SpellStone &&
+                     // Spell Stones are consumed at activation but still run the stored spell's sequence.
                      (Scroll.Amount <= 0 || Scroll.Deleted || Scroll.RootParent != Caster || Scroll is BaseWand baseWand &&
                          (baseWand.Charges <= 0 || baseWand.Parent != Caster)))
             {
