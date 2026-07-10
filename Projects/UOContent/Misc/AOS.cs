@@ -257,6 +257,7 @@ namespace Server
             }
 
             BattleLust.OnDamageTaken(m, from, appliedDamage);
+            SoulCharge.OnDamageTaken(m, appliedDamage);
             return totalDamage;
         }
 
@@ -1491,7 +1492,8 @@ namespace Server
         LowerStatReq = 0x00000001,
         SelfRepair = 0x00000002,
         MageArmor = 0x00000004,
-        DurabilityBonus = 0x00000008
+        DurabilityBonus = 0x00000008,
+        SoulCharge = 0x00000010
     }
 
     public sealed class AosArmorAttributes : BaseAttributes
@@ -1536,6 +1538,13 @@ namespace Server
         {
             get => this[AosArmorAttribute.DurabilityBonus];
             set => this[AosArmorAttribute.DurabilityBonus] = value;
+        }
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        public int SoulCharge
+        {
+            get => Owner is BaseShield ? this[AosArmorAttribute.SoulCharge] : 0;
+            set => this[AosArmorAttribute.SoulCharge] = Owner is BaseShield ? value : 0;
         }
 
         public static int GetValue(Mobile m, AosArmorAttribute attribute)
@@ -1587,6 +1596,11 @@ namespace Server
             if ((prop = SelfRepair) != 0)
             {
                 list.Add(1060450, prop); // self repair ~1_val~
+            }
+
+            if (Core.SA && Owner is BaseShield && (prop = SoulCharge) != 0)
+            {
+                list.Add(1113630, prop); // Soul Charge ~1_val~%
             }
         }
 
