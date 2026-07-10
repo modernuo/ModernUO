@@ -112,6 +112,191 @@ public class SpellFocusingPropertyTests
         }
     }
 
+    [Fact]
+    public void SpellFocusing_UsesThePvMSequenceAndResetsAfterThePeak()
+    {
+        var previousExpansion = Core.Expansion;
+        var caster = CreateMobile(player: true);
+        var target = CreateMobile(player: false);
+        var item = new Katana();
+        var spell = new TestSpell(caster);
+
+        try
+        {
+            Core.Expansion = Expansion.AOS;
+            caster.AddItem(item);
+            item.Attributes.SpellFocusing = 1;
+
+            var expected = new[]
+            {
+                -30, -24, -18, -12, -6, 0, 2, 4, 6, 8, 10,
+                12, 14, 16, 18, 20, 22, 24, 26, 28, 30
+            };
+
+            foreach (var expectedOffset in expected)
+            {
+                Assert.True(SpellFocusing.TryGetDamageOffset(spell, caster, target, out var offset));
+                Assert.Equal(expectedOffset, offset);
+            }
+
+            Assert.True(SpellFocusing.TryGetDamageOffset(spell, caster, target, out var resetOffset));
+            Assert.Equal(-30, resetOffset);
+        }
+        finally
+        {
+            Core.Expansion = previousExpansion;
+            item.Delete();
+            target.Delete();
+            caster.Delete();
+        }
+    }
+
+    [Fact]
+    public void SpellFocusing_HoldsThePvPCapAndResetsOnTargetChange()
+    {
+        var previousExpansion = Core.Expansion;
+        var caster = CreateMobile(player: true);
+        var target = CreateMobile(player: true);
+        var secondTarget = CreateMobile(player: true);
+        var item = new Katana();
+        var spell = new TestSpell(caster);
+
+        try
+        {
+            Core.Expansion = Expansion.AOS;
+            caster.AddItem(item);
+            item.Attributes.SpellFocusing = 1;
+
+            for (var i = 0; i < 15; i++)
+            {
+                Assert.True(SpellFocusing.TryGetDamageOffset(spell, caster, target, out _));
+            }
+
+            for (var i = 0; i < 6; i++)
+            {
+                Assert.True(SpellFocusing.TryGetDamageOffset(spell, caster, target, out var offset));
+                Assert.Equal(20, offset);
+            }
+
+            Assert.True(SpellFocusing.TryGetDamageOffset(spell, caster, target, out var resetOffset));
+            Assert.Equal(-30, resetOffset);
+
+            Assert.True(SpellFocusing.TryGetDamageOffset(spell, caster, secondTarget, out var targetResetOffset));
+            Assert.Equal(-30, targetResetOffset);
+        }
+        finally
+        {
+            Core.Expansion = previousExpansion;
+            item.Delete();
+            secondTarget.Delete();
+            target.Delete();
+            caster.Delete();
+        }
+    }
+
+    [Fact]
+    public void SpellFocusing_AppliesTheModifierAtTheSpellDamageHook()
+    {
+        var previousExpansion = Core.Expansion;
+        var caster = CreateMobile(player: true);
+        var target = CreateMobile(player: false);
+        var item = new Katana();
+        var spell = new TestSpell(caster);
+
+        try
+        {
+            Core.Expansion = Expansion.AOS;
+            caster.AddItem(item);
+            item.Attributes.SpellFocusing = 1;
+            var startingHits = target.Hits;
+
+            SpellHelper.Damage(spell, target, 100, 100, 0, 0, 0, 0);
+
+            Assert.Equal(startingHits - 70, target.Hits);
+        }
+        finally
+        {
+            Core.Expansion = previousExpansion;
+            item.Delete();
+            target.Delete();
+            caster.Delete();
+        }
+    }
+
+    [Fact]
+    public void SpellFocusing_ClearsTheSequenceWhenTheCasterIsCleared()
+    {
+        var previousExpansion = Core.Expansion;
+        var caster = CreateMobile(player: true);
+        var target = CreateMobile(player: false);
+        var item = new Katana();
+        var spell = new TestSpell(caster);
+
+        try
+        {
+            Core.Expansion = Expansion.AOS;
+            caster.AddItem(item);
+            item.Attributes.SpellFocusing = 1;
+
+            Assert.True(SpellFocusing.TryGetDamageOffset(spell, caster, target, out var firstOffset));
+            Assert.Equal(-30, firstOffset);
+            Assert.True(SpellFocusing.TryGetDamageOffset(spell, caster, target, out var secondOffset));
+            Assert.Equal(-24, secondOffset);
+
+            SpellFocusing.Clear(caster);
+
+            Assert.True(SpellFocusing.TryGetDamageOffset(spell, caster, target, out var resetOffset));
+            Assert.Equal(-30, resetOffset);
+        }
+        finally
+        {
+            Core.Expansion = previousExpansion;
+            item.Delete();
+            target.Delete();
+            caster.Delete();
+        }
+    }
+
+    [Fact]
+    public void SpellFocusing_RequiresAnEligibleSpellAndTheAoSExpansion()
+    {
+        var previousExpansion = Core.Expansion;
+        var caster = CreateMobile(player: true);
+        var target = CreateMobile(player: false);
+        var item = new Katana();
+        var qualifyingSpell = new TestSpell(caster);
+        var nonQualifyingSpell = new NonQualifyingSpell(caster);
+
+        try
+        {
+            caster.AddItem(item);
+            item.Attributes.SpellFocusing = 1;
+
+            Core.Expansion = Expansion.UOR;
+            Assert.False(SpellFocusing.TryGetDamageOffset(qualifyingSpell, caster, target, out _));
+
+            Core.Expansion = Expansion.AOS;
+            Assert.False(SpellFocusing.TryGetDamageOffset(nonQualifyingSpell, caster, target, out _));
+        }
+        finally
+        {
+            Core.Expansion = previousExpansion;
+            item.Delete();
+            target.Delete();
+            caster.Delete();
+        }
+    }
+
+    private static Mobile CreateMobile(bool player)
+    {
+        var mobile = new Mobile(World.NewMobile);
+        mobile.DefaultMobileInit();
+        mobile.Player = player;
+        mobile.RawStr = 100;
+        mobile.Hits = mobile.HitsMax;
+        return mobile;
+    }
+
     private sealed class TestSpell : Spell
     {
         private static readonly SpellInfo TestInfo = new("Test Spell", "test");
@@ -121,6 +306,23 @@ public class SpellFocusingPropertyTests
         }
 
         public override bool SpellFocusingEligible => true;
+        public override TimeSpan CastDelayBase => TimeSpan.Zero;
+
+        public override void OnCast()
+        {
+        }
+
+        public override int GetMana() => 0;
+    }
+
+    private sealed class NonQualifyingSpell : Spell
+    {
+        private static readonly SpellInfo TestInfo = new("Non-Qualifying Spell", "no");
+
+        public NonQualifyingSpell(Mobile caster) : base(caster, null, TestInfo)
+        {
+        }
+
         public override TimeSpan CastDelayBase => TimeSpan.Zero;
 
         public override void OnCast()

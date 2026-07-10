@@ -37,24 +37,8 @@ public static class SpellFocusing
     {
         offset = 0;
 
-        if (!Core.AOS || spell?.SpellFocusingEligible != true)
+        if (!Core.AOS || spell?.SpellFocusingEligible != true || caster?.Alive != true || target?.Alive != true)
         {
-            return false;
-        }
-
-        if (caster?.Alive != true)
-        {
-            if (caster != null)
-            {
-                SpellFocusingSash.Clear(caster);
-            }
-
-            return false;
-        }
-
-        if (target?.Alive != true)
-        {
-            SpellFocusingSash.Clear(caster);
             return false;
         }
 
@@ -62,16 +46,6 @@ public static class SpellFocusing
 
         for (var i = 0; i < items.Count; i++)
         {
-            if (items[i] is SpellFocusingSash)
-            {
-                if (SpellFocusingSash.TryGetDamageOffset(spell, caster, target, out offset))
-                {
-                    return true;
-                }
-
-                continue;
-            }
-
             if (items[i] is IAosItem { Attributes.SpellFocusing: not 0 } item)
             {
                 offset = item.Attributes.GetSpellFocusingOffset(caster, target);
