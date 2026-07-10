@@ -4191,7 +4191,7 @@ namespace Server.Mobiles
         public virtual void AlterMeleeDamageTo(Mobile to, ref int damage)
         {
             TriggerAbilityAlterDamage(MonsterAbilityTrigger.GiveMeleeDamage, to, ref damage);
-            ArcaneEmpowermentSpell.AlterFollowerMeleeDamageTo(this, ref damage);
+            ArcaneEmpowermentSpell.AlterFollowerMeleeDamageTo(this, to, ref damage);
         }
 
         public virtual bool CheckFoodPreference(Item f) =>

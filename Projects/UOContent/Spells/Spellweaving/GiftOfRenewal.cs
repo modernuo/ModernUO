@@ -138,7 +138,7 @@ namespace Server.Spells.Spellweaving
 
                 var toHeal = _hitsPerRound;
 
-                SpellHelper.Heal(toHeal, _mobile, _caster);
+                SpellHelper.HealSpell(toHeal, _mobile, _caster);
                 _mobile.FixedParticles(0x376A, 9, 32, 5005, EffectLayer.Waist);
             }
         }

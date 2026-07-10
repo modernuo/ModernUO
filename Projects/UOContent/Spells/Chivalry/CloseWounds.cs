@@ -69,7 +69,7 @@ namespace Server.Spells.Chivalry
                     toHeal = m.HitsMax - m.Hits;
                 }
 
-                SpellHelper.Heal(toHeal, m, Caster, false);
+                SpellHelper.HealSpell(toHeal, m, Caster, false);
 
                 // You have had ~1_HEALED_AMOUNT~ hit points of damage healed.
                 m.SendLocalizedMessage(1060203, toHeal.ToString());

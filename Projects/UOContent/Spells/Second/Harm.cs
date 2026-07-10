@@ -74,7 +74,7 @@ namespace Server.Spells.Second
                     m.PlaySound(0x1F1);
                 }
 
-                SpellHelper.Damage(this, m, damage, 0, 0, 100, 0, 0);
+                SpellHelper.Damage(this, m, damage, 0, 0, 100, 0, 0, sdiAlreadyApplied: true);
             }
         }
 

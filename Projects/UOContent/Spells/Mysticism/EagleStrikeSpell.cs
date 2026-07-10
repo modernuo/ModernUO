@@ -68,7 +68,7 @@ public class EagleStrikeSpell : MysticSpell, ITargetingSpell<Mobile>
 
         double damage = GetNewAosDamage(19, 1, 5, to);
 
-        SpellHelper.Damage(this, to, damage, 0, 0, 0, 0, 100);
+        SpellHelper.Damage(this, to, damage, 0, 0, 0, 0, 100, sdiAlreadyApplied: true);
 
         to.PlaySound(0x64D);
     }

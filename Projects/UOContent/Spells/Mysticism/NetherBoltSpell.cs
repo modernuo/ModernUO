@@ -61,7 +61,9 @@ public class NetherBoltSpell : MysticSpell, ITargetingSpell<Mobile>
             );
             source.PlaySound(0x211);
 
-            SpellHelper.Damage(this, m, GetNewAosDamage(10, 1, 4, m), 0, 0, 0, 0, 0, 100);
+            SpellHelper.Damage(
+                this, m, GetNewAosDamage(10, 1, 4, m), 0, 0, 0, 0, 0, 100, sdiAlreadyApplied: true
+            );
         }
     }
 

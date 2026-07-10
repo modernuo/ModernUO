@@ -76,7 +76,7 @@ public class NetherCycloneSpell : MysticSpell, ITargetingSpell<IPoint3D>
                 {
                     var m = pool.Dequeue();
                     Caster.DoHarmful(m);
-                    SpellHelper.Damage(this, m, damage, 0, 0, 0, 0, 0, 100);
+                    SpellHelper.Damage(this, m, damage, 0, 0, 0, 0, 0, 100, sdiAlreadyApplied: true);
 
                     var resistedReduction = reduction - m.Skills.MagicResist.Value / 800.0;
 

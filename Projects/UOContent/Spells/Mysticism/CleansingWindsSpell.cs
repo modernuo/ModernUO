@@ -127,7 +127,7 @@ public class CleansingWindsSpell : MysticSpell, ITargetingSpell<Mobile>
 
                 if (toHealMod > 0)
                 {
-                    SpellHelper.Heal(toHealMod, target, Caster);
+                    SpellHelper.HealSpell(toHealMod, target, Caster);
                 }
             }
         }

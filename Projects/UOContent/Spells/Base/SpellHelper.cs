@@ -930,11 +930,11 @@ namespace Server.Spells
             return reflect;
         }
 
-        public static void Damage(Spell spell, Mobile target, double damage)
+        public static void Damage(Spell spell, Mobile target, double damage, bool sdiAlreadyApplied = false)
         {
             var ts = GetDamageDelayForSpell(spell);
 
-            Damage(spell, ts, target, spell.Caster, damage);
+            Damage(spell, ts, target, spell.Caster, damage, sdiAlreadyApplied);
         }
 
         public static void Damage(TimeSpan delay, Mobile target, double damage)
@@ -947,7 +947,9 @@ namespace Server.Spells
             Damage(null, delay, target, from, damage);
         }
 
-        public static void Damage(Spell spell, TimeSpan delay, Mobile target, Mobile from, double damage)
+        public static void Damage(
+            Spell spell, TimeSpan delay, Mobile target, Mobile from, double damage, bool sdiAlreadyApplied = false
+        )
         {
             var damageGiven = (int)damage;
 
@@ -964,7 +966,7 @@ namespace Server.Spells
                     damageGiven = AOS.Scale(damageGiven, 100 + spellFocusingOffset);
                 }
 
-                ArcaneEmpowermentSpell.ApplySpellDamage(from, target, ref damageGiven);
+                ArcaneEmpowermentSpell.ApplySpellDamage(from, target, ref damageGiven, sdiAlreadyApplied);
 
                 target.Damage(damageGiven, from);
 
@@ -978,13 +980,13 @@ namespace Server.Spells
             }
             else
             {
-                new SpellDamageTimer(spell, target, from, damageGiven, delay).Start();
+                new SpellDamageTimer(spell, target, from, damageGiven, delay, sdiAlreadyApplied).Start();
             }
         }
 
         public static void Damage(
             Spell spell, Mobile target, double damage, int phys, int fire, int cold, int pois,
-            int nrgy, int chaos = 0, DFAlgorithm dfa = DFAlgorithm.Standard
+            int nrgy, int chaos = 0, DFAlgorithm dfa = DFAlgorithm.Standard, bool sdiAlreadyApplied = false
         )
         {
             Damage(
@@ -999,7 +1001,8 @@ namespace Server.Spells
                 pois,
                 nrgy,
                 chaos,
-                dfa
+                dfa,
+                sdiAlreadyApplied
             );
         }
 
@@ -1021,7 +1024,8 @@ namespace Server.Spells
 
         public static void Damage(
             Spell spell, TimeSpan delay, Mobile target, Mobile from, double damage, int phys, int fire,
-            int cold, int pois, int nrgy, int chaos = 0, DFAlgorithm dfa = DFAlgorithm.Standard
+            int cold, int pois, int nrgy, int chaos = 0, DFAlgorithm dfa = DFAlgorithm.Standard,
+            bool sdiAlreadyApplied = false
         )
         {
             var dmg = (int)damage;
@@ -1039,7 +1043,7 @@ namespace Server.Spells
                     dmg = AOS.Scale(dmg, 100 + spellFocusingOffset);
                 }
 
-                ArcaneEmpowermentSpell.ApplySpellDamage(from, target, ref dmg);
+                ArcaneEmpowermentSpell.ApplySpellDamage(from, target, ref dmg, sdiAlreadyApplied);
 
                 if (Feint.GetDamageReduction(from, target, out var feintReduction))
                 {
@@ -1064,7 +1068,9 @@ namespace Server.Spells
             }
             else
             {
-                new SpellDamageTimerAOS(spell, delay, target, from, dmg, phys, fire, cold, pois, nrgy, chaos, dfa).Start();
+                new SpellDamageTimerAOS(
+                    spell, delay, target, from, dmg, phys, fire, cold, pois, nrgy, chaos, dfa, sdiAlreadyApplied
+                ).Start();
             }
         }
 
@@ -1094,6 +1100,11 @@ namespace Server.Spells
         }
         public static void Heal(int amount, Mobile target, Mobile from, bool message = true)
         {
+            target.Heal(amount, from, message);
+        }
+
+        public static void HealSpell(int amount, Mobile target, Mobile from, bool message = true)
+        {
             ArcaneEmpowermentSpell.ApplyHealing(from, ref amount);
             target.Heal(amount, from, message);
         }
@@ -1105,13 +1116,17 @@ namespace Server.Spells
             private readonly Mobile m_From;
             private readonly Spell m_Spell;
             private readonly Mobile m_Target;
+            private readonly bool m_SdiAlreadyApplied;
             private int m_Damage;
 
-            public SpellDamageTimer(Spell s, Mobile target, Mobile from, int damage, TimeSpan delay) : base(delay)
+            public SpellDamageTimer(
+                Spell s, Mobile target, Mobile from, int damage, TimeSpan delay, bool sdiAlreadyApplied
+            ) : base(delay)
             {
                 m_Target = target;
                 m_From = from;
                 m_Damage = damage;
+                m_SdiAlreadyApplied = sdiAlreadyApplied;
                 m_Spell = s;
 
                 if (m_Spell?.DelayedDamage == true)
@@ -1130,7 +1145,7 @@ namespace Server.Spells
                     m_Damage = AOS.Scale(m_Damage, 100 + spellFocusingOffset);
                 }
 
-                ArcaneEmpowermentSpell.ApplySpellDamage(m_From, m_Target, ref m_Damage);
+                ArcaneEmpowermentSpell.ApplySpellDamage(m_From, m_Target, ref m_Damage, m_SdiAlreadyApplied);
 
                 m_Target.Damage(m_Damage);
                 m_Spell?.RemoveDelayedDamageContext(m_Target);
@@ -1147,13 +1162,14 @@ namespace Server.Spells
             private readonly int m_Nrgy;
             private readonly int m_Phys;
             private readonly int m_Pois;
+            private readonly bool m_SdiAlreadyApplied;
             private readonly Spell m_Spell;
             private readonly Mobile m_Target;
             private int m_Damage;
 
             public SpellDamageTimerAOS(
                 Spell s, TimeSpan delay, Mobile target, Mobile from, int damage, int phys, int fire, int cold,
-                int pois, int nrgy, int chaos, DFAlgorithm dfa
+                int pois, int nrgy, int chaos, DFAlgorithm dfa, bool sdiAlreadyApplied
             ) : base(delay)
             {
                 m_Target = target;
@@ -1166,6 +1182,7 @@ namespace Server.Spells
                 m_Nrgy = nrgy;
                 m_Chaos = chaos;
                 m_DFA = dfa;
+                m_SdiAlreadyApplied = sdiAlreadyApplied;
                 m_Spell = s;
 
                 if (m_Spell?.DelayedDamage == true)
@@ -1193,7 +1210,8 @@ namespace Server.Spells
                     m_Pois,
                     m_Nrgy,
                     m_Chaos,
-                    m_DFA
+                    m_DFA,
+                    m_SdiAlreadyApplied
                 );
 
                 m_Spell?.RemoveDelayedDamageContext(m_Target);

@@ -82,7 +82,7 @@ namespace Server.Spells.Spellweaving
             }
         }
 
-        internal static void ApplySpellDamage(Mobile caster, Mobile target, ref int damage)
+        internal static void ApplySpellDamage(Mobile caster, Mobile target, ref int damage, bool sdiAlreadyApplied = false)
         {
             if (damage <= 0 || caster?.Alive != true || target?.Deleted != false ||
                 !_table.TryGetValue(caster, out var context))
@@ -95,9 +95,9 @@ namespace Server.Spells.Spellweaving
 
             if (playerTarget)
             {
-                // GetNewAosDamage already includes item SDI and caps it at 15% in PvP. Arcane
-                // Empowerment may use only the remaining room so the combined value stays capped.
-                var itemSdi = AosAttributes.GetValue(caster, AosAttribute.SpellDamage);
+                // When the generated damage already includes item SDI, Arcane Empowerment may use
+                // only the remaining room so the combined PvP value stays capped.
+                var itemSdi = sdiAlreadyApplied ? AosAttributes.GetValue(caster, AosAttribute.SpellDamage) : 0;
                 bonus = Math.Min(bonus, Math.Max(0, PvPSdiCap - itemSdi));
             }
 
@@ -129,9 +129,9 @@ namespace Server.Spells.Spellweaving
             return AOS.Scale(baseHitsMax, SummonHealthBonus);
         }
 
-        internal static void AlterFollowerMeleeDamageTo(BaseCreature follower, ref int damage)
+        internal static void AlterFollowerMeleeDamageTo(BaseCreature follower, Mobile target, ref int damage)
         {
-            AlterFollowerDamageTo(follower, null, ref damage);
+            AlterFollowerDamageTo(follower, target, ref damage);
         }
 
         internal static void AlterFollowerSpellDamageTo(BaseCreature follower, Mobile target, ref int damage)

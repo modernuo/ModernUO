@@ -52,7 +52,7 @@ namespace Server.Spells.Fourth
                 toHeal += Utility.Random(1, 10);
 
                 // m.Heal( toHeal, Caster );
-                SpellHelper.Heal(toHeal, m, Caster);
+                SpellHelper.HealSpell(toHeal, m, Caster);
 
                 m.FixedParticles(0x376A, 9, 32, 5030, EffectLayer.Waist);
                 m.PlaySound(0x202);

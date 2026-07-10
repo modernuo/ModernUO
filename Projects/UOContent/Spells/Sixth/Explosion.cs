@@ -100,7 +100,7 @@ namespace Server.Spells.Sixth
                     _target.FixedParticles(0x36BD, 20, 10, 5044, EffectLayer.Head);
                     _target.PlaySound(0x307);
 
-                    SpellHelper.Damage(_spell, _target, damage, 0, 100, 0, 0, 0);
+                    SpellHelper.Damage(_spell, _target, damage, 0, 100, 0, 0, 0, sdiAlreadyApplied: true);
                 }
 
                 _spell?.RemoveDelayedDamageContext(_attacker);

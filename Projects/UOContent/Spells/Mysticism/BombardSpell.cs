@@ -56,7 +56,9 @@ public class BombardSpell : MysticSpell, ITargetingSpell<Mobile>
             Caster.MovingEffect(m, 0x1363, 12, 1, false, true, 0, 0);
             Caster.PlaySound(0x64B);
 
-            SpellHelper.Damage(this, m, GetNewAosDamage(40, 1, 5, m), 100, 0, 0, 0, 0);
+            SpellHelper.Damage(
+                this, m, GetNewAosDamage(40, 1, 5, m), 100, 0, 0, 0, 0, sdiAlreadyApplied: true
+            );
 
             Timer.StartTimer(TimeSpan.FromSeconds(1.2), () =>
             {

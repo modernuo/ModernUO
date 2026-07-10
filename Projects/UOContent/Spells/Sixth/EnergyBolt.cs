@@ -57,7 +57,7 @@ namespace Server.Spells.Sixth
                 source.MovingParticles(m, 0x379F, 7, 0, false, true, 0, 0, 3043, 4043, 0x211, EffectLayer.RightHand, 0);
                 source.PlaySound(0x20A);
 
-                SpellHelper.Damage(this, m, damage, 0, 0, 0, 0, 100);
+                SpellHelper.Damage(this, m, damage, 0, 0, 0, 0, 100, sdiAlreadyApplied: true);
             }
         }
 

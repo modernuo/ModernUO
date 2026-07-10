@@ -130,6 +130,7 @@ public class ArcaneEmpowermentSpellTests
     {
         var caster = NewCaster();
         var target = NewTarget();
+        var playerTarget = NewPlayerCaster();
         var follower = new TestSummon
         {
             HitsMaxSeed = 100,
@@ -148,6 +149,10 @@ public class ArcaneEmpowermentSpellTests
         follower.AlterMeleeDamageTo(target, ref damage);
         Assert.Equal(120, damage);
 
+        damage = 100;
+        follower.AlterMeleeDamageTo(playerTarget, ref damage);
+        Assert.Equal(112, damage);
+
         var spellDamage = 100;
         ArcaneEmpowermentSpell.ApplySpellDamage(caster, target, ref spellDamage);
         Assert.Equal(120, spellDamage);
@@ -155,6 +160,16 @@ public class ArcaneEmpowermentSpellTests
         var healing = 100;
         ArcaneEmpowermentSpell.ApplyHealing(caster, ref healing);
         Assert.Equal(120, healing);
+
+        var centralDamageTarget = NewTarget();
+        centralDamageTarget.Hits = centralDamageTarget.HitsMax;
+        var centralDamageBefore = centralDamageTarget.Hits;
+        SpellHelper.Damage(new ArcaneEmpowermentSpell(caster), centralDamageTarget, 10);
+        Assert.Equal(12, centralDamageBefore - centralDamageTarget.Hits);
+
+        var sharedHealTarget = NewTarget();
+        SpellHelper.Heal(10, sharedHealTarget, caster);
+        Assert.Equal(11, sharedHealTarget.Hits);
 
         Assert.Equal(70.0, ArcaneEmpowermentSpell.GetDispelDifficulty(follower));
 
@@ -173,6 +188,9 @@ public class ArcaneEmpowermentSpellTests
 
         caster.Delete();
         target.Delete();
+        playerTarget.Delete();
+        centralDamageTarget.Delete();
+        sharedHealTarget.Delete();
         follower.Delete();
     }
 
@@ -214,6 +232,11 @@ public class ArcaneEmpowermentSpellTests
 
         var damage = 100;
         ArcaneEmpowermentSpell.ApplySpellDamage(caster, target, ref damage);
+
+        Assert.Equal(115, damage);
+
+        damage = 100;
+        ArcaneEmpowermentSpell.ApplySpellDamage(caster, target, ref damage, sdiAlreadyApplied: true);
 
         Assert.Equal(100, damage);
 
