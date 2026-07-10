@@ -20,6 +20,8 @@ namespace Server.Spells.First
 
         public override SpellCircle Circle => SpellCircle.First;
 
+        public override bool SpellFocusingEligible => true;
+
         private static readonly Type[] _delayedDamageSpellFamilyStacking = Core.AOS ? [typeof(NetherBoltSpell)] : null;
 
         public override Type[] DelayedDamageSpellFamilyStacking => _delayedDamageSpellFamilyStacking;

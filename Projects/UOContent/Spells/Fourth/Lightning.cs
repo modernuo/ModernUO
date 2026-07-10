@@ -19,6 +19,8 @@ namespace Server.Spells.Fourth
 
         public override SpellCircle Circle => SpellCircle.Fourth;
 
+        public override bool SpellFocusingEligible => true;
+
         public override bool DelayedDamage => false;
 
         public void Target(Mobile m)

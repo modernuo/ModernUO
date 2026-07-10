@@ -16,6 +16,8 @@ namespace Server.Spells.Spellweaving
         public override double RequiredSkill => 80.0;
         public override int RequiredMana => 50;
 
+        public override bool SpellFocusingEligible => true;
+
         public void Target(Mobile m)
         {
             if (CheckHSequence(m))

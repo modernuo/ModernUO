@@ -57,6 +57,8 @@ namespace Server.Spells
 
         public virtual bool DelayedDamage => false;
 
+        public virtual bool SpellFocusingEligible => false;
+
         public static readonly Type[] AOSNoDelayedDamageStackingSelf = Core.AOS ? Array.Empty<Type>() : null;
 
         // Null means stacking is allowed while empty indicates no stacking with self

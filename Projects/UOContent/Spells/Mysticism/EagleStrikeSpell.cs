@@ -21,6 +21,7 @@ public class EagleStrikeSpell : MysticSpell, ITargetingSpell<Mobile>
     }
 
     public override SpellCircle Circle => SpellCircle.Third;
+    public override bool SpellFocusingEligible => true;
 
     public void Target(Mobile m)
     {

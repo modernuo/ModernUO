@@ -332,6 +332,10 @@ namespace Server
 
     public sealed class AosAttributes : BaseAttributes
     {
+        private Mobile _spellFocusingOwner;
+        private Mobile _spellFocusingTarget;
+        private int _spellFocusingCount;
+
         public AosAttributes(Item owner) : base(owner)
         {
         }
@@ -518,7 +522,56 @@ namespace Server
         public int SpellFocusing
         {
             get => this[AosAttribute.SpellFocusing];
-            set => this[AosAttribute.SpellFocusing] = value;
+            set
+            {
+                if (SpellFocusing == value)
+                {
+                    return;
+                }
+
+                this[AosAttribute.SpellFocusing] = value;
+                ResetSpellFocusing();
+            }
+        }
+
+        internal void ResetSpellFocusing()
+        {
+            _spellFocusingOwner = null;
+            _spellFocusingTarget = null;
+            _spellFocusingCount = 0;
+        }
+
+        internal int GetSpellFocusingOffset(Mobile caster, Mobile target)
+        {
+            if (_spellFocusingOwner != caster || _spellFocusingTarget?.Deleted != false || !_spellFocusingTarget.Alive)
+            {
+                ResetSpellFocusing();
+                _spellFocusingOwner = caster;
+                _spellFocusingTarget = target;
+            }
+            else if (_spellFocusingTarget != target)
+            {
+                ResetSpellFocusing();
+                _spellFocusingOwner = caster;
+                _spellFocusingTarget = target;
+            }
+
+            var offset = GetSpellFocusingOffset(_spellFocusingCount, _spellFocusingTarget.Player);
+
+            _spellFocusingCount++;
+
+            if (_spellFocusingCount >= 21)
+            {
+                ResetSpellFocusing();
+            }
+
+            return offset;
+        }
+
+        private static int GetSpellFocusingOffset(int castCount, bool playerTarget)
+        {
+            var offset = castCount < 6 ? -30 + castCount * 6 : (castCount - 5) * 2;
+            return Math.Min(offset, playerTarget ? 20 : 30);
         }
 
         public void GetProperties(IPropertyList list, int damageBonus = 0, int hitChanceBonus = 0, int luckBonus = 0)

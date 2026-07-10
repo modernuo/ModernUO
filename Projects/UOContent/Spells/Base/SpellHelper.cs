@@ -958,6 +958,11 @@ namespace Server.Spells
                 bcFrom?.AlterSpellDamageTo(target, ref damageGiven);
                 bcTarget?.AlterSpellDamageFrom(from, ref damageGiven);
 
+                if (SpellFocusing.TryGetDamageOffset(spell, from, target, out var spellFocusingOffset))
+                {
+                    damageGiven = AOS.Scale(damageGiven, 100 + spellFocusingOffset);
+                }
+
                 target.Damage(damageGiven, from);
 
                 bcFrom?.OnDamageSpell(target, damageGiven);
@@ -1025,6 +1030,11 @@ namespace Server.Spells
                 bcFrom?.AlterSpellDamageTo(target, ref dmg);
 
                 bcTarget?.AlterSpellDamageFrom(from, ref dmg);
+
+                if (SpellFocusing.TryGetDamageOffset(spell, from, target, out var spellFocusingOffset))
+                {
+                    dmg = AOS.Scale(dmg, 100 + spellFocusingOffset);
+                }
 
                 if (Feint.GetDamageReduction(from, target, out var feintReduction))
                 {
@@ -1109,6 +1119,11 @@ namespace Server.Spells
             {
                 (m_From as BaseCreature)?.AlterSpellDamageTo(m_Target, ref m_Damage);
                 (m_Target as BaseCreature)?.AlterSpellDamageFrom(m_From, ref m_Damage);
+
+                if (SpellFocusing.TryGetDamageOffset(m_Spell, m_From, m_Target, out var spellFocusingOffset))
+                {
+                    m_Damage = AOS.Scale(m_Damage, 100 + spellFocusingOffset);
+                }
 
                 m_Target.Damage(m_Damage);
                 m_Spell?.RemoveDelayedDamageContext(m_Target);

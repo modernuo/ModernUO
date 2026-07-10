@@ -26,6 +26,8 @@ namespace Server.Spells.Fifth
 
         public override SpellCircle Circle => SpellCircle.Fifth;
 
+        public override bool SpellFocusingEligible => true;
+
         public override bool DelayedDamage => !Core.AOS;
 
         public void Target(Mobile m)

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Server;
 using Server.Items;
+using Server.Spells;
 using Server.Text;
 using Xunit;
 
@@ -58,6 +59,75 @@ public class SpellFocusingPropertyTests
             Core.Expansion = previousExpansion;
             item.Delete();
         }
+    }
+
+    [Fact]
+    public void SpellFocusing_UsesAnyEquippedItemWithTheProperty()
+    {
+        var previousExpansion = Core.Expansion;
+        var caster = new Mobile(World.NewMobile);
+        var target = new Mobile(World.NewMobile);
+        var item = new Katana();
+        var spell = new TestSpell(caster);
+
+        try
+        {
+            Core.Expansion = Expansion.AOS;
+            caster.DefaultMobileInit();
+            caster.Player = true;
+            target.DefaultMobileInit();
+            target.Player = false;
+            caster.AddItem(item);
+            item.Attributes.SpellFocusing = 1;
+
+            var expected = new[] { -30, -24, -18, -12, -6, 0, 2 };
+
+            foreach (var expectedOffset in expected)
+            {
+                Assert.True(SpellFocusing.TryGetDamageOffset(spell, caster, target, out var offset));
+                Assert.Equal(expectedOffset, offset);
+            }
+
+            target.Delete();
+            var replacement = new Mobile(World.NewMobile);
+            replacement.DefaultMobileInit();
+            replacement.Player = false;
+
+            try
+            {
+                Assert.True(SpellFocusing.TryGetDamageOffset(spell, caster, replacement, out var resetOffset));
+                Assert.Equal(-30, resetOffset);
+            }
+            finally
+            {
+                replacement.Delete();
+            }
+        }
+        finally
+        {
+            Core.Expansion = previousExpansion;
+            item.Delete();
+            target.Delete();
+            caster.Delete();
+        }
+    }
+
+    private sealed class TestSpell : Spell
+    {
+        private static readonly SpellInfo TestInfo = new("Test Spell", "test");
+
+        public TestSpell(Mobile caster) : base(caster, null, TestInfo)
+        {
+        }
+
+        public override bool SpellFocusingEligible => true;
+        public override TimeSpan CastDelayBase => TimeSpan.Zero;
+
+        public override void OnCast()
+        {
+        }
+
+        public override int GetMana() => 0;
     }
 
     private sealed class RecordingPropertyList : IPropertyList
