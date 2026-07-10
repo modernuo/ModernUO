@@ -184,7 +184,7 @@ namespace Server.Spells
                     Register(677, typeof(NetherBoltSpell));
                     Register(678, typeof(HealingStoneSpell));
                     Register(679, typeof(PurgeMagicSpell));
-                    // Register(680, typeof(EnchantSpell));
+                    Register(680, typeof(EnchantSpell));
                     // Register(681, typeof(SleepSpell));
                     Register(682, typeof(EagleStrikeSpell));
                     Register(683, typeof(AnimatedWeaponSpell));

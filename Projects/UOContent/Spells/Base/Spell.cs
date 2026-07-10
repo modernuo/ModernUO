@@ -736,6 +736,8 @@ namespace Server.Spells
                 fc -= EssenceOfWindSpell.GetFCMalus(Caster);
             }
 
+            fc += Mysticism.EnchantSpell.GetFasterCasting(Caster);
+
             if (Core.SA)
             {
                 // At some point OSI added 0.25s to every spell. This makes the minimum 0.5s

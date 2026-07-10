@@ -15,6 +15,7 @@ using Server.Spells.Bushido;
 using Server.Spells.Chivalry;
 using Server.Spells.Necromancy;
 using Server.Spells.Ninjitsu;
+using Server.Spells.Mysticism;
 using Server.Spells.Sixth;
 using Server.Spells.Spellweaving;
 using Server.Text;
@@ -1187,6 +1188,7 @@ public abstract partial class BaseWeapon
     public override void OnRemoved(IEntity parent)
     {
         ClearLastParryChance();
+        EnchantSpell.StopEffect(this);
 
         if (parent is not Mobile m)
         {
@@ -1234,9 +1236,16 @@ public abstract partial class BaseWeapon
         m.Delta(MobileDelta.WeaponDamage);
     }
 
+    public override void OnAfterDelete()
+    {
+        EnchantSpell.StopEffect(this);
+        base.OnAfterDelete();
+    }
+
     public override void OnMapChange()
     {
         base.OnMapChange();
+        EnchantSpell.StopEffect(this);
 
         if ((Map == null || Map == Map.Internal) && Parent is Mobile m && ExtendedWeaponAttributes.BattleLust != 0)
         {
@@ -2291,15 +2300,20 @@ public abstract partial class BaseWeapon
                 }
 
                 var maChance =
-                    (int)(AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitMagicArrow) * propertyBonus);
+                    (int)((AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitMagicArrow) +
+                           EnchantSpell.GetHitSpellBonus(this, AosWeaponAttribute.HitMagicArrow)) * propertyBonus);
                 var harmChance =
-                    (int)(AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitHarm) * propertyBonus);
+                    (int)((AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitHarm) +
+                           EnchantSpell.GetHitSpellBonus(this, AosWeaponAttribute.HitHarm)) * propertyBonus);
                 var fireballChance =
-                    (int)(AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitFireball) * propertyBonus);
+                    (int)((AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitFireball) +
+                           EnchantSpell.GetHitSpellBonus(this, AosWeaponAttribute.HitFireball)) * propertyBonus);
                 var lightningChance =
-                    (int)(AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitLightning) * propertyBonus);
+                    (int)((AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitLightning) +
+                           EnchantSpell.GetHitSpellBonus(this, AosWeaponAttribute.HitLightning)) * propertyBonus);
                 var dispelChance =
-                    (int)(AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitDispel) * propertyBonus);
+                    (int)((AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitDispel) +
+                           EnchantSpell.GetHitSpellBonus(this, AosWeaponAttribute.HitDispel)) * propertyBonus);
 
                 if (maChance != 0 && maChance > Utility.Random(100))
                 {
@@ -3063,7 +3077,7 @@ public abstract partial class BaseWeapon
     }
 
     public override bool AllowEquippedCast(Mobile from) =>
-        base.AllowEquippedCast(from) || Attributes.SpellChanneling != 0;
+        base.AllowEquippedCast(from) || Attributes.SpellChanneling != 0 || EnchantSpell.ProvidesSpellChanneling(this, from);
 
     public virtual int GetLuckBonus() => CraftResources.GetInfo(_resource)?.AttributeInfo?.WeaponLuck ?? 0;
 
