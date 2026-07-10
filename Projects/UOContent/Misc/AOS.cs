@@ -77,7 +77,12 @@ namespace Server
             Fix(ref chaos);
             Fix(ref direct);
 
-            var firePostResistDamage = ignoreArmor ? damage * fire / 100 : 0;
+            var physicalPostResistDamage = 0;
+            var firePostResistDamage = 0;
+            var coldPostResistDamage = 0;
+            var poisonPostResistDamage = 0;
+            var energyPostResistDamage = 0;
+            var directPostResistDamage = 0;
 
             if (Core.ML && chaos > 0)
             {
@@ -111,6 +116,16 @@ namespace Server
                 }
             }
 
+            if (ignoreArmor)
+            {
+                physicalPostResistDamage = damage * phys / 100;
+                firePostResistDamage = damage * fire / 100;
+                coldPostResistDamage = damage * cold / 100;
+                poisonPostResistDamage = damage * pois / 100;
+                energyPostResistDamage = damage * nrgy / 100;
+                directPostResistDamage = damage * direct / 100;
+            }
+
             BaseQuiver quiver = null;
 
             if (archer && from != null)
@@ -131,18 +146,23 @@ namespace Server
 
                 var fireDamageNumerator = damage * fire * (100 - resFire);
 
+                physicalPostResistDamage = damage * phys * (100 - resPhys) / 10000;
+                firePostResistDamage = fireDamageNumerator / 10000;
+                coldPostResistDamage = damage * cold * (100 - resCold) / 10000;
+                poisonPostResistDamage = damage * pois * (100 - resPois) / 10000;
+                energyPostResistDamage = damage * nrgy * (100 - resNrgy) / 10000;
+
                 totalDamage = damage * phys * (100 - resPhys);
                 totalDamage += fireDamageNumerator;
                 totalDamage += damage * cold * (100 - resCold);
                 totalDamage += damage * pois * (100 - resPois);
                 totalDamage += damage * nrgy * (100 - resNrgy);
-
                 totalDamage /= 10000;
-                firePostResistDamage = fireDamageNumerator / 10000;
 
                 if (Core.ML)
                 {
-                    totalDamage += damage * direct / 100;
+                    directPostResistDamage = damage * direct / 100;
+                    totalDamage += directPostResistDamage;
 
                     if (quiver != null)
                     {
@@ -250,6 +270,17 @@ namespace Server
             var appliedDamage = Math.Max(0, oldHits - m.Hits);
 
             PurgeMagicSpell.OnMobileDamaged(from, m, appliedDamage);
+
+            DamageEater.OnDamageTaken(
+                m,
+                appliedDamage,
+                physicalPostResistDamage,
+                firePostResistDamage,
+                coldPostResistDamage,
+                poisonPostResistDamage,
+                energyPostResistDamage,
+                directPostResistDamage
+            );
 
             if (firePostResistDamage > 0 && appliedDamage > 0)
             {
@@ -1313,7 +1344,13 @@ namespace Server
     [Flags]
     public enum AbsorptionAttribute
     {
-        CastingFocus = 0x00000001
+        CastingFocus = 0x00000001,
+        DamageEater = 0x00000002,
+        KineticEater = 0x00000004,
+        FireEater = 0x00000008,
+        ColdEater = 0x00000010,
+        PoisonEater = 0x00000020,
+        EnergyEater = 0x00000040
     }
 
     public sealed class AbsorptionAttributes : BaseAttributes
@@ -1339,9 +1376,64 @@ namespace Server
             set => this[AbsorptionAttribute.CastingFocus] = Owner is BaseArmor ? value : 0;
         }
 
+        [CommandProperty(AccessLevel.GameMaster)]
+        public int DamageEater
+        {
+            get => Owner is BaseArmor ? this[AbsorptionAttribute.DamageEater] : 0;
+            set => SetEaterValue(AbsorptionAttribute.DamageEater, value);
+        }
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        public int KineticEater
+        {
+            get => Owner is BaseArmor ? this[AbsorptionAttribute.KineticEater] : 0;
+            set => SetEaterValue(AbsorptionAttribute.KineticEater, value);
+        }
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        public int FireEater
+        {
+            get => Owner is BaseArmor ? this[AbsorptionAttribute.FireEater] : 0;
+            set => SetEaterValue(AbsorptionAttribute.FireEater, value);
+        }
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        public int ColdEater
+        {
+            get => Owner is BaseArmor ? this[AbsorptionAttribute.ColdEater] : 0;
+            set => SetEaterValue(AbsorptionAttribute.ColdEater, value);
+        }
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        public int PoisonEater
+        {
+            get => Owner is BaseArmor ? this[AbsorptionAttribute.PoisonEater] : 0;
+            set => SetEaterValue(AbsorptionAttribute.PoisonEater, value);
+        }
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        public int EnergyEater
+        {
+            get => Owner is BaseArmor ? this[AbsorptionAttribute.EnergyEater] : 0;
+            set => SetEaterValue(AbsorptionAttribute.EnergyEater, value);
+        }
+
+        internal bool HasDamageEater =>
+            DamageEater != 0 || KineticEater != 0 || FireEater != 0 || ColdEater != 0 || PoisonEater != 0 || EnergyEater != 0;
+
+        private void SetEaterValue(AbsorptionAttribute attribute, int value)
+        {
+            this[attribute] = Owner is BaseArmor ? value : 0;
+
+            if (Owner is Item { Parent: Mobile mobile })
+            {
+                Server.Items.DamageEater.ClearIfInactive(mobile);
+            }
+        }
+
         public static int GetValue(Mobile m, AbsorptionAttribute attribute)
         {
-            if (!Core.SA)
+            if (!Core.SA || m == null)
             {
                 return 0;
             }
@@ -1367,12 +1459,74 @@ namespace Server
             return value;
         }
 
+        internal static bool HasDamageEaterOn(Mobile m)
+        {
+            if (!Core.SA || m == null)
+            {
+                return false;
+            }
+
+            var items = m.Items;
+            for (var i = 0; i < items.Count; ++i)
+            {
+                if (items[i] is BaseArmor armor && armor.AbsorptionAttributes?.HasDamageEater == true)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        internal static int GetEaterValue(Mobile m, AbsorptionAttribute attribute)
+        {
+            var value = Math.Max(0, GetValue(m, attribute));
+            var cap = attribute == AbsorptionAttribute.DamageEater
+                ? Server.Items.DamageEater.AllTypesCap
+                : Server.Items.DamageEater.SpecificCap;
+
+            return Math.Min(value, cap);
+        }
+
         public void GetProperties(IPropertyList list)
         {
             var castingFocus = CastingFocus;
             if (Core.SA && castingFocus != 0)
             {
                 list.Add(1113696, castingFocus); // Casting Focus ~1_val~%
+            }
+
+            if (Core.SA)
+            {
+                if (DamageEater != 0)
+                {
+                    list.Add(1113598, DamageEater); // Damage Eater ~1_val~%
+                }
+
+                if (KineticEater != 0)
+                {
+                    list.Add(1113597, KineticEater); // Kinetic Eater ~1_val~%
+                }
+
+                if (FireEater != 0)
+                {
+                    list.Add(1113593, FireEater); // Fire Eater ~1_val~%
+                }
+
+                if (ColdEater != 0)
+                {
+                    list.Add(1113594, ColdEater); // Cold Eater ~1_val~%
+                }
+
+                if (PoisonEater != 0)
+                {
+                    list.Add(1113595, PoisonEater); // Poison Eater ~1_val~%
+                }
+
+                if (EnergyEater != 0)
+                {
+                    list.Add(1113596, EnergyEater); // Energy Eater ~1_val~%
+                }
             }
         }
 

@@ -1234,6 +1234,7 @@ namespace Server.Items
         {
             if (parent is Mobile m)
             {
+                var hadDamageEater = AbsorptionAttributes?.HasDamageEater == true;
                 var serial = Serial;
 
                 m.RemoveStatMod($"{serial}Str");
@@ -1247,6 +1248,11 @@ namespace Server.Items
 
                 m.Delta(MobileDelta.Armor); // Tell them armor rating has changed
                 m.CheckStatTimers();
+
+                if (hadDamageEater)
+                {
+                    DamageEater.Clear(m);
+                }
             }
 
             base.OnRemoved(parent);
