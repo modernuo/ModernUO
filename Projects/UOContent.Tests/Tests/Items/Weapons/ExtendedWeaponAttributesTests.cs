@@ -28,6 +28,7 @@ public class ExtendedWeaponAttributesTests
         Assert.Equal(0x00000008, (int)ExtendedWeaponAttribute.BloodDrinker);
         Assert.Equal(0x00000010, (int)ExtendedWeaponAttribute.HitSwarm);
         Assert.Equal(0x00000020, (int)ExtendedWeaponAttribute.SplinteringWeapon);
+        Assert.Equal(0x00000040, (int)ExtendedWeaponAttribute.Focus);
     }
 
     [Fact]
@@ -45,6 +46,7 @@ public class ExtendedWeaponAttributesTests
             Assert.Equal(0, weapon.ExtendedWeaponAttributes.BloodDrinker);
             Assert.Equal(0, weapon.ExtendedWeaponAttributes.HitSwarm);
             Assert.Equal(0, weapon.ExtendedWeaponAttributes.SplinteringWeapon);
+            Assert.Equal(0, weapon.ExtendedWeaponAttributes.Focus);
         }
         finally
         {
@@ -82,10 +84,11 @@ public class ExtendedWeaponAttributesTests
         AssertStaffCommandProperty(nameof(ExtendedWeaponAttributes.BloodDrinker));
         AssertStaffCommandProperty(nameof(ExtendedWeaponAttributes.HitSwarm));
         AssertStaffCommandProperty(nameof(ExtendedWeaponAttributes.SplinteringWeapon));
+        AssertStaffCommandProperty(nameof(ExtendedWeaponAttributes.Focus));
     }
 
     [Fact]
-    public void ExtendedWeaponAttributes_PersistBaneAndBattleLustThroughBaseWeaponSerialization()
+    public void ExtendedWeaponAttributes_PersistThroughBaseWeaponSerialization()
     {
         var previousExpansion = Core.Expansion;
         var weapon = new TestKatana();
@@ -100,6 +103,7 @@ public class ExtendedWeaponAttributesTests
             weapon.ExtendedWeaponAttributes.BloodDrinker = 1;
             weapon.ExtendedWeaponAttributes.HitSwarm = 30;
             weapon.ExtendedWeaponAttributes.SplinteringWeapon = 25;
+            weapon.ExtendedWeaponAttributes.Focus = 1;
 
             var writer = new BufferWriter(true);
             weapon.Serialize(writer);
@@ -116,6 +120,7 @@ public class ExtendedWeaponAttributesTests
             Assert.Equal(1, deserialized.ExtendedWeaponAttributes.BloodDrinker);
             Assert.Equal(30, deserialized.ExtendedWeaponAttributes.HitSwarm);
             Assert.Equal(25, deserialized.ExtendedWeaponAttributes.SplinteringWeapon);
+            Assert.Equal(1, deserialized.ExtendedWeaponAttributes.Focus);
         }
         finally
         {

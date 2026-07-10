@@ -1188,6 +1188,7 @@ public abstract partial class BaseWeapon
     public override void OnRemoved(IEntity parent)
     {
         ClearLastParryChance();
+        FocusContext.Clear(this);
         EnchantSpell.StopEffect(this);
 
         if (parent is not Mobile m)
@@ -1238,6 +1239,7 @@ public abstract partial class BaseWeapon
 
     public override void OnAfterDelete()
     {
+        FocusContext.Clear(this);
         EnchantSpell.StopEffect(this);
         base.OnAfterDelete();
     }
@@ -1246,6 +1248,11 @@ public abstract partial class BaseWeapon
     {
         base.OnMapChange();
         EnchantSpell.StopEffect(this);
+
+        if (Map == null || Map == Map.Internal)
+        {
+            FocusContext.Clear(this);
+        }
 
         if ((Map == null || Map == Map.Internal) && Parent is Mobile m && ExtendedWeaponAttributes.BattleLust != 0)
         {
@@ -1984,6 +1991,8 @@ public abstract partial class BaseWeapon
             percentageBonus += talisman.Killer.DamageBonus(defender);
         }
 
+        // Canonical Focus endpoints are -50% and +20%. Intermediate values use a documented 10-point step.
+        percentageBonus += FocusContext.GetDamageBonus(this, attacker, defender);
         percentageBonus += BattleLust.GetDamageBonus(attacker, defender);
 
         percentageBonus = Math.Min(percentageBonus, 300);
@@ -2143,6 +2152,9 @@ public abstract partial class BaseWeapon
 
         if (damageGiven > 0)
         {
+            // A Focus cycle advances only after positive damage is applied; misses, parries, and
+            // zero-damage post-absorption hits leave the current modifier unchanged.
+            FocusContext.OnSuccessfulHit(this, attacker, defender);
             var propertyBonus = move?.GetPropertyBonus(attacker) ?? 1.0;
             var splintering = SplinteringWeapon.TryProcOnEligibleHit(
                 attacker,
@@ -2586,6 +2598,7 @@ public abstract partial class BaseWeapon
 
     public virtual void OnMiss(Mobile attacker, Mobile defender)
     {
+        FocusContext.OnMiss(this, attacker, defender);
         PlaySwingAnimation(attacker);
         attacker.PlaySound(GetMissAttackSound(attacker, defender));
         defender.PlaySound(GetMissDefendSound(attacker, defender));

@@ -1234,7 +1234,8 @@ namespace Server
         HitSparks = 0x00000004,
         BloodDrinker = 0x00000008,
         HitSwarm = 0x00000010,
-        SplinteringWeapon = 0x00000020
+        SplinteringWeapon = 0x00000020,
+        Focus = 0x00000040
     }
 
     public sealed class ExtendedWeaponAttributes : BaseAttributes
@@ -1305,11 +1306,33 @@ namespace Server
             set => this[ExtendedWeaponAttribute.SplinteringWeapon] = value;
         }
 
+        [CommandProperty(AccessLevel.GameMaster)]
+        public int Focus
+        {
+            get => this[ExtendedWeaponAttribute.Focus];
+            set
+            {
+                var hadFocus = Focus != 0;
+
+                this[ExtendedWeaponAttribute.Focus] = value;
+
+                if (hadFocus && value == 0 && Owner is BaseWeapon weapon)
+                {
+                    FocusContext.Clear(weapon);
+                }
+            }
+        }
+
         public void GetProperties(IPropertyList list)
         {
             if (Core.HS && Bane != 0)
             {
                 list.Add(1154671); // Bane
+            }
+
+            if (Core.HS && Focus != 0)
+            {
+                list.Add(1150018); // Focus
             }
 
             if (Core.SA && BattleLust != 0)
