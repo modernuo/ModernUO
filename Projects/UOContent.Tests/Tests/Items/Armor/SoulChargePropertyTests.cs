@@ -313,7 +313,7 @@ public class SoulChargePropertyTests
 
     private static BronzeShield EquipSoulChargeShield(Mobile mobile, int value)
     {
-        var shield = new BronzeShield();
+        var shield = new BronzeShield { Layer = Layer.TwoHanded };
         shield.ArmorAttributes.SoulCharge = value;
         mobile.AddItem(shield);
         Assert.Same(shield, mobile.FindItemOnLayer<BaseShield>(Layer.TwoHanded));
