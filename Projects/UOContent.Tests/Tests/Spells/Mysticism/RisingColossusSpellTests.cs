@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Reflection;
 using Server.Items;
 using Server.Mobiles;
+using Server.Multis;
+using Server.Regions;
 using Server.Spells;
 using Server.Spells.Mysticism;
+using Server.Text;
 using Xunit;
 
 namespace Server.Tests.Spells.Mysticism;
@@ -144,6 +147,34 @@ public class RisingColossusSpellTests
     }
 
     [Fact]
+    public void Serialization_PreservesDispelDifficulty()
+    {
+        var caster = NewCaster();
+        var original = new RisingColossus(caster, 120.0, 120.0);
+        var deserialized = new RisingColossus(caster, 83.0, 0.0);
+
+        try
+        {
+            var writer = new BufferWriter(true);
+            original.Serialize(writer);
+            var buffer = new byte[writer.Position];
+            writer.Buffer.AsSpan(0, (int)writer.Position).CopyTo(buffer);
+
+            var reader = new BufferReader(buffer);
+            deserialized.Deserialize(reader);
+
+            Assert.Equal(buffer.Length, reader.Position);
+            Assert.Equal(original.DispelDifficulty, deserialized.DispelDifficulty);
+        }
+        finally
+        {
+            original.Delete();
+            deserialized.Delete();
+            caster.Delete();
+        }
+    }
+
+    [Fact]
     public void CheckCast_RejectsInsufficientSkillManaAndFollowerCapacity()
     {
         var lowSkillCaster = NewCaster(mysticism: 82.9);
@@ -184,14 +215,26 @@ public class RisingColossusSpellTests
     }
 
     [Fact]
-    public void TargetLocation_RejectsHouseLocations()
+    public void TargetLocation_RejectsHouseLocationsForTargetAndCaster()
     {
         var caster = NewCaster();
-        var outside = new Point3D(6200, 500, 0);
+        var houseLocation = FindSpawnLocation();
+        var outside = new Point3D(houseLocation.X + 10, houseLocation.Y + 10, houseLocation.Z);
+        var house = new TestHouse(caster);
+        house.MoveToWorld(houseLocation, Map.Felucca);
 
-        Assert.False(RisingColossusSpell.IsHouseLocation(caster, outside, Map.Felucca));
+        try
+        {
+            Assert.True(RisingColossusSpell.IsHouseLocation(caster, houseLocation, Map.Felucca));
 
-        caster.Delete();
+            caster.MoveToWorld(houseLocation, Map.Felucca);
+            Assert.True(RisingColossusSpell.IsHouseLocation(caster, outside, Map.Felucca));
+        }
+        finally
+        {
+            house.Delete();
+            caster.Delete();
+        }
     }
 
     [Fact]
@@ -229,6 +272,41 @@ public class RisingColossusSpellTests
         }
         finally
         {
+            spell.FinishSequence();
+            caster.Delete();
+            Core.Expansion = previousExpansion;
+        }
+    }
+
+    [Fact]
+    public void TargetLocation_RejectsCustomNoSummonRegion()
+    {
+        var previousExpansion = Core.Expansion;
+        Core.Expansion = Expansion.SA;
+
+        var caster = NewCaster();
+        AddReagents(caster);
+        var summonLocation = FindSpawnLocation();
+        caster.MoveToWorld(new Point3D(summonLocation.X - 1, summonLocation.Y, summonLocation.Z), Map.Felucca);
+        var region = new NoSummonRegion(summonLocation);
+        region.Register();
+        var spell = new TestRisingColossusSpell(caster);
+        caster.Spell = spell;
+        spell.State = SpellState.Sequencing;
+
+        try
+        {
+            Assert.True(RisingColossusSpell.IsNoSummonRegion(summonLocation, Map.Felucca));
+            spell.Target(summonLocation);
+
+            Assert.Equal(100, caster.Mana);
+            Assert.Equal(0, caster.Followers);
+            Assert.Equal(10, caster.Backpack.FindItemByType<DaemonBone>().Amount);
+            Assert.Null(FindSummon(caster));
+        }
+        finally
+        {
+            region.Unregister();
             spell.FinishSequence();
             caster.Delete();
             Core.Expansion = previousExpansion;
@@ -368,6 +446,27 @@ public class RisingColossusSpellTests
             .SetValue(null, 0);
 
         SpellRegistry.SpecialMoves.Clear();
+    }
+
+    private sealed class NoSummonRegion : BaseRegion
+    {
+        public NoSummonRegion(Point3D location) :
+            base("Rising Colossus NoSummon Test", Map.Felucca, 1000,
+                new Rectangle3D(location.X, location.Y, -128, 1, 1, 256))
+        {
+        }
+
+        public override bool AllowSpawn() => false;
+    }
+
+    private sealed class TestHouse : BaseHouse
+    {
+        public TestHouse(Mobile owner) : base(0, owner, 0, 0)
+        {
+        }
+
+        public override Rectangle2D[] Area => [new Rectangle2D(-2, -2, 5, 5)];
+        public override Point3D BaseBanLocation => Point3D.Zero;
     }
 
     private sealed class TestRisingColossusSpell : RisingColossusSpell

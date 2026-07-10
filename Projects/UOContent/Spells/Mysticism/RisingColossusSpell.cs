@@ -44,6 +44,9 @@ public class RisingColossusSpell : MysticSpell, ITargetingSpell<IPoint3D>
         return caster.Map != null && Region.Find(caster.Location, caster.Map).IsPartOf<HouseRegion>();
     }
 
+    internal static bool IsNoSummonRegion(Point3D location, Map map) =>
+        map == null || !Region.Find(location, map).AllowSpawn();
+
     public override bool CheckCast()
     {
         if (!base.CheckCast())
@@ -70,19 +73,22 @@ public class RisingColossusSpell : MysticSpell, ITargetingSpell<IPoint3D>
 
         var map = Caster.Map;
         SpellHelper.GetSurfaceTop(ref point);
+        var location = new Point3D(point);
 
-        if (map?.CanSpawnMobile(point.X, point.Y, point.Z) != true || IsHouseLocation(Caster, new Point3D(point), map))
+        if (map?.CanSpawnMobile(location) != true ||
+            IsNoSummonRegion(location, map) ||
+            IsHouseLocation(Caster, location, map))
         {
             Caster.SendLocalizedMessage(501942); // That location is blocked.
         }
-        else if (SpellHelper.CheckTown(point, Caster) && CheckSequence())
+        else if (SpellHelper.CheckTown(location, Caster) && CheckSequence())
         {
             var mysticism = GetBaseSkill(Caster);
             var supportSkill = GetDamageSkill(Caster);
             var duration = GetDuration(mysticism, supportSkill);
             var summon = new RisingColossus(Caster, mysticism, supportSkill);
 
-            if (BaseCreature.Summon(summon, false, Caster, new Point3D(point), 0x656, duration))
+            if (BaseCreature.Summon(summon, false, Caster, location, 0x656, duration))
             {
                 Effects.SendTargetParticles(summon, 0x3728, 10, 10, 0x13AA, (EffectLayer)255);
             }
