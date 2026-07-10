@@ -1,0 +1,14 @@
+{
+  "version": 0,
+  "type": "Server.Mobiles.RisingColossus",
+  "properties": [
+    {
+      "name": "DispelDifficulty",
+      "type": "double",
+      "rule": "PrimitiveTypeMigrationRule",
+      "ruleArguments": [
+        ""
+      ]
+    }
+  ]
+}

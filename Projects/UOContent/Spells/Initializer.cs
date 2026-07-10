@@ -196,7 +196,7 @@ namespace Server.Spells
                     Register(689, typeof(SpellPlagueSpell));
                     Register(690, typeof(HailStormSpell));
                     Register(691, typeof(NetherCycloneSpell));
-                    // Register(692, typeof(RisingColossusSpell));
+                    Register(692, typeof(RisingColossusSpell));
                 }
             }
         }
