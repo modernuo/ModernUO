@@ -615,7 +615,8 @@ namespace Server
                 list.Add(1060401, prop); // damage increase ~1_val~%
             }
 
-            if ((prop = DefendChance) != 0)
+            // The SA event sash emits its fixed Mana/Defense lines in artifact order from AddNameProperties.
+            if ((Owner is not SpellFocusingSash || !Core.SA) && (prop = DefendChance) != 0)
             {
                 list.Add(1060408, prop); // defense chance increase ~1_val~%
             }
@@ -670,7 +671,7 @@ namespace Server
                 list.Add(1060436, prop); // luck ~1_val~
             }
 
-            if ((prop = BonusMana) != 0)
+            if ((Owner is not SpellFocusingSash || !Core.SA) && (prop = BonusMana) != 0)
             {
                 list.Add(1060439, prop); // mana increase ~1_val~
             }
@@ -1603,6 +1604,11 @@ namespace Server
 
         public static bool IsBrittle(Item item)
         {
+            if (item is SpellFocusingSash)
+            {
+                return Core.SA;
+            }
+
             if (!Core.HS)
             {
                 return false;
