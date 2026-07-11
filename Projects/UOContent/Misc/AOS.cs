@@ -1121,7 +1121,7 @@ namespace Server
                 ? this[AosWeaponAttribute.ReactiveParalyze]
                 : 0;
             set => this[AosWeaponAttribute.ReactiveParalyze] =
-                Owner is BaseWeapon { Layer: Layer.TwoHanded } weapon && weapon is not BaseRanged ? value : 0;
+                Owner is BaseWeapon { Layer: Layer.TwoHanded } weapon && weapon is not BaseRanged && value != 0 ? 1 : 0;
         }
 
         public static int GetValue(Mobile m, AosWeaponAttribute attribute)
@@ -1975,7 +1975,7 @@ namespace Server
         public int ReactiveParalyze
         {
             get => Owner is BaseShield ? this[AosArmorAttribute.ReactiveParalyze] : 0;
-            set => this[AosArmorAttribute.ReactiveParalyze] = Owner is BaseShield ? value : 0;
+            set => this[AosArmorAttribute.ReactiveParalyze] = Owner is BaseShield && value != 0 ? 1 : 0;
         }
 
         public static int GetValue(Mobile m, AosArmorAttribute attribute)

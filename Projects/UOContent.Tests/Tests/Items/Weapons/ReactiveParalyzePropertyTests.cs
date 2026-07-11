@@ -62,6 +62,33 @@ public class ReactiveParalyzePropertyTests
     }
 
     [Fact]
+    public void Attributes_NormalizeReactiveParalyzeToBinaryPresence()
+    {
+        var shield = new BronzeShield();
+        var weapon = new Halberd();
+
+        try
+        {
+            shield.ArmorAttributes.ReactiveParalyze = -1;
+            weapon.WeaponAttributes.ReactiveParalyze = 2;
+
+            Assert.Equal(1, shield.ArmorAttributes.ReactiveParalyze);
+            Assert.Equal(1, weapon.WeaponAttributes.ReactiveParalyze);
+
+            shield.ArmorAttributes.ReactiveParalyze = 0;
+            weapon.WeaponAttributes.ReactiveParalyze = 0;
+
+            Assert.Equal(0, shield.ArmorAttributes.ReactiveParalyze);
+            Assert.Equal(0, weapon.WeaponAttributes.ReactiveParalyze);
+        }
+        finally
+        {
+            shield.Delete();
+            weapon.Delete();
+        }
+    }
+
+    [Fact]
     public void GetProperties_GatesReactiveParalyzeToStygianAbyssAndSupportedHosts()
     {
         var previousExpansion = Core.Expansion;
