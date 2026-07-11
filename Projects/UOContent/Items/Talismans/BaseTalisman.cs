@@ -958,6 +958,15 @@ public partial class BaseTalisman : Item, IAosItem
                     }
                 case TalismanRemoval.Ward:
                     {
+                        // Publish 54: Ward Removal cannot affect friendly players in Trammel.
+                        // Keep the normal harmful-target policy for hostile/PvP contexts intact.
+                        if (from.Map == Map.Trammel && target.Player &&
+                            Notoriety.Compute(from, target) is Notoriety.Innocent or Notoriety.Ally)
+                        {
+                            from.SendLocalizedMessage(1001018); // You can not perform negative acts on your target.
+                            return;
+                        }
+
                         target.PlaySound(0x201);
                         Effects.SendLocationParticles(
                             EffectItem.Create(target.Location, target.Map, EffectItem.DefaultDuration),
