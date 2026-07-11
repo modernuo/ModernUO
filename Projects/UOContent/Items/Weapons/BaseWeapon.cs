@@ -1761,6 +1761,8 @@ public abstract partial class BaseWeapon
                     defender.Stam += Utility.RandomMinMax(1, (int)(bushido / 5));
                 }
 
+                TryApplyReactiveParalyze(attacker, defender);
+
                 var shield = defender.FindItemOnLayer<BaseShield>(Layer.TwoHanded);
 
                 shield?.OnHit(this, damage);
@@ -1788,6 +1790,42 @@ public abstract partial class BaseWeapon
         }
 
         return damage;
+    }
+
+    internal static TimeSpan GetReactiveParalyzeDuration(Mobile defender, Mobile attacker)
+    {
+        var seconds = defender.Skills.Magery.Value / 10 - attacker.Skills.MagicResist.Value / 10;
+
+        if (!attacker.Player)
+        {
+            seconds *= 3;
+        }
+
+        return TimeSpan.FromSeconds(Math.Max(seconds, 0));
+    }
+
+    internal static void TryApplyReactiveParalyze(Mobile attacker, Mobile defender)
+    {
+        if (!Core.SA || attacker.Paralyzed || !HasReactiveParalyze(defender))
+        {
+            return;
+        }
+
+        if (Utility.Random(100) < 30)
+        {
+            attacker.Paralyze(GetReactiveParalyzeDuration(defender, attacker));
+        }
+    }
+
+    private static bool HasReactiveParalyze(Mobile defender)
+    {
+        if (defender.FindItemOnLayer<BaseShield>(Layer.TwoHanded) is { ArmorAttributes.ReactiveParalyze: 1 })
+        {
+            return true;
+        }
+
+        return defender.FindItemOnLayer<BaseWeapon>(Layer.TwoHanded) is { WeaponAttributes.ReactiveParalyze: 1 } weapon &&
+               weapon is not BaseRanged;
     }
 
     public virtual int AbsorbDamage(Mobile attacker, Mobile defender, int damage)

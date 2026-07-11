@@ -919,7 +919,8 @@ namespace Server
         ResistEnergyBonus = 0x00200000,
         UseBestSkill = 0x00400000,
         MageWeapon = 0x00800000,
-        DurabilityBonus = 0x01000000
+        DurabilityBonus = 0x01000000,
+        ReactiveParalyze = 0x02000000
     }
 
     public sealed class AosWeaponAttributes : BaseAttributes
@@ -1113,6 +1114,16 @@ namespace Server
             set => this[AosWeaponAttribute.DurabilityBonus] = value;
         }
 
+        [CommandProperty(AccessLevel.GameMaster)]
+        public int ReactiveParalyze
+        {
+            get => Owner is BaseWeapon { Layer: Layer.TwoHanded } weapon && weapon is not BaseRanged
+                ? this[AosWeaponAttribute.ReactiveParalyze]
+                : 0;
+            set => this[AosWeaponAttribute.ReactiveParalyze] =
+                Owner is BaseWeapon { Layer: Layer.TwoHanded } weapon && weapon is not BaseRanged ? value : 0;
+        }
+
         public static int GetValue(Mobile m, AosWeaponAttribute attribute)
         {
             if (!Core.AOS)
@@ -1242,6 +1253,11 @@ namespace Server
             if ((prop = SelfRepair) != 0)
             {
                 list.Add(1060450, prop); // self repair ~1_val~
+            }
+
+            if (Core.SA && ReactiveParalyze == 1)
+            {
+                list.Add(1112364); // reactive paralyze
             }
         }
 
@@ -1900,7 +1916,8 @@ namespace Server
         SelfRepair = 0x00000002,
         MageArmor = 0x00000004,
         DurabilityBonus = 0x00000008,
-        SoulCharge = 0x00000010
+        SoulCharge = 0x00000010,
+        ReactiveParalyze = 0x00000020
     }
 
     public sealed class AosArmorAttributes : BaseAttributes
@@ -1952,6 +1969,13 @@ namespace Server
         {
             get => Owner is BaseShield ? this[AosArmorAttribute.SoulCharge] : 0;
             set => this[AosArmorAttribute.SoulCharge] = Owner is BaseShield ? value : 0;
+        }
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        public int ReactiveParalyze
+        {
+            get => Owner is BaseShield ? this[AosArmorAttribute.ReactiveParalyze] : 0;
+            set => this[AosArmorAttribute.ReactiveParalyze] = Owner is BaseShield ? value : 0;
         }
 
         public static int GetValue(Mobile m, AosArmorAttribute attribute)
@@ -2008,6 +2032,11 @@ namespace Server
             if (Core.SA && Owner is BaseShield && (prop = SoulCharge) != 0)
             {
                 list.Add(1113630, prop); // Soul Charge ~1_val~%
+            }
+
+            if (Core.SA && Owner is BaseShield && ReactiveParalyze == 1)
+            {
+                list.Add(1112364); // reactive paralyze
             }
         }
 
