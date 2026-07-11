@@ -28,7 +28,7 @@ public interface ISlayer
     SlayerName Slayer2 { get; set; }
 }
 
-[SerializationGenerator(12, false)]
+[SerializationGenerator(13, false)]
 public abstract partial class BaseWeapon
     : Item, IWeapon, IFactionItem, ICraftable, ISlayer, IDurability, IAosItem, IIdentifiable
 {
@@ -209,6 +209,10 @@ public abstract partial class BaseWeapon
 
     [SerializableFieldDefault(32)]
     private NegativeAttributes NegativeAttributesDefaultValue() => new(this);
+
+    // Field 33 intentionally has no save flag; BaseWeapon's legacy save-flag mask is already at the high bit.
+    [SerializableField(33)]
+    private double _unwieldyOriginalWeight = -1;
 
     private FactionItem m_FactionState;
     private SkillMod m_SkillMod, m_MageMod;
@@ -985,6 +989,8 @@ public abstract partial class BaseWeapon
         weap.NegativeAttributes = new NegativeAttributes(newItem, NegativeAttributes);
         weap.SkillBonuses = new AosSkillBonuses(newItem, SkillBonuses);
         weap.WeaponAttributes = new AosWeaponAttributes(newItem, WeaponAttributes);
+        weap._unwieldyOriginalWeight = _unwieldyOriginalWeight;
+        weap.ReconcileUnwieldyWeight();
 
         // Set hue again because of resource
         weap.Hue = Hue;
@@ -3980,6 +3986,7 @@ public abstract partial class BaseWeapon
     {
         _extendedWeaponAttributes ??= ExtendedWeaponAttributesDefaultValue();
         _negativeAttributes ??= NegativeAttributesDefaultValue();
+        ReconcileUnwieldyWeight();
 
         var parentMobile = Parent as Mobile;
 
@@ -4028,6 +4035,61 @@ public abstract partial class BaseWeapon
         if (_hitPoints <= 0 && _maxHitPoints <= 0)
         {
             _hitPoints = _maxHitPoints = Utility.RandomMinMax(InitMinHits, InitMaxHits);
+        }
+    }
+
+    internal void SetUnwieldy(int value)
+    {
+        var wasUnwieldy = NegativeAttributes[NegativeAttribute.Unwieldy] != 0;
+        var isUnwieldy = value != 0;
+
+        NegativeAttributes[NegativeAttribute.Unwieldy] = isUnwieldy ? 1 : 0;
+
+        if (!Core.HS)
+        {
+            if (!isUnwieldy)
+            {
+                _unwieldyOriginalWeight = -1;
+            }
+
+            return;
+        }
+
+        if (isUnwieldy)
+        {
+            if (!wasUnwieldy || _unwieldyOriginalWeight < 0)
+            {
+                _unwieldyOriginalWeight = Weight;
+            }
+
+            Weight = 50;
+        }
+        else if (wasUnwieldy && _unwieldyOriginalWeight >= 0)
+        {
+            Weight = _unwieldyOriginalWeight;
+            _unwieldyOriginalWeight = -1;
+        }
+    }
+
+    private void ReconcileUnwieldyWeight()
+    {
+        if (NegativeAttributes[NegativeAttribute.Unwieldy] == 0)
+        {
+            return;
+        }
+
+        if (Core.HS)
+        {
+            if (_unwieldyOriginalWeight < 0)
+            {
+                _unwieldyOriginalWeight = Weight;
+            }
+
+            Weight = 50;
+        }
+        else if (_unwieldyOriginalWeight >= 0)
+        {
+            Weight = _unwieldyOriginalWeight;
         }
     }
 

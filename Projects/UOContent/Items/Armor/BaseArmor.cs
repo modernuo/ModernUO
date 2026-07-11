@@ -12,7 +12,7 @@ using AMT = Server.Items.ArmorMaterialType;
 
 namespace Server.Items
 {
-    [SerializationGenerator(11, false)]
+    [SerializationGenerator(12, false)]
     public abstract partial class BaseArmor
         : Item, IScissorable, IFactionItem, ICraftable, IWearableDurability, IAosItem, IIdentifiable
     {
@@ -172,6 +172,12 @@ namespace Server.Items
 
         [SerializableFieldDefault(26)]
         private AbsorptionAttributes AbsorptionAttributesDefaultValue() => new(this);
+
+        [SerializableField(27)]
+        private double _unwieldyOriginalWeight = -1;
+
+        [SerializableFieldSaveFlag(27)]
+        private bool ShouldSerializeUnwieldyOriginalWeight() => _unwieldyOriginalWeight >= 0;
 
         private FactionItem m_FactionState;
 
@@ -841,6 +847,8 @@ namespace Server.Items
             armor.NegativeAttributes = new NegativeAttributes(newItem, NegativeAttributes);
             armor.AbsorptionAttributes = new AbsorptionAttributes(newItem, AbsorptionAttributes);
             armor.SkillBonuses = new AosSkillBonuses(newItem, SkillBonuses);
+            armor._unwieldyOriginalWeight = _unwieldyOriginalWeight;
+            armor.ReconcileUnwieldyWeight();
 
             // Set hue again because of resource
             armor.Hue = Hue;
@@ -1064,6 +1072,7 @@ namespace Server.Items
         {
             _negativeAttributes ??= NegativeAttributesDefaultValue();
             _absorptionAttributes ??= AbsorptionAttributesDefaultValue();
+            ReconcileUnwieldyWeight();
 
             var m = Parent as Mobile;
 
@@ -1104,6 +1113,60 @@ namespace Server.Items
             m?.CheckStatTimers();
         }
 
+        internal void SetUnwieldy(int value)
+        {
+            var wasUnwieldy = NegativeAttributes[NegativeAttribute.Unwieldy] != 0;
+            var isUnwieldy = value != 0;
+
+            NegativeAttributes[NegativeAttribute.Unwieldy] = isUnwieldy ? 1 : 0;
+
+            if (!Core.HS)
+            {
+                if (!isUnwieldy)
+                {
+                    _unwieldyOriginalWeight = -1;
+                }
+
+                return;
+            }
+
+            if (isUnwieldy)
+            {
+                if (!wasUnwieldy || _unwieldyOriginalWeight < 0)
+                {
+                    _unwieldyOriginalWeight = Weight;
+                }
+
+                Weight = 50;
+            }
+            else if (wasUnwieldy && _unwieldyOriginalWeight >= 0)
+            {
+                Weight = _unwieldyOriginalWeight;
+                _unwieldyOriginalWeight = -1;
+            }
+        }
+
+        private void ReconcileUnwieldyWeight()
+        {
+            if (NegativeAttributes[NegativeAttribute.Unwieldy] == 0)
+            {
+                return;
+            }
+
+            if (Core.HS)
+            {
+                if (_unwieldyOriginalWeight < 0)
+                {
+                    _unwieldyOriginalWeight = Weight;
+                }
+
+                Weight = 50;
+            }
+            else if (_unwieldyOriginalWeight >= 0)
+            {
+                Weight = _unwieldyOriginalWeight;
+            }
+        }
         public override bool AllowSecureTrade(Mobile from, Mobile to, Mobile newOwner, bool accepted)
         {
             if (!Ethic.CheckTrade(from, to, newOwner, this))

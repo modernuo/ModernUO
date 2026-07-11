@@ -1563,7 +1563,8 @@ namespace Server
         Prized = 0x00000001,
         Massive = 0x00000002,
         Brittle = 0x00000004,
-        Antique = 0x00000008
+        Antique = 0x00000008,
+        Unwieldy = 0x00000010
     }
 
     public sealed class NegativeAttributes : BaseAttributes
@@ -1608,6 +1609,24 @@ namespace Server
         {
             get => Owner is BaseWeapon or BaseArmor ? this[NegativeAttribute.Brittle] : 0;
             set => this[NegativeAttribute.Brittle] = Owner is BaseWeapon or BaseArmor ? value : 0;
+        }
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        public int Unwieldy
+        {
+            get => Owner is BaseWeapon or BaseArmor ? this[NegativeAttribute.Unwieldy] : 0;
+            set
+            {
+                switch (Owner)
+                {
+                    case BaseWeapon weapon:
+                        weapon.SetUnwieldy(value);
+                        break;
+                    case BaseArmor armor:
+                        armor.SetUnwieldy(value);
+                        break;
+                }
+            }
         }
 
         public static bool IsAntique(Item item)
