@@ -190,7 +190,7 @@ namespace Server.Spells
                     Register(683, typeof(AnimatedWeaponSpell));
                     Register(684, typeof(StoneFormSpell));
                     Register(685, typeof(SpellTriggerSpell));
-                    // Register(686, typeof(MassSleepSpell));
+                    Register(686, typeof(MassSleepSpell));
                     Register(687, typeof(CleansingWindsSpell));
                     Register(688, typeof(BombardSpell));
                     Register(689, typeof(SpellPlagueSpell));

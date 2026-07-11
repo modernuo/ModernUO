@@ -2375,6 +2375,7 @@ namespace Server.Mobiles
             Confidence.StopRegenerating(this);
 
             StaminaSystem.FatigueOnDamage(this, amount);
+            Server.Spells.Mysticism.SleepSpell.OnMobileDamaged(this, amount);
 
             ReceivedHonorContext?.OnTargetDamaged(from, amount);
             SentHonorContext?.OnSourceDamaged(from, amount);

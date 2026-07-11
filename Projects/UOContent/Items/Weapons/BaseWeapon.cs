@@ -1533,6 +1533,8 @@ public abstract partial class BaseWeapon
                 bonus -= EssenceOfWindSpell.GetSSIMalus(m);
             }
 
+            bonus -= SleepSpell.GetSwingSpeedMalus(m);
+
             if (bonus > 60)
             {
                 bonus = 60;

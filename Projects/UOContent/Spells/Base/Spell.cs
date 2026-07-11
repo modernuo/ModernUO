@@ -697,7 +697,8 @@ namespace Server.Spells
             }
 
             var fcr = AosAttributes.GetValue(Caster, AosAttribute.CastRecovery) -
-                      ThunderstormSpell.GetCastRecoveryMalus(Caster);
+                      ThunderstormSpell.GetCastRecoveryMalus(Caster) -
+                      Mysticism.SleepSpell.GetCastRecoveryMalus(Caster);
 
             var fcrDelay = -(CastRecoveryFastScalar * fcr);
 
@@ -741,6 +742,8 @@ namespace Server.Spells
             {
                 fc -= EssenceOfWindSpell.GetFCMalus(Caster);
             }
+
+            fc -= Mysticism.SleepSpell.GetCastSpeedMalus(Caster);
 
             fc += Mysticism.EnchantSpell.GetFasterCasting(Caster);
 
