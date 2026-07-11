@@ -2581,6 +2581,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         ns.SendMobileAttributes(this);
 
         OnMapChange(oldMap);
+        EventSink.InvokeMapChanged(this, oldMap);
     }
 
     public virtual void MoveToWorld(Point3D newLocation, Map map)

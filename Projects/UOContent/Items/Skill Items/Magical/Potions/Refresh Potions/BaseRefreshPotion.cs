@@ -18,6 +18,11 @@ public abstract partial class BaseRefreshPotion : BasePotion
             return false;
         }
 
+        if (BoneBreaker.HasActiveDrain(from))
+        {
+            return false;
+        }
+
         if (from.Stam >= from.StamMax)
         {
             from.SendMessage("You decide against drinking this potion, as you are already at full stamina.");

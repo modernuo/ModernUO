@@ -25,6 +25,9 @@ public static partial class EventSink
     public static event Action<Mobile> Logout;
     public static void InvokeLogout(Mobile m) => Logout?.Invoke(m);
 
+    public static event Action<Mobile, Map> MapChanged;
+    public static void InvokeMapChanged(Mobile mobile, Map oldMap) => MapChanged?.Invoke(mobile, oldMap);
+
     public static event Action<Mobile> Connected;
     public static void InvokeConnected(Mobile m) => Connected?.Invoke(m);
 

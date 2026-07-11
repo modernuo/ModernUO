@@ -1257,7 +1257,8 @@ namespace Server
         BloodDrinker = 0x00000008,
         HitSwarm = 0x00000010,
         SplinteringWeapon = 0x00000020,
-        Focus = 0x00000040
+        Focus = 0x00000040,
+        BoneBreaker = 0x00000080
     }
 
     public sealed class ExtendedWeaponAttributes : BaseAttributes
@@ -1345,6 +1346,13 @@ namespace Server
             }
         }
 
+        [CommandProperty(AccessLevel.GameMaster)]
+        public int BoneBreaker
+        {
+            get => this[ExtendedWeaponAttribute.BoneBreaker];
+            set => this[ExtendedWeaponAttribute.BoneBreaker] = value;
+        }
+
         public void GetProperties(IPropertyList list)
         {
             if (Core.HS && Bane != 0)
@@ -1380,6 +1388,11 @@ namespace Server
             if (Core.TOL && HitSwarm != 0)
             {
                 list.Add(1157325, HitSwarm); // Swarm ~1_val~%
+            }
+
+            if (Core.TOL && BoneBreaker != 0)
+            {
+                list.Add(1157318); // Bone Breaker
             }
         }
 

@@ -2390,6 +2390,7 @@ public abstract partial class BaseWeapon
             {
                 Sparks.TryProcOnNormalHit(attacker, defender, ExtendedWeaponAttributes.HitSparks);
                 Swarm.TryProcOnNormalHit(attacker, defender, ExtendedWeaponAttributes.HitSwarm);
+                BoneBreaker.TryProcOnNormalHit(attacker, defender, ExtendedWeaponAttributes.BoneBreaker);
             }
         }
 
