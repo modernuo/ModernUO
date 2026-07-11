@@ -28,7 +28,7 @@ public interface ISlayer
     SlayerName Slayer2 { get; set; }
 }
 
-[SerializationGenerator(13, false)]
+[SerializationGenerator(14, false)]
 public abstract partial class BaseWeapon
     : Item, IWeapon, IFactionItem, ICraftable, ISlayer, IDurability, IAosItem, IIdentifiable
 {
@@ -214,6 +214,15 @@ public abstract partial class BaseWeapon
     [SerializableField(33)]
     private double _unwieldyOriginalWeight = -1;
 
+    // Field 34 intentionally has no save flag; BaseWeapon's legacy save-flag mask is already at the high bit.
+    [SerializedIgnoreDupe]
+    [SerializableField(34, setter: "private")]
+    [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
+    private AbsorptionAttributes _absorptionAttributes;
+
+    [SerializableFieldDefault(34)]
+    private AbsorptionAttributes AbsorptionAttributesDefaultValue() => new(this);
+
     private FactionItem m_FactionState;
     private SkillMod m_SkillMod, m_MageMod;
     private int _lastParryChance;
@@ -244,6 +253,7 @@ public abstract partial class BaseWeapon
         WeaponAttributes = new AosWeaponAttributes(this);
         ExtendedWeaponAttributes = new ExtendedWeaponAttributes(this);
         NegativeAttributes = new NegativeAttributes(this);
+        AbsorptionAttributes = new AbsorptionAttributes(this);
         SkillBonuses = new AosSkillBonuses(this);
         AosElementDamages = new AosElementAttributes(this);
     }
@@ -987,6 +997,7 @@ public abstract partial class BaseWeapon
         weap.AosElementDamages = new AosElementAttributes(newItem, AosElementDamages);
         weap.ExtendedWeaponAttributes = new ExtendedWeaponAttributes(newItem, ExtendedWeaponAttributes);
         weap.NegativeAttributes = new NegativeAttributes(newItem, NegativeAttributes);
+        weap.AbsorptionAttributes = new AbsorptionAttributes(newItem, AbsorptionAttributes);
         weap.SkillBonuses = new AosSkillBonuses(newItem, SkillBonuses);
         weap.WeaponAttributes = new AosWeaponAttributes(newItem, WeaponAttributes);
         weap._unwieldyOriginalWeight = _unwieldyOriginalWeight;
@@ -3986,6 +3997,7 @@ public abstract partial class BaseWeapon
     {
         _extendedWeaponAttributes ??= ExtendedWeaponAttributesDefaultValue();
         _negativeAttributes ??= NegativeAttributesDefaultValue();
+        _absorptionAttributes ??= AbsorptionAttributesDefaultValue();
         ReconcileUnwieldyWeight();
 
         var parentMobile = Parent as Mobile;

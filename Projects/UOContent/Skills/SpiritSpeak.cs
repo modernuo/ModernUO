@@ -93,7 +93,7 @@ namespace Server.SkillHandlers
 
             public override int GetMana() => 0;
 
-            public override void OnCasterHurt()
+            public override void OnCasterHurt(DamageType damageType)
             {
                 if (IsCasting)
                 {

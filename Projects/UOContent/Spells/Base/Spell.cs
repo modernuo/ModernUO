@@ -84,7 +84,7 @@ namespace Server.Spells
 
         public virtual bool IsCasting => State == SpellState.Casting;
 
-        public virtual void OnCasterHurt()
+        public virtual void OnCasterHurt(DamageType damageType = DamageType.None)
         {
             // Confirm: Monsters and pets cannot be disturbed.
             if (Caster.Player && IsCasting)
@@ -103,6 +103,12 @@ namespace Server.Spells
                 if (castingFocus > Utility.Random(100))
                 {
                     Caster.SendLocalizedMessage(1113690); // You regain your focus and continue casting the spell.
+                    return;
+                }
+
+                var resonance = AbsorptionAttributes.GetResonanceValue(Caster, damageType);
+                if (resonance > 0 && resonance > Utility.Random(100))
+                {
                     return;
                 }
 

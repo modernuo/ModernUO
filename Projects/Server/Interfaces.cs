@@ -35,7 +35,7 @@ public interface ISpell
 {
     bool BlocksMovement { get; }
     bool IsCasting { get; }
-    void OnCasterHurt();
+    void OnCasterHurt(DamageType damageType = DamageType.None);
     void OnCasterKilled();
     void OnConnectionChanged();
     bool OnCasterMoving(Direction d);

@@ -151,6 +151,16 @@ public enum VisibleDamageType
     Selective
 }
 
+public enum DamageType
+{
+    None,
+    Physical,
+    Fire,
+    Cold,
+    Poison,
+    Energy
+}
+
 public enum ResistanceType
 {
     Physical,
@@ -339,6 +349,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
     private int m_SolidHueOverride = -1;
     private ISpell m_Spell;
+    private DamageType _damageType;
     private int m_StatCap;
     private int m_Str, m_Dex, m_Int;
 
@@ -5919,6 +5930,21 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
     public virtual bool CanBeDamaged() => !m_Blessed;
 
+    public void Damage(int amount, Mobile from, DamageType damageType)
+    {
+        var previousDamageType = _damageType;
+        _damageType = damageType;
+
+        try
+        {
+            Damage(amount, from);
+        }
+        finally
+        {
+            _damageType = previousDamageType;
+        }
+    }
+
     public virtual void Damage(int amount, Mobile from = null, bool informMount = true, bool ignoreEvilOmen = false)
     {
         if (amount <= 0)
@@ -5939,7 +5965,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         var oldHits = Hits;
         var newHits = oldHits - amount;
 
-        m_Spell?.OnCasterHurt();
+        m_Spell?.OnCasterHurt(_damageType);
 
         // if (m_Spell != null && m_Spell.State == SpellState.Casting)
         // m_Spell.Disturb( DisturbType.Hurt, false, true );

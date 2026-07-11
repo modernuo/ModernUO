@@ -15,6 +15,7 @@ namespace Server
     public static class AOS
     {
         public const int CastingFocusChanceCap = 12;
+        public const int ResonanceChanceCap = 40;
         public const int MassiveStrengthRequirement = 125;
 
         public static void DisableStatInfluences()
@@ -77,6 +78,8 @@ namespace Server
             Fix(ref nrgy);
             Fix(ref chaos);
             Fix(ref direct);
+
+            var damageType = GetDamageType(phys, fire, cold, pois, nrgy, chaos, direct);
 
             var physicalPostResistDamage = 0;
             var firePostResistDamage = 0;
@@ -267,7 +270,7 @@ namespace Server
             }
 
             var oldHits = m.Hits;
-            m.Damage(totalDamage, from);
+            m.Damage(totalDamage, from, damageType);
             var appliedDamage = Math.Max(0, oldHits - m.Hits);
 
             PurgeMagicSpell.OnMobileDamaged(from, m, appliedDamage);
@@ -299,6 +302,24 @@ namespace Server
             {
                 val = 0;
             }
+        }
+
+        private static DamageType GetDamageType(int phys, int fire, int cold, int pois, int nrgy, int chaos, int direct)
+        {
+            if (chaos != 0 || direct != 0)
+            {
+                return DamageType.None;
+            }
+
+            return (phys, fire, cold, pois, nrgy) switch
+            {
+                (100, 0, 0, 0, 0) => DamageType.Physical,
+                (0, 100, 0, 0, 0) => DamageType.Fire,
+                (0, 0, 100, 0, 0) => DamageType.Cold,
+                (0, 0, 0, 100, 0) => DamageType.Poison,
+                (0, 0, 0, 0, 100) => DamageType.Energy,
+                _                  => DamageType.None
+            };
         }
 
         public static int Scale(int input, int percent) => input * percent / 100;
@@ -1374,7 +1395,12 @@ namespace Server
         FireEater = 0x00000008,
         ColdEater = 0x00000010,
         PoisonEater = 0x00000020,
-        EnergyEater = 0x00000040
+        EnergyEater = 0x00000040,
+        FireResonance = 0x00000080,
+        ColdResonance = 0x00000100,
+        PoisonResonance = 0x00000200,
+        EnergyResonance = 0x00000400,
+        KineticResonance = 0x00000800
     }
 
     public sealed class AbsorptionAttributes : BaseAttributes
@@ -1442,6 +1468,41 @@ namespace Server
             set => SetEaterValue(AbsorptionAttribute.EnergyEater, value);
         }
 
+        [CommandProperty(AccessLevel.GameMaster)]
+        public int FireResonance
+        {
+            get => CanHaveResonance ? this[AbsorptionAttribute.FireResonance] : 0;
+            set => SetResonanceValue(AbsorptionAttribute.FireResonance, value);
+        }
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        public int ColdResonance
+        {
+            get => CanHaveResonance ? this[AbsorptionAttribute.ColdResonance] : 0;
+            set => SetResonanceValue(AbsorptionAttribute.ColdResonance, value);
+        }
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        public int PoisonResonance
+        {
+            get => CanHaveResonance ? this[AbsorptionAttribute.PoisonResonance] : 0;
+            set => SetResonanceValue(AbsorptionAttribute.PoisonResonance, value);
+        }
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        public int EnergyResonance
+        {
+            get => CanHaveResonance ? this[AbsorptionAttribute.EnergyResonance] : 0;
+            set => SetResonanceValue(AbsorptionAttribute.EnergyResonance, value);
+        }
+
+        [CommandProperty(AccessLevel.GameMaster)]
+        public int KineticResonance
+        {
+            get => CanHaveResonance ? this[AbsorptionAttribute.KineticResonance] : 0;
+            set => SetResonanceValue(AbsorptionAttribute.KineticResonance, value);
+        }
+
         internal bool HasDamageEater =>
             DamageEater != 0 || KineticEater != 0 || FireEater != 0 || ColdEater != 0 || PoisonEater != 0 || EnergyEater != 0;
 
@@ -1454,6 +1515,11 @@ namespace Server
                 Server.Items.DamageEater.ClearIfInactive(mobile);
             }
         }
+
+        private bool CanHaveResonance => Owner is BaseShield or BaseWeapon { Layer: Layer.TwoHanded };
+
+        private void SetResonanceValue(AbsorptionAttribute attribute, int value) =>
+            this[attribute] = CanHaveResonance ? value : 0;
 
         public static int GetValue(Mobile m, AbsorptionAttribute attribute)
         {
@@ -1478,10 +1544,39 @@ namespace Server
                         value += attrs[attribute];
                     }
                 }
+                else if (IsResonance(attribute) && obj is BaseWeapon weapon)
+                {
+                    var attrs = weapon.AbsorptionAttributes;
+
+                    if (attrs != null)
+                    {
+                        value += attrs[attribute];
+                    }
+                }
             }
 
             return value;
         }
+
+        internal static int GetResonanceValue(Mobile m, DamageType damageType)
+        {
+            AbsorptionAttribute attribute = damageType switch
+            {
+                DamageType.Physical => AbsorptionAttribute.KineticResonance,
+                DamageType.Fire     => AbsorptionAttribute.FireResonance,
+                DamageType.Cold     => AbsorptionAttribute.ColdResonance,
+                DamageType.Poison   => AbsorptionAttribute.PoisonResonance,
+                DamageType.Energy   => AbsorptionAttribute.EnergyResonance,
+                _                   => (AbsorptionAttribute)0
+            };
+
+            return attribute == 0 ? 0 : Math.Min(AOS.ResonanceChanceCap, Math.Max(0, GetValue(m, attribute)));
+        }
+
+        private static bool IsResonance(AbsorptionAttribute attribute) => attribute is
+            AbsorptionAttribute.FireResonance or AbsorptionAttribute.ColdResonance or
+            AbsorptionAttribute.PoisonResonance or AbsorptionAttribute.EnergyResonance or
+            AbsorptionAttribute.KineticResonance;
 
         internal static bool HasDamageEaterOn(Mobile m)
         {
@@ -1550,6 +1645,31 @@ namespace Server
                 if (EnergyEater != 0)
                 {
                     list.Add(1113596, EnergyEater); // Energy Eater ~1_val~%
+                }
+
+                if (FireResonance != 0)
+                {
+                    list.Add(1154655, FireResonance); // Fire Resonance ~1_val~%
+                }
+
+                if (ColdResonance != 0)
+                {
+                    list.Add(1154656, ColdResonance); // Cold Resonance ~1_val~%
+                }
+
+                if (PoisonResonance != 0)
+                {
+                    list.Add(1154657, PoisonResonance); // Poison Resonance ~1_val~%
+                }
+
+                if (EnergyResonance != 0)
+                {
+                    list.Add(1154658, EnergyResonance); // Energy Resonance ~1_val~%
+                }
+
+                if (KineticResonance != 0)
+                {
+                    list.Add(1154659, KineticResonance); // Kinetic Resonance ~1_val~%
                 }
             }
         }
