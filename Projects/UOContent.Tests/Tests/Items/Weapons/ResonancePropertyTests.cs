@@ -147,37 +147,41 @@ public class ResonancePropertyTests
     public void ResonanceAggregation_UsesOnlyMatchingEligibleEquipmentAndCapsAtFortyPercent()
     {
         var previousExpansion = Core.Expansion;
-        var mobile = CreateMobile(player: true);
+        var shieldBearer = CreateMobile(player: true);
+        var weaponBearer = CreateMobile(player: true);
         var shield = new BronzeShield { Layer = Layer.TwoHanded };
         var weapon = new WarHammer();
+        var armor = new LeatherChest();
         var oneHandedWeapon = new Katana();
 
         try
         {
-            shield.AbsorptionAttributes.FireResonance = 25;
+            shield.AbsorptionAttributes.FireResonance = 50;
             shield.AbsorptionAttributes.ColdResonance = 16;
             weapon.AbsorptionAttributes.FireResonance = 25;
             weapon.AbsorptionAttributes.PoisonResonance = 19;
-            oneHandedWeapon.AbsorptionAttributes.FireResonance = 99;
+            armor.AbsorptionAttributes[AbsorptionAttribute.FireResonance] = 99;
+            oneHandedWeapon.AbsorptionAttributes[AbsorptionAttribute.FireResonance] = 99;
 
-            mobile.AddItem(shield);
-            mobile.AddItem(weapon);
-            mobile.AddItem(oneHandedWeapon);
+            shieldBearer.AddItem(shield);
+            shieldBearer.AddItem(armor);
+            weaponBearer.AddItem(weapon);
+            weaponBearer.AddItem(oneHandedWeapon);
 
-            Assert.Contains(shield, mobile.Items);
-            Assert.Contains(weapon, mobile.Items);
-            Assert.Contains(oneHandedWeapon, mobile.Items);
-            Assert.Equal(Layer.TwoHanded, shield.Layer);
-            Assert.Equal(Layer.TwoHanded, weapon.Layer);
+            Assert.Same(shield, shieldBearer.FindItemOnLayer<BaseShield>(Layer.TwoHanded));
+            Assert.Same(weapon, weaponBearer.FindItemOnLayer<BaseWeapon>(Layer.TwoHanded));
 
             Core.Expansion = Expansion.ML;
-            Assert.Equal(0, AbsorptionAttributes.GetResonanceValue(mobile, DamageType.Fire));
+            Assert.Equal(0, AbsorptionAttributes.GetResonanceValue(shieldBearer, DamageType.Fire));
+            Assert.Equal(0, AbsorptionAttributes.GetResonanceValue(weaponBearer, DamageType.Fire));
 
             Core.Expansion = Expansion.SA;
-            Assert.Equal(AOS.ResonanceChanceCap, AbsorptionAttributes.GetResonanceValue(mobile, DamageType.Fire));
-            Assert.Equal(16, AbsorptionAttributes.GetResonanceValue(mobile, DamageType.Cold));
-            Assert.Equal(19, AbsorptionAttributes.GetResonanceValue(mobile, DamageType.Poison));
-            Assert.Equal(0, AbsorptionAttributes.GetResonanceValue(mobile, DamageType.Energy));
+            Assert.Equal(AOS.ResonanceChanceCap, AbsorptionAttributes.GetResonanceValue(shieldBearer, DamageType.Fire));
+            Assert.Equal(16, AbsorptionAttributes.GetResonanceValue(shieldBearer, DamageType.Cold));
+            Assert.Equal(0, AbsorptionAttributes.GetResonanceValue(shieldBearer, DamageType.Poison));
+            Assert.Equal(25, AbsorptionAttributes.GetResonanceValue(weaponBearer, DamageType.Fire));
+            Assert.Equal(19, AbsorptionAttributes.GetResonanceValue(weaponBearer, DamageType.Poison));
+            Assert.Equal(0, AbsorptionAttributes.GetResonanceValue(weaponBearer, DamageType.Energy));
             Assert.Equal(0, oneHandedWeapon.AbsorptionAttributes.FireResonance);
         }
         finally
@@ -185,8 +189,10 @@ public class ResonancePropertyTests
             Core.Expansion = previousExpansion;
             shield.Delete();
             weapon.Delete();
+            armor.Delete();
             oneHandedWeapon.Delete();
-            mobile.Delete();
+            shieldBearer.Delete();
+            weaponBearer.Delete();
         }
     }
 

@@ -1535,18 +1535,20 @@ namespace Server
             {
                 var obj = items[i];
 
-                if (obj is BaseArmor armor)
+                if (IsResonance(attribute))
                 {
-                    var attrs = armor.AbsorptionAttributes;
-
-                    if (attrs != null)
+                    if (obj is BaseShield shield)
                     {
-                        value += attrs[attribute];
+                        value += shield.AbsorptionAttributes[attribute];
+                    }
+                    else if (obj is BaseWeapon { Layer: Layer.TwoHanded } weapon)
+                    {
+                        value += weapon.AbsorptionAttributes[attribute];
                     }
                 }
-                else if (IsResonance(attribute) && obj is BaseWeapon weapon)
+                else if (obj is BaseArmor armor)
                 {
-                    var attrs = weapon.AbsorptionAttributes;
+                    var attrs = armor.AbsorptionAttributes;
 
                     if (attrs != null)
                     {
