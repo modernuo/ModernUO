@@ -3190,6 +3190,7 @@ public abstract partial class BaseWeapon
         NegativeAttributes.GetProperties(list);
         ExtendedWeaponAttributes.GetProperties(list);
         WeaponAttributes.GetProperties(list);
+        AbsorptionAttributes.GetProperties(list);
 
         if (ImmolatingWeaponSpell.IsImmolating(this))
         {

@@ -149,7 +149,7 @@ public abstract partial class BaseWeapon
         _engravedText = content.EngravedText;
         _extendedWeaponAttributes = content.ExtendedWeaponAttributes ?? ExtendedWeaponAttributesDefaultValue();
         _negativeAttributes = content.NegativeAttributes ?? NegativeAttributesDefaultValue();
-        _unwieldyOriginalWeight = content.UnwieldyOriginalWeight ?? -1;
+        _unwieldyOriginalWeight = content.UnwieldyOriginalWeight;
         _absorptionAttributes = AbsorptionAttributesDefaultValue();
     }
 }
