@@ -30,6 +30,7 @@ public class ExtendedWeaponAttributesTests
         Assert.Equal(0x00000020, (int)ExtendedWeaponAttribute.SplinteringWeapon);
         Assert.Equal(0x00000040, (int)ExtendedWeaponAttribute.Focus);
         Assert.Equal(0x00000080, (int)ExtendedWeaponAttribute.BoneBreaker);
+        Assert.Equal(0x00000100, (int)ExtendedWeaponAttribute.AssassinHoned);
     }
 
     [Fact]
@@ -49,6 +50,7 @@ public class ExtendedWeaponAttributesTests
             Assert.Equal(0, weapon.ExtendedWeaponAttributes.SplinteringWeapon);
             Assert.Equal(0, weapon.ExtendedWeaponAttributes.Focus);
             Assert.Equal(0, weapon.ExtendedWeaponAttributes.BoneBreaker);
+            Assert.Equal(0, weapon.ExtendedWeaponAttributes.AssassinHoned);
         }
         finally
         {
@@ -88,6 +90,7 @@ public class ExtendedWeaponAttributesTests
         AssertStaffCommandProperty(nameof(ExtendedWeaponAttributes.SplinteringWeapon));
         AssertStaffCommandProperty(nameof(ExtendedWeaponAttributes.Focus));
         AssertStaffCommandProperty(nameof(ExtendedWeaponAttributes.BoneBreaker));
+        AssertStaffCommandProperty(nameof(ExtendedWeaponAttributes.AssassinHoned));
     }
 
     [Fact]
@@ -108,6 +111,7 @@ public class ExtendedWeaponAttributesTests
             weapon.ExtendedWeaponAttributes.SplinteringWeapon = 25;
             weapon.ExtendedWeaponAttributes.Focus = 1;
             weapon.ExtendedWeaponAttributes.BoneBreaker = 1;
+            weapon.ExtendedWeaponAttributes.AssassinHoned = 1;
 
             var writer = new BufferWriter(true);
             weapon.Serialize(writer);
@@ -126,6 +130,7 @@ public class ExtendedWeaponAttributesTests
             Assert.Equal(25, deserialized.ExtendedWeaponAttributes.SplinteringWeapon);
             Assert.Equal(1, deserialized.ExtendedWeaponAttributes.Focus);
             Assert.Equal(1, deserialized.ExtendedWeaponAttributes.BoneBreaker);
+            Assert.Equal(1, deserialized.ExtendedWeaponAttributes.AssassinHoned);
         }
         finally
         {

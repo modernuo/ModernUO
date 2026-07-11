@@ -1274,7 +1274,8 @@ namespace Server
         HitSwarm = 0x00000010,
         SplinteringWeapon = 0x00000020,
         Focus = 0x00000040,
-        BoneBreaker = 0x00000080
+        BoneBreaker = 0x00000080,
+        AssassinHoned = 0x00000100
     }
 
     public sealed class ExtendedWeaponAttributes : BaseAttributes
@@ -1369,6 +1370,13 @@ namespace Server
             set => this[ExtendedWeaponAttribute.BoneBreaker] = value;
         }
 
+        [CommandProperty(AccessLevel.GameMaster)]
+        public int AssassinHoned
+        {
+            get => this[ExtendedWeaponAttribute.AssassinHoned];
+            set => this[ExtendedWeaponAttribute.AssassinHoned] = value;
+        }
+
         public void GetProperties(IPropertyList list)
         {
             if (Core.HS && Bane != 0)
@@ -1409,6 +1417,11 @@ namespace Server
             if (Core.TOL && BoneBreaker != 0)
             {
                 list.Add(1157318); // Bone Breaker
+            }
+
+            if (Core.HS && AssassinHoned != 0)
+            {
+                list.Add(1152206); // Assassin Honed
             }
         }
 

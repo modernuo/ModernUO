@@ -2050,6 +2050,7 @@ public abstract partial class BaseWeapon
         // Canonical Focus endpoints are -50% and +20%. Intermediate values use a documented 10-point step.
         percentageBonus += FocusContext.GetDamageBonus(this, attacker, defender);
         percentageBonus += BattleLust.GetDamageBonus(attacker, defender);
+        percentageBonus += GetAssassinHonedDamageBonus(attacker, defender);
 
         percentageBonus = Math.Min(percentageBonus, 300);
 
@@ -2578,6 +2579,23 @@ public abstract partial class BaseWeapon
         var potentialDamage = Math.Min(350.0, defender.HitsMax * 0.30);
 
         return (int)(potentialDamage - defender.Hits / (double)defender.HitsMax * potentialDamage);
+    }
+
+    internal int GetAssassinHonedDamageBonus(Mobile attacker, Mobile defender)
+    {
+        if (!Core.HS || ExtendedWeaponAttributes.AssassinHoned == 0 || MlSpeed <= 0 ||
+            (attacker.Direction & Direction.Mask) != (defender.Direction & Direction.Mask))
+        {
+            return 0;
+        }
+
+        if (this is BaseRanged && Utility.Random(2) != 0)
+        {
+            return 0;
+        }
+
+        // Publish 74 policy: original ML speed only; SSI does not affect this bonus.
+        return (int)(146.0 / MlSpeed);
     }
 
     public virtual void GetDamageTypes(
