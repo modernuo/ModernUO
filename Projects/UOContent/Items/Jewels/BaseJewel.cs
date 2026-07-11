@@ -19,7 +19,7 @@ public enum GemType
 }
 
 [SerializationGenerator(6, false)]
-public abstract partial class BaseJewel : Item, ICraftable, IAosItem
+public abstract partial class BaseJewel : Item, ICraftable, IAosItem, IDurability
 {
     [EncodedInt]
     [InvalidateProperties]
@@ -123,6 +123,15 @@ public abstract partial class BaseJewel : Item, ICraftable, IAosItem
 
     public virtual int InitMinHits => 0;
     public virtual int InitMaxHits => 0;
+    public virtual bool CanFortify => false;
+
+    public void UnscaleDurability()
+    {
+    }
+
+    public void ScaleDurability()
+    {
+    }
 
     public override int LabelNumber
     {

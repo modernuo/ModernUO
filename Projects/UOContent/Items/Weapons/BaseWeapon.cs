@@ -933,6 +933,7 @@ public abstract partial class BaseWeapon
             attacker.DisruptiveAction();
 
             attacker.NetState?.SendSwing(attacker.Serial, defender.Serial);
+            NegativeAttributes.ApplyAntiqueWear(attacker);
 
             if (attacker is BaseCreature bc)
             {

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using ModernUO.Serialization;
+using Server.Collections;
 using Server.Items;
 using Server.Mobiles;
 using Server.Spells;
@@ -1561,7 +1562,8 @@ namespace Server
     {
         Prized = 0x00000001,
         Massive = 0x00000002,
-        Brittle = 0x00000004
+        Brittle = 0x00000004,
+        Antique = 0x00000008
     }
 
     public sealed class NegativeAttributes : BaseAttributes
@@ -1595,10 +1597,79 @@ namespace Server
         }
 
         [CommandProperty(AccessLevel.GameMaster)]
+        public int Antique
+        {
+            get => Owner is BaseWeapon or BaseArmor or BaseJewel ? this[NegativeAttribute.Antique] : 0;
+            set => this[NegativeAttribute.Antique] = Owner is BaseWeapon or BaseArmor or BaseJewel ? value : 0;
+        }
+
+        [CommandProperty(AccessLevel.GameMaster)]
         public int Brittle
         {
             get => Owner is BaseWeapon or BaseArmor ? this[NegativeAttribute.Brittle] : 0;
             set => this[NegativeAttribute.Brittle] = Owner is BaseWeapon or BaseArmor ? value : 0;
+        }
+
+        public static bool IsAntique(Item item)
+        {
+            if (!Core.HS)
+            {
+                return false;
+            }
+
+            return item switch
+            {
+                BaseWeapon weapon => weapon.NegativeAttributes.Antique != 0,
+                BaseArmor armor   => armor.NegativeAttributes.Antique != 0,
+                BaseJewel jewel   => jewel.NegativeAttributes.Antique != 0,
+                _                 => false
+            };
+        }
+
+        public static void ApplyAntiqueWear(Mobile wearer)
+        {
+            if (!wearer.Alive || !Core.HS)
+            {
+                return;
+            }
+
+            using var equipped = PooledRefList<Item>.Create(wearer.Items.Count);
+
+            foreach (var item in wearer.Items)
+            {
+                equipped.Add(item);
+            }
+
+            foreach (var item in equipped)
+            {
+                ApplyAntiqueWear(item);
+            }
+        }
+
+        private static void ApplyAntiqueWear(Item item)
+        {
+            if (!IsAntique(item) || Utility.Random(100) >= 2 || item is not IDurability durability)
+            {
+                return;
+            }
+
+            if (durability.HitPoints > 0)
+            {
+                --durability.HitPoints;
+            }
+            else if (durability.MaxHitPoints > 1)
+            {
+                --durability.MaxHitPoints;
+
+                if (item.Parent is Mobile mobile)
+                {
+                    mobile.LocalOverheadMessage(MessageType.Regular, 0x3B2, 1061121);
+                }
+            }
+            else
+            {
+                item.Delete();
+            }
         }
 
         public static bool IsBrittle(Item item)
@@ -1649,6 +1720,11 @@ namespace Server
 
         public void GetProperties(IPropertyList list)
         {
+            if (Core.HS && Antique != 0)
+            {
+                list.Add(1076187); // Antique
+            }
+
             if (Core.HS && Prized != 0)
             {
                 list.Add(1154910); // Prized

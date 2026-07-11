@@ -1,3 +1,4 @@
+using System;
 using ModernUO.Serialization;
 using Server.Network;
 using Server.Targeting;
@@ -80,15 +81,46 @@ public partial class PowderOfTemperament : Item, IUsesRemaining
                 return;
             }
 
-            if (!wearable.CanFortify)
-            {
-                from.SendLocalizedMessage(1049083); // You cannot use the powder on that item.
-                return;
-            }
-
             if (NegativeAttributes.IsBrittle(item))
             {
                 from.SendLocalizedMessage(1149799); // That cannot be used on brittle items.
+                return;
+            }
+
+            if (NegativeAttributes.IsAntique(item))
+            {
+                if (item is BaseJewel || GetAntiqueMaximumDurability(item) is not { } maximumDurability)
+                {
+                    from.SendLocalizedMessage(1049083); // You cannot use the powder on that item.
+                    return;
+                }
+
+                if (!item.IsChildOf(from.Backpack) && (!Core.ML || item.Parent != from) ||
+                    !_powder.IsChildOf(from.Backpack))
+                {
+                    from.SendLocalizedMessage(1042001); // That must be in your pack for you to use it.
+                    return;
+                }
+
+                wearable.MaxHitPoints = maximumDurability;
+                wearable.HitPoints = Math.Min(wearable.HitPoints, maximumDurability);
+                GetNegativeAttributes(item).Antique++;
+                from.SendLocalizedMessage(1049084); // You successfully use the powder on the item.
+                from.PlaySound(0x247);
+                --_powder.UsesRemaining;
+
+                if (_powder.UsesRemaining <= 0)
+                {
+                    from.SendLocalizedMessage(1049086); // You have used up your powder of fortifying.
+                    _powder.Delete();
+                }
+
+                return;
+            }
+
+            if (!wearable.CanFortify)
+            {
+                from.SendLocalizedMessage(1049083); // You cannot use the powder on that item.
                 return;
             }
 
@@ -161,5 +193,21 @@ public partial class PowderOfTemperament : Item, IUsesRemaining
                 from.SendLocalizedMessage(1049085); // The item cannot be improved any further.
             }
         }
+
+        private static int? GetAntiqueMaximumDurability(Item item) => GetNegativeAttributes(item).Antique switch
+        {
+            1 => 250,
+            2 => 200,
+            3 => 150,
+            _ => null
+        };
+
+        private static NegativeAttributes GetNegativeAttributes(Item item) => item switch
+        {
+            BaseWeapon weapon => weapon.NegativeAttributes,
+            BaseArmor armor   => armor.NegativeAttributes,
+            BaseJewel jewel   => jewel.NegativeAttributes,
+            _                 => throw new ArgumentException($"Unsupported Antique host: {item.GetType().FullName}", nameof(item))
+        };
     }
 }

@@ -40,6 +40,11 @@ namespace Server.Engines.Craft
                 return EnhanceResult.BadItem;
             }
 
+            if (NegativeAttributes.IsAntique(item))
+            {
+                return EnhanceResult.BadItem;
+            }
+
             if (item is IArcaneEquip eq && eq.IsArcane)
             {
                 return EnhanceResult.BadItem;

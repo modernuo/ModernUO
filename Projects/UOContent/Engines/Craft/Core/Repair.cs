@@ -377,6 +377,50 @@ namespace Server.Engines.Craft
                         toDelete = true;
                     }
                 }
+                else if (targeted is BaseJewel jewel)
+                {
+                    var skill = m_CraftSystem.MainSkill;
+                    const int toWeaken = 1;
+
+                    if (!NegativeAttributes.IsAntique(jewel) || m_CraftSystem.CraftItems.SearchForSubclass(jewel.GetType()) == null)
+                    {
+                        number = usingDeed ? 1061136 : 1044277; // That item cannot be repaired.
+                    }
+                    else if (!jewel.IsChildOf(from.Backpack) && (!Core.ML || jewel.Parent != from))
+                    {
+                        number = 1044275; // The item must be in your backpack to repair it.
+                    }
+                    else if (jewel.MaxHitPoints <= 0 || jewel.HitPoints == jewel.MaxHitPoints)
+                    {
+                        number = 1044281; // That item is in full repair
+                    }
+                    else if (jewel.MaxHitPoints <= toWeaken)
+                    {
+                        number = 1044278; // That item has been repaired many times, and will break if repairs are attempted again.
+                    }
+                    else
+                    {
+                        if (CheckWeaken(from, skill, jewel.HitPoints, jewel.MaxHitPoints))
+                        {
+                            jewel.MaxHitPoints -= toWeaken;
+                            jewel.HitPoints = Math.Max(0, jewel.HitPoints - toWeaken);
+                        }
+
+                        if (CheckRepairDifficulty(from, skill, jewel.HitPoints, jewel.MaxHitPoints))
+                        {
+                            number = 1044279; // You repair the item.
+                            m_CraftSystem.PlayCraftEffect(from);
+                            jewel.HitPoints = jewel.MaxHitPoints;
+                        }
+                        else
+                        {
+                            number = usingDeed ? 1061137 : 1044280; // You fail to repair the item.
+                            m_CraftSystem.PlayCraftEffect(from);
+                        }
+
+                        toDelete = true;
+                    }
+                }
                 else if (targeted is BaseClothing clothing)
                 {
                     var skill = m_CraftSystem.MainSkill;
