@@ -32,6 +32,7 @@ public class ExtendedWeaponAttributesTests
         Assert.Equal(0x00000080, (int)ExtendedWeaponAttribute.BoneBreaker);
         Assert.Equal(0x00000100, (int)ExtendedWeaponAttribute.AssassinHoned);
         Assert.Equal(0x00000200, (int)ExtendedWeaponAttribute.Searing);
+        Assert.Equal(0x00000400, (int)ExtendedWeaponAttribute.HitManaDrain);
     }
 
     [Fact]
@@ -53,6 +54,7 @@ public class ExtendedWeaponAttributesTests
             Assert.Equal(0, weapon.ExtendedWeaponAttributes.BoneBreaker);
             Assert.Equal(0, weapon.ExtendedWeaponAttributes.AssassinHoned);
             Assert.Equal(0, weapon.ExtendedWeaponAttributes.Searing);
+            Assert.Equal(0, weapon.ExtendedWeaponAttributes.HitManaDrain);
             Assert.False(weapon.SearingIgnited);
         }
         finally
@@ -95,6 +97,7 @@ public class ExtendedWeaponAttributesTests
         AssertStaffCommandProperty(nameof(ExtendedWeaponAttributes.BoneBreaker));
         AssertStaffCommandProperty(nameof(ExtendedWeaponAttributes.AssassinHoned));
         AssertStaffCommandProperty(nameof(ExtendedWeaponAttributes.Searing));
+        AssertStaffCommandProperty(nameof(ExtendedWeaponAttributes.HitManaDrain));
     }
 
     [Fact]
@@ -117,6 +120,7 @@ public class ExtendedWeaponAttributesTests
             weapon.ExtendedWeaponAttributes.BoneBreaker = 1;
             weapon.ExtendedWeaponAttributes.AssassinHoned = 1;
             weapon.ExtendedWeaponAttributes.Searing = 1;
+            weapon.ExtendedWeaponAttributes.HitManaDrain = 70;
             weapon.SearingIgnited = true;
 
             var writer = new BufferWriter(true);
@@ -138,6 +142,7 @@ public class ExtendedWeaponAttributesTests
             Assert.Equal(1, deserialized.ExtendedWeaponAttributes.BoneBreaker);
             Assert.Equal(1, deserialized.ExtendedWeaponAttributes.AssassinHoned);
             Assert.Equal(1, deserialized.ExtendedWeaponAttributes.Searing);
+            Assert.Equal(70, deserialized.ExtendedWeaponAttributes.HitManaDrain);
             Assert.True(deserialized.SearingIgnited);
         }
         finally

@@ -2249,6 +2249,17 @@ public abstract partial class BaseWeapon
             // zero-damage post-absorption hits leave the current modifier unchanged.
             FocusContext.OnSuccessfulHit(this, attacker, defender);
             var propertyBonus = move?.GetPropertyBonus(attacker) ?? 1.0;
+
+            if (Core.SA)
+            {
+                var manaDrainChance = (int)(ExtendedWeaponAttributes.HitManaDrain * propertyBonus);
+
+                if (manaDrainChance > 0 && manaDrainChance > Utility.Random(100))
+                {
+                    defender.Mana -= AOS.Scale(damageGiven, 20);
+                }
+            }
+
             var splintering = SplinteringWeapon.TryProcOnEligibleHit(
                 attacker,
                 defender,

@@ -1276,7 +1276,8 @@ namespace Server
         Focus = 0x00000040,
         BoneBreaker = 0x00000080,
         AssassinHoned = 0x00000100,
-        Searing = 0x00000200
+        Searing = 0x00000200,
+        HitManaDrain = 0x00000400
     }
 
     public sealed class ExtendedWeaponAttributes : BaseAttributes
@@ -1393,6 +1394,13 @@ namespace Server
             }
         }
 
+        [CommandProperty(AccessLevel.GameMaster)]
+        public int HitManaDrain
+        {
+            get => this[ExtendedWeaponAttribute.HitManaDrain];
+            set => this[ExtendedWeaponAttribute.HitManaDrain] = value;
+        }
+
         public void GetProperties(IPropertyList list)
         {
             if (Core.HS && Bane != 0)
@@ -1418,6 +1426,11 @@ namespace Server
             if (Core.SA && BloodDrinker != 0)
             {
                 list.Add(1113591); // Blood Drinker
+            }
+
+            if (Core.SA && HitManaDrain != 0)
+            {
+                list.Add(1113699, HitManaDrain); // Hit Mana Drain ~1_val~%
             }
 
             if (Core.SA && SplinteringWeapon != 0)
