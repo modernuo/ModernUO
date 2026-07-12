@@ -31,6 +31,7 @@ public class ExtendedWeaponAttributesTests
         Assert.Equal(0x00000040, (int)ExtendedWeaponAttribute.Focus);
         Assert.Equal(0x00000080, (int)ExtendedWeaponAttribute.BoneBreaker);
         Assert.Equal(0x00000100, (int)ExtendedWeaponAttribute.AssassinHoned);
+        Assert.Equal(0x00000200, (int)ExtendedWeaponAttribute.Searing);
     }
 
     [Fact]
@@ -51,6 +52,8 @@ public class ExtendedWeaponAttributesTests
             Assert.Equal(0, weapon.ExtendedWeaponAttributes.Focus);
             Assert.Equal(0, weapon.ExtendedWeaponAttributes.BoneBreaker);
             Assert.Equal(0, weapon.ExtendedWeaponAttributes.AssassinHoned);
+            Assert.Equal(0, weapon.ExtendedWeaponAttributes.Searing);
+            Assert.False(weapon.SearingIgnited);
         }
         finally
         {
@@ -91,6 +94,7 @@ public class ExtendedWeaponAttributesTests
         AssertStaffCommandProperty(nameof(ExtendedWeaponAttributes.Focus));
         AssertStaffCommandProperty(nameof(ExtendedWeaponAttributes.BoneBreaker));
         AssertStaffCommandProperty(nameof(ExtendedWeaponAttributes.AssassinHoned));
+        AssertStaffCommandProperty(nameof(ExtendedWeaponAttributes.Searing));
     }
 
     [Fact]
@@ -112,6 +116,8 @@ public class ExtendedWeaponAttributesTests
             weapon.ExtendedWeaponAttributes.Focus = 1;
             weapon.ExtendedWeaponAttributes.BoneBreaker = 1;
             weapon.ExtendedWeaponAttributes.AssassinHoned = 1;
+            weapon.ExtendedWeaponAttributes.Searing = 1;
+            weapon.SearingIgnited = true;
 
             var writer = new BufferWriter(true);
             weapon.Serialize(writer);
@@ -131,6 +137,8 @@ public class ExtendedWeaponAttributesTests
             Assert.Equal(1, deserialized.ExtendedWeaponAttributes.Focus);
             Assert.Equal(1, deserialized.ExtendedWeaponAttributes.BoneBreaker);
             Assert.Equal(1, deserialized.ExtendedWeaponAttributes.AssassinHoned);
+            Assert.Equal(1, deserialized.ExtendedWeaponAttributes.Searing);
+            Assert.True(deserialized.SearingIgnited);
         }
         finally
         {

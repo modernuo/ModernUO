@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using ModernUO.Serialization;
 using Server.Collections;
+using Server.ContextMenus;
 using Server.Engines.Craft;
 using Server.Engines.Virtues;
 using Server.Ethics;
@@ -28,7 +29,7 @@ public interface ISlayer
     SlayerName Slayer2 { get; set; }
 }
 
-[SerializationGenerator(14, false)]
+[SerializationGenerator(15, false)]
 public abstract partial class BaseWeapon
     : Item, IWeapon, IFactionItem, ICraftable, ISlayer, IDurability, IAosItem, IIdentifiable
 {
@@ -222,6 +223,12 @@ public abstract partial class BaseWeapon
 
     [SerializableFieldDefault(34)]
     private AbsorptionAttributes AbsorptionAttributesDefaultValue() => new(this);
+
+    // Field 35 intentionally has no save flag; BaseWeapon's legacy save-flag mask is already at the high bit.
+    [InvalidateProperties]
+    [SerializableField(35)]
+    [SerializedCommandProperty(AccessLevel.GameMaster)]
+    private bool _searingIgnited;
 
     private FactionItem m_FactionState;
     private SkillMod m_SkillMod, m_MageMod;
@@ -973,9 +980,11 @@ public abstract partial class BaseWeapon
                 }
             }
 
+            var searingProcEligible = Searing.BeginAttack(this, attacker);
+
             if (CheckHit(attacker, defender))
             {
-                OnHit(attacker, defender, damageBonus);
+                OnHit(attacker, defender, damageBonus, searingProcEligible);
             }
             else
             {
@@ -1203,10 +1212,21 @@ public abstract partial class BaseWeapon
         }
     }
 
+    public override void GetContextMenuEntries(Mobile from, ref PooledRefList<ContextMenuEntry> list)
+    {
+        base.GetContextMenuEntries(from, ref list);
+
+        if (Core.HS && ExtendedWeaponAttributes.Searing != 0 && Parent == from && from.Weapon == this)
+        {
+            list.Add(new ToggleSearingEntry(SearingIgnited));
+        }
+    }
+
     public override void OnRemoved(IEntity parent)
     {
         ClearLastParryChance();
         FocusContext.Clear(this);
+        SearingIgnited = false;
         EnchantSpell.StopEffect(this);
 
         if (parent is not Mobile m)
@@ -1258,8 +1278,21 @@ public abstract partial class BaseWeapon
     public override void OnAfterDelete()
     {
         FocusContext.Clear(this);
+        SearingIgnited = false;
         EnchantSpell.StopEffect(this);
         base.OnAfterDelete();
+    }
+
+    private sealed class ToggleSearingEntry(bool ignited) : ContextMenuEntry(ignited ? 1151174 : 1151173)
+    {
+        public override void OnClick(Mobile from, IEntity target)
+        {
+            if (Core.HS && target is BaseWeapon { Deleted: false, ExtendedWeaponAttributes.Searing: not 0 } weapon &&
+                weapon.Parent == from && from.Weapon == weapon)
+            {
+                weapon.SearingIgnited = !weapon.SearingIgnited;
+            }
+        }
     }
 
     public override void OnMapChange()
@@ -1270,6 +1303,7 @@ public abstract partial class BaseWeapon
         if (Map == null || Map == Map.Internal)
         {
             FocusContext.Clear(this);
+            SearingIgnited = false;
         }
 
         if ((Map == null || Map == Map.Internal) && Parent is Mobile m && ExtendedWeaponAttributes.BattleLust != 0)
@@ -1920,7 +1954,7 @@ public abstract partial class BaseWeapon
         };
     }
 
-    public virtual void OnHit(Mobile attacker, Mobile defender, double damageBonus = 1.0)
+    public virtual void OnHit(Mobile attacker, Mobile defender, double damageBonus = 1.0, bool searingProcEligible = false)
     {
         if (MirrorImage.HasClone(defender) && defender.Skills.Ninjitsu.Value / 150.0 > Utility.RandomDouble())
         {
@@ -2432,6 +2466,7 @@ public abstract partial class BaseWeapon
                 Sparks.TryProcOnNormalHit(attacker, defender, ExtendedWeaponAttributes.HitSparks);
                 Swarm.TryProcOnNormalHit(attacker, defender, ExtendedWeaponAttributes.HitSwarm);
                 BoneBreaker.TryProcOnNormalHit(attacker, defender, ExtendedWeaponAttributes.BoneBreaker);
+                Searing.TryProcOnNormalHit(this, attacker, defender, searingProcEligible);
             }
         }
 

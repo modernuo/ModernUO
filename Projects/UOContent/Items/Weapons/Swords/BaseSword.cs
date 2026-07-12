@@ -21,9 +21,9 @@ namespace Server.Items
             from.Target = new BladedItemTarget(this);
         }
 
-        public override void OnHit(Mobile attacker, Mobile defender, double damageBonus = 1)
+        public override void OnHit(Mobile attacker, Mobile defender, double damageBonus = 1, bool searingProcEligible = false)
         {
-            base.OnHit(attacker, defender, damageBonus);
+            base.OnHit(attacker, defender, damageBonus, searingProcEligible);
 
             if (!Core.AOS && Poison != null && PoisonCharges > 0)
             {

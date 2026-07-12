@@ -110,7 +110,7 @@ public abstract partial class BaseThrown : BaseRanged
         return true;
     }
 
-    public override void OnHit(Mobile attacker, Mobile defender, double damageBonus = 1)
+    public override void OnHit(Mobile attacker, Mobile defender, double damageBonus = 1, bool searingProcEligible = false)
     {
         if (WeaponAbility.GetCurrentAbility(attacker) is not MysticArc)
         {
@@ -118,7 +118,7 @@ public abstract partial class BaseThrown : BaseRanged
             Timer.StartTimer(TimeSpan.FromSeconds(0.3), () => Return(attacker, defender, location));
         }
 
-        base.OnHit(attacker, defender, damageBonus);
+        base.OnHit(attacker, defender, damageBonus, searingProcEligible);
     }
 
     public override void OnMiss(Mobile attacker, Mobile defender)

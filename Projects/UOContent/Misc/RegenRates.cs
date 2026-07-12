@@ -43,7 +43,7 @@ namespace Server.Misc
 
         private static TimeSpan Mobile_HitsRegenRate(Mobile from)
         {
-            var points = AosAttributes.GetValue(from, AosAttribute.RegenHits);
+            var points = AosAttributes.GetValue(from, AosAttribute.RegenHits) + Searing.GetHitRegenPenalty(from);
 
             var bc = from as BaseCreature;
 

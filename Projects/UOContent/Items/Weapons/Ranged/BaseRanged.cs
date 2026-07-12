@@ -75,9 +75,11 @@ namespace Server.Items
 
                     if (OnFired(attacker, defender))
                     {
+                        var searingProcEligible = Searing.BeginAttack(this, attacker);
+
                         if (CheckHit(attacker, defender))
                         {
-                            OnHit(attacker, defender);
+                            OnHit(attacker, defender, 1.0, searingProcEligible);
                         }
                         else
                         {
@@ -102,7 +104,7 @@ namespace Server.Items
             return TimeSpan.FromSeconds(0.25);
         }
 
-        public override void OnHit(Mobile attacker, Mobile defender, double damageBonus = 1)
+        public override void OnHit(Mobile attacker, Mobile defender, double damageBonus = 1, bool searingProcEligible = false)
         {
             if (attacker.Player && !defender.Player && (defender.Body.IsAnimal || defender.Body.IsMonster) &&
                 Utility.RandomDouble() < 0.4 && Ammo is { } ammo && !defender.AddToBackpack(ammo))
@@ -130,7 +132,7 @@ namespace Server.Items
                 }
             }
 
-            base.OnHit(attacker, defender, damageBonus);
+            base.OnHit(attacker, defender, damageBonus, searingProcEligible);
         }
 
         public override void OnMiss(Mobile attacker, Mobile defender)

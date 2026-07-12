@@ -18,9 +18,9 @@ namespace Server.Items
         public override WeaponType DefType => WeaponType.Piercing;
         public override WeaponAnimation DefAnimation => WeaponAnimation.Pierce2H;
 
-        public override void OnHit(Mobile attacker, Mobile defender, double damageBonus = 1)
+        public override void OnHit(Mobile attacker, Mobile defender, double damageBonus = 1, bool searingProcEligible = false)
         {
-            base.OnHit(attacker, defender, damageBonus);
+            base.OnHit(attacker, defender, damageBonus, searingProcEligible);
 
             if (!Core.AOS && Core.UOR && Layer == Layer.TwoHanded &&
                 attacker.Skills.Anatomy.Value / 400.0 >= Utility.RandomDouble() &&

@@ -1275,7 +1275,8 @@ namespace Server
         SplinteringWeapon = 0x00000020,
         Focus = 0x00000040,
         BoneBreaker = 0x00000080,
-        AssassinHoned = 0x00000100
+        AssassinHoned = 0x00000100,
+        Searing = 0x00000200
     }
 
     public sealed class ExtendedWeaponAttributes : BaseAttributes
@@ -1377,6 +1378,21 @@ namespace Server
             set => this[ExtendedWeaponAttribute.AssassinHoned] = value;
         }
 
+        [CommandProperty(AccessLevel.GameMaster)]
+        public int Searing
+        {
+            get => this[ExtendedWeaponAttribute.Searing];
+            set
+            {
+                this[ExtendedWeaponAttribute.Searing] = value;
+
+                if (value == 0 && Owner is BaseWeapon weapon)
+                {
+                    weapon.SearingIgnited = false;
+                }
+            }
+        }
+
         public void GetProperties(IPropertyList list)
         {
             if (Core.HS && Bane != 0)
@@ -1387,6 +1403,11 @@ namespace Server
             if (Core.HS && Focus != 0)
             {
                 list.Add(1150018); // Focus
+            }
+
+            if (Core.HS && Searing != 0)
+            {
+                list.Add(1151172); // Searing
             }
 
             if (Core.SA && BattleLust != 0)

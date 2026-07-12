@@ -108,9 +108,9 @@ namespace Server.Items
             }
         }
 
-        public override void OnHit(Mobile attacker, Mobile defender, double damageBonus = 1)
+        public override void OnHit(Mobile attacker, Mobile defender, double damageBonus = 1, bool searingProcEligible = false)
         {
-            base.OnHit(attacker, defender, damageBonus);
+            base.OnHit(attacker, defender, damageBonus, searingProcEligible);
 
             if (!Core.AOS && Core.UOR && (attacker.Player || attacker.Body.IsHuman) && Layer == Layer.TwoHanded &&
                 attacker.Skills.Anatomy.Value >= 80 &&

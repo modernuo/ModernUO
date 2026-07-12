@@ -17,9 +17,9 @@ namespace Server.Items
         public override WeaponType DefType => WeaponType.Bashing;
         public override WeaponAnimation DefAnimation => WeaponAnimation.Bash1H;
 
-        public override void OnHit(Mobile attacker, Mobile defender, double damageBonus = 1)
+        public override void OnHit(Mobile attacker, Mobile defender, double damageBonus = 1, bool searingProcEligible = false)
         {
-            base.OnHit(attacker, defender, damageBonus);
+            base.OnHit(attacker, defender, damageBonus, searingProcEligible);
 
             defender.Stam -= Utility.Random(3, 3); // 3-5 points of stamina loss
         }
