@@ -26,12 +26,11 @@ using MoveImpl = Server.Movement.MovementImpl;
 namespace Server.PathAlgorithms;
 
 /// <summary>
-/// A* pathfinder with a single bitmap-cache lookup per cell expansion. Default walkers
-/// take one <see cref="StepCache.TryGetMask"/> call returning the 8-direction
-/// mask + per-direction Z. Non-default walkers (non-GM players, creatures with swim/fly/
-/// door/clip capabilities) and per-cell cache fallthroughs route through
-/// <see cref="GetSuccessorsSlowPath"/>, which runs the per-direction
-/// <see cref="CalcMoves.CheckMovement"/> loop for that one cell.
+/// A* pathfinder that expands a cell with a single <see cref="StepCache.TryGetMask"/> lookup,
+/// which returns all 8 directions' walkability and destination Zs at once. Where the cache can't
+/// answer — a fallthrough on that cell, or a flying creature the static cache can't model —
+/// <see cref="GetSuccessorsSlowPath"/> runs the per-direction <see cref="CalcMoves.CheckMovement"/>
+/// loop for that one cell instead, so a partial cache miss costs only the cells it affects.
 /// </summary>
 public class BitmapAStarAlgorithm : PathAlgorithm
 {
@@ -50,61 +49,50 @@ public class BitmapAStarAlgorithm : PathAlgorithm
     private const int PlaneOffset = 128;
     private const int PlaneCount = 13;
     private const int PlaneHeight = 20;
-    // Default shared singleton (MaxSearchNodes = 1000, set from config in Configure). Typed
-    // as the concrete class so Configure can set its instance config; assignable anywhere a
-    // PathAlgorithm is expected. Specialized variants are just additional instances.
+    // The shared default. A differently-configured variant is just another instance.
     public static readonly BitmapAStarAlgorithm Instance = new();
 
-    // Scratch buffers — reused across every Find on THIS instance. Per-instance (not static)
-    // so independently-configured algorithms don't share state. ~320 KB per instance; create
-    // specialized instances once (static readonly), never per-call. Safe to reuse per Find
-    // because the game loop is single-threaded and Find is never re-entered.
+    // Scratch reused across every Find on this instance — roughly 320 KB of it, so create
+    // instances once and hold them, never per call. Per-instance rather than static so two
+    // differently-configured algorithms don't share state. Reuse is safe because the game loop is
+    // single-threaded and Find never re-enters.
     private readonly Direction[] _path = new Direction[AreaSize * AreaSize];
     private readonly PathNode[] _nodes = new PathNode[NodeCount];
     private readonly byte[] _nodeStates = new byte[NodeCount];
     private readonly int[] _successors = new int[8];
     private readonly PriorityQueue<int, int> _openQueue = new();
 
-    // A* node-expansion budget: the search bails (returning null) after this many node
-    // expansions. Benchmarked as near-optimal: above the ~500 needed to solve walled-off
-    // indoor routes, below the ~1500 window-exhaustion cost ceiling where a failed
-    // (unreachable) search's worst-case cost spikes for no solving benefit. Successful
-    // searches terminate on goal-found, so this never touches the common open-terrain case.
-    // Per-instance so specialized algorithms (e.g. a wider-budget variant for special NPCs)
-    // can coexist; the shared default lives on Instance and is set from config in Configure.
+    // Expansion budget: the search gives up and returns null past this many nodes. It bounds the
+    // cost of an unreachable goal, which would otherwise exhaust the whole search window. A
+    // successful search stops when it finds the goal, so the budget only binds on hard or hopeless
+    // routes — it needs to stay high enough to solve walled-off indoor ones.
     public int MaxSearchNodes { get; set; } = 1000;
 
     private int _xOffset;
     private int _yOffset;
 
-    // When set, GetSuccessors delegates to the per-cell slow path on every expansion
-    // (creature has CanFly — Z-jumping is beyond the cache's static-only scope).
+    // Every expansion goes to the slow path: the creature can fly, and arbitrary Z-jumping is
+    // outside what a static cache can model.
     private bool _currentMobileNeedsSlowPath;
 
-    // When set, diagonal corner-cut uses the strict AND-rule (BOTH cardinal partners
-    // must be walkable) instead of the lenient creature OR-rule. Cache still applies —
-    // partner bits live in the same source-cell mask byte. Non-GM players only.
+    // Diagonal corner-cut uses the strict rule — both cardinal partners walkable, not just one.
+    // Non-GM players only. The cache still applies; the partner bits are in the same mask byte.
     private bool _currentMobilePlayerStrict;
 
-    // Capability overlay applied to cache results. Layered each cell:
+    // Capability overlay on the cache's two rule sets, applied per cell as
     //   effective = (walkMask & !cantWalk) | (wetMask & canSwim)
-    // Reset at end of Find.
     private bool _currentMobileCanSwim;
     private bool _currentMobileCantWalk;
 
-    // Dynamic-obstacle pass capability flags (per-mobile, captured in Find).
-    // Mirrors MovementImpl.Check's per-mobile derivations so per-cell items/mobiles
-    // checks can be evaluated without re-deriving.
+    // Per-mobile flags for the dynamic-obstacle pass, derived once in Find rather than per cell.
     private bool _currentMobileIgnoreDoors;
     private bool _currentMobileIgnoreSpellFields;
     private bool _currentMobileIgnoreMovableImpassables;
 
     public static void Configure()
     {
-        // A* node-expansion budget. Default 1000 is benchmarked near-optimal (see
-        // MaxSearchNodes). Applied to the shared singleton; specialized instances pass their
-        // own value. Written back to server.cfg on first boot. Auto-invoked at startup via
-        // AssemblyHandler.Invoke("Configure").
+        // Shard-tunable expansion budget for the shared instance; see MaxSearchNodes. Written back
+        // to server.cfg on first boot so it's discoverable.
         Instance.MaxSearchNodes = ServerConfiguration.GetOrUpdateSetting(
             "pathfinding.maxSearchNodes",
             1000
@@ -136,10 +124,8 @@ public class BitmapAStarAlgorithm : PathAlgorithm
             return null;
         }
 
-        // Mark a new Find generation so the StepCache promotion gate counts THIS pathfind
-        // as one touch per chunk regardless of how many times the expansion frontier
-        // probes a given chunk. Without this, A* hits each visited chunk dozens of times
-        // and trips the threshold immediately.
+        // The frontier probes a given chunk dozens of times over one search; opening a generation
+        // is what makes the cache's promotion gate count all of that as a single touch.
         StepCache.Instance.BeginFindGeneration();
 
         PathfindRecorder.RecordIfEnabled(m, map, start, goal);
@@ -161,7 +147,7 @@ public class BitmapAStarAlgorithm : PathAlgorithm
             _currentMobileIgnoreMovableImpassables = false;
         }
 
-        // Mirrors MovementImpl: dead/spectral mobiles also ignore doors.
+        // Dead and spectral mobiles pass through doors too. Mirrors MovementImpl.
         _currentMobileIgnoreDoors |= !m.Alive || m.Body.BodyID == 0x3DB || m.IsDeadBondedPet;
         _currentMobileIgnoreSpellFields = m is PlayerMobile && map != Map.Felucca;
 
@@ -209,7 +195,8 @@ public class BitmapAStarAlgorithm : PathAlgorithm
 
             _nodeStates[bestNode] = 2;
 
-            // Set MovementImpl globals so per-cell slow-path fallthroughs see the right state.
+            // MovementImpl reads these statics, so a slow-path fallthrough on any cell below needs
+            // them set for this mobile.
             if (bc != null)
             {
                 MoveImpl.AlwaysIgnoreDoors = bc.CanOpenDoors;
@@ -326,11 +313,10 @@ public class BitmapAStarAlgorithm : PathAlgorithm
     }
 
     /// <summary>
-    /// One <see cref="StepCache.TryGetMask"/> call returns the 8-direction
-    /// walkable mask + destination Zs. Diagonal corner-cut applies the lenient creature
-    /// OR-rule using partner bits in the same mask byte — no neighbor-chunk lookup needed.
-    /// On cache fallthrough or for non-default walkers, defers to
-    /// <see cref="GetSuccessorsSlowPath"/> for THIS cell only.
+    /// Expands one cell into its walkable neighbours. A single cache lookup covers all 8
+    /// directions, including the partner bits the diagonal corner-cut needs, so no neighbouring
+    /// cell has to be consulted. Falls back to <see cref="GetSuccessorsSlowPath"/> for this cell
+    /// alone when the cache can't answer.
     /// </summary>
     private int GetSuccessors(int p, Mobile m, Map map)
     {
@@ -353,16 +339,12 @@ public class BitmapAStarAlgorithm : PathAlgorithm
 
         if (!lookup.IsHit)
         {
-            // Multi-covered cells: synthesize a multi-aware mask in ONE pass (over land + statics +
-            // house/boat component tiles) instead of the slow path's 8x per-cell CheckMovement.
-            // Fliers and cache-off already returned at the top of GetSuccessors, so this only runs
-            // for cacheable walkers/swimmers. The synthesized mask flows through the SAME
-            // capability-overlay + diagonal corner-cut + dynamic-obstacle loop below as a static hit.
+            // A multi-covered cell still gets a whole-cell mask, synthesized over the house or boat
+            // components rather than looked up. That keeps it out of the slow path's 8 separate
+            // CheckMovement calls, and the result flows through the same overlay, corner-cut and
+            // dynamic-obstacle logic below as a cache hit would.
             if (lookup.HitKind == CacheHitKind.Fallthrough_Multi)
             {
-                // Multi-covered cell: the per-multiID interior cache serves a ~20 ns lookup for
-                // interior cells (and records the right counter); it falls back internally to the
-                // Phase-2 live synthesizer for perimeter / terrain-dirty / foundation cells.
                 lookup = MultiMaskCache.Instance.GetMask(map, p3D.X, p3D.Y, (sbyte)p3D.Z);
             }
             else
@@ -371,8 +353,8 @@ public class BitmapAStarAlgorithm : PathAlgorithm
             }
         }
 
-        // Capability overlay: walking allowed unless cantWalk; swimming allowed if canSwim.
-        // Partner bits used for diagonal corner-cut also use the effective mask.
+        // Overlay the mobile's capabilities onto the cache's two rule sets. The corner-cut below
+        // reads its partner bits from this effective mask, not the raw one.
         var walkBits = _currentMobileCantWalk ? (byte)0 : lookup.WalkMask;
         var swimBits = _currentMobileCanSwim ? lookup.WetMask : (byte)0;
         var mask = (byte)(walkBits | swimBits);
@@ -393,9 +375,8 @@ public class BitmapAStarAlgorithm : PathAlgorithm
                 continue;
             }
 
-            // Diagonal corner-cut. Creatures (default): OR-rule — at least one cardinal
-            // partner walkable. Non-GM players: AND-rule — BOTH partners must be walkable.
-            // Partner bits live in the same source-cell mask byte either way.
+            // Diagonal corner-cut: a creature needs at least one of the two flanking cardinals to
+            // be walkable, a non-GM player needs both.
             if ((i & 1) == 1)
             {
                 var leftBit = 1 << ((i - 1) & 0x7);
@@ -408,9 +389,9 @@ public class BitmapAStarAlgorithm : PathAlgorithm
                 }
             }
 
-            // Walking takes precedence over swimming when both apply (matches MovementImpl's
-            // surface-selection: closest-to-startZ wins, and walk surface is always closer
-            // when the creature is currently standing on land).
+            // Walking wins over swimming where both are possible. MovementImpl picks the surface
+            // closest to the start Z, and for a creature standing on land that is always the walk
+            // surface.
             var useWalkZ = (walkBits & (1 << i)) != 0;
             var z = useWalkZ
                 ? i switch
@@ -441,8 +422,8 @@ public class BitmapAStarAlgorithm : PathAlgorithm
             var absX = x + _xOffset;
             var absY = y + _yOffset;
 
-            // Dynamic-obstacle pass: items + mobiles at the target cell. Cache only
-            // covers static walkability; dynamic state has to be checked at query time.
+            // The cache only knows static terrain, so items and mobiles at the target cell have to
+            // be checked live.
             if (IsBlockedByDynamic(m, map, absX, absY, z))
             {
                 continue;
@@ -464,11 +445,9 @@ public class BitmapAStarAlgorithm : PathAlgorithm
     private const int MobileHeight = 15;
 
     /// <summary>
-    /// Mirrors MovementImpl's dynamic-item / mobile collision phase for a target cell.
-    /// Items: ImpassableSurface that overlap (z, z+PersonHeight), respecting capability
-    /// overrides (CanOpenDoors → ignore door items; CanMoveOverObstacles → ignore movables;
-    /// non-Felucca players → ignore spell fields). Mobiles: any other mobile whose Z range
-    /// overlaps and which we can't move over.
+    /// MovementImpl's item and mobile collision phase for one target cell: impassable items
+    /// overlapping the mobile's vertical envelope block it, subject to the capability overrides,
+    /// as does any other mobile it can't move over.
     /// </summary>
     private bool IsBlockedByDynamic(Mobile m, Map map, int x, int y, int z)
     {
@@ -509,9 +488,9 @@ public class BitmapAStarAlgorithm : PathAlgorithm
             }
         }
 
-        // A* must be able to plan a path to the goal cell even when the target mobile is
-        // standing on it (the follower stops within range short of it). Skip the mob-block
-        // check at the goal cell ONLY; everywhere else dynamic mobiles still block.
+        // The goal cell is usually occupied by whatever the mobile is chasing, so blocking on it
+        // would fail every pursuit. The follower stops short of the goal anyway. Every other cell
+        // still blocks on mobiles.
         var skipMobCheck = x == MoveImpl.Goal.X && y == MoveImpl.Goal.Y;
 
         if (!skipMobCheck)
@@ -534,18 +513,16 @@ public class BitmapAStarAlgorithm : PathAlgorithm
     }
 
     /// <summary>
-    /// Mirrors MovementImpl.CanMoveOver — true when m can step onto t's cell (dead bodies,
-    /// hidden staff, etc.).
+    /// True when m can step onto t's cell — a corpse, hidden staff, and so on. Mirrors
+    /// MovementImpl.CanMoveOver.
     /// </summary>
     private static bool CanMoveOver(Mobile m, Mobile t) =>
         !t.Alive || !m.Alive || t.IsDeadBondedPet || m.IsDeadBondedPet
         || t.Hidden && t.AccessLevel > AccessLevel.Player;
 
     /// <summary>
-    /// Per-direction <see cref="CalcMoves.CheckMovement"/> loop for a single source cell.
-    /// Runs on cache fallthrough or when <see cref="_currentMobileNeedsSlowPath"/> is set.
-    /// CheckMovement validates land/statics/items via MovementImpl; dynamic mobile blocking
-    /// is layered on top because MovementImpl doesn't iterate same-cell mobiles.
+    /// Expands one cell the long way, with a CheckMovement call per direction. The same-cell
+    /// mobile check is layered on top because MovementImpl doesn't iterate those.
     /// </summary>
     private int GetSuccessorsSlowPath(Mobile m, Map map, int px, int py, Point3D p3D, int[] vals)
     {
@@ -586,11 +563,10 @@ public class BitmapAStarAlgorithm : PathAlgorithm
     }
 
     /// <summary>
-    /// True for creatures whose movement rules the static cache can't model. Currently
-    /// only CanFly — flying creatures Z-jump arbitrarily and the cache's source-Z guard
-    /// would over-fire. CanSwim / CantWalk are handled via the capability overlay (walkMask
-    /// + wetMask). CanOpenDoors / CanMoveOverObstacles only affect dynamic items and don't
-    /// disqualify the cache.
+    /// True for creatures the static cache can't model at all. Only flying ones qualify: they
+    /// Z-jump freely, so the cache's source-Z guard would reject nearly every cell anyway. Swim
+    /// and cant-walk are handled by the capability overlay, and the door / obstacle capabilities
+    /// only affect dynamic items, so none of those disqualify the cache.
     /// </summary>
     private static bool RequiresSlowPath(Mobile m) => m is BaseCreature bc && bc.CanFly;
 }

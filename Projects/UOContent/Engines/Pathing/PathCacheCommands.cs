@@ -8,23 +8,23 @@ namespace Server.Engines.Pathing;
 
 /// <summary>
 /// Admin commands for inspecting and operating the pathfinding step cache.
-///   [PathCacheStats — current resident-chunk count + hit/miss/eviction telemetry.
-///   [PathCacheClear — drop all cached chunks, close lazy readers, zero counters.
-///   [PathBake       — walk a whole map building the full static cache, then save it.
-///   [PathCacheSave  — persist resident chunks per map to Data/Pathfinding/&lt;mapId&gt;.swb.
-///   [PathCacheLoad  — open those files as lazy backing stores. Also runs at startup.
-///   [PathRecord     — toggle JSONL telemetry capture for replay / benchmark corpora.
+///   [PathCacheStats — resident-chunk count and hit/miss/eviction telemetry.
+///   [PathCacheClear — drop all cached chunks, close the .swb readers, zero the counters.
+///   [PathBake       — build a map's full static cache and save it.
+///   [PathCacheSave  — persist the resident chunks to Data/Pathfinding/&lt;mapId&gt;.swb.
+///   [PathCacheLoad  — open those files as backing stores. Also runs at startup.
+///   [PathRecord     — toggle capture of pathfind telemetry.
 ///
-/// The step cache works WITHOUT any .swb file — chunks build on demand as creatures path.
-/// A baked .swb is an optional optimization that removes first-pathfind-after-boot latency
-/// for shard owners who want it; <see cref="OnPathBake"/> is how you produce one.
+/// None of this is required: the cache builds chunks on demand as creatures path, with or without
+/// a .swb on disk. Baking one is purely an optimization that trades disk and a few minutes of bake
+/// time for the removal of first-pathfind-after-boot latency.
 /// </summary>
 public static class PathCacheCommands
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(PathCacheCommands));
 
-    // modernuo.json flag: when true, Initialize() bakes any missing/stale .swb at startup.
-    // The first-boot ConfigurePrompts() prompt writes it.
+    // When set, Initialize() bakes any missing or stale .swb at startup. ConfigurePrompts() asks
+    // for it on first boot.
     private const string PrebakeSetting = "pathfinding.prebakeMaps";
 
     private static string PathFor(int mapId) =>
@@ -32,9 +32,8 @@ public static class PathCacheCommands
 
     public static void Configure()
     {
-        // Resident-chunk cap is shard-tunable. Default 8192 ≈ 40 MB; small shards may
-        // want lower, large shards (or full-map bakes) may want higher. Setting is
-        // written back to server.cfg on first boot for discoverability.
+        // Resident-chunk cap, shard-tunable — the default works out to roughly 40 MB. Written back
+        // to server.cfg on first boot so it's discoverable.
         StepCache.Instance.MaxResidentChunks = ServerConfiguration.GetOrUpdateSetting(
             "pathfinding.maxResidentChunks",
             8192
@@ -52,13 +51,13 @@ public static class PathCacheCommands
     }
 
     /// <summary>
-    /// First-boot prompt, auto-invoked by <c>AssemblyHandler.Invoke("ConfigurePrompts")</c> in
-    /// the startup sequence — after assemblies load (so content can prompt) but before Serilog
-    /// starts, so the console prompt isn't interleaved with async log output. Offers to pre-bake
-    /// the pathfinding <c>.swb</c> cache for the selected maps; the answer persists in
-    /// modernuo.json (<see cref="PrebakeSetting"/>), so it's asked exactly once. Skipped when the
-    /// setting already exists or when input is redirected (headless/CI) — operators can set the
-    /// flag directly. The bake itself happens later in <see cref="Initialize"/>.
+    /// Asks, once, whether to pre-bake the .swb cache; <see cref="Initialize"/> does the work later.
+    /// The answer persists, so the question is never repeated, and it's skipped entirely when input
+    /// is redirected — a headless or CI boot sets <see cref="PrebakeSetting"/> directly instead.
+    ///
+    /// Runs in the ConfigurePrompts phase because that's the one window where content can prompt:
+    /// assemblies are loaded, but Serilog hasn't started, so console output won't interleave with
+    /// async log writes.
     /// </summary>
     public static void ConfigurePrompts()
     {
@@ -81,16 +80,15 @@ public static class PathCacheCommands
     }
 
     /// <summary>
-    /// Auto-invoked by <c>AssemblyHandler.Invoke("Initialize")</c> after the tile matrix and
-    /// world are loaded. When <see cref="PrebakeSetting"/> is set, bakes any map whose
-    /// <c>.swb</c> is missing or stale, so the first pathfind on each region is already warm. A
-    /// fresh cache makes this a no-op, so only first boot — or a client/map update that changes
-    /// the fingerprint — pays the cost.
+    /// Bakes any map whose <c>.swb</c> is missing or stale, when <see cref="PrebakeSetting"/> is
+    /// set. Runs in the Initialize phase, once the tile matrix and world are loaded. An up-to-date
+    /// cache makes it a no-op, so the cost lands only on a first boot or after a client or map
+    /// update moves the fingerprint.
     ///
-    /// Validity is decided by <see cref="StepCache.HasLazyReader"/>: <see cref="Configure"/> runs
-    /// <see cref="AutoLoadAtStartup"/> in the earlier Configure phase, opening (and fingerprint-
-    /// validating) a reader for every up-to-date <c>.swb</c>. So a map with an open reader is
-    /// already good and we skip it — no need to recompute the fingerprint a second time here.
+    /// A map is judged up-to-date by whether it has an open reader. <see cref="AutoLoadAtStartup"/>
+    /// already ran in the earlier Configure phase and only opens a reader for a .swb whose
+    /// fingerprint validates, so an open reader is proof of a good bake — no need to fingerprint
+    /// the map a second time here.
     /// </summary>
     public static void Initialize()
     {
@@ -110,7 +108,7 @@ public static class PathCacheCommands
 
             if (StepCache.Instance.HasLazyReader(map.MapID))
             {
-                continue; // AutoLoadAtStartup already opened a fingerprint-valid .swb for this map
+                continue; // already has a fingerprint-valid .swb open
             }
 
             var path = PathFor(map.MapID);
@@ -127,15 +125,14 @@ public static class PathCacheCommands
         if (baked > 0)
         {
             logger.Information("PathBake: pre-bake complete ({Count} map(s) written).", baked);
-            AutoLoadAtStartup(); // (re)open the freshly written files as lazy backing stores
+            AutoLoadAtStartup(); // reopen what we just wrote
         }
     }
 
     /// <summary>
-    /// Open Data/Pathfinding/&lt;mapId&gt;.swb as a lazy backing store for every map.
-    /// Reads only the header + chunk-offset index up front (~16 bytes per chunk);
-    /// individual chunk records are fetched on demand when the cache asks for them.
-    /// RAM stays bounded by MaxResidentChunks regardless of file size.
+    /// Opens Data/Pathfinding/&lt;mapId&gt;.swb as a backing store for every map. Only the header and
+    /// index are read up front; chunk records are fetched as the cache asks for them, so resident
+    /// memory stays bounded by the LRU cap however large the files are.
     /// </summary>
     private static void AutoLoadAtStartup()
     {
@@ -196,9 +193,9 @@ public static class PathCacheCommands
                 continue;
             }
 
-            // BakeMap walks the whole map (building every chunk) and writes the .swb. The
-            // chunks are left resident afterward; drop them so peak memory is bounded to one
-            // map at a time and the post-command footprint returns to the LRU cap.
+            // BakeMap leaves every chunk it built resident. Drop them between maps so peak memory
+            // is one map's worth rather than all of them, and the footprint afterwards is back
+            // under the LRU cap.
             var written = StepCache.Instance.BakeMap(map.MapID, PathFor(map.MapID));
             StepCache.Instance.ClearResidentChunks();
 
@@ -218,8 +215,7 @@ public static class PathCacheCommands
             return;
         }
 
-        // Reopen the freshly written files as lazy backing stores so they're usable now
-        // without a restart (resident memory stays bounded by the LRU cap).
+        // Reopen what we just wrote, so the bake is usable immediately without a restart.
         AutoLoadAtStartup();
         from.SendMessage($"PathBake: {totalChunks} chunks across {totalMaps} map(s) in {sw.Elapsed.TotalSeconds:F1}s; lazy readers reopened.");
     }

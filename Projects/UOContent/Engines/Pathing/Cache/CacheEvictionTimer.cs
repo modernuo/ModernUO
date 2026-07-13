@@ -3,9 +3,8 @@ using System;
 namespace Server.Engines.Pathing.Cache;
 
 /// <summary>
-/// Periodic backstop that enforces the StaticWalkabilityCache resident-chunk cap.
-/// Steady-state cost is a single early-return; only fires real work when the cache
-/// has overflowed MaxResidentChunks. Runs on the game thread; no locking required.
+/// Periodic backstop that enforces <see cref="StepCache"/>'s resident-chunk cap. Costs a
+/// single early-return unless the cache has overflowed MaxResidentChunks.
 /// </summary>
 public class CacheEvictionTimer : Timer
 {

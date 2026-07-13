@@ -8,26 +8,19 @@ using Server.Targeting;
 namespace Server.Engines.Pathing;
 
 /// <summary>
-/// Developer diagnostic for the bitmap A* step cache. Stand where a creature would start,
-/// run <c>[PathDiag</c>, and target the goal. The detailed report is appended to
-/// <c>Logs/pathdiag.log</c>; a short summary is sent to the invoking client. For the route
-/// it records:
-///   1. the raw tile makeup of the start and goal cells (land + statics) and the
-///      clearance-aware standable surfaces the baker anchors to — the ground truth for
-///      "why does the cache (not) serve this cell";
-///   2. one warm <see cref="StepCache.TryGetMask"/>-served Find with the per-pathfind cache
-///      hit/fallthrough breakdown and fallthrough fraction — a high fallthrough fraction
-///      means the cache isn't helping the route (it pays the lookup then uses the slow path);
-///   3. warm timing over many iterations.
+/// Diagnoses why the step cache does or doesn't serve a given route. Stand where the creature
+/// would start, run <c>[PathDiag</c>, target the goal; the full report lands in
+/// <c>Logs/pathdiag.log</c> and a summary goes to the client. It reports the tile makeup of the
+/// start and goal cells alongside the standable surfaces the baker anchors to, the cache
+/// hit/fallthrough breakdown for one warm Find, and warm timings.
 ///
-/// Primarily useful when bringing up custom maps / facets: it shows whether static-over-land
-/// geometry (dungeon walkways, bridges, stairs, raised foundations, stacked floors) is being
-/// baked at the right Z.
+/// The fallthrough fraction is the number to read: a high one means the cache is paying for a
+/// lookup on every cell and then taking the slow path anyway. That usually points at
+/// static-over-land geometry — dungeon walkways, bridges, stairs, stacked floors — baking at the
+/// wrong Z, which is why this is most useful when bringing up a custom map or facet.
 ///
-/// Output goes to a log file rather than the console because the live server uses Serilog and
-/// raw Console writes interleave badly with it. The promotion gate is forced to eager
-/// (threshold 1) for the duration so the cache builds on first touch and the numbers reflect
-/// its best case; the previous threshold is restored afterward.
+/// The promotion gate is forced eager for the duration, so the numbers reflect the cache's best
+/// case rather than an artifact of chunks not having been built yet.
 /// </summary>
 public static class PathDiag
 {
@@ -67,7 +60,7 @@ public static class PathDiag
 
         var cache = StepCache.Instance;
         var previousThreshold = cache.MissPromotionThreshold;
-        cache.MissPromotionThreshold = 1; // eager build — measure the cache's best case
+        cache.MissPromotionThreshold = 1; // build eagerly, so we measure the cache's best case
 
         StreamWriter log = null;
         try
@@ -99,9 +92,8 @@ public static class PathDiag
     }
 
     /// <summary>
-    /// Writes the raw tile makeup of one cell plus the surfaces the baker anchors to. A large
-    /// gap between the query Z and the standable surfaces is the signature of a route the
-    /// cache can't serve (the creature stands on a static surface far from the land average).
+    /// Dumps one cell's tiles and the surfaces the baker anchors to. A wide gap between the query Z
+    /// and every standable surface is the signature of a cell the cache can't serve.
     /// </summary>
     private static void DumpCell(TextWriter log, Map map, int x, int y, int queryZ, string label)
     {
@@ -133,9 +125,8 @@ public static class PathDiag
     }
 
     /// <summary>
-    /// Runs one warm Find and records the StepCache counter delta for it — the per-pathfind
-    /// cache hit/fallthrough mix and the fallthrough fraction. Returns a summary for the
-    /// caller to relay to the player.
+    /// Runs one Find against a warm cache and reports the counter delta it produced — the
+    /// hit/fallthrough mix for that single pathfind.
     /// </summary>
     private static (string result, double fallthroughPct, long total) RunInstrumentedFind(
         TextWriter log, Mobile from, Map map, Point3D start, Point3D goal
@@ -143,7 +134,8 @@ public static class PathDiag
     {
         var cache = StepCache.Instance;
 
-        // Warm every chunk the route touches before measuring.
+        // Build every chunk the route touches first, so the measured Find below reports steady-state
+        // behaviour rather than first-touch misses.
         for (var i = 0; i < 3; i++)
         {
             BitmapAStarAlgorithm.Instance.Find(from, map, start, goal);

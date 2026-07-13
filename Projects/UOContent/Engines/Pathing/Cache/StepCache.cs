@@ -10,13 +10,15 @@ using Server.Logging;
 namespace Server.Engines.Pathing.Cache;
 
 /// <summary>
-/// Singleton store of per-chunk static walkability data. Chunks correspond to
-/// Map.SectorSize = 16; key encoding packs (mapId, chunkX, chunkY) into a long.
-/// Lazily built on first query; invalidated by version-check vs Sector.MultisVersion;
-/// memory bounded by MaxResidentChunks via probabilistic LRU eviction.
+/// Singleton store of static walkability, keyed by 16x16 chunk (one per map sector). Chunks build
+/// on demand and memory stays bounded by MaxResidentChunks through probabilistic LRU eviction, so
+/// the cache is usable with no on-disk bake at all; a baked .swb file only removes the first-touch
+/// build cost.
 ///
-/// Default-walker scope only. Cells with multi-Z surfaces and queries for non-default
-/// walkers route to the MovementImpl slow path via the Fallthrough_* hit kinds.
+/// The cache answers for a default walker on static terrain. Anything outside that — a multi
+/// covering the cell, a query Z that doesn't match what the cell was baked at, stacked surfaces
+/// with no matching stratum — returns a Fallthrough_* kind, and the caller resolves that cell
+/// through MovementImpl instead. Callers must check <see cref="StepMask.IsHit"/>.
 /// </summary>
 public sealed class StepCache
 {
@@ -25,24 +27,21 @@ public sealed class StepCache
     public static StepCache Instance { get; } = new();
 
     private readonly Dictionary<long, StepChunk> _chunks = [];
-    // Parallel list of keys for O(1) random sampling during eviction. Kept in lockstep
-    // with _chunks: append on Miss_NotBuilt, swap-and-pop on eviction.
+    // Keys of _chunks, kept in lockstep with it, so eviction can sample a random resident chunk
+    // in O(1). Appended on insert, swap-and-popped on eviction.
     private readonly List<long> _keysList = [];
 
-    // Second-touch promotion tracker. A chunk's first miss within the window returns
-    // Fallthrough_NotBuilt; the caller takes the slow path. The Nth DISTINCT-FIND miss
-    // within the same window (where N = MissPromotionThreshold) promotes to BuildChunk +
-    // serve. We count distinct Find generations, not raw TryGetMask calls — A* expansion
-    // hits each visited chunk many times in one Find, so per-call counting hits threshold
-    // immediately and defeats the gate. Per-Find counting filters single-Find pass-throughs
-    // (pet following a moving player) while still promoting chunks revisited by multiple
-    // Finds (NPC patrolling fixed territory).
+    // Promotion gate. A chunk's first miss returns Fallthrough_NotBuilt and the caller takes the
+    // slow path; only once misses reach MissPromotionThreshold within MissPromotionWindowMs does
+    // the chunk get built and served. This keeps one-off traffic — a pet trailing a player across
+    // the map — from building chunks nothing will query again, while a creature working a fixed
+    // territory still warms the chunks it revisits.
+    //
+    // The gate counts distinct Finds, not TryGetMask calls: A* probes each chunk it visits dozens
+    // of times within a single pathfind, so per-call counting would cross any threshold instantly
+    // and gate nothing.
     private readonly Dictionary<long, ChunkMissState> _chunkMissTracker = [];
     private const int MaxMissTrackerEntries = 4096;
-
-    // Generation counter incremented by BeginFindGeneration(). Sentinel 0 = "no Find started
-    // yet"; treated as a distinct generation per call so callers that bypass BeginFindGeneration
-    // (single-call tests, BakeMap with threshold=1) get sensible behavior.
 
     private struct ChunkMissState
     {
@@ -83,24 +82,21 @@ public sealed class StepCache
     public bool PreloadOnLazyOpen { get; set; }
 
     /// <summary>
-    /// Number of misses on the same chunk within <see cref="MissPromotionWindowMs"/>
-    /// required to trigger a build. 1 = eager (legacy behavior). 2 = second-touch (default,
-    /// filters single-touch pass-throughs).
+    /// Misses on the same chunk, within <see cref="MissPromotionWindowMs"/>, needed to build it.
+    /// 1 builds eagerly on first touch; the default 2 waits for a second Find to show interest.
     /// </summary>
     public int MissPromotionThreshold { get; set; } = 2;
 
     /// <summary>
-    /// Window over which misses against the same chunk accumulate toward promotion.
-    /// Misses spaced wider than this restart the count. Default 30s.
+    /// How long misses on a chunk accumulate toward promotion. A gap wider than this restarts
+    /// the count.
     /// </summary>
     public uint MissPromotionWindowMs { get; set; } = 30_000;
 
     /// <summary>
-    /// Marks the start of a new pathfind. The promotion gate counts distinct Find
-    /// generations per chunk, not raw TryGetMask calls — call this once at the top of
-    /// each pathfind invocation so multiple cell expansions within one Find don't trip
-    /// the threshold. Wraps at uint.MaxValue back to 1 (0 is reserved as the
-    /// "no Find started yet" sentinel).
+    /// Opens a new pathfind for the promotion gate. Call once per pathfind: the gate counts
+    /// distinct Finds, so without this every cell expansion would count separately and the
+    /// threshold would be met immediately. Wraps back to 1, since 0 means "no Find open".
     /// </summary>
     public void BeginFindGeneration()
     {
@@ -112,12 +108,11 @@ public sealed class StepCache
         }
     }
 
-    /// <summary>Test-only: read the current Find generation.</summary>
+    /// <summary>The open pathfind's generation, or 0 if none. See <see cref="BeginFindGeneration"/>.</summary>
     internal uint CurrentFindGeneration { get; private set; }
 
     /// <summary>
-    /// Pack (mapId, chunkX, chunkY) into a single long key.
-    /// Layout: [reserved 16][mapId 16][chunkX 16][chunkY 16].
+    /// Packs (mapId, chunkX, chunkY) into one key: [reserved 16][mapId 16][chunkX 16][chunkY 16].
     /// </summary>
     internal static long EncodeKey(int mapId, int chunkX, int chunkY) =>
         ((long)(mapId & 0xFFFF) << 32) | ((long)(chunkX & 0xFFFF) << 16) | (long)(chunkY & 0xFFFF);
@@ -139,9 +134,8 @@ public sealed class StepCache
     );
 
     /// <summary>
-    /// Drop all cached chunks AND zero every telemetry counter. Used by tests and
-    /// benchmarks that need a known cold-start state. Counter reset is intentional —
-    /// counters are since-last-clear, not since-startup.
+    /// Returns the cache to a cold-start state: drops every chunk, closes the .swb readers, and
+    /// zeroes the counters.
     /// </summary>
     public void Clear()
     {
@@ -151,10 +145,8 @@ public sealed class StepCache
     }
 
     /// <summary>
-    /// Drop all resident chunks AND zero counters, but keep lazy readers open.
-    /// Useful in benchmark loops that want to measure "first query after boot" cost
-    /// without paying the lazy-reader reopen overhead each iteration. Same intent as
-    /// <see cref="Clear"/> minus the file-handle teardown.
+    /// <see cref="Clear"/> without the file-handle teardown: drops the resident chunks and zeroes
+    /// the counters, but leaves the .swb readers open so the next query can refill from them.
     /// </summary>
     public void ClearResidentChunks()
     {
@@ -176,16 +168,14 @@ public sealed class StepCache
         _buildsTotal = 0;
     }
 
-    // Per-map open .swb readers, populated by TryOpenLazyReader at startup. Chunks are
-    // fetched on demand from the file when ResolveMissingChunk fires; resident memory
-    // stays bounded by MaxResidentChunks regardless of file size.
-    private readonly Dictionary<int, StepCacheFile.LazyReader> _lazyReaders = new();
+    // Open .swb readers, one per map. Chunks are pulled from them on demand, so resident memory
+    // stays bounded by MaxResidentChunks no matter how large the file is.
+    private readonly Dictionary<int, StepCacheFile.LazyReader> _lazyReaders = [];
 
     /// <summary>
-    /// Walk every chunk in <paramref name="mapId"/>, populate the resident set, then
-    /// save to <paramref name="path"/>. Returns the number of chunks written.
-    /// Designed for offline / fixture use; blocks the calling thread for many seconds
-    /// on a full Trammel walk.
+    /// Builds every chunk in the map and writes them to <paramref name="path"/>, returning the
+    /// number written. Blocks the caller for many seconds on a full-size map — run it offline or
+    /// during maintenance, not on a live shard at peak.
     /// </summary>
     public int BakeMap(int mapId, string path)
     {
@@ -195,9 +185,9 @@ public sealed class StepCache
             return 0;
         }
 
-        // BakeMap is an explicit decision to populate every chunk; the promotion gate
-        // would otherwise return Fallthrough_NotBuilt for every chunk (each touched once)
-        // and the bake would write an empty file. Force eager build for the duration.
+        // A bake touches each chunk exactly once, so the promotion gate would defer every one of
+        // them and write an empty file. Baking is an explicit decision to populate everything, so
+        // build eagerly for the duration.
         var prevThreshold = MissPromotionThreshold;
         MissPromotionThreshold = 1;
         try
@@ -216,8 +206,8 @@ public sealed class StepCache
             {
                 for (var cx = 0; cx < chunkCols; cx++)
                 {
-                    // Any sourceZ works — the chunk is built on first access regardless of
-                    // whether the query returns Hit or Fallthrough_SourceZMismatch.
+                    // The sourceZ is irrelevant here: the chunk gets built on first access whether
+                    // the query ends up a Hit or a Fallthrough_SourceZMismatch.
                     TryGetMask(map, cx * ChunkSize, cy * ChunkSize, sourceZ: 0);
                 }
 
@@ -245,9 +235,9 @@ public sealed class StepCache
     }
 
     /// <summary>
-    /// Persist all resident chunks for <paramref name="mapId"/> to a .swb file. Returns
-    /// the number of chunks written. The file embeds a TileData fingerprint so a stale
-    /// file (built before a client patch) can be detected and rejected at open time.
+    /// Writes the map's resident chunks to a .swb file and returns the count. The file carries a
+    /// fingerprint of the tile and map data, so a bake made before a client patch is detected and
+    /// rejected when it is next opened.
     /// </summary>
     public int SaveToFile(string path, int mapId)
     {
@@ -285,10 +275,9 @@ public sealed class StepCache
     }
 
     /// <summary>
-    /// Open a .swb file as a lazy backing store for <paramref name="mapId"/>. Reads only
-    /// header + chunk-offset index (~16 bytes per chunk); individual records are fetched
-    /// on demand by <see cref="ResolveMissingChunk"/>. Returns false on missing file,
-    /// magic / version mismatch, or TileData hash mismatch (stale bake).
+    /// Opens a .swb file as a backing store for the map, reading only the header and chunk index
+    /// up front; records are pulled as queries ask for them. Returns false if the file is missing,
+    /// unreadable, or a stale bake whose fingerprint no longer matches the live tile data.
     /// </summary>
     public bool TryOpenLazyReader(string path, int mapId)
     {
@@ -328,10 +317,7 @@ public sealed class StepCache
     }
 
     /// <summary>
-    /// Materializes every chunk in <paramref name="reader"/> into the resident set.
-    /// Called from <see cref="TryOpenLazyReader"/> when <see cref="PreloadOnLazyOpen"/>
-    /// is set. Skips chunks whose live <see cref="Map.Sector.MultisVersion"/> doesn't
-    /// match the file's snapshot — those will rebake on first query.
+    /// Loads every chunk in the file into the resident set, for <see cref="PreloadOnLazyOpen"/>.
     /// </summary>
     private void PreloadFromLazyReader(int mapId, StepCacheFile.LazyReader reader)
     {
@@ -366,29 +352,22 @@ public sealed class StepCache
         );
     }
 
-    /// <summary>
-    /// Number of .swb readers currently open. Mostly for tests / telemetry.
-    /// </summary>
+    /// <summary>Number of .swb readers currently open.</summary>
     public int OpenLazyReaderCount => _lazyReaders.Count;
 
     /// <summary>
-    /// True if a valid .swb reader is open for <paramref name="mapId"/>. A reader only opens via
-    /// <see cref="TryOpenLazyReader"/> after <see cref="StepCacheFile.OpenForLazy"/> validates the
-    /// file's fingerprint against the live tile data, so "has reader" already means "present and
-    /// up-to-date" — the boot prebake uses this to skip baking maps that don't need it, instead of
-    /// recomputing the fingerprint a second time.
+    /// True when a .swb reader is open for the map. A reader only opens after its fingerprint
+    /// validates against the live tile data, so this already answers "is there an up-to-date bake
+    /// for this map?" — the boot prebake leans on that to skip maps rather than fingerprint them
+    /// a second time.
     /// </summary>
     public bool HasLazyReader(int mapId) => _lazyReaders.ContainsKey(mapId);
 
-    /// <summary>Test-only diagnostic: does the lazy reader for <paramref name="mapId"/> hold an offset for (chunkX, chunkY)?</summary>
+    /// <summary>Diagnostic: does the map's .swb hold a record for (chunkX, chunkY)?</summary>
     internal bool LazyReaderHasChunk(int mapId, int chunkX, int chunkY) =>
         _lazyReaders.TryGetValue(mapId, out var r) && r.Has(chunkX, chunkY);
 
-    /// <summary>
-    /// Closes all open lazy readers, releasing their underlying file streams. Called from
-    /// <see cref="Clear"/> so test cleanup can delete .swb files (they're held with
-    /// FileShare.Read | FileShare.Delete, so this is mostly belt-and-suspenders).
-    /// </summary>
+    /// <summary>Closes every open .swb reader, releasing the underlying file streams.</summary>
     public void CloseLazyReaders()
     {
         foreach (var reader in _lazyReaders.Values)
@@ -399,18 +378,16 @@ public sealed class StepCache
     }
 
     /// <summary>
-    /// Probabilistic LRU sample size — picks SampleSize random resident chunks per
-    /// eviction and evicts the oldest of that sample. Approximates true LRU at a tiny
-    /// fraction of the cost (no full sort). Redis uses the same approach (`maxmemory-samples`).
-    /// 5 yields ~quality-of-true-LRU for cache eviction; higher values trade speed for accuracy.
+    /// How many random resident chunks each eviction samples before dropping the oldest of them.
+    /// Sampling approximates true LRU closely enough at a fraction of the cost, since it needs no
+    /// sort and no access-ordered structure. Raising it trades speed for accuracy.
     /// </summary>
     private const int LruSampleSize = 5;
 
     /// <summary>
-    /// If resident chunk count exceeds MaxResidentChunks, evict via probabilistic LRU
-    /// until the count is at or below the cap. Per-eviction cost is O(LruSampleSize),
-    /// independent of resident count — sustained cap pressure has no perpetual perf hit.
-    /// Called from CacheEvictionTimer; also callable directly from tests.
+    /// Evicts chunks until the resident count is back within MaxResidentChunks. Each eviction costs
+    /// O(<see cref="LruSampleSize"/>) regardless of how many chunks are resident, so sustained cap
+    /// pressure doesn't degrade. Driven by <see cref="CacheEvictionTimer"/>.
     /// </summary>
     public void EnforceLruCap()
     {
@@ -426,8 +403,8 @@ public sealed class StepCache
             long oldestTouched = long.MaxValue;
             long oldestKey = 0;
 
-            // Sample LruSampleSize random keys; track the oldest by LastTouchedTicks.
-            // With replacement is fine — collisions are rare and don't break correctness.
+            // Sampling with replacement: a repeated key just wastes one sample, it can't pick a
+            // wrong victim.
             var samples = Math.Min(LruSampleSize, _keysList.Count);
             for (var s = 0; s < samples; s++)
             {
@@ -482,11 +459,10 @@ public sealed class StepCache
     }
 
     /// <summary>
-    /// True if a multi (house / boat) covers (x, y) or any of its 8 neighbours. Multi-covered
-    /// cells — plus the 1-cell halo, because a cell's mask encodes the edges TO its neighbours, so
-    /// a neighbouring wall must block those edges — are served by the live movement path, not the
-    /// static chunk cache. Cheap: an interior cell checks only its own sector (chunk == sector);
-    /// only edge/corner cells additionally check the adjacent sector(s) the halo reaches.
+    /// True when a multi covers (x, y) or any of its 8 neighbours. The halo matters because a
+    /// cell's mask encodes the edges TO its neighbours, so a wall one cell over has to block those
+    /// edges. Since a chunk is a sector, an interior cell only inspects its own sector's HasMultis
+    /// flag; edge and corner cells additionally check whichever adjacent sectors the halo reaches.
     /// </summary>
     private static bool MultiInfluence(Map map, int x, int y)
     {
@@ -503,7 +479,7 @@ public sealed class StepCache
         var south = (y & 15) == 15;
         if (!(west || east || north || south))
         {
-            return false; // interior cell — its whole halo is inside the (multi-free) own sector
+            return false; // interior cell: its whole halo lies in this sector, which has no multis
         }
 
         return west && map.GetRealSector(sx - 1, sy).HasMultis
@@ -517,9 +493,9 @@ public sealed class StepCache
     }
 
     /// <summary>
-    /// Hot-path query. Returns the cached mask + 8 destination Z values + hit kind.
-    /// Inspect <see cref="StepMask.IsHit"/> to decide whether to use the result or fall
-    /// back to the slow path.
+    /// The hot-path query: one lookup yields the cell's 8-direction mask, its 8 destination Zs,
+    /// and the hit kind. Check <see cref="StepMask.IsHit"/> before trusting the payload — on any
+    /// fallthrough it is all zeroes and the caller must resolve the cell through MovementImpl.
     /// </summary>
     public StepMask TryGetMask(Map map, int x, int y, sbyte sourceZ)
     {
@@ -529,10 +505,9 @@ public sealed class StepCache
             return Fallthrough(CacheHitKind.Fallthrough_OffMap);
         }
 
-        // Multis (houses, boats) are not baked into the static chunk cache (they're dynamic
-        // content). If a multi covers this cell or its 1-cell halo, route to the live movement
-        // path, which is fully multi-aware. Gated on Sector.HasMultis, so the multi-free majority
-        // of the map pays a single (interior) sector lookup.
+        // Multis are dynamic, so they are never baked into a chunk. Cells they touch go to the
+        // multi-aware path instead. The check is gated on Sector.HasMultis, so the multi-free
+        // majority of the map pays one sector lookup for it.
         if (MultiInfluence(map, x, y))
         {
             _fallthroughMulti++;
@@ -546,8 +521,8 @@ public sealed class StepCache
         var hitKindResult = CacheHitKind.Hit;
         if (!_chunks.TryGetValue(key, out var chunk))
         {
-            // Try lazy file first — file-loaded chunks bypass the miss tracker because
-            // the .swb represents an explicit prior decision to keep this chunk warm.
+            // The .swb is consulted before the promotion gate: a baked chunk is already an explicit
+            // decision to keep this area warm, and loading it is far cheaper than building it.
             chunk = TryLoadFromLazyReader(map, chunkX, chunkY);
             if (chunk != null)
             {
@@ -569,16 +544,16 @@ public sealed class StepCache
             }
         }
 
-        // A resident chunk is static-only — it never goes stale from multis (multi-covered cells
-        // fall through to the live path above).
+        // No staleness check: a resident chunk holds only static terrain, and every cell a multi
+        // could have changed already fell through above.
         chunk.LastTouchedTicks = Core.TickCount;
 
         var cellIndex = ((y - (chunkY << 4)) << 4) | (x - (chunkX << 4));
 
         if (chunk.IsCellMultiZ(cellIndex))
         {
-            // Tier 4: try the per-cell strata. Each stratum is keyed by its bake-time
-            // standing-Z; a query matches when |sourceZ - stratum.zCenter| <= StepHeight.
+            // Stacked surfaces: pick the stratum baked nearest the query Z. Multi-Z cells are
+            // served only from strata, never from the main mask.
             if (TryStratumHit(chunk, cellIndex, sourceZ, hitKindResult, out var stratumResult))
             {
                 RecordServed(hitKindResult);
@@ -589,15 +564,14 @@ public sealed class StepCache
             return Fallthrough(CacheHitKind.Fallthrough_MultiZ);
         }
 
-        // Source-Z guard: the cache stores one answer per cell baked at SourceZ.
-        // StepHeight tolerance accepts incremental Z jitter; loosening it breaks parity
-        // because tile reachability shifts at step-height boundaries.
+        // Source-Z guard. A cell holds one answer, baked at one standing Z, so a query from too far
+        // above or below it would get an answer that doesn't apply. The StepHeight tolerance
+        // absorbs ordinary Z jitter and cannot be widened: reachability flips at exactly that
+        // boundary, so a looser guard would serve answers that disagree with MovementImpl.
         if (Math.Abs(sourceZ - chunk.SourceZ[cellIndex]) > StepHeight)
         {
-            // Swim-layer fallback for shore cells: if the chunk has the layer and this
-            // cell's water-surface Z is within StepHeight of the query, serve from the
-            // swim layer (computed at swim-perspective Z). Walker queries on shore cells
-            // fall through this branch via their Z mismatch with SwimSourceZ.
+            // Unless this is a shore cell and the query is coming from the water, in which case the
+            // swim layer holds the answer baked from the water surface.
             if (chunk.HasSwimLayer)
             {
                 var swimSrc = chunk.SwimSourceZ[cellIndex];
@@ -650,37 +624,24 @@ public sealed class StepCache
     }
 
     /// <summary>
-    /// Returns a fresh StepChunk loaded from the lazy file reader, or null if there's no
-    /// open reader for the map / no record at (chunkX, chunkY) / the loaded snapshot is
-    /// stale relative to the live sector's <see cref="Map.Sector.MultisVersion"/>. A null
-    /// return means the caller should consult the miss tracker; a stale return means
-    /// "rebuild, the .swb is out of date and a future SaveToFile will overwrite it."
+    /// Loads a chunk from the map's .swb, or null if no reader is open or the file has no record at
+    /// (chunkX, chunkY). No staleness check is needed here — the fingerprint was validated when the
+    /// file was opened, and the chunks are static-only.
     /// </summary>
-    private StepChunk TryLoadFromLazyReader(Map map, int chunkX, int chunkY)
-    {
-        if (!_lazyReaders.TryGetValue(map.MapID, out var reader))
-        {
-            return null;
-        }
-        // Static-only chunks are valid once the file fingerprint matched at open time; multi-covered
-        // cells fall through before reaching here. Returns null when the file lacks this chunk.
-        return reader.TryReadChunk(chunkX, chunkY);
-    }
+    private StepChunk TryLoadFromLazyReader(Map map, int chunkX, int chunkY) =>
+        _lazyReaders.TryGetValue(map.MapID, out var reader) ? reader.TryReadChunk(chunkX, chunkY) : null;
 
     /// <summary>
-    /// Records a miss for <paramref name="chunkKey"/> and decides whether to build now
-    /// or defer to slow path. Counts distinct Find generations, not raw calls — multiple
-    /// TryGetMask calls within one Find (BeginFindGeneration scope) count as one touch.
-    /// Returns true when DISTINCT-FIND misses within the window cross
-    /// <see cref="MissPromotionThreshold"/>; caller should run BuildChunk and serve.
-    /// Returns false otherwise; caller should return Fallthrough_NotBuilt so the algorithm
-    /// uses the slow path. Generation 0 ("no Find active") treats every call as distinct,
-    /// preserving legacy semantics for callers that don't call BeginFindGeneration.
+    /// Records a miss and answers whether the chunk has now earned a build. True means build and
+    /// serve; false means return Fallthrough_NotBuilt and let the caller take the slow path.
+    ///
+    /// A miss only counts once per Find (see <see cref="BeginFindGeneration"/>). With no Find open
+    /// — a direct caller, or a bake — every call counts separately.
     /// </summary>
     private bool ShouldPromoteAfterMiss(long chunkKey)
     {
-        // Environment.TickCount, not Core.TickCount: tests/bench fixtures may not advance
-        // the game-loop tick. The promotion window is wall-clock anyway.
+        // Environment.TickCount rather than Core.TickCount: the window is wall-clock, and test and
+        // benchmark fixtures don't necessarily advance the game loop's tick.
         var now = (uint)Environment.TickCount;
         var gen = CurrentFindGeneration;
 
@@ -743,10 +704,10 @@ public sealed class StepCache
     }
 
     /// <summary>
-    /// Drop tracker entries older than the promotion window. Called when the tracker hits
-    /// its capacity ceiling. If the prune doesn't reclaim anything (every entry is in
-    /// window), the cap is enforced by clearing — the worst case is a few extra
-    /// Fallthrough_NotBuilt returns until traffic re-establishes hot chunks.
+    /// Drops tracker entries that have aged out of the promotion window, once the tracker hits its
+    /// capacity ceiling. When nothing has aged out, the whole tracker is cleared to enforce the cap
+    /// — that costs a few extra Fallthrough_NotBuilt returns while traffic re-establishes the hot
+    /// chunks, which is cheaper than letting the tracker grow without bound.
     /// </summary>
     private void PruneMissTracker(uint now)
     {
@@ -780,17 +741,15 @@ public sealed class StepCache
         var baseX = chunkX << 4;
         var baseY = chunkY << 4;
 
-        // Tier 4 strata accumulator. Both the offset table and the packed data buffer are
-        // created lazily on the first multi-Z cell; single-Z chunks (the vast majority) never
-        // touch the pool. strataData is a rented scratch buffer — the chunk gets an exact-size
-        // copy at the end, so the pooled array never escapes this method.
+        // Strata accumulator, created on the first multi-Z cell so single-Z chunks pay nothing.
+        // strataData is rented scratch; the chunk receives an exact-size copy, so the pooled array
+        // never escapes this method.
         ushort[] strataOffsetByCell = null;
         byte[] strataData = null;
         var strataLen = 0;
 
-        // Reused per cell: the standable surface Zs (walkway / bridge / floor levels). 16 is
-        // generous — clearance forces standable surfaces >= PersonHeight apart, so a 256-tall
-        // Z range admits at most ~16 anyway.
+        // Standable surface Zs for the current cell. 16 slots is generous: clearance forces
+        // surfaces at least PersonHeight apart, so an sbyte Z range can't hold more than ~16.
         Span<sbyte> surfaceZs = stackalloc sbyte[16];
 
         for (var dy = 0; dy < ChunkSize; dy++)
@@ -803,16 +762,13 @@ public sealed class StepCache
 
                 map.GetAverageZ(x, y, out _, out var avgZ, out _);
 
-                // Anchor the cell at the surface a creature actually STANDS on, not the land
-                // average. For plain overworld that's the land; for static-over-land terrain
-                // (sewer/dungeon walkways, bridges, stair treads, raised foundations, upper
-                // building floors) it's the walkable static surface — which the old
-                // ComputeStandingZ(avgZ) anchor missed, producing source-Z fallthroughs (or,
-                // within the StepHeight tolerance band on stairs, a wrong vertical-neighbor
-                // answer baked at the adjacent tread). ComputeStandableSurfaceZs returns the
-                // standable surfaces ascending; the lowest is the primary anchor and A* tracks
-                // newZ to match it. Cells with no standable walk surface (deep water, solid
-                // rock) fall back to the land avg so the swim layer / wetMask still bake.
+                // Anchor the cell at the surface a creature stands on, not the land average. On
+                // open terrain those coincide, but on static-over-land geometry — walkways,
+                // bridges, stair treads, upper floors — the walkable surface is the static, and
+                // anchoring at the land below it would make every query fall through the source-Z
+                // guard. Surfaces come back ascending and the lowest is the anchor; A* tracks its
+                // per-cell Z to match. A cell with no standable surface at all (deep water, solid
+                // rock) falls back to the land average so its swim data still bakes.
                 var surfaceCount = StepProbe.ComputeStandableSurfaceZs(map, x, y, surfaceZs);
                 var standingZ = surfaceCount > 0 ? surfaceZs[0] : (sbyte)Math.Clamp(avgZ, sbyte.MinValue, sbyte.MaxValue);
 
@@ -838,15 +794,12 @@ public sealed class StepCache
                 chunk.SwimZW[cell]   = result.SwimZ_W;
                 chunk.SwimZNW[cell]  = result.SwimZ_NW;
 
-                // Shore-cell handling: if the cell has BOTH a walk surface (standing Z)
-                // AND a water surface (Wet land tile or wet static) at a Z separated by
-                // > StepHeight, populate the swim layer at swim-perspective Z. Only when
-                // ComputeMaskAt produces a non-zero swim mask — bridges/docks/piers with
-                // insufficient vertical clearance for a swim creature's body envelope
-                // produce wetMask=0 (StaticsBlockAt rejects them), and we skip those cells
-                // rather than baking a stratum that always answers "no movement." The
-                // sentinel NoSwimLayerCell stays in SwimSourceZ for skipped cells; the
-                // chunk only sets HasSwimLayer when at least one cell got a usable entry.
+                // Shore cell: a walkable surface and a water surface more than StepHeight apart.
+                // The main mask is baked at the walk surface, so a swimmer querying from the water
+                // would fail the source-Z guard; bake it a second answer from the water surface.
+                // An empty swim mask means the water is unreachable anyway — a dock or pier with
+                // too little clearance for a swimmer's body — so leave those cells at the
+                // NoSwimLayerCell sentinel rather than store an answer that always says "blocked".
                 var swimZRaw = StepProbe.ComputeSwimStandingZ(map, x, y);
                 if (swimZRaw != int.MinValue && Math.Abs(swimZRaw - standingZ) > StepHeight)
                 {
@@ -871,29 +824,24 @@ public sealed class StepCache
                     }
                 }
 
-                // Stacked walkable surfaces at one cell (ground + 1st + 2nd building floors,
-                // a bridge over a walkable path, etc.): bake a stratum per standable surface
-                // so a query at any floor's Z hits. The primary (lowest) surface is also in
-                // the main mask above, but multi-Z cells are served exclusively from strata,
-                // so every standable surface — including the primary — must appear here.
-                // Single-surface cells (the common case, incl. stair treads and sewer
-                // walkways) skip this entirely and stay on the fast single-mask path.
+                // Stacked walkable surfaces — a bridge over a path, the floors of a building —
+                // need one stratum each so a query at any of their Zs finds an answer. Every
+                // surface goes in, including the lowest, because a multi-Z cell is served only
+                // from its strata and never from the main mask baked above.
                 if (surfaceCount >= 2)
                 {
                     if (strataOffsetByCell == null)
                     {
                         strataOffsetByCell = new ushort[StepChunk.CellsPerChunk];
                         strataOffsetByCell.AsSpan().Fill(StepChunk.NoStrata);
-                        // Offsets are ushort and NoStrata takes ushort.MaxValue, so a reachable
-                        // offset is at most NoStrata - 1 and the packed data can never exceed
-                        // NoStrata bytes. Renting that much up front means the guard below is
-                        // the only bound the writes need.
+                        // NoStrata bounds the packed data to NoStrata bytes (see StepChunk), so
+                        // renting that much up front leaves the record guard below as the only
+                        // bound the writes need.
                         strataData = STArrayPool<byte>.Shared.Rent(StepChunk.NoStrata);
                     }
 
-                    // A record is one count byte plus surfaceCount strata. Skip the cell if it
-                    // doesn't fit — it keeps the land-anchored main mask and falls through
-                    // off-surface. Well above realistic per-chunk strata volume either way.
+                    // One count byte plus a record per surface. A cell whose record won't fit stays
+                    // single-Z: it keeps the main mask and falls through off its anchor surface.
                     var recordLength = 1 + surfaceCount * StepChunk.StratumByteLength;
                     if (strataLen + recordLength <= StepChunk.NoStrata)
                     {
@@ -920,10 +868,10 @@ public sealed class StepCache
     }
 
     /// <summary>
-    /// Tier 4 strata lookup. Walks the cell's stratum list, returns true with the first
-    /// stratum whose <c>zCenter</c> is within StepHeight of <paramref name="sourceZ"/>.
-    /// Layout matches <see cref="StepChunk.StrataData"/>: u8 count, then count × 19-byte
-    /// stratum (sbyte zCenter, byte walkMask, byte wetMask, 8 sbyte walkZ, 8 sbyte swimZ).
+    /// Finds the cell's stratum matching <paramref name="sourceZ"/> — the first whose zCenter is
+    /// within StepHeight — and builds its mask. False when the cell has no strata or none of them
+    /// sit near enough, in which case the caller falls through. Reads the layout
+    /// <see cref="WriteStratum"/> writes.
     /// </summary>
     private static bool TryStratumHit(
         StepChunk chunk, int cellIndex, sbyte sourceZ, CacheHitKind hitKind, out StepMask result
