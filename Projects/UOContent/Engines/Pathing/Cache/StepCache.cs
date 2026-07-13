@@ -1,5 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using Server.Buffers;
+using Server.Collections;
 using Server.Logging;
 
 namespace Server.Engines.Pathing.Cache;
@@ -19,7 +24,7 @@ public sealed class StepCache
 
     public static StepCache Instance { get; } = new();
 
-    private readonly Dictionary<long, StepChunk> _chunks = new();
+    private readonly Dictionary<long, StepChunk> _chunks = [];
     // Parallel list of keys for O(1) random sampling during eviction. Kept in lockstep
     // with _chunks: append on Miss_NotBuilt, swap-and-pop on eviction.
     private readonly List<long> _keysList = [];
@@ -32,7 +37,7 @@ public sealed class StepCache
     // immediately and defeats the gate. Per-Find counting filters single-Find pass-throughs
     // (pet following a moving player) while still promoting chunks revisited by multiple
     // Finds (NPC patrolling fixed territory).
-    private readonly Dictionary<long, ChunkMissState> _chunkMissTracker = new();
+    private readonly Dictionary<long, ChunkMissState> _chunkMissTracker = [];
     private const int MaxMissTrackerEntries = 4096;
 
     // Generation counter incremented by BeginFindGeneration(). Sentinel 0 = "no Find started
@@ -195,7 +200,6 @@ public sealed class StepCache
         // and the bake would write an empty file. Force eager build for the duration.
         var prevThreshold = MissPromotionThreshold;
         MissPromotionThreshold = 1;
-        var startTick = Core.TickCount;
         try
         {
             var chunkCols = (map.Width + ChunkSize - 1) / ChunkSize;
@@ -207,6 +211,7 @@ public sealed class StepCache
                 mapId, chunkCols, chunkRows, chunkCols * chunkRows
             );
 
+            var stopWatch = Stopwatch.StartNew();
             for (var cy = 0; cy < chunkRows; cy++)
             {
                 for (var cx = 0; cx < chunkCols; cx++)
@@ -221,14 +226,14 @@ public sealed class StepCache
                     logger.Information(
                         "PathBake map {MapId}: row {Row}/{Rows} ({Pct}%), {Resident} chunks resident, {Elapsed:F1}s, {HeapMB} MB heap",
                         mapId, cy + 1, chunkRows, (cy + 1) * 100 / chunkRows,
-                        _chunks.Count, (Core.TickCount - startTick) / 1000.0, GC.GetTotalMemory(false) >> 20
+                        _chunks.Count, stopWatch.ElapsedMilliseconds / 1000.0, GC.GetTotalMemory(false) >> 20
                     );
                 }
             }
 
             logger.Information(
                 "PathBake map {MapId}: walk complete in {Elapsed:F1}s, writing {Resident} chunks to disk...",
-                mapId, (Core.TickCount - startTick) / 1000.0, _chunks.Count
+                mapId, stopWatch.ElapsedMilliseconds / 1000.0, _chunks.Count
             );
         }
         finally
@@ -459,6 +464,24 @@ public sealed class StepCache
     private const int ChunkSize = 16;
 
     /// <summary>
+    /// All-zero mask carrying a Fallthrough_* kind. <see cref="StepMask.IsHit"/> is false for
+    /// these, so the caller ignores the payload and takes the slow path.
+    /// </summary>
+    private static StepMask Fallthrough(CacheHitKind kind) =>
+        new(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, kind);
+
+    /// <summary>Bumps the telemetry counter matching a served (non-fallthrough) hit kind.</summary>
+    private void RecordServed(CacheHitKind kind)
+    {
+        switch (kind)
+        {
+            case CacheHitKind.Miss_NotBuilt:     { _missesNotBuilt++;     break; }
+            case CacheHitKind.Miss_DirtyRebuild: { _missesDirtyRebuild++; break; }
+            case CacheHitKind.Hit:               { _hits++;               break; }
+        }
+    }
+
+    /// <summary>
     /// True if a multi (house / boat) covers (x, y) or any of its 8 neighbours. Multi-covered
     /// cells — plus the 1-cell halo, because a cell's mask encodes the edges TO its neighbours, so
     /// a neighbouring wall must block those edges — are served by the live movement path, not the
@@ -503,27 +526,7 @@ public sealed class StepCache
         if (map == null || map == Map.Internal || x < 0 || y < 0 || x >= map.Width || y >= map.Height)
         {
             _fallthroughOffMap++;
-            return new StepMask(
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                CacheHitKind.Fallthrough_OffMap
-            );
+            return Fallthrough(CacheHitKind.Fallthrough_OffMap);
         }
 
         // Multis (houses, boats) are not baked into the static chunk cache (they're dynamic
@@ -533,10 +536,7 @@ public sealed class StepCache
         if (MultiInfluence(map, x, y))
         {
             _fallthroughMulti++;
-            return new StepMask(
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                CacheHitKind.Fallthrough_Multi
-            );
+            return Fallthrough(CacheHitKind.Fallthrough_Multi);
         }
 
         var chunkX = x >> 4;
@@ -565,27 +565,7 @@ public sealed class StepCache
             else
             {
                 _fallthroughNotBuilt++;
-                return new StepMask(
-                    0,
-                    0,
-                    0,
-                    0,
-                    0,
-                    0,
-                    0,
-                    0,
-                    0,
-                    0,
-                    0,
-                    0,
-                    0,
-                    0,
-                    0,
-                    0,
-                    0,
-                    0,
-                    CacheHitKind.Fallthrough_NotBuilt
-                );
+                return Fallthrough(CacheHitKind.Fallthrough_NotBuilt);
             }
         }
 
@@ -601,36 +581,12 @@ public sealed class StepCache
             // standing-Z; a query matches when |sourceZ - stratum.zCenter| <= StepHeight.
             if (TryStratumHit(chunk, cellIndex, sourceZ, hitKindResult, out var stratumResult))
             {
-                switch (hitKindResult)
-                {
-                    case CacheHitKind.Miss_NotBuilt:    { _missesNotBuilt++;     break; }
-                    case CacheHitKind.Miss_DirtyRebuild: { _missesDirtyRebuild++; break; }
-                    case CacheHitKind.Hit:              { _hits++;               break; }
-                }
+                RecordServed(hitKindResult);
                 return stratumResult;
             }
+
             _fallthroughMultiZ++;
-            return new StepMask(
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                CacheHitKind.Fallthrough_MultiZ
-            );
+            return Fallthrough(CacheHitKind.Fallthrough_MultiZ);
         }
 
         // Source-Z guard: the cache stores one answer per cell baked at SourceZ.
@@ -647,12 +603,7 @@ public sealed class StepCache
                 var swimSrc = chunk.SwimSourceZ[cellIndex];
                 if (swimSrc != StepChunk.NoSwimLayerCell && Math.Abs(sourceZ - swimSrc) <= StepHeight)
                 {
-                    switch (hitKindResult)
-                    {
-                        case CacheHitKind.Miss_NotBuilt:    { _missesNotBuilt++;     break; }
-                        case CacheHitKind.Miss_DirtyRebuild: { _missesDirtyRebuild++; break; }
-                        case CacheHitKind.Hit:              { _hits++;               break; }
-                    }
+                    RecordServed(hitKindResult);
                     return new StepMask(
                         0, chunk.SwimMask[cellIndex],
                         0, 0, 0, 0, 0, 0, 0, 0,
@@ -670,35 +621,10 @@ public sealed class StepCache
             }
 
             _fallthroughSourceZMismatch++;
-            return new StepMask(
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                CacheHitKind.Fallthrough_SourceZMismatch
-            );
+            return Fallthrough(CacheHitKind.Fallthrough_SourceZMismatch);
         }
 
-        switch (hitKindResult)
-        {
-            case CacheHitKind.Miss_NotBuilt:    { _missesNotBuilt++;     break; }
-            case CacheHitKind.Miss_DirtyRebuild: { _missesDirtyRebuild++; break; }
-            case CacheHitKind.Hit:              { _hits++;               break; }
-        }
+        RecordServed(hitKindResult);
 
         return new StepMask(
             chunk.WalkMask[cellIndex],
@@ -758,7 +684,11 @@ public sealed class StepCache
         var now = (uint)Environment.TickCount;
         var gen = CurrentFindGeneration;
 
-        if (_chunkMissTracker.TryGetValue(chunkKey, out var state))
+        // One hash lookup for the whole update — the entry is mutated through the ref instead
+        // of being re-hashed and re-probed by an indexer assignment. Safe to hold across the
+        // Remove below only because nothing reads it afterwards.
+        ref var state = ref CollectionsMarshal.GetValueRefOrNullRef(_chunkMissTracker, chunkKey);
+        if (!Unsafe.IsNullRef(ref state))
         {
             // Same Find generation as the last touch — A* expansion is probing this chunk
             // multiple times in one pathfind. Don't increment; the gate counts distinct
@@ -772,12 +702,11 @@ public sealed class StepCache
             var elapsed = now - state.LastMissTickStamp;
             if (elapsed > MissPromotionWindowMs)
             {
-                _chunkMissTracker[chunkKey] = new ChunkMissState
-                {
-                    MissCount = 1,
-                    LastMissTickStamp = now,
-                    LastFindGeneration = gen
-                };
+                // Outside the window — restart the count. Never promotes on this call, even at
+                // threshold 1, matching the pre-existing gate semantics.
+                state.MissCount = 1;
+                state.LastMissTickStamp = now;
+                state.LastFindGeneration = gen;
                 return false;
             }
 
@@ -788,12 +717,9 @@ public sealed class StepCache
                 return true;
             }
 
-            _chunkMissTracker[chunkKey] = new ChunkMissState
-            {
-                MissCount = newCount,
-                LastMissTickStamp = now,
-                LastFindGeneration = gen
-            };
+            state.MissCount = newCount;
+            state.LastMissTickStamp = now;
+            state.LastFindGeneration = gen;
             return false;
         }
 
@@ -826,18 +752,21 @@ public sealed class StepCache
     {
         var window = MissPromotionWindowMs;
         var beforeCount = _chunkMissTracker.Count;
-        var toRemove = new List<long>();
+
+        using var toRemove = PooledRefQueue<long>.Create();
         foreach (var kvp in _chunkMissTracker)
         {
             if (now - kvp.Value.LastMissTickStamp > window)
             {
-                toRemove.Add(kvp.Key);
+                toRemove.Enqueue(kvp.Key);
             }
         }
-        foreach (var k in toRemove)
+
+        while (toRemove.Count > 0)
         {
-            _chunkMissTracker.Remove(k);
+            _chunkMissTracker.Remove(toRemove.Dequeue());
         }
+
         if (_chunkMissTracker.Count == beforeCount)
         {
             _chunkMissTracker.Clear();
@@ -851,10 +780,13 @@ public sealed class StepCache
         var baseX = chunkX << 4;
         var baseY = chunkY << 4;
 
-        // Tier 4 strata accumulator. Lazily allocated when the first multi-Z cell
-        // appears; otherwise the chunk has zero strata overhead.
+        // Tier 4 strata accumulator. Both the offset table and the packed data buffer are
+        // created lazily on the first multi-Z cell; single-Z chunks (the vast majority) never
+        // touch the pool. strataData is a rented scratch buffer — the chunk gets an exact-size
+        // copy at the end, so the pooled array never escapes this method.
         ushort[] strataOffsetByCell = null;
-        List<byte> strataData = null;
+        byte[] strataData = null;
+        var strataLen = 0;
 
         // Reused per cell: the standable surface Zs (walkway / bridge / floor levels). 16 is
         // generous — clearance forces standable surfaces >= PersonHeight apart, so a 256-tall
@@ -951,24 +883,26 @@ public sealed class StepCache
                     if (strataOffsetByCell == null)
                     {
                         strataOffsetByCell = new ushort[StepChunk.CellsPerChunk];
-                        for (var i = 0; i < strataOffsetByCell.Length; i++)
-                        {
-                            strataOffsetByCell[i] = StepChunk.NoStrata;
-                        }
-                        strataData = new List<byte>(256);
+                        strataOffsetByCell.AsSpan().Fill(StepChunk.NoStrata);
+                        // Offsets are ushort and NoStrata takes ushort.MaxValue, so a reachable
+                        // offset is at most NoStrata - 1 and the packed data can never exceed
+                        // NoStrata bytes. Renting that much up front means the guard below is
+                        // the only bound the writes need.
+                        strataData = STArrayPool<byte>.Shared.Rent(StepChunk.NoStrata);
                     }
 
-                    // Cap at 65,535 byte offsets — well above realistic per-chunk strata
-                    // volume. If we ever blow past this we silently leave the cell single-Z
-                    // (it keeps the land-anchored main mask and falls through off-surface).
-                    if (strataData.Count <= ushort.MaxValue - StepChunk.StratumByteLength * 8)
+                    // A record is one count byte plus surfaceCount strata. Skip the cell if it
+                    // doesn't fit — it keeps the land-anchored main mask and falls through
+                    // off-surface. Well above realistic per-chunk strata volume either way.
+                    var recordLength = 1 + surfaceCount * StepChunk.StratumByteLength;
+                    if (strataLen + recordLength <= StepChunk.NoStrata)
                     {
-                        strataOffsetByCell[cell] = (ushort)strataData.Count;
-                        strataData.Add((byte)surfaceCount);
+                        strataOffsetByCell[cell] = (ushort)strataLen;
+                        strataData[strataLen++] = (byte)surfaceCount;
                         for (var i = 0; i < surfaceCount; i++)
                         {
                             var sz = surfaceZs[i];
-                            AppendStratumBytes(strataData, new StepProbe.ComputedStratum(sz, StepProbe.ComputeMaskAt(map, x, y, sz)));
+                            WriteStratum(strataData, ref strataLen, sz, StepProbe.ComputeMaskAt(map, x, y, sz));
                         }
                     }
                 }
@@ -977,7 +911,8 @@ public sealed class StepCache
 
         if (strataOffsetByCell != null)
         {
-            chunk.SetStrata(strataOffsetByCell, strataData.ToArray());
+            chunk.SetStrata(strataOffsetByCell, strataData.AsSpan(0, strataLen).ToArray());
+            STArrayPool<byte>.Shared.Return(strataData);
         }
 
         _buildsTotal++;
@@ -1050,29 +985,33 @@ public sealed class StepCache
         return false;
     }
 
-    private static void AppendStratumBytes(List<byte> dst, in StepProbe.ComputedStratum s)
+    /// <summary>
+    /// Packs one stratum into <paramref name="dst"/> at <paramref name="pos"/>, advancing it by
+    /// <see cref="StepChunk.StratumByteLength"/>. Layout must stay in lockstep with
+    /// <see cref="TryStratumHit"/> and <see cref="StepCacheFile"/>.
+    /// </summary>
+    private static void WriteStratum(Span<byte> dst, ref int pos, sbyte zCenter, in StepMask mask)
     {
-        dst.Add((byte)s.ZCenter);
-        dst.Add(s.Mask.WalkMask);
-        dst.Add(s.Mask.WetMask);
-        dst.Add((byte)s.Mask.WalkZ_N);
-        dst.Add((byte)s.Mask.WalkZ_NE);
-        dst.Add((byte)s.Mask.WalkZ_E);
-        dst.Add((byte)s.Mask.WalkZ_SE);
-        dst.Add((byte)s.Mask.WalkZ_S);
-        dst.Add((byte)s.Mask.WalkZ_SW);
-        dst.Add((byte)s.Mask.WalkZ_W);
-        dst.Add((byte)s.Mask.WalkZ_NW);
-        dst.Add((byte)s.Mask.SwimZ_N);
-        dst.Add((byte)s.Mask.SwimZ_NE);
-        dst.Add((byte)s.Mask.SwimZ_E);
-        dst.Add((byte)s.Mask.SwimZ_SE);
-        dst.Add((byte)s.Mask.SwimZ_S);
-        dst.Add((byte)s.Mask.SwimZ_SW);
-        dst.Add((byte)s.Mask.SwimZ_W);
-        dst.Add((byte)s.Mask.SwimZ_NW);
+        dst[pos++] = (byte)zCenter;
+        dst[pos++] = mask.WalkMask;
+        dst[pos++] = mask.WetMask;
+        dst[pos++] = (byte)mask.WalkZ_N;
+        dst[pos++] = (byte)mask.WalkZ_NE;
+        dst[pos++] = (byte)mask.WalkZ_E;
+        dst[pos++] = (byte)mask.WalkZ_SE;
+        dst[pos++] = (byte)mask.WalkZ_S;
+        dst[pos++] = (byte)mask.WalkZ_SW;
+        dst[pos++] = (byte)mask.WalkZ_W;
+        dst[pos++] = (byte)mask.WalkZ_NW;
+        dst[pos++] = (byte)mask.SwimZ_N;
+        dst[pos++] = (byte)mask.SwimZ_NE;
+        dst[pos++] = (byte)mask.SwimZ_E;
+        dst[pos++] = (byte)mask.SwimZ_SE;
+        dst[pos++] = (byte)mask.SwimZ_S;
+        dst[pos++] = (byte)mask.SwimZ_SW;
+        dst[pos++] = (byte)mask.SwimZ_W;
+        dst[pos++] = (byte)mask.SwimZ_NW;
     }
 
-    private const int PersonHeight = 16;
     private const int StepHeight = 2;
 }
