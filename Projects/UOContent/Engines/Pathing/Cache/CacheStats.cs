@@ -1,8 +1,9 @@
 namespace Server.Engines.Pathing.Cache;
 
 /// <summary>
-/// Snapshot of StaticWalkabilityCache counters. Returned by GetStats() and consumed
-/// by the [PathCacheStats admin command. All counters are monotonic except ResidentChunks.
+/// Snapshot of <see cref="StepCache"/>'s counters, as returned by GetStats() and reported by
+/// the [PathCacheStats command. Every counter is monotonic except ResidentChunks, and all of
+/// them reset on Clear() — they count since the last clear, not since startup.
 /// </summary>
 public readonly struct CacheStats(
     int residentChunks,

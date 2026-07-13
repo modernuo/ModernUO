@@ -3,20 +3,19 @@ using System;
 namespace Server.Engines.Pathing.Cache;
 
 /// <summary>
-/// Per-chunk storage backing StepCache. Holds raw walk + swim masks and destination Z
-/// values for each of 256 cells in a 16x16 chunk, plus build-time metadata (multis version, multi-Z strata)
-/// and LRU bookkeeping.
+/// Per-chunk storage backing <see cref="StepCache"/>: walk + swim masks and destination Zs for
+/// each of the 256 cells in a 16x16 chunk, plus the optional multi-Z strata and swim layers and
+/// the LRU timestamp.
 /// </summary>
 internal sealed class StepChunk
 {
     public const int CellsPerChunk = 256; // 16 x 16
 
-    /// <summary>Bit i of WalkMask[c] = "default walker can step from cell c to neighbor (Direction)i".
-    /// Raw — no diagonal corner-cut applied here.</summary>
+    /// <summary>Bit i of WalkMask[c]: a default walker can step from cell c to neighbour (Direction)i.
+    /// Raw — no diagonal corner-cut applied, so callers must AND the partner bits themselves.</summary>
     public readonly byte[] WalkMask = new byte[CellsPerChunk];
 
-    /// <summary>Bit i of WetMask[c] = "swim-only mob can step from cell c to neighbor (Direction)i".
-    /// Layered with WalkMask via canSwim/cantWalk capability flags.</summary>
+    /// <summary>Bit i of WetMask[c]: a swim-only mob can step from cell c to neighbour (Direction)i.</summary>
     public readonly byte[] WetMask = new byte[CellsPerChunk];
 
     public readonly sbyte[] SourceZ = new sbyte[CellsPerChunk];
@@ -40,14 +39,13 @@ internal sealed class StepChunk
     public readonly sbyte[] SwimZNW = new sbyte[CellsPerChunk];
 
     /// <summary>
-    /// Swim layer — populated only for chunks containing at least one shore cell (a cell
-    /// with both a walkable land surface and a water surface separated by > StepHeight).
-    /// On shore cells, queries from the swim source Z miss the primary source-Z guard;
-    /// the swim layer carries the correct wetMask + per-direction destination Zs computed
-    /// from the water surface's perspective. For non-shore cells in a chunk that has the
-    /// layer, <see cref="SwimSourceZ"/>[cell] = <see cref="NoSwimLayerCell"/> sentinel.
-    /// All swim-layer arrays are null on chunks with no shore cells (~90% of map chunks
-    /// on Trammel) — zero memory cost on the common case.
+    /// Marks a cell with no swim-layer entry, in a chunk that has the layer.
+    ///
+    /// The swim layer exists only on chunks holding at least one shore cell — a cell with both a
+    /// walkable surface and a water surface more than StepHeight apart. A swim query there sits
+    /// too far from the primary SourceZ to pass the source-Z guard, so the layer carries a second
+    /// mask and destination-Z set computed from the water surface instead. Chunks with no shore
+    /// cells leave every swim-layer array null.
     /// </summary>
     public const sbyte NoSwimLayerCell = sbyte.MinValue;
 
@@ -79,9 +77,8 @@ internal sealed class StepChunk
     public sbyte[] SwimZNW_Layer => _swimZNW_extra;
 
     /// <summary>
-    /// Lazily allocates the swim-layer arrays and seeds <see cref="SwimSourceZ"/> with
-    /// the <see cref="NoSwimLayerCell"/> sentinel. Called at bake time the first time a
-    /// shore cell is detected in this chunk.
+    /// Allocates the swim-layer arrays and seeds <see cref="SwimSourceZ"/> with
+    /// <see cref="NoSwimLayerCell"/>. Called on the first shore cell found in this chunk.
     /// </summary>
     internal void AllocateSwimLayer()
     {
@@ -105,28 +102,30 @@ internal sealed class StepChunk
         }
     }
 
-    /// <summary>Sentinel: cell has no strata — single-Z, use the main Walk/Wet arrays.</summary>
+    /// <summary>
+    /// Marks a single-Z cell: no strata, read the main Walk/Wet arrays instead. Because this
+    /// takes ushort.MaxValue, a real strata offset is at most NoStrata - 1, which bounds
+    /// <see cref="StrataData"/> to NoStrata bytes.
+    /// </summary>
     public const ushort NoStrata = ushort.MaxValue;
 
     /// <summary>
-    /// Length-256 offset table: <c>StrataOffsetByCell[cell] = byte offset</c> into
-    /// <see cref="StrataData"/> where this cell's strata begin, or <see cref="NoStrata"/>
-    /// for cells without multi-Z. Null when the chunk has zero multi-Z cells.
+    /// Length-256 table mapping a cell to the byte offset in <see cref="StrataData"/> where its
+    /// strata begin, or <see cref="NoStrata"/>. Null when no cell in the chunk is multi-Z.
     /// </summary>
     private ushort[] _strataOffsetByCell;
 
     /// <summary>
-    /// Packed per-cell strata. For each cell with strata:
-    ///   u8 stratumCount, then stratumCount × Stratum (19 bytes each):
-    ///     sbyte zCenter, byte walkMask, byte wetMask,
-    ///     sbyte walkZ_N..NW (8), sbyte swimZ_N..NW (8)
+    /// Packed strata for the multi-Z cells. Per cell: u8 stratumCount, then stratumCount records
+    /// of <see cref="StratumByteLength"/> bytes — sbyte zCenter, byte walkMask, byte wetMask,
+    /// sbyte walkZ_N..NW (8), sbyte swimZ_N..NW (8).
     /// </summary>
     private byte[] _strataData;
 
-    /// <summary>Snapshot of Sector.MultisVersion at the time this chunk was built.</summary>
+    /// <summary>Reserved. Chunks are static-only, so this is always 0.</summary>
     public int BuiltMultisVersion;
 
-    /// <summary>Updated on every cache hit/miss. Used by LRU fallback eviction.</summary>
+    /// <summary>Refreshed on every query that reaches this chunk. Drives LRU eviction.</summary>
     public long LastTouchedTicks;
 
     /// <summary>Size in bytes of one Stratum record in StrataData.</summary>
@@ -140,10 +139,8 @@ internal sealed class StepChunk
         _strataData == null ? ReadOnlySpan<byte>.Empty : _strataData.AsSpan();
 
     /// <summary>
-    /// Single-shot setter for the chunk's strata. Pass null/null to clear (chunk becomes
-    /// "no multi-Z"). Otherwise <paramref name="offsetByCell"/> must be length 256 with
-    /// <see cref="NoStrata"/> for cells without strata, and <paramref name="data"/> the
-    /// packed strata records.
+    /// Sets the chunk's strata in one shot. <paramref name="offsetByCell"/> must be length 256,
+    /// carrying <see cref="NoStrata"/> for single-Z cells. Pass null/null to clear.
     /// </summary>
     internal void SetStrata(ushort[] offsetByCell, byte[] data)
     {
@@ -151,18 +148,17 @@ internal sealed class StepChunk
         _strataData = data;
     }
 
-    /// <summary>Serialization hook: returns the raw offset array (or null if no strata).</summary>
+    /// <summary>Serialization hook: the raw offset array, or null if the chunk has no strata.</summary>
     internal ushort[] GetStrataOffsetByCellForSerialization() => _strataOffsetByCell;
 
-    /// <summary>Serialization hook: returns the raw data array (or null if no strata).</summary>
+    /// <summary>Serialization hook: the raw data array, or null if the chunk has no strata.</summary>
     internal byte[] GetStrataDataForSerialization() => _strataData;
 
     /// <summary>
-    /// True when every cell shares one value across WalkMask, WetMask, SourceZ, and all 16
-    /// directional-Z arrays, and the chunk has neither multi-Z strata nor a swim layer. Such a
-    /// chunk serializes to a ~28-byte uniform record (StepCacheFile v5) instead of the full
-    /// record. Chunks with a swim layer (shore cells) are never uniform — their per-cell swim
-    /// data must be preserved via the Full record.
+    /// True when all 256 cells share one value across WalkMask, WetMask, SourceZ and every
+    /// directional-Z array, with no strata and no swim layer — open water or solid rock, mostly.
+    /// <see cref="StepCacheFile"/> collapses such a chunk to a ~28-byte record. A swim layer
+    /// disqualifies a chunk outright: its per-cell shore data would not survive the collapse.
     /// </summary>
     internal bool IsUniform() => _strataOffsetByCell == null
                                  && !HasSwimLayer

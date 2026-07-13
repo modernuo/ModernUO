@@ -1,10 +1,10 @@
 namespace Server.Engines.Pathing.Cache;
 
 /// <summary>
-/// Per-cell, per-direction static walkability data baked by <see cref="StepProbe"/>
-/// and stored by <see cref="StepCache"/>. WalkMask + WalkZ_* applies under default-walker
-/// rules (cantWalk=false, canSwim=false). WetMask + SwimZ_* applies under swim-only rules
-/// (cantWalk=true, canSwim=true). Algorithms layer the right rules per mobile.
+/// Per-cell, per-direction walkability baked by <see cref="StepProbe"/> and stored by
+/// <see cref="StepCache"/>. Two rule sets travel together: WalkMask + WalkZ_* for a default
+/// walker (cantWalk=false, canSwim=false), WetMask + SwimZ_* for a swim-only mob
+/// (cantWalk=true, canSwim=true). Callers overlay whichever applies to the mobile.
 /// </summary>
 public readonly struct StepMask(
     byte walkMask,
@@ -49,8 +49,8 @@ public readonly struct StepMask(
     public readonly CacheHitKind HitKind = hitKind;
 
     /// <summary>
-    /// True when the cache produced a usable answer (Hit / Miss_NotBuilt / Miss_DirtyRebuild).
-    /// False on Fallthrough_*, in which case the caller must use the slow path for this cell.
+    /// True when the cache produced a usable answer. False on any Fallthrough_*, where the
+    /// payload is all zeroes and the caller must resolve this cell via the slow path.
     /// </summary>
     public bool IsHit => HitKind <= CacheHitKind.Miss_DirtyRebuild;
 

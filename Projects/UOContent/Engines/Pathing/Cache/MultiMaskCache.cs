@@ -6,13 +6,19 @@ using Server.Multis;
 namespace Server.Engines.Pathing.Cache;
 
 /// <summary>
-/// Warm, in-memory cache of per-multiID local-frame walkability masks for INTERIOR multi cells
-/// (cell + all 8 neighbours covered by the multi → terrain-neighbour-free → position-invariant).
-/// Wraps the Phase-2 synthesizer (StepProbe.ComputeMultiMaskAt). Cleanliness is decided ONCE per
-/// instance (BaseMulti.PathInteriorCacheState, via ComputeFootprintClean): a clean instance — whole
-/// footprint terrain below the floor — serves interior cells from the shared per-multiID cache;
-/// dirty instances, boats (movers), and HouseFoundation (runtime-mutable) fall back to live-synth.
-/// Keyed by multiID &amp; 0x3FFF.
+/// Caches walkability masks for the interior cells of a multi, shared across every instance of the
+/// same multiID.
+///
+/// An interior cell — one whose 8 neighbours are all covered by the multi — has no terrain
+/// neighbour, so its mask depends only on the multi's own component tiles and is identical at every
+/// position the design is placed. That makes it cacheable in the multi's local frame and reusable
+/// across instances; perimeter cells are not, and fall back to <see cref="StepProbe.ComputeMultiMaskAt"/>.
+///
+/// The catch is terrain intruding into the multi's floor envelope, which would make a cell's mask
+/// position-dependent after all. <see cref="ComputeFootprintClean"/> rules that out per instance,
+/// once: if the whole footprint's terrain sits below the lowest floor, no interior cell can see it.
+/// A dirty instance, or a <see cref="HouseFoundation"/> (whose design mutates at runtime), always
+/// synthesizes live rather than risk serving a wrong mask.
 /// </summary>
 public sealed class MultiMaskCache
 {
@@ -25,26 +31,20 @@ public sealed class MultiMaskCache
     public void Clear() => _byMultiId.Clear();
 
     /// <summary>
-    /// Returns the multi-aware StepMask for a covered cell (x,y,sourceZ). Serves a cached interior
-    /// mask when available and the guards pass (counted as a MultiMaskCacheHit); otherwise falls
-    /// back to the Phase-2 live synthesizer ComputeMultiMaskAt (counted as a MultiLocalHit), caching
-    /// the result if the cell is interior and clean. Always returns a usable mask (HitKind == Hit).
+    /// The multi-aware mask for a covered cell, always usable (HitKind is always Hit). Served from
+    /// the shared cache when the cell is a clean interior one, synthesized live otherwise.
     /// </summary>
     public StepMask GetMask(Map map, int x, int y, sbyte sourceZ)
     {
         if (!TryResolveCoveringMulti(map, x, y, out var multi, out var lx, out var ly)
-            || multi is HouseFoundation)      // runtime-mutable per-instance DesignState MCL
+            || multi is HouseFoundation)      // its DesignState MCL changes at runtime
         {
             return LiveSynth(map, x, y, sourceZ);
         }
 
-        // Boats are cached too: their per-multiID deck masks are movement-invariant (built once per
-        // heading), and the per-instance clean gate below + the ItemID/location/map resets keep a
-        // moving/turning boat correct. Narrow boats have little interior; wide galleons gain a lot.
+        // Boats are cached despite moving: a deck mask is built in the local frame and is invariant
+        // under translation, and the clean gate plus the ItemID/location/map resets cover turning.
 
-        // Per-instance footprint cleanliness (computed once, stored on the multi; reset on move).
-        // Clean ⇒ no terrain intrusion anywhere in the footprint ⇒ interior cells are exact from the
-        // shared per-multiID cache. Dirty ⇒ degrade to the live synthesizer (never serve a wrong mask).
         if (multi.PathInteriorCacheState == MultiInteriorCacheState.Unknown)
         {
             multi.PathInteriorCacheState =
@@ -62,7 +62,7 @@ public sealed class MultiMaskCache
 
         if (state == MultiLocalMask.CellState.Cached)
         {
-            // Footprint is clean, so only the source-Z match matters (terrain can't intrude).
+            // A clean footprint rules terrain out, so the source-Z match is the only guard left.
             var worldFloorZ = local.FloorZAt(lx, ly) + multi.Z;
             if (Math.Abs(sourceZ - worldFloorZ) <= StepHeight)
             {
@@ -78,8 +78,7 @@ public sealed class MultiMaskCache
             return LiveSynth(map, x, y, sourceZ);
         }
 
-        // Unknown → classify + (if interior) build & cache. No per-cell terrain guard needed: the
-        // instance is clean, so every interior cell's 3x3 terrain is below the floor.
+        // First touch of this cell: synthesize, then classify and cache if it's interior.
         var mask = LiveSynth(map, x, y, sourceZ);
         if (IsInteriorLocalCell(mcl, lx, ly)
             && TryToLocalZ(mask, multi.Z, out var localMask)
@@ -113,8 +112,7 @@ public sealed class MultiMaskCache
     }
 
     /// <summary>
-    /// Finds the multi covering (x,y) and the local cell indices into its MCL. Mirrors
-    /// Map.StaticTileEnumerator / BaseMulti.Contains. Returns false if no multi covers the cell.
+    /// Finds the multi covering (x,y) and the cell's indices into its MCL, or false if none does.
     /// </summary>
     public static bool TryResolveCoveringMulti(Map map, int x, int y, out BaseMulti multi, out int lx, out int ly)
     {
@@ -138,9 +136,9 @@ public sealed class MultiMaskCache
     }
 
     /// <summary>
-    /// True iff local cell (lx,ly) and all 8 neighbours are covered by the multi (have MCL tiles).
-    /// Such a cell's 8-direction transition is fully determined by the multi (no terrain neighbour),
-    /// so its mask is position-invariant. A pure function of the MCL.
+    /// True when (lx,ly) and all 8 of its neighbours carry MCL tiles. Such a cell has no terrain
+    /// neighbour, so the multi alone determines its transitions and its mask is position-invariant.
+    /// A pure function of the MCL.
     /// </summary>
     public static bool IsInteriorLocalCell(MultiComponentList mcl, int lx, int ly)
     {
@@ -161,9 +159,9 @@ public sealed class MultiMaskCache
     }
 
     /// <summary>
-    /// Converts a world-frame mask's per-direction Zs to local Z (subtract multiZ). Returns false
-    /// if any local Z doesn't fit sbyte (caller must then NOT cache the cell — rare; only when
-    /// |multiZ| is large enough to push a world Z out of range). Mask (walk/wet) bits are copied.
+    /// Rebases a world-frame mask's per-direction Zs into the multi's local frame. Returns false
+    /// when a local Z overflows sbyte — only reachable at extreme |multiZ| — and the caller must
+    /// then leave the cell uncached.
     /// </summary>
     public static bool TryToLocalZ(StepMask world, int multiZ, out StepMask local)
     {
@@ -191,9 +189,8 @@ public sealed class MultiMaskCache
     }
 
     /// <summary>
-    /// True iff all terrain (land + statics) at (x,y) sits strictly below <paramref name="floorZ"/>,
-    /// so a creature standing on the multi floor never sees terrain in its envelope and the cached
-    /// (terrain-free) mask is exact. Cheap: one land-top read + the cell's static-tile array scan.
+    /// True when all terrain (land + statics) at (x,y) sits strictly below <paramref name="floorZ"/>,
+    /// so a creature standing on the multi's floor never sees terrain in its envelope.
     /// </summary>
     public static bool TerrainTopBelow(Map map, int x, int y, sbyte floorZ)
     {
@@ -216,7 +213,7 @@ public sealed class MultiMaskCache
         return true;
     }
 
-    /// <summary>Highest terrain (land + statics) top at (x,y). Building block for the cleanliness check.</summary>
+    /// <summary>Highest terrain (land + statics) top at (x,y).</summary>
     public static int TerrainTop(Map map, int x, int y)
     {
         map.GetAverageZ(x, y, out _, out _, out var top);
@@ -234,10 +231,10 @@ public sealed class MultiMaskCache
     }
 
     /// <summary>
-    /// True iff the multi's WHOLE footprint terrain sits below its lowest standable floor — i.e.
-    /// maxTerrain &lt; minFloor over all covered cells. When true, no covered cell's terrain (nor any
-    /// neighbour's) can intrude into a creature's floor envelope, so interior cells of this design are
-    /// safe to serve from the shared per-multiID cache for THIS instance. One-time per instance.
+    /// True when the multi's entire footprint terrain sits below its lowest standable floor. No
+    /// covered cell's terrain — nor any neighbour's — can then intrude into a creature's floor
+    /// envelope, which is what makes this instance's interior cells safe to serve from the shared
+    /// per-multiID cache. Evaluated once per instance and cached on the multi.
     /// </summary>
     public static bool ComputeFootprintClean(Map map, BaseMulti multi)
     {
@@ -252,7 +249,7 @@ public sealed class MultiMaskCache
                 var col = mcl.Tiles[lx][ly];
                 if (col.Length == 0)
                 {
-                    continue; // uncovered local cell
+                    continue;
                 }
 
                 foreach (var tile in col)
@@ -278,7 +275,7 @@ public sealed class MultiMaskCache
 
         if (minFloorLocal == int.MaxValue)
         {
-            return false; // no standable floor anywhere → don't cache (defensive)
+            return false; // no standable floor anywhere; refuse to cache rather than guess
         }
 
         return maxTerrain < minFloorLocal + multi.Z;
@@ -304,8 +301,9 @@ public sealed class MultiMaskCache
 }
 
 /// <summary>
-/// Per-multiID lazily-filled grid of interior-cell masks. Cell state: Unknown (not yet classified),
-/// Cached (interior + clean → mask valid), NonInterior (perimeter/edge/terrain-dirty → live-synth).
+/// One multiID's grid of interior-cell masks, filled in as cells are first touched. A cell is
+/// Unknown until classified, then either Cached (interior — the mask is valid) or NonInterior
+/// (perimeter — synthesize live).
 /// </summary>
 internal sealed class MultiLocalMask
 {
@@ -314,8 +312,8 @@ internal sealed class MultiLocalMask
     private readonly int _width;
     private readonly int _height;
     private readonly CellState[] _state;
-    private readonly StepMask[] _mask;   // local-Z mask, valid when state == Cached
-    private readonly sbyte[] _floorZ;    // local floor Z, valid when state == Cached
+    private readonly StepMask[] _mask;   // local-frame mask, valid only when state == Cached
+    private readonly sbyte[] _floorZ;    // local floor Z, valid only when state == Cached
 
     public MultiLocalMask(int width, int height)
     {

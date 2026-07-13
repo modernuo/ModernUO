@@ -272,15 +272,9 @@ public class StepCacheFileTests
     }
 
     /// <summary>
-    /// First-touch on a chunk that the lazy reader can satisfy must NOT route through the
-    /// miss tracker — file-loaded chunks represent an explicit prior decision to keep
-    /// them warm. This guards the deployment shape where an admin ships .swb files and
-    /// expects the very first NPC pathfind in any region to use cache (not slow path).
-    /// </summary>
-    /// <summary>
-    /// A chunk with an injected swim layer must serialize and deserialize via the lazy
-    /// reader without losing the layer. Validates v3 file format end-to-end: swim layer
-    /// fields survive Save → Clear → LazyOpen → first-touch query.
+    /// A chunk's swim layer must survive Save → Clear → LazyOpen → first-touch query. The layer is
+    /// an optional trailer, so a chunk that has one is the only thing that proves it is written and
+    /// read back rather than silently dropped.
     /// </summary>
     [Fact]
     public void SwimLayer_RoundTrips_ThroughLazyReader()
@@ -292,19 +286,14 @@ public class StepCacheFileTests
         var map = Map.Maps[1];
         Assert.NotNull(map);
 
-        // Build a chunk and inject a synthetic swim layer onto cell (1500, 1600).
+        // Build a chunk and inject a synthetic swim layer onto one cell.
         cache.TryGetMask(map, 1500, 1600, sourceZ: 10);
 
-        var chunksField = typeof(StepCache).GetField(
-            "_chunks",
-            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance
-        );
-        var chunks = (System.Collections.Generic.Dictionary<long, StepChunk>)chunksField!.GetValue(cache)!;
-        var key = StepCache.EncodeKey(map.MapID, 1500 >> 4, 1600 >> 4);
-        var chunk = chunks[key];
+        var chunk = cache.GetResidentChunk(map.MapID, 1500 >> 4, 1600 >> 4);
+        Assert.NotNull(chunk);
 
         chunk.AllocateSwimLayer();
-        var cellIndex = ((1600 - ((1600 >> 4) << 4)) << 4) | (1500 - ((1500 >> 4) << 4));
+        var cellIndex = PathingTestSupport.CellIndex(1500, 1600);
         chunk.SwimSourceZ[cellIndex]   = -7;
         chunk.SwimMask[cellIndex]      = 0b0000_1111;
         chunk.SwimZN_Layer[cellIndex]  = -7;
@@ -402,6 +391,12 @@ public class StepCacheFileTests
         }
     }
 
+    /// <summary>
+    /// A chunk the .swb can satisfy must be served on first touch, without consulting the promotion
+    /// gate. This is the deployment shape where an admin ships baked files and expects the very
+    /// first pathfind through a region to use the cache rather than the slow path — the gate would
+    /// otherwise defer that first touch and defeat the whole point of shipping the bake.
+    /// </summary>
     [SkippableFact]
     public void LazyReaderHit_BypassesMissTrackerOnFirstTouch()
     {

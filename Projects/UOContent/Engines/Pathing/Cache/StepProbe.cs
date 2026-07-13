@@ -4,123 +4,37 @@ using CalcMoves = Server.Movement.Movement;
 namespace Server.Engines.Pathing.Cache;
 
 /// <summary>
-/// Computes static-only walkability for a single cell — the per-cell, per-direction
-/// "can step" mask and destination Z, based purely on land + statics.mul tiles (NOT
-/// multis). Mirrors <see cref="MovementImpl"/>.Check minus the item and mobile collision
-/// phases. Multis (houses, boats) are intentionally excluded: they're dynamic content, so
-/// cells they cover route to the live movement path via <see cref="StepCache"/>'s
-/// multi-halo fallthrough rather than being baked into the static chunk cache.
+/// Computes the 8-direction "can step" mask and destination Zs for a single cell from land and
+/// statics alone. Mirrors <see cref="MovementImpl"/>.Check minus the item and mobile collision
+/// phases, which belong to the caller's dynamic-obstacle pass.
+///
+/// Multis (houses, boats) are excluded from the static bake because they are dynamic content;
+/// cells they cover route to the live movement path via <see cref="StepCache"/>'s multi halo.
+/// <see cref="ComputeMultiMaskAt"/> is the opt-in exception for those cells.
+///
+/// Each call bakes both rule sets: walker (canSwim=false, cantWalk=false) and swim-only
+/// (canSwim=true, cantWalk=true). Diagonal corner-cut is not applied — callers hold the partner
+/// bits in the same mask byte and combine them at query time.
 /// </summary>
-/// <remarks>
-/// Bakes two rule sets per cell: walker (canSwim=false, cantWalk=false) and swim-only
-/// (canSwim=true, cantWalk=true). Item / mobile collision phases are omitted (they're
-/// the dynamic-obstacle pass's job). Diagonal corner-cut is NOT applied here; callers
-/// must AND the partner-cell results at query time.
-/// </remarks>
 public static class StepProbe
 {
     private const int PersonHeight = 16;
     private const int StepHeight = 2;
 
-    public readonly struct ComputedStratum(sbyte zCenter, StepMask mask)
-    {
-        public readonly sbyte ZCenter = zCenter;
-        public readonly StepMask Mask = mask;
-    }
-
     /// <summary>
-    /// Tier 4 strata builder: enumerates the distinct walkable standing-Zs at (x, y)
-    /// — one per land surface plus one per walkable static — and runs
-    /// <see cref="ComputeMaskAt"/> at each, producing a per-stratum walkability snapshot.
-    /// Returns null when the cell has 0 or 1 strata (single-Z; the caller should use
-    /// the chunk's main mask).
-    /// </summary>
-    public static ComputedStratum[] ComputeStrataAt(Map map, int x, int y)
-    {
-        if (map == null || map == Map.Internal)
-        {
-            return null;
-        }
-        if (x < 0 || y < 0 || x >= map.Width || y >= map.Height)
-        {
-            return null;
-        }
-
-        // Collect candidate Zs. 16 slots is generous — multi-Z cells in practice rarely
-        // exceed 3-4 surfaces (bridge over land, paver-over-ground, multi-floor stairs).
-        Span<int> zs = stackalloc int[16];
-        var count = 0;
-
-        var landTile = map.Tiles.GetLandTile(x, y);
-        var landFlags = TileData.LandTable[landTile.ID & TileData.MaxLandValue].Flags;
-        if (!landTile.Ignored && (landFlags & TileFlag.Impassable) == 0)
-        {
-            map.GetAverageZ(x, y, out _, out var landCenter, out _);
-            zs[count++] = landCenter;
-        }
-
-        foreach (var tile in map.Tiles.GetStaticTiles(x, y))
-        {
-            if (count >= zs.Length)
-            {
-                break;
-            }
-            var data = TileData.ItemTable[tile.ID & TileData.MaxItemValue];
-            if (!data.Surface || data.Impassable)
-            {
-                continue;
-            }
-            zs[count++] = tile.Z + data.CalcHeight;
-        }
-
-        if (count <= 1)
-        {
-            return null;
-        }
-
-        // Sort and merge near-equal Zs. Two Zs separated by less than 2*StepHeight collapse
-        // into a single stratum — the slow path's tolerance treats them as the same surface.
-        zs[..count].Sort();
-        Span<int> distinct = stackalloc int[16];
-        var distinctCount = 0;
-        for (var i = 0; i < count; i++)
-        {
-            if (distinctCount == 0 || zs[i] - distinct[distinctCount - 1] > 2 * StepHeight)
-            {
-                distinct[distinctCount++] = zs[i];
-            }
-        }
-
-        if (distinctCount <= 1)
-        {
-            return null;
-        }
-
-        var strata = new ComputedStratum[distinctCount];
-        for (var i = 0; i < distinctCount; i++)
-        {
-            var z = (sbyte)Math.Clamp(distinct[i], sbyte.MinValue, sbyte.MaxValue);
-            strata[i] = new ComputedStratum(z, ComputeMaskAt(map, x, y, z));
-        }
-        return strata;
-    }
-
-    /// <summary>
-    /// Writes the distinct surface Zs at (x, y) that a default walker (PersonHeight envelope)
-    /// can actually STAND on — each candidate surface (walkable land center + every walkable
-    /// static top) that has PersonHeight of vertical clearance free of impassable statics —
-    /// into <paramref name="zs"/>, ascending, and returns the count.
+    /// Writes the surface Zs at (x, y) a default walker can actually stand on into
+    /// <paramref name="zs"/>, ascending, and returns the count. A candidate surface — the
+    /// walkable land centre, or any walkable static's top — qualifies only if a PersonHeight
+    /// envelope above it is clear of impassable statics.
     ///
-    /// This is the clearance-aware counterpart to <see cref="ComputeStrataAt"/>'s candidate
-    /// gather: it drops surfaces a creature cannot occupy (land under a sewer walkway, ground
-    /// under a low bridge), so the result is exactly the set of standing Zs the slow path can
-    /// resolve to. Two standable surfaces are inherently &gt;= PersonHeight apart (an upper
-    /// surface within PersonHeight of a lower one removes the lower one's clearance), so a
-    /// single ascending pass with an exact-duplicate skip is sufficient.
+    /// The clearance test is what makes this the exact set of standing Zs the slow path can
+    /// resolve to: it drops surfaces a creature cannot occupy, like the land beneath a sewer
+    /// walkway or a low bridge. That in turn means two surviving surfaces are always at least
+    /// PersonHeight apart (an upper surface any closer would have taken the lower one's
+    /// clearance away), so one ascending pass with a duplicate skip suffices.
     ///
-    /// Used by the baker to capture walkable static-over-land surfaces (sewer/dungeon
-    /// walkways, bridges, raised foundations, upper building floors) that the land-anchored
-    /// main mask would otherwise miss.
+    /// The baker anchors each cell here so static-over-land geometry — walkways, bridges, raised
+    /// foundations, upper floors — bakes at the Z a creature stands on rather than the land average.
     /// </summary>
     public static int ComputeStandableSurfaceZs(Map map, int x, int y, Span<sbyte> zs)
     {
@@ -190,21 +104,17 @@ public static class StepProbe
         ComputeMaskCore(map, x, y, sourceZ, includeMultis: false);
 
     /// <summary>
-    /// Multi-aware counterpart to <see cref="ComputeMaskAt"/>: synthesizes the full 8-direction
-    /// walkability mask for a cell covered by (or adjacent to) a multi, folding house/boat component
-    /// tiles into the surface/step logic via GetStaticAndMultiTiles. Replaces the slow path's 8x
-    /// per-cell CheckMovement for Fallthrough_Multi cells. Item/mobile collision is still handled by
-    /// the caller's dynamic-obstacle pass.
+    /// Multi-aware counterpart to <see cref="ComputeMaskAt"/>, for cells a multi covers or
+    /// neighbours: folds house/boat component tiles into the same surface/step logic. Builds the
+    /// whole 8-direction mask in one pass, where the slow path would run CheckMovement eight times.
     /// </summary>
     public static StepMask ComputeMultiMaskAt(Map map, int x, int y, sbyte sourceZ) =>
         ComputeMaskCore(map, x, y, sourceZ, includeMultis: true);
 
     /// <summary>
-    /// Shared per-cell 8-direction mask builder. With includeMultis=false this reproduces the
-    /// static-only bake (land + statics.mul). With includeMultis=true it also folds in multi
-    /// (house/boat) component tiles via GetStaticAndMultiTiles — the multi-aware synthesizer used
-    /// for Fallthrough_Multi cells. Item/mobile collision phases are still omitted (the dynamic pass
-    /// owns them).
+    /// Shared 8-direction mask builder behind <see cref="ComputeMaskAt"/> and
+    /// <see cref="ComputeMultiMaskAt"/>. <paramref name="includeMultis"/> is the only difference:
+    /// it swaps the tile source to GetStaticAndMultiTiles so house and boat components participate.
     /// </summary>
     private static StepMask ComputeMaskCore(Map map, int x, int y, sbyte sourceZ, bool includeMultis)
     {
@@ -224,8 +134,8 @@ public static class StepProbe
         byte wetMask = 0;
         Span<sbyte> walkZs = stackalloc sbyte[8];
         Span<sbyte> swimZs = stackalloc sbyte[8];
-        // stackalloc is NOT zero-initialized — unwritten slots hold whatever was on the
-        // stack. Clear before use; the loop only writes slots where the step succeeds.
+        // stackalloc is not zero-initialized, and the loop below writes a slot only where the
+        // step succeeds, so blocked directions would otherwise carry stack garbage.
         walkZs.Clear();
         swimZs.Clear();
 
@@ -262,10 +172,10 @@ public static class StepProbe
     }
 
     /// <summary>
-    /// Returns the slow path's standing-Z for a default walker at (x, y). Mirrors
-    /// MovementImpl.Check's surface-selection — paver Z+1 for paver-over-ground,
-    /// landCenter for bare land. Used by <see cref="StepCache"/> to bake SourceZ so
-    /// A*'s tracked-per-cell Z matches the cache's bake-time assumption.
+    /// The standing-Z a default walker at (x, y) resolves to under the slow path's
+    /// surface-selection rules: paver Z+1 over paver-on-ground, land centre on bare land.
+    /// The baker anchors cells with <see cref="ComputeStandableSurfaceZs"/> instead, which is
+    /// clearance-aware; this remains the direct MovementImpl equivalent for parity checks.
     /// </summary>
     public static int ComputeStandingZ(Map map, int x, int y, int locZ)
     {
