@@ -286,19 +286,14 @@ public class StepCacheFileTests
         var map = Map.Maps[1];
         Assert.NotNull(map);
 
-        // Build a chunk and inject a synthetic swim layer onto cell (1500, 1600).
+        // Build a chunk and inject a synthetic swim layer onto one cell.
         cache.TryGetMask(map, 1500, 1600, sourceZ: 10);
 
-        var chunksField = typeof(StepCache).GetField(
-            "_chunks",
-            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance
-        );
-        var chunks = (System.Collections.Generic.Dictionary<long, StepChunk>)chunksField!.GetValue(cache)!;
-        var key = StepCache.EncodeKey(map.MapID, 1500 >> 4, 1600 >> 4);
-        var chunk = chunks[key];
+        var chunk = cache.GetResidentChunk(map.MapID, 1500 >> 4, 1600 >> 4);
+        Assert.NotNull(chunk);
 
         chunk.AllocateSwimLayer();
-        var cellIndex = ((1600 - ((1600 >> 4) << 4)) << 4) | (1500 - ((1500 >> 4) << 4));
+        var cellIndex = PathingTestSupport.CellIndex(1500, 1600);
         chunk.SwimSourceZ[cellIndex]   = -7;
         chunk.SwimMask[cellIndex]      = 0b0000_1111;
         chunk.SwimZN_Layer[cellIndex]  = -7;

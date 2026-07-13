@@ -349,6 +349,36 @@ public sealed class StepCache
     internal bool LazyReaderHasChunk(int mapId, int chunkX, int chunkY) =>
         _lazyReaders.TryGetValue(mapId, out var r) && r.Has(chunkX, chunkY);
 
+    /// <summary>
+    /// Diagnostic: the resident chunk covering (chunkX, chunkY), or null if it isn't resident.
+    /// Exposed so tests can inspect and inject chunk state without reflecting into the internals.
+    /// </summary>
+    internal StepChunk GetResidentChunk(int mapId, int chunkX, int chunkY) =>
+        _chunks.GetValueOrDefault(EncodeKey(mapId, chunkX, chunkY));
+
+    /// <summary>
+    /// Diagnostic: whether the eviction key list still mirrors the resident set exactly. A desync
+    /// breaks sampled eviction — a stale key throws on lookup, a missing one pins a chunk resident
+    /// forever — and it is invisible from the outside, so tests assert on it directly.
+    /// </summary>
+    internal bool ResidentIndexInSync()
+    {
+        if (_keysList.Count != _chunks.Count)
+        {
+            return false;
+        }
+
+        foreach (var key in _keysList)
+        {
+            if (!_chunks.ContainsKey(key))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     /// <summary>Closes every open .swb reader, releasing the underlying file streams.</summary>
     public void CloseLazyReaders()
     {
