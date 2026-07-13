@@ -126,14 +126,6 @@ internal static class StepCacheFile
         + 8 * StepChunk.CellsPerChunk;      // SwimZ[8]
 
     /// <summary>
-    /// Where the header's IndexOffset u64 sits. It's written as a placeholder and patched once the
-    /// chunks are down and the index position is known.
-    /// </summary>
-    private const int IndexOffsetFieldPosition = 32;
-
-    public delegate bool ChunkEnumerator(out int chunkX, out int chunkY, out StepChunk chunk);
-
-    /// <summary>
     /// Reads just a .swb file's fingerprint — 20 bytes, no chunk data. False if the file is
     /// missing, isn't a .swb, or is a version this binary can't load.
     /// </summary>
@@ -235,28 +227,28 @@ internal static class StepCacheFile
     }
 
     /// <summary>
-    /// Writes the file: header (with placeholder IndexOffset) → chunks (offsets recorded)
-    /// → index trailer → patches the header IndexOffset. <paramref name="chunkCount"/> must
-    /// equal the actual number of chunks <paramref name="next"/> will yield.
+    /// Writes the map's chunks to <paramref name="path"/>: header, then one record per chunk, then
+    /// the index trailer. IndexOffset isn't known until the records are down, so it goes in as a
+    /// placeholder and gets patched by seeking back to it.
     /// </summary>
-    public static void Write(string path, uint mapId, uint chunkCount, ChunkEnumerator next)
+    public static void Write(string path, uint mapId, ReadOnlySpan<(int chunkX, int chunkY, StepChunk chunk)> chunks)
     {
         Directory.CreateDirectory(Path.GetDirectoryName(path) ?? ".");
 
         // A rough estimate: the base record plus a small strata budget per chunk. Coastline chunks
         // run ~2.5 KB over it for their swim layer, but they're a small share of any map, and the
         // writer grows on overflow — under-estimating costs a few reallocs during a bake, nothing more.
-        var capacity = HeaderSize + (BytesPerChunkBase + 256) * (int)chunkCount + IndexEntryBytes * (int)chunkCount;
-        var buffer = new byte[capacity];
-        var w = new BufferWriter(buffer, prefixStr: false);
+        var capacity = HeaderSize + (BytesPerChunkBase + 256 + IndexEntryBytes) * chunks.Length;
+        var w = new BufferWriter(new byte[capacity], prefixStr: false);
 
         w.Write(Magic);
         w.Write(FormatVersion);
         w.Write(mapId);
         w.Write(ComputeFingerprint((int)mapId));
         w.Write((ulong)DateTime.UtcNow.Ticks);
-        w.Write(chunkCount);
-        w.Write(0UL); // IndexOffset placeholder, patched after chunks
+        w.Write((uint)chunks.Length);
+        var indexOffsetPosition = w.Position;
+        w.Write(0UL); // patched below, once the records are written and the index position is known
 
         // Each record is built into recordScratch, compressed into compScratch, then framed as
         // [u32 uncompressedLen][payload].
@@ -264,46 +256,33 @@ internal static class StepCacheFile
         var recordScratch = new byte[BytesPerChunkBase + 1024];
         var compScratch = new byte[packer.MaxPackSize(recordScratch.Length)];
 
-        var indexEntries = new (ulong key, ulong offset, uint length)[chunkCount];
-        var written = 0u;
-        while (next(out var chunkX, out var chunkY, out var chunk))
+        // Record lengths only — the index stores no offsets, so the reader rebuilds them by
+        // summing these in order.
+        var lengths = new uint[chunks.Length];
+        for (var i = 0; i < chunks.Length; i++)
         {
-            if (written >= chunkCount)
-            {
-                throw new InvalidOperationException(
-                    $"StepCacheFile.Write: enumerator yielded more than the declared {chunkCount} chunks"
-                );
-            }
-            var chunkOffset = (ulong)w.Position;
+            var (chunkX, chunkY, chunk) = chunks[i];
+            var start = w.Position;
             WriteChunk(w, chunkX, chunkY, chunk, packer, ref recordScratch, ref compScratch);
-            var chunkLength = (uint)((ulong)w.Position - chunkOffset);
-            indexEntries[written] = (PackChunkKey(chunkX, chunkY), chunkOffset, chunkLength);
-            written++;
-        }
-
-        if (written != chunkCount)
-        {
-            throw new InvalidOperationException(
-                $"StepCacheFile.Write: declared {chunkCount} chunks but enumerator yielded {written}"
-            );
+            lengths[i] = (uint)(w.Position - start);
         }
 
         var indexOffset = (ulong)w.Position;
-        for (var i = 0u; i < chunkCount; i++)
+        for (var i = 0; i < chunks.Length; i++)
         {
-            var key = indexEntries[i].key;
-            var packedKey = ((uint)(key >> 32) << 16) | (uint)(key & 0xFFFF);
-            w.Write(packedKey);
-            w.Write(indexEntries[i].length);
+            var (chunkX, chunkY, _) = chunks[i];
+            w.Write((uint)((chunkX & 0xFFFF) << 16 | chunkY & 0xFFFF));
+            w.Write(lengths[i]);
         }
 
-        // Patch IndexOffset on the writer's CURRENT buffer: BufferWriter may have grown during the
-        // chunk writes, which leaves the original `buffer` reference pointing at a stale array.
-        var liveBuffer = w.Buffer;
-        BinaryPrimitives.WriteUInt64LittleEndian(liveBuffer.AsSpan(IndexOffsetFieldPosition, 8), indexOffset);
-
         var totalBytes = (int)w.Position;
-        File.WriteAllBytes(path, liveBuffer.AsSpan(0, totalBytes).ToArray());
+
+        w.Seek(indexOffsetPosition, SeekOrigin.Begin);
+        w.Write(indexOffset);
+
+        // w.Buffer, not the array handed to the constructor: BufferWriter reallocates on growth,
+        // which leaves that original reference pointing at a stale array.
+        File.WriteAllBytes(path, w.Buffer.AsSpan(0, totalBytes).ToArray());
     }
 
     /// <summary>

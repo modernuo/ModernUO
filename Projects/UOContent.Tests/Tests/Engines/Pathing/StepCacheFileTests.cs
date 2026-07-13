@@ -272,15 +272,9 @@ public class StepCacheFileTests
     }
 
     /// <summary>
-    /// First-touch on a chunk that the lazy reader can satisfy must NOT route through the
-    /// miss tracker — file-loaded chunks represent an explicit prior decision to keep
-    /// them warm. This guards the deployment shape where an admin ships .swb files and
-    /// expects the very first NPC pathfind in any region to use cache (not slow path).
-    /// </summary>
-    /// <summary>
-    /// A chunk with an injected swim layer must serialize and deserialize via the lazy
-    /// reader without losing the layer. Validates v3 file format end-to-end: swim layer
-    /// fields survive Save → Clear → LazyOpen → first-touch query.
+    /// A chunk's swim layer must survive Save → Clear → LazyOpen → first-touch query. The layer is
+    /// an optional trailer, so a chunk that has one is the only thing that proves it is written and
+    /// read back rather than silently dropped.
     /// </summary>
     [Fact]
     public void SwimLayer_RoundTrips_ThroughLazyReader()
@@ -402,6 +396,12 @@ public class StepCacheFileTests
         }
     }
 
+    /// <summary>
+    /// A chunk the .swb can satisfy must be served on first touch, without consulting the promotion
+    /// gate. This is the deployment shape where an admin ships baked files and expects the very
+    /// first pathfind through a region to use the cache rather than the slow path — the gate would
+    /// otherwise defer that first touch and defeat the whole point of shipping the bake.
+    /// </summary>
     [SkippableFact]
     public void LazyReaderHit_BypassesMissTrackerOnFirstTouch()
     {

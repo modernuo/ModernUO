@@ -241,37 +241,19 @@ public sealed class StepCache
     /// </summary>
     public int SaveToFile(string path, int mapId)
     {
-        var matching = 0;
+        using var chunks = PooledRefList<(int chunkX, int chunkY, StepChunk chunk)>.Create();
+
         foreach (var key in _keysList)
         {
-            DecodeKey(key, out var keyMapId, out _, out _);
+            DecodeKey(key, out var keyMapId, out var chunkX, out var chunkY);
             if (keyMapId == mapId)
             {
-                matching++;
+                chunks.Add((chunkX, chunkY, _chunks[key]));
             }
         }
 
-        var enumerator = _keysList.GetEnumerator();
-        StepCacheFile.Write(path, (uint)mapId, (uint)matching, EmitChunk);
-        enumerator.Dispose();
-        return matching;
-
-        bool EmitChunk(out int chunkX, out int chunkY, out StepChunk chunk)
-        {
-            while (enumerator.MoveNext())
-            {
-                var key = enumerator.Current;
-                DecodeKey(key, out var emittedMapId, out chunkX, out chunkY);
-                if (emittedMapId == mapId)
-                {
-                    chunk = _chunks[key];
-                    return true;
-                }
-            }
-            chunkX = chunkY = 0;
-            chunk = null!;
-            return false;
-        }
+        StepCacheFile.Write(path, (uint)mapId, chunks.AsSpan());
+        return chunks.Count;
     }
 
     /// <summary>
