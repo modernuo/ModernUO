@@ -430,6 +430,9 @@ public static class World
         }
     }
 
+    // Debug-level output only exists in DEBUG builds (see LogFactory), so Release builds
+    // should not pay for the stat summing and argument boxing inside the freeze at all.
+    [Conditional("DEBUG")]
     private static void LogWorkerBalance()
     {
         var totalEntities = 0L;
