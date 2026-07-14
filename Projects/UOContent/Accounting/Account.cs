@@ -287,10 +287,6 @@ public partial class Account : IAccount, IComparable<Account>
 
     public Serial Serial { get; set; }
 
-    public byte SerializedThread { get; set; }
-    public int SerializedPosition { get; set; }
-    public int SerializedLength { get; set; }
-
     [AfterDeserialization(false)]
     private void AfterDeserialization()
     {

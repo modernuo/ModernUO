@@ -421,6 +421,13 @@ public static class World
         WorldState = WorldState.Running;
         Persistence.PostWorldSaveAll(); // Process decay and safety queues
         MovementThrottle.ResetAllMovementTiming(); // Prevent post-save movement rejection bursts
+
+        // The snapshot is on disk; release the per-worker write logs so serialized
+        // entity references don't linger between saves.
+        for (var i = 0; i < _threadWorkers.Length; i++)
+        {
+            _threadWorkers[i].ReleaseWriteLogs();
+        }
     }
 
     private static void LogWorkerBalance()
@@ -474,10 +481,13 @@ public static class World
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void SetChunkSourceOwner(Persistence owner) => _chunkSource.SetOwner(owner);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static void PushToCache(IGenericSerializable e) => _chunkSource.Push(e);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static void PushSingleToCache(IGenericSerializable e) => _chunkSource.PushSingle(e);
+    internal static void PushSingleToCache(GenericPersistence persistence) => _chunkSource.PushSingle(persistence);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static void PushSlotRangesToCache(ISlotRangeSource source, int slotCount) =>

@@ -13,9 +13,6 @@ public class ShadowDictionaryEntriesTests
         public Serial Serial { get; }
         public DateTime Created { get; set; }
         public bool Deleted => false;
-        public byte SerializedThread { get; set; }
-        public int SerializedPosition { get; set; }
-        public int SerializedLength { get; set; }
 
         public void Delete()
         {
@@ -31,6 +28,9 @@ public class ShadowDictionaryEntriesTests
         {
         }
     }
+
+    private static TestEntity GetSlotValue(Array entries, int slot) =>
+        System.Runtime.CompilerServices.Unsafe.As<ShadowEntry<TestEntity>[]>(entries)[slot].Value;
 
     [Fact]
     public void RuntimeLayoutIsSupported()
@@ -74,25 +74,47 @@ public class ShadowDictionaryEntriesTests
 
             var source = (ISlotRangeSource)persistence;
             var writer = new BufferWriter(new byte[dict.Count * 16], true);
+            var lengths = new List<int>();
 
             // Serialize in worker-sized slices, like the drain does.
             var serialized = 0;
             for (var offset = 0; offset < slotCount; offset += 4096)
             {
-                serialized += source.SerializeRange(writer, 3, offset, Math.Min(4096, slotCount - offset));
+                serialized += source.SerializeRange(writer, lengths, offset, Math.Min(4096, slotCount - offset));
             }
 
             Assert.Equal(dict.Count, serialized);
+            Assert.Equal(dict.Count, lengths.Count);
 
-            // Every live entity was stamped exactly once with a coherent span.
-            foreach (var (serial, entity) in dict)
+            // Re-walk the same slots in the same order, pairing each occupied slot with the
+            // next logged length — exactly how the snapshot writer locates each record.
+            var entriesField = ShadowDictionaryEntries.GetEntriesField<TestEntity>();
+            var entries = (Array)entriesField.GetValue(dict);
+
+            var position = 0;
+            var lengthIndex = 0;
+            var matched = 0;
+
+            for (var slot = 0; slot < entries.Length; slot++)
             {
-                Assert.Equal(3, entity.SerializedThread);
-                Assert.Equal(8, entity.SerializedLength); // serial + int
+                // Occupancy is exactly the non-null values, same as production.
+                var entity = GetSlotValue(entries, slot);
+                if (entity == null)
+                {
+                    continue;
+                }
 
-                var span = writer.Buffer.AsSpan(entity.SerializedPosition, entity.SerializedLength);
-                Assert.Equal(serial, (Serial)System.Buffers.Binary.BinaryPrimitives.ReadUInt32LittleEndian(span));
+                var length = lengths[lengthIndex++];
+                Assert.Equal(8, length); // serial + int
+
+                var span = writer.Buffer.AsSpan(position, length);
+                Assert.Equal(entity.Serial, (Serial)System.Buffers.Binary.BinaryPrimitives.ReadUInt32LittleEndian(span));
+
+                position += length;
+                matched++;
             }
+
+            Assert.Equal(dict.Count, matched);
         }
         finally
         {

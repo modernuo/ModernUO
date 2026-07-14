@@ -122,6 +122,10 @@ public abstract class Persistence
 
         foreach (var p in ordered)
         {
+            // Chunks are persistence-homogeneous: publishing the partial chunk at each
+            // boundary lets workers attribute buffer-chunk records to their owner without
+            // any per-entity state.
+            World.SetChunkSourceOwner(p);
             p.Serialize();
         }
     }

@@ -80,8 +80,8 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
 
         var threads = World._threadWorkers;
 
-        // 1MB buffer: entity spans are written individually, so the default 4KB buffer
-        // costs a syscall every few entities on the snapshot thread.
+        // 1MB buffer: segments are written as large spans, but idx entries and skip splits
+        // still benefit on the snapshot thread.
         using var binFs = new FileStream(
             Path.Combine(dir, $"{Name}.bin"), FileMode.Create, FileAccess.Write, FileShare.None, 1024 * 1024
         );
@@ -91,24 +91,24 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
         var binPosition = 0L;
 
         // Support for non-entity generic serialization.
-        if (SerializedLength > 0)
+        if (_selfLength > 0)
         {
             try
             {
-                binFs.Write(threads[SerializedThread].GetHeap(SerializedPosition, SerializedLength));
+                binFs.Write(threads[_selfThread].GetHeap(_selfPosition, _selfLength));
             }
             catch (Exception error)
             {
                 logger.Error(
                     error,
-                    "Error writing entity: (Thread: {Thread} - {Start} {Length})",
-                    SerializedThread,
-                    SerializedPosition,
-                    SerializedLength
+                    "Error writing self-payload: (Thread: {Thread} - {Start} {Length})",
+                    _selfThread,
+                    _selfPosition,
+                    _selfLength
                 );
             }
 
-            binPosition += SerializedLength;
+            binPosition += _selfLength;
         }
 
         idx.Write(3); // Version
@@ -116,48 +116,139 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
         var countPosition = idx.Position;
         idx.Write(0);
 
-        var entityCount = EntitiesBySerial.Count;
-        foreach (var e in EntitiesBySerial.Values)
+        // The bin is written in worker-heap order, not dictionary order: each worker logged
+        // (segment, record lengths) as it serialized, so records pair with their bytes by
+        // re-walking the same slots in the same order. The idx stores absolute positions,
+        // so the loader never cares about record order.
+        var entityCount = 0;
+
+        for (var t = 0; t < threads.Length; t++)
         {
-            if (e is Item { SkipSerialization: true } or Mobile { SkipSerialization: true })
+            var worker = threads[t];
+            var segments = worker.Segments;
+
+            for (var s = 0; s < segments.Count; s++)
             {
-                entityCount--;
-                continue;
+                var segment = segments[s];
+                if (!ReferenceEquals(segment.Owner, this))
+                {
+                    continue;
+                }
+
+                try
+                {
+                    binPosition = WriteSegmentRecords(worker, in segment, idx, binFs, binPosition, ref entityCount);
+                }
+                catch (Exception error)
+                {
+                    logger.Error(
+                        error,
+                        "Error writing segment: (Thread: {Thread} - {Start}, {Records} records)",
+                        t,
+                        segment.HeapStart,
+                        segment.RecordCount
+                    );
+                }
             }
-
-            var thread = e.SerializedThread;
-            var heapStart = e.SerializedPosition;
-            var heapLength = e.SerializedLength;
-
-            idx.Write(e.GetType());
-            idx.Write(e.Serial);
-            idx.Write(e.Created.Ticks);
-            idx.Write(binPosition);
-            idx.Write(heapLength);
-
-            try
-            {
-                binFs.Write(threads[thread].GetHeap(heapStart, heapLength));
-            }
-            catch (Exception error)
-            {
-                logger.Error(
-                    error,
-                    "Error writing entity: {Entity} (Thread: {Thread} - {Start} {Length})",
-                    e,
-                    thread,
-                    heapStart,
-                    heapLength
-                );
-            }
-
-            binPosition += heapLength;
         }
 
         var currentPosition = idx.Position;
         idx.Seek(countPosition, SeekOrigin.Begin);
         idx.Write(entityCount);
         idx.Seek(currentPosition, SeekOrigin.Begin);
+    }
+
+    private long WriteSegmentRecords(
+        SerializationThreadWorker worker, in SerializedSegment segment, MemoryMapFileWriter idx, FileStream binFs,
+        long binPosition, ref int entityCount
+    )
+    {
+        var lengths = worker.Lengths;
+        var lengthIndex = segment.LengthsStart;
+
+        var heapPos = (int)segment.HeapStart;
+        var spanStart = heapPos;
+
+        if (segment.SlotOffset >= 0)
+        {
+            // Re-walk the same slots the worker serialized; occupancy cannot have changed
+            // because dictionary mutations divert to the pending queues until PostWorldSave.
+            var entries = Unsafe.As<ShadowEntry<T>[]>(_entriesSnapshot);
+            ref var entry = ref Unsafe.Add(ref MemoryMarshal.GetArrayDataReference(entries), segment.SlotOffset);
+
+            for (var i = 0; i < segment.SlotCount; i++, entry = ref Unsafe.Add(ref entry, 1))
+            {
+                var entity = entry.Value;
+                if (entity == null)
+                {
+                    continue;
+                }
+
+                var length = lengths[lengthIndex++];
+
+                if (entity is Item { SkipSerialization: true } or Mobile { SkipSerialization: true })
+                {
+                    // The bytes exist in the heap but are not part of the save: split the span.
+                    if (heapPos > spanStart)
+                    {
+                        binFs.Write(worker.GetHeap(spanStart, heapPos - spanStart));
+                    }
+
+                    heapPos += length;
+                    spanStart = heapPos;
+                    continue;
+                }
+
+                idx.Write(entity.GetType());
+                idx.Write(entity.Serial);
+                idx.Write(entity.Created.Ticks);
+                idx.Write(binPosition);
+                idx.Write(length);
+
+                binPosition += length;
+                heapPos += length;
+                entityCount++;
+            }
+        }
+        else
+        {
+            var bufferEntities = worker.BufferEntities;
+
+            for (var i = 0; i < segment.RecordCount; i++)
+            {
+                var entity = (T)bufferEntities[segment.EntitiesStart + i];
+                var length = lengths[lengthIndex++];
+
+                if (entity is Item { SkipSerialization: true } or Mobile { SkipSerialization: true })
+                {
+                    if (heapPos > spanStart)
+                    {
+                        binFs.Write(worker.GetHeap(spanStart, heapPos - spanStart));
+                    }
+
+                    heapPos += length;
+                    spanStart = heapPos;
+                    continue;
+                }
+
+                idx.Write(entity.GetType());
+                idx.Write(entity.Serial);
+                idx.Write(entity.Created.Ticks);
+                idx.Write(binPosition);
+                idx.Write(length);
+
+                binPosition += length;
+                heapPos += length;
+                entityCount++;
+            }
+        }
+
+        if (heapPos > spanStart)
+        {
+            binFs.Write(worker.GetHeap(spanStart, heapPos - spanStart));
+        }
+
+        return binPosition;
     }
 
     public override void Serialize()
@@ -196,7 +287,7 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
         return false;
     }
 
-    int ISlotRangeSource.SerializeRange(BufferWriter writer, byte threadIndex, int offset, int count)
+    int ISlotRangeSource.SerializeRange(BufferWriter writer, List<int> lengths, int offset, int count)
     {
         // Layout proven at startup by ShadowDictionaryEntries.Supported; ranges are produced
         // from the same array's length, so every read is in-bounds.
@@ -212,7 +303,9 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
             var entity = entry.Value;
             if (entity != null)
             {
-                SerializationThreadWorker.Serialize(entity, writer, threadIndex);
+                var start = writer.Position;
+                entity.Serialize(writer);
+                lengths.Add((int)(writer.Position - start));
                 serialized++;
             }
         }
@@ -393,8 +486,6 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
             if (ctor.Invoke(ctorArgs) is T entity)
             {
                 entity.Created = created;
-                // Cost estimate for the first save's scheduling; overwritten by every save.
-                entity.SerializedLength = length;
                 entities.Add(new EntitySpan<T>(entity, pos, length));
                 EntitiesBySerial[serial] = entity;
             }

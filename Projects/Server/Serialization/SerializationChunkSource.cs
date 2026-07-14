@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -29,10 +30,10 @@ namespace Server;
 public interface ISlotRangeSource
 {
     /// <summary>
-    /// Serializes every occupied slot in [offset, offset + count) into the writer,
-    /// stamping each entity's thread/position/length. Returns the number serialized.
+    /// Serializes every occupied slot in [offset, offset + count) into the writer, appending
+    /// each record's byte length to <paramref name="lengths"/>. Returns the number serialized.
     /// </summary>
-    int SerializeRange(BufferWriter writer, byte threadIndex, int offset, int count);
+    int SerializeRange(BufferWriter writer, List<int> lengths, int offset, int count);
 }
 
 /// <summary>
@@ -54,22 +55,24 @@ public sealed class SerializationChunkSource
 
     internal readonly struct Chunk
     {
-        public readonly IGenericSerializable Single;
+        public readonly GenericPersistence Single;
         public readonly IGenericSerializable[] Buffer;
         public readonly ISlotRangeSource Source;
+        public readonly Persistence Owner; // buffer chunks only; ranges use Source, singles record their own placement
         public readonly int Offset;
         public readonly int Count;
 
-        public Chunk(IGenericSerializable single)
+        public Chunk(GenericPersistence single)
         {
             Single = single;
             Count = 1;
         }
 
-        public Chunk(IGenericSerializable[] buffer, int count)
+        public Chunk(IGenericSerializable[] buffer, int count, Persistence owner)
         {
             Buffer = buffer;
             Count = count;
+            Owner = owner;
         }
 
         public Chunk(ISlotRangeSource source, int offset, int count)
@@ -86,6 +89,21 @@ public sealed class SerializationChunkSource
     // Producer state - written only by the game loop thread.
     private IGenericSerializable[] _current;
     private int _count;
+    private Persistence _currentOwner;
+
+    /// <summary>
+    /// Declares the owner of subsequently pushed entities. Publishes the partial chunk when
+    /// the owner changes, keeping buffer chunks persistence-homogeneous so workers can
+    /// attribute their serialized records to a persistence without any per-entity state.
+    /// </summary>
+    public void SetOwner(Persistence owner)
+    {
+        if (!ReferenceEquals(_currentOwner, owner))
+        {
+            Flush();
+            _currentOwner = owner;
+        }
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Push(IGenericSerializable entity)
@@ -99,18 +117,18 @@ public sealed class SerializationChunkSource
 
         if (++_count == ChunkCapacity)
         {
-            _chunks.Enqueue(new Chunk(current, ChunkCapacity));
+            _chunks.Enqueue(new Chunk(current, ChunkCapacity, _currentOwner));
             _current = null;
             _count = 0;
         }
     }
 
     /// <summary>
-    /// Publishes the entity as a dedicated chunk regardless of its estimated size.
-    /// Used for persistence self-payloads, which can be large on the first save
-    /// before a <see cref="IGenericSerializable.SerializedLength"/> estimate exists.
+    /// Publishes a persistence self-payload as a dedicated chunk regardless of its
+    /// estimated size — it can be large on the first save before an estimate exists.
+    /// The worker records the payload's placement on the persistence itself.
     /// </summary>
-    public void PushSingle(IGenericSerializable entity) => _chunks.Enqueue(new Chunk(entity));
+    public void PushSingle(GenericPersistence persistence) => _chunks.Enqueue(new Chunk(persistence));
 
     /// <summary>
     /// Publishes slot ranges covering [0, slotCount) of a directly-iterable persistence.
@@ -133,7 +151,7 @@ public sealed class SerializationChunkSource
     {
         if (_count > 0)
         {
-            _chunks.Enqueue(new Chunk(_current, _count));
+            _chunks.Enqueue(new Chunk(_current, _count, _currentOwner));
             _current = null;
             _count = 0;
         }
