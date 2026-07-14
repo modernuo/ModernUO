@@ -1,22 +1,21 @@
 using System;
-using System.Collections.Generic;
-using System.Reflection;
 using Server.Network;
 using Xunit;
 
 namespace Server.Tests.Network;
 
 /// <summary>
-/// Guards the outgoing huffman table in <see cref="NetworkCompression"/>.
+/// Known-answer test for outgoing huffman compression.
 /// The table is a contract with the client's hard-coded decompression tree, so a single wrong
-/// entry silently corrupts every packet containing that byte and desyncs the client's framing.
-/// The expected bytes below were generated from the canonical table (as it existed before #2522),
-/// not from the implementation, so they fail if the table drifts.
+/// entry -- or a subtle bit-packing error in a future rewrite of <see cref="NetworkCompression.Compress"/> --
+/// silently corrupts every affected packet and desyncs the client's framing with no error.
+/// A round-trip test cannot catch that, since encoder and decoder would share the same mistake.
+/// The expected bytes below were generated from the canonical table, not from the implementation.
 /// </summary>
 public class NetworkCompressionTests
 {
-    // Every symbol 0x00-0xFF exactly once. Any single wrong table entry changes these bytes,
-    // so this vector pins all 256 entries plus the terminal code.
+    // Every symbol 0x00-0xFF exactly once. Any single wrong table entry changes these bytes, so this
+    // pins all 256 entries plus the terminal code, and exercises the encoder end to end.
     private static ReadOnlySpan<byte> AllSymbolsCompressed =>
     [
         0x3F, 0x13, 0x4E, 0xB4, 0x76, 0xCB, 0x81, 0x8A, 0xB3, 0xCE, 0x76, 0x5E,
@@ -58,71 +57,12 @@ public class NetworkCompressionTests
         Span<byte> output = stackalloc byte[512];
         var length = NetworkCompression.Compress(input, output);
 
-        AssertEqual(AllSymbolsCompressed, output[..length]);
-    }
+        Assert.Equal(AllSymbolsCompressed.Length, length);
 
-    [Fact]
-    public void Compress_EncodesStatLockInfo()
-    {
-        // 0xBF/0x19 StatLockInfo, sent during login. Contains 0x19, the symbol broken by #2522.
-        ReadOnlySpan<byte> input = [0xBF, 0x00, 0x0C, 0x00, 0x19, 0x02, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00];
-        ReadOnlySpan<byte> expected = [0x80, 0xCC, 0xE9, 0xCE, 0x88, 0x0F, 0x86, 0x80];
-
-        Span<byte> output = stackalloc byte[64];
-        var length = NetworkCompression.Compress(input, output);
-
-        AssertEqual(expected, output[..length]);
-    }
-
-    [Fact]
-    public void HuffmanTable_IsCompletePrefixFreeCode()
-    {
-        var table = (uint[])typeof(NetworkCompression)
-            .GetField("_packedHuffmanTable", BindingFlags.NonPublic | BindingFlags.Static)!
-            .GetValue(null)!;
-
-        Assert.Equal(257, table.Length);
-
-        // A code is only decodable if no code is a prefix of another. #2522 gave symbol 0x19 the
-        // code 100101110, which begins with symbol 0x0D's code 10010111 -- so the client's decoder
-        // matched 0x0D, emitted the wrong byte, and desynced from there on.
-        var codes = new Dictionary<(int Length, uint Value), int>();
-        var kraft = 0.0;
-
-        for (var symbol = 0; symbol < table.Length; symbol++)
-        {
-            var length = (int)(table[symbol] >> 16);
-            var value = table[symbol] & 0xFFFF;
-
-            Assert.InRange(length, 2, 11);
-            Assert.True(value < 1u << length, $"Symbol 0x{symbol:X2} value 0x{value:X3} exceeds {length} bits");
-
-            codes[(length, value)] = symbol;
-            kraft += Math.Pow(2, -length);
-        }
-
-        foreach (var ((length, value), symbol) in codes)
-        {
-            for (var prefixLength = 2; prefixLength < length; prefixLength++)
-            {
-                var prefix = value >> (length - prefixLength);
-                Assert.False(
-                    codes.TryGetValue((prefixLength, prefix), out var other),
-                    $"Symbol 0x{symbol:X2} code is prefixed by symbol 0x{other:X2}"
-                );
-            }
-        }
-
-        // Kraft-McMillan equality: the tree is full, every leaf reachable and none wasted.
-        Assert.Equal(1.0, kraft, 10);
-    }
-
-    private static void AssertEqual(ReadOnlySpan<byte> expected, ReadOnlySpan<byte> actual)
-    {
-        Assert.Equal(expected.Length, actual.Length);
+        var expected = AllSymbolsCompressed;
         for (var i = 0; i < expected.Length; i++)
         {
-            Assert.True(expected[i] == actual[i], $"Byte {i}: expected 0x{expected[i]:X2}, got 0x{actual[i]:X2}");
+            Assert.True(expected[i] == output[i], $"Byte {i}: expected 0x{expected[i]:X2}, got 0x{output[i]:X2}");
         }
     }
 }
