@@ -31,9 +31,19 @@ public interface IGenericEntityPersistence
     public void DeserializeIndexes(string savePath, Dictionary<ulong, string> typesDb);
 }
 
-public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPersistence where T : class, ISerializable
+public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPersistence, ISlotRangeSource
+    where T : class, ISerializable
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(GenericEntityPersistence<T>));
+
+    // Layout-validated direct access to EntitiesBySerial's entries array, letting workers
+    // iterate the dictionary in parallel during saves. Null when unsupported on this runtime.
+    private static readonly FieldInfo _entriesField =
+        ShadowDictionaryEntries.Supported ? ShadowDictionaryEntries.GetEntriesField<T>() : null;
+
+    // The entries array captured at freeze time. The dictionary cannot mutate while saving
+    // (adds/removes divert to the pending queues), so the array is stable until released.
+    private object _entriesSnapshot;
 
     // Support legacy split file serialization
     private static Dictionary<int, List<EntitySpan<T>>> _entities;
@@ -155,6 +165,15 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
         // Self-payload first so a large one overlaps the entity stream instead of ending it.
         World.PushSingleToCache(this);
 
+        // Fast path: publish slot ranges of the dictionary's entries array so the workers
+        // iterate it directly in parallel — the main thread never touches the entities.
+        if (TrySnapshotEntries(out var slotCount))
+        {
+            World.PushSlotRangesToCache(this, slotCount);
+            return;
+        }
+
+        // Fallback: enumerate and hand off every entity from the main thread.
         foreach (var entity in EntitiesBySerial.Values)
         {
             // Previous save's length is the cost estimate; 0 (new entity or first save) takes
@@ -169,6 +188,44 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
                 World.PushToCache(entity);
             }
         }
+    }
+
+    internal bool TrySnapshotEntries(out int slotCount)
+    {
+        if (_entriesField != null && EntitiesBySerial.Count > 0 &&
+            _entriesField.GetValue(EntitiesBySerial) is Array entries)
+        {
+            _entriesSnapshot = entries;
+            slotCount = entries.Length;
+            return true;
+        }
+
+        slotCount = 0;
+        return false;
+    }
+
+    int ISlotRangeSource.SerializeRange(BufferWriter writer, byte threadIndex, int offset, int count)
+    {
+        // Layout proven at startup by ShadowDictionaryEntries.Supported; ranges are produced
+        // from the same array's length, so every read is in-bounds.
+        var entries = Unsafe.As<ShadowEntry<T>[]>(_entriesSnapshot);
+        var serialized = 0;
+
+        ref var entry = ref Unsafe.Add(ref MemoryMarshal.GetArrayDataReference(entries), offset);
+
+        for (var i = 0; i < count; i++, entry = ref Unsafe.Add(ref entry, 1))
+        {
+            // Occupied slots are exactly the non-null values: Dictionary clears reference
+            // values on remove, and never-used capacity is zero-initialized.
+            var entity = entry.Value;
+            if (entity != null)
+            {
+                SerializationThreadWorker.Serialize(entity, writer, threadIndex);
+                serialized++;
+            }
+        }
+
+        return serialized;
     }
 
     private static ConstructorInfo GetConstructorFor(string typeName, Type t, Type[] constructorTypes)
@@ -495,6 +552,8 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
 
     public override void PostWorldSave()
     {
+        // Release the snapshot so a between-saves resize doesn't pin the old array.
+        _entriesSnapshot = null;
         ProcessSafetyQueues();
     }
 

@@ -44,7 +44,10 @@ public static class World
     private static readonly MobilePersistence _mobilePersistence = new();
     private static readonly GenericEntityPersistence<BaseGuild> _guildPersistence = new("Guilds", 3, 1, 0x7FFFFFFF);
 
+    // All workers including the main thread's inline worker (last index), for heap lookups.
     internal static SerializationThreadWorker[] _threadWorkers;
+    // How many of those own a thread (wake/sleep/exit applies only to these).
+    private static int _realWorkerCount;
     private static readonly SerializationChunkSource _chunkSource = new();
     private static readonly ManualResetEvent _diskWriteHandle = new(true);
 
@@ -195,18 +198,22 @@ public static class World
             watch.Elapsed.TotalSeconds
         );
 
-        // Create the serialization threads.
-        var threadCount = UseMultiThreadedSaves ? Math.Max(Environment.ProcessorCount - 1, 1) : 1;
-        _threadWorkers = new SerializationThreadWorker[threadCount];
+        // Create the serialization threads, plus an inline worker the main thread uses to
+        // join the drain after publishing work instead of idling until the workers finish.
+        _realWorkerCount = UseMultiThreadedSaves ? Math.Max(Environment.ProcessorCount - 1, 1) : 1;
+        _threadWorkers = new SerializationThreadWorker[_realWorkerCount + 1];
 
         // The save we just loaded tells us how big the heaps need to be, so the first save
         // doesn't pay copy-on-grow inside the freeze window. 25% headroom for world growth.
-        var heapSizeHint = (int)Math.Min(GetLoadedSaveSize() / threadCount * 5 / 4, 1024 * 1024 * 1024);
+        var heapSizeHint = (int)Math.Min(GetLoadedSaveSize() / _threadWorkers.Length * 5 / 4, 1024 * 1024 * 1024);
 
-        for (var i = 0; i < _threadWorkers.Length; i++)
+        for (var i = 0; i < _realWorkerCount; i++)
         {
             _threadWorkers[i] = new SerializationThreadWorker(i, _chunkSource, heapSizeHint);
         }
+
+        _threadWorkers[_realWorkerCount] =
+            SerializationThreadWorker.CreateInline(_realWorkerCount, _chunkSource, heapSizeHint);
     }
 
     private static long GetLoadedSaveSize()
@@ -446,7 +453,7 @@ public static class World
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static void WakeSerializationThreads()
     {
-        for (var i = 0; i < _threadWorkers.Length; i++)
+        for (var i = 0; i < _realWorkerCount; i++)
         {
             _threadWorkers[i].Wake();
         }
@@ -457,7 +464,10 @@ public static class World
         // Publish the partial chunk before the workers are told to finish draining.
         _chunkSource.Flush();
 
-        for (var i = 0; i < _threadWorkers.Length; i++)
+        // Join the drain: the main thread would otherwise idle here while workers finish.
+        _threadWorkers[_realWorkerCount].DrainInline();
+
+        for (var i = 0; i < _realWorkerCount; i++)
         {
             _threadWorkers[i].Sleep();
         }
@@ -469,9 +479,13 @@ public static class World
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static void PushSingleToCache(IGenericSerializable e) => _chunkSource.PushSingle(e);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void PushSlotRangesToCache(ISlotRangeSource source, int slotCount) =>
+        _chunkSource.PushSlotRanges(source, slotCount);
+
     public static void ExitSerializationThreads()
     {
-        for (var i = 0; i < _threadWorkers.Length; i++)
+        for (var i = 0; i < _realWorkerCount; i++)
         {
             _threadWorkers[i]?.Exit();
         }

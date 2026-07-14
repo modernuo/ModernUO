@@ -36,15 +36,32 @@ public class SerializationThreadWorker
     private long _bytesSerialized;
 
     public SerializationThreadWorker(int index, SerializationChunkSource chunkSource, int heapSizeHint = 0)
+        : this(index, chunkSource, heapSizeHint, inline: false)
+    {
+    }
+
+    private SerializationThreadWorker(int index, SerializationChunkSource chunkSource, int heapSizeHint, bool inline)
     {
         _index = index;
         _chunkSource = chunkSource;
         _heapSizeHint = heapSizeHint;
-        _startEvent = new AutoResetEvent(false);
-        _stopEvent = new AutoResetEvent(false);
-        _thread = new Thread(Execute);
-        _thread.Start(this);
+
+        if (!inline)
+        {
+            _startEvent = new AutoResetEvent(false);
+            _stopEvent = new AutoResetEvent(false);
+            _thread = new Thread(Execute);
+            _thread.Start(this);
+        }
     }
+
+    /// <summary>
+    /// Creates a worker with no thread of its own. The owner drains chunks inline via
+    /// <see cref="DrainInline"/> — used by the main thread to join the drain instead of
+    /// idling while the thread workers finish.
+    /// </summary>
+    public static SerializationThreadWorker CreateInline(int index, SerializationChunkSource chunkSource, int heapSizeHint = 0) =>
+        new(index, chunkSource, heapSizeHint, inline: true);
 
     // Stats from the most recent save, for diagnosing load balance.
     public long EntitiesSerialized => _entitiesSerialized;
@@ -82,12 +99,62 @@ public class SerializationThreadWorker
     public ReadOnlySpan<byte> GetHeap(int start, int length) => _heap.AsSpan(start, length);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static void Serialize(IGenericSerializable e, BufferWriter writer, byte threadIndex)
+    internal static void Serialize(IGenericSerializable e, BufferWriter writer, byte threadIndex)
     {
         e.SerializedThread = threadIndex;
         var start = e.SerializedPosition = (int)writer.Position;
         e.Serialize(writer);
         e.SerializedLength = (int)(writer.Position - start);
+    }
+
+    private static long ProcessChunk(
+        in SerializationChunkSource.Chunk chunk, SerializationChunkSource chunkSource,
+        BufferWriter writer, byte threadIndex
+    )
+    {
+        if (chunk.Single != null)
+        {
+            Serialize(chunk.Single, writer, threadIndex);
+            return 1;
+        }
+
+        if (chunk.Source != null)
+        {
+            return chunk.Source.SerializeRange(writer, threadIndex, chunk.Offset, chunk.Count);
+        }
+
+        var buffer = chunk.Buffer;
+        var count = chunk.Count;
+        for (var i = 0; i < count; i++)
+        {
+            Serialize(buffer[i], writer, threadIndex);
+        }
+
+        chunkSource.Return(buffer, count);
+        return count;
+    }
+
+    /// <summary>
+    /// Drains chunks on the calling thread until the queue is empty, then returns.
+    /// Only valid on inline workers; the main thread calls this after publishing all work
+    /// so it contributes drain throughput instead of idling.
+    /// </summary>
+    public void DrainInline()
+    {
+        var writer = new BufferWriter(_heap, true, World.SerializedTypes);
+        var threadIndex = (byte)_index;
+        var entities = 0L;
+
+        while (_chunkSource.TryTake(out var chunk))
+        {
+            entities += ProcessChunk(in chunk, _chunkSource, writer, threadIndex);
+        }
+
+        _heap = writer.Buffer;
+        _entitiesSerialized = entities;
+        _bytesSerialized = writer.Position;
+
+        writer.Close();
     }
 
     private static void Execute(object obj)
@@ -110,24 +177,7 @@ public class SerializationThreadWorker
                 if (chunkSource.TryTake(out var chunk))
                 {
                     spinner.Reset();
-
-                    if (chunk.Single != null)
-                    {
-                        Serialize(chunk.Single, writer, threadIndex);
-                        entities++;
-                    }
-                    else
-                    {
-                        var buffer = chunk.Buffer;
-                        var count = chunk.Count;
-                        for (var i = 0; i < count; i++)
-                        {
-                            Serialize(buffer[i], writer, threadIndex);
-                        }
-
-                        entities += count;
-                        chunkSource.Return(buffer, count);
-                    }
+                    entities += ProcessChunk(in chunk, chunkSource, writer, threadIndex);
                 }
                 else if (pauseRequested) // Break when finished
                 {
