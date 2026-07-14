@@ -30,6 +30,10 @@ public class BufferWriter : IGenericWriter
     private readonly ConcurrentQueue<Type> _types;
     private readonly Encoding _encoding;
     private readonly bool _prefixStrings;
+
+    // High-water mark for SeekOrigin.End. Writes advance _index directly and this is folded
+    // in Seek/Resize (the only places the index can move backward), so the hot write path
+    // carries no per-write bookkeeping.
     private long _bytesWritten;
     private long _index;
 
@@ -76,7 +80,7 @@ public class BufferWriter : IGenericWriter
         _types = types;
     }
 
-    public virtual long Position => Index;
+    public virtual long Position => _index;
 
     protected virtual int BufferSize => 256;
 
@@ -89,6 +93,8 @@ public class BufferWriter : IGenericWriter
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Resize(int size)
     {
+        _bytesWritten = Math.Max(_bytesWritten, _index);
+
         // We shouldn't ever resize to a 0 length buffer. That is dangerous
         if (size <= 0)
         {
@@ -107,13 +113,23 @@ public class BufferWriter : IGenericWriter
 
     public virtual void Flush() => Resize(Math.Clamp(_buffer.Length * 2, BufferSize, _buffer.Length + 1024 * 1024 * 64));
 
+    /// <summary>
+    /// Ensures capacity, returns a ref at the current position, and advances the index.
+    /// The capacity check proves the caller's unaligned store is in-bounds, and the index
+    /// only moves forward between Seek calls, so no per-write validation is needed. Growth
+    /// (Flush -> Resize) always adds at least BufferSize, covering any primitive width.
+    /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void FlushIfNeeded(int amount)
+    private ref byte Reserve(int bytes)
     {
-        if (Index + amount > _buffer.Length)
+        if (_index + bytes > _buffer.Length)
         {
             Flush();
         }
+
+        ref var result = ref Unsafe.Add(ref MemoryMarshal.GetArrayDataReference(_buffer), (nint)_index);
+        _index += bytes;
+        return ref result;
     }
 
     public virtual void Write(byte[] bytes) => Write(bytes.AsSpan());
@@ -130,7 +146,7 @@ public class BufferWriter : IGenericWriter
         }
 
         bytes.CopyTo(_buffer.AsSpan((int)_index));
-        Index += length;
+        _index += length;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -149,9 +165,11 @@ public class BufferWriter : IGenericWriter
             "Attempting to seek to an invalid position using SeekOrigin.Current"
         );
 
+        _bytesWritten = Math.Max(_bytesWritten, _index);
+
         return Index = Math.Max(0, origin switch
         {
-            SeekOrigin.Current => Index + offset,
+            SeekOrigin.Current => _index + offset,
             SeekOrigin.End     => _bytesWritten + offset,
             _                  => offset // Begin
         });
@@ -181,95 +199,99 @@ public class BufferWriter : IGenericWriter
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Write(long value)
     {
-        FlushIfNeeded(8);
+        if (!BitConverter.IsLittleEndian)
+        {
+            value = BinaryPrimitives.ReverseEndianness(value);
+        }
 
-        BinaryPrimitives.WriteInt64LittleEndian(_buffer.AsSpan((int)_index), value);
-        Index += 8;
+        Unsafe.WriteUnaligned(ref Reserve(8), value);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Write(ulong value)
     {
-        FlushIfNeeded(8);
+        if (!BitConverter.IsLittleEndian)
+        {
+            value = BinaryPrimitives.ReverseEndianness(value);
+        }
 
-        BinaryPrimitives.WriteUInt64LittleEndian(_buffer.AsSpan((int)_index), value);
-        Index += 8;
+        Unsafe.WriteUnaligned(ref Reserve(8), value);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Write(int value)
     {
-        FlushIfNeeded(4);
+        if (!BitConverter.IsLittleEndian)
+        {
+            value = BinaryPrimitives.ReverseEndianness(value);
+        }
 
-        BinaryPrimitives.WriteInt32LittleEndian(_buffer.AsSpan((int)_index), value);
-        Index += 4;
+        Unsafe.WriteUnaligned(ref Reserve(4), value);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Write(uint value)
     {
-        FlushIfNeeded(4);
+        if (!BitConverter.IsLittleEndian)
+        {
+            value = BinaryPrimitives.ReverseEndianness(value);
+        }
 
-        BinaryPrimitives.WriteUInt32LittleEndian(_buffer.AsSpan((int)_index), value);
-        Index += 4;
+        Unsafe.WriteUnaligned(ref Reserve(4), value);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Write(short value)
     {
-        FlushIfNeeded(2);
+        if (!BitConverter.IsLittleEndian)
+        {
+            value = BinaryPrimitives.ReverseEndianness(value);
+        }
 
-        BinaryPrimitives.WriteInt16LittleEndian(_buffer.AsSpan((int)_index), value);
-        Index += 2;
+        Unsafe.WriteUnaligned(ref Reserve(2), value);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Write(ushort value)
     {
-        FlushIfNeeded(2);
+        if (!BitConverter.IsLittleEndian)
+        {
+            value = BinaryPrimitives.ReverseEndianness(value);
+        }
 
-        BinaryPrimitives.WriteUInt16LittleEndian(_buffer.AsSpan((int)_index), value);
-        Index += 2;
+        Unsafe.WriteUnaligned(ref Reserve(2), value);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Write(double value)
     {
-        FlushIfNeeded(8);
+        if (!BitConverter.IsLittleEndian)
+        {
+            value = BitConverter.Int64BitsToDouble(BinaryPrimitives.ReverseEndianness(BitConverter.DoubleToInt64Bits(value)));
+        }
 
-        BinaryPrimitives.WriteDoubleLittleEndian(_buffer.AsSpan((int)_index), value);
-        Index += 8;
+        Unsafe.WriteUnaligned(ref Reserve(8), value);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Write(float value)
     {
-        FlushIfNeeded(4);
+        if (!BitConverter.IsLittleEndian)
+        {
+            value = BitConverter.Int32BitsToSingle(BinaryPrimitives.ReverseEndianness(BitConverter.SingleToInt32Bits(value)));
+        }
 
-        BinaryPrimitives.WriteSingleLittleEndian(_buffer.AsSpan((int)_index), value);
-        Index += 4;
+        Unsafe.WriteUnaligned(ref Reserve(4), value);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void Write(byte value)
-    {
-        FlushIfNeeded(1);
-        _buffer[Index++] = value;
-    }
+    public void Write(byte value) => Reserve(1) = value;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void Write(sbyte value)
-    {
-        FlushIfNeeded(1);
-        _buffer[Index++] = (byte)value;
-    }
+    public void Write(sbyte value) => Reserve(1) = (byte)value;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public unsafe void Write(bool value)
-    {
-        FlushIfNeeded(1);
-        _buffer[Index++] = *(byte*)&value; // up to 30% faster to dereference the raw value on the stack
-    }
+    public void Write(bool value) => Reserve(1) = Unsafe.As<bool, byte>(ref value);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Write(Serial serial) => Write(serial.Value);
@@ -298,12 +320,102 @@ public class BufferWriter : IGenericWriter
         Write(MemoryMarshal.Cast<int, byte>(buffer));
     }
 
+    // Class-level implementations of the hottest IGenericWriter default interface methods.
+    // The JIT devirtualizes and inlines interface calls to the concrete type, but a default
+    // interface method dispatches again internally on `this` for every nested Write — these
+    // keep the whole write inlined instead.
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void WriteEncodedInt(int value)
+    {
+        var v = (uint)value;
+
+        while (v >= 0x80)
+        {
+            Write((byte)(v | 0x80));
+            v >>= 7;
+        }
+
+        Write((byte)v);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void Write(DateTime value)
+    {
+        // If DateTimeKind is Unspecified, we can't assume it needs to be converted.
+        if (value.Kind == DateTimeKind.Local)
+        {
+            value = value.ToUniversalTime();
+        }
+
+        Write(value.Ticks);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void Write(TimeSpan value) => Write(value.Ticks);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void Write(Point3D value)
+    {
+        Write(value.m_X);
+        Write(value.m_Y);
+        Write(value.m_Z);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void Write(Point2D value)
+    {
+        Write(value.m_X);
+        Write(value.m_Y);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void Write(Rectangle2D value)
+    {
+        Write(value.Start);
+        Write(value.End);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void Write(Rectangle3D value)
+    {
+        Write(value.Start);
+        Write(value.End);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void Write(Map value) => Write((byte)(value?.MapIndex ?? 0xFF));
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void Write(Race value) => Write((byte)(value?.RaceIndex ?? 0xFF));
+
     internal void InternalWriteString(string value)
     {
+        // Single pass for typical (short) strings: encode into a stack scratch, then write the
+        // length prefix and copy. The two-pass path below walks the string twice
+        // (GetByteCount + GetBytes) because the variable-width prefix must precede the bytes.
+        // UTF8 needs at most 3 bytes per non-surrogate char (surrogate pairs encode 2 chars
+        // into 4 bytes), so 85 chars always fit 255 bytes.
+        if (value.Length <= 85)
+        {
+            Span<byte> scratch = stackalloc byte[256];
+            var written = _encoding.GetBytes(value, scratch);
+
+            WriteEncodedInt(written);
+
+            while (_buffer.Length - _index < written)
+            {
+                Flush();
+            }
+
+            scratch[..written].CopyTo(_buffer.AsSpan((int)_index));
+            _index += written;
+            return;
+        }
+
         var length = _encoding.GetByteCount(value);
 
-        ((IGenericWriter)this).WriteEncodedInt(length);
+        WriteEncodedInt(length);
 
         while (_buffer.Length - _index < length)
         {
@@ -311,6 +423,6 @@ public class BufferWriter : IGenericWriter
         }
 
         // We don't use spans here since that incurs extra allocations for safety.
-        Index += _encoding.GetBytes(value, 0, value.Length, _buffer, (int)_index);
+        _index += _encoding.GetBytes(value, 0, value.Length, _buffer, (int)_index);
     }
 }
