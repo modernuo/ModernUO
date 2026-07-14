@@ -41,9 +41,8 @@ public interface ISlotRangeSource
 /// so the per-entity cost is a plain array store instead of a synchronized enqueue, and
 /// workers pull whole chunks so they naturally load-balance: a worker busy with a thick
 /// entity simply takes fewer chunks.
-/// Entities whose previous serialized size exceeds <see cref="HeavyEntityThreshold"/> are
-/// published as dedicated single-entity chunks so multi-megabyte payloads spread across
-/// workers instead of riding inside one chunk.
+/// Persistence self-payloads are published as dedicated single-entity chunks so large
+/// systems spread across workers instead of riding inside one chunk.
 /// Persistences that support direct parallel iteration publish slot ranges instead of
 /// filled chunks, removing the per-entity handoff from the freeze entirely.
 /// </summary>
@@ -52,13 +51,6 @@ public sealed class SerializationChunkSource
     // 4096 refs (32KB per chunk) keeps producer sync cost at one enqueue per 4096 entities
     // while the drain tail stays sub-millisecond.
     private const int ChunkCapacity = 4096;
-
-    /// <summary>
-    /// Entities whose previous <see cref="IGenericSerializable.SerializedLength"/> exceeds this
-    /// should be pushed with <see cref="PushSingle"/>. Callers do the check where the entity's
-    /// concrete type is known, so the size read is not an interface dispatch per entity.
-    /// </summary>
-    public const int HeavyEntityThreshold = 1024 * 1024; // 1MB
 
     internal readonly struct Chunk
     {

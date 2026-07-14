@@ -156,19 +156,20 @@ public class SerializationChunkSourceTests
                 entities.Add(new TestEntity { PayloadSize = 16 + i % 64 });
             }
 
-            // A heavy entity mid-stream gets a dedicated chunk
-            var heavy = new TestEntity { PayloadSize = 512 * 1024, SerializedLength = 4 * 1024 * 1024 };
-            entities.Insert(5000, heavy);
-
             foreach (var worker in workers)
             {
                 worker.Wake();
             }
 
-            // Mirrors GenericEntityPersistence.Serialize: heavy check at the call site
-            foreach (var e in entities)
+            // A large payload published as a dedicated single chunk (like persistence
+            // self-payloads), interleaved with the bare entity stream.
+            var heavy = new TestEntity { PayloadSize = 512 * 1024 };
+            entities.Insert(5000, heavy);
+
+            for (var i = 0; i < entities.Count; i++)
             {
-                if (e.SerializedLength > SerializationChunkSource.HeavyEntityThreshold)
+                var e = entities[i];
+                if (e == heavy)
                 {
                     source.PushSingle(e);
                 }
