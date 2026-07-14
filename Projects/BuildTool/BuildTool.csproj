@@ -17,5 +17,6 @@
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="Spectre.Console" Version="0.57.2" />
+        <PackageReference Update="Serilog" Version="4.4.0" />
     </ItemGroup>
 </Project>

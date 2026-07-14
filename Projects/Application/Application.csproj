@@ -28,4 +28,7 @@
             <IncludeInPackage>false</IncludeInPackage>
         </ProjectReference>
     </ItemGroup>
+    <ItemGroup>
+      <PackageReference Update="Serilog" Version="4.4.0" />
+    </ItemGroup>
 </Project>
