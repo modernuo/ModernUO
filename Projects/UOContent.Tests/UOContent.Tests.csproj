@@ -4,7 +4,7 @@
         <Configurations>Debug;Release;Analyze</Configurations>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.7.0" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.8.1" />
         <PackageReference Include="xunit" Version="2.9.3" />
         <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
             <PrivateAssets>all</PrivateAssets>
@@ -15,6 +15,7 @@
         <ProjectReference Include="..\UOContent\UOContent.csproj" />
         <ProjectReference Include="..\Server.Tests\Server.Tests.csproj" />
         <DataFiles Include="$(SolutionDir)\Distribution\Data\**" />
+        <PackageReference Update="Serilog" Version="4.4.0" />
     </ItemGroup>
     <Target Name="CopyData" AfterTargets="AfterBuild">
         <Copy SourceFiles="@(DataFiles)" DestinationFolder="$(OutDir)\Data\%(RecursiveDir)" />

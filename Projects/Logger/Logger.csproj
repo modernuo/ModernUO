@@ -7,6 +7,9 @@
         <PublishDir>..\..\Distribution\Assemblies</PublishDir>
         <Configurations>Debug;Release;Analyze</Configurations>
     </PropertyGroup>
+    <ItemGroup>
+      <PackageReference Update="Serilog" Version="4.4.0" />
+    </ItemGroup>
     <Target Name="CleanPub" AfterTargets="Clean">
         <Message Text="Logger: Removing distribution assemblies..."/>
         <Delete Files="..\..\Distribution\Assemblies\$(AssemblyName).deps.json" ContinueOnError="true"/>
