@@ -29,6 +29,11 @@ public abstract class GenericPersistence : Persistence, IGenericSerializable
     public int SerializedPosition { get; set; }
     public int SerializedLength { get; set; }
 
+    private long _loadedFileLength;
+
+    // Scheduling estimate only: previous save's payload size, or the loaded file size before the first save.
+    internal long EstimatedSize => SerializedLength > 0 ? SerializedLength : _loadedFileLength;
+
     public GenericPersistence(string name, int priority) : base(priority)
     {
         Name = name;
@@ -37,7 +42,9 @@ public abstract class GenericPersistence : Persistence, IGenericSerializable
 
     public override void Serialize()
     {
-        World.PushToCache(this);
+        // Always a dedicated chunk: self-payloads can be arbitrarily large and must not
+        // ride inside a shared chunk where one worker would serialize them plus the chunk.
+        World.PushSingleToCache(this);
     }
 
     public override void WriteSnapshot(string savePath, HashSet<Type> typeSet)
@@ -74,6 +81,7 @@ public abstract class GenericPersistence : Persistence, IGenericSerializable
         }
 
         var fileLength = file.Length;
+        _loadedFileLength = fileLength;
 
         string error;
 

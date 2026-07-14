@@ -44,8 +44,8 @@ public static class World
     private static readonly MobilePersistence _mobilePersistence = new();
     private static readonly GenericEntityPersistence<BaseGuild> _guildPersistence = new("Guilds", 3, 1, 0x7FFFFFFF);
 
-    private static int _threadId;
     internal static SerializationThreadWorker[] _threadWorkers;
+    private static readonly SerializationChunkSource _chunkSource = new();
     private static readonly ManualResetEvent _diskWriteHandle = new(true);
 
     private static string _tempSavePath; // Path to the temporary folder for the save
@@ -199,9 +199,36 @@ public static class World
         var threadCount = UseMultiThreadedSaves ? Math.Max(Environment.ProcessorCount - 1, 1) : 1;
         _threadWorkers = new SerializationThreadWorker[threadCount];
 
+        // The save we just loaded tells us how big the heaps need to be, so the first save
+        // doesn't pay copy-on-grow inside the freeze window. 25% headroom for world growth.
+        var heapSizeHint = (int)Math.Min(GetLoadedSaveSize() / threadCount * 5 / 4, 1024 * 1024 * 1024);
+
         for (var i = 0; i < _threadWorkers.Length; i++)
         {
-            _threadWorkers[i] = new SerializationThreadWorker(i);
+            _threadWorkers[i] = new SerializationThreadWorker(i, _chunkSource, heapSizeHint);
+        }
+    }
+
+    private static long GetLoadedSaveSize()
+    {
+        try
+        {
+            if (!Directory.Exists(SavePath))
+            {
+                return 0;
+            }
+
+            var total = 0L;
+            foreach (var file in Directory.EnumerateFiles(SavePath, "*.bin", SearchOption.AllDirectories))
+            {
+                total += new FileInfo(file).Length;
+            }
+
+            return total;
+        }
+        catch
+        {
+            return 0;
         }
     }
 
@@ -304,6 +331,7 @@ public static class World
 
             Persistence.SerializeAll();
             PauseSerializationThreads();
+            LogWorkerBalance();
 
             EventSink.InvokeWorldSave();
         }
@@ -388,6 +416,33 @@ public static class World
         MovementThrottle.ResetAllMovementTiming(); // Prevent post-save movement rejection bursts
     }
 
+    private static void LogWorkerBalance()
+    {
+        var totalEntities = 0L;
+        var totalBytes = 0L;
+        var minBytes = long.MaxValue;
+        var maxBytes = 0L;
+
+        for (var i = 0; i < _threadWorkers.Length; i++)
+        {
+            var worker = _threadWorkers[i];
+            totalEntities += worker.EntitiesSerialized;
+            var bytes = worker.BytesSerialized;
+            totalBytes += bytes;
+            minBytes = Math.Min(minBytes, bytes);
+            maxBytes = Math.Max(maxBytes, bytes);
+        }
+
+        logger.Debug(
+            "Serialized {EntityCount} entities ({ByteCount} bytes) across {WorkerCount} workers (min {MinBytes}, max {MaxBytes} bytes per worker)",
+            totalEntities,
+            totalBytes,
+            _threadWorkers.Length,
+            minBytes,
+            maxBytes
+        );
+    }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static void WakeSerializationThreads()
     {
@@ -397,9 +452,11 @@ public static class World
         }
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static void PauseSerializationThreads()
     {
+        // Publish the partial chunk before the workers are told to finish draining.
+        _chunkSource.Flush();
+
         for (var i = 0; i < _threadWorkers.Length; i++)
         {
             _threadWorkers[i].Sleep();
@@ -407,20 +464,10 @@ public static class World
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static int GetThreadWorkerCount() => Math.Max(Environment.ProcessorCount - 1, 1);
+    internal static void PushToCache(IGenericSerializable e) => _chunkSource.Push(e);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static void ResetRoundRobin() => _threadId = 0;
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static void PushToCache(IGenericSerializable e)
-    {
-        _threadWorkers[_threadId++].Push(e);
-        if (_threadId == _threadWorkers.Length)
-        {
-            _threadId = 0;
-        }
-    }
+    internal static void PushSingleToCache(IGenericSerializable e) => _chunkSource.PushSingle(e);
 
     public static void ExitSerializationThreads()
     {

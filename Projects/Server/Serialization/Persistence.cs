@@ -113,11 +113,20 @@ public abstract class Persistence
 
     internal static void SerializeAll()
     {
-        foreach (var p in _registry)
+        // Largest known payloads first (LPT scheduling). An indivisible multi-megabyte system
+        // serialized last extends the freeze by its entire duration; serialized first it overlaps
+        // the entity stream. Sizes come from the previous save, or the loaded files on first save.
+        var ordered = new Persistence[_registry.Count];
+        _registry.CopyTo(ordered);
+        Array.Sort(ordered, static (a, b) => GetEstimatedSize(b).CompareTo(GetEstimatedSize(a)));
+
+        foreach (var p in ordered)
         {
             p.Serialize();
         }
     }
+
+    private static long GetEstimatedSize(Persistence p) => (p as GenericPersistence)?.EstimatedSize ?? 0;
 
     internal static void PostWorldSaveAll()
     {

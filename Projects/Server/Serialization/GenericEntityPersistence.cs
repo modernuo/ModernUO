@@ -70,7 +70,11 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
 
         var threads = World._threadWorkers;
 
-        using var binFs = new FileStream(Path.Combine(dir, $"{Name}.bin"), FileMode.Create, FileAccess.Write, FileShare.None);
+        // 1MB buffer: entity spans are written individually, so the default 4KB buffer
+        // costs a syscall every few entities on the snapshot thread.
+        using var binFs = new FileStream(
+            Path.Combine(dir, $"{Name}.bin"), FileMode.Create, FileAccess.Write, FileShare.None, 1024 * 1024
+        );
         using var idxFs = new FileStream(Path.Combine(dir, $"{Name}.idx"), FileMode.Create);
         using var idx = new MemoryMapFileWriter(idxFs, 1024 * 1024, typeSet); // 1MB
 
@@ -148,12 +152,23 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
 
     public override void Serialize()
     {
+        // Self-payload first so a large one overlaps the entity stream instead of ending it.
+        World.PushSingleToCache(this);
+
         foreach (var entity in EntitiesBySerial.Values)
         {
-            World.PushToCache(entity);
+            // Previous save's length is the cost estimate; 0 (new entity or first save) takes
+            // the small path. Heavy entities get dedicated chunks so multi-megabyte payloads
+            // spread across workers instead of riding inside one shared chunk.
+            if (entity.SerializedLength > SerializationChunkSource.HeavyEntityThreshold)
+            {
+                World.PushSingleToCache(entity);
+            }
+            else
+            {
+                World.PushToCache(entity);
+            }
         }
-
-        World.PushToCache(this);
     }
 
     private static ConstructorInfo GetConstructorFor(string typeName, Type t, Type[] constructorTypes)
@@ -329,6 +344,8 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
             if (ctor.Invoke(ctorArgs) is T entity)
             {
                 entity.Created = created;
+                // Cost estimate for the first save's scheduling; overwritten by every save.
+                entity.SerializedLength = length;
                 entities.Add(new EntitySpan<T>(entity, pos, length));
                 EntitiesBySerial[serial] = entity;
             }
