@@ -111,22 +111,17 @@ public class FileBufferWriterTests
     }
 
     [Fact]
-    public void TypeWritesRegisterIntoTheTypeSet()
+    public void TypeWritesUseTagAndHashFormat()
     {
         var path = TempFile();
 
         try
         {
-            var typeSet = new System.Collections.Generic.HashSet<Type>();
-
-            using (var writer = new FileBufferWriter(path, typeSet))
+            using (var writer = new FileBufferWriter(path))
             {
                 writer.Write(typeof(string));
                 writer.Write((Type)null);
             }
-
-            Assert.Contains(typeof(string), typeSet);
-            Assert.Single(typeSet);
 
             var bytes = File.ReadAllBytes(path);
             Assert.Equal(1 + 8 + 1, bytes.Length); // flag + hash + null flag

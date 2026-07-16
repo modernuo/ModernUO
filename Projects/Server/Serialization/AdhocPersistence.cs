@@ -14,7 +14,6 @@
  *************************************************************************/
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.MemoryMappedFiles;
@@ -27,9 +26,9 @@ public static class AdhocPersistence
     /**
      * Serializes to memory.
      */
-    public static IGenericWriter SerializeToBuffer(Action<IGenericWriter> serializer, ConcurrentQueue<Type> types = null)
+    public static IGenericWriter SerializeToBuffer(Action<IGenericWriter> serializer)
     {
-        var saveBuffer = new BufferWriter(true, types);
+        var saveBuffer = new BufferWriter(true);
         serializer(saveBuffer);
         return saveBuffer;
     }
@@ -55,18 +54,11 @@ public static class AdhocPersistence
     {
         var fullPath = PathUtility.GetFullPath(filePath, Core.BaseDirectory);
         PathUtility.EnsureDirectory(Path.GetDirectoryName(fullPath));
-        HashSet<Type> typesSet = [];
-        var writer = new FileBufferWriter(fullPath, typesSet, sizeHint);
+
+        var writer = new FileBufferWriter(fullPath, sizeHint);
         serializer(writer);
 
-        Task.Run(
-            () =>
-            {
-                writer.Dispose();
-                Persistence.WriteSerializedTypesSnapshot(Path.GetDirectoryName(fullPath), typesSet);
-            },
-            Core.ClosingTokenSource.Token
-        );
+        Task.Run(() => writer.Dispose(), Core.ClosingTokenSource.Token);
     }
 
     public static unsafe void Deserialize(string filePath, Action<IGenericReader> deserializer)

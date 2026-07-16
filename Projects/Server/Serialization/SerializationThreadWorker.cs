@@ -214,7 +214,7 @@ public class SerializationThreadWorker
     {
         ReleaseWriteLogs();
 
-        var writer = new BufferWriter(_heap, true, World.SerializedTypes);
+        var writer = new BufferWriter(_heap, true);
         var entities = 0L;
 
         while (_chunkSource.TryTake(out var chunk))
@@ -234,13 +234,12 @@ public class SerializationThreadWorker
         var worker = (SerializationThreadWorker)obj;
 
         var chunkSource = worker._chunkSource;
-        var serializedTypes = World.SerializedTypes;
 
         while (worker._startEvent.WaitOne())
         {
             worker.ReleaseWriteLogs();
 
-            var writer = new BufferWriter(worker._heap, true, serializedTypes);
+            var writer = new BufferWriter(worker._heap, true);
             var entities = 0L;
             var spinner = new SpinWait();
 

@@ -102,7 +102,7 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
         typeof(T).RegisterFindEntity(Find);
     }
 
-    public override void WriteSnapshot(string savePath, HashSet<Type> typeSet)
+    public override void WriteSnapshot(string savePath)
     {
         var dir = Path.Combine(savePath, Name);
         PathUtility.EnsureDirectory(dir);
@@ -117,7 +117,7 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
         // v4 records are fixed-width 26 bytes; the header carries the type table
         // (name lengths vary — 64 bytes per entry is a staging hint, not a contract).
         var expectedIdxSize = 12 + 26L * EntitiesBySerial.Count + 64L * _typeTable.Count;
-        using var idx = new FileBufferWriter(Path.Combine(dir, $"{Name}.idx"), typeSet, expectedIdxSize);
+        using var idx = new FileBufferWriter(Path.Combine(dir, $"{Name}.idx"), expectedIdxSize);
 
         var binPosition = 0L;
 

@@ -14,7 +14,6 @@
  *************************************************************************/
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -239,39 +238,6 @@ public static class World
         }
     }
 
-    /**
-     * Duplicates can be weeded out asynchronously while flushing
-     * If performance becomes a problem, we need to build a dual mode concurrent array.
-     *
-     ****************************************************** Proposal ******************************************************
-     * The structure is initialized with a large capacity to avoid unnecessary resizing.
-     * Write Mode:
-     * - Multiple threads can add a single, or a range of elements concurrently.
-     * - Elements can be Peeked, but there are no guarantees.
-     * - To resize the internal array, replaced it with the next size up from an array pool.
-     * - The structure cannot be cleared in this mode.
-     *
-     * Read Mode:
-     * - The array can be read from multiple threads using a ref struct enumerator.
-     * - Elements cannot be added or reassigned.
-     * - Cleared by replacing the internal array with another one from the pool.
-     * - Note: Upon clearing, the existing array is not sent back to the pool until there are zero enumerators.
-     *
-     * Enumeration:
-     * - Multiple threads can enumerate while in read mode. The enumerator will Interlocked.Increment a read counter.
-     * - Upon dispose of the enumerator, the read counter will be lowered with an Interlocked.Decrement
-     * - When the read counter reaches 0, if there is a cleared array, the array is sent back to the pool zeroed.
-     *
-     * Notes:
-     * - Elements can never be removed.
-     *
-     * How is this different from ConcurrentQueue?
-     * The functionality is very similar, except the constraints allow the implementation to be done without locks.
-     * Since this implementation uses pooled arrays, allocations will approach zero over time.
-     **********************************************************************************************************************
-     */
-    public static ConcurrentQueue<Type> SerializedTypes { get; } = new();
-
     public static void Save()
     {
         if (WorldState != WorldState.Running)
@@ -367,8 +333,6 @@ public static class World
         }
     }
 
-    private static readonly HashSet<Type> _typesSet = [];
-
     private static void WriteFiles(object state)
     {
         var snapshotPath = (string)state;
@@ -377,15 +341,7 @@ public static class World
             var watch = Stopwatch.StartNew();
             logger.Information("Writing world save snapshot");
 
-            // Dedupe the types
-            while (SerializedTypes.TryDequeue(out var type))
-            {
-                _typesSet.Add(type);
-            }
-
-            Persistence.WriteSnapshotAll(snapshotPath, _typesSet);
-
-            _typesSet.Clear();
+            Persistence.WriteSnapshotAll(snapshotPath);
 
             try
             {
@@ -408,9 +364,6 @@ public static class World
 
             BroadcastStaff(0x35, true, "Writing world save snapshot failed! Check the logs!");
         }
-
-        // Clear types
-        SerializedTypes.Clear();
 
         _diskWriteHandle.Set();
         Core.LoopContext.Post(FinishWorldSave);

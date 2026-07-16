@@ -84,29 +84,11 @@ public abstract class Persistence
     }
 
     // Note: This is strictly on a background thread
-    internal static void WriteSnapshotAll(string path, HashSet<Type> typeSet)
+    internal static void WriteSnapshotAll(string path)
     {
         foreach (var p in _registry)
         {
-            p.WriteSnapshot(path, typeSet);
-        }
-
-        WriteSerializedTypesSnapshot(path, typeSet);
-    }
-
-    public static void WriteSerializedTypesSnapshot(string path, HashSet<Type> types)
-    {
-        var typesPath = Path.Combine(path, "SerializedTypes.db");
-        using var writer = new FileBufferWriter(typesPath);
-
-        writer.Write(0); // version
-        writer.Write(types.Count);
-
-        foreach (var type in types)
-        {
-            var fullName = type.FullName;
-            writer.Write(HashUtility.ComputeHash64(fullName));
-            writer.WriteRaw(fullName);
+            p.WriteSnapshot(path);
         }
     }
 
@@ -148,7 +130,7 @@ public abstract class Persistence
     }
 
     // Note: This should only be run on a background thread
-    public abstract void WriteSnapshot(string savePath, HashSet<Type> typeSet);
+    public abstract void WriteSnapshot(string savePath);
 
     public abstract void Serialize();
 

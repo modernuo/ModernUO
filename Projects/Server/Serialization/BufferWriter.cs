@@ -17,7 +17,6 @@ using System;
 using System.Buffers;
 using System.Buffers.Binary;
 using System.Collections;
-using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
@@ -30,7 +29,6 @@ namespace Server;
 
 public class BufferWriter : IGenericWriter
 {
-    private readonly ConcurrentQueue<Type> _types;
     private readonly Encoding _encoding;
     private readonly bool _prefixStrings;
 
@@ -60,24 +58,22 @@ public class BufferWriter : IGenericWriter
 
     private byte[] _buffer;
 
-    public BufferWriter(byte[] buffer, bool prefixStr, ConcurrentQueue<Type> types = null)
+    public BufferWriter(byte[] buffer, bool prefixStr)
     {
         _prefixStrings = prefixStr;
         _encoding = TextEncoding.UTF8;
         _buffer = buffer;
-        _types = types;
     }
 
-    public BufferWriter(bool prefixStr, ConcurrentQueue<Type> types = null) : this(0, prefixStr, types)
+    public BufferWriter(bool prefixStr) : this(0, prefixStr)
     {
     }
 
-    public BufferWriter(int count, bool prefixStr, ConcurrentQueue<Type> types = null)
+    public BufferWriter(int count, bool prefixStr)
     {
         _prefixStrings = prefixStr;
         _encoding = TextEncoding.UTF8;
         _buffer = GC.AllocateUninitializedArray<byte>(count < 1 ? BufferSize : count);
-        _types = types;
     }
 
     public virtual long Position => _index;
@@ -307,7 +303,6 @@ public class BufferWriter : IGenericWriter
         {
             Write((byte)0x2); // xxHash3 64bit
             Write(AssemblyHandler.GetTypeHash(type));
-            _types?.Enqueue(type);
         }
     }
 

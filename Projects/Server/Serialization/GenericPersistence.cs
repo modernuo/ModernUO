@@ -57,7 +57,7 @@ public abstract class GenericPersistence : Persistence, IGenericSerializable
         World.PushSingleToCache(this);
     }
 
-    public override void WriteSnapshot(string savePath, HashSet<Type> typeSet)
+    public override void WriteSnapshot(string savePath)
     {
         if (_selfLength == 0)
         {

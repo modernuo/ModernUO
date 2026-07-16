@@ -123,7 +123,7 @@ public class GenericEntityPersistenceRoundTripTests
 
             // Background write phase: snapshot from the segment logs. v4 embeds the type
             // table in the idx, so no SerializedTypes.db is produced or needed.
-            persistence.WriteSnapshot(dir, []);
+            persistence.WriteSnapshot(dir);
 
             persistence.PostWorldSave(); // releases the entries snapshot
 

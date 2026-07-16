@@ -15,8 +15,6 @@
 
 using System;
 using System.Buffers;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.IO;
 using Microsoft.Win32.SafeHandles;
 
@@ -44,16 +42,14 @@ public class FileBufferWriter : BufferWriter, IDisposable
     private long _fileHighWater; // logical end of file across seeks
 
     /// <param name="filePath">Destination file; created/truncated.</param>
-    /// <param name="typeSet">Types written via <see cref="Write(Type)"/> register here.</param>
     /// <param name="expectedSize">
-    /// Expected total file size when known (e.g. idx files are exactly
-    /// 8 + 33 * count bytes). Files at or under the staging cap never drain until close;
-    /// larger files stream through a pooled block at the cap. The block comes from
-    /// ArrayPool so sequential snapshot writers recycle one buffer instead of dropping
-    /// a large-object allocation per file per save.
+    /// Expected total file size when known. Files at or under the staging cap never
+    /// drain until close; larger files stream through a pooled block at the cap. The
+    /// block comes from ArrayPool so sequential snapshot writers recycle one buffer
+    /// instead of dropping a large-object allocation per file per save.
     /// </param>
-    public FileBufferWriter(string filePath, HashSet<Type> typeSet = null, long expectedSize = MaxStagingSize)
-        : base(RentStaging(expectedSize), true, typeSet != null ? new ConcurrentQueue<Type>(typeSet) : null)
+    public FileBufferWriter(string filePath, long expectedSize = MaxStagingSize)
+        : base(RentStaging(expectedSize), true)
     {
         _rentedStaging = Buffer;
         _handle = File.OpenHandle(filePath, FileMode.Create, FileAccess.Write, FileShare.None, FileOptions.SequentialScan);
