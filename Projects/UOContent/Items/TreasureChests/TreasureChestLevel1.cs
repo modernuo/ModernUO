@@ -72,7 +72,10 @@ public partial class TreasureChestLevel1 : LockableContainer
 
     public override bool IsDecoContainer => false;
 
-    public override TimeSpan DecayTime => TimeSpan.FromMinutes(Utility.Random(15, 60));
+    // Rolled once: DecayScheduler reads ScheduledDecayTime repeatedly and needs a stable value.
+    private readonly TimeSpan _decayTime = TimeSpan.FromMinutes(Utility.Random(15, 60));
+
+    public override TimeSpan DecayTime => _decayTime;
 
     public override int DefaultGumpID => 0x44;
 

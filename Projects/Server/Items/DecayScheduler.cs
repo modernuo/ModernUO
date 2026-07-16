@@ -22,9 +22,24 @@ namespace Server.Items;
 /// Timer wheel-based decay scheduler with O(1) registration/unregistration.
 /// Uses coarse-grained HashSet buckets for time intervals, with a PriorityQueue
 /// for fine-grained processing of items due within the current window.
+/// <para>
+/// An item that becomes decay eligible must be passed to <see cref="Item.UpdateDecayRegistration" />
+/// once its parent, map and location are final. The scheduler drops items that stop being eligible,
+/// but nothing enrolls one that becomes eligible while untracked.
+/// </para>
+/// <para>
+/// <see cref="Item.Decays" /> and <see cref="Item.DecayTime" /> overrides must be stable rather than
+/// recomputed per read: <see cref="Item.ScheduledDecayTime" /> is read repeatedly, and a value that
+/// changes between reads re-buckets the item every tick and decays it at the wrong time.
+/// </para>
 /// </summary>
 public class DecayScheduler : Timer
 {
+    // Item.DecaySlot values; any non-negative value is a bucket index.
+    internal const sbyte SlotNone = -1;
+    internal const sbyte SlotOverflow = -2;
+    internal const sbyte SlotActive = -3;
+
     private const int BucketCount = 12;
     private static int _maxItemsPerTick;
     private static TimeSpan _tickInterval;
@@ -75,6 +90,65 @@ public class DecayScheduler : Timer
     }
 
     /// <summary>
+    /// Test hook: drops all tracked items and re-bases the rotation schedule on
+    /// <see cref="Core.Now" />, so deadlines left by a test that moved the clock do not suppress
+    /// rotations in the next one.
+    /// </summary>
+    internal static void ResetForTests()
+    {
+        Shared?.Stop();
+
+        _activeQueue.Clear();
+        _overflowBucket.Clear();
+
+        for (var i = 0; i < BucketCount; i++)
+        {
+            _buckets[i].Clear();
+        }
+
+        _currentBucketIndex = 0;
+
+        var now = Core.Now;
+        _nextBucketRotation = now + _bucketInterval;
+        _nextOverflowCheck = now + _totalBucketSpan;
+    }
+
+    /// <summary>
+    /// Diagnostics: true if the item is currently tracked in any bucket, the overflow
+    /// bucket, or the active queue.
+    /// </summary>
+    internal static bool IsRegistered(Item item)
+    {
+        if (item == null)
+        {
+            return false;
+        }
+
+        if (_overflowBucket.Contains(item))
+        {
+            return true;
+        }
+
+        for (var i = 0; i < BucketCount; i++)
+        {
+            if (_buckets[i].Contains(item))
+            {
+                return true;
+            }
+        }
+
+        foreach (var (queued, _) in _activeQueue.UnorderedItems)
+        {
+            if (queued == item)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>
     /// Checks if all decay tracking structures are empty.
     /// </summary>
     private static bool IsEmpty()
@@ -115,11 +189,13 @@ public class DecayScheduler : Timer
         if (timeUntilDecay <= _bucketInterval)
         {
             _activeQueue.Enqueue(item, decayTime);
+            item.DecaySlot = SlotActive;
         }
         // If beyond the total bucket span, add to overflow bucket
         else if (timeUntilDecay > _totalBucketSpan)
         {
             _overflowBucket.Add(item);
+            item.DecaySlot = SlotOverflow;
         }
         else
         {
@@ -127,6 +203,7 @@ public class DecayScheduler : Timer
             var bucketOffset = GetBucketOffset(timeUntilDecay);
             var absoluteIndex = (_currentBucketIndex + bucketOffset) % BucketCount;
             _buckets[absoluteIndex].Add(item);
+            item.DecaySlot = (sbyte)absoluteIndex;
         }
     }
 
@@ -135,27 +212,26 @@ public class DecayScheduler : Timer
     /// </summary>
     public static void Unregister(Item item)
     {
-        if (item?.Deleted != false)
+        if (item == null || item.DecaySlot == SlotNone)
         {
             return;
         }
 
-        // Check overflow bucket first
-        if (_overflowBucket.Remove(item))
-        {
-            return;
-        }
+        var slot = item.DecaySlot;
+        item.DecaySlot = SlotNone;
 
-        // Check regular buckets
-        for (var i = 0; i < BucketCount; i++)
+        if (slot == SlotOverflow)
         {
-            if (_buckets[i].Remove(item))
-            {
-                return;
-            }
+            _overflowBucket.Remove(item);
         }
-
-        _activeQueue.Remove(item, out _, out _);
+        else if (slot == SlotActive)
+        {
+            _activeQueue.Remove(item, out _, out _);
+        }
+        else
+        {
+            _buckets[slot].Remove(item);
+        }
     }
 
     /// <summary>
@@ -171,10 +247,11 @@ public class DecayScheduler : Timer
         return Math.Clamp(bucketOffset, 0, BucketCount - 1);
     }
 
-    protected override void OnTick()
+    /// <summary>
+    /// Advances the wheel for <paramref name="now" />. Returns true when nothing is left to track.
+    /// </summary>
+    internal static bool ProcessTick(DateTime now)
     {
-        var now = Core.Now;
-
         // Process items from active queue first (smaller queue = faster log(n) operations)
         ProcessActiveQueue(now);
 
@@ -190,8 +267,13 @@ public class DecayScheduler : Timer
             ProcessOverflow(now);
         }
 
+        return IsEmpty();
+    }
+
+    protected override void OnTick()
+    {
         // Stop timer if nothing left to track
-        if (IsEmpty())
+        if (ProcessTick(Core.Now))
         {
             Stop();
             return;
@@ -220,7 +302,8 @@ public class DecayScheduler : Timer
         {
             if (item.Deleted || !item.CanDecay())
             {
-                continue; // Lazy cleanup - item was picked up or deleted
+                item.DecaySlot = SlotNone; // Lazy cleanup - item was picked up or deleted
+                continue;
             }
 
             var decayTime = item.ScheduledDecayTime;
@@ -233,6 +316,7 @@ public class DecayScheduler : Timer
                 {
                     // Extended beyond total span - move to overflow
                     _overflowBucket.Add(item);
+                    item.DecaySlot = SlotOverflow;
                 }
                 else
                 {
@@ -243,11 +327,13 @@ public class DecayScheduler : Timer
                     if (actualIndex != _currentBucketIndex)
                     {
                         _buckets[actualIndex].Add(item);
+                        item.DecaySlot = (sbyte)actualIndex;
                     }
                     else
                     {
                         // Still maps to current bucket - add to active queue
                         _activeQueue.Enqueue(item, decayTime);
+                        item.DecaySlot = SlotActive;
                     }
                 }
                 continue;
@@ -255,6 +341,7 @@ public class DecayScheduler : Timer
 
             // Due within next window - add to active queue
             _activeQueue.Enqueue(item, decayTime);
+            item.DecaySlot = SlotActive;
         }
 
         // Clear the processed bucket
@@ -276,10 +363,12 @@ public class DecayScheduler : Timer
         {
             if (item.Deleted || !item.CanDecay())
             {
+                item.DecaySlot = SlotNone;
                 return true; // Remove invalid items
             }
 
-            var timeUntilDecay = item.ScheduledDecayTime - now;
+            var decayTime = item.ScheduledDecayTime;
+            var timeUntilDecay = decayTime - now;
 
             if (timeUntilDecay > _totalBucketSpan)
             {
@@ -289,13 +378,15 @@ public class DecayScheduler : Timer
             // Now within regular bucket range - move to appropriate bucket
             if (timeUntilDecay <= _bucketInterval)
             {
-                _activeQueue.Enqueue(item, item.ScheduledDecayTime);
+                _activeQueue.Enqueue(item, decayTime);
+                item.DecaySlot = SlotActive;
             }
             else
             {
                 var bucketOffset = GetBucketOffset(timeUntilDecay);
                 var actualIndex = (_currentBucketIndex + bucketOffset) % BucketCount;
                 _buckets[actualIndex].Add(item);
+                item.DecaySlot = (sbyte)actualIndex;
             }
 
             return true; // Remove from overflow
@@ -319,6 +410,7 @@ public class DecayScheduler : Timer
 
             processed++;
             _activeQueue.Dequeue();
+            item.DecaySlot = SlotNone;
 
             if (item.Deleted || !item.CanDecay())
             {
@@ -332,6 +424,12 @@ public class DecayScheduler : Timer
             else if (item.OnDecay())
             {
                 item.Delete();
+            }
+            else
+            {
+                // Refused by the region. Restart the clock rather than dropping the item, which has
+                // already left the queue; re-registering as-is would spin on a due time in the past.
+                item.SetLastMoved();
             }
         }
     }

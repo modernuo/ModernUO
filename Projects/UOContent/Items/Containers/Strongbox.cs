@@ -32,10 +32,6 @@ public partial class StrongBox : BaseContainer, IChoppable
 
     public override int DefaultMaxWeight => 0;
 
-    public override bool Decays => _house == null || _owner?.Deleted != false || !_house.IsCoOwner(_owner);
-
-    public override TimeSpan DecayTime => TimeSpan.FromMinutes(30.0);
-
     public void OnChop(Mobile from)
     {
         if (_house?.Deleted != false || _owner?.Deleted != false || from == _owner || _house.IsOwner(from))
@@ -50,11 +46,13 @@ public partial class StrongBox : BaseContainer, IChoppable
         Timer.StartTimer(TimeSpan.FromSeconds(1.0), Validate);
     }
 
+    // A strongbox is only ever its owner's. Without a house, or without an owner still co-owning
+    // that house, it would be a free container anyone could loot, so it goes away instead. A deleted
+    // owner deserializes back as null, which IsCoOwner rejects.
     private void Validate()
     {
-        if (_owner != null && _house?.IsCoOwner(_owner) == false)
+        if (_house?.IsCoOwner(_owner) != true)
         {
-            Console.WriteLine("Warning: Destroying strongbox of {0}", _owner.Name);
             Destroy();
         }
     }
