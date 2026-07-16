@@ -14,7 +14,6 @@
  *************************************************************************/
 
 using System;
-using System.Buffers;
 using System.Collections;
 using System.IO;
 using System.Net;
@@ -39,168 +38,24 @@ public interface IGenericWriter
     void Write(Serial serial);
     void Write(Type type);
     void Write(decimal value);
-
-    void Write(DateTime value)
-    {
-        // If DateTimeKind is Unspecified, we can't assume it needs to be converted.
-        if (value.Kind == DateTimeKind.Local)
-        {
-            value = value.ToUniversalTime();
-        }
-
-        Write(value.Ticks);
-    }
-    void WriteDeltaTime(DateTime value)
-    {
-        if (value == DateTime.MinValue)
-        {
-            Write(long.MinValue);
-            return;
-        }
-
-        if (value == DateTime.MaxValue)
-        {
-            Write(long.MaxValue);
-            return;
-        }
-
-        if (value.Kind == DateTimeKind.Local)
-        {
-            value = value.ToUniversalTime();
-        }
-
-        // Technically supports negative deltas for times in the past
-        Write(value.Ticks - DateTime.UtcNow.Ticks);
-    }
-    void Write(IPAddress value)
-    {
-        Span<byte> stack = stackalloc byte[16];
-        value.TryWriteBytes(stack, out var bytesWritten);
-        Write((byte)bytesWritten);
-        Write(stack[..bytesWritten]);
-    }
-
-    void Write(TimeSpan value)
-    {
-        Write(value.Ticks);
-    }
-
-    void WriteEncodedInt(int value)
-    {
-        var v = (uint)value;
-
-        while (v >= 0x80)
-        {
-            Write((byte)(v | 0x80));
-            v >>= 7;
-        }
-
-        Write((byte)v);
-    }
-
-    void Write(Point3D value)
-    {
-        Write(value.m_X);
-        Write(value.m_Y);
-        Write(value.m_Z);
-    }
-    void Write(Point2D value)
-    {
-        Write(value.m_X);
-        Write(value.m_Y);
-    }
-    void Write(Rectangle2D value)
-    {
-        Write(value.Start);
-        Write(value.End);
-    }
-    void Write(Rectangle3D value)
-    {
-        Write(value.Start);
-        Write(value.End);
-    }
-    void Write(Map value) => Write((byte)(value?.MapIndex ?? 0xFF));
-    void Write(Race value) => Write((byte)(value?.RaceIndex ?? 0xFF));
+    void WriteEncodedInt(int value);
+    void Write(DateTime value);
+    void WriteDeltaTime(DateTime value);
+    void Write(IPAddress value);
+    void Write(TimeSpan value);
+    void Write(Point3D value);
+    void Write(Point2D value);
+    void Write(Rectangle2D value);
+    void Write(Rectangle3D value);
+    void Write(Map value);
+    void Write(Race value);
     void Write(byte[] bytes);
     void Write(byte[] bytes, int offset, int count);
     void Write(ReadOnlySpan<byte> bytes);
-    unsafe void WriteEnum<T>(T value) where T : unmanaged, Enum
-    {
-        switch (sizeof(T))
-        {
-            default:
-                {
-                    throw new ArgumentException($"Argument of type {typeof(T)} is not a normal enum");
-                }
-            case 1:
-                {
-                    Write(*(byte*)&value);
-                    break;
-                }
-            case 2:
-                {
-                    Write(*(ushort*)&value);
-                    break;
-                }
-            case 4:
-                {
-                    WriteEncodedInt(*(int*)&value);
-                    break;
-                }
-            case 8:
-                {
-                    Write(*(ulong*)&value);
-                    break;
-                }
-        }
-    }
-    void Write(Guid guid)
-    {
-        Span<byte> stack = stackalloc byte[16];
-        guid.TryWriteBytes(stack);
-        Write(stack);
-    }
-
-    public void Write(BitArray bitArray)
-    {
-        var bitLength = bitArray.Length;
-        var byteLength = (bitLength + 7) / 8;
-
-        WriteEncodedInt(bitLength);
-
-        var arrayBuffer = ArrayPool<byte>.Shared.Rent(byteLength);
-        try
-        {
-            bitArray.CopyTo(arrayBuffer, 0);
-            Write(arrayBuffer.AsSpan(0, byteLength));
-        }
-        finally
-        {
-            ArrayPool<byte>.Shared.Return(arrayBuffer);
-        }
-    }
-
-    void Write(TextDefinition def)
-    {
-        if (def == null)
-        {
-            WriteEncodedInt(3);
-        }
-        else if (def.Number > 0)
-        {
-            WriteEncodedInt(1);
-            WriteEncodedInt(def.Number);
-        }
-        else if (def.String != null)
-        {
-            WriteEncodedInt(2);
-            Write(def.String);
-        }
-        else
-        {
-            WriteEncodedInt(0); // Empty
-        }
-    }
+    void WriteEnum<T>(T value) where T : unmanaged, Enum;
+    void Write(Guid guid);
+    void Write(BitArray bitArray);
+    void Write(TextDefinition def);
 
     long Seek(long offset, SeekOrigin origin);
 }

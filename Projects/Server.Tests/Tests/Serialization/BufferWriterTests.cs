@@ -1,6 +1,7 @@
 using System;
 using System.Buffers.Binary;
 using System.IO;
+using System.Linq;
 using System.Text;
 using Xunit;
 
@@ -120,6 +121,11 @@ public class BufferWriterTests
     [InlineData(127, new byte[] { 0x7F })]
     [InlineData(128, new byte[] { 0x80, 0x01 })]
     [InlineData(0x3FFF, new byte[] { 0xFF, 0x7F })]
+    [InlineData(0x4000, new byte[] { 0x80, 0x80, 0x01 })]
+    [InlineData(0x1F_FFFF, new byte[] { 0xFF, 0xFF, 0x7F })]
+    [InlineData(0x20_0000, new byte[] { 0x80, 0x80, 0x80, 0x01 })]
+    [InlineData(0xFFF_FFFF, new byte[] { 0xFF, 0xFF, 0xFF, 0x7F })]
+    [InlineData(0x1000_0000, new byte[] { 0x80, 0x80, 0x80, 0x80, 0x01 })]
     [InlineData(int.MaxValue, new byte[] { 0xFF, 0xFF, 0xFF, 0xFF, 0x07 })]
     [InlineData(-1, new byte[] { 0xFF, 0xFF, 0xFF, 0xFF, 0x0F })]
     public void EncodedIntMatchesFormat(int value, byte[] expected)
@@ -250,5 +256,55 @@ public class BufferWriterTests
 
         IGenericReader reader = new BufferReader(writer.Buffer);
         Assert.Equal(1234567.89012m, reader.ReadDecimal());
+    }
+
+    [Fact]
+    public void LongStringPrefixIsZeroPaddedToWorstCaseWidth()
+    {
+        // 100 ASCII chars: worst case 300 bytes -> 2-byte prefix; actual 100 bytes would
+        // canonically fit in 1. The prefix must be the non-minimal 2-byte form the readers
+        // decode identically: (100 | 0x80), 0x00.
+        var value = new string('a', 100);
+        var writer = new BufferWriter(new byte[1024], false);
+        writer.WriteRaw(value);
+
+        var b = writer.Buffer;
+        Assert.Equal((byte)(100 | 0x80), b[0]);
+        Assert.Equal(0, b[1]);
+        Assert.Equal(2 + 100, writer.Position);
+
+        IGenericReader reader = new BufferReader(writer.Buffer);
+        Assert.Equal(value, reader.ReadStringRaw());
+    }
+
+    [Theory]
+    [InlineData(42)]     // canonical 1-byte prefix (3 * 42 < 0x80)
+    [InlineData(100)]    // padded prefix
+    [InlineData(10_000)] // multi-byte prefix, forces growth from a small buffer
+    public void ThreeBytePerCharContentRoundTrips(int chars)
+    {
+        // CJK content encodes at the UTF-8 worst case of 3 bytes per char - the case an
+        // undersized scratch would truncate or throw on.
+        var value = new string('二', chars);
+        var writer = new BufferWriter(new byte[16], true);
+        writer.Write(value);
+
+        Assert.Equal(Encoding.UTF8.GetByteCount(value), 3 * chars);
+
+        IGenericReader reader = new BufferReader(writer.Buffer);
+        Assert.Equal(value, reader.ReadString());
+    }
+
+    [Fact]
+    public void SurrogatePairContentRoundTripsThroughRawPath()
+    {
+        // Surrogate pairs encode 2 chars into 4 bytes (2 bytes per char) - under the
+        // 3-bytes-per-char reservation, exercising written < maxLength with a padded prefix.
+        var value = string.Concat(Enumerable.Repeat("😀", 60)); // 120 chars, 240 bytes
+        var writer = new BufferWriter(new byte[16], false);
+        writer.WriteRaw(value);
+
+        IGenericReader reader = new BufferReader(writer.Buffer);
+        Assert.Equal(value, reader.ReadStringRaw());
     }
 }

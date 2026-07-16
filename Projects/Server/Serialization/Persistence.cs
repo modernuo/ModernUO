@@ -97,8 +97,7 @@ public abstract class Persistence
     public static void WriteSerializedTypesSnapshot(string path, HashSet<Type> types)
     {
         var typesPath = Path.Combine(path, "SerializedTypes.db");
-        using var fs = new FileStream(typesPath, FileMode.Create);
-        using var writer = new MemoryMapFileWriter(fs, 1024 * 1024 * 4);
+        using var writer = new FileBufferWriter(typesPath);
 
         writer.Write(0); // version
         writer.Write(types.Count);
@@ -107,7 +106,7 @@ public abstract class Persistence
         {
             var fullName = type.FullName;
             writer.Write(HashUtility.ComputeHash64(fullName));
-            writer.WriteStringRaw(fullName);
+            writer.WriteRaw(fullName);
         }
     }
 

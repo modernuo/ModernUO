@@ -56,17 +56,13 @@ public static class AdhocPersistence
         var fullPath = PathUtility.GetFullPath(filePath, Core.BaseDirectory);
         PathUtility.EnsureDirectory(Path.GetDirectoryName(fullPath));
         HashSet<Type> typesSet = [];
-        var writer = new MemoryMapFileWriter(new FileStream(filePath, FileMode.Create), sizeHint, typesSet);
+        var writer = new FileBufferWriter(fullPath, typesSet, sizeHint);
         serializer(writer);
 
         Task.Run(
             () =>
             {
-                var fs = writer.FileStream;
-
                 writer.Dispose();
-                fs.Dispose();
-
                 Persistence.WriteSerializedTypesSnapshot(Path.GetDirectoryName(fullPath), typesSet);
             },
             Core.ClosingTokenSource.Token

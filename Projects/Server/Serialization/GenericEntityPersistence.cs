@@ -28,7 +28,7 @@ namespace Server;
 
 public interface IGenericEntityPersistence
 {
-    public void DeserializeIndexes(string savePath, Dictionary<ulong, string> typesDb);
+    void DeserializeIndexes(string savePath, Dictionary<ulong, string> typesDb);
 }
 
 public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPersistence, ISlotRangeSource
@@ -85,8 +85,9 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
         using var binFs = new FileStream(
             Path.Combine(dir, $"{Name}.bin"), FileMode.Create, FileAccess.Write, FileShare.None, 1024 * 1024
         );
-        using var idxFs = new FileStream(Path.Combine(dir, $"{Name}.idx"), FileMode.Create);
-        using var idx = new MemoryMapFileWriter(idxFs, 1024 * 1024, typeSet); // 1MB
+        // idx entries are fixed-width: version + count + 33 bytes per record.
+        var expectedIdxSize = 8 + 33L * EntitiesBySerial.Count;
+        using var idx = new FileBufferWriter(Path.Combine(dir, $"{Name}.idx"), typeSet, expectedIdxSize);
 
         var binPosition = 0L;
 
@@ -159,7 +160,7 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
     }
 
     private long WriteSegmentRecords(
-        SerializationThreadWorker worker, in SerializedSegment segment, MemoryMapFileWriter idx, FileStream binFs,
+        SerializationThreadWorker worker, in SerializedSegment segment, FileBufferWriter idx, FileStream binFs,
         long binPosition, ref int entityCount
     )
     {
