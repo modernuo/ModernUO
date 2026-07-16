@@ -297,7 +297,7 @@ public class BufferWriter : IGenericWriter
     public void Write(Serial serial) => Write(serial.Value);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public virtual void Write(Type type)
+    public void Write(Type type)
     {
         if (type == null)
         {

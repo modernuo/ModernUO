@@ -14,6 +14,8 @@
  *************************************************************************/
 
 using System;
+using System.Buffers;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.Win32.SafeHandles;
@@ -37,7 +39,6 @@ public class FileBufferWriter : BufferWriter, IDisposable
     private const int MaxStagingSize = 1024 * 1024; // 1MB write granularity for large files
 
     private readonly SafeFileHandle _handle;
-    private readonly HashSet<Type> _typeSet;
     private readonly byte[] _rentedStaging;
     private long _fileOffset;    // file position where the staging block begins
     private long _fileHighWater; // logical end of file across seeks
@@ -52,31 +53,16 @@ public class FileBufferWriter : BufferWriter, IDisposable
     /// a large-object allocation per file per save.
     /// </param>
     public FileBufferWriter(string filePath, HashSet<Type> typeSet = null, long expectedSize = MaxStagingSize)
-        : base(RentStaging(expectedSize), true)
+        : base(RentStaging(expectedSize), true, typeSet != null ? new ConcurrentQueue<Type>(typeSet) : null)
     {
         _rentedStaging = Buffer;
-        _typeSet = typeSet;
         _handle = File.OpenHandle(filePath, FileMode.Create, FileAccess.Write, FileShare.None, FileOptions.SequentialScan);
     }
 
     private static byte[] RentStaging(long expectedSize) =>
-        System.Buffers.ArrayPool<byte>.Shared.Rent((int)Math.Clamp(expectedSize, MinStagingSize, MaxStagingSize));
+        ArrayPool<byte>.Shared.Rent((int)Math.Clamp(expectedSize, MinStagingSize, MaxStagingSize));
 
     public override long Position => _fileOffset + Index;
-
-    public override void Write(Type type)
-    {
-        if (type == null)
-        {
-            Write((byte)0);
-        }
-        else
-        {
-            Write((byte)0x2); // xxHash3 64bit
-            Write(AssemblyHandler.GetTypeHash(type));
-            _typeSet?.Add(type);
-        }
-    }
 
     public override void Flush()
     {
@@ -149,7 +135,7 @@ public class FileBufferWriter : BufferWriter, IDisposable
 
             // Safe even if an oversized item grew the staging block: growth replaced the
             // base buffer with a fresh array, so the rented one is no longer referenced.
-            System.Buffers.ArrayPool<byte>.Shared.Return(_rentedStaging);
+            ArrayPool<byte>.Shared.Return(_rentedStaging);
         }
     }
 
