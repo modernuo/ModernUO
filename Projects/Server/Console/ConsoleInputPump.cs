@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Threading;
+using Server.Logging;
 
 namespace Server;
 
@@ -17,6 +18,7 @@ internal sealed class ConsoleInputPump
 {
     private readonly TextReader _input;
     private readonly Func<string, Action<string>> _lookup;
+    private readonly Server.Logging.ILogger _logger;
     private readonly object _gate = new();
     private readonly AutoResetEvent _promptDelivered = new(false);
 
@@ -24,19 +26,14 @@ internal sealed class ConsoleInputPump
     private string _promptResult;
     private volatile bool _running = true;
 
-    public ConsoleInputPump(TextReader input, Func<string, Action<string>> lookup)
+    public ConsoleInputPump(TextReader input, Func<string, Action<string>> lookup, Server.Logging.ILogger logger = null)
     {
         _input = input ?? throw new ArgumentNullException(nameof(input));
         _lookup = lookup ?? throw new ArgumentNullException(nameof(lookup));
+        _logger = logger;
     }
 
     public bool Running => _running;
-
-    public void Stop()
-    {
-        _running = false;
-        ReleasePendingPrompt(null);
-    }
 
     public void Run()
     {
@@ -51,6 +48,7 @@ internal sealed class ConsoleInputPump
                 }
                 catch
                 {
+                    _logger?.Warning("Console commands have been disabled due to an error.");
                     break;
                 }
 
@@ -93,9 +91,9 @@ internal sealed class ConsoleInputPump
                     var action = _lookup(split[0].ToLower());
                     action?.Invoke(split.Length > 1 ? split[1] : string.Empty);
                 }
-                catch
+                catch (Exception e)
                 {
-                    // A throwing lookup or handler logs its own failures; never let one kill the loop.
+                    _logger?.Error(e, "Failed to execute console command: {Command}", line);
                 }
             }
         }

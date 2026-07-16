@@ -69,7 +69,6 @@ public static class ConsoleInputHandler
         lock (_inputCommands)
         {
             var action = _inputCommands.GetValueOrDefault(command)?.Function;
-            _commandDescriptions = null;
             return action;
         }
     }
@@ -88,7 +87,7 @@ public static class ConsoleInputHandler
             return;
         }
 
-        _pump = new ConsoleInputPump(Console.In, GetInputCommand);
+        _pump = new ConsoleInputPump(Console.In, GetInputCommand, logger);
 
         new Thread(_pump.Run)
         {
