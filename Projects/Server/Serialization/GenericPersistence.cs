@@ -104,7 +104,7 @@ public abstract class GenericPersistence : Persistence, IGenericSerializable
             Console.WriteLine(error);
 
             Console.Write("Skip this file and continue? (y/n): ");
-            var y = Console.ReadLine();
+            var y = ConsoleInputHandler.ReadLine();
 
             if (!y.InsensitiveEquals("y"))
             {

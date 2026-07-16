@@ -16,7 +16,7 @@ public static class ServerConfigurationPrompts
         do
         {
             Console.Write("{0}> ", directories.Count > 0 ? "[enter to finish]" : " ");
-            var directory = Console.ReadLine();
+            var directory = ConsoleInputHandler.ReadLine();
             if (string.IsNullOrWhiteSpace(directory))
             {
                 break;
@@ -55,7 +55,7 @@ public static class ServerConfigurationPrompts
         {
             // IP:Port?
             Console.Write("[{0}]> ", ips.Count > 0 ? "enter to finish" : "0.0.0.0:2593");
-            var ipStr = Console.ReadLine();
+            var ipStr = ConsoleInputHandler.ReadLine();
 
             IPEndPoint ip;
             if (string.IsNullOrWhiteSpace(ipStr))
@@ -102,7 +102,7 @@ public static class ServerConfigurationPrompts
         do
         {
             Console.Write("[ModernUO]> ");
-            serverName = Console.ReadLine();
+            serverName = ConsoleInputHandler.ReadLine();
 
             if (string.IsNullOrWhiteSpace(serverName))
             {

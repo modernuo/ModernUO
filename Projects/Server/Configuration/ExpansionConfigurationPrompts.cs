@@ -23,7 +23,7 @@ public static class ExpansionConfigurationPrompts
         do
         {
             Console.Write("[enter for {0}]> ", maxExpansionName);
-            var input = Console.ReadLine();
+            var input = ConsoleInputHandler.ReadLine();
             Expansion expansion;
 
             if (string.IsNullOrWhiteSpace(input))
@@ -77,7 +77,7 @@ public static class ExpansionConfigurationPrompts
         do
         {
             OutputSelectedMaps(expansion, selectedMaps);
-            lastInput = Console.ReadLine()?.TrimEnd();
+            lastInput = ConsoleInputHandler.ReadLine()?.TrimEnd();
 
             if (string.IsNullOrWhiteSpace(lastInput))
             {
