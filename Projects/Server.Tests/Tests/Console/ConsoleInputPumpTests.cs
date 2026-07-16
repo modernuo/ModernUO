@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.IO;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Server;
@@ -93,6 +92,27 @@ public class ConsoleInputPumpTests
         reader.Complete(); // EOF while prompt is waiting
 
         Assert.True(prompt.Wait(TimeSpan.FromSeconds(2)), "prompt hung on EOF");
+        Assert.Null(prompt.Result);
+        Assert.False(pump.Running);
+    }
+
+    [Fact]
+    public void Throwing_lookup_does_not_hang_pending_prompt()
+    {
+        var reader = new BlockingTextReader();
+        var pump = new ConsoleInputPump(reader, _ => throw new InvalidOperationException("boom"));
+        Task.Run(pump.Run);
+
+        // Feed a command line; the throwing lookup must be swallowed and the loop must
+        // keep going rather than tearing down the reader thread.
+        reader.Feed("badcommand");
+        Thread.Sleep(50);
+
+        var prompt = Task.Run(pump.ReadLine);
+        Thread.Sleep(50);
+        reader.Complete(); // EOF while prompt is waiting
+
+        Assert.True(prompt.Wait(TimeSpan.FromSeconds(2)), "prompt hung after throwing lookup");
         Assert.Null(prompt.Result);
         Assert.False(pump.Running);
     }

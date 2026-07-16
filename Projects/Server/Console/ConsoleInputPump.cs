@@ -9,6 +9,9 @@ namespace Server;
 /// waiting <see cref="ReadLine"/> caller (a prompt) or dispatched as a command via the
 /// supplied lookup. EOF ends the loop instead of spinning. Correct-by-construction:
 /// the prompt-vs-command decision is made under a single lock at the moment a line is read.
+/// Command handlers dispatched by <see cref="Run"/> execute on the reader thread and
+/// must never call <see cref="ReadLine"/> — doing so would deadlock the pump (the reader
+/// thread would be blocked waiting on itself to read the next line).
 /// </summary>
 internal sealed class ConsoleInputPump
 {
@@ -37,71 +40,81 @@ internal sealed class ConsoleInputPump
 
     public void Run()
     {
-        while (_running && !Core.Closing)
+        try
         {
-            string line;
-            try
+            while (_running && !Core.Closing)
             {
-                line = _input.ReadLine();
-            }
-            catch
-            {
-                break;
-            }
-
-            if (line == null)
-            {
-                break; // EOF — never spin
-            }
-
-            bool isCommand;
-            lock (_gate)
-            {
-                if (_promptPending)
+                string line;
+                try
                 {
-                    _promptResult = line;
-                    _promptPending = false;
-                    _promptDelivered.Set();
-                    isCommand = false;
+                    line = _input.ReadLine();
                 }
-                else
+                catch
                 {
-                    isCommand = true;
+                    break;
                 }
-            }
 
-            if (!isCommand)
-            {
-                continue;
-            }
+                if (line == null)
+                {
+                    break; // EOF — never spin
+                }
 
-            var trimmed = line.Trim();
-            if (trimmed.Length == 0)
-            {
-                continue;
-            }
+                bool isCommand;
+                lock (_gate)
+                {
+                    if (_promptPending)
+                    {
+                        _promptResult = line;
+                        _promptPending = false;
+                        _promptDelivered.Set();
+                        isCommand = false;
+                    }
+                    else
+                    {
+                        isCommand = true;
+                    }
+                }
 
-            var split = trimmed.Split(' ', 2);
-            var action = _lookup(split[0].ToLower());
-            if (action == null)
-            {
-                continue;
-            }
+                if (!isCommand)
+                {
+                    continue;
+                }
 
-            try
-            {
-                action(split.Length > 1 ? split[1] : string.Empty);
-            }
-            catch
-            {
-                // Command handlers log their own failures; never let one kill the loop.
+                var trimmed = line.Trim();
+                if (trimmed.Length == 0)
+                {
+                    continue;
+                }
+
+                var split = trimmed.Split(' ', 2);
+
+                try
+                {
+                    var action = _lookup(split[0].ToLower());
+                    action?.Invoke(split.Length > 1 ? split[1] : string.Empty);
+                }
+                catch
+                {
+                    // A throwing lookup or handler logs its own failures; never let one kill the loop.
+                }
             }
         }
-
-        _running = false;
-        ReleasePendingPrompt(null);
+        finally
+        {
+            _running = false;
+            ReleasePendingPrompt(null);
+        }
     }
 
+    /// <summary>
+    /// Blocks the calling thread until the next console line is available, or until the
+    /// pump stops (returning <c>null</c>). Intended for a single, sequential caller at a
+    /// time — ModernUO's console prompts run one after another during startup/steps.
+    /// Concurrent callers are not supported: a second caller overlapping with a pending
+    /// prompt will race with it for the next line. Must not be called from the reader
+    /// thread (i.e. from within a command handler dispatched by <see cref="Run"/>), as
+    /// that would deadlock the pump.
+    /// </summary>
     public string ReadLine()
     {
         lock (_gate)
