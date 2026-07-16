@@ -114,8 +114,9 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
         using var binFs = new FileStream(
             Path.Combine(dir, $"{Name}.bin"), FileMode.Create, FileAccess.Write, FileShare.None, 1024 * 1024
         );
-        // idx entries are fixed-width: version + count + 33 bytes per record.
-        var expectedIdxSize = 8 + 33L * EntitiesBySerial.Count;
+        // v4 records are fixed-width 26 bytes; the header carries the type table
+        // (name lengths vary — 64 bytes per entry is a staging hint, not a contract).
+        var expectedIdxSize = 12 + 26L * EntitiesBySerial.Count + 64L * _typeTable.Count;
         using var idx = new FileBufferWriter(Path.Combine(dir, $"{Name}.idx"), typeSet, expectedIdxSize);
 
         var binPosition = 0L;
@@ -141,7 +142,16 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
             binPosition += _selfLength;
         }
 
-        idx.Write(3); // Version
+        idx.Write(4); // Version
+
+        // The type table is fully known at freeze (AddEntity diverts to the pending
+        // queues while saving) and is written before the records so the loader can
+        // resolve constructors before reading them.
+        idx.Write(_typeTable.Count);
+        for (var i = 0; i < _typeTable.Count; i++)
+        {
+            idx.WriteRaw(_typeTable[i].FullName);
+        }
 
         var countPosition = idx.Position;
         idx.Write(0);
@@ -229,7 +239,7 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
                     continue;
                 }
 
-                idx.Write(entity.GetType());
+                idx.Write(GetTypeIndex(entity));
                 idx.Write(entity.Serial);
                 idx.Write(entity.Created.Ticks);
                 idx.Write(binPosition);
@@ -261,7 +271,7 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
                     continue;
                 }
 
-                idx.Write(entity.GetType());
+                idx.Write(GetTypeIndex(entity));
                 idx.Write(entity.Serial);
                 idx.Write(entity.Created.Ticks);
                 idx.Write(binPosition);
@@ -279,6 +289,18 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
         }
 
         return binPosition;
+    }
+
+    private ushort GetTypeIndex(T entity)
+    {
+        if (!_typeIndexes.TryGetValue(entity.GetType(), out var typeIndex))
+        {
+            throw new InvalidOperationException(
+                $"{entity.GetType()} was serialized but never registered; entities must enter {Name} through AddEntity."
+            );
+        }
+
+        return typeIndex;
     }
 
     public override void Serialize()
@@ -401,7 +423,16 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
         {
             // Legacy didn't have the null flag check
             var typeName = dataReader.ReadStringRaw();
-            types.Add((ulong)i, GetConstructorFor(typeName, AssemblyHandler.FindTypeByName(typeName), ctorArguments));
+            var type = AssemblyHandler.FindTypeByName(typeName);
+            var ctor = GetConstructorFor(typeName, type, ctorArguments);
+
+            if (ctor != null)
+            {
+                // Keep the type table complete so the next (v4) save can index it.
+                RegisterType(type);
+            }
+
+            types.Add((ulong)i, ctor);
         }
 
         accessor.SafeMemoryMappedViewHandle.ReleasePointer();
@@ -459,50 +490,121 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
 
         var version = dataReader.ReadInt();
 
-        var ctors = version < 2 ? ReadTypes(Path.GetDirectoryName(filePath)) : [];
-
-        if (typesDb == null && ctors.Count == 0)
+        if (version >= 4)
         {
-            return;
+            DeserializeIndexesV4(dataReader, entities);
+        }
+        else
+        {
+            var ctors = version < 2 ? ReadTypes(Path.GetDirectoryName(filePath)) : [];
+
+            if (typesDb == null && ctors.Count == 0)
+            {
+                accessor.SafeMemoryMappedViewHandle.ReleasePointer();
+                return;
+            }
+
+            var now = DateTime.UtcNow;
+            var ctorArgs = new object[1];
+            Type[] ctorArguments = [typeof(Serial)];
+
+            var count = dataReader.ReadInt();
+
+            for (var i = 0; i < count; ++i)
+            {
+                ulong hash;
+                // Version 2 & 3 with SerializedTypes.db
+                if (version >= 2)
+                {
+                    var flag = dataReader.ReadByte();
+                    if (flag != 2)
+                    {
+                        throw new Exception($"Invalid type flag, expected 2 but received {flag}.");
+                    }
+
+                    hash = dataReader.ReadULong();
+                }
+                else
+                {
+                    hash = (ulong)dataReader.ReadInt(); // Legacy RunUO tdb index
+                }
+
+                if (!ctors.TryGetValue(hash, out var ctor) && typesDb?.TryGetValue(hash, out var typeName) == true)
+                {
+                    var type = AssemblyHandler.FindTypeByHash(hash);
+                    ctors[hash] = ctor = GetConstructorFor(typeName, type, ctorArguments);
+
+                    if (ctor != null)
+                    {
+                        // Keep the type table complete so the next (v4) save can index it.
+                        RegisterType(type);
+                    }
+                }
+
+                var serial = (Serial)dataReader.ReadUInt();
+                var created = version == 0 ? now : new DateTime(dataReader.ReadLong(), DateTimeKind.Utc);
+                if (version is > 0 and < 3)
+                {
+                    dataReader.ReadLong(); // LastSerialized
+                }
+
+                var pos = dataReader.ReadLong();
+                var length = dataReader.ReadInt();
+
+                if (ctor == null)
+                {
+                    continue;
+                }
+
+                ctorArgs[0] = serial;
+
+                if (ctor.Invoke(ctorArgs) is T entity)
+                {
+                    entity.Created = created;
+                    entities.Add(new EntitySpan<T>(entity, pos, length));
+                    EntitiesBySerial[serial] = entity;
+                }
+            }
         }
 
-        var now = DateTime.UtcNow;
-        var ctorArgs = new object[1];
+        accessor.SafeMemoryMappedViewHandle.ReleasePointer();
+
+        if (EntitiesBySerial.Count > 0)
+        {
+            _lastEntitySerial = EntitiesBySerial.Keys.Max();
+        }
+    }
+
+    private void DeserializeIndexesV4(UnmanagedDataReader dataReader, List<EntitySpan<T>> entities)
+    {
         Type[] ctorArguments = [typeof(Serial)];
 
+        var typeCount = dataReader.ReadInt();
+        var ctors = new ConstructorInfo[typeCount];
+
+        for (var i = 0; i < typeCount; i++)
+        {
+            var typeName = dataReader.ReadStringRaw();
+            var type = AssemblyHandler.FindTypeByHash(HashUtility.ComputeHash64(typeName));
+            var ctor = GetConstructorFor(typeName, type, ctorArguments);
+
+            if (ctor != null)
+            {
+                // Keep the type table complete so the next save can index it.
+                RegisterType(type);
+            }
+
+            ctors[i] = ctor;
+        }
+
+        var ctorArgs = new object[1];
         var count = dataReader.ReadInt();
 
         for (var i = 0; i < count; ++i)
         {
-            ulong hash;
-            // Version 2 & 3 with SerializedTypes.db
-            if (version >= 2)
-            {
-                var flag = dataReader.ReadByte();
-                if (flag != 2)
-                {
-                    throw new Exception($"Invalid type flag, expected 2 but received {flag}.");
-                }
-
-                hash = dataReader.ReadULong();
-            }
-            else
-            {
-                hash = (ulong)dataReader.ReadInt(); // Legacy RunUO tdb index
-            }
-
-            if (!ctors.TryGetValue(hash, out var ctor) && typesDb?.TryGetValue(hash, out var typeName) == true)
-            {
-                ctors[hash] = ctor = GetConstructorFor(typeName, AssemblyHandler.FindTypeByHash(hash), ctorArguments);
-            }
-
+            var ctor = ctors[dataReader.ReadUShort()];
             var serial = (Serial)dataReader.ReadUInt();
-            var created = version == 0 ? now : new DateTime(dataReader.ReadLong(), DateTimeKind.Utc);
-            if (version is > 0 and < 3)
-            {
-                dataReader.ReadLong(); // LastSerialized
-            }
-
+            var created = new DateTime(dataReader.ReadLong(), DateTimeKind.Utc);
             var pos = dataReader.ReadLong();
             var length = dataReader.ReadInt();
 
@@ -519,13 +621,6 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
                 entities.Add(new EntitySpan<T>(entity, pos, length));
                 EntitiesBySerial[serial] = entity;
             }
-        }
-
-        accessor.SafeMemoryMappedViewHandle.ReleasePointer();
-
-        if (EntitiesBySerial.Count > 0)
-        {
-            _lastEntitySerial = EntitiesBySerial.Keys.Max();
         }
     }
 

@@ -100,6 +100,8 @@ public class GenericEntityPersistenceRoundTripTests
                 };
             }
 
+            persistence.RegisterType(typeof(RoundTripEntity));
+
             // Freeze: what Persistence.SerializeAll + GenericEntityPersistence.Serialize do,
             // against this test's chunk source instead of the world's.
             foreach (var worker in workers)
@@ -119,22 +121,16 @@ public class GenericEntityPersistenceRoundTripTests
                 worker.Sleep();
             }
 
-            // Background write phase: snapshot from the segment logs, then the types db.
-            var typeSet = new HashSet<Type>();
-            persistence.WriteSnapshot(dir, typeSet);
-
-            var typesDb = new Dictionary<ulong, string>();
-            foreach (var type in typeSet)
-            {
-                typesDb[AssemblyHandler.GetTypeHash(type)] = type.FullName;
-            }
+            // Background write phase: snapshot from the segment logs. v4 embeds the type
+            // table in the idx, so no SerializedTypes.db is produced or needed.
+            persistence.WriteSnapshot(dir, []);
 
             persistence.PostWorldSave(); // releases the entries snapshot
 
             // Load into a fresh persistence, like a server boot would.
             loaded = new RoundTripPersistence(2001);
-            loaded.DeserializeIndexes(dir, typesDb);
-            loaded.Deserialize(dir, typesDb);
+            loaded.DeserializeIndexes(dir, null);
+            loaded.Deserialize(dir, null);
 
             Assert.True(loaded.SelfPayloadDeserialized);
             Assert.Equal(persistence.EntitiesBySerial.Count, loaded.EntitiesBySerial.Count);
@@ -146,6 +142,9 @@ public class GenericEntityPersistenceRoundTripTests
                 Assert.Equal(original.Name, entity.Name);
                 Assert.Equal(original.Created.Ticks, entity.Created.Ticks);
             }
+
+            // Loading must hydrate the type table so the next save can write indexes.
+            Assert.True(loaded.TryGetTypeIndex(typeof(RoundTripEntity), out _));
         }
         finally
         {
