@@ -54,6 +54,35 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
     private readonly Dictionary<Serial, T> _pendingAdd = new();
     private readonly Dictionary<Serial, T> _pendingDelete = new();
 
+    // Insertion-ordered table of every entity type added since boot. idx v4 records
+    // reference types by table index, so entries are never removed — a type whose
+    // entities were all deleted keeps its slot until restart. Only mutated on the game
+    // thread (AddEntity, deserialize); only read on the background writer thread during
+    // WritingSave, when AddEntity diverts to the pending queues.
+    private readonly Dictionary<Type, ushort> _typeIndexes = new();
+    private readonly List<Type> _typeTable = [];
+
+    internal IReadOnlyList<Type> TypeTable => _typeTable;
+
+    internal bool TryGetTypeIndex(Type type, out ushort index) => _typeIndexes.TryGetValue(type, out index);
+
+    internal void RegisterType(Type type)
+    {
+        ref var index = ref CollectionsMarshal.GetValueRefOrAddDefault(_typeIndexes, type, out var exists);
+        if (!exists)
+        {
+            if (_typeTable.Count > ushort.MaxValue)
+            {
+                throw new InvalidOperationException(
+                    $"{Name} exceeded {ushort.MaxValue + 1} distinct entity types."
+                );
+            }
+
+            index = (ushort)_typeTable.Count;
+            _typeTable.Add(type);
+        }
+    }
+
     public Dictionary<Serial, T> EntitiesBySerial { get; } = new();
 
     public GenericEntityPersistence(string name, int priority, uint minSerial, uint maxSerial) : this(
@@ -715,6 +744,7 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
             case WorldState.PendingSave:
             case WorldState.Running:
                 {
+                    RegisterType(entity.GetType());
                     ref var entityEntry = ref CollectionsMarshal.GetValueRefOrAddDefault(EntitiesBySerial, entity.Serial, out var exists);
                     if (exists)
                     {
