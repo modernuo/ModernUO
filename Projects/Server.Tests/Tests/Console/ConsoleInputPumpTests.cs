@@ -13,16 +13,30 @@ namespace Server.Tests;
 #pragma warning disable xUnit1031
 public class ConsoleInputPumpTests
 {
+    private static readonly TimeSpan Timeout = TimeSpan.FromSeconds(5);
+
+    // Deterministic synchronization: spin until a real condition holds (the pump's
+    // rendezvous state or the reader's progress) instead of sleeping a fixed interval,
+    // which races on slow/loaded CI runners.
+    private static void WaitUntil(Func<bool> condition, string message) =>
+        Assert.True(SpinWait.SpinUntil(condition, Timeout), message);
+
     // A TextReader whose ReadLine() blocks until a line is fed, and returns null after Complete().
     private sealed class BlockingTextReader : TextReader
     {
         private readonly BlockingCollection<string> _lines = new();
+        private int _readCalls;
+
+        // Number of times ReadLine() has been entered — lets a test wait until the pump's
+        // reader loop is blocked waiting for the next line (e.g. after consuming a command).
+        public int ReadCallCount => Volatile.Read(ref _readCalls);
 
         public void Feed(string line) => _lines.Add(line);
         public void Complete() => _lines.CompleteAdding();
 
         public override string ReadLine()
         {
+            Interlocked.Increment(ref _readCalls);
             try
             {
                 return _lines.Take();
@@ -41,7 +55,7 @@ public class ConsoleInputPumpTests
 
         var ran = Task.Run(pump.Run);
 
-        Assert.True(ran.Wait(TimeSpan.FromSeconds(2)), "Run() did not return on EOF");
+        Assert.True(ran.Wait(Timeout), "Run() did not return on EOF");
         Assert.False(pump.Running);
     }
 
@@ -58,7 +72,7 @@ public class ConsoleInputPumpTests
 
         Task.Run(pump.Run);
 
-        Assert.True(invokedWith.Task.Wait(TimeSpan.FromSeconds(2)), "command not dispatched");
+        Assert.True(invokedWith.Task.Wait(Timeout), "command not dispatched");
         Assert.Equal("hello", invokedWith.Task.Result);
     }
 
@@ -69,12 +83,13 @@ public class ConsoleInputPumpTests
         var pump = new ConsoleInputPump(reader, _ => null);
         Task.Run(pump.Run);
 
+        // Register the prompt, then wait until it is actually pending before feeding a
+        // line — otherwise the line could be consumed as a command before registration.
         var prompt = Task.Run(pump.ReadLine);
-        // Give the prompt a moment to register, then feed a line.
-        Thread.Sleep(50);
+        WaitUntil(() => pump.HasPendingPrompt, "prompt did not register");
         reader.Feed("the answer");
 
-        Assert.True(prompt.Wait(TimeSpan.FromSeconds(2)), "prompt did not receive a line");
+        Assert.True(prompt.Wait(Timeout), "prompt did not receive a line");
         Assert.Equal("the answer", prompt.Result);
 
         reader.Complete();
@@ -88,10 +103,10 @@ public class ConsoleInputPumpTests
         Task.Run(pump.Run);
 
         var prompt = Task.Run(pump.ReadLine);
-        Thread.Sleep(50);
+        WaitUntil(() => pump.HasPendingPrompt, "prompt did not register");
         reader.Complete(); // EOF while prompt is waiting
 
-        Assert.True(prompt.Wait(TimeSpan.FromSeconds(2)), "prompt hung on EOF");
+        Assert.True(prompt.Wait(Timeout), "prompt hung on EOF");
         Assert.Null(prompt.Result);
         Assert.False(pump.Running);
     }
@@ -103,16 +118,20 @@ public class ConsoleInputPumpTests
         var pump = new ConsoleInputPump(reader, _ => throw new InvalidOperationException("boom"));
         Task.Run(pump.Run);
 
-        // Feed a command line; the throwing lookup must be swallowed and the loop must
-        // keep going rather than tearing down the reader thread.
+        // Wait until the reader loop is blocked on its first read, then feed a bad command.
+        WaitUntil(() => reader.ReadCallCount >= 1, "reader did not start");
         reader.Feed("badcommand");
-        Thread.Sleep(50);
+
+        // Wait until the loop has consumed that command (throwing lookup swallowed) and is
+        // blocked waiting for the NEXT line — a second ReadLine() entry. This guarantees
+        // the command was dispatched (not delivered to a prompt) before we register one.
+        WaitUntil(() => reader.ReadCallCount >= 2, "bad command was not consumed");
 
         var prompt = Task.Run(pump.ReadLine);
-        Thread.Sleep(50);
+        WaitUntil(() => pump.HasPendingPrompt, "prompt did not register");
         reader.Complete(); // EOF while prompt is waiting
 
-        Assert.True(prompt.Wait(TimeSpan.FromSeconds(2)), "prompt hung after throwing lookup");
+        Assert.True(prompt.Wait(Timeout), "prompt hung after throwing lookup");
         Assert.Null(prompt.Result);
         Assert.False(pump.Running);
     }

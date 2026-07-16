@@ -35,6 +35,19 @@ internal sealed class ConsoleInputPump
 
     public bool Running => _running;
 
+    // Test-observable: true while a ReadLine() caller is registered and waiting for the
+    // next line. Lets tests synchronize on the rendezvous state instead of sleeping.
+    internal bool HasPendingPrompt
+    {
+        get
+        {
+            lock (_gate)
+            {
+                return _promptPending;
+            }
+        }
+    }
+
     public void Run()
     {
         try
