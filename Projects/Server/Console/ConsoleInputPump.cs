@@ -19,7 +19,7 @@ internal sealed class ConsoleInputPump
     private readonly TextReader _input;
     private readonly Func<string, Action<string>> _lookup;
     private readonly Server.Logging.ILogger _logger;
-    private readonly object _gate = new();
+    private readonly Lock _gate = new();
     private readonly AutoResetEvent _promptDelivered = new(false);
 
     private bool _promptPending;
