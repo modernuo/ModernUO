@@ -84,40 +84,34 @@ public abstract class Persistence
     }
 
     // Note: This is strictly on a background thread
-    internal static void WriteSnapshotAll(string path, HashSet<Type> typeSet)
+    internal static void WriteSnapshotAll(string path)
     {
         foreach (var p in _registry)
         {
-            p.WriteSnapshot(path, typeSet);
-        }
-
-        WriteSerializedTypesSnapshot(path, typeSet);
-    }
-
-    public static void WriteSerializedTypesSnapshot(string path, HashSet<Type> types)
-    {
-        var typesPath = Path.Combine(path, "SerializedTypes.db");
-        using var fs = new FileStream(typesPath, FileMode.Create);
-        using var writer = new MemoryMapFileWriter(fs, 1024 * 1024 * 4);
-
-        writer.Write(0); // version
-        writer.Write(types.Count);
-
-        foreach (var type in types)
-        {
-            var fullName = type.FullName;
-            writer.Write(HashUtility.ComputeHash64(fullName));
-            writer.WriteStringRaw(fullName);
+            p.WriteSnapshot(path);
         }
     }
 
     internal static void SerializeAll()
     {
-        foreach (var p in _registry)
+        // Largest known payloads first (LPT scheduling). An indivisible multi-megabyte system
+        // serialized last extends the freeze by its entire duration; serialized first it overlaps
+        // the entity stream. Sizes come from the previous save, or the loaded files on first save.
+        var ordered = new Persistence[_registry.Count];
+        _registry.CopyTo(ordered);
+        Array.Sort(ordered, static (a, b) => GetEstimatedSize(b).CompareTo(GetEstimatedSize(a)));
+
+        foreach (var p in ordered)
         {
+            // Chunks are persistence-homogeneous: publishing the partial chunk at each
+            // boundary lets workers attribute buffer-chunk records to their owner without
+            // any per-entity state.
+            World.SetChunkSourceOwner(p);
             p.Serialize();
         }
     }
+
+    private static long GetEstimatedSize(Persistence p) => (p as GenericPersistence)?.EstimatedSize ?? 0;
 
     internal static void PostWorldSaveAll()
     {
@@ -136,7 +130,7 @@ public abstract class Persistence
     }
 
     // Note: This should only be run on a background thread
-    public abstract void WriteSnapshot(string savePath, HashSet<Type> typeSet);
+    public abstract void WriteSnapshot(string savePath);
 
     public abstract void Serialize();
 

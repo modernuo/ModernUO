@@ -14,7 +14,6 @@
  *************************************************************************/
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -44,8 +43,11 @@ public static class World
     private static readonly MobilePersistence _mobilePersistence = new();
     private static readonly GenericEntityPersistence<BaseGuild> _guildPersistence = new("Guilds", 3, 1, 0x7FFFFFFF);
 
-    private static int _threadId;
+    // All workers including the main thread's inline worker (last index), for heap lookups.
     internal static SerializationThreadWorker[] _threadWorkers;
+    // How many of those own a thread (wake/sleep/exit applies only to these).
+    private static int _realWorkerCount;
+    private static readonly SerializationChunkSource _chunkSource = new();
     private static readonly ManualResetEvent _diskWriteHandle = new(true);
 
     private static string _tempSavePath; // Path to the temporary folder for the save
@@ -195,48 +197,46 @@ public static class World
             watch.Elapsed.TotalSeconds
         );
 
-        // Create the serialization threads.
-        var threadCount = UseMultiThreadedSaves ? Math.Max(Environment.ProcessorCount - 1, 1) : 1;
-        _threadWorkers = new SerializationThreadWorker[threadCount];
+        // Create the serialization threads, plus an inline worker the main thread uses to
+        // join the drain after publishing work instead of idling until the workers finish.
+        _realWorkerCount = UseMultiThreadedSaves ? Math.Max(Environment.ProcessorCount - 1, 1) : 1;
+        _threadWorkers = new SerializationThreadWorker[_realWorkerCount + 1];
 
-        for (var i = 0; i < _threadWorkers.Length; i++)
+        // The save we just loaded tells us how big the heaps need to be, so the first save
+        // doesn't pay copy-on-grow inside the freeze window. 25% headroom for world growth.
+        var heapSizeHint = (int)Math.Min(GetLoadedSaveSize() / _threadWorkers.Length * 5 / 4, 1024 * 1024 * 1024);
+
+        for (var i = 0; i < _realWorkerCount; i++)
         {
-            _threadWorkers[i] = new SerializationThreadWorker(i);
+            _threadWorkers[i] = new SerializationThreadWorker(i, _chunkSource, heapSizeHint);
         }
+
+        _threadWorkers[_realWorkerCount] =
+            SerializationThreadWorker.CreateInline(_realWorkerCount, _chunkSource, heapSizeHint);
     }
 
-    /**
-     * Duplicates can be weeded out asynchronously while flushing
-     * If performance becomes a problem, we need to build a dual mode concurrent array.
-     *
-     ****************************************************** Proposal ******************************************************
-     * The structure is initialized with a large capacity to avoid unnecessary resizing.
-     * Write Mode:
-     * - Multiple threads can add a single, or a range of elements concurrently.
-     * - Elements can be Peeked, but there are no guarantees.
-     * - To resize the internal array, replaced it with the next size up from an array pool.
-     * - The structure cannot be cleared in this mode.
-     *
-     * Read Mode:
-     * - The array can be read from multiple threads using a ref struct enumerator.
-     * - Elements cannot be added or reassigned.
-     * - Cleared by replacing the internal array with another one from the pool.
-     * - Note: Upon clearing, the existing array is not sent back to the pool until there are zero enumerators.
-     *
-     * Enumeration:
-     * - Multiple threads can enumerate while in read mode. The enumerator will Interlocked.Increment a read counter.
-     * - Upon dispose of the enumerator, the read counter will be lowered with an Interlocked.Decrement
-     * - When the read counter reaches 0, if there is a cleared array, the array is sent back to the pool zeroed.
-     *
-     * Notes:
-     * - Elements can never be removed.
-     *
-     * How is this different from ConcurrentQueue?
-     * The functionality is very similar, except the constraints allow the implementation to be done without locks.
-     * Since this implementation uses pooled arrays, allocations will approach zero over time.
-     **********************************************************************************************************************
-     */
-    public static ConcurrentQueue<Type> SerializedTypes { get; } = new();
+    private static long GetLoadedSaveSize()
+    {
+        try
+        {
+            if (!Directory.Exists(SavePath))
+            {
+                return 0;
+            }
+
+            var total = 0L;
+            foreach (var file in Directory.EnumerateFiles(SavePath, "*.bin", SearchOption.AllDirectories))
+            {
+                total += new FileInfo(file).Length;
+            }
+
+            return total;
+        }
+        catch
+        {
+            return 0;
+        }
+    }
 
     public static void Save()
     {
@@ -304,6 +304,7 @@ public static class World
 
             Persistence.SerializeAll();
             PauseSerializationThreads();
+            LogWorkerBalance();
 
             EventSink.InvokeWorldSave();
         }
@@ -332,8 +333,6 @@ public static class World
         }
     }
 
-    private static readonly HashSet<Type> _typesSet = [];
-
     private static void WriteFiles(object state)
     {
         var snapshotPath = (string)state;
@@ -342,15 +341,7 @@ public static class World
             var watch = Stopwatch.StartNew();
             logger.Information("Writing world save snapshot");
 
-            // Dedupe the types
-            while (SerializedTypes.TryDequeue(out var type))
-            {
-                _typesSet.Add(type);
-            }
-
-            Persistence.WriteSnapshotAll(snapshotPath, _typesSet);
-
-            _typesSet.Clear();
+            Persistence.WriteSnapshotAll(snapshotPath);
 
             try
             {
@@ -374,9 +365,6 @@ public static class World
             BroadcastStaff(0x35, true, "Writing world save snapshot failed! Check the logs!");
         }
 
-        // Clear types
-        SerializedTypes.Clear();
-
         _diskWriteHandle.Set();
         Core.LoopContext.Post(FinishWorldSave);
     }
@@ -386,45 +374,84 @@ public static class World
         WorldState = WorldState.Running;
         Persistence.PostWorldSaveAll(); // Process decay and safety queues
         MovementThrottle.ResetAllMovementTiming(); // Prevent post-save movement rejection bursts
+
+        // The snapshot is on disk; release the per-worker write logs so serialized
+        // entity references don't linger between saves.
+        for (var i = 0; i < _threadWorkers.Length; i++)
+        {
+            _threadWorkers[i].ReleaseWriteLogs();
+        }
+    }
+
+    // Debug-level output only exists in DEBUG builds (see LogFactory), so Release builds
+    // should not pay for the stat summing and argument boxing inside the freeze at all.
+    [Conditional("DEBUG")]
+    private static void LogWorkerBalance()
+    {
+        var totalEntities = 0L;
+        var totalBytes = 0L;
+        var minBytes = long.MaxValue;
+        var maxBytes = 0L;
+
+        for (var i = 0; i < _threadWorkers.Length; i++)
+        {
+            var worker = _threadWorkers[i];
+            totalEntities += worker.EntitiesSerialized;
+            var bytes = worker.BytesSerialized;
+            totalBytes += bytes;
+            minBytes = Math.Min(minBytes, bytes);
+            maxBytes = Math.Max(maxBytes, bytes);
+        }
+
+        logger.Debug(
+            "Serialized {EntityCount} entities ({ByteCount} bytes) across {WorkerCount} workers (min {MinBytes}, max {MaxBytes} bytes per worker)",
+            totalEntities,
+            totalBytes,
+            _threadWorkers.Length,
+            minBytes,
+            maxBytes
+        );
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static void WakeSerializationThreads()
     {
-        for (var i = 0; i < _threadWorkers.Length; i++)
+        for (var i = 0; i < _realWorkerCount; i++)
         {
             _threadWorkers[i].Wake();
         }
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static void PauseSerializationThreads()
     {
-        for (var i = 0; i < _threadWorkers.Length; i++)
+        // Publish the partial chunk before the workers are told to finish draining.
+        _chunkSource.Flush();
+
+        // Join the drain: the main thread would otherwise idle here while workers finish.
+        _threadWorkers[_realWorkerCount].DrainInline();
+
+        for (var i = 0; i < _realWorkerCount; i++)
         {
             _threadWorkers[i].Sleep();
         }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static int GetThreadWorkerCount() => Math.Max(Environment.ProcessorCount - 1, 1);
+    internal static void SetChunkSourceOwner(Persistence owner) => _chunkSource.SetOwner(owner);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static void ResetRoundRobin() => _threadId = 0;
+    internal static void PushToCache(IGenericSerializable e) => _chunkSource.Push(e);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static void PushToCache(IGenericSerializable e)
-    {
-        _threadWorkers[_threadId++].Push(e);
-        if (_threadId == _threadWorkers.Length)
-        {
-            _threadId = 0;
-        }
-    }
+    internal static void PushSingleToCache(GenericPersistence persistence) => _chunkSource.PushSingle(persistence);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void PushSlotRangesToCache(ISlotRangeSource source, int slotCount) =>
+        _chunkSource.PushSlotRanges(source, slotCount);
 
     public static void ExitSerializationThreads()
     {
-        for (var i = 0; i < _threadWorkers.Length; i++)
+        for (var i = 0; i < _realWorkerCount; i++)
         {
             _threadWorkers[i]?.Exit();
         }

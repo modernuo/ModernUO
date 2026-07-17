@@ -25,9 +25,24 @@ public abstract class GenericPersistence : Persistence, IGenericSerializable
     public string Name { get; }
     public string SaveFilePath { get; protected set; } // "<Folder>/<System>.bin"
 
-    public byte SerializedThread { get; set; }
-    public int SerializedPosition { get; set; }
-    public int SerializedLength { get; set; }
+    // Placement of the self-payload in the worker heaps for the most recent save. Only
+    // persistences carry placement state — entities are located through the per-worker
+    // segment logs instead.
+    private protected byte _selfThread;
+    private protected int _selfPosition;
+    private protected int _selfLength;
+
+    internal void SetSelfPlacement(byte thread, int position, int length)
+    {
+        _selfThread = thread;
+        _selfPosition = position;
+        _selfLength = length;
+    }
+
+    private long _loadedFileLength;
+
+    // Scheduling estimate only: previous save's payload size, or the loaded file size before the first save.
+    internal long EstimatedSize => _selfLength > 0 ? _selfLength : _loadedFileLength;
 
     public GenericPersistence(string name, int priority) : base(priority)
     {
@@ -37,12 +52,14 @@ public abstract class GenericPersistence : Persistence, IGenericSerializable
 
     public override void Serialize()
     {
-        World.PushToCache(this);
+        // Always a dedicated chunk: self-payloads can be arbitrarily large and must not
+        // ride inside a shared chunk where one worker would serialize them plus the chunk.
+        World.PushSingleToCache(this);
     }
 
-    public override void WriteSnapshot(string savePath, HashSet<Type> typeSet)
+    public override void WriteSnapshot(string savePath)
     {
-        if (SerializedLength == 0)
+        if (_selfLength == 0)
         {
             return;
         }
@@ -55,11 +72,7 @@ public abstract class GenericPersistence : Persistence, IGenericSerializable
 
         using var binFs = new FileStream(file, FileMode.Create, FileAccess.Write, FileShare.None);
 
-        var thread = SerializedThread;
-        var heapStart = SerializedPosition;
-        var heapLength = SerializedLength;
-
-        binFs.Write(threads[thread].GetHeap(heapStart, heapLength));
+        binFs.Write(threads[_selfThread].GetHeap(_selfPosition, _selfLength));
     }
 
     public override unsafe void Deserialize(string savePath, Dictionary<ulong, string> typesDb)
@@ -74,6 +87,7 @@ public abstract class GenericPersistence : Persistence, IGenericSerializable
         }
 
         var fileLength = file.Length;
+        _loadedFileLength = fileLength;
 
         string error;
 
