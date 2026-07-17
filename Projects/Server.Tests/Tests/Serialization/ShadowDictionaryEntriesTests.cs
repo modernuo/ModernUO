@@ -4,6 +4,10 @@ using Xunit;
 
 namespace Server.Tests;
 
+// Constructing a persistence mutates the static Persistence registry (an unsynchronized
+// SortedSet); every test that does so must share the sequential collection or parallel
+// collections corrupt the tree.
+[Collection("Sequential Server Tests")]
 public class ShadowDictionaryEntriesTests
 {
     private class TestEntity : ISerializable
