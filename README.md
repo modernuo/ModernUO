@@ -18,12 +18,13 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 [![Windows 10/11/2012/2016/2019/2022/2025](https://img.shields.io/badge/-server%202025-3c78d5?labelColor=222222&logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHJvbGU9ImltZyIgdmlld0JveD0iMCAwIDI0IDI0Ij48dGl0bGU+V2luZG93czwvdGl0bGU+PHBhdGggZD0iTTAsMEgxMS4zNzdWMTEuMzcySDBaTTEyLjYyMywwSDI0VjExLjM3MkgxMi42MjNaTTAsMTIuNjIzSDExLjM3N1YyNEgwWm0xMi42MjMsMEgyNFYyNEgxMi42MjMiIGZpbGw9IiMzYzc4ZDUiLz48L3N2Zz4=)](https://www.microsoft.com/en-US/evalcenter/evaluate-windows-server-2022)
 ![MacOS 14+](https://img.shields.io/badge/-sonoma-222222?logo=apple&logoColor=white&labelColor=222222)
 [![Debian 12+](https://img.shields.io/badge/-trixie-A81D33?logo=debian&logoColor=A81D33&labelColor=222222)](https://www.debian.org/distrib/)
-[![Ubuntu 22+ LTS](https://img.shields.io/badge/-24LTS-E95420?logo=ubuntu&logoColor=E95420&labelColor=222222)](https://ubuntu.com/download/server)
+[![Ubuntu 22+ LTS](https://img.shields.io/badge/-26LTS-E95420?logo=ubuntu&logoColor=E95420&labelColor=222222)](https://ubuntu.com/download/server)
 <br/>
 [![Alpine 3.22+](https://img.shields.io/badge/-3.22-0D597F?logo=alpinelinux&logoColor=0D597F&labelColor=222222)](https://alpinelinux.org/downloads/)
-[![Fedora 42+](https://img.shields.io/badge/-42-51a2da?logo=fedora&logoColor=51a2da&labelColor=222222)](https://getfedora.org/en/server/download/)
-[![RedHat 9+](https://img.shields.io/badge/-9-BE0000?logo=redhat&logoColor=BE0000&labelColor=222222)](https://access.redhat.com/downloads)
-[![CentOS Stream 9+](https://img.shields.io/badge/-stream_9-262577?logo=centos&logoColor=white&labelColor=222222)](https://www.centos.org/download/)
+[![Fedora 42+](https://img.shields.io/badge/-44-51a2da?logo=fedora&logoColor=51a2da&labelColor=222222)](https://getfedora.org/en/server/download/)
+[![RedHat 9+](https://img.shields.io/badge/-10-BE0000?logo=redhat&logoColor=BE0000&labelColor=222222)](https://access.redhat.com/downloads)
+[![CentOS Stream 9+](https://img.shields.io/badge/-stream_10-262577?logo=centos&logoColor=white&labelColor=222222)](https://www.centos.org/download/)
+[![AlmaLinux 10](https://img.shields.io/badge/-10-0F4266?logo=almalinux&logoColor=white&labelColor=222222)](https://almalinux.org/get-almalinux/)
 [![openSUSE 15.6+](https://img.shields.io/badge/-15.6-73BA25?logo=openSUSE&logoColor=73BA25&labelColor=222222)](https://get.opensuse.org/)
 [![SUSE Enterprise 15 SP6](https://img.shields.io/badge/-15%20SP6-0C322C?logo=suse&logoColor=30BA78&labelColor=222222)](https://www.suse.com/download/sles/)
 [![Linux Mint 21+](https://img.shields.io/badge/-21-87CF3E?logo=linux%20mint&logoColor=87CF3E&labelColor=222222)](https://linuxmint.com/download.php)
@@ -77,11 +78,15 @@ Run `./publish.cmd` (Windows) or `./publish.sh` (Linux/macOS) with no arguments 
   - `arm64` - ARM 64-bit
 
 ## Linux Prerequisites
-### Fedora, CentOS, RHEL, etc
+### Fedora, CentOS, RHEL, AlmaLinux, Rocky, etc
 ```shell
 dnf upgrade --refresh -y
-# CentOS does not come with EPEL enabled
-dnf install -y epel-release epel-next-release
+# RHEL-family distributions (CentOS Stream, AlmaLinux, Rocky, RHEL) need CRB and EPEL enabled.
+# Fedora skips this block.
+dnf install -y dnf-plugins-core
+dnf config-manager --set-enabled crb
+dnf install -y epel-release
+# Prerequisites
 dnf install -y findutils libicu libdeflate-devel zstd libargon2-devel liburing-devel
 ```
 

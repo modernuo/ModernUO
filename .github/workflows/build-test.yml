@@ -23,6 +23,8 @@ on:
 jobs:
   build-macos:
     runs-on: ${{ matrix.os }}
+    # A hung run otherwise bills the full 360-minute default before GitHub kills it.
+    timeout-minutes: 30
     name: Build (${{ matrix.name }})
     strategy:
       fail-fast: false
@@ -52,15 +54,26 @@ jobs:
     - name: Migration Changes
       run: git diff --exit-code ./**/Migrations/*.v*.json
     - name: Test
+      # blame-hang kills a stuck test host after 10 minutes and reports the in-flight
+      # tests plus a process dump instead of hanging until the job timeout.
       run: |
-        dotnet test --logger trx --results-directory ./TestResults
+        dotnet test --logger trx --results-directory ./TestResults --blame-hang --blame-hang-timeout 10m --blame-hang-dump-type full
         if [ -z "$(find ./TestResults -name '*.trx' 2>/dev/null)" ]; then
           echo "::error::No test result files were produced - no test projects ran. Failing to avoid masking failures."
           exit 1
         fi
+    - name: Upload test results on failure
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: TestResults-${{ matrix.name }}
+        path: ./TestResults
+        if-no-files-found: ignore
 
   build-linux:
     runs-on: ubuntu-latest
+    # A hung run otherwise bills the full 360-minute default before GitHub kills it.
+    timeout-minutes: 30
     container:
       image: ${{ matrix.container }}
       options: --security-opt seccomp=unconfined
@@ -69,6 +82,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          - container: ubuntu:26.04
+            name: Ubuntu 26
+            packageManager: apt
           - container: ubuntu:noble
             name: Ubuntu 24
             packageManager: apt
@@ -81,20 +97,33 @@ jobs:
           - container: debian:bookworm
             name: Debian 12
             packageManager: apt
-          - container: fedora:42
-            name: Fedora 42
+          - container: fedora:44
+            name: Fedora 44
             packageManager: dnf
           - container: quay.io/centos/centos:stream9
             name: CentOS 9 Stream
             packageManager: dnf
+            epel: true
+          - container: quay.io/centos/centos:stream10
+            name: CentOS 10 Stream
+            packageManager: dnf
+            epel: true
+          - container: almalinux:10
+            name: AlmaLinux 10
+            packageManager: dnf
+            epel: true
 
     steps:
-      - name: Enable EPEL and CRB for CentOS
+      # Enable CRB before EPEL, per the EPEL quickstart. epel-next is not installed:
+      # none of the prerequisites need it, EPEL 10 does not have it, and it is one more
+      # mirrorlist to fetch.
+      - name: Enable EPEL and CRB
         run: |
           dnf upgrade --refresh -y
-          dnf install -y epel-release epel-next-release
+          dnf install -y dnf-plugins-core
           dnf config-manager --set-enabled crb
-        if: ${{ startsWith(matrix.name, 'CentOS') }}
+          dnf install -y epel-release
+        if: ${{ matrix.epel }}
       - name: Install Prerequisites using dnf
         run: dnf makecache --refresh && dnf install -y findutils libicu libdeflate-devel zstd libargon2-devel liburing-devel
         if: ${{ matrix.packageManager == 'dnf' }}
@@ -111,9 +140,18 @@ jobs:
       - name: Build
         run: dotnet run --project Projects/BuildTool -- --config Release --skip-prereqs
       - name: Test
+        # blame-hang kills a stuck test host after 10 minutes and reports the in-flight
+        # tests plus a process dump instead of hanging until the job timeout.
         run: |
-          dotnet test --logger trx --results-directory ./TestResults
+          dotnet test --logger trx --results-directory ./TestResults --blame-hang --blame-hang-timeout 10m --blame-hang-dump-type full
           if [ -z "$(find ./TestResults -name '*.trx' 2>/dev/null)" ]; then
             echo "::error::No test result files were produced - no test projects ran. Failing to avoid masking failures."
             exit 1
           fi
+      - name: Upload test results on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TestResults-${{ matrix.name }}
+          path: ./TestResults
+          if-no-files-found: ignore
