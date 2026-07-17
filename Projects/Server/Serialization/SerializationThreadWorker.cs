@@ -270,12 +270,9 @@ public class SerializationThreadWorker
 
             writer.Close();
 
-            // Wake/Sleep/Exit all run on the owning thread, so the moment _stopEvent is set
-            // the owner may start another pause cycle (Exit does exactly that). Clear _pause
-            // and sample the exit condition BEFORE signaling: clearing after the signal can
-            // clobber the next cycle's pause request (this thread then spins forever waiting
-            // for a pause that never reads true), and deciding to exit after the signal can
-            // return without servicing that cycle's Sleep (the owner then blocks forever).
+            // The owning thread may start another pause cycle the moment _stopEvent is set
+            // (Exit does exactly that). Clear _pause and sample the exit condition before
+            // signaling, or the new cycle's pause request is clobbered / its Sleep orphaned.
             var exiting = Core.Closing || worker._exit;
             Volatile.Write(ref worker._pause, false);
 

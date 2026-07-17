@@ -4,9 +4,8 @@ using Xunit;
 
 namespace Server.Tests;
 
-// Constructing a persistence mutates the static Persistence registry (an unsynchronized
-// SortedSet); every test that does so must share the sequential collection or parallel
-// collections corrupt the tree.
+// Constructing a persistence mutates the static registry (an unsynchronized SortedSet);
+// tests that do so must share the sequential collection.
 [Collection("Sequential Server Tests")]
 public class SerializationChunkSourceTests
 {

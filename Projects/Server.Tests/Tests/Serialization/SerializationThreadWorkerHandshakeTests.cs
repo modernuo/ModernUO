@@ -7,12 +7,9 @@ namespace Server.Tests;
 [Collection("Sequential Server Tests")]
 public class SerializationThreadWorkerHandshakeTests
 {
-    // Regression: the pause handshake cleared _pause and checked the exit flag AFTER
-    // signaling _stopEvent. Wake/Sleep/Exit all run on the owning thread, so an Exit()
-    // issued the moment a Sleep() returned could either be clobbered (worker spins
-    // forever) or orphaned (worker returns without servicing Exit's Sleep) — a silent
-    // deadlock. Churn the full lifecycle with the racy back-to-back Sleep/Exit pattern;
-    // the watchdog turns a reintroduced deadlock into a failure instead of a hung run.
+    // The pause handshake must tolerate a new cycle starting the moment _stopEvent is
+    // set (Exit right after Sleep). The watchdog turns a reintroduced deadlock into a
+    // failure instead of a hung run.
     [Fact]
     public void WakeSleepExitChurn_NeverDeadlocks()
     {

@@ -25,9 +25,8 @@ namespace Server;
 /// growing: the full raw write path (unrolled encoded ints, in-place strings) composes into
 /// memory, and the file sees large sequential positional writes. Seeks flush the staging
 /// block and move the file offset, so backwards patches (e.g. the idx entity count) become
-/// small positional writes. This replaces memory-mapped snapshot writing, which paid soft
-/// page faults on every composed page and unpredictable dirty-section teardown stalls at
-/// dispose — measured ~4x slower end-to-end than staged writes at snapshot sizes.
+/// small positional writes. Memory-mapped writing pays soft page faults on every composed
+/// page and dirty-section teardown stalls at dispose — measured ~4x slower at snapshot sizes.
 /// A single item larger than the staging block grows the block via the base resize path,
 /// so oversized spans and strings remain correct.
 /// </summary>
