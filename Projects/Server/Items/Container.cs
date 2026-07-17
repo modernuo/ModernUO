@@ -437,9 +437,7 @@ public partial class Container : Item
 
         for (var i = items.Count - 1; i >= 0; --i)
         {
-            var item = items[i];
-            item.SetLastMoved();
-            item.MoveToWorld(loc, map);
+            items[i].MoveToWorld(loc, map);
         }
 
         Delete();
