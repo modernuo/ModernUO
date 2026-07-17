@@ -166,7 +166,7 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
 
             Console.Write($"Error: Type '{typeName}' was {issue}. Delete all of those types? (y/n): ");
 
-            if (Console.ReadLine().InsensitiveEquals("y"))
+            if (ConsoleInputHandler.ReadLine().InsensitiveEquals("y"))
             {
                 Console.WriteLine("Loading...");
                 return null;
@@ -430,7 +430,7 @@ public class GenericEntityPersistence<T> : GenericPersistence, IGenericEntityPer
                 if (!deleteAllFailures)
                 {
                     Console.Write("Delete the object and continue? (y/n/a): ");
-                    var pressedKey = Console.ReadLine();
+                    var pressedKey = ConsoleInputHandler.ReadLine();
 
                     if (pressedKey.InsensitiveEquals("a"))
                     {

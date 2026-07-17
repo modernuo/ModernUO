@@ -147,6 +147,8 @@ public static class Core
 
     public static bool Closing => ClosingTokenSource.IsCancellationRequested;
 
+    public static bool Headless { get; private set; }
+
     public static int GlobalUpdateRange { get; set; } = 18;
 
     public static int GlobalMaxUpdateRange { get; set; } = 24;
@@ -258,7 +260,7 @@ public static class Core
                 // ignored
             }
 
-            if (!close)
+            if (!close && !Core.Headless)
             {
                 Console.WriteLine("This exception is fatal, press return to exit");
                 ConsoleInputHandler.ReadLine();
@@ -406,6 +408,12 @@ public static class Core
         Utility.PopColor();
 
         Console.CancelKeyPress += Console_CancelKeyPressed;
+
+        Headless = Console.IsInputRedirected;
+        if (Headless)
+        {
+            logger.Information("Headless mode detected (stdin is not a TTY); interactive console input is disabled.");
+        }
 
         // LibDeflate is not thread safe, so we need to create a new instance for each thread
         var standard = Deflate.Standard;

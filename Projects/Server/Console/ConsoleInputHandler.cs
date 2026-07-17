@@ -24,13 +24,9 @@ namespace Server;
 
 public static class ConsoleInputHandler
 {
-    private static readonly AutoResetEvent _receivedUserInput = new(false);
-    private static readonly AutoResetEvent _endUserInput = new(false);
-    private static bool _initialized;
-    private static bool _expectUserInput;
+    private static ConsoleInputPump _pump;
     private static readonly Dictionary<string, ConsoleCommand> _inputCommands = new();
     private static string[] _commandDescriptions;
-    private static string _input;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void RegisterCommand(string command, string description, Action<string> function) =>
@@ -73,7 +69,6 @@ public static class ConsoleInputHandler
         lock (_inputCommands)
         {
             var action = _inputCommands.GetValueOrDefault(command)?.Function;
-            _commandDescriptions = null;
             return action;
         }
     }
@@ -86,9 +81,15 @@ public static class ConsoleInputHandler
     [CallPriority(0)]
     public static void Initialize()
     {
-        _initialized = true;
+        if (Core.Headless)
+        {
+            logger.Information("Console input disabled (headless: stdin is not a TTY).");
+            return;
+        }
 
-        new Thread(ProcessConsoleInput)
+        _pump = new ConsoleInputPump(Console.In, GetInputCommand, logger);
+
+        new Thread(_pump.Run)
         {
             IsBackground = true,
             Name = "Console Input Handler"
@@ -150,69 +151,21 @@ public static class ConsoleInputHandler
 
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(ConsoleInputHandler));
 
-    private static async void ProcessConsoleInput()
-    {
-        while (!Core.Closing)
-        {
-            string input;
-            try
-            {
-                input = Console.ReadLine()?.Trim();
-            }
-            catch
-            {
-                logger.Warning("Console commands have been disabled due to an error.");
-                _initialized = false;
-                return;
-            }
-
-            if (Volatile.Read(ref _expectUserInput))
-            {
-                _input = input;
-                _receivedUserInput.Set();
-                _endUserInput.WaitOne();
-                continue;
-            }
-
-            if (string.IsNullOrEmpty(input))
-            {
-                continue;
-            }
-
-            var splitInput = input.Split(' ', 2);
-            var command = splitInput[0].ToLower();
-
-            try
-            {
-                Action<string> action;
-                lock (_inputCommands)
-                {
-                    action = _inputCommands.GetValueOrDefault(command)?.Function;
-                }
-
-                action?.Invoke(splitInput.Length > 1 ? splitInput[1] : string.Empty);
-            }
-            catch (Exception e)
-            {
-                logger.Error(e, "Failed to execute console command: {Command}", input);
-            }
-        }
-    }
-
     public static string ReadLine()
     {
-        if (!_initialized)
+        if (Core.Headless)
+        {
+            throw new HeadlessConsoleInputException("ConsoleInputHandler.ReadLine");
+        }
+
+        // Early startup (before Initialize) or after the loop ended: read directly.
+        var pump = _pump;
+        if (pump is not { Running: true })
         {
             return Console.ReadLine();
         }
 
-        Volatile.Write(ref _expectUserInput, true);
-        _receivedUserInput.WaitOne();
-        var line = _input;
-        Volatile.Write(ref _expectUserInput, false);
-        _endUserInput.Set();
-
-        return line;
+        return pump.ReadLine();
     }
 
     private class ConsoleCommand(string[] commands, string description, Action<string> function)
