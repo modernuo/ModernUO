@@ -226,13 +226,10 @@ public class Gump : BaseGump
 
     public void Remove(GumpEntry g)
     {
-        if (g == null || !Entries.Contains(g))
+        if (g != null && Entries.Remove(g))
         {
-            return;
+            g.Parent = null;
         }
-
-        Entries.Remove(g);
-        g.Parent = null;
     }
 
     public int Intern(string value)

@@ -123,9 +123,8 @@ namespace Server.Engines.PartySystem
                 {
                     from.SendMessage("They are not in a party.");
                 }
-                else if (p.m_Listeners.Contains(from))
+                else if (p.m_Listeners.Remove(from))
                 {
-                    p.m_Listeners.Remove(from);
                     from.SendMessage("You are no longer listening to that party.");
                 }
                 else

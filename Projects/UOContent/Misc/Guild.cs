@@ -191,7 +191,7 @@ namespace Server.Guilds
 
         public void TurnToMember(Guild g)
         {
-            if (g.Alliance != this || !m_PendingMembers.Contains(g) || m_Members.Contains(g))
+            if (g.Alliance != this || m_Members.Contains(g) || !m_PendingMembers.Remove(g))
             {
                 return;
             }
@@ -199,21 +199,16 @@ namespace Server.Guilds
             g.GuildMessage(1070760, Name);    // Your Guild has joined the ~1_ALLIANCENAME~ Alliance.
             AllianceMessage(1070761, g.Name); // A new Guild has joined your Alliance: ~1_GUILDNAME~
 
-            m_PendingMembers.Remove(g);
             m_Members.Add(g);
             g.Alliance.InvalidateMemberProperties();
         }
 
         public void RemoveGuild(Guild g)
         {
-            if (m_PendingMembers.Contains(g))
-            {
-                m_PendingMembers.Remove(g);
-            }
+            m_PendingMembers.Remove(g);
 
-            if (m_Members.Contains(g)) // Sanity, just incase someone with a custom script adds a character to BOTH arrays
+            if (m_Members.Remove(g)) // Sanity, just incase someone with a custom script adds a character to BOTH arrays
             {
-                m_Members.Remove(g);
                 g.InvalidateMemberProperties();
 
                 g.GuildMessage(1070763, Name);    // Your Guild has been removed from the ~1_ALLIANCENAME~ Alliance.

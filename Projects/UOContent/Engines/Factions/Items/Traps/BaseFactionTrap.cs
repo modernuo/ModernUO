@@ -252,11 +252,7 @@ public abstract class BaseFactionTrap : BaseTrap
 
     public override void OnDelete()
     {
-        if (Faction?.Traps.Contains(this) == true)
-        {
-            Faction.Traps.Remove(this);
-        }
-
+        Faction?.Traps.Remove(this);
         base.OnDelete();
     }
 

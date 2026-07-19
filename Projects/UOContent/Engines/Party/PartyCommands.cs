@@ -40,7 +40,7 @@ namespace Server.Engines.PartySystem
                 from.SendLocalizedMessage(1005455); // Who would you like to remove from your party?
                 from.Target = new RemovePartyTarget();
             }
-            else if ((p.Leader == from || from == target) && p.Contains(target))
+            else if (p.Leader == from || from == target)
             {
                 p.Remove(target);
             }
