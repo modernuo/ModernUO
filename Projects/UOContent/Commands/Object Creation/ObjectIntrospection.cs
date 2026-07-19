@@ -184,4 +184,45 @@ public static class ObjectIntrospection
 
         return lines;
     }
+
+    public static List<Type> DiscoverConstructibleTypes()
+    {
+        var results = new List<Type>();
+
+        foreach (var asm in AssemblyHandler.Assemblies)
+        {
+            foreach (var type in AssemblyHandler.GetTypeCache(asm).Types)
+            {
+                if (type.IsAbstract)
+                {
+                    continue;
+                }
+
+                if (!typeof(Item).IsAssignableFrom(type) && !typeof(Mobile).IsAssignableFrom(type))
+                {
+                    continue;
+                }
+
+                if (HasConstructibleCtor(type))
+                {
+                    results.Add(type);
+                }
+            }
+        }
+
+        return results;
+    }
+
+    private static bool HasConstructibleCtor(Type type)
+    {
+        foreach (var ctor in type.GetConstructors())
+        {
+            if (Attributes.IsConstructible(ctor, AccessLevel.Developer))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
