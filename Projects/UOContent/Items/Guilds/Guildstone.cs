@@ -54,14 +54,12 @@ public partial class Guildstone : Item, IAddon, IChoppable
 
         var house = BaseHouse.FindHouseAt(this);
 
-        if (house?.IsOwner(from) == true && house.Addons.Contains(this))
+        if (house?.IsOwner(from) == true && house.Addons.Remove(this))
         {
             Effects.PlaySound(GetWorldLocation(), Map, 0x3B3);
             from.SendLocalizedMessage(500461); // You destroy the item.
 
             Delete();
-
-            house.Addons.Remove(this);
 
             var deed = Deed;
 

@@ -477,17 +477,8 @@ namespace Server.Misc
                 return Notoriety.Enemy;
             }
 
-            if (Stealing.ClassicMode && pmTarg?.PermaFlags.Contains(source) == true)
-            {
-                return Notoriety.CanBeAttacked;
-            }
-
-            if (bcTarg?.AlwaysAttackable == true)
-            {
-                return Notoriety.CanBeAttacked;
-            }
-
-            if (CheckHouseFlag(source, target, target.Location, target.Map))
+            if (Stealing.ClassicMode && pmTarg?.PermaFlags.Contains(source) == true ||
+                bcTarg?.AlwaysAttackable == true || CheckHouseFlag(source, target, target.Location, target.Map))
             {
                 return Notoriety.CanBeAttacked;
             }

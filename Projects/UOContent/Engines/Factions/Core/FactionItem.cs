@@ -87,10 +87,7 @@ public class FactionItem
             item.FactionItemState = null;
         }
 
-        if (Faction?.State.FactionItems.Contains(this) == true)
-        {
-            Faction.State.FactionItems.Remove(this);
-        }
+        Faction?.State.FactionItems.Remove(this);
     }
 
     public void Serialize(IGenericWriter writer)

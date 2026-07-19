@@ -2642,10 +2642,8 @@ namespace Server.Multis
                 return;
             }
 
-            if (Access.Contains(targ))
+            if (Access.Remove(targ))
             {
-                Access.Remove(targ);
-
                 if (!HasAccess(targ) && IsInside(targ))
                 {
                     targ.Location = BanLocation;
@@ -2800,10 +2798,8 @@ namespace Server.Multis
                 return;
             }
 
-            if (CoOwners.Contains(targ))
+            if (CoOwners.Remove(targ))
             {
-                CoOwners.Remove(targ);
-
                 targ.Delta(MobileDelta.Noto);
 
                 from.SendLocalizedMessage(501299); // Co-owner removed from list.
@@ -2872,10 +2868,8 @@ namespace Server.Multis
                 return;
             }
 
-            if (Friends.Contains(targ))
+            if (Friends.Remove(targ))
             {
-                Friends.Remove(targ);
-
                 targ.Delta(MobileDelta.Noto);
 
                 from.SendLocalizedMessage(501298);  // Friend removed from list.

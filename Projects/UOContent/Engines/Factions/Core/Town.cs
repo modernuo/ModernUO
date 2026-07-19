@@ -350,28 +350,8 @@ public abstract class Town : IComparable<Town>
         return true;
     }
 
-    public bool UnregisterGuard(BaseFactionGuard guard)
-    {
-        if (guard == null)
-        {
-            return false;
-        }
-
-        var guardList = FindGuardList(guard.GetType());
-
-        if (guardList == null)
-        {
-            return false;
-        }
-
-        if (!guardList.Guards.Contains(guard))
-        {
-            return false;
-        }
-
-        guardList.Guards.Remove(guard);
-        return true;
-    }
+    public bool UnregisterGuard(BaseFactionGuard guard) =>
+        guard != null && FindGuardList(guard.GetType())?.Guards.Remove(guard) == true;
 
     public bool RegisterVendor(BaseFactionVendor vendor)
     {

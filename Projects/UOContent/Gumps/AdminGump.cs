@@ -1865,16 +1865,13 @@ namespace Server.Gumps
                     {
                         var acct = (Account)m_List[v];
 
-                        if (info.IsSwitched(v))
-                        {
-                            if (!rads.Contains(acct))
-                            {
-                                rads.Add(acct);
-                            }
-                        }
-                        else if (rads.Contains(acct))
+                        if (!info.IsSwitched(v))
                         {
                             rads.Remove(acct);
+                        }
+                        else if (!rads.Contains(acct))
+                        {
+                            rads.Add(acct);
                         }
                     }
                 }
