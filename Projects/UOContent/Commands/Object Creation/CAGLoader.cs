@@ -52,6 +52,7 @@ public static class CAGLoader
     public static CAGCategory BuildTree(ObjectIndexFile index)
     {
         var root = new CAGCategory("Add Menu");
+        var pending = new Dictionary<CAGCategory, List<CAGObject>>();
 
         foreach (var entry in index.Objects)
         {
@@ -63,8 +64,13 @@ public static class CAGLoader
             }
 
             var category = NavigateToCategory(root, entry.Category);
-            AppendObject(
-                category,
+            if (!pending.TryGetValue(category, out var objects))
+            {
+                objects = new List<CAGObject>();
+                pending[category] = objects;
+            }
+
+            objects.Add(
                 new CAGObject
                 {
                     Type = type,
@@ -73,6 +79,11 @@ public static class CAGLoader
                     Parent = category
                 }
             );
+        }
+
+        foreach (var (category, objects) in pending)
+        {
+            AppendNodes(category, objects);
         }
 
         return root;
@@ -124,6 +135,19 @@ public static class CAGLoader
     }
 
     private static void AppendObject(CAGCategory category, CAGObject obj) => AppendNode(category, obj);
+
+    private static void AppendNodes(CAGCategory parent, IReadOnlyList<CAGNode> nodes)
+    {
+        var existing = parent.Nodes ?? [];
+        var grown = new CAGNode[existing.Length + nodes.Count];
+        Array.Copy(existing, grown, existing.Length);
+        for (var i = 0; i < nodes.Count; i++)
+        {
+            grown[existing.Length + i] = nodes[i];
+        }
+
+        parent.Nodes = grown;
+    }
 
     private static void AddFallbackForStaleCache(CAGCategory root, ObjectIndexFile index)
     {
