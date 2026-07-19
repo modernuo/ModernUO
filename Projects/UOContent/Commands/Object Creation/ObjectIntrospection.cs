@@ -1,6 +1,8 @@
 using System;
+using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Text;
 using Server.Items;
 
 namespace Server.Commands;
@@ -119,5 +121,67 @@ public static class ObjectIntrospection
         }
 
         return docs;
+    }
+
+    public static List<OplLine> ExtractOpl(Type type)
+    {
+        if (type.IsAssignableTo(typeof(Item)))
+        {
+            var item = type.CreateInstance<Item>();
+            try
+            {
+                var opl = new ObjectPropertyList(item);
+                item.GetProperties(opl);
+                return DecodeOpl(opl);
+            }
+            finally
+            {
+                item.Delete();
+            }
+        }
+
+        if (type.IsAssignableTo(typeof(Mobile)))
+        {
+            var m = type.CreateInstance<Mobile>();
+            try
+            {
+                var opl = new ObjectPropertyList(m);
+                m.GetProperties(opl);
+                return DecodeOpl(opl);
+            }
+            finally
+            {
+                m.Delete();
+            }
+        }
+
+        return [];
+    }
+
+    private static List<OplLine> DecodeOpl(ObjectPropertyList opl)
+    {
+        opl.Terminate();
+        var buffer = opl.Buffer;
+        var lines = new List<OplLine>();
+        var pos = 15; // fixed OPL header length
+
+        while (pos + 4 <= buffer.Length)
+        {
+            var cliloc = BinaryPrimitives.ReadInt32BigEndian(buffer.AsSpan(pos));
+            pos += 4;
+            if (cliloc == 0)
+            {
+                break;
+            }
+
+            var byteLen = BinaryPrimitives.ReadUInt16BigEndian(buffer.AsSpan(pos));
+            pos += 2;
+            var args = byteLen > 0 ? Encoding.Unicode.GetString(buffer, pos, byteLen) : null;
+            pos += byteLen;
+
+            lines.Add(new OplLine { Cliloc = cliloc, Args = args, Text = Localization.GetText(cliloc) });
+        }
+
+        return lines;
     }
 }
