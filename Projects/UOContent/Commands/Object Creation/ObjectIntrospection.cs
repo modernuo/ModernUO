@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Reflection;
 using Server.Items;
 
 namespace Server.Commands;
@@ -56,5 +58,36 @@ public static class ObjectIntrospection
         }
 
         throw new ArgumentException($"{type} is neither Item nor Mobile.", nameof(type));
+    }
+
+    public static List<CtorDoc> ExtractCtors(Type type)
+    {
+        var docs = new List<CtorDoc>();
+
+        foreach (var ctor in type.GetConstructors())
+        {
+            if (!Attributes.IsConstructible(ctor, AccessLevel.Developer))
+            {
+                continue;
+            }
+
+            var doc = new CtorDoc();
+            foreach (var p in ctor.GetParameters())
+            {
+                doc.Parameters.Add(
+                    new ParamDoc
+                    {
+                        Name = p.Name,
+                        Type = ObjectNaming.FriendlyTypeName(p.ParameterType),
+                        Default = p.HasDefaultValue ? p.DefaultValue?.ToString() ?? "null" : null,
+                        IsParams = p.IsDefined(typeof(ParamArrayAttribute), false)
+                    }
+                );
+            }
+
+            docs.Add(doc);
+        }
+
+        return docs;
     }
 }
