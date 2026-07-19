@@ -63,6 +63,21 @@ public class ObjectPropertyListSpanAddTests
     }
 
     [Fact]
+    public void HashFormat_OnlyMarksIntegers()
+    {
+        // Integer {value:#} emits the cliloc marker "#<value>".
+        var intList = new ObjectPropertyList(null);
+        intList.Add(1062028, $"{1043009:#}");
+        Assert.Equal((1062028, "#1043009"), Decode(intList)[0]);
+
+        // Float {value:#} is the standard '#' custom-numeric (digit-placeholder) format, not a cliloc
+        // marker -- so no leading '#'.
+        var dblList = new ObjectPropertyList(null);
+        dblList.Add(1062028, $"{42.0:#}");
+        Assert.Equal((1062028, 42.0.ToString("#")), Decode(dblList)[0]); // "42"
+    }
+
+    [Fact]
     public void Add_TruncatesArgumentOverMaxLength()
     {
         var oversized = new string('x', ObjectPropertyList.MaxArgumentLength + 50);
