@@ -90,4 +90,34 @@ public static class ObjectIntrospection
 
         return docs;
     }
+
+    public static List<PropertyDoc> ExtractProperties(Type type)
+    {
+        var docs = new List<PropertyDoc>();
+
+        var props = type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+        foreach (var p in props)
+        {
+            var attr = p.GetCustomAttribute<CommandPropertyAttribute>(true);
+            if (attr == null)
+            {
+                continue;
+            }
+
+            var pt = p.PropertyType;
+            docs.Add(
+                new PropertyDoc
+                {
+                    Name = p.Name,
+                    Type = ObjectNaming.FriendlyTypeName(pt),
+                    ReadLevel = attr.ReadLevel.ToString(),
+                    WriteLevel = attr.WriteLevel.ToString(),
+                    ReadOnly = attr.ReadOnly || !p.CanWrite,
+                    EnumValues = pt.IsEnum ? Enum.GetNames(pt) : null
+                }
+            );
+        }
+
+        return docs;
+    }
 }
