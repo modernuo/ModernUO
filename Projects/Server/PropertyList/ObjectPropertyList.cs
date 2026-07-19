@@ -384,9 +384,9 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
 
     public void AppendFormatted<T>(T value, string? format)
     {
-        // We support localization '#' cliloc formatter for custom property lists
-        // This allows someone to build an IPropertyList that creates HTML using the same syntax as LocalizationInterpolationHandler
-        if (format == "#")
+        // '#' marks an integer argument as a cliloc ("#<value>"). Integers only -- a float/double/decimal
+        // '#' is the standard numeric format, not a cliloc marker.
+        if (format == "#" && value is int or uint or long or ulong or short or ushort or byte or sbyte)
         {
             AppendLiteral("#");
             format = null;
