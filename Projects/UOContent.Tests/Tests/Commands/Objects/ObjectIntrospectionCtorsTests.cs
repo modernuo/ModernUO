@@ -1,4 +1,3 @@
-using System.Linq;
 using Server.Commands;
 using Server.Items;
 using Xunit;
