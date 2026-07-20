@@ -77,10 +77,19 @@ public class AdvancedSearchWorkerTests
     public void DoSearch_IsGuarded_AgainstReentry()
     {
         // White-box: flip the guard, assert a second entry is rejected, then clear.
+        // _searchInProgress is process-global static state; release it in finally so a
+        // failed assert here can't leak the guard into other tests.
         Assert.False(AdvancedSearchGump.IsSearchInProgress);
-        Assert.True(AdvancedSearchGump.TryBeginSearch());   // acquires
-        Assert.False(AdvancedSearchGump.TryBeginSearch());  // rejected
-        AdvancedSearchGump.EndSearch();                     // releases
+        Assert.True(AdvancedSearchGump.TryBeginSearch()); // acquires
+        try
+        {
+            Assert.False(AdvancedSearchGump.TryBeginSearch()); // rejected
+        }
+        finally
+        {
+            AdvancedSearchGump.EndSearch(); // releases
+        }
+
         Assert.False(AdvancedSearchGump.IsSearchInProgress);
     }
 }

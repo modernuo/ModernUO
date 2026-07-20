@@ -754,80 +754,87 @@ public class AdvancedSearchGump : Gump
         _threadId = 0;
 
         var autoSave = AutoSave.SavesEnabled;
-        if (autoSave)
+        AutoSave.SavesEnabled = false;
+
+        try
         {
-            AutoSave.SavesEnabled = false;
-        }
+            _threadWorkers ??= new AdvancedSearchThreadWorker[Math.Max(Environment.ProcessorCount - 1, 1)];
 
-        _threadWorkers ??= new AdvancedSearchThreadWorker[Math.Max(Environment.ProcessorCount - 1, 1)];
+            var ignoreQueue = new ConcurrentQueue<IEntity>();
+            var results = new ConcurrentQueue<AdvancedSearchResult>();
+            var worldLocation = new WorldLocation(from.Location, from.Map);
 
-        var ignoreQueue = new ConcurrentQueue<IEntity>();
-        var results = new ConcurrentQueue<AdvancedSearchResult>();
-        var worldLocation = new WorldLocation(from.Location, from.Map);
-
-        for (var i = 0; i < _threadWorkers.Length; i++)
-        {
-            (_threadWorkers[i] ??= new AdvancedSearchThreadWorker()).Wake(worldLocation, Filter, results, ignoreQueue);
-        }
-
-        var type = Filter.FilterType ? Filter.Type : null;
-
-        // Push the entities
-        foreach (var item in World.Items.Values)
-        {
-            if (type == null || type.IsInstanceOfType(item))
+            for (var i = 0; i < _threadWorkers.Length; i++)
             {
-                PushToWorkers(item);
+                (_threadWorkers[i] ??= new AdvancedSearchThreadWorker()).Wake(worldLocation, Filter, results, ignoreQueue);
             }
-        }
 
-        foreach (var m in World.Mobiles.Values)
-        {
-            if (type == null || type.IsInstanceOfType(m))
-            {
-                PushToWorkers(m);
-            }
-        }
+            var type = Filter.FilterType ? Filter.Type : null;
 
-        ThreadPool.QueueUserWorkItem(state =>
-        {
-            try
+            // Push the entities
+            foreach (var item in World.Items.Values)
             {
-                // Block until everything is processed
-                for (var i = 0; i < _threadWorkers.Length; i++)
+                if (type == null || type.IsInstanceOfType(item))
                 {
-                    _threadWorkers[i].Sleep();
+                    PushToWorkers(item);
                 }
+            }
 
-                var ignoredEntities = new HashSet<IEntity>(ignoreQueue);
-
-                // Force the GC to collect the ignored entities
-                ignoreQueue.Clear();
-
-                var resultsList = new List<AdvancedSearchResult>(results.Count);
-                foreach (var result in results)
+            foreach (var m in World.Mobiles.Values)
+            {
+                if (type == null || type.IsInstanceOfType(m))
                 {
-                    if (!ignoredEntities.Contains(result.Entity))
+                    PushToWorkers(m);
+                }
+            }
+
+            ThreadPool.QueueUserWorkItem(state =>
+            {
+                try
+                {
+                    // Block until everything is processed
+                    for (var i = 0; i < _threadWorkers.Length; i++)
                     {
-                        resultsList.Add(result);
+                        _threadWorkers[i].Sleep();
                     }
+
+                    var ignoredEntities = new HashSet<IEntity>(ignoreQueue);
+
+                    // Force the GC to collect the ignored entities
+                    ignoreQueue.Clear();
+
+                    var resultsList = new List<AdvancedSearchResult>(results.Count);
+                    foreach (var result in results)
+                    {
+                        if (!ignoredEntities.Contains(result.Entity))
+                        {
+                            resultsList.Add(result);
+                        }
+                    }
+
+                    SearchResults = resultsList.ToArray();
+
+                    // Force the GC to collect the results
+                    resultsList.Clear();
+                    resultsList.TrimExcess();
+
+                    // Send the gump on the main thread
+                    Core.LoopContext.Post(() => Resend(from));
                 }
-
-                SearchResults = resultsList.ToArray();
-
-                // Force the GC to collect the results
-                resultsList.Clear();
-                resultsList.TrimExcess();
-
-                // Send the gump on the main thread
-                Core.LoopContext.Post(() => Resend(from));
-            }
-            finally
-            {
-                AutoSave.SavesEnabled = (bool)state!;
-                EndSearch();
-            }
-        }, autoSave);
+                finally
+                {
+                    AutoSave.SavesEnabled = (bool)state!;
+                    EndSearch();
+                }
+            }, autoSave);
+        }
+        catch
+        {
+            // Setup failed before the work item took ownership of the release.
+            AutoSave.SavesEnabled = autoSave;
+            EndSearch();
+            throw;
+        }
     }
 
     private void SetSortSwitches(int radioSwitch)
