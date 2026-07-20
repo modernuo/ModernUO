@@ -375,22 +375,27 @@ public static class AdvancedSearchUtilities
         return false;
     }
 
+    // Evaluates one trimmed leaf atom against caller-supplied state. A custom delegate is required
+    // because ReadOnlySpan<char> cannot be a Func<> type argument; passing state avoids a per-call
+    // capturing closure, so the recursion allocates neither a string nor a closure.
+    internal delegate bool LeafEvaluator<in TState>(TState state, ReadOnlySpan<char> leaf);
+
     // OR ('|') binds looser than AND ('@'); split on the outermost OR first, then AND.
-    internal static bool EvaluateBoolean(ReadOnlySpan<char> expr, Func<string, bool> evalLeaf)
+    internal static bool EvaluateBoolean<TState>(ReadOnlySpan<char> expr, TState state, LeafEvaluator<TState> evalLeaf)
     {
         var orIndex = expr.IndexOf('|');
         if (orIndex != -1)
         {
-            return EvaluateBoolean(expr[..orIndex], evalLeaf) || EvaluateBoolean(expr[(orIndex + 1)..], evalLeaf);
+            return EvaluateBoolean(expr[..orIndex], state, evalLeaf) || EvaluateBoolean(expr[(orIndex + 1)..], state, evalLeaf);
         }
 
         var andIndex = expr.IndexOf('@');
         if (andIndex != -1)
         {
-            return EvaluateBoolean(expr[..andIndex], evalLeaf) && EvaluateBoolean(expr[(andIndex + 1)..], evalLeaf);
+            return EvaluateBoolean(expr[..andIndex], state, evalLeaf) && EvaluateBoolean(expr[(andIndex + 1)..], state, evalLeaf);
         }
 
-        return evalLeaf(expr.Trim().ToString());
+        return evalLeaf(state, expr.Trim());
     }
 
     private static int GetEnumSize(Type enumType) =>

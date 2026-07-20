@@ -51,7 +51,8 @@ public class AdvancedSearchUtilitiesTests
     [InlineData("F|F", false)]
     public void EvaluateBoolean_Precedence(string expr, bool expected)
     {
-        var result = AdvancedSearchUtilities.EvaluateBoolean(expr, leaf => leaf == "T");
+        // State is unused here; the leaf evaluator just checks the span equals "T".
+        var result = AdvancedSearchUtilities.EvaluateBoolean(expr, 0, static (_, leaf) => leaf.SequenceEqual("T"));
         Assert.Equal(expected, result);
     }
 

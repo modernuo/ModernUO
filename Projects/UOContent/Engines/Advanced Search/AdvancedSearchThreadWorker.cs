@@ -349,7 +349,7 @@ public class AdvancedSearchThreadWorker
     }
 
     private static bool EvaluateRecursive(IEntity entity, ReadOnlySpan<char> span) =>
-        AdvancedSearchUtilities.EvaluateBoolean(span, leaf => EvaluateSingleExpression(entity, leaf));
+        AdvancedSearchUtilities.EvaluateBoolean(span, entity, static (e, leaf) => EvaluateSingleExpression(e, leaf));
 
     private static bool EvaluateSingleExpression(IEntity entity, ReadOnlySpan<char> expression)
     {
