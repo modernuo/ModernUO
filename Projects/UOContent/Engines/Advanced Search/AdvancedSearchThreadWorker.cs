@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Reflection;
 using System.Threading;
 using Server.Items;
+using Server.Logging;
 using Server.Mobiles;
 using Server.Multis;
 
@@ -10,6 +11,8 @@ namespace Server.Engines.AdvancedSearch;
 
 public class AdvancedSearchThreadWorker
 {
+    private static readonly ILogger _logger = LogFactory.GetLogger(typeof(AdvancedSearchThreadWorker));
+
     private readonly Thread _thread;
     private readonly AutoResetEvent _startEvent; // Main thread tells the thread to start working
     private readonly AutoResetEvent _stopEvent; // Main thread waits for the worker finish draining
@@ -101,6 +104,24 @@ public class AdvancedSearchThreadWorker
     }
 
     private AdvancedSearchResult DoEntitySearch(IEntity entity)
+    {
+        if (entity == null || entity.Deleted)
+        {
+            return null;
+        }
+
+        try
+        {
+            return DoEntitySearchCore(entity);
+        }
+        catch (Exception ex)
+        {
+            _logger.Warning(ex, "AdvancedSearch: filter threw for {Entity}; skipping", entity);
+            return null;
+        }
+    }
+
+    private AdvancedSearchResult DoEntitySearchCore(IEntity entity)
     {
         if (_filter.HideValidInternalMap)
         {
@@ -317,6 +338,12 @@ public class AdvancedSearchThreadWorker
 
     private static bool EvaluateSingleExpression(IEntity entity, ReadOnlySpan<char> expression)
     {
+        expression = expression.Trim();
+        if (expression.Length == 0)
+        {
+            return false;
+        }
+
         var negate = false;
         if (expression[0] == '~')
         {
