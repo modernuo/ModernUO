@@ -11,6 +11,8 @@ namespace Server
     {
         public static readonly Type[] ParseStringParamTypes = { typeof(string), typeof(IFormatProvider) };
         public static readonly Type[] ParseStringNumericParamTypes = { typeof(string), typeof(NumberStyles) };
+        // Legacy RunUO signature: a static Parse(string) that predates IParsable<T> (e.g. Faction, Town).
+        public static readonly Type[] ParseStringSingleParamTypes = { typeof(string) };
 
         public static readonly Type OfByte = typeof(byte);
         public static readonly Type OfSByte = typeof(sbyte);
@@ -116,12 +118,29 @@ namespace Server
 
         private static readonly ConcurrentDictionary<Type, MethodInfo> _parseMethods = new();
 
+        // A static string Parse method: the modern IParsable<T> Parse(string, IFormatProvider), or a
+        // legacy RunUO Parse(string). Cached per type; null if the type has neither. (Span-based Parse
+        // can't be reflection-invoked — a ReadOnlySpan can't be boxed into the args array — so the
+        // string overloads are what we bind to.)
+        public static MethodInfo GetParseMethod(Type t) =>
+            _parseMethods.GetOrAdd(
+                t,
+                static type => type.GetMethod("Parse", ParseStringParamTypes)
+                               ?? type.GetMethod("Parse", ParseStringSingleParamTypes)
+            );
+
         public static object Parse(Type t, string value)
         {
-            var method = _parseMethods.GetOrAdd(t, static type => type.GetMethod("Parse", ParseStringParamTypes));
+            var method = GetParseMethod(t);
+            if (method == null)
+            {
+                return null;
+            }
 
             // Fresh args array per call — a shared static array would race across concurrent callers.
-            return method?.Invoke(null, new object[] { value, null });
+            // Arg shape depends on which overload we bound to (IParsable 2-arg vs legacy 1-arg).
+            var args = method.GetParameters().Length == 2 ? new object[] { value, null } : new object[] { value };
+            return method.Invoke(null, args);
         }
 
         // Do not use this in "Parse" methods, it may cause a stack overflow
@@ -221,7 +240,10 @@ namespace Server
                 }
             }
 
-            if (IsParsable(type))
+            // IParsable<T> (Parse(string, IFormatProvider)) or a legacy RunUO Parse(string). Gating on
+            // the discovered method rather than the IParsable interface keeps pre-IParsable types
+            // (Faction, Town, ...) parseable for backwards compatibility.
+            if (GetParseMethod(type) != null)
             {
                 try
                 {

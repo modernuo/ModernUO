@@ -96,4 +96,24 @@ public class AdvancedSearchUtilitiesTests
         Assert.True(AdvancedSearchUtilities.CompareValues(typeof(Guid), g, "00000000-0000-0000-0000-000000000001", "="));
         Assert.False(AdvancedSearchUtilities.CompareValues(typeof(Guid), g, "00000000-0000-0000-0000-000000000002", "="));
     }
+
+    // A reference type with a legacy RunUO-style static Parse(string) and NO IParsable<> interface —
+    // the Faction/Town shape. Types must still discover its Parse by reflection.
+    private sealed class LegacyParseType
+    {
+        public string Value { get; private init; }
+        public static LegacyParseType Parse(string s) => new() { Value = s };
+        public override bool Equals(object obj) => obj is LegacyParseType o && o.Value == Value;
+        public override int GetHashCode() => Value?.GetHashCode() ?? 0;
+    }
+
+    [Fact]
+    public void CompareValues_LegacyParseString_ParsedViaTypes()
+    {
+        // Pre-IParsable types (only a static Parse(string)) must still be searchable: Types binds the
+        // legacy Parse by reflection, so we compare against a real parsed instance, not the raw text.
+        var prop = LegacyParseType.Parse("alpha");
+        Assert.True(AdvancedSearchUtilities.CompareValues(typeof(LegacyParseType), prop, "alpha", "="));
+        Assert.False(AdvancedSearchUtilities.CompareValues(typeof(LegacyParseType), prop, "beta", "="));
+    }
 }

@@ -128,17 +128,13 @@ public static class AdvancedSearchUtilities
             };
         }
         // Anything the hot typed paths above didn't handle — reference types (Poison, Map, entity
-        // properties resolved by serial, ...) and value types exposing IParsable (Guid,
-        // DateTimeOffset, ...). Delegate parsing to the shared, thread-safe Types converter so the
-        // target is parsed into the property's real type, then compare by value. A string is
-        // allocated here, but this is the uncommon path; the common types never reach it.
-        if (!propertyType.IsValueType || Types.IsParsable(propertyType))
-        {
-            return Types.TryParse(propertyType, valuePart.ToString(), out var parsedValue) == null &&
-                   CompareReference(propertyValue!, parsedValue, operatorSpan);
-        }
-
-        return false;
+        // properties resolved by serial), IParsable value types (Guid, decimal, ...), and legacy
+        // RunUO types with a static Parse(string) (Faction, Town, ...). Delegate to the shared,
+        // thread-safe Types converter so the target is parsed into the property's real type, then
+        // compare by value. A string is allocated here, but this is the uncommon path; the common
+        // types never reach it. Types returns a non-null message when it can't parse -> no match.
+        return Types.TryParse(propertyType, valuePart.ToString(), out var parsed) == null &&
+               CompareReference(propertyValue!, parsed, operatorSpan);
     }
 
     public static bool CompareNumeric<T>(T propertyValue, T parsedValue, ReadOnlySpan<char> operatorSpan) where T : INumber<T> =>
