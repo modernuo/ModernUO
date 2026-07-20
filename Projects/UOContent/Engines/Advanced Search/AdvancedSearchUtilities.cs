@@ -240,17 +240,38 @@ public static class AdvancedSearchUtilities
             _           => false
         };
 
-    public static bool CompareReference<T>(T propertyValue, T parsedValue, ReadOnlySpan<char> operatorSpan) =>
-        operatorSpan switch
+    public static bool CompareReference<T>(T propertyValue, T parsedValue, ReadOnlySpan<char> operatorSpan)
+    {
+        switch (operatorSpan)
         {
-            "=" or "==" => propertyValue.Equals(parsedValue),
-            "!" or "!=" => !propertyValue.Equals(parsedValue),
-            ">"         => Comparer<T>.Default.Compare(propertyValue, parsedValue) > 0,
-            "<"         => Comparer<T>.Default.Compare(propertyValue, parsedValue) < 0,
-            ">="        => Comparer<T>.Default.Compare(propertyValue, parsedValue) >= 0,
-            "<="        => Comparer<T>.Default.Compare(propertyValue, parsedValue) <= 0,
-            _           => false
-        };
+            case "=":
+            case "==": return Equals(propertyValue, parsedValue);
+            case "!":
+            case "!=": return !Equals(propertyValue, parsedValue);
+        }
+
+        if (propertyValue is IComparable cmp && parsedValue != null)
+        {
+            try
+            {
+                var c = cmp.CompareTo(parsedValue);
+                return operatorSpan switch
+                {
+                    ">"  => c > 0,
+                    "<"  => c < 0,
+                    ">=" => c >= 0,
+                    "<=" => c <= 0,
+                    _    => false
+                };
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        return false;
+    }
 
     public static T ParseValue<T>(ReadOnlySpan<char> valuePart)
     {

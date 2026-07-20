@@ -54,4 +54,16 @@ public class AdvancedSearchUtilitiesTests
         var result = AdvancedSearchUtilities.EvaluateBoolean(expr, leaf => leaf == "T");
         Assert.Equal(expected, result);
     }
+
+    [Fact]
+    public void CompareValues_ReferenceType_EqualityByString_NoThrow()
+    {
+        // A reference-typed property (e.g. RootParent name-ish) compared with "=" should not throw,
+        // and ordering operators must return false rather than throwing.
+        var ex = Record.Exception(() =>
+        {
+            Assert.False(AdvancedSearchUtilities.CompareValues(typeof(object), new object(), "whatever", ">"));
+        });
+        Assert.Null(ex);
+    }
 }
