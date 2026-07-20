@@ -273,12 +273,6 @@ public static class AdvancedSearchUtilities
         return false;
     }
 
-    public static T ParseValue<T>(ReadOnlySpan<char> valuePart)
-    {
-        TryParseValue(valuePart, out T value);
-        return value;
-    }
-
     internal static bool TryParseValue<T>(ReadOnlySpan<char> valuePart, out T value)
     {
         // Special handling for boolean and hexadecimal values

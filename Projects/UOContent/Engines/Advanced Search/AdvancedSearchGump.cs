@@ -8,6 +8,7 @@ using Server.Commands;
 using Server.Commands.Generic;
 using Server.Engines.Spawners;
 using Server.Gumps;
+using Server.Logging;
 using Server.Network;
 using Server.Saves;
 
@@ -28,6 +29,8 @@ public enum AdvancedSearchGumpOptions : long
 
 public class AdvancedSearchGump : Gump
 {
+    private static readonly ILogger _logger = LogFactory.GetLogger(typeof(AdvancedSearchGump));
+
     private const int MaxEntries = 18;
 
     private static int _threadId;
@@ -827,6 +830,13 @@ public class AdvancedSearchGump : Gump
 
                     // Send the gump on the main thread
                     Core.LoopContext.Post(() => Resend(from));
+                }
+                catch (Exception ex)
+                {
+                    // Never let a drain-phase failure escape unhandled on the ThreadPool
+                    // thread - that would terminate the process. The finally below still
+                    // restores autosave and releases the search guard.
+                    _logger.Warning(ex, "AdvancedSearch: search drain failed");
                 }
                 finally
                 {

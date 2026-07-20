@@ -118,8 +118,10 @@ public class AdvancedSearchThreadWorker
                 }
                 else
                 {
-                    // Queue is transiently empty but we're not paused yet; avoid a 100%-CPU busy-spin.
-                    Thread.SpinWait(1);
+                    // Queue is transiently empty but we're not paused yet; yield the core to
+                    // other runnable threads (e.g. the other still-filtering workers) instead
+                    // of busy-spinning.
+                    Thread.Yield();
                 }
             }
 
