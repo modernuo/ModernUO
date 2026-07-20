@@ -282,6 +282,65 @@ public MyItem(Serial serial) : base(serial) { }
 // ModernUO — DELETE THIS CONSTRUCTOR. The source generator creates it.
 ```
 
+## 15. Static `Parse(string)` → `IParsable<T>` / `ISpanParsable<T>`
+
+RunUO predates `IParsable<T>`/`ISpanParsable<T>` (C# 11 / .NET 7 static-abstract interface
+members), so RunUO types that convert from a string expose a bare `public static T Parse(string value)`.
+**ModernUO expects any such type to implement `IParsable<T>` (string) and, where practical,
+`ISpanParsable<T>` (span; it extends `IParsable<T>`, so implement span and you get both).**
+
+This matters because the engine's string→value converter, `Server.Types.TryParse` — used by `[set`,
+`[props`, spawner property assignment, the conditional-command compiler (`[where`), and Advanced
+Search — binds to the `Parse(string, IFormatProvider)` signature. A type with **only** a legacy
+`Parse(string)` is discovered by `Types` through a reflection fallback, but that fallback is a safety
+net, not the intended path: a bare `Parse(string)` is easy to miss, doesn't participate in the
+span-based fast paths, and (if it returns `null` instead of throwing) makes `[set` silently assign
+`null` on bad input. Convert it.
+
+The `Parse` overloads throw `FormatException` on failure; `TryParse` returns `false`. Delegate the
+string overloads to a span core (see `Race`, `Poison`, `Point3D` for the established pattern):
+
+```csharp
+// RunUO
+public abstract class Faction : IComparable<Faction>
+{
+    public static Faction Parse(string name)  // returns null on no-match — wrong contract, not IParsable
+    {
+        // ... linear search by name ...
+        return null;
+    }
+}
+
+// ModernUO
+public abstract class Faction : IComparable<Faction>, ISpanParsable<Faction>
+{
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Faction Parse(string s) => Parse(s, null);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Faction Parse(string s, IFormatProvider provider) => Parse(s.AsSpan(), provider);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool TryParse(string s, IFormatProvider provider, out Faction result) =>
+        TryParse(s.AsSpan(), provider, out result);
+
+    public static Faction Parse(ReadOnlySpan<char> s, IFormatProvider provider) =>
+        TryParse(s, provider, out var result)
+            ? result
+            : throw new FormatException($"The input string '{s}' was not in a correct format.");
+
+    public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider provider, out Faction result)
+    {
+        // ... linear search by name using s.InsensitiveEquals(...) ...
+        result = null;
+        return false;
+    }
+}
+```
+
+To find un-migrated types: search for `public static [A-Za-z0-9_<>]+ Parse\(string ` and check whether
+the declaring type lists `IParsable<T>`/`ISpanParsable<T>`.
+
 ## Quick Checklist
 
 When migrating any RunUO script, apply these changes in order:
@@ -300,6 +359,7 @@ When migrating any RunUO script, apply these changes in order:
 12. [ ] Modernize property syntax
 13. [ ] Remove `Serial` constructor (handled by serialization generator)
 14. [ ] Update usings
+15. [ ] Convert bare static `Parse(string)` to `IParsable<T>`/`ISpanParsable<T>`
 
 ## See Also
 

@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Server.Targeting;
 
 namespace Server.Factions;
 
 [CustomEnum(["Britain", "Magincia", "Minoc", "Moonglow", "Skara Brae", "Trinsic", "Vesper", "Yew"])]
-public abstract class Town : IComparable<Town>
+public abstract class Town : IComparable<Town>, ISpanParsable<Town>
 {
     public const int SilverCaptureBonus = 10000;
 
@@ -482,7 +483,27 @@ public abstract class Town : IComparable<Town>
         return null;
     }
 
-    public static Town Parse(string name)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Town Parse(string s) => Parse(s, null);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Town Parse(string s, IFormatProvider provider) => Parse(s.AsSpan(), provider);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool TryParse(string s, IFormatProvider provider, out Town result) =>
+        TryParse(s.AsSpan(), provider, out result);
+
+    public static Town Parse(ReadOnlySpan<char> s, IFormatProvider provider)
+    {
+        if (TryParse(s, provider, out var result))
+        {
+            return result;
+        }
+
+        throw new FormatException($"The input string '{s}' was not in a correct format.");
+    }
+
+    public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider provider, out Town result)
     {
         var towns = Towns;
 
@@ -490,13 +511,15 @@ public abstract class Town : IComparable<Town>
         {
             var town = towns[i];
 
-            if (town.Definition.FriendlyName.InsensitiveEquals(name))
+            if (s.InsensitiveEquals(town.Definition.FriendlyName))
             {
-                return town;
+                result = town;
+                return true;
             }
         }
 
-        return null;
+        result = null;
+        return false;
     }
 
     [Usage("GrantTownSilver <amount>")]
