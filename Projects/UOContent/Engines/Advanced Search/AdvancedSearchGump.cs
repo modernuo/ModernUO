@@ -133,9 +133,7 @@ public class AdvancedSearchGump : Gump
 
     public AdvancedSearchGump() : base(50, 50) => Build();
 
-    // Number of result entries that actually fit on the current page, given how many
-    // remain after DisplayFrom. Prevents the paging loop from reading/rendering past
-    // the end of SearchResults on a partial last page.
+    // Entries on the current page — bounds the paging loop so a partial last page can't read past the end.
     internal static int VisibleCount(int total, int displayFrom, int maxEntries) =>
         Math.Clamp(total - displayFrom, 0, maxEntries);
 
@@ -334,8 +332,7 @@ public class AdvancedSearchGump : Gump
 
             var allDisplayedSelected = true;
 
-            // Bounded to the entries that actually exist on this page so a partial last
-            // page (fewer than MaxEntries remaining) still renders in descending mode.
+            // Bound to this page's real entries so a partial last page still renders in descending mode.
             var visibleCount = VisibleCount(SearchResults.Length, DisplayFrom, MaxEntries);
 
             for (var i = 0; i < visibleCount; i++)
@@ -779,9 +776,8 @@ public class AdvancedSearchGump : Gump
 
             var type = Filter.FilterType ? Filter.Type : null;
 
-            // Push the entities. Workers read entity state concurrently with this thread's own
-            // subsequent mutations of the world; see the class comment on
-            // AdvancedSearchThreadWorker for the accepted, bounded race this implies.
+            // Push the entities. Workers read entity state concurrently with the main loop —
+            // see AdvancedSearchThreadWorker for the accepted, bounded race.
             foreach (var item in World.Items.Values)
             {
                 if (type == null || type.IsInstanceOfType(item))
@@ -833,9 +829,8 @@ public class AdvancedSearchGump : Gump
                 }
                 catch (Exception ex)
                 {
-                    // Never let a drain-phase failure escape unhandled on the ThreadPool
-                    // thread - that would terminate the process. The finally below still
-                    // restores autosave and releases the search guard.
+                    // A drain-phase throw here would terminate the process; the finally still
+                    // restores autosave and releases the guard.
                     _logger.Warning(ex, "AdvancedSearch: search drain failed");
                 }
                 finally

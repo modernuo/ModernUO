@@ -10,19 +10,13 @@ using Server.Multis;
 namespace Server.Engines.AdvancedSearch;
 
 /// <summary>
-/// Runs entity filtering on a dedicated background thread while the main event loop keeps
-/// mutating those same entities. This is an intentional, bounded race: workers read live
-/// <see cref="Item"/>/<see cref="Mobile"/> state (location, map, properties, etc.) without any
-/// synchronization with the main thread. Torn reads of multi-field value types like
-/// <see cref="Point3D"/> can yield a stale-but-plausible combination of coordinates rather than
-/// the true before- or after-mutation value, and any exception thrown by a getter (e.g. from a
-/// property being torn down mid-read) is caught and logged per-entity in
-/// <see cref="DoEntitySearch"/>, which simply skips that entity instead of crashing the worker
-/// or the search. Results are therefore a best-effort snapshot that may occasionally omit or
-/// misreport an entity that was concurrently modified or deleted, never a page fault or bad
-/// server state. Fully eliminating the race would require copying the fields each filter reads
-/// onto the main thread before handing entities off to workers; that snapshotting is a larger
-/// change and is deferred.
+/// Filters entities on a background thread while the main loop keeps mutating them — an
+/// intentional, bounded race. Reads of live <see cref="Item"/>/<see cref="Mobile"/> state are
+/// unsynchronized, so a torn <see cref="Point3D"/> read may report stale coordinates, and any
+/// getter that throws mid-read is caught per-entity in <see cref="DoEntitySearch"/> and skipped.
+/// Results are best-effort and may omit a concurrently modified entity, but never fault or corrupt
+/// server state. Eliminating the race would require snapshotting each read field onto the main
+/// thread before handing entities off; that is deferred.
 /// </summary>
 public class AdvancedSearchThreadWorker
 {
@@ -118,9 +112,7 @@ public class AdvancedSearchThreadWorker
                 }
                 else
                 {
-                    // Queue is transiently empty but we're not paused yet; yield the core to
-                    // other runnable threads (e.g. the other still-filtering workers) instead
-                    // of busy-spinning.
+                    // Transiently empty but not yet paused: yield rather than busy-spin.
                     Thread.Yield();
                 }
             }
@@ -157,8 +149,7 @@ public class AdvancedSearchThreadWorker
     {
         if (_filter == null)
         {
-            // Exit() clears the filter as part of tearing down the worker; a straggler
-            // entity dequeued after that point must bail out instead of NREing below.
+            // Exit() clears the filter; a straggler entity dequeued after teardown bails here.
             return null;
         }
 
@@ -193,8 +184,7 @@ public class AdvancedSearchThreadWorker
             return null;
         }
 
-        // Deferred until after the cheap map/range/region filters so entities that don't
-        // even qualify for this search skip the expensive house/keyring enumeration below.
+        // After the cheap filters, so non-qualifying entities skip the house/keyring enumeration.
         if (_filter.HideValidInternalMap)
         {
             HandleValidInternal(entity);
