@@ -12,6 +12,7 @@ namespace Server.Engines.AdvancedSearch;
 public class AdvancedSearchThreadWorker
 {
     private static readonly ILogger _logger = LogFactory.GetLogger(typeof(AdvancedSearchThreadWorker));
+    private static readonly ConcurrentDictionary<Type, PropertyInfo[]> _propCache = new();
 
     private readonly Thread _thread;
     private readonly AutoResetEvent _startEvent; // Main thread tells the thread to start working
@@ -29,7 +30,10 @@ public class AdvancedSearchThreadWorker
         _startEvent = new AutoResetEvent(false);
         _stopEvent = new AutoResetEvent(false);
         _entities = new ConcurrentQueue<IEntity>();
-        _thread = new Thread(Execute);
+        _thread = new Thread(Execute)
+        {
+            IsBackground = true
+        };
         _thread.Start(this);
     }
 
@@ -55,10 +59,16 @@ public class AdvancedSearchThreadWorker
 
     public void Exit()
     {
-        _exit = true;
+        Volatile.Write(ref _exit, true);
 
         Wake(WorldLocation.Zero, null, null, null);
-        Sleep();
+
+        // Tolerate a worker that has already terminated (e.g. Core.Closing raced us) so
+        // shutdown can't deadlock waiting on a stopEvent that will never be set.
+        if (_thread.IsAlive)
+        {
+            Sleep();
+        }
     }
 
     public void Push(IEntity entity)
@@ -91,12 +101,17 @@ public class AdvancedSearchThreadWorker
                     worker._filter = null;
                     break;
                 }
+                else
+                {
+                    // Queue is transiently empty but we're not paused yet; avoid a 100%-CPU busy-spin.
+                    Thread.SpinWait(1);
+                }
             }
 
             worker._stopEvent.Set(); // Allow the main thread to continue now that we are finished
-            worker._pause = false;
+            Volatile.Write(ref worker._pause, false);
 
-            if (Core.Closing || worker._exit)
+            if (Core.Closing || Volatile.Read(ref worker._exit))
             {
                 return;
             }
@@ -123,9 +138,11 @@ public class AdvancedSearchThreadWorker
 
     private AdvancedSearchResult DoEntitySearchCore(IEntity entity)
     {
-        if (_filter.HideValidInternalMap)
+        if (_filter == null)
         {
-            HandleValidInternal(entity);
+            // Exit() clears the filter as part of tearing down the worker; a straggler
+            // entity dequeued after that point must bail out instead of NREing below.
+            return null;
         }
 
         // Check for valid map
@@ -157,6 +174,13 @@ public class AdvancedSearchThreadWorker
              !Region.Find(location, entity.Map).IsPartOf(_filter.RegionName)))
         {
             return null;
+        }
+
+        // Deferred until after the cheap map/range/region filters so entities that don't
+        // even qualify for this search skip the expensive house/keyring enumeration below.
+        if (_filter.HideValidInternalMap)
+        {
+            HandleValidInternal(entity);
         }
 
         if (entity is Mobile mobile)
@@ -349,7 +373,7 @@ public class AdvancedSearchThreadWorker
             return false;
         }
 
-        var properties = entity.GetType().GetProperties();
+        var properties = _propCache.GetOrAdd(entity.GetType(), static t => t.GetProperties());
         PropertyInfo property = null;
         for (var i = 0; i < properties.Length; ++i)
         {
