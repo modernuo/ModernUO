@@ -317,24 +317,8 @@ public class AdvancedSearchThreadWorker
         }
     }
 
-    private static bool EvaluateRecursive(IEntity entity, ReadOnlySpan<char> span)
-    {
-        var atIndex = span.IndexOf('@');
-        var orIndex = span.IndexOf('|');
-
-        if (atIndex == -1 && orIndex == -1)
-        {
-            return EvaluateSingleExpression(entity, span);
-        }
-
-        var result = atIndex != -1;
-        var splitIndex = result ? atIndex : orIndex;
-
-        var left = EvaluateRecursive(entity, span.Slice(0, splitIndex));
-        var right = EvaluateRecursive(entity, span.Slice(splitIndex + 1));
-
-        return result ? left && right : left || right;
-    }
+    private static bool EvaluateRecursive(IEntity entity, ReadOnlySpan<char> span) =>
+        AdvancedSearchUtilities.EvaluateBoolean(span, leaf => EvaluateSingleExpression(entity, leaf));
 
     private static bool EvaluateSingleExpression(IEntity entity, ReadOnlySpan<char> expression)
     {

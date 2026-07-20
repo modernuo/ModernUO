@@ -39,4 +39,19 @@ public class AdvancedSearchUtilitiesTests
     {
         Assert.True(AdvancedSearchUtilities.CompareValues(typeof(Layer), (byte)Layer.OneHanded, "onehanded", "="));
     }
+
+    [Theory]
+    // leaf value is "T"/"F"; evalLeaf returns leaf=="T"
+    [InlineData("T", true)]
+    [InlineData("F", false)]
+    [InlineData("F@F|T", true)]   // (F&&F)||T = T   (buggy code gave F&&(F||T)=F)
+    [InlineData("T|F@F", true)]   // T||(F&&F) = T   (buggy code gave (T||F)&&F=F)
+    [InlineData("T@F", false)]
+    [InlineData("T@T", true)]
+    [InlineData("F|F", false)]
+    public void EvaluateBoolean_Precedence(string expr, bool expected)
+    {
+        var result = AdvancedSearchUtilities.EvaluateBoolean(expr, leaf => leaf == "T");
+        Assert.Equal(expected, result);
+    }
 }

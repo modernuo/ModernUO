@@ -360,6 +360,24 @@ public static class AdvancedSearchUtilities
         return false;
     }
 
+    // OR ('|') binds looser than AND ('@'); split on the outermost OR first, then AND.
+    internal static bool EvaluateBoolean(ReadOnlySpan<char> expr, Func<string, bool> evalLeaf)
+    {
+        var orIndex = expr.IndexOf('|');
+        if (orIndex != -1)
+        {
+            return EvaluateBoolean(expr[..orIndex], evalLeaf) || EvaluateBoolean(expr[(orIndex + 1)..], evalLeaf);
+        }
+
+        var andIndex = expr.IndexOf('@');
+        if (andIndex != -1)
+        {
+            return EvaluateBoolean(expr[..andIndex], evalLeaf) && EvaluateBoolean(expr[(andIndex + 1)..], evalLeaf);
+        }
+
+        return evalLeaf(expr.Trim().ToString());
+    }
+
     private static int GetEnumSize(Type enumType) =>
         Type.GetTypeCode(Enum.GetUnderlyingType(enumType)) switch
         {
