@@ -130,6 +130,12 @@ public class AdvancedSearchGump : Gump
 
     public AdvancedSearchGump() : base(50, 50) => Build();
 
+    // Number of result entries that actually fit on the current page, given how many
+    // remain after DisplayFrom. Prevents the paging loop from reading/rendering past
+    // the end of SearchResults on a partial last page.
+    internal static int VisibleCount(int total, int displayFrom, int maxEntries) =>
+        Math.Clamp(total - displayFrom, 0, maxEntries);
+
     private void Build()
     {
         const int height = 500;
@@ -325,15 +331,14 @@ public class AdvancedSearchGump : Gump
 
             var allDisplayedSelected = true;
 
-            for (var i = 0; i < MaxEntries; i++)
-            {
-                var offset = SortDescending ? MaxEntries - 1 - i : i;
-                var index = offset + DisplayFrom;
+            // Bounded to the entries that actually exist on this page so a partial last
+            // page (fewer than MaxEntries remaining) still renders in descending mode.
+            var visibleCount = VisibleCount(SearchResults.Length, DisplayFrom, MaxEntries);
 
-                if (index >= SearchResults.Length)
-                {
-                    break;
-                }
+            for (var i = 0; i < visibleCount; i++)
+            {
+                var offset = SortDescending ? visibleCount - 1 - i : i;
+                var index = offset + DisplayFrom;
 
                 var entry = SearchResults[index];
 
