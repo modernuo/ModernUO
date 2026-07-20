@@ -72,4 +72,15 @@ public class AdvancedSearchWorkerTests
             worker.Exit();
         }
     }
+
+    [Fact]
+    public void DoSearch_IsGuarded_AgainstReentry()
+    {
+        // White-box: flip the guard, assert a second entry is rejected, then clear.
+        Assert.False(AdvancedSearchGump.IsSearchInProgress);
+        Assert.True(AdvancedSearchGump.TryBeginSearch());   // acquires
+        Assert.False(AdvancedSearchGump.TryBeginSearch());  // rejected
+        AdvancedSearchGump.EndSearch();                     // releases
+        Assert.False(AdvancedSearchGump.IsSearchInProgress);
+    }
 }

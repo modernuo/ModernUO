@@ -33,6 +33,12 @@ public class AdvancedSearchGump : Gump
     private static int _threadId;
     private static AdvancedSearchThreadWorker[] _threadWorkers;
 
+    private static int _searchInProgress;
+
+    internal static bool IsSearchInProgress => Volatile.Read(ref _searchInProgress) == 1;
+    internal static bool TryBeginSearch() => Interlocked.CompareExchange(ref _searchInProgress, 1, 0) == 0;
+    internal static void EndSearch() => Volatile.Write(ref _searchInProgress, 0);
+
     private static void Configure()
     {
         EventSink.Shutdown += Shutdown;
@@ -739,6 +745,14 @@ public class AdvancedSearchGump : Gump
             return;
         }
 
+        if (!TryBeginSearch())
+        {
+            from.SendMessage("A search is already running. Please wait for it to finish.");
+            return;
+        }
+
+        _threadId = 0;
+
         var autoSave = AutoSave.SavesEnabled;
         if (autoSave)
         {
@@ -777,39 +791,42 @@ public class AdvancedSearchGump : Gump
 
         ThreadPool.QueueUserWorkItem(state =>
         {
-            // Block until everything is processed
-            for (var i = 0; i < _threadWorkers.Length; i++)
+            try
             {
-                _threadWorkers[i].Sleep();
-            }
-
-            var ignoredEntities = new HashSet<IEntity>(ignoreQueue);
-
-            // Force the GC to collect the ignored entities
-            ignoreQueue.Clear();
-
-            var resultsList = new List<AdvancedSearchResult>(results.Count);
-            foreach (var result in results)
-            {
-                if (!ignoredEntities.Contains(result.Entity))
+                // Block until everything is processed
+                for (var i = 0; i < _threadWorkers.Length; i++)
                 {
-                    resultsList.Add(result);
+                    _threadWorkers[i].Sleep();
                 }
-            }
 
-            SearchResults = resultsList.ToArray();
+                var ignoredEntities = new HashSet<IEntity>(ignoreQueue);
 
-            // Force the GC to collect the results
-            resultsList.Clear();
-            resultsList.TrimExcess();
+                // Force the GC to collect the ignored entities
+                ignoreQueue.Clear();
 
-            // Send the gump on the main thread
-            Core.LoopContext.Post(
-                autoSaveState =>
+                var resultsList = new List<AdvancedSearchResult>(results.Count);
+                foreach (var result in results)
                 {
-                    AutoSave.SavesEnabled = (bool)autoSaveState!;
-                    Resend(from);
-                }, state);
+                    if (!ignoredEntities.Contains(result.Entity))
+                    {
+                        resultsList.Add(result);
+                    }
+                }
+
+                SearchResults = resultsList.ToArray();
+
+                // Force the GC to collect the results
+                resultsList.Clear();
+                resultsList.TrimExcess();
+
+                // Send the gump on the main thread
+                Core.LoopContext.Post(() => Resend(from));
+            }
+            finally
+            {
+                AutoSave.SavesEnabled = (bool)state!;
+                EndSearch();
+            }
         }, autoSave);
     }
 
