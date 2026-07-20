@@ -9,6 +9,21 @@ using Server.Multis;
 
 namespace Server.Engines.AdvancedSearch;
 
+/// <summary>
+/// Runs entity filtering on a dedicated background thread while the main event loop keeps
+/// mutating those same entities. This is an intentional, bounded race: workers read live
+/// <see cref="Item"/>/<see cref="Mobile"/> state (location, map, properties, etc.) without any
+/// synchronization with the main thread. Torn reads of multi-field value types like
+/// <see cref="Point3D"/> can yield a stale-but-plausible combination of coordinates rather than
+/// the true before- or after-mutation value, and any exception thrown by a getter (e.g. from a
+/// property being torn down mid-read) is caught and logged per-entity in
+/// <see cref="DoEntitySearch"/>, which simply skips that entity instead of crashing the worker
+/// or the search. Results are therefore a best-effort snapshot that may occasionally omit or
+/// misreport an entity that was concurrently modified or deleted, never a page fault or bad
+/// server state. Fully eliminating the race would require copying the fields each filter reads
+/// onto the main thread before handing entities off to workers; that snapshotting is a larger
+/// change and is deferred.
+/// </summary>
 public class AdvancedSearchThreadWorker
 {
     private static readonly ILogger _logger = LogFactory.GetLogger(typeof(AdvancedSearchThreadWorker));

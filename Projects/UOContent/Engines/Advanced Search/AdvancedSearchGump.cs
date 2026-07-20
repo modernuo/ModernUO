@@ -776,7 +776,9 @@ public class AdvancedSearchGump : Gump
 
             var type = Filter.FilterType ? Filter.Type : null;
 
-            // Push the entities
+            // Push the entities. Workers read entity state concurrently with this thread's own
+            // subsequent mutations of the world; see the class comment on
+            // AdvancedSearchThreadWorker for the accepted, bounded race this implies.
             foreach (var item in World.Items.Values)
             {
                 if (type == null || type.IsInstanceOfType(item))
