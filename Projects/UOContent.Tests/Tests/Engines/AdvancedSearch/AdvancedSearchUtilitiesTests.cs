@@ -67,4 +67,23 @@ public class AdvancedSearchUtilitiesTests
         });
         Assert.Null(ex);
     }
+
+    [Fact]
+    public void CompareValues_TimeSpan_ParsesViaSpanParsable()
+    {
+        // TimeSpan is not IConvertible, so the old Convert.ChangeType fallback threw and silently
+        // returned no-match. ISpanParsable<TimeSpan> parses it correctly.
+        var prop = TimeSpan.FromMinutes(5);
+        Assert.True(AdvancedSearchUtilities.CompareValues(typeof(TimeSpan), prop, "00:05:00", "="));
+        Assert.False(AdvancedSearchUtilities.CompareValues(typeof(TimeSpan), prop, "00:10:00", "="));
+        Assert.True(AdvancedSearchUtilities.CompareValues(typeof(TimeSpan), prop, "00:01:00", ">"));
+    }
+
+    [Fact]
+    public void CompareValues_TimeSpan_BadInput_ReturnsFalse_NoThrow()
+    {
+        var ex = Record.Exception(() =>
+            Assert.False(AdvancedSearchUtilities.CompareValues(typeof(TimeSpan), TimeSpan.Zero, "notaspan", "=")));
+        Assert.Null(ex);
+    }
 }

@@ -345,17 +345,45 @@ public static class AdvancedSearchUtilities
             return TryParseNumericValue<double, T>(valuePart, out value);
         }
 
-        // Default parsing for other types
-        try
+        // string/object need no parsing — the span itself is the value (object is the reference-type
+        // comparison path, which compares against the raw text).
+        if (typeof(T) == typeof(string) || typeof(T) == typeof(object))
         {
-            value = (T)Convert.ChangeType(valuePart.ToString(), typeof(T));
+            value = (T)(object)valuePart.ToString();
             return true;
         }
-        catch
+
+        // Remaining supported types (TimeSpan, DateTime) parse straight from the span via
+        // ISpanParsable<T> — no allocation, no reflection, and unlike Convert.ChangeType it handles
+        // TimeSpan, which is not IConvertible and previously failed silently.
+        if (typeof(T) == typeof(TimeSpan))
         {
-            value = default;
-            return false;
+            return TryParseSpanParsable<TimeSpan, T>(valuePart, out value);
         }
+
+        if (typeof(T) == typeof(DateTime))
+        {
+            return TryParseSpanParsable<DateTime, T>(valuePart, out value);
+        }
+
+        value = default;
+        return false;
+    }
+
+    // Parses U (a value type exposing ISpanParsable<U>) from the span and reinterprets it as T. The
+    // two type params mirror TryParseNumericValue: the caller dispatches on typeof(T), so U == T at
+    // every call site and the (T)(object) cast is always valid.
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static bool TryParseSpanParsable<U, T>(ReadOnlySpan<char> valuePart, out T value) where U : ISpanParsable<U>
+    {
+        if (U.TryParse(valuePart, null, out var parsed))
+        {
+            value = (T)(object)parsed;
+            return true;
+        }
+
+        value = default;
+        return false;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
