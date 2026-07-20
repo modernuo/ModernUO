@@ -86,4 +86,14 @@ public class AdvancedSearchUtilitiesTests
             Assert.False(AdvancedSearchUtilities.CompareValues(typeof(TimeSpan), TimeSpan.Zero, "notaspan", "=")));
         Assert.Null(ex);
     }
+
+    [Fact]
+    public void CompareValues_Guid_ValueTypeParsedViaTypes()
+    {
+        // Guid is a value type not named by the hot paths; it's parsed via Types (IParsable) and
+        // compared by value.
+        var g = Guid.Parse("00000000-0000-0000-0000-000000000001");
+        Assert.True(AdvancedSearchUtilities.CompareValues(typeof(Guid), g, "00000000-0000-0000-0000-000000000001", "="));
+        Assert.False(AdvancedSearchUtilities.CompareValues(typeof(Guid), g, "00000000-0000-0000-0000-000000000002", "="));
+    }
 }

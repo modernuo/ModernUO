@@ -127,9 +127,14 @@ public static class AdvancedSearchUtilities
                 _ => false
             };
         }
-        if (!propertyType.IsValueType)
+        // Anything the hot typed paths above didn't handle — reference types (Poison, Map, entity
+        // properties resolved by serial, ...) and value types exposing IParsable (Guid,
+        // DateTimeOffset, ...). Delegate parsing to the shared, thread-safe Types converter so the
+        // target is parsed into the property's real type, then compare by value. A string is
+        // allocated here, but this is the uncommon path; the common types never reach it.
+        if (!propertyType.IsValueType || Types.IsParsable(propertyType))
         {
-            return TryParseValue<object>(valuePart, out var parsedValue) &&
+            return Types.TryParse(propertyType, valuePart.ToString(), out var parsedValue) == null &&
                    CompareReference(propertyValue!, parsedValue, operatorSpan);
         }
 
@@ -345,9 +350,8 @@ public static class AdvancedSearchUtilities
             return TryParseNumericValue<double, T>(valuePart, out value);
         }
 
-        // string/object need no parsing — the span itself is the value (object is the reference-type
-        // comparison path, which compares against the raw text).
-        if (typeof(T) == typeof(string) || typeof(T) == typeof(object))
+        // string needs no parsing — the span itself is the value.
+        if (typeof(T) == typeof(string))
         {
             value = (T)(object)valuePart.ToString();
             return true;

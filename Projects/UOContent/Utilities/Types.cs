@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
@@ -10,7 +11,6 @@ namespace Server
     {
         public static readonly Type[] ParseStringParamTypes = { typeof(string), typeof(IFormatProvider) };
         public static readonly Type[] ParseStringNumericParamTypes = { typeof(string), typeof(NumberStyles) };
-        private static object[] _parseParams = { null, null };
 
         public static readonly Type OfByte = typeof(byte);
         public static readonly Type OfSByte = typeof(sbyte);
@@ -75,7 +75,9 @@ namespace Server
             OfULong
         };
 
-        private static Dictionary<Type, bool> _isParsable;
+        // Thread-safe: parse metadata is read from parallel callers (e.g. the Advanced Search workers),
+        // not just the single-threaded command path.
+        private static readonly ConcurrentDictionary<Type, bool> _isParsable = new();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsType(Type type, Type check) => check.IsAssignableFrom(type);
@@ -89,25 +91,19 @@ namespace Server
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsText(Type t) => IsType(t, OfText);
 
-        public static bool IsParsable(Type t)
-        {
-            _isParsable ??= new();
-            if (_isParsable.TryGetValue(t, out var isParsable))
+        public static bool IsParsable(Type t) =>
+            _isParsable.GetOrAdd(t, static type =>
             {
-                return isParsable;
-            }
-
-            foreach (var x in t.GetInterfaces())
-            {
-                if (x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IParsable<>))
+                foreach (var x in type.GetInterfaces())
                 {
-                    isParsable = true;
-                    break;
+                    if (x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IParsable<>))
+                    {
+                        return true;
+                    }
                 }
-            }
 
-            return _isParsable[t] = isParsable;
-        }
+                return false;
+            });
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsDecimal(Type t) => Array.IndexOf(DecimalTypes, t) >= 0;
@@ -118,18 +114,14 @@ namespace Server
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsEntity(Type t) => OfEntity.IsAssignableFrom(t);
 
-        private static Dictionary<Type, MethodInfo> _parseMethods;
+        private static readonly ConcurrentDictionary<Type, MethodInfo> _parseMethods = new();
 
         public static object Parse(Type t, string value)
         {
-            _parseMethods ??= new();
-            if (!_parseMethods.TryGetValue(t, out var method))
-            {
-                _parseMethods[t] = method = t.GetMethod("Parse", ParseStringParamTypes);
-            }
+            var method = _parseMethods.GetOrAdd(t, static type => type.GetMethod("Parse", ParseStringParamTypes));
 
-            _parseParams[0] = value;
-            return method?.Invoke(null, _parseParams);
+            // Fresh args array per call — a shared static array would race across concurrent callers.
+            return method?.Invoke(null, new object[] { value, null });
         }
 
         // Do not use this in "Parse" methods, it may cause a stack overflow
