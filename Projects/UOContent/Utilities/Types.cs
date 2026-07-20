@@ -143,6 +143,56 @@ namespace Server
             return method.Invoke(null, args);
         }
 
+        // Parses directly into the concrete numeric type via INumber<T>.TryParse (the Type-dispatched
+        // equivalent of a generic TryParse<T>). Returns the boxed value; false if the text doesn't fit
+        // the type's range/format so the caller can fall through.
+        private static bool TryParseNumeric(Type type, ReadOnlySpan<char> span, NumberStyles style, out object result)
+        {
+            if (type == OfInt && int.TryParse(span, style, null, out var i))
+            {
+                result = i;
+                return true;
+            }
+            if (type == OfUInt && uint.TryParse(span, style, null, out var ui))
+            {
+                result = ui;
+                return true;
+            }
+            if (type == OfLong && long.TryParse(span, style, null, out var l))
+            {
+                result = l;
+                return true;
+            }
+            if (type == OfULong && ulong.TryParse(span, style, null, out var ul))
+            {
+                result = ul;
+                return true;
+            }
+            if (type == OfShort && short.TryParse(span, style, null, out var s))
+            {
+                result = s;
+                return true;
+            }
+            if (type == OfUShort && ushort.TryParse(span, style, null, out var us))
+            {
+                result = us;
+                return true;
+            }
+            if (type == OfByte && byte.TryParse(span, style, null, out var b))
+            {
+                result = b;
+                return true;
+            }
+            if (type == OfSByte && sbyte.TryParse(span, style, null, out var sb))
+            {
+                result = sb;
+                return true;
+            }
+
+            result = null;
+            return false;
+        }
+
         // Do not use this in "Parse" methods, it may cause a stack overflow
         public static string TryParse(Type type, string value, out object constructed)
         {
@@ -212,32 +262,32 @@ namespace Server
 
             if (IsNumeric(type))
             {
-                try
+                var span = value.AsSpan();
+                var style = NumberStyles.Integer;
+                if (span.StartsWithOrdinal("0x"))
                 {
-                    var isHex = value.StartsWithOrdinal("0x");
-                    var index = isHex ? 2 : 0;
-                    if (ulong.TryParse(value.AsSpan(index), isHex ? NumberStyles.HexNumber : NumberStyles.Integer, null, out var num))
-                    {
-                        if (isEntity)
-                        {
-                            constructed = World.FindEntity((Serial)num);
-                        }
-                        else if (isSerial)
-                        {
-                            constructed = (Serial)num;
-                        }
-                        else
-                        {
-                            constructed = Convert.ChangeType(num, type);
-                        }
+                    span = span[2..];
+                    style = NumberStyles.HexNumber;
+                }
 
+                if (isEntity || isSerial)
+                {
+                    // Serial/entity properties were mutated to int above; a Serial is a uint, so parse
+                    // the full 32-bit range as ulong and resolve.
+                    if (ulong.TryParse(span, style, null, out var num))
+                    {
+                        constructed = isEntity ? World.FindEntity((Serial)num) : (Serial)num;
                         return null;
                     }
                 }
-                catch
+                else if (TryParseNumeric(type, span, style, out constructed))
                 {
-                    return "That is not properly formatted.";
+                    // Parse the string directly into the target type via INumber<T>.TryParse — no
+                    // Convert.ChangeType, and (unlike parse-as-ulong) signed and per-type ranges are honored.
+                    return null;
                 }
+
+                // On parse failure, fall through to the Parse-method / Convert.ChangeType fallbacks below.
             }
 
             // IParsable<T> (Parse(string, IFormatProvider)) or a legacy RunUO Parse(string). Gating on
