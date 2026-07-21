@@ -4,9 +4,6 @@ using Xunit;
 
 namespace Server.Tests.Buffers;
 
-// Uses the shared, deliberately lock-free STArrayPool<char> (via RawInterpolatedStringHandler.Clear),
-// so it must run in the non-parallel collection like STArrayPoolTests/ValueStringBuilderTests — otherwise
-// it races another pool test and trips STArrayPool's single-threaded Debug.Assert.
 [Collection("Sequential Server Tests")]
 public class RawInterpolatedStringHandlerTests
 {

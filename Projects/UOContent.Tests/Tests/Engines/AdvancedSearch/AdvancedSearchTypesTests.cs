@@ -4,8 +4,6 @@ using Xunit;
 
 namespace UOContent.Tests;
 
-// Fixture-backed: parsing a reference type through Server.Types (Poison) needs the poison registry
-// populated, which requires Core.Expansion (AOS+, set by the fixture) and PoisonKinds.Configure().
 [Collection("Sequential UOContent Tests")]
 public class AdvancedSearchTypesTests
 {
