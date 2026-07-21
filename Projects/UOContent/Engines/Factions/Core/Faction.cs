@@ -16,7 +16,7 @@ using Server.Targeting;
 namespace Server.Factions;
 
 [CustomEnum(["Minax", "Council of Mages", "True Britannians", "Shadowlords"])]
-public abstract class Faction : IComparable<Faction>
+public abstract class Faction : IComparable<Faction>, ISpanParsable<Faction>
 {
     public const int StabilityFactor = 300;     // 300% greater (3 times) than smallest faction
     public const int StabilityActivation = 200; // Stability code goes into effect when largest faction has > 200 people
@@ -1313,7 +1313,27 @@ public abstract class Faction : IComparable<Faction>
         return null;
     }
 
-    public static Faction Parse(string name)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Faction Parse(string s) => Parse(s, null);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Faction Parse(string s, IFormatProvider provider) => Parse(s.AsSpan(), provider);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool TryParse(string s, IFormatProvider provider, out Faction result) =>
+        TryParse(s.AsSpan(), provider, out result);
+
+    public static Faction Parse(ReadOnlySpan<char> s, IFormatProvider provider)
+    {
+        if (TryParse(s, provider, out var result))
+        {
+            return result;
+        }
+
+        throw new FormatException($"The input string '{s}' was not in a correct format.");
+    }
+
+    public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider provider, out Faction result)
     {
         var factions = Factions;
 
@@ -1321,13 +1341,15 @@ public abstract class Faction : IComparable<Faction>
         {
             var faction = factions[i];
 
-            if (faction.Definition.FriendlyName.InsensitiveEquals(name))
+            if (s.InsensitiveEquals(faction.Definition.FriendlyName))
             {
-                return faction;
+                result = faction;
+                return true;
             }
         }
 
-        return null;
+        result = null;
+        return false;
     }
 
     public static bool InSkillLoss(Mobile mob) => m_SkillLoss.ContainsKey(mob);

@@ -43,77 +43,80 @@ public static class AdvancedSearchUtilities
 
         if (propertyType == typeof(long))
         {
-            var parsedValue = ParseValue<long>(valuePart);
-            return CompareNumeric((long)propertyValue!, parsedValue, operatorSpan);
+            return TryParseValue<long>(valuePart, out var parsedValue) &&
+                   CompareNumeric((long)propertyValue!, parsedValue, operatorSpan);
         }
         if (propertyType == typeof(ulong))
         {
-            var parsedValue = ParseValue<ulong>(valuePart);
-            return CompareNumeric((ulong)propertyValue!, parsedValue, operatorSpan);
+            return TryParseValue<ulong>(valuePart, out var parsedValue) &&
+                   CompareNumeric((ulong)propertyValue!, parsedValue, operatorSpan);
         }
         if (propertyType == typeof(int))
         {
-            var parsedValue = ParseValue<int>(valuePart);
-            return CompareNumeric((int)propertyValue!, parsedValue, operatorSpan);
+            return TryParseValue<int>(valuePart, out var parsedValue) &&
+                   CompareNumeric((int)propertyValue!, parsedValue, operatorSpan);
         }
         if (propertyType == typeof(uint))
         {
-            var parsedValue = ParseValue<uint>(valuePart);
-            return CompareNumeric((uint)propertyValue!, parsedValue, operatorSpan);
+            return TryParseValue<uint>(valuePart, out var parsedValue) &&
+                   CompareNumeric((uint)propertyValue!, parsedValue, operatorSpan);
         }
         if (propertyType == typeof(short))
         {
-            var parsedValue = ParseValue<short>(valuePart);
-            return CompareNumeric((short)propertyValue!, parsedValue, operatorSpan);
+            return TryParseValue<short>(valuePart, out var parsedValue) &&
+                   CompareNumeric((short)propertyValue!, parsedValue, operatorSpan);
         }
         if (propertyType == typeof(ushort))
         {
-            var parsedValue = ParseValue<ushort>(valuePart);
-            return CompareNumeric((ushort)propertyValue!, parsedValue, operatorSpan);
+            return TryParseValue<ushort>(valuePart, out var parsedValue) &&
+                   CompareNumeric((ushort)propertyValue!, parsedValue, operatorSpan);
         }
         if (propertyType == typeof(sbyte))
         {
-            var parsedValue = ParseValue<sbyte>(valuePart);
-            return CompareNumeric((sbyte)propertyValue!, parsedValue, operatorSpan);
+            return TryParseValue<sbyte>(valuePart, out var parsedValue) &&
+                   CompareNumeric((sbyte)propertyValue!, parsedValue, operatorSpan);
         }
         if (propertyType == typeof(byte))
         {
-            var parsedValue = ParseValue<byte>(valuePart);
-            return CompareNumeric((byte)propertyValue!, parsedValue, operatorSpan);
+            return TryParseValue<byte>(valuePart, out var parsedValue) &&
+                   CompareNumeric((byte)propertyValue!, parsedValue, operatorSpan);
         }
         if (propertyType == typeof(float))
         {
-            var parsedValue = ParseValue<float>(valuePart);
-            return Compare((float)propertyValue!, parsedValue, valuePart, operatorSpan);
+            return TryParseValue<float>(valuePart, out var parsedValue) &&
+                   Compare((float)propertyValue!, parsedValue, valuePart, operatorSpan);
         }
         if (propertyType == typeof(double))
         {
-            var parsedValue = ParseValue<double>(valuePart);
-            return Compare((double)propertyValue!, parsedValue, valuePart, operatorSpan);
+            return TryParseValue<double>(valuePart, out var parsedValue) &&
+                   Compare((double)propertyValue!, parsedValue, valuePart, operatorSpan);
         }
         if (propertyType == typeof(string))
         {
-            var parsedValue = ParseValue<string>(valuePart);
-            return Compare((string)propertyValue!, parsedValue, operatorSpan);
+            return TryParseValue<string>(valuePart, out var parsedValue) &&
+                   Compare((string)propertyValue!, parsedValue, operatorSpan);
         }
         if (propertyType == typeof(TimeSpan))
         {
-            var parsedValue = ParseValue<TimeSpan>(valuePart);
-            return Compare((TimeSpan)propertyValue!, parsedValue, operatorSpan);
+            return TryParseValue<TimeSpan>(valuePart, out var parsedValue) &&
+                   Compare((TimeSpan)propertyValue!, parsedValue, operatorSpan);
         }
         if (propertyType == typeof(DateTime))
         {
-            var parsedValue = ParseValue<DateTime>(valuePart);
-            return Compare((DateTime)propertyValue!, parsedValue, operatorSpan);
+            return TryParseValue<DateTime>(valuePart, out var parsedValue) &&
+                   Compare((DateTime)propertyValue!, parsedValue, operatorSpan);
         }
         if (propertyType == typeof(bool))
         {
-            var parsedValue = ParseValue<bool>(valuePart);
-            return Compare((bool)propertyValue!, parsedValue, operatorSpan);
+            return TryParseValue<bool>(valuePart, out var parsedValue) &&
+                   Compare((bool)propertyValue!, parsedValue, operatorSpan);
         }
         if (propertyType.IsEnum)
         {
-            var valueEnum = Enum.Parse(propertyType, valuePart, false);
+            if (!Enum.TryParse(propertyType, valuePart.ToString(), true, out var valueEnum) || valueEnum == null)
+            {
+                return false;
+            }
 
             return GetEnumSize(propertyType) switch
             {
@@ -121,15 +124,17 @@ public static class AdvancedSearchUtilities
                 2 => CompareNumeric((short)propertyValue!, (short)valueEnum, operatorSpan),
                 4 => CompareNumeric((int)propertyValue!, (int)valueEnum, operatorSpan),
                 8 => CompareNumeric((long)propertyValue!, (long)valueEnum, operatorSpan),
+                _ => false
             };
         }
-        if (!propertyType.IsValueType)
-        {
-            var parsedValue = ParseValue<object>(valuePart);
-            return CompareReference(propertyValue!, parsedValue, operatorSpan);
-        }
-
-        return false;
+        // Anything the hot typed paths above didn't handle — reference types (Poison, Map, entity
+        // properties resolved by serial), IParsable value types (Guid, decimal, ...), and legacy
+        // RunUO types with a static Parse(string) (Faction, Town, ...). Delegate to the shared,
+        // thread-safe Types converter so the target is parsed into the property's real type, then
+        // compare by value. A string is allocated here, but this is the uncommon path; the common
+        // types never reach it. Types returns a non-null message when it can't parse -> no match.
+        return Types.TryParse(propertyType, valuePart.ToString(), out var parsed) == null &&
+               CompareReference(propertyValue!, parsed, operatorSpan);
     }
 
     public static bool CompareNumeric<T>(T propertyValue, T parsedValue, ReadOnlySpan<char> operatorSpan) where T : INumber<T> =>
@@ -236,19 +241,40 @@ public static class AdvancedSearchUtilities
             _           => false
         };
 
-    public static bool CompareReference<T>(T propertyValue, T parsedValue, ReadOnlySpan<char> operatorSpan) =>
-        operatorSpan switch
+    public static bool CompareReference<T>(T propertyValue, T parsedValue, ReadOnlySpan<char> operatorSpan)
+    {
+        switch (operatorSpan)
         {
-            "=" or "==" => propertyValue.Equals(parsedValue),
-            "!" or "!=" => !propertyValue.Equals(parsedValue),
-            ">"         => Comparer<T>.Default.Compare(propertyValue, parsedValue) > 0,
-            "<"         => Comparer<T>.Default.Compare(propertyValue, parsedValue) < 0,
-            ">="        => Comparer<T>.Default.Compare(propertyValue, parsedValue) >= 0,
-            "<="        => Comparer<T>.Default.Compare(propertyValue, parsedValue) <= 0,
-            _           => false
-        };
+            case "=":
+            case "==": return Equals(propertyValue, parsedValue);
+            case "!":
+            case "!=": return !Equals(propertyValue, parsedValue);
+        }
 
-    public static T ParseValue<T>(ReadOnlySpan<char> valuePart)
+        if (propertyValue is IComparable cmp && parsedValue != null)
+        {
+            try
+            {
+                var c = cmp.CompareTo(parsedValue);
+                return operatorSpan switch
+                {
+                    ">"  => c > 0,
+                    "<"  => c < 0,
+                    ">=" => c >= 0,
+                    "<=" => c <= 0,
+                    _    => false
+                };
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        return false;
+    }
+
+    internal static bool TryParseValue<T>(ReadOnlySpan<char> valuePart, out T value)
     {
         // Special handling for boolean and hexadecimal values
         if (typeof(T) == typeof(bool))
@@ -256,74 +282,149 @@ public static class AdvancedSearchUtilities
             var val = valuePart.ToString().ToLower();
             if (val is "true" or "1" or "enabled" or "on")
             {
-                return (T)(object)true;
+                value = (T)(object)true;
+                return true;
             }
 
             if (val is "false" or "0" or "disabled" or "off")
             {
-                return (T)(object)false;
+                value = (T)(object)false;
+                return true;
             }
+
+            value = default;
+            return false;
         }
 
         if (typeof(T) == typeof(long))
         {
-            return ParseNumericValue<long, T>(valuePart);
+            return TryParseNumericValue<long, T>(valuePart, out value);
         }
 
         if (typeof(T) == typeof(ulong))
         {
-            return ParseNumericValue<ulong, T>(valuePart);
+            return TryParseNumericValue<ulong, T>(valuePart, out value);
         }
 
         if (typeof(T) == typeof(int))
         {
-            return ParseNumericValue<int, T>(valuePart);
+            return TryParseNumericValue<int, T>(valuePart, out value);
         }
 
         if (typeof(T) == typeof(uint))
         {
-            return ParseNumericValue<uint, T>(valuePart);
+            return TryParseNumericValue<uint, T>(valuePart, out value);
         }
 
         if (typeof(T) == typeof(short))
         {
-            return ParseNumericValue<short, T>(valuePart);
+            return TryParseNumericValue<short, T>(valuePart, out value);
         }
 
         if (typeof(T) == typeof(ushort))
         {
-            return ParseNumericValue<ushort, T>(valuePart);
+            return TryParseNumericValue<ushort, T>(valuePart, out value);
         }
 
         if (typeof(T) == typeof(sbyte))
         {
-            return ParseNumericValue<sbyte, T>(valuePart);
+            return TryParseNumericValue<sbyte, T>(valuePart, out value);
         }
 
         if (typeof(T) == typeof(byte))
         {
-            return ParseNumericValue<byte, T>(valuePart);
+            return TryParseNumericValue<byte, T>(valuePart, out value);
         }
 
         if (typeof(T) == typeof(float))
         {
-            return ParseNumericValue<float, T>(valuePart);
+            return TryParseNumericValue<float, T>(valuePart, out value);
         }
 
         if (typeof(T) == typeof(double))
         {
-            return ParseNumericValue<double, T>(valuePart);
+            return TryParseNumericValue<double, T>(valuePart, out value);
         }
 
-        // Default parsing for other types
-        return (T)Convert.ChangeType(valuePart.ToString(), typeof(T));
+        // string needs no parsing — the span itself is the value.
+        if (typeof(T) == typeof(string))
+        {
+            value = (T)(object)valuePart.ToString();
+            return true;
+        }
+
+        // Remaining supported types (TimeSpan, DateTime) parse straight from the span via
+        // ISpanParsable<T> — no allocation, no reflection, and unlike Convert.ChangeType it handles
+        // TimeSpan, which is not IConvertible and previously failed silently.
+        if (typeof(T) == typeof(TimeSpan))
+        {
+            return TryParseSpanParsable<TimeSpan, T>(valuePart, out value);
+        }
+
+        if (typeof(T) == typeof(DateTime))
+        {
+            return TryParseSpanParsable<DateTime, T>(valuePart, out value);
+        }
+
+        value = default;
+        return false;
+    }
+
+    // Parses U (a value type exposing ISpanParsable<U>) from the span and reinterprets it as T. The
+    // two type params mirror TryParseNumericValue: the caller dispatches on typeof(T), so U == T at
+    // every call site and the (T)(object) cast is always valid.
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static bool TryParseSpanParsable<U, T>(ReadOnlySpan<char> valuePart, out T value) where U : ISpanParsable<U>
+    {
+        if (U.TryParse(valuePart, null, out var parsed))
+        {
+            value = (T)(object)parsed;
+            return true;
+        }
+
+        value = default;
+        return false;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static R ParseNumericValue<T, R>(ReadOnlySpan<char> valuePart) where T : INumber<T> =>
-        valuePart.StartsWith("0x")
-            ? (R)(object)T.Parse(valuePart[2..], NumberStyles.HexNumber, null)
-            : (R)(object)T.Parse(valuePart, null);
+    private static bool TryParseNumericValue<T, R>(ReadOnlySpan<char> valuePart, out R value) where T : INumber<T>
+    {
+        var ok = valuePart.StartsWith("0x")
+            ? T.TryParse(valuePart[2..], NumberStyles.HexNumber, null, out var parsed)
+            : T.TryParse(valuePart, null, out parsed);
+
+        if (ok)
+        {
+            value = (R)(object)parsed;
+            return true;
+        }
+
+        value = default;
+        return false;
+    }
+
+    // Evaluates one trimmed leaf atom against caller-supplied state. A custom delegate is required
+    // because ReadOnlySpan<char> cannot be a Func<> type argument; passing state avoids a per-call
+    // capturing closure, so the recursion allocates neither a string nor a closure.
+    internal delegate bool LeafEvaluator<in TState>(TState state, ReadOnlySpan<char> leaf);
+
+    // OR ('|') binds looser than AND ('@'); split on the outermost OR first, then AND.
+    internal static bool EvaluateBoolean<TState>(ReadOnlySpan<char> expr, TState state, LeafEvaluator<TState> evalLeaf)
+    {
+        var orIndex = expr.IndexOf('|');
+        if (orIndex != -1)
+        {
+            return EvaluateBoolean(expr[..orIndex], state, evalLeaf) || EvaluateBoolean(expr[(orIndex + 1)..], state, evalLeaf);
+        }
+
+        var andIndex = expr.IndexOf('@');
+        if (andIndex != -1)
+        {
+            return EvaluateBoolean(expr[..andIndex], state, evalLeaf) && EvaluateBoolean(expr[(andIndex + 1)..], state, evalLeaf);
+        }
+
+        return evalLeaf(state, expr.Trim());
+    }
 
     private static int GetEnumSize(Type enumType) =>
         Type.GetTypeCode(Enum.GetUnderlyingType(enumType)) switch

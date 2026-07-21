@@ -4,6 +4,7 @@ using Xunit;
 
 namespace Server.Tests.Buffers;
 
+[Collection("Sequential Server Tests")]
 public class RawInterpolatedStringHandlerTests
 {
     [Fact]

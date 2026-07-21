@@ -3,13 +3,26 @@ using System.Collections.Concurrent;
 using System.Reflection;
 using System.Threading;
 using Server.Items;
+using Server.Logging;
 using Server.Mobiles;
 using Server.Multis;
 
 namespace Server.Engines.AdvancedSearch;
 
+/// <summary>
+/// Filters entities on a background thread while the main loop keeps mutating them — an
+/// intentional, bounded race. Reads of live <see cref="Item"/>/<see cref="Mobile"/> state are
+/// unsynchronized, so a torn <see cref="Point3D"/> read may report stale coordinates, and any
+/// getter that throws mid-read is caught per-entity in <see cref="DoEntitySearch"/> and skipped.
+/// Results are best-effort and may omit a concurrently modified entity, but never fault or corrupt
+/// server state. Eliminating the race would require snapshotting each read field onto the main
+/// thread before handing entities off; that is deferred.
+/// </summary>
 public class AdvancedSearchThreadWorker
 {
+    private static readonly ILogger _logger = LogFactory.GetLogger(typeof(AdvancedSearchThreadWorker));
+    private static readonly ConcurrentDictionary<Type, PropertyInfo[]> _propCache = new();
+
     private readonly Thread _thread;
     private readonly AutoResetEvent _startEvent; // Main thread tells the thread to start working
     private readonly AutoResetEvent _stopEvent; // Main thread waits for the worker finish draining
@@ -26,7 +39,10 @@ public class AdvancedSearchThreadWorker
         _startEvent = new AutoResetEvent(false);
         _stopEvent = new AutoResetEvent(false);
         _entities = new ConcurrentQueue<IEntity>();
-        _thread = new Thread(Execute);
+        _thread = new Thread(Execute)
+        {
+            IsBackground = true
+        };
         _thread.Start(this);
     }
 
@@ -52,10 +68,16 @@ public class AdvancedSearchThreadWorker
 
     public void Exit()
     {
-        _exit = true;
+        Volatile.Write(ref _exit, true);
 
         Wake(WorldLocation.Zero, null, null, null);
-        Sleep();
+
+        // Tolerate a worker that has already terminated (e.g. Core.Closing raced us) so
+        // shutdown can't deadlock waiting on a stopEvent that will never be set.
+        if (_thread.IsAlive)
+        {
+            Sleep();
+        }
     }
 
     public void Push(IEntity entity)
@@ -88,12 +110,17 @@ public class AdvancedSearchThreadWorker
                     worker._filter = null;
                     break;
                 }
+                else
+                {
+                    // Transiently empty but not yet paused: yield rather than busy-spin.
+                    Thread.Yield();
+                }
             }
 
             worker._stopEvent.Set(); // Allow the main thread to continue now that we are finished
-            worker._pause = false;
+            Volatile.Write(ref worker._pause, false);
 
-            if (Core.Closing || worker._exit)
+            if (Core.Closing || Volatile.Read(ref worker._exit))
             {
                 return;
             }
@@ -102,9 +129,28 @@ public class AdvancedSearchThreadWorker
 
     private AdvancedSearchResult DoEntitySearch(IEntity entity)
     {
-        if (_filter.HideValidInternalMap)
+        if (entity == null || entity.Deleted)
         {
-            HandleValidInternal(entity);
+            return null;
+        }
+
+        try
+        {
+            return DoEntitySearchCore(entity);
+        }
+        catch (Exception ex)
+        {
+            _logger.Warning(ex, "AdvancedSearch: filter threw for {Entity}; skipping", entity);
+            return null;
+        }
+    }
+
+    private AdvancedSearchResult DoEntitySearchCore(IEntity entity)
+    {
+        if (_filter == null)
+        {
+            // Exit() clears the filter; a straggler entity dequeued after teardown bails here.
+            return null;
         }
 
         // Check for valid map
@@ -136,6 +182,12 @@ public class AdvancedSearchThreadWorker
              !Region.Find(location, entity.Map).IsPartOf(_filter.RegionName)))
         {
             return null;
+        }
+
+        // After the cheap filters, so non-qualifying entities skip the house/keyring enumeration.
+        if (_filter.HideValidInternalMap)
+        {
+            HandleValidInternal(entity);
         }
 
         if (entity is Mobile mobile)
@@ -296,27 +348,17 @@ public class AdvancedSearchThreadWorker
         }
     }
 
-    private static bool EvaluateRecursive(IEntity entity, ReadOnlySpan<char> span)
-    {
-        var atIndex = span.IndexOf('@');
-        var orIndex = span.IndexOf('|');
-
-        if (atIndex == -1 && orIndex == -1)
-        {
-            return EvaluateSingleExpression(entity, span);
-        }
-
-        var result = atIndex != -1;
-        var splitIndex = result ? atIndex : orIndex;
-
-        var left = EvaluateRecursive(entity, span.Slice(0, splitIndex));
-        var right = EvaluateRecursive(entity, span.Slice(splitIndex + 1));
-
-        return result ? left && right : left || right;
-    }
+    private static bool EvaluateRecursive(IEntity entity, ReadOnlySpan<char> span) =>
+        AdvancedSearchUtilities.EvaluateBoolean(span, entity, static (e, leaf) => EvaluateSingleExpression(e, leaf));
 
     private static bool EvaluateSingleExpression(IEntity entity, ReadOnlySpan<char> expression)
     {
+        expression = expression.Trim();
+        if (expression.Length == 0)
+        {
+            return false;
+        }
+
         var negate = false;
         if (expression[0] == '~')
         {
@@ -338,7 +380,7 @@ public class AdvancedSearchThreadWorker
             return false;
         }
 
-        var properties = entity.GetType().GetProperties();
+        var properties = _propCache.GetOrAdd(entity.GetType(), static t => t.GetProperties());
         PropertyInfo property = null;
         for (var i = 0; i < properties.Length; ++i)
         {

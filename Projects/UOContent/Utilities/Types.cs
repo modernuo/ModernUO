@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
@@ -10,7 +11,8 @@ namespace Server
     {
         public static readonly Type[] ParseStringParamTypes = { typeof(string), typeof(IFormatProvider) };
         public static readonly Type[] ParseStringNumericParamTypes = { typeof(string), typeof(NumberStyles) };
-        private static object[] _parseParams = { null, null };
+        // Legacy RunUO signature: a static Parse(string) that predates IParsable<T> (e.g. Faction, Town).
+        public static readonly Type[] ParseStringSingleParamTypes = { typeof(string) };
 
         public static readonly Type OfByte = typeof(byte);
         public static readonly Type OfSByte = typeof(sbyte);
@@ -75,7 +77,9 @@ namespace Server
             OfULong
         };
 
-        private static Dictionary<Type, bool> _isParsable;
+        // Thread-safe: parse metadata is read from parallel callers (e.g. the Advanced Search workers),
+        // not just the single-threaded command path.
+        private static readonly ConcurrentDictionary<Type, bool> _isParsable = new();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsType(Type type, Type check) => check.IsAssignableFrom(type);
@@ -89,25 +93,19 @@ namespace Server
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsText(Type t) => IsType(t, OfText);
 
-        public static bool IsParsable(Type t)
-        {
-            _isParsable ??= new();
-            if (_isParsable.TryGetValue(t, out var isParsable))
+        public static bool IsParsable(Type t) =>
+            _isParsable.GetOrAdd(t, static type =>
             {
-                return isParsable;
-            }
-
-            foreach (var x in t.GetInterfaces())
-            {
-                if (x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IParsable<>))
+                foreach (var x in type.GetInterfaces())
                 {
-                    isParsable = true;
-                    break;
+                    if (x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IParsable<>))
+                    {
+                        return true;
+                    }
                 }
-            }
 
-            return _isParsable[t] = isParsable;
-        }
+                return false;
+            });
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsDecimal(Type t) => Array.IndexOf(DecimalTypes, t) >= 0;
@@ -118,18 +116,81 @@ namespace Server
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsEntity(Type t) => OfEntity.IsAssignableFrom(t);
 
-        private static Dictionary<Type, MethodInfo> _parseMethods;
+        private static readonly ConcurrentDictionary<Type, MethodInfo> _parseMethods = new();
+
+        // A static string Parse method: the modern IParsable<T> Parse(string, IFormatProvider), or a
+        // legacy RunUO Parse(string). Cached per type; null if the type has neither. (Span-based Parse
+        // can't be reflection-invoked — a ReadOnlySpan can't be boxed into the args array — so the
+        // string overloads are what we bind to.)
+        public static MethodInfo GetParseMethod(Type t) =>
+            _parseMethods.GetOrAdd(
+                t,
+                static type => type.GetMethod("Parse", ParseStringParamTypes)
+                               ?? type.GetMethod("Parse", ParseStringSingleParamTypes)
+            );
 
         public static object Parse(Type t, string value)
         {
-            _parseMethods ??= new();
-            if (!_parseMethods.TryGetValue(t, out var method))
+            var method = GetParseMethod(t);
+            if (method == null)
             {
-                _parseMethods[t] = method = t.GetMethod("Parse", ParseStringParamTypes);
+                return null;
             }
 
-            _parseParams[0] = value;
-            return method?.Invoke(null, _parseParams);
+            // Fresh args array per call — a shared static array would race across concurrent callers.
+            // Arg shape depends on which overload we bound to (IParsable 2-arg vs legacy 1-arg).
+            var args = method.GetParameters().Length == 2 ? new object[] { value, null } : new object[] { value };
+            return method.Invoke(null, args);
+        }
+
+        // Parses directly into the concrete numeric type via INumber<T>.TryParse (the Type-dispatched
+        // equivalent of a generic TryParse<T>). Returns the boxed value; false if the text doesn't fit
+        // the type's range/format so the caller can fall through.
+        private static bool TryParseNumeric(Type type, ReadOnlySpan<char> span, NumberStyles style, out object result)
+        {
+            if (type == OfInt && int.TryParse(span, style, null, out var i))
+            {
+                result = i;
+                return true;
+            }
+            if (type == OfUInt && uint.TryParse(span, style, null, out var ui))
+            {
+                result = ui;
+                return true;
+            }
+            if (type == OfLong && long.TryParse(span, style, null, out var l))
+            {
+                result = l;
+                return true;
+            }
+            if (type == OfULong && ulong.TryParse(span, style, null, out var ul))
+            {
+                result = ul;
+                return true;
+            }
+            if (type == OfShort && short.TryParse(span, style, null, out var s))
+            {
+                result = s;
+                return true;
+            }
+            if (type == OfUShort && ushort.TryParse(span, style, null, out var us))
+            {
+                result = us;
+                return true;
+            }
+            if (type == OfByte && byte.TryParse(span, style, null, out var b))
+            {
+                result = b;
+                return true;
+            }
+            if (type == OfSByte && sbyte.TryParse(span, style, null, out var sb))
+            {
+                result = sb;
+                return true;
+            }
+
+            result = null;
+            return false;
         }
 
         // Do not use this in "Parse" methods, it may cause a stack overflow
@@ -201,35 +262,38 @@ namespace Server
 
             if (IsNumeric(type))
             {
-                try
+                var span = value.AsSpan();
+                var style = NumberStyles.Integer;
+                if (span.StartsWithOrdinal("0x"))
                 {
-                    var isHex = value.StartsWithOrdinal("0x");
-                    var index = isHex ? 2 : 0;
-                    if (ulong.TryParse(value.AsSpan(index), isHex ? NumberStyles.HexNumber : NumberStyles.Integer, null, out var num))
-                    {
-                        if (isEntity)
-                        {
-                            constructed = World.FindEntity((Serial)num);
-                        }
-                        else if (isSerial)
-                        {
-                            constructed = (Serial)num;
-                        }
-                        else
-                        {
-                            constructed = Convert.ChangeType(num, type);
-                        }
+                    span = span[2..];
+                    style = NumberStyles.HexNumber;
+                }
 
+                if (isEntity || isSerial)
+                {
+                    // Serial/entity properties were mutated to int above; a Serial is a uint, so parse
+                    // the full 32-bit range as ulong and resolve.
+                    if (ulong.TryParse(span, style, null, out var num))
+                    {
+                        constructed = isEntity ? World.FindEntity((Serial)num) : (Serial)num;
                         return null;
                     }
                 }
-                catch
+                else if (TryParseNumeric(type, span, style, out constructed))
                 {
-                    return "That is not properly formatted.";
+                    // Parse the string directly into the target type via INumber<T>.TryParse — no
+                    // Convert.ChangeType, and (unlike parse-as-ulong) signed and per-type ranges are honored.
+                    return null;
                 }
+
+                // On parse failure, fall through to the Parse-method / Convert.ChangeType fallbacks below.
             }
 
-            if (IsParsable(type))
+            // IParsable<T> (Parse(string, IFormatProvider)) or a legacy RunUO Parse(string). Gating on
+            // the discovered method rather than the IParsable interface keeps pre-IParsable types
+            // (Faction, Town, ...) parseable for backwards compatibility.
+            if (GetParseMethod(type) != null)
             {
                 try
                 {

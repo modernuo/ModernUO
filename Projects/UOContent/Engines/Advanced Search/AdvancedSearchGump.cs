@@ -8,6 +8,7 @@ using Server.Commands;
 using Server.Commands.Generic;
 using Server.Engines.Spawners;
 using Server.Gumps;
+using Server.Logging;
 using Server.Network;
 using Server.Saves;
 
@@ -28,10 +29,18 @@ public enum AdvancedSearchGumpOptions : long
 
 public class AdvancedSearchGump : Gump
 {
+    private static readonly ILogger _logger = LogFactory.GetLogger(typeof(AdvancedSearchGump));
+
     private const int MaxEntries = 18;
 
     private static int _threadId;
     private static AdvancedSearchThreadWorker[] _threadWorkers;
+
+    private static int _searchInProgress;
+
+    internal static bool IsSearchInProgress => Volatile.Read(ref _searchInProgress) == 1;
+    internal static bool TryBeginSearch() => Interlocked.CompareExchange(ref _searchInProgress, 1, 0) == 0;
+    internal static void EndSearch() => Volatile.Write(ref _searchInProgress, 0);
 
     private static void Configure()
     {
@@ -123,6 +132,10 @@ public class AdvancedSearchGump : Gump
     public string CommandString { get; set; }
 
     public AdvancedSearchGump() : base(50, 50) => Build();
+
+    // Entries on the current page — bounds the paging loop so a partial last page can't read past the end.
+    internal static int VisibleCount(int total, int displayFrom, int maxEntries) =>
+        Math.Clamp(total - displayFrom, 0, maxEntries);
 
     private void Build()
     {
@@ -319,15 +332,13 @@ public class AdvancedSearchGump : Gump
 
             var allDisplayedSelected = true;
 
-            for (var i = 0; i < MaxEntries; i++)
-            {
-                var offset = SortDescending ? MaxEntries - 1 - i : i;
-                var index = offset + DisplayFrom;
+            // Bound to this page's real entries so a partial last page still renders in descending mode.
+            var visibleCount = VisibleCount(SearchResults.Length, DisplayFrom, MaxEntries);
 
-                if (index >= SearchResults.Length)
-                {
-                    break;
-                }
+            for (var i = 0; i < visibleCount; i++)
+            {
+                var offset = SortDescending ? visibleCount - 1 - i : i;
+                var index = offset + DisplayFrom;
 
                 var entry = SearchResults[index];
 
@@ -739,78 +750,103 @@ public class AdvancedSearchGump : Gump
             return;
         }
 
+        if (!TryBeginSearch())
+        {
+            from.SendMessage("A search is already running. Please wait for it to finish.");
+            return;
+        }
+
+        _threadId = 0;
+
         var autoSave = AutoSave.SavesEnabled;
-        if (autoSave)
+        AutoSave.SavesEnabled = false;
+
+        try
         {
-            AutoSave.SavesEnabled = false;
-        }
+            _threadWorkers ??= new AdvancedSearchThreadWorker[Math.Max(Environment.ProcessorCount - 1, 1)];
 
-        _threadWorkers ??= new AdvancedSearchThreadWorker[Math.Max(Environment.ProcessorCount - 1, 1)];
+            var ignoreQueue = new ConcurrentQueue<IEntity>();
+            var results = new ConcurrentQueue<AdvancedSearchResult>();
+            var worldLocation = new WorldLocation(from.Location, from.Map);
 
-        var ignoreQueue = new ConcurrentQueue<IEntity>();
-        var results = new ConcurrentQueue<AdvancedSearchResult>();
-        var worldLocation = new WorldLocation(from.Location, from.Map);
-
-        for (var i = 0; i < _threadWorkers.Length; i++)
-        {
-            (_threadWorkers[i] ??= new AdvancedSearchThreadWorker()).Wake(worldLocation, Filter, results, ignoreQueue);
-        }
-
-        var type = Filter.FilterType ? Filter.Type : null;
-
-        // Push the entities
-        foreach (var item in World.Items.Values)
-        {
-            if (type == null || type.IsInstanceOfType(item))
-            {
-                PushToWorkers(item);
-            }
-        }
-
-        foreach (var m in World.Mobiles.Values)
-        {
-            if (type == null || type.IsInstanceOfType(m))
-            {
-                PushToWorkers(m);
-            }
-        }
-
-        ThreadPool.QueueUserWorkItem(state =>
-        {
-            // Block until everything is processed
             for (var i = 0; i < _threadWorkers.Length; i++)
             {
-                _threadWorkers[i].Sleep();
+                (_threadWorkers[i] ??= new AdvancedSearchThreadWorker()).Wake(worldLocation, Filter, results, ignoreQueue);
             }
 
-            var ignoredEntities = new HashSet<IEntity>(ignoreQueue);
+            var type = Filter.FilterType ? Filter.Type : null;
 
-            // Force the GC to collect the ignored entities
-            ignoreQueue.Clear();
-
-            var resultsList = new List<AdvancedSearchResult>(results.Count);
-            foreach (var result in results)
+            // Push the entities. Workers read entity state concurrently with the main loop —
+            // see AdvancedSearchThreadWorker for the accepted, bounded race.
+            foreach (var item in World.Items.Values)
             {
-                if (!ignoredEntities.Contains(result.Entity))
+                if (type == null || type.IsInstanceOfType(item))
                 {
-                    resultsList.Add(result);
+                    PushToWorkers(item);
                 }
             }
 
-            SearchResults = resultsList.ToArray();
-
-            // Force the GC to collect the results
-            resultsList.Clear();
-            resultsList.TrimExcess();
-
-            // Send the gump on the main thread
-            Core.LoopContext.Post(
-                autoSaveState =>
+            foreach (var m in World.Mobiles.Values)
+            {
+                if (type == null || type.IsInstanceOfType(m))
                 {
-                    AutoSave.SavesEnabled = (bool)autoSaveState!;
-                    Resend(from);
-                }, state);
-        }, autoSave);
+                    PushToWorkers(m);
+                }
+            }
+
+            ThreadPool.QueueUserWorkItem(state =>
+            {
+                try
+                {
+                    // Block until everything is processed
+                    for (var i = 0; i < _threadWorkers.Length; i++)
+                    {
+                        _threadWorkers[i].Sleep();
+                    }
+
+                    var ignoredEntities = new HashSet<IEntity>(ignoreQueue);
+
+                    // Force the GC to collect the ignored entities
+                    ignoreQueue.Clear();
+
+                    var resultsList = new List<AdvancedSearchResult>(results.Count);
+                    foreach (var result in results)
+                    {
+                        if (!ignoredEntities.Contains(result.Entity))
+                        {
+                            resultsList.Add(result);
+                        }
+                    }
+
+                    SearchResults = resultsList.ToArray();
+
+                    // Force the GC to collect the results
+                    resultsList.Clear();
+                    resultsList.TrimExcess();
+
+                    // Send the gump on the main thread
+                    Core.LoopContext.Post(() => Resend(from));
+                }
+                catch (Exception ex)
+                {
+                    // A drain-phase throw here would terminate the process; the finally still
+                    // restores autosave and releases the guard.
+                    _logger.Warning(ex, "AdvancedSearch: search drain failed");
+                }
+                finally
+                {
+                    AutoSave.SavesEnabled = (bool)state!;
+                    EndSearch();
+                }
+            }, autoSave);
+        }
+        catch
+        {
+            // Setup failed before the work item took ownership of the release.
+            AutoSave.SavesEnabled = autoSave;
+            EndSearch();
+            throw;
+        }
     }
 
     private void SetSortSwitches(int radioSwitch)
