@@ -9,6 +9,8 @@
 /Distribution/bsdtar
 /Distribution/Configuration/antimacro.json
 /Distribution/Configuration/assistants.json
+/Distribution/Configuration/bans.json
+/Distribution/Configuration/crowdsec.json
 /Distribution/Configuration/expansion.json
 /Distribution/Configuration/modernuo.json
 /Distribution/Configuration/email-settings.json
@@ -19,6 +21,7 @@
 /Distribution/Backups
 /Distribution/Saves
 /Distribution/docs
+/docs/
 /Distribution/temp
 /Distribution/*.dylib
 /Distribution/*.so

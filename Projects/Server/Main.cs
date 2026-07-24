@@ -30,6 +30,8 @@ using Server.Compression;
 using Server.Json;
 using Server.Logging;
 using Server.Network;
+using Server.Network.Bans;
+using Server.Network.Bans.Blocklist;
 using Server.Text;
 
 namespace Server;
@@ -260,7 +262,7 @@ public static class Core
                 // ignored
             }
 
-            if (!close && !Core.Headless)
+            if (!close && !Headless)
             {
                 Console.WriteLine("This exception is fatal, press return to exit");
                 ConsoleInputHandler.ReadLine();
@@ -342,6 +344,8 @@ public static class Core
         World.ExitSerializationThreads();
         PingServer.Shutdown();
         NetState.Shutdown();
+        BanChannel.Stop();
+        FileBlocklist.Stop();
 
         if (!_crashed)
         {
@@ -461,6 +465,8 @@ public static class Core
 
         AssemblyHandler.Invoke("Initialize");
 
+        BanChannel.Start(ClosingTokenSource.Token);
+        FileBlocklist.Start(ClosingTokenSource.Token);
         NetState.Start();
         PingServer.Start();
         EventSink.InvokeServerStarted();

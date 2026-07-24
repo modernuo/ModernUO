@@ -73,6 +73,7 @@ public partial class NetState
     public static IPEndPoint[] ListeningAddresses { get; private set; }
 
     private static IPRateLimiter _ipRateLimiter;
+    private static readonly Bans.Blocklist.PromotedGuard _blocklistGuard = new();
 
     /// <summary>
     /// Configures the IORingGroup and socket manager.
@@ -224,10 +225,28 @@ public partial class NetState
                 if (_ipRateLimiter != null && !_ipRateLimiter.Verify(remoteIP, out var totalAttempts))
                 {
                     logger.Debug("{Address} Past IP limit threshold ({TotalAttempts})", remoteIP, totalAttempts);
+
+                    if (Bans.BanConfiguration.Settings.ReportRateLimitTrips)
+                    {
+                        // Enqueue-only contribution; NOT added to the local firewall set (the limiter already
+                        // gates it here and the OS bouncer drops it at the kernel).
+                        Bans.BanChannel.Report(remoteIP, Bans.BanConfiguration.Settings.AutoBanDuration, "rate-limit");
+                    }
                 }
                 else if (Firewall.IsBlocked(remoteIP))
                 {
                     logger.Debug("{Address} Firewalled", remoteIP);
+                }
+                else if (Bans.Blocklist.BlocklistGate.Evaluate(remoteIP, false, _blocklistGuard, Core.TickCount,
+                             Bans.BanConfiguration.Settings.ReportBlocklistHits,
+                             (long)Bans.BanConfiguration.Settings.BlocklistPromoteSuppression.TotalMilliseconds, out var promote))
+                {
+                    logger.Debug("{Address} Blocklisted", remoteIP);
+
+                    if (promote)
+                    {
+                        Bans.BanChannel.Report(remoteIP, Bans.BanConfiguration.Settings.BlocklistBanDuration, "blocklist");
+                    }
                 }
                 else
                 {

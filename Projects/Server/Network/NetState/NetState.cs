@@ -96,6 +96,15 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
         // Initialize IORingGroup and buffer pools
         ConfigureNetwork();
+
+        // Build the pluggable ban-channel enforcers (local firewall + optional CrowdSec intel).
+        Bans.BanChannel.Configure();
+
+        // Explicit call for deterministic ordering; AssemblyHandler.Invoke("Configure") also reaches this.
+        Bans.Blocklist.FileBlocklist.Configure();
+
+        // Periodically sweep the blocklist promote-guard so a distinct-IP flood can't grow it unbounded.
+        Timer.DelayCall(TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(1), () => _blocklistGuard.Sweep(Core.TickCount));
     }
 
     // Internal constructor for accepted sockets

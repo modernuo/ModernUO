@@ -78,6 +78,11 @@ internal static class TestServerInitializer
             Core.LoopContext = new EventLoopContext();
             Core.Expansion = Expansion.EJ;
 
+            // Timer wheel must exist before NetState.Configure(), which schedules a recurring
+            // sweep via Timer.DelayCall (matches production ordering in Main.cs: Timer.Init runs
+            // before AssemblyHandler.Invoke("Configure")).
+            Timer.Init(0);
+
             // Configure networking (initializes RingSocketManager for tests)
             Server.Network.NetState.Configure();
 
@@ -86,8 +91,6 @@ internal static class TestServerInitializer
 
             // Configure the world
             World.Configure();
-
-            Timer.Init(0);
 
             // Load the world
             World.Load();
