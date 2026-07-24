@@ -1743,7 +1743,8 @@ namespace Server.Gumps
             {
                 for (var i = 0; i < a.LoginIPs.Length; ++i)
                 {
-                    AdminFirewall.Add(a.LoginIPs[i]);
+                    Firewall.Add(new SingleIpFirewallEntry(a.LoginIPs[i]));
+                    Server.Network.Bans.BanChannel.Report(a.LoginIPs[i], TimeSpan.Zero, "manual");
                 }
 
                 notice = "All addresses in the list have been firewalled.";
@@ -1767,7 +1768,13 @@ namespace Server.Gumps
 
             if (okay)
             {
-                AdminFirewall.Add(toFirewall);
+                var firewallEntry = Firewall.ToFirewallEntry(toFirewall);
+                Firewall.Add(firewallEntry);
+
+                if (firewallEntry.MinIpAddress == firewallEntry.MaxIpAddress)
+                {
+                    Server.Network.Bans.BanChannel.Report(firewallEntry.MinIpAddress.ToIpAddress(), TimeSpan.Zero, "manual");
+                }
 
                 notice = $"{toFirewall} : Added to firewall.";
             }
@@ -3559,7 +3566,7 @@ namespace Server.Gumps
                                         IFirewallEntry firewallEntry;
                                         try
                                         {
-                                            firewallEntry = AdminFirewall.ToFirewallEntry(text);
+                                            firewallEntry = Firewall.ToFirewallEntry(text);
                                         }
                                         catch
                                         {
@@ -3581,7 +3588,17 @@ namespace Server.Gumps
                                             $"{from.AccessLevel} {CommandLogging.Format(from)} firewalling {firewallEntry}"
                                         );
 
-                                        AdminFirewall.Add(firewallEntry);
+                                        Firewall.Add(firewallEntry);
+
+                                        if (firewallEntry.MinIpAddress == firewallEntry.MaxIpAddress)
+                                        {
+                                            Server.Network.Bans.BanChannel.Report(
+                                                firewallEntry.MinIpAddress.ToIpAddress(),
+                                                TimeSpan.Zero,
+                                                "manual"
+                                            );
+                                        }
+
                                         from.SendGump(
                                             new AdminGump(
                                                 from,
@@ -3620,7 +3637,13 @@ namespace Server.Gumps
                                             $"{from.AccessLevel} {CommandLogging.Format(from)} removing {m_State} from firewall list"
                                         );
 
-                                        AdminFirewall.Remove(m_State);
+                                        Firewall.Remove(m_State as IFirewallEntry);
+
+                                        if (m_State is IFirewallEntry fe && fe.MinIpAddress == fe.MaxIpAddress)
+                                        {
+                                            Server.Network.Bans.BanChannel.Retract(fe.MinIpAddress.ToIpAddress());
+                                        }
+
                                         from.SendGump(
                                             new AdminGump(
                                                 from,

@@ -1154,7 +1154,8 @@ namespace Server.Commands.Generic
 
                 try
                 {
-                    AdminFirewall.Add(state.Address);
+                    Firewall.Add(new SingleIpFirewallEntry(state.Address));
+                    Server.Network.Bans.BanChannel.Report(state.Address, TimeSpan.Zero, "manual");
                     AddResponse("They have been firewalled.");
                 }
                 catch (Exception ex)
