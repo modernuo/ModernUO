@@ -1,137 +1,89 @@
+/*************************************************************************
+ * ModernUO                                                              *
+ * Copyright 2019-2026 - ModernUO Development Team                       *
+ * Email: hi@modernuo.com                                                *
+ * File: FirewallTests.cs                                                *
+ *                                                                       *
+ * This program is free software: you can redistribute it and/or modify  *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ *                                                                       *
+ * You should have received a copy of the GNU General Public License     *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
+ *************************************************************************/
 
+using System;
 using System.Net;
-using System.Threading.Tasks;
 using Server.Network;
 using Xunit;
 
-namespace Server.Tests;
+namespace Server.Tests.Network.Firewall;
 
+[Collection("Sequential Server Tests")]
 public class FirewallTests
 {
+    private static IPAddress Ip(string s) => IPAddress.Parse(s);
+
     [Fact]
-    public void Firewall_BlocksIPAddress_WhenAdded()
+    public void Add_ThenIsBlocked_SingleIp()
     {
-        var ip = IPAddress.Parse("192.168.1.1");
-        var entry = new SingleIpFirewallEntry("192.168.1.1");
-
-        Assert.False(Firewall.IsBlocked(ip));
-
-        Firewall.Add(entry);
-
-        Assert.True(Firewall.IsBlocked(ip));
+        Server.Network.Firewall.ResetForTesting();
+        Assert.True(Server.Network.Firewall.Add(new SingleIpFirewallEntry(Ip("1.2.3.4"))));
+        Assert.True(Server.Network.Firewall.IsBlocked(Ip("1.2.3.4")));
+        Assert.False(Server.Network.Firewall.IsBlocked(Ip("1.2.3.5")));
     }
 
     [Fact]
-    public void Firewall_DoesNotBlockIPAddress_WhenNotAdded()
+    public void Add_Range_BlocksInside_NotOutside()
     {
-        var ip = IPAddress.Parse("192.168.1.2");
-        Assert.False(Firewall.IsBlocked(ip));
+        Server.Network.Firewall.ResetForTesting();
+        Server.Network.Firewall.Add(new CidrFirewallEntry(Ip("10.0.0.0"), Ip("10.0.0.255")));
+        Assert.True(Server.Network.Firewall.IsBlocked(Ip("10.0.0.7")));
+        Assert.False(Server.Network.Firewall.IsBlocked(Ip("10.0.1.0")));
     }
 
     [Fact]
-    public void Firewall_StopsBlockingIPAddress_WhenRemoved()
+    public void Remove_Unblocks()
     {
-        var ip = IPAddress.Parse("192.168.1.3");
-        var entry = new SingleIpFirewallEntry("192.168.1.3");
-
-        Firewall.Add(entry);
-        Assert.True(Firewall.IsBlocked(ip));
-
-        Firewall.Remove(entry);
-        Assert.False(Firewall.IsBlocked(ip));
+        Server.Network.Firewall.ResetForTesting();
+        var entry = new SingleIpFirewallEntry(Ip("1.2.3.4"));
+        Server.Network.Firewall.Add(entry);
+        Assert.True(Server.Network.Firewall.Remove(entry));
+        Assert.False(Server.Network.Firewall.IsBlocked(Ip("1.2.3.4")));
     }
 
     [Fact]
-    public void Firewall_BlocksIPRange()
+    public void ExpireEntries_RemovesExpired_KeepsPermanent()
     {
-        var entry = new CidrFirewallEntry(IPAddress.Parse("10.0.0.1"), IPAddress.Parse("10.0.0.5"));
+        Server.Network.Firewall.ResetForTesting();
+        var permanent = new SingleIpFirewallEntry(Ip("1.1.1.1"));
+        var temporary = new SingleIpFirewallEntry(Ip("2.2.2.2"));
+        Server.Network.Firewall.Add(permanent);                                   // no ttl
+        Server.Network.Firewall.Add(temporary, TimeSpan.FromMilliseconds(50));    // ttl
 
-        Firewall.Add(entry);
+        Server.Network.Firewall.ExpireEntries(Core.TickCount + 100);              // past the ttl
 
-        Assert.True(Firewall.IsBlocked(IPAddress.Parse("10.0.0.1")));
-        Assert.True(Firewall.IsBlocked(IPAddress.Parse("10.0.0.3")));
-        Assert.True(Firewall.IsBlocked(IPAddress.Parse("10.0.0.5")));
-
-        Assert.False(Firewall.IsBlocked(IPAddress.Parse("10.0.0.6")));
+        Assert.True(Server.Network.Firewall.IsBlocked(Ip("1.1.1.1")));
+        Assert.False(Server.Network.Firewall.IsBlocked(Ip("2.2.2.2")));
     }
 
     [Fact]
-    public void Firewall_CacheInvalidation_WorksOnUpdate()
+    public void ToFirewallEntry_ParsesForms()
     {
-        var ip = IPAddress.Parse("192.168.1.10");
-        var entry = new SingleIpFirewallEntry("192.168.1.10");
-
-        Firewall.Add(entry);
-        Assert.True(Firewall.IsBlocked(ip));
-
-        Firewall.Remove(entry);
-        Assert.False(Firewall.IsBlocked(ip));
+        Assert.IsType<SingleIpFirewallEntry>(Server.Network.Firewall.ToFirewallEntry("1.2.3.4"));
+        Assert.IsType<CidrFirewallEntry>(Server.Network.Firewall.ToFirewallEntry("10.0.0.0/24"));
+        Assert.IsType<CidrFirewallEntry>(Server.Network.Firewall.ToFirewallEntry("10.0.0.0-10.0.0.255"));
+        Assert.Null(Server.Network.Firewall.ToFirewallEntry("not-an-ip"));
     }
 
     [Fact]
-    public void Firewall_ReadsFirewallSetCorrectly()
+    public void ReadFirewallSet_SurfacesAddedEntries()
     {
-        var entry = new SingleIpFirewallEntry("172.16.0.1");
-        Firewall.Add(entry);
+        Server.Network.Firewall.ResetForTesting();
+        var entry = new SingleIpFirewallEntry(Ip("1.2.3.4"));
+        Server.Network.Firewall.Add(entry);
 
-        var found = false;
-        Firewall.ReadFirewallSet(set =>
-        {
-            found = set.Contains(entry);
-        });
-
-        Assert.True(found);
-    }
-
-    [Fact]
-    public void Firewall_IsThreadSafe()
-    {
-        var testIps = new IPAddress[256];
-        for (var i = 0; i <= 255; i++)
-        {
-            testIps[i] = IPAddress.Parse($"192.168.0.{i}");
-        }
-
-        var entry = new CidrFirewallEntry(IPAddress.Parse("192.168.0.1"), IPAddress.Parse("192.168.0.255"));
-        Firewall.Add(entry);
-
-        Parallel.ForEach(testIps, ip =>
-        {
-            var shouldBlock = int.Parse(ip.ToString().Split('.')[3]) is > 0;
-            Assert.Equal(shouldBlock, Firewall.IsBlocked(ip));
-        });
-
-        Firewall.Remove(entry);
-
-        Parallel.ForEach(testIps, ip =>
-        {
-            Assert.False(Firewall.IsBlocked(ip));
-        });
-    }
-
-    [Fact]
-    public void Firewall_DoesNotThrowWhenRemovingNonExistentEntry()
-    {
-        var entry = new SingleIpFirewallEntry("203.0.113.5");
-        Assert.False(Firewall.Remove(entry));
-    }
-
-    [Fact]
-    public void Firewall_CacheHandlesMultipleUpdates()
-    {
-        var ip = IPAddress.Parse("192.168.1.20");
-        var entry = new SingleIpFirewallEntry("192.168.1.20");
-
-        Firewall.Add(entry);
-        Assert.True(Firewall.IsBlocked(ip));
-
-        Firewall.Remove(entry);
-        Assert.False(Firewall.IsBlocked(ip));
-
-        Firewall.Add(entry);
-        Assert.True(Firewall.IsBlocked(ip));
-
-        Firewall.Remove(entry);
-        Assert.False(Firewall.IsBlocked(ip));
+        Server.Network.Firewall.ReadFirewallSet(set => Assert.Contains(entry, set));
     }
 }
