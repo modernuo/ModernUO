@@ -39,15 +39,12 @@ public static class PathCacheCommands
             8192
         );
 
-        PathfindRecorder.Configure();
-
         CommandSystem.Register("PathCacheStats", AccessLevel.Administrator, OnPathCacheStats);
         CommandSystem.Register("PathCacheClear", AccessLevel.Administrator, OnPathCacheClear);
         CommandSystem.Register("PathBake",       AccessLevel.Administrator, OnPathBake);
         CommandSystem.Register("PathCacheSave",  AccessLevel.Administrator, OnPathCacheSave);
         CommandSystem.Register("PathCacheLoad",  AccessLevel.Administrator, OnPathCacheLoad);
         CommandSystem.Register("PathRecord",     AccessLevel.Administrator, OnPathRecord);
-        AutoLoadAtStartup();
     }
 
     /// <summary>
@@ -80,18 +77,23 @@ public static class PathCacheCommands
     }
 
     /// <summary>
-    /// Bakes any map whose <c>.swb</c> is missing or stale, when <see cref="PrebakeSetting"/> is
-    /// set. Runs in the Initialize phase, once the tile matrix and world are loaded. An up-to-date
-    /// cache makes it a no-op, so the cost lands only on a first boot or after a client or map
-    /// update moves the fingerprint.
+    /// Opens the existing <c>.swb</c> files, then — when <see cref="PrebakeSetting"/> is set —
+    /// bakes any that are missing or stale. An up-to-date cache makes the bake a no-op, so the cost
+    /// lands only on a first boot or after a client or map update moves the fingerprint.
     ///
-    /// A map is judged up-to-date by whether it has an open reader. <see cref="AutoLoadAtStartup"/>
-    /// already ran in the earlier Configure phase and only opens a reader for a .swb whose
-    /// fingerprint validates, so an open reader is proof of a good bake — no need to fingerprint
-    /// the map a second time here.
+    /// Both halves run here rather than in Configure: the fingerprint hashes the map files, so
+    /// opening a .swb forces the lazy <see cref="Map.Tiles"/> property. In Configure that would
+    /// build every TileMatrix ahead of <c>TileMatrixLoader</c>, possibly before
+    /// <c>TileMatrix.Configure()</c> settles <c>Pre6000ClientSupport</c> — both sit at the default
+    /// call priority and the phase sort is unstable.
+    ///
+    /// A reader only opens once its fingerprint validates, so an open reader is proof of a good
+    /// bake and the map is skipped without fingerprinting it again.
     /// </summary>
     public static void Initialize()
     {
+        AutoLoadAtStartup();
+
         if (!ServerConfiguration.GetSetting(PrebakeSetting, false))
         {
             return;
@@ -119,13 +121,15 @@ public static class PathCacheCommands
             );
             StepCache.Instance.BakeMap(map.MapID, path);
             StepCache.Instance.ClearResidentChunks();
+
+            // Just this map: a blanket AutoLoadAtStartup() would reopen every reader already open.
+            StepCache.Instance.TryOpenLazyReader(path, map.MapID);
             baked++;
         }
 
         if (baked > 0)
         {
             logger.Information("PathBake: pre-bake complete ({Count} map(s) written).", baked);
-            AutoLoadAtStartup(); // reopen what we just wrote
         }
     }
 

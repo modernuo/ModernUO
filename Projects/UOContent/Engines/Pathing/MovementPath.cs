@@ -60,8 +60,6 @@ public sealed class MovementPath
     public static void Configure()
     {
         CommandSystem.Register("Path", AccessLevel.GameMaster, Path_OnCommand);
-        CacheEvictionTimer.Configure();
-        PathCacheCommands.Configure();
     }
 
     [Usage("Path")]
