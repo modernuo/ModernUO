@@ -108,45 +108,6 @@ public static partial class Utility
         }
     }
 
-    // Converts an IPAddress to a UInt128 in IPv6 format
-    public static UInt128 ToUInt128(this IPAddress ip)
-    {
-        if (ip.AddressFamily == AddressFamily.InterNetwork && !ip.IsIPv4MappedToIPv6)
-        {
-            Span<byte> integer = stackalloc byte[4];
-            return !ip.TryWriteBytes(integer, out _)
-                ? (UInt128)0
-                : new UInt128(0, 0xFFFF00000000UL | BinaryPrimitives.ReadUInt32BigEndian(integer));
-        }
-
-        Span<byte> bytes = stackalloc byte[16];
-        if (!ip.TryWriteBytes(bytes, out _))
-        {
-            return 0;
-        }
-
-        var high = BinaryPrimitives.ReadUInt64BigEndian(bytes[..8]);
-        var low = BinaryPrimitives.ReadUInt64BigEndian(bytes.Slice(8, 8));
-
-        return new UInt128(high, low);
-    }
-
-    // Converts a UInt128 in IPv6 format to an IPAddress
-    public static IPAddress ToIpAddress(this UInt128 value, bool mapToIpv6 = false)
-    {
-        // IPv4 mapped IPv6 address
-        if (!mapToIpv6 && value >= 0xFFFF00000000UL && value <= 0xFFFFFFFFFFFFUL)
-        {
-            var newAddress = IPAddress.HostToNetworkOrder((int)value);
-            return new IPAddress(unchecked((uint)newAddress));
-        }
-
-        Span<byte> bytes = stackalloc byte[16]; // 128 bits for IPv6 address
-        ((IBinaryInteger<UInt128>)value).WriteBigEndian(bytes);
-
-        return new IPAddress(bytes);
-    }
-
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static UInt128 CreateCidrAddress(ReadOnlySpan<byte> bytes, int prefixLength, bool isMax)
     {

@@ -1,3 +1,4 @@
+﻿using System;
 using System.IO;
 using System.Reflection;
 using System.Threading;
@@ -78,6 +79,15 @@ internal static class TestServerInitializer
             Core.LoopContext = new EventLoopContext();
             Core.Expansion = Expansion.EJ;
 
+            // Seed the loop clock as Main.cs does before the Configure sweep; otherwise Core.Now is
+            // DateTime.MinValue for the whole test host.
+            Core._now = DateTime.UtcNow;
+
+            // Timer wheel must exist before NetState.Configure(), which schedules a recurring
+            // sweep via Timer.DelayCall (matches production ordering in Main.cs: Timer.Init runs
+            // before AssemblyHandler.Invoke("Configure")).
+            Timer.Init(0);
+
             // Configure networking (initializes RingSocketManager for tests)
             Server.Network.NetState.Configure();
 
@@ -86,8 +96,6 @@ internal static class TestServerInitializer
 
             // Configure the world
             World.Configure();
-
-            Timer.Init(0);
 
             // Load the world
             World.Load();

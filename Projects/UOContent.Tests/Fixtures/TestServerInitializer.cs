@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Reflection;
 using System.Threading;
@@ -61,6 +61,15 @@ internal static class TestServerInitializer
             AssemblyHandler.LoadAssemblies(["Server.dll", "UOContent.dll"]);
 
             SkillsInfo.Configure();
+
+            // Seed the loop clock as Main.cs does before the Configure sweep; otherwise Core.Now is
+            // DateTime.MinValue for the whole test host.
+            Core._now = DateTime.UtcNow;
+
+            // Timer wheel must exist before NetState.Configure(), which schedules a recurring
+            // sweep via Timer.DelayCall (matches production ordering in Main.cs: Timer.Init runs
+            // before AssemblyHandler.Invoke("Configure")).
+            Timer.Init(0);
             Server.Network.NetState.Configure();
             TestMapDefinitions.ConfigureTestMapDefinitions();
 
@@ -91,7 +100,6 @@ internal static class TestServerInitializer
             }
 
             World.Configure();
-            Timer.Init(0);
             RaceDefinitions.Configure();
             MovementImpl.Configure();
             PathFollower.Configure();

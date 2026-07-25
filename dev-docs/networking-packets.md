@@ -473,6 +473,65 @@ ns.SendMovementRej(int sequence, Mobile m);
 6. **Big-endian by default** -- only use `WriteLE`/`ReadLE` when the protocol requires it
 7. **Function pointers** (`&Handler`) for incoming packet registration (no delegate allocation)
 
+## Connection Filtering (Accept Path)
+
+Every inbound socket is checked before it becomes a `NetState`. The check runs on the game loop once
+per accepted connection -- this is the path that has to survive a DDoS -- so it must be allocation-free
+and non-blocking.
+
+Gates plug in through `IConnectionFilter`, registered with `ConnectionFilters.Register()` during the
+Configure sweep:
+
+```csharp
+public sealed class MyFilter : IConnectionFilter
+{
+    public string Name => "my-filter";
+    public void Configure() { /* read config, no I/O */ }
+    public void Start(CancellationToken token) { /* background hydration */ }
+    public void Stop() { }
+    public bool ShouldDeny(IPAddress address) => /* allocation-free membership test */;
+}
+
+// In a static Configure() so the sweep finds it:
+ConnectionFilters.Register(new MyFilter());
+```
+
+Rules:
+
+- `ShouldDeny` must be **allocation-free**, O(log n) at worst, no I/O, no blocking. Anything expensive
+  (parsing, reloading, contributing to an external service) belongs off the loop or behind a bounded,
+  non-blocking enqueue.
+- Side effects a hit implies (reporting to `BanChannel`, promoting to an OS firewall, suppressing
+  duplicate reports) are the **filter's** business, not the accept path's.
+- Filters are consulted in registration order and the first denial short-circuits, so register the
+  cheapest and most selective first. Order affects only how quickly a denial is reached, never whether
+  one happens.
+- A filter that throws is **unregistered** and the connection fails open. A filter that faults once
+  faults for every connection, so leaving it registered would mean an exception per accept.
+
+Core owns the question; **every implementation lives in UOContent**. The two that ship are `firewall`
+(admin-curated, mutable at runtime, persisted to `Configuration/firewall.json`) and `blocklist`
+(file-sourced, millions of entries, demand-pages hits to CrowdSec). A shard that fronts its server with
+an upstream proxy or edge scrubbing can drop both and register nothing.
+
+Do **not** route this kind of check through `EventSink.InvokeSocketConnect` -- that fires later and
+allocates a `SocketConnectEventArgs` per connection, which is exactly what the accept path avoids for
+rejected traffic.
+
+### IP Address Normalization (`IPAddressUtility`)
+
+Addresses are normalized to `UInt128` in **IPv6 form** so a single comparison/index works for both
+families. An IPv4 address becomes its v4-mapped-v6 value (`::ffff:a.b.c.d`), which is why round-tripping
+matters: `IPv4 -> UInt128 -> IPAddress` can come back as `InterNetworkV6` with `IsIPv4MappedToIPv6`
+set, even though it is "really" a v4 address. Code that switches on `AddressFamily` alone will mis-handle
+those, so the helpers check both.
+
+> **Known wart / follow-up:** `ToUInt128` guards with `AddressFamily == InterNetwork && !IsIPv4MappedToIPv6`.
+> Per BCL semantics `IsIPv4MappedToIPv6` is only ever true for `InterNetworkV6`, so the second clause
+> reads as redundant -- it is really defending the round-trip described above. The normalization would be
+> clearer as an explicit "to canonical v6 bits" step that never needs the family check at all. Deliberately
+> left as-is; to be revisited in a follow-up PR rather than churned mid-feature.
+
 ## Key File References
 
 | File | Description |
@@ -492,3 +551,8 @@ ns.SendMovementRej(int sequence, Mobile m);
 | `Projects/Server/Network/Packets/OutgoingAccountPackets.cs` | Account packets |
 | `Projects/Server/Network/Packets/OutgoingContainerPackets.cs` | Container packets |
 | `Projects/Server/Network/PacketHandler.cs` | PacketHandler class |
+| `Projects/Server/Network/IConnectionFilter.cs` | Accept-path gate contract |
+| `Projects/Server/Network/ConnectionFilters.cs` | Filter registry + lifecycle |
+| `Projects/UOContent/Misc/Firewall/Firewall.cs` | Admin-curated firewall set |
+| `Projects/Server/Utilities/IPAddressUtility.cs` | IPAddress <-> UInt128 normalization, CIDR parsing |
+| `Projects/UOContent/Misc/Blocklist/BlocklistFilter.cs` | File-sourced blocklist filter |

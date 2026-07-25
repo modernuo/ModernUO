@@ -224,10 +224,19 @@ public partial class NetState
                 if (_ipRateLimiter != null && !_ipRateLimiter.Verify(remoteIP, out var totalAttempts))
                 {
                     logger.Debug("{Address} Past IP limit threshold ({TotalAttempts})", remoteIP, totalAttempts);
+
+                    if (Bans.BanConfiguration.Settings.ReportRateLimitTrips)
+                    {
+                        // Enqueue-only contribution; NOT added to the local firewall set (the limiter already
+                        // gates it here and the OS bouncer drops it at the kernel).
+                        Bans.BanChannel.Report(remoteIP, Bans.BanConfiguration.Settings.AutoBanDuration, "rate-limit");
+                    }
                 }
-                else if (Firewall.IsBlocked(remoteIP))
+                else if (ConnectionFilters.ShouldDeny(remoteIP, out var deniedBy))
                 {
-                    logger.Debug("{Address} Firewalled", remoteIP);
+                    // Whatever a hit implies (persisting, promoting to an OS bouncer, contributing to the
+                    // ban channel) is the filter's own business; the accept path just drops the socket.
+                    logger.Debug("{Address} denied by connection filter '{Filter}'", remoteIP, deniedBy);
                 }
                 else
                 {

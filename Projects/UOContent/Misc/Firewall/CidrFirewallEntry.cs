@@ -25,8 +25,15 @@ public class CidrFirewallEntry : BaseFirewallEntry
     public override UInt128 MaxIpAddress { get; }
 
     public CidrFirewallEntry(string ipAddressOrCidr)
-        : this(ParseIPAddress(ipAddressOrCidr, out var prefixLength), prefixLength)
     {
+        // Core owns the CIDR -> normalized range parse.
+        if (!IPAddressUtility.TryParseCidrRange(ipAddressOrCidr, out var min, out var max))
+        {
+            throw new ArgumentException("Invalid IP address or CIDR.", nameof(ipAddressOrCidr));
+        }
+
+        MinIpAddress = min;
+        MaxIpAddress = max;
     }
 
     public CidrFirewallEntry(IPAddress minAddress, IPAddress maxAddress)
@@ -50,26 +57,4 @@ public class CidrFirewallEntry : BaseFirewallEntry
         MaxIpAddress = Utility.CreateCidrAddress(bytes, prefixLength, true);
     }
 
-    private static IPAddress ParseIPAddress(ReadOnlySpan<char> ipString, out int prefixLength)
-    {
-        var slashIndex = ipString.IndexOf('/');
-        var ipAddress = IPAddress.Parse(slashIndex > -1 ? ipString[..slashIndex] : ipString);
-        var maxPrefixLength = ipAddress.AddressFamily == AddressFamily.InterNetworkV6 ? 128 : 32;
-
-        if (slashIndex == -1)
-        {
-            prefixLength = maxPrefixLength;
-        }
-        else
-        {
-            var prefixPart = ipString[(slashIndex + 1)..];
-
-            if (!int.TryParse(prefixPart, out prefixLength) || prefixLength < 0 || prefixLength > maxPrefixLength)
-            {
-                throw new ArgumentException("Invalid prefix length.");
-            }
-        }
-
-        return ipAddress;
-    }
 }

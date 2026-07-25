@@ -9,6 +9,7 @@ using Server.Items;
 using Server.Mobiles;
 using Server.Multis;
 using Server.Network;
+using Server.Network.Bans;
 using Server.Spells;
 
 namespace Server.Commands.Generic
@@ -1154,7 +1155,8 @@ namespace Server.Commands.Generic
 
                 try
                 {
-                    AdminFirewall.Add(state.Address);
+                    Firewall.Add(new SingleIpFirewallEntry(state.Address));
+                    BanChannel.Report(state.Address, TimeSpan.Zero, "manual");
                     AddResponse("They have been firewalled.");
                 }
                 catch (Exception ex)
