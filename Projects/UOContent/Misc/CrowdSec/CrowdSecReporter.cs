@@ -69,6 +69,12 @@ public sealed class CrowdSecReporter : IBanReporter
     /// </summary>
     public int SendFailureCount => _sendFailures;
 
+    /// <summary>
+    /// The drain loop's task, so tests can observe its lifetime. It must stay incomplete until the loop
+    /// actually exits — see the note on <see cref="DrainLoop"/> for the shape that silently broke that.
+    /// </summary>
+    internal Task DrainTaskForTesting => _drainTask;
+
     public static void Configure()
     {
         BanChannel.Register(new CrowdSecReporter());
