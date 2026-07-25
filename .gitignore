@@ -10,6 +10,7 @@
 /Distribution/Configuration/antimacro.json
 /Distribution/Configuration/assistants.json
 /Distribution/Configuration/bans.json
+/Distribution/Configuration/blocklist.json
 /Distribution/Configuration/crowdsec.json
 /Distribution/Configuration/expansion.json
 /Distribution/Configuration/ip-blocklist.txt

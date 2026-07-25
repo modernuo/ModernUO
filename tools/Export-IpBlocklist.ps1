@@ -7,11 +7,11 @@
 .DESCRIPTION
     This is the producer half of ModernUO's in-app blocklist gate. It fetches a deliberately THIN feed
     set, merges every source into one global set, drops duplicates and reserved/bogon addresses, then
-    writes the result to a plain text file that the shard reads via `blocklistFile` in
-    Configuration/bans.json. Nothing is installed and no credentials are needed — the output is just a
-    text file, so this can run on any machine that can reach the shard's Distribution folder.
+    writes the result to a plain text file that the shard reads via `file` in
+    Configuration/blocklist.json. Nothing is installed and no credentials are needed — the output is just
+    a text file, so this can run on any machine that can reach the shard's Distribution folder.
 
-    It writes the file the shard's `FileBlocklist` demand-pages against. IPs that actually connect are
+    It writes the file the shard's `BlocklistFilter` demand-pages against. IPs that actually connect are
     promoted to CrowdSec / the OS firewall by the shard; the OS firewall never has to hold millions of
     entries, which is exactly the scale it cannot handle on Windows.
 
@@ -33,12 +33,11 @@
     The only category deliberately held back is commercial VPN exit endpoints, which could block a legit
     player — and those are barely present here anyway (bitwire is ~5% of VPN-tunnel lists). If you ever want
     to protect VPN/Tor players, pass -ExcludeAnonymizers to subtract Tor/open-proxy/VPN IPs from the output.
-    The shard's IP whitelist still overrides the gate for anyone who has already logged in.
 
-    OUTPUT FORMAT (must stay in sync with Server/Network/Bans/Blocklist/BlocklistFile.cs):
+    OUTPUT FORMAT (must stay in sync with UOContent/Misc/Blocklist/BlocklistFile.cs):
         Line 1 is a header comment carrying the version markers, e.g.
             # modernuo-blocklist generated=2026-07-25T18:03:11Z count=3914022 ipv4=3901188 cidr=12834
-        The shard polls `blocklistReloadInterval` and reloads when the file mtime AND `generated=` change,
+        The shard polls `reloadInterval` and reloads when the file mtime AND `generated=` change,
         so the header is REQUIRED — without it the shard loads once and never picks up a new file.
         Every following line is one entry: a bare IPv4/IPv6 address or a CIDR (`1.2.3.0/24`). Blank lines
         and lines starting with `#` or `;` are ignored. Order does not matter; the shard sorts and
@@ -59,12 +58,12 @@
 
 .PARAMETER DistributionPath
     Path to the shard's Distribution folder. The blocklist is written to
-    <DistributionPath>\Configuration\ip-blocklist.txt, which is the default `blocklistFile` in bans.json.
+    <DistributionPath>\Configuration\ip-blocklist.txt, which is the default `file` in blocklist.json.
     Not needed when the script is run from its place in the repo (tools\), or when -OutFile is given.
 
 .PARAMETER OutFile
     Explicit output path, overriding -DistributionPath. Use this if you relocated the blocklist and
-    changed `blocklistFile` in bans.json to match.
+    changed `file` in blocklist.json to match.
 
 .PARAMETER MinInterval
     Refuse to re-run while the existing blocklist is younger than this (default 2h), so a misbehaving
@@ -93,14 +92,11 @@
     .\Export-IpBlocklist.ps1 -DryRun
 
 .EXAMPLE
+    # Safe to call as often as you like — it no-ops unless the list is older than 2h.
     .\Export-IpBlocklist.ps1 -DistributionPath 'C:\Shard\Distribution'
 
 .EXAMPLE
     .\Export-IpBlocklist.ps1 -OutFile 'D:\shared\ip-blocklist.txt' -ExcludeAnonymizers
-
-.EXAMPLE
-    # Safe to call as often as you like — it no-ops unless the list is older than 2h.
-    .\Export-IpBlocklist.ps1 -DistributionPath 'C:\Shard\Distribution'
 
 .EXAMPLE
     # Regenerate right now, ignoring the cooldown.
@@ -127,7 +123,7 @@ $ErrorActionPreference = 'Stop'
 $UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ModernUO-Blocklist-Export'
 $totalSw = [System.Diagnostics.Stopwatch]::StartNew()
 
-# Default location, relative to the Distribution folder. Keep in sync with BanSettings.BlocklistFile.
+# Default location, relative to the Distribution folder. Keep in sync with BlocklistSettings.File.
 $DefaultRelativePath = 'Configuration\ip-blocklist.txt'
 
 # ---------------------------------------------------------------------------------------------------------
@@ -530,4 +526,4 @@ $wSw.Stop()
 $sizeMb = [Math]::Round((Get-Item -LiteralPath $OutFile).Length / 1MB, 1)
 Write-Host ("`nWrote {0} entries ({1} MB) to {2} in {3:N1}s (total {4:N1}s). generated={5}" -f `
     $total, $sizeMb, $OutFile, $wSw.Elapsed.TotalSeconds, $totalSw.Elapsed.TotalSeconds, $generated)
-Write-Host "The shard picks this up on its next blocklistReloadInterval poll; no restart needed."
+Write-Host "The shard picks this up on its next reloadInterval poll; no restart needed."

@@ -73,7 +73,6 @@ public partial class NetState
     public static IPEndPoint[] ListeningAddresses { get; private set; }
 
     private static IPRateLimiter _ipRateLimiter;
-    private static readonly Bans.Blocklist.PromotedGuard _blocklistGuard = new();
 
     /// <summary>
     /// Configures the IORingGroup and socket manager.
@@ -233,20 +232,11 @@ public partial class NetState
                         Bans.BanChannel.Report(remoteIP, Bans.BanConfiguration.Settings.AutoBanDuration, "rate-limit");
                     }
                 }
-                else if (Firewall.IsBlocked(remoteIP))
+                else if (ConnectionFilters.ShouldDeny(remoteIP, out var deniedBy))
                 {
-                    logger.Debug("{Address} Firewalled", remoteIP);
-                }
-                else if (Bans.Blocklist.BlocklistGate.Evaluate(remoteIP, false, _blocklistGuard, Core.TickCount,
-                             Bans.BanConfiguration.Settings.ReportBlocklistHits,
-                             (long)Bans.BanConfiguration.Settings.BlocklistPromoteSuppression.TotalMilliseconds, out var promote))
-                {
-                    logger.Debug("{Address} Blocklisted", remoteIP);
-
-                    if (promote)
-                    {
-                        Bans.BanChannel.Report(remoteIP, Bans.BanConfiguration.Settings.BlocklistBanDuration, "blocklist");
-                    }
+                    // Whatever a hit implies (persisting, promoting to an OS bouncer, contributing to the
+                    // ban channel) is the filter's own business; the accept path just drops the socket.
+                    logger.Debug("{Address} denied by connection filter '{Filter}'", remoteIP, deniedBy);
                 }
                 else
                 {

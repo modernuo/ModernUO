@@ -251,6 +251,10 @@ public static class Firewall
 
         // Main-thread maintenance: expire TTLs and flush pending writes. No background thread.
         Timer.DelayCall(TimeSpan.FromSeconds(30), TimeSpan.FromSeconds(30), Maintenance);
+
+        // Expose the set to the accept path. Everything else (gump, commands, persistence) keeps using
+        // the Firewall API directly; only the per-connection question goes through the filter registry.
+        ConnectionFilters.Register(FirewallConnectionFilter.Instance);
     }
 
     private static void Maintenance()

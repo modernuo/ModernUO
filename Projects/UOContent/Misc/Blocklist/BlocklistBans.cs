@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: FileBlocklistTests.cs                                           *
+ * File: BlocklistBans.cs                                                *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -13,27 +13,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
-using System.Net;
+using Server.Network;
 using Server.Network.Bans.Blocklist;
-using Xunit;
 
-namespace Server.Tests.Network.Bans.Blocklist;
+namespace Server.Misc;
 
-[Collection("Sequential Server Tests")]
-public class FileBlocklistTests
+/// <summary>
+/// Registers the file-backed blocklist with the Core <see cref="ConnectionFilters"/> registry during the
+/// Configure sweep. Registration is unconditional: the filter self-disables when <c>blocklist.json</c>
+/// names no file, or when that file does not exist yet, so no config gate is needed here.
+/// </summary>
+public static class BlocklistBans
 {
-    [Fact]
-    public void IsBanned_reflects_loaded_snapshot()
+    public static void Configure()
     {
-        FileBlocklist.LoadForTesting(BlocklistSnapshot.Build(System.Text.Encoding.ASCII.GetBytes("1.2.3.4"), out _, out _));
-        Assert.True(FileBlocklist.IsBanned(IPAddress.Parse("1.2.3.4")));
-        Assert.False(FileBlocklist.IsBanned(IPAddress.Parse("1.2.3.5")));
-    }
-
-    [Fact]
-    public void Empty_when_unloaded_never_throws()
-    {
-        FileBlocklist.LoadForTesting(BlocklistSnapshot.Empty);
-        Assert.False(FileBlocklist.IsBanned(IPAddress.Parse("8.8.8.8")));
+        ConnectionFilters.Register(new BlocklistFilter());
     }
 }

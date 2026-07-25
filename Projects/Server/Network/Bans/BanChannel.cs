@@ -23,8 +23,8 @@ namespace Server.Network.Bans;
 
 /// <summary>
 /// Coordinates the configured <see cref="IBanReporter"/> contribution sinks. Enforcement is NOT here —
-/// the accept path calls <see cref="Firewall.IsBlocked"/> directly. This channel only fans locally-decided
-/// bans out to external systems (CrowdSec), which distribute them to OS-level bouncers.
+/// the accept path asks <see cref="ConnectionFilters"/>. This channel only fans locally-decided bans out
+/// to external systems (CrowdSec), which distribute them to OS-level bouncers.
 /// </summary>
 public static class BanChannel
 {
@@ -103,9 +103,6 @@ public static class BanChannel
                 logger.Warning(e, "Ban reporter '{Name}' threw while stopping", reporter.Name);
             }
         }
-
-        // Flush the local firewall's pending writes on the way down.
-        Firewall.Save();
     }
 
     /// <summary>Fans a locally-decided ban out to every reporter. Non-blocking; never throws.</summary>

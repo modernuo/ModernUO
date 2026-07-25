@@ -21,9 +21,9 @@ namespace Server.Network.Bans;
 
 /// <summary>
 /// A contribution sink behind <see cref="BanChannel"/>. Reporters receive locally-decided bans
-/// (manual admin bans, rate-limit trips) and forward them to an external system (e.g. CrowdSec),
-/// which distributes them to OS-level bouncers. Reporters never answer the accept-path membership
-/// query — enforcement is the local <see cref="Firewall"/>'s job.
+/// (manual admin bans, rate-limit trips, blocklist promotions) and forward them to an external system
+/// (e.g. CrowdSec), which distributes them to OS-level bouncers. Reporters never answer the accept-path
+/// membership query — that is an <see cref="IConnectionFilter"/>'s job.
 /// </summary>
 public interface IBanReporter
 {

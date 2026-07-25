@@ -1,4 +1,4 @@
-/*************************************************************************
+﻿/*************************************************************************
  * ModernUO                                                              *
  * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
@@ -31,7 +31,6 @@ using Server.Json;
 using Server.Logging;
 using Server.Network;
 using Server.Network.Bans;
-using Server.Network.Bans.Blocklist;
 using Server.Text;
 
 namespace Server;
@@ -345,7 +344,7 @@ public static class Core
         PingServer.Shutdown();
         NetState.Shutdown();
         BanChannel.Stop();
-        FileBlocklist.Stop();
+        ConnectionFilters.Stop();
 
         if (!_crashed)
         {
@@ -466,7 +465,7 @@ public static class Core
         AssemblyHandler.Invoke("Initialize");
 
         BanChannel.Start(ClosingTokenSource.Token);
-        FileBlocklist.Start(ClosingTokenSource.Token);
+        ConnectionFilters.Start(ClosingTokenSource.Token);
         NetState.Start();
         PingServer.Start();
         EventSink.InvokeServerStarted();

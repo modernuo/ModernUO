@@ -74,35 +74,4 @@ public record BanSettings
     /// <summary>Duration reported for an auto-detected (rate-limit) ban.</summary>
     [JsonPropertyName("autoBanDuration")]
     public TimeSpan AutoBanDuration { get; set; } = TimeSpan.FromHours(4);
-
-    /// <summary>
-    /// Path to the local blocklist file. A relative path resolves against <see cref="Core.BaseDirectory"/>;
-    /// an absolute path is used as-is (handy when several shards share one generated list). The gate is
-    /// inert while the file is absent, so the default is safe to ship — drop a list in and it takes effect
-    /// on the next poll. Set to <c>""</c> to disable the gate entirely. Produce the file with
-    /// <c>tools/Export-IpBlocklist.ps1</c>.
-    /// </summary>
-    [JsonPropertyName("blocklistFile")]
-    public string BlocklistFile { get; set; } = "Configuration/ip-blocklist.txt";
-
-    /// <summary>How often the blocklist file is re-read for changes.</summary>
-    [JsonPropertyName("blocklistReloadInterval")]
-    public TimeSpan BlocklistReloadInterval { get; set; } = TimeSpan.FromSeconds(60);
-
-    /// <summary>Whether blocklist hits are contributed to reporters.</summary>
-    [JsonPropertyName("reportBlocklistHits")]
-    public bool ReportBlocklistHits { get; set; } = true;
-
-    /// <summary>Duration reported for a blocklist-matched ban.</summary>
-    [JsonPropertyName("blocklistBanDuration")]
-    public TimeSpan BlocklistBanDuration { get; set; } = TimeSpan.FromHours(6);
-
-    /// <summary>
-    /// How long the accept-path guard suppresses re-reporting a promoted IP. This only needs to bridge
-    /// the gap until the OS bouncer picks up the promotion (seconds); after that the kernel drops repeat
-    /// traffic. Decoupled from <see cref="BlocklistBanDuration"/> so the guard doesn't remember hours of
-    /// distinct IPs.
-    /// </summary>
-    [JsonPropertyName("blocklistPromoteSuppression")]
-    public TimeSpan BlocklistPromoteSuppression { get; set; } = TimeSpan.FromSeconds(60);
 }
