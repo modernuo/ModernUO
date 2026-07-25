@@ -16,7 +16,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Server.Network.Bans.Blocklist;
+namespace Server.Network.Bans;
 
 /// <summary>Suppresses re-reporting the same IP within a TTL. Accept-path thread only.</summary>
 public sealed class PromotedGuard

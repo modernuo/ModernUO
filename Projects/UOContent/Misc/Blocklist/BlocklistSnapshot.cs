@@ -20,7 +20,7 @@ using System.Net.Sockets;
 using System.Text;
 using Server.Collections;
 
-namespace Server.Network.Bans.Blocklist;
+namespace Server.Network.Bans;
 
 /// <summary>
 /// Immutable dual-stack blocklist. Singles and CIDRs are folded into a single sorted, coalesced

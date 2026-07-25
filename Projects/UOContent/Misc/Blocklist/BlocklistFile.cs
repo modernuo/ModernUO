@@ -16,7 +16,7 @@
 using System;
 using System.IO;
 
-namespace Server.Network.Bans.Blocklist;
+namespace Server.Network.Bans;
 
 public readonly record struct BlocklistHeader(string Generated, int Count, bool Present);
 

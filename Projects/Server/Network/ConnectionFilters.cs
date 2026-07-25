@@ -55,7 +55,7 @@ public static class ConnectionFilters
             }
         }
 
-        filter.Configure();
+        filter.Register();
 
         var updated = new IConnectionFilter[_filters.Length + 1];
         Array.Copy(_filters, updated, _filters.Length);

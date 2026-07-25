@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -324,7 +325,7 @@ public static class Firewall
     {
         _dirty = false;
         var path = Path.Join(Core.BaseDirectory, _path);
-        var tmp = path + ".tmp";
+        var tmp = $"{path}.tmp";
         JsonConfig.Serialize(tmp, ToSettings());
         File.Move(tmp, path, overwrite: true); // atomic swap
     }
@@ -348,7 +349,7 @@ public static class Firewall
 
     private static void MigrateLegacyCfg(string legacyPath)
     {
-        var searchValues = System.Buffers.SearchValues.Create("*Xx?");
+        var searchValues = SearchValues.Create("*Xx?");
 
         using var reader = new StreamReader(legacyPath);
         while (reader.ReadLine() is { } line)
@@ -384,7 +385,7 @@ public static class Firewall
     {
         try
         {
-            File.Move(legacyPath, legacyPath + ".migrated", overwrite: true);
+            File.Move(legacyPath, $"{legacyPath}.migrated", overwrite: true);
         }
         catch (Exception e)
         {

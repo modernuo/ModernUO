@@ -37,7 +37,7 @@ internal sealed class FirewallConnectionFilter : IConnectionFilter
 
     // Firewall.Configure() owns loading/persistence and does the registering, so there is nothing to do
     // here; Register() calling this back is harmless.
-    public void Configure()
+    public void Register()
     {
     }
 

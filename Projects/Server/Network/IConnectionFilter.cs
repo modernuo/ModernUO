@@ -44,7 +44,7 @@ public interface IConnectionFilter
     string Name { get; }
 
     /// <summary>Reads configuration. Called by <see cref="ConnectionFilters.Register"/>. No I/O beyond config.</summary>
-    void Configure();
+    void Register();
 
     /// <summary>Starts any background hydration. The token is cancelled on shutdown.</summary>
     void Start(CancellationToken token);

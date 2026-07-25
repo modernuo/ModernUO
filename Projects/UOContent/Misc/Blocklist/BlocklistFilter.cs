@@ -20,7 +20,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Server.Logging;
 
-namespace Server.Network.Bans.Blocklist;
+namespace Server.Network.Bans;
 
 /// <summary>
 /// Accept-path gate for a large, file-sourced IP blocklist, hydrated from the file a generator
@@ -57,9 +57,13 @@ public sealed class BlocklistFilter : IConnectionFilter
 
     public int Count => _snapshot.Count;
 
-    public void Configure()
+    public static void Configure()
     {
-        BlocklistConfiguration.Configure();
+        ConnectionFilters.Register(new BlocklistFilter());
+    }
+
+    public void Register()
+    {
         var s = BlocklistConfiguration.Settings;
 
         _path = ResolvePath(s.File);

@@ -18,7 +18,7 @@ using System.IO;
 using System.Text.Json.Serialization;
 using Server.Json;
 
-namespace Server.Network.Bans.Blocklist;
+namespace Server.Network.Bans;
 
 /// <summary>
 /// Loads the <see cref="BlocklistSettings"/> from <c>Configuration/blocklist.json</c> (matching the
