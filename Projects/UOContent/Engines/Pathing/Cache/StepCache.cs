@@ -285,7 +285,8 @@ public sealed class StepCache
         }
         _lazyReaders[mapId] = reader;
 
-        logger.Information(
+        // Debug: opening is the expected case. A rebuild is the interesting one, and BakeMap logs it.
+        logger.Debug(
             "StepCache: opened {Path} ({ChunkCount} chunks indexed) for map {MapId}",
             path, reader.IndexedChunkCount, mapId
         );
