@@ -1,4 +1,4 @@
-/*************************************************************************
+﻿/*************************************************************************
  * ModernUO                                                              *
  * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
@@ -64,10 +64,12 @@ public sealed class CrowdSecAlertClient : ICrowdSecAlertClient
         }
 
         var request = new CrowdSecLoginRequest { MachineId = _machineId, Password = _password };
-        using var response = await _http.PostAsJsonAsync("/v1/watchers/login", request, _jsonOptions, token);
+        using var response = await _http.PostAsJsonAsync("/v1/watchers/login", request, _jsonOptions, token)
+            .ConfigureAwait(false);
         response.EnsureSuccessStatusCode();
 
-        var login = await response.Content.ReadFromJsonAsync<CrowdSecLoginResponse>(_jsonOptions, token);
+        var login = await response.Content.ReadFromJsonAsync<CrowdSecLoginResponse>(_jsonOptions, token)
+            .ConfigureAwait(false);
         _token = login?.Token ?? throw new InvalidOperationException("CrowdSec login returned no token.");
         _tokenExpiresUtc = DateTime.TryParse(login.Expire, out var exp) ? exp.ToUniversalTime() : DateTime.UtcNow.AddHours(1);
     }
@@ -90,7 +92,7 @@ public sealed class CrowdSecAlertClient : ICrowdSecAlertClient
             };
             Authorize(message);
             return message;
-        }, token);
+        }, token).ConfigureAwait(false);
     }
 
     public async ValueTask DeleteDecisionsAsync(string origin, IPAddress ip, CancellationToken token)
@@ -101,7 +103,7 @@ public sealed class CrowdSecAlertClient : ICrowdSecAlertClient
             var message = new HttpRequestMessage(HttpMethod.Delete, query);
             Authorize(message);
             return message;
-        }, token);
+        }, token).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -113,10 +115,10 @@ public sealed class CrowdSecAlertClient : ICrowdSecAlertClient
 
     private async ValueTask SendWithRetryAsync(Func<HttpRequestMessage> build, CancellationToken token)
     {
-        await EnsureAuthAsync(token);
+        await EnsureAuthAsync(token).ConfigureAwait(false);
 
         using var first = build();
-        using var response = await _http.SendAsync(first, token);
+        using var response = await _http.SendAsync(first, token).ConfigureAwait(false);
         if (response.StatusCode != HttpStatusCode.Unauthorized)
         {
             response.EnsureSuccessStatusCode();
@@ -125,9 +127,9 @@ public sealed class CrowdSecAlertClient : ICrowdSecAlertClient
 
         // Token rejected mid-flight: force a re-login and retry once.
         _token = null;
-        await EnsureAuthAsync(token);
+        await EnsureAuthAsync(token).ConfigureAwait(false);
         using var retry = build();
-        using var retryResponse = await _http.SendAsync(retry, token);
+        using var retryResponse = await _http.SendAsync(retry, token).ConfigureAwait(false);
         retryResponse.EnsureSuccessStatusCode();
     }
 

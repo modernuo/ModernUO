@@ -130,14 +130,19 @@ public sealed class CrowdSecReporter : IBanReporter
     }
 
     /// <summary>
-    /// Best-effort bounded flush of whatever contribution items are still queued at shutdown. Runs on a
-    /// fresh, short-lived token — NOT the drain loop's (already-cancelled) token — since a cancelled token
-    /// would make the send fail immediately. Pending reports are deduped via <see cref="BuildAlerts"/> and
-    /// sent as a single batch; pending retracts are issued as individual (deduped) DELETEs so an admin's
-    /// explicit unban still propagates on a clean shutdown instead of lingering until
-    /// <see cref="CrowdSecSettings.ManualBanDuration"/> elapses. One shared short budget bounds the whole
-    /// flush: a shutdown must never hang on this, and any leftover retracts still self-heal via that duration.
+    /// Best-effort bounded flush of whatever contribution items are still queued at shutdown.
     /// </summary>
+    /// <remarks>
+    /// Shutdown is the one place where blocking is the right answer — the loop has stopped ticking, so
+    /// there is no later tick to resume on — but it must not block <em>on the loop thread</em>.
+    /// <see cref="Stop"/> runs on the main thread, where <see cref="SynchronizationContext.Current"/> is
+    /// the <c>EventLoopContext</c>; an await that captured it would post its continuation to a queue
+    /// nothing pumps any more, and we would wait here forever. Running the flush through
+    /// <see cref="Task.Run(Func{Task})"/> puts the whole chain on the pool, where there is no context to
+    /// capture, so correctness does not depend on every await in the client remembering
+    /// <c>ConfigureAwait(false)</c>. The bounded <see cref="Task.Wait(TimeSpan)"/> is the backstop behind
+    /// the flush's own budget: a wedged send costs a few seconds of shutdown, never the process.
+    /// </remarks>
     private void FlushRemainingOnStop()
     {
         if (_queue == null || _client == null)
@@ -159,7 +164,32 @@ public sealed class CrowdSecReporter : IBanReporter
             return;
         }
 
-        // One shared, short budget bounds the entire flush so shutdown can never hang on it.
+        try
+        {
+            if (!Task.Run(() => FlushRemainingOnStopAsync(reports, retracts)).Wait(TimeSpan.FromSeconds(4)))
+            {
+                logger.Warning(
+                    "CrowdSec flush-on-stop timed out; {Count} item(s) not contributed",
+                    reports.Count + retracts.Count
+                );
+            }
+        }
+        catch (Exception e)
+        {
+            logger.Warning(e, "CrowdSec flush-on-stop failed");
+        }
+    }
+
+    /// <summary>
+    /// Runs on a fresh, short-lived token — NOT the drain loop's (already-cancelled) token — since a
+    /// cancelled token would make the send fail immediately. Pending reports are deduped via
+    /// <see cref="BuildAlerts"/> and sent as a single batch; pending retracts are issued as individual
+    /// (deduped) DELETEs so an admin's explicit unban still propagates on a clean shutdown instead of
+    /// lingering until <see cref="CrowdSecSettings.ManualBanDuration"/> elapses. One shared short budget
+    /// bounds the whole flush, and any leftover retracts still self-heal via that duration.
+    /// </summary>
+    private async Task FlushRemainingOnStopAsync(List<ReportItem> reports, List<ReportItem> retracts)
+    {
         using var flushCts = new CancellationTokenSource(TimeSpan.FromSeconds(3));
 
         if (reports.Count > 0)
@@ -167,7 +197,7 @@ public sealed class CrowdSecReporter : IBanReporter
             var alerts = BuildAlerts(reports, _settings, DateTime.UtcNow);
             try
             {
-                _client.PostAlertsAsync(alerts, flushCts.Token).GetAwaiter().GetResult();
+                await _client.PostAlertsAsync(alerts, flushCts.Token).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -191,7 +221,7 @@ public sealed class CrowdSecReporter : IBanReporter
 
             try
             {
-                _client.DeleteDecisionsAsync(_settings.Origin, retract.Ip, flushCts.Token).GetAwaiter().GetResult();
+                await _client.DeleteDecisionsAsync(_settings.Origin, retract.Ip, flushCts.Token).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -226,7 +256,12 @@ public sealed class CrowdSecReporter : IBanReporter
             SingleReader = true
         });
 
-    private async ValueTask DrainLoop(CancellationToken token)
+    // Returns Task, not ValueTask, precisely because Start() hands it to Task.Run: there is no
+    // Task.Run(Func<ValueTask>) overload, so a ValueTask-returning lambda binds to Task.Run<TResult> and
+    // yields a Task<ValueTask> that completes at the FIRST await instead of when the loop exits. That
+    // would make Stop()'s drain-exited handshake a no-op and let the flush race this loop on a
+    // SingleReader channel. A loop awaited once has nothing to gain from ValueTask anyway.
+    private async Task DrainLoop(CancellationToken token)
     {
         var reader = _queue.Reader;
 
@@ -234,13 +269,13 @@ public sealed class CrowdSecReporter : IBanReporter
         {
             try
             {
-                if (!await reader.WaitToReadAsync(token))
+                if (!await reader.WaitToReadAsync(token).ConfigureAwait(false))
                 {
                     return;
                 }
 
                 // Coalesce a burst before flushing.
-                await Task.Delay(_settings.FlushInterval, token);
+                await Task.Delay(_settings.FlushInterval, token).ConfigureAwait(false);
 
                 List<ReportItem> reports = [];
                 List<ReportItem> retracts = [];
@@ -252,7 +287,8 @@ public sealed class CrowdSecReporter : IBanReporter
                 if (reports.Count > 0)
                 {
                     var alerts = BuildAlerts(reports, _settings, DateTime.UtcNow);
-                    if (!await SendWithBoundedRetryAsync(() => _client.PostAlertsAsync(alerts, token), token))
+                    if (!await SendWithBoundedRetryAsync(() => _client.PostAlertsAsync(alerts, token), token)
+                            .ConfigureAwait(false))
                     {
                         RecordSendFailure(alerts.Count);
                     }
@@ -261,7 +297,8 @@ public sealed class CrowdSecReporter : IBanReporter
                 foreach (var retract in retracts)
                 {
                     var ip = retract.Ip;
-                    if (!await SendWithBoundedRetryAsync(() => _client.DeleteDecisionsAsync(_settings.Origin, ip, token), token))
+                    if (!await SendWithBoundedRetryAsync(() => _client.DeleteDecisionsAsync(_settings.Origin, ip, token), token)
+                            .ConfigureAwait(false))
                     {
                         RecordSendFailure(1);
                     }
@@ -293,7 +330,7 @@ public sealed class CrowdSecReporter : IBanReporter
         {
             try
             {
-                await send();
+                await send().ConfigureAwait(false);
                 return true;
             }
             catch (OperationCanceledException)
@@ -310,7 +347,7 @@ public sealed class CrowdSecReporter : IBanReporter
 
                 var delay = _retryDelays[attempt];
                 logger.Warning(e, "CrowdSec send failed (attempt {Attempt}); retrying in {Delay}", attempt + 1, delay);
-                await Task.Delay(delay, token);
+                await Task.Delay(delay, token).ConfigureAwait(false);
             }
         }
     }
