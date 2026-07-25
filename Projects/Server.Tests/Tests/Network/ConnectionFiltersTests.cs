@@ -109,7 +109,7 @@ public class ConnectionFiltersTests : IDisposable
         public int Calls { get; private set; }
         public bool Configured { get; private set; }
 
-        public void Configure() => Configured = true;
+        public void Register() => Configured = true;
 
         public void Start(CancellationToken token)
         {

@@ -16,7 +16,7 @@
 using System;
 using System.Text.Json;
 using Server.Json;
-using Server.Network.Bans.Blocklist;
+using Server.Network.Bans;
 using Xunit;
 
 namespace Server.Tests.Network.Bans.Blocklist;

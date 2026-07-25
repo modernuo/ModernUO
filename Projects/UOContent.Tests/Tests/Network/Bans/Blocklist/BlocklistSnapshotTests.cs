@@ -14,7 +14,7 @@
  *************************************************************************/
 
 using System.Net;
-using Server.Network.Bans.Blocklist;
+using Server.Network.Bans;
 using Xunit;
 
 namespace Server.Tests.Network.Bans.Blocklist;

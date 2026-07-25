@@ -17,7 +17,7 @@ public class BanChannelTests
 
         public string Name => "fake";
         public bool CanRetract => true;
-        public void Configure() { }
+        public void Register() { }
         public void Start(CancellationToken token) { }
         public void Stop() { }
 
