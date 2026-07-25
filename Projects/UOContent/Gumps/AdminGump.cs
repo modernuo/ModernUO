@@ -11,6 +11,7 @@ using Server.Maps;
 using Server.Misc;
 using Server.Multis;
 using Server.Network;
+using Server.Network.Bans;
 using Server.Prompts;
 using Server.Saves;
 using Server.Text;
@@ -1744,7 +1745,7 @@ namespace Server.Gumps
                 for (var i = 0; i < a.LoginIPs.Length; ++i)
                 {
                     Firewall.Add(new SingleIpFirewallEntry(a.LoginIPs[i]));
-                    Server.Network.Bans.BanChannel.Report(a.LoginIPs[i], TimeSpan.Zero, "manual");
+                    BanChannel.Report(a.LoginIPs[i], TimeSpan.Zero, "manual");
                 }
 
                 notice = "All addresses in the list have been firewalled.";
@@ -1773,7 +1774,7 @@ namespace Server.Gumps
 
                 if (firewallEntry.MinIpAddress == firewallEntry.MaxIpAddress)
                 {
-                    Server.Network.Bans.BanChannel.Report(firewallEntry.MinIpAddress.ToIpAddress(), TimeSpan.Zero, "manual");
+                    BanChannel.Report(firewallEntry.MinIpAddress.ToIpAddress(), TimeSpan.Zero, "manual");
                 }
 
                 notice = $"{toFirewall} : Added to firewall.";
@@ -3592,7 +3593,7 @@ namespace Server.Gumps
 
                                         if (firewallEntry.MinIpAddress == firewallEntry.MaxIpAddress)
                                         {
-                                            Server.Network.Bans.BanChannel.Report(
+                                            BanChannel.Report(
                                                 firewallEntry.MinIpAddress.ToIpAddress(),
                                                 TimeSpan.Zero,
                                                 "manual"
@@ -3641,7 +3642,7 @@ namespace Server.Gumps
 
                                         if (m_State is IFirewallEntry fe && fe.MinIpAddress == fe.MaxIpAddress)
                                         {
-                                            Server.Network.Bans.BanChannel.Retract(fe.MinIpAddress.ToIpAddress());
+                                            BanChannel.Retract(fe.MinIpAddress.ToIpAddress());
                                         }
 
                                         from.SendGump(
