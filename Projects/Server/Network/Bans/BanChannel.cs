@@ -46,8 +46,9 @@ public static class BanChannel
             return;
         }
 
-        foreach (var existing in _reporters)
+        for (var i = 0; i < _reporters.Length; i++)
         {
+            var existing = _reporters[i];
             if (existing.Name == reporter.Name)
             {
                 return;
@@ -84,8 +85,9 @@ public static class BanChannel
 
     public static void Stop()
     {
-        foreach (var reporter in _reporters)
+        for (var i = 0; i < _reporters.Length; i++)
         {
+            var reporter = _reporters[i];
             try
             {
                 reporter.Stop();
