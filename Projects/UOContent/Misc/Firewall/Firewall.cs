@@ -35,7 +35,7 @@ public static class Firewall
     private static readonly List<IFirewallEntry> _entries = [];
 
     // Entries with a TTL: entry -> absolute expiry tick (Core.TickCount). Permanent entries are absent.
-    private static readonly Dictionary<IFirewallEntry, long> _expiring = new();
+    private static readonly Dictionary<IFirewallEntry, long> _expiring = [];
 
     private static SortedRangeIndex<UInt128> _index = SortedRangeIndex<UInt128>.Empty;
     private static bool _indexDirty;
@@ -72,8 +72,9 @@ public static class Firewall
         }
 
         using var ranges = PooledRefList<SortedRangeIndex<UInt128>.Range>.Create(_entries.Count, mt: false);
-        foreach (var entry in _entries)
+        for (var i = 0; i < _entries.Count; i++)
         {
+            var entry = _entries[i];
             ranges.Add(new SortedRangeIndex<UInt128>.Range(entry.MinIpAddress, entry.MaxIpAddress));
         }
 
@@ -174,8 +175,9 @@ public static class Firewall
             return;
         }
 
-        foreach (var entry in expired)
+        for (var i = 0; i < expired.Count; i++)
         {
+            var entry = expired[i];
             _entries.Remove(entry);
             _expiring.Remove(entry);
         }
@@ -278,8 +280,10 @@ public static class Firewall
         }
 
         var now = DateTime.UtcNow;
-        foreach (var record in settings.Entries)
+        var records = settings.Entries;
+        for (var i = 0; i < records.Length; i++)
         {
+            var record = records[i];
             var entry = ToFirewallEntry(record.Value);
             if (entry == null)
             {
@@ -307,8 +311,9 @@ public static class Firewall
         var nowTicks = Core.TickCount;
         var list = new List<FirewallEntryRecord>(_entries.Count);
 
-        foreach (var entry in _entries)
+        for (var i = 0; i < _entries.Count; i++)
         {
+            var entry = _entries[i];
             DateTime? expires = null;
             if (_expiring.TryGetValue(entry, out var expiresAtTick))
             {

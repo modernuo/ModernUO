@@ -152,8 +152,9 @@ public static class IPAddressUtility
         v = 0;
         uint acc = 0;
         int octet = 0, digits = 0, dots = 0;
-        foreach (var c in s)
+        for (var i = 0; i < s.Length; i++)
         {
+            var c = s[i];
             if (c == '.')
             {
                 if (digits == 0 || octet > 255)
@@ -199,8 +200,9 @@ public static class IPAddressUtility
         v = 0;
         uint acc = 0;
         int octet = 0, digits = 0, dots = 0;
-        foreach (var c in s)
+        for (var i = 0; i < s.Length; i++)
         {
+            var c = s[i];
             if (c == (byte)'.')
             {
                 if (digits == 0 || octet > 255)

@@ -47,9 +47,10 @@ public static class ConnectionFilters
             return;
         }
 
-        foreach (var existing in _filters)
+        var filters = _filters;
+        for (var i = 0; i < filters.Length; i++)
         {
-            if (existing.Name == filter.Name)
+            if (filters[i].Name == filter.Name)
             {
                 return;
             }
@@ -104,12 +105,13 @@ public static class ConnectionFilters
     {
         logger.Error(e, "Connection filter '{Name}' threw on the accept path; unregistering it", filter.Name);
 
-        var updated = new List<IConnectionFilter>(_filters.Length);
-        foreach (var existing in _filters)
+        var filters = _filters;
+        var updated = new List<IConnectionFilter>(filters.Length);
+        for (var i = 0; i < filters.Length; i++)
         {
-            if (!ReferenceEquals(existing, filter))
+            if (!ReferenceEquals(filters[i], filter))
             {
-                updated.Add(existing);
+                updated.Add(filters[i]);
             }
         }
 
@@ -118,8 +120,10 @@ public static class ConnectionFilters
 
     public static void Start(CancellationToken token)
     {
-        foreach (var filter in _filters)
+        var filters = _filters;
+        for (var i = 0; i < filters.Length; i++)
         {
+            var filter = filters[i];
             try
             {
                 filter.Start(token);
@@ -134,8 +138,10 @@ public static class ConnectionFilters
 
     public static void Stop()
     {
-        foreach (var filter in _filters)
+        var filters = _filters;
+        for (var i = 0; i < filters.Length; i++)
         {
+            var filter = filters[i];
             try
             {
                 filter.Stop();

@@ -21,7 +21,7 @@ namespace Server.Network.Bans;
 /// <summary>Suppresses re-reporting the same IP within a TTL. Accept-path thread only.</summary>
 public sealed class PromotedGuard
 {
-    private readonly Dictionary<UInt128, long> _expiry = new();
+    private readonly Dictionary<UInt128, long> _expiry = [];
 
     public bool TryMark(UInt128 ip, long nowTicks, long ttlMs)
     {

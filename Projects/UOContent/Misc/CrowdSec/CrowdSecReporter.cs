@@ -213,25 +213,26 @@ public sealed class CrowdSecReporter : IBanReporter
         }
 
         HashSet<string> seen = [];
-        foreach (var retract in retracts)
+        for (var i = 0; i < retracts.Count; i++)
         {
             if (flushCts.IsCancellationRequested)
             {
                 break; // out of budget; the rest self-heal via ManualBanDuration
             }
 
-            if (!seen.Add(retract.Ip.ToString()))
+            var ip = retracts[i].Ip;
+            if (!seen.Add(ip.ToString()))
             {
                 continue;
             }
 
             try
             {
-                await _client.DeleteDecisionsAsync(_settings.Origin, retract.Ip, flushCts.Token).ConfigureAwait(false);
+                await _client.DeleteDecisionsAsync(_settings.Origin, ip, flushCts.Token).ConfigureAwait(false);
             }
             catch (Exception e)
             {
-                logger.Warning(e, "CrowdSec flush-on-stop retract failed for {Address}", retract.Ip);
+                logger.Warning(e, "CrowdSec flush-on-stop retract failed for {Address}", ip);
                 RecordSendFailure(1);
             }
         }
@@ -300,9 +301,9 @@ public sealed class CrowdSecReporter : IBanReporter
                     }
                 }
 
-                foreach (var retract in retracts)
+                for (var i = 0; i < retracts.Count; i++)
                 {
-                    var ip = retract.Ip;
+                    var ip = retracts[i].Ip;
                     if (!await SendWithBoundedRetryAsync(() => _client.DeleteDecisionsAsync(_settings.Origin, ip, token), token)
                             .ConfigureAwait(false))
                     {

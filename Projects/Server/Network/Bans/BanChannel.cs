@@ -46,10 +46,10 @@ public static class BanChannel
             return;
         }
 
-        for (var i = 0; i < _reporters.Length; i++)
+        var reporters = _reporters;
+        for (var i = 0; i < reporters.Length; i++)
         {
-            var existing = _reporters[i];
-            if (existing.Name == reporter.Name)
+            if (reporters[i].Name == reporter.Name)
             {
                 return;
             }
@@ -69,8 +69,10 @@ public static class BanChannel
 
     public static void Start(CancellationToken token)
     {
-        foreach (var reporter in _reporters)
+        var reporters = _reporters;
+        for (var i = 0; i < reporters.Length; i++)
         {
+            var reporter = reporters[i];
             try
             {
                 reporter.Start(token);
@@ -85,9 +87,10 @@ public static class BanChannel
 
     public static void Stop()
     {
-        for (var i = 0; i < _reporters.Length; i++)
+        var reporters = _reporters;
+        for (var i = 0; i < reporters.Length; i++)
         {
-            var reporter = _reporters[i];
+            var reporter = reporters[i];
             try
             {
                 reporter.Stop();

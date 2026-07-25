@@ -43,8 +43,10 @@ public static class BlocklistFile
             var count = 0;
             if (first.StartsWith('#'))
             {
-                foreach (var tok in first.Split(' ', StringSplitOptions.RemoveEmptyEntries))
+                var tokens = first.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                for (var i = 0; i < tokens.Length; i++)
                 {
+                    var tok = tokens[i];
                     if (tok.StartsWith("generated=", StringComparison.Ordinal))
                     {
                         generated = tok["generated=".Length..];
