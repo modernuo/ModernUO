@@ -26,7 +26,7 @@ public class CidrFirewallEntry : BaseFirewallEntry
 
     public CidrFirewallEntry(string ipAddressOrCidr)
     {
-        // Core owns the CIDR -> normalized range parse (IPAddressUtility); this used to be a private copy.
+        // Core owns the CIDR -> normalized range parse.
         if (!IPAddressUtility.TryParseCidrRange(ipAddressOrCidr, out var min, out var max))
         {
             throw new ArgumentException("Invalid IP address or CIDR.", nameof(ipAddressOrCidr));

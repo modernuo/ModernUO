@@ -99,8 +99,8 @@ public sealed class BlocklistFilter : IConnectionFilter
 
         _cts = CancellationTokenSource.CreateLinkedTokenSource(token);
 
-        // A missing file is the shipped default, not an error: the gate stays inert and the poll picks the
-        // list up whenever the generator first writes it. No restart needed.
+        // A missing file is the shipped default, not an error: the gate stays inert until the poll picks
+        // up whatever the generator first writes. No restart needed.
         if (File.Exists(_path))
         {
             Reload(); // synchronous prime; empty on failure (fail-open)
@@ -233,10 +233,9 @@ public sealed class BlocklistFilter : IConnectionFilter
 
     private void Reload()
     {
-        // Capture the mtime/header BEFORE Load() so the markers describe the version we're about to
-        // parse, not whatever the producer may have atomically swapped in mid-parse. If a swap happens
-        // mid-parse, the markers describe the old-or-equal version, so the next poll detects the change
-        // and reloads again -- this errs toward reloading and never skips a version.
+        // Capture the mtime/header BEFORE Load() so the markers describe the version being parsed, not
+        // one the producer swapped in mid-parse. Stale markers only cost an extra reload next poll;
+        // capturing after could skip a version entirely.
         var writeUtc = default(DateTime);
         try
         {

@@ -20,7 +20,7 @@ using Xunit;
 
 namespace Server.Tests.Network.Firewall;
 
-[Collection("Sequential Server Tests")]
+[Collection("Sequential UOContent Tests")]
 public class FirewallTests
 {
     private static IPAddress Ip(string s) => IPAddress.Parse(s);

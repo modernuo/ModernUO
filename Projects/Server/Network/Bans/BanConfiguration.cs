@@ -33,8 +33,7 @@ public static class BanConfiguration
 
     public static void Configure()
     {
-        // Reached by the Configure sweep, which is the only caller. Idempotent anyway, so a second call
-        // cannot re-deserialize or re-write the template over an operator's edits.
+        // Idempotent: a second call must not re-deserialize or overwrite an operator's edits.
         if (Settings != null)
         {
             return;

@@ -69,10 +69,7 @@ public sealed class CrowdSecReporter : IBanReporter
     /// </summary>
     public int SendFailureCount => _sendFailures;
 
-    /// <summary>
-    /// The drain loop's task, so tests can observe its lifetime. It must stay incomplete until the loop
-    /// actually exits — see the note on <see cref="DrainLoop"/> for the shape that silently broke that.
-    /// </summary>
+    /// <summary>The drain loop's task, so tests can assert it stays alive until the loop exits.</summary>
     internal Task DrainTaskForTesting => _drainTask;
 
     public static void Configure()
@@ -104,28 +101,21 @@ public sealed class CrowdSecReporter : IBanReporter
     {
         _cts?.Cancel();
 
-        // Main.HandleClosed cancels ClosingTokenSource BEFORE calling BanChannel.Stop(), so by the time
-        // we get here the drain loop has almost always already observed cancellation and is unwinding.
-        // Wait a short bounded grace period for it to actually EXIT before we touch the SingleReader channel
-        // ourselves — flushing while the drain is still a live reader would be unsafe.
+        // The flush below reads a SingleReader channel, so wait for the drain to actually exit first.
         var drainExited = true;
         try
         {
-            // Task.Wait(timeout) returns false only on timeout (task still running); true when completed;
-            // throws when the task faulted/cancelled (also completed). So drainExited is false only while
-            // the drain is genuinely still alive.
+            // Wait(timeout) is false only on timeout; a throw means faulted/cancelled, which is still exited.
             drainExited = _drainTask == null || _drainTask.Wait(TimeSpan.FromSeconds(2));
         }
         catch
         {
-            // A faulted/cancelled wait means the drain task has completed — it is no longer reading the
-            // channel, so the flush below is safe.
+            // Ignored: a faulted wait means the drain has completed and released the channel.
         }
 
         _cts?.Dispose();
         _cts = null;
 
-        // Only read the SingleReader channel once the drain has provably stopped reading it.
         if (drainExited)
         {
             FlushRemainingOnStop();
@@ -136,19 +126,12 @@ public sealed class CrowdSecReporter : IBanReporter
     }
 
     /// <summary>
-    /// Best-effort bounded flush of whatever contribution items are still queued at shutdown.
+    /// Best-effort bounded flush of whatever is still queued at shutdown. Blocking is correct here — the
+    /// loop has stopped ticking — but must not happen on the loop thread: <see cref="Stop"/> runs where
+    /// <c>SynchronizationContext.Current</c> is the <c>EventLoopContext</c>, and a captured continuation
+    /// would be posted to a queue nothing pumps any more. <see cref="Task.Run(Func{Task})"/> keeps the
+    /// chain on the pool; the bounded wait caps a wedged send at a few seconds of shutdown.
     /// </summary>
-    /// <remarks>
-    /// Shutdown is the one place where blocking is the right answer — the loop has stopped ticking, so
-    /// there is no later tick to resume on — but it must not block <em>on the loop thread</em>.
-    /// <see cref="Stop"/> runs on the main thread, where <see cref="SynchronizationContext.Current"/> is
-    /// the <c>EventLoopContext</c>; an await that captured it would post its continuation to a queue
-    /// nothing pumps any more, and we would wait here forever. Running the flush through
-    /// <see cref="Task.Run(Func{Task})"/> puts the whole chain on the pool, where there is no context to
-    /// capture, so correctness does not depend on every await in the client remembering
-    /// <c>ConfigureAwait(false)</c>. The bounded <see cref="Task.Wait(TimeSpan)"/> is the backstop behind
-    /// the flush's own budget: a wedged send costs a few seconds of shutdown, never the process.
-    /// </remarks>
     private void FlushRemainingOnStop()
     {
         if (_queue == null || _client == null)
@@ -187,12 +170,10 @@ public sealed class CrowdSecReporter : IBanReporter
     }
 
     /// <summary>
-    /// Runs on a fresh, short-lived token — NOT the drain loop's (already-cancelled) token — since a
-    /// cancelled token would make the send fail immediately. Pending reports are deduped via
-    /// <see cref="BuildAlerts"/> and sent as a single batch; pending retracts are issued as individual
-    /// (deduped) DELETEs so an admin's explicit unban still propagates on a clean shutdown instead of
-    /// lingering until <see cref="CrowdSecSettings.ManualBanDuration"/> elapses. One shared short budget
-    /// bounds the whole flush, and any leftover retracts still self-heal via that duration.
+    /// Uses a fresh token, not the drain loop's already-cancelled one, which would fail every send
+    /// immediately. Reports go as one deduped batch; retracts go as individual DELETEs so an admin's
+    /// unban propagates on a clean shutdown. Leftovers self-heal via
+    /// <see cref="CrowdSecSettings.ManualBanDuration"/>.
     /// </summary>
     private async Task FlushRemainingOnStopAsync(List<ReportItem> reports, List<ReportItem> retracts)
     {
@@ -263,11 +244,9 @@ public sealed class CrowdSecReporter : IBanReporter
             SingleReader = true
         });
 
-    // Returns Task, not ValueTask, precisely because Start() hands it to Task.Run: there is no
-    // Task.Run(Func<ValueTask>) overload, so a ValueTask-returning lambda binds to Task.Run<TResult> and
-    // yields a Task<ValueTask> that completes at the FIRST await instead of when the loop exits. That
-    // would make Stop()'s drain-exited handshake a no-op and let the flush race this loop on a
-    // SingleReader channel. A loop awaited once has nothing to gain from ValueTask anyway.
+    // Must return Task: Start() passes this to Task.Run, which has no Func<ValueTask> overload, so a
+    // ValueTask would bind to Task.Run<TResult> and yield a Task<ValueTask> that completes at the first
+    // await rather than when the loop exits.
     private async Task DrainLoop(CancellationToken token)
     {
         var reader = _queue.Reader;

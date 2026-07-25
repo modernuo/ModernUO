@@ -20,7 +20,7 @@ using Xunit;
 
 namespace Server.Tests.Network.Firewall;
 
-[Collection("Sequential Server Tests")]
+[Collection("Sequential UOContent Tests")]
 public class FirewallPersistenceTests
 {
     [Fact]
@@ -47,7 +47,8 @@ public class FirewallPersistenceTests
         {
             Entries =
             [
-                new FirewallEntryRecord { Value = "9.9.9.9", Expires = DateTime.UtcNow.AddHours(-1) }
+                // Core.Now, matching the clock LoadFrom compares against.
+                new FirewallEntryRecord { Value = "9.9.9.9", Expires = Core.Now.AddHours(-1) }
             ]
         };
 

@@ -279,7 +279,8 @@ public static class Firewall
             return;
         }
 
-        var now = DateTime.UtcNow;
+        // Core.Now: this runs on the game loop, via the Configure sweep.
+        var now = Core.Now;
         var records = settings.Entries;
         for (var i = 0; i < records.Length; i++)
         {
@@ -307,7 +308,10 @@ public static class Firewall
 
     internal static FirewallSettings ToSettings()
     {
-        var now = DateTime.UtcNow;
+        // expires is derived below as now + (expiresAtTick - nowTicks), so both operands must come from
+        // the same instant. Core.Now and Core.TickCount are refreshed together each loop iteration; a
+        // fresh DateTime.UtcNow here would bake the loop's lag into every persisted expiry.
+        var now = Core.Now;
         var nowTicks = Core.TickCount;
         var list = new List<FirewallEntryRecord>(_entries.Count);
 

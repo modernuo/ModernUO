@@ -35,14 +35,12 @@ internal sealed class FirewallConnectionFilter : IConnectionFilter
 
     public string Name => "firewall";
 
-    // Firewall.Configure() owns loading/persistence and does the registering, so there is nothing to do
-    // here; Register() calling this back is harmless.
+    // Firewall.Configure() owns loading and registration.
     public void Register()
     {
     }
 
-    // Nothing to hydrate in the background: the set is loaded synchronously at Configure and maintained
-    // by a main-loop timer.
+    // Nothing to hydrate: the set loads at Configure and is maintained by a main-loop timer.
     public void Start(CancellationToken token)
     {
     }

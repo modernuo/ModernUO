@@ -161,24 +161,11 @@ public class CrowdSecReporterTests
     }
 
     /// <summary>
-    /// Regression for the two shapes that made the drain task lie about the loop's lifetime.
+    /// The drain task must track the loop's lifetime, not just its first await — a ValueTask-returning
+    /// drain loop passed to Task.Run yields a Task&lt;ValueTask&gt; that completes immediately, which makes
+    /// Stop()'s drain-exited handshake a no-op. With an empty queue the loop parks on WaitToReadAsync,
+    /// so a correctly unwrapped task cannot win this race; a slow pool only under-detects.
     /// </summary>
-    /// <remarks>
-    /// <see cref="CrowdSecReporter.Start"/> hands the drain loop to <see cref="Task.Run(Func{Task})"/>,
-    /// and there is no <c>Task.Run(Func&lt;ValueTask&gt;)</c> overload — a ValueTask-returning drain loop
-    /// binds to <c>Task.Run&lt;TResult&gt;(Func&lt;TResult&gt;)</c> and yields a <c>Task&lt;ValueTask&gt;</c>
-    /// that completes at the first suspending await rather than when the loop exits, silently upcast by
-    /// the <see cref="Task"/> field. That turned <see cref="CrowdSecReporter.Stop"/>'s drain-exited
-    /// handshake into a no-op and let the shutdown flush read the <c>SingleReader</c> channel while the
-    /// drain loop was still reading it. Every other test here reaches Stop() without a Start(), so
-    /// nothing covered it.
-    /// <para>
-    /// Racing the drain against a delay is what separates the two shapes: with an empty queue the loop
-    /// parks on <c>WaitToReadAsync</c> forever, so a correctly unwrapped task cannot win that race, while
-    /// the <c>Task&lt;ValueTask&gt;</c> completed in ~0ms. A slow pool can only make this under-detect,
-    /// never fail spuriously.
-    /// </para>
-    /// </remarks>
     [Fact]
     public async Task Start_DrainTaskSpansLoopLifetime_NotJustTheFirstAwait()
     {

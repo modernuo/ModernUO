@@ -75,8 +75,7 @@ public static class ConnectionFilters
         var filters = _filters;
         for (var i = 0; i < filters.Length; i++)
         {
-            // Try/catch costs nothing when nothing throws, and this is the one path where a faulty
-            // third-party filter would otherwise take down the accept loop for every connection.
+            // A faulty filter must not take down the accept loop for every connection.
             try
             {
                 if (filters[i].ShouldDeny(address))
@@ -96,10 +95,9 @@ public static class ConnectionFilters
     }
 
     /// <summary>
-    /// Drops a filter that threw on the accept path. A filter that faults once will fault for every
-    /// subsequent connection, so leaving it registered means an exception and a log line per accept —
-    /// exactly the amplification an attacker wants. Failing open here is deliberate: a broken filter
-    /// must not be able to deny every connection either.
+    /// Drops a filter that threw on the accept path: one that faults once faults for every subsequent
+    /// connection, costing an exception and a log line per accept. Failing open is deliberate — a broken
+    /// filter must not be able to deny every connection either.
     /// </summary>
     private static void Disable(IConnectionFilter filter, Exception e)
     {
