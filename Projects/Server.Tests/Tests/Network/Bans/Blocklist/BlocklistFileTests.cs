@@ -51,6 +51,28 @@ public class BlocklistFileTests
         Assert.False(snap.IsBanned(IPAddress.Parse("1.2.3.4")));
     }
 
+    // Pins the exact line tools/Export-IpBlocklist.ps1 emits: the producer adds informational tokens the
+    // reader doesn't know about, and the reload detector breaks silently if generated= stops being read.
+    [Fact]
+    public void Reads_generator_header_with_extra_tokens()
+    {
+        var p = WriteTemp(
+            "# modernuo-blocklist generated=2026-07-25T18:03:11Z count=12442 ipv4=7868 cidr=4574 feeds=2\n" +
+            "2.181.183.77\n223.169.0.0/16\n"
+        );
+
+        Assert.True(BlocklistFile.TryReadHeader(p, out var h));
+        Assert.Equal("2026-07-25T18:03:11Z", h.Generated);
+        Assert.Equal(12442, h.Count);
+
+        var snap = BlocklistFile.Load(p, out var parsed, out var skipped);
+        Assert.Equal(2, parsed);
+        Assert.Equal(0, skipped);
+        Assert.True(snap.IsBanned(IPAddress.Parse("2.181.183.77")));
+        Assert.True(snap.IsBanned(IPAddress.Parse("223.169.4.9")));
+        File.Delete(p);
+    }
+
     [Fact]
     public void Load_parses_body()
     {

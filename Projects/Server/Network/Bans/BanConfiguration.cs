@@ -75,9 +75,15 @@ public record BanSettings
     [JsonPropertyName("autoBanDuration")]
     public TimeSpan AutoBanDuration { get; set; } = TimeSpan.FromHours(4);
 
-    /// <summary>Path to the local blocklist file, relative to <see cref="Core.BaseDirectory"/>.</summary>
+    /// <summary>
+    /// Path to the local blocklist file. A relative path resolves against <see cref="Core.BaseDirectory"/>;
+    /// an absolute path is used as-is (handy when several shards share one generated list). The gate is
+    /// inert while the file is absent, so the default is safe to ship — drop a list in and it takes effect
+    /// on the next poll. Set to <c>""</c> to disable the gate entirely. Produce the file with
+    /// <c>tools/Export-IpBlocklist.ps1</c>.
+    /// </summary>
     [JsonPropertyName("blocklistFile")]
-    public string BlocklistFile { get; set; } = "";
+    public string BlocklistFile { get; set; } = "Configuration/ip-blocklist.txt";
 
     /// <summary>How often the blocklist file is re-read for changes.</summary>
     [JsonPropertyName("blocklistReloadInterval")]

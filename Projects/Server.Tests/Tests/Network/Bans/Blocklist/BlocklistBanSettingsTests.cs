@@ -11,7 +11,9 @@ public class BlocklistBanSettingsTests
     {
         var s = new BanSettings();
 
-        Assert.Equal("", s.BlocklistFile);
+        // Default points at the location tools/Export-IpBlocklist.ps1 writes; the gate stays inert until
+        // that file actually exists, so shipping a non-empty default changes nothing for shards without one.
+        Assert.Equal("Configuration/ip-blocklist.txt", s.BlocklistFile);
         Assert.Equal(TimeSpan.FromSeconds(60), s.BlocklistReloadInterval);
         Assert.True(s.ReportBlocklistHits);
         Assert.Equal(TimeSpan.FromHours(6), s.BlocklistBanDuration);

@@ -43,19 +43,46 @@ public static class FileBlocklist
     {
         BanConfiguration.Configure();
         var s = BanConfiguration.Settings;
-        _path = s.BlocklistFile;
+        _path = ResolvePath(s.BlocklistFile);
         _interval = s.BlocklistReloadInterval <= TimeSpan.Zero ? TimeSpan.FromSeconds(60) : s.BlocklistReloadInterval;
+    }
+
+    /// <summary>
+    /// Resolves the configured path once: a relative path is anchored to <see cref="Core.BaseDirectory"/>
+    /// (never the process working directory, which differs when the shard is launched from elsewhere), an
+    /// absolute path is taken as-is so several shards can share one generated list.
+    /// </summary>
+    private static string ResolvePath(string configured)
+    {
+        if (string.IsNullOrWhiteSpace(configured))
+        {
+            return null;
+        }
+
+        return Path.IsPathRooted(configured) ? configured : Path.Join(Core.BaseDirectory, configured);
     }
 
     public static void Start(CancellationToken token)
     {
-        if (string.IsNullOrWhiteSpace(_path))
+        if (_path == null)
         {
             logger.Information("FileBlocklist disabled (blocklistFile empty in bans.json)");
             return;
         }
+
         _cts = CancellationTokenSource.CreateLinkedTokenSource(token);
-        Reload(); // synchronous prime; empty on failure (fail-open)
+
+        // A missing file is the shipped default, not an error: the gate stays inert and the poll picks the
+        // list up whenever the generator (tools/Export-IpBlocklist.ps1) first writes it. No restart needed.
+        if (File.Exists(_path))
+        {
+            Reload(); // synchronous prime; empty on failure (fail-open)
+        }
+        else
+        {
+            logger.Information("FileBlocklist inert: no blocklist at \"{Path}\"; polling every {Interval}", _path, _interval);
+        }
+
         _ = Task.Run(() => PollLoop(_cts.Token), _cts.Token);
     }
 

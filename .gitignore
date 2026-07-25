@@ -12,6 +12,8 @@
 /Distribution/Configuration/bans.json
 /Distribution/Configuration/crowdsec.json
 /Distribution/Configuration/expansion.json
+/Distribution/Configuration/ip-blocklist.txt
+/Distribution/Configuration/ip-blocklist.txt.tmp
 /Distribution/Configuration/modernuo.json
 /Distribution/Configuration/email-settings.json
 /Distribution/Configuration/throttles.json
@@ -49,5 +51,7 @@
 /packages/*
 /Distribution/Configuration/server-access.json
 
-# BuildTool native binaries (downloaded from GitHub Releases)
-/tools/
+# BuildTool native binaries (downloaded from GitHub Releases).
+# Ignore everything under tools/ except the operator scripts checked in below.
+/tools/*
+!/tools/Export-IpBlocklist.ps1
