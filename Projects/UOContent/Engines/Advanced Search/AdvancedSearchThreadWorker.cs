@@ -117,10 +117,15 @@ public class AdvancedSearchThreadWorker
                 }
             }
 
-            worker._stopEvent.Set(); // Allow the main thread to continue now that we are finished
+            // The owning thread may start another cycle the moment _stopEvent is set (Exit does exactly
+            // that). Clear _pause and sample the exit condition before signaling, or the new cycle's
+            // pause request is clobbered / its Sleep orphaned. Matches SerializationThreadWorker.
+            var exiting = Core.Closing || Volatile.Read(ref worker._exit);
             Volatile.Write(ref worker._pause, false);
 
-            if (Core.Closing || Volatile.Read(ref worker._exit))
+            worker._stopEvent.Set(); // Allow the main thread to continue now that we are finished
+
+            if (exiting)
             {
                 return;
             }
