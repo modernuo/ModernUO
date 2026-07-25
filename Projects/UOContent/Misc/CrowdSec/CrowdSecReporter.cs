@@ -147,8 +147,8 @@ public sealed class CrowdSecReporter : IBanReporter
 
         _queue.Writer.TryComplete();
 
-        var reports = new List<ReportItem>();
-        var retracts = new List<ReportItem>();
+        List<ReportItem> reports = [];
+        List<ReportItem> retracts = [];
         while (_queue.Reader.TryRead(out var item))
         {
             (item.Retract ? retracts : reports).Add(item);
@@ -176,7 +176,7 @@ public sealed class CrowdSecReporter : IBanReporter
             }
         }
 
-        var seen = new HashSet<string>();
+        HashSet<string> seen = [];
         foreach (var retract in retracts)
         {
             if (flushCts.IsCancellationRequested)
@@ -242,8 +242,8 @@ public sealed class CrowdSecReporter : IBanReporter
                 // Coalesce a burst before flushing.
                 await Task.Delay(_settings.FlushInterval, token);
 
-                var reports = new List<ReportItem>();
-                var retracts = new List<ReportItem>();
+                List<ReportItem> reports = [];
+                List<ReportItem> retracts = [];
                 while (reader.TryRead(out var item))
                 {
                     (item.Retract ? retracts : reports).Add(item);
@@ -328,7 +328,7 @@ public sealed class CrowdSecReporter : IBanReporter
     /// <summary>Coalesces items by IP (last write wins) and builds one alert per unique address.</summary>
     internal static List<CrowdSecAlert> BuildAlerts(IEnumerable<ReportItem> items, CrowdSecSettings settings, DateTime nowUtc)
     {
-        var byIp = new Dictionary<string, ReportItem>();
+        Dictionary<string, ReportItem> byIp = [];
         foreach (var item in items)
         {
             byIp[item.Ip.ToString()] = item;
