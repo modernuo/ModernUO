@@ -31,7 +31,7 @@ public interface IBanReporter
     string Name { get; }
 
     /// <summary>Reads configuration. No network or file I/O here.</summary>
-    void Configure();
+    void Register();
 
     /// <summary>Starts background delivery. The token is cancelled on shutdown.</summary>
     void Start(CancellationToken token);

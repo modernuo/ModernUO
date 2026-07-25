@@ -31,15 +31,8 @@ public static class BlocklistConfiguration
 
     public static BlocklistSettings Settings { get; private set; }
 
-    public static void Configure()
+    public static void Load()
     {
-        // Idempotent: this Configure() is auto-discovered and also called explicitly by the filter,
-        // so guard against a redundant second load.
-        if (Settings != null)
-        {
-            return;
-        }
-
         var path = Path.Join(Core.BaseDirectory, _path);
 
         if (File.Exists(path))

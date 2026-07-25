@@ -69,9 +69,14 @@ public sealed class CrowdSecReporter : IBanReporter
     /// </summary>
     public int SendFailureCount => _sendFailures;
 
-    public void Configure()
+    public static void Configure()
     {
-        CrowdSecConfiguration.Configure();
+        BanChannel.Register(new CrowdSecReporter());
+    }
+
+    public void Register()
+    {
+        CrowdSecConfiguration.Load();
         _settings ??= CrowdSecConfiguration.Settings;
     }
 

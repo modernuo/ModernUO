@@ -54,7 +54,7 @@ public static class BanChannel
             }
         }
 
-        reporter.Configure();
+        reporter.Register();
 
         var updated = new IBanReporter[_reporters.Length + 1];
         Array.Copy(_reporters, updated, _reporters.Length);

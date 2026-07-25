@@ -64,6 +64,7 @@ public sealed class BlocklistFilter : IConnectionFilter
 
     public void Register()
     {
+        BlocklistConfiguration.Load();
         var s = BlocklistConfiguration.Settings;
 
         _path = ResolvePath(s.File);
