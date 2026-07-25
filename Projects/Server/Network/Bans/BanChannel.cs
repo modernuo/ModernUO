@@ -34,14 +34,6 @@ public static class BanChannel
 
     public static IReadOnlyList<IBanReporter> Reporters => _reporters;
 
-    public static void Configure()
-    {
-        // Load ban policy for the accept path. Reporters are NOT built here — content registers them
-        // via Register() during the same Configure() sweep, in any order relative to this call, so we
-        // must not clobber any registrations that may already have arrived.
-        BanConfiguration.Configure();
-    }
-
     /// <summary>
     /// Registers a contribution sink from content (inversion of control). Idempotent by
     /// <see cref="IBanReporter.Name"/>: a second registration of the same name is ignored. Configures the

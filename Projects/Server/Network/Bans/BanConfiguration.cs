@@ -33,8 +33,8 @@ public static class BanConfiguration
 
     public static void Configure()
     {
-        // Idempotent: this Configure() is auto-discovered and also called explicitly by BanChannel,
-        // so guard against a redundant second load.
+        // Reached by the Configure sweep, which is the only caller. Idempotent anyway, so a second call
+        // cannot re-deserialize or re-write the template over an operator's edits.
         if (Settings != null)
         {
             return;

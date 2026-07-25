@@ -96,10 +96,6 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
         // Initialize IORingGroup and buffer pools
         ConfigureNetwork();
-
-        // Load ban policy. Reporters (content) register themselves during the same Configure sweep, as do
-        // the accept-path IConnectionFilters.
-        Bans.BanChannel.Configure();
     }
 
     // Internal constructor for accepted sockets
