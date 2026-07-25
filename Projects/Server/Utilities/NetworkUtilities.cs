@@ -1,6 +1,7 @@
+using System;
 using System.Net;
 using System.Net.Sockets;
-using Server.Network;
+using Server.Collections;
 
 namespace Server;
 
@@ -14,36 +15,42 @@ public static class NetworkUtilities
             _                            => false
         };
 
-    private static readonly IFirewallEntry[] _privateNetworkV4 =
-    [
-        new CidrFirewallEntry("127.0.0.1/8"),
-        new CidrFirewallEntry("192.168.0.0/16"),
-        new CidrFirewallEntry("10.0.0.0/8"),
-        new CidrFirewallEntry("172.16.0.0/12"),
-        new CidrFirewallEntry("169.254.0.0/16"),
-        new CidrFirewallEntry("100.64.0.0/10")
-    ];
+    // These are constant reserved ranges, not firewall entries -- they only ever answer "is this address
+    // in one of these blocks?", which is exactly what SortedRangeIndex is for. Building them through the
+    // firewall entry types was a convenience that made core depend on the firewall for something that has
+    // nothing to do with banning.
+    private static readonly SortedRangeIndex<UInt128> _privateNetworkV4 = BuildIndex(
+        "127.0.0.1/8",
+        "192.168.0.0/16",
+        "10.0.0.0/8",
+        "172.16.0.0/12",
+        "169.254.0.0/16",
+        "100.64.0.0/10"
+    );
 
-    private static readonly IFirewallEntry[] _privateNetworkV6 =
-    [
-        new CidrFirewallEntry("fc00::/7"),
-        new CidrFirewallEntry("fe80::/10")
-    ];
+    private static readonly SortedRangeIndex<UInt128> _privateNetworkV6 = BuildIndex(
+        "fc00::/7",
+        "fe80::/10"
+    );
 
-    public static bool IsPrivateNetworkV4(this IPAddress ip)
+    private static SortedRangeIndex<UInt128> BuildIndex(params ReadOnlySpan<string> cidrs)
     {
-        for (var i = 0; i < _privateNetworkV4.Length; i++)
+        var ranges = new SortedRangeIndex<UInt128>.Range[cidrs.Length];
+        for (var i = 0; i < cidrs.Length; i++)
         {
-            if (_privateNetworkV4[i].IsBlocked(ip))
+            if (!IPAddressUtility.TryParseCidrRange(cidrs[i], out var min, out var max))
             {
-                return true;
+                throw new ArgumentException($"Invalid reserved-network CIDR \"{cidrs[i]}\"");
             }
+
+            ranges[i] = new SortedRangeIndex<UInt128>.Range(min, max);
         }
 
-        return false;
+        Array.Sort(ranges, SortedRangeIndex<UInt128>.ByMin);
+        return SortedRangeIndex<UInt128>.Build(ranges);
     }
 
-    public static bool IsPrivateNetworkV6(this IPAddress ip) =>
-        _privateNetworkV6[0].IsBlocked(ip) ||
-        _privateNetworkV6[1].IsBlocked(ip);
+    public static bool IsPrivateNetworkV4(this IPAddress ip) => _privateNetworkV4.Contains(ip.ToUInt128());
+
+    public static bool IsPrivateNetworkV6(this IPAddress ip) => _privateNetworkV6.Contains(ip.ToUInt128());
 }

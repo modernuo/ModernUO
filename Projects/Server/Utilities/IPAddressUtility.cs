@@ -72,6 +72,49 @@ public static class IPAddressUtility
         return new IPAddress(bytes);
     }
 
+    /// <summary>
+    /// Parses <c>a.b.c.d/n</c>, <c>::/n</c>, or a bare address (treated as a single-host range) into an
+    /// inclusive <see cref="UInt128"/> range in normalized IPv6 form. A bare IPv4 prefix is widened by 96
+    /// bits so v4 and v6 ranges are directly comparable. Returns false on anything malformed.
+    /// </summary>
+    public static bool TryParseCidrRange(ReadOnlySpan<char> cidr, out UInt128 min, out UInt128 max)
+    {
+        min = default;
+        max = default;
+
+        var slash = cidr.IndexOf('/');
+        if (!IPAddress.TryParse(slash >= 0 ? cidr[..slash] : cidr, out var ip))
+        {
+            return false;
+        }
+
+        var isV6 = ip.AddressFamily == AddressFamily.InterNetworkV6;
+        var maxPrefixLength = isV6 ? 128 : 32;
+        int prefixLength;
+
+        if (slash < 0)
+        {
+            prefixLength = maxPrefixLength;
+        }
+        else if (!int.TryParse(cidr[(slash + 1)..], out prefixLength) ||
+                 prefixLength < 0 || prefixLength > maxPrefixLength)
+        {
+            return false;
+        }
+
+        if (!isV6)
+        {
+            prefixLength += 96; // 32 -> 128
+        }
+
+        Span<byte> bytes = stackalloc byte[16];
+        ip.WriteMappedIPv6To(bytes);
+
+        min = Utility.CreateCidrAddress(bytes, prefixLength, false);
+        max = Utility.CreateCidrAddress(bytes, prefixLength, true);
+        return true;
+    }
+
     /// <summary>Extracts the big-endian uint of an <see cref="AddressFamily.InterNetwork"/> address.</summary>
     public static bool TryV4(IPAddress ip, out uint v)
     {

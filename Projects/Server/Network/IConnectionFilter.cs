@@ -21,8 +21,9 @@ namespace Server.Network;
 /// <summary>
 /// A gate consulted for every inbound connection, before the socket is configured and before any
 /// per-connection allocation. Implementations decide membership only — the accept path neither knows
-/// nor cares where a filter's data comes from, so a filter may be a small admin-curated set held in
-/// core (see <c>Firewall</c>) or a millions-strong list hydrated from a file by content.
+/// nor cares where a filter's data comes from, so a filter may be a handful of admin-curated entries,
+/// a millions-strong list hydrated from a file, or a query against something else entirely. Core owns
+/// the question; content owns every answer (see <c>Firewall</c> and <c>BlocklistFilter</c> in UOContent).
 /// </summary>
 /// <remarks>
 /// <para>

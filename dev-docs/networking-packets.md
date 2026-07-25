@@ -504,14 +504,19 @@ Rules:
 - Side effects a hit implies (reporting to `BanChannel`, promoting to an OS firewall, suppressing
   duplicate reports) are the **filter's** business, not the accept path's.
 - Filters are consulted in registration order and the first denial short-circuits, so register the
-  cheapest and most selective first. Core registers before content is swept.
+  cheapest and most selective first. Order affects only how quickly a denial is reached, never whether
+  one happens.
 - A filter that throws is **unregistered** and the connection fails open. A filter that faults once
   faults for every connection, so leaving it registered would mean an exception per accept.
 
-Built-in filters: `firewall` (core, admin-curated, mutable at runtime) and `blocklist` (UOContent,
-file-sourced, millions of entries, demand-pages hits to CrowdSec). Do **not** route this kind of check
-through `EventSink.InvokeSocketConnect` -- that fires later and allocates a `SocketConnectEventArgs`
-per connection, which is exactly what the accept path avoids for rejected traffic.
+Core owns the question; **every implementation lives in UOContent**. The two that ship are `firewall`
+(admin-curated, mutable at runtime, persisted to `Configuration/firewall.json`) and `blocklist`
+(file-sourced, millions of entries, demand-pages hits to CrowdSec). A shard that fronts its server with
+an upstream proxy or edge scrubbing can drop both and register nothing.
+
+Do **not** route this kind of check through `EventSink.InvokeSocketConnect` -- that fires later and
+allocates a `SocketConnectEventArgs` per connection, which is exactly what the accept path avoids for
+rejected traffic.
 
 ### IP Address Normalization (`IPAddressUtility`)
 
@@ -548,6 +553,6 @@ those, so the helpers check both.
 | `Projects/Server/Network/PacketHandler.cs` | PacketHandler class |
 | `Projects/Server/Network/IConnectionFilter.cs` | Accept-path gate contract |
 | `Projects/Server/Network/ConnectionFilters.cs` | Filter registry + lifecycle |
-| `Projects/Server/Network/Firewall/Firewall.cs` | Admin-curated firewall set |
-| `Projects/Server/Utilities/IPAddressUtility.cs` | IPAddress <-> UInt128 normalization |
+| `Projects/UOContent/Misc/Firewall/Firewall.cs` | Admin-curated firewall set |
+| `Projects/Server/Utilities/IPAddressUtility.cs` | IPAddress <-> UInt128 normalization, CIDR parsing |
 | `Projects/UOContent/Misc/Blocklist/BlocklistFilter.cs` | File-sourced blocklist filter |

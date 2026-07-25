@@ -22,8 +22,8 @@ namespace Server.Network;
 /// Exposes the admin-curated <see cref="Firewall"/> set to the accept path as an
 /// <see cref="IConnectionFilter"/>. The firewall keeps its own API (the admin gump and commands mutate
 /// it directly); this is only the accept-path adapter, since a static class cannot implement an
-/// interface. It registers from the core assembly, so it is consulted before any content filter — which
-/// is what we want, as it is the cheapest check (an empty set costs one length compare).
+/// interface. It is the cheapest gate to consult — an empty set costs one length compare — so
+/// <see cref="Firewall.Configure"/> registers it first.
 /// </summary>
 internal sealed class FirewallConnectionFilter : IConnectionFilter
 {
