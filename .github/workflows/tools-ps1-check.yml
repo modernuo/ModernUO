@@ -1,0 +1,252 @@
+# TEMPORARY -- delete this file before merging PR #2542.
+#
+# Verifies tools/Export-IpBlocklist.ps1 runs correctly under pwsh on every OS, and that it refuses to
+# run on Windows PowerShell 5.1 with a clear message rather than a wall of parse errors. Most of the
+# checks are offline: the script's feed-name filter throws AFTER the Add-Type
+# compile and the cooldown gate but BEFORE any download, so "did it throw 'No feeds matched'?" is a
+# deterministic signal that it got that far without touching the network.
+#
+# That gives us discriminating assertions for the two bugs this exists to catch:
+#   * path join   -- a fresh list is written via Join-Path, then the script is pointed at the folder.
+#                    If its own path join is wrong for this OS it will not find the file and will run
+#                    instead of skipping.
+#   * duration    -- a 3h-old list with -MinInterval 2.5h must RUN. A culture-sensitive parse reads
+#                    "2.5" as 25 under a comma-decimal locale, which would skip instead.
+#
+# One step does hit the network, using the smallest feed in the set (~200KB), because the file write
+# and the atomic swap cannot be exercised without content to write.
+
+name: Tools PS1 Check
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'tools/Export-IpBlocklist.ps1'
+      - '.github/workflows/tools-ps1-check.yml'
+
+jobs:
+  check:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    name: ${{ matrix.name }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            name: Linux (pwsh)
+            shell: pwsh
+          - os: macos-latest
+            name: macOS (pwsh)
+            shell: pwsh
+          - os: windows-latest
+            name: Windows (pwsh)
+            shell: pwsh
+
+    defaults:
+      run:
+        shell: ${{ matrix.shell }}
+
+    steps:
+    - uses: actions/checkout@v7
+
+    - name: Environment
+      run: |
+        "PSVersion : $($PSVersionTable.PSVersion)"
+        "PSEdition : $($PSVersionTable.PSEdition)"
+        "Platform  : $([System.Environment]::OSVersion.Platform)"
+        "Separator : $([IO.Path]::DirectorySeparatorChar)"
+        "Culture   : $((Get-Culture).Name) (decimal '$((Get-Culture).NumberFormat.NumberDecimalSeparator)')"
+
+    # ASCII-only is a hard requirement, not style. Windows PowerShell reads a BOM-less .ps1 as ANSI, and
+    # a UTF-8 em dash decodes to a trailing U+201D -- a smart quote PowerShell accepts as a string
+    # delimiter. One of those inside a string ends it early and the file dies in parse errors BEFORE
+    # #requires is honored, so the "needs PowerShell 7" message never gets a chance to print.
+    - name: Source is ASCII-only
+      run: |
+        $bytes = [IO.File]::ReadAllBytes("$PWD/tools/Export-IpBlocklist.ps1")
+        $bad = @()
+        for ($i = 0; $i -lt $bytes.Length; $i++) { if ($bytes[$i] -gt 127) { $bad += $i } }
+        if ($bad.Count -gt 0) {
+          "::error::Non-ASCII bytes at offsets: $($bad[0..([Math]::Min(9,$bad.Count-1))] -join ', ')" +
+          " ($($bad.Count) total). Windows PowerShell would fail to parse this before #requires runs."
+          exit 1
+        }
+        "OK (ASCII-only, $($bytes.Length) bytes)"
+
+    - name: Syntax parses
+      run: |
+        $errs = $null
+        [void][System.Management.Automation.Language.Parser]::ParseFile(
+          "$PWD/tools/Export-IpBlocklist.ps1", [ref]$null, [ref]$errs)
+        if ($errs) {
+          $errs | ForEach-Object { "::error::$($_.Extent.StartLineNumber): $($_.Message)" }
+          exit 1
+        }
+        "OK"
+
+    # Proves the script's own Join-Path is right for this OS: it must locate the list we wrote at
+    # <Dist>/Configuration/ip-blocklist.txt and skip. A literal 'Configuration\ip-blocklist.txt' would
+    # miss it on Linux/macOS and fall through to the feed filter instead.
+    # Also proves Add-Type compiled, since that runs before the feed filter.
+    - name: Offline - default path resolution and cooldown skip
+      run: |
+        $dist = Join-Path $env:RUNNER_TEMP 'Distribution'
+        $cfg  = Join-Path $dist 'Configuration'
+        New-Item -ItemType Directory -Path $cfg -Force | Out-Null
+        $stamp = [DateTime]::UtcNow.ToString('yyyy-MM-ddTHH:mm:ssZ', [Globalization.CultureInfo]::InvariantCulture)
+        Set-Content -LiteralPath (Join-Path $cfg 'ip-blocklist.txt') -Value @(
+          "# modernuo-blocklist generated=$stamp count=1", "9.9.9.9")
+
+        # *>&1 (not 2>&1): the script reports through Write-Host, which is the information stream.
+        # Progress records are silenced so the captured text stays readable.
+        $ProgressPreference = 'SilentlyContinue'
+        $out = ''
+        try   { $out = (& "$PWD/tools/Export-IpBlocklist.ps1" -DistributionPath $dist -Feeds '__none__' *>&1 | Out-String) }
+        catch { $out = "EXCEPTION: $($_.Exception.Message)" }
+        $out
+        if ($out -notmatch 'Nothing downloaded') {
+          "::error::Expected the cooldown gate to skip. The script did not find the list at the path it "  +
+          "resolved, which means its path join is wrong for this OS."
+          exit 1
+        }
+        "OK"
+
+    # Discriminates an invariant duration parse from a culture-sensitive one. The list is 3h old, so
+    # -MinInterval 2.5h must NOT skip; a parse that reads "2.5" as 25 would skip. Reaching the feed
+    # filter (which throws) is the proof it passed the gate -- still no download.
+    - name: Offline - duration parsing is culture-invariant
+      run: |
+        $dist = Join-Path $env:RUNNER_TEMP 'DistributionAged'
+        $cfg  = Join-Path $dist 'Configuration'
+        New-Item -ItemType Directory -Path $cfg -Force | Out-Null
+        $stamp = [DateTime]::UtcNow.AddHours(-3).ToString('yyyy-MM-ddTHH:mm:ssZ', [Globalization.CultureInfo]::InvariantCulture)
+        Set-Content -LiteralPath (Join-Path $cfg 'ip-blocklist.txt') -Value @(
+          "# modernuo-blocklist generated=$stamp count=1", "9.9.9.9")
+
+        $cultures = @([Globalization.CultureInfo]::InvariantCulture)
+        $comma = [Globalization.CultureInfo]::GetCultureInfo('de-DE')
+        if ($comma.NumberFormat.NumberDecimalSeparator -eq ',') {
+          $cultures += $comma
+        } else {
+          "::warning::de-DE resolved without a comma decimal separator (globalization-invariant mode?); " +
+          "running the invariant culture only."
+        }
+
+        # Passing the gate is signalled by the feed filter throwing, so the throw is an expected
+        # outcome to capture rather than a failure to propagate.
+        $ProgressPreference = 'SilentlyContinue'
+        $original = [Threading.Thread]::CurrentThread.CurrentCulture
+        foreach ($c in $cultures) {
+          [Threading.Thread]::CurrentThread.CurrentCulture = $c
+          $out = ''
+          try     { $out = (& "$PWD/tools/Export-IpBlocklist.ps1" -DistributionPath $dist -MinInterval '2.5h' -Feeds '__none__' *>&1 | Out-String) }
+          catch   { $out = "EXCEPTION: $($_.Exception.Message)" }
+          finally { [Threading.Thread]::CurrentThread.CurrentCulture = $original }
+          "--- culture '$($c.Name)' ---"
+          $out
+          if ($out -match 'Nothing downloaded') {
+            "::error::Under culture '$($c.Name)' a 3h-old list was treated as newer than -MinInterval 2.5h. " +
+            "The duration parse is culture-sensitive ('2.5' read as 25)."
+            exit 1
+          }
+          if ($out -notmatch 'No feeds matched') {
+            "::error::Under culture '$($c.Name)' the script neither skipped nor reached the feed filter. Unexpected."
+            exit 1
+          }
+        }
+        "OK"
+
+    # The only networked step. Uses the smallest feed in the set so CI stays cheap and polite, and is
+    # the only way to cover the file write, the atomic swap (File.Move 3-arg vs File.Replace) and the
+    # on-disk format.
+    - name: Online - end to end write, format and idempotent re-run
+      run: |
+        $ProgressPreference = 'SilentlyContinue'
+        $dist = Join-Path $env:RUNNER_TEMP 'DistributionLive'
+        New-Item -ItemType Directory -Path $dist -Force | Out-Null
+        $file = Join-Path (Join-Path $dist 'Configuration') 'ip-blocklist.txt'
+
+        # A throw inside the script surfaces as a terminating error and fails the step on its own.
+        & "$PWD/tools/Export-IpBlocklist.ps1" -DistributionPath $dist -Feeds 'sentinel-turris'
+
+        if (-not (Test-Path -LiteralPath $file)) {
+          "::error::No blocklist written to $file"; exit 1
+        }
+        if (Test-Path -LiteralPath "$file.tmp") {
+          "::error::Left a .tmp behind next to the list"; exit 1
+        }
+
+        # Header must match what UOContent/Misc/Blocklist/BlocklistFile.cs reads, with an invariant
+        # timestamp -- the shard compares generated= verbatim to decide whether to reload.
+        $header = Get-Content -LiteralPath $file -TotalCount 1
+        "header: $header"
+        if ($header -notmatch '^# modernuo-blocklist generated=\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z count=(\d+)') {
+          "::error::Header does not match the format the shard parses"; exit 1
+        }
+        $declared = [int]$Matches[1]
+        if ($declared -lt 1) { "::error::Header declares $declared entries"; exit 1 }
+
+        # LF-only: the C# writer emits '\n' explicitly and the reader trims, but CRLF here would mean
+        # something re-encoded the file.
+        $bytes = [IO.File]::ReadAllBytes($file)
+        if ([Array]::IndexOf($bytes, [byte]13) -ge 0) {
+          "::error::Output contains CR; expected LF-only line endings"; exit 1
+        }
+
+        # Every body line must be an address or CIDR the shard can parse.
+        $lines = [IO.File]::ReadAllLines($file)
+        if (($lines.Count - 1) -ne $declared) {
+          "::error::Header says $declared entries, file has $($lines.Count - 1)"; exit 1
+        }
+        $checked = 0
+        foreach ($line in $lines[1..[Math]::Min(500, $lines.Count - 1)]) {
+          $addr = ($line -split '/')[0]
+          $parsed = [Net.IPAddress]::Any
+          if (-not [Net.IPAddress]::TryParse($addr, [ref]$parsed)) {
+            "::error::Unparseable entry: '$line'"; exit 1
+          }
+          $checked++
+        }
+        "validated $checked of $declared entries"
+
+        # Re-running must skip: proves the header this OS wrote is readable by the gate on this OS.
+        $again = & "$PWD/tools/Export-IpBlocklist.ps1" -DistributionPath $dist -Feeds 'sentinel-turris' *>&1 | Out-String
+        if ($again -notmatch 'Nothing downloaded') {
+          "::error::Re-run did not skip; the generated header is not round-tripping"; exit 1
+        }
+
+        # ...and -Force must override the cooldown and swap the file in place.
+        $before = (Get-Item -LiteralPath $file).Length
+        & "$PWD/tools/Export-IpBlocklist.ps1" -DistributionPath $dist -Feeds 'sentinel-turris' -Force *> $null
+        if (Test-Path -LiteralPath "$file.tmp") { "::error::-Force left a .tmp behind"; exit 1 }
+        if ((Get-Item -LiteralPath $file).Length -lt 1) { "::error::-Force produced an empty list"; exit 1 }
+        "OK (rewrote $before-byte list in place)"
+
+  # The script targets pwsh only. Windows PowerShell must refuse it via #requires with a readable
+  # message -- which is only possible because the source is ASCII and therefore still parses there.
+  refuses-windows-powershell:
+    runs-on: windows-latest
+    timeout-minutes: 5
+    name: Windows PowerShell 5.1 refuses cleanly
+    steps:
+    - uses: actions/checkout@v7
+    - name: Fails with the #requires message, not parse errors
+      shell: powershell
+      run: |
+        "PSVersion: $($PSVersionTable.PSVersion)"
+        $out = ''
+        try   { $out = (& "$PWD/tools/Export-IpBlocklist.ps1" -DryRun *>&1 | Out-String) }
+        catch { $out = "EXCEPTION: $($_.Exception.Message)" }
+        $out
+        if ($out -match 'Unexpected token|Missing closing') {
+          "::error::Windows PowerShell hit parse errors instead of the #requires message. The source is " +
+          "probably no longer ASCII-only."
+          exit 1
+        }
+        if ($out -notmatch 'requires') {
+          "::error::Expected a #requires refusal naming PowerShell 7."
+          exit 1
+        }
+        "OK - refused cleanly"

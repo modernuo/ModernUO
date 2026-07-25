@@ -1,14 +1,14 @@
-#requires -Version 5.1
+#requires -Version 7.0
 <#
 .SYNOPSIS
     Downloads a small, non-overlapping set of public IP threat feeds and writes them to a single
-    ModernUO blocklist file — merged, de-duplicated and bogon-filtered.
+    ModernUO blocklist file -- merged, de-duplicated and bogon-filtered.
 
 .DESCRIPTION
     This is the producer half of ModernUO's in-app blocklist gate. It fetches a deliberately THIN feed
     set, merges every source into one global set, drops duplicates and reserved/bogon addresses, then
     writes the result to a plain text file that the shard reads via `file` in
-    Configuration/blocklist.json. Nothing is installed and no credentials are needed — the output is just
+    Configuration/blocklist.json. Nothing is installed and no credentials are needed -- the output is just
     a text file, so this can run on any machine that can reach the shard's Distribution folder.
 
     It writes the file the shard's `BlocklistFilter` demand-pages against. IPs that actually connect are
@@ -16,7 +16,7 @@
     entries, which is exactly the scale it cannot handle on Windows.
 
     Inclusion principle: any category of IP used in OTHER attacks that could plausibly be turned against a
-    game server should be blocked — compromised hosts, botnets, scanners, spam / DDoS-as-a-service bots,
+    game server should be blocked -- compromised hosts, botnets, scanners, spam / DDoS-as-a-service bots,
     open proxies and Tor relays. That whole surface is already covered by the anchor feed `bitwire-it`,
     which is itself a 91-source aggregator (it folds in spamhaus, ipsum, firehol-level2, blocklist-de,
     dshield, emergingthreats, binarydefense, cins-army, bruteforceblocker, greensnow, vxvault, ThreatFox,
@@ -25,37 +25,38 @@
     already carry are kept on top of it:
 
         bitwire-it        2h-refreshed 91-source aggregate (compromised hosts, botnets, scanners, spam
-                          bots, Tor/open-proxy abuse relays, ThreatFox C2) — the broad base layer.
+                          bots, Tor/open-proxy abuse relays, ThreatFox C2) -- the broad base layer.
         romainmarcoux     ~130k fresh attacker IPs bitwire's snapshot lags on (high-churn feed).
         sentinel-turris   ~800 unique honeypot probers (Turris greylist) not in bitwire.
-        firehol-level1    hijacked/reputation NETBLOCKS (spamhaus DROP-style) — bogon-filtered.
+        firehol-level1    hijacked/reputation NETBLOCKS (spamhaus DROP-style) -- bogon-filtered.
 
     The only category deliberately held back is commercial VPN exit endpoints, which could block a legit
-    player — and those are barely present here anyway (bitwire is ~5% of VPN-tunnel lists). If you ever want
+    player -- and those are barely present here anyway (bitwire is ~5% of VPN-tunnel lists). If you ever want
     to protect VPN/Tor players, pass -ExcludeAnonymizers to subtract Tor/open-proxy/VPN IPs from the output.
 
     OUTPUT FORMAT (must stay in sync with UOContent/Misc/Blocklist/BlocklistFile.cs):
         Line 1 is a header comment carrying the version markers, e.g.
             # modernuo-blocklist generated=2026-07-25T18:03:11Z count=3914022 ipv4=3901188 cidr=12834
         The shard polls `reloadInterval` and reloads when the file mtime AND `generated=` change,
-        so the header is REQUIRED — without it the shard loads once and never picks up a new file.
+        so the header is REQUIRED -- without it the shard loads once and never picks up a new file.
         Every following line is one entry: a bare IPv4/IPv6 address or a CIDR (`1.2.3.0/24`). Blank lines
         and lines starting with `#` or `;` are ignored. Order does not matter; the shard sorts and
         coalesces on load. The feeds used here are IPv4-only, but the shard parses IPv6 lines too.
 
     The file is written to a `.tmp` sibling and swapped into place atomically, so the shard never reads a
-    half-written list — it either sees the previous version or the new one, whole.
+    half-written list -- it either sees the previous version or the new one, whole.
 
     Performance: bitwire alone is ~4M lines. Parsing/validating/bogon-filtering that in interpreted
-    PowerShell is the slow part (minutes), so the hot loop is compiled once via Add-Type (C#) — it runs in
+    PowerShell is the slow part (minutes), so the hot loop is compiled once via Add-Type (C#) -- it runs in
     ~1s. Downloads stream with a live Write-Progress bar; every phase prints its own elapsed time so you can
     see exactly where the wall-clock goes.
 
-    Runs on Windows PowerShell 5.1 and on PowerShell 7 for Windows, Linux and macOS. Schedule it with
-    Task Scheduler, cron, or a systemd timer.
+    Requires PowerShell 7 (pwsh), which runs on Windows, Linux and macOS -- Windows PowerShell 5.1 is
+    not supported and the script refuses to run there. Schedule it with Task Scheduler, cron, or a
+    systemd timer.
 
     Every run rewrites the whole file, so an IP that drops off the feeds stops being blocked on the next
-    run — there is no TTL to tune. Calling it is idempotent: if the list on disk is younger than
+    run -- there is no TTL to tune. Calling it is idempotent: if the list on disk is younger than
     -MinInterval the script exits without downloading anything, so an over-eager trigger costs nothing
     upstream. -Force overrides that.
 
@@ -72,7 +73,7 @@
     Refuse to re-run while the existing blocklist is younger than this (default 2h), so a misbehaving
     scheduler, a login script or a stuck retry loop cannot hammer the upstream feeds. The age comes from
     the `generated=` header of the file already on disk (falling back to its mtime), so it survives across
-    machines and reboots — there is no separate state file. Nothing is downloaded when the check trips.
+    machines and reboots -- there is no separate state file. Nothing is downloaded when the check trips.
     Accepts `90s`, `45m`, `2h`, `2.5h`, `1d`, or a bare number of hours. Use `0` to disable the check.
     Match this to how often you actually want fresh data: the anchor feed only refreshes every 2h, so
     running more often than that costs bandwidth and gains nothing.
@@ -85,7 +86,7 @@
 
 .PARAMETER ExcludeAnonymizers
     Also download Tor-exit / open-proxy / VPN-tunnel lists and SUBTRACT those IPs from the output. Off by
-    default — for a game server, Tor/open-proxy relays are attack infrastructure you want to block. Turn
+    default -- for a game server, Tor/open-proxy relays are attack infrastructure you want to block. Turn
     this on only if you need to keep VPN/Tor players reachable.
 
 .PARAMETER DryRun
@@ -95,7 +96,7 @@
     .\Export-IpBlocklist.ps1 -DryRun
 
 .EXAMPLE
-    # Safe to call as often as you like — it no-ops unless the list is older than 2h.
+    # Safe to call as often as you like -- it no-ops unless the list is older than 2h.
     .\Export-IpBlocklist.ps1 -DistributionPath 'C:\Shard\Distribution'
 
 .EXAMPLE
@@ -111,7 +112,7 @@
 
 .NOTES
     Feeds are aggressive-but-low-FP for a game server (attacker / botnet / compromised / abuse-relay SOURCE
-    IPs). Reserved/bogon space (0/8, 10/8, 127/8, RFC1918, multicast, etc.) is always filtered out — this
+    IPs). Reserved/bogon space (0/8, 10/8, 127/8, RFC1918, multicast, etc.) is always filtered out -- this
     matters because firehol-level1 ships bogon netblocks that would otherwise block private/reserved ranges.
 #>
 [CmdletBinding()]
@@ -126,23 +127,12 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-
-# Windows PowerShell (.NET Framework) still defaults to SSL3/TLS1 and needs this. PowerShell 7 on any
-# platform negotiates TLS 1.2/1.3 on its own, and ServicePointManager is a legacy no-op there.
-if ($PSVersionTable.PSEdition -eq 'Desktop') {
-    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-}
-
 $UA = 'ModernUO-Blocklist-Export'
 $totalSw = [System.Diagnostics.Stopwatch]::StartNew()
 
 # Default location under the Distribution folder. Keep in sync with BlocklistSettings.File.
-# Joined a segment at a time (never a literal 'a\b') so the separator is right on Linux and macOS.
+# Kept as separate segments (never a literal 'a\b') so Join-Path picks the right separator per OS.
 $DefaultPathSegments = @('Configuration', 'ip-blocklist.txt')
-
-# File.Move(source, dest, overwrite) is .NET Core only. Where it exists it is the portable atomic
-# replace; Windows PowerShell 5.1 falls back to File.Replace. Probed once, used at the swap below.
-$MoveCanOverwrite = [bool][IO.File].GetMethod('Move', [Type[]]@([string], [string], [bool]))
 
 # ---------------------------------------------------------------------------------------------------------
 # Resolve the output path. Explicit -OutFile wins; then -DistributionPath; then the in-repo layout
@@ -160,11 +150,7 @@ if (-not $OutFile) {
     if (-not (Test-Path -LiteralPath $DistributionPath -PathType Container)) {
         throw "DistributionPath '$DistributionPath' does not exist."
     }
-    # One segment per Join-Path: the multi-argument form is PowerShell 6+ only, and this stays 5.1-safe.
-    $OutFile = $DistributionPath
-    foreach ($segment in $DefaultPathSegments) {
-        $OutFile = Join-Path $OutFile $segment
-    }
+    $OutFile = Join-Path $DistributionPath @DefaultPathSegments
 }
 
 # ---------------------------------------------------------------------------------------------------------
@@ -235,7 +221,7 @@ if (-not $Force -and $minAge -gt [TimeSpan]::Zero) {
         # A negative age means the stamp is in the future (clock skew, or a file from another host). Treat it
         # as fresh: refusing to run is the recoverable failure, hammering the feeds on every tick is not.
         if ($existing.Age -lt $minAge) {
-            $agoText = if ($existing.Age -lt [TimeSpan]::Zero) { 'in the future — check the clock' } else { ("{0:N1}h ago" -f $existing.Age.TotalHours) }
+            $agoText = if ($existing.Age -lt [TimeSpan]::Zero) { 'in the future -- check the clock' } else { ("{0:N1}h ago" -f $existing.Age.TotalHours) }
             Write-Host ("Blocklist at {0} was generated {1} ({2}={3}); newer than -MinInterval {4}." -f `
                 $OutFile, $agoText, $existing.Source, $existing.Stamp, $MinInterval)
             Write-Host "Nothing downloaded. Pass -Force to regenerate now, or lower -MinInterval."
@@ -247,7 +233,7 @@ if (-not $Force -and $minAge -gt [TimeSpan]::Zero) {
 # ---------------------------------------------------------------------------------------------------------
 # Compiled hot loop. Interpreted PowerShell chokes on bitwire's ~4M lines; this parses + validates + bogon-
 # filters + de-dupes in one compiled pass, and writes the final file directly (no 4M-element PS pipelines).
-# Kept to C# 5 syntax so it also compiles under Windows PowerShell 5.1's .NET Framework compiler.
+# Deliberately plain C#: no LINQ, no generics beyond HashSet, nothing that would slow the hot loop.
 # ---------------------------------------------------------------------------------------------------------
 Add-Type -TypeDefinition @'
 using System;
@@ -376,7 +362,7 @@ public static class BlocklistExporter
 '@
 
 # ---------------------------------------------------------------------------------------------------------
-# Feed set — thin, non-overlapping. See .DESCRIPTION for why each is kept and what was dropped as redundant.
+# Feed set -- thin, non-overlapping. See .DESCRIPTION for why each is kept and what was dropped as redundant.
 # romainmarcoux's "full" set is sharded; only aa..ad carry data today (ae.. are empty placeholders).
 # A 404/empty shard is skipped, so extend this list if upstream grows the shard count.
 # ---------------------------------------------------------------------------------------------------------
@@ -404,7 +390,7 @@ if ($Feeds) {
 }
 
 # ---------------------------------------------------------------------------------------------------------
-# Reserved / bogon ranges — never valid attacker SOURCE IPs; always filtered. Built once as uint32 arrays.
+# Reserved / bogon ranges -- never valid attacker SOURCE IPs; always filtered. Built once as uint32 arrays.
 # ---------------------------------------------------------------------------------------------------------
 function ConvertTo-IPv4UInt {
     param([string]$s)
@@ -486,14 +472,14 @@ foreach ($feed in $AllFeeds) {
             Write-Host ("  [dl {0,6:N1}s / parse {1,5:N1}s] {2}" -f $dlSw.Elapsed.TotalSeconds, $pSw.Elapsed.TotalSeconds, ("{0} ({1} MB)" -f $feed.Name, $mb))
             $ok = $true
         }
-        catch { Write-Warning ("{0}: {1} — skipping shard ({2})" -f $feed.Name, $url, $_.Exception.Message) }
+        catch { Write-Warning ("{0}: {1} -- skipping shard ({2})" -f $feed.Name, $url, $_.Exception.Message) }
     }
     if ($ok) {
         $feedCount++
         $delta = ($singles.Count + $cidrs.Count) - $before
         Write-Host ("{0,-16} +{1,8} new  (running total {2} ip / {3} cidr)`n" -f $feed.Name, $delta, $singles.Count, $cidrs.Count)
     }
-    else { Write-Warning ("{0}: all sources failed — skipping" -f $feed.Name) }
+    else { Write-Warning ("{0}: all sources failed -- skipping" -f $feed.Name) }
 }
 
 # ---------------------------------------------------------------------------------------------------------
@@ -521,11 +507,11 @@ if ($DryRun) {
 }
 
 # A partial feed outage must not silently shrink the shard's blocklist to nothing; keep the last good file.
-if ($total -eq 0) { throw "No entries parsed — refusing to overwrite '$OutFile' with an empty list." }
+if ($total -eq 0) { throw "No entries parsed -- refusing to overwrite '$OutFile' with an empty list." }
 
 # ---------------------------------------------------------------------------------------------------------
 # Write to a .tmp sibling and swap it into place, so the shard (which reads the whole file on a change)
-# never observes a half-written list. File.Replace is atomic on NTFS; Move covers the first-ever run.
+# never observes a half-written list. One rename does it whether or not a list is already there.
 # ---------------------------------------------------------------------------------------------------------
 $outDir = Split-Path -Parent $OutFile
 if ($outDir -and -not (Test-Path -LiteralPath $outDir -PathType Container)) {
@@ -541,20 +527,9 @@ $tmp = $OutFile + '.tmp'
 $wSw = [System.Diagnostics.Stopwatch]::StartNew()
 try {
     [BlocklistExporter]::Write($tmp, $header, $singles, $cidrs)
-    if (-not (Test-Path -LiteralPath $OutFile -PathType Leaf)) {
-        [IO.File]::Move($tmp, $OutFile)
-    }
-    elseif ($MoveCanOverwrite) {
-        # .NET Core / PowerShell 7: one atomic rename over the destination on every platform
-        # (MoveFileEx REPLACE_EXISTING on Windows, rename(2) on Linux/macOS).
-        [IO.File]::Move($tmp, $OutFile, $true)
-    }
-    else {
-        # Windows PowerShell 5.1 has no 3-argument Move; File.Replace is the atomic equivalent there.
-        # [NullString]::Value, not $null: PowerShell marshals $null to "" for string parameters, and
-        # File.Replace rejects an empty backup path. Null means "no backup copy" — the point of using it.
-        [IO.File]::Replace($tmp, $OutFile, [System.Management.Automation.Language.NullString]::Value)
-    }
+    # One atomic rename over the destination on every platform: MoveFileEx REPLACE_EXISTING on
+    # Windows, rename(2) on Linux and macOS.
+    [IO.File]::Move($tmp, $OutFile, $true)
 }
 finally {
     # Never leave a partial .tmp next to a live blocklist for the next run to trip over.
