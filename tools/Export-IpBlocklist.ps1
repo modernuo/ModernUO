@@ -51,15 +51,18 @@
     ~1s. Downloads stream with a live Write-Progress bar; every phase prints its own elapsed time so you can
     see exactly where the wall-clock goes.
 
-    Run on a schedule (Task Scheduler / cron). Every run rewrites the whole file, so an IP that drops off
-    the feeds stops being blocked on the next run — there is no TTL to tune. Calling it is idempotent: if the
-    list on disk is younger than -MinInterval the script exits without downloading anything, so an
-    over-eager trigger costs nothing upstream. -Force overrides that.
+    Runs on Windows PowerShell 5.1 and on PowerShell 7 for Windows, Linux and macOS. Schedule it with
+    Task Scheduler, cron, or a systemd timer.
+
+    Every run rewrites the whole file, so an IP that drops off the feeds stops being blocked on the next
+    run — there is no TTL to tune. Calling it is idempotent: if the list on disk is younger than
+    -MinInterval the script exits without downloading anything, so an over-eager trigger costs nothing
+    upstream. -Force overrides that.
 
 .PARAMETER DistributionPath
-    Path to the shard's Distribution folder. The blocklist is written to
-    <DistributionPath>\Configuration\ip-blocklist.txt, which is the default `file` in blocklist.json.
-    Not needed when the script is run from its place in the repo (tools\), or when -OutFile is given.
+    Path to the shard's Distribution folder. The blocklist is written to the Configuration/ip-blocklist.txt
+    beneath it, which is the default `file` in blocklist.json. Not needed when the script is run from its
+    place in the repo (tools/), or when -OutFile is given.
 
 .PARAMETER OutFile
     Explicit output path, overriding -DistributionPath. Use this if you relocated the blocklist and
@@ -102,6 +105,10 @@
     # Regenerate right now, ignoring the cooldown.
     .\Export-IpBlocklist.ps1 -DistributionPath 'C:\Shard\Distribution' -Force
 
+.EXAMPLE
+    # Linux/macOS, e.g. from cron:
+    pwsh -File /opt/modernuo/Export-IpBlocklist.ps1 -DistributionPath /opt/modernuo/Distribution
+
 .NOTES
     Feeds are aggressive-but-low-FP for a game server (attacker / botnet / compromised / abuse-relay SOURCE
     IPs). Reserved/bogon space (0/8, 10/8, 127/8, RFC1918, multicast, etc.) is always filtered out — this
@@ -119,12 +126,23 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-$UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ModernUO-Blocklist-Export'
+
+# Windows PowerShell (.NET Framework) still defaults to SSL3/TLS1 and needs this. PowerShell 7 on any
+# platform negotiates TLS 1.2/1.3 on its own, and ServicePointManager is a legacy no-op there.
+if ($PSVersionTable.PSEdition -eq 'Desktop') {
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+}
+
+$UA = 'ModernUO-Blocklist-Export'
 $totalSw = [System.Diagnostics.Stopwatch]::StartNew()
 
-# Default location, relative to the Distribution folder. Keep in sync with BlocklistSettings.File.
-$DefaultRelativePath = 'Configuration\ip-blocklist.txt'
+# Default location under the Distribution folder. Keep in sync with BlocklistSettings.File.
+# Joined a segment at a time (never a literal 'a\b') so the separator is right on Linux and macOS.
+$DefaultPathSegments = @('Configuration', 'ip-blocklist.txt')
+
+# File.Move(source, dest, overwrite) is .NET Core only. Where it exists it is the portable atomic
+# replace; Windows PowerShell 5.1 falls back to File.Replace. Probed once, used at the swap below.
+$MoveCanOverwrite = [bool][IO.File].GetMethod('Move', [Type[]]@([string], [string], [bool]))
 
 # ---------------------------------------------------------------------------------------------------------
 # Resolve the output path. Explicit -OutFile wins; then -DistributionPath; then the in-repo layout
@@ -142,7 +160,11 @@ if (-not $OutFile) {
     if (-not (Test-Path -LiteralPath $DistributionPath -PathType Container)) {
         throw "DistributionPath '$DistributionPath' does not exist."
     }
-    $OutFile = Join-Path $DistributionPath $DefaultRelativePath
+    # One segment per Join-Path: the multi-argument form is PowerShell 6+ only, and this stays 5.1-safe.
+    $OutFile = $DistributionPath
+    foreach ($segment in $DefaultPathSegments) {
+        $OutFile = Join-Path $OutFile $segment
+    }
 }
 
 # ---------------------------------------------------------------------------------------------------------
@@ -157,7 +179,13 @@ function ConvertTo-Duration {
     $unit = $t[$t.Length - 1]
     $numText = if ($unit -match '[0-9.]') { $t } else { $t.Substring(0, $t.Length - 1) }
     $n = 0.0
-    if (-not [double]::TryParse($numText, [ref]$n)) { throw "Could not parse duration '$Text' (try 90s, 45m, 2h, 2.5h, 1d)." }
+    # InvariantCulture is not optional here: under a comma-decimal locale (de-DE, fr-FR, ...) the
+    # current-culture parse reads '2.5' as 25 -- it treats '.' as a group separator and SUCCEEDS, so
+    # `-MinInterval 2.5h` would silently become a 25 hour cooldown instead of failing loudly.
+    if (-not [double]::TryParse($numText, [Globalization.NumberStyles]::Float,
+                                [Globalization.CultureInfo]::InvariantCulture, [ref]$n)) {
+        throw "Could not parse duration '$Text' (try 90s, 45m, 2h, 2.5h, 1d)."
+    }
     switch ($unit) {
         's'     { return [TimeSpan]::FromSeconds($n) }
         'm'     { return [TimeSpan]::FromMinutes($n) }
@@ -178,7 +206,7 @@ function Get-BlocklistAge {
         $first = Get-Content -LiteralPath $Path -TotalCount 1 -ErrorAction Stop
         if ($first -and $first.StartsWith('#')) {
             foreach ($tok in $first.Split(' ', [StringSplitOptions]::RemoveEmptyEntries)) {
-                if ($tok.StartsWith('generated=')) {
+                if ($tok.StartsWith('generated=', [StringComparison]::Ordinal)) {
                     $stamp = [DateTime]::MinValue
                     $styles = [Globalization.DateTimeStyles]::AdjustToUniversal -bor [Globalization.DateTimeStyles]::AssumeUniversal
                     if ([DateTime]::TryParse($tok.Substring(10), [Globalization.CultureInfo]::InvariantCulture, $styles, [ref]$stamp)) {
@@ -193,7 +221,9 @@ function Get-BlocklistAge {
     # Hand-maintained or truncated file: fall back to the filesystem timestamp.
     try {
         $w = (Get-Item -LiteralPath $Path -ErrorAction Stop).LastWriteTimeUtc
-        return @{ Age = ([DateTime]::UtcNow - $w); Stamp = $w.ToString('yyyy-MM-ddTHH:mm:ssZ'); Source = 'mtime' }
+        return @{ Age = ([DateTime]::UtcNow - $w)
+                  Stamp = $w.ToString('yyyy-MM-ddTHH:mm:ssZ', [Globalization.CultureInfo]::InvariantCulture)
+                  Source = 'mtime' }
     }
     catch { return $null }
 }
@@ -502,19 +532,28 @@ if ($outDir -and -not (Test-Path -LiteralPath $outDir -PathType Container)) {
     New-Item -ItemType Directory -Path $outDir -Force | Out-Null
 }
 
-$generated = [DateTime]::UtcNow.ToString('yyyy-MM-ddTHH:mm:ssZ')
+# InvariantCulture: ':' is the culture-defined time separator in a custom format string, and the
+# header is a machine-read marker the shard compares verbatim.
+$generated = [DateTime]::UtcNow.ToString('yyyy-MM-ddTHH:mm:ssZ', [Globalization.CultureInfo]::InvariantCulture)
 $header = "# modernuo-blocklist generated=$generated count=$total ipv4=$($singles.Count) cidr=$($cidrs.Count) feeds=$feedCount"
 
 $tmp = $OutFile + '.tmp'
 $wSw = [System.Diagnostics.Stopwatch]::StartNew()
 try {
     [BlocklistExporter]::Write($tmp, $header, $singles, $cidrs)
-    if (Test-Path -LiteralPath $OutFile -PathType Leaf) {
+    if (-not (Test-Path -LiteralPath $OutFile -PathType Leaf)) {
+        [IO.File]::Move($tmp, $OutFile)
+    }
+    elseif ($MoveCanOverwrite) {
+        # .NET Core / PowerShell 7: one atomic rename over the destination on every platform
+        # (MoveFileEx REPLACE_EXISTING on Windows, rename(2) on Linux/macOS).
+        [IO.File]::Move($tmp, $OutFile, $true)
+    }
+    else {
+        # Windows PowerShell 5.1 has no 3-argument Move; File.Replace is the atomic equivalent there.
         # [NullString]::Value, not $null: PowerShell marshals $null to "" for string parameters, and
         # File.Replace rejects an empty backup path. Null means "no backup copy" — the point of using it.
         [IO.File]::Replace($tmp, $OutFile, [System.Management.Automation.Language.NullString]::Value)
-    } else {
-        [IO.File]::Move($tmp, $OutFile)
     }
 }
 finally {
