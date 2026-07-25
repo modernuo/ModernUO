@@ -28,7 +28,12 @@ namespace Server;
 /// </summary>
 public static class IPAddressUtility
 {
-    // Converts an IPAddress to a UInt128 in IPv6 format
+    // Converts an IPAddress to a UInt128 in IPv6 format.
+    // The IsIPv4MappedToIPv6 clause below looks redundant (the BCL only ever sets it on InterNetworkV6),
+    // but it guards the v4 -> UInt128 -> IPAddress round-trip, which can return a mapped v6 address for
+    // what is really a v4 one.
+    //TODO Rework as an explicit "to canonical v6 bits" step that needs no family check
+    //     (see dev-docs/networking-packets.md, "IP Address Normalization")
     public static UInt128 ToUInt128(this IPAddress ip)
     {
         if (ip.AddressFamily == AddressFamily.InterNetwork && !ip.IsIPv4MappedToIPv6)
