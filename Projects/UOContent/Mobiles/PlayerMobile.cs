@@ -2826,8 +2826,8 @@ namespace Server.Mobiles
                             for (var i = 0; i < recipeCount; i++)
                             {
                                 var r = reader.ReadInt();
-                                if (version > 33 ||
-                                    reader.ReadBool()) // Don't add in recipes which we haven't gotten or have been removed
+                                // Don't add in recipes which we haven't gotten or have been removed
+                                if (version > 33 || reader.ReadBool())
                                 {
                                     _acquiredRecipes.Add(r);
                                 }
