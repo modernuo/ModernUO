@@ -953,8 +953,6 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
     public static TimeSpan AutoManifestTimeout { get; set; } = TimeSpan.FromSeconds(5.0);
 
-    public static bool InsuranceEnabled { get; set; }
-
     public static int ActionDelay { get; set; } = 500;
 
     public static VisibleDamageType VisibleDamageType { get; set; }

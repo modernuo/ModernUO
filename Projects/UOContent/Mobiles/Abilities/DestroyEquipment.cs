@@ -23,7 +23,7 @@ public class DestroyEquipment : MonsterAbilitySingleTarget
                 continue;
             }
 
-            if (Mobile.InsuranceEnabled && item.Insured)
+            if (item.Insured)
             {
                 continue;
             }
