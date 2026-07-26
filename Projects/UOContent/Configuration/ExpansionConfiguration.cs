@@ -7,7 +7,6 @@ namespace Server
     {
         public static void Configure()
         {
-
             ObjectPropertyList.Enabled = ServerConfiguration.GetSetting("opl.enable", Core.AOS);
             var visibleDamage = ServerConfiguration.GetSetting("visibleDamage", Core.AOS);
             Mobile.VisibleDamageType = visibleDamage ? VisibleDamageType.Related : VisibleDamageType.None;
