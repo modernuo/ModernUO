@@ -962,20 +962,21 @@ public static class FeatureFlagManager
         _ = key.ToLowerInvariant() switch
         {
             // Server project flags
-            "player_trading" => ServerFeatureFlags.PlayerTrading = enabled,
-            "pvp_combat"     => ServerFeatureFlags.PvPCombat = enabled,
-            "bank_access"          => ServerFeatureFlags.BankAccess = enabled,
-            "speedhack_detection"  => ServerFeatureFlags.SpeedhackDetection = enabled,
+            "player_trading"      => ServerFeatureFlags.PlayerTrading = enabled,
+            "pvp_combat"          => ServerFeatureFlags.PvPCombat = enabled,
+            "bank_access"         => ServerFeatureFlags.BankAccess = enabled,
+            "speedhack_detection" => ServerFeatureFlags.SpeedhackDetection = enabled,
+            "insurance"           => ServerFeatureFlags.InsuranceEnabled = enabled,
 
             // UOContent flags
-            "vendor_purchase"        => ContentFeatureFlags.VendorPurchase = enabled,
-            "vendor_sell"            => ContentFeatureFlags.VendorSell = enabled,
-            "player_vendors"         => ContentFeatureFlags.PlayerVendors = enabled,
-            "house_placement"        => ContentFeatureFlags.HousePlacement = enabled,
-            "boat_placement"         => ContentFeatureFlags.BoatPlacement = enabled,
-            "bulk_orders"            => ContentFeatureFlags.BulkOrders = enabled,
-            "passive_detect_hidden"  => ContentFeatureFlags.PassiveDetectHidden = enabled,
-            "young_player_system"    => ContentFeatureFlags.YoungPlayerSystem = enabled,
+            "vendor_purchase"          => ContentFeatureFlags.VendorPurchase = enabled,
+            "vendor_sell"              => ContentFeatureFlags.VendorSell = enabled,
+            "player_vendors"           => ContentFeatureFlags.PlayerVendors = enabled,
+            "house_placement"          => ContentFeatureFlags.HousePlacement = enabled,
+            "boat_placement"           => ContentFeatureFlags.BoatPlacement = enabled,
+            "bulk_orders"              => ContentFeatureFlags.BulkOrders = enabled,
+            "passive_detect_hidden"    => ContentFeatureFlags.PassiveDetectHidden = enabled,
+            "young_player_system"      => ContentFeatureFlags.YoungPlayerSystem = enabled,
             "bitmap_pathfinding_cache" => ContentFeatureFlags.BitmapPathfindingCache = enabled,
         };
     }

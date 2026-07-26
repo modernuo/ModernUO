@@ -26,7 +26,7 @@ public class ClothingBlessTarget : Target // Create our targeting class (which w
             }
 
             // Check if its already newbied (blessed)
-            if (item.LootType == LootType.Blessed || item.BlessedFor == from || item.Insured)
+            if (item.LootType == LootType.Blessed || item.BlessedFor == from || Insurance.Enabled && item.Insured)
             {
                 from.SendLocalizedMessage(1045113); // That item is already blessed
             }

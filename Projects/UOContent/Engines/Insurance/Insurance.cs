@@ -10,12 +10,12 @@ namespace Server.Engines.Insurance;
 
 public static class Insurance
 {
-    public static bool Enabled { get; private set; }
+    public static bool Enabled => ServerFeatureFlags.InsuranceEnabled;
     private static Dictionary<Mobile, InsuranceContext> _insuranceContexts;
 
     public static void Configure()
     {
-        Enabled = ServerConfiguration.GetSetting("insurance.enable", Core.AOS);
+        ServerFeatureFlags.InsuranceEnabled = ServerConfiguration.GetSetting("insurance.enable", Core.AOS);
 
         if (Enabled)
         {
@@ -72,7 +72,7 @@ public static class Insurance
 
     public static bool CheckItemInsuranceOnDeath(PlayerMobile from, Item item)
     {
-        if (!item.Insured)
+        if (!Enabled || !item.Insured)
         {
             return false;
         }

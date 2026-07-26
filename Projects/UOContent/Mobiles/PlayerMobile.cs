@@ -2397,7 +2397,8 @@ namespace Server.Mobiles
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool FindItems_Callback(Item item) =>
-            !item.Deleted && (item.LootType == LootType.Blessed || item.Insured) && Backpack != item.Parent;
+            !item.Deleted && Backpack != item.Parent &&
+            (item.LootType == LootType.Blessed || ServerFeatureFlags.InsuranceEnabled && item.Insured);
 
         public override bool OnBeforeDeath()
         {
