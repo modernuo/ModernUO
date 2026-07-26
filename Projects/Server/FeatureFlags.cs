@@ -10,4 +10,5 @@ public static class ServerFeatureFlags
     public static bool PvPCombat { get; set; } = true;
     public static bool BankAccess { get; set; } = true;
     public static bool SpeedhackDetection { get; set; }
+    public static bool InsuranceEnabled { get; set; }
 }

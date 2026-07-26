@@ -1,4 +1,5 @@
 ﻿using Server.Collections;
+using Server.Engines.Insurance;
 using Server.Items;
 
 namespace Server.Mobiles;
@@ -23,7 +24,7 @@ public class DestroyEquipment : MonsterAbilitySingleTarget
                 continue;
             }
 
-            if (Mobile.InsuranceEnabled && item.Insured)
+            if (Insurance.Enabled && item.Insured)
             {
                 continue;
             }

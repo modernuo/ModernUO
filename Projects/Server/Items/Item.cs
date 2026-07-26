@@ -1884,7 +1884,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
         {
             list.Add(1049643); // cursed
         }
-        else if (Insured)
+        else if (ServerFeatureFlags.InsuranceEnabled && Insured)
         {
             list.Add(1061682); // <b>insured</b>
         }
@@ -4216,12 +4216,12 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
     }
 
     public virtual bool CheckBlessed(Mobile m) =>
-        m_LootType == LootType.Blessed || Mobile.InsuranceEnabled && Insured || m != null && m == BlessedFor;
+        m_LootType == LootType.Blessed || ServerFeatureFlags.InsuranceEnabled && Insured || m != null && m == BlessedFor;
 
     public virtual bool CheckNewbied() => m_LootType == LootType.Newbied;
 
     public virtual bool IsStandardLoot() =>
-        (!Mobile.InsuranceEnabled || !Insured) && BlessedFor == null && m_LootType == LootType.Regular;
+        (!ServerFeatureFlags.InsuranceEnabled || !Insured) && BlessedFor == null && m_LootType == LootType.Regular;
 
     public override string ToString() => $"{Serial} \"{GetType().Name}\"";
 
