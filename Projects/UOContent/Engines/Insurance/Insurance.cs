@@ -11,16 +11,12 @@ namespace Server.Engines.Insurance;
 public static class Insurance
 {
     public static bool Enabled => ServerFeatureFlags.InsuranceEnabled;
-    private static Dictionary<Mobile, InsuranceContext> _insuranceContexts;
+    private static readonly Dictionary<Mobile, InsuranceContext> _insuranceContexts = [];
 
     public static void Configure()
     {
+        // Legacy, but not expected to be used anymore in favor of the feature flag system
         ServerFeatureFlags.InsuranceEnabled = ServerConfiguration.GetSetting("insurance.enable", Core.AOS);
-
-        if (Enabled)
-        {
-            _insuranceContexts = [];
-        }
     }
 
     public static int GetInsuranceCost(Mobile from, Item item) => 600;
