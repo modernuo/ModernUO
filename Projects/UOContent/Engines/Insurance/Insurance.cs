@@ -61,10 +61,9 @@ public static class Insurance
             from.SendLocalizedMessage(1061115); // You do not have the gold to automatically reinsure all your items.
         }
 
-        if (context.InsuranceReward != null && context.InsuranceBonus > 0)
+        if (context.InsuranceReward != null && context.InsuranceBonus > 0 &&
+            Banker.Deposit(context.InsuranceReward, context.InsuranceBonus))
         {
-            Banker.Deposit(context.InsuranceReward, context.InsuranceBonus);
-
             // ~1_AMOUNT~ gold has been deposited into your bank box.
             context.InsuranceReward.SendLocalizedMessage(1060397, $"{context.InsuranceBonus}");
         }
