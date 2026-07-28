@@ -444,8 +444,15 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
         }
 
         var length = span.Length;
-        if (length <= 0 || !GetSendBuffer(out var buffer))
+        if (length <= 0)
         {
+            return;
+        }
+
+        // Never drop silently: the client would stay connected while missing game state.
+        if (!GetSendBuffer(out var buffer))
+        {
+            SendBufferExhausted(length, 0);
             return;
         }
 
@@ -455,6 +462,18 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
             if (CompressionEnabled)
             {
                 length = NetworkCompression.Compress(span, buffer);
+
+                // 0 means nothing was written, whether it did not fit or the input was too large.
+                if (length <= 0)
+                {
+                    SendBufferExhausted(span.Length, buffer.Length);
+                    return;
+                }
+            }
+            else if (span.Length > buffer.Length)
+            {
+                SendBufferExhausted(span.Length, buffer.Length);
+                return;
             }
             else
             {
@@ -482,6 +501,31 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
             TraceException(ex);
             Disconnect("Exception while sending.");
         }
+    }
+
+    /// <summary>
+    /// Handles a packet that cannot be placed in the send buffer.
+    /// </summary>
+    /// <remarks>
+    /// High unacked means a slow client holding the buffer; needed approaching capacity means the
+    /// buffer is too small for this shard and network.sendBufferSize should be raised.
+    /// </remarks>
+    private void SendBufferExhausted(int needed, int writable)
+    {
+        var sendBuffer = _socket?.SendBuffer;
+        var unacked = sendBuffer?.InFlightBytes ?? 0;
+        var capacity = sendBuffer?.PhysicalSize ?? 0;
+
+        logger.Warning(
+            "{NetState}: send buffer exhausted - needed {Needed} bytes, {Writable} writable, {Unacked} awaiting acknowledgement, {Capacity} capacity. Raise network.sendBufferSize (power of two) if this recurs on healthy connections.",
+            this,
+            needed,
+            writable,
+            unacked,
+            capacity
+        );
+
+        Disconnect($"Send buffer exhausted (needed {needed}, writable {writable}, unacked {unacked}, capacity {capacity})");
     }
 
     private void StartPacketLog()
