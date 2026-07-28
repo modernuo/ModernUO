@@ -13,6 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
 using System.Net;
 using Server.Network.Bans.CrowdSec;
 using Xunit;
@@ -21,6 +22,16 @@ namespace Server.Tests.Network.Bans;
 
 public class CrowdSecAlertClientTests
 {
+    /// <summary>
+    /// LAPI's default watcher profile matches the <c>crowdsec/</c> prefix and answers 401 without it, so
+    /// this is a protocol constraint rather than a cosmetic product string.
+    /// </summary>
+    [Fact]
+    public void UserAgent_IsPrefixedForTheWatcherProfile()
+    {
+        Assert.StartsWith("crowdsec/", CrowdSecAlertClient.UserAgent, StringComparison.Ordinal);
+    }
+
     [Fact]
     public void BuildDeleteQuery_EscapesOrigin()
     {
