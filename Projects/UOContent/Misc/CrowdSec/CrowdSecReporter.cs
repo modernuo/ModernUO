@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Net;
 using System.Threading;
 using System.Threading.Channels;
@@ -357,7 +358,7 @@ public sealed class CrowdSecReporter : IBanReporter
             byIp[item.Ip.ToString()] = item;
         }
 
-        var timestamp = nowUtc.ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
+        var timestamp = FormatTimestamp(nowUtc);
         var alerts = new List<CrowdSecAlert>(byIp.Count);
 
         foreach (var (value, item) in byIp)
@@ -389,6 +390,17 @@ public sealed class CrowdSecReporter : IBanReporter
 
         return alerts;
     }
+
+    /// <summary>
+    /// ISO8601/RFC3339 UTC timestamp for <c>start_at</c>/<c>stop_at</c>. LAPI parses these with Go's
+    /// <c>time.RFC3339</c> and answers 500 when the parse fails, so the format must be culture-independent:
+    /// ':' is the *time separator* specifier in a custom .NET format string, and a shard running under a
+    /// culture like fi-FI would otherwise emit "T12.34.56.789Z". InvariantCulture also pins the Gregorian
+    /// calendar, which non-Gregorian cultures (th-TH, ar-SA) would otherwise shift the year for.
+    /// </summary>
+    internal static string FormatTimestamp(DateTime time) =>
+        (time.Kind == DateTimeKind.Utc ? time : time.ToUniversalTime())
+        .ToString("yyyy-MM-ddTHH:mm:ss.fffZ", CultureInfo.InvariantCulture);
 
     /// <summary>CrowdSec accepts Go durations; whole seconds are unambiguous and sufficient.</summary>
     internal static string FormatDuration(TimeSpan ttl)

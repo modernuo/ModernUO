@@ -15,7 +15,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Net;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Server.Network.Bans.CrowdSec;
@@ -79,6 +81,60 @@ public class CrowdSecReporterTests
         var decision = Assert.Single(alerts).Decisions[0];
         Assert.Equal("modernuo/blocklist", alerts[0].Scenario);
         Assert.Equal("modernuo/blocklist", decision.Scenario);
+    }
+
+    /// <summary>
+    /// LAPI dereferences scenario_hash/scenario_version unconditionally when persisting an alert, so an
+    /// omitted field is a 500, not a validation error. Asserted on the serialized payload rather than the
+    /// DTO because that is what actually goes on the wire.
+    /// </summary>
+    [Fact]
+    public void BuildAlerts_SerializedPayload_CarriesRequiredScenarioFields()
+    {
+        var alerts = CrowdSecReporter.BuildAlerts(
+            [new(IPAddress.Parse("9.9.9.9"), TimeSpan.FromHours(1), "rate-limit", false)],
+            Settings(),
+            DateTime.UnixEpoch);
+
+        var payload = JsonSerializer.SerializeToNode(alerts)!.AsArray()[0]!.AsObject();
+
+        Assert.True(payload.ContainsKey("scenario_hash"));
+        Assert.True(payload.ContainsKey("scenario_version"));
+        Assert.Equal(JsonValueKind.String, payload["scenario_hash"]!.GetValue<JsonElement>().ValueKind);
+        Assert.Equal(JsonValueKind.String, payload["scenario_version"]!.GetValue<JsonElement>().ValueKind);
+        Assert.Equal(1, payload["capacity"]!.GetValue<int>());
+    }
+
+    /// <summary>
+    /// ':' is the time-separator specifier in a custom .NET format string, so a shard under fi-FI used to
+    /// emit "T00.00.00.000Z" — which Go's time.RFC3339 rejects, and LAPI answers 500 for. th-TH additionally
+    /// shifts the year via the Buddhist calendar.
+    /// </summary>
+    [Theory]
+    [InlineData("fi-FI")]
+    [InlineData("th-TH")]
+    [InlineData("ar-SA")]
+    public void FormatTimestamp_IsIso8601_RegardlessOfCulture(string culture)
+    {
+        var previous = CultureInfo.CurrentCulture;
+        try
+        {
+            CultureInfo.CurrentCulture = new CultureInfo(culture);
+            Assert.Equal("1970-01-01T00:00:00.000Z", CrowdSecReporter.FormatTimestamp(DateTime.UnixEpoch));
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = previous;
+        }
+    }
+
+    /// <summary>A non-UTC input must still be stamped as UTC — the trailing 'Z' is a literal, not a claim.</summary>
+    [Fact]
+    public void FormatTimestamp_ConvertsNonUtcInput()
+    {
+        var local = new DateTimeOffset(1970, 1, 1, 2, 0, 0, TimeSpan.FromHours(2)).LocalDateTime;
+
+        Assert.Equal("1970-01-01T00:00:00.000Z", CrowdSecReporter.FormatTimestamp(local));
     }
 
     [Fact]

@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -40,6 +41,12 @@ public sealed class CrowdSecAlertClient : ICrowdSecAlertClient
 {
     private static readonly JsonSerializerOptions _jsonOptions = new() { PropertyNameCaseInsensitive = true };
 
+    /// <summary>
+    /// The <c>crowdsec/</c> prefix is load-bearing: LAPI's default watcher profile matches on it and
+    /// answers 401 for anything else, so this cannot be a plain product string.
+    /// </summary>
+    internal const string UserAgent = "crowdsec/ModernUO-watcher-1.0";
+
     private readonly HttpClient _http;
     private readonly string _machineId;
     private readonly string _password;
@@ -51,7 +58,7 @@ public sealed class CrowdSecAlertClient : ICrowdSecAlertClient
     {
         var baseUri = new Uri(settings.LapiUrl, UriKind.Absolute); // fails loud on malformed url
         _http = new HttpClient { BaseAddress = baseUri, Timeout = TimeSpan.FromSeconds(30) };
-        _http.DefaultRequestHeaders.Add("User-Agent", "ModernUO-watcher/1.0");
+        _http.DefaultRequestHeaders.Add("User-Agent", UserAgent);
         _machineId = settings.MachineId;
         _password = settings.Password;
     }
@@ -71,7 +78,15 @@ public sealed class CrowdSecAlertClient : ICrowdSecAlertClient
         var login = await response.Content.ReadFromJsonAsync<CrowdSecLoginResponse>(_jsonOptions, token)
             .ConfigureAwait(false);
         _token = login?.Token ?? throw new InvalidOperationException("CrowdSec login returned no token.");
-        _tokenExpiresUtc = DateTime.TryParse(login.Expire, out var exp) ? exp.ToUniversalTime() : DateTime.UtcNow.AddHours(1);
+
+        // LAPI returns an RFC3339 expiry. Parse it invariantly for the same reason we format invariantly:
+        // the current culture must not decide whether a machine-readable timestamp is understood.
+        _tokenExpiresUtc = DateTime.TryParse(
+            login.Expire,
+            CultureInfo.InvariantCulture,
+            DateTimeStyles.AdjustToUniversal,
+            out var exp
+        ) ? exp : DateTime.UtcNow.AddHours(1);
     }
 
     private void Authorize(HttpRequestMessage message) =>

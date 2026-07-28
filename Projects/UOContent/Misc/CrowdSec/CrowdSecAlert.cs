@@ -21,11 +21,24 @@ namespace Server.Network.Bans.CrowdSec;
 public sealed class CrowdSecAlert
 {
     [JsonPropertyName("scenario")] public string Scenario { get; set; }
+
+    /// <summary>
+    /// Required by LAPI. It dereferences the field unconditionally when persisting the alert, so
+    /// omitting it answers 500 rather than a validation error. Empty is the accepted value for a
+    /// watcher that isn't shipping a hub scenario.
+    /// </summary>
+    [JsonPropertyName("scenario_hash")] public string ScenarioHash { get; set; } = "";
+
+    /// <summary>Required alongside <see cref="ScenarioHash"/>; same 500-on-missing behavior.</summary>
+    [JsonPropertyName("scenario_version")] public string ScenarioVersion { get; set; } = "1.0";
+
     [JsonPropertyName("message")] public string Message { get; set; }
     [JsonPropertyName("events_count")] public int EventsCount { get; set; } = 1;
     [JsonPropertyName("start_at")] public string StartAt { get; set; }
     [JsonPropertyName("stop_at")] public string StopAt { get; set; }
-    [JsonPropertyName("capacity")] public int Capacity { get; set; }
+
+    /// <summary>Bucket capacity. One decision per alert, so 1 — a leaky-bucket capacity of 0 is nonsense.</summary>
+    [JsonPropertyName("capacity")] public int Capacity { get; set; } = 1;
     [JsonPropertyName("leakspeed")] public string LeakSpeed { get; set; } = "0s";
     [JsonPropertyName("simulated")] public bool Simulated { get; set; }
     [JsonPropertyName("events")] public object[] Events { get; set; } = [];
