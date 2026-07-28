@@ -73,7 +73,9 @@ public static class NetworkCompression
 
     public static int Compress(ReadOnlySpan<byte> input, Span<byte> output)
     {
-        if (input.Length > DefiniteOverflow)
+        // output.Length < 4 underflows safeOutputLength below (nuint), defeating the hot loop's
+        // bounds check. Reachable whenever the send buffer is nearly full.
+        if (input.Length > DefiniteOverflow || output.Length < 4)
         {
             return 0;
         }
