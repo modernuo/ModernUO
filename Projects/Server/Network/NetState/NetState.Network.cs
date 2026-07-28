@@ -19,6 +19,7 @@ using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Network;
+using System.Numerics;
 
 namespace Server.Network;
 
@@ -28,9 +29,10 @@ namespace Server.Network;
 public partial class NetState
 {
     // Buffer sizes
-    private const int RecvBufferSize = 1024 * 64;   // 64KB recv buffers
-    private const int SendBufferSize = 1024 * 256;  // 256KB send buffers
-    private const int MaxConnections = 4096;        // Max concurrent connections
+    private const int RecvBufferSize = 1024 * 64;    // 64KB recv buffers
+    private const int DefaultSendBufferSize = 1024 * 256;  // 256KB send buffers
+    private const int MinSendBufferSize = 1024 * 64;       // Platform allocation granularity
+    private const int MaxConnections = 4096;         // Max concurrent connections
 
     private static readonly Queue<NetState> _disposed = [];
     private static readonly TimeSpan ConnectingSocketIdleLimit = TimeSpan.FromMilliseconds(5000); // 5 seconds
@@ -41,7 +43,9 @@ public partial class NetState
     // NetState storage indexed by RingSocket.Id
     private static readonly NetState[] _netStates = new NetState[MaxConnections];
 
-    // Events buffer for ProcessCompletions
+    // Events buffer for ProcessCompletions. Bounded by one event per peeked completion
+    // (maxSockets), doubled for headroom. Undersizing drops DataReceived events whose bytes were
+    // already committed, leaving them unparsed until the next recv completes.
     private static readonly RingSocketEvent[] _events = new RingSocketEvent[MaxConnections * 2];
 
     // Listener management
@@ -88,18 +92,59 @@ public partial class NetState
         // Initialize IP rate limiter
         _ipRateLimiter = new IPRateLimiter(10, 10000, 1000, 2.0, 3_600_000, Core.ClosingTokenSource.Token);
 
+        // Sends in flight per connection; honoured by RIO only (see IIORingGroup). Costs a
+        // request-queue and completion-queue slot per send, not another buffer. Worst-case added
+        // latency is roughly completion RTT / this value.
+        var maxOutstandingSends = ServerConfiguration.GetOrUpdateSetting("network.maxOutstandingSends", 32);
+
         // Initialize IORingGroup
-        var ring = IORingGroup.Create(queueSize: MaxConnections * 2, maxConnections: MaxConnections);
+        var ring = IORingGroup.Create(
+            queueSize: MaxConnections * 2,
+            maxConnections: MaxConnections,
+            maxOutstandingSends: maxOutstandingSends
+        );
+
+        // Per-connection send buffer: the lever for "send buffer exhausted" disconnects, and the
+        // per-connection memory ceiling.
+        var sendBufferSize = GetSendBufferSize();
 
         // Create socket manager which handles buffer pools and socket lifecycle
         _socketManager = new RingSocketManager(
             ring,
             maxSockets: MaxConnections,
             recvBufferSize: RecvBufferSize,
-            sendBufferSize: SendBufferSize,
+            sendBufferSize: sendBufferSize,
             initialBufferSlabs: 8,
             maxBufferSlabs: 32
         );
+    }
+
+    /// <summary>
+    /// Reads the configured send buffer size, coerced to a power of two of at least the platform
+    /// allocation granularity. IORingBuffer requires this and would otherwise throw at socket
+    /// creation rather than at startup.
+    /// </summary>
+    private static int GetSendBufferSize()
+    {
+        var configured = ServerConfiguration.GetOrUpdateSetting("network.sendBufferSize", DefaultSendBufferSize);
+        var size = Math.Max(MinSendBufferSize, configured);
+
+        if (!BitOperations.IsPow2(size))
+        {
+            size = (int)BitOperations.RoundUpToPowerOf2((uint)size);
+        }
+
+        if (size != configured)
+        {
+            logger.Warning(
+                "network.sendBufferSize {Configured} is not a power of two of at least {Minimum}; using {Adjusted}",
+                configured,
+                MinSendBufferSize,
+                size
+            );
+        }
+
+        return size;
     }
 
     /// <summary>
