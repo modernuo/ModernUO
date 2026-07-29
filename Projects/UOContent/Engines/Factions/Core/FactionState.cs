@@ -114,6 +114,13 @@ public class FactionState
                         }
                     }
 
+                    // The loop above only assigns RankIndex to members with kill points, and nothing
+                    // computes rank on read, so rank everyone now that the ordering has settled.
+                    foreach (var player in Members)
+                    {
+                        player.UpdateRank();
+                    }
+
                     FactionItems = [];
 
                     if (version >= 2)

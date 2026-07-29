@@ -55,6 +55,12 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
     private int _pos;
     private char[]? _arrayToReturnToPool;
 
+    /// <summary>
+    /// True while GetProperties is populating this list. Set by the owning entity so a nested
+    /// InvalidateProperties can be refused instead of Reset()ing a build already in flight.
+    /// </summary>
+    internal bool IsBuilding { get; set; }
+
     public ObjectPropertyList(IEntity? e)
     {
         Entity = e;
@@ -319,8 +325,23 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
     private static int GetDefaultLength(int literalLength, int formattedCount) =>
         Math.Max(256, literalLength + formattedCount * 11);
 
+    // Reset()/Dispose() return the scratch buffer to the pool. If either lands while a `$"..."`
+    // handler is still appending, re-rent rather than spanning a null array and throwing out of
+    // GetProperties. Mobile/Item hold the primary guard; this covers any other caller.
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void EnsureInterpolationBuffer()
+    {
+        if (_arrayToReturnToPool == null)
+        {
+            _arrayToReturnToPool = STArrayPool<char>.Shared.Rent(256);
+            _pos = 0;
+        }
+    }
+
     public void AppendLiteral(string value)
     {
+        EnsureInterpolationBuffer();
+
         if (value.Length == 1)
         {
             var chars = _arrayToReturnToPool.AsSpan();
@@ -354,6 +375,8 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
 
     public void AppendFormatted<T>(T value)
     {
+        EnsureInterpolationBuffer();
+
         string? s;
         if (value is IFormattable)
         {
@@ -384,6 +407,8 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
 
     public void AppendFormatted<T>(T value, string? format)
     {
+        EnsureInterpolationBuffer();
+
         // '#' marks an integer argument as a cliloc ("#<value>"). Integers only -- a float/double/decimal
         // '#' is the standard numeric format, not a cliloc marker.
         if (format == "#" && value is int or uint or long or ulong or short or ushort or byte or sbyte)
@@ -442,6 +467,8 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
 
     public void AppendFormatted(ReadOnlySpan<char> value)
     {
+        EnsureInterpolationBuffer();
+
         if (value.TryCopyTo(_arrayToReturnToPool.AsSpan(_pos..)))
         {
             _pos += value.Length;
@@ -454,6 +481,8 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
 
     public void AppendFormatted(ReadOnlySpan<char> value, int alignment = 0, string? format = null)
     {
+        EnsureInterpolationBuffer();
+
         var leftAlign = false;
         if (alignment < 0)
         {
@@ -488,6 +517,8 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
 
     public void AppendFormatted(string? value)
     {
+        EnsureInterpolationBuffer();
+
         if (value?.TryCopyTo(_arrayToReturnToPool.AsSpan(_pos..)) == true)
         {
             _pos += value.Length;

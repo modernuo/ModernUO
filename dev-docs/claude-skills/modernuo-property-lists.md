@@ -20,6 +20,12 @@ description: >
 3. **String interpolation** works with `IPropertyList` -- use `$"..."` syntax
 4. **`[InvalidateProperties]`** on `[SerializableField]` auto-refreshes tooltip on change
 5. **Call `InvalidateProperties()`** manually when non-serialized state changes tooltip
+6. **Never invalidate from inside `GetProperties`** -- every property a `GetProperties` override
+   reads must be a pure read. `InvalidateProperties()` rebuilds in place (`Reset()` + rebuild), so a
+   getter with that side effect tears down the list mid-build: it returns the pooled interpolation
+   buffer under an in-flight `$"..."` handler (`ArgumentNullException`, parameter `"array"`) and
+   rewinds the packet cursor. The engine refuses and logs an error; `DEBUG` throws. Defer instead:
+   `Timer.DelayCall(InvalidateProperties)`
 
 ## IPropertyList Interface
 
@@ -235,6 +241,7 @@ block.Add("Cannot be repaired".AsSpan());   // plain span, no string alloc
 - **Excessive rebuilds**: Don't call `InvalidateProperties()` in tight loops
 - **Assuming tooltip support**: Check `ObjectPropertyList.Enabled` if needed
 - **One giant `Add()` for multi-line text**: A property over ~512 chars crashes the legacy 2D client. Use `AddChunked`/`OplTextBlock` for variable-length free text
+- **Side-effecting property getters**: A getter reached from `GetProperties` that calls `InvalidateProperties()` (directly or via a helper like `Invalidate()`) re-enters the build and is refused — error logged, `DEBUG` throws. Lazy recomputation in a getter is fine; the *notification* is not. Invalidate where the value changes, or `Timer.DelayCall(InvalidateProperties)`
 
 ## Real Examples
 - Item properties: `Projects/Server/Items/Item.cs` (AddNameProperties, GetProperties)

@@ -26,6 +26,7 @@ using Server.Network;
 using Server.Prompts;
 using Server.Targeting;
 using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Server.Buffers;
@@ -2291,7 +2292,22 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     public int CompareTo(Mobile other) => other == null ? -1 : Serial.CompareTo(other.Serial);
 
     public virtual int HuedItemID => m_Female ? 0x2107 : 0x2106;
-    public ObjectPropertyList PropertyList => m_PropertyList ??= InitializePropertyList(new ObjectPropertyList(this));
+    public ObjectPropertyList PropertyList
+    {
+        get
+        {
+            if (m_PropertyList == null)
+            {
+                // Publish the list before building it so a nested InvalidateProperties can see the
+                // build in progress and defer instead of recursing into a second throwaway list.
+                var list = new ObjectPropertyList(this);
+                m_PropertyList = list;
+                InitializePropertyList(list);
+            }
+
+            return m_PropertyList;
+        }
+    }
 
     public virtual void GetProperties(IPropertyList list)
     {
@@ -7225,8 +7241,18 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
 
     private ObjectPropertyList InitializePropertyList(ObjectPropertyList list)
     {
-        GetProperties(list);
-        list.Terminate();
+        list.IsBuilding = true;
+
+        try
+        {
+            GetProperties(list);
+            list.Terminate();
+        }
+        finally
+        {
+            list.IsBuilding = false;
+        }
+
         return list;
     }
 
@@ -7241,6 +7267,26 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         if (!ObjectPropertyList.Enabled)
         {
             return;
+        }
+
+        // Always a bug in the property getter, and there is no correct recovery: refuse rather than
+        // hide it. RELEASE keeps a possibly stale tooltip, DEBUG throws.
+        // See dev-docs/property-lists.md "Never Invalidate From Inside GetProperties".
+        if (m_PropertyList?.IsBuilding == true)
+        {
+            logger.Error(
+                "{Entity} called InvalidateProperties() while its property list was being built. Remove the side effect from the property getter, or defer it with Timer.DelayCall.\n{StackTrace}",
+                this,
+                new StackTrace()
+            );
+
+#if DEBUG
+            throw new InvalidOperationException(
+                $"{this} invalidated its property list from inside GetProperties. Remove the side effect from the property getter."
+            );
+#else
+            return;
+#endif
         }
 
         if (m_Map != null && m_Map != Map.Internal && !World.Loading)
