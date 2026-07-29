@@ -242,7 +242,11 @@ public abstract class Faction : IComparable<Faction>, ISpanParsable<Faction>
 
     public virtual void AddMember(Mobile mob)
     {
-        Members.Insert(ZeroRankOffset, new PlayerState(mob, this, Members));
+        var state = new PlayerState(mob, this, Members);
+        Members.Insert(ZeroRankOffset, state);
+
+        // Ranked after the insert: the ctor ran while Owner was still short a member.
+        state.UpdateRank();
 
         mob.AddToBackpack(FactionItem.Imbue(new Robe(), this, false, Definition.HuePrimary));
         mob.SendLocalizedMessage(1010374); // You have been granted a robe which signifies your faction

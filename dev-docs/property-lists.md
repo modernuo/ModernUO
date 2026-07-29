@@ -301,6 +301,66 @@ public void UseCharge()
 }
 ```
 
+### Never Invalidate From Inside `GetProperties` (CRITICAL)
+
+`InvalidateProperties()` rebuilds the list **in place** — `Reset()`, then `GetProperties()` again on
+the same instance. Calling it from a property getter that the build itself reaches is therefore
+re-entrant, and `Reset()` does two destructive things to the build in flight:
+
+1. It returns the pooled interpolation scratch buffer. The compiler rents that buffer in the
+   interpolated-string handler's constructor and returns it in the closing `Add`, so **every hole is
+   evaluated while the buffer is live**. Pulling it out mid-append makes the next `Append*` span a
+   null array — `ArgumentNullException: Value cannot be null. (Parameter 'array')` thrown out of
+   `GetProperties`, from a line that looks unrelated to the getter that caused it.
+2. It rewinds the packet cursor, so properties already written are overwritten by the nested pass.
+
+This is always a defect in the property getter, so the engine refuses rather than trying to recover:
+a nested call logs an error with a stack trace, throws in `DEBUG`, and in `RELEASE` returns without
+touching the list — leaving a possibly stale tooltip, but never a crash, a corrupted packet, or a
+leaked pool buffer. Retrying the build would only hide the bug.
+
+```csharp
+// BAD -- a getter with a side effect. Reading it from GetProperties re-enters the build.
+public RankDefinition Rank
+{
+    get
+    {
+        if (_invalidateRank)
+        {
+            _rank = Recompute();
+            _invalidateRank = false;
+            Invalidate();       // -> InvalidateProperties() -> Reset() on the list being built
+        }
+
+        return _rank;
+    }
+}
+
+// GOOD -- getters stay side-effect free; invalidate where the value actually changes.
+public int RankIndex
+{
+    get => _rankIndex;
+    set
+    {
+        if (_rankIndex != value)
+        {
+            _rankIndex = value;
+            _invalidateRank = true;
+            Invalidate();
+        }
+    }
+}
+```
+
+Lazy recomputation inside a getter is fine — it is the *notification* that must not happen there. If
+something genuinely must invalidate in response to a read, defer it off the build:
+
+```csharp
+Timer.DelayCall(InvalidateProperties);
+```
+
+**Check when writing a `GetProperties` override**: every property it reads must be a pure read.
+
 ## ObjectPropertyList Internals
 
 Defined in `Projects/Server/PropertyList/ObjectPropertyList.cs`:

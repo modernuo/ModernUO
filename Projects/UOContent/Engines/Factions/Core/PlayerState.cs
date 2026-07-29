@@ -8,7 +8,6 @@ public class PlayerState : IComparable<PlayerState>
 {
     private Town m_Finance;
 
-    private bool m_InvalidateRank = true;
     private int m_KillPoints;
     private MerchantTitle m_MerchantTitle;
     private RankDefinition m_Rank;
@@ -21,6 +20,10 @@ public class PlayerState : IComparable<PlayerState>
         Mobile = mob;
         Faction = faction;
         Owner = owner;
+
+        // Owner does not contain this state yet, so the count is short by one; the caller ranks it
+        // after inserting.
+        SeedLowestRank();
 
         Attach();
         Invalidate();
@@ -53,6 +56,9 @@ public class PlayerState : IComparable<PlayerState>
                     break;
                 }
         }
+
+        // Members are still being read; FactionState ranks everyone once the ordering settles.
+        SeedLowestRank();
 
         Attach();
     }
@@ -116,6 +122,8 @@ public class PlayerState : IComparable<PlayerState>
                         Owner.Remove(this);
                         Owner.Insert(Faction.ZeroRankOffset, this);
 
+                        // Direct, not through RankIndex: ZeroRankOffset is mid-update. The
+                        // UpdateRank() at the end of this setter covers it.
                         m_RankIndex = Faction.ZeroRankOffset;
                         Faction.ZeroRankOffset++;
                     }
@@ -180,6 +188,7 @@ public class PlayerState : IComparable<PlayerState>
                 }
 
                 m_KillPoints = value;
+                UpdateRank();
                 Invalidate();
             }
         }
@@ -193,49 +202,72 @@ public class PlayerState : IComparable<PlayerState>
             if (m_RankIndex != value)
             {
                 m_RankIndex = value;
-                m_InvalidateRank = true;
+
+                UpdateRank();
+                Invalidate();
             }
         }
     }
 
-    public RankDefinition Rank
+    /// <summary>
+    /// Read from PlayerMobile.GetProperties, so it must stay a plain field read -- recomputing or
+    /// invalidating here re-enters the property list build. Maintained by <see cref="UpdateRank"/>.
+    /// </summary>
+    public RankDefinition Rank => m_Rank;
+
+    // Lowest rank (Required 0): correct for an unranked member, and never null, so Rank.Title
+    // cannot NRE before the first UpdateRank().
+    private void SeedLowestRank()
     {
-        get
+        var ranks = Faction.Definition.Ranks;
+
+        if (ranks.Length > 0)
         {
-            if (m_InvalidateRank)
+            m_Rank = ranks[^1];
+        }
+    }
+
+    /// <summary>
+    /// Recomputes the cached rank. Call whenever <see cref="RankIndex"/>, the faction's
+    /// ZeroRankOffset, or the member count changes -- and only once they have settled.
+    /// </summary>
+    public void UpdateRank()
+    {
+        var ranks = Faction.Definition.Ranks;
+
+        if (ranks.Length == 0)
+        {
+            return;
+        }
+
+        int percent;
+
+        if (Owner.Count == 1)
+        {
+            percent = 1000;
+        }
+        else if (m_RankIndex == -1 || Faction.ZeroRankOffset <= 0)
+        {
+            percent = 0;
+        }
+        else
+        {
+            percent = (Faction.ZeroRankOffset - m_RankIndex) * 1000 / Faction.ZeroRankOffset;
+        }
+
+        // Ranks run Required-descending ending at 0, so anything >= 0 matches below. A negative
+        // percent (RankIndex out of sync with ZeroRankOffset) would otherwise leave it null.
+        m_Rank = ranks[^1];
+
+        for (var i = 0; i < ranks.Length; i++)
+        {
+            var check = ranks[i];
+
+            if (percent >= check.Required)
             {
-                var ranks = Faction.Definition.Ranks;
-                int percent;
-
-                if (Owner.Count == 1)
-                {
-                    percent = 1000;
-                }
-                else if (m_RankIndex == -1)
-                {
-                    percent = 0;
-                }
-                else
-                {
-                    percent = (Faction.ZeroRankOffset - m_RankIndex) * 1000 / Faction.ZeroRankOffset;
-                }
-
-                for (var i = 0; i < ranks.Length; i++)
-                {
-                    var check = ranks[i];
-
-                    if (percent >= check.Required)
-                    {
-                        m_Rank = check;
-                        m_InvalidateRank = false;
-                        break;
-                    }
-                }
-
-                Invalidate();
+                m_Rank = check;
+                break;
             }
-
-            return m_Rank;
         }
     }
 

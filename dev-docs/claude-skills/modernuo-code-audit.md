@@ -191,8 +191,17 @@ mob.SendMessage($"You earned a {rank:L} trophy!");          // "gold" not "Gold"
 
 **See**: `dev-docs/string-handling.md` § "Interpolation Anti-Patterns" for the full reference with detailed before/after examples.
 
+### 19. No InvalidateProperties From Inside GetProperties
+**Check**: Any property read by a `GetProperties` override — including through helpers — must be a pure read. Flag getters that call `InvalidateProperties()` (or a wrapper like `Invalidate()`) as a side effect.
+**Bad**: a `Rank` getter that lazily recomputes and then calls `Invalidate()`; reading it from `GetProperties` re-enters the build.
+**Good**: invalidate in the setter that actually changes the value, or defer with `Timer.DelayCall(InvalidateProperties)`.
+**Why**: `InvalidateProperties()` rebuilds the list in place (`Reset()` + rebuild). `Reset()` returns the pooled interpolation buffer — which the compiler rents for the whole `$"..."` expression, so every hole is evaluated while it is live — and rewinds the packet cursor. Re-entering mid-build throws `ArgumentNullException` (parameter `"array"`) out of `GetProperties` from a line unrelated to the offending getter, or silently corrupts the tooltip. The engine refuses and logs an error, and `DEBUG` throws, so this shows up as a crash in development.
+**Note**: Lazy recomputation inside a getter is fine. It is the notification that must not happen there.
+
+**See**: `dev-docs/property-lists.md` § "Never Invalidate From Inside `GetProperties`".
+
 ## Severity Levels
-- **ERROR**: Rules 3, 9, 10, 13 (will cause bugs, build failures, or client-side leaks)
+- **ERROR**: Rules 3, 9, 10, 13, 19 (will cause bugs, build failures, or client-side leaks)
 - **WARNING**: Rules 1 (Tier 3 LINQ), 2, 4, 5, 6, 7, 8, 12, 14, 15, 17 (performance/convention issues)
 - **INFO**: Rules 1 (Tier 2 LINQ on warm paths — note it but don't flag as violation), 16 (switch patterns — suggest but don't flag)
 - **ASK**: Rule 11 (need user input)
