@@ -61,7 +61,6 @@ public sealed class ObjectPropertyList : IPropertyList, IDisposable
     /// </summary>
     internal bool IsBuilding { get; set; }
 
-
     public ObjectPropertyList(IEntity? e)
     {
         Entity = e;
