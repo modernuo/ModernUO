@@ -194,10 +194,20 @@ public class PlayerState : IComparable<PlayerState>
             {
                 m_RankIndex = value;
                 m_InvalidateRank = true;
+
+                // Refresh the tooltip here, where the rank actually changes, rather than from the
+                // Rank getter -- which is read from inside GetProperties. See the note on Rank.
+                Invalidate();
             }
         }
     }
 
+    // NOTE: this getter must stay side-effect free. It is read from PlayerMobile.GetProperties
+    // while the object property list is being built; the Invalidate() that used to live here
+    // re-entered Mobile.InvalidateProperties, which Reset()s the very list being written and
+    // returns its pooled interpolation buffer under the in-flight `$"..."` handler, throwing
+    // ArgumentNullException("array") out of GetProperties. Invalidation now happens where the rank
+    // is actually dirtied (the RankIndex and KillPoints setters).
     public RankDefinition Rank
     {
         get
@@ -211,7 +221,7 @@ public class PlayerState : IComparable<PlayerState>
                 {
                     percent = 1000;
                 }
-                else if (m_RankIndex == -1)
+                else if (m_RankIndex == -1 || Faction.ZeroRankOffset <= 0)
                 {
                     percent = 0;
                 }
@@ -220,6 +230,12 @@ public class PlayerState : IComparable<PlayerState>
                     percent = (Faction.ZeroRankOffset - m_RankIndex) * 1000 / Faction.ZeroRankOffset;
                 }
 
+                // Ranks are ordered by Required descending and the last entry requires 0, so this
+                // matches for any percent >= 0. A negative percent (RankIndex out of sync with
+                // ZeroRankOffset) would otherwise leave the rank null AND permanently dirty, which
+                // NREs on Rank.Title and re-invalidates on every tooltip build.
+                m_Rank = ranks.Length > 0 ? ranks[^1] : null;
+
                 for (var i = 0; i < ranks.Length; i++)
                 {
                     var check = ranks[i];
@@ -227,12 +243,11 @@ public class PlayerState : IComparable<PlayerState>
                     if (percent >= check.Required)
                     {
                         m_Rank = check;
-                        m_InvalidateRank = false;
                         break;
                     }
                 }
 
-                Invalidate();
+                m_InvalidateRank = false;
             }
 
             return m_Rank;

@@ -2427,11 +2427,34 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
         }
     }
 
+    // See Mobile._buildingPropertyList: a property getter reached from GetProperties /
+    // AppendChildProperties can call InvalidateProperties, which Reset()s the list being built and
+    // returns its interpolation scratch buffer under an in-flight `$"..."` handler.
+    private bool _buildingPropertyList;
+    private bool _propertyListInvalidatedDuringBuild;
+
     private ObjectPropertyList InitializePropertyList(ObjectPropertyList list)
     {
-        GetProperties(list);
-        AppendChildProperties(list);
-        list.Terminate();
+        _buildingPropertyList = true;
+        _propertyListInvalidatedDuringBuild = false;
+
+        try
+        {
+            GetProperties(list);
+            AppendChildProperties(list);
+            list.Terminate();
+        }
+        finally
+        {
+            _buildingPropertyList = false;
+        }
+
+        if (_propertyListInvalidatedDuringBuild)
+        {
+            _propertyListInvalidatedDuringBuild = false;
+            Delta(ItemDelta.Properties);
+        }
+
         return list;
     }
 
@@ -2445,6 +2468,13 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
     {
         if (!ObjectPropertyList.Enabled)
         {
+            return;
+        }
+
+        // Re-entered from a side-effecting getter inside GetProperties. See _buildingPropertyList.
+        if (_buildingPropertyList)
+        {
+            _propertyListInvalidatedDuringBuild = true;
             return;
         }
 

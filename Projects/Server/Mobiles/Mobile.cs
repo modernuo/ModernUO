@@ -7223,10 +7223,37 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         return delta != 0 ? body : 0;
     }
 
+    // A property getter reached from GetProperties can itself call InvalidateProperties -- Factions
+    // PlayerState.Rank does exactly that. InvalidateProperties rebuilds in place via
+    // list.Reset() + InitializePropertyList(list), and Reset() returns the interpolation scratch
+    // buffer to the pool. Re-entering it mid-build therefore pulls that buffer out from under an
+    // in-flight `$"..."` handler and the next Append* spans a null array (ArgumentNullException,
+    // parameter "array"), aborting the whole tooltip build. The list being built already observes
+    // the new state, so a nested invalidate only has to push the update once the build finishes.
+    private bool _buildingPropertyList;
+    private bool _propertyListInvalidatedDuringBuild;
+
     private ObjectPropertyList InitializePropertyList(ObjectPropertyList list)
     {
-        GetProperties(list);
-        list.Terminate();
+        _buildingPropertyList = true;
+        _propertyListInvalidatedDuringBuild = false;
+
+        try
+        {
+            GetProperties(list);
+            list.Terminate();
+        }
+        finally
+        {
+            _buildingPropertyList = false;
+        }
+
+        if (_propertyListInvalidatedDuringBuild)
+        {
+            _propertyListInvalidatedDuringBuild = false;
+            Delta(MobileDelta.Properties);
+        }
+
         return list;
     }
 
@@ -7240,6 +7267,13 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
     {
         if (!ObjectPropertyList.Enabled)
         {
+            return;
+        }
+
+        // Re-entered from a side-effecting getter inside GetProperties. See _buildingPropertyList.
+        if (_buildingPropertyList)
+        {
+            _propertyListInvalidatedDuringBuild = true;
             return;
         }
 
