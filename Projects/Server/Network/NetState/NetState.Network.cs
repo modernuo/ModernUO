@@ -274,7 +274,7 @@ public partial class NetState
                     {
                         // Enqueue-only contribution; NOT added to the local firewall set (the limiter already
                         // gates it here and the OS bouncer drops it at the kernel).
-                        Bans.BanChannel.Report(remoteIP, Bans.BanConfiguration.Settings.AutoBanDuration, "rate-limit");
+                        Bans.BanChannel.Report(remoteIP, Bans.BanConfiguration.Settings.AutoBanDuration, Bans.BanReasons.RateLimit);
                     }
                 }
                 else if (ConnectionFilters.ShouldDeny(remoteIP, out var deniedBy))
@@ -362,6 +362,18 @@ public partial class NetState
             // Socket must have finished the entire authentication process or be forcibly disconnected
             if (!ns.SentFirstPacket || !ns.Seeded)
             {
+                // Only the totally silent ones are evidence. A connection that sent SOME data and ran out of
+                // time is far more likely a slow link, and banning those makes the player retry, trip the
+                // rate limiter, and compound it into an hours-long ban.
+                if (!ns._receivedData && Bans.BanConfiguration.Settings.ReportBadConnects)
+                {
+                    Bans.BanChannel.Report(
+                        ns.Address,
+                        Bans.BanConfiguration.Settings.BadConnectDuration,
+                        Bans.BanReasons.SilentConnect
+                    );
+                }
+
                 ns.Disconnect(null);
 
                 // Force immediate cleanup - these are unauthenticated connections
@@ -536,6 +548,11 @@ public partial class NetState
         if (!ns._running)
         {
             return;
+        }
+
+        if (bytesReceived > 0)
+        {
+            ns._receivedData = true;
         }
 
         // Data is already committed to buffer by RingSocketManager

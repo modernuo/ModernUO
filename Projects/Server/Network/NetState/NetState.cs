@@ -60,6 +60,10 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
     internal ProtocolState _protocolState = ProtocolState.AwaitingSeed;
     private bool _packetLogging;
 
+    // Whether ANY inbound bytes have arrived: what separates a slow client from a socket held open on
+    // purpose. See BanSettings.ReportBadConnects.
+    internal bool _receivedData;
+
     // Managed socket with buffers (handles lifecycle automatically)
     internal RingSocket _socket;
 
@@ -621,6 +625,37 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
                     {
                         case ProtocolState.AwaitingSeed:
                             {
+                                // Traffic that is positively another protocol. Unlike "does not look like a
+                                // good client", this cannot misfire on a misconfigured one.
+                                var foreign = ForeignProtocol.Identify(buffer, out var foreignKind);
+
+                                if (foreign == ForeignProtocolMatch.Incomplete)
+                                {
+                                    _parserState = ParserState.AwaitingPartialPacket;
+                                    break;
+                                }
+
+                                if (foreign == ForeignProtocolMatch.Confirmed)
+                                {
+                                    logger.Debug(
+                                        "{Address} spoke {Protocol} on the game port; disconnecting",
+                                        Address,
+                                        foreignKind
+                                    );
+
+                                    if (Bans.BanConfiguration.Settings.ReportBadConnects)
+                                    {
+                                        Bans.BanChannel.Report(
+                                            Address,
+                                            Bans.BanConfiguration.Settings.BadConnectDuration,
+                                            Bans.BanReasons.ForeignProtocol
+                                        );
+                                    }
+
+                                    Disconnect(string.Empty);
+                                    return;
+                                }
+
                                 if (packetId == 0xEF)
                                 {
                                     _parserState = ParserState.ProcessingPacket;
@@ -636,6 +671,18 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
 
                                     if (newSeed == 0)
                                     {
+                                        // No real client sends a zero seed, so this is deliberate garbage
+                                        // rather than a damaged connection — unlike the short-read branch
+                                        // below, which a fragmented first segment can reach honestly.
+                                        if (Bans.BanConfiguration.Settings.ReportBadConnects)
+                                        {
+                                            Bans.BanChannel.Report(
+                                                Address,
+                                                Bans.BanConfiguration.Settings.BadConnectDuration,
+                                                Bans.BanReasons.InvalidSeed
+                                            );
+                                        }
+
                                         Disconnect(string.Empty);
                                         return;
                                     }
@@ -647,8 +694,16 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
                                     _parserState = ParserState.AwaitingNextPacket;
                                     _protocolState = ProtocolState.GameServer_AwaitingGameServerLogin;
                                 }
-                                else // Don't allow partial packets on initial connection, just disconnect them.
+                                else
                                 {
+                                    // Fewer than four bytes for a raw seed: disconnect rather than wait. This
+                                    // only affects pre-0xEF clients (0xEF goes through HandlePacket, which
+                                    // already waits for its 21 bytes), and waiting here would be paid for on
+                                    // the path that has to survive a flood -- a garbage client sending one or
+                                    // two bytes, or a slow loris dribbling a byte every few seconds, would
+                                    // hold a connection slot for the full ConnectingSocketIdleLimit instead of
+                                    // being dropped immediately. With a fixed MaxConnections table that trades
+                                    // capacity for a rare fragmentation case a reconnect already fixes.
                                     Disconnect(string.Empty);
                                 }
                                 break;

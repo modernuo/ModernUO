@@ -324,6 +324,7 @@ public static class AccountHandler
             e.Accepted = true;
 
             acct.LogAccess(e.State);
+            LoginAllowlist.RecordLogin(e.State?.Address);
         }
     }
 
@@ -355,6 +356,7 @@ public static class AccountHandler
         else
         {
             acct.LogAccess(e.State);
+            LoginAllowlist.RecordLogin(e.State?.Address);
 
             logger.Information("Login: {NetState} Account '{Username}' at character list", e.State, un);
             e.State.Account = acct;

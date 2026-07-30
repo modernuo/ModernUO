@@ -29,15 +29,23 @@ public static class BanConfiguration
 {
     private const string _path = "Configuration/bans.json";
 
-    public static BanSettings Settings { get; private set; }
+    private static bool _loaded;
+
+    /// <summary>
+    /// Never null: the accept and reap paths read this per connection, including before <see cref="Configure"/>
+    /// has run (a harness driving <c>NetState.Slice</c> directly), so it starts at the record's defaults.
+    /// </summary>
+    public static BanSettings Settings { get; private set; } = new();
 
     public static void Configure()
     {
-        // Idempotent: a second call must not re-deserialize or overwrite an operator's edits.
-        if (Settings != null)
+        // Idempotent; flagged rather than null-checked because Settings is non-null from the start.
+        if (_loaded)
         {
             return;
         }
+
+        _loaded = true;
 
         var path = Path.Join(Core.BaseDirectory, _path);
 
@@ -73,4 +81,18 @@ public record BanSettings
     /// <summary>Duration reported for an auto-detected (rate-limit) ban.</summary>
     [JsonPropertyName("autoBanDuration")]
     public TimeSpan AutoBanDuration { get; set; } = TimeSpan.FromHours(4);
+
+    /// <summary>
+    /// Whether behavioural detections are contributed to reporters. Those connections are disconnected either
+    /// way; this only controls escalation.
+    /// </summary>
+    /// <remarks>
+    /// Keyed on bytes-received, never elapsed time: a connection that sent something and ran out of time is
+    /// far more likely a slow link than an attack. See <c>dev-docs/ip-bans-and-allowlists.md</c>.
+    /// </remarks>
+    [JsonPropertyName("reportBadConnects")]
+    public bool ReportBadConnects { get; set; } = true;
+
+    [JsonPropertyName("badConnectDuration")]
+    public TimeSpan BadConnectDuration { get; set; } = TimeSpan.FromHours(4);
 }

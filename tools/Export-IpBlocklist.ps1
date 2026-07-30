@@ -34,7 +34,31 @@
     player -- and those are barely present here anyway (bitwire is ~5% of VPN-tunnel lists). If you ever want
     to protect VPN/Tor players, pass -ExcludeAnonymizers to subtract Tor/open-proxy/VPN IPs from the output.
 
-    OUTPUT FORMAT (must stay in sync with UOContent/Misc/Blocklist/BlocklistFile.cs):
+    ALLOWLIST
+    Aggregators inevitably list shared consumer address space. A CGNAT public IP fronts many subscribers, so
+    one abusive customer gets the address listed and every other subscriber behind it is blocked with them.
+    Entries in the allowlist file (-AllowlistFile) are SUBTRACTED from the merged set before it is written, so
+    the exemption costs nothing on the shard's accept path -- which is deliberately allowlist-free, because a
+    whitelist there could only ever turn a deny into an allow at the price of a lookup on every accept, the
+    attacker's included. Allowlisting belongs here (at generation) and at the enforcement layer
+    (`cscli allowlists`), never at the gate.
+
+    Subtraction is range-correct: an allowlisted address that falls inside a blocked CIDR splits that CIDR
+    around the hole instead of being silently ignored, so an exemption always takes effect no matter which
+    shape the feed happened to publish.
+
+    Allowlists are split by owner rather than kept in one file: `ip-allowlist.txt` holds the operator's own
+    exemptions and is never rewritten, while network-wide carve-outs live in their own generated files beside
+    it. Both are created on first run and merged into one allow set. Keeping them apart means a carve-out can
+    be regenerated, diffed or copied to another shard without disturbing hand-written entries.
+
+    The carve-out shipped by default is Starlink (`ip-allowlist-starlink.txt`, AS14593), the worst offender
+    for this: it is CGNAT throughout and its leases rotate, so a listing there says almost nothing about the
+    player currently holding the address. It costs ~0.1% of the list. Blank the file to restore
+    reputation-blocking on Starlink -- abusive hosts in that space are still caught on BEHAVIOR by the rate
+    limiter and promoted to CrowdSec, which is the gate that actually observes them.
+
+    OUTPUT FORMAT (must stay in sync with UOContent/Network/Blocklist/BlocklistFile.cs):
         Line 1 is a header comment carrying the version markers, e.g.
             # modernuo-blocklist generated=2026-07-25T18:03:11Z count=3914022 ipv4=3901188 cidr=12834
         The shard polls `reloadInterval` and reloads when the file mtime AND `generated=` change,
@@ -84,6 +108,40 @@
 .PARAMETER Feeds
     Which feeds to include (by Name). Default: all of them.
 
+.PARAMETER AllowlistFile
+    One or more lists of addresses that must NEVER be blocked; every entry is subtracted from the merged set
+    before the output is written. Same format as the blocklist: one bare IPv4 or CIDR per line, `#`/`;`
+    comments ignored.
+
+    Defaults to the operator's own list plus one file per network carve-out, all beside the output, created
+    if missing and merged into one allow set:
+        ip-allowlist.txt            operator exemptions -- created once, never rewritten
+        ip-allowlist-<name>.txt     one per -Carveout -- generated data, safe to regenerate or copy
+    Splitting them means a network-wide carve-out can be refreshed or shared between shards without
+    touching anyone's hand-written entries. Blank a file (keep the file) to disable its contents.
+
+    Passing this parameter replaces the defaults entirely; an explicitly-named file that does not exist is a
+    warning rather than a silent template write, so a typo cannot look like it worked. Pass `''` to disable
+    subtraction altogether.
+
+    Editing any allowlist also bypasses -MinInterval on the next run: an exemption you just added would
+    otherwise sit unapplied for up to the cooldown, which reads exactly like the allowlist not working.
+
+.PARAMETER Carveout
+    Which network carve-outs to maintain and subtract, by Name. Default: all rows in the `$Carveouts` table,
+    which currently ships `starlink` only. Pass `''` to keep the operator's own allowlist while subtracting
+    no carve-outs.
+
+    Covering another CGNAT provider is a table row near the top of this script: a Name, its ASN, a one-line
+    reason, and either a pasted Seed or nothing at all if you intend to run -RefreshCarveouts.
+
+.PARAMETER RefreshCarveouts
+    Re-fetch each selected carve-out's prefixes from its ASN's current routing announcements, collapse them,
+    and rewrite its file. Implies -Force. A carve-out whose fetch fails keeps the data it already had.
+
+    Announcements rather than ownership records on purpose: registry data disagrees with what is actually
+    routed, and registry queries silently cap their result sets.
+
 .PARAMETER ExcludeAnonymizers
     Also download Tor-exit / open-proxy / VPN-tunnel lists and SUBTRACT those IPs from the output. Off by
     default -- for a game server, Tor/open-proxy relays are attack infrastructure you want to block. Turn
@@ -107,6 +165,24 @@
     .\Export-IpBlocklist.ps1 -DistributionPath 'C:\Shard\Distribution' -Force
 
 .EXAMPLE
+    # Unblock a player caught by a shared-IP listing: add the address, then regenerate. Editing the
+    # allowlist bypasses the cooldown, so no -Force is needed.
+    Add-Content 'C:\Shard\Distribution\Configuration\ip-allowlist.txt' '203.0.113.42'
+    .\Export-IpBlocklist.ps1 -DistributionPath 'C:\Shard\Distribution'
+
+.EXAMPLE
+    # Check what an allowlist would cost before committing to it.
+    .\Export-IpBlocklist.ps1 -AllowlistFile 'D:\shared\allow.txt' -DryRun
+
+.EXAMPLE
+    # Bring the carve-out data up to date with what the network currently announces.
+    .\Export-IpBlocklist.ps1 -RefreshCarveouts
+
+.EXAMPLE
+    # Generate without any network carve-out, keeping your own exemptions.
+    .\Export-IpBlocklist.ps1 -Carveout ''
+
+.EXAMPLE
     # Linux/macOS, e.g. from cron:
     pwsh -File /opt/modernuo/Export-IpBlocklist.ps1 -DistributionPath /opt/modernuo/Distribution
 
@@ -120,6 +196,9 @@ param(
     [string]   $DistributionPath,
     [string]   $OutFile,
     [string]   $MinInterval = '2h',
+    [string[]] $AllowlistFile,
+    [string[]] $Carveout,
+    [switch]   $RefreshCarveouts,
     [string[]] $Feeds,
     [switch]   $ExcludeAnonymizers,
     [switch]   $Force,
@@ -152,6 +231,183 @@ if (-not $OutFile) {
     }
     $OutFile = Join-Path $DistributionPath @DefaultPathSegments
 }
+
+# ---------------------------------------------------------------------------------------------------------
+# Network carve-outs. Each entry becomes `ip-allowlist-<Name>.txt` beside the output and is subtracted from
+# the generated list. To cover another CGNAT provider, add a row: give it a Name, its ASN, and either paste a
+# Seed or leave Seed empty and run -RefreshCarveouts to fetch the prefixes from routing data.
+#
+# Seed is the offline copy, so a fresh checkout works with no network access. It is split on whitespace, so
+# the wrapping is only for readability.
+# ---------------------------------------------------------------------------------------------------------
+$Carveouts = @(
+    [pscustomobject]@{
+        Name  = 'starlink'
+        Asn   = 14593
+        Label = 'Starlink (SpaceX)'
+        Why   = 'CGNAT throughout, with rotating leases, so one address fronts many subscribers at once.'
+        Seed  = @'
+    9.161.0.0/21 9.161.8.0/23 9.161.10.0/24 9.161.128.0/20 9.161.144.0/22 9.161.150.0/23 9.161.152.0/23 9.170.0.0/19
+    9.170.32.0/20 9.170.48.0/22 9.170.54.0/23 9.170.56.0/21 9.170.64.0/21 9.170.72.0/22 9.246.0.0/19 9.246.32.0/20
+    9.246.48.0/23 9.246.52.0/22 9.246.56.0/21 9.246.64.0/18 9.246.128.0/20 9.246.144.0/22 14.1.64.0/19
+    64.226.208.0/24 65.181.0.0/20 65.181.16.0/21 65.181.24.0/22 65.181.30.0/23 66.9.160.0/20 66.9.176.0/21
+    66.9.184.0/22 74.244.0.0/16 74.245.0.0/20 74.245.16.0/23 74.245.19.0/24 74.245.20.0/24 74.245.29.0/24
+    74.245.30.0/23 74.245.32.0/24 74.245.35.0/24 74.245.36.0/24 74.245.39.0/24 74.245.40.0/22 74.245.44.0/24
+    74.245.138.0/23 74.245.140.0/23 74.245.142.0/24 74.245.156.0/22 74.245.160.0/22 74.245.164.0/24 74.245.192.0/21
+    74.245.200.0/23 74.245.202.0/24 74.245.206.0/24 74.245.208.0/22 74.245.212.0/24 74.245.217.0/24 74.245.224.0/21
+    74.245.232.0/22 74.245.236.0/23 74.245.239.0/24 74.245.240.0/21 74.245.248.0/23 74.245.251.0/24 74.245.252.0/22
+    87.251.24.0/21 91.102.180.0/22 98.97.0.0/17 98.97.128.0/19 98.97.160.0/20 98.97.176.0/22 98.97.180.0/23
+    98.97.182.0/24 98.97.184.0/24 98.97.186.0/23 98.97.188.0/23 98.97.190.0/24 103.235.92.0/22 116.91.208.0/20
+    129.222.0.0/18 129.222.64.0/20 129.222.80.0/21 129.222.88.0/22 129.222.94.0/23 129.222.96.0/19 129.222.128.0/18
+    129.222.192.0/20 129.222.208.0/21 129.222.224.0/19 129.224.192.0/20 129.224.208.0/21 129.224.216.0/22
+    129.224.222.0/24 135.129.2.0/23 135.129.4.0/22 135.129.8.0/21 135.129.16.0/23 135.129.19.0/24 135.129.20.0/22
+    135.129.24.0/21 135.129.32.0/23 135.129.34.0/24 135.129.36.0/22 135.129.40.0/21 135.129.48.0/21 135.129.57.0/24
+    135.129.58.0/23 135.129.60.0/22 135.129.112.0/23 135.129.115.0/24 135.129.116.0/24 135.129.118.0/23
+    135.129.120.0/21 135.129.240.0/24 135.129.244.0/24 135.129.248.0/22 135.129.252.0/23 135.129.254.0/24
+    137.83.112.0/22 137.83.116.0/23 137.83.118.0/24 137.83.121.0/24 137.83.122.0/23 137.83.124.0/22 138.84.32.0/19
+    141.109.64.0/20 141.109.80.0/24 141.109.82.0/23 141.109.84.0/22 141.109.88.0/23 141.109.92.0/24 143.105.0.0/18
+    143.105.64.0/19 143.105.96.0/20 143.105.112.0/21 143.105.121.0/24 143.105.122.0/23 143.105.124.0/22
+    143.105.128.0/17 143.131.0.0/21 143.131.9.0/24 143.131.10.0/23 143.131.12.0/22 144.126.64.0/20 144.126.80.0/21
+    144.126.96.0/19 145.224.64.0/18 148.222.128.0/21 148.222.192.0/19 148.227.64.0/18 149.19.108.0/23
+    149.19.160.0/20 150.228.0.0/16 153.66.0.0/15 162.43.192.0/22 164.152.165.0/24 168.140.240.0/20 169.150.16.0/23
+    169.150.18.0/24 169.150.22.0/23 169.150.26.0/24 169.150.28.0/22 169.155.224.0/19 170.203.64.0/19
+    170.203.192.0/19 173.250.196.0/23 173.250.199.0/24 173.250.200.0/24 173.250.203.0/24 173.250.204.0/22
+    173.250.208.0/20 176.116.124.0/23 179.60.168.0/21 179.64.0.0/17 179.64.132.0/24 179.64.140.0/24 179.64.147.0/24
+    179.64.153.0/24 179.64.154.0/24 179.64.156.0/24 179.64.160.0/23 179.64.172.0/24 179.64.178.0/24 179.64.180.0/24
+    179.64.186.0/24 179.65.0.0/19 179.65.32.0/20 179.65.126.0/23 179.65.128.0/19 179.65.160.0/21 179.65.176.0/20
+    179.238.0.0/18 179.238.64.0/19 188.92.248.0/21 188.95.144.0/23 198.54.103.0/24 200.189.16.0/20 205.174.156.0/23
+    206.83.96.0/21 206.83.104.0/24 206.83.106.0/23 206.83.108.0/22 206.83.112.0/20 206.214.224.0/20 206.224.64.0/20
+    206.224.80.0/21 206.224.88.0/23 209.198.128.0/22 209.198.132.0/23 209.198.135.0/24 209.198.136.0/21
+    209.198.144.0/20 212.105.128.0/21 212.105.136.0/22 212.105.140.0/23 212.105.144.0/20 216.128.0.0/19
+    216.147.120.0/21 216.180.80.0/20 216.234.192.0/19 217.65.136.0/21 217.142.16.0/20
+'@
+    }
+)
+
+# ---------------------------------------------------------------------------------------------------------
+# Resolve the allowlists. They sit beside the output by default so relocating the blocklist keeps the set
+# together, and they are split by owner: `ip-allowlist.txt` is the operator's -- hand-edited, never rewritten
+# -- while each carve-out file is generated data that can be regenerated, diffed or copied between shards
+# without touching anyone's local exemptions.
+#
+# An EXPLICIT -AllowlistFile replaces the whole set and is never templated: if the operator names a file, a
+# missing one is a typo worth hearing about, not something to paper over with defaults they did not ask for.
+# ---------------------------------------------------------------------------------------------------------
+if ($Carveout) {
+    $Carveouts = @($Carveouts | Where-Object { $Carveout -contains $_.Name })
+    if (-not $Carveouts) { throw "No carve-outs matched -Carveout. Known: $(($Carveouts | ForEach-Object Name) -join ', ')" }
+}
+elseif ($PSBoundParameters.ContainsKey('Carveout')) {
+    $Carveouts = @()   # -Carveout '' disables them without disabling the operator's own list
+}
+
+$allowExplicit = $PSBoundParameters.ContainsKey('AllowlistFile')
+$AllowPaths = @()
+
+if ($allowExplicit) {
+    $AllowPaths = @($AllowlistFile | Where-Object { -not [string]::IsNullOrWhiteSpace($_) })
+}
+else {
+    $cfgDir = Split-Path -Parent $OutFile
+    $AllowPaths = @(Join-Path $cfgDir 'ip-allowlist.txt') +
+                  @($Carveouts | ForEach-Object { Join-Path $cfgDir ("ip-allowlist-{0}.txt" -f $_.Name) })
+}
+
+function Write-AllowlistFile {
+    param([string]$Path, [string[]]$Lines)
+
+    $dir = Split-Path -Parent $Path
+    if ($dir -and -not (Test-Path -LiteralPath $dir -PathType Container)) {
+        New-Item -ItemType Directory -Path $dir -Force | Out-Null
+    }
+
+    # Same atomic write the blocklist gets: a half-written allowlist would silently under-subtract.
+    $tmp = $Path + '.tmp'
+    [IO.File]::WriteAllLines($tmp, $Lines, [System.Text.UTF8Encoding]::new($false))
+    [IO.File]::Move($tmp, $Path, $true)
+}
+
+$OperatorTemplate = @'
+# ModernUO blocklist allowlist -- every entry here is SUBTRACTED from the generated blocklist.
+#
+# This file is yours. Export-IpBlocklist.ps1 creates it once and never rewrites it, so anything you add
+# survives every regeneration.
+#
+# One entry per line: a bare IPv4 address (1.2.3.4) or a CIDR (1.2.3.0/24). Lines starting with '#' or ';'
+# are comments. Order does not matter. Re-run Export-IpBlocklist.ps1 to apply changes -- editing this file
+# bypasses the -MinInterval cooldown, so no -Force is needed.
+#
+# Removal is range-correct: an address listed here is removed even when a feed published it as part of a
+# larger CIDR -- that CIDR is split around the hole rather than dropped wholesale or silently ignored.
+#
+# Network-wide carve-outs live in their own files beside this one, so they can be regenerated or copied
+# between shards without touching anything you put here.
+#
+# Put player/staff exemptions below, one per line, e.g.:
+#   203.0.113.42        # shard owner, listed via a shared upstream address
+'@
+
+# Header for a carve-out file, built from its table row so adding a provider needs no new prose.
+function Get-CarveoutHeader {
+    param([pscustomobject]$Row)
+
+    @(
+        ("# {0} (AS{1}) carve-out -- subtracted from the generated blocklist." -f $Row.Label, $Row.Asn)
+        "#"
+        ("# {0}" -f $Row.Why)
+        "# Reputation feeds list those addresses constantly, so a hit there says little about the player"
+        "# currently behind it. Abusive hosts inside it are still caught on BEHAVIOR by the rate limiter."
+        "#"
+        "# GENERATED DATA -- safe to regenerate, diff, or copy to another shard. Blank the file (keep the file)"
+        "# to reputation-block this network again; deleting it just makes the next run write it back."
+        "#"
+        ("# Refresh with: .\Export-IpBlocklist.ps1 -RefreshCarveouts -Carveout {0}" -f $Row.Name)
+    )
+}
+
+# Fetches a carve-out's currently ANNOUNCED prefixes and collapses them. Routing data, not a registry:
+# ownership records disagree with what is actually announced, and registry queries cap their result sets.
+function Get-CarveoutPrefixes {
+    param([pscustomobject]$Row)
+
+    $url = "https://stat.ripe.net/data/announced-prefixes/data.json?resource=AS$($Row.Asn)"
+    $json = Get-Url -Url $url -Label ("AS{0} prefixes" -f $Row.Asn) | ConvertFrom-Json
+
+    $v4 = @($json.data.prefixes.prefix | Where-Object { $_ -and $_ -notmatch ':' })
+    if (-not $v4) { throw "AS$($Row.Asn) announced no IPv4 prefixes -- refusing to overwrite the carve-out." }
+
+    [BlocklistExporter]::CollapsePrefixes(($v4 -join "`n"))
+}
+
+# Seed any default file that is missing, from the offline copy so a fresh checkout needs no network.
+# -RefreshCarveouts rewrites them from routing data later, once Add-Type and Get-Url exist.
+# Explicit paths are never created -- see the resolution note above.
+$CarveoutByFile = @{}
+foreach ($c in $Carveouts) { $CarveoutByFile[("ip-allowlist-{0}.txt" -f $c.Name)] = $c }
+
+$AllowPaths = @($AllowPaths | ForEach-Object {
+    $p = $_
+    if (Test-Path -LiteralPath $p -PathType Leaf) { return $p }
+
+    if ($allowExplicit) {
+        Write-Warning ("Allowlist '{0}' does not exist -- nothing will be subtracted from it. Check the path." -f $p)
+        return
+    }
+
+    $row = $CarveoutByFile[(Split-Path -Leaf $p)]
+    if ($row) {
+        $prefixes = @($row.Seed -split '\s+' | Where-Object { $_ })
+        Write-AllowlistFile -Path $p -Lines (@(Get-CarveoutHeader -Row $row) + $prefixes)
+        Write-Host ("Created {0} carve-out at {1} ({2} prefixes; blank the file to disable)." -f `
+            $row.Label, $p, $prefixes.Count)
+    }
+    else {
+        Write-AllowlistFile -Path $p -Lines @($OperatorTemplate)
+        Write-Host ("Created allowlist at {0} (add player/staff exemptions here)." -f $p)
+    }
+
+    return $p
+})
 
 # ---------------------------------------------------------------------------------------------------------
 # Cooldown gate. Runs BEFORE anything is downloaded: the whole point is that a misconfigured scheduler or a
@@ -215,17 +471,40 @@ function Get-BlocklistAge {
 }
 
 $minAge = ConvertTo-Duration $MinInterval
-if (-not $Force -and $minAge -gt [TimeSpan]::Zero) {
+# -RefreshCarveouts implies -Force: the operator explicitly asked for new carve-out data, so waiting out the
+# cooldown and leaving the old data in place would be the wrong answer.
+if (-not $Force -and -not $RefreshCarveouts -and $minAge -gt [TimeSpan]::Zero) {
     $existing = Get-BlocklistAge -Path $OutFile
     if ($existing) {
         # A negative age means the stamp is in the future (clock skew, or a file from another host). Treat it
         # as fresh: refusing to run is the recoverable failure, hammering the feeds on every tick is not.
         if ($existing.Age -lt $minAge) {
-            $agoText = if ($existing.Age -lt [TimeSpan]::Zero) { 'in the future -- check the clock' } else { ("{0:N1}h ago" -f $existing.Age.TotalHours) }
-            Write-Host ("Blocklist at {0} was generated {1} ({2}={3}); newer than -MinInterval {4}." -f `
-                $OutFile, $agoText, $existing.Source, $existing.Stamp, $MinInterval)
-            Write-Host "Nothing downloaded. Pass -Force to regenerate now, or lower -MinInterval."
-            return
+            # An allowlist edited since the list was built is the one case where waiting out the cooldown is
+            # the wrong answer: the operator is unblocking someone, and "nothing happened" is indistinguishable
+            # from the allowlist not working. Cheap to honour -- it can only ever shrink the output.
+            $changedAllow = $null
+            $builtAt = [DateTime]::UtcNow - $existing.Age
+            foreach ($p in $AllowPaths) {
+                try {
+                    if ((Get-Item -LiteralPath $p -ErrorAction Stop).LastWriteTimeUtc -gt $builtAt) {
+                        $changedAllow = $p
+                        break
+                    }
+                }
+                catch { }
+            }
+
+            if ($changedAllow) {
+                Write-Host ("Allowlist {0} changed since the blocklist was built; regenerating despite -MinInterval {1}." -f `
+                    $changedAllow, $MinInterval)
+            }
+            else {
+                $agoText = if ($existing.Age -lt [TimeSpan]::Zero) { 'in the future -- check the clock' } else { ("{0:N1}h ago" -f $existing.Age.TotalHours) }
+                Write-Host ("Blocklist at {0} was generated {1} ({2}={3}); newer than -MinInterval {4}." -f `
+                    $OutFile, $agoText, $existing.Source, $existing.Stamp, $MinInterval)
+                Write-Host "Nothing downloaded. Pass -Force to regenerate now, or lower -MinInterval."
+                return
+            }
         }
     }
 }
@@ -326,6 +605,244 @@ public static class BlocklistExporter
             }
         }
         return added;
+    }
+
+    // ---------------------------------------------------------------------------------------------------
+    // Allowlist subtraction. Allow entries become sorted, merged [start,end] ranges once; the blocklist is
+    // then filtered against them. The interesting case is a blocked CIDR that only PARTIALLY overlaps an
+    // allow range -- dropping it whole would unblock far more than asked, keeping it whole would ignore the
+    // exemption, so it is split into the surviving pieces and re-emitted as minimal CIDRs.
+    // ---------------------------------------------------------------------------------------------------
+    public sealed class RangeSet
+    {
+        public uint[] Start;
+        public uint[] End;
+        public int Count;
+    }
+
+    public sealed class AllowResult
+    {
+        public int SinglesRemoved;
+        public int CidrsDropped;
+        public int CidrsSplit;
+        public int EntriesAdded;
+    }
+
+    // Parses "a.b.c.d/p" to an inclusive range. The base is masked to the prefix, so a sloppy 1.2.3.5/24
+    // means the whole 1.2.3.0/24 -- the standard reading, and the safe direction for an exemption.
+    static bool TryCidrRange(string c, out ulong lo, out ulong hi)
+    {
+        lo = 0; hi = 0;
+        int slash = c.IndexOf('/');
+        if (slash <= 0) return false;
+        uint ip;
+        if (!TryParseIPv4(c, 0, slash, out ip)) return false;
+        int bits = 0, bd = 0;
+        for (int i = slash + 1; i < c.Length; i++)
+        {
+            char ch = c[i];
+            if (ch < '0' || ch > '9') { bd = -1; break; }
+            bits = bits * 10 + (ch - '0'); bd++;
+        }
+        if (bd <= 0 || bits > 32) return false;
+        // 1u << 32 is undefined in C# (the shift count is masked to 5 bits), so /0 is special-cased.
+        uint mask = (bits == 0) ? 0u : ~((uint)((1UL << (32 - bits)) - 1UL));
+        ulong size = (bits == 0) ? 0x100000000UL : (1UL << (32 - bits));
+        lo = ip & mask;
+        hi = lo + size - 1UL;
+        return true;
+    }
+
+    public static RangeSet BuildRanges(HashSet<uint> singles, HashSet<string> cidrs)
+    {
+        uint[] s = new uint[singles.Count + cidrs.Count];
+        uint[] e = new uint[s.Length];
+        int k = 0;
+
+        foreach (uint v in singles) { s[k] = v; e[k] = v; k++; }
+        foreach (string c in cidrs)
+        {
+            ulong lo, hi;
+            if (!TryCidrRange(c, out lo, out hi)) continue;
+            s[k] = (uint)lo;
+            e[k] = (uint)(hi > 0xFFFFFFFFUL ? 0xFFFFFFFFUL : hi);
+            k++;
+        }
+
+        Array.Resize(ref s, k);
+        Array.Resize(ref e, k);
+        Array.Sort(s, e);
+
+        // Coalesce overlapping AND adjacent ranges so the lookups below can assume disjoint, ordered spans.
+        int w = 0;
+        for (int i = 0; i < k; i++)
+        {
+            if (w > 0 && (ulong)s[i] <= (ulong)e[w - 1] + 1UL)
+            {
+                if (e[i] > e[w - 1]) e[w - 1] = e[i];
+            }
+            else
+            {
+                s[w] = s[i]; e[w] = e[i]; w++;
+            }
+        }
+
+        return new RangeSet { Start = s, End = e, Count = w };
+    }
+
+    // Index of the first range whose End >= v (ranges are disjoint and sorted, so End is sorted too).
+    static int FirstEndAtLeast(uint[] re, int n, uint v)
+    {
+        int lo = 0, hi = n;
+        while (lo < hi)
+        {
+            int mid = (int)(((uint)lo + (uint)hi) >> 1);
+            if (re[mid] < v) lo = mid + 1; else hi = mid;
+        }
+        return lo;
+    }
+
+    static bool Covered(uint[] rs, uint[] re, int n, uint v)
+    {
+        int i = FirstEndAtLeast(re, n, v);
+        return i < n && rs[i] <= v;
+    }
+
+    static string FormatCidr(uint ip, int bits)
+    {
+        char[] buf = new char[19];
+        int p = 0;
+        p = WriteOctet(buf, p, (ip >> 24) & 255); buf[p++] = '.';
+        p = WriteOctet(buf, p, (ip >> 16) & 255); buf[p++] = '.';
+        p = WriteOctet(buf, p, (ip >> 8) & 255);  buf[p++] = '.';
+        p = WriteOctet(buf, p, ip & 255);         buf[p++] = '/';
+        p = WriteOctet(buf, p, (uint)bits);
+        return new string(buf, 0, p);
+    }
+
+    // Writes [lo,hi] as the minimal set of aligned CIDR blocks. A /32 goes back to the singles set so the
+    // output keeps the file's convention of bare addresses for single hosts.
+    static void Emit(ulong lo, ulong hi, HashSet<uint> singles, HashSet<string> cidrs, AllowResult r)
+    {
+        while (lo <= hi)
+        {
+            int bits = 32;
+            while (bits > 0)
+            {
+                ulong size = 1UL << (32 - (bits - 1));
+                if ((lo % size) != 0UL) break;
+                if (lo + size - 1UL > hi) break;
+                bits--;
+            }
+
+            if (bits == 32)
+            {
+                if (singles.Add((uint)lo)) r.EntriesAdded++;
+            }
+            else if (cidrs.Add(FormatCidr((uint)lo, bits)))
+            {
+                r.EntriesAdded++;
+            }
+
+            lo += 1UL << (32 - bits);
+        }
+    }
+
+    public static AllowResult ApplyAllowlist(HashSet<uint> singles, HashSet<string> cidrs, RangeSet allow)
+    {
+        var r = new AllowResult();
+        if (allow == null || allow.Count == 0) return r;
+
+        uint[] rs = allow.Start, re = allow.End;
+        int n = allow.Count;
+
+        // Singles first: the CIDR pass below can add new singles, and those are outside the allow ranges by
+        // construction, so re-testing them would be wasted work.
+        uint[] sarr = new uint[singles.Count];
+        singles.CopyTo(sarr);
+        for (int i = 0; i < sarr.Length; i++)
+        {
+            if (Covered(rs, re, n, sarr[i]) && singles.Remove(sarr[i])) r.SinglesRemoved++;
+        }
+
+        string[] carr = new string[cidrs.Count];
+        cidrs.CopyTo(carr);
+        cidrs.Clear();
+
+        for (int i = 0; i < carr.Length; i++)
+        {
+            string c = carr[i];
+            ulong lo, hi;
+
+            // Unparseable entries are kept verbatim rather than dropped: this pass exists to subtract, and
+            // silently discarding something it could not read would weaken the list.
+            if (!TryCidrRange(c, out lo, out hi)) { cidrs.Add(c); continue; }
+            if (hi > 0xFFFFFFFFUL) hi = 0xFFFFFFFFUL;
+
+            int idx = FirstEndAtLeast(re, n, (uint)lo);
+            if (idx >= n || (ulong)rs[idx] > hi) { cidrs.Add(c); continue; } // no overlap: the common case
+
+            ulong cursor = lo;
+            int before = r.EntriesAdded;
+            for (int j = idx; j < n && (ulong)rs[j] <= hi; j++)
+            {
+                if ((ulong)rs[j] > cursor) Emit(cursor, (ulong)rs[j] - 1UL, singles, cidrs, r);
+                ulong next = (ulong)re[j] + 1UL;
+                if (next > cursor) cursor = next;
+                if (cursor > hi) break;
+            }
+            if (cursor <= hi) Emit(cursor, hi, singles, cidrs, r);
+
+            if (r.EntriesAdded == before) r.CidrsDropped++; else r.CidrsSplit++;
+        }
+
+        return r;
+    }
+
+    static string FormatIp(uint ip)
+    {
+        char[] buf = new char[16];
+        int p = 0;
+        p = WriteOctet(buf, p, (ip >> 24) & 255); buf[p++] = '.';
+        p = WriteOctet(buf, p, (ip >> 16) & 255); buf[p++] = '.';
+        p = WriteOctet(buf, p, (ip >> 8) & 255);  buf[p++] = '.';
+        p = WriteOctet(buf, p, ip & 255);
+        return new string(buf, 0, p);
+    }
+
+    // Collapses a prefix list into the minimal equivalent set, in ascending order. Used by
+    // -RefreshCarveouts: routing data publishes thousands of overlapping announcements.
+    public static string[] CollapsePrefixes(string content)
+    {
+        uint[] noBogon = new uint[0];
+        var singles = new HashSet<uint>();
+        var cidrs = new HashSet<string>();
+        AddContent(content, singles, cidrs, noBogon, noBogon);
+
+        var ranges = BuildRanges(singles, cidrs);
+        var result = new List<string>();
+
+        for (int i = 0; i < ranges.Count; i++)
+        {
+            ulong lo = ranges.Start[i], hi = ranges.End[i];
+
+            while (lo <= hi)
+            {
+                int bits = 32;
+                while (bits > 0)
+                {
+                    ulong size = 1UL << (32 - (bits - 1));
+                    if ((lo % size) != 0UL) break;
+                    if (lo + size - 1UL > hi) break;
+                    bits--;
+                }
+
+                result.Add(bits == 32 ? FormatIp((uint)lo) : FormatCidr((uint)lo, bits));
+                lo += 1UL << (32 - bits);
+            }
+        }
+
+        return result.ToArray();
     }
 
     static int WriteOctet(char[] buf, int pos, uint v)
@@ -450,6 +967,26 @@ function Get-Url {
 }
 
 # ---------------------------------------------------------------------------------------------------------
+# Refresh carve-out data from routing announcements. Runs here because it needs Get-Url and the compiled
+# collapser. A failure leaves the existing file alone rather than truncating a working carve-out.
+# ---------------------------------------------------------------------------------------------------------
+if ($RefreshCarveouts) {
+    foreach ($c in $Carveouts) {
+        $path = $AllowPaths | Where-Object { (Split-Path -Leaf $_) -eq ("ip-allowlist-{0}.txt" -f $c.Name) } | Select-Object -First 1
+        if (-not $path) { continue }
+
+        try {
+            $prefixes = Get-CarveoutPrefixes -Row $c
+            Write-AllowlistFile -Path $path -Lines (@(Get-CarveoutHeader -Row $c) + $prefixes)
+            Write-Host ("Refreshed {0} carve-out: {1} prefixes -> {2}" -f $c.Label, @($prefixes).Count, $path)
+        }
+        catch {
+            Write-Warning ("{0}: refresh failed ({1}) -- keeping the existing carve-out" -f $c.Label, $_.Exception.Message)
+        }
+    }
+}
+
+# ---------------------------------------------------------------------------------------------------------
 # Collect every kept feed into ONE global set, timing each phase.
 # ---------------------------------------------------------------------------------------------------------
 $singles = [System.Collections.Generic.HashSet[uint32]]::new()
@@ -483,18 +1020,45 @@ foreach ($feed in $AllFeeds) {
 }
 
 # ---------------------------------------------------------------------------------------------------------
-# Optional: subtract Tor / open-proxy / VPN IPs.
+# Subtraction pass: the allowlist file, plus the anonymizer feeds when -ExcludeAnonymizers is set. Both are
+# "never block these", so they share one set and one range-correct removal -- which is also the fix for the
+# old anonymizer path, where CIDR entries were parsed and then never actually subtracted.
+#
+# Bogon filtering is deliberately NOT applied here: it exists to keep junk OUT of the blocklist, and running
+# it over subtractive input would quietly discard exemptions instead (e.g. a shard exempting its own LAN).
 # ---------------------------------------------------------------------------------------------------------
+$allowSingles = [System.Collections.Generic.HashSet[uint32]]::new()
+$allowCidrs   = [System.Collections.Generic.HashSet[string]]::new()
+$noBogon      = [uint32[]]::new(0)
+
+foreach ($p in $AllowPaths) {
+    try {
+        $allowText = Get-Content -LiteralPath $p -Raw -ErrorAction Stop
+        if (-not $allowText) { continue }
+
+        $before = $allowSingles.Count + $allowCidrs.Count
+        [void][BlocklistExporter]::AddContent($allowText, $allowSingles, $allowCidrs, $noBogon, $noBogon)
+        Write-Host ("  allowlist {0,-28} +{1} entr(ies)" -f (Split-Path -Leaf $p), (($allowSingles.Count + $allowCidrs.Count) - $before))
+    }
+    catch { Write-Warning ("Could not read allowlist {0}: {1}" -f $p, $_.Exception.Message) }
+}
+
 if ($ExcludeAnonymizers) {
-    $anon = [System.Collections.Generic.HashSet[uint32]]::new()
-    $anonCidr = [System.Collections.Generic.HashSet[string]]::new()
     foreach ($url in $AnonFeeds) {
-        try { [void][BlocklistExporter]::AddContent((Get-Url -Url $url -Label 'anonymizers'), $anon, $anonCidr, $bogStart, $bogEnd) }
+        try { [void][BlocklistExporter]::AddContent((Get-Url -Url $url -Label 'anonymizers'), $allowSingles, $allowCidrs, $noBogon, $noBogon) }
         catch { Write-Warning ("anonymizer list {0}: {1}" -f $url, $_.Exception.Message) }
     }
-    $removed = 0
-    foreach ($ip in @($anon)) { if ($singles.Remove($ip)) { $removed++ } }
-    Write-Host ("ExcludeAnonymizers: removed {0} Tor/proxy/VPN single IPs" -f $removed)
+}
+
+$allowCount = $allowSingles.Count + $allowCidrs.Count
+if ($allowCount -gt 0) {
+    $aSw = [System.Diagnostics.Stopwatch]::StartNew()
+    $ranges = [BlocklistExporter]::BuildRanges($allowSingles, $allowCidrs)
+    $res = [BlocklistExporter]::ApplyAllowlist($singles, $cidrs, $ranges)
+    $aSw.Stop()
+
+    Write-Host ("Allowlist: {0} entr(ies) -> {1} ranges; removed {2} IPs, dropped {3} CIDRs, split {4} into {5} ({6:N1}s)" -f `
+        $allowCount, $ranges.Count, $res.SinglesRemoved, $res.CidrsDropped, $res.CidrsSplit, $res.EntriesAdded, $aSw.Elapsed.TotalSeconds)
 }
 
 $total = $singles.Count + $cidrs.Count
@@ -521,7 +1085,9 @@ if ($outDir -and -not (Test-Path -LiteralPath $outDir -PathType Container)) {
 # InvariantCulture: ':' is the culture-defined time separator in a custom format string, and the
 # header is a machine-read marker the shard compares verbatim.
 $generated = [DateTime]::UtcNow.ToString('yyyy-MM-ddTHH:mm:ssZ', [Globalization.CultureInfo]::InvariantCulture)
-$header = "# modernuo-blocklist generated=$generated count=$total ipv4=$($singles.Count) cidr=$($cidrs.Count) feeds=$feedCount"
+# The shard's header reader is token-based and ignores tokens it does not know, so `allow=` is additive --
+# it is here so an operator can tell from the file alone whether a carve-out was in effect when it was built.
+$header = "# modernuo-blocklist generated=$generated count=$total ipv4=$($singles.Count) cidr=$($cidrs.Count) feeds=$feedCount allow=$allowCount"
 
 $tmp = $OutFile + '.tmp'
 $wSw = [System.Diagnostics.Stopwatch]::StartNew()

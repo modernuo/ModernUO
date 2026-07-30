@@ -182,6 +182,12 @@ public sealed class BlocklistSnapshot
         return false;
     }
 
+    /// <summary>
+    /// Plain set membership, for callers whose set is an ALLOWlist (see <see cref="FileAllowlist"/>) and for
+    /// whom <see cref="IsBanned"/> would read backwards. The interval machinery is direction-agnostic.
+    /// </summary>
+    public bool Contains(IPAddress ip) => IsBanned(ip);
+
     public bool IsBanned(IPAddress ip)
     {
         if (ip.IsIPv4MappedToIPv6)
