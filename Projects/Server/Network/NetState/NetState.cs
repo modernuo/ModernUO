@@ -696,14 +696,9 @@ public partial class NetState : IComparable<NetState>, IValueLinkListNode<NetSta
                                 }
                                 else
                                 {
-                                    // Fewer than four bytes for a raw seed: disconnect rather than wait. This
-                                    // only affects pre-0xEF clients (0xEF goes through HandlePacket, which
-                                    // already waits for its 21 bytes), and waiting here would be paid for on
-                                    // the path that has to survive a flood -- a garbage client sending one or
-                                    // two bytes, or a slow loris dribbling a byte every few seconds, would
-                                    // hold a connection slot for the full ConnectingSocketIdleLimit instead of
-                                    // being dropped immediately. With a fixed MaxConnections table that trades
-                                    // capacity for a rare fragmentation case a reconnect already fixes.
+                                    // Disconnect rather than wait. Waiting would hold a connection slot for
+                                    // the full ConnectingSocketIdleLimit per one- or two-byte client, which
+                                    // is what a flood sends. Only pre-0xEF clients reach here.
                                     Disconnect(string.Empty);
                                 }
                                 break;

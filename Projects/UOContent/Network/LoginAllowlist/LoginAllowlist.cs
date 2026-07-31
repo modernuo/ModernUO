@@ -33,9 +33,9 @@ namespace Server.Network;
 /// <remarks>
 /// <para>
 /// Consulted only after the blocklist has already matched, and again before a ban is contributed, so a
-/// normal accept pays nothing for it. Suppresses escalation only. An entry is evidence rather than a
-/// licence: enough strikes inside the window revokes it. It cannot bootstrap, so it hedges stable addresses
-/// and does not replace <see cref="FileAllowlist"/>. See <c>dev-docs/ip-bans-and-allowlists.md</c>.
+/// normal accept pays nothing for it. An entry is evidence rather than a licence: enough strikes inside the
+/// window revokes it. It cannot bootstrap, so it hedges stable addresses and does not replace
+/// <see cref="FileAllowlist"/>. See <c>dev-docs/ip-bans-and-allowlists.md</c>.
 /// </para>
 /// <para>
 /// Both dictionaries are game-loop state. Only the file write runs off-loop, over a snapshot taken on the

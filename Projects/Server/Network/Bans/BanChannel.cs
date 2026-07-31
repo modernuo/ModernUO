@@ -104,13 +104,11 @@ public static class BanChannel
 
     /// <summary>Fans a locally-decided ban out to every reporter. Non-blocking; never throws.</summary>
     /// <summary>
-    /// Optional content-supplied exemption. When it returns true the contribution is dropped before reaching
-    /// any reporter.
+    /// Optional content-supplied exemption; true drops the contribution before any reporter sees it. This
+    /// withholds escalation only — the gate that reached the verdict has already acted.
     /// </summary>
     /// <remarks>
-    /// Suppresses escalation only — the gate that reached the verdict has already acted, so the shard stays
-    /// protected. The reason is passed so policy can refuse to exempt an operator's own decision; an
-    /// implementation that ignores it would silently swallow manual bans. See
+    /// An implementation that ignores <c>reason</c> would silently swallow manual bans. See
     /// <see cref="BanReasons.IsBehavioral"/>.
     /// </remarks>
     public static Func<IPAddress, string, bool> IsExempt { get; set; }

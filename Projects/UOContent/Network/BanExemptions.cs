@@ -13,20 +13,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using System;
 using System.Net;
 using Server.Network.Bans;
 
 namespace Server.Network;
 
 /// <summary>
-/// The single answer to "should this ban contribution be dropped?", combining the operator's file allowlist
-/// with the one addresses earn by logging in. Owns <see cref="BanChannel.IsExempt"/> so neither source has to
-/// know about the other.
+/// Combines <see cref="FileAllowlist"/> and <see cref="LoginAllowlist"/> into the one answer
+/// <see cref="BanChannel.IsExempt"/> asks for, so neither source has to know about the other.
 /// </summary>
-/// <remarks>
-/// Suppresses escalation only. Whatever gate reached the verdict has already acted, so the shard is
-/// protected either way; what is withheld is pushing the address to an external bouncer.
-/// </remarks>
 public static class BanExemptions
 {
     public static void Configure()
@@ -41,7 +37,7 @@ public static class BanExemptions
     /// Split for testing. <paramref name="loginAllowlist"/> is stateful — calling it spends a strike — so it
     /// must not be invoked once the answer is already decided.
     /// </summary>
-    internal static bool IsExempt(IPAddress address, string reason, System.Func<IPAddress, string, bool> loginAllowlist)
+    internal static bool IsExempt(IPAddress address, string reason, Func<IPAddress, string, bool> loginAllowlist)
     {
         if (address == null)
         {
