@@ -73,12 +73,12 @@ public record BlocklistSettings
     /// entry also suppresses ban contributions, which the generator alone cannot do. See
     /// <see cref="FileAllowlist"/>.
     /// </summary>
+    /// <remarks>
+    /// The filename may contain wildcards, which is how the default picks up a carve-out an admin adds
+    /// without anyone editing this file.
+    /// </remarks>
     [JsonPropertyName("allowlistFiles")]
-    public string[] AllowlistFiles { get; set; } =
-    [
-        "Configuration/ip-allowlist.txt",
-        "Configuration/ip-allowlist-starlink.txt"
-    ];
+    public string[] AllowlistFiles { get; set; } = ["Configuration/ip-allowlist*.txt"];
 
     /// <summary>How often the file is checked for changes. Reloads only happen when it actually changed.</summary>
     [JsonPropertyName("reloadInterval")]

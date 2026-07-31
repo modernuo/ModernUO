@@ -14,6 +14,7 @@
  *************************************************************************/
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Threading;
@@ -42,7 +43,7 @@ public static class FileAllowlist
     // reference swap is the whole synchronization story — readers see the old or the new snapshot, whole.
     private static volatile BlocklistSnapshot _snapshot = BlocklistSnapshot.Empty;
 
-    private static string[] _paths = [];
+    private static string[] _patterns = [];
     private static TimeSpan _interval = TimeSpan.FromSeconds(60);
     private static long _lastStamp;
     private static CancellationTokenSource _cts;
@@ -61,10 +62,10 @@ public static class FileAllowlist
             return;
         }
 
-        _paths = ResolvePaths(settings.AllowlistFiles);
+        _patterns = ResolvePaths(settings.AllowlistFiles);
         _interval = settings.ReloadInterval <= TimeSpan.Zero ? TimeSpan.FromSeconds(60) : settings.ReloadInterval;
 
-        if (_paths.Length == 0)
+        if (_patterns.Length == 0)
         {
             logger.Information("File allowlist disabled (\"allowlistFiles\" empty in blocklist.json)");
             return;
@@ -108,6 +109,59 @@ public static class FileAllowlist
 
         Array.Resize(ref resolved, count);
         return resolved;
+    }
+
+    /// <summary>
+    /// Expands the configured patterns to actual files. Done per poll rather than once, so a carve-out an
+    /// admin adds is picked up without a restart.
+    /// </summary>
+    private static string[] ExpandPaths()
+    {
+        var files = new List<string>();
+
+        for (var i = 0; i < _patterns.Length; i++)
+        {
+            var pattern = _patterns[i];
+            var name = Path.GetFileName(pattern);
+
+            if (name.IndexOf('*') < 0 && name.IndexOf('?') < 0)
+            {
+                if (File.Exists(pattern))
+                {
+                    files.Add(pattern);
+                }
+
+                continue;
+            }
+
+            try
+            {
+                var dir = Path.GetDirectoryName(pattern);
+                if (string.IsNullOrEmpty(dir) || !Directory.Exists(dir))
+                {
+                    continue;
+                }
+
+                var matches = Directory.GetFiles(dir, name);
+                Array.Sort(matches, StringComparer.Ordinal);
+
+                for (var j = 0; j < matches.Length; j++)
+                {
+                    // Windows wildcard matching still honours legacy short names, so ".txt" can pull in the
+                    // generator's ".txt.tmp" mid-swap. Check the real extension.
+                    if (matches[j].EndsWith(".txt", StringComparison.OrdinalIgnoreCase))
+                    {
+                        files.Add(matches[j]);
+                    }
+                }
+            }
+            catch
+            {
+                // Unreadable directory; the next poll retries.
+            }
+        }
+
+        return files.ToArray();
     }
 
     private static async ValueTask PollLoop(CancellationToken token)
@@ -155,12 +209,13 @@ public static class FileAllowlist
     private static long Stamp()
     {
         var stamp = 0L;
+        var paths = ExpandPaths();
 
-        for (var i = 0; i < _paths.Length; i++)
+        for (var i = 0; i < paths.Length; i++)
         {
             try
             {
-                var info = new FileInfo(_paths[i]);
+                var info = new FileInfo(paths[i]);
                 if (info.Exists)
                 {
                     stamp = stamp * 31 + info.LastWriteTimeUtc.Ticks + info.Length;
@@ -205,19 +260,20 @@ public static class FileAllowlist
     {
         files = 0;
 
-        var chunks = new byte[_paths.Length][];
+        var paths = ExpandPaths();
+        var chunks = new byte[paths.Length][];
         var total = 0;
 
-        for (var i = 0; i < _paths.Length; i++)
+        for (var i = 0; i < paths.Length; i++)
         {
             try
             {
-                if (!File.Exists(_paths[i]))
+                if (!File.Exists(paths[i]))
                 {
                     continue;
                 }
 
-                var bytes = File.ReadAllBytes(_paths[i]);
+                var bytes = File.ReadAllBytes(paths[i]);
                 chunks[i] = bytes;
                 total += bytes.Length + 1; // + newline separator
                 files++;
@@ -225,7 +281,7 @@ public static class FileAllowlist
             catch (Exception e)
             {
                 // Fail open per file: losing one entry beats refusing to load the rest.
-                logger.Warning(e, "Could not read allowlist \"{Path}\"", _paths[i]);
+                logger.Warning(e, "Could not read allowlist \"{Path}\"", paths[i]);
             }
         }
 

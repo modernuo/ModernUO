@@ -38,7 +38,7 @@ Two, with different authority:
 
 | List | Source | Revocable? | Covers |
 |---|---|---|---|
-| `FileAllowlist` | `ip-allowlist.txt`, `ip-allowlist-<carveout>.txt` | No — an operator said so | Blocking **and** escalation |
+| `FileAllowlist` | every `ip-allowlist*.txt` | No — an operator said so | Blocking **and** escalation |
 | `LoginAllowlist` | Earned by authenticating, 90-day TTL | Yes — 10 strikes/hour | Blocking **and** escalation |
 
 Both are consulted **only after the blocklist has already matched**, so a normal accept — the one an
@@ -111,22 +111,26 @@ behind it is blocked with them — and where leases rotate, a listing says littl
 address now. This is near-universal on mobile carriers, satellite (Starlink) and WISPs, and common on
 fixed-line broadband outside North America.
 
-The generator therefore keeps a **carve-out table**, one entry per provider, each written to its own
-`ip-allowlist-<name>.txt` and subtracted from the output. `starlink` ships **active**, costing about 0.1% of
-the list. Blank a file (keep the file) to reputation-block that network again; deleting it makes the next run
-write it back.
+A **carve-out** exempts a whole network. **None ship with ModernUO** — which providers to exempt depends on
+where your players actually are, and a carve-out names a real network, so you build the ones you need:
 
 ```powershell
-# Bring carve-out data up to date with what each network currently announces
-.\Export-IpBlocklist.ps1 -RefreshCarveouts
+# Exempt a CGNAT provider whose players keep getting listed
+.\Export-IpBlocklist.ps1 -AddCarveout starlink -Asn 14593
 
-# Generate with no carve-out at all, keeping your own allowlist
-.\Export-IpBlocklist.ps1 -Carveout ''
+# Later: bring every carve-out up to date with what those networks currently announce
+.\Export-IpBlocklist.ps1 -RefreshCarveouts
 ```
 
-Covering another CGNAT provider is a row in the `$Carveouts` table near the top of the script: a name, its
-ASN, a one-line reason, and either pasted prefixes or nothing at all if you intend to use
-`-RefreshCarveouts`.
+That writes `ip-allowlist-starlink.txt` beside the blocklist, and every `ip-allowlist*.txt` there is
+subtracted — both by the generator and by the shard, with no config edit. Starlink costs about 0.1% of the
+list. Blank a file (keep the file) to reputation-block that network again; delete it to drop the carve-out.
+
+Carve-out files carry an `asn=` marker in their header, which is how `-RefreshCarveouts` finds them. A
+hand-written allowlist has no marker and is never rewritten.
+
+**Do you need one?** If players report being blocked and they are on satellite, mobile, or an ISP short on
+IPv4, probably yes. Find the ASN by looking up an address the network hands out on any public BGP lookup.
 
 Prefixes come from **announcements, not ownership records**. Registry data disagrees with what is actually
 routed and silently caps result sets: ARIN whois returns at most 256 rows and gives per-customer /24s, and
@@ -185,7 +189,7 @@ firewalled off. Shortening the 5s handshake window has been tried and broke real
 | File | Controls |
 |---|---|
 | `bans.json` | `reportRateLimitTrips`, `autoBanDuration`, `reportBadConnects`, `badConnectDuration` |
-| `blocklist.json` | `file`, `allowlistFiles`, `reloadInterval`, `reportHits`, `banDuration`, `promoteSuppression` |
+| `blocklist.json` | `file`, `allowlistFiles` (wildcards allowed), `reloadInterval`, `reportHits`, `banDuration`, `promoteSuppression` |
 | `login-allowlist.json` | `enabled`, `file`, `ttl`, `flushInterval`, `escalateAfterStrikes`, `strikeWindow` |
 | `auto-denylist.json` | `enabled`, `duration`, `maxEntries` |
 | `crowdsec.json` | `lapiUrl`, `machineId`, `password`, `origin`, `manualBanDuration`, `flushInterval`, `maxQueue` |

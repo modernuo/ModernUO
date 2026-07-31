@@ -14,10 +14,8 @@
 /Distribution/Configuration/blocklist.json
 /Distribution/Configuration/crowdsec.json
 /Distribution/Configuration/expansion.json
-/Distribution/Configuration/ip-allowlist.txt
-/Distribution/Configuration/ip-allowlist.txt.tmp
-/Distribution/Configuration/ip-allowlist-starlink.txt
-/Distribution/Configuration/ip-allowlist-starlink.txt.tmp
+/Distribution/Configuration/ip-allowlist*.txt
+/Distribution/Configuration/ip-allowlist*.txt.tmp
 /Distribution/Configuration/ip-blocklist.txt
 /Distribution/Configuration/ip-blocklist.txt.tmp
 /Distribution/Configuration/login-allowlist.json

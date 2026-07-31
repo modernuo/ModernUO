@@ -47,16 +47,20 @@
     around the hole instead of being silently ignored, so an exemption always takes effect no matter which
     shape the feed happened to publish.
 
-    Allowlists are split by owner rather than kept in one file: `ip-allowlist.txt` holds the operator's own
-    exemptions and is never rewritten, while network-wide carve-outs live in their own generated files beside
-    it. Both are created on first run and merged into one allow set. Keeping them apart means a carve-out can
-    be regenerated, diffed or copied to another shard without disturbing hand-written entries.
+    Every `ip-allowlist*.txt` beside the output is subtracted, so allowlists are split by owner rather than
+    kept in one file: `ip-allowlist.txt` holds the operator's own exemptions and is never rewritten, while
+    network carve-outs live in `ip-allowlist-<name>.txt`. Keeping them apart means a carve-out can be
+    regenerated, diffed or copied to another shard without disturbing hand-written entries.
 
-    The carve-out shipped by default is Starlink (`ip-allowlist-starlink.txt`, AS14593), the worst offender
-    for this: it is CGNAT throughout and its leases rotate, so a listing there says almost nothing about the
-    player currently holding the address. It costs ~0.1% of the list. Blank the file to restore
-    reputation-blocking on Starlink -- abusive hosts in that space are still caught on BEHAVIOR by the rate
-    limiter and promoted to CrowdSec, which is the gate that actually observes them.
+    NO CARVE-OUT IS SHIPPED. Which providers to exempt is a policy call that depends on where a shard's
+    players actually are, and a carve-out names a real network, so this script builds them on request rather
+    than publishing anyone's. A shard whose players are on CGNAT -- satellite, mobile, or an ISP short on
+    IPv4 -- will usually want one:
+
+        .\Export-IpBlocklist.ps1 -AddCarveout starlink -Asn 14593
+
+    That costs roughly 0.1% of the list. Abusive hosts inside a carved-out network are still caught on
+    BEHAVIOR by the rate limiter and promoted to CrowdSec, which is the gate that actually observes them.
 
     OUTPUT FORMAT (must stay in sync with UOContent/Network/Blocklist/BlocklistFile.cs):
         Line 1 is a header comment carrying the version markers, e.g.
@@ -113,12 +117,11 @@
     before the output is written. Same format as the blocklist: one bare IPv4 or CIDR per line, `#`/`;`
     comments ignored.
 
-    Defaults to the operator's own list plus one file per network carve-out, all beside the output, created
-    if missing and merged into one allow set:
-        ip-allowlist.txt            operator exemptions -- created once, never rewritten
-        ip-allowlist-<name>.txt     one per -Carveout -- generated data, safe to regenerate or copy
-    Splitting them means a network-wide carve-out can be refreshed or shared between shards without
-    touching anyone's hand-written entries. Blank a file (keep the file) to disable its contents.
+    Defaults to every `ip-allowlist*.txt` beside the output, merged into one allow set:
+        ip-allowlist.txt            operator exemptions -- created on first run, never rewritten
+        ip-allowlist-<name>.txt     a network carve-out -- generated data, safe to regenerate or copy
+    Discovered rather than configured, so a carve-out you add is picked up with no further edits. Blank a
+    file (keep the file) to disable its contents; delete it to drop it entirely.
 
     Passing this parameter replaces the defaults entirely; an explicitly-named file that does not exist is a
     warning rather than a silent template write, so a typo cannot look like it worked. Pass `''` to disable
@@ -127,17 +130,24 @@
     Editing any allowlist also bypasses -MinInterval on the next run: an exemption you just added would
     otherwise sit unapplied for up to the cooldown, which reads exactly like the allowlist not working.
 
-.PARAMETER Carveout
-    Which network carve-outs to maintain and subtract, by Name. Default: all rows in the `$Carveouts` table,
-    which currently ships `starlink` only. Pass `''` to keep the operator's own allowlist while subtracting
-    no carve-outs.
+.PARAMETER AddCarveout
+    Build a carve-out for a network and start subtracting it. Takes a short name for the file and -Asn for
+    the network, fetches that ASN's current routing announcements, collapses them, and writes
+    `ip-allowlist-<name>.txt` beside the output. Implies -Force.
 
-    Covering another CGNAT provider is a table row near the top of this script: a Name, its ASN, a one-line
-    reason, and either a pasted Seed or nothing at all if you intend to run -RefreshCarveouts.
+        .\Export-IpBlocklist.ps1 -AddCarveout starlink -Asn 14593
+
+    No carve-out ships with this script: naming a network to exempt is a policy call for the shard, so they
+    are built on request rather than published here. Re-running with the same name rebuilds the file.
+
+.PARAMETER Asn
+    Autonomous system number for -AddCarveout, e.g. 14593 for Starlink. Look one up by querying an address
+    the network hands out, or on any public BGP lookup.
 
 .PARAMETER RefreshCarveouts
-    Re-fetch each selected carve-out's prefixes from its ASN's current routing announcements, collapse them,
-    and rewrite its file. Implies -Force. A carve-out whose fetch fails keeps the data it already had.
+    Re-fetch every carve-out beside the output and rewrite it from current routing announcements. Implies
+    -Force. Carve-outs are recognised by the `asn=` marker in their header, so a hand-written allowlist is
+    left alone, and one whose fetch fails keeps the data it already had.
 
     Announcements rather than ownership records on purpose: registry data disagrees with what is actually
     routed, and registry queries silently cap their result sets.
@@ -175,12 +185,9 @@
     .\Export-IpBlocklist.ps1 -AllowlistFile 'D:\shared\allow.txt' -DryRun
 
 .EXAMPLE
-    # Bring the carve-out data up to date with what the network currently announces.
+    # Exempt a CGNAT provider whose players keep getting listed, then keep it current.
+    .\Export-IpBlocklist.ps1 -AddCarveout starlink -Asn 14593
     .\Export-IpBlocklist.ps1 -RefreshCarveouts
-
-.EXAMPLE
-    # Generate without any network carve-out, keeping your own exemptions.
-    .\Export-IpBlocklist.ps1 -Carveout ''
 
 .EXAMPLE
     # Linux/macOS, e.g. from cron:
@@ -197,7 +204,8 @@ param(
     [string]   $OutFile,
     [string]   $MinInterval = '2h',
     [string[]] $AllowlistFile,
-    [string[]] $Carveout,
+    [string]   $AddCarveout,
+    [int]      $Asn,
     [switch]   $RefreshCarveouts,
     [string[]] $Feeds,
     [switch]   $ExcludeAnonymizers,
@@ -206,6 +214,11 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+
+# Fail before any download rather than after 60MB of feeds.
+if ($AddCarveout -and $Asn -le 0) {
+    throw "-AddCarveout needs -Asn, e.g. -AddCarveout starlink -Asn 14593"
+}
 $UA = 'ModernUO-Blocklist-Export'
 $totalSw = [System.Diagnostics.Stopwatch]::StartNew()
 
@@ -233,56 +246,13 @@ if (-not $OutFile) {
 }
 
 # ---------------------------------------------------------------------------------------------------------
-# Network carve-outs. Each entry becomes `ip-allowlist-<Name>.txt` beside the output and is subtracted from
-# the generated list. To cover another CGNAT provider, add a row: give it a Name, its ASN, and either paste a
-# Seed or leave Seed empty and run -RefreshCarveouts to fetch the prefixes from routing data.
+# Network carve-outs are DATA, not code: this script ships none. Which providers a shard exempts is a policy
+# call that depends on where its players actually are, so the carve-outs live in files an admin creates with
+# -AddCarveout, and every ip-allowlist*.txt beside the output is subtracted.
 #
-# Seed is the offline copy, so a fresh checkout works with no network access. It is split on whitespace, so
-# the wrapping is only for readability.
+# A shard whose players are on CGNAT -- satellite, mobile, or an ISP short on IPv4 -- will usually want one:
+#     .\Export-IpBlocklist.ps1 -AddCarveout starlink -Asn 14593
 # ---------------------------------------------------------------------------------------------------------
-$Carveouts = @(
-    [pscustomobject]@{
-        Name  = 'starlink'
-        Asn   = 14593
-        Label = 'Starlink (SpaceX)'
-        Why   = 'CGNAT throughout, with rotating leases, so one address fronts many subscribers at once.'
-        Seed  = @'
-    9.161.0.0/21 9.161.8.0/23 9.161.10.0/24 9.161.128.0/20 9.161.144.0/22 9.161.150.0/23 9.161.152.0/23 9.170.0.0/19
-    9.170.32.0/20 9.170.48.0/22 9.170.54.0/23 9.170.56.0/21 9.170.64.0/21 9.170.72.0/22 9.246.0.0/19 9.246.32.0/20
-    9.246.48.0/23 9.246.52.0/22 9.246.56.0/21 9.246.64.0/18 9.246.128.0/20 9.246.144.0/22 14.1.64.0/19
-    64.226.208.0/24 65.181.0.0/20 65.181.16.0/21 65.181.24.0/22 65.181.30.0/23 66.9.160.0/20 66.9.176.0/21
-    66.9.184.0/22 74.244.0.0/16 74.245.0.0/20 74.245.16.0/23 74.245.19.0/24 74.245.20.0/24 74.245.29.0/24
-    74.245.30.0/23 74.245.32.0/24 74.245.35.0/24 74.245.36.0/24 74.245.39.0/24 74.245.40.0/22 74.245.44.0/24
-    74.245.138.0/23 74.245.140.0/23 74.245.142.0/24 74.245.156.0/22 74.245.160.0/22 74.245.164.0/24 74.245.192.0/21
-    74.245.200.0/23 74.245.202.0/24 74.245.206.0/24 74.245.208.0/22 74.245.212.0/24 74.245.217.0/24 74.245.224.0/21
-    74.245.232.0/22 74.245.236.0/23 74.245.239.0/24 74.245.240.0/21 74.245.248.0/23 74.245.251.0/24 74.245.252.0/22
-    87.251.24.0/21 91.102.180.0/22 98.97.0.0/17 98.97.128.0/19 98.97.160.0/20 98.97.176.0/22 98.97.180.0/23
-    98.97.182.0/24 98.97.184.0/24 98.97.186.0/23 98.97.188.0/23 98.97.190.0/24 103.235.92.0/22 116.91.208.0/20
-    129.222.0.0/18 129.222.64.0/20 129.222.80.0/21 129.222.88.0/22 129.222.94.0/23 129.222.96.0/19 129.222.128.0/18
-    129.222.192.0/20 129.222.208.0/21 129.222.224.0/19 129.224.192.0/20 129.224.208.0/21 129.224.216.0/22
-    129.224.222.0/24 135.129.2.0/23 135.129.4.0/22 135.129.8.0/21 135.129.16.0/23 135.129.19.0/24 135.129.20.0/22
-    135.129.24.0/21 135.129.32.0/23 135.129.34.0/24 135.129.36.0/22 135.129.40.0/21 135.129.48.0/21 135.129.57.0/24
-    135.129.58.0/23 135.129.60.0/22 135.129.112.0/23 135.129.115.0/24 135.129.116.0/24 135.129.118.0/23
-    135.129.120.0/21 135.129.240.0/24 135.129.244.0/24 135.129.248.0/22 135.129.252.0/23 135.129.254.0/24
-    137.83.112.0/22 137.83.116.0/23 137.83.118.0/24 137.83.121.0/24 137.83.122.0/23 137.83.124.0/22 138.84.32.0/19
-    141.109.64.0/20 141.109.80.0/24 141.109.82.0/23 141.109.84.0/22 141.109.88.0/23 141.109.92.0/24 143.105.0.0/18
-    143.105.64.0/19 143.105.96.0/20 143.105.112.0/21 143.105.121.0/24 143.105.122.0/23 143.105.124.0/22
-    143.105.128.0/17 143.131.0.0/21 143.131.9.0/24 143.131.10.0/23 143.131.12.0/22 144.126.64.0/20 144.126.80.0/21
-    144.126.96.0/19 145.224.64.0/18 148.222.128.0/21 148.222.192.0/19 148.227.64.0/18 149.19.108.0/23
-    149.19.160.0/20 150.228.0.0/16 153.66.0.0/15 162.43.192.0/22 164.152.165.0/24 168.140.240.0/20 169.150.16.0/23
-    169.150.18.0/24 169.150.22.0/23 169.150.26.0/24 169.150.28.0/22 169.155.224.0/19 170.203.64.0/19
-    170.203.192.0/19 173.250.196.0/23 173.250.199.0/24 173.250.200.0/24 173.250.203.0/24 173.250.204.0/22
-    173.250.208.0/20 176.116.124.0/23 179.60.168.0/21 179.64.0.0/17 179.64.132.0/24 179.64.140.0/24 179.64.147.0/24
-    179.64.153.0/24 179.64.154.0/24 179.64.156.0/24 179.64.160.0/23 179.64.172.0/24 179.64.178.0/24 179.64.180.0/24
-    179.64.186.0/24 179.65.0.0/19 179.65.32.0/20 179.65.126.0/23 179.65.128.0/19 179.65.160.0/21 179.65.176.0/20
-    179.238.0.0/18 179.238.64.0/19 188.92.248.0/21 188.95.144.0/23 198.54.103.0/24 200.189.16.0/20 205.174.156.0/23
-    206.83.96.0/21 206.83.104.0/24 206.83.106.0/23 206.83.108.0/22 206.83.112.0/20 206.214.224.0/20 206.224.64.0/20
-    206.224.80.0/21 206.224.88.0/23 209.198.128.0/22 209.198.132.0/23 209.198.135.0/24 209.198.136.0/21
-    209.198.144.0/20 212.105.128.0/21 212.105.136.0/22 212.105.140.0/23 212.105.144.0/20 216.128.0.0/19
-    216.147.120.0/21 216.180.80.0/20 216.234.192.0/19 217.65.136.0/21 217.142.16.0/20
-'@
-    }
-)
 
 # ---------------------------------------------------------------------------------------------------------
 # Resolve the allowlists. They sit beside the output by default so relocating the blocklist keeps the set
@@ -290,27 +260,21 @@ $Carveouts = @(
 # -- while each carve-out file is generated data that can be regenerated, diffed or copied between shards
 # without touching anyone's local exemptions.
 #
-# An EXPLICIT -AllowlistFile replaces the whole set and is never templated: if the operator names a file, a
-# missing one is a typo worth hearing about, not something to paper over with defaults they did not ask for.
+# Carve-outs are discovered rather than listed, so a file an admin drops in is picked up with no config edit
+# and no code change. An EXPLICIT -AllowlistFile replaces the whole set and is never templated: if the
+# operator names a file, a missing one is a typo worth hearing about.
 # ---------------------------------------------------------------------------------------------------------
-if ($Carveout) {
-    $Carveouts = @($Carveouts | Where-Object { $Carveout -contains $_.Name })
-    if (-not $Carveouts) { throw "No carve-outs matched -Carveout. Known: $(($Carveouts | ForEach-Object Name) -join ', ')" }
-}
-elseif ($PSBoundParameters.ContainsKey('Carveout')) {
-    $Carveouts = @()   # -Carveout '' disables them without disabling the operator's own list
-}
+$AllowGlob = 'ip-allowlist*.txt'
+$ConfigDir = Split-Path -Parent $OutFile
 
 $allowExplicit = $PSBoundParameters.ContainsKey('AllowlistFile')
-$AllowPaths = @()
 
 if ($allowExplicit) {
     $AllowPaths = @($AllowlistFile | Where-Object { -not [string]::IsNullOrWhiteSpace($_) })
 }
 else {
-    $cfgDir = Split-Path -Parent $OutFile
-    $AllowPaths = @(Join-Path $cfgDir 'ip-allowlist.txt') +
-                  @($Carveouts | ForEach-Object { Join-Path $cfgDir ("ip-allowlist-{0}.txt" -f $_.Name) })
+    $AllowPaths = @(Get-ChildItem -Path $ConfigDir -Filter $AllowGlob -File -ErrorAction SilentlyContinue |
+                    Sort-Object Name | ForEach-Object { $_.FullName })
 }
 
 function Write-AllowlistFile {
@@ -340,74 +304,72 @@ $OperatorTemplate = @'
 # Removal is range-correct: an address listed here is removed even when a feed published it as part of a
 # larger CIDR -- that CIDR is split around the hole rather than dropped wholesale or silently ignored.
 #
-# Network-wide carve-outs live in their own files beside this one, so they can be regenerated or copied
-# between shards without touching anything you put here.
+# Network carve-outs live in their own ip-allowlist-<name>.txt beside this one (see -AddCarveout), so they
+# can be regenerated or copied between shards without touching anything you put here.
 #
 # Put player/staff exemptions below, one per line, e.g.:
 #   203.0.113.42        # shard owner, listed via a shared upstream address
 '@
 
-# Header for a carve-out file, built from its table row so adding a provider needs no new prose.
+# Carve-out files carry their own `asn=` marker, so -RefreshCarveouts can rebuild whatever an admin created
+# without this script keeping a list of anyone's networks.
 function Get-CarveoutHeader {
-    param([pscustomobject]$Row)
+    param([string]$Name, [int]$CarveoutAsn)
 
     @(
-        ("# {0} (AS{1}) carve-out -- subtracted from the generated blocklist." -f $Row.Label, $Row.Asn)
+        ("# {0} carve-out (asn={1}) -- subtracted from the generated blocklist." -f $Name, $CarveoutAsn)
         "#"
-        ("# {0}" -f $Row.Why)
-        "# Reputation feeds list those addresses constantly, so a hit there says little about the player"
-        "# currently behind it. Abusive hosts inside it are still caught on BEHAVIOR by the rate limiter."
+        "# Reputation feeds list shared consumer address space constantly, so a hit inside a CGNAT network"
+        "# says little about the player currently behind it. Abusive hosts here are still caught on BEHAVIOR."
         "#"
-        "# GENERATED DATA -- safe to regenerate, diff, or copy to another shard. Blank the file (keep the file)"
-        "# to reputation-block this network again; deleting it just makes the next run write it back."
+        "# GENERATED DATA -- safe to regenerate, diff, or copy to another shard. Blank the file (keep the"
+        "# file) to reputation-block this network again; delete it to stop carving it out entirely."
         "#"
-        ("# Refresh with: .\Export-IpBlocklist.ps1 -RefreshCarveouts -Carveout {0}" -f $Row.Name)
+        "# Refresh with: .\Export-IpBlocklist.ps1 -RefreshCarveouts"
     )
 }
 
-# Fetches a carve-out's currently ANNOUNCED prefixes and collapses them. Routing data, not a registry:
+# Fetches a network's currently ANNOUNCED prefixes and collapses them. Routing data, not a registry:
 # ownership records disagree with what is actually announced, and registry queries cap their result sets.
 function Get-CarveoutPrefixes {
-    param([pscustomobject]$Row)
+    param([int]$CarveoutAsn)
 
-    $url = "https://stat.ripe.net/data/announced-prefixes/data.json?resource=AS$($Row.Asn)"
-    $json = Get-Url -Url $url -Label ("AS{0} prefixes" -f $Row.Asn) | ConvertFrom-Json
+    $url = "https://stat.ripe.net/data/announced-prefixes/data.json?resource=AS$CarveoutAsn"
+    $json = Get-Url -Url $url -Label ("AS{0} prefixes" -f $CarveoutAsn) | ConvertFrom-Json
 
     $v4 = @($json.data.prefixes.prefix | Where-Object { $_ -and $_ -notmatch ':' })
-    if (-not $v4) { throw "AS$($Row.Asn) announced no IPv4 prefixes -- refusing to overwrite the carve-out." }
+    if (-not $v4) { throw "AS$CarveoutAsn announced no IPv4 prefixes -- refusing to overwrite the carve-out." }
 
     [BlocklistExporter]::CollapsePrefixes(($v4 -join "`n"))
 }
 
-# Seed any default file that is missing, from the offline copy so a fresh checkout needs no network.
-# -RefreshCarveouts rewrites them from routing data later, once Add-Type and Get-Url exist.
-# Explicit paths are never created -- see the resolution note above.
-$CarveoutByFile = @{}
-foreach ($c in $Carveouts) { $CarveoutByFile[("ip-allowlist-{0}.txt" -f $c.Name)] = $c }
+# Reads the `asn=` marker back out of a carve-out file. Anything without one is a hand-written allowlist and
+# is left alone by -RefreshCarveouts.
+function Get-CarveoutAsn {
+    param([string]$Path)
 
-$AllowPaths = @($AllowPaths | ForEach-Object {
-    $p = $_
-    if (Test-Path -LiteralPath $p -PathType Leaf) { return $p }
-
-    if ($allowExplicit) {
-        Write-Warning ("Allowlist '{0}' does not exist -- nothing will be subtracted from it. Check the path." -f $p)
-        return
+    foreach ($line in (Get-Content -LiteralPath $Path -TotalCount 5 -ErrorAction SilentlyContinue)) {
+        if ($line -match 'asn=(\d+)') { return [int]$Matches[1] }
     }
 
-    $row = $CarveoutByFile[(Split-Path -Leaf $p)]
-    if ($row) {
-        $prefixes = @($row.Seed -split '\s+' | Where-Object { $_ })
-        Write-AllowlistFile -Path $p -Lines (@(Get-CarveoutHeader -Row $row) + $prefixes)
-        Write-Host ("Created {0} carve-out at {1} ({2} prefixes; blank the file to disable)." -f `
-            $row.Label, $p, $prefixes.Count)
-    }
-    else {
-        Write-AllowlistFile -Path $p -Lines @($OperatorTemplate)
-        Write-Host ("Created allowlist at {0} (add player/staff exemptions here)." -f $p)
-    }
+    return 0
+}
 
-    return $p
-})
+# The operator's own list is the one file this script will create unprompted; carve-outs are opt-in.
+if (-not $allowExplicit) {
+    $operatorPath = Join-Path $ConfigDir 'ip-allowlist.txt'
+    if (-not (Test-Path -LiteralPath $operatorPath -PathType Leaf)) {
+        Write-AllowlistFile -Path $operatorPath -Lines @($OperatorTemplate)
+        Write-Host ("Created allowlist at {0} (add player/staff exemptions here)." -f $operatorPath)
+        $AllowPaths = @($operatorPath) + $AllowPaths
+    }
+}
+else {
+    $AllowPaths = @($AllowPaths | ForEach-Object {
+        if (Test-Path -LiteralPath $_ -PathType Leaf) { return $_ }
+        Write-Warning ("Allowlist '{0}' does not exist -- nothing will be subtracted from it. Check the path." -f $_)
+    })
+}
 
 # ---------------------------------------------------------------------------------------------------------
 # Cooldown gate. Runs BEFORE anything is downloaded: the whole point is that a misconfigured scheduler or a
@@ -471,9 +433,9 @@ function Get-BlocklistAge {
 }
 
 $minAge = ConvertTo-Duration $MinInterval
-# -RefreshCarveouts implies -Force: the operator explicitly asked for new carve-out data, so waiting out the
-# cooldown and leaving the old data in place would be the wrong answer.
-if (-not $Force -and -not $RefreshCarveouts -and $minAge -gt [TimeSpan]::Zero) {
+# Asking for carve-out data implies -Force: waiting out the cooldown and leaving the old data in place would
+# be the wrong answer.
+if (-not $Force -and -not $RefreshCarveouts -and -not $AddCarveout -and $minAge -gt [TimeSpan]::Zero) {
     $existing = Get-BlocklistAge -Path $OutFile
     if ($existing) {
         # A negative age means the stamp is in the future (clock skew, or a file from another host). Treat it
@@ -970,18 +932,29 @@ function Get-Url {
 # Refresh carve-out data from routing announcements. Runs here because it needs Get-Url and the compiled
 # collapser. A failure leaves the existing file alone rather than truncating a working carve-out.
 # ---------------------------------------------------------------------------------------------------------
+if ($AddCarveout) {
+    $path = Join-Path $ConfigDir ("ip-allowlist-{0}.txt" -f $AddCarveout)
+    $prefixes = Get-CarveoutPrefixes -CarveoutAsn $Asn
+
+    Write-AllowlistFile -Path $path -Lines (@(Get-CarveoutHeader -Name $AddCarveout -CarveoutAsn $Asn) + $prefixes)
+    Write-Host ("Created {0} carve-out from AS{1}: {2} prefixes -> {3}" -f $AddCarveout, $Asn, @($prefixes).Count, $path)
+
+    if ($AllowPaths -notcontains $path) { $AllowPaths += $path }
+}
+
 if ($RefreshCarveouts) {
-    foreach ($c in $Carveouts) {
-        $path = $AllowPaths | Where-Object { (Split-Path -Leaf $_) -eq ("ip-allowlist-{0}.txt" -f $c.Name) } | Select-Object -First 1
-        if (-not $path) { continue }
+    foreach ($path in $AllowPaths) {
+        $carveoutAsn = Get-CarveoutAsn -Path $path
+        if ($carveoutAsn -le 0) { continue }   # hand-written allowlist, not ours to rewrite
 
         try {
-            $prefixes = Get-CarveoutPrefixes -Row $c
-            Write-AllowlistFile -Path $path -Lines (@(Get-CarveoutHeader -Row $c) + $prefixes)
-            Write-Host ("Refreshed {0} carve-out: {1} prefixes -> {2}" -f $c.Label, @($prefixes).Count, $path)
+            $name = [IO.Path]::GetFileNameWithoutExtension($path) -replace '^ip-allowlist-', ''
+            $prefixes = Get-CarveoutPrefixes -CarveoutAsn $carveoutAsn
+            Write-AllowlistFile -Path $path -Lines (@(Get-CarveoutHeader -Name $name -CarveoutAsn $carveoutAsn) + $prefixes)
+            Write-Host ("Refreshed {0} carve-out from AS{1}: {2} prefixes" -f $name, $carveoutAsn, @($prefixes).Count)
         }
         catch {
-            Write-Warning ("{0}: refresh failed ({1}) -- keeping the existing carve-out" -f $c.Label, $_.Exception.Message)
+            Write-Warning ("AS{0}: refresh failed ({1}) -- keeping the existing carve-out" -f $carveoutAsn, $_.Exception.Message)
         }
     }
 }
