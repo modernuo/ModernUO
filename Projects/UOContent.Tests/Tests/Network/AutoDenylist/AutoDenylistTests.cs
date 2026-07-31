@@ -22,6 +22,11 @@ namespace Server.Tests.Network.AutoDenylists;
 
 // Static store, so every test resets it first. Addresses come from TEST-NET-2 (198.51.100.0/24) to stay clear
 // of the other ban tests if xUnit runs these classes concurrently.
+//
+// Sequential because the cap tests reach AutoDenylist.Sweep, which rents through STArrayPool. That pool is
+// single-threaded by design and its bucket cache is a plain static, so touching it from two test threads
+// races. The blocklist tests need no such marking because BlocklistSnapshot.Build asks for the mt pool.
+[Collection("Sequential UOContent Tests")]
 public class AutoDenylistTests
 {
     private const long DurationMs = 900_000; // 15 minutes, the shipped default

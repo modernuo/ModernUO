@@ -8,6 +8,9 @@ namespace Server.Tests;
 /// hole is evaluated while it is live. A Reset()/Dispose() landing in that window used to leave the
 /// next Append* spanning a null array: ArgumentNullException, parameter "array".
 /// </summary>
+// Sequential: building a list rents and returns through STArrayPool, whose bucket cache is a plain static
+// with a check-then-act initialize. Two test classes doing this on different threads race it.
+[Collection("Sequential Server Tests")]
 public class ObjectPropertyListReentrancyTests
 {
     // Stands in for a property getter that invalidates while its own tooltip is being built.
@@ -52,6 +55,7 @@ public class ObjectPropertyListReentrancyTests
 /// The guard is per-list, so nested builds (a GetProperties override that reads another entity's
 /// PropertyList) cannot unguard the outer one the way a single shared slot would.
 /// </summary>
+[Collection("Sequential Server Tests")] // same STArrayPool exposure as above
 public class ObjectPropertyListNestedBuildTests
 {
     [Fact]
