@@ -363,7 +363,7 @@ public sealed class CrowdSecReporter : IBanReporter
 
         foreach (var (value, item) in byIp)
         {
-            var ttl = item.Reason == "manual" || item.Ttl <= TimeSpan.Zero ? settings.ManualBanDuration : item.Ttl;
+            var ttl = item.Reason == BanReasons.Manual || item.Ttl <= TimeSpan.Zero ? settings.ManualBanDuration : item.Ttl;
             var scenario = $"{settings.Origin}/{item.Reason}";
 
             alerts.Add(new CrowdSecAlert

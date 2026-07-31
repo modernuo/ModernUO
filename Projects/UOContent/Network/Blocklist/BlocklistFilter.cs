@@ -133,7 +133,7 @@ public sealed class BlocklistFilter : IConnectionFilter
         if (shouldReport)
         {
             // Demand-page this address up to the OS-level bouncer. Enqueue-only; never blocks the loop.
-            BanChannel.Report(address, _banDuration, "blocklist");
+            BanChannel.Report(address, _banDuration, BanReasons.Blocklist);
         }
 
         return true;
@@ -148,6 +148,21 @@ public sealed class BlocklistFilter : IConnectionFilter
         shouldReport = false;
 
         if (!_snapshot.IsBanned(address))
+        {
+            return false;
+        }
+
+        // Both are asked only once the list has matched, so they cost the common accept nothing. The file
+        // list is usually redundant because the generator subtracts it — except right after an operator adds
+        // an entry without regenerating, which is exactly when someone is waiting to get back in.
+        if (FileAllowlist.Contains(address))
+        {
+            return false;
+        }
+
+        // A feed listing an address a real player logged in from recently is far more often a false positive
+        // than a compromise.
+        if (LoginAllowlist.IsAllowed(address))
         {
             return false;
         }

@@ -509,10 +509,15 @@ Rules:
 - A filter that throws is **unregistered** and the connection fails open. A filter that faults once
   faults for every connection, so leaving it registered would mean an exception per accept.
 
-Core owns the question; **every implementation lives in UOContent**. The two that ship are `firewall`
-(admin-curated, mutable at runtime, persisted to `Configuration/firewall.json`) and `blocklist`
-(file-sourced, millions of entries, demand-pages hits to CrowdSec). A shard that fronts its server with
-an upstream proxy or edge scrubbing can drop both and register nothing.
+Core owns the question; **every implementation lives in UOContent**. The three that ship are `firewall`
+(admin-curated, mutable at runtime, persisted to `Configuration/firewall.json`), `blocklist` (file-sourced,
+millions of entries, demand-pages hits to CrowdSec) and `auto-denylist` (in-memory, short-lived, fed by the
+shard's own behavioural detections). A shard that fronts its server with an upstream proxy or edge scrubbing
+can drop all of them and register nothing.
+
+The allowlists, ban contribution, behavioural detection and the operator process for exempting a
+false-positive address are covered separately in
+[`dev-docs/ip-bans-and-allowlists.md`](ip-bans-and-allowlists.md).
 
 Do **not** route this kind of check through `EventSink.InvokeSocketConnect` -- that fires later and
 allocates a `SocketConnectEventArgs` per connection, which is exactly what the accept path avoids for
@@ -553,6 +558,10 @@ those, so the helpers check both.
 | `Projects/Server/Network/PacketHandler.cs` | PacketHandler class |
 | `Projects/Server/Network/IConnectionFilter.cs` | Accept-path gate contract |
 | `Projects/Server/Network/ConnectionFilters.cs` | Filter registry + lifecycle |
-| `Projects/UOContent/Misc/Firewall/Firewall.cs` | Admin-curated firewall set |
+| `Projects/UOContent/Network/Firewall/Firewall.cs` | Admin-curated firewall set |
 | `Projects/Server/Utilities/IPAddressUtility.cs` | IPAddress <-> UInt128 normalization, CIDR parsing |
-| `Projects/UOContent/Misc/Blocklist/BlocklistFilter.cs` | File-sourced blocklist filter |
+| `Projects/UOContent/Network/Blocklist/BlocklistFilter.cs` | File-sourced blocklist filter |
+| `Projects/UOContent/Network/LoginAllowlist/LoginAllowlist.cs` | Allowlist earned by a recent successful login |
+| `Projects/UOContent/Network/AutoDenylist/AutoDenylist.cs` | Short-lived local hold on behavioural detections |
+| `Projects/Server/Network/Bans/BanReasons.cs` | Ban reason slugs + the behavioural opt-in set |
+| `Projects/Server/Network/ForeignProtocol.cs` | Positive identification of non-UO traffic (HTTP/TLS/SSH) |

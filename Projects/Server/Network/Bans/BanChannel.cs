@@ -103,8 +103,25 @@ public static class BanChannel
     }
 
     /// <summary>Fans a locally-decided ban out to every reporter. Non-blocking; never throws.</summary>
+    /// <summary>
+    /// Optional content-supplied exemption; true drops the contribution before any reporter sees it. This
+    /// withholds escalation only — the gate that reached the verdict has already acted.
+    /// </summary>
+    /// <remarks>
+    /// An implementation that ignores <c>reason</c> would silently swallow manual bans. See
+    /// <see cref="BanReasons.IsBehavioral"/>.
+    /// </remarks>
+    public static Func<IPAddress, string, bool> IsExempt { get; set; }
+
     public static void Report(IPAddress ip, TimeSpan ttl, string reason)
     {
+        var exempt = IsExempt;
+        if (exempt != null && exempt(ip, reason))
+        {
+            logger.Debug("{Address} not contributed ('{Reason}'): exempt", ip, reason);
+            return;
+        }
+
         var reporters = _reporters;
         for (var i = 0; i < reporters.Length; i++)
         {

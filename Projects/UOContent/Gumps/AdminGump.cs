@@ -1745,7 +1745,7 @@ namespace Server.Gumps
                 for (var i = 0; i < a.LoginIPs.Length; ++i)
                 {
                     Firewall.Add(new SingleIpFirewallEntry(a.LoginIPs[i]));
-                    BanChannel.Report(a.LoginIPs[i], TimeSpan.Zero, "manual");
+                    BanChannel.Report(a.LoginIPs[i], TimeSpan.Zero, BanReasons.Manual);
                 }
 
                 notice = "All addresses in the list have been firewalled.";
@@ -1774,7 +1774,7 @@ namespace Server.Gumps
 
                 if (firewallEntry.MinIpAddress == firewallEntry.MaxIpAddress)
                 {
-                    BanChannel.Report(firewallEntry.MinIpAddress.ToIpAddress(), TimeSpan.Zero, "manual");
+                    BanChannel.Report(firewallEntry.MinIpAddress.ToIpAddress(), TimeSpan.Zero, BanReasons.Manual);
                 }
 
                 notice = $"{toFirewall} : Added to firewall.";
@@ -3596,7 +3596,7 @@ namespace Server.Gumps
                                             BanChannel.Report(
                                                 firewallEntry.MinIpAddress.ToIpAddress(),
                                                 TimeSpan.Zero,
-                                                "manual"
+                                                BanReasons.Manual
                                             );
                                         }
 

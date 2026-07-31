@@ -48,6 +48,7 @@ Apply these when writing or reviewing `.cs` files under `Projects/`.
 | Server lifecycle & bootstrap phases (Configure/ConfigurePrompts/Initialize) | `dev-docs/server-lifecycle.md` |
 | Configuration system | `dev-docs/configuration.md` |
 | Networking & packets | `dev-docs/networking-packets.md` |
+| IP bans, blocklists & allowlists (incl. unblocking a player) | `dev-docs/ip-bans-and-allowlists.md` |
 | Region system | `dev-docs/regions.md` |
 | String handling & ValueStringBuilder | `dev-docs/string-handling.md` |
 | RunUO migration (overview) | `dev-docs/runuo-migration-docs/00-overview.md` |

@@ -61,6 +61,29 @@ public class BanChannelTests
     }
 
     [Fact]
+    public void Report_SuppressedForExemptAddress()
+    {
+        var reporter = new FakeReporter();
+        BanChannel.ConfigureForTesting([reporter]);
+
+        var exempt = IPAddress.Parse("203.0.113.7");
+        BanChannel.IsExempt = (ip, _) => ip.Equals(exempt);
+
+        try
+        {
+            BanChannel.Report(exempt, TimeSpan.FromHours(1), "rate-limit");
+            Assert.Empty(reporter.Reports); // escalation suppressed; the local gate already acted
+
+            BanChannel.Report(IPAddress.Parse("203.0.113.8"), TimeSpan.FromHours(1), "rate-limit");
+            Assert.Single(reporter.Reports); // everyone else is still contributed
+        }
+        finally
+        {
+            BanChannel.IsExempt = null;
+        }
+    }
+
+    [Fact]
     public void Retract_ReachesRetractCapableReporters()
     {
         var a = new FakeReporter();
