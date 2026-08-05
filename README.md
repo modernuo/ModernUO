@@ -15,7 +15,7 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 
 ## Requirements
 #### Supported Operating Systems
-[![Windows 10/11/2012/2016/2019/2022/2025](https://img.shields.io/badge/-server%202025-3c78d5?labelColor=222222&logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHJvbGU9ImltZyIgdmlld0JveD0iMCAwIDI0IDI0Ij48dGl0bGU+V2luZG93czwvdGl0bGU+PHBhdGggZD0iTTAsMEgxMS4zNzdWMTEuMzcySDBaTTEyLjYyMywwSDI0VjExLjM3MkgxMi42MjNaTTAsMTIuNjIzSDExLjM3N1YyNEgwWm0xMi42MjMsMEgyNFYyNEgxMi42MjMiIGZpbGw9IiMzYzc4ZDUiLz48L3N2Zz4=)](https://www.microsoft.com/en-US/evalcenter/evaluate-windows-server-2022)
+[![Windows 10 1803+/11/2019/2022/2025](https://img.shields.io/badge/-server%202025-3c78d5?labelColor=222222&logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHJvbGU9ImltZyIgdmlld0JveD0iMCAwIDI0IDI0Ij48dGl0bGU+V2luZG93czwvdGl0bGU+PHBhdGggZD0iTTAsMEgxMS4zNzdWMTEuMzcySDBaTTEyLjYyMywwSDI0VjExLjM3MkgxMi42MjNaTTAsMTIuNjIzSDExLjM3N1YyNEgwWm0xMi42MjMsMEgyNFYyNEgxMi42MjMiIGZpbGw9IiMzYzc4ZDUiLz48L3N2Zz4=)](https://www.microsoft.com/en-US/evalcenter/evaluate-windows-server-2022)
 ![MacOS 14+](https://img.shields.io/badge/-sonoma-222222?logo=apple&logoColor=white&labelColor=222222)
 [![Debian 12+](https://img.shields.io/badge/-trixie-A81D33?logo=debian&logoColor=A81D33&labelColor=222222)](https://www.debian.org/distrib/)
 [![Ubuntu 22+ LTS](https://img.shields.io/badge/-26LTS-E95420?logo=ubuntu&logoColor=E95420&labelColor=222222)](https://ubuntu.com/download/server)
@@ -36,6 +36,24 @@ ModernUO [![Discord](https://img.shields.io/discord/751317910504603701?logo=disc
 
 ##### Windows
 [![VC++ Redistributable v14](https://img.shields.io/badge/-Redist%20v14-00599C?logo=cplusplus&logoColor=white&labelColor=222222)](https://aka.ms/vc14/vc_redist.x64.exe)
+
+#### Hardware
+
+| Use | vCPU | RAM | Storage |
+|---|---|---|---|
+| Development / test | 2 **dedicated** | 2 GB | SSD |
+| Small live shard (< 50 concurrent) | 4 dedicated | 4 GB | NVMe |
+| Medium (50–200) | 4–8 | 8 GB | NVMe |
+| Large (200+) | 8+, high clock | 16 GB+ | NVMe |
+
+Game logic is single-threaded, so **single-core clock speed matters more than core count**, and
+**dedicated vCPU matters more than either** — burstable or shared plans throttle once credits run
+out, which is the most common cause of unexplained lag spikes. Save size drives RAM more than
+player count does.
+
+See [dev-docs/server-requirements.md](dev-docs/server-requirements.md) for the reasoning and tuning
+options, and [dev-docs/measuring-event-loop.md](dev-docs/measuring-event-loop.md) if you are
+diagnosing lag on an existing shard.
 
 #### Development
 [![git](https://img.shields.io/badge/-git-F05032?logo=git&logoColor=F05032&labelColor=222222)](https://git-scm.com/downloads)
