@@ -72,6 +72,31 @@ public partial class NetState
     }
 
     /// <summary>
+    /// Wakes the game loop if it is blocked in <see cref="WaitForCompletion"/>.
+    /// </summary>
+    /// <remarks>
+    /// Safe from any thread, and before networking is configured or after it is torn down, where
+    /// it does nothing. The underlying signal is sticky, so a wake racing with the loop's decision
+    /// to sleep is honoured by that sleep rather than lost.
+    /// </remarks>
+    public static void Wake()
+    {
+        _socketManager?.Ring?.Wake();
+    }
+
+    /// <summary>
+    /// True when no queued network work remains for the loop to drain.
+    /// </summary>
+    /// <remarks>
+    /// <see cref="Slice"/> defers work in several places -- throttled states are re-queued, sends
+    /// are batched into <c>_flushPending</c>, and disposals are drained separately -- so an empty
+    /// completion queue alone does not mean there is nothing to do.
+    /// </remarks>
+    internal static bool IsIdle =>
+        _throttled.Count == 0 && _throttledPending.Count == 0 &&
+        _flushPending.Count == 0 && _disposed.Count == 0;
+
+    /// <summary>
     /// Gets the listening addresses that the server is bound to.
     /// </summary>
     public static IPEndPoint[] ListeningAddresses { get; private set; }

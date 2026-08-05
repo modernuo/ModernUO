@@ -51,9 +51,41 @@ public partial class Timer
         }
     }
 
+    /// <summary>
+    /// Milliseconds the wheel was behind schedule on the most recent <see cref="Slice"/>.
+    /// </summary>
+    /// <remarks>
+    /// This is the number that corresponds to player-felt lag: it is how late the wheel turned,
+    /// not how fast the loop spun. Arriving within one <c>_tickRate</c> is on time and reports 0;
+    /// anything beyond that is time the server owed the world and did not deliver.
+    /// <para>
+    /// Cheap by construction -- it reuses a subtraction the wheel already performs, so there is no
+    /// reason for operators to hand-roll a probe that enumerates processes or threads to get it.
+    /// </para>
+    /// </remarks>
+    public static long LastTickLag { get; private set; }
+
+    /// <summary>
+    /// Highest <see cref="LastTickLag"/> observed since the last <see cref="ResetPeakTickLag"/>.
+    /// </summary>
+    public static long PeakTickLag { get; private set; }
+
+    /// <summary>
+    /// Clears the <see cref="PeakTickLag"/> high-water mark, so the next reporting window starts
+    /// fresh rather than being pinned by an old spike.
+    /// </summary>
+    public static void ResetPeakTickLag() => PeakTickLag = 0;
+
     public static void Slice(long tickCount)
     {
         var deltaSinceTurn = tickCount - _lastTickTurned;
+
+        LastTickLag = deltaSinceTurn > _tickRate ? deltaSinceTurn - _tickRate : 0;
+        if (LastTickLag > PeakTickLag)
+        {
+            PeakTickLag = LastTickLag;
+        }
+
         while (deltaSinceTurn >= _tickRate)
         {
             deltaSinceTurn -= _tickRate;

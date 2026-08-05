@@ -39,10 +39,23 @@ public static class Core
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(Core));
 
-    private static bool _performProcessKill;
+    // Written from other threads (Kill, RequestSnapshot) and read by the event loop. Volatile
+    // because the loop now genuinely blocks between reads rather than spinning past them.
+    private static volatile bool _performProcessKill;
     private static bool _restartOnKill;
-    private static bool _performSnapshot;
+    private static volatile bool _performSnapshot;
     private static string _snapshotPath;
+
+    // Longest the loop will block when it has nothing to do. This is a backstop, not a latency
+    // control: because the timer wheel's tick rate bounds the sleep anyway, its only job is to
+    // limit the damage if a wake signal is ever missed. 0 selects the legacy spin loop, which
+    // exists so the two can be measured against each other on the same host.
+    private static int _eventLoopIdleWaitMs = 2;
+
+    /// <summary>
+    /// Longest the loop will block while idle, in milliseconds. 0 means the legacy spin loop.
+    /// </summary>
+    public static int EventLoopIdleWaitMs => _eventLoopIdleWaitMs;
     private static bool _crashed;
     private static string _baseDirectory;
 
@@ -235,6 +248,10 @@ public static class Core
     {
         _restartOnKill = restart;
         _performProcessKill = true;
+
+        // Callers are usually off-loop (console input, signal handlers). Without this the loop
+        // would not notice the request until it woke for some other reason.
+        NetState.Wake();
     }
 
     public static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -424,6 +441,10 @@ public static class Core
 
         ServerConfiguration.Load();
 
+        // Read before the loop starts. 0 restores the pre-2026 spin loop, which is retained so a
+        // shard can measure the two schedulers against each other on identical hardware.
+        _eventLoopIdleWaitMs = ServerConfiguration.GetOrUpdateSetting("server.eventLoopIdleWaitMs", 2);
+
         var assemblyPath = Path.Join(BaseDirectory, AssembliesConfiguration);
 
         // Load UOContent.dll
@@ -471,6 +492,19 @@ public static class Core
         EventSink.InvokeServerStarted();
         RunEventLoop();
     }
+
+    /// <summary>
+    /// True when every queue the loop drains is empty, so sleeping cannot strand pending work.
+    /// </summary>
+    /// <remarks>
+    /// This is what lets the loop use a whole core when it needs one: under load these are
+    /// non-empty, the loop never sleeps, and it runs flat out. It is not merely a timer check
+    /// because the drains above are deliberately bounded -- ProcessDeltaQueue stops at the count
+    /// it saw on entry, ExecuteTasks stops at its per-frame cap -- so leftovers are normal and
+    /// must keep the loop awake.
+    /// </remarks>
+    private static bool IsIdle() =>
+        !Mobile.HasQueuedDeltas && !Item.HasQueuedDeltas && LoopContext.IsEmpty && NetState.IsIdle;
 
     public static void RunEventLoop()
     {
@@ -532,10 +566,29 @@ public static class Core
 
                     lastRaw = nowRaw;
 
-                    var sleepMs = (int)Timer.MillisecondsUntilNextTick(_tickCount);
-                    if (sleepMs >= 2)
+                    if (_eventLoopIdleWaitMs <= 0)
                     {
-                        NetState.WaitForCompletion(sleepMs - 1);
+                        // Legacy scheduling, kept so the new behaviour can be A/B measured against
+                        // it on the same host. Only considers sleeping once per `interval`
+                        // iterations, and spins through the loop body the rest of the time.
+                        var sleepMs = (int)Timer.MillisecondsUntilNextTick(_tickCount);
+                        if (sleepMs >= 2)
+                        {
+                            NetState.WaitForCompletion(sleepMs - 1);
+                        }
+                    }
+                }
+
+                if (_eventLoopIdleWaitMs > 0 && IsIdle())
+                {
+                    // Re-read the clock rather than reusing _tickCount: the loop body above has
+                    // consumed real time, and a stale timestamp would overstate how long is left
+                    // before the next tick, so we would sleep straight past it and manufacture
+                    // the very tick lag this is meant to remove.
+                    var due = Timer.MillisecondsUntilNextTick(GetTimestamp());
+                    if (due > 0)
+                    {
+                        NetState.WaitForCompletion((int)Math.Min(due, _eventLoopIdleWaitMs));
                     }
                 }
             }
@@ -553,6 +606,10 @@ public static class Core
     {
         _snapshotPath = snapshotPath;
         _performSnapshot = true;
+
+        // Save requests arrive off-loop. Wake so the snapshot starts now rather than after the
+        // loop happens to surface for another reason.
+        NetState.Wake();
     }
 
     public static void VerifySerialization()
