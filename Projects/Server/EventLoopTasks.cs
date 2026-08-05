@@ -65,12 +65,37 @@ public sealed class EventLoopContext : SynchronizationContext
     }
 
     /// <summary>
+    /// Number of posts that skipped the wake because they came from the loop thread.
+    /// </summary>
+    public static long WakesElided => Volatile.Read(ref _wakesElided);
+
+    /// <summary>
+    /// Number of posts that actually signalled the ring.
+    /// </summary>
+    public static long WakesIssued => Volatile.Read(ref _wakesIssued);
+
+    private static long _wakesElided;
+    private static long _wakesIssued;
+
+    /// <summary>
     /// Nudges the game loop in case it is asleep. Enqueuing alone is not enough: the loop blocks
     /// on network I/O, which a queue push does not signal, so without this a cross-thread post
     /// would sit unnoticed until the loop woke for some other reason.
     /// </summary>
-    private static void WakeEventLoop()
+    private void WakeEventLoop()
     {
+        // A post from the loop thread cannot need a wake: the loop is executing this very call,
+        // so by definition it is not blocked. Skipping the signal here is exact, not heuristic,
+        // and it matters because the signal is a syscall on every backend -- pure waste on a busy
+        // shard, which is precisely where it can least be afforded.
+        if (Thread.CurrentThread == _mainThread)
+        {
+            Interlocked.Increment(ref _wakesElided);
+            return;
+        }
+
+        Interlocked.Increment(ref _wakesIssued);
+
         // Posts can happen during startup before networking is configured, and during shutdown
         // after it is torn down; NetState.Wake handles both by doing nothing.
         Network.NetState.Wake();

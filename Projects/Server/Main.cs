@@ -56,6 +56,32 @@ public static class Core
     /// Longest the loop will block while idle, in milliseconds. 0 means the legacy spin loop.
     /// </summary>
     public static int EventLoopIdleWaitMs => _eventLoopIdleWaitMs;
+
+    // Loop-thread only, so plain increments are safe.
+    private static long _loopIterations;
+    private static long _loopSleeps;
+
+    /// <summary>
+    /// Loop iterations since the last <see cref="ResetLoopCounters"/>.
+    /// </summary>
+    public static long LoopIterations => _loopIterations;
+
+    /// <summary>
+    /// Iterations that actually blocked, since the last <see cref="ResetLoopCounters"/>.
+    /// </summary>
+    /// <remarks>
+    /// The ratio of this to <see cref="LoopIterations"/> is how to tell whether idle sleeping is
+    /// doing anything on a given shard. Under sustained load it should approach zero, because the
+    /// queues are never all empty -- which also means the wake signal is not being exercised, and
+    /// any cost it carries is pure overhead there.
+    /// </remarks>
+    public static long LoopSleeps => _loopSleeps;
+
+    public static void ResetLoopCounters()
+    {
+        _loopIterations = 0;
+        _loopSleeps = 0;
+    }
     private static bool _crashed;
     private static string _baseDirectory;
 
@@ -579,6 +605,8 @@ public static class Core
                     }
                 }
 
+                _loopIterations++;
+
                 if (_eventLoopIdleWaitMs > 0 && IsIdle())
                 {
                     // Re-read the clock rather than reusing _tickCount: the loop body above has
@@ -588,6 +616,7 @@ public static class Core
                     var due = Timer.MillisecondsUntilNextTick(GetTimestamp());
                     if (due > 0)
                     {
+                        _loopSleeps++;
                         NetState.WaitForCompletion((int)Math.Min(due, _eventLoopIdleWaitMs));
                     }
                 }

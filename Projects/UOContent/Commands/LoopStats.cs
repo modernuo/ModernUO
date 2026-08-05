@@ -63,11 +63,17 @@ public static class LoopStats
     {
         var snapshot = Capture();
         logger.Information(
-            "loop: cpu={Cpu:F1}% cps={Cps:F0} tickLagPeak={PeakLag}ms tickLagNow={LastLag}ms idleWait={IdleWait}ms",
+            "loop: cpu={Cpu:F1}% cps={Cps:F0} tickLagPeak={PeakLag}ms tickLagNow={LastLag}ms " +
+            "sleeps={Sleeps}/{Iterations} ({SleepRatio:F1}%) wakes={WakesIssued} elided={WakesElided} idleWait={IdleWait}ms",
             snapshot.CpuPercent,
             snapshot.AverageCps,
             snapshot.PeakTickLag,
             snapshot.LastTickLag,
+            snapshot.Sleeps,
+            snapshot.Iterations,
+            snapshot.SleepRatio,
+            snapshot.WakesIssued,
+            snapshot.WakesElided,
             Core.EventLoopIdleWaitMs
         );
     }
@@ -76,7 +82,12 @@ public static class LoopStats
         double CpuPercent,
         double AverageCps,
         long PeakTickLag,
-        long LastTickLag
+        long LastTickLag,
+        long Sleeps,
+        long Iterations,
+        double SleepRatio,
+        long WakesIssued,
+        long WakesElided
     );
 
     /// <summary>
@@ -94,11 +105,26 @@ public static class LoopStats
         // Guard the very first call, where the window is zero-length.
         var cpuPercent = wallMs > 0 ? cpuMs / wallMs * 100 : 0;
 
-        var snapshot = new Snapshot(cpuPercent, Core.AverageCPS, Timer.PeakTickLag, Timer.LastTickLag);
+        var iterations = Core.LoopIterations;
+        var sleeps = Core.LoopSleeps;
+        var sleepRatio = iterations > 0 ? (double)sleeps / iterations * 100 : 0;
+
+        var snapshot = new Snapshot(
+            cpuPercent,
+            Core.AverageCPS,
+            Timer.PeakTickLag,
+            Timer.LastTickLag,
+            sleeps,
+            iterations,
+            sleepRatio,
+            EventLoopContext.WakesIssued,
+            EventLoopContext.WakesElided
+        );
 
         _lastCpu = cpu;
         _lastReport = now;
         Timer.ResetPeakTickLag();
+        Core.ResetLoopCounters();
 
         return snapshot;
     }
@@ -117,6 +143,8 @@ public static class LoopStats
         e.Mobile.SendMessage($"{"CPU"}: {snapshot.CpuPercent:F1}{"% of one core since last check"}");
         e.Mobile.SendMessage($"{"Cycles/sec"}: {snapshot.AverageCps:F0}");
         e.Mobile.SendMessage($"{"Tick lag"}: {snapshot.LastTickLag}{"ms now, peak "}{snapshot.PeakTickLag}{"ms"}");
+        e.Mobile.SendMessage($"{"Slept"}: {snapshot.Sleeps}{" of "}{snapshot.Iterations}{" iterations ("}{snapshot.SleepRatio:F1}{"%)"}");
+        e.Mobile.SendMessage($"{"Wakes"}: {snapshot.WakesIssued}{" signalled, "}{snapshot.WakesElided}{" elided on-thread"}");
     }
 
     [Usage("LoopStatsLog [seconds]")]

@@ -37,11 +37,44 @@ dominated by the scheduler rather than by load — see [Reading the numbers](#re
 Logs a line every 15 seconds (`0` disables it):
 
 ```
-loop: cpu=0.6% cps=407 tickLagPeak=11ms tickLagNow=0ms idleWait=2ms
+loop: cpu=0.4% cps=422 tickLagPeak=4ms tickLagNow=1ms sleeps=6581/6588 (99.9%) wakes=0 elided=0 idleWait=2ms
 ```
 
 `cpu` is percent of a single core since the previous line, `tickLagPeak` is the worst tick lag in
 that window, and the window resets each time so an old spike does not pin the number.
+
+`sleeps` is how many loop iterations actually blocked, `wakes` is how many cross-thread posts
+signalled the ring, and `elided` is how many skipped the signal because they came from the loop
+thread and therefore could not have needed one.
+
+## Will a busy shard regress?
+
+The scheduling change costs something only where it does something, and these counters show which.
+
+**Under sustained load the loop stops sleeping.** `sleeps` approaches 0 because the queues are
+never all empty at once — 500 players generate a continuous stream of pending sends. At that point
+the loop is running exactly as it did before, and the only added per-iteration work is the idle
+check, which is four `Count` comparisons.
+
+**Constant networking generates no wakes at all.** Packet handling runs inline on the loop thread
+(`NetState.Slice` → `HandleReceive` → `HandlePacket`), as do timers (`Timer.Slice` → `Turn` →
+`OnTick`). Neither goes through `LoopContext.Post`, so neither can trigger a wake. Traffic volume
+is simply not connected to wake volume.
+
+Wakes come only from cross-thread work: async continuations resuming on the loop, and a handful of
+explicit posts such as the start and end of a world save. Those are rare by construction. Posts
+originating **on** the loop thread are elided outright — the loop is executing that call, so it
+cannot be blocked, which makes the check exact rather than a heuristic.
+
+So the shape to expect on a busy shard is `sleeps` near 0 and `wakes` low. To confirm on your own
+shard:
+
+1. Run at peak population with `server.loopStatsIntervalSeconds` enabled.
+2. Check `sleeps` — if it is near 0, idle sleeping is dormant and cannot be costing you anything.
+3. Check `wakes` — if it is high while `sleeps` is near 0, signals are being issued that nobody is
+   waiting on. Report it; that is the case worth optimising and it is not expected.
+4. Compare `tickLagPeak` and `cpu` against a run at `server.eventLoopIdleWaitMs=0`. Equal or better
+   on both means no regression.
 
 In game, `[LoopStats` prints the same values on demand and `[LoopStatsLog 15` starts periodic
 logging without a restart.
