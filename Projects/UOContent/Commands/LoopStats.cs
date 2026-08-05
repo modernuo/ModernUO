@@ -21,6 +21,8 @@ public static class LoopStats
     private static TimeSpan _lastCpu;
     private static DateTime _lastReport;
     private static bool _reporting;
+    private static long _lastSkippedTicks;
+    private static long _lastTurns;
 
     public static void Configure()
     {
@@ -63,17 +65,21 @@ public static class LoopStats
     {
         var snapshot = Capture();
         logger.Information(
-            "loop: cpu={Cpu:F1}% cps={Cps:F0} tickLagPeak={PeakLag}ms tickLagNow={LastLag}ms " +
-            "sleeps={Sleeps}/{Iterations} ({SleepRatio:F1}%) wakes={WakesIssued} elided={WakesElided} idleWait={IdleWait}ms",
+            "loop: cpu={Cpu:F1}% cps={Cps:F0} skippedTicks={Skipped}/{Turns} tickLagPeak={PeakLag}ms " +
+            "sleeps={Sleeps}/{Iterations} ({SleepRatio:F1}%) wakes={WakesIssued} elided={WakesElided} " +
+            "backoffs={Backoffs}{Suspended} idleWait={IdleWait}ms",
             snapshot.CpuPercent,
             snapshot.AverageCps,
+            snapshot.SkippedTicks,
+            snapshot.TotalTurns,
             snapshot.PeakTickLag,
-            snapshot.LastTickLag,
             snapshot.Sleeps,
             snapshot.Iterations,
             snapshot.SleepRatio,
             snapshot.WakesIssued,
             snapshot.WakesElided,
+            Core.IdleSleepBackoffs,
+            Core.IdleSleepSuspended ? " (SUSPENDED)" : "",
             Core.EventLoopIdleWaitMs
         );
     }
@@ -83,6 +89,8 @@ public static class LoopStats
         double AverageCps,
         long PeakTickLag,
         long LastTickLag,
+        long SkippedTicks,
+        long TotalTurns,
         long Sleeps,
         long Iterations,
         double SleepRatio,
@@ -109,11 +117,22 @@ public static class LoopStats
         var sleeps = Core.LoopSleeps;
         var sleepRatio = iterations > 0 ? (double)sleeps / iterations * 100 : 0;
 
+        // Timer's counters are monotonic because the loop's backoff reads them too, so difference
+        // them here rather than resetting and stealing the other reader's baseline.
+        var skippedTotal = Timer.SkippedTicks;
+        var turnsTotal = Timer.TotalTurns;
+        var skipped = skippedTotal - _lastSkippedTicks;
+        var turns = turnsTotal - _lastTurns;
+        _lastSkippedTicks = skippedTotal;
+        _lastTurns = turnsTotal;
+
         var snapshot = new Snapshot(
             cpuPercent,
             Core.AverageCPS,
             Timer.PeakTickLag,
             Timer.LastTickLag,
+            skipped,
+            turns,
             sleeps,
             iterations,
             sleepRatio,
@@ -142,6 +161,7 @@ public static class LoopStats
         }}");
         e.Mobile.SendMessage($"{"CPU"}: {snapshot.CpuPercent:F1}{"% of one core since last check"}");
         e.Mobile.SendMessage($"{"Cycles/sec"}: {snapshot.AverageCps:F0}");
+        e.Mobile.SendMessage($"{"Skipped ticks"}: {snapshot.SkippedTicks}{" of "}{snapshot.TotalTurns}{" turns"}");
         e.Mobile.SendMessage($"{"Tick lag"}: {snapshot.LastTickLag}{"ms now, peak "}{snapshot.PeakTickLag}{"ms"}");
         e.Mobile.SendMessage($"{"Slept"}: {snapshot.Sleeps}{" of "}{snapshot.Iterations}{" iterations ("}{snapshot.SleepRatio:F1}{"%)"}");
         e.Mobile.SendMessage($"{"Wakes"}: {snapshot.WakesIssued}{" signalled, "}{snapshot.WakesElided}{" elided on-thread"}");

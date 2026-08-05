@@ -82,6 +82,95 @@ public static class Core
         _loopIterations = 0;
         _loopSleeps = 0;
     }
+
+    // Adaptive backoff. Idle sleeping is the right default, but it can only ever make latency
+    // worse in one way: the wait may return late, and a late return means the wheel loses a slot
+    // that a spinning loop would have caught. Rather than trade that risk off blindly, watch for
+    // it and stop sleeping while it is happening.
+    private const long BackoffSampleIntervalMs = 1000;
+    private const long BackoffDurationMs = 5000;
+
+    private static long _nextBackoffSample;
+    private static long _skippedTicksAtLastSample;
+    private static long _idleSleepSuspendedUntil;
+    private static int _skippedTickThreshold = 2;
+    private static long _idleSleepBackoffs;
+    private static bool _backoffPrimed;
+    private static int _consecutiveBadSamples;
+
+    /// <summary>
+    /// Times the loop has stopped sleeping because the wheel was losing slots.
+    /// </summary>
+    public static long IdleSleepBackoffs => _idleSleepBackoffs;
+
+    /// <summary>
+    /// Whether idle sleeping is currently suspended by the adaptive backoff.
+    /// </summary>
+    public static bool IdleSleepSuspended => _tickCount < _idleSleepSuspendedUntil;
+
+    /// <summary>
+    /// Samples how many wheel slots were lost since the last check and suspends idle sleeping if
+    /// too many were, so a struggling shard spins rather than risking a late wake.
+    /// </summary>
+    /// <remarks>
+    /// Measured on an idle shard, both the spin loop and 2ms sleeping lose about one slot in
+    /// 7,500, which is the operating system rather than the scheduler. The threshold is set well
+    /// above that floor so ordinary jitter does not trip it, and the suspension is held for
+    /// several seconds so the loop is not flapping between modes on a single hiccup.
+    /// </remarks>
+    private static void SampleTickHealth()
+    {
+        if (_tickCount < _nextBackoffSample)
+        {
+            return;
+        }
+
+        _nextBackoffSample = _tickCount + BackoffSampleIntervalMs;
+
+        var skipped = Timer.SkippedTicks;
+        var lost = skipped - _skippedTicksAtLastSample;
+        _skippedTicksAtLastSample = skipped;
+
+        // The wheel is initialised before the world loads, so the loop's very first Slice turns it
+        // once for every 8ms that loading took -- hundreds of slots, none of them a stall. Prime
+        // the baseline off that first sample instead of judging it.
+        if (!_backoffPrimed)
+        {
+            _backoffPrimed = true;
+            return;
+        }
+
+        if (lost <= _skippedTickThreshold)
+        {
+            _consecutiveBadSamples = 0;
+            return;
+        }
+
+        // Require the condition to persist. Startup loses slots legitimately while tiered JIT and
+        // first-touch initialisation settle, and any host can drop one sample to unrelated load;
+        // neither is a reason to abandon idle sleeping. A shard that is genuinely behind stays
+        // behind, so it trips on the second sample instead.
+        if (++_consecutiveBadSamples < 2)
+        {
+            return;
+        }
+
+        // Already suspended: extend rather than counting it as a fresh backoff, so the counter
+        // reflects distinct episodes instead of how long one lasted.
+        var wasSuspended = _tickCount < _idleSleepSuspendedUntil;
+        _idleSleepSuspendedUntil = _tickCount + BackoffDurationMs;
+
+        if (!wasSuspended)
+        {
+            _idleSleepBackoffs++;
+            logger.Warning(
+                "Event loop is losing timer slots ({Lost} in {Interval}ms); idle sleeping suspended for {Duration}ms",
+                lost,
+                BackoffSampleIntervalMs,
+                BackoffDurationMs
+            );
+        }
+    }
     private static bool _crashed;
     private static string _baseDirectory;
 
@@ -471,6 +560,12 @@ public static class Core
         // shard can measure the two schedulers against each other on identical hardware.
         _eventLoopIdleWaitMs = ServerConfiguration.GetOrUpdateSetting("server.eventLoopIdleWaitMs", 2);
 
+        // Wheel slots lost per second before idle sleeping backs off. An idle shard loses roughly
+        // one slot in 7,500 turns (~125/sec) whether it sleeps or spins, so this sits well above
+        // the noise floor. Raise it to tolerate a jittery host, or set it very high to disable the
+        // backoff entirely.
+        _skippedTickThreshold = ServerConfiguration.GetOrUpdateSetting("server.skippedTickThreshold", 2);
+
         var assemblyPath = Path.Join(BaseDirectory, AssembliesConfiguration);
 
         // Load UOContent.dll
@@ -606,8 +701,9 @@ public static class Core
                 }
 
                 _loopIterations++;
+                SampleTickHealth();
 
-                if (_eventLoopIdleWaitMs > 0 && IsIdle())
+                if (_eventLoopIdleWaitMs > 0 && _tickCount >= _idleSleepSuspendedUntil && IsIdle())
                 {
                     // Re-read the clock rather than reusing _tickCount: the loop body above has
                     // consumed real time, and a stale timestamp would overstate how long is left

@@ -71,9 +71,37 @@ public partial class Timer
     public static long PeakTickLag { get; private set; }
 
     /// <summary>
-    /// Clears the <see cref="PeakTickLag"/> high-water mark, so the next reporting window starts
+    /// Wheel slots that came due while the loop was elsewhere, since the last reset.
+    /// </summary>
+    /// <remarks>
+    /// This is the number to judge health by, not <see cref="PeakTickLag"/>. A peak is a single
+    /// worst case over the whole window, so one hiccup pins it and it reads the same whether the
+    /// server stumbled once or is permanently behind. A skipped slot means two or more turns came
+    /// due in the same pass -- the wheel genuinely lost a step rather than merely arriving a
+    /// fraction late, which it always does since a wake can never land exactly on the boundary.
+    /// <para>
+    /// Judge it as a rate against the tick rate: at 8ms, a second holds 125 slots, so a handful
+    /// per minute is scheduling jitter and hundreds per minute is a server that cannot keep up.
+    /// </para>
+    /// </remarks>
+    public static long SkippedTicks { get; private set; }
+
+    /// <summary>
+    /// Wheel turns performed since the last reset, so <see cref="SkippedTicks"/> can be read as a
+    /// proportion rather than a bare count.
+    /// </summary>
+    public static long TotalTurns { get; private set; }
+
+    /// <summary>
+    /// Clears the <see cref="PeakTickLag"/> high-water mark so the next reporting window starts
     /// fresh rather than being pinned by an old spike.
     /// </summary>
+    /// <remarks>
+    /// <see cref="SkippedTicks"/> and <see cref="TotalTurns"/> are deliberately left alone: they
+    /// are monotonic because more than one consumer reads them -- the reporter and the loop's own
+    /// backoff -- and a counter that any reader can reset is a counter the other readers cannot
+    /// trust. Callers difference them against their own previous sample instead.
+    /// </remarks>
     public static void ResetPeakTickLag() => PeakTickLag = 0;
 
     public static void Slice(long tickCount)
@@ -86,11 +114,22 @@ public partial class Timer
             PeakTickLag = LastTickLag;
         }
 
+        var turns = 0;
         while (deltaSinceTurn >= _tickRate)
         {
             deltaSinceTurn -= _tickRate;
             _lastTickTurned += _tickRate;
+            turns++;
             Turn();
+        }
+
+        TotalTurns += turns;
+
+        // Turning once is on schedule. Every turn beyond the first in a single pass is a slot that
+        // came due while the loop was busy or descheduled, so it fired late.
+        if (turns > 1)
+        {
+            SkippedTicks += turns - 1;
         }
     }
 

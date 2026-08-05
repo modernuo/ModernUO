@@ -64,6 +64,52 @@ public class TickLagTests
         Assert.Equal(peakAfterSpike, Timer.PeakTickLag);
     }
 
+    // SkippedTicks and TotalTurns are monotonic by design, since the loop's backoff reads them
+    // alongside the reporter. Tests difference them the same way real consumers do.
+    [Fact]
+    public void OnTimeSliceSkipsNothing()
+    {
+        Timer.Init(0);
+        var turns = Timer.TotalTurns;
+        var skipped = Timer.SkippedTicks;
+
+        Timer.Slice(8);
+
+        Assert.Equal(1, Timer.TotalTurns - turns);
+        Assert.Equal(0, Timer.SkippedTicks - skipped);
+    }
+
+    [Fact]
+    public void CompressedTurnsCountAsSkippedTicks()
+    {
+        Timer.Init(0);
+        var turns = Timer.TotalTurns;
+        var skipped = Timer.SkippedTicks;
+
+        // 30ms against an 8ms rate: three turns come due at once, so two slots fired late.
+        Timer.Slice(30);
+
+        Assert.Equal(3, Timer.TotalTurns - turns);
+        Assert.Equal(2, Timer.SkippedTicks - skipped);
+    }
+
+    [Fact]
+    public void SteadyTurnsAccumulateWithoutSkipping()
+    {
+        // Arriving exactly on each boundary is the healthy case: many turns, nothing skipped.
+        Timer.Init(0);
+        var turns = Timer.TotalTurns;
+        var skipped = Timer.SkippedTicks;
+
+        for (var t = 8; t <= 80; t += 8)
+        {
+            Timer.Slice(t);
+        }
+
+        Assert.Equal(10, Timer.TotalTurns - turns);
+        Assert.Equal(0, Timer.SkippedTicks - skipped);
+    }
+
     [Fact]
     public void ResetClearsPeakSoWindowsAreIndependent()
     {
