@@ -87,6 +87,27 @@ public partial class Timer
     public static long SkippedTicks { get; private set; }
 
     /// <summary>
+    /// Passes where the wheel turned more than once, so a slot fired at least one tick rate late.
+    /// </summary>
+    /// <remarks>
+    /// The 8ms budget. A timer scheduled on an 8ms cadence missed its deadline whenever this
+    /// increments. Preferably zero, but a host that occasionally deschedules the process will
+    /// produce some regardless of how the loop is configured.
+    /// </remarks>
+    public static long MissedTickDeadlines { get; private set; }
+
+    /// <summary>
+    /// Passes where the wheel turned three or more times, so a slot fired two tick rates or more
+    /// late.
+    /// </summary>
+    /// <remarks>
+    /// The 16ms budget, and the one that should never be non-zero. Anything scheduled at 16ms or
+    /// slower has visibly missed its deadline by the time this increments, so it is the number the
+    /// adaptive backoff acts on rather than the raw slot count.
+    /// </remarks>
+    public static long MissedFrameDeadlines { get; private set; }
+
+    /// <summary>
     /// Wheel turns performed since the last reset, so <see cref="SkippedTicks"/> can be read as a
     /// proportion rather than a bare count.
     /// </summary>
@@ -127,9 +148,18 @@ public partial class Timer
 
         // Turning once is on schedule. Every turn beyond the first in a single pass is a slot that
         // came due while the loop was busy or descheduled, so it fired late.
+        //
+        // Two turns means the oldest slot fired 8-15ms late: an 8ms cadence missed, a 16ms one did
+        // not. Three or more means 16ms or worse, which nothing scheduled at 16ms can absorb.
         if (turns > 1)
         {
             SkippedTicks += turns - 1;
+            MissedTickDeadlines++;
+
+            if (turns > 2)
+            {
+                MissedFrameDeadlines++;
+            }
         }
     }
 

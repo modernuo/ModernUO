@@ -99,9 +99,23 @@ public static class Core
     private static long _nextHealthSample;
     private static long _lastHealthSampleAt;
     private static long _iterationsAtLastSample;
-    private static long _skippedTicksAtLastSample;
+    private static long _missedFramesAtLastSample;
+
+    // Deadline misses the scheduler could plausibly have caused, as opposed to ones the server
+    // inflicted on itself. A world save blocking the loop for a second, or a staff command that is
+    // knowingly expensive, both blow the budget -- but the loop was not sleeping through either, so
+    // backing off sleeping would be treating an unrelated symptom. Only a gap that actually
+    // contained a sleep can be the sleep's fault.
+    private static bool _sleptLastIteration;
+    private static long _schedulerMissedFrames;
+
+    /// <summary>
+    /// Deadline misses that followed a sleep, and so may be attributable to the scheduler rather
+    /// than to work the server chose to do.
+    /// </summary>
+    public static long SchedulerMissedFrames => _schedulerMissedFrames;
     private static long _idleSleepSuspendedUntil;
-    private static int _skippedTickThreshold = 2;
+    private static int _missedFrameThreshold = 2;
     private static long _idleSleepBackoffs;
     private static bool _backoffPrimed;
     private static int _consecutiveBadSamples;
@@ -122,14 +136,14 @@ public static class Core
     /// <remarks>
     /// Cycle rate and tick health look like the same question but are not. Once the loop sleeps
     /// when idle, the cycle rate is set by how long it sleeps, not by how the shard is doing: it
-    /// reads about the same whether the world is empty or busy but keeping up. Skipped slots
+    /// reads about the same whether the world is empty or busy but keeping up. Missed deadlines
     /// measure the thing that matters directly, so they -- not the cycle rate -- decide the
     /// backoff. The rate is retained because existing tooling reads it.
     /// <para>
-    /// Measured on an idle shard, both a spinning loop and 2ms sleeping lose about one slot in
-    /// 7,500, which is the operating system rather than the scheduler. The threshold sits well
-    /// above that floor, and the suspension is held for seconds, so the loop cannot flap between
-    /// modes on a single hiccup.
+    /// The backoff can only remove the loop's own contribution, which is a wait that returned
+    /// late. It cannot make the operating system schedule the process: a host that steals 50ms
+    /// costs six slots whether the loop was sleeping or spinning. That is a feature for diagnosis
+    /// -- if deadlines are still missed at an idle wait of 0, the loop has been ruled out.
     /// </para>
     /// </remarks>
     private static void SampleLoopHealth()
@@ -146,9 +160,13 @@ public static class Core
         var iterations = _loopIterations - _iterationsAtLastSample;
         _iterationsAtLastSample = _loopIterations;
 
-        var skipped = Timer.SkippedTicks;
-        var lost = skipped - _skippedTicksAtLastSample;
-        _skippedTicksAtLastSample = skipped;
+        // Keyed on the 16ms budget rather than raw lost slots: a single slot lost is an 8ms
+        // overrun that most game timers absorb, while two or more means anything on a 16ms
+        // cadence has visibly missed. The latter is what should never happen, so it is what the
+        // loop reacts to.
+        var missed = _schedulerMissedFrames;
+        var lost = missed - _missedFramesAtLastSample;
+        _missedFramesAtLastSample = missed;
 
         // The wheel is initialised before the world loads, so the loop's very first Slice turns it
         // once for every 8ms that loading took -- hundreds of slots, none of them a stall. Prime
@@ -174,7 +192,7 @@ public static class Core
             }
         }
 
-        if (lost <= _skippedTickThreshold)
+        if (lost <= _missedFrameThreshold)
         {
             _consecutiveBadSamples = 0;
             return;
@@ -204,7 +222,7 @@ public static class Core
         {
             _idleSleepBackoffs++;
             logger.Warning(
-                "Event loop is losing timer slots ({Lost} in {Interval}ms); idle sleeping suspended for {Duration}ms",
+                "Timer wheel missed its 16ms budget {Lost} time(s) in {Interval}ms; idle sleeping suspended for {Duration}ms",
                 lost,
                 HealthSampleIntervalMs,
                 BackoffDurationMs
@@ -600,11 +618,12 @@ public static class Core
         // shard can measure the two schedulers against each other on identical hardware.
         _eventLoopIdleWaitMs = ServerConfiguration.GetOrUpdateSetting("server.eventLoopIdleWaitMs", 2);
 
-        // Wheel slots lost per second before idle sleeping backs off. An idle shard loses roughly
-        // one slot in 7,500 turns (~125/sec) whether it sleeps or spins, so this sits well above
-        // the noise floor. Raise it to tolerate a jittery host, or set it very high to disable the
-        // backoff entirely.
-        _skippedTickThreshold = ServerConfiguration.GetOrUpdateSetting("server.skippedTickThreshold", 2);
+        // How many times per second the wheel may blow its 16ms budget before idle sleeping backs
+        // off. This should be zero on healthy hardware, so the bar is deliberately low; it is not
+        // zero only because a host that briefly deschedules the process will produce one, and that
+        // is not worth abandoning sleeping over. Raise it to tolerate a jittery host, or set it
+        // very high to disable the backoff entirely.
+        _missedFrameThreshold = ServerConfiguration.GetOrUpdateSetting("server.missedFrameThreshold", 1);
 
         var assemblyPath = Path.Join(BaseDirectory, AssembliesConfiguration);
 
@@ -676,9 +695,22 @@ public static class Core
                 _tickCount = GetTimestamp();
                 _now = DateTime.UtcNow;
 
+                // Only read when the previous iteration actually slept, so a loop that never
+                // sleeps -- under load, or at an idle wait of 0 -- pays nothing for this.
+                var missedBeforeSlice = _sleptLastIteration ? Timer.MissedFrameDeadlines : 0;
+
                 Mobile.ProcessDeltaQueue();
                 Item.ProcessDeltaQueue();
                 Timer.Slice(_tickCount);
+
+                if (_sleptLastIteration)
+                {
+                    // This Slice measures the gap since the previous one, and that gap contained a
+                    // sleep. Anything it lost is fair to lay at the scheduler's door; misses on
+                    // iterations that did not sleep were the server being busy, not being late.
+                    _schedulerMissedFrames += Timer.MissedFrameDeadlines - missedBeforeSlice;
+                    _sleptLastIteration = false;
+                }
 
                 // Handle networking
                 NetState.Slice();
@@ -714,6 +746,7 @@ public static class Core
                     if (due > 0)
                     {
                         _loopSleeps++;
+                        _sleptLastIteration = true;
                         NetState.WaitForCompletion((int)Math.Min(due, _eventLoopIdleWaitMs));
                     }
                 }

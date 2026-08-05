@@ -23,6 +23,9 @@ public static class LoopStats
     private static bool _reporting;
     private static long _lastSkippedTicks;
     private static long _lastTurns;
+    private static long _lastMissed8;
+    private static long _lastMissed16;
+    private static long _lastSchedMissed;
     private static long _lastIterations;
     private static long _lastSleeps;
 
@@ -67,11 +70,15 @@ public static class LoopStats
     {
         var snapshot = Capture();
         logger.Information(
-            "loop: cpu={Cpu:F1}% cps={Cps:F0} skippedTicks={Skipped}/{Turns} tickLagPeak={PeakLag}ms " +
+            "loop: cpu={Cpu:F1}% cps={Cps:F0} missed8ms={Missed8} missed16ms={Missed16} sched={SchedMissed} " +
+            "slots={Skipped}/{Turns} tickLagPeak={PeakLag}ms " +
             "sleeps={Sleeps}/{Iterations} ({SleepRatio:F1}%) wakes={WakesIssued} elided={WakesElided} " +
             "backoffs={Backoffs}{Suspended} idleWait={IdleWait}ms",
             snapshot.CpuPercent,
             snapshot.AverageCps,
+            snapshot.MissedTickDeadlines,
+            snapshot.MissedFrameDeadlines,
+            snapshot.SchedulerMissedFrames,
             snapshot.SkippedTicks,
             snapshot.TotalTurns,
             snapshot.PeakTickLag,
@@ -93,6 +100,9 @@ public static class LoopStats
         long LastTickLag,
         long SkippedTicks,
         long TotalTurns,
+        long MissedTickDeadlines,
+        long MissedFrameDeadlines,
+        long SchedulerMissedFrames,
         long Sleeps,
         long Iterations,
         double SleepRatio,
@@ -130,10 +140,19 @@ public static class LoopStats
         // them here rather than resetting and stealing the other reader's baseline.
         var skippedTotal = Timer.SkippedTicks;
         var turnsTotal = Timer.TotalTurns;
+        var missed8Total = Timer.MissedTickDeadlines;
+        var missed16Total = Timer.MissedFrameDeadlines;
         var skipped = skippedTotal - _lastSkippedTicks;
         var turns = turnsTotal - _lastTurns;
+        var schedMissedTotal = Core.SchedulerMissedFrames;
+        var missed8 = missed8Total - _lastMissed8;
+        var missed16 = missed16Total - _lastMissed16;
+        var schedMissed = schedMissedTotal - _lastSchedMissed;
         _lastSkippedTicks = skippedTotal;
         _lastTurns = turnsTotal;
+        _lastMissed8 = missed8Total;
+        _lastMissed16 = missed16Total;
+        _lastSchedMissed = schedMissedTotal;
 
         var snapshot = new Snapshot(
             cpuPercent,
@@ -142,6 +161,9 @@ public static class LoopStats
             Timer.LastTickLag,
             skipped,
             turns,
+            missed8,
+            missed16,
+            schedMissed,
             sleeps,
             iterations,
             sleepRatio,
@@ -170,9 +192,10 @@ public static class LoopStats
 
         e.Mobile.SendMessage($"{"Event loop"}: {mode}");
         e.Mobile.SendMessage($"{"CPU"}: {snapshot.CpuPercent:F1}{"% of one core since last check"}");
-        e.Mobile.SendMessage($"{"Skipped ticks"}: {snapshot.SkippedTicks}{" of "}{snapshot.TotalTurns}{" turns"}{"  <-- health"}");
+        e.Mobile.SendMessage($"{"Missed 16ms budget"}: {snapshot.MissedFrameDeadlines}{" ("}{snapshot.SchedulerMissedFrames}{" after a sleep)"}");
+        e.Mobile.SendMessage($"{"Missed 8ms budget"}: {snapshot.MissedTickDeadlines}{" of "}{snapshot.TotalTurns}{" turns"}");
+        e.Mobile.SendMessage($"{"Slots lost"}: {snapshot.SkippedTicks}{", peak lag "}{snapshot.PeakTickLag}{"ms"}");
         e.Mobile.SendMessage($"{"Cycles/sec"}: {snapshot.AverageCps:F0}{"  (paced by idle wait, not health)"}");
-        e.Mobile.SendMessage($"{"Tick lag"}: {snapshot.LastTickLag}{"ms now, peak "}{snapshot.PeakTickLag}{"ms"}");
         e.Mobile.SendMessage($"{"Slept"}: {snapshot.Sleeps}{" of "}{snapshot.Iterations}{" iterations ("}{snapshot.SleepRatio:F1}{"%)"}");
         e.Mobile.SendMessage($"{"Wakes"}: {snapshot.WakesIssued}{" signalled, "}{snapshot.WakesElided}{" elided on-thread"}");
     }

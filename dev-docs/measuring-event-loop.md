@@ -82,6 +82,30 @@ sleeps it is paced by `eventLoopIdleWaitMs` rather than by anything about your s
 the default, whether the world is empty or busy but keeping up. It is retained because existing
 tooling reads it. Do not build alerts on it.
 
+### Self-inflicted stalls are expected, and are not the scheduler's fault
+
+A world save can block the loop for a second or more on a large shard. A staff command like
+advanced search is knowingly expensive. Both blow the 16 ms budget, sometimes badly — the wheel then
+catches up by turning many times in one pass, because ModernUO does **not** drift timers and should
+not start.
+
+Those misses are real and are reported. What they are not is a reason to stop sleeping: the loop was
+not asleep during the save, so sleeping did not cause the stall and spinning afterwards would not
+have prevented it.
+
+So a miss is attributed to the scheduler only when the gap that produced it **contained a sleep**.
+The `sched=` figure counts those, and it is what the backoff acts on. Startup makes the distinction
+visible — the wheel is initialised before the world loads, so the first pass absorbs the whole load:
+
+```
+missed16ms=2 sched=0 slots=438/1249 tickLagPeak=3330ms backoffs=0
+```
+
+A 3.3-second stall, 438 slots lost, budget blown twice, and the backoff correctly does nothing.
+
+If you see `missed16ms` climbing while `sched` stays at zero, the loop is keeping up and something
+the server is *doing* is expensive. Look at saves and commands, not at the scheduler.
+
 ## Automatic backoff
 
 Sleeping can only make latency worse in one way: the wait may return late, and a late return loses a
