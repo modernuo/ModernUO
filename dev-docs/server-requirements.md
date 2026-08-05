@@ -98,7 +98,8 @@ See the README for the full supported list. Two floors are worth calling out:
 
 | Setting | Default | Why change it |
 |---|---|---|
-| `server.eventLoopIdleWaitMs` | `2` | Raising toward `8` reduces idle wakeups further. `0` restores the legacy spin loop and should only be used for A/B measurement. |
+| `server.eventLoopIdleWaitMs` | `2` | `0` never sleeps: ~98% of one core, but zero skipped timer slots and zero lag. The choice for a large shard on dedicated CPU that would rather spend a core than risk a late wake. Above `2` the wheel starts losing slots. |
+| `server.skippedTickThreshold` | `2` | Timer slots the loop may lose per second before it stops sleeping and spins instead. Raise on a jittery host; set very high to disable the backoff. |
 | `world.useMultithreadedSaves` | `true` | Set `false` on 2-core hosts so saves do not contend with the game loop. |
 | `pathfinding.prebakeMaps` | varies | Leave off on memory-constrained hosts; it peaks above 1 GB while baking. |
 | `network.sendBufferSize` | 256 KB | Lower it if you are memory-bound with many connections. |

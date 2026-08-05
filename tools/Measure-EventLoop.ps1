@@ -1,6 +1,6 @@
 # A/B measurement for the event loop scheduler.
 #
-# Boots the shard twice against identical binaries -- once with the legacy spin loop
+# Boots the shard twice against identical binaries -- once with idle sleeping disabled
 # (server.eventLoopIdleWaitMs = 0) and once with idle sleeping (= 2) -- and samples process CPU
 # time over a fixed window. Everything else is held constant, so the delta is the scheduler.
 #
@@ -81,12 +81,12 @@ function Measure-Loop([int]$idleWait, [string]$label) {
     }
 }
 
-$legacy = Measure-Loop 0 'Legacy spin loop'
+$legacy = Measure-Loop 0 'Never sleep (max responsiveness)'
 $sleeping = Measure-Loop 2 'Idle sleeping'
 
 Write-Host ""
 Write-Host "=== Result ===" -ForegroundColor Green
-Write-Host ("  legacy spin : {0,6:F2}% of one core" -f $legacy.CpuPercent)
+Write-Host ("  never sleep : {0,6:F2}% of one core" -f $legacy.CpuPercent)
 Write-Host ("  idle sleep  : {0,6:F2}% of one core" -f $sleeping.CpuPercent)
 if ($sleeping.CpuPercent -gt 0) {
     Write-Host ("  reduction   : {0,6:F1}x" -f ($legacy.CpuPercent / $sleeping.CpuPercent))

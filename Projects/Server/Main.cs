@@ -47,13 +47,15 @@ public static class Core
     private static string _snapshotPath;
 
     // Longest the loop will block when it has nothing to do. This is a backstop, not a latency
-    // control: because the timer wheel's tick rate bounds the sleep anyway, its only job is to
-    // limit the damage if a wake signal is ever missed. 0 selects the legacy spin loop, which
-    // exists so the two can be measured against each other on the same host.
+    // control: the timer wheel's tick rate bounds the sleep anyway, so its only job is to limit
+    // the damage if a wake signal is ever missed. Measured across 1/2/4/8ms, 2 is where the trade
+    // stops being free -- below it costs CPU for nothing, above it starts losing timer slots.
     private static int _eventLoopIdleWaitMs = 2;
 
     /// <summary>
-    /// Longest the loop will block while idle, in milliseconds. 0 means the legacy spin loop.
+    /// Longest the loop will block while idle, in milliseconds. 0 disables idle sleeping entirely,
+    /// leaving the loop to spin; the adaptive backoff does the same thing temporarily when the
+    /// wheel starts losing slots.
     /// </summary>
     public static int EventLoopIdleWaitMs => _eventLoopIdleWaitMs;
 
@@ -62,35 +64,41 @@ public static class Core
     private static long _loopSleeps;
 
     /// <summary>
-    /// Loop iterations since the last <see cref="ResetLoopCounters"/>.
+    /// Loop iterations since process start.
     /// </summary>
     public static long LoopIterations => _loopIterations;
 
     /// <summary>
-    /// Iterations that actually blocked, since the last <see cref="ResetLoopCounters"/>.
+    /// Iterations that actually blocked, since process start.
     /// </summary>
     /// <remarks>
     /// The ratio of this to <see cref="LoopIterations"/> is how to tell whether idle sleeping is
     /// doing anything on a given shard. Under sustained load it should approach zero, because the
     /// queues are never all empty -- which also means the wake signal is not being exercised, and
     /// any cost it carries is pure overhead there.
+    /// <para>
+    /// Monotonic, like the timer wheel's counters and for the same reason: the loop's own health
+    /// sample reads them alongside any reporter, and a counter that either can reset is one the
+    /// other cannot trust. Difference against your own previous sample.
+    /// </para>
     /// </remarks>
     public static long LoopSleeps => _loopSleeps;
 
-    public static void ResetLoopCounters()
-    {
-        _loopIterations = 0;
-        _loopSleeps = 0;
-    }
-
-    // Adaptive backoff. Idle sleeping is the right default, but it can only ever make latency
-    // worse in one way: the wait may return late, and a late return means the wheel loses a slot
-    // that a spinning loop would have caught. Rather than trade that risk off blindly, watch for
-    // it and stop sleeping while it is happening.
-    private const long BackoffSampleIntervalMs = 1000;
+    // One periodic health sample drives both the CPS figure and the adaptive backoff. They used to
+    // be separate: CPS every 100 iterations, backoff every second. A fixed cadence is what makes
+    // CPS meaningful at all now -- an iteration-counted sample changes its own sampling rate by
+    // orders of magnitude depending on whether the loop is sleeping, which silently rescaled the
+    // smoothing window along with it.
+    private const long HealthSampleIntervalMs = 1000;
     private const long BackoffDurationMs = 5000;
 
-    private static long _nextBackoffSample;
+    // EMA over roughly half a minute of one-second samples. Meaningful now that the cadence is
+    // fixed in time rather than in iterations.
+    private const double CpsSmoothing = 2.0 / 31;
+
+    private static long _nextHealthSample;
+    private static long _lastHealthSampleAt;
+    private static long _iterationsAtLastSample;
     private static long _skippedTicksAtLastSample;
     private static long _idleSleepSuspendedUntil;
     private static int _skippedTickThreshold = 2;
@@ -109,23 +117,34 @@ public static class Core
     public static bool IdleSleepSuspended => _tickCount < _idleSleepSuspendedUntil;
 
     /// <summary>
-    /// Samples how many wheel slots were lost since the last check and suspends idle sleeping if
-    /// too many were, so a struggling shard spins rather than risking a late wake.
+    /// Once a second, recomputes the cycle rate and decides whether the loop is keeping up.
     /// </summary>
     /// <remarks>
-    /// Measured on an idle shard, both the spin loop and 2ms sleeping lose about one slot in
-    /// 7,500, which is the operating system rather than the scheduler. The threshold is set well
-    /// above that floor so ordinary jitter does not trip it, and the suspension is held for
-    /// several seconds so the loop is not flapping between modes on a single hiccup.
+    /// Cycle rate and tick health look like the same question but are not. Once the loop sleeps
+    /// when idle, the cycle rate is set by how long it sleeps, not by how the shard is doing: it
+    /// reads about the same whether the world is empty or busy but keeping up. Skipped slots
+    /// measure the thing that matters directly, so they -- not the cycle rate -- decide the
+    /// backoff. The rate is retained because existing tooling reads it.
+    /// <para>
+    /// Measured on an idle shard, both a spinning loop and 2ms sleeping lose about one slot in
+    /// 7,500, which is the operating system rather than the scheduler. The threshold sits well
+    /// above that floor, and the suspension is held for seconds, so the loop cannot flap between
+    /// modes on a single hiccup.
+    /// </para>
     /// </remarks>
-    private static void SampleTickHealth()
+    private static void SampleLoopHealth()
     {
-        if (_tickCount < _nextBackoffSample)
+        if (_tickCount < _nextHealthSample)
         {
             return;
         }
 
-        _nextBackoffSample = _tickCount + BackoffSampleIntervalMs;
+        var elapsed = _tickCount - _lastHealthSampleAt;
+        _lastHealthSampleAt = _tickCount;
+        _nextHealthSample = _tickCount + HealthSampleIntervalMs;
+
+        var iterations = _loopIterations - _iterationsAtLastSample;
+        _iterationsAtLastSample = _loopIterations;
 
         var skipped = Timer.SkippedTicks;
         var lost = skipped - _skippedTicksAtLastSample;
@@ -133,11 +152,26 @@ public static class Core
 
         // The wheel is initialised before the world loads, so the loop's very first Slice turns it
         // once for every 8ms that loading took -- hundreds of slots, none of them a stall. Prime
-        // the baseline off that first sample instead of judging it.
+        // the baselines off that first sample instead of judging it.
         if (!_backoffPrimed)
         {
             _backoffPrimed = true;
             return;
+        }
+
+        if (elapsed > 0)
+        {
+            _currentCPS = iterations * 1000.0 / elapsed;
+
+            if (!_cpsInitialized)
+            {
+                _averageCPS = _currentCPS;
+                _cpsInitialized = true;
+            }
+            else
+            {
+                _averageCPS += CpsSmoothing * (_currentCPS - _averageCPS);
+            }
         }
 
         if (lost <= _skippedTickThreshold)
@@ -155,6 +189,12 @@ public static class Core
             return;
         }
 
+        if (_eventLoopIdleWaitMs <= 0)
+        {
+            // Already spinning; there is nothing left to suspend.
+            return;
+        }
+
         // Already suspended: extend rather than counting it as a fresh backoff, so the counter
         // reflects distinct episodes instead of how long one lasted.
         var wasSuspended = _tickCount < _idleSleepSuspendedUntil;
@@ -166,7 +206,7 @@ public static class Core
             logger.Warning(
                 "Event loop is losing timer slots ({Lost} in {Interval}ms); idle sleeping suspended for {Duration}ms",
                 lost,
-                BackoffSampleIntervalMs,
+                HealthSampleIntervalMs,
                 BackoffDurationMs
             );
         }
@@ -631,13 +671,6 @@ public static class Core
     {
         try
         {
-            var lastRaw = Stopwatch.GetTimestamp();
-            const int interval = 100;
-            double frequency = Stopwatch.Frequency * interval;
-            const double alpha = 2.0 / 129; // EMA smoothing (≈128-sample window)
-
-            var sample = 0;
-
             while (!Closing)
             {
                 _tickCount = GetTimestamp();
@@ -668,40 +701,8 @@ public static class Core
                     break;
                 }
 
-                if (sample++ == interval)
-                {
-                    sample = 0;
-                    var nowRaw = Stopwatch.GetTimestamp();
-
-                    _currentCPS = frequency / (nowRaw - lastRaw);
-
-                    if (!_cpsInitialized)
-                    {
-                        _averageCPS = _currentCPS;
-                        _cpsInitialized = true;
-                    }
-                    else
-                    {
-                        _averageCPS += alpha * (_currentCPS - _averageCPS);
-                    }
-
-                    lastRaw = nowRaw;
-
-                    if (_eventLoopIdleWaitMs <= 0)
-                    {
-                        // Legacy scheduling, kept so the new behaviour can be A/B measured against
-                        // it on the same host. Only considers sleeping once per `interval`
-                        // iterations, and spins through the loop body the rest of the time.
-                        var sleepMs = (int)Timer.MillisecondsUntilNextTick(_tickCount);
-                        if (sleepMs >= 2)
-                        {
-                            NetState.WaitForCompletion(sleepMs - 1);
-                        }
-                    }
-                }
-
                 _loopIterations++;
-                SampleTickHealth();
+                SampleLoopHealth();
 
                 if (_eventLoopIdleWaitMs > 0 && _tickCount >= _idleSleepSuspendedUntil && IsIdle())
                 {

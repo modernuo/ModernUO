@@ -23,6 +23,8 @@ public static class LoopStats
     private static bool _reporting;
     private static long _lastSkippedTicks;
     private static long _lastTurns;
+    private static long _lastIterations;
+    private static long _lastSleeps;
 
     public static void Configure()
     {
@@ -113,8 +115,15 @@ public static class LoopStats
         // Guard the very first call, where the window is zero-length.
         var cpuPercent = wallMs > 0 ? cpuMs / wallMs * 100 : 0;
 
-        var iterations = Core.LoopIterations;
-        var sleeps = Core.LoopSleeps;
+        // Core's counters are monotonic for the same reason Timer's are: the loop's own health
+        // sample reads them too. Difference rather than reset.
+        var iterationsTotal = Core.LoopIterations;
+        var sleepsTotal = Core.LoopSleeps;
+        var iterations = iterationsTotal - _lastIterations;
+        var sleeps = sleepsTotal - _lastSleeps;
+        _lastIterations = iterationsTotal;
+        _lastSleeps = sleepsTotal;
+
         var sleepRatio = iterations > 0 ? (double)sleeps / iterations * 100 : 0;
 
         // Timer's counters are monotonic because the loop's backoff reads them too, so difference
@@ -143,7 +152,6 @@ public static class LoopStats
         _lastCpu = cpu;
         _lastReport = now;
         Timer.ResetPeakTickLag();
-        Core.ResetLoopCounters();
 
         return snapshot;
     }
@@ -154,14 +162,16 @@ public static class LoopStats
     {
         var snapshot = Capture();
 
-        e.Mobile.SendMessage($"{"Event loop"}: {Core.EventLoopIdleWaitMs switch
-        {
-            <= 0 => "legacy spin",
-            var ms => $"idle wait {ms}ms"
-        }}");
+        var mode = Core.IdleSleepSuspended
+            ? "spinning (backed off)"
+            : Core.EventLoopIdleWaitMs <= 0
+                ? "spinning (sleeping disabled)"
+                : $"idle wait {Core.EventLoopIdleWaitMs}ms";
+
+        e.Mobile.SendMessage($"{"Event loop"}: {mode}");
         e.Mobile.SendMessage($"{"CPU"}: {snapshot.CpuPercent:F1}{"% of one core since last check"}");
-        e.Mobile.SendMessage($"{"Cycles/sec"}: {snapshot.AverageCps:F0}");
-        e.Mobile.SendMessage($"{"Skipped ticks"}: {snapshot.SkippedTicks}{" of "}{snapshot.TotalTurns}{" turns"}");
+        e.Mobile.SendMessage($"{"Skipped ticks"}: {snapshot.SkippedTicks}{" of "}{snapshot.TotalTurns}{" turns"}{"  <-- health"}");
+        e.Mobile.SendMessage($"{"Cycles/sec"}: {snapshot.AverageCps:F0}{"  (paced by idle wait, not health)"}");
         e.Mobile.SendMessage($"{"Tick lag"}: {snapshot.LastTickLag}{"ms now, peak "}{snapshot.PeakTickLag}{"ms"}");
         e.Mobile.SendMessage($"{"Slept"}: {snapshot.Sleeps}{" of "}{snapshot.Iterations}{" iterations ("}{snapshot.SleepRatio:F1}{"%)"}");
         e.Mobile.SendMessage($"{"Wakes"}: {snapshot.WakesIssued}{" signalled, "}{snapshot.WakesElided}{" elided on-thread"}");
