@@ -20,21 +20,27 @@ long a *quiet* loop stays blocked.
 
 Measured on an idle shard with a real world loaded (190,728 items, 33,158 mobiles):
 
-| Setting | CPU | Skipped slots / 1875 | Peak lag |
+| Setting | CPU | Skipped slots / 1875 | Peak lag (avg over windows) |
 |---|---|---|---|
 | `0` | **98.5%** of one core | **0** | **0 ms** |
-| `2` (default) | ~0.8% | 0–1 | 1–12 ms |
-| `8` | 0.16% | ~1 | up to 23 ms |
+| `1` | 0.81% | 0–1 | 7.8 ms |
+| `2` (default) | ~0.8% | 0–1 | 11.2 ms |
+| `4` | 0.57% | 0–1 | 7.0 ms |
+| `8` | 0.16% | ~1 | 9.8 ms |
 
-**`0` never sleeps.** It is the way out of this entire apparatus: no sleeping, no wake signals, no
-backoff. It buys something real — literally zero skipped slots and zero lag — for the price of a
-core. A large shard on dedicated CPU that would rather spend the core than ever risk a late wake
-should set it and stop reading here.
+**The trade-off is not a smooth slope.** `0` is qualitatively different — never sleeping means
+never waking late, so zero skipped slots and zero lag. Everything from `1` to `8` sits in the same
+band: peaks of 7–11 ms with no trend, and roughly one lost slot in several thousand. The differences
+across that range are measurement noise, not a dial. Pick `0` or pick a sleep value; the specific
+sleep value barely matters for latency and matters a lot for CPU.
 
-**`2` is the default** because it is where the trade stops being free. Below it, CPU rises for no
-measurable latency gain. Above it, the wheel starts losing slots and the peak grows. On an idle
-shard `2` loses about one slot in 7,500 — and so does pure spinning, because that floor is the
-operating system, not the scheduler.
+**`0` is the way out of this entire apparatus** — no sleeping, no wake signals, no backoff — for the
+price of a core. A large shard on dedicated CPU that would rather spend the core than ever risk a
+late wake should set it and stop reading here.
+
+**`2` is the default** because it is the conservative end of that band while still costing almost
+nothing. On an idle shard it loses about one slot in 7,500 — and so does pure spinning, because that
+floor is the operating system, not the scheduler.
 
 ## The metric that matters: skipped slots
 
@@ -50,6 +56,26 @@ keep up.
 **Peak tick lag is reported but is a weak signal.** It is a single worst case over the whole window,
 so one hiccup pins it and it reads identically whether the server stumbled once or is permanently
 behind. Use it to size an outlier, not to judge health.
+
+### Wheel lag is not network latency
+
+These are separate paths, and conflating them is the easiest mistake to make here.
+
+A player's action arrives as a packet. The receive completion is in the loop's wait set, so it wakes
+the loop **immediately** — not after `eventLoopIdleWaitMs` elapses — and the packet is handled inline
+by `NetState.Slice` → `HandleReceive` → `HandlePacket`. Sleeping longer does not add round-trip
+latency, because a sleeping loop is woken by the thing it was waiting for.
+
+Wheel lag only delays **timer-driven** logic: combat swings, spell timers, AI ticks, spawners. Those
+are built around 100 ms to multi-second intervals, so 8–23 ms of wheel lag is well inside their
+noise floor and is not something a player can perceive.
+
+The one path that genuinely waits out the sleep is a **new connection**, because AcceptEx
+completions are polled rather than signalled. That adds up to `eventLoopIdleWaitMs` to connection
+setup — single-digit milliseconds on a handshake that takes far longer.
+
+Round-trip latency under real player load has not been measured end to end here; the above is read
+off the code paths, not off a wire capture.
 
 **Cycles per second is not a health signal at all.** It counts loop iterations, so once the loop
 sleeps it is paced by `eventLoopIdleWaitMs` rather than by anything about your shard: roughly 400 at
