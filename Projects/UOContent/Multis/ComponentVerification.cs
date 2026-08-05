@@ -4,11 +4,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using Server.Compression;
+using Server.Logging;
 
 namespace Server.Multis;
 
 public static class ComponentVerification
 {
+    private static readonly ILogger logger = LogFactory.GetLogger(typeof(ComponentVerification));
+
     private static int[] _itemTable;
     private static int[] _multiTable;
     private static bool _loaded;
@@ -19,6 +22,15 @@ public static class ComponentVerification
     // housing-tier bits when loading: base pieces collapse to 0 (always valid, exactly as walls.txt
     // encodes them) while AOS/SE/ML/... line up unchanged.
     private const int HousingTierMask = (int)HousingFlags.HousingEJ;
+
+    // Table sentinels. Slots start as NotAComponent, which CheckValidity rejects, so a piece that
+    // never gets registered can never be placed. NoFeatureRequired is a piece with no expansion
+    // requirement: walls.txt encodes pre-AOS base pieces as 0, housing.bin collapses to 0 under
+    // HousingTierMask.
+    private const int NotAComponent = -1;
+    private const int NoFeatureRequired = 0;
+
+    private const string FeatureMaskColumn = "FeatureMask";
 
     public static bool IsItemValid(int itemID)
     {
@@ -33,7 +45,8 @@ public static class ComponentVerification
     }
 
     private static bool CheckValidity(int val) =>
-        val != -1 && (val == 0 || ((int)ExpansionInfo.CoreExpansion.HousingFlags & val) != 0);
+        val != NotAComponent &&
+        (val == NoFeatureRequired || ((int)ExpansionInfo.CoreExpansion.HousingFlags & val) != 0);
 
     private static void EnsureLoaded()
     {
@@ -42,20 +55,48 @@ public static class ComponentVerification
             return;
         }
 
+        // Set before loading: this runs from the design packet handler, so a bad file must not
+        // re-read every sheet on each later placement attempt. Sheets below fail independently.
         _loaded = true;
 
         _itemTable = CreateTable(TileData.MaxItemValue);
         _multiTable = CreateTable(0x4000);
 
         var housingPath = MultiData.HousingUOPPath;
-        if (housingPath != null)
+        if (housingPath != null && TryLoadFromHousingBin(housingPath))
         {
-            var entry = MultiData.HousingEntry;
-            LoadFromHousingBin(ReadUOPEntry(housingPath, entry));
             return;
         }
 
         LoadFromTxtFiles();
+    }
+
+    private static bool TryLoadFromHousingBin(string path)
+    {
+        try
+        {
+            var data = ReadUOPEntry(path, MultiData.HousingEntry);
+            if (data != null)
+            {
+                LoadFromHousingBin(data);
+                return true;
+            }
+
+            logger.Warning(
+                "Could not decompress housing.bin from {Path}. Falling back to the component sheets",
+                path
+            );
+        }
+        catch (Exception ex)
+        {
+            logger.Warning(
+                ex,
+                "Failed to read housing.bin from {Path}. Falling back to the component sheets",
+                path
+            );
+        }
+
+        return false;
     }
 
     private static byte[] ReadUOPEntry(string path, UOPEntry entry)
@@ -223,16 +264,55 @@ public static class ComponentVerification
             return;
         }
 
-        var ss = new Spreadsheet(path);
+        Spreadsheet ss;
 
+        try
+        {
+            ss = new Spreadsheet(path);
+        }
+        catch (Exception ex)
+        {
+            // One unreadable sheet must not take the others down with it.
+            logger.Error(ex, "Could not read house components from {Path}", path);
+            return;
+        }
+
+        // GetInt32 on a missing column yields NoFeatureRequired, which would register every piece in
+        // the sheet as unconditionally placeable. Refuse the sheet instead.
+        var featureCID = ss.GetColumnID(FeatureMaskColumn);
+        if (featureCID < 0)
+        {
+            logger.Error(
+                "House component sheet {Path} has no {Column} column. Its pieces will not be registered",
+                path,
+                FeatureMaskColumn
+            );
+            return;
+        }
+
+        // An individual missing column is expected - older sheets predate walls.txt's
+        // SecondAltWindowS/E - but a sheet matching none of them is not the sheet we expect.
         var tileCIDs = new int[tileColumns.Length];
+        var matchedColumns = 0;
 
         for (var i = 0; i < tileColumns.Length; ++i)
         {
             tileCIDs[i] = ss.GetColumnID(tileColumns[i]);
+
+            if (tileCIDs[i] >= 0)
+            {
+                matchedColumns++;
+            }
         }
 
-        var featureCID = ss.GetColumnID("FeatureMask");
+        if (matchedColumns == 0)
+        {
+            logger.Error(
+                "House component sheet {Path} has none of its expected tile columns. Its pieces will not be registered",
+                path
+            );
+            return;
+        }
 
         for (var i = 0; i < ss.Records.Length; ++i)
         {
@@ -260,7 +340,7 @@ public static class ComponentVerification
 
         for (var i = 0; i < table.Length; ++i)
         {
-            table[i] = -1;
+            table[i] = NotAComponent;
         }
 
         return table;
@@ -277,11 +357,18 @@ public class Spreadsheet
         var types = ReadLine(ip);
         var names = ReadLine(ip);
 
+        if (types == null || names == null)
+        {
+            throw new InvalidDataException($"House component sheet '{path}' is missing its header rows.");
+        }
+
         m_Columns = new ColumnInfo[types.Length];
 
         for (var i = 0; i < m_Columns.Length; ++i)
         {
-            m_Columns[i] = new ColumnInfo(i, types[i], names[i]);
+            // A names row shorter than the types row leaves the extras unnamed, so nothing resolves
+            // to them.
+            m_Columns[i] = new ColumnInfo(i, types[i], i < names.Length ? names[i] : "");
         }
 
         var records = new List<DataRecord>();
@@ -294,10 +381,15 @@ public class Spreadsheet
             {
                 var ci = m_Columns[i];
 
+                // Client sheets write an empty trailing Comment as a plain newline, leaving the row
+                // one field short. The client only requires the columns up to FeatureMask, so treat
+                // the missing field as empty rather than dropping a row that lists real pieces.
+                var value = ci.m_DataIndex < values.Length ? values[ci.m_DataIndex] : null;
+
                 data[i] = ci.m_Type switch
                 {
-                    "int"    => Utility.ToInt32(values[ci.m_DataIndex]),
-                    "string" => values[ci.m_DataIndex],
+                    "int"    => Utility.ToInt32(value),
+                    "string" => value,
                     _        => data[i]
                 };
             }
@@ -327,7 +419,10 @@ public class Spreadsheet
     {
         while (ip.ReadLine() is { } line)
         {
-            if (line.Length > 0)
+            // Whitespace-only, not merely empty: the retail client's doors.txt separates its header
+            // rows with lines of bare tabs, and accepting one as the names row leaves every column
+            // unnamed, so no door resolves. The client skips them the same way.
+            if (!string.IsNullOrWhiteSpace(line))
             {
                 return line.Split('\t');
             }
