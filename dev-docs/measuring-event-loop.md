@@ -1,5 +1,13 @@
 # Measuring the Event Loop
 
+> **This branch vendors IORingGroup as source under `Projects/IORingGroup/` and is not for
+> merging.** It exists so the scheduling design can be measured on real hardware before any
+> IORingGroup version is published, since each published version would otherwise need its own
+> measurement pass and a wrong guess would be stuck on the NuGet feed permanently. Clone and
+> `dotnet build` — there is no package to restore. The sources are byte-identical to the upstream
+> `perf/wake-and-timer` branch; the real PR will restore the `PackageReference` and delete that
+> directory.
+
 The game loop can be switched between two schedulers at runtime, so you can measure both on your
 own hardware without rebuilding. If you are trying to work out whether ModernUO or your host is
 responsible for lag, this is the first thing to run.

@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <!--
+        VENDORED FOR MEASUREMENT ONLY.
+
+        This is a source copy of modernuo/IORingGroup at the `perf/wake-and-timer` branch
+        (what would have been 1.0.10), pulled in so this branch builds with `dotnet build`
+        and nothing else. It exists so the event-loop scheduling design can be measured on
+        real hardware without publishing a NuGet version per iteration. Every published
+        version would otherwise need its own measurement pass, and a wrong guess would be
+        stuck on the feed forever.
+
+        Do NOT merge this project. The real PR restores:
+            <PackageReference Include="IORingGroup" Version="x.y.z" />
+        in Projects/Server/Server.csproj and deletes this directory.
+
+        Upstream: https://github.com/modernuo/IORingGroup
+    -->
+    <PropertyGroup>
+        <RootNamespace>System.Network</RootNamespace>
+        <AssemblyName>IORingGroup</AssemblyName>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <IsPackable>false</IsPackable>
+
+        <!-- Match upstream's language version so the vendored sources are compiled exactly as
+             they would be in their own repo. -->
+        <LangVersion>Preview</LangVersion>
+
+        <!--
+            ModernUO's Directory.Build.props turns all warnings into errors, which is stricter
+            than upstream's configuration. Two upstream-clean diagnostics trip it:
+
+              CS8981  interop structs deliberately mirror their C names (pollfd, kevent,
+                      timespec, linger), and renaming them would diverge from upstream.
+              CS0649  IORingBuffer.ForceLegacyWindowsPath is a test seam assigned by reflection.
+
+            Suppressed rather than fixed, because editing vendored sources would defeat the point
+            of vendoring: this must stay byte-identical to the upstream branch being measured.
+        -->
+        <NoWarn>$(NoWarn);CS8981;CS0649</NoWarn>
+    </PropertyGroup>
+</Project>
