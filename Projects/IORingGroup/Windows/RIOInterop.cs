@@ -68,6 +68,10 @@ internal static unsafe class RIOInterop
 
     public const int ERROR_IO_INCOMPLETE = 996;
 
+    // OVERLAPPED.Internal holds this while an operation is outstanding; the kernel overwrites it
+    // with the final NTSTATUS on completion. Polling it is what HasOverlappedIoCompleted does.
+    public const nuint STATUS_PENDING = 0x103;
+
     // Linux-style poll masks (used by IIORingGroup interface)
     public const short POLLRDNORM = 0x0100;
     public const short POLLRDBAND = 0x0200;
