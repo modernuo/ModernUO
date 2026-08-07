@@ -60,6 +60,10 @@ public sealed unsafe class LinuxIORingGroup : IIORingGroup
     private readonly io_uring_cqe* _cqes;
 
     private readonly int _eventFd = -1;
+
+    // Wake() gets its own eventfd rather than sharing _eventFd, because WaitForCompletion drains
+    // the completion fd on entry to discard stale notifications -- which would swallow a wake.
+    private readonly int _wakeFd = -1;
     private volatile bool _disposed;
 
     public LinuxIORingGroup(int queueSize = IORingGroup.DefaultQueueSize, int maxConnections = IORingGroup.DefaultMaxConnections)
@@ -174,6 +178,17 @@ public sealed unsafe class LinuxIORingGroup : IIORingGroup
             LinuxIORing.munmap(_sqRingPtr, _sqRingSize);
             LinuxIORing.close(_ringFd);
             throw new InvalidOperationException("Failed to register eventfd with io_uring");
+        }
+
+        _wakeFd = LinuxIORing.eventfd(0, LinuxIORing.EFD_NONBLOCK);
+        if (_wakeFd < 0)
+        {
+            // Not fatal: callers fall back to their own timeout. But it must not be silent, or
+            // cross-thread work would appear to arrive late with nothing to point at.
+            Console.Error.WriteLine(
+                $"IORingGroup: failed to create wake eventfd (errno {Marshal.GetLastPInvokeError()}); " +
+                "callers will only wake on I/O or timeout."
+            );
         }
 
         // Initialize local tail from shared memory
@@ -436,7 +451,9 @@ public sealed unsafe class LinuxIORingGroup : IIORingGroup
     /// <inheritdoc/>
     public void WaitForCompletion(int timeoutMs)
     {
-        // Clear any pending eventfd notifications from already-processed completions
+        // Clear any pending eventfd notifications from already-processed completions. This is why
+        // Wake() cannot share this fd: draining here would read away a wake issued just before the
+        // call and then block anyway, which is precisely the lost wakeup the wake exists to avoid.
         ulong val;
         LinuxIORing.read(_eventFd, (nint)(&val), 8); // Non-blocking: returns EAGAIN if counter=0
 
@@ -446,9 +463,26 @@ public sealed unsafe class LinuxIORingGroup : IIORingGroup
             return;
         }
 
-        // Wait for new completions or timeout
-        var pfd = new LinuxIORing.pollfd { fd = _eventFd, events = LinuxIORing.POLLIN };
-        LinuxIORing.poll((nint)(&pfd), 1, timeoutMs);
+        // Wait for new completions, an explicit wake, or timeout.
+        var pfds = stackalloc LinuxIORing.pollfd[2];
+        pfds[0] = new LinuxIORing.pollfd { fd = _eventFd, events = LinuxIORing.POLLIN };
+        var count = 1u;
+
+        if (_wakeFd >= 0)
+        {
+            pfds[1] = new LinuxIORing.pollfd { fd = _wakeFd, events = LinuxIORing.POLLIN };
+            count = 2;
+        }
+
+        LinuxIORing.poll((nint)pfds, count, timeoutMs);
+
+        // Drain afterwards, never before. The wake fd's counter is what makes a wake sticky across
+        // the gap between a caller deciding it is idle and actually blocking.
+        if (_wakeFd >= 0)
+        {
+            ulong drain;
+            LinuxIORing.read(_wakeFd, (nint)(&drain), 8);
+        }
     }
 
     /// <inheritdoc/>
@@ -461,16 +495,16 @@ public sealed unsafe class LinuxIORingGroup : IIORingGroup
     /// <inheritdoc/>
     public void Wake()
     {
-        if (_disposed || _eventFd < 0)
+        if (_disposed || _wakeFd < 0)
         {
             return;
         }
 
-        // The eventfd is the same one WaitForCompletion polls, and its counter latches: if this
-        // lands before the caller blocks, the poll returns immediately instead of the wake being
-        // lost. EAGAIN means the counter is already saturated, which is still "signalled".
+        // The counter latches, so a wake landing before the caller blocks makes its poll return
+        // immediately rather than being lost. EAGAIN means the counter is already saturated,
+        // which still counts as signalled.
         ulong one = 1;
-        LinuxIORing.write(_eventFd, (nint)(&one), 8);
+        LinuxIORing.write(_wakeFd, (nint)(&one), 8);
     }
 
     // =============================================================================
@@ -760,6 +794,11 @@ public sealed unsafe class LinuxIORingGroup : IIORingGroup
         if (_sqRingPtr != 0 && _sqRingPtr != -1)
         {
             LinuxIORing.munmap(_sqRingPtr, _sqRingSize);
+        }
+
+        if (_wakeFd >= 0)
+        {
+            LinuxIORing.close(_wakeFd);
         }
 
         if (_eventFd >= 0)
