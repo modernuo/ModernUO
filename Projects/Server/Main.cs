@@ -120,6 +120,12 @@ public static class Core
     private static bool _backoffPrimed;
     private static int _consecutiveBadSamples;
 
+    // How long after a save to stop drawing conclusions from tick health. Long enough to cover the
+    // disk flush continuing past the main-thread portion, which on a slow or shared host keeps
+    // stealing time from the loop well after Snapshot returns.
+    private const long PostSaveGraceMs = 3000;
+    private static long _healthGraceUntil;
+
     /// <summary>
     /// Times the loop has stopped sleeping because the wheel was losing slots.
     /// </summary>
@@ -190,6 +196,15 @@ public static class Core
             {
                 _averageCPS += CpsSmoothing * (_currentCPS - _averageCPS);
             }
+        }
+
+        // Sleeping continues through the grace window. The complaint a save produces is a spurious
+        // warning, not spurious behaviour, and suspending sleep would spend CPU on exactly the host
+        // that has least to spare.
+        if (_tickCount < _healthGraceUntil)
+        {
+            _consecutiveBadSamples = 0;
+            return;
         }
 
         if (lost <= _missedFrameThreshold)
@@ -725,6 +740,12 @@ public static class Core
                     // Return value is the offset that can be used to fix timers that should drift
                     World.Snapshot(_snapshotPath);
                     _performSnapshot = false;
+
+                    // The main-thread portion is done, but the disk flush is not, and on a slow or
+                    // oversubscribed host that contention keeps landing on the loop for a while
+                    // after. Stop judging tick health until it settles: the misses are real and
+                    // still reported, they are just not evidence about the scheduler.
+                    _healthGraceUntil = GetTimestamp() + PostSaveGraceMs;
                 }
 
                 if (_performProcessKill)
