@@ -74,4 +74,16 @@ public class PasswordProtectionTest
 
         Assert.False(passwordProtection.ValidatePassword(encryptedPassword, "Not the same password"));
     }
+
+    // Produced by ModernUO's shipping default before this change: Argon2i, m=8192, t=3, p=1.
+    // Pinned as a literal so it cannot drift with the configured defaults. Password: "hunter2".
+    private const string LegacyArgon2iHash =
+        "$argon2i$v=19$m=8192,t=3,p=1$LD1XJz7P3wQmIJ+Tu6ScgA$NO5hBABsHQ172C5nDO2X4gWnB4jDef3x6WhLdVE2LFw";
+
+    [Fact]
+    public void Argon2_ValidatesLegacyArgon2iHash()
+    {
+        Assert.True(Argon2PasswordProtection.Instance.ValidatePassword(LegacyArgon2iHash, "hunter2"));
+        Assert.False(Argon2PasswordProtection.Instance.ValidatePassword(LegacyArgon2iHash, "wrong"));
+    }
 }
