@@ -36,6 +36,29 @@ options.Os ??= detectedPlatform.OsRid;
 options.Arch ??= detectedPlatform.ArchRid;
 var rid = $"{options.Os}-{options.Arch}";
 
+if (options.CheckPrereqsOnly)
+{
+    var allPassed = true;
+
+    foreach (var result in NativeLibraryChecker.Check(detectedPlatform))
+    {
+        if (!result.IsWarning)
+        {
+            Console.WriteLine($"{result.Name,-16} {(result.Passed ? "OK" : "MISSING"),-8} {result.Details}");
+            allPassed &= result.Passed;
+            continue;
+        }
+
+        Console.WriteLine(result.Details);
+        if (result.InstallCommand is not null)
+        {
+            Console.WriteLine($"  {result.InstallCommand}");
+        }
+    }
+
+    return allPassed ? 0 : 1;
+}
+
 // Run prerequisite checks unless skipped
 if (!options.SkipPrereqs)
 {
@@ -105,6 +128,12 @@ static BuildOptions ParseArguments(string[] args)
             case "--skip-prereqs":
                 {
                     options.SkipPrereqs = true;
+                    hasNamedArgs = true;
+                    break;
+                }
+            case "--check-prereqs":
+                {
+                    options.CheckPrereqsOnly = true;
                     hasNamedArgs = true;
                     break;
                 }

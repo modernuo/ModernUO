@@ -87,18 +87,25 @@ dnf install -y dnf-plugins-core
 dnf config-manager --set-enabled crb
 dnf install -y epel-release
 # Prerequisites
-dnf install -y findutils libicu libdeflate-devel zstd libargon2-devel
+dnf install -y findutils libicu libdeflate libargon2
 ```
 
 ### Ubuntu, Debian, etc
 ```shell
 apt-get update -y
-apt-get install -y libicu-dev libdeflate-dev zstd libargon2-dev
+apt-get install -y libicu-dev libdeflate0 libargon2-1
 ```
+
+Only the runtime libraries are needed — the `-dev`/`-devel` packages are not. ICU is the exception
+on Debian and Ubuntu, where the runtime package carries the ABI version in its name (`libicu74`,
+`libicu76`, …) and there is no stable alias, so `libicu-dev` is the version-independent way to pull
+it in. Run `./build-tool --check-prereqs` to print the exact packages your release needs.
+
+`zstd` is no longer listed because ZstdNet bundles `libzstd` for every platform.
 
 ## OSX Requirements
 ```shell
-brew install icu4c libdeflate zstd argon2
+brew install icu4c libdeflate argon2
 ```
 
 ## Running the Server

@@ -46,7 +46,7 @@ jobs:
     - name: Install Prerequisites
       run: |
         brew update
-        brew install icu4c libdeflate zstd argon2
+        brew install icu4c libdeflate argon2
     - name: Set Library Path
       run: echo "DYLD_LIBRARY_PATH=/opt/homebrew/lib:$DYLD_LIBRARY_PATH" >> $GITHUB_ENV
     - name: Build
@@ -124,11 +124,14 @@ jobs:
           dnf config-manager --set-enabled crb
           dnf install -y epel-release
         if: ${{ matrix.epel }}
+      # Runtime packages only, deliberately. Installing the -dev packages here would add the
+      # unversioned .so symlink and mask the very thing the binding packages now probe for, so a
+      # regression in versioned-SONAME resolution would sail through CI.
       - name: Install Prerequisites using dnf
-        run: dnf makecache --refresh && dnf install -y findutils libicu libdeflate-devel zstd libargon2-devel
+        run: dnf makecache --refresh && dnf install -y findutils libicu libdeflate libargon2
         if: ${{ matrix.packageManager == 'dnf' }}
       - name: Install Prerequisites using apt
-        run: apt-get update -y && apt-get install -y curl libicu-dev libdeflate-dev zstd libargon2-dev tzdata
+        run: apt-get update -y && apt-get install -y curl libicu-dev libdeflate0 libargon2-1 tzdata
         if: ${{ matrix.packageManager == 'apt' }}
       - uses: actions/checkout@v7
         with:
