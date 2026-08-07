@@ -281,4 +281,16 @@ public interface IIORingGroup : IDisposable
     /// Safe to call after <see cref="IDisposable.Dispose"/>, where it is a no-op.
     /// </remarks>
     void Wake();
+
+    /// <summary>
+    /// Whether <see cref="WaitForCompletion"/> can honour a timeout of a few milliseconds.
+    /// </summary>
+    /// <remarks>
+    /// False means short waits are quantised to something far coarser -- on Windows without a
+    /// high-resolution waitable timer, the system timer resolution of 15.625ms -- so a caller
+    /// asking for 2ms will routinely block for eight times that. A caller that cares about
+    /// sub-frame timing should not sleep at all on such a host, and should say so loudly rather
+    /// than silently running an order of magnitude behind what it asked for.
+    /// </remarks>
+    bool SupportsHighResolutionWait { get; }
 }

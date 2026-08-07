@@ -488,6 +488,14 @@ public sealed unsafe partial class LinuxEpollGroup : IIORingGroup
     }
 
     /// <inheritdoc/>
+    /// <remarks>
+    /// epoll_wait takes its timeout at millisecond granularity backed by a high-resolution kernel
+    /// timer, so short waits are honoured. There is no equivalent of the Windows timer-resolution
+    /// problem.
+    /// </remarks>
+    public bool SupportsHighResolutionWait => true;
+
+    /// <inheritdoc/>
     public void Wake()
     {
         if (_disposed || _wakeFd < 0)

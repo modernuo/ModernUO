@@ -653,6 +653,13 @@ public sealed unsafe partial class DarwinIORingGroup : IIORingGroup
     }
 
     /// <inheritdoc/>
+    /// <remarks>
+    /// kevent takes its timeout as a timespec with nanosecond granularity, so short waits are
+    /// honoured. There is no equivalent of the Windows timer-resolution problem.
+    /// </remarks>
+    public bool SupportsHighResolutionWait => true;
+
+    /// <inheritdoc/>
     public void Wake()
     {
         if (_disposed)

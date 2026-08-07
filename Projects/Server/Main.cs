@@ -90,7 +90,19 @@ public static class Core
     // orders of magnitude depending on whether the loop is sleeping, which silently rescaled the
     // smoothing window along with it.
     private const long HealthSampleIntervalMs = 1000;
-    private const long BackoffDurationMs = 5000;
+
+    // Backoff escalates. A fixed suspension thrashes on a host that is persistently bad: it
+    // expires, sleeping resumes, the host punishes it again immediately, and the loop oscillates
+    // between modes forever while never settling on the one that works. Doubling means a host that
+    // keeps failing converges on "stop sleeping" within a couple of minutes, while one that had a
+    // transient problem still recovers.
+    private const long BackoffBaseMs = 5000;
+    private const long BackoffMaxMs = 120_000;
+    private const int BackoffMaxShift = 5;
+
+    // Clean streak that clears the escalation, so an unlucky hour does not condemn the shard to
+    // spinning for the rest of its uptime.
+    private const long BackoffResetAfterCleanMs = 60_000;
 
     // EMA over roughly half a minute of one-second samples. Meaningful now that the cadence is
     // fixed in time rather than in iterations.
@@ -119,6 +131,10 @@ public static class Core
     private static long _idleSleepBackoffs;
     private static bool _backoffPrimed;
     private static int _consecutiveBadSamples;
+    private static int _consecutiveBackoffs;
+    private static long _currentBackoffMs = BackoffBaseMs;
+    private static long _lastBackoffAt;
+    private static bool _loggedBackoffCeiling;
 
     // How long after a save to stop drawing conclusions from tick health. Long enough to cover the
     // disk flush continuing past the main-thread portion, which on a slow or shared host keeps
@@ -231,18 +247,49 @@ public static class Core
         // Already suspended: extend rather than counting it as a fresh backoff, so the counter
         // reflects distinct episodes instead of how long one lasted.
         var wasSuspended = _tickCount < _idleSleepSuspendedUntil;
-        _idleSleepSuspendedUntil = _tickCount + BackoffDurationMs;
 
-        if (!wasSuspended)
+        if (wasSuspended)
         {
-            _idleSleepBackoffs++;
-            logger.Warning(
-                "Timer wheel missed its 16ms budget {Lost} time(s) in {Interval}ms; idle sleeping suspended for {Duration}ms",
-                lost,
-                HealthSampleIntervalMs,
-                BackoffDurationMs
-            );
+            _idleSleepSuspendedUntil = _tickCount + _currentBackoffMs;
+            return;
         }
+
+        // A long clean streak means the last bad patch was situational, so start over rather than
+        // holding a grudge.
+        if (_lastBackoffAt > 0 && _tickCount - _lastBackoffAt > BackoffResetAfterCleanMs)
+        {
+            _consecutiveBackoffs = 0;
+        }
+
+        _currentBackoffMs = Math.Min(BackoffBaseMs << Math.Min(_consecutiveBackoffs, BackoffMaxShift), BackoffMaxMs);
+        _consecutiveBackoffs++;
+        _lastBackoffAt = _tickCount;
+        _idleSleepSuspendedUntil = _tickCount + _currentBackoffMs;
+        _idleSleepBackoffs++;
+
+        if (_currentBackoffMs >= BackoffMaxMs)
+        {
+            // Escalation has run out of room. The host cannot honour a short wait, and no amount
+            // of retrying will change that, so say so once in terms the operator can act on.
+            if (!_loggedBackoffCeiling)
+            {
+                _loggedBackoffCeiling = true;
+                logger.Error(
+                    "Idle sleeping keeps costing timer accuracy on this host and has backed off {Count} times. " +
+                    "Set server.eventLoopIdleWaitMs to 0 to disable it permanently and trade CPU for latency.",
+                    _idleSleepBackoffs
+                );
+            }
+
+            return;
+        }
+
+        logger.Warning(
+            "Timer wheel missed its 16ms budget {Lost} time(s) in {Interval}ms; idle sleeping suspended for {Duration}ms",
+            lost,
+            HealthSampleIntervalMs,
+            _currentBackoffMs
+        );
     }
     private static bool _crashed;
     private static string _baseDirectory;
@@ -685,6 +732,21 @@ public static class Core
         NetState.Start();
         PingServer.Start();
         EventSink.InvokeServerStarted();
+
+        // Without a high-resolution wait, a 2ms request rounds up to the system timer resolution
+        // -- 15.625ms on Windows -- so the loop would sleep eight times longer than it asked and
+        // quietly run a tick behind. Spinning is the lesser evil, and it must not be a silent
+        // downgrade: an operator seeing missed deadlines deserves to know the cause is the host.
+        if (_eventLoopIdleWaitMs > 0 && NetState.Ring?.SupportsHighResolutionWait == false)
+        {
+            logger.Error(
+                "This host cannot honour short waits (no high-resolution timer; Windows 10 1803 / Server 2019 required). " +
+                "Idle sleeping is disabled -- the loop will spin instead, using a full core."
+            );
+
+            _eventLoopIdleWaitMs = 0;
+        }
+
         RunEventLoop();
     }
 

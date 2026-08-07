@@ -532,6 +532,14 @@ public sealed unsafe class WindowsManagedRIOGroup : IIORingGroup
     }
 
     /// <inheritdoc/>
+    /// <remarks>
+    /// The high-resolution waitable timer requires Windows 10 1803 / Server 2019. Without it the
+    /// only tool left is the WaitForMultipleObjects timeout, which rounds up to the system timer
+    /// resolution -- 15.625ms unless something has raised it process-wide.
+    /// </remarks>
+    public bool SupportsHighResolutionWait => _idleTimer != 0;
+
+    /// <inheritdoc/>
     public void Wake()
     {
         if (_disposed || _wakeEvent == 0)
