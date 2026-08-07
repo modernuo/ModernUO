@@ -82,6 +82,36 @@ sleeps it is paced by `eventLoopIdleWaitMs` rather than by anything about your s
 the default, whether the world is empty or busy but keeping up. It is retained because existing
 tooling reads it. Do not build alerts on it.
 
+### The first time any code path runs, it will probably miss
+
+A freshly started shard misses the budget on paths it has never executed: the first login, the
+first character creation, the first time a particular gump is opened. That is tier-0 JIT and
+first-touch static initialisation, not the cost of the operation.
+
+Profiling caught this directly. A 113 ms stall in a house-placement gump was two thirds
+`InitClassSlow` and `GetGCStaticBaseSlow` — running static constructors — and only a third the gump
+logic itself. Character creation on an M1 shows the same shape: a few missed deadlines the first
+time, from a workload that is nowhere near 24 ms of actual work.
+
+To tell them apart, run the same operation two or three times in one session. Cold-path cost
+disappears on the second run; real cost does not. You do not need to reach tiered-compilation
+maturity to see the difference, just the cold-to-warm transition.
+
+### The 16 ms bar is stricter than the game needs
+
+This measures **timer accuracy, not network latency**. A missed budget means whatever timers were
+sitting in those wheel slots fired late — it does not mean a packet was delayed, since packets are
+handled inline and wake a sleeping loop immediately.
+
+UO systems run on 100 ms to multi-second cadences: combat swings, AI ticks, spawners, decay. A 24 ms
+wheel stall is inside their noise floor, and invisible next to a typical 50 ms ping. The bar is set
+where it is because it makes a sensitive detector that catches problems long before players would,
+not because 16 ms is a threshold players can perceive.
+
+So an occasional `missed16ms` is not a defect. What matters is the **rate**, and whether `sched` is
+climbing with it. Sustained misses, or misses attributed to the scheduler, are worth chasing. A
+handful on a cold path is the metric working.
+
 ### Self-inflicted stalls are expected, and are not the scheduler's fault
 
 A world save can block the loop for a second or more on a large shard. A staff command like
