@@ -32,9 +32,10 @@ public static class NativeLibraryChecker
                 "Linux",
                 [
                     ".NET 10 Runtime — https://dotnet.microsoft.com/download/dotnet/10.0",
-                    "Debian/Ubuntu:  sudo apt-get install -y libdeflate0 libargon2-1 libicuNN",
+                    "Debian/Ubuntu:  sudo apt-get install -y libdeflate0 libargon2-1 libicuNN tzdata",
                     "                (libicuNN varies by release, e.g. libicu76 — run build-tool --check-prereqs there for the exact name)",
-                    "Fedora/RHEL:    sudo dnf install -y libdeflate libargon2 libicu",
+                    "                (add tzdata-legacy if the shard is configured with an alias such as US/Eastern)",
+                    "Fedora/RHEL:    sudo dnf install -y libdeflate libargon2 libicu tzdata",
                     "CentOS:         Also requires epel-release and CRB enabled"
                 ]
             ),
@@ -179,49 +180,25 @@ public static class NativeLibraryChecker
     }
 
     /// <summary>
-    /// Libraries the server needs from the system on Linux.
-    ///
-    /// zstd is absent because ZstdNet bundles libzstd for every RID. liburing is absent because
-    /// IORingGroup issues io_uring syscalls directly and imports only libc, libSystem.dylib,
-    /// kernel32.dll, kernelbase.dll and ws2_32.dll.
-    ///
-    /// ICU is here because the server does not set InvariantGlobalization and its runtimeconfig
-    /// sets System.Globalization.PredefinedCulturesOnly to false, so it genuinely needs ICU.
-    ///
-    /// MaxSoVersion bounds the dlopen fallback used when ldconfig cannot answer. It is per library
-    /// because the SONAME digit is: libdeflate is .so.0 and libargon2 is .so.1 on the same machine,
-    /// while ICU tracks its own release train and was .so.74 on Ubuntu 24.04, .so.76 on Alpine and
-    /// .so.77 on Fedora. A single small bound silently reports ICU missing when it is installed.
+    /// Native libraries the server needs from the system on Linux, and the SONAME range to accept
+    /// for each. Rationale and per-distro package names: dev-docs/platform-prerequisites.md.
     /// </summary>
-    private static readonly (string Name, int MaxSoVersion)[] _linuxLibraries =
+    private static readonly (string Name, int MinSoVersion, int MaxSoVersion)[] _linuxLibraries =
     [
-        ("libicuuc", 99),
-        ("libdeflate", 9),
-        ("libargon2", 9)
+        ("libicuuc", 60, 120),
+        ("libicui18n", 60, 120),
+        ("libdeflate", 0, 9),
+        ("libargon2", 0, 9)
     ];
 
     private static List<PrerequisiteResult> CheckLinux(PlatformInfo platform)
     {
-        // Ask whether the loader can find each library rather than whether a named package is
-        // installed. Package names were why the -dev packages were mandated, and no hardcoded name
-        // works for ICU anyway: its apt package is release-specific (libicu72, libicu74, ...).
-        // ldconfig -p is the loader's own cache, so matching on the "libfoo.so" prefix covers
-        // libdeflate.so.0, libargon2.so.1 and libicuuc.so.76 alike.
-        //
-        // It is only ever a fast *positive* signal. musl's ldconfig exits 0 while producing no
-        // usable cache, so trusting a negative from it reports every library missing on Alpine even
-        // when all of them are installed. A cache can also be stale or omit LD_LIBRARY_PATH.
-        // Anything it does not vouch for gets dlopen'd for real before being called missing.
-        var ldResult = ProcessRunner.RunCaptured("ldconfig", "-p");
-        var cache = ldResult.Success ? ldResult.StandardOutput : null;
-
         var results = new List<PrerequisiteResult>();
         var missing = new List<string>();
 
-        foreach (var (name, maxSoVersion) in _linuxLibraries)
+        foreach (var (name, minSoVersion, maxSoVersion) in _linuxLibraries)
         {
-            var found = cache?.Contains($"{name}.so", StringComparison.Ordinal) == true ||
-                CanLoad(name, maxSoVersion);
+            var found = CanLoad(name, minSoVersion, maxSoVersion);
 
             if (!found)
             {
@@ -235,6 +212,19 @@ public static class NativeLibraryChecker
                 Details = found ? "Found" : "Not found"
             });
         }
+
+        var hasTimeZoneData = HasTimeZoneData();
+        if (!hasTimeZoneData)
+        {
+            missing.Add("tzdata");
+        }
+
+        results.Add(new PrerequisiteResult
+        {
+            Name = "tzdata",
+            Passed = hasTimeZoneData,
+            Details = hasTimeZoneData ? "Found" : "Not found — every zone except UTC will throw"
+        });
 
         if (missing.Count == 0)
         {
@@ -258,7 +248,7 @@ public static class NativeLibraryChecker
             Name = "Install all missing",
             Passed = false,
             IsWarning = true,
-            Details = "Install the runtime libraries. The -dev/-devel packages are not required:",
+            Details = "Install the missing dependencies. The -dev/-devel packages are not required:",
             InstallCommand = BuildInstallCommand(platform, missing)
         });
 
@@ -266,18 +256,37 @@ public static class NativeLibraryChecker
     }
 
     /// <summary>
-    /// Asks the loader directly, for when ldconfig cannot answer. Mirrors the binding packages'
-    /// own probing: the unversioned name first, then libfoo.so.N descending. Bare names go through
-    /// the full loader search path, so LD_LIBRARY_PATH and /etc/ld.so.conf.d still apply.
+    /// tzdata is data, not a library, so no loader probe finds it. Asking the runtime rather than
+    /// stat'ing a path keeps TZDIR honoured, and the count is still accurate under
+    /// InvariantGlobalization, which this tool runs with — only display names degrade there.
     /// </summary>
-    private static bool CanLoad(string library, int maxSoVersion)
+    private static bool HasTimeZoneData()
+    {
+        try
+        {
+            return TimeZoneInfo.GetSystemTimeZones().Count > 1;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Asks the loader directly rather than querying a package database or scanning ldconfig's
+    /// cache, both of which answer a different question and can disagree with what dlopen will do.
+    /// Mirrors the binding packages' own probing: the unversioned name first, then libfoo.so.N
+    /// descending. Bare names go through the full loader search path, so LD_LIBRARY_PATH and
+    /// /etc/ld.so.conf.d still apply.
+    /// </summary>
+    private static bool CanLoad(string library, int minSoVersion, int maxSoVersion)
     {
         if (TryLoadAndFree($"{library}.so"))
         {
             return true;
         }
 
-        for (var soVersion = maxSoVersion; soVersion >= 0; soVersion--)
+        for (var soVersion = maxSoVersion; soVersion >= minSoVersion; soVersion--)
         {
             if (TryLoadAndFree($"{library}.so.{soVersion}"))
             {
@@ -305,14 +314,17 @@ public static class NativeLibraryChecker
         {
             case PackageManager.Apt:
                 {
+                    // Distinct because the two ICU libraries resolve to the same package, and
+                    // ResolveAptIcuPackage shells out, so it is memoized rather than called per name.
                     var packages = missing.Select(
                         library => library switch
                         {
                             "libdeflate" => "libdeflate0",
                             "libargon2"  => "libargon2-1",
-                            _            => ResolveAptIcuPackage()
+                            "tzdata"     => "tzdata",
+                            _            => _aptIcuPackage ??= ResolveAptIcuPackage()
                         }
-                    );
+                    ).Distinct();
 
                     return $"sudo apt-get install -y {string.Join(' ', packages)}";
                 }
@@ -323,9 +335,10 @@ public static class NativeLibraryChecker
                         {
                             "libdeflate" => "libdeflate",
                             "libargon2"  => "libargon2",
+                            "tzdata"     => "tzdata",
                             _            => "libicu"
                         }
-                    );
+                    ).Distinct();
 
                     return $"sudo dnf install -y {string.Join(' ', packages)}";
                 }
@@ -333,6 +346,8 @@ public static class NativeLibraryChecker
                 return $"Install your distribution's runtime packages for: {string.Join(", ", missing)}";
         }
     }
+
+    private static string _aptIcuPackage;
 
     /// <summary>
     /// ICU's apt package carries the ABI version in its name and there is no stable alias, so ask
