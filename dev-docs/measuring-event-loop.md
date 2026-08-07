@@ -209,6 +209,23 @@ To confirm on your own shard, at peak population:
 For a clean comparison, hold everything else constant: `"autosave.enabled": "False"`,
 `"pathfinding.prebakeMaps": "False"`, same world, same population, back to back.
 
+### Before you start, on Linux
+
+Two native libraries are needed, and their absence looks alarming — the build succeeds and the
+tests then fail with `DllNotFoundException`, which reads like a broken branch rather than a missing
+package. The resolver wants the unversioned `.so`, so the `-dev` packages are the ones that matter:
+
+```bash
+sudo apt-get install -y libdeflate-dev libargon2-dev   # Debian/Ubuntu
+```
+
+Also **clone with full history**. A `--depth 1` clone fails the build in Nerdbank.GitVersioning,
+which needs the commit history to compute a version, and the error points at MSBuild internals
+rather than at the clone.
+
+Verified in a clean container: with those two packages and a full clone, this branch builds and
+passes 826 Server.Tests and 642 UOContent.Tests on Linux, matching Windows.
+
 ### Windows
 
 ```powershell
