@@ -87,13 +87,13 @@ dnf install -y dnf-plugins-core
 dnf config-manager --set-enabled crb
 dnf install -y epel-release
 # Prerequisites
-dnf install -y findutils libicu libdeflate-devel zstd libargon2-devel liburing-devel
+dnf install -y findutils libicu libdeflate-devel zstd libargon2-devel
 ```
 
 ### Ubuntu, Debian, etc
 ```shell
 apt-get update -y
-apt-get install -y libicu-dev libdeflate-dev zstd libargon2-dev liburing-dev
+apt-get install -y libicu-dev libdeflate-dev zstd libargon2-dev
 ```
 
 ## OSX Requirements

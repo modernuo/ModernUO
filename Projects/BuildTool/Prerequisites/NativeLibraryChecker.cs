@@ -31,8 +31,8 @@ public static class NativeLibraryChecker
                 "Linux",
                 [
                     ".NET 10 Runtime — https://dotnet.microsoft.com/download/dotnet/10.0",
-                    "Debian/Ubuntu:  sudo apt-get install -y libicu-dev libdeflate-dev zstd libargon2-dev liburing-dev",
-                    "Fedora/RHEL:    sudo dnf install -y libicu libdeflate-devel zstd libargon2-devel liburing-devel",
+                    "Debian/Ubuntu:  sudo apt-get install -y libicu-dev libdeflate-dev zstd libargon2-dev",
+                    "Fedora/RHEL:    sudo dnf install -y libicu libdeflate-devel zstd libargon2-devel",
                     "CentOS:         Also requires epel-release and CRB enabled"
                 ]
             ),
@@ -189,7 +189,7 @@ public static class NativeLibraryChecker
     private static List<PrerequisiteResult> CheckLinuxApt()
     {
         var results = new List<PrerequisiteResult>();
-        var packages = new[] { "libicu-dev", "libdeflate-dev", "zstd", "libargon2-dev", "liburing-dev" };
+        var packages = new[] { "libicu-dev", "libdeflate-dev", "zstd", "libargon2-dev" };
         var missing = new List<string>();
 
         foreach (var package in packages)
@@ -228,7 +228,7 @@ public static class NativeLibraryChecker
     private static List<PrerequisiteResult> CheckLinuxDnf(PlatformInfo platform)
     {
         var results = new List<PrerequisiteResult>();
-        var packages = new[] { "libicu", "libdeflate-devel", "zstd", "libargon2-devel", "liburing-devel" };
+        var packages = new[] { "libicu", "libdeflate-devel", "zstd", "libargon2-devel" };
         var missing = new List<string>();
 
         foreach (var package in packages)
@@ -291,8 +291,7 @@ public static class NativeLibraryChecker
             ["libicu"] = "libicuuc",
             ["libdeflate"] = "libdeflate",
             ["zstd"] = "libzstd",
-            ["libargon2"] = "libargon2",
-            ["liburing"] = "liburing"
+            ["libargon2"] = "libargon2"
         };
 
         foreach (var (name, soName) in libraries)

@@ -125,10 +125,10 @@ jobs:
           dnf install -y epel-release
         if: ${{ matrix.epel }}
       - name: Install Prerequisites using dnf
-        run: dnf makecache --refresh && dnf install -y findutils libicu libdeflate-devel zstd libargon2-devel liburing-devel
+        run: dnf makecache --refresh && dnf install -y findutils libicu libdeflate-devel zstd libargon2-devel
         if: ${{ matrix.packageManager == 'dnf' }}
       - name: Install Prerequisites using apt
-        run: apt-get update -y && apt-get install -y curl libicu-dev libdeflate-dev zstd libargon2-dev tzdata liburing-dev
+        run: apt-get update -y && apt-get install -y curl libicu-dev libdeflate-dev zstd libargon2-dev tzdata
         if: ${{ matrix.packageManager == 'apt' }}
       - uses: actions/checkout@v7
         with:
