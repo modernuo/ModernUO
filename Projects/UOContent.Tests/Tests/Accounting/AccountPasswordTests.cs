@@ -1,3 +1,4 @@
+using System;
 using Server.Accounting;
 using Server.Accounting.Security;
 using Xunit;
@@ -5,9 +6,18 @@ using Xunit;
 namespace Server.Tests.Accounting;
 
 [Collection("Sequential UOContent Tests")]
-public class AccountPasswordTests
+public class AccountPasswordTests : IDisposable
 {
     private const string Password = "hunter2";
+
+    // AccountSecurity.CurrentAlgorithm is process-wide static state, shared with every other
+    // class in the "Sequential UOContent Tests" collection. xUnit constructs/disposes this class
+    // once per test case, so capturing and restoring it here means every case -- current and any
+    // added later to this file -- starts from and leaves behind the ambient value, instead of
+    // bleeding whatever algorithm it last set into the rest of the collection.
+    private readonly PasswordProtectionAlgorithm _originalAlgorithm = AccountSecurity.CurrentAlgorithm;
+
+    public void Dispose() => AccountSecurity.CurrentAlgorithm = _originalAlgorithm;
 
     [Theory]
     [InlineData(PasswordProtectionAlgorithm.SHA1)]
