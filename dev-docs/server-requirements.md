@@ -86,11 +86,19 @@ defaults keep 24 hourly, 30 daily, and 12 monthly copies), plus the pathfinding 
 
 ## Operating systems
 
-See the README for the full supported list. Two floors are worth calling out:
+See the README for the full supported list. Two things are worth calling out:
 
-- **Windows 10 1803 / Server 2019** or newer. The event loop uses a high-resolution waitable timer
-  to hit sub-millisecond waits without raising system-wide timer resolution. Server 2012 and 2016
-  are not supported.
+- **Windows Server 2012 R2 and 2016 are supported, but do not get idle sleeping.** Sleeping for a
+  couple of milliseconds needs a high-resolution waitable timer, which requires Windows 10 1803 /
+  Server 2019. Without one, the only tool left is the plain wait timeout, and that rounds up to the
+  15.625 ms system timer resolution — a 2 ms request would block for eight times as long and put
+  the timer wheel permanently behind.
+
+  So on those versions the server detects the absence at startup, logs it, and spins instead. That
+  is the same behaviour as setting `server.eventLoopIdleWaitMs` to 0: a full core at idle, and
+  zero missed deadlines. Everything else, including the accept-path improvements, applies
+  normally — the detection happens once at startup, not per iteration, so there is no ongoing cost
+  to running an older version.
 - **Linux kernel 6.1** or newer (Debian 12 and equivalents). io_uring is used where available, with
   automatic epoll fallback.
 
