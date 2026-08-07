@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using BuildTool.Platform;
 using BuildTool.Publishing;
 
@@ -31,8 +32,10 @@ public static class NativeLibraryChecker
                 "Linux",
                 [
                     ".NET 10 Runtime — https://dotnet.microsoft.com/download/dotnet/10.0",
-                    "Debian/Ubuntu:  sudo apt-get install -y libicu-dev libdeflate-dev zstd libargon2-dev liburing-dev",
-                    "Fedora/RHEL:    sudo dnf install -y libicu libdeflate-devel zstd libargon2-devel liburing-devel",
+                    "Debian/Ubuntu:  sudo apt-get install -y libdeflate0 libargon2-1 libicuNN tzdata",
+                    "                (libicuNN varies by release, e.g. libicu76 — run build-tool --check-prereqs there for the exact name)",
+                    "                (add tzdata-legacy if the shard is configured with an alias such as US/Eastern)",
+                    "Fedora/RHEL:    sudo dnf install -y libdeflate libargon2 libicu tzdata",
                     "CentOS:         Also requires epel-release and CRB enabled"
                 ]
             ),
@@ -176,82 +179,59 @@ public static class NativeLibraryChecker
         return results;
     }
 
+    /// <summary>
+    /// Native libraries the server needs from the system on Linux, and the SONAME range to accept
+    /// for each. Rationale and per-distro package names: dev-docs/platform-prerequisites.md.
+    /// </summary>
+    private static readonly (string Name, int MinSoVersion, int MaxSoVersion)[] _linuxLibraries =
+    [
+        ("libicuuc", 60, 120),
+        ("libicui18n", 60, 120),
+        ("libdeflate", 0, 9),
+        ("libargon2", 0, 9)
+    ];
+
     private static List<PrerequisiteResult> CheckLinux(PlatformInfo platform)
     {
-        return platform.PackageManager switch
-        {
-            PackageManager.Apt => CheckLinuxApt(),
-            PackageManager.Dnf => CheckLinuxDnf(platform),
-            _ => CheckLinuxGeneric(platform)
-        };
-    }
-
-    private static List<PrerequisiteResult> CheckLinuxApt()
-    {
         var results = new List<PrerequisiteResult>();
-        var packages = new[] { "libicu-dev", "libdeflate-dev", "zstd", "libargon2-dev", "liburing-dev" };
         var missing = new List<string>();
 
-        foreach (var package in packages)
+        foreach (var (name, minSoVersion, maxSoVersion) in _linuxLibraries)
         {
-            var result = ProcessRunner.RunCaptured("dpkg", $"-l {package}");
-            var installed = result.Success && result.StandardOutput.Contains("ii");
+            var found = CanLoad(name, minSoVersion, maxSoVersion);
 
-            if (!installed)
+            if (!found)
             {
-                missing.Add(package);
+                missing.Add(name);
             }
 
             results.Add(new PrerequisiteResult
             {
-                Name = package,
-                Passed = installed,
-                Details = installed ? "Installed" : "Not installed"
+                Name = name,
+                Passed = found,
+                Details = found ? "Found" : "Not found"
             });
         }
 
-        if (missing.Count > 0)
+        var hasTimeZoneData = HasTimeZoneData();
+        if (!hasTimeZoneData)
         {
-            results.Add(new PrerequisiteResult
-            {
-                Name = "Install all missing",
-                Passed = false,
-                IsWarning = true,
-                Details = "Run the following command to install all missing dependencies:",
-                InstallCommand = $"sudo apt-get install -y {string.Join(' ', missing)}"
-            });
+            missing.Add("tzdata");
         }
 
-        return results;
-    }
-
-    private static List<PrerequisiteResult> CheckLinuxDnf(PlatformInfo platform)
-    {
-        var results = new List<PrerequisiteResult>();
-        var packages = new[] { "libicu", "libdeflate-devel", "zstd", "libargon2-devel", "liburing-devel" };
-        var missing = new List<string>();
-
-        foreach (var package in packages)
+        results.Add(new PrerequisiteResult
         {
-            var result = ProcessRunner.RunCaptured("rpm", $"-q {package}");
-            var installed = result.Success;
+            Name = "tzdata",
+            Passed = hasTimeZoneData,
+            Details = hasTimeZoneData ? "Found" : "Not found — every zone except UTC will throw"
+        });
 
-            if (!installed)
-            {
-                missing.Add(package);
-            }
-
-            results.Add(new PrerequisiteResult
-            {
-                Name = package,
-                Passed = installed,
-                Details = installed ? "Installed" : "Not installed"
-            });
+        if (missing.Count == 0)
+        {
+            return results;
         }
 
-        // Check if this is CentOS (needs EPEL)
-        var isCentOs = platform.DistroId?.Equals("centos", StringComparison.OrdinalIgnoreCase) == true;
-        if (isCentOs && missing.Count > 0)
+        if (platform.DistroId?.Equals("centos", StringComparison.OrdinalIgnoreCase) == true)
         {
             results.Add(new PrerequisiteResult
             {
@@ -263,49 +243,131 @@ public static class NativeLibraryChecker
             });
         }
 
-        if (missing.Count > 0)
+        results.Add(new PrerequisiteResult
         {
-            results.Add(new PrerequisiteResult
-            {
-                Name = "Install all missing",
-                Passed = false,
-                IsWarning = true,
-                Details = "Run the following command to install all missing dependencies:",
-                InstallCommand = $"sudo dnf install -y {string.Join(' ', missing)}"
-            });
-        }
+            Name = "Install all missing",
+            Passed = false,
+            IsWarning = true,
+            Details = "Install the missing dependencies. The -dev/-devel packages are not required:",
+            InstallCommand = BuildInstallCommand(platform, missing)
+        });
 
         return results;
     }
 
-    private static List<PrerequisiteResult> CheckLinuxGeneric(PlatformInfo platform)
+    /// <summary>
+    /// tzdata is data, not a library, so no loader probe finds it. Asking the runtime rather than
+    /// stat'ing a path keeps TZDIR honoured, and the count is still accurate under
+    /// InvariantGlobalization, which this tool runs with — only display names degrade there.
+    /// </summary>
+    private static bool HasTimeZoneData()
     {
-        var results = new List<PrerequisiteResult>();
-
-        // Use ldconfig to check for shared libraries
-        var ldResult = ProcessRunner.RunCaptured("ldconfig", "-p");
-        var ldOutput = ldResult.Success ? ldResult.StandardOutput : "";
-
-        var libraries = new Dictionary<string, string>
+        try
         {
-            ["libicu"] = "libicuuc",
-            ["libdeflate"] = "libdeflate",
-            ["zstd"] = "libzstd",
-            ["libargon2"] = "libargon2",
-            ["liburing"] = "liburing"
-        };
-
-        foreach (var (name, soName) in libraries)
+            return TimeZoneInfo.GetSystemTimeZones().Count > 1;
+        }
+        catch
         {
-            var found = ldOutput.Contains(soName, StringComparison.OrdinalIgnoreCase);
-            results.Add(new PrerequisiteResult
-            {
-                Name = name,
-                Passed = found,
-                Details = found ? "Found" : "Not found — install using your package manager"
-            });
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Asks the loader directly rather than querying a package database or scanning ldconfig's
+    /// cache, both of which answer a different question and can disagree with what dlopen will do.
+    /// Mirrors the binding packages' own probing: the unversioned name first, then libfoo.so.N
+    /// descending. Bare names go through the full loader search path, so LD_LIBRARY_PATH and
+    /// /etc/ld.so.conf.d still apply.
+    /// </summary>
+    private static bool CanLoad(string library, int minSoVersion, int maxSoVersion)
+    {
+        if (TryLoadAndFree($"{library}.so"))
+        {
+            return true;
         }
 
-        return results;
+        for (var soVersion = maxSoVersion; soVersion >= minSoVersion; soVersion--)
+        {
+            if (TryLoadAndFree($"{library}.so.{soVersion}"))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool TryLoadAndFree(string candidate)
+    {
+        if (!NativeLibrary.TryLoad(candidate, out var handle))
+        {
+            return false;
+        }
+
+        NativeLibrary.Free(handle);
+        return true;
+    }
+
+    private static string BuildInstallCommand(PlatformInfo platform, List<string> missing)
+    {
+        switch (platform.PackageManager)
+        {
+            case PackageManager.Apt:
+                {
+                    // Distinct because the two ICU libraries resolve to the same package, and
+                    // ResolveAptIcuPackage shells out, so it is memoized rather than called per name.
+                    var packages = missing.Select(
+                        library => library switch
+                        {
+                            "libdeflate" => "libdeflate0",
+                            "libargon2"  => "libargon2-1",
+                            "tzdata"     => "tzdata",
+                            _            => _aptIcuPackage ??= ResolveAptIcuPackage()
+                        }
+                    ).Distinct();
+
+                    return $"sudo apt-get install -y {string.Join(' ', packages)}";
+                }
+            case PackageManager.Dnf:
+                {
+                    var packages = missing.Select(
+                        library => library switch
+                        {
+                            "libdeflate" => "libdeflate",
+                            "libargon2"  => "libargon2",
+                            "tzdata"     => "tzdata",
+                            _            => "libicu"
+                        }
+                    ).Distinct();
+
+                    return $"sudo dnf install -y {string.Join(' ', packages)}";
+                }
+            default:
+                return $"Install your distribution's runtime packages for: {string.Join(", ", missing)}";
+        }
+    }
+
+    private static string _aptIcuPackage;
+
+    /// <summary>
+    /// ICU's apt package carries the ABI version in its name and there is no stable alias, so ask
+    /// apt which one this release actually ships instead of printing a name that rots.
+    /// </summary>
+    private static string ResolveAptIcuPackage()
+    {
+        var result = ProcessRunner.RunCaptured("apt-cache", "search --names-only ^libicu[0-9]+$");
+        if (!result.Success)
+        {
+            return "libicu";
+        }
+
+        var best = result.StandardOutput
+            .Split('\n', StringSplitOptions.RemoveEmptyEntries)
+            .Select(line => line.Split(' ', 2)[0].Trim())
+            .Where(name => name.StartsWith("libicu", StringComparison.Ordinal))
+            .OrderBy(name => int.TryParse(name.AsSpan(6), out var version) ? version : 0)
+            .LastOrDefault();
+
+        return best ?? "libicu";
     }
 }

@@ -4,6 +4,7 @@ using BuildTool.Interactive;
 using BuildTool.Platform;
 using BuildTool.Prerequisites;
 using BuildTool.Publishing;
+using Spectre.Console;
 
 Console.OutputEncoding = Encoding.UTF8;
 
@@ -35,6 +36,22 @@ var detectedPlatform = PlatformDetector.Detect();
 options.Os ??= detectedPlatform.OsRid;
 options.Arch ??= detectedPlatform.ArchRid;
 var rid = $"{options.Os}-{options.Arch}";
+
+if (options.CheckPrereqsOnly)
+{
+    // Same renderer the guided menu uses, so the two cannot drift. Spectre drops ANSI styling by
+    // itself when stdout is not a terminal, which is the case this flag exists for, but it also
+    // falls back to an 80 column width and folds anything longer. The install hints we print are
+    // shell commands — the CentOS one is 95 characters — and a fold puts a newline in the middle of
+    // a command that someone is meant to copy. Widen the profile so they stay on one line.
+    if (Console.IsOutputRedirected)
+    {
+        AnsiConsole.Profile.Width = 200;
+    }
+
+    // Exit code is the machine-readable half: 0 when everything resolves, 1 when anything is missing.
+    return PrerequisiteChecker.CheckNativeLibraries(detectedPlatform, interactive: false) ? 0 : 1;
+}
 
 // Run prerequisite checks unless skipped
 if (!options.SkipPrereqs)
@@ -105,6 +122,12 @@ static BuildOptions ParseArguments(string[] args)
             case "--skip-prereqs":
                 {
                     options.SkipPrereqs = true;
+                    hasNamedArgs = true;
+                    break;
+                }
+            case "--check-prereqs":
+                {
+                    options.CheckPrereqsOnly = true;
                     hasNamedArgs = true;
                     break;
                 }
