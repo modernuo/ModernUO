@@ -29,6 +29,9 @@ public static class LoopStats
     private static long _lastIterations;
     private static long _lastSleeps;
 
+    // Anything shorter than most of the configured interval is a catch-up duplicate, not a window.
+    private static TimeSpan _minReportWindow;
+
     public static void Configure()
     {
         CommandSystem.Register("LoopStats", AccessLevel.Administrator, LoopStats_OnCommand);
@@ -53,6 +56,7 @@ public static class LoopStats
         }
 
         _reporting = true;
+        _minReportWindow = interval * 0.75;
         _lastCpu = Environment.CpuUsage.TotalTime;
         _lastReport = Core.Now;
         Timer.ResetPeakTickLag();
@@ -68,6 +72,15 @@ public static class LoopStats
 
     private static void Report()
     {
+        // The reporter is itself a wheel timer, so a stall makes it come due once per slot the
+        // wheel then catches up on -- a 183 second gap at startup produced twelve reports in the
+        // same millisecond, each covering no elapsed time and printing zeroes. Keep the first,
+        // which legitimately describes the stall, and drop the rest of the burst.
+        if (Core.Now - _lastReport < _minReportWindow)
+        {
+            return;
+        }
+
         var snapshot = Capture();
         logger.Information(
             "loop: cpu={Cpu:F1}% cps={Cps:F0} missed8ms={Missed8} missed16ms={Missed16} sched={SchedMissed} " +
