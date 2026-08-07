@@ -187,22 +187,41 @@ pwsh tools/Measure-EventLoop.ps1 -WarmupSeconds 45 -SampleSeconds 60
 
 Boots the shard twice, samples `TotalProcessorTime` over the window, and prints both results.
 
-### Linux and macOS
+### macOS and Linux
 
-Start the server, wait for the world to finish loading, then sample the process:
+```bash
+./tools/measure-event-loop.sh 45 60
+```
+
+Same procedure as the Windows script: boots the shard twice, samples process CPU over the window,
+and prints the `loop:` lines from both runs so the CPU figures can be read against what they cost
+in timer accuracy. Needs `python3`, which ships with the macOS developer tools.
+
+To sample a shard that is already running instead:
 
 ```bash
 pid=$(pgrep -f ModernUO)
-t0=$(ps -o cputime= -p "$pid"); sleep 60; t1=$(ps -o cputime= -p "$pid")
-echo "cpu before=$t0 after=$t1"
+ps -o time= -p "$pid"; sleep 60; ps -o time= -p "$pid"
 ```
 
-or watch it with `top -pid "$pid"` (macOS) / `top -p "$pid"` (Linux). Change the setting between
-runs and restart.
+or watch it with `top -pid "$pid"` (macOS) / `top -p "$pid"` (Linux).
 
-macOS uses kqueue and Linux uses io_uring (falling back to epoll), so these are worth running on
-their own rather than assuming the Windows result carries over — the wake path is different code on
-each.
+**Run these rather than assuming the Windows result carries over.** The wake path is different code
+on every backend — `EVFILT_USER` on kqueue, an eventfd on io_uring and epoll, an event object on
+Windows — and so is the cost structure the loop sits on. Windows pays a syscall per iteration in the
+accept scan that the others do not, and the timer-resolution problem that shapes the Windows
+implementation has no equivalent elsewhere.
+
+Before measuring on a platform for the first time, run the ring's own tests, which exercise the wake
+contract natively:
+
+```bash
+dotnet test IORingGroup.Tests/IORingGroup.Tests.csproj
+```
+
+`WakeBeforeWaitIsNotLost` and `WakeFromAnotherThreadUnblocksWait` are the ones that matter. If the
+platform's wake primitive is broken, those fail and the loop would otherwise appear merely
+"slow to notice work" for no visible reason.
 
 ## If skipped slots are high regardless of setting
 

@@ -64,3 +64,4 @@
 !/tools/Export-IpBlocklist.ps1
 !/tools/Measure-EventLoop.ps1
 !/tools/HostLatencyProbe.cs
+!/tools/measure-event-loop.sh

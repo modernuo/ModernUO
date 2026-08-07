@@ -57,6 +57,7 @@ public sealed unsafe partial class DarwinIORingGroup : IIORingGroup
     // contents never vary, so sharing one array across threads is safe and avoids allocating
     // on every wake.
     private readonly kevent[] _wakeTrigger;
+    private bool _wakeRegistered = true;
 
     private volatile bool _disposed;
 
@@ -142,7 +143,17 @@ public sealed unsafe partial class DarwinIORingGroup : IIORingGroup
             }
         ];
 
-        Darwin.kevent(_kqueueFd, register, 1, null, 0, nint.Zero);
+        // A failure here is not fatal -- a caller that cannot be woken falls back to its own
+        // timeout -- but it must not be silent, or cross-thread work would appear to arrive late
+        // for no discoverable reason.
+        if (Darwin.kevent(_kqueueFd, register, 1, null, 0, nint.Zero) < 0)
+        {
+            _wakeRegistered = false;
+            Console.Error.WriteLine(
+                $"IORingGroup: failed to register EVFILT_USER for Wake() (errno {Marshal.GetLastPInvokeError()}); " +
+                "callers will only wake on I/O or timeout."
+            );
+        }
     }
 
     /// <inheritdoc/>
@@ -662,7 +673,7 @@ public sealed unsafe partial class DarwinIORingGroup : IIORingGroup
     /// <inheritdoc/>
     public void Wake()
     {
-        if (_disposed)
+        if (_disposed || !_wakeRegistered)
         {
             return;
         }
