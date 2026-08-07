@@ -63,6 +63,12 @@ public partial class Timer
     /// reason for operators to hand-roll a probe that enumerates processes or threads to get it.
     /// </para>
     /// </remarks>
+    /// <summary>
+    /// Milliseconds of simulated time one wheel turn advances. The schedule the loop is trying to
+    /// keep, and therefore the bar any idle wait has to clear.
+    /// </summary>
+    public static int TickRate => _tickRate;
+
     public static long LastTickLag { get; private set; }
 
     /// <summary>

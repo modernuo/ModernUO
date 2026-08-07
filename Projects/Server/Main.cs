@@ -51,6 +51,7 @@ public static class Core
     // the damage if a wake signal is ever missed. Measured across 1/2/4/8ms, 2 is where the trade
     // stops being free -- below it costs CPU for nothing, above it starts losing timer slots.
     private static int _eventLoopIdleWaitMs = 2;
+    private static bool _autoDetectIdleWait = true;
 
     /// <summary>
     /// Longest the loop will block while idle, in milliseconds. 0 disables idle sleeping entirely,
@@ -168,6 +169,66 @@ public static class Core
     /// -- if deadlines are still missed at an idle wait of 0, the loop has been ruled out.
     /// </para>
     /// </remarks>
+    /// <summary>
+    /// Measures what a short wait actually costs on this host, and gives up on idle sleeping if it
+    /// cannot be honoured well enough to keep the timer wheel on schedule.
+    /// </summary>
+    /// <remarks>
+    /// Whether sleeping is viable is a property of the host, not of the server, and it cannot be
+    /// inferred from anything visible at build time. A dedicated core returns a 2ms wait in about
+    /// 2ms. An oversubscribed shared vCPU may not: yielding hands the slot back to the hypervisor,
+    /// which is under no obligation to return it promptly, and waits come back tens of
+    /// milliseconds late.
+    /// <para>
+    /// The adaptive backoff would eventually reach the same conclusion, but only after minutes of
+    /// degraded play while it escalates. Measuring at startup costs a fraction of a second and
+    /// gets it right before the first player connects.
+    /// </para>
+    /// </remarks>
+    private static void CalibrateIdleWait()
+    {
+        const int samples = 25;
+        var observed = new long[samples];
+
+        for (var i = 0; i < samples; i++)
+        {
+            var start = GetTimestamp();
+            NetState.WaitForCompletion(_eventLoopIdleWaitMs);
+            observed[i] = GetTimestamp() - start;
+        }
+
+        Array.Sort(observed);
+        var median = observed[samples / 2];
+        var worst = observed[^1];
+
+        // The wheel turns every _tickRate ms. A sleep that routinely overshoots a whole tick can
+        // never keep it on schedule, however short the request was.
+        if (median < Timer.TickRate)
+        {
+            logger.Information(
+                "Event loop idle wait calibrated: {Requested}ms request returns in {Median}ms (worst {Worst}ms)",
+                _eventLoopIdleWaitMs,
+                median,
+                worst
+            );
+
+            return;
+        }
+
+        logger.Warning(
+            "This host returns a {Requested}ms wait after {Median}ms (worst {Worst}ms), which cannot keep the " +
+            "{TickRate}ms timer wheel on schedule -- typical of an oversubscribed shared vCPU, where yielding " +
+            "costs the scheduling slot. Idle sleeping is disabled; the loop will spin and use a full core. " +
+            "Set server.autoDetectIdleWait to false to override.",
+            _eventLoopIdleWaitMs,
+            median,
+            worst,
+            Timer.TickRate
+        );
+
+        _eventLoopIdleWaitMs = 0;
+    }
+
     private static void SampleLoopHealth()
     {
         if (_tickCount < _nextHealthSample)
@@ -687,6 +748,10 @@ public static class Core
         // very high to disable the backoff entirely.
         _missedFrameThreshold = ServerConfiguration.GetOrUpdateSetting("server.missedFrameThreshold", 1);
 
+        // Whether a short wait is honoured is a host property, so it is measured at startup rather
+        // than assumed. Set false to keep the configured idle wait regardless of what the host does.
+        _autoDetectIdleWait = ServerConfiguration.GetOrUpdateSetting("server.autoDetectIdleWait", true);
+
         var assemblyPath = Path.Join(BaseDirectory, AssembliesConfiguration);
 
         // Load UOContent.dll
@@ -745,6 +810,11 @@ public static class Core
             );
 
             _eventLoopIdleWaitMs = 0;
+        }
+
+        if (_eventLoopIdleWaitMs > 0 && _autoDetectIdleWait)
+        {
+            CalibrateIdleWait();
         }
 
         RunEventLoop();
