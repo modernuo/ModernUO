@@ -94,6 +94,7 @@ public class PasswordProtectionTest
     [InlineData("argon2id", 8192, 1, 1, true)]   // right type, stale memory
     [InlineData("argon2id", 16384, 3, 1, true)]  // right type, stale iterations
     [InlineData("argon2id", 16384, 1, 2, true)]  // right type, stale parallelism
+    [InlineData("argon2i", 16384, 1, 1, true)]   // right cost, stale type
     public void Argon2_NeedsRehash_ComparesTypeAndCost(
         string type, int memory, int time, int parallelism, bool expected
     )
