@@ -46,6 +46,7 @@ Apply these when writing or reviewing `.cs` files under `Projects/`.
 | Event system | `dev-docs/events.md` |
 | Threading model | `dev-docs/threading-model.md` |
 | Server lifecycle & bootstrap phases (Configure/ConfigurePrompts/Initialize) | `dev-docs/server-lifecycle.md` |
+| Platform prerequisites (ICU, tzdata, native libs per distro) | `dev-docs/platform-prerequisites.md` |
 | Configuration system | `dev-docs/configuration.md` |
 | Networking & packets | `dev-docs/networking-packets.md` |
 | IP bans, blocklists & allowlists (incl. unblocking a player) | `dev-docs/ip-bans-and-allowlists.md` |
