@@ -128,11 +128,32 @@ jobs:
       # unversioned .so symlink and mask the very thing the binding packages now probe for, so a
       # regression in versioned-SONAME resolution would sail through CI.
       - name: Install Prerequisites using dnf
-        run: dnf makecache --refresh && dnf install -y findutils libicu libdeflate libargon2
+        run: dnf makecache --refresh && dnf install -y findutils libicu libdeflate libargon2 tzdata
         if: ${{ matrix.packageManager == 'dnf' }}
+      # ICU's runtime package carries the ABI version in its name (libicu70 on jammy, libicu76 on
+      # trixie) and has no stable alias, so match it by pattern. libicu-dev was the old way to stay
+      # version-independent, but it drags in the unversioned symlink and defeats the check below.
       - name: Install Prerequisites using apt
-        run: apt-get update -y && apt-get install -y curl libicu-dev libdeflate0 libargon2-1 tzdata
+        run: apt-get update -y && apt-get install -y curl '^libicu[0-9]+$' libdeflate0 libargon2-1 tzdata
         if: ${{ matrix.packageManager == 'apt' }}
+      # Versioned-SONAME resolution is only under test while the unversioned symlink is absent. If a
+      # base image or a package ever starts shipping it, every probe would succeed on the first try
+      # and a regression in the fallback would sail through CI, so fail loudly instead of silently
+      # testing nothing.
+      - name: Assert the unversioned .so symlinks are absent
+        run: |
+          found=""
+          for lib in libicuuc libicui18n libdeflate libargon2; do
+            hit=$(ls /usr/lib/*/"$lib".so /usr/lib64/"$lib".so 2>/dev/null || true)
+            if [ -n "$hit" ]; then
+              found="$found $hit"
+            fi
+          done
+          if [ -n "$found" ]; then
+            echo "::error::Unversioned symlinks present, so CI is no longer exercising versioned SONAME resolution:$found"
+            exit 1
+          fi
+          echo "No unversioned symlinks present; versioned SONAME resolution is under test."
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
