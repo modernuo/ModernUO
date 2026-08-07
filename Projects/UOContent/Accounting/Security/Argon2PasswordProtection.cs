@@ -39,4 +39,22 @@ public class Argon2PasswordProtection : IPasswordProtection
 
     public bool ValidatePassword(string encryptedPassword, string plainPassword) =>
         _passwordHasher.Verify(encryptedPassword, plainPassword);
+
+    public bool NeedsRehash(string encryptedPassword)
+    {
+        // Argon2's PHC string embeds m, t and p, so verification uses the parameters stored with
+        // each account rather than the configured ones. Without this comparison a parameter change
+        // would reach nobody: CheckPassword only rehashed when the *algorithm* changed.
+        if (!Argon2PasswordHasher.TryExtractMetadataValues(encryptedPassword, out var values))
+        {
+            // Only reached after a successful verify, so an unparseable string means a format this
+            // build does not understand. Rewriting it into the current one is strictly better.
+            return true;
+        }
+
+        return values.ArgonType != _passwordHasher.ArgonType
+               || values.MemoryCost != _passwordHasher.MemoryCost
+               || values.TimeCost != _passwordHasher.TimeCost
+               || values.Parallelism != _passwordHasher.Parallelism;
+    }
 }

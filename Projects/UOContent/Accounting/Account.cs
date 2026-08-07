@@ -6,6 +6,7 @@ using System.Xml;
 using ModernUO.CodeGeneratedEvents;
 using ModernUO.Serialization;
 using Server.Accounting.Security;
+using Server.Logging;
 using Server.Misc;
 using Server.Mobiles;
 using Server.Multis;
@@ -18,6 +19,8 @@ namespace Server.Accounting;
 [SerializationGenerator(6)]
 public partial class Account : IAccount, IComparable<Account>
 {
+    private static readonly ILogger logger = LogFactory.GetLogger(typeof(Account));
+
     public static readonly TimeSpan YoungDuration = TimeSpan.FromHours(40.0);
     public static readonly TimeSpan InactiveDuration = TimeSpan.FromDays(180.0);
     public static readonly TimeSpan EmptyInactiveDuration = TimeSpan.FromDays(30.0);
@@ -408,9 +411,13 @@ public partial class Account : IAccount, IComparable<Account>
             return false;
         }
 
-        // Upgrade the password protection in case we change the algorithm
-        if (_passwordAlgorithm != AccountSecurity.CurrentAlgorithm)
+        // Rehash when either the algorithm or its cost parameters have moved on. The short-circuit
+        // ordering is load-bearing: NeedsRehash must never be handed a hash produced by a different
+        // algorithm, and the first clause guarantees it is not.
+        if (_passwordAlgorithm != AccountSecurity.CurrentAlgorithm ||
+            AccountSecurity.CurrentPasswordProtection.NeedsRehash(Password))
         {
+            logger.Debug("Rehashing the password for account '{Username}'.", _username);
             SetPassword(plainPassword);
         }
 

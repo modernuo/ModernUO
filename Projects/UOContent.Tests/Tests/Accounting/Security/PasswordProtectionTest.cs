@@ -86,4 +86,38 @@ public class PasswordProtectionTest
         Assert.True(Argon2PasswordProtection.Instance.ValidatePassword(LegacyArgon2iHash, "hunter2"));
         Assert.False(Argon2PasswordProtection.Instance.ValidatePassword(LegacyArgon2iHash, "wrong"));
     }
+
+    [Theory]
+    // type, memory, time, parallelism -> expected NeedsRehash
+    [InlineData("argon2id", 16384, 1, 1, false)] // current defaults
+    [InlineData("argon2i", 8192, 3, 1, true)]    // the old shipping default
+    [InlineData("argon2id", 8192, 1, 1, true)]   // right type, stale memory
+    [InlineData("argon2id", 16384, 3, 1, true)]  // right type, stale iterations
+    [InlineData("argon2id", 16384, 1, 2, true)]  // right type, stale parallelism
+    public void Argon2_NeedsRehash_ComparesTypeAndCost(
+        string type, int memory, int time, int parallelism, bool expected
+    )
+    {
+        var hash = $"${type}$v=19$m={memory},t={time},p={parallelism}$" +
+                   "LD1XJz7P3wQmIJ+Tu6ScgA$NO5hBABsHQ172C5nDO2X4gWnB4jDef3x6WhLdVE2LFw";
+
+        Assert.Equal(expected, Argon2PasswordProtection.Instance.NeedsRehash(hash));
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("not-a-hash")]
+    public void Argon2_NeedsRehash_IsTrueForUnparseableHashes(string hash)
+    {
+        Assert.True(Argon2PasswordProtection.Instance.NeedsRehash(hash));
+    }
+
+    [Fact]
+    public void NonArgon2Protections_NeverNeedRehash()
+    {
+        Assert.False(PBKDF2PasswordProtection.Instance.NeedsRehash("anything"));
+        Assert.False(HashAlgorithmPasswordProtection.SHA2Instance.NeedsRehash("anything"));
+        Assert.False(HashAlgorithmPasswordProtection.SHA1Instance.NeedsRehash("anything"));
+        Assert.False(HashAlgorithmPasswordProtection.MD5Instance.NeedsRehash("anything"));
+    }
 }

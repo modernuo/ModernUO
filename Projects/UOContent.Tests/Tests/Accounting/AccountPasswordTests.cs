@@ -54,4 +54,23 @@ public class AccountPasswordTests : IDisposable
         Assert.True(account.CheckPassword(Password));
         Assert.False(account.CheckPassword("wrong-password"));
     }
+
+    [Fact]
+    public void StaleArgon2Parameters_AreRehashedOnLogin()
+    {
+        AccountSecurity.CurrentAlgorithm = PasswordProtectionAlgorithm.Argon2;
+        var account = new Account("stale-params-user", Password);
+
+        // Simulate an account stored under the pre-1.20.0 default: Argon2i, m=8192, t=3, p=1.
+        account.Password =
+            "$argon2i$v=19$m=8192,t=3,p=1$LD1XJz7P3wQmIJ+Tu6ScgA$NO5hBABsHQ172C5nDO2X4gWnB4jDef3x6WhLdVE2LFw";
+
+        Assert.True(account.CheckPassword("hunter2"));
+        Assert.StartsWith("$argon2id$v=19$m=16384,t=1,p=1$", account.Password);
+
+        // Already current: verifying again must not rewrite the hash.
+        var afterFirst = account.Password;
+        Assert.True(account.CheckPassword("hunter2"));
+        Assert.Equal(afterFirst, account.Password);
+    }
 }
