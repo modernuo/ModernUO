@@ -376,21 +376,31 @@ public partial class Account : IAccount, IComparable<Account>
         return true;
     }
 
+    /// <summary>
+    /// SHA1 and SHA2 are the ServUO-compatible algorithms; they salt the password with the
+    /// username. Argon2 and PBKDF2 carry their own salt and do not.
+    /// </summary>
+    private static bool UsesUsernamePhrase(PasswordProtectionAlgorithm algorithm) =>
+        algorithm is PasswordProtectionAlgorithm.SHA1 or PasswordProtectionAlgorithm.SHA2;
+
     public void SetPassword(string plainPassword)
     {
-        var phrase = _passwordAlgorithm is PasswordProtectionAlgorithm.SHA1 or PasswordProtectionAlgorithm.SHA2
-            ? $"{_username}{plainPassword}"
-            : plainPassword;
+        // The phrase must match how CheckPassword will rebuild it *after* the algorithm changes,
+        // so it is derived from the target algorithm rather than the outgoing one. Deriving it
+        // from _passwordAlgorithm stored a username-salted hash under an algorithm that never
+        // re-adds the username, locking the account out on its next login -- and, because this
+        // runs from the constructor before _passwordAlgorithm is assigned, it also produced
+        // brand-new SHA1/SHA2 accounts that could never log in at all.
+        var algorithm = AccountSecurity.CurrentAlgorithm;
+        var phrase = UsesUsernamePhrase(algorithm) ? $"{_username}{plainPassword}" : plainPassword;
 
-        Password = AccountSecurity.CurrentPasswordProtection.EncryptPassword(phrase);
-        PasswordAlgorithm = AccountSecurity.CurrentAlgorithm;
+        Password = AccountSecurity.GetPasswordProtection(algorithm).EncryptPassword(phrase);
+        PasswordAlgorithm = algorithm;
     }
 
     public bool CheckPassword(string plainPassword)
     {
-        var phrase = _passwordAlgorithm is PasswordProtectionAlgorithm.SHA1 or PasswordProtectionAlgorithm.SHA2
-            ? $"{_username}{plainPassword}"
-            : plainPassword;
+        var phrase = UsesUsernamePhrase(_passwordAlgorithm) ? $"{_username}{plainPassword}" : plainPassword;
 
         var ok = AccountSecurity.GetPasswordProtection(_passwordAlgorithm).ValidatePassword(Password, phrase);
         if (!ok)
