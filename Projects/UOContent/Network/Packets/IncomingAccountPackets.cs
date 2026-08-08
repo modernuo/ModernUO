@@ -28,7 +28,11 @@ namespace Server.Network;
 
 public static class IncomingAccountPackets
 {
+    // Initial capacity and the point at which issuing sweeps for expired ids. Not a cap: a login
+    // rush must not be turned into "unable to find auth id" for whoever lands past the limit.
     private const int _authIDWindowSize = 128;
+
+    private static int _authIdPurgeThreshold = _authIDWindowSize;
 
     // The gap between PlayServerAck and the client's game login is seconds. Two minutes is generous,
     // and bounds how long a stolen id stays usable.
@@ -347,30 +351,16 @@ public static class IncomingAccountPackets
 
     internal static int RegisterAuthId(IAccount account, IPAddress address, ClientVersion version)
     {
-        // Ids are only consumed by a game login, so anyone who reaches the server list and never
-        // picks a server leaves theirs behind. Reclaim the dead ones before evicting a live one --
-        // otherwise enough abandoned logins fill the window and start pushing out ids that clients
-        // are still on their way to redeem.
-        if (_authIDWindow.Count >= _authIDWindowSize)
+        // An id is issued when a server is picked and consumed by the game login seconds later, so
+        // the only ones left behind belong to clients that picked a server and never arrived. Sweep
+        // those, but never evict a live id to make room: the client holding it is on its way to
+        // redeem it, and taking it away hands a real player a failed login. If everything is still
+        // live the window simply grows -- that is a login rush, not a backlog. Creating an entry
+        // costs a successful password verify, so the size is self-limiting.
+        if (_authIDWindow.Count >= _authIdPurgeThreshold)
         {
             PurgeExpiredAuthIds();
-        }
-
-        if (_authIDWindow.Count >= _authIDWindowSize)
-        {
-            var oldestID = 0;
-            var oldest = DateTime.MaxValue;
-
-            foreach (var (key, authId) in _authIDWindow)
-            {
-                if (authId.Age < oldest)
-                {
-                    oldestID = key;
-                    oldest = authId.Age;
-                }
-            }
-
-            _authIDWindow.Remove(oldestID);
+            _authIdPurgeThreshold = Math.Max(_authIDWindowSize, _authIDWindow.Count * 2);
         }
 
         int authID;
@@ -432,7 +422,11 @@ public static class IncomingAccountPackets
         }
     }
 
-    internal static void ClearAuthIdWindow() => _authIDWindow.Clear();
+    internal static void ClearAuthIdWindow()
+    {
+        _authIDWindow.Clear();
+        _authIdPurgeThreshold = _authIDWindowSize;
+    }
 
     internal static int AuthIdWindowCount => _authIDWindow.Count;
 

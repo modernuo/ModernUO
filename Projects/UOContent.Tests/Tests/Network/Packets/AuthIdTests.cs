@@ -196,12 +196,11 @@ public class AuthIdTests : IDisposable
     }
 
     /// <summary>
-    /// Ids are only consumed by a game login, so a player who reaches the server list and never
-    /// picks a server abandons theirs. Enough of those must not push out ids that live clients are
-    /// still on their way to redeem.
+    /// An id is only left behind when a client picks a server and never arrives. Issuing sweeps
+    /// those, so they do not accumulate.
     /// </summary>
     [Fact]
-    public void AbandonedIdsAreReclaimedBeforeALiveOneIsEvicted()
+    public void AbandonedIdsAreSweptWhenNewOnesAreIssued()
     {
         var abandoned = CreateAccount("authid-abandoned-user");
         var live = CreateAccount("authid-live-user");
@@ -210,7 +209,6 @@ public class AuthIdTests : IDisposable
 
         try
         {
-            // Fill the window with ids nobody ever redeems.
             for (var i = 0; i < 128; i++)
             {
                 Register(abandoned, AddressX);
@@ -220,8 +218,6 @@ public class AuthIdTests : IDisposable
 
             Core._now = now + TimeSpan.FromMinutes(30.0);
 
-            // The next issue reclaims the dead entries instead of evicting, so the id it hands out
-            // is the only one left and is immediately redeemable.
             var liveId = Register(live, AddressX);
 
             Assert.Equal(1, IncomingAccountPackets.AuthIdWindowCount);
@@ -233,6 +229,34 @@ public class AuthIdTests : IDisposable
         finally
         {
             Core._now = now;
+        }
+    }
+
+    /// <summary>
+    /// A login rush is not a backlog. Every one of these ids belongs to a client on its way to
+    /// redeem it, so none may be discarded to keep the window at some arbitrary size -- doing so
+    /// hands a real player "unable to find auth id" and a disconnect.
+    /// </summary>
+    [Fact]
+    public void ALoginRushDoesNotEvictAnyonesAuthId()
+    {
+        var account = CreateAccount("authid-rush-user");
+        var ids = new int[800];
+
+        for (var i = 0; i < ids.Length; i++)
+        {
+            ids[i] = Register(account, AddressX);
+        }
+
+        Assert.Equal(ids.Length, IncomingAccountPackets.AuthIdWindowCount);
+
+        // Every id issued during the rush is still redeemable, including the first one.
+        for (var i = 0; i < ids.Length; i++)
+        {
+            Assert.Equal(
+                IncomingAccountPackets.AuthIdResult.Vouched,
+                IncomingAccountPackets.ConsumeAuthId(ids[i], account.Username, AddressX, out _)
+            );
         }
     }
 
