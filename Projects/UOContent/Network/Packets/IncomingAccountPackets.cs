@@ -416,12 +416,6 @@ public static class IncomingAccountPackets
 
         var authId = reader.ReadInt32();
 
-        if (!_authIDWindow.TryGetValue(authId, out var ap))
-        {
-            state.LogInfo("Invalid client detected, disconnecting...");
-            state.Disconnect("Unable to find auth id.");
-        }
-
         if (state.AuthId != 0 && authId != state.AuthId || state.AuthId == 0 && authId != state.Seed)
         {
             state.LogInfo("Invalid client detected, disconnecting...");
@@ -429,14 +423,28 @@ public static class IncomingAccountPackets
             return;
         }
 
-        _authIDWindow.Remove(authId);
-        state.Version = ap.Version;
-        state.Seeded = true;
-
         var username = reader.ReadLatin1Safe(30);
         var password = reader.ReadLatin1Safe(30);
 
-        var e = new GameServer.GameLoginEventArgs(state, username, password);
+        // Spends the id either way, so a guessed one cannot be reused to probe usernames.
+        var authResult = ConsumeAuthId(authId, username, state.Address, out var ap);
+
+        if (authResult == AuthIdResult.Rejected)
+        {
+            state.LogInfo("Invalid client detected, disconnecting...");
+            state.Disconnect("Unable to find auth id.");
+            return;
+        }
+
+        state.Version = ap.Version;
+        state.Seeded = true;
+
+        var e = new GameServer.GameLoginEventArgs(
+            state,
+            username,
+            password,
+            authResult == AuthIdResult.Vouched
+        );
 
         GameServer.GameServerLoginEvent(e);
 

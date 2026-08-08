@@ -3,6 +3,7 @@ using System.Net;
 using Server.Accounting;
 using Server.Accounting.Security;
 using Server.Network;
+using Server.Tests.Network;
 using Xunit;
 
 namespace Server.Tests.Network.Packets;
@@ -140,6 +141,34 @@ public class AuthIdTests : IDisposable
             IncomingAccountPackets.AuthIdResult.Rejected,
             IncomingAccountPackets.ConsumeAuthId(authId, account.Username, AddressX, out _)
         );
+    }
+
+    [Fact]
+    public void PreAuthenticatedGameLogin_SkipsThePasswordCheck()
+    {
+        var account = CreateAccount("authid-preauth-user");
+        using var ns = PacketTestUtilities.CreateTestNetState();
+
+        // A wrong password is accepted only because the auth id already vouched for the account.
+        var e = new GameServer.GameLoginEventArgs(ns, account.Username, "wrong-password", true);
+        GameServer.GameServerLoginEvent(e);
+
+        Assert.True(e.Accepted);
+    }
+
+    [Fact]
+    public void GameLoginWithoutPreAuthentication_StillChecksThePassword()
+    {
+        var account = CreateAccount("authid-nopreauth-user");
+        using var ns = PacketTestUtilities.CreateTestNetState();
+
+        var wrong = new GameServer.GameLoginEventArgs(ns, account.Username, "wrong-password", false);
+        GameServer.GameServerLoginEvent(wrong);
+        Assert.False(wrong.Accepted);
+
+        var right = new GameServer.GameLoginEventArgs(ns, account.Username, "hunter2", false);
+        GameServer.GameServerLoginEvent(right);
+        Assert.True(right.Accepted);
     }
 
     [Fact]

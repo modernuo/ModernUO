@@ -343,7 +343,10 @@ public static class AccountHandler
             logger.Information("Login: {NetState} Access denied for '{Username}'", e.State, un);
             e.Accepted = false;
         }
-        else if (!acct.CheckPassword(pw))
+        // The auth id already vouched for this account from this address, and it was only issued
+        // after the account login packet verified the password. Re-deriving the hash here costs
+        // another full Argon2 verify to answer a question already answered.
+        else if (!e.PreAuthenticated && !acct.CheckPassword(pw))
         {
             logger.Information("Login: {NetState} Invalid password for '{Username}'", e.State, un);
             e.Accepted = false;
