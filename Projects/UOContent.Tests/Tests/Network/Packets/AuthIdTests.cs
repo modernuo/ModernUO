@@ -123,10 +123,8 @@ public class AuthIdTests : IDisposable
         );
     }
 
-    /// <summary>
-    /// A rejected attempt must not consume the id. Anyone landing on a live id could otherwise burn
-    /// it, and its owner would arrive to "unable to find auth id" and have to log in again.
-    /// </summary>
+    // A rejected attempt must not consume the id, or anyone landing on a live one could burn it and
+    // force its owner to log in again.
     [Fact]
     public void SurvivesAnAttemptFromTheWrongAddress()
     {
@@ -174,10 +172,6 @@ public class AuthIdTests : IDisposable
         Assert.Null(entry.Account);
     }
 
-    /// <summary>
-    /// An expired id is still spent by its owner: they fall back to the password verify, and the id
-    /// has done everything it is ever going to do.
-    /// </summary>
     [Fact]
     public void AnExpiredIdIsSpentByItsOwner()
     {
@@ -202,11 +196,8 @@ public class AuthIdTests : IDisposable
         }
     }
 
-    /// <summary>
-    /// An expired id is not a lockout. A player can sit on the server list, and before any of this
-    /// existed the game login always verified the password anyway -- so falling back to that verify
-    /// is the behaviour we started from, not a regression.
-    /// </summary>
+    // Expiry is not a lockout. The game login always verified the password before any of this
+    // existed, so falling back to that verify is the behaviour we started from.
     [Fact]
     public void ExpiresIntoAPasswordVerifyRatherThanARejection()
     {
@@ -275,11 +266,8 @@ public class AuthIdTests : IDisposable
         Assert.Equal(1, IncomingAccountPackets.AuthIdWindowCount);
     }
 
-    /// <summary>
-    /// A connection gets exactly one id, no matter how many times it re-selects. Handing the same
-    /// one back rather than minting another is what makes an orphaned id impossible, instead of
-    /// something to clean up afterwards.
-    /// </summary>
+    // Handing the same id back rather than minting another is what makes an orphan impossible,
+    // instead of something to clean up afterwards.
     [Fact]
     public void ReSelectingReturnsTheSameIdAndAddsNothingToTheWindow()
     {
@@ -298,10 +286,6 @@ public class AuthIdTests : IDisposable
         );
     }
 
-    /// <summary>
-    /// An id is only left behind when a client picks a server and never arrives. Issuing sweeps
-    /// those, so they do not accumulate.
-    /// </summary>
     [Fact]
     public void AbandonedIdsAreSweptWhenNewOnesAreIssued()
     {
@@ -335,11 +319,8 @@ public class AuthIdTests : IDisposable
         }
     }
 
-    /// <summary>
-    /// A login rush is not a backlog. Every one of these ids belongs to a client on its way to
-    /// redeem it, so none may be discarded to keep the window at some arbitrary size -- doing so
-    /// hands a real player "unable to find auth id" and a disconnect.
-    /// </summary>
+    // A login rush is not a backlog. Every id belongs to a client on its way to redeem it, so none
+    // may be discarded to hold the window at some arbitrary size.
     [Fact]
     public void ALoginRushDoesNotEvictAnyonesAuthId()
     {

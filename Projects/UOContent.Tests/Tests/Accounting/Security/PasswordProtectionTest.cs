@@ -75,7 +75,7 @@ public class PasswordProtectionTest
         Assert.False(passwordProtection.ValidatePassword(encryptedPassword, "Not the same password"));
     }
 
-    // The shipping default before this change. A literal, so it cannot drift with the configured
+    // The shipping default before this change, as a literal so it cannot drift with the configured
     // defaults. Password: "hunter2".
     private const string LegacyArgon2iHash =
         "$argon2i$v=19$m=8192,t=3,p=1$LD1XJz7P3wQmIJ+Tu6ScgA$NO5hBABsHQ172C5nDO2X4gWnB4jDef3x6WhLdVE2LFw";
@@ -105,9 +105,8 @@ public class PasswordProtectionTest
         Assert.Equal(expected, Argon2PasswordProtection.Instance.NeedsRehash(hash));
     }
 
-    // Digest and salt lengths are the decoded sizes of the base64 segments, not parameter-list
-    // entries, so they need their own literals. Current type and cost throughout; only a length
-    // differs from the defaults. The theory above is the negative control at default lengths.
+    // Digest and salt lengths are decoded base64 sizes rather than parameter-list entries, so they
+    // need their own literals. Current type and cost throughout; only a length differs.
     [Theory]
     // 16-byte digest: 22 base64 chars instead of the 43 a 32-byte digest encodes to.
     [InlineData("$argon2id$v=19$m=16384,t=1,p=1$LD1XJz7P3wQmIJ+Tu6ScgA$NO5hBABsHQ172C5nDO2X4g")]

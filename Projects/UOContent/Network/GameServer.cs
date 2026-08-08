@@ -16,8 +16,8 @@ public static partial class GameServer
 
         /// <summary>
         /// The auth id presented on this game login was issued to this account, from this address,
-        /// after the account login packet already verified the password. Read-only: a subscriber
-        /// must not be able to grant itself the skip.
+        /// after the account login packet verified the password. Read-only so a subscriber cannot
+        /// grant itself the skip.
         /// </summary>
         public bool PreAuthenticated { get; }
 

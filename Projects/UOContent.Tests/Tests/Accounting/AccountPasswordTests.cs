@@ -30,9 +30,9 @@ public class AccountPasswordTests : IDisposable
         Assert.False(account.CheckPassword("wrong-password"));
     }
 
-    // SetPassword assigns PasswordAlgorithm before deriving the phrase from it. Reversing those two
-    // lines salts the hash by the outgoing algorithm's rule and stores it under the incoming one,
-    // which verifies once and then never again.
+    // SetPassword assigns PasswordAlgorithm before deriving the phrase from it. Reversed, the hash
+    // is salted by the outgoing algorithm's rule but stored under the incoming one, which verifies
+    // once and then never again.
     [Theory]
     [InlineData(PasswordProtectionAlgorithm.SHA1)]
     [InlineData(PasswordProtectionAlgorithm.SHA2)]
