@@ -23,19 +23,18 @@ using Server.Network;
 namespace Server.Accounting.Security;
 
 /// <summary>
-/// Work handed to the verification thread. Everything here is either an immutable string or a
-/// reference the worker only carries -- the worker reads no game state and writes none.
+/// Work handed to the verification thread. Strings and references it only carries: the worker
+/// reads no game state and writes none.
 /// </summary>
 internal sealed class PasswordVerificationJob
 {
     public Account Account;
     public NetState State;
 
-    /// <summary>The stored hash at dispatch, used to verify and to guard the upgrade against a
-    /// password change that lands while this runs.</summary>
+    /// <summary>The hash at dispatch. Also guards the upgrade against a password change landing
+    /// while this runs.</summary>
     public string StoredHash;
 
-    /// <summary>Phrase to verify against <see cref="StoredHash"/>.</summary>
     public string VerifyPhrase;
 
     /// <summary>Phrase to rehash from, or null when no upgrade is due.</summary>
@@ -59,42 +58,25 @@ internal readonly struct PasswordVerificationOutcome
 }
 
 /// <summary>
-/// Runs Argon2 off the game loop.
+/// Runs Argon2 off the game loop, where a verify costs ~8.9 ms of frozen world per login attempt.
 ///
-/// An Argon2 verify is ~8.9 ms, which is more than half a frame of frozen world for every login
-/// attempt, successful or not. Measurement (docs/handoffs/2026-08-07-off-loop-argon2-hashing.md)
-/// puts the on-loop saving at 3.5-8.9 ms per login: the hand-off costs ~220 ns, and the only real
-/// residue is the loop's own work slowing while a memory-hard KDF evicts shared L3.
+/// Exactly one worker. A single background hasher cannot cost the loop more than the inline verify
+/// under any scheduling regime, because at worst it takes an equal share of one core; a pool breaks
+/// that bound and is what would make the gain hardware-dependent. It also caps live Argon2 arenas
+/// at one, and does the least total harm to the loop's own cache footprint.
 ///
-/// One worker, deliberately, for three reasons that agree:
-///   - the per-login contention tax falls with concurrency but total loop damage rises, so one
-///     hasher does the least harm to the loop;
-///   - a single background hasher cannot cost the loop more than the inline verify under any
-///     scheduling regime, because at worst it takes an equal share of one core -- which is what
-///     makes the measurement extrapolate to hardware we cannot inspect. A pool breaks that bound;
-///   - exactly one 16 MiB Argon2 arena is live at a time whatever the login volume, which answers
-///     memory-exhaustion without a separate cap.
-///
-/// Throughput is ~110 verifies/sec. Wall-clock login latency is explicitly not a concern, so
-/// head-of-line blocking during a rush costs nothing.
+/// ~110 verifies/sec, which is ample: login latency is not a concern, only loop time.
 /// </summary>
 internal sealed class PasswordVerificationWorker
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(PasswordVerificationWorker));
 
     /// <summary>
-    /// Backstop, not a policy. The queue is already bounded by construction: AccountLogin rejects a
-    /// second 0x80 on the same connection via <c>SentFirstPacket</c>, so a connection can hold at
-    /// most one pending verify, and the engine caps concurrent connections at 4096
-    /// (<c>NetState.Network.cs</c>). This matches that bound so it can only trip if the
-    /// one-per-connection invariant is ever broken.
-    ///
-    /// Deliberately not a flood defence. Any cap low enough to blunt an attack rejects real players
-    /// first -- during a mass reconnect they are the queue -- and a cap high enough not to do that
-    /// blunts nothing. Refusing logins for the duration of an attack *is* the denial of service,
-    /// just self-inflicted. That defence belongs at the connection layer, where IP bans, the
-    /// blocklist and the accept gate already sit and where an attacker is stopped before costing a
-    /// hash at all.
+    /// Backstop, not a flood defence. <c>SentFirstPacket</c> holds a connection to one pending
+    /// verify and the engine caps connections at 4096 (<c>NetState.Network.cs</c>), so this matches
+    /// that bound and can only trip if the one-per-connection invariant breaks. A cap low enough to
+    /// blunt an attack would reject real players first -- during a mass reconnect they are the
+    /// queue. Flood defence belongs at the connection layer.
     /// </summary>
     internal const int MaxPending = 4096;
 
@@ -104,11 +86,8 @@ internal sealed class PasswordVerificationWorker
 
     private static PasswordVerificationWorker _instance;
 
-    /// <summary>
-    /// Off-loop verification needs a spare core to move work to, which a 1-2 core host does not
-    /// have, and is pointless on a dev box or test shard where logins are rare and the simpler
-    /// path is easier to reason about.
-    /// </summary>
+    // Needs a spare core to move work to, which a 1-2 core host does not have. Off in DEBUG:
+    // dev boxes and test shards have few logins and are better served by the simpler path.
     internal static bool Enabled { get; } =
 #if DEBUG
         false;
@@ -120,8 +99,8 @@ internal sealed class PasswordVerificationWorker
     private readonly AutoResetEvent _work = new(false);
     private readonly ConcurrentQueue<PasswordVerificationJob> _queue = new();
 
-    // Its own Argon2, sharing no RNG with the loop's. Verification is static-backed and would be
-    // safe either way; hashing is not.
+    // Its own Argon2: verification is static-backed and safe to share, hashing draws from a
+    // per-instance RNG and is not.
     private readonly IPasswordProtection _argon2 = Argon2PasswordProtection.CreateIsolated();
 
     private int _pending;
@@ -164,10 +143,9 @@ internal sealed class PasswordVerificationWorker
     }
 
     /// <summary>
-    /// Argon2 only, and only outside the save freeze. The freeze runs on the loop, so nothing new
-    /// can be queued while it holds; checking before each job bounds the overlap to whichever hash
-    /// was already in flight. PendingSave counts too -- the serialization threads are awake and
-    /// spinning on an empty queue by then, which is the worst moment to add a competitor.
+    /// Checked before each job, which bounds a save overlap to whichever hash was already running:
+    /// the freeze holds the loop, so nothing new can be queued during it. PendingSave counts too --
+    /// the serialization threads are already awake and spinning on an empty queue by then.
     /// </summary>
     private static bool CanRunNow() =>
         World.WorldState is WorldState.Running or WorldState.WritingSave;
@@ -197,11 +175,9 @@ internal sealed class PasswordVerificationWorker
 
             Interlocked.Decrement(ref _pending);
 
-            // Gone while it waited. Skipping here reclaims the slot without spending ~9 ms on a
-            // verdict nobody will receive, which matters most during exactly the reconnect rush
-            // that builds a queue in the first place. Running only ever goes true -> false, so a
-            // stale read costs a wasted hash that Apply discards -- it can never skip a live
-            // connection.
+            // Gone while it waited: skip it rather than spend ~9 ms on a verdict nobody receives.
+            // Running only goes true -> false, so a stale read wastes a hash but can never skip a
+            // live connection.
             if (job.State?.Running != true)
             {
                 continue;
@@ -215,7 +191,7 @@ internal sealed class PasswordVerificationWorker
             }
             catch (Exception ex)
             {
-                // A verdict must still come back, or the connection waits forever for a reply.
+                // A verdict must still come back, or the connection never gets a reply.
                 logger.Error(ex, "Password verification failed for {Username}", job.Account?.Username);
                 outcome = new PasswordVerificationOutcome(false, null);
             }
@@ -241,8 +217,7 @@ internal sealed class PasswordVerificationWorker
     {
         var state = job.State;
 
-        // The connection may have gone while the hash ran. A dead NetState must not be revived, and
-        // nothing may be written on its behalf.
+        // Re-checked: the connection can also drop while the verdict sits in the loop queue.
         if (state?.Running != true)
         {
             return;
@@ -256,8 +231,7 @@ internal sealed class PasswordVerificationWorker
         AccountHandler.CompleteDeferredAccountLogin(state, job.Account, outcome.Verified);
     }
 
-    /// <summary>Runs a job on the calling thread. The seam the tests drive, and the path taken when
-    /// off-loop verification is gated off.</summary>
+    /// <summary>Runs a job on the calling thread. The seam the tests drive.</summary>
     internal static PasswordVerificationOutcome ComputeInline(PasswordVerificationJob job) =>
         Instance.Compute(job);
 

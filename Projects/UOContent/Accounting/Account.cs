@@ -401,15 +401,13 @@ public partial class Account : IAccount, IComparable<Account>
         AccountSecurity.CurrentPasswordProtection.NeedsRehash(Password);
 
     /// <summary>
-    /// Applies a rehash derived off the game loop. Not to be confused with the private
-    /// <c>UpgradePassword</c> below, which adopts a legacy hash wholesale during RunUO/ServUO
-    /// import.
+    /// Applies a rehash derived off the game loop. Distinct from the private
+    /// <c>UpgradePassword</c> below, which adopts a legacy hash during RunUO/ServUO import.
     /// </summary>
     /// <param name="expectedCurrent">
-    /// The hash the verification started from. Milliseconds passed while it ran, and the password
-    /// may have been changed in that window by an admin or by the player. The newer value was
-    /// already written with current parameters and needs no upgrade, so this drops the stale one
-    /// rather than replacing a live credential with a hash of the previous password.
+    /// The hash verification started from. If the password changed while it ran, the newer value
+    /// was already written with current parameters, so the stale upgrade is dropped rather than
+    /// replacing a live credential with a hash of the password it superseded.
     /// </param>
     internal void ApplyPasswordUpgrade(
         string expectedCurrent, string newEncrypted, PasswordProtectionAlgorithm algorithm

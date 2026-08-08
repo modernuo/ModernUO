@@ -315,9 +315,9 @@ public static class AccountHandler
     }
 
     /// <summary>
-    /// Decides where the password check runs, and produces the verdict when it runs here. An
-    /// else-if chain cannot express this: the off-loop path yields no verdict at all, and the
-    /// saturated path is a rejection rather than a reason to fall through and verify.
+    /// Not an else-if branch in the caller because two of the outcomes are not verdicts: the
+    /// off-loop path produces none yet, and a full queue must reject rather than fall through and
+    /// verify.
     /// </summary>
     private static void HandlePasswordCheck(AccountLoginEventArgs e, Account acct, string pw)
     {
@@ -330,8 +330,8 @@ public static class AccountHandler
                 }
             case PasswordCheckDispatch.Saturated:
                 {
-                    // Reject rather than verify inline: steering the work back onto the loop is
-                    // what a flood would be trying to achieve.
+                    // Reject rather than verify inline: steering work back onto the loop is what a
+                    // flood would want.
                     logger.Warning(
                         "Login: {NetState} Password verification queue full, rejecting '{Username}'",
                         e.State,
@@ -389,12 +389,10 @@ public static class AccountHandler
     /// <summary>
     /// Hands an Argon2 verify to the verification thread.
     ///
-    /// Argon2-stored accounts only. A SHA/MD5 hash is verified in microseconds and its protection
-    /// holds a shared <c>HashAlgorithm</c> whose <c>ComputeHash</c> is not thread safe, so those
-    /// stay here. Their one-time rehash into Argon2 stays here too: it costs a migrating account a
-    /// single 8.9 ms login, exactly as it does today, and moving it would mean either making the
-    /// player wait on an upgrade that does not gate their verdict, or applying account state from a
-    /// callback with no login left to attach it to.
+    /// Argon2-stored accounts only: SHA/MD5 protections share a <c>HashAlgorithm</c> whose
+    /// <c>ComputeHash</c> is not thread safe, and cost microseconds anyway. Their one-time rehash
+    /// into Argon2 also stays here, costing a migrating account one 8.9 ms login exactly as today --
+    /// moving it would mean waiting on an upgrade that does not gate the verdict.
     /// </summary>
     private static PasswordCheckDispatch DispatchPasswordCheck(AccountLoginEventArgs e, Account acct, string pw)
     {
