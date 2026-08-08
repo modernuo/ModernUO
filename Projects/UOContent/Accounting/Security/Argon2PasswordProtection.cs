@@ -21,11 +21,38 @@ public class Argon2PasswordProtection : IPasswordProtection
 {
     public static IPasswordProtection Instance = new Argon2PasswordProtection();
 
-    private readonly Argon2PasswordHasher m_PasswordHasher = new(rng: RandomNumberGenerator.Create());
+    // 16 MiB at t=1 is cheaper than 8 MiB at t=3 (8.5 ms vs 10.1 ms) and twice as memory-hard, which
+    // is what resists GPU and ASIC cracking. p=1: native argon2 spawns a thread per lane.
+    private readonly Argon2PasswordHasher _passwordHasher = new(
+        time: 1,
+        memory: 16384,
+        parallel: 1,
+        type: Argon2Type.Argon2id,
+        rng: RandomNumberGenerator.Create()
+    );
 
     public string EncryptPassword(string plainPassword) =>
-        m_PasswordHasher.Hash(plainPassword);
+        _passwordHasher.Hash(plainPassword);
 
     public bool ValidatePassword(string encryptedPassword, string plainPassword) =>
-        m_PasswordHasher.Verify(encryptedPassword, plainPassword);
+        _passwordHasher.Verify(encryptedPassword, plainPassword);
+
+    // The PHC string carries the parameters it was hashed with, so verification uses those rather
+    // than the configured ones. Comparing them is what lets a parameter change reach existing
+    // accounts.
+    public bool NeedsRehash(string encryptedPassword)
+    {
+        // Unparseable but verified: a format this build does not understand, so rewrite it.
+        if (!Argon2PasswordHasher.TryExtractMetadataValues(encryptedPassword, out var values))
+        {
+            return true;
+        }
+
+        return values.ArgonType != _passwordHasher.ArgonType
+               || values.MemoryCost != _passwordHasher.MemoryCost
+               || values.TimeCost != _passwordHasher.TimeCost
+               || values.Parallelism != _passwordHasher.Parallelism
+               || values.HashLength != (int)_passwordHasher.HashLength
+               || values.SaltLength != (int)_passwordHasher.SaltLength;
+    }
 }

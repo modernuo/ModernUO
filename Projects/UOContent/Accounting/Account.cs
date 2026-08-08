@@ -378,12 +378,12 @@ public partial class Account : IAccount, IComparable<Account>
 
     public void SetPassword(string plainPassword)
     {
-        var phrase = _passwordAlgorithm is PasswordProtectionAlgorithm.SHA1 or PasswordProtectionAlgorithm.SHA2
+        PasswordAlgorithm = AccountSecurity.CurrentAlgorithm;
+        var phrase = PasswordAlgorithm is PasswordProtectionAlgorithm.SHA1 or PasswordProtectionAlgorithm.SHA2
             ? $"{_username}{plainPassword}"
             : plainPassword;
 
         Password = AccountSecurity.CurrentPasswordProtection.EncryptPassword(phrase);
-        PasswordAlgorithm = AccountSecurity.CurrentAlgorithm;
     }
 
     public bool CheckPassword(string plainPassword)
@@ -399,7 +399,8 @@ public partial class Account : IAccount, IComparable<Account>
         }
 
         // Upgrade the password protection in case we change the algorithm
-        if (_passwordAlgorithm != AccountSecurity.CurrentAlgorithm)
+        if (_passwordAlgorithm != AccountSecurity.CurrentAlgorithm ||
+            AccountSecurity.CurrentPasswordProtection.NeedsRehash(Password))
         {
             SetPassword(plainPassword);
         }

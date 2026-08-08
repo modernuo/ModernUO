@@ -98,6 +98,7 @@ Examples from the codebase:
 accountHandler.enableAutoAccountCreation
 accountHandler.enablePlayerPasswordCommand
 accountHandler.maxAccountsPerIP
+accountSecurity.encryptionAlgorithm
 autosave.enabled
 autosave.saveDelay
 world.savePath
