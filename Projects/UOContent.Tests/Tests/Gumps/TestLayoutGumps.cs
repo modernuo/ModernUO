@@ -73,6 +73,32 @@ public class TestLayoutGumps
         AssertThat.Equal(writer.Span, packet);
     }
 
+    [Fact]
+    public void TestEmptyGumpsHaveNoVisualElements()
+    {
+        Assert.False(Compile(new EmptyLegacyTestGump()).HasVisualElementsForTest);
+        Assert.False(Compile(new EmptyDynamicTestGump()).HasVisualElementsForTest);
+        Assert.False(Compile(new EmptyStaticTestGump()).HasVisualElementsForTest);
+        Assert.False(Compile(new EmptyStaticTestGump()).HasVisualElementsForTest);
+    }
+
+    [Fact]
+    public void TestVisibleGumpsHaveVisualElements()
+    {
+        Assert.True(Compile(new LegacyTestGump("Test")).HasVisualElementsForTest);
+        Assert.True(Compile(new DynamicTestGump("Test")).HasVisualElementsForTest);
+        Assert.True(Compile(new StaticTestGump()).HasVisualElementsForTest);
+        Assert.True(Compile(new StaticTestGump()).HasVisualElementsForTest);
+    }
+
+    private static T Compile<T>(T gump) where T : BaseGump
+    {
+        var buffer = GC.AllocateUninitializedArray<byte>(512);
+        var writer = new SpanWriter(buffer);
+        gump.Compile(ref writer);
+        return gump;
+    }
+
     private static void InternalTestStaticGump<T>(ReadOnlySpan<byte> expectedLayout, StaticGump<T> staticGump, string[] strings)
         where T : StaticGump<T>
     {

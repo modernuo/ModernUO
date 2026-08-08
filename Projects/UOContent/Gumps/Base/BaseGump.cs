@@ -13,6 +13,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *************************************************************************/
 
+using Server.Logging;
 using Server.Network;
 using System;
 using System.Buffers;
@@ -23,10 +24,12 @@ namespace Server.Gumps;
 public abstract class BaseGump
 {
     private static readonly byte[] _packetBuffer = GC.AllocateUninitializedArray<byte>(0x10000);
+    private static readonly ILogger _logger = LogFactory.GetLogger(typeof(BaseGump));
     private static Serial nextSerial = (Serial)1;
 
     public int TypeID { get; protected set; }
     public Serial Serial { get; protected set; }
+    protected bool HasVisualElements { get; set; }
 
     public abstract int Switches { get; }
     public abstract int TextEntries { get; }
@@ -55,6 +58,11 @@ public abstract class BaseGump
     {
         var writer = new SpanWriter(_packetBuffer);
         Compile(ref writer);
+
+        if (!HasVisualElements)
+        {
+            _logger.Warning("Sending empty gump {GumpType}", GetType().FullName);
+        }
 
         ns.Send(writer.Span);
 

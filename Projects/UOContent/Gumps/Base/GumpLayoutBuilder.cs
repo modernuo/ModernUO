@@ -30,6 +30,7 @@ public ref struct GumpLayoutBuilder
     internal GumpFlags _flags;
     internal int _switches;
     internal int _textEntries;
+    internal bool _hasVisualElements;
 
     internal Span<byte> LayoutData => _layoutBuffer.AsSpan(0, _bytesWritten);
 
@@ -95,6 +96,7 @@ public ref struct GumpLayoutBuilder
 
     public void AddBackground(int x, int y, int width, int height, int gumpId)
     {
+        _hasVisualElements = true;
         GrowIfNeeded(9 + 9 + 45);
         WriteStart("resizepic"u8);
         WriteValue(x);
@@ -109,6 +111,7 @@ public ref struct GumpLayoutBuilder
         int x, int y, int normalId, int pressedId, int buttonId, GumpButtonType type = GumpButtonType.Reply, int param = 0
     )
     {
+        _hasVisualElements = true;
         GrowIfNeeded(11 + 6 + 54 + 2);
         WriteStart("button"u8);
         WriteValue(x);
@@ -123,6 +126,7 @@ public ref struct GumpLayoutBuilder
 
     public void AddCheckbox(int x, int y, int inactiveId, int activeId, bool selected, int switchId)
     {
+        _hasVisualElements = true;
         GrowIfNeeded(10 + 8 + 45 + 2);
         WriteStart("checkbox"u8);
         WriteValue(x);
@@ -154,6 +158,7 @@ public ref struct GumpLayoutBuilder
     public int AddHtmlPlaceholder(int x, int y, int width, int height,
         bool background = false, bool scrollbar = false)
     {
+        _hasVisualElements = true;
         GrowIfNeeded(11 + 8 + 36 + 10);
         WriteStart("htmlgump"u8);
         WriteValue(x);
@@ -172,6 +177,7 @@ public ref struct GumpLayoutBuilder
     public void AddHtml(int x, int y, int width, int height, int text,
         bool background = false, bool scrollbar = false)
     {
+        _hasVisualElements = true;
         GrowIfNeeded(11 + 8 + 45 + 4);
         WriteStart("htmlgump"u8);
         WriteValue(x);
@@ -188,6 +194,7 @@ public ref struct GumpLayoutBuilder
         int x, int y, int width, int height, int number, bool background = false, bool scrollbar = false
     )
     {
+        _hasVisualElements = true;
         GrowIfNeeded(11 + 11 + 45 + 4);
         WriteStart("xmfhtmlgump"u8);
         WriteValue(x);
@@ -204,6 +211,7 @@ public ref struct GumpLayoutBuilder
         int x, int y, int width, int height, int number, int color, bool background = false, bool scrollbar = false
     )
     {
+        _hasVisualElements = true;
         GrowIfNeeded(12 + 16 + 45 + 5 + 4);
         WriteStart("xmfhtmlgumpcolor"u8);
         WriteValue(x);
@@ -220,6 +228,7 @@ public ref struct GumpLayoutBuilder
     public void AddHtmlLocalized(int x, int y, int width, int height, int number, ReadOnlySpan<char> args, int color,
         bool background = false, bool scrollbar = false)
     {
+        _hasVisualElements = true;
         GrowIfNeeded(12 + 10 + 45 + 5 + 4 + (args.Length > 0 ? 3 + args.Length : 0));
         WriteStart("xmfhtmltok"u8);
         WriteValue(x);
@@ -254,6 +263,7 @@ public ref struct GumpLayoutBuilder
 
     public void AddImage(int x, int y, int gumpId, int hue = 0, ReadOnlySpan<char> cls = default)
     {
+        _hasVisualElements = true;
         GrowIfNeeded(7 + 7 + 36 + (hue != 0 ? 14 : 0) + (cls.Length > 0 ? 7 + cls.Length : 0));
         WriteStart("gumppic"u8);
         WriteValue(x);
@@ -294,6 +304,7 @@ public ref struct GumpLayoutBuilder
     public void AddImageTiledButton(int x, int y, int normalId, int pressedId, int buttonId, GumpButtonType type, int param,
         int itemId, int hue, int width, int height, int localizedTooltip = -1)
     {
+        _hasVisualElements = true;
         GrowIfNeeded(15 + 13 + 90 + 2);
         WriteStart("buttontileart"u8);
         WriteValue(x);
@@ -319,6 +330,7 @@ public ref struct GumpLayoutBuilder
 
     public void AddImageTiled(int x, int y, int width, int height, int gumpId)
     {
+        _hasVisualElements = true;
         GrowIfNeeded(9 + 12 + 45);
         WriteStart("gumppictiled"u8);
         WriteValue(x);
@@ -331,6 +343,7 @@ public ref struct GumpLayoutBuilder
 
     public void AddItem(int x, int y, int itemId, int hue = 0)
     {
+        _hasVisualElements = true;
         GrowIfNeeded(7 + 36 + (hue != 0 ? 20 : 7));
         WriteStart(hue == 0 ? "tilepic"u8 : "tilepichue"u8);
         WriteValue(x);
@@ -355,6 +368,7 @@ public ref struct GumpLayoutBuilder
 
     public int AddLabelPlaceholder(int x, int y, int hue)
     {
+        _hasVisualElements = true;
         GrowIfNeeded(8 + 4 + 27 + 6);
         WriteStart("text"u8);
         WriteValue(x);
@@ -368,6 +382,7 @@ public ref struct GumpLayoutBuilder
 
     public void AddLabel(int x, int y, int hue, int text)
     {
+        _hasVisualElements = true;
         GrowIfNeeded(8 + 4 + 36 + 6);
         WriteStart("text"u8);
         WriteValue(x);
@@ -379,6 +394,7 @@ public ref struct GumpLayoutBuilder
 
     public int AddLabelCroppedPlaceholder(int x, int y, int width, int height, int hue)
     {
+        _hasVisualElements = true;
         GrowIfNeeded(10 + 11 + 45 + 6);
         WriteStart("croppedtext"u8);
         WriteValue(x);
@@ -394,6 +410,7 @@ public ref struct GumpLayoutBuilder
 
     public void AddLabelCropped(int x, int y, int width, int height, int hue, int text)
     {
+        _hasVisualElements = true;
         GrowIfNeeded(10 + 11 + 54 + 6);
         WriteStart("croppedtext"u8);
         WriteValue(x);
@@ -430,6 +447,7 @@ public ref struct GumpLayoutBuilder
 
     public void AddRadio(int x, int y, int inactiveId, int activeId, bool selected, int switchId)
     {
+        _hasVisualElements = true;
         GrowIfNeeded(10 + 5 + 45 + 2);
         WriteStart("radio"u8);
         WriteValue(x);
@@ -445,6 +463,7 @@ public ref struct GumpLayoutBuilder
 
     public void AddSpriteImage(int x, int y, int gumpId, int width, int height, int sx, int sy)
     {
+        _hasVisualElements = true;
         GrowIfNeeded(11 + 8 + 63);
         WriteStart("picinpic"u8);
         WriteValue(x);
@@ -461,6 +480,7 @@ public ref struct GumpLayoutBuilder
         int x, int y, int width, int height, int hue, int entryId
     )
     {
+        _hasVisualElements = true;
         GrowIfNeeded(11 + 9 + 54 + 6);
         WriteStart("textentry"u8);
         WriteValue(x);
@@ -481,6 +501,7 @@ public ref struct GumpLayoutBuilder
         int x, int y, int width, int height, int hue, int entryId, int initialText
     )
     {
+        _hasVisualElements = true;
         GrowIfNeeded(11 + 9 + 63 + 6);
         WriteStart("textentry"u8);
         WriteValue(x);
@@ -499,6 +520,7 @@ public ref struct GumpLayoutBuilder
         int x, int y, int width, int height, int hue, int entryId, int size = 0
     )
     {
+        _hasVisualElements = true;
         GrowIfNeeded(12 + 16 + 63 + 6);
         WriteStart("textentrylimited"u8);
         WriteValue(x);
@@ -520,6 +542,7 @@ public ref struct GumpLayoutBuilder
         int x, int y, int width, int height, int hue, int entryId, int initialText, int size = 0
     )
     {
+        _hasVisualElements = true;
         GrowIfNeeded(12 + 16 + 72);
         WriteStart("textentrylimited"u8);
         WriteValue(x);
