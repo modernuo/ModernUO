@@ -2903,7 +2903,7 @@ namespace Server.Gumps
                                     else
                                     {
                                         notice = "The password has been changed.";
-                                        a.SetPassword(password);
+                                        Server.Accounting.Security.PasswordWorker.SetPassword(a, password, null);
                                         page = AdminGumpPage.AccountDetails_Information;
                                         CommandLogging.WriteLine(
                                             from,
