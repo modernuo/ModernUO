@@ -392,7 +392,8 @@ public partial class Account : IAccount, IComparable<Account>
     /// reported being locked out, and never on one that can still log in: the repair cannot tell a
     /// mis-migrated hash from a password that merely begins with the username, so marking a working
     /// account risks rewriting its credential down to whatever was submitted. Cleared automatically
-    /// once a repair succeeds.
+    /// once a repair succeeds. Necessary but not sufficient: the shard-wide
+    /// <see cref="AccountSecurity.RepairMigratedPasswords"/> switch must be on as well.
     /// </summary>
     public const string RepairPasswordTag = "RepairMigratedPassword";
 

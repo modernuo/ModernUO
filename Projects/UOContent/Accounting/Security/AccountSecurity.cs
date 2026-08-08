@@ -36,11 +36,17 @@ public static class AccountSecurity
     public static PasswordProtectionAlgorithm CurrentAlgorithm { get; set; }
 
     /// <summary>
-    /// Enables a one-time repair for accounts whose password was corrupted by the pre-fix
-    /// SetPassword, which hashed username + password but tagged it with an algorithm whose phrase
-    /// rule omits the username. Off by default: the repair costs a second verify on every FAILED
-    /// login, and failed logins are the credential-stuffing surface. Turn it on for a migration
-    /// window, then off again.
+    /// Shard-wide master switch for the one-time repair of accounts whose password was corrupted by
+    /// the pre-fix SetPassword, which stored the credential under the wrong family's phrase rule.
+    /// This flag alone repairs nothing: an account is only repaired when it *also* carries the
+    /// <see cref="Account.RepairPasswordTag"/> tag, which an operator adds from the admin gump
+    /// (Account Details -> Tags -> Add Tag) and which is cleared automatically once the repair
+    /// succeeds. Tag only an account whose owner has actually reported being locked out, never one
+    /// that can still log in: the repair cannot distinguish a mis-migrated hash from a password that
+    /// merely begins with the username, so tagging a working account risks rewriting its credential
+    /// down to whatever was submitted. Off by default because the repair costs a second verify on a
+    /// failed login -- for tagged accounts only, so the credential-stuffing surface is unaffected by
+    /// the flag on its own. Turn it on for a migration window, then off again.
     /// </summary>
     public static bool RepairMigratedPasswords { get; set; }
 
