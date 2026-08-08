@@ -120,22 +120,16 @@ public static class AntiMacroSystem
 
         var now = Core.Now;
 
-        using var toRemove = PooledRefQueue<Mobile>.Create();
         foreach (var (m, antiMacro) in _antiMacroTable)
         {
             if (antiMacro._lastExpiration <= now)
             {
-                toRemove.Enqueue(m);
+                _antiMacroTable.Remove(m);
             }
             else
             {
                 antiMacro.CleanExpired();
             }
-        }
-
-        while (toRemove.Count > 0)
-        {
-            _antiMacroTable.Remove(toRemove.Dequeue());
         }
     }
 
@@ -259,19 +253,12 @@ public static class AntiMacroSystem
         {
             var now = Core.Now;
 
-            using var toRemove = PooledRefQueue<(Skill, object)>.Create();
-
             foreach (var (key, countAndTimeStamp) in _antiMacroTracking)
             {
                 if (countAndTimeStamp._count <= 0 || countAndTimeStamp._expiration <= now)
                 {
-                    toRemove.Enqueue(key);
+                    _antiMacroTracking.Remove(key);
                 }
-            }
-
-            while (toRemove.Count > 0)
-            {
-                _antiMacroTracking.Remove(toRemove.Dequeue());
             }
         }
     }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using ModernUO.CodeGeneratedEvents;
-using Server.Collections;
 using Server.Logging;
 using Server.Mobiles;
 using Server.Spells.Ninjitsu;
@@ -60,21 +59,15 @@ public static class StaminaSystem
         EventSink.Logout += Logout;
 
         // Credit idle time
-        using var queue = PooledRefQueue<IHasSteps>.Create();
         foreach (var m in _stepsTaken.Keys)
         {
-            // We cannot remove since we are iterating.
+            // Keeps the ref valid for the check below.
             ref var stepsTaken = ref RegenSteps(m, out var exists, removeOnInvalidation: false);
 
             if (exists && stepsTaken.Steps <= 0)
             {
-                queue.Enqueue(m);
+                _stepsTaken.Remove(m);
             }
-        }
-
-        while (queue.Count > 0)
-        {
-            _stepsTaken.Remove(queue.Dequeue());
         }
     }
 
@@ -325,7 +318,7 @@ public static class StaminaSystem
     {
         var from = e.Mobile;
         var running = (e.Direction & Direction.Running) != 0;
-        
+
         if (CannotWalkWhenFatigued && from.Stam <= 0)
         {
             from.SendLocalizedMessage(500110); // You are too fatigued to move.
@@ -481,27 +474,13 @@ public static class StaminaSystem
 
             if (_resetHash.Count > 0)
             {
-                using var queue = PooledRefQueue<IHasSteps>.Create();
-
                 ref var stepsTaken = ref Unsafe.NullRef<StepsTaken>();
                 foreach (var m in _resetHash)
                 {
                     stepsTaken = ref GetStepsTaken(m, out var exists);
                     if (!exists || Core.Now >= stepsTaken.IdleStartTime + ResetDuration)
                     {
-                        queue.Enqueue(m);
-                    }
-                }
-
-                if (_resetHash.Count == queue.Count)
-                {
-                    _resetHash.Clear();
-                }
-                else
-                {
-                    while (queue.Count > 0)
-                    {
-                        _resetHash.Remove(queue.Dequeue());
+                        _resetHash.Remove(m);
                     }
                 }
             }

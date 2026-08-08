@@ -17,7 +17,6 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading;
-using Server.Collections;
 using Server.Logging;
 using Server.Network.Bans;
 
@@ -134,22 +133,18 @@ public static class AutoDenylist
             return;
         }
 
-        using var lapsed = new PooledRefList<UInt128>(16);
+        var lapsed = 0;
 
         foreach (var (address, expires) in _held)
         {
             if (expires - nowTicks <= 0)
             {
-                lapsed.Add(address);
+                _held.Remove(address);
+                lapsed++;
             }
         }
 
-        for (var i = 0; i < lapsed.Count; i++)
-        {
-            _held.Remove(lapsed[i]);
-        }
-
-        if (lapsed.Count > 0)
+        if (lapsed > 0)
         {
             _warnedFull = false;
         }

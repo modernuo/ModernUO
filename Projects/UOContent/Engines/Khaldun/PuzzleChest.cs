@@ -550,19 +550,12 @@ namespace Server.Items
                 return;
             }
 
-            using var toDelete = PooledRefQueue<Mobile>.Create();
-
             foreach (var (key, value) in _guesses)
             {
                 if (Core.Now - value.When > CleanupTime)
                 {
-                    toDelete.Enqueue(key);
+                    _guesses.Remove(key);
                 }
-            }
-
-            while (toDelete.Count > 0)
-            {
-                _guesses.Remove(toDelete.Dequeue());
             }
 
             if (_guesses.Count == 0)

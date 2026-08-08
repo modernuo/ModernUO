@@ -403,27 +403,20 @@ public class PlayerMurderSystem : GenericPersistence
                 return;
             }
 
-            using var queue = PooledRefQueue<Mobile>.Create();
-
             foreach (var context in _contextTerms)
             {
                 context.DecayKills();
                 if (!context.CheckStart())
                 {
-                    queue.Enqueue(context.Player);
-                }
-            }
-
-            while (queue.Count > 0)
-            {
-                var pm = (PlayerMobile)queue.Dequeue();
-                if (_murderContexts.TryGetValue(pm, out var ctx))
-                {
-                    if (ctx.CanRemove())
+                    var pm = context.Player;
+                    if (_murderContexts.TryGetValue(pm, out var ctx))
                     {
-                        _murderContexts.Remove(pm);
+                        if (ctx.CanRemove())
+                        {
+                            _murderContexts.Remove(pm);
+                        }
+                        _contextTerms.Remove(ctx);
                     }
-                    _contextTerms.Remove(ctx);
                 }
             }
         }

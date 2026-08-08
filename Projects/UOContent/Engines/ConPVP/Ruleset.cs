@@ -56,12 +56,11 @@ namespace Server.Engines.ConPVP
 
         public void RemoveFlavor(Ruleset flavor)
         {
-            if (!Flavors.Contains(flavor))
+            if (!Flavors.Remove(flavor))
             {
                 return;
             }
 
-            Flavors.Remove(flavor);
             Options.And(flavor.Options.Not());
             flavor.Options.Not();
         }

@@ -39,19 +39,12 @@ public static class DetectHidden
     // Clean up old debounce entries to prevent memory bloat
     private static void CleanupDebounceCache(long now)
     {
-        using var entriesToRemove = PooledRefQueue<(Mobile, Mobile)>.Create();
-
         foreach (var entry in PassiveDetectDebounce)
         {
             if (now - entry.Value > DebounceExpiryMs)
             {
-                entriesToRemove.Enqueue(entry.Key);
+                PassiveDetectDebounce.Remove(entry.Key);
             }
-        }
-
-        while (entriesToRemove.Count > 0)
-        {
-            PassiveDetectDebounce.Remove(entriesToRemove.Dequeue());
         }
     }
 

@@ -716,10 +716,7 @@ public partial class BRBomb : Item
 
             m.Target = new BombTarget(this, m);
 
-            if (m_Helpers.Contains(m))
-            {
-                m_Helpers.Remove(m);
-            }
+            m_Helpers.Remove(m);
 
             if (m_Helpers.Count > 0)
             {

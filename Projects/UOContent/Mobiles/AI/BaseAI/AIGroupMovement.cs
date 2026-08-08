@@ -27,19 +27,12 @@ public abstract partial class BaseAI
 
     private static void CleanupReservedPositions()
     {
-        using var toRemove = PooledRefQueue<BaseCreature>.Create();
-
         foreach (var (m, p) in _reservedPositions)
         {
             if (m?.Deleted != false || m.GetDistanceToSqrt(p) < 1)
             {
-                toRemove.Enqueue(m);
+                _reservedPositions.Remove(m);
             }
-        }
-
-        while (toRemove.Count > 0)
-        {
-            _reservedPositions.Remove(toRemove.Dequeue());
         }
     }
 

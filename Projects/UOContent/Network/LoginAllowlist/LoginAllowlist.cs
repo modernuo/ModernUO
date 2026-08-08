@@ -20,7 +20,6 @@ using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using Server.Collections;
 using Server.Logging;
 using Server.Network.Bans;
 
@@ -230,13 +229,15 @@ public static class LoginAllowlist
         var stamps = new long[_allowed.Count];
         var count = 0;
 
-        using var expired = new PooledRefList<UInt128>(16);
+        var dropped = 0;
 
         foreach (var (address, stamp) in _allowed)
         {
             if (stamp < cutoff)
             {
-                expired.Add(address);
+                _allowed.Remove(address);
+                _strikes.Remove(address);
+                dropped++;
                 continue;
             }
 
@@ -245,19 +246,12 @@ public static class LoginAllowlist
             count++;
         }
 
-        for (var i = 0; i < expired.Count; i++)
-        {
-            _allowed.Remove(expired[i]);
-            _strikes.Remove(expired[i]);
-        }
-
         PruneStaleStrikes(nowUnix);
 
         _dirty = false;
 
         var path = _path;
         var total = count;
-        var dropped = expired.Count;
 
         _ = Task.Run(() => Write(path, addresses, stamps, total, dropped));
     }
@@ -270,19 +264,12 @@ public static class LoginAllowlist
             return;
         }
 
-        using var stale = new PooledRefList<UInt128>(16);
-
         foreach (var (address, strike) in _strikes)
         {
             if (nowUnix - strike.WindowStart > _strikeWindowSeconds)
             {
-                stale.Add(address);
+                _strikes.Remove(address);
             }
-        }
-
-        for (var i = 0; i < stale.Count; i++)
-        {
-            _strikes.Remove(stale[i]);
         }
     }
 

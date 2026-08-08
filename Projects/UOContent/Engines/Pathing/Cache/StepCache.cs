@@ -727,18 +727,12 @@ public sealed class StepCache
         var window = MissPromotionWindowMs;
         var beforeCount = _chunkMissTracker.Count;
 
-        using var toRemove = PooledRefQueue<long>.Create();
         foreach (var kvp in _chunkMissTracker)
         {
             if (now - kvp.Value.LastMissTickStamp > window)
             {
-                toRemove.Enqueue(kvp.Key);
+                _chunkMissTracker.Remove(kvp.Key);
             }
-        }
-
-        while (toRemove.Count > 0)
-        {
-            _chunkMissTracker.Remove(toRemove.Dequeue());
         }
 
         if (_chunkMissTracker.Count == beforeCount)
