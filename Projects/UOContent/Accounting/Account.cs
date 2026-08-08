@@ -376,13 +376,24 @@ public partial class Account : IAccount, IComparable<Account>
         return true;
     }
 
+    // Runtime only, never serialized. Orders password writes so one derived off the loop cannot
+    // land on top of a newer one. Bumped by every write, deferred or not.
+    private int _passwordSequence;
+
     public void SetPassword(string plainPassword)
     {
+        _passwordSequence++;
         PasswordAlgorithm = AccountSecurity.CurrentAlgorithm;
         Password = AccountSecurity.CurrentPasswordProtection.EncryptPassword(
             AccountSecurity.DerivePhrase(PasswordAlgorithm, _username, plainPassword)
         );
     }
+
+    /// <summary>
+    /// Claims the next write slot. Taken on the loop at dispatch, so a hash derived off it can tell
+    /// whether anything newer was requested while it ran.
+    /// </summary>
+    internal int BeginPasswordWrite() => ++_passwordSequence;
 
     /// <summary>The phrase that verifies against the currently stored hash.</summary>
     internal string GetVerifyPhrase(string plainPassword) =>
@@ -401,25 +412,27 @@ public partial class Account : IAccount, IComparable<Account>
         AccountSecurity.CurrentPasswordProtection.NeedsRehash(Password);
 
     /// <summary>
-    /// Applies a rehash derived off the game loop. Distinct from the private
-    /// <c>UpgradePassword</c> below, which adopts a legacy hash during RunUO/ServUO import.
+    /// Applies a hash derived off the game loop, unless something newer was requested while it ran.
+    /// Distinct from the private <c>UpgradePassword</c> below, which adopts a legacy hash during
+    /// RunUO/ServUO import.
+    ///
+    /// Ordering by sequence rather than by comparing the stored hash: both a login rehash and an
+    /// explicit change need "newest wins", and comparing hashes would silently drop the second of
+    /// two changes dispatched before either landed.
     /// </summary>
-    /// <param name="expectedCurrent">
-    /// The hash verification started from. If the password changed while it ran, the newer value
-    /// was already written with current parameters, so the stale upgrade is dropped rather than
-    /// replacing a live credential with a hash of the password it superseded.
-    /// </param>
-    internal void ApplyPasswordUpgrade(
-        string expectedCurrent, string newEncrypted, PasswordProtectionAlgorithm algorithm
+    /// <returns>False when a newer write superseded this one.</returns>
+    internal bool ApplyPasswordWrite(
+        int sequence, string newEncrypted, PasswordProtectionAlgorithm algorithm
     )
     {
-        if (!string.Equals(Password, expectedCurrent, StringComparison.Ordinal))
+        if (sequence != _passwordSequence)
         {
-            return;
+            return false;
         }
 
         PasswordAlgorithm = algorithm;
         Password = newEncrypted;
+        return true;
     }
 
     public bool CheckPassword(string plainPassword)

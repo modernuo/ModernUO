@@ -140,8 +140,13 @@ public static class AccountHandler
 
             if (accessList[0].MatchClassC(ipAddress))
             {
-                acct.SetPassword(pass);
-                from.SendMessage("The password to your account has changed.");
+                // Confirmed from the callback: off the loop the hash has not landed yet when
+                // this returns.
+                PasswordWorker.SetPassword(
+                    acct,
+                    pass,
+                    _ => from.SendMessage("The password to your account has changed.")
+                );
             }
             else
             {
@@ -396,24 +401,29 @@ public static class AccountHandler
     /// </summary>
     private static PasswordCheckDispatch DispatchPasswordCheck(AccountLoginEventArgs e, Account acct, string pw)
     {
-        if (!PasswordVerificationWorker.Enabled ||
+        if (!PasswordWorker.Enabled ||
             AccountSecurity.CurrentAlgorithm != PasswordProtectionAlgorithm.Argon2 ||
             acct.PasswordAlgorithm != PasswordProtectionAlgorithm.Argon2)
         {
             return PasswordCheckDispatch.Inline;
         }
 
-        var job = new PasswordVerificationJob
+        var needsUpgrade = acct.NeedsPasswordUpgrade();
+
+        var job = new PasswordJob
         {
             Account = acct,
             State = e.State,
             StoredHash = acct.Password,
             VerifyPhrase = acct.GetVerifyPhrase(pw),
-            RehashPhrase = acct.NeedsPasswordUpgrade() ? acct.GetRehashPhrase(pw) : null,
-            TargetAlgorithm = AccountSecurity.CurrentAlgorithm
+            HashPhrase = needsUpgrade ? acct.GetRehashPhrase(pw) : null,
+            TargetAlgorithm = AccountSecurity.CurrentAlgorithm,
+            Sequence = needsUpgrade ? acct.BeginPasswordWrite() : 0,
+            OnComplete = static (j, outcome) =>
+                CompleteDeferredAccountLogin(j.State, j.Account, outcome.Verified)
         };
 
-        return PasswordVerificationWorker.TryEnqueue(job)
+        return PasswordWorker.TryEnqueue(job)
             ? PasswordCheckDispatch.Deferred
             : PasswordCheckDispatch.Saturated;
     }

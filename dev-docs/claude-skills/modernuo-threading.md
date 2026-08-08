@@ -181,7 +181,7 @@ Timer.DelayCall(TimeSpan.Zero, TimeSpan.FromMilliseconds(50), () =>
 
 | Worker | Justification |
 |---|---|
-| `Accounting/Security/PasswordVerificationWorker.cs` | 8.9 ms/login on-loop; 3.5-8.9 ms measured saving |
+| `Accounting/Security/PasswordWorker.cs` | 8.9 ms/login on-loop; 3.5-8.9 ms measured saving |
 | `Engines/Advanced Search/AdvancedSearchGump.cs` | Admin-triggered full-world scan, saves disabled |
 
 ### The five rules

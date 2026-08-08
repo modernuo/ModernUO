@@ -57,10 +57,8 @@ public static class AccountSecurity
     /// with, and a rehash with the one it is moving to -- deriving with the wrong one produces a
     /// hash that verifies once and never again.
     /// </summary>
-    public static string DerivePhrase(
-        PasswordProtectionAlgorithm algorithm, string username, string plainPassword
-    ) =>
-        algorithm is PasswordProtectionAlgorithm.SHA1 or PasswordProtectionAlgorithm.SHA2
+    public static string DerivePhrase(PasswordProtectionAlgorithm algorithm, string username, string plainPassword)
+        => algorithm is PasswordProtectionAlgorithm.SHA1 or PasswordProtectionAlgorithm.SHA2
             ? $"{username}{plainPassword}"
             : plainPassword;
 

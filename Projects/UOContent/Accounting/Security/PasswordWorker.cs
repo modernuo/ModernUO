@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: PasswordVerificationWorker.cs                                   *
+ * File: PasswordWorker.cs                                   *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -23,37 +23,51 @@ using Server.Network;
 namespace Server.Accounting.Security;
 
 /// <summary>
-/// Work handed to the verification thread. Strings and references it only carries: the worker
-/// reads no game state and writes none.
+/// Work handed to the password thread. Strings and references it only carries: the worker reads no
+/// game state and writes none.
+///
+/// Either half is optional, which is what lets one job type serve both callers. A login verifies
+/// and may rehash; an explicit password change only hashes.
 /// </summary>
-internal sealed class PasswordVerificationJob
+internal sealed class PasswordJob
 {
     public Account Account;
+
+    /// <summary>Ties the job to a connection. Null when the work is not gated on one, such as a
+    /// password change by an admin.</summary>
     public NetState State;
 
-    /// <summary>The hash at dispatch. Also guards the upgrade against a password change landing
-    /// while this runs.</summary>
+    /// <summary>Hash to verify against, with <see cref="VerifyPhrase"/>.</summary>
     public string StoredHash;
 
+    /// <summary>Phrase to verify, or null to skip verification.</summary>
     public string VerifyPhrase;
 
-    /// <summary>Phrase to rehash from, or null when no upgrade is due.</summary>
-    public string RehashPhrase;
+    /// <summary>Phrase to hash, or null when nothing needs writing.</summary>
+    public string HashPhrase;
 
     public PasswordProtectionAlgorithm TargetAlgorithm;
+
+    /// <summary>Write slot claimed at dispatch, checked by
+    /// <see cref="Account.ApplyPasswordWrite"/>.</summary>
+    public int Sequence;
+
+    /// <summary>Runs on the game loop with the result. Free to touch game state.</summary>
+    public Action<PasswordJob, PasswordOutcome> OnComplete;
 }
 
-internal readonly struct PasswordVerificationOutcome
+internal readonly struct PasswordOutcome
 {
+    /// <summary>True when no verification was asked for, or it succeeded.</summary>
     public readonly bool Verified;
 
-    /// <summary>The new hash, or null when the password did not verify or needed no upgrade.</summary>
-    public readonly string UpgradedPassword;
+    /// <summary>The derived hash, or null when nothing was hashed or verification failed.</summary>
+    public readonly string Hash;
 
-    public PasswordVerificationOutcome(bool verified, string upgradedPassword)
+    public PasswordOutcome(bool verified, string hash)
     {
         Verified = verified;
-        UpgradedPassword = upgradedPassword;
+        Hash = hash;
     }
 }
 
@@ -67,9 +81,9 @@ internal readonly struct PasswordVerificationOutcome
 ///
 /// ~110 verifies/sec, which is ample: login latency is not a concern, only loop time.
 /// </summary>
-internal sealed class PasswordVerificationWorker
+internal sealed class PasswordWorker
 {
-    private static readonly ILogger logger = LogFactory.GetLogger(typeof(PasswordVerificationWorker));
+    private static readonly ILogger logger = LogFactory.GetLogger(typeof(PasswordWorker));
 
     /// <summary>
     /// Backstop, not a flood defence. <c>SentFirstPacket</c> holds a connection to one pending
@@ -84,7 +98,7 @@ internal sealed class PasswordVerificationWorker
     // only while a save is in progress, never in steady state.
     private const int SaveGatePollMs = 50;
 
-    private static PasswordVerificationWorker _instance;
+    private static PasswordWorker _instance;
 
     // Needs a spare core to move work to, which a 1-2 core host does not have. Off in DEBUG:
     // dev boxes and test shards have few logins and are better served by the simpler path.
@@ -97,7 +111,7 @@ internal sealed class PasswordVerificationWorker
 
     private readonly Thread _thread;
     private readonly AutoResetEvent _work = new(false);
-    private readonly ConcurrentQueue<PasswordVerificationJob> _queue = new();
+    private readonly ConcurrentQueue<PasswordJob> _queue = new();
 
     // Its own Argon2: verification is static-backed and safe to share, hashing draws from a
     // per-instance RNG and is not.
@@ -106,7 +120,7 @@ internal sealed class PasswordVerificationWorker
     private int _pending;
     private volatile bool _exit;
 
-    private PasswordVerificationWorker()
+    private PasswordWorker()
     {
         _thread = new Thread(Execute)
         {
@@ -118,7 +132,7 @@ internal sealed class PasswordVerificationWorker
     }
 
     // Created on first use, so a shard that never takes the off-loop path never allocates a thread.
-    private static PasswordVerificationWorker Instance => _instance ??= new PasswordVerificationWorker();
+    private static PasswordWorker Instance => _instance ??= new PasswordWorker();
 
     internal static int Pending => _instance?._pending ?? 0;
 
@@ -126,9 +140,9 @@ internal sealed class PasswordVerificationWorker
     /// Queues a job. False when the queue is full, in which case the caller must reject the login
     /// without verifying.
     /// </summary>
-    internal static bool TryEnqueue(PasswordVerificationJob job) => Instance.TryEnqueueCore(job);
+    internal static bool TryEnqueue(PasswordJob job) => Instance.TryEnqueueCore(job);
 
-    private bool TryEnqueueCore(PasswordVerificationJob job)
+    private bool TryEnqueueCore(PasswordJob job)
     {
         if (Volatile.Read(ref _pending) >= MaxPending)
         {
@@ -183,7 +197,7 @@ internal sealed class PasswordVerificationWorker
                 continue;
             }
 
-            PasswordVerificationOutcome outcome;
+            PasswordOutcome outcome;
 
             try
             {
@@ -193,46 +207,80 @@ internal sealed class PasswordVerificationWorker
             {
                 // A verdict must still come back, or the connection never gets a reply.
                 logger.Error(ex, "Password verification failed for {Username}", job.Account?.Username);
-                outcome = new PasswordVerificationOutcome(false, null);
+                outcome = new PasswordOutcome(false, null);
             }
 
             Core.LoopContext.Post(() => Apply(job, outcome));
         }
     }
 
-    private PasswordVerificationOutcome Compute(PasswordVerificationJob job)
+    private PasswordOutcome Compute(PasswordJob job)
     {
-        if (!_argon2.ValidatePassword(job.StoredHash, job.VerifyPhrase))
+        if (job.VerifyPhrase != null && !_argon2.ValidatePassword(job.StoredHash, job.VerifyPhrase))
         {
-            return new PasswordVerificationOutcome(false, null);
+            return new PasswordOutcome(false, null);
         }
 
-        return new PasswordVerificationOutcome(
+        return new PasswordOutcome(
             true,
-            job.RehashPhrase == null ? null : _argon2.EncryptPassword(job.RehashPhrase)
+            job.HashPhrase == null ? null : _argon2.EncryptPassword(job.HashPhrase)
         );
     }
 
-    private static void Apply(PasswordVerificationJob job, PasswordVerificationOutcome outcome)
+    private static void Apply(PasswordJob job, PasswordOutcome outcome)
     {
-        var state = job.State;
-
-        // Re-checked: the connection can also drop while the verdict sits in the loop queue.
-        if (state?.Running != true)
+        // Re-checked: a connection can drop while the result sits in the loop queue. Jobs with no
+        // connection attached, such as an admin password change, are unaffected.
+        if (job.State != null && !job.State.Running)
         {
             return;
         }
 
-        if (outcome.Verified && outcome.UpgradedPassword != null)
+        if (outcome.Verified && outcome.Hash != null)
         {
-            job.Account.ApplyPasswordUpgrade(job.StoredHash, outcome.UpgradedPassword, job.TargetAlgorithm);
+            job.Account.ApplyPasswordWrite(job.Sequence, outcome.Hash, job.TargetAlgorithm);
         }
 
-        AccountHandler.CompleteDeferredAccountLogin(state, job.Account, outcome.Verified);
+        job.OnComplete?.Invoke(job, outcome);
+    }
+
+    /// <summary>
+    /// Sets a password, off the loop when that is available and inline otherwise, invoking
+    /// <paramref name="onDone"/> on the loop either way. Both branches claim a write slot first, so
+    /// the newest request wins however the work was routed.
+    ///
+    /// The confirmation belongs in <paramref name="onDone"/>, not at the call site: off-loop it has
+    /// not happened yet when the call returns.
+    /// </summary>
+    internal static void SetPassword(Account account, string plainPassword, Action<bool> onDone)
+    {
+        if (!Enabled || AccountSecurity.CurrentAlgorithm != PasswordProtectionAlgorithm.Argon2)
+        {
+            account.SetPassword(plainPassword);
+            onDone?.Invoke(true);
+            return;
+        }
+
+        var job = new PasswordJob
+        {
+            Account = account,
+            HashPhrase = account.GetRehashPhrase(plainPassword),
+            TargetAlgorithm = AccountSecurity.CurrentAlgorithm,
+            Sequence = account.BeginPasswordWrite(),
+            OnComplete = (_, outcome) => onDone?.Invoke(outcome.Hash != null)
+        };
+
+        if (!TryEnqueue(job))
+        {
+            // Saturated. A password change is rare and must not be silently dropped, so this one
+            // pays the hash on the loop rather than failing.
+            account.SetPassword(plainPassword);
+            onDone?.Invoke(true);
+        }
     }
 
     /// <summary>Runs a job on the calling thread. The seam the tests drive.</summary>
-    internal static PasswordVerificationOutcome ComputeInline(PasswordVerificationJob job) =>
+    internal static PasswordOutcome ComputeInline(PasswordJob job) =>
         Instance.Compute(job);
 
     internal static void Exit()

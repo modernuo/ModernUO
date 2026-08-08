@@ -177,7 +177,7 @@ version of this -- it is a correctness bug.
 
 | Worker | Off-loop work | Justification |
 |---|---|---|
-| `Accounting/Security/PasswordVerificationWorker.cs` | Argon2 password verification | `docs/handoffs/2026-08-07-off-loop-argon2-hashing.md` -- 8.9 ms/login on-loop, measured 3.5--8.9 ms saved |
+| `Accounting/Security/PasswordWorker.cs` | Argon2 verification and hashing | `docs/handoffs/2026-08-07-off-loop-argon2-hashing.md` -- 8.9 ms/login on-loop, measured 3.5--8.9 ms saved |
 | `Engines/Advanced Search/AdvancedSearchGump.cs` | Parallel entity search | Admin-triggered full-world scan; saves disabled for its duration |
 
 Adding to this table needs the same bar: a measurement, and all five rules below.
