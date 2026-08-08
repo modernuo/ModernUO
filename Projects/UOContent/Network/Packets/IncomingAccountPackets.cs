@@ -352,9 +352,8 @@ public static class IncomingAccountPackets
     /// drained until the next slice, so a client pipelining another select into the same buffer
     /// arrives here again; handing back the id it already holds cannot orphan one.
     /// </summary>
-    internal static int EnsureAuthId(
-        int existingAuthId, IAccount account, IPAddress address, ClientVersion version
-    ) => existingAuthId != 0 ? existingAuthId : RegisterAuthId(account, address, version);
+    internal static int EnsureAuthId(int existingAuthId, IAccount account, IPAddress address, ClientVersion version)
+        => existingAuthId != 0 ? existingAuthId : RegisterAuthId(account, address, version);
 
     internal static int RegisterAuthId(IAccount account, IPAddress address, ClientVersion version)
     {
@@ -387,9 +386,7 @@ public static class IncomingAccountPackets
     /// mismatch is <see cref="AuthIdResult.Rejected"/> rather than a fallback: network switching
     /// mid-login is not supported.
     /// </summary>
-    internal static AuthIdResult ConsumeAuthId(
-        int authId, string username, IPAddress address, out AuthIDPersistence entry
-    )
+    internal static AuthIdResult ConsumeAuthId(int authId, string username, IPAddress address, out AuthIDPersistence entry)
     {
         if (!_authIDWindow.TryGetValue(authId, out entry))
         {
@@ -400,8 +397,7 @@ public static class IncomingAccountPackets
         // burn it, leaving its owner to log in again. Address before username, so a remote guesser
         // never learns whether a username matched.
         if (!Utility.Intern(address).Equals(entry.Address)
-            || entry.Account == null
-            || !username.InsensitiveEquals(entry.Account.Username))
+            || entry.Account == null || !username.InsensitiveEquals(entry.Account.Username))
         {
             entry = default;
             return AuthIdResult.Rejected;
@@ -417,7 +413,6 @@ public static class IncomingAccountPackets
     {
         var now = Core.Now;
 
-        // Dictionary supports removal during enumeration, so this reclaims in one pass.
         foreach (var (key, entry) in _authIDWindow)
         {
             if (now - entry.Age > _authIDLifetime)
