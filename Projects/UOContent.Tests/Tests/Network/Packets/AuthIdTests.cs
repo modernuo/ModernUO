@@ -47,16 +47,14 @@ public class AuthIdTests : IDisposable
     }
 
     [Fact]
-    public void DoesNotVouchForADifferentAccount()
+    public void RejectsADifferentAccount()
     {
         var issued = CreateAccount("authid-owner-user");
         var other = CreateAccount("authid-other-user");
         var authId = Register(issued, AddressX);
 
-        // AccountMismatch, not Rejected: the caller must still be able to accept this login by
-        // verifying the password, exactly as it did before pre-authentication existed.
         Assert.Equal(
-            IncomingAccountPackets.AuthIdResult.AccountMismatch,
+            IncomingAccountPackets.AuthIdResult.Rejected,
             IncomingAccountPackets.ConsumeAuthId(authId, other.Username, AddressX, out _)
         );
     }
@@ -132,15 +130,110 @@ public class AuthIdTests : IDisposable
         var authId = Register(account, AddressX);
 
         Assert.Equal(
-            IncomingAccountPackets.AuthIdResult.AccountMismatch,
+            IncomingAccountPackets.AuthIdResult.Rejected,
             IncomingAccountPackets.ConsumeAuthId(authId, "not-the-owner", AddressX, out _)
         );
 
-        // Spent regardless, so a guessed id cannot be reused to enumerate usernames.
+        // Spent regardless, so a guessed id cannot be reused to probe for its owner.
         Assert.Equal(
             IncomingAccountPackets.AuthIdResult.Rejected,
             IncomingAccountPackets.ConsumeAuthId(authId, account.Username, AddressX, out _)
         );
+    }
+
+    /// <summary>
+    /// An expired id is not a lockout. A player can sit on the server list, and before any of this
+    /// existed the game login always verified the password anyway -- so falling back to that verify
+    /// is the behaviour we started from, not a regression.
+    /// </summary>
+    [Fact]
+    public void ExpiresIntoAPasswordVerifyRatherThanARejection()
+    {
+        var account = CreateAccount("authid-expired-user");
+        var authId = Register(account, AddressX);
+
+        var now = Core._now;
+
+        try
+        {
+            Core._now = now + TimeSpan.FromMinutes(30.0);
+
+            Assert.Equal(
+                IncomingAccountPackets.AuthIdResult.Expired,
+                IncomingAccountPackets.ConsumeAuthId(authId, account.Username, AddressX, out var entry)
+            );
+
+            // Still carries the client version the game login needs.
+            Assert.Equal(new ClientVersion(7, 0, 0, 0), entry.Version);
+        }
+        finally
+        {
+            Core._now = now;
+        }
+    }
+
+    [Fact]
+    public void AnExpiredIdFromAnotherAddressIsStillRejected()
+    {
+        var account = CreateAccount("authid-expired-elsewhere-user");
+        var authId = Register(account, AddressX);
+
+        var now = Core._now;
+
+        try
+        {
+            Core._now = now + TimeSpan.FromMinutes(30.0);
+
+            Assert.Equal(
+                IncomingAccountPackets.AuthIdResult.Rejected,
+                IncomingAccountPackets.ConsumeAuthId(authId, account.Username, AddressY, out _)
+            );
+        }
+        finally
+        {
+            Core._now = now;
+        }
+    }
+
+    /// <summary>
+    /// Ids are only consumed by a game login, so a player who reaches the server list and never
+    /// picks a server abandons theirs. Enough of those must not push out ids that live clients are
+    /// still on their way to redeem.
+    /// </summary>
+    [Fact]
+    public void AbandonedIdsAreReclaimedBeforeALiveOneIsEvicted()
+    {
+        var abandoned = CreateAccount("authid-abandoned-user");
+        var live = CreateAccount("authid-live-user");
+
+        var now = Core._now;
+
+        try
+        {
+            // Fill the window with ids nobody ever redeems.
+            for (var i = 0; i < 128; i++)
+            {
+                Register(abandoned, AddressX);
+            }
+
+            Assert.Equal(128, IncomingAccountPackets.AuthIdWindowCount);
+
+            Core._now = now + TimeSpan.FromMinutes(30.0);
+
+            // The next issue reclaims the dead entries instead of evicting, so the id it hands out
+            // is the only one left and is immediately redeemable.
+            var liveId = Register(live, AddressX);
+
+            Assert.Equal(1, IncomingAccountPackets.AuthIdWindowCount);
+            Assert.Equal(
+                IncomingAccountPackets.AuthIdResult.Vouched,
+                IncomingAccountPackets.ConsumeAuthId(liveId, live.Username, AddressX, out _)
+            );
+        }
+        finally
+        {
+            Core._now = now;
+        }
     }
 
     [Fact]

@@ -58,14 +58,16 @@ public static class IncomingAccountPackets
 
     internal enum AuthIdResult
     {
-        // No such id, or it expired, or it came from another address. Indistinguishable from forged.
+        // No such id, or it was issued for a different account or address. A client that presents
+        // one of those is not one of ours; nothing here is worth a password check.
         Rejected,
 
-        // Live id from the right address, but for a different account than the one being logged
-        // into. Proves nothing, so the caller falls back to verifying the password.
-        AccountMismatch,
+        // Right account, right address, but too old to stand in for the verify. A player can idle
+        // on the server list, so this is a normal thing to do -- fall back to checking the password
+        // rather than turning it into a lockout.
+        Expired,
 
-        // Issued to this account, from this address. Stands in for the password verify.
+        // Issued to this account, from this address, recently. Stands in for the password verify.
         Vouched
     }
 
@@ -345,6 +347,15 @@ public static class IncomingAccountPackets
 
     internal static int RegisterAuthId(IAccount account, IPAddress address, ClientVersion version)
     {
+        // Ids are only consumed by a game login, so anyone who reaches the server list and never
+        // picks a server leaves theirs behind. Reclaim the dead ones before evicting a live one --
+        // otherwise enough abandoned logins fill the window and start pushing out ids that clients
+        // are still on their way to redeem.
+        if (_authIDWindow.Count >= _authIDWindowSize)
+        {
+            PurgeExpiredAuthIds();
+        }
+
         if (_authIDWindow.Count >= _authIDWindowSize)
         {
             var oldestID = 0;
@@ -392,17 +403,38 @@ public static class IncomingAccountPackets
             return AuthIdResult.Rejected;
         }
 
-        if (Core.Now - entry.Age > _authIDLifetime || !Utility.Intern(address).Equals(entry.Address))
+        // Address before age: a different address is a different client, however fresh the id is.
+        if (!Utility.Intern(address).Equals(entry.Address))
         {
             return AuthIdResult.Rejected;
         }
 
-        return entry.Account != null && username.InsensitiveEquals(entry.Account.Username)
-            ? AuthIdResult.Vouched
-            : AuthIdResult.AccountMismatch;
+        if (entry.Account == null || !username.InsensitiveEquals(entry.Account.Username))
+        {
+            return AuthIdResult.Rejected;
+        }
+
+        return Core.Now - entry.Age > _authIDLifetime ? AuthIdResult.Expired : AuthIdResult.Vouched;
+    }
+
+    private static void PurgeExpiredAuthIds()
+    {
+        var now = Core.Now;
+
+        // Removing during enumeration is supported on Dictionary since .NET Core 3.0, so this
+        // reclaims in one pass with no scratch list.
+        foreach (var (key, entry) in _authIDWindow)
+        {
+            if (now - entry.Age > _authIDLifetime)
+            {
+                _authIDWindow.Remove(key);
+            }
+        }
     }
 
     internal static void ClearAuthIdWindow() => _authIDWindow.Clear();
+
+    internal static int AuthIdWindowCount => _authIDWindow.Count;
 
     public static void GameLogin(NetState state, SpanReader reader)
     {
@@ -439,6 +471,8 @@ public static class IncomingAccountPackets
         state.Version = ap.Version;
         state.Seeded = true;
 
+        // Expired still carries a usable entry, and the client just pays the password verify it
+        // would have paid before any of this existed.
         var e = new GameServer.GameLoginEventArgs(
             state,
             username,
