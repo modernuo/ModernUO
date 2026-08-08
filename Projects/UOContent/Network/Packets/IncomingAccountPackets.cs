@@ -504,6 +504,14 @@ public static class IncomingAccountPackets
 
     public static void PlayServer(NetState state, SpanReader reader)
     {
+        // A server is picked once per connection. Picking again would hand back an id this
+        // connection may already have spent on a game login, so the client could never redeem it.
+        if (state.AuthId != 0)
+        {
+            state.Disconnect("Duplicate play server packet sent.");
+            return;
+        }
+
         int index = reader.ReadInt16();
         var info = state.ServerInfo;
         var a = state.Account;
@@ -516,7 +524,7 @@ public static class IncomingAccountPackets
         {
             var si = info[index];
 
-            state.AuthId = GenerateAuthID(state);
+            state.AuthId = state.GenerateAuthID();
 
             state.SentFirstPacket = false;
             state.SendPlayServerAck(si, state.AuthId);
@@ -525,6 +533,14 @@ public static class IncomingAccountPackets
 
     public static void LoginServerSeed(NetState state, SpanReader reader)
     {
+        // Seeding happens once per connection. A second one means the client is restarting a
+        // handshake it already completed, which no real client does.
+        if (state.Seeded)
+        {
+            state.Disconnect("Duplicate login server seed packet sent.");
+            return;
+        }
+
         state.Seed = reader.ReadInt32();
         state.Seeded = true;
 
