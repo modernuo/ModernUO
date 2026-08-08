@@ -24,9 +24,7 @@ namespace Server.Gumps;
 public abstract class BaseGump
 {
     private static readonly byte[] _packetBuffer = GC.AllocateUninitializedArray<byte>(0x10000);
-#if DEBUG
     private static readonly ILogger _logger = LogFactory.GetLogger(typeof(BaseGump));
-#endif
     private static Serial nextSerial = (Serial)1;
 
     public int TypeID { get; protected set; }
@@ -61,12 +59,10 @@ public abstract class BaseGump
         var writer = new SpanWriter(_packetBuffer);
         Compile(ref writer);
 
-#if DEBUG
         if (!HasVisualElements)
         {
             _logger.Warning("Sending empty gump {GumpType}", GetType().FullName);
         }
-#endif
 
         ns.Send(writer.Span);
 
