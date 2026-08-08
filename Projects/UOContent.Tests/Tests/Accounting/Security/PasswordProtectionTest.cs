@@ -105,6 +105,21 @@ public class PasswordProtectionTest
         Assert.Equal(expected, Argon2PasswordProtection.Instance.NeedsRehash(hash));
     }
 
+    // The digest and salt lengths are not in the parameter list -- they are the decoded sizes of the
+    // two base64 segments -- so they cannot be varied through the theory template above. Both hashes
+    // here carry the current type and cost; only a segment length differs from the library defaults
+    // (32-byte digest, 16-byte salt). The "current defaults" row of the theory above is the negative
+    // control: it uses those default lengths and must stay false.
+    [Theory]
+    // 16-byte digest: 22 base64 chars instead of the 43 a 32-byte digest encodes to.
+    [InlineData("$argon2id$v=19$m=16384,t=1,p=1$LD1XJz7P3wQmIJ+Tu6ScgA$NO5hBABsHQ172C5nDO2X4g")]
+    // 8-byte salt: 11 base64 chars instead of the 22 a 16-byte salt encodes to.
+    [InlineData("$argon2id$v=19$m=16384,t=1,p=1$LD1XJz7P3wQ$NO5hBABsHQ172C5nDO2X4gWnB4jDef3x6WhLdVE2LFw")]
+    public void Argon2_NeedsRehash_ComparesSaltAndDigestLengths(string hash)
+    {
+        Assert.True(Argon2PasswordProtection.Instance.NeedsRehash(hash));
+    }
+
     [Theory]
     [InlineData("")]
     [InlineData("not-a-hash")]

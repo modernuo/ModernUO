@@ -23,9 +23,10 @@ public class Argon2PasswordProtection : IPasswordProtection
 
     // Argon2id over Argon2i: RFC 9106 recommends Argon2i only where side-channel resistance is
     // required and memory is scarce. 16 MiB at t=1 measures cheaper than the old 8 MiB at t=3
-    // (8.5 ms vs 10.1 ms) while doubling memory-hardness, which is the property that resists GPU
-    // and ASIC cracking; iterations mostly buy wall-clock. p=1 because native argon2 spawns a
-    // thread per lane, which is oversubscription on the 1-2 core hosts this path exists to serve.
+    // (8.5 ms vs 10.1 ms, measured by ModernUO-Benchmarks/Benchmarks/Argon2Hashing) while doubling
+    // memory-hardness, which is the property that resists GPU and ASIC cracking; iterations mostly
+    // buy wall-clock. p=1 because native argon2 spawns a thread per lane, which is oversubscription
+    // on the 1-2 core hosts this path exists to serve.
     private readonly Argon2PasswordHasher _passwordHasher = new(
         time: 1,
         memory: 16384,
@@ -52,9 +53,15 @@ public class Argon2PasswordProtection : IPasswordProtection
             return true;
         }
 
+        // The digest and salt lengths live in the base64 segments rather than the parameter list,
+        // but they are just as much a part of "was this produced with the parameters we configure
+        // today". Casting the hasher's uint properties keeps the comparison signed-vs-signed; both
+        // are small byte counts, so the narrowing cannot lose anything.
         return values.ArgonType != _passwordHasher.ArgonType
                || values.MemoryCost != _passwordHasher.MemoryCost
                || values.TimeCost != _passwordHasher.TimeCost
-               || values.Parallelism != _passwordHasher.Parallelism;
+               || values.Parallelism != _passwordHasher.Parallelism
+               || values.HashLength != (int)_passwordHasher.HashLength
+               || values.SaltLength != (int)_passwordHasher.SaltLength;
     }
 }
