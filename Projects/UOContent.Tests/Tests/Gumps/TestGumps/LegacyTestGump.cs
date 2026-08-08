@@ -4,6 +4,8 @@ namespace Server.Tests.Gumps;
 
 public sealed class LegacyTestGump : Gump
 {
+    public bool HasVisualElementsForTest => HasVisualElements;
+
     public LegacyTestGump(string petName) : base(50, 50)
     {
         Serial = (Serial)0x123;

@@ -6,6 +6,8 @@ public class DynamicTestGump : DynamicGump
 {
     private readonly string _petName;
 
+    public bool HasVisualElementsForTest => HasVisualElements;
+
     public DynamicTestGump(string petName) : base(50, 50)
     {
         _petName = petName;

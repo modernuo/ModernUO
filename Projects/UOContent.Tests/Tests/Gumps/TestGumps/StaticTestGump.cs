@@ -4,6 +4,8 @@ namespace Server.Tests.Gumps;
 
 public class StaticTestGump : StaticGump<StaticTestGump>
 {
+    public bool HasVisualElementsForTest => HasVisualElements;
+
     public StaticTestGump() : base(50, 50)
     {
         Serial = (Serial)0x123;

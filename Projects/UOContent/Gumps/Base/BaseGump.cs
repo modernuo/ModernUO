@@ -31,7 +31,7 @@ public abstract class BaseGump
 
     public int TypeID { get; protected set; }
     public Serial Serial { get; protected set; }
-    internal bool HasVisualElements { get; set; }
+    protected bool HasVisualElements { get; set; }
 
     public abstract int Switches { get; }
     public abstract int TextEntries { get; }

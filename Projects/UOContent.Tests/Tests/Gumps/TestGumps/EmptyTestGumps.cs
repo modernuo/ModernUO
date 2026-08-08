@@ -4,6 +4,8 @@ namespace Server.Tests.Gumps;
 
 public sealed class EmptyLegacyTestGump : Gump
 {
+    public bool HasVisualElementsForTest => HasVisualElements;
+
     public EmptyLegacyTestGump() : base(0, 0)
     {
     }
@@ -11,6 +13,8 @@ public sealed class EmptyLegacyTestGump : Gump
 
 public sealed class EmptyDynamicTestGump : DynamicGump
 {
+    public bool HasVisualElementsForTest => HasVisualElements;
+
     public EmptyDynamicTestGump() : base(0, 0)
     {
     }
@@ -23,6 +27,8 @@ public sealed class EmptyDynamicTestGump : DynamicGump
 
 public sealed class EmptyStaticTestGump : StaticGump<EmptyStaticTestGump>
 {
+    public bool HasVisualElementsForTest => HasVisualElements;
+
     public EmptyStaticTestGump() : base(0, 0)
     {
     }

@@ -76,20 +76,22 @@ public class TestLayoutGumps
     [Fact]
     public void TestEmptyGumpsHaveNoVisualElements()
     {
-        Assert.False(Compile(new EmptyLegacyTestGump()).HasVisualElements);
-        Assert.False(Compile(new EmptyDynamicTestGump()).HasVisualElements);
-        Assert.False(Compile(new EmptyStaticTestGump()).HasVisualElements);
+        Assert.False(Compile(new EmptyLegacyTestGump()).HasVisualElementsForTest);
+        Assert.False(Compile(new EmptyDynamicTestGump()).HasVisualElementsForTest);
+        Assert.False(Compile(new EmptyStaticTestGump()).HasVisualElementsForTest);
+        Assert.False(Compile(new EmptyStaticTestGump()).HasVisualElementsForTest);
     }
 
     [Fact]
     public void TestVisibleGumpsHaveVisualElements()
     {
-        Assert.True(Compile(new LegacyTestGump("Test")).HasVisualElements);
-        Assert.True(Compile(new DynamicTestGump("Test")).HasVisualElements);
-        Assert.True(Compile(new StaticTestGump()).HasVisualElements);
+        Assert.True(Compile(new LegacyTestGump("Test")).HasVisualElementsForTest);
+        Assert.True(Compile(new DynamicTestGump("Test")).HasVisualElementsForTest);
+        Assert.True(Compile(new StaticTestGump()).HasVisualElementsForTest);
+        Assert.True(Compile(new StaticTestGump()).HasVisualElementsForTest);
     }
 
-    private static BaseGump Compile(BaseGump gump)
+    private static T Compile<T>(T gump) where T : BaseGump
     {
         var buffer = GC.AllocateUninitializedArray<byte>(512);
         var writer = new SpanWriter(buffer);

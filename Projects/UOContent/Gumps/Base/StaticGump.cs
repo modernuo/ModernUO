@@ -30,7 +30,7 @@ public abstract class StaticGump<TSelf> : BaseGump where TSelf : StaticGump<TSel
     private static byte[] _compressedStringsData;
 
     private static bool _hasDynamicStrings;
-    private static bool _hasVisualElements;
+    private static bool _cachedHasVisualElements;
     private static int _staticStringsCount;
     private static byte[] _staticStrings;
 
@@ -73,7 +73,7 @@ public abstract class StaticGump<TSelf> : BaseGump where TSelf : StaticGump<TSel
 
         if (Cached && _compressedLayoutData != null)
         {
-            HasVisualElements = _hasVisualElements;
+            HasVisualElements = _cachedHasVisualElements;
             writer.Write(_compressedLayoutData);
 
             if (_compressedStringsData != null)
@@ -118,7 +118,7 @@ public abstract class StaticGump<TSelf> : BaseGump where TSelf : StaticGump<TSel
             BuildLayout(ref gumpBuilder);
             gumpBuilder.FinalizeLayout();
 
-            HasVisualElements = _hasVisualElements = gumpBuilder.HasVisualElements;
+            HasVisualElements = _cachedHasVisualElements = gumpBuilder.HasVisualElements;
             _switches = gumpBuilder.Switches;
             _textEntries = gumpBuilder.TextEntries;
             _staticStringsCount = gumpBuilder._stringsCount;
