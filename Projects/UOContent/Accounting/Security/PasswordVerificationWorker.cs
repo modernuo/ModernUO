@@ -83,11 +83,20 @@ internal sealed class PasswordVerificationWorker
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(PasswordVerificationWorker));
 
     /// <summary>
-    /// Pending cap. Overflow rejects the login rather than verifying it inline: falling back to the
-    /// loop would let anyone who fills the queue steer the work back onto the thread this exists to
-    /// protect.
+    /// Backstop, not a policy. The queue is already bounded by construction: AccountLogin rejects a
+    /// second 0x80 on the same connection via <c>SentFirstPacket</c>, so a connection can hold at
+    /// most one pending verify, and the engine caps concurrent connections at 4096
+    /// (<c>NetState.Network.cs</c>). This matches that bound so it can only trip if the
+    /// one-per-connection invariant is ever broken.
+    ///
+    /// Deliberately not a flood defence. Any cap low enough to blunt an attack rejects real players
+    /// first -- during a mass reconnect they are the queue -- and a cap high enough not to do that
+    /// blunts nothing. Refusing logins for the duration of an attack *is* the denial of service,
+    /// just self-inflicted. That defence belongs at the connection layer, where IP bans, the
+    /// blocklist and the accept gate already sit and where an attacker is stopped before costing a
+    /// hash at all.
     /// </summary>
-    internal const int MaxPending = 128;
+    internal const int MaxPending = 4096;
 
     // Nothing signals the worker when a save freeze ends, so it re-checks on this interval -- but
     // only while a save is in progress, never in steady state.
@@ -187,6 +196,16 @@ internal sealed class PasswordVerificationWorker
             }
 
             Interlocked.Decrement(ref _pending);
+
+            // Gone while it waited. Skipping here reclaims the slot without spending ~9 ms on a
+            // verdict nobody will receive, which matters most during exactly the reconnect rush
+            // that builds a queue in the first place. Running only ever goes true -> false, so a
+            // stale read costs a wasted hash that Apply discards -- it can never skip a live
+            // connection.
+            if (job.State?.Running != true)
+            {
+                continue;
+            }
 
             PasswordVerificationOutcome outcome;
 
