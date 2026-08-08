@@ -75,8 +75,8 @@ public class PasswordProtectionTest
         Assert.False(passwordProtection.ValidatePassword(encryptedPassword, "Not the same password"));
     }
 
-    // Produced by ModernUO's shipping default before this change: Argon2i, m=8192, t=3, p=1.
-    // Pinned as a literal so it cannot drift with the configured defaults. Password: "hunter2".
+    // The shipping default before this change. A literal, so it cannot drift with the configured
+    // defaults. Password: "hunter2".
     private const string LegacyArgon2iHash =
         "$argon2i$v=19$m=8192,t=3,p=1$LD1XJz7P3wQmIJ+Tu6ScgA$NO5hBABsHQ172C5nDO2X4gWnB4jDef3x6WhLdVE2LFw";
 
@@ -105,11 +105,9 @@ public class PasswordProtectionTest
         Assert.Equal(expected, Argon2PasswordProtection.Instance.NeedsRehash(hash));
     }
 
-    // The digest and salt lengths are not in the parameter list -- they are the decoded sizes of the
-    // two base64 segments -- so they cannot be varied through the theory template above. Both hashes
-    // here carry the current type and cost; only a segment length differs from the library defaults
-    // (32-byte digest, 16-byte salt). The "current defaults" row of the theory above is the negative
-    // control: it uses those default lengths and must stay false.
+    // Digest and salt lengths are the decoded sizes of the base64 segments, not parameter-list
+    // entries, so they need their own literals. Current type and cost throughout; only a length
+    // differs from the defaults. The theory above is the negative control at default lengths.
     [Theory]
     // 16-byte digest: 22 base64 chars instead of the 43 a 32-byte digest encodes to.
     [InlineData("$argon2id$v=19$m=16384,t=1,p=1$LD1XJz7P3wQmIJ+Tu6ScgA$NO5hBABsHQ172C5nDO2X4g")]

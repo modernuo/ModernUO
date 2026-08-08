@@ -21,12 +21,8 @@ public class Argon2PasswordProtection : IPasswordProtection
 {
     public static IPasswordProtection Instance = new Argon2PasswordProtection();
 
-    // Argon2id over Argon2i: RFC 9106 recommends Argon2i only where side-channel resistance is
-    // required and memory is scarce. 16 MiB at t=1 measures cheaper than the old 8 MiB at t=3
-    // (8.5 ms vs 10.1 ms, measured by ModernUO-Benchmarks/Benchmarks/Argon2Hashing) while doubling
-    // memory-hardness, which is the property that resists GPU and ASIC cracking; iterations mostly
-    // buy wall-clock. p=1 because native argon2 spawns a thread per lane, which is oversubscription
-    // on the 1-2 core hosts this path exists to serve.
+    // 16 MiB at t=1 is cheaper than 8 MiB at t=3 (8.5 ms vs 10.1 ms) and twice as memory-hard, which
+    // is what resists GPU and ASIC cracking. p=1: native argon2 spawns a thread per lane.
     private readonly Argon2PasswordHasher _passwordHasher = new(
         time: 1,
         memory: 16384,
@@ -41,22 +37,17 @@ public class Argon2PasswordProtection : IPasswordProtection
     public bool ValidatePassword(string encryptedPassword, string plainPassword) =>
         _passwordHasher.Verify(encryptedPassword, plainPassword);
 
+    // The PHC string carries the parameters it was hashed with, so verification uses those rather
+    // than the configured ones. Comparing them is what lets a parameter change reach existing
+    // accounts.
     public bool NeedsRehash(string encryptedPassword)
     {
-        // Argon2's PHC string embeds m, t and p, so verification uses the parameters stored with
-        // each account rather than the configured ones. Without this comparison a parameter change
-        // would reach nobody: CheckPassword only rehashed when the *algorithm* changed.
+        // Unparseable but verified: a format this build does not understand, so rewrite it.
         if (!Argon2PasswordHasher.TryExtractMetadataValues(encryptedPassword, out var values))
         {
-            // Only reached after a successful verify, so an unparseable string means a format this
-            // build does not understand. Rewriting it into the current one is strictly better.
             return true;
         }
 
-        // The digest and salt lengths live in the base64 segments rather than the parameter list,
-        // but they are just as much a part of "was this produced with the parameters we configure
-        // today". Casting the hasher's uint properties keeps the comparison signed-vs-signed; both
-        // are small byte counts, so the narrowing cannot lose anything.
         return values.ArgonType != _passwordHasher.ArgonType
                || values.MemoryCost != _passwordHasher.MemoryCost
                || values.TimeCost != _passwordHasher.TimeCost

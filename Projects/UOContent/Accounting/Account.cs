@@ -6,7 +6,6 @@ using System.Xml;
 using ModernUO.CodeGeneratedEvents;
 using ModernUO.Serialization;
 using Server.Accounting.Security;
-using Server.Logging;
 using Server.Misc;
 using Server.Mobiles;
 using Server.Multis;
@@ -19,8 +18,6 @@ namespace Server.Accounting;
 [SerializationGenerator(6)]
 public partial class Account : IAccount, IComparable<Account>
 {
-    private static readonly ILogger logger = LogFactory.GetLogger(typeof(Account));
-
     public static readonly TimeSpan YoungDuration = TimeSpan.FromHours(40.0);
     public static readonly TimeSpan InactiveDuration = TimeSpan.FromDays(180.0);
     public static readonly TimeSpan EmptyInactiveDuration = TimeSpan.FromDays(30.0);
@@ -379,85 +376,32 @@ public partial class Account : IAccount, IComparable<Account>
         return true;
     }
 
-    /// <summary>
-    /// SHA1 and SHA2 are the ServUO-compatible algorithms; they salt the password with the
-    /// username. Argon2 and PBKDF2 carry their own salt and do not.
-    /// </summary>
-    private static bool UsesUsernamePhrase(PasswordProtectionAlgorithm algorithm) =>
-        algorithm is PasswordProtectionAlgorithm.SHA1 or PasswordProtectionAlgorithm.SHA2;
-
-    /// <summary>
-    /// Account tag that opts a single account into the mis-migrated-password repair. Set it from the
-    /// admin gump (Account Details -> Tags -> Add Tag) on an account whose owner has actually
-    /// reported being locked out, and never on one that can still log in: the repair cannot tell a
-    /// mis-migrated hash from a password that merely begins with the username, so marking a working
-    /// account risks rewriting its credential down to whatever was submitted. Cleared automatically
-    /// once a repair succeeds. Necessary but not sufficient: the shard-wide
-    /// <see cref="AccountSecurity.RepairMigratedPasswords"/> switch must be on as well.
-    /// </summary>
-    public const string RepairPasswordTag = "RepairMigratedPassword";
-
-    // The pre-fix SetPassword left the credential hashed under the *other* family's phrase rule, in
-    // both directions, so the repair tries whichever rule the stored algorithm does not use.
-    private string RepairPhrase(string plainPassword) =>
-        UsesUsernamePhrase(_passwordAlgorithm) ? plainPassword : $"{_username}{plainPassword}";
-
     public void SetPassword(string plainPassword)
     {
-        // The phrase must match how CheckPassword will rebuild it *after* the algorithm changes,
-        // so it is derived from the target algorithm rather than the outgoing one. Deriving it
-        // from _passwordAlgorithm stored a username-salted hash under an algorithm that never
-        // re-adds the username, locking the account out on its next login -- and, because this
-        // runs from the constructor before _passwordAlgorithm is assigned, it also produced
-        // brand-new SHA1/SHA2 accounts that could never log in at all.
-        var algorithm = AccountSecurity.CurrentAlgorithm;
-        var phrase = UsesUsernamePhrase(algorithm) ? $"{_username}{plainPassword}" : plainPassword;
+        PasswordAlgorithm = AccountSecurity.CurrentAlgorithm;
+        var phrase = PasswordAlgorithm is PasswordProtectionAlgorithm.SHA1 or PasswordProtectionAlgorithm.SHA2
+            ? $"{_username}{plainPassword}"
+            : plainPassword;
 
-        Password = AccountSecurity.GetPasswordProtection(algorithm).EncryptPassword(phrase);
-        PasswordAlgorithm = algorithm;
+        Password = AccountSecurity.CurrentPasswordProtection.EncryptPassword(phrase);
     }
 
     public bool CheckPassword(string plainPassword)
     {
-        var protection = AccountSecurity.GetPasswordProtection(_passwordAlgorithm);
-        var phrase = UsesUsernamePhrase(_passwordAlgorithm) ? $"{_username}{plainPassword}" : plainPassword;
-        var forceRehash = false;
+        var phrase = _passwordAlgorithm is PasswordProtectionAlgorithm.SHA1 or PasswordProtectionAlgorithm.SHA2
+            ? $"{_username}{plainPassword}"
+            : plainPassword;
 
-        if (!protection.ValidatePassword(Password, phrase))
+        var ok = AccountSecurity.GetPasswordProtection(_passwordAlgorithm).ValidatePassword(Password, phrase);
+        if (!ok)
         {
-            // Nothing in the stored hash distinguishes a mis-migrated credential from a forgotten
-            // password, and the retry is not free: it costs a second full verify, and failed logins
-            // are the credential-stuffing surface. Worse, it cannot tell "stored is
-            // H(username + password)" from "the password simply starts with the username" -- and
-            // repairing the latter would rewrite a correct credential down to the submitted suffix
-            // and lock the owner out for good. Hence two gates: a shard-wide switch, and a per-account
-            // tag an operator sets only for someone who has reported the lockout.
-            if (!AccountSecurity.RepairMigratedPasswords || GetTag(RepairPasswordTag) == null ||
-                !protection.ValidatePassword(Password, RepairPhrase(plainPassword)))
-            {
-                return false;
-            }
-
-            logger.Warning(
-                "Account '{Username}' had a password mis-migrated by a pre-fix SetPassword; repairing it.",
-                _username
-            );
-
-            // One-shot: the window closes for this account as soon as it is repaired.
-            RemoveTag(RepairPasswordTag);
-
-            // The stored hash may already carry current parameters, so NeedsRehash would decline and
-            // the account would verify once and stay broken.
-            forceRehash = true;
+            return false;
         }
 
-        // Rehash when either the algorithm or its cost parameters have moved on. The short-circuit
-        // ordering is load-bearing: NeedsRehash must never be handed a hash produced by a different
-        // algorithm, and the second clause guarantees it is not.
-        if (forceRehash || _passwordAlgorithm != AccountSecurity.CurrentAlgorithm ||
+        // Upgrade the password protection in case we change the algorithm
+        if (_passwordAlgorithm != AccountSecurity.CurrentAlgorithm ||
             AccountSecurity.CurrentPasswordProtection.NeedsRehash(Password))
         {
-            logger.Debug("Rehashing the password for account '{Username}'.", _username);
             SetPassword(plainPassword);
         }
 

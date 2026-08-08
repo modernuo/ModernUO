@@ -100,9 +100,8 @@ internal static class TestServerInitializer
             }
 
             World.Configure();
-            // Registers the Accounts entity persistence. Production reaches this through
-            // AssemblyHandler.Invoke("Configure"); the curated subset here must call it so that
-            // Accounts.NewAccount resolves and tests can construct an Account.
+            // Registers the Accounts entity persistence, without which Accounts.NewAccount cannot
+            // resolve and no test can construct an Account.
             Server.Accounting.Accounts.Configure();
             RaceDefinitions.Configure();
             MovementImpl.Configure();
