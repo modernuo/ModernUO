@@ -195,36 +195,46 @@ public class AuthIdTests : IDisposable
         }
     }
 
-    /// <summary>
-    /// A connection is capped at one live id. NetState.AuthId only holds the newest, so any id it
-    /// replaces goes immediately rather than sitting in the window with nothing coming for it.
-    /// </summary>
-    [Fact]
-    public void ReleasingAnIdMakesItUnredeemableImmediately()
-    {
-        var account = CreateAccount("authid-released-user");
-        var authId = Register(account, AddressX);
-
-        IncomingAccountPackets.ReleaseAuthId(authId);
-
-        Assert.Equal(0, IncomingAccountPackets.AuthIdWindowCount);
-        Assert.Equal(
-            IncomingAccountPackets.AuthIdResult.Rejected,
-            IncomingAccountPackets.ConsumeAuthId(authId, account.Username, AddressX, out _)
+    private static int Ensure(int existingAuthId, IAccount account, IPAddress address) =>
+        IncomingAccountPackets.EnsureAuthId(
+            existingAuthId,
+            account,
+            address,
+            new ClientVersion(7, 0, 0, 0)
         );
+
+    [Fact]
+    public void IssuesAnIdWhenTheConnectionHasNone()
+    {
+        var account = CreateAccount("authid-first-select-user");
+
+        var authId = Ensure(0, account, AddressX);
+
+        Assert.NotEqual(0, authId);
+        Assert.Equal(1, IncomingAccountPackets.AuthIdWindowCount);
     }
 
+    /// <summary>
+    /// A connection gets exactly one id, no matter how many times it re-selects. Handing the same
+    /// one back rather than minting another is what makes an orphaned id impossible, instead of
+    /// something to clean up afterwards.
+    /// </summary>
     [Fact]
-    public void ReleasingZeroIsANoOp()
+    public void ReSelectingReturnsTheSameIdAndAddsNothingToTheWindow()
     {
-        var account = CreateAccount("authid-release-zero-user");
-        Register(account, AddressX);
+        var account = CreateAccount("authid-reselect-user");
+        var first = Ensure(0, account, AddressX);
 
-        // NetState.AuthId is 0 until a server is picked, so the release on the first pick must not
-        // disturb the window.
-        IncomingAccountPackets.ReleaseAuthId(0);
+        for (var i = 0; i < 10; i++)
+        {
+            Assert.Equal(first, Ensure(first, account, AddressX));
+        }
 
         Assert.Equal(1, IncomingAccountPackets.AuthIdWindowCount);
+        Assert.Equal(
+            IncomingAccountPackets.AuthIdResult.Vouched,
+            IncomingAccountPackets.ConsumeAuthId(first, account.Username, AddressX, out _)
+        );
     }
 
     /// <summary>

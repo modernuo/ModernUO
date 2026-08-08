@@ -346,24 +346,18 @@ public static class IncomingAccountPackets
         }
     }
 
-    private static int GenerateAuthID(this NetState state)
-    {
-        // Caps a connection at one live id. Choosing a server queues a disconnect, but the queue is
-        // drained on the next slice, so a client that pipelines another seed/login/select into the
-        // same buffer gets here again -- and state.AuthId only holds the newest, so the previous id
-        // would sit in the window until it timed out with nothing coming to redeem it.
-        ReleaseAuthId(state.AuthId);
+    private static int GenerateAuthID(this NetState state) =>
+        EnsureAuthId(state.AuthId, state.Account, state.Address, state.Version);
 
-        return RegisterAuthId(state.Account, state.Address, state.Version);
-    }
-
-    internal static void ReleaseAuthId(int authId)
-    {
-        if (authId != 0)
-        {
-            _authIDWindow.Remove(authId);
-        }
-    }
+    /// <summary>
+    /// One id per connection, by construction. Choosing a server queues a disconnect, but the queue
+    /// is drained on the next slice, so a client that pipelines another seed/login/select into the
+    /// same buffer arrives here again. Handing back the id it already holds -- rather than minting a
+    /// second and orphaning the first -- means no amount of re-selecting can leave anything behind.
+    /// </summary>
+    internal static int EnsureAuthId(
+        int existingAuthId, IAccount account, IPAddress address, ClientVersion version
+    ) => existingAuthId != 0 ? existingAuthId : RegisterAuthId(account, address, version);
 
     internal static int RegisterAuthId(IAccount account, IPAddress address, ClientVersion version)
     {
