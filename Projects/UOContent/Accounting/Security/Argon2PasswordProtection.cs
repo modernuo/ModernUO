@@ -37,9 +37,8 @@ public class Argon2PasswordProtection : IPasswordProtection
     public bool ValidatePassword(string encryptedPassword, string plainPassword) =>
         _passwordHasher.Verify(encryptedPassword, plainPassword);
 
-    // The PHC string carries the parameters it was hashed with, so verification uses those rather
-    // than the configured ones. Comparing them is what lets a parameter change reach existing
-    // accounts.
+    // Verification uses the parameters embedded in the PHC string, not the configured ones, so
+    // comparing them is what lets a parameter change reach existing accounts.
     public bool NeedsRehash(string encryptedPassword)
     {
         // Unparseable but verified: a format this build does not understand, so rewrite it.

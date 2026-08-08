@@ -17,6 +17,9 @@ using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
+using System.Security.Cryptography;
+using Server.Accounting;
 using Server.Engines.CharacterCreation;
 using Server.Misc;
 using Server.Mobiles;
@@ -25,7 +28,16 @@ namespace Server.Network;
 
 public static class IncomingAccountPackets
 {
+    // Initial capacity and the point at which issuing sweeps expired ids. Not a cap; the window
+    // grows rather than evicting a live id.
     private const int _authIDWindowSize = 128;
+
+    private static int _authIdPurgeThreshold = _authIDWindowSize;
+
+    // The gap between PlayServerAck and the game login is seconds. Bounds how long a stolen id
+    // stays usable.
+    private static readonly TimeSpan _authIDLifetime = TimeSpan.FromMinutes(2.0);
+
     private static readonly Dictionary<int, AuthIDPersistence> _authIDWindow =
         new(_authIDWindowSize);
 
@@ -34,11 +46,31 @@ public static class IncomingAccountPackets
         public DateTime Age;
         public readonly ClientVersion Version;
 
-        public AuthIDPersistence(ClientVersion v)
+        // GameLogin skips its password verify when both match, so the id is a bearer token and has
+        // to be bound to whatever earned it.
+        public readonly IAccount Account;
+        public readonly IPAddress Address;
+
+        public AuthIDPersistence(ClientVersion v, IAccount account, IPAddress address)
         {
             Age = Core.Now;
             Version = v;
+            Account = account;
+            Address = Utility.Intern(address);
         }
+    }
+
+    internal enum AuthIdResult
+    {
+        // No such id, or it was issued for a different account or address.
+        Rejected,
+
+        // Right account and address, too old to stand in for the verify. Idling on the server list
+        // is normal, so this falls back to the password check rather than becoming a lockout.
+        Expired,
+
+        // Issued to this account, from this address, recently. Stands in for the password verify.
+        Vouched
     }
 
     public static unsafe void Configure()
@@ -312,41 +344,91 @@ public static class IncomingAccountPackets
         }
     }
 
-    private static int GenerateAuthID(this NetState state)
+    private static int GenerateAuthID(this NetState state) =>
+        EnsureAuthId(state.AuthId, state.Account, state.Address, state.Version);
+
+    /// <summary>
+    /// One id per connection, by construction. Choosing a server queues a disconnect that is not
+    /// drained until the next slice, so a client pipelining another select into the same buffer
+    /// arrives here again; handing back the id it already holds cannot orphan one.
+    /// </summary>
+    internal static int EnsureAuthId(int existingAuthId, IAccount account, IPAddress address, ClientVersion version)
+        => existingAuthId != 0 ? existingAuthId : RegisterAuthId(account, address, version);
+
+    internal static int RegisterAuthId(IAccount account, IPAddress address, ClientVersion version)
     {
-        if (_authIDWindow.Count == _authIDWindowSize)
+        // Sweep the ids left behind by clients that picked a server and never arrived, but never
+        // evict a live one to make room -- the client holding it is on its way to redeem it. If all
+        // are live the window grows, which is a login rush, not a backlog. Each entry costs a
+        // successful password verify, so the size is self-limiting.
+        if (_authIDWindow.Count >= _authIdPurgeThreshold)
         {
-            var oldestID = 0;
-            var oldest = DateTime.MaxValue;
-
-            foreach (var (key, authId) in _authIDWindow)
-            {
-                if (authId.Age < oldest)
-                {
-                    oldestID = key;
-                    oldest = authId.Age;
-                }
-            }
-
-            _authIDWindow.Remove(oldestID);
+            PurgeExpiredAuthIds();
+            _authIdPurgeThreshold = Math.Max(_authIDWindowSize, _authIDWindow.Count * 2);
         }
 
         int authID;
 
+        // The id stands in for a password verify, so it has to be unguessable. Zero is reserved:
+        // GameLogin reads state.AuthId == 0 as "no auth id was issued".
         do
         {
-            authID = Utility.Random(1, int.MaxValue - 1);
+            authID = RandomNumberGenerator.GetInt32(int.MinValue, int.MaxValue);
+        } while (authID == 0 || _authIDWindow.ContainsKey(authID));
 
-            if (Utility.RandomBool())
-            {
-                authID |= 1 << 31;
-            }
-        } while (_authIDWindow.ContainsKey(authID));
-
-        _authIDWindow[authID] = new AuthIDPersistence(state.Version);
+        _authIDWindow[authID] = new AuthIDPersistence(version, account, address);
 
         return authID;
     }
+
+    /// <summary>
+    /// Spends an auth id, but only for the account and address it was issued to. An address
+    /// mismatch is <see cref="AuthIdResult.Rejected"/> rather than a fallback: network switching
+    /// mid-login is not supported.
+    /// </summary>
+    internal static AuthIdResult ConsumeAuthId(int authId, string username, IPAddress address, out AuthIDPersistence entry)
+    {
+        if (!_authIDWindow.TryGetValue(authId, out entry))
+        {
+            return AuthIdResult.Rejected;
+        }
+
+        // Look, then take: removing before ownership is proven would let anyone landing on a live id
+        // burn it, leaving its owner to log in again. Address before username, so a remote guesser
+        // never learns whether a username matched.
+        if (!Utility.Intern(address).Equals(entry.Address)
+            || entry.Account == null || !username.InsensitiveEquals(entry.Account.Username))
+        {
+            entry = default;
+            return AuthIdResult.Rejected;
+        }
+
+        // Theirs, so spend it. Expired counts as spent; it has done all it is ever going to do.
+        _authIDWindow.Remove(authId);
+
+        return Core.Now - entry.Age > _authIDLifetime ? AuthIdResult.Expired : AuthIdResult.Vouched;
+    }
+
+    private static void PurgeExpiredAuthIds()
+    {
+        var now = Core.Now;
+
+        foreach (var (key, entry) in _authIDWindow)
+        {
+            if (now - entry.Age > _authIDLifetime)
+            {
+                _authIDWindow.Remove(key);
+            }
+        }
+    }
+
+    internal static void ClearAuthIdWindow()
+    {
+        _authIDWindow.Clear();
+        _authIdPurgeThreshold = _authIDWindowSize;
+    }
+
+    internal static int AuthIdWindowCount => _authIDWindow.Count;
 
     public static void GameLogin(NetState state, SpanReader reader)
     {
@@ -360,12 +442,6 @@ public static class IncomingAccountPackets
 
         var authId = reader.ReadInt32();
 
-        if (!_authIDWindow.TryGetValue(authId, out var ap))
-        {
-            state.LogInfo("Invalid client detected, disconnecting...");
-            state.Disconnect("Unable to find auth id.");
-        }
-
         if (state.AuthId != 0 && authId != state.AuthId || state.AuthId == 0 && authId != state.Seed)
         {
             state.LogInfo("Invalid client detected, disconnecting...");
@@ -373,14 +449,28 @@ public static class IncomingAccountPackets
             return;
         }
 
-        _authIDWindow.Remove(authId);
-        state.Version = ap.Version;
-        state.Seeded = true;
-
         var username = reader.ReadLatin1Safe(30);
         var password = reader.ReadLatin1Safe(30);
 
-        var e = new GameServer.GameLoginEventArgs(state, username, password);
+        var authResult = ConsumeAuthId(authId, username, state.Address, out var ap);
+
+        if (authResult == AuthIdResult.Rejected)
+        {
+            state.LogInfo("Invalid client detected, disconnecting...");
+            state.Disconnect("Unable to find auth id.");
+            return;
+        }
+
+        state.Version = ap.Version;
+        state.Seeded = true;
+
+        // Expired carries a usable entry; only the password verify skip is withheld.
+        var e = new GameServer.GameLoginEventArgs(
+            state,
+            username,
+            password,
+            authResult == AuthIdResult.Vouched
+        );
 
         GameServer.GameServerLoginEvent(e);
 
@@ -402,6 +492,14 @@ public static class IncomingAccountPackets
 
     public static void PlayServer(NetState state, SpanReader reader)
     {
+        // A server is picked once per connection. Picking again hands back an id this connection may
+        // already have spent on a game login, which the client could never redeem.
+        if (state.AuthId != 0)
+        {
+            state.Disconnect("Duplicate play server packet sent.");
+            return;
+        }
+
         int index = reader.ReadInt16();
         var info = state.ServerInfo;
         var a = state.Account;
@@ -414,7 +512,7 @@ public static class IncomingAccountPackets
         {
             var si = info[index];
 
-            state.AuthId = GenerateAuthID(state);
+            state.AuthId = state.GenerateAuthID();
 
             state.SentFirstPacket = false;
             state.SendPlayServerAck(si, state.AuthId);
@@ -423,6 +521,14 @@ public static class IncomingAccountPackets
 
     public static void LoginServerSeed(NetState state, SpanReader reader)
     {
+        // Seeding happens once per connection. A second one restarts a handshake this connection
+        // already completed, which no real client does.
+        if (state.Seeded)
+        {
+            state.Disconnect("Duplicate login server seed packet sent.");
+            return;
+        }
+
         state.Seed = reader.ReadInt32();
         state.Seeded = true;
 
