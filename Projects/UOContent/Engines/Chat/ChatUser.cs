@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Server.Collections;
 
 namespace Server.Engines.Chat
 {
@@ -8,8 +9,8 @@ namespace Server.Engines.Chat
         public const char ModeratorColorCharacter = '1';
         public const char VoicedColorCharacter = '2';
 
-        private static readonly List<ChatUser> m_Users = new();
-        private static readonly Dictionary<Mobile, ChatUser> m_Table = new();
+        private static readonly List<ChatUser> _Users = new();
+        private static readonly Dictionary<Mobile, ChatUser> _Table = new();
 
         public ChatUser(Mobile m, string username)
         {
@@ -20,25 +21,16 @@ namespace Server.Engines.Chat
         }
 
         public Mobile Mobile { get; }
-
         public List<ChatUser> Ignored { get; }
-
         public List<ChatUser> Ignoring { get; }
-
         public string Username { get; }
-
         public Channel CurrentChannel { get; set; }
-
         public bool IsOnline => Mobile.NetState != null;
-
         public bool Anonymous { get; set; }
-
         public bool IgnorePrivateMessage { get; set; }
-
         public bool IsModerator => CurrentChannel?.IsModerator(this) == true;
 
-        public char GetColorCharacter() =>
-            IsModerator ? ModeratorColorCharacter :
+        public char GetColorCharacter() => IsModerator ? ModeratorColorCharacter :
             CurrentChannel?.IsVoiced(this) == true ? VoicedColorCharacter : NormalColorCharacter;
 
         public bool CheckOnline()
@@ -101,13 +93,14 @@ namespace Server.Engines.Chat
 
             if (user != null)
             {
+                Channel.SendChannelsTo(user);
                 return user;
             }
 
             user = new ChatUser(from, username);
 
-            m_Users.Add(user);
-            m_Table[from] = user;
+            _Users.Add(user);
+            _Table[from] = user;
 
             Channel.SendChannelsTo(user);
 
@@ -123,7 +116,7 @@ namespace Server.Engines.Chat
                 }
             }
 
-            // ChatSystem.SendCommandTo( user.m_Mobile, ChatCommand.AddUserToChannel, user.GetColorCharacter() + user.Username );
+            // ChatSystem.SendCommandTo( user._Mobile, ChatCommand.AddUserToChannel, user.GetColorCharacter() + user.Username );
 
             return user;
         }
@@ -135,32 +128,39 @@ namespace Server.Engines.Chat
                 return;
             }
 
+            using var ignoringUsers = new PooledRefList<ChatUser>();
+
             for (var i = 0; i < user.Ignoring.Count; ++i)
             {
-                user.Ignoring[i].RemoveIgnored(user);
+                ignoringUsers.Add(user.Ignoring[i]);
+            }
+            
+            for (var i = 0; i < ignoringUsers.Count; i++)
+            {
+                ignoringUsers[i].RemoveIgnored(user);
             }
 
-            if (m_Users.Remove(user))
+            if (_Users.Remove(user))
             {
                 ChatSystem.SendCommandTo(user.Mobile, ChatCommand.CloseChatWindow);
 
                 user.CurrentChannel?.RemoveUser(user);
 
-                m_Table.Remove(user.Mobile);
+                _Table.Remove(user.Mobile);
             }
         }
 
         public static ChatUser GetChatUser(Mobile from)
         {
-            m_Table.TryGetValue(from, out var c);
+            _Table.TryGetValue(from, out var c);
             return c;
         }
 
         public static ChatUser GetChatUser(string username)
         {
-            for (var i = 0; i < m_Users.Count; ++i)
+            for (var i = 0; i < _Users.Count; ++i)
             {
-                var user = m_Users[i];
+                var user = _Users[i];
 
                 if (user.Username == username)
                 {
@@ -180,9 +180,11 @@ namespace Server.Engines.Chat
             ChatCommand command, ChatUser initiator = null, string param1 = null, string param2 = null
         )
         {
-            for (var i = 0; i < m_Users.Count; ++i)
+            using var usersToProcess = new PooledRefList<ChatUser>();
+            
+            for (var i = 0; i < _Users.Count; ++i)
             {
-                var user = m_Users[i];
+                var user = _Users[i];
 
                 if (user == initiator)
                 {
@@ -191,8 +193,13 @@ namespace Server.Engines.Chat
 
                 if (user.CheckOnline())
                 {
-                    ChatSystem.SendCommandTo(user.Mobile, command, param1, param2);
+                    usersToProcess.Add(user);
                 }
+            }
+            
+            for (var i = 0; i < usersToProcess.Count; i++)
+            {
+                ChatSystem.SendCommandTo(usersToProcess[i].Mobile, command, param1, param2);
             }
         }
     }

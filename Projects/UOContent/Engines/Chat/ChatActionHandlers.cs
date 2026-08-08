@@ -2,16 +2,14 @@ namespace Server.Engines.Chat
 {
     public static class ChatActionHandlers
     {
-        private static readonly ChatActionHandler[] m_Handlers;
+        private static readonly ChatActionHandler[] _Handlers;
 
         static ChatActionHandlers()
         {
-            m_Handlers = new ChatActionHandler[0x100];
+            _Handlers = new ChatActionHandler[0x100];
 
             Register(0x41, true, true, ChangeChannelPassword);
-
             Register(0x58, false, false, LeaveChat);
-
             Register(0x61, false, true, ChannelMessage);
             Register(0x62, false, false, JoinChannel);
             Register(0x63, false, false, JoinNewChannel);
@@ -42,17 +40,17 @@ namespace Server.Engines.Chat
 
         public static void Register(int actionID, bool requireModerator, bool requireConference, OnChatAction callback)
         {
-            if (actionID >= 0 && actionID < m_Handlers.Length)
+            if (actionID >= 0 && actionID < _Handlers.Length)
             {
-                m_Handlers[actionID] = new ChatActionHandler(requireModerator, requireConference, callback);
+                _Handlers[actionID] = new ChatActionHandler(requireModerator, requireConference, callback);
             }
         }
 
         public static ChatActionHandler GetHandler(int actionID)
         {
-            if (actionID >= 0 && actionID < m_Handlers.Length)
+            if (actionID >= 0 && actionID < _Handlers.Length)
             {
-                return m_Handlers[actionID];
+                return _Handlers[actionID];
             }
 
             return null;
@@ -63,6 +61,8 @@ namespace Server.Engines.Chat
             if (channel.CanTalk(from))
             {
                 channel.SendIgnorableMessage(57, from, from.GetColorCharacter() + from.Username, param); // %1: %2
+                
+                _ = Discord.SendChannelMessageAsync(channel.Name, from.Username, param);
             }
             else
             {
@@ -75,6 +75,8 @@ namespace Server.Engines.Chat
             if (channel.CanTalk(from))
             {
                 channel.SendIgnorableMessage(58, from, from.GetColorCharacter() + from.Username, param); // %1 %2
+                
+                _ = Discord.SendChannelMessageAsync(channel.Name, from.Username, param);
             }
             else
             {
