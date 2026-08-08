@@ -386,6 +386,21 @@ public partial class Account : IAccount, IComparable<Account>
     private static bool UsesUsernamePhrase(PasswordProtectionAlgorithm algorithm) =>
         algorithm is PasswordProtectionAlgorithm.SHA1 or PasswordProtectionAlgorithm.SHA2;
 
+    /// <summary>
+    /// Account tag that opts a single account into the mis-migrated-password repair. Set it from the
+    /// admin gump (Account Details -> Tags -> Add Tag) on an account whose owner has actually
+    /// reported being locked out, and never on one that can still log in: the repair cannot tell a
+    /// mis-migrated hash from a password that merely begins with the username, so marking a working
+    /// account risks rewriting its credential down to whatever was submitted. Cleared automatically
+    /// once a repair succeeds.
+    /// </summary>
+    public const string RepairPasswordTag = "RepairMigratedPassword";
+
+    // The pre-fix SetPassword left the credential hashed under the *other* family's phrase rule, in
+    // both directions, so the repair tries whichever rule the stored algorithm does not use.
+    private string RepairPhrase(string plainPassword) =>
+        UsesUsernamePhrase(_passwordAlgorithm) ? plainPassword : $"{_username}{plainPassword}";
+
     public void SetPassword(string plainPassword)
     {
         // The phrase must match how CheckPassword will rebuild it *after* the algorithm changes,
@@ -409,12 +424,15 @@ public partial class Account : IAccount, IComparable<Account>
 
         if (!protection.ValidatePassword(Password, phrase))
         {
-            // A pre-fix SetPassword stored username + password under an algorithm whose phrase rule
-            // omits the username. Nothing in the hash distinguishes that from a forgotten password,
-            // so the only way to detect it is to try the other phrase -- which costs a second
-            // verify on every failed login. Off by default for exactly that reason.
-            if (!AccountSecurity.RepairMigratedPasswords || UsesUsernamePhrase(_passwordAlgorithm) ||
-                !protection.ValidatePassword(Password, $"{_username}{plainPassword}"))
+            // Nothing in the stored hash distinguishes a mis-migrated credential from a forgotten
+            // password, and the retry is not free: it costs a second full verify, and failed logins
+            // are the credential-stuffing surface. Worse, it cannot tell "stored is
+            // H(username + password)" from "the password simply starts with the username" -- and
+            // repairing the latter would rewrite a correct credential down to the submitted suffix
+            // and lock the owner out for good. Hence two gates: a shard-wide switch, and a per-account
+            // tag an operator sets only for someone who has reported the lockout.
+            if (!AccountSecurity.RepairMigratedPasswords || GetTag(RepairPasswordTag) == null ||
+                !protection.ValidatePassword(Password, RepairPhrase(plainPassword)))
             {
                 return false;
             }
@@ -424,8 +442,11 @@ public partial class Account : IAccount, IComparable<Account>
                 _username
             );
 
-            // The stored hash may already carry current parameters, so NeedsRehash would say no
-            // and the account would verify once and stay broken.
+            // One-shot: the window closes for this account as soon as it is repaired.
+            RemoveTag(RepairPasswordTag);
+
+            // The stored hash may already carry current parameters, so NeedsRehash would decline and
+            // the account would verify once and stay broken.
             forceRehash = true;
         }
 

@@ -10,14 +10,19 @@ public class AccountPasswordTests : IDisposable
 {
     private const string Password = "hunter2";
 
-    // AccountSecurity.CurrentAlgorithm is process-wide static state, shared with every other
-    // class in the "Sequential UOContent Tests" collection. xUnit constructs/disposes this class
-    // once per test case, so capturing and restoring it here means every case -- current and any
-    // added later to this file -- starts from and leaves behind the ambient value, instead of
-    // bleeding whatever algorithm it last set into the rest of the collection.
+    // AccountSecurity.CurrentAlgorithm and AccountSecurity.RepairMigratedPasswords are process-wide
+    // static state, shared with every other class in the "Sequential UOContent Tests" collection.
+    // xUnit constructs/disposes this class once per test case, so capturing and restoring them here
+    // means every case -- current and any added later to this file -- starts from and leaves behind
+    // the ambient values, instead of bleeding whatever it last set into the rest of the collection.
     private readonly PasswordProtectionAlgorithm _originalAlgorithm = AccountSecurity.CurrentAlgorithm;
+    private readonly bool _originalRepairMigratedPasswords = AccountSecurity.RepairMigratedPasswords;
 
-    public void Dispose() => AccountSecurity.CurrentAlgorithm = _originalAlgorithm;
+    public void Dispose()
+    {
+        AccountSecurity.CurrentAlgorithm = _originalAlgorithm;
+        AccountSecurity.RepairMigratedPasswords = _originalRepairMigratedPasswords;
+    }
 
     [Theory]
     [InlineData(PasswordProtectionAlgorithm.SHA1)]
@@ -89,12 +94,38 @@ public class AccountPasswordTests : IDisposable
         return account;
     }
 
+    /// <summary>
+    /// The other corruption shape: an account *created* while CurrentAlgorithm was SHA1 or SHA2.
+    /// The pre-fix SetPassword ran from the constructor before _passwordAlgorithm was assigned, so
+    /// it took the None branch and stored H(bare password) under an algorithm whose phrase rule
+    /// adds the username. Those accounts could never log in at all.
+    /// </summary>
+    private static Account CreateMisCreatedShaAccount(string username, PasswordProtectionAlgorithm algorithm)
+    {
+        AccountSecurity.CurrentAlgorithm = algorithm;
+        var account = new Account(username, Password);
+        account.Password = AccountSecurity.CurrentPasswordProtection.EncryptPassword(Password);
+
+        return account;
+    }
+
     [Fact]
     public void MisMigratedAccount_IsRejected_WhenRepairIsDisabled()
     {
         var account = CreateMisMigratedAccount("repair-off-user");
+        account.SetTag(Account.RepairPasswordTag, "yes");
         AccountSecurity.RepairMigratedPasswords = false;
 
+        Assert.False(account.CheckPassword(Password));
+    }
+
+    [Fact]
+    public void MisMigratedAccount_IsRejected_WhenTheAccountIsNotTagged()
+    {
+        var account = CreateMisMigratedAccount("repair-untagged-user");
+        AccountSecurity.RepairMigratedPasswords = true;
+
+        Assert.Null(account.GetTag(Account.RepairPasswordTag));
         Assert.False(account.CheckPassword(Password));
     }
 
@@ -102,20 +133,63 @@ public class AccountPasswordTests : IDisposable
     public void MisMigratedAccount_IsRepaired_WhenRepairIsEnabled()
     {
         var account = CreateMisMigratedAccount("repair-on-user");
+        account.SetTag(Account.RepairPasswordTag, "yes");
         AccountSecurity.RepairMigratedPasswords = true;
 
-        try
-        {
-            Assert.True(account.CheckPassword(Password));
-        }
-        finally
-        {
-            AccountSecurity.RepairMigratedPasswords = false;
-        }
+        Assert.True(account.CheckPassword(Password));
+
+        AccountSecurity.RepairMigratedPasswords = false;
 
         // Repaired in place: it must now verify with the flag back off.
         Assert.True(account.CheckPassword(Password));
         Assert.False(account.CheckPassword("wrong-password"));
+    }
+
+    [Theory]
+    [InlineData(PasswordProtectionAlgorithm.SHA1)]
+    [InlineData(PasswordProtectionAlgorithm.SHA2)]
+    public void MisCreatedShaAccount_IsRepaired_WhenBothGatesAreSet(PasswordProtectionAlgorithm algorithm)
+    {
+        var account = CreateMisCreatedShaAccount($"repair-created-{algorithm}-user", algorithm);
+        account.SetTag(Account.RepairPasswordTag, "yes");
+        AccountSecurity.RepairMigratedPasswords = true;
+
+        Assert.True(account.CheckPassword(Password));
+
+        AccountSecurity.RepairMigratedPasswords = false;
+
+        // Repaired in place under the username-salted rule its algorithm actually uses.
+        Assert.True(account.CheckPassword(Password));
+        Assert.False(account.CheckPassword("wrong-password"));
+    }
+
+    [Theory]
+    [InlineData(PasswordProtectionAlgorithm.SHA1)]
+    [InlineData(PasswordProtectionAlgorithm.SHA2)]
+    public void MisCreatedShaAccount_IsRejected_WhenTheAccountIsNotTagged(PasswordProtectionAlgorithm algorithm)
+    {
+        var account = CreateMisCreatedShaAccount($"reject-created-{algorithm}-user", algorithm);
+        AccountSecurity.RepairMigratedPasswords = true;
+
+        Assert.False(account.CheckPassword(Password));
+    }
+
+    [Fact]
+    public void RepairTag_IsClearedAfterASuccessfulRepair()
+    {
+        var account = CreateMisMigratedAccount("repair-one-shot-user");
+        account.SetTag(Account.RepairPasswordTag, "yes");
+        AccountSecurity.RepairMigratedPasswords = true;
+
+        Assert.True(account.CheckPassword(Password));
+        Assert.Null(account.GetTag(Account.RepairPasswordTag));
+
+        // The window is closed for this account: corrupting it again is no longer repairable,
+        // even with the shard-wide flag still on.
+        account.Password = AccountSecurity.CurrentPasswordProtection
+            .EncryptPassword($"repair-one-shot-user{Password}");
+
+        Assert.False(account.CheckPassword(Password));
     }
 
     [Fact]
@@ -123,16 +197,38 @@ public class AccountPasswordTests : IDisposable
     {
         AccountSecurity.CurrentAlgorithm = PasswordProtectionAlgorithm.Argon2;
         var account = new Account("repair-wrong-pass-user", Password);
+        account.SetTag(Account.RepairPasswordTag, "yes");
         AccountSecurity.RepairMigratedPasswords = true;
 
-        try
-        {
-            Assert.False(account.CheckPassword("wrong-password"));
-            Assert.True(account.CheckPassword(Password));
-        }
-        finally
-        {
-            AccountSecurity.RepairMigratedPasswords = false;
-        }
+        Assert.False(account.CheckPassword("wrong-password"));
+        Assert.True(account.CheckPassword(Password));
+    }
+
+    /// <summary>
+    /// The repair cannot distinguish a mis-migrated hash from a password that merely begins with
+    /// the username, so a shard-wide repair window would let anyone log into such an account with
+    /// only the suffix -- and the rehash that follows would rewrite the stored credential down to
+    /// that suffix, locking the real owner out permanently. The per-account tag is what stops it:
+    /// with the flag on but the account untagged, the attack must fail and the hash must not move.
+    /// </summary>
+    [Fact]
+    public void TruncatedPassword_IsRejected_AndDoesNotRewriteTheHash()
+    {
+        const string username = "trunc-attack-user";
+        const string realPassword = $"{username}123";
+
+        AccountSecurity.CurrentAlgorithm = PasswordProtectionAlgorithm.Argon2;
+
+        // Stored correctly: argon2("trunc-attack-user123"), no corruption anywhere.
+        var account = new Account(username, realPassword);
+        var storedBefore = account.Password;
+
+        AccountSecurity.RepairMigratedPasswords = true;
+
+        Assert.False(account.CheckPassword("123"));
+        Assert.Equal(storedBefore, account.Password);
+
+        // And the owner is still able to log in afterwards.
+        Assert.True(account.CheckPassword(realPassword));
     }
 }
