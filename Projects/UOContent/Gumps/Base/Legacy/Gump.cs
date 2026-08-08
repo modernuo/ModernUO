@@ -249,6 +249,7 @@ public class Gump : BaseGump
     {
         _textEntries = 0;
         _switches = 0;
+        HasVisualElements = false;
 
         var layoutWriter = new SpanWriter(_layoutBuffer);
 
@@ -274,6 +275,7 @@ public class Gump : BaseGump
 
         foreach (var entry in Entries)
         {
+            HasVisualElements |= IsVisualEntry(entry);
             entry.AppendTo(ref layoutWriter, _stringsList, ref _textEntries, ref _switches);
         }
 
@@ -310,6 +312,9 @@ public class Gump : BaseGump
             _stringsList.Clear();
         }
     }
+
+    private static bool IsVisualEntry(GumpEntry entry) =>
+        entry is not (GumpAlphaRegion or GumpECHandleInput or GumpGroup or GumpItemProperty or GumpMasterGump or GumpPage or GumpTooltip);
 
     protected void Reset()
     {

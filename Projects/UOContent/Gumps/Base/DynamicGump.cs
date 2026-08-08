@@ -47,6 +47,7 @@ public abstract class DynamicGump : BaseGump
         BuildLayout(ref gumpBuilder);
         gumpBuilder.FinalizeLayout();
 
+        HasVisualElements = gumpBuilder.HasVisualElements;
         _switches = gumpBuilder.Switches;
         _textEntries = gumpBuilder.TextEntries;
 
