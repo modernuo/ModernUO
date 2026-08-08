@@ -196,9 +196,8 @@ public class AuthIdTests : IDisposable
     }
 
     /// <summary>
-    /// Picking a second server on the same connection orphans the first id -- the NetState now
-    /// holds the new one, so nothing will ever redeem the old. It goes immediately rather than
-    /// waiting to time out.
+    /// A connection is capped at one live id. NetState.AuthId only holds the newest, so any id it
+    /// replaces goes immediately rather than sitting in the window with nothing coming for it.
     /// </summary>
     [Fact]
     public void ReleasingAnIdMakesItUnredeemableImmediately()

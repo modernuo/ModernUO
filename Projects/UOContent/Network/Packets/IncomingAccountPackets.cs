@@ -348,9 +348,10 @@ public static class IncomingAccountPackets
 
     private static int GenerateAuthID(this NetState state)
     {
-        // Picking a second server on the same connection orphans the first id: state.AuthId now
-        // holds the new one, so nothing is coming to redeem the old. Drop it now instead of leaving
-        // it to time out.
+        // Caps a connection at one live id. Choosing a server queues a disconnect, but the queue is
+        // drained on the next slice, so a client that pipelines another seed/login/select into the
+        // same buffer gets here again -- and state.AuthId only holds the newest, so the previous id
+        // would sit in the window until it timed out with nothing coming to redeem it.
         ReleaseAuthId(state.AuthId);
 
         return RegisterAuthId(state.Account, state.Address, state.Version);
