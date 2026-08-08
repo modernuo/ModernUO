@@ -379,28 +379,63 @@ public partial class Account : IAccount, IComparable<Account>
     public void SetPassword(string plainPassword)
     {
         PasswordAlgorithm = AccountSecurity.CurrentAlgorithm;
-        var phrase = PasswordAlgorithm is PasswordProtectionAlgorithm.SHA1 or PasswordProtectionAlgorithm.SHA2
-            ? $"{_username}{plainPassword}"
-            : plainPassword;
+        Password = AccountSecurity.CurrentPasswordProtection.EncryptPassword(
+            AccountSecurity.DerivePhrase(PasswordAlgorithm, _username, plainPassword)
+        );
+    }
 
-        Password = AccountSecurity.CurrentPasswordProtection.EncryptPassword(phrase);
+    /// <summary>The phrase that verifies against the currently stored hash.</summary>
+    internal string GetVerifyPhrase(string plainPassword) =>
+        AccountSecurity.DerivePhrase(_passwordAlgorithm, _username, plainPassword);
+
+    /// <summary>The phrase a rehash to the configured algorithm would be derived from.</summary>
+    internal string GetRehashPhrase(string plainPassword) =>
+        AccountSecurity.DerivePhrase(AccountSecurity.CurrentAlgorithm, _username, plainPassword);
+
+    /// <summary>
+    /// Whether a successful login should rewrite the stored hash, because the algorithm changed or
+    /// its cost parameters moved.
+    /// </summary>
+    internal bool NeedsPasswordUpgrade() =>
+        _passwordAlgorithm != AccountSecurity.CurrentAlgorithm ||
+        AccountSecurity.CurrentPasswordProtection.NeedsRehash(Password);
+
+    /// <summary>
+    /// Applies a rehash derived off the game loop. Not to be confused with the private
+    /// <c>UpgradePassword</c> below, which adopts a legacy hash wholesale during RunUO/ServUO
+    /// import.
+    /// </summary>
+    /// <param name="expectedCurrent">
+    /// The hash the verification started from. Milliseconds passed while it ran, and the password
+    /// may have been changed in that window by an admin or by the player. The newer value was
+    /// already written with current parameters and needs no upgrade, so this drops the stale one
+    /// rather than replacing a live credential with a hash of the previous password.
+    /// </param>
+    internal void ApplyPasswordUpgrade(
+        string expectedCurrent, string newEncrypted, PasswordProtectionAlgorithm algorithm
+    )
+    {
+        if (!string.Equals(Password, expectedCurrent, StringComparison.Ordinal))
+        {
+            return;
+        }
+
+        PasswordAlgorithm = algorithm;
+        Password = newEncrypted;
     }
 
     public bool CheckPassword(string plainPassword)
     {
-        var phrase = _passwordAlgorithm is PasswordProtectionAlgorithm.SHA1 or PasswordProtectionAlgorithm.SHA2
-            ? $"{_username}{plainPassword}"
-            : plainPassword;
+        var ok = AccountSecurity.GetPasswordProtection(_passwordAlgorithm)
+            .ValidatePassword(Password, GetVerifyPhrase(plainPassword));
 
-        var ok = AccountSecurity.GetPasswordProtection(_passwordAlgorithm).ValidatePassword(Password, phrase);
         if (!ok)
         {
             return false;
         }
 
         // Upgrade the password protection in case we change the algorithm
-        if (_passwordAlgorithm != AccountSecurity.CurrentAlgorithm ||
-            AccountSecurity.CurrentPasswordProtection.NeedsRehash(Password))
+        if (NeedsPasswordUpgrade())
         {
             SetPassword(plainPassword);
         }

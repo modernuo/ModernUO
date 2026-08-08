@@ -564,7 +564,22 @@ public static class IncomingAccountPackets
 
         EventSink.InvokeAccountLogin(accountLoginEventArgs);
 
-        if (accountLoginEventArgs.Accepted)
+        // The password check moved off the loop; whoever took it replies when the verdict lands.
+        if (accountLoginEventArgs.Deferred)
+        {
+            return;
+        }
+
+        CompleteAccountLogin(state, accountLoginEventArgs.Accepted, accountLoginEventArgs.RejectReason);
+    }
+
+    /// <summary>
+    /// Replies to an account login. Split out so a verdict produced off the loop reaches the client
+    /// through exactly the same path as one produced inline.
+    /// </summary>
+    internal static void CompleteAccountLogin(NetState state, bool accepted, ALRReason rejectReason)
+    {
+        if (accepted)
         {
             var serverListEventArgs = new GatewayServer.ServerListEventArgs(state, state.Account);
 
@@ -584,7 +599,7 @@ public static class IncomingAccountPackets
         else
         {
             state.Account = null;
-            AccountLogin_ReplyRej(state, accountLoginEventArgs.RejectReason);
+            AccountLogin_ReplyRej(state, rejectReason);
         }
     }
 

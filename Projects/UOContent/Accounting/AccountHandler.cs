@@ -5,6 +5,7 @@ using System.Net;
 using System.Runtime.CompilerServices;
 using ModernUO.CodeGeneratedEvents;
 using Server.Accounting;
+using Server.Accounting.Security;
 using Server.Engines.CharacterCreation;
 using Server.Engines.Help;
 using Server.Logging;
@@ -307,25 +308,134 @@ public static class AccountHandler
             logger.Information("Login: {NetState} Access denied for '{Username}'", e.State, un);
             e.RejectReason = LockdownLevel > AccessLevel.Player ? ALRReason.BadComm : ALRReason.BadPass;
         }
-        else if (!acct.CheckPassword(pw))
+        else
         {
-            logger.Information("Login: {NetState} Invalid password for '{Username}'", e.State, un);
-            e.RejectReason = ALRReason.BadPass;
+            HandlePasswordCheck(e, acct, pw);
         }
-        else if (acct.Banned)
+    }
+
+    /// <summary>
+    /// Decides where the password check runs, and produces the verdict when it runs here. An
+    /// else-if chain cannot express this: the off-loop path yields no verdict at all, and the
+    /// saturated path is a rejection rather than a reason to fall through and verify.
+    /// </summary>
+    private static void HandlePasswordCheck(AccountLoginEventArgs e, Account acct, string pw)
+    {
+        switch (DispatchPasswordCheck(e, acct, pw))
         {
-            logger.Information("Login: {NetState} Banned account '{Username}'", e.State, un);
+            case PasswordCheckDispatch.Deferred:
+                {
+                    e.Deferred = true;
+                    return;
+                }
+            case PasswordCheckDispatch.Saturated:
+                {
+                    // Reject rather than verify inline: steering the work back onto the loop is
+                    // what a flood would be trying to achieve.
+                    logger.Warning(
+                        "Login: {NetState} Password verification queue full, rejecting '{Username}'",
+                        e.State,
+                        acct.Username
+                    );
+
+                    e.RejectReason = ALRReason.BadComm;
+                    return;
+                }
+        }
+
+        if (!acct.CheckPassword(pw))
+        {
+            logger.Information("Login: {NetState} Invalid password for '{Username}'", e.State, acct.Username);
+            e.RejectReason = ALRReason.BadPass;
+            return;
+        }
+
+        ApplyVerifiedLogin(e, acct);
+    }
+
+    /// <summary>
+    /// Everything after the password is known good. Shared so an off-loop verdict lands in exactly
+    /// the same state as an inline one.
+    /// </summary>
+    private static void ApplyVerifiedLogin(AccountLoginEventArgs e, Account acct)
+    {
+        if (acct.Banned)
+        {
+            logger.Information("Login: {NetState} Banned account '{Username}'", e.State, acct.Username);
             e.RejectReason = ALRReason.Blocked;
+            return;
+        }
+
+        logger.Information("Login: {NetState} Valid credentials for '{Username}'", e.State, acct.Username);
+        e.State.Account = acct;
+        e.Accepted = true;
+
+        acct.LogAccess(e.State);
+        LoginAllowlist.RecordLogin(e.State?.Address);
+    }
+
+    private enum PasswordCheckDispatch
+    {
+        /// <summary>Verify on the loop, as before.</summary>
+        Inline,
+
+        /// <summary>Handed to the verification thread; no verdict yet.</summary>
+        Deferred,
+
+        /// <summary>The queue is full.</summary>
+        Saturated
+    }
+
+    /// <summary>
+    /// Hands an Argon2 verify to the verification thread.
+    ///
+    /// Argon2-stored accounts only. A SHA/MD5 hash is verified in microseconds and its protection
+    /// holds a shared <c>HashAlgorithm</c> whose <c>ComputeHash</c> is not thread safe, so those
+    /// stay here. Their one-time rehash into Argon2 stays here too: it costs a migrating account a
+    /// single 8.9 ms login, exactly as it does today, and moving it would mean either making the
+    /// player wait on an upgrade that does not gate their verdict, or applying account state from a
+    /// callback with no login left to attach it to.
+    /// </summary>
+    private static PasswordCheckDispatch DispatchPasswordCheck(AccountLoginEventArgs e, Account acct, string pw)
+    {
+        if (!PasswordVerificationWorker.Enabled ||
+            AccountSecurity.CurrentAlgorithm != PasswordProtectionAlgorithm.Argon2 ||
+            acct.PasswordAlgorithm != PasswordProtectionAlgorithm.Argon2)
+        {
+            return PasswordCheckDispatch.Inline;
+        }
+
+        var job = new PasswordVerificationJob
+        {
+            Account = acct,
+            State = e.State,
+            StoredHash = acct.Password,
+            VerifyPhrase = acct.GetVerifyPhrase(pw),
+            RehashPhrase = acct.NeedsPasswordUpgrade() ? acct.GetRehashPhrase(pw) : null,
+            TargetAlgorithm = AccountSecurity.CurrentAlgorithm
+        };
+
+        return PasswordVerificationWorker.TryEnqueue(job)
+            ? PasswordCheckDispatch.Deferred
+            : PasswordCheckDispatch.Saturated;
+    }
+
+    /// <summary>Resumes a login whose password check ran on the verification thread.</summary>
+    internal static void CompleteDeferredAccountLogin(NetState state, Account acct, bool verified)
+    {
+        var e = new AccountLoginEventArgs(state, acct.Username, null);
+
+        if (verified)
+        {
+            ApplyVerifiedLogin(e, acct);
         }
         else
         {
-            logger.Information("Login: {NetState} Valid credentials for '{Username}'", e.State, un);
-            e.State.Account = acct;
-            e.Accepted = true;
-
-            acct.LogAccess(e.State);
-            LoginAllowlist.RecordLogin(e.State?.Address);
+            logger.Information("Login: {NetState} Invalid password for '{Username}'", state, acct.Username);
+            e.RejectReason = ALRReason.BadPass;
         }
+
+        IncomingAccountPackets.CompleteAccountLogin(state, e.Accepted, e.RejectReason);
     }
 
     [OnEvent(nameof(GameServer.GameServerLoginEvent))]
