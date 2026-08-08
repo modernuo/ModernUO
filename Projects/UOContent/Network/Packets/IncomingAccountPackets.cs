@@ -398,21 +398,27 @@ public static class IncomingAccountPackets
         int authId, string username, IPAddress address, out AuthIDPersistence entry
     )
     {
-        if (!_authIDWindow.Remove(authId, out entry))
+        if (!_authIDWindow.TryGetValue(authId, out entry))
         {
             return AuthIdResult.Rejected;
         }
 
-        // Address before age: a different address is a different client, however fresh the id is.
-        if (!Utility.Intern(address).Equals(entry.Address))
+        // Look, then take. Removing before the presenter has shown the id is theirs would let anyone
+        // who lands on a live id burn it, and its owner would arrive to "unable to find auth id" and
+        // have to log in again. Address first: a different address is a different client however
+        // fresh the id is, and checking it before the username means a remote guesser never learns
+        // whether a username matched.
+        if (!Utility.Intern(address).Equals(entry.Address)
+            || entry.Account == null
+            || !username.InsensitiveEquals(entry.Account.Username))
         {
+            entry = default;
             return AuthIdResult.Rejected;
         }
 
-        if (entry.Account == null || !username.InsensitiveEquals(entry.Account.Username))
-        {
-            return AuthIdResult.Rejected;
-        }
+        // Theirs, so spend it. Expired still counts as spent -- they fall back to the password
+        // verify and the id has done all it is ever going to do.
+        _authIDWindow.Remove(authId);
 
         return Core.Now - entry.Age > _authIDLifetime ? AuthIdResult.Expired : AuthIdResult.Vouched;
     }

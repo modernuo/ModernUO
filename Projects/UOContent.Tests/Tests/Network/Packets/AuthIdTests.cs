@@ -123,10 +123,32 @@ public class AuthIdTests : IDisposable
         );
     }
 
+    /// <summary>
+    /// A rejected attempt must not consume the id. Anyone landing on a live id could otherwise burn
+    /// it, and its owner would arrive to "unable to find auth id" and have to log in again.
+    /// </summary>
     [Fact]
-    public void IsSpentEvenWhenTheAccountDoesNotMatch()
+    public void SurvivesAnAttemptFromTheWrongAddress()
     {
-        var account = CreateAccount("authid-spent-user");
+        var account = CreateAccount("authid-not-burned-address-user");
+        var authId = Register(account, AddressX);
+
+        Assert.Equal(
+            IncomingAccountPackets.AuthIdResult.Rejected,
+            IncomingAccountPackets.ConsumeAuthId(authId, account.Username, AddressY, out _)
+        );
+
+        Assert.Equal(1, IncomingAccountPackets.AuthIdWindowCount);
+        Assert.Equal(
+            IncomingAccountPackets.AuthIdResult.Vouched,
+            IncomingAccountPackets.ConsumeAuthId(authId, account.Username, AddressX, out _)
+        );
+    }
+
+    [Fact]
+    public void SurvivesAnAttemptForTheWrongAccount()
+    {
+        var account = CreateAccount("authid-not-burned-account-user");
         var authId = Register(account, AddressX);
 
         Assert.Equal(
@@ -134,11 +156,50 @@ public class AuthIdTests : IDisposable
             IncomingAccountPackets.ConsumeAuthId(authId, "not-the-owner", AddressX, out _)
         );
 
-        // Spent regardless, so a guessed id cannot be reused to probe for its owner.
+        Assert.Equal(1, IncomingAccountPackets.AuthIdWindowCount);
         Assert.Equal(
-            IncomingAccountPackets.AuthIdResult.Rejected,
+            IncomingAccountPackets.AuthIdResult.Vouched,
             IncomingAccountPackets.ConsumeAuthId(authId, account.Username, AddressX, out _)
         );
+    }
+
+    [Fact]
+    public void ARejectedAttemptYieldsNoEntry()
+    {
+        var account = CreateAccount("authid-no-leak-user");
+        var authId = Register(account, AddressX);
+
+        IncomingAccountPackets.ConsumeAuthId(authId, "not-the-owner", AddressX, out var entry);
+
+        Assert.Null(entry.Account);
+    }
+
+    /// <summary>
+    /// An expired id is still spent by its owner: they fall back to the password verify, and the id
+    /// has done everything it is ever going to do.
+    /// </summary>
+    [Fact]
+    public void AnExpiredIdIsSpentByItsOwner()
+    {
+        var account = CreateAccount("authid-expired-spent-user");
+        var authId = Register(account, AddressX);
+
+        var now = Core._now;
+
+        try
+        {
+            Core._now = now + TimeSpan.FromMinutes(30.0);
+
+            Assert.Equal(
+                IncomingAccountPackets.AuthIdResult.Expired,
+                IncomingAccountPackets.ConsumeAuthId(authId, account.Username, AddressX, out _)
+            );
+            Assert.Equal(0, IncomingAccountPackets.AuthIdWindowCount);
+        }
+        finally
+        {
+            Core._now = now;
+        }
     }
 
     /// <summary>
