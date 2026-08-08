@@ -39,17 +39,13 @@ public sealed class PromotedGuard
         {
             return;
         }
-        using var dead = Collections.PooledRefQueue<UInt128>.Create();
+
         foreach (var (ip, exp) in _expiry)
         {
             if (exp - nowTicks <= 0)
             {
-                dead.Enqueue(ip);
+                _expiry.Remove(ip);
             }
-        }
-        while (dead.Count > 0)
-        {
-            _expiry.Remove(dead.Dequeue());
         }
     }
 }

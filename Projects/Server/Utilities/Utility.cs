@@ -1050,28 +1050,16 @@ public static partial class Utility
             return;
         }
 
-        using var queue = PooledRefQueue<K>.Create();
         foreach (var (key, value) in dictionary)
         {
-            if (serializableKey)
-            {
-                if (key == null || ((ISerializable)key).Deleted)
-                {
-                    queue.Enqueue(key);
-                }
-            }
-            else
-            {
-                if (value == null || ((ISerializable)value).Deleted)
-                {
-                    queue.Enqueue(key);
-                }
-            }
-        }
+            var deleted = serializableKey
+                ? ((ISerializable)key).Deleted
+                : value == null || ((ISerializable)value).Deleted;
 
-        while (queue.Count > 0)
-        {
-            dictionary.Remove(queue.Dequeue());
+            if (deleted)
+            {
+                dictionary.Remove(key);
+            }
         }
 
         dictionary.TrimExcess();

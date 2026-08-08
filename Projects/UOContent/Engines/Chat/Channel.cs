@@ -146,15 +146,8 @@ namespace Server.Engines.Chat
                 m_Users.Remove(user);
                 user.CurrentChannel = null;
 
-                if (m_Moderators.Contains(user))
-                {
-                    m_Moderators.Remove(user);
-                }
-
-                if (m_Voices.Contains(user))
-                {
-                    m_Voices.Remove(user);
-                }
+                m_Moderators.Remove(user);
+                m_Voices.Remove(user);
 
                 SendCommand(ChatCommand.RemoveUserFromChannel, user, user.Username);
                 ChatSystem.SendCommandTo(user.Mobile, ChatCommand.LeaveChannel);
@@ -183,10 +176,7 @@ namespace Server.Engines.Chat
 
         public void RemoveBan(ChatUser user)
         {
-            if (m_Banned.Contains(user))
-            {
-                m_Banned.Remove(user);
-            }
+            m_Banned.Remove(user);
         }
 
         public void Kick(ChatUser user, ChatUser moderator = null)

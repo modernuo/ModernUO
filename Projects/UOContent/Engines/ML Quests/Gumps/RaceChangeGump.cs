@@ -116,10 +116,9 @@ namespace Server.Engines.MLQuests.Gumps
 
         private static void CloseCurrent(NetState ns)
         {
-            if (m_Pending.TryGetValue(ns, out var state))
+            if (m_Pending.Remove(ns, out var state))
             {
                 state._timeoutToken.Cancel();
-                m_Pending.Remove(ns);
             }
 
             ns.SendCloseRaceChanger();

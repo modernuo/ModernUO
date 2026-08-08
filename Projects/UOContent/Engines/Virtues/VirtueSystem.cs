@@ -372,8 +372,6 @@ public class VirtueSystem : GenericPersistence
                 return;
             }
 
-            using var queue = PooledRefQueue<Mobile>.Create();
-
             // This is not particularly efficient. If it gets too slow, then use a different architecture.
             foreach (var (player, virtues) in _playerVirtues)
             {
@@ -381,13 +379,8 @@ public class VirtueSystem : GenericPersistence
 
                 if (!virtues.IsUsed())
                 {
-                    queue.Enqueue(player);
+                    _playerVirtues.Remove(player);
                 }
-            }
-
-            while (queue.Count > 0)
-            {
-                _playerVirtues.Remove((PlayerMobile)queue.Dequeue());
             }
         }
 

@@ -103,9 +103,8 @@ namespace Server.Commands
                     {
                         var list = pm.VisibilityList;
 
-                        if (list.Contains(targ))
+                        if (list.Remove(targ))
                         {
-                            list.Remove(targ);
                             pm.SendMessage($"{targ.Name} has been removed from your visibility list.");
                         }
                         else
