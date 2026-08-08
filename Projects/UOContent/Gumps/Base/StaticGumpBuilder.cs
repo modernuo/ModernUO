@@ -43,7 +43,7 @@ public ref struct StaticGumpBuilder
 
     public int Switches => _gumpBuilder._switches;
     public int TextEntries => _gumpBuilder._textEntries;
-    internal bool HasVisualElements => _gumpBuilder._visualElements > 0;
+    internal bool HasVisualElements => _gumpBuilder._hasVisualElements;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public StaticGumpBuilder()
