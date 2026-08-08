@@ -17,6 +17,9 @@ using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
+using System.Security.Cryptography;
+using Server.Accounting;
 using Server.Engines.CharacterCreation;
 using Server.Misc;
 using Server.Mobiles;
@@ -26,6 +29,11 @@ namespace Server.Network;
 public static class IncomingAccountPackets
 {
     private const int _authIDWindowSize = 128;
+
+    // The gap between PlayServerAck and the client's game login is seconds. Two minutes is generous,
+    // and bounds how long a stolen id stays usable.
+    private static readonly TimeSpan _authIDLifetime = TimeSpan.FromMinutes(2.0);
+
     private static readonly Dictionary<int, AuthIDPersistence> _authIDWindow =
         new(_authIDWindowSize);
 
@@ -34,11 +42,31 @@ public static class IncomingAccountPackets
         public DateTime Age;
         public readonly ClientVersion Version;
 
-        public AuthIDPersistence(ClientVersion v)
+        // The account and address that earned this id on the account login packet. GameLogin skips
+        // its own password verify when both match, so the id is a bearer token and must be bound.
+        public readonly IAccount Account;
+        public readonly IPAddress Address;
+
+        public AuthIDPersistence(ClientVersion v, IAccount account, IPAddress address)
         {
             Age = Core.Now;
             Version = v;
+            Account = account;
+            Address = Utility.Intern(address);
         }
+    }
+
+    internal enum AuthIdResult
+    {
+        // No such id, or it expired, or it came from another address. Indistinguishable from forged.
+        Rejected,
+
+        // Live id from the right address, but for a different account than the one being logged
+        // into. Proves nothing, so the caller falls back to verifying the password.
+        AccountMismatch,
+
+        // Issued to this account, from this address. Stands in for the password verify.
+        Vouched
     }
 
     public static unsafe void Configure()
@@ -312,9 +340,12 @@ public static class IncomingAccountPackets
         }
     }
 
-    private static int GenerateAuthID(this NetState state)
+    private static int GenerateAuthID(this NetState state) =>
+        RegisterAuthId(state.Account, state.Address, state.Version);
+
+    internal static int RegisterAuthId(IAccount account, IPAddress address, ClientVersion version)
     {
-        if (_authIDWindow.Count == _authIDWindowSize)
+        if (_authIDWindow.Count >= _authIDWindowSize)
         {
             var oldestID = 0;
             var oldest = DateTime.MaxValue;
@@ -333,20 +364,45 @@ public static class IncomingAccountPackets
 
         int authID;
 
+        // A cryptographic draw across the whole int range: the id stands in for a password verify,
+        // so it has to be unguessable. Zero is reserved -- GameLogin reads state.AuthId == 0 as
+        // "no auth id was issued".
         do
         {
-            authID = Utility.Random(1, int.MaxValue - 1);
+            authID = RandomNumberGenerator.GetInt32(int.MinValue, int.MaxValue);
+        } while (authID == 0 || _authIDWindow.ContainsKey(authID));
 
-            if (Utility.RandomBool())
-            {
-                authID |= 1 << 31;
-            }
-        } while (_authIDWindow.ContainsKey(authID));
-
-        _authIDWindow[authID] = new AuthIDPersistence(state.Version);
+        _authIDWindow[authID] = new AuthIDPersistence(version, account, address);
 
         return authID;
     }
+
+    /// <summary>
+    /// Looks up and spends an auth id. The id is removed whether or not it vouches, so a guessed id
+    /// cannot be reused to enumerate usernames. An address mismatch is
+    /// <see cref="AuthIdResult.Rejected"/> rather than a fallback: network switching mid-login is
+    /// not supported.
+    /// </summary>
+    internal static AuthIdResult ConsumeAuthId(
+        int authId, string username, IPAddress address, out AuthIDPersistence entry
+    )
+    {
+        if (!_authIDWindow.Remove(authId, out entry))
+        {
+            return AuthIdResult.Rejected;
+        }
+
+        if (Core.Now - entry.Age > _authIDLifetime || !Utility.Intern(address).Equals(entry.Address))
+        {
+            return AuthIdResult.Rejected;
+        }
+
+        return entry.Account != null && username.InsensitiveEquals(entry.Account.Username)
+            ? AuthIdResult.Vouched
+            : AuthIdResult.AccountMismatch;
+    }
+
+    internal static void ClearAuthIdWindow() => _authIDWindow.Clear();
 
     public static void GameLogin(NetState state, SpanReader reader)
     {
