@@ -3325,6 +3325,16 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
         m_DeltaFlags &= ~flags;
     }
 
+    /// <summary>
+    /// True when deltas remain queued after a <see cref="ProcessDeltaQueue"/> pass.
+    /// </summary>
+    /// <remarks>
+    /// ProcessDeltaQueue is bounded by the count it saw on entry, so a delta enqueued while it
+    /// runs is deferred to the next pass. The event loop consults this before sleeping: a
+    /// non-empty queue is real pending work, not a spurious signal.
+    /// </remarks>
+    public static bool HasQueuedDeltas => m_DeltaQueue.Count > 0;
+
     public static void ProcessDeltaQueue()
     {
         var limit = m_DeltaQueue.Count;

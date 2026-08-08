@@ -10,6 +10,8 @@
     <Build Solution="Analyze|*" Project="false" />
     <Build Solution="Debug|*" Project="false" />
   </Project>
+  <!-- VENDORED FOR MEASUREMENT ONLY - see Projects/IORingGroup/IORingGroup.csproj -->
+  <Project Path="Projects/IORingGroup/IORingGroup.csproj" />
   <Project Path="Projects/Logger/Logger.csproj" />
   <Project Path="Projects/Server.Tests/Server.Tests.csproj" />
   <Project Path="Projects/Server/Server.csproj" />

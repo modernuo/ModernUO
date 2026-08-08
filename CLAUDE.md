@@ -45,6 +45,8 @@ Apply these when writing or reviewing `.cs` files under `Projects/`.
 | Commands & targeting | `dev-docs/commands-targeting.md` |
 | Event system | `dev-docs/events.md` |
 | Threading model | `dev-docs/threading-model.md` |
+| Event loop scheduling & lag diagnosis | `dev-docs/measuring-event-loop.md` |
+| Server hardware requirements | `dev-docs/server-requirements.md` |
 | Server lifecycle & bootstrap phases (Configure/ConfigurePrompts/Initialize) | `dev-docs/server-lifecycle.md` |
 | Platform prerequisites (ICU, tzdata, native libs per distro) | `dev-docs/platform-prerequisites.md` |
 | Configuration system | `dev-docs/configuration.md` |

@@ -39,10 +39,319 @@ public static class Core
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(Core));
 
-    private static bool _performProcessKill;
+    // Written from other threads (Kill, RequestSnapshot) and read by the event loop. Volatile
+    // because the loop now genuinely blocks between reads rather than spinning past them.
+    private static volatile bool _performProcessKill;
     private static bool _restartOnKill;
-    private static bool _performSnapshot;
+    private static volatile bool _performSnapshot;
     private static string _snapshotPath;
+
+    // Longest the loop will block when it has nothing to do. This is a backstop, not a latency
+    // control: the timer wheel's tick rate bounds the sleep anyway, so its only job is to limit
+    // the damage if a wake signal is ever missed. Measured across 1/2/4/8ms, 2 is where the trade
+    // stops being free -- below it costs CPU for nothing, above it starts losing timer slots.
+    private static int _eventLoopIdleWaitMs = 2;
+    private static bool _autoDetectIdleWait = true;
+
+    /// <summary>
+    /// Longest the loop will block while idle, in milliseconds. 0 disables idle sleeping entirely,
+    /// leaving the loop to spin; the adaptive backoff does the same thing temporarily when the
+    /// wheel starts losing slots.
+    /// </summary>
+    public static int EventLoopIdleWaitMs => _eventLoopIdleWaitMs;
+
+    // Loop-thread only, so plain increments are safe.
+    private static long _loopIterations;
+    private static long _loopSleeps;
+
+    /// <summary>
+    /// Loop iterations since process start.
+    /// </summary>
+    public static long LoopIterations => _loopIterations;
+
+    /// <summary>
+    /// Iterations that actually blocked, since process start.
+    /// </summary>
+    /// <remarks>
+    /// The ratio of this to <see cref="LoopIterations"/> is how to tell whether idle sleeping is
+    /// doing anything on a given shard. Under sustained load it should approach zero, because the
+    /// queues are never all empty -- which also means the wake signal is not being exercised, and
+    /// any cost it carries is pure overhead there.
+    /// <para>
+    /// Monotonic, like the timer wheel's counters and for the same reason: the loop's own health
+    /// sample reads them alongside any reporter, and a counter that either can reset is one the
+    /// other cannot trust. Difference against your own previous sample.
+    /// </para>
+    /// </remarks>
+    public static long LoopSleeps => _loopSleeps;
+
+    // One periodic health sample drives both the CPS figure and the adaptive backoff. They used to
+    // be separate: CPS every 100 iterations, backoff every second. A fixed cadence is what makes
+    // CPS meaningful at all now -- an iteration-counted sample changes its own sampling rate by
+    // orders of magnitude depending on whether the loop is sleeping, which silently rescaled the
+    // smoothing window along with it.
+    private const long HealthSampleIntervalMs = 1000;
+
+    // Backoff escalates. A fixed suspension thrashes on a host that is persistently bad: it
+    // expires, sleeping resumes, the host punishes it again immediately, and the loop oscillates
+    // between modes forever while never settling on the one that works. Doubling means a host that
+    // keeps failing converges on "stop sleeping" within a couple of minutes, while one that had a
+    // transient problem still recovers.
+    private const long BackoffBaseMs = 5000;
+    private const long BackoffMaxMs = 120_000;
+    private const int BackoffMaxShift = 5;
+
+    // Clean streak that clears the escalation, so an unlucky hour does not condemn the shard to
+    // spinning for the rest of its uptime.
+    private const long BackoffResetAfterCleanMs = 60_000;
+
+    // EMA over roughly half a minute of one-second samples. Meaningful now that the cadence is
+    // fixed in time rather than in iterations.
+    private const double CpsSmoothing = 2.0 / 31;
+
+    private static long _nextHealthSample;
+    private static long _lastHealthSampleAt;
+    private static long _iterationsAtLastSample;
+    private static long _missedFramesAtLastSample;
+
+    // Deadline misses the scheduler could plausibly have caused, as opposed to ones the server
+    // inflicted on itself. A world save blocking the loop for a second, or a staff command that is
+    // knowingly expensive, both blow the budget -- but the loop was not sleeping through either, so
+    // backing off sleeping would be treating an unrelated symptom. Only a gap that actually
+    // contained a sleep can be the sleep's fault.
+    private static bool _sleptLastIteration;
+    private static long _schedulerMissedFrames;
+
+    /// <summary>
+    /// Deadline misses that followed a sleep, and so may be attributable to the scheduler rather
+    /// than to work the server chose to do.
+    /// </summary>
+    public static long SchedulerMissedFrames => _schedulerMissedFrames;
+    private static long _idleSleepSuspendedUntil;
+    private static int _missedFrameThreshold = 2;
+    private static long _idleSleepBackoffs;
+    private static bool _backoffPrimed;
+    private static int _consecutiveBadSamples;
+    private static int _consecutiveBackoffs;
+    private static long _currentBackoffMs = BackoffBaseMs;
+    private static long _lastBackoffAt;
+    private static bool _loggedBackoffCeiling;
+
+    // How long after a save to stop drawing conclusions from tick health. Long enough to cover the
+    // disk flush continuing past the main-thread portion, which on a slow or shared host keeps
+    // stealing time from the loop well after Snapshot returns.
+    private const long PostSaveGraceMs = 3000;
+    private static long _healthGraceUntil;
+
+    /// <summary>
+    /// Times the loop has stopped sleeping because the wheel was losing slots.
+    /// </summary>
+    public static long IdleSleepBackoffs => _idleSleepBackoffs;
+
+    /// <summary>
+    /// Whether idle sleeping is currently suspended by the adaptive backoff.
+    /// </summary>
+    public static bool IdleSleepSuspended => _tickCount < _idleSleepSuspendedUntil;
+
+    /// <summary>
+    /// Once a second, recomputes the cycle rate and decides whether the loop is keeping up.
+    /// </summary>
+    /// <remarks>
+    /// Cycle rate and tick health look like the same question but are not. Once the loop sleeps
+    /// when idle, the cycle rate is set by how long it sleeps, not by how the shard is doing: it
+    /// reads about the same whether the world is empty or busy but keeping up. Missed deadlines
+    /// measure the thing that matters directly, so they -- not the cycle rate -- decide the
+    /// backoff. The rate is retained because existing tooling reads it.
+    /// <para>
+    /// The backoff can only remove the loop's own contribution, which is a wait that returned
+    /// late. It cannot make the operating system schedule the process: a host that steals 50ms
+    /// costs six slots whether the loop was sleeping or spinning. That is a feature for diagnosis
+    /// -- if deadlines are still missed at an idle wait of 0, the loop has been ruled out.
+    /// </para>
+    /// </remarks>
+    /// <summary>
+    /// Measures what a short wait actually costs on this host, and gives up on idle sleeping if it
+    /// cannot be honoured well enough to keep the timer wheel on schedule.
+    /// </summary>
+    /// <remarks>
+    /// Whether sleeping is viable is a property of the host, not of the server, and it cannot be
+    /// inferred from anything visible at build time. A dedicated core returns a 2ms wait in about
+    /// 2ms. An oversubscribed shared vCPU may not: yielding hands the slot back to the hypervisor,
+    /// which is under no obligation to return it promptly, and waits come back tens of
+    /// milliseconds late.
+    /// <para>
+    /// The adaptive backoff would eventually reach the same conclusion, but only after minutes of
+    /// degraded play while it escalates. Measuring at startup costs a fraction of a second and
+    /// gets it right before the first player connects.
+    /// </para>
+    /// </remarks>
+    private static void CalibrateIdleWait()
+    {
+        const int samples = 25;
+        var observed = new long[samples];
+
+        for (var i = 0; i < samples; i++)
+        {
+            var start = GetTimestamp();
+            NetState.WaitForCompletion(_eventLoopIdleWaitMs);
+            observed[i] = GetTimestamp() - start;
+        }
+
+        Array.Sort(observed);
+        var median = observed[samples / 2];
+        var worst = observed[^1];
+
+        // The wheel turns every _tickRate ms. A sleep that routinely overshoots a whole tick can
+        // never keep it on schedule, however short the request was.
+        if (median < Timer.TickRate)
+        {
+            logger.Information(
+                "Event loop idle wait calibrated: {Requested}ms request returns in {Median}ms (worst {Worst}ms)",
+                _eventLoopIdleWaitMs,
+                median,
+                worst
+            );
+
+            return;
+        }
+
+        logger.Warning(
+            "This host returns a {Requested}ms wait after {Median}ms (worst {Worst}ms), which cannot keep the " +
+            "{TickRate}ms timer wheel on schedule -- typical of an oversubscribed shared vCPU, where yielding " +
+            "costs the scheduling slot. Idle sleeping is disabled; the loop will spin and use a full core. " +
+            "Set server.autoDetectIdleWait to false to override.",
+            _eventLoopIdleWaitMs,
+            median,
+            worst,
+            Timer.TickRate
+        );
+
+        _eventLoopIdleWaitMs = 0;
+    }
+
+    private static void SampleLoopHealth()
+    {
+        if (_tickCount < _nextHealthSample)
+        {
+            return;
+        }
+
+        var elapsed = _tickCount - _lastHealthSampleAt;
+        _lastHealthSampleAt = _tickCount;
+        _nextHealthSample = _tickCount + HealthSampleIntervalMs;
+
+        var iterations = _loopIterations - _iterationsAtLastSample;
+        _iterationsAtLastSample = _loopIterations;
+
+        // Keyed on the 16ms budget rather than raw lost slots: a single slot lost is an 8ms
+        // overrun that most game timers absorb, while two or more means anything on a 16ms
+        // cadence has visibly missed. The latter is what should never happen, so it is what the
+        // loop reacts to.
+        var missed = _schedulerMissedFrames;
+        var lost = missed - _missedFramesAtLastSample;
+        _missedFramesAtLastSample = missed;
+
+        // The wheel is initialised before the world loads, so the loop's very first Slice turns it
+        // once for every 8ms that loading took -- hundreds of slots, none of them a stall. Prime
+        // the baselines off that first sample instead of judging it.
+        if (!_backoffPrimed)
+        {
+            _backoffPrimed = true;
+            return;
+        }
+
+        if (elapsed > 0)
+        {
+            _currentCPS = iterations * 1000.0 / elapsed;
+
+            if (!_cpsInitialized)
+            {
+                _averageCPS = _currentCPS;
+                _cpsInitialized = true;
+            }
+            else
+            {
+                _averageCPS += CpsSmoothing * (_currentCPS - _averageCPS);
+            }
+        }
+
+        // Sleeping continues through the grace window. The complaint a save produces is a spurious
+        // warning, not spurious behaviour, and suspending sleep would spend CPU on exactly the host
+        // that has least to spare.
+        if (_tickCount < _healthGraceUntil)
+        {
+            _consecutiveBadSamples = 0;
+            return;
+        }
+
+        if (lost <= _missedFrameThreshold)
+        {
+            _consecutiveBadSamples = 0;
+            return;
+        }
+
+        // Require the condition to persist. Startup loses slots legitimately while tiered JIT and
+        // first-touch initialisation settle, and any host can drop one sample to unrelated load;
+        // neither is a reason to abandon idle sleeping. A shard that is genuinely behind stays
+        // behind, so it trips on the second sample instead.
+        if (++_consecutiveBadSamples < 2)
+        {
+            return;
+        }
+
+        if (_eventLoopIdleWaitMs <= 0)
+        {
+            // Already spinning; there is nothing left to suspend.
+            return;
+        }
+
+        // Already suspended: extend rather than counting it as a fresh backoff, so the counter
+        // reflects distinct episodes instead of how long one lasted.
+        var wasSuspended = _tickCount < _idleSleepSuspendedUntil;
+
+        if (wasSuspended)
+        {
+            _idleSleepSuspendedUntil = _tickCount + _currentBackoffMs;
+            return;
+        }
+
+        // A long clean streak means the last bad patch was situational, so start over rather than
+        // holding a grudge.
+        if (_lastBackoffAt > 0 && _tickCount - _lastBackoffAt > BackoffResetAfterCleanMs)
+        {
+            _consecutiveBackoffs = 0;
+        }
+
+        _currentBackoffMs = Math.Min(BackoffBaseMs << Math.Min(_consecutiveBackoffs, BackoffMaxShift), BackoffMaxMs);
+        _consecutiveBackoffs++;
+        _lastBackoffAt = _tickCount;
+        _idleSleepSuspendedUntil = _tickCount + _currentBackoffMs;
+        _idleSleepBackoffs++;
+
+        if (_currentBackoffMs >= BackoffMaxMs)
+        {
+            // Escalation has run out of room. The host cannot honour a short wait, and no amount
+            // of retrying will change that, so say so once in terms the operator can act on.
+            if (!_loggedBackoffCeiling)
+            {
+                _loggedBackoffCeiling = true;
+                logger.Error(
+                    "Idle sleeping keeps costing timer accuracy on this host and has backed off {Count} times. " +
+                    "Set server.eventLoopIdleWaitMs to 0 to disable it permanently and trade CPU for latency.",
+                    _idleSleepBackoffs
+                );
+            }
+
+            return;
+        }
+
+        logger.Warning(
+            "Timer wheel missed its 16ms budget {Lost} time(s) in {Interval}ms; idle sleeping suspended for {Duration}ms",
+            lost,
+            HealthSampleIntervalMs,
+            _currentBackoffMs
+        );
+    }
     private static bool _crashed;
     private static string _baseDirectory;
 
@@ -235,6 +544,10 @@ public static class Core
     {
         _restartOnKill = restart;
         _performProcessKill = true;
+
+        // Callers are usually off-loop (console input, signal handlers). Without this the loop
+        // would not notice the request until it woke for some other reason.
+        NetState.Wake();
     }
 
     public static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -424,6 +737,21 @@ public static class Core
 
         ServerConfiguration.Load();
 
+        // Read before the loop starts. 0 restores the pre-2026 spin loop, which is retained so a
+        // shard can measure the two schedulers against each other on identical hardware.
+        _eventLoopIdleWaitMs = ServerConfiguration.GetOrUpdateSetting("server.eventLoopIdleWaitMs", 2);
+
+        // How many times per second the wheel may blow its 16ms budget before idle sleeping backs
+        // off. This should be zero on healthy hardware, so the bar is deliberately low; it is not
+        // zero only because a host that briefly deschedules the process will produce one, and that
+        // is not worth abandoning sleeping over. Raise it to tolerate a jittery host, or set it
+        // very high to disable the backoff entirely.
+        _missedFrameThreshold = ServerConfiguration.GetOrUpdateSetting("server.missedFrameThreshold", 1);
+
+        // Whether a short wait is honoured is a host property, so it is measured at startup rather
+        // than assumed. Set false to keep the configured idle wait regardless of what the host does.
+        _autoDetectIdleWait = ServerConfiguration.GetOrUpdateSetting("server.autoDetectIdleWait", true);
+
         var assemblyPath = Path.Join(BaseDirectory, AssembliesConfiguration);
 
         // Load UOContent.dll
@@ -469,28 +797,67 @@ public static class Core
         NetState.Start();
         PingServer.Start();
         EventSink.InvokeServerStarted();
+
+        // Without a high-resolution wait, a 2ms request rounds up to the system timer resolution
+        // -- 15.625ms on Windows -- so the loop would sleep eight times longer than it asked and
+        // quietly run a tick behind. Spinning is the lesser evil, and it must not be a silent
+        // downgrade: an operator seeing missed deadlines deserves to know the cause is the host.
+        if (_eventLoopIdleWaitMs > 0 && NetState.Ring?.SupportsHighResolutionWait == false)
+        {
+            logger.Error(
+                "This host cannot honour short waits (no high-resolution timer; Windows 10 1803 / Server 2019 required). " +
+                "Idle sleeping is disabled -- the loop will spin instead, using a full core."
+            );
+
+            _eventLoopIdleWaitMs = 0;
+        }
+
+        if (_eventLoopIdleWaitMs > 0 && _autoDetectIdleWait)
+        {
+            CalibrateIdleWait();
+        }
+
         RunEventLoop();
     }
+
+    /// <summary>
+    /// True when every queue the loop drains is empty, so sleeping cannot strand pending work.
+    /// </summary>
+    /// <remarks>
+    /// This is what lets the loop use a whole core when it needs one: under load these are
+    /// non-empty, the loop never sleeps, and it runs flat out. It is not merely a timer check
+    /// because the drains above are deliberately bounded -- ProcessDeltaQueue stops at the count
+    /// it saw on entry, ExecuteTasks stops at its per-frame cap -- so leftovers are normal and
+    /// must keep the loop awake.
+    /// </remarks>
+    private static bool IsIdle() =>
+        !Mobile.HasQueuedDeltas && !Item.HasQueuedDeltas && LoopContext.IsEmpty && NetState.IsIdle;
 
     public static void RunEventLoop()
     {
         try
         {
-            var lastRaw = Stopwatch.GetTimestamp();
-            const int interval = 100;
-            double frequency = Stopwatch.Frequency * interval;
-            const double alpha = 2.0 / 129; // EMA smoothing (≈128-sample window)
-
-            var sample = 0;
-
             while (!Closing)
             {
                 _tickCount = GetTimestamp();
                 _now = DateTime.UtcNow;
 
+                // Only read when the previous iteration actually slept, so a loop that never
+                // sleeps -- under load, or at an idle wait of 0 -- pays nothing for this.
+                var missedBeforeSlice = _sleptLastIteration ? Timer.MissedFrameDeadlines : 0;
+
                 Mobile.ProcessDeltaQueue();
                 Item.ProcessDeltaQueue();
                 Timer.Slice(_tickCount);
+
+                if (_sleptLastIteration)
+                {
+                    // This Slice measures the gap since the previous one, and that gap contained a
+                    // sleep. Anything it lost is fair to lay at the scheduler's door; misses on
+                    // iterations that did not sleep were the server being busy, not being late.
+                    _schedulerMissedFrames += Timer.MissedFrameDeadlines - missedBeforeSlice;
+                    _sleptLastIteration = false;
+                }
 
                 // Handle networking
                 NetState.Slice();
@@ -505,6 +872,12 @@ public static class Core
                     // Return value is the offset that can be used to fix timers that should drift
                     World.Snapshot(_snapshotPath);
                     _performSnapshot = false;
+
+                    // The main-thread portion is done, but the disk flush is not, and on a slow or
+                    // oversubscribed host that contention keeps landing on the loop for a while
+                    // after. Stop judging tick health until it settles: the misses are real and
+                    // still reported, they are just not evidence about the scheduler.
+                    _healthGraceUntil = GetTimestamp() + PostSaveGraceMs;
                 }
 
                 if (_performProcessKill)
@@ -513,29 +886,21 @@ public static class Core
                     break;
                 }
 
-                if (sample++ == interval)
+                _loopIterations++;
+                SampleLoopHealth();
+
+                if (_eventLoopIdleWaitMs > 0 && _tickCount >= _idleSleepSuspendedUntil && IsIdle())
                 {
-                    sample = 0;
-                    var nowRaw = Stopwatch.GetTimestamp();
-
-                    _currentCPS = frequency / (nowRaw - lastRaw);
-
-                    if (!_cpsInitialized)
+                    // Re-read the clock rather than reusing _tickCount: the loop body above has
+                    // consumed real time, and a stale timestamp would overstate how long is left
+                    // before the next tick, so we would sleep straight past it and manufacture
+                    // the very tick lag this is meant to remove.
+                    var due = Timer.MillisecondsUntilNextTick(GetTimestamp());
+                    if (due > 0)
                     {
-                        _averageCPS = _currentCPS;
-                        _cpsInitialized = true;
-                    }
-                    else
-                    {
-                        _averageCPS += alpha * (_currentCPS - _averageCPS);
-                    }
-
-                    lastRaw = nowRaw;
-
-                    var sleepMs = (int)Timer.MillisecondsUntilNextTick(_tickCount);
-                    if (sleepMs >= 2)
-                    {
-                        NetState.WaitForCompletion(sleepMs - 1);
+                        _loopSleeps++;
+                        _sleptLastIteration = true;
+                        NetState.WaitForCompletion((int)Math.Min(due, _eventLoopIdleWaitMs));
                     }
                 }
             }
@@ -553,6 +918,10 @@ public static class Core
     {
         _snapshotPath = snapshotPath;
         _performSnapshot = true;
+
+        // Save requests arrive off-loop. Wake so the snapshot starts now rather than after the
+        // loop happens to surface for another reason.
+        NetState.Wake();
     }
 
     public static void VerifySerialization()

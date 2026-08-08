@@ -34,7 +34,9 @@
     </Target>
     <ItemGroup>
         <ProjectReference Include="..\Logger\Logger.csproj" />
-        <PackageReference Include="IORingGroup" Version="1.0.9" />
+        <!-- VENDORED FOR MEASUREMENT ONLY. The real PR restores the PackageReference:
+             <PackageReference Include="IORingGroup" Version="1.0.10" /> -->
+        <ProjectReference Include="..\IORingGroup\IORingGroup.csproj" />
         <PackageReference Include="CommunityToolkit.HighPerformance" Version="8.4.2" />
         <PackageReference Include="LibDeflate.Bindings" Version="1.0.4" />
         <PackageReference Include="System.IO.Hashing" Version="10.0.10" />

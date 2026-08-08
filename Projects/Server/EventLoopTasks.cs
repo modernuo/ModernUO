@@ -42,10 +42,64 @@ public sealed class EventLoopContext : SynchronizationContext
 
     public override SynchronizationContext CreateCopy() => new EventLoopContext();
 
-    public void Post(Action d, Priority priority = Priority.Normal) =>
-        (priority == Priority.High ? _priorityQueue : _queue).Enqueue(d);
+    /// <summary>
+    /// True when no callbacks are waiting to run.
+    /// </summary>
+    /// <remarks>
+    /// <see cref="ExecuteTasks"/> drains at most <c>_maxPerFrame</c> callbacks, so work can
+    /// legitimately be left over. The event loop checks this before sleeping so a backlog keeps
+    /// it running instead.
+    /// </remarks>
+    public bool IsEmpty => _queue.IsEmpty && _priorityQueue.IsEmpty;
 
-    public override void Post(SendOrPostCallback d, object state) => _queue.Enqueue(() => d(state));
+    public void Post(Action d, Priority priority = Priority.Normal)
+    {
+        (priority == Priority.High ? _priorityQueue : _queue).Enqueue(d);
+        WakeEventLoop();
+    }
+
+    public override void Post(SendOrPostCallback d, object state)
+    {
+        _queue.Enqueue(() => d(state));
+        WakeEventLoop();
+    }
+
+    /// <summary>
+    /// Number of posts that skipped the wake because they came from the loop thread.
+    /// </summary>
+    public static long WakesElided => Volatile.Read(ref _wakesElided);
+
+    /// <summary>
+    /// Number of posts that actually signalled the ring.
+    /// </summary>
+    public static long WakesIssued => Volatile.Read(ref _wakesIssued);
+
+    private static long _wakesElided;
+    private static long _wakesIssued;
+
+    /// <summary>
+    /// Nudges the game loop in case it is asleep. Enqueuing alone is not enough: the loop blocks
+    /// on network I/O, which a queue push does not signal, so without this a cross-thread post
+    /// would sit unnoticed until the loop woke for some other reason.
+    /// </summary>
+    private void WakeEventLoop()
+    {
+        // A post from the loop thread cannot need a wake: the loop is executing this very call,
+        // so by definition it is not blocked. Skipping the signal here is exact, not heuristic,
+        // and it matters because the signal is a syscall on every backend -- pure waste on a busy
+        // shard, which is precisely where it can least be afforded.
+        if (Thread.CurrentThread == _mainThread)
+        {
+            Interlocked.Increment(ref _wakesElided);
+            return;
+        }
+
+        Interlocked.Increment(ref _wakesIssued);
+
+        // Posts can happen during startup before networking is configured, and during shutdown
+        // after it is torn down; NetState.Wake handles both by doing nothing.
+        Network.NetState.Wake();
+    }
 
     public override void Send(SendOrPostCallback d, object state)
     {
@@ -62,6 +116,8 @@ public sealed class EventLoopContext : SynchronizationContext
             d(state);
             evt.Set();
         });
+
+        WakeEventLoop();
 
         evt.WaitOne();
     }
