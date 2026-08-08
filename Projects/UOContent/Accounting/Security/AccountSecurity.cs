@@ -35,6 +35,15 @@ public static class AccountSecurity
 {
     public static PasswordProtectionAlgorithm CurrentAlgorithm { get; set; }
 
+    /// <summary>
+    /// Enables a one-time repair for accounts whose password was corrupted by the pre-fix
+    /// SetPassword, which hashed username + password but tagged it with an algorithm whose phrase
+    /// rule omits the username. Off by default: the repair costs a second verify on every FAILED
+    /// login, and failed logins are the credential-stuffing surface. Turn it on for a migration
+    /// window, then off again.
+    /// </summary>
+    public static bool RepairMigratedPasswords { get; set; }
+
     public static IPasswordProtection CurrentPasswordProtection => GetPasswordProtection(CurrentAlgorithm);
 
     public static void Configure()
@@ -44,6 +53,9 @@ public static class AccountSecurity
                 "accountSecurity.encryptionAlgorithm",
                 PasswordProtectionAlgorithm.Argon2
             );
+
+        RepairMigratedPasswords =
+            ServerConfiguration.GetOrUpdateSetting("accountSecurity.repairMigratedPasswords", false);
 
         if (CurrentAlgorithm < PasswordProtectionAlgorithm.SHA2)
         {

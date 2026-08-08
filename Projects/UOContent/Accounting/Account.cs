@@ -403,18 +403,36 @@ public partial class Account : IAccount, IComparable<Account>
 
     public bool CheckPassword(string plainPassword)
     {
+        var protection = AccountSecurity.GetPasswordProtection(_passwordAlgorithm);
         var phrase = UsesUsernamePhrase(_passwordAlgorithm) ? $"{_username}{plainPassword}" : plainPassword;
+        var forceRehash = false;
 
-        var ok = AccountSecurity.GetPasswordProtection(_passwordAlgorithm).ValidatePassword(Password, phrase);
-        if (!ok)
+        if (!protection.ValidatePassword(Password, phrase))
         {
-            return false;
+            // A pre-fix SetPassword stored username + password under an algorithm whose phrase rule
+            // omits the username. Nothing in the hash distinguishes that from a forgotten password,
+            // so the only way to detect it is to try the other phrase -- which costs a second
+            // verify on every failed login. Off by default for exactly that reason.
+            if (!AccountSecurity.RepairMigratedPasswords || UsesUsernamePhrase(_passwordAlgorithm) ||
+                !protection.ValidatePassword(Password, $"{_username}{plainPassword}"))
+            {
+                return false;
+            }
+
+            logger.Warning(
+                "Account '{Username}' had a password mis-migrated by a pre-fix SetPassword; repairing it.",
+                _username
+            );
+
+            // The stored hash may already carry current parameters, so NeedsRehash would say no
+            // and the account would verify once and stay broken.
+            forceRehash = true;
         }
 
         // Rehash when either the algorithm or its cost parameters have moved on. The short-circuit
         // ordering is load-bearing: NeedsRehash must never be handed a hash produced by a different
-        // algorithm, and the first clause guarantees it is not.
-        if (_passwordAlgorithm != AccountSecurity.CurrentAlgorithm ||
+        // algorithm, and the second clause guarantees it is not.
+        if (forceRehash || _passwordAlgorithm != AccountSecurity.CurrentAlgorithm ||
             AccountSecurity.CurrentPasswordProtection.NeedsRehash(Password))
         {
             logger.Debug("Rehashing the password for account '{Username}'.", _username);

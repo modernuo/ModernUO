@@ -73,4 +73,66 @@ public class AccountPasswordTests : IDisposable
         Assert.True(account.CheckPassword("hunter2"));
         Assert.Equal(afterFirst, account.Password);
     }
+
+    /// <summary>
+    /// Builds an account whose stored hash is what the pre-fix SetPassword produced when a SHA2
+    /// account was upgraded to Argon2: argon2(username + password), tagged Argon2, whose phrase
+    /// rule omits the username. Unrecoverable without the plaintext, hence the repair path.
+    /// </summary>
+    private static Account CreateMisMigratedAccount(string username)
+    {
+        AccountSecurity.CurrentAlgorithm = PasswordProtectionAlgorithm.Argon2;
+        var account = new Account(username, Password);
+        account.Password = AccountSecurity.CurrentPasswordProtection
+            .EncryptPassword($"{username}{Password}");
+
+        return account;
+    }
+
+    [Fact]
+    public void MisMigratedAccount_IsRejected_WhenRepairIsDisabled()
+    {
+        var account = CreateMisMigratedAccount("repair-off-user");
+        AccountSecurity.RepairMigratedPasswords = false;
+
+        Assert.False(account.CheckPassword(Password));
+    }
+
+    [Fact]
+    public void MisMigratedAccount_IsRepaired_WhenRepairIsEnabled()
+    {
+        var account = CreateMisMigratedAccount("repair-on-user");
+        AccountSecurity.RepairMigratedPasswords = true;
+
+        try
+        {
+            Assert.True(account.CheckPassword(Password));
+        }
+        finally
+        {
+            AccountSecurity.RepairMigratedPasswords = false;
+        }
+
+        // Repaired in place: it must now verify with the flag back off.
+        Assert.True(account.CheckPassword(Password));
+        Assert.False(account.CheckPassword("wrong-password"));
+    }
+
+    [Fact]
+    public void WrongPassword_IsStillRejected_WhenRepairIsEnabled()
+    {
+        AccountSecurity.CurrentAlgorithm = PasswordProtectionAlgorithm.Argon2;
+        var account = new Account("repair-wrong-pass-user", Password);
+        AccountSecurity.RepairMigratedPasswords = true;
+
+        try
+        {
+            Assert.False(account.CheckPassword("wrong-password"));
+            Assert.True(account.CheckPassword(Password));
+        }
+        finally
+        {
+            AccountSecurity.RepairMigratedPasswords = false;
+        }
+    }
 }
