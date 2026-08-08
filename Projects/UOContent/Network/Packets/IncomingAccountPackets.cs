@@ -346,8 +346,23 @@ public static class IncomingAccountPackets
         }
     }
 
-    private static int GenerateAuthID(this NetState state) =>
-        RegisterAuthId(state.Account, state.Address, state.Version);
+    private static int GenerateAuthID(this NetState state)
+    {
+        // Picking a second server on the same connection orphans the first id: state.AuthId now
+        // holds the new one, so nothing is coming to redeem the old. Drop it now instead of leaving
+        // it to time out.
+        ReleaseAuthId(state.AuthId);
+
+        return RegisterAuthId(state.Account, state.Address, state.Version);
+    }
+
+    internal static void ReleaseAuthId(int authId)
+    {
+        if (authId != 0)
+        {
+            _authIDWindow.Remove(authId);
+        }
+    }
 
     internal static int RegisterAuthId(IAccount account, IPAddress address, ClientVersion version)
     {

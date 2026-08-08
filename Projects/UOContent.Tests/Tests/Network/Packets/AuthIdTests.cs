@@ -196,6 +196,39 @@ public class AuthIdTests : IDisposable
     }
 
     /// <summary>
+    /// Picking a second server on the same connection orphans the first id -- the NetState now
+    /// holds the new one, so nothing will ever redeem the old. It goes immediately rather than
+    /// waiting to time out.
+    /// </summary>
+    [Fact]
+    public void ReleasingAnIdMakesItUnredeemableImmediately()
+    {
+        var account = CreateAccount("authid-released-user");
+        var authId = Register(account, AddressX);
+
+        IncomingAccountPackets.ReleaseAuthId(authId);
+
+        Assert.Equal(0, IncomingAccountPackets.AuthIdWindowCount);
+        Assert.Equal(
+            IncomingAccountPackets.AuthIdResult.Rejected,
+            IncomingAccountPackets.ConsumeAuthId(authId, account.Username, AddressX, out _)
+        );
+    }
+
+    [Fact]
+    public void ReleasingZeroIsANoOp()
+    {
+        var account = CreateAccount("authid-release-zero-user");
+        Register(account, AddressX);
+
+        // NetState.AuthId is 0 until a server is picked, so the release on the first pick must not
+        // disturb the window.
+        IncomingAccountPackets.ReleaseAuthId(0);
+
+        Assert.Equal(1, IncomingAccountPackets.AuthIdWindowCount);
+    }
+
+    /// <summary>
     /// An id is only left behind when a client picks a server and never arrives. Issuing sweeps
     /// those, so they do not accumulate.
     /// </summary>
