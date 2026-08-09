@@ -376,24 +376,13 @@ public partial class Account : IAccount, IComparable<Account>
         return true;
     }
 
-    // Runtime only, never serialized. Orders password writes so one derived off the loop cannot
-    // land on top of a newer one. Bumped by every write, deferred or not.
-    private int _passwordSequence;
-
     public void SetPassword(string plainPassword)
     {
-        _passwordSequence++;
         PasswordAlgorithm = AccountSecurity.CurrentAlgorithm;
         Password = AccountSecurity.CurrentPasswordProtection.EncryptPassword(
             AccountSecurity.DerivePhrase(PasswordAlgorithm, _username, plainPassword)
         );
     }
-
-    /// <summary>
-    /// Claims the next write slot. Taken on the loop at dispatch, so a hash derived off it can tell
-    /// whether anything newer was requested while it ran.
-    /// </summary>
-    internal int BeginPasswordWrite() => ++_passwordSequence;
 
     /// <summary>The phrase that verifies against the currently stored hash.</summary>
     internal string GetVerifyPhrase(string plainPassword) =>
@@ -412,27 +401,18 @@ public partial class Account : IAccount, IComparable<Account>
         AccountSecurity.CurrentPasswordProtection.NeedsRehash(Password);
 
     /// <summary>
-    /// Applies a hash derived off the game loop, unless something newer was requested while it ran.
-    /// Distinct from the private <c>UpgradePassword</c> below, which adopts a legacy hash during
-    /// RunUO/ServUO import.
+    /// Applies a hash derived off the game loop. Distinct from the private <c>UpgradePassword</c>
+    /// below, which adopts a legacy hash during RunUO/ServUO import.
     ///
-    /// Ordering by sequence rather than by comparing the stored hash: both a login rehash and an
-    /// explicit change need "newest wins", and comparing hashes would silently drop the second of
-    /// two changes dispatched before either landed.
+    /// Unguarded, because ordering is already total: dispatch happens on the loop, the worker takes
+    /// one job at a time in FIFO order, and results come back through the loop context in that same
+    /// order. Last dispatched is therefore last applied. A second worker thread would break that
+    /// and would need ordering reintroduced here.
     /// </summary>
-    /// <returns>False when a newer write superseded this one.</returns>
-    internal bool ApplyPasswordWrite(
-        int sequence, string newEncrypted, PasswordProtectionAlgorithm algorithm
-    )
+    internal void ApplyPasswordWrite(string newEncrypted, PasswordProtectionAlgorithm algorithm)
     {
-        if (sequence != _passwordSequence)
-        {
-            return false;
-        }
-
         PasswordAlgorithm = algorithm;
         Password = newEncrypted;
-        return true;
     }
 
     public bool CheckPassword(string plainPassword)

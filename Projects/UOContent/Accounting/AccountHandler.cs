@@ -413,17 +413,14 @@ public static class AccountHandler
             return PasswordCheckDispatch.Inline;
         }
 
-        var needsUpgrade = acct.NeedsPasswordUpgrade();
-
         var job = new PasswordJob
         {
             Account = acct,
             State = e.State,
             StoredHash = acct.Password,
             VerifyPhrase = acct.GetVerifyPhrase(pw),
-            HashPhrase = needsUpgrade ? acct.GetRehashPhrase(pw) : null,
+            HashPhrase = acct.NeedsPasswordUpgrade() ? acct.GetRehashPhrase(pw) : null,
             TargetAlgorithm = AccountSecurity.CurrentAlgorithm,
-            Sequence = needsUpgrade ? acct.BeginPasswordWrite() : 0,
             OnComplete = static (j, outcome) =>
                 CompleteDeferredAccountLogin(j.State, j.Account, outcome.Verified)
         };

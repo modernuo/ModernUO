@@ -45,7 +45,6 @@ public class PasswordWorkerTests : IDisposable
             Account = account,
             HashPhrase = account.GetRehashPhrase("a-queued-password"),
             TargetAlgorithm = AccountSecurity.CurrentAlgorithm,
-            Sequence = account.BeginPasswordWrite(),
             OnComplete = (_, outcome) => applied = outcome.Hash != null
         };
 
@@ -124,61 +123,53 @@ public class PasswordWorkerTests : IDisposable
     }
 
     [Fact]
-    public void AppliesAWriteWhenNothingNewerWasRequested()
+    public void AppliesAWrite()
     {
         var account = CreateAccount("offloop-apply-user");
-
-        var sequence = account.BeginPasswordWrite();
         var upgraded = Argon2PasswordProtection.Instance.EncryptPassword(Password);
 
-        Assert.True(account.ApplyPasswordWrite(sequence, upgraded, PasswordProtectionAlgorithm.Argon2));
+        account.ApplyPasswordWrite(upgraded, PasswordProtectionAlgorithm.Argon2);
+
         Assert.Equal(upgraded, account.Password);
         Assert.True(account.CheckPassword(Password));
     }
 
     /// <summary>
-    /// A rehash derived off-loop must not land on a password set while it ran, or the account is
-    /// locked to a hash of the credential that one superseded.
+    /// Writes apply in dispatch order, which is what makes a guard unnecessary: dispatch is on the
+    /// loop, one worker drains FIFO, and results return through the loop context in that same order.
+    /// A second worker thread would break this and would need ordering reintroduced.
     /// </summary>
     [Fact]
-    public void DropsAWriteSupersededByAnInlineSetPassword()
-    {
-        var account = CreateAccount("offloop-stale-apply-user");
-
-        var sequence = account.BeginPasswordWrite();
-        var upgraded = Argon2PasswordProtection.Instance.EncryptPassword(Password);
-
-        account.SetPassword("a-brand-new-password");
-        var afterChange = account.Password;
-
-        Assert.False(account.ApplyPasswordWrite(sequence, upgraded, PasswordProtectionAlgorithm.Argon2));
-        Assert.Equal(afterChange, account.Password);
-        Assert.True(account.CheckPassword("a-brand-new-password"));
-        Assert.False(account.CheckPassword(Password));
-    }
-
-    /// <summary>
-    /// Two changes dispatched before either lands: the newer must win regardless of the order the
-    /// results come back in. Comparing stored hashes instead of sequences would drop the second and
-    /// silently keep the older password.
-    /// </summary>
-    [Fact]
-    public void TheNewestWriteWinsWhateverOrderResultsLand()
+    public void WritesApplyInDispatchOrder()
     {
         var account = CreateAccount("offloop-two-writes-user");
+        var done = 0;
 
-        var first = account.BeginPasswordWrite();
-        var firstHash = Argon2PasswordProtection.Instance.EncryptPassword("first-new-password");
+        for (var i = 1; i <= 2; i++)
+        {
+            Assert.True(
+                PasswordWorker.TryEnqueue(
+                    new PasswordJob
+                    {
+                        Account = account,
+                        HashPhrase = account.GetRehashPhrase($"password-{i}"),
+                        TargetAlgorithm = AccountSecurity.CurrentAlgorithm,
+                        OnComplete = (_, _) => done++
+                    }
+                )
+            );
+        }
 
-        var second = account.BeginPasswordWrite();
-        var secondHash = Argon2PasswordProtection.Instance.EncryptPassword("second-new-password");
+        var deadline = DateTime.UtcNow.AddSeconds(20);
+        while (done < 2 && DateTime.UtcNow < deadline)
+        {
+            Core.LoopContext.ExecuteTasks();
+            System.Threading.Thread.Sleep(5);
+        }
 
-        // Results land out of order.
-        Assert.True(account.ApplyPasswordWrite(second, secondHash, PasswordProtectionAlgorithm.Argon2));
-        Assert.False(account.ApplyPasswordWrite(first, firstHash, PasswordProtectionAlgorithm.Argon2));
-
-        Assert.True(account.CheckPassword("second-new-password"));
-        Assert.False(account.CheckPassword("first-new-password"));
+        Assert.Equal(2, done);
+        Assert.True(account.CheckPassword("password-2"));
+        Assert.False(account.CheckPassword("password-1"));
     }
 
     [Theory]

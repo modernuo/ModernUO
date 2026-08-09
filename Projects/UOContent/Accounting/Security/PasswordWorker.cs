@@ -47,10 +47,6 @@ internal sealed class PasswordJob
 
     public PasswordProtectionAlgorithm TargetAlgorithm;
 
-    /// <summary>Write slot claimed at dispatch, checked by
-    /// <see cref="Account.ApplyPasswordWrite"/>.</summary>
-    public int Sequence;
-
     /// <summary>Runs on the game loop with the result. Free to touch game state.</summary>
     public Action<PasswordJob, PasswordOutcome> OnComplete;
 }
@@ -235,7 +231,7 @@ internal sealed class PasswordWorker
 
         if (outcome.Verified && outcome.Hash != null)
         {
-            job.Account.ApplyPasswordWrite(job.Sequence, outcome.Hash, job.TargetAlgorithm);
+            job.Account.ApplyPasswordWrite(outcome.Hash, job.TargetAlgorithm);
         }
 
         job.OnComplete?.Invoke(job, outcome);
@@ -263,7 +259,6 @@ internal sealed class PasswordWorker
             Account = account,
             HashPhrase = account.GetRehashPhrase(plainPassword),
             TargetAlgorithm = AccountSecurity.CurrentAlgorithm,
-            Sequence = account.BeginPasswordWrite(),
             OnComplete = (_, outcome) => onDone?.Invoke(outcome.Hash != null)
         };
 
@@ -314,7 +309,7 @@ internal sealed class PasswordWorker
 
             if (outcome.Verified && outcome.Hash != null)
             {
-                job.Account.ApplyPasswordWrite(job.Sequence, outcome.Hash, job.TargetAlgorithm);
+                job.Account.ApplyPasswordWrite(outcome.Hash, job.TargetAlgorithm);
             }
         }
     }
