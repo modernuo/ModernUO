@@ -110,7 +110,7 @@ internal sealed class PasswordWorker
 
     private readonly Thread _thread;
     private readonly AutoResetEvent _work = new(false);
-    private readonly ConcurrentQueue<PasswordJob> _queue = new();
+    private readonly ConcurrentQueue<PasswordJob> _queue = [];
 
     private int _pending;
     private volatile bool _exit;
