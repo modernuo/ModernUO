@@ -39,9 +39,9 @@ public class AccountLoginEventArgs
     public ALRReason RejectReason { get; set; }
 
     /// <summary>
-    /// No verdict yet: a subscriber moved the password check off the game loop and will reply
-    /// itself once it lands. The packet handler must not send an accept or a reject when this is
-    /// set, or the client receives two answers to one login.
+    /// No verdict yet: a subscriber moved the password check off the game loop and replies itself
+    /// once it lands. The packet handler must send neither accept nor reject while this is set, or
+    /// the client gets two answers to one login.
     /// </summary>
     public bool Deferred { get; set; }
 }

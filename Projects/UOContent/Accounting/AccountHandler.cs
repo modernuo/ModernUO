@@ -71,7 +71,7 @@ public static class AccountHandler
     {
         EventSink.AccountLogin += EventSink_AccountLogin;
 
-        // Wired here because AssemblyHandler only discovers *public* static Configure/Initialize,
+        // Wired here because AssemblyHandler only discovers public static Configure/Initialize,
         // and PasswordWorker is internal.
         EventSink.Shutdown += PasswordWorker.Shutdown;
         EventSink.ServerCrashed += PasswordWorker.OnCrashed;
@@ -145,8 +145,7 @@ public static class AccountHandler
 
             if (accessList[0].MatchClassC(ipAddress))
             {
-                // Confirmed from the callback: off the loop the hash has not landed yet when
-                // this returns.
+                // Confirmed from the callback: off-loop the write has not landed yet here.
                 PasswordWorker.SetPassword(
                     acct,
                     pass,
@@ -325,9 +324,8 @@ public static class AccountHandler
     }
 
     /// <summary>
-    /// Not an else-if branch in the caller because two of the outcomes are not verdicts: the
-    /// off-loop path produces none yet, and a full queue must reject rather than fall through and
-    /// verify.
+    /// Separate from the caller's else-if chain because two outcomes are not verdicts: the off-loop
+    /// path has none yet, and a full queue must reject rather than fall through and verify.
     /// </summary>
     private static void HandlePasswordCheck(AccountLoginEventArgs e, Account acct, string pw)
     {
@@ -341,7 +339,7 @@ public static class AccountHandler
             case PasswordCheckDispatch.Saturated:
                 {
                     // Reject rather than verify inline: steering work back onto the loop is what a
-                    // flood would want.
+                    // flood wants.
                     logger.Warning(
                         "Login: {NetState} Password verification queue full, rejecting '{Username}'",
                         e.State,
@@ -363,10 +361,8 @@ public static class AccountHandler
         ApplyVerifiedLogin(e, acct);
     }
 
-    /// <summary>
-    /// Everything after the password is known good. Shared so an off-loop verdict lands in exactly
-    /// the same state as an inline one.
-    /// </summary>
+    /// <summary>Everything after the password is known good, shared so an off-loop verdict lands
+    /// in the same state as an inline one.</summary>
     private static void ApplyVerifiedLogin(AccountLoginEventArgs e, Account acct)
     {
         if (acct.Banned)
@@ -386,10 +382,10 @@ public static class AccountHandler
 
     private enum PasswordCheckDispatch
     {
-        /// <summary>Verify on the loop, as before.</summary>
+        /// <summary>Verify on the loop.</summary>
         Inline,
 
-        /// <summary>Handed to the verification thread; no verdict yet.</summary>
+        /// <summary>Handed to the worker; no verdict yet.</summary>
         Deferred,
 
         /// <summary>The queue is full.</summary>
@@ -398,12 +394,10 @@ public static class AccountHandler
 
     /// <summary>
     /// Hands the password check to the worker, whatever algorithm it uses. Every protection is safe
-    /// to run off the loop, so there is no carve-out.
-    ///
-    /// Nor is a cheap digest worth carving out. <c>AccountSecurity.Configure</c> refuses anything
-    /// below SHA2 as the configured algorithm, so MD5 and SHA1 only ever appear as a stored hash
-    /// awaiting migration -- which makes <c>NeedsPasswordUpgrade</c> true, and the job carries the
-    /// upgrade hash that dominates it. The microsecond digest is never the whole job.
+    /// off the loop, so there is no carve-out, and a cheap digest does not need one either:
+    /// <c>AccountSecurity.Configure</c> refuses anything below SHA2 as the configured algorithm, so
+    /// MD5 and SHA1 only appear as a stored hash awaiting migration. That makes
+    /// <c>NeedsPasswordUpgrade</c> true, and the upgrade hash dominates the job.
     /// </summary>
     private static PasswordCheckDispatch DispatchPasswordCheck(AccountLoginEventArgs e, Account acct, string pw)
     {

@@ -404,10 +404,9 @@ public partial class Account : IAccount, IComparable<Account>
     /// Applies a hash derived off the game loop. Distinct from the private <c>UpgradePassword</c>
     /// below, which adopts a legacy hash when loading pre-binary XML accounts.
     ///
-    /// Unguarded, because ordering is already total: dispatch happens on the loop, the worker takes
-    /// one job at a time in FIFO order, and results come back through the loop context in that same
-    /// order. Last dispatched is therefore last applied. A second worker thread would break that
-    /// and would need ordering reintroduced here.
+    /// Unguarded: dispatch is on the loop, one worker drains FIFO, and results return through the
+    /// loop context in that order, so last dispatched is last applied. A second worker would need
+    /// ordering reintroduced here.
     /// </summary>
     internal void ApplyPasswordWrite(string newEncrypted, PasswordProtectionAlgorithm algorithm)
     {

@@ -181,10 +181,10 @@ Timer.DelayCall(TimeSpan.Zero, TimeSpan.FromMilliseconds(50), () =>
 
 | Worker | Justification |
 |---|---|
-| `Accounting/Security/PasswordWorker.cs` | 8.9 ms/login on-loop; 3.5-8.9 ms measured saving |
+| `Accounting/Security/PasswordWorker.cs` | 8.9 ms/login on-loop at Argon2; 3.5-8.9 ms measured saving |
 | `Engines/Advanced Search/AdvancedSearchGump.cs` | Admin-triggered full-world scan, saves disabled |
 
-### The five rules
+### The six rules
 
 1. No game state read or written off-thread; dispatch immutable values captured on the loop.
 2. Resolve policy (algorithm, salt, era branch) at dispatch — the worker holds none.
@@ -192,6 +192,9 @@ Timer.DelayCall(TimeSpan.Zero, TimeSpan.FromMilliseconds(50), () =>
 4. Run only while `WorldState is Running or WritingSave`. **Not** `World.Saving` — that misses
    `PendingSave`, where serialization threads are already spinning.
 5. Bounded queue, or a bound upstream named in a comment.
+6. Everything the worker calls must itself be thread-safe. A singleton is not automatically safe —
+   `HashAlgorithm.ComputeHash` carries state, `Utility`'s RNG is a shared `System.Random` and game
+   state. Prefer static one-shot APIs (`SHA256.HashData`, `RandomNumberGenerator.Fill`).
 
 ### Crossing the boundary
 

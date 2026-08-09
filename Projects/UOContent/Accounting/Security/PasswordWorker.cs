@@ -22,11 +22,10 @@ using Server.Network;
 namespace Server.Accounting.Security;
 
 /// <summary>
-/// Work handed to the password thread. Strings and references it only carries: the worker reads no
-/// game state and writes none.
+/// Work handed to the password thread, which reads no game state and writes none.
 ///
-/// Either half is optional, which is what lets one job type serve both callers. A login verifies
-/// and may rehash; an explicit password change only hashes.
+/// Verify and hash are independently optional: a login verifies and may rehash, an explicit change
+/// only hashes.
 /// </summary>
 internal sealed class PasswordJob
 {
@@ -39,8 +38,8 @@ internal sealed class PasswordJob
     /// <summary>Hash to verify against, with <see cref="VerifyPhrase"/>.</summary>
     public string StoredHash;
 
-    /// <summary>Algorithm <see cref="StoredHash"/> was written with. Resolved on the loop, because
-    /// AccountSecurity.CurrentAlgorithm is mutable state the worker must not read.</summary>
+    /// <summary>Algorithm <see cref="StoredHash"/> was written with. Both algorithms are resolved on
+    /// the loop; <c>AccountSecurity.CurrentAlgorithm</c> is mutable state the worker must not read.</summary>
     public PasswordProtectionAlgorithm StoredAlgorithm;
 
     /// <summary>Phrase to verify, or null to skip verification.</summary>
@@ -71,14 +70,16 @@ internal readonly struct PasswordOutcome
 }
 
 /// <summary>
-/// Runs Argon2 off the game loop, where a verify costs ~8.9 ms of frozen world per login attempt.
+/// Runs password hashing off the game loop. An Argon2 verify costs ~8.9 ms of frozen world per
+/// login attempt, successful or not.
 ///
-/// Exactly one worker. A single background hasher cannot cost the loop more than the inline verify
-/// under any scheduling regime, because at worst it takes an equal share of one core; a pool breaks
-/// that bound and is what would make the gain hardware-dependent. It also caps live Argon2 arenas
-/// at one, and does the least total harm to the loop's own cache footprint.
+/// Exactly one worker, and that is load-bearing three times over. It cannot cost the loop more than
+/// an inline verify under any scheduling regime, because at worst it takes an equal share of one
+/// core -- which is what lets the measurement hold on hardware we cannot inspect. It caps live
+/// hashing arenas at one. And writes apply in dispatch order only because a single thread drains
+/// FIFO, so a second would need ordering reintroduced.
 ///
-/// ~110 verifies/sec, which is ample: login latency is not a concern, only loop time.
+/// ~110 verifies/sec, which is ample: only loop time matters, not login latency.
 /// </summary>
 internal sealed class PasswordWorker
 {
@@ -87,9 +88,8 @@ internal sealed class PasswordWorker
     /// <summary>
     /// Backstop, not a flood defense. <c>SentFirstPacket</c> holds a connection to one pending
     /// verify and the engine caps connections at 4096 (<c>NetState.Network.cs</c>), so this matches
-    /// that bound and can only trip if the one-per-connection invariant breaks. A cap low enough to
-    /// blunt an attack would reject real players first -- during a mass reconnect they are the
-    /// queue. Flood defense belongs at the connection layer.
+    /// that bound and can only trip if that invariant breaks. A cap low enough to blunt an attack
+    /// would reject real players first; flood defense belongs at the connection layer.
     /// </summary>
     private const int MaxPending = 4096;
 
@@ -99,8 +99,8 @@ internal sealed class PasswordWorker
 
     private static PasswordWorker _instance;
 
-    // Needs a spare core to move work to, which a 1-2 core host does not have. Off in DEBUG:
-    // dev boxes and test shards have few logins and are better served by the simpler path.
+    // Needs a spare core to move work to, which a 1-2 core host does not have. Off in DEBUG, where
+    // logins are rare and the inline path is easier to follow.
     internal static readonly bool Enabled =
 #if DEBUG
         false;
@@ -120,7 +120,7 @@ internal sealed class PasswordWorker
         _thread = new Thread(Execute)
         {
             IsBackground = true,
-            Name = "Password Verification"
+            Name = "Password Worker"
         };
 
         _thread.Start();
@@ -129,10 +129,7 @@ internal sealed class PasswordWorker
     // Created on first use, so a shard that never takes the off-loop path never allocates a thread.
     private static PasswordWorker Instance => _instance ??= new PasswordWorker();
 
-    /// <summary>
-    /// Queues a job. False when the queue is full, in which case the caller must reject the login
-    /// without verifying.
-    /// </summary>
+    /// <summary>Queues a job. False when full, and the caller must then reject without verifying.</summary>
     internal static bool TryEnqueue(PasswordJob job) => Instance.TryEnqueueCore(job);
 
     private bool TryEnqueueCore(PasswordJob job)
@@ -181,10 +178,9 @@ internal sealed class PasswordWorker
 
             Interlocked.Decrement(ref _pending);
 
-            // Gone while it waited: skip it rather than spend ~9 ms on a verdict nobody receives.
-            // Running only goes true -> false, so a stale read wastes a hash but can never skip a
-            // live connection. A null State means the job is not tied to a connection at all, such
-            // as an admin password change, and must still run.
+            // Gone while it waited: skip it rather than hash for a verdict nobody receives. Running
+            // only goes true -> false, so a stale read wastes a hash but never skips a live one. A
+            // null State is a job with no connection to lose, and still runs.
             if (job.State?.Running == false)
             {
                 continue;
@@ -199,7 +195,7 @@ internal sealed class PasswordWorker
             catch (Exception ex)
             {
                 // A verdict must still come back, or the connection never gets a reply.
-                logger.Error(ex, "Password verification failed for {Username}", job.Account?.Username);
+                logger.Error(ex, "Password work failed for {Username}", job.Account?.Username);
                 outcome = new PasswordOutcome(false, null);
             }
 
@@ -226,8 +222,7 @@ internal sealed class PasswordWorker
 
     private static void Apply(PasswordJob job, PasswordOutcome outcome)
     {
-        // Re-checked: a connection can drop while the result sits in the loop queue. Jobs with no
-        // connection attached, such as an admin password change, are unaffected.
+        // Re-checked: a connection can drop while the result sits in the loop queue.
         if (job.State?.Running == false)
         {
             return;
@@ -242,12 +237,11 @@ internal sealed class PasswordWorker
     }
 
     /// <summary>
-    /// Sets a password, off the loop when that is available and inline otherwise, invoking
-    /// <paramref name="onDone"/> on the loop either way. Both branches claim a write slot first, so
-    /// the newest request wins however the work was routed.
+    /// Sets a password, off the loop where available and inline otherwise, invoking
+    /// <paramref name="onDone"/> on the loop either way.
     ///
-    /// The confirmation belongs in <paramref name="onDone"/>, not at the call site: off-loop it has
-    /// not happened yet when the call returns.
+    /// Confirm from <paramref name="onDone"/>, not the call site: off-loop the write has not
+    /// happened when this returns.
     /// </summary>
     internal static void SetPassword(Account account, string plainPassword, Action<bool> onDone)
     {
@@ -268,8 +262,8 @@ internal sealed class PasswordWorker
 
         if (!TryEnqueue(job))
         {
-            // Saturated. A password change is rare and must not be silently dropped, so this one
-            // pays the hash on the loop rather than failing.
+            // Saturated. Unlike a login, a password change must not be dropped, so it pays the
+            // hash on the loop instead.
             account.SetPassword(plainPassword);
             onDone?.Invoke(true);
         }
@@ -279,11 +273,10 @@ internal sealed class PasswordWorker
     internal static PasswordOutcome ComputeInline(PasswordJob job) => Compute(job);
 
     /// <summary>
-    /// Normal shutdown. The loop has stopped but this runs on the game thread, so pending work can
-    /// be finished in place -- which is the only chance it gets, since nothing will pump the loop
-    /// context again.
+    /// Normal shutdown, on the game thread after the loop has stopped. Pending work gets no other
+    /// chance: nothing will pump the loop context again.
     ///
-    /// Only writes are finished. A verify decides a login, and every connection is closing.
+    /// Writes only. A verify decides a login, and every connection is closing.
     /// </summary>
     internal static void Shutdown()
     {
@@ -296,7 +289,7 @@ internal sealed class PasswordWorker
 
         instance.StopThread();
 
-        // Results posted before the thread stopped are still queued on a loop that has exited.
+        // Results posted before the thread stopped are queued on a loop that has exited.
         Core.LoopContext.ExecuteTasks();
 
         while (instance._queue.TryDequeue(out var job))
@@ -318,9 +311,8 @@ internal sealed class PasswordWorker
     }
 
     /// <summary>
-    /// Crash. There is no usable game thread, so nothing may be applied -- stop the thread and let
-    /// whatever was pending go. Subscribed separately because <c>HandleClosed</c> skips
-    /// <c>InvokeShutdown</c> when the server crashed.
+    /// Crash. No usable game thread, so nothing may be applied and pending work is dropped.
+    /// Subscribed separately because <c>HandleClosed</c> skips <c>InvokeShutdown</c> when crashed.
     /// </summary>
     internal static void OnCrashed(ServerCrashedEventArgs e) => _instance?.StopThread();
 

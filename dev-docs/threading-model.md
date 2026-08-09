@@ -177,12 +177,12 @@ version of this -- it is a correctness bug.
 
 | Worker | Off-loop work | Justification |
 |---|---|---|
-| `Accounting/Security/PasswordWorker.cs` | Argon2 verification and hashing | `docs/handoffs/2026-08-07-off-loop-argon2-hashing.md` -- 8.9 ms/login on-loop, measured 3.5--8.9 ms saved |
+| `Accounting/Security/PasswordWorker.cs` | Password verification and hashing | `docs/handoffs/2026-08-07-off-loop-argon2-hashing.md` -- 8.9 ms/login on-loop at Argon2, measured 3.5--8.9 ms saved |
 | `Engines/Advanced Search/AdvancedSearchGump.cs` | Parallel entity search | Admin-triggered full-world scan; saves disabled for its duration |
 
 Adding to this table needs the same bar: a measurement, and all five rules below.
 
-#### The five rules
+#### The six rules
 
 1. **No game state off-thread, read or written.** Hand the worker immutable values (strings,
    structs) captured on the loop. Carrying a reference is fine only if the worker just passes it
@@ -197,6 +197,12 @@ Adding to this table needs the same bar: a measurement, and all five rules below
    is *not* the right check -- it covers only the freeze and misses `PendingSave`, where the
    serialization threads are already awake and spinning on an empty queue.
 5. **Bound the queue**, or rely on a bound upstream and say which one in a comment.
+6. **Everything the worker calls must itself be safe off-thread.** A process-wide singleton is not
+   automatically safe -- look for instance state. `HashAlgorithm.ComputeHash` carries the running
+   digest across `HashCore`/`HashFinal`, so two threads sharing one corrupt each other. `Utility`'s
+   RNG is a shared `System.Random`, which is both thread-unsafe and game state. Prefer the static
+   one-shot forms (`SHA256.HashData`, `RandomNumberGenerator.Fill`), and if a dependency cannot be
+   made safe, fix it at the source rather than narrowing the worker around it.
 
 #### Handing work across the boundary
 
