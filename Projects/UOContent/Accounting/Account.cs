@@ -402,7 +402,7 @@ public partial class Account : IAccount, IComparable<Account>
 
     /// <summary>
     /// Applies a hash derived off the game loop. Distinct from the private <c>UpgradePassword</c>
-    /// below, which adopts a legacy hash during RunUO/ServUO import.
+    /// below, which adopts a legacy hash when loading pre-binary XML accounts.
     ///
     /// Unguarded, because ordering is already total: dispatch happens on the loop, the worker takes
     /// one job at a time in FIFO order, and results come back through the loop context in that same
