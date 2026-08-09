@@ -150,6 +150,78 @@ These files MAY use threading (they're server infrastructure, not game logic):
 - `Projects/Server/Network/` - Network I/O
 - `Projects/Server/Timer/Timer.Pool.cs` - Pool refill
 
+## Exceptions: Vetted Workers in UOContent
+
+**A background thread is a last resort.** The forbidden list is about game logic, which is never
+threaded. A dedicated worker touching no game state is the sanctioned way off the loop, and
+necessarily uses `new Thread`, `ConcurrentQueue<T>`, `Interlocked`, `AutoResetEvent` and
+`volatile` **at the thread boundary only**.
+
+### Prove the need first
+
+- Measure **on-loop time**, not wall-clock. Frozen world is the cost; player latency is not.
+- Off-loading creates no CPU. On 1-2 cores there is no spare core — gate on `ProcessorCount`.
+- Count what stays: dispatch, continuation, and the loop slowing while the worker evicts shared L3.
+- Record the measurement, or nobody can re-justify the worker later.
+
+### Game logic stays on the loop — chunk it
+
+Work needing game state cannot be threaded at any core count. Too slow for one tick? Split across
+ticks, bounded by count or elapsed time — never "until done".
+
+```csharp
+Timer.DelayCall(TimeSpan.Zero, TimeSpan.FromMilliseconds(50), () =>
+{
+    var budget = 0;
+    while (_cursor < _items.Count && budget++ < 100) { Process(_items[_cursor++]); }
+});
+```
+
+### Vetted workers
+
+| Worker | Justification |
+|---|---|
+| `Accounting/Security/PasswordWorker.cs` | 8.9 ms/login on-loop at Argon2; 3.5-8.9 ms measured saving |
+| `Engines/Advanced Search/AdvancedSearchGump.cs` | Admin-triggered full-world scan, saves disabled |
+
+### The six rules
+
+1. No game state read or written off-thread; dispatch immutable values captured on the loop.
+2. Resolve policy (algorithm, salt, era branch) at dispatch — the worker holds none.
+3. Park on a kernel wait, never spin. Spinning burns a core on shared hosts.
+4. Run only while `WorldState is Running or WritingSave`. **Not** `World.Saving` — that misses
+   `PendingSave`, where serialization threads are already spinning.
+5. Bounded queue, or a bound upstream named in a comment.
+6. Everything the worker calls must itself be thread-safe. A singleton is not automatically safe —
+   `HashAlgorithm.ComputeHash` carries state, `Utility`'s RNG is a shared `System.Random` and game
+   state. Prefer static one-shot APIs (`SHA256.HashData`, `RandomNumberGenerator.Fill`).
+
+### Crossing the boundary
+
+Dispatch captures what the continuation will need to re-validate:
+
+```csharp
+var job = new Job { Target = state, Expected = account.Password, Input = DerivePhrase(...) };
+if (!Worker.TryEnqueue(job)) { /* reject — never fall back to running it inline */ }
+```
+
+Hand back one of two ways, and no other:
+
+```csharp
+Core.LoopContext.Post(() => Apply(job, result));  // a result for a specific caller
+Volatile.Write(ref _snapshot, newTable);          // a shared table rebuilt periodically
+```
+
+The continuation re-validates, because time passed:
+
+```csharp
+if (job.Target?.Running != true) { return; }                     // gone
+if (account.Password != job.Expected) { return; }                // changed underneath
+```
+
+Always post a result, including on failure — a worker that throws silently leaves its caller
+waiting forever. Use `ConfigureAwait(false)` on every await inside off-loop work.
+
 ## Anti-Patterns
 
 | Pattern | Problem | Solution |

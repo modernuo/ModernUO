@@ -51,6 +51,17 @@ public static class AccountSecurity
         }
     }
 
+    /// <summary>
+    /// The string actually fed to the KDF. SHA1 and SHA2 salt by username; everything else hashes
+    /// the password alone. Verification must derive with the algorithm the stored hash was made
+    /// with, and a rehash with the one it is moving to -- deriving with the wrong one produces a
+    /// hash that verifies once and never again.
+    /// </summary>
+    public static string DerivePhrase(PasswordProtectionAlgorithm algorithm, string username, string plainPassword)
+        => algorithm is PasswordProtectionAlgorithm.SHA1 or PasswordProtectionAlgorithm.SHA2
+            ? $"{username}{plainPassword}"
+            : plainPassword;
+
     public static IPasswordProtection GetPasswordProtection(PasswordProtectionAlgorithm algorithm)
     {
         var passwordProtection = algorithm switch

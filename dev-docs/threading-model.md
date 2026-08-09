@@ -130,6 +130,138 @@ These files in `Projects/Server/` MAY use threading because they handle I/O outs
 - `Timer/Timer.Pool.cs` -- Async pool refill
 - `EventLoopTasks.cs` -- The synchronization context itself
 
+### Exceptions: Vetted Workers in `Projects/UOContent/`
+
+**Take great care here. A background thread is a last resort, not a tool of first choice.**
+
+The table above is about **game logic**, which is never threaded. A dedicated worker that touches
+no game state is the sanctioned way to move CPU-heavy or I/O work off the loop, and it necessarily
+uses primitives the table forbids -- `new Thread`, `ConcurrentQueue<T>`, `Interlocked`,
+`AutoResetEvent`, `volatile`. Those are legitimate **at the thread boundary**, and nowhere else.
+
+#### First: prove the need
+
+Do not add a worker because something "looks slow". Measure, and measure the right thing:
+
+- **Measure on-loop time, not wall-clock.** How long a player waits does not matter; how long the
+  world is frozen does. A change that improves latency but not loop time buys nothing.
+- **Off-loading does not create CPU.** It converts "the loop is blocked for N ms" into "the loop
+  competes for cores for N ms". On a 1--2 core host there is no spare core and it buys nothing at
+  all -- gate on `Environment.ProcessorCount`.
+- **Account for what stays behind.** Dispatch, the continuation, and the loop's own work slowing
+  down while the worker evicts shared L3. That last one is real and is usually the largest.
+- **Write the benchmark down.** A worker with no recorded measurement cannot be re-justified later,
+  and will be removed by someone who cannot tell whether it earns its complexity.
+
+#### Game logic stays on the loop -- chunk it instead
+
+Work that **needs** game state cannot be threaded at any core count. If it is too slow for one
+tick, split it across ticks rather than across threads:
+
+```csharp
+// Bound the work per tick, resume where it left off.
+Timer.DelayCall(TimeSpan.Zero, TimeSpan.FromMilliseconds(50), () =>
+{
+    var budget = 0;
+    while (_cursor < _items.Count && budget++ < 100)
+    {
+        Process(_items[_cursor++]);
+    }
+});
+```
+
+Bound by count or elapsed time, never by "until done". Threading game state is not a faster
+version of this -- it is a correctness bug.
+
+#### Vetted workers
+
+| Worker | Off-loop work | Justification |
+|---|---|---|
+| `Accounting/Security/PasswordWorker.cs` | Password verification and hashing | `docs/handoffs/2026-08-07-off-loop-argon2-hashing.md` -- 8.9 ms/login on-loop at Argon2, measured 3.5--8.9 ms saved |
+| `Engines/Advanced Search/AdvancedSearchGump.cs` | Parallel entity search | Admin-triggered full-world scan; saves disabled for its duration |
+
+Adding to this table needs the same bar: a measurement, and all five rules below.
+
+#### The six rules
+
+1. **No game state off-thread, read or written.** Hand the worker immutable values (strings,
+   structs) captured on the loop. Carrying a reference is fine only if the worker just passes it
+   back untouched.
+2. **Decide policy on the loop, compute on the worker.** Anything rule-dependent -- which algorithm,
+   which salt, which era branch -- is resolved at dispatch, so the worker holds no policy it could
+   apply inconsistently.
+3. **Park on a kernel wait; never spin.** `AutoResetEvent.WaitOne()` costs nothing while idle.
+   `SerializationThreadWorker` does spin, but only to await a producer mid-drain; absent that race,
+   spinning is a bug that burns a core on shared hosts.
+4. **Yield to world saves.** Run only while `WorldState is Running or WritingSave`. `World.Saving`
+   is *not* the right check -- it covers only the freeze and misses `PendingSave`, where the
+   serialization threads are already awake and spinning on an empty queue.
+5. **Bound the queue**, or rely on a bound upstream and say which one in a comment.
+6. **Everything the worker calls must itself be safe off-thread.** A process-wide singleton is not
+   automatically safe -- look for instance state. `HashAlgorithm.ComputeHash` carries the running
+   digest across `HashCore`/`HashFinal`, so two threads sharing one corrupt each other. `Utility`'s
+   RNG is a shared `System.Random`, which is both thread-unsafe and game state. Prefer the static
+   one-shot forms (`SHA256.HashData`, `RandomNumberGenerator.Fill`), and if a dependency cannot be
+   made safe, fix it at the source rather than narrowing the worker around it.
+
+#### Handing work across the boundary
+
+**Loop → worker (dispatch).** Snapshot everything needed into immutable values. Capture any value
+you intend to overwrite later, so the continuation can tell whether it changed:
+
+```csharp
+var job = new Job
+{
+    Target = state,              // carried, never dereferenced off-thread
+    Expected = account.Password, // captured so the continuation can detect a change
+    Input = DerivePhrase(...)    // policy resolved here, on the loop
+};
+
+if (!Worker.TryEnqueue(job))
+{
+    // Full. Reject -- do not fall back to running it inline, or a flood steers the work
+    // straight back onto the loop.
+}
+```
+
+**Worker → loop (hand back).** Two sanctioned routes, and no others:
+
+```csharp
+// 1. Marshal the apply step. Preferred when a specific result belongs to a specific caller.
+Core.LoopContext.Post(() => Apply(job, result));
+
+// 2. Publish an immutable snapshot behind a single volatile reference, read lock-free by the loop.
+//    Preferred for a shared lookup table rebuilt periodically.
+Volatile.Write(ref _snapshot, newTable);
+```
+
+**The continuation must re-validate.** Time passed, and the loop kept running:
+
+```csharp
+private static void Apply(Job job, Result result)
+{
+    // Gone? Never revive a dead NetState or a deleted entity.
+    if (job.Target?.Running != true)
+    {
+        return;
+    }
+
+    // Changed? Do not overwrite a newer value with one derived from an older one.
+    if (!string.Equals(account.Password, job.Expected, StringComparison.Ordinal))
+    {
+        return;
+    }
+
+    account.Apply(result);
+}
+```
+
+**Always post a result, including on failure.** A worker that throws and posts nothing leaves
+whatever awaited it waiting forever. Catch, log, and post a failure verdict.
+
+**Never** call into game state from the worker, and never `await` on the loop in a way that lets a
+continuation resume heavy work there -- `ConfigureAwait(false)` on every await inside off-loop work.
+
 ## Memory Pooling
 
 ### STArrayPool<T>

@@ -93,7 +93,7 @@ public record LoginAllowlistSettings
     /// this it escalates like anything else until it earns a new entry by logging in again.
     /// </summary>
     /// <remarks>
-    /// Generous on purpose: local defences never stop applying, so a high threshold only delays the external
+    /// Generous on purpose: local defenses never stop applying, so a high threshold only delays the external
     /// ban. A bad line might trip a gate a few times an hour; a host being used to flood burns through this
     /// in seconds. Set to 0 to never revoke.
     /// </remarks>

@@ -22,23 +22,24 @@ namespace Server.Accounting.Security;
 
 public class PBKDF2PasswordProtection : IPasswordProtection
 {
-    private const ushort m_MinIterations = 1024;
-    private const ushort m_MaxIterations = 1536;
-    private const int m_SaltSize = 8;
-    private const int m_HashSize = 32;
-    private const int m_OutputSize = 2 + m_SaltSize + m_HashSize;
+    private const ushort MinIterations = 1024;
+    private const ushort MaxIterations = 1536;
+    private const int SaltSize = 8;
+    private const int HashSize = 32;
+    private const int OutputSize = 2 + SaltSize + HashSize;
     public static readonly IPasswordProtection Instance = new PBKDF2PasswordProtection();
 
     public string EncryptPassword(string plainPassword)
     {
-        Span<byte> output = stackalloc byte[m_OutputSize];
-        var iterations = Utility.RandomMinMax(m_MinIterations, m_MaxIterations);
+        Span<byte> output = stackalloc byte[OutputSize];
+
+        var iterations = RandomNumberGenerator.GetInt32(MinIterations, MaxIterations + 1);
         BinaryPrimitives.WriteUInt16LittleEndian(output[..2], (ushort)iterations);
 
-        var salt = output.Slice(2, m_SaltSize);
+        var salt = output.Slice(2, SaltSize);
         RandomNumberGenerator.Fill(salt);
 
-        var hash = output.Slice(2 + m_SaltSize, m_HashSize);
+        var hash = output.Slice(2 + SaltSize, HashSize);
         Rfc2898DeriveBytes.Pbkdf2(plainPassword, salt, hash, iterations, HashAlgorithmName.SHA256);
 
         return output.ToHexString();
@@ -46,15 +47,15 @@ public class PBKDF2PasswordProtection : IPasswordProtection
 
     public bool ValidatePassword(string encryptedPassword, string plainPassword)
     {
-        Span<byte> encryptedBytes = stackalloc byte[m_OutputSize];
+        Span<byte> encryptedBytes = stackalloc byte[OutputSize];
         encryptedPassword.GetBytes(encryptedBytes);
 
         var iterations = BinaryPrimitives.ReadUInt16LittleEndian(encryptedBytes[..2]);
-        var salt = encryptedBytes.Slice(2, m_SaltSize);
+        var salt = encryptedBytes.Slice(2, SaltSize);
 
-        Span<byte> hash = stackalloc byte[m_HashSize];
+        Span<byte> hash = stackalloc byte[HashSize];
         Rfc2898DeriveBytes.Pbkdf2(plainPassword, salt, hash, iterations, HashAlgorithmName.SHA256);
 
-        return hash.SequenceEqual(encryptedBytes[(m_SaltSize + 2)..]);
+        return hash.SequenceEqual(encryptedBytes[(SaltSize + 2)..]);
     }
 }

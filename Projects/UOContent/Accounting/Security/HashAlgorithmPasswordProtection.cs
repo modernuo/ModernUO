@@ -19,19 +19,47 @@ using Server.Text;
 
 namespace Server.Accounting.Security;
 
+/// <summary>
+/// The obsolete unsalted digests, kept only so imported accounts can log in once and be upgraded.
+///
+/// Hashing goes through the one-shot static APIs rather than a retained <see cref="HashAlgorithm"/>.
+/// A <see cref="HashAlgorithm"/> instance carries the running digest across HashCore/HashFinal, so
+/// two threads sharing one corrupt each other's result -- and these are process-wide singletons.
+/// The static form has no such state, allocates nothing, and produces identical bytes.
+/// </summary>
 public class HashAlgorithmPasswordProtection : IPasswordProtection
 {
-    public static IPasswordProtection MD5Instance = new HashAlgorithmPasswordProtection(MD5.Create());
-    public static IPasswordProtection SHA1Instance = new HashAlgorithmPasswordProtection(SHA1.Create());
-    public static IPasswordProtection SHA2Instance = new HashAlgorithmPasswordProtection(SHA512.Create());
-    private readonly HashAlgorithm _hashAlgorithm;
+    private enum Kind
+    {
+        MD5,
+        SHA1,
+        SHA512
+    }
 
-    public HashAlgorithmPasswordProtection(HashAlgorithm hashAlgorithm) => _hashAlgorithm = hashAlgorithm;
+    public static readonly IPasswordProtection MD5Instance = new HashAlgorithmPasswordProtection(Kind.MD5);
+    public static readonly IPasswordProtection SHA1Instance = new HashAlgorithmPasswordProtection(Kind.SHA1);
+    public static readonly IPasswordProtection SHA2Instance = new HashAlgorithmPasswordProtection(Kind.SHA512);
+
+    private const int MaxDigestLength = 64; // SHA512, the largest of the three.
+
+    private readonly Kind _kind;
+
+    private HashAlgorithmPasswordProtection(Kind kind) => _kind = kind;
 
     public string EncryptPassword(string plainPassword)
     {
         var bytes = plainPassword.AsSpan(0, Math.Min(256, plainPassword.Length)).GetBytesAscii();
-        return _hashAlgorithm.ComputeHash(bytes).ToHexString();
+
+        Span<byte> digest = stackalloc byte[MaxDigestLength];
+
+        var written = _kind switch
+        {
+            Kind.MD5  => MD5.HashData(bytes, digest),
+            Kind.SHA1 => SHA1.HashData(bytes, digest),
+            _         => SHA512.HashData(bytes, digest)
+        };
+
+        return digest[..written].ToHexString();
     }
 
     public bool ValidatePassword(string encryptedPassword, string plainPassword) =>

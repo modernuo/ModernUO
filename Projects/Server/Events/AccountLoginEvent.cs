@@ -37,6 +37,13 @@ public class AccountLoginEventArgs
     public bool Accepted { get; set; }
 
     public ALRReason RejectReason { get; set; }
+
+    /// <summary>
+    /// No verdict yet: a subscriber moved the password check off the game loop and replies itself
+    /// once it lands. The packet handler must send neither accept nor reject while this is set, or
+    /// the client gets two answers to one login.
+    /// </summary>
+    public bool Deferred { get; set; }
 }
 
 public static partial class EventSink

@@ -5,6 +5,7 @@ using System.Net;
 using System.Runtime.CompilerServices;
 using ModernUO.CodeGeneratedEvents;
 using Server.Accounting;
+using Server.Accounting.Security;
 using Server.Engines.CharacterCreation;
 using Server.Engines.Help;
 using Server.Logging;
@@ -69,6 +70,9 @@ public static class AccountHandler
     public static void Initialize()
     {
         EventSink.AccountLogin += EventSink_AccountLogin;
+
+        EventSink.Shutdown += PasswordWorker.Stop;
+        EventSink.ServerCrashed += PasswordWorker.OnCrashed;
     }
 
     [Usage("Password <newPassword> <repeatPassword>")]
@@ -139,8 +143,12 @@ public static class AccountHandler
 
             if (accessList[0].MatchClassC(ipAddress))
             {
-                acct.SetPassword(pass);
-                from.SendMessage("The password to your account has changed.");
+                // Confirmed from the callback: off-loop the write has not landed yet here.
+                PasswordWorker.SetPassword(
+                    acct,
+                    pass,
+                    _ => from.SendMessage("The password to your account has changed.")
+                );
             }
             else
             {
@@ -307,25 +315,129 @@ public static class AccountHandler
             logger.Information("Login: {NetState} Access denied for '{Username}'", e.State, un);
             e.RejectReason = LockdownLevel > AccessLevel.Player ? ALRReason.BadComm : ALRReason.BadPass;
         }
-        else if (!acct.CheckPassword(pw))
+        else
         {
-            logger.Information("Login: {NetState} Invalid password for '{Username}'", e.State, un);
-            e.RejectReason = ALRReason.BadPass;
+            HandlePasswordCheck(e, acct, pw);
         }
-        else if (acct.Banned)
+    }
+
+    /// <summary>
+    /// Separate from the caller's else-if chain because two outcomes are not verdicts: the off-loop
+    /// path has none yet, and a full queue must reject rather than fall through and verify.
+    /// </summary>
+    private static void HandlePasswordCheck(AccountLoginEventArgs e, Account acct, string pw)
+    {
+        switch (DispatchPasswordCheck(e, acct, pw))
         {
-            logger.Information("Login: {NetState} Banned account '{Username}'", e.State, un);
+            case PasswordCheckDispatch.Deferred:
+                {
+                    e.Deferred = true;
+                    return;
+                }
+            case PasswordCheckDispatch.Saturated:
+                {
+                    // Reject rather than verify inline: steering work back onto the loop is what a
+                    // flood wants.
+                    logger.Warning(
+                        "Login: {NetState} Password verification queue full, rejecting '{Username}'",
+                        e.State,
+                        acct.Username
+                    );
+
+                    e.RejectReason = ALRReason.BadComm;
+                    return;
+                }
+        }
+
+        if (!acct.CheckPassword(pw))
+        {
+            logger.Information("Login: {NetState} Invalid password for '{Username}'", e.State, acct.Username);
+            e.RejectReason = ALRReason.BadPass;
+            return;
+        }
+
+        ApplyVerifiedLogin(e, acct);
+    }
+
+    /// <summary>Everything after the password is known good, shared so an off-loop verdict lands
+    /// in the same state as an inline one.</summary>
+    private static void ApplyVerifiedLogin(AccountLoginEventArgs e, Account acct)
+    {
+        if (acct.Banned)
+        {
+            logger.Information("Login: {NetState} Banned account '{Username}'", e.State, acct.Username);
             e.RejectReason = ALRReason.Blocked;
+            return;
+        }
+
+        logger.Information("Login: {NetState} Valid credentials for '{Username}'", e.State, acct.Username);
+        e.State.Account = acct;
+        e.Accepted = true;
+
+        acct.LogAccess(e.State);
+        LoginAllowlist.RecordLogin(e.State?.Address);
+    }
+
+    private enum PasswordCheckDispatch
+    {
+        /// <summary>Verify on the loop.</summary>
+        Inline,
+
+        /// <summary>Handed to the worker; no verdict yet.</summary>
+        Deferred,
+
+        /// <summary>The queue is full.</summary>
+        Saturated
+    }
+
+    /// <summary>
+    /// Hands the password check to the worker, whatever algorithm it uses. Every protection is safe
+    /// off the loop, so there is no carve-out, and a cheap digest does not need one either:
+    /// <c>AccountSecurity.Configure</c> refuses anything below SHA2 as the configured algorithm, so
+    /// MD5 and SHA1 only appear as a stored hash awaiting migration. That makes
+    /// <c>NeedsPasswordUpgrade</c> true, and the upgrade hash dominates the job.
+    /// </summary>
+    private static PasswordCheckDispatch DispatchPasswordCheck(AccountLoginEventArgs e, Account acct, string pw)
+    {
+        if (!PasswordWorker.Enabled)
+        {
+            return PasswordCheckDispatch.Inline;
+        }
+
+        var job = new PasswordJob
+        {
+            Account = acct,
+            State = e.State,
+            StoredHash = acct.Password,
+            StoredAlgorithm = acct.PasswordAlgorithm,
+            VerifyPhrase = acct.GetVerifyPhrase(pw),
+            HashPhrase = acct.NeedsPasswordUpgrade() ? acct.GetRehashPhrase(pw) : null,
+            TargetAlgorithm = AccountSecurity.CurrentAlgorithm,
+            OnComplete = static (j, outcome) =>
+                CompleteDeferredAccountLogin(j.State, j.Account, outcome.Verified)
+        };
+
+        return PasswordWorker.TryEnqueue(job)
+            ? PasswordCheckDispatch.Deferred
+            : PasswordCheckDispatch.Saturated;
+    }
+
+    /// <summary>Resumes a login whose password check ran on the verification thread.</summary>
+    internal static void CompleteDeferredAccountLogin(NetState state, Account acct, bool verified)
+    {
+        var e = new AccountLoginEventArgs(state, acct.Username, null);
+
+        if (verified)
+        {
+            ApplyVerifiedLogin(e, acct);
         }
         else
         {
-            logger.Information("Login: {NetState} Valid credentials for '{Username}'", e.State, un);
-            e.State.Account = acct;
-            e.Accepted = true;
-
-            acct.LogAccess(e.State);
-            LoginAllowlist.RecordLogin(e.State?.Address);
+            logger.Information("Login: {NetState} Invalid password for '{Username}'", state, acct.Username);
+            e.RejectReason = ALRReason.BadPass;
         }
+
+        IncomingAccountPackets.CompleteAccountLogin(state, e.Accepted, e.RejectReason);
     }
 
     [OnEvent(nameof(GameServer.GameServerLoginEvent))]
