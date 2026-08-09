@@ -553,11 +553,11 @@ public static class Core
         ServerConfiguration.Load();
 
         // 0 disables idle sleeping entirely (full-core spin, zero scheduling overhead).
-        _eventLoopIdleWaitMs = ServerConfiguration.GetOrUpdateSetting("server.eventLoopIdleWaitMs", 2);
+        _eventLoopIdleWaitMs = ServerConfiguration.GetSetting("server.eventLoopIdleWaitMs", 2);
 
         // 16ms-budget misses per second before idle sleeping backs off. Raise to tolerate a
         // jittery host; set very high to disable the backoff.
-        _lateWakeThreshold = ServerConfiguration.GetOrUpdateSetting("server.lateWakeThreshold", 1);
+        _lateWakeThreshold = ServerConfiguration.GetSetting("server.lateWakeThreshold", 1);
 
         var assemblyPath = Path.Join(BaseDirectory, AssembliesConfiguration);
 
