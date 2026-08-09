@@ -71,8 +71,6 @@ public static class AccountHandler
     {
         EventSink.AccountLogin += EventSink_AccountLogin;
 
-        // Wired here because AssemblyHandler only discovers public static Configure/Initialize,
-        // and PasswordWorker is internal.
         EventSink.Shutdown += PasswordWorker.Shutdown;
         EventSink.ServerCrashed += PasswordWorker.OnCrashed;
     }
