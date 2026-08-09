@@ -21,14 +21,6 @@ public class Argon2PasswordProtection : IPasswordProtection
 {
     public static IPasswordProtection Instance = new Argon2PasswordProtection();
 
-    /// <summary>
-    /// An instance sharing no state with <see cref="Instance"/>. Verification is static-backed and
-    /// safe to call from anywhere, but hashing draws its salt from a per-instance
-    /// <see cref="RandomNumberGenerator"/>, so a thread that hashes off the game loop takes its own
-    /// rather than racing the loop for that one field.
-    /// </summary>
-    public static IPasswordProtection CreateIsolated() => new Argon2PasswordProtection();
-
     // 16 MiB at t=1 is cheaper than 8 MiB at t=3 (8.5 ms vs 10.1 ms) and twice as memory-hard, which
     // is what resists GPU and ASIC cracking. p=1: native argon2 spawns a thread per lane.
     private readonly Argon2PasswordHasher _passwordHasher = new(

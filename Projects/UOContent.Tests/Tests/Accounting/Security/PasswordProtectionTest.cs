@@ -75,6 +75,32 @@ public class PasswordProtectionTest
         Assert.False(passwordProtection.ValidatePassword(encryptedPassword, "Not the same password"));
     }
 
+    /// <summary>
+    /// Literal digests of <see cref="plainPassword"/>, so the stored format cannot drift. These are
+    /// compared as strings against what is already in every account database -- a casing or encoding
+    /// change would lock out every SHA and MD5 account on the shard at once.
+    /// </summary>
+    [Theory]
+    [InlineData("MD5", "52284053181040AC90DBDE74A0E7FF5E")]
+    [InlineData("SHA1", "9AC635509803AAE2D8312BA1879289259A50C5F0")]
+    [InlineData(
+        "SHA2",
+        "5A727BFF8F8E08A24BDF6B0CD5065F30A1F8E0060B857BB8AFD6955BE0ACBC489DA63F19B8F4CF08D73DE4069CF4B" +
+        "29D94B353F31513B2FB2D9382EFE15AE975"
+    )]
+    public void HashAlgorithm_StoredFormatIsStable(string algorithmType, string expected)
+    {
+        var protection = algorithmType switch
+        {
+            "SHA1" => HashAlgorithmPasswordProtection.SHA1Instance,
+            "SHA2" => HashAlgorithmPasswordProtection.SHA2Instance,
+            _      => HashAlgorithmPasswordProtection.MD5Instance,
+        };
+
+        Assert.Equal(expected, protection.EncryptPassword(plainPassword));
+        Assert.True(protection.ValidatePassword(expected, plainPassword));
+    }
+
     // The shipping default before this change, as a literal so it cannot drift with the configured
     // defaults. Password: "hunter2".
     private const string LegacyArgon2iHash =

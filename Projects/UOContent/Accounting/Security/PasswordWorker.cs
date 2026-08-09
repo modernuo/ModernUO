@@ -39,6 +39,10 @@ internal sealed class PasswordJob
     /// <summary>Hash to verify against, with <see cref="VerifyPhrase"/>.</summary>
     public string StoredHash;
 
+    /// <summary>Algorithm <see cref="StoredHash"/> was written with. Resolved on the loop, because
+    /// AccountSecurity.CurrentAlgorithm is mutable state the worker must not read.</summary>
+    public PasswordProtectionAlgorithm StoredAlgorithm;
+
     /// <summary>Phrase to verify, or null to skip verification.</summary>
     public string VerifyPhrase;
 
@@ -107,10 +111,6 @@ internal sealed class PasswordWorker
     private readonly Thread _thread;
     private readonly AutoResetEvent _work = new(false);
     private readonly ConcurrentQueue<PasswordJob> _queue = new();
-
-    // Its own Argon2: verification is static-backed and safe to share, hashing draws from a
-    // per-instance RNG and is not.
-    private readonly IPasswordProtection _argon2 = Argon2PasswordProtection.CreateIsolated();
 
     private int _pending;
     private volatile bool _exit;
@@ -207,16 +207,20 @@ internal sealed class PasswordWorker
         }
     }
 
-    private PasswordOutcome Compute(PasswordJob job)
+    private static PasswordOutcome Compute(PasswordJob job)
     {
-        if (job.VerifyPhrase != null && !_argon2.ValidatePassword(job.StoredHash, job.VerifyPhrase))
+        if (job.VerifyPhrase != null &&
+            !AccountSecurity.GetPasswordProtection(job.StoredAlgorithm)
+                .ValidatePassword(job.StoredHash, job.VerifyPhrase))
         {
             return new PasswordOutcome(false, null);
         }
 
         return new PasswordOutcome(
             true,
-            job.HashPhrase == null ? null : _argon2.EncryptPassword(job.HashPhrase)
+            job.HashPhrase == null
+                ? null
+                : AccountSecurity.GetPasswordProtection(job.TargetAlgorithm).EncryptPassword(job.HashPhrase)
         );
     }
 
@@ -247,7 +251,7 @@ internal sealed class PasswordWorker
     /// </summary>
     internal static void SetPassword(Account account, string plainPassword, Action<bool> onDone)
     {
-        if (!Enabled || AccountSecurity.CurrentAlgorithm != PasswordProtectionAlgorithm.Argon2)
+        if (!Enabled)
         {
             account.SetPassword(plainPassword);
             onDone?.Invoke(true);
@@ -272,8 +276,7 @@ internal sealed class PasswordWorker
     }
 
     /// <summary>Runs a job on the calling thread. The seam the tests drive.</summary>
-    internal static PasswordOutcome ComputeInline(PasswordJob job) =>
-        Instance.Compute(job);
+    internal static PasswordOutcome ComputeInline(PasswordJob job) => Compute(job);
 
     /// <summary>
     /// Normal shutdown. The loop has stopped but this runs on the game thread, so pending work can
@@ -305,7 +308,7 @@ internal sealed class PasswordWorker
                 continue;
             }
 
-            var outcome = instance.Compute(job);
+            var outcome = Compute(job);
 
             if (outcome.Verified && outcome.Hash != null)
             {

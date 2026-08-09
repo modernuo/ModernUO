@@ -26,6 +26,7 @@ public class PasswordWorkerTests : IDisposable
             StoredHash = account.Password,
             VerifyPhrase = account.GetVerifyPhrase(submitted),
             HashPhrase = account.NeedsPasswordUpgrade() ? account.GetRehashPhrase(submitted) : null,
+            StoredAlgorithm = account.PasswordAlgorithm,
             TargetAlgorithm = AccountSecurity.CurrentAlgorithm
         };
 

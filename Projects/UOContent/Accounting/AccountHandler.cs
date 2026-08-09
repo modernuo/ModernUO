@@ -397,18 +397,13 @@ public static class AccountHandler
     }
 
     /// <summary>
-    /// Hands an Argon2 verify to the verification thread.
-    ///
-    /// Argon2-stored accounts only: SHA/MD5 protections share a <c>HashAlgorithm</c> whose
-    /// <c>ComputeHash</c> is not thread safe, and cost microseconds anyway. Their one-time rehash
-    /// into Argon2 also stays here, costing a migrating account one 8.9 ms login exactly as today --
-    /// moving it would mean waiting on an upgrade that does not gate the verdict.
+    /// Hands the password check to the worker, whatever algorithm it uses. Every protection is safe
+    /// to run off the loop, so there is no carve-out; a cheap digest pays a thread hop it does not
+    /// need, but login latency is not what this is protecting.
     /// </summary>
     private static PasswordCheckDispatch DispatchPasswordCheck(AccountLoginEventArgs e, Account acct, string pw)
     {
-        if (!PasswordWorker.Enabled ||
-            AccountSecurity.CurrentAlgorithm != PasswordProtectionAlgorithm.Argon2 ||
-            acct.PasswordAlgorithm != PasswordProtectionAlgorithm.Argon2)
+        if (!PasswordWorker.Enabled)
         {
             return PasswordCheckDispatch.Inline;
         }
@@ -418,6 +413,7 @@ public static class AccountHandler
             Account = acct,
             State = e.State,
             StoredHash = acct.Password,
+            StoredAlgorithm = acct.PasswordAlgorithm,
             VerifyPhrase = acct.GetVerifyPhrase(pw),
             HashPhrase = acct.NeedsPasswordUpgrade() ? acct.GetRehashPhrase(pw) : null,
             TargetAlgorithm = AccountSecurity.CurrentAlgorithm,

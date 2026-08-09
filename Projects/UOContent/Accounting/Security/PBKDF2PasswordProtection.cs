@@ -32,7 +32,10 @@ public class PBKDF2PasswordProtection : IPasswordProtection
     public string EncryptPassword(string plainPassword)
     {
         Span<byte> output = stackalloc byte[m_OutputSize];
-        var iterations = Utility.RandomMinMax(m_MinIterations, m_MaxIterations);
+
+        // The cryptographic RNG, not Utility's. The game RNG is a shared System.Random -- unsafe to
+        // touch from another thread, and game state besides.
+        var iterations = RandomNumberGenerator.GetInt32(m_MinIterations, m_MaxIterations + 1);
         BinaryPrimitives.WriteUInt16LittleEndian(output[..2], (ushort)iterations);
 
         var salt = output.Slice(2, m_SaltSize);
