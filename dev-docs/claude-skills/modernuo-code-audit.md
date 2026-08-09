@@ -200,8 +200,27 @@ mob.SendMessage($"You earned a {rank:L} trophy!");          // "gold" not "Gold"
 
 **See**: `dev-docs/property-lists.md` § "Never Invalidate From Inside `GetProperties`".
 
+### 20. Tick-Count Math Must Be Wraparound-Safe
+**Check**: Every comparison between `Core.TickCount` / `Core.GetTimestamp()` values (or fields
+derived from them — names like `*Until`, `*At`, `*Next*`, `deadline`) must be in subtraction form.
+Flag direct comparisons, zero/sign sentinels, and deadline fields left at their zero default.
+**Bad**: `if (Core.TickCount < _deadline)`; `if (_lastEventAt > 0)` as "has happened";
+`private static long _deadline;` compared before being seeded from a real tick.
+**Good**: `if (Core.TickCount - _deadline < 0)`; a separate `bool` for "has happened"; seeding
+deadline fields from the first observed timestamp.
+**Why**: On some hypervisors — Google Cloud specifically — the VM receives a pass-through of the
+host's never-resetting counter. Tick counts are NOT zero at process start, NOT zero at OS boot,
+can be enormous from the first read, and can wrap negative. Direct comparisons and sign sentinels
+then fail only on those hosts, after long host uptimes — the least reproducible bug class there
+is. Windows has not shown this in testing; Linux has, in production. Subtraction of two ticks
+wraps correctly in two's complement.
+**Note**: `DateTime`/`DateTimeOffset` comparisons are unaffected; this applies only to the
+monotonic tick domain.
+
+**See**: `dev-docs/tick-counts.md` for the full rules and review checklist.
+
 ## Severity Levels
-- **ERROR**: Rules 3, 9, 10, 13, 19 (will cause bugs, build failures, or client-side leaks)
+- **ERROR**: Rules 3, 9, 10, 13, 19, 20 (will cause bugs, build failures, or client-side leaks)
 - **WARNING**: Rules 1 (Tier 3 LINQ), 2, 4, 5, 6, 7, 8, 12, 14, 15, 17 (performance/convention issues)
 - **INFO**: Rules 1 (Tier 2 LINQ on warm paths — note it but don't flag as violation), 16 (switch patterns — suggest but don't flag)
 - **ASK**: Rule 11 (need user input)

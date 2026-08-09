@@ -7834,6 +7834,12 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         }
     }
 
+    /// <summary>
+    /// True when deltas remain queued after a <see cref="ProcessDeltaQueue"/> pass, which is
+    /// bounded by the count it saw on entry. The event loop consults this before sleeping.
+    /// </summary>
+    public static bool HasQueuedDeltas => m_DeltaQueue.Count > 0;
+
     public static void ProcessDeltaQueue()
     {
         var limit = m_DeltaQueue.Count;
