@@ -64,3 +64,6 @@
 # Ignore everything under tools/ except the operator scripts checked in below.
 /tools/*
 !/tools/Export-IpBlocklist.ps1
+!/tools/Measure-EventLoop.ps1
+!/tools/HostLatencyProbe.cs
+!/tools/measure-event-loop.sh

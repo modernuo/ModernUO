@@ -48,6 +48,7 @@ Apply these when writing or reviewing `.cs` files under `Projects/`.
 | Threading model | `dev-docs/threading-model.md` |
 | Server hardware requirements | `dev-docs/server-requirements.md` |
 | Debugging event-loop performance (profiling build, decomposition, GC/RAM) | `dev-docs/debugging-event-loop.md` |
+| A/B measurement harness (this branch only) | `dev-docs/measuring-event-loop.md` |
 | Tick-count overflow rules (subtraction comparisons; GCP pass-through counters) | `dev-docs/tick-counts.md` |
 | Server lifecycle & bootstrap phases (Configure/ConfigurePrompts/Initialize) | `dev-docs/server-lifecycle.md` |
 | Platform prerequisites (ICU, tzdata, native libs per distro) | `dev-docs/platform-prerequisites.md` |
