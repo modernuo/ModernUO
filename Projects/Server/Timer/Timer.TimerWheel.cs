@@ -51,8 +51,15 @@ public partial class Timer
         }
     }
 
+    /// <summary>
+    /// Milliseconds of simulated time one wheel turn advances.
+    /// </summary>
+    public static int TickRate => _tickRate;
+
     public static void Slice(long tickCount)
     {
+        EventLoopProfiler.WheelSlice(tickCount - _lastTickTurned);
+
         var deltaSinceTurn = tickCount - _lastTickTurned;
         while (deltaSinceTurn >= _tickRate)
         {

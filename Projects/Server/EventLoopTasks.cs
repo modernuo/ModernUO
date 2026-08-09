@@ -42,10 +42,47 @@ public sealed class EventLoopContext : SynchronizationContext
 
     public override SynchronizationContext CreateCopy() => new EventLoopContext();
 
-    public void Post(Action d, Priority priority = Priority.Normal) =>
-        (priority == Priority.High ? _priorityQueue : _queue).Enqueue(d);
+    /// <summary>
+    /// True when no callbacks are waiting to run.
+    /// </summary>
+    /// <remarks>
+    /// <see cref="ExecuteTasks"/> drains at most <c>_maxPerFrame</c> callbacks, so work can
+    /// legitimately be left over. The event loop checks this before sleeping so a backlog keeps
+    /// it running instead.
+    /// </remarks>
+    public bool IsEmpty => _queue.IsEmpty && _priorityQueue.IsEmpty;
 
-    public override void Post(SendOrPostCallback d, object state) => _queue.Enqueue(() => d(state));
+    public void Post(Action d, Priority priority = Priority.Normal)
+    {
+        (priority == Priority.High ? _priorityQueue : _queue).Enqueue(d);
+        WakeEventLoop();
+    }
+
+    public override void Post(SendOrPostCallback d, object state)
+    {
+        _queue.Enqueue(() => d(state));
+        WakeEventLoop();
+    }
+
+    /// <summary>
+    /// Nudges the game loop in case it is asleep: the loop blocks on network I/O, which a queue
+    /// push alone does not signal.
+    /// </summary>
+    private void WakeEventLoop()
+    {
+        // A post from the loop thread cannot need a wake -- the loop is executing this very call
+        // -- and the signal is a syscall on every backend.
+        if (Thread.CurrentThread == _mainThread)
+        {
+            EventLoopProfiler.WakeSignal(elided: true);
+            return;
+        }
+
+        EventLoopProfiler.WakeSignal(elided: false);
+
+        // Safe before networking is configured and after teardown; NetState.Wake does nothing.
+        Network.NetState.Wake();
+    }
 
     public override void Send(SendOrPostCallback d, object state)
     {
@@ -62,6 +99,8 @@ public sealed class EventLoopContext : SynchronizationContext
             d(state);
             evt.Set();
         });
+
+        WakeEventLoop();
 
         evt.WaitOne();
     }

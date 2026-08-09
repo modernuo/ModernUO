@@ -39,10 +39,142 @@ public static class Core
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(Core));
 
-    private static bool _performProcessKill;
+    // Written from other threads (Kill, RequestSnapshot) and read by the event loop. Volatile
+    // because the loop now genuinely blocks between reads rather than spinning past them.
+    private static volatile bool _performProcessKill;
     private static bool _restartOnKill;
-    private static bool _performSnapshot;
+    private static volatile bool _performSnapshot;
     private static string _snapshotPath;
+
+    // A backstop, not a latency control: the wheel's tick rate bounds the sleep, so this only
+    // limits the damage if a wake signal is ever missed. Measured across 1/2/4/8ms, 2 is optimal.
+    private static int _eventLoopIdleWaitMs = 2;
+
+    /// <summary>
+    /// Longest the loop will block while idle, in milliseconds. 0 disables idle sleeping,
+    /// leaving the loop to spin; the adaptive backoff does the same thing temporarily when the
+    /// host keeps returning waits late.
+    /// </summary>
+    public static int EventLoopIdleWaitMs => _eventLoopIdleWaitMs;
+
+    /// <summary>
+    /// Whether idle sleeping is currently suspended because the host returned waits late.
+    /// </summary>
+    /// <remarks>
+    /// Compared by subtraction, never directly: tick counts can start enormous and wrap.
+    /// See dev-docs/tick-counts.md.
+    /// </remarks>
+    public static bool IdleSleepSuspended => _tickCount - _idleSleepSuspendedUntil < 0;
+
+    private const long HealthSampleIntervalMs = 1000;
+
+    // Backoff escalates by doubling: a fixed suspension oscillates forever on a persistently bad
+    // host, while doubling converges on "stop sleeping" within minutes yet still recovers from a
+    // transient problem.
+    private const long BackoffBaseMs = 5000;
+    private const long BackoffMaxMs = 120_000;
+    private const int BackoffMaxShift = 5;
+
+    // Clean streak that clears the escalation.
+    private const long BackoffResetAfterCleanMs = 60_000;
+
+    // A sleep is bounded by the time to the next wheel turn, so a correctly honoured sleep can
+    // never miss a deadline; the only way sleeping harms the wheel is the wait returning late
+    // (the host descheduled the process). That overshoot is measured per sleep, which is why
+    // server work -- saves, heavy commands, deep timer callbacks -- cannot trip this backoff.
+    // Loop-thread only, so plain increments are safe.
+    private static int _lateWakes;
+
+    private static long _nextHealthSample;
+    private static long _idleSleepSuspendedUntil;
+    private static int _lateWakeThreshold = 1;
+    private static long _idleSleepBackoffs;
+    private static int _consecutiveBadSamples;
+    private static int _consecutiveBackoffs;
+    private static long _currentBackoffMs = BackoffBaseMs;
+    private static long _lastBackoffAt;
+    private static bool _loggedBackoffCeiling;
+
+    /// <summary>
+    /// Once a second, suspends idle sleeping (with escalating duration) if the host keeps
+    /// returning idle waits a full tick or more late.
+    /// </summary>
+    private static void CheckSchedulerHealth()
+    {
+        if (_tickCount - _nextHealthSample < 0)
+        {
+            return;
+        }
+
+        _nextHealthSample = _tickCount + HealthSampleIntervalMs;
+
+        var late = _lateWakes;
+        _lateWakes = 0;
+
+        if (late <= _lateWakeThreshold)
+        {
+            _consecutiveBadSamples = 0;
+            return;
+        }
+
+        // Require the condition to persist: any host can drop one sample to unrelated load, and a
+        // host that is genuinely oversubscribed stays that way, so it trips on the second sample.
+        if (++_consecutiveBadSamples < 2)
+        {
+            return;
+        }
+
+        if (_eventLoopIdleWaitMs <= 0)
+        {
+            return;
+        }
+
+        // Already suspended: extend rather than counting a fresh backoff episode.
+        if (_tickCount - _idleSleepSuspendedUntil < 0)
+        {
+            _idleSleepSuspendedUntil = _tickCount + _currentBackoffMs;
+            return;
+        }
+
+        // A long clean streak resets the escalation. Gated on the count rather than a
+        // "_lastBackoffAt > 0" sentinel because tick counts are not guaranteed positive.
+        if (_consecutiveBackoffs > 0 && _tickCount - _lastBackoffAt > BackoffResetAfterCleanMs)
+        {
+            _consecutiveBackoffs = 0;
+        }
+
+        _currentBackoffMs = Math.Min(BackoffBaseMs << Math.Min(_consecutiveBackoffs, BackoffMaxShift), BackoffMaxMs);
+        _consecutiveBackoffs++;
+        _lastBackoffAt = _tickCount;
+        _idleSleepSuspendedUntil = _tickCount + _currentBackoffMs;
+        _idleSleepBackoffs++;
+
+        if (_currentBackoffMs >= BackoffMaxMs)
+        {
+            // Escalation has run out of room; say so once in terms the operator can act on.
+            if (!_loggedBackoffCeiling)
+            {
+                _loggedBackoffCeiling = true;
+                logger.Error(
+                    "This host keeps returning idle waits late and sleeping has backed off {Count} times. " +
+                    "The process is not being scheduled promptly, which is typical of shared or burstable vCPUs. " +
+                    "Set server.eventLoopIdleWaitMs to 0 to disable sleeping permanently and trade a full core for latency.",
+                    _idleSleepBackoffs
+                );
+            }
+
+            return;
+        }
+
+        logger.Warning(
+            "This host returned a {Requested}ms idle wait at least {TickRate}ms late {Count} time(s) in the last " +
+            "second; idle sleeping suspended for {Duration}ms",
+            _eventLoopIdleWaitMs,
+            Timer.TickRate,
+            late,
+            _currentBackoffMs
+        );
+    }
     private static bool _crashed;
     private static string _baseDirectory;
 
@@ -110,14 +242,6 @@ public static class Core
     public static DateTime Now => _now;
 
     public static long Uptime => TickCount - _firstTick;
-
-    private static double _currentCPS;
-    private static double _averageCPS;
-    private static bool _cpsInitialized;
-
-    public static double CyclesPerSecond => _currentCPS;
-
-    public static double AverageCPS => _averageCPS;
 
     public static string BaseDirectory
     {
@@ -235,6 +359,10 @@ public static class Core
     {
         _restartOnKill = restart;
         _performProcessKill = true;
+
+        // Callers are usually off-loop (console input, signal handlers). Without this the loop
+        // would not notice the request until it woke for some other reason.
+        NetState.Wake();
     }
 
     public static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -424,6 +552,13 @@ public static class Core
 
         ServerConfiguration.Load();
 
+        // 0 disables idle sleeping entirely (full-core spin, zero scheduling overhead).
+        _eventLoopIdleWaitMs = ServerConfiguration.GetSetting("server.eventLoopIdleWaitMs", 2);
+
+        // 16ms-budget misses per second before idle sleeping backs off. Raise to tolerate a
+        // jittery host; set very high to disable the backoff.
+        _lateWakeThreshold = ServerConfiguration.GetSetting("server.lateWakeThreshold", 1);
+
         var assemblyPath = Path.Join(BaseDirectory, AssembliesConfiguration);
 
         // Load UOContent.dll
@@ -453,6 +588,12 @@ public static class Core
         _now = DateTime.UtcNow;
         _firstTick = _tickCount = GetTimestamp();
 
+        // Seed schedule state from the first real tick: tick counts are not guaranteed to start
+        // anywhere near zero (hypervisor pass-through counters), so zero-initialized deadlines
+        // would compare wrong. See dev-docs/tick-counts.md.
+        _nextHealthSample = _tickCount + HealthSampleIntervalMs;
+        _idleSleepSuspendedUntil = _tickCount;
+
         Timer.Init(_tickCount);
 
         AssemblyHandler.Invoke("Configure");
@@ -469,34 +610,63 @@ public static class Core
         NetState.Start();
         PingServer.Start();
         EventSink.InvokeServerStarted();
+
+        // Without a high-resolution wait a 2ms request quantises to 15.625ms and the loop would
+        // quietly run a tick behind; spinning is the lesser evil and must not be silent. Only
+        // fires when both the ring's high-res timer and its timeBeginPeriod fallback failed.
+        if (_eventLoopIdleWaitMs > 0 && NetState.Ring?.SupportsHighResolutionWait == false)
+        {
+            logger.Error(
+                "This host cannot honor short waits (no high-resolution timer, and raising the system timer " +
+                "resolution failed). Idle sleeping is disabled. The loop will spin instead, using a full core."
+            );
+
+            _eventLoopIdleWaitMs = 0;
+        }
+
         RunEventLoop();
     }
+
+    /// <summary>
+    /// True when every queue the loop drains is empty, so sleeping cannot strand pending work.
+    /// The drains are bounded (ProcessDeltaQueue stops at the count seen on entry, ExecuteTasks
+    /// at its per-frame cap), so leftovers are normal and must keep the loop awake.
+    /// </summary>
+    private static bool IsIdle() =>
+        !Mobile.HasQueuedDeltas && !Item.HasQueuedDeltas && LoopContext.IsEmpty && NetState.IsIdle;
 
     public static void RunEventLoop()
     {
         try
         {
-            var lastRaw = Stopwatch.GetTimestamp();
-            const int interval = 100;
-            double frequency = Stopwatch.Frequency * interval;
-            const double alpha = 2.0 / 129; // EMA smoothing (≈128-sample window)
-
-            var sample = 0;
-
             while (!Closing)
             {
                 _tickCount = GetTimestamp();
                 _now = DateTime.UtcNow;
 
+                EventLoopProfiler.IterationStart(_tickCount);
+
+                EventLoopProfiler.PhaseStart(LoopPhase.MobileDeltas);
                 Mobile.ProcessDeltaQueue();
+                EventLoopProfiler.PhaseEnd(LoopPhase.MobileDeltas);
+
+                EventLoopProfiler.PhaseStart(LoopPhase.ItemDeltas);
                 Item.ProcessDeltaQueue();
+                EventLoopProfiler.PhaseEnd(LoopPhase.ItemDeltas);
+
+                EventLoopProfiler.PhaseStart(LoopPhase.TimerSlice);
                 Timer.Slice(_tickCount);
+                EventLoopProfiler.PhaseEnd(LoopPhase.TimerSlice);
 
                 // Handle networking
+                EventLoopProfiler.PhaseStart(LoopPhase.NetworkSlice);
                 NetState.Slice();
+                EventLoopProfiler.PhaseEnd(LoopPhase.NetworkSlice);
 
                 // Execute captured post-await methods (like Timer.Pause)
+                EventLoopProfiler.PhaseStart(LoopPhase.LoopTasks);
                 LoopContext.ExecuteTasks();
+                EventLoopProfiler.PhaseEnd(LoopPhase.LoopTasks);
 
                 Timer.CheckTimerPool(); // Check for pool depletion so we can async refill it.
 
@@ -513,29 +683,28 @@ public static class Core
                     break;
                 }
 
-                if (sample++ == interval)
+                CheckSchedulerHealth();
+
+                if (_eventLoopIdleWaitMs > 0 && _tickCount - _idleSleepSuspendedUntil >= 0 && IsIdle())
                 {
-                    sample = 0;
-                    var nowRaw = Stopwatch.GetTimestamp();
-
-                    _currentCPS = frequency / (nowRaw - lastRaw);
-
-                    if (!_cpsInitialized)
+                    // Re-read the clock: the loop body consumed real time, and a stale timestamp
+                    // would overstate the time to the next tick and sleep straight past it.
+                    var start = GetTimestamp();
+                    var due = Timer.MillisecondsUntilNextTick(start);
+                    if (due > 0)
                     {
-                        _averageCPS = _currentCPS;
-                        _cpsInitialized = true;
-                    }
-                    else
-                    {
-                        _averageCPS += alpha * (_currentCPS - _averageCPS);
-                    }
+                        var requested = (int)Math.Min(due, _eventLoopIdleWaitMs);
+                        NetState.WaitForCompletion(requested);
 
-                    lastRaw = nowRaw;
+                        var elapsed = GetTimestamp() - start;
+                        EventLoopProfiler.SleepEnd(requested, elapsed);
 
-                    var sleepMs = (int)Timer.MillisecondsUntilNextTick(_tickCount);
-                    if (sleepMs >= 2)
-                    {
-                        NetState.WaitForCompletion(sleepMs - 1);
+                        // A sleep is bounded by the next wheel turn, so only a wait the host
+                        // returned late can cost the wheel a deadline.
+                        if (elapsed - requested >= Timer.TickRate)
+                        {
+                            _lateWakes++;
+                        }
                     }
                 }
             }
@@ -553,6 +722,10 @@ public static class Core
     {
         _snapshotPath = snapshotPath;
         _performSnapshot = true;
+
+        // Save requests arrive off-loop. Wake so the snapshot starts now rather than after the
+        // loop happens to surface for another reason.
+        NetState.Wake();
     }
 
     public static void VerifySerialization()

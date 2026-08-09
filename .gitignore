@@ -14,6 +14,7 @@
 /Distribution/Configuration/blocklist.json
 /Distribution/Configuration/crowdsec.json
 /Distribution/Configuration/expansion.json
+/Distribution/Configuration/firewall.json
 /Distribution/Configuration/ip-allowlist*.txt
 /Distribution/Configuration/ip-allowlist*.txt.tmp
 /Distribution/Configuration/ip-blocklist.txt
@@ -25,6 +26,7 @@
 /Distribution/Configuration/email-settings.json
 /Distribution/Configuration/throttles.json
 /Distribution/Configuration/tot.json
+/Distribution/Data/Pathfinding
 /Distribution/Logs
 /Distribution/Archives
 /Distribution/Backups

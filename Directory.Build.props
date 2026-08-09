@@ -63,6 +63,13 @@
         <CodeAnalysisRuleSet>..\..\Rules.ruleset</CodeAnalysisRuleSet>
         <AnalysisLevel>latest</AnalysisLevel>
     </PropertyGroup>
+    <!-- Event-loop time accounting, compiled out unless requested:
+         dotnet build -p:EventLoopProfiling=true
+         See dev-docs/debugging-event-loop.md. Placed last so it appends to whatever the
+         configuration groups above set DefineConstants to. -->
+    <PropertyGroup Condition="'$(EventLoopProfiling)'=='true'">
+        <DefineConstants>$(DefineConstants);EVENT_LOOP_PROFILING</DefineConstants>
+    </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="Serilog" Version="4.3.1" />
         <PackageReference Include="Serilog.Sinks.Async" Version="2.1.0" />

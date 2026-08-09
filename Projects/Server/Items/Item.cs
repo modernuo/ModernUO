@@ -3325,6 +3325,12 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
         m_DeltaFlags &= ~flags;
     }
 
+    /// <summary>
+    /// True when deltas remain queued after a <see cref="ProcessDeltaQueue"/> pass, which is
+    /// bounded by the count it saw on entry. The event loop consults this before sleeping.
+    /// </summary>
+    public static bool HasQueuedDeltas => m_DeltaQueue.Count > 0;
+
     public static void ProcessDeltaQueue()
     {
         var limit = m_DeltaQueue.Count;

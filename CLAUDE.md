@@ -29,6 +29,7 @@ Apply these when writing or reviewing `.cs` files under `Projects/`.
 17. **No `System.Text.StringBuilder`** — use `ValueStringBuilder` with `stackalloc` (bounded output) or `ValueStringBuilder.Create()` (unbounded). Supports `$"..."` interpolation directly. Always use `using var` for disposal. Use `Reset()` instead of reassigning → `dev-docs/string-handling.md`
 18. **Interpolation anti-patterns on handler-aware APIs** — `Send*`/`Say`/`Emote`/`PublicOverhead*`/`IPropertyList.Add`/gump `AddLabel`/`AddHtml`/`Html.Center`/`SpanWriter.Write*` all have `ref RawInterpolatedStringHandler` overloads that allocate zero strings, but only when the call-site argument is a `$"..."` literal directly. Avoid: ternaries with interpolated branches (`Send(c ? $"a" : $"b")`), switch expressions with interpolated arms, pre-built `var s = $"..."` locals (single-use), `.ToString()` / `.String()` / `string.Format` inside holes, string concat (`{a + b}`), LINQ string ops in holes. Use `:L` format spec for lowercase (`{rank:L}` not `rank.ToString().ToLowerInvariant()`) → `dev-docs/string-handling.md` § Interpolation Anti-Patterns
 19. **No `InvalidateProperties()` from inside `GetProperties`** — every property a `GetProperties` override reads must be a pure read. `InvalidateProperties()` rebuilds the list in place (`Reset()` + rebuild), and `Reset()` returns the pooled interpolation buffer — which the compiler rents for the whole `$"..."` expression, so every hole is evaluated while it is live — and rewinds the packet cursor. A getter that invalidates therefore throws `ArgumentNullException` (parameter `"array"`) out of `GetProperties` from an unrelated-looking line, or silently corrupts the tooltip. The engine refuses and logs an error; `DEBUG` throws. Lazy recomputation in a getter is fine — the *notification* is not. Invalidate in the setter that changes the value, or defer with `Timer.DelayCall(InvalidateProperties)` → `dev-docs/property-lists.md` § Never Invalidate From Inside `GetProperties`
+20. **Tick-count math must be wraparound-safe** — compare `Core.TickCount`/`GetTimestamp()` values only by subtraction (`a - b < 0`, never `a < b`), no zero/sign sentinels on tick fields, seed deadline fields from a real tick (never rely on the 0 default). Cloud hypervisors (GCP) pass through the host's never-resetting counter: ticks start enormous and can wrap negative. Linux affected in production; Windows not so far → `dev-docs/tick-counts.md`
 
 ## Dev-Docs Reference
 
@@ -45,6 +46,9 @@ Apply these when writing or reviewing `.cs` files under `Projects/`.
 | Commands & targeting | `dev-docs/commands-targeting.md` |
 | Event system | `dev-docs/events.md` |
 | Threading model | `dev-docs/threading-model.md` |
+| Server hardware requirements | `dev-docs/server-requirements.md` |
+| Debugging event-loop performance (profiling build, decomposition, GC/RAM) | `dev-docs/debugging-event-loop.md` |
+| Tick-count overflow rules (subtraction comparisons; GCP pass-through counters) | `dev-docs/tick-counts.md` |
 | Server lifecycle & bootstrap phases (Configure/ConfigurePrompts/Initialize) | `dev-docs/server-lifecycle.md` |
 | Platform prerequisites (ICU, tzdata, native libs per distro) | `dev-docs/platform-prerequisites.md` |
 | Configuration system | `dev-docs/configuration.md` |
@@ -95,7 +99,18 @@ Then copy only the relevant skill files based on the task:
 | Migrate persistence (WorldSave) | `migrate-from-runuo/migrate-persistence` |
 | Migrate multi-file system | `migrate-from-runuo/migrate-systems` |
 
-To enable a skill: `cp dev-docs/claude-skills/<name>.md .claude/skills/`
+To enable a skill — Claude Code loads `.claude/skills/<name>/SKILL.md`; a bare `.md` dropped
+directly into `.claude/skills/` is **not** picked up, and newly installed skills appear in the
+*next* session:
+
+```sh
+# Standard skills (modernuo-*)
+mkdir -p .claude/skills/<name> && cp dev-docs/claude-skills/<name>.md .claude/skills/<name>/SKILL.md
+
+# Migration skills — sources live in the migrate-from-runuo/ subfolder, but install under the
+# bare skill name (the table's "migrate-from-runuo/<name>" is the source path, not the name):
+mkdir -p .claude/skills/<name> && cp dev-docs/claude-skills/migrate-from-runuo/<name>.md .claude/skills/<name>/SKILL.md
+```
 
 Migration skills reference the deep docs in `dev-docs/runuo-migration-docs/` and point to existing ModernUO skills for best practices.
 
