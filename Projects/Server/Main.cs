@@ -617,8 +617,8 @@ public static class Core
         if (_eventLoopIdleWaitMs > 0 && NetState.Ring?.SupportsHighResolutionWait == false)
         {
             logger.Error(
-                "This host cannot honour short waits (no high-resolution timer, and raising the system timer " +
-                "resolution failed). Idle sleeping is disabled -- the loop will spin instead, using a full core."
+                "This host cannot honor short waits (no high-resolution timer, and raising the system timer " +
+                "resolution failed). Idle sleeping is disabled. The loop will spin instead, using a full core."
             );
 
             _eventLoopIdleWaitMs = 0;
