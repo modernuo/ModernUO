@@ -398,8 +398,12 @@ public static class AccountHandler
 
     /// <summary>
     /// Hands the password check to the worker, whatever algorithm it uses. Every protection is safe
-    /// to run off the loop, so there is no carve-out; a cheap digest pays a thread hop it does not
-    /// need, but login latency is not what this is protecting.
+    /// to run off the loop, so there is no carve-out.
+    ///
+    /// Nor is a cheap digest worth carving out. <c>AccountSecurity.Configure</c> refuses anything
+    /// below SHA2 as the configured algorithm, so MD5 and SHA1 only ever appear as a stored hash
+    /// awaiting migration -- which makes <c>NeedsPasswordUpgrade</c> true, and the job carries the
+    /// upgrade hash that dominates it. The microsecond digest is never the whole job.
     /// </summary>
     private static PasswordCheckDispatch DispatchPasswordCheck(AccountLoginEventArgs e, Account acct, string pw)
     {
