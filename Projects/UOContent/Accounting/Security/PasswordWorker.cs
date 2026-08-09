@@ -17,7 +17,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Threading;
 using Server.Logging;
-using Server.Misc;
 using Server.Network;
 
 namespace Server.Accounting.Security;
@@ -90,7 +89,7 @@ internal sealed class PasswordWorker
     /// verify and the engine caps connections at 4096 (<c>NetState.Network.cs</c>), so this matches
     /// that bound and can only trip if the one-per-connection invariant breaks. A cap low enough to
     /// blunt an attack would reject real players first -- during a mass reconnect they are the
-    /// queue. Flood defence belongs at the connection layer.
+    /// queue. Flood defense belongs at the connection layer.
     /// </summary>
     internal const int MaxPending = 4096;
 
@@ -161,8 +160,7 @@ internal sealed class PasswordWorker
     /// the freeze holds the loop, so nothing new can be queued during it. PendingSave counts too --
     /// the serialization threads are already awake and spinning on an empty queue by then.
     /// </summary>
-    private static bool CanRunNow() =>
-        World.WorldState is WorldState.Running or WorldState.WritingSave;
+    private static bool CanRunNow() => World.WorldState is WorldState.Running or WorldState.WritingSave;
 
     private void Execute()
     {
@@ -283,7 +281,14 @@ internal sealed class PasswordWorker
     internal static PasswordOutcome ComputeInline(PasswordJob job) =>
         Instance.Compute(job);
 
-    internal static void Exit()
+    /// <summary>
+    /// Normal shutdown. The loop has stopped but this runs on the game thread, so pending work can
+    /// be finished in place -- which is the only chance it gets, since nothing will pump the loop
+    /// context again.
+    ///
+    /// Only writes are finished. A verify decides a login, and every connection is closing.
+    /// </summary>
+    internal static void Shutdown()
     {
         var instance = _instance;
 
@@ -292,9 +297,40 @@ internal sealed class PasswordWorker
             return;
         }
 
-        instance._exit = true;
-        instance._work.Set();
-        instance._thread.Join(TimeSpan.FromSeconds(5));
-        _instance = null;
+        instance.StopThread();
+
+        // Results posted before the thread stopped are still queued on a loop that has exited.
+        Core.LoopContext.ExecuteTasks();
+
+        while (instance._queue.TryDequeue(out var job))
+        {
+            Interlocked.Decrement(ref instance._pending);
+
+            if (job.HashPhrase == null)
+            {
+                continue;
+            }
+
+            var outcome = instance.Compute(job);
+
+            if (outcome.Verified && outcome.Hash != null)
+            {
+                job.Account.ApplyPasswordWrite(job.Sequence, outcome.Hash, job.TargetAlgorithm);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Crash. There is no usable game thread, so nothing may be applied -- stop the thread and let
+    /// whatever was pending go. Subscribed separately because <c>HandleClosed</c> skips
+    /// <c>InvokeShutdown</c> when the server crashed.
+    /// </summary>
+    internal static void OnCrashed(ServerCrashedEventArgs e) => _instance?.StopThread();
+
+    private void StopThread()
+    {
+        _exit = true;
+        _work.Set();
+        _thread.Join(TimeSpan.FromSeconds(5));
     }
 }
