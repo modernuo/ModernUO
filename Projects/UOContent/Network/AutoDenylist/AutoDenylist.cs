@@ -29,7 +29,7 @@ namespace Server.Network;
 /// <remarks>
 /// The local half of promotion. Contributing to CrowdSec only helps once an OS bouncer reacts; until then
 /// every reconnect costs a socket, a buffer and a <c>NetState</c> slot — and the verdicts that matter most
-/// are reachable only after reading bytes, like a zero seed. It is also the whole defence on a shard running
+/// are reachable only after reading bytes, like a zero seed. It is also the whole defense on a shard running
 /// no bouncer, which is the default. Not persisted, by design: a holding pen that survives restarts is a ban
 /// without a ban's review. Only <see cref="BanReasons.IsBehavioral"/> verdicts are held.
 /// </remarks>

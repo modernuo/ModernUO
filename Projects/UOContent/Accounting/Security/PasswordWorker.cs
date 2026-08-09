@@ -85,13 +85,13 @@ internal sealed class PasswordWorker
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(PasswordWorker));
 
     /// <summary>
-    /// Backstop, not a flood defence. <c>SentFirstPacket</c> holds a connection to one pending
+    /// Backstop, not a flood defense. <c>SentFirstPacket</c> holds a connection to one pending
     /// verify and the engine caps connections at 4096 (<c>NetState.Network.cs</c>), so this matches
     /// that bound and can only trip if the one-per-connection invariant breaks. A cap low enough to
     /// blunt an attack would reject real players first -- during a mass reconnect they are the
     /// queue. Flood defense belongs at the connection layer.
     /// </summary>
-    internal const int MaxPending = 4096;
+    private const int MaxPending = 4096;
 
     // Nothing signals the worker when a save freeze ends, so it re-checks on this interval -- but
     // only while a save is in progress, never in steady state.
@@ -101,7 +101,7 @@ internal sealed class PasswordWorker
 
     // Needs a spare core to move work to, which a 1-2 core host does not have. Off in DEBUG:
     // dev boxes and test shards have few logins and are better served by the simpler path.
-    internal static bool Enabled { get; } =
+    internal static readonly bool Enabled =
 #if DEBUG
         false;
 #else
@@ -132,8 +132,6 @@ internal sealed class PasswordWorker
 
     // Created on first use, so a shard that never takes the off-loop path never allocates a thread.
     private static PasswordWorker Instance => _instance ??= new PasswordWorker();
-
-    internal static int Pending => _instance?._pending ?? 0;
 
     /// <summary>
     /// Queues a job. False when the queue is full, in which case the caller must reject the login
@@ -189,8 +187,9 @@ internal sealed class PasswordWorker
 
             // Gone while it waited: skip it rather than spend ~9 ms on a verdict nobody receives.
             // Running only goes true -> false, so a stale read wastes a hash but can never skip a
-            // live connection.
-            if (job.State?.Running != true)
+            // live connection. A null State means the job is not tied to a connection at all, such
+            // as an admin password change, and must still run.
+            if (job.State?.Running == false)
             {
                 continue;
             }
@@ -229,7 +228,7 @@ internal sealed class PasswordWorker
     {
         // Re-checked: a connection can drop while the result sits in the loop queue. Jobs with no
         // connection attached, such as an admin password change, are unaffected.
-        if (job.State != null && !job.State.Running)
+        if (job.State?.Running == false)
         {
             return;
         }

@@ -29,6 +29,40 @@ public class PasswordWorkerTests : IDisposable
             TargetAlgorithm = AccountSecurity.CurrentAlgorithm
         };
 
+    /// <summary>
+    /// Drives the real queue rather than <c>ComputeInline</c>. A job with no NetState attached -- an
+    /// admin password change -- was being dropped by the liveness check, which read a null State as
+    /// a dead connection, so the change silently never happened and its callback never fired.
+    /// </summary>
+    [Fact]
+    public void RunsAJobThatHasNoConnectionAttached()
+    {
+        var account = CreateAccount("offloop-no-netstate-user");
+        var applied = false;
+
+        var job = new PasswordJob
+        {
+            Account = account,
+            HashPhrase = account.GetRehashPhrase("a-queued-password"),
+            TargetAlgorithm = AccountSecurity.CurrentAlgorithm,
+            Sequence = account.BeginPasswordWrite(),
+            OnComplete = (_, outcome) => applied = outcome.Hash != null
+        };
+
+        Assert.True(PasswordWorker.TryEnqueue(job));
+
+        // The worker posts its result to the loop context, which no loop is pumping here.
+        var deadline = DateTime.UtcNow.AddSeconds(10);
+        while (!applied && DateTime.UtcNow < deadline)
+        {
+            Core.LoopContext.ExecuteTasks();
+            System.Threading.Thread.Sleep(5);
+        }
+
+        Assert.True(applied);
+        Assert.True(account.CheckPassword("a-queued-password"));
+    }
+
     [Fact]
     public void VerifiesTheCorrectPassword()
     {
