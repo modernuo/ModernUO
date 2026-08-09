@@ -126,7 +126,6 @@ internal sealed class PasswordWorker
         _thread.Start();
     }
 
-    // Created on first use, so a shard that never takes the off-loop path never allocates a thread.
     private static PasswordWorker Instance => _instance ??= new PasswordWorker();
 
     /// <summary>Queues a job. False when full, and the caller must then reject without verifying.</summary>
@@ -215,8 +214,7 @@ internal sealed class PasswordWorker
         return new PasswordOutcome(
             true,
             job.HashPhrase == null
-                ? null
-                : AccountSecurity.GetPasswordProtection(job.TargetAlgorithm).EncryptPassword(job.HashPhrase)
+                ? null : AccountSecurity.GetPasswordProtection(job.TargetAlgorithm).EncryptPassword(job.HashPhrase)
         );
     }
 
@@ -273,48 +271,18 @@ internal sealed class PasswordWorker
     internal static PasswordOutcome ComputeInline(PasswordJob job) => Compute(job);
 
     /// <summary>
-    /// Normal shutdown, on the game thread after the loop has stopped. Pending work gets no other
-    /// chance: nothing will pump the loop context again.
+    /// Stops the worker on shutdown or crash. Pending jobs are dropped rather than finished:
+    /// nothing saves the world after this point, so a write applied here would reach no disk.
     ///
-    /// Writes only. A verify decides a login, and every connection is closing.
+    /// Draining the loop context is not this type's business either. That belongs in the core
+    /// shutdown path, before subscriber events run -- a subscriber pumping the shared context would
+    /// execute other subscribers' work at an arbitrary point in the event order.
     /// </summary>
-    internal static void Shutdown()
-    {
-        var instance = _instance;
+    internal static void Stop() => _instance?.StopThread();
 
-        if (instance == null)
-        {
-            return;
-        }
-
-        instance.StopThread();
-
-        // Results posted before the thread stopped are queued on a loop that has exited.
-        Core.LoopContext.ExecuteTasks();
-
-        while (instance._queue.TryDequeue(out var job))
-        {
-            Interlocked.Decrement(ref instance._pending);
-
-            if (job.HashPhrase == null)
-            {
-                continue;
-            }
-
-            var outcome = Compute(job);
-
-            if (outcome.Verified && outcome.Hash != null)
-            {
-                job.Account.ApplyPasswordWrite(outcome.Hash, job.TargetAlgorithm);
-            }
-        }
-    }
-
-    /// <summary>
-    /// Crash. No usable game thread, so nothing may be applied and pending work is dropped.
-    /// Subscribed separately because <c>HandleClosed</c> skips <c>InvokeShutdown</c> when crashed.
-    /// </summary>
-    internal static void OnCrashed(ServerCrashedEventArgs e) => _instance?.StopThread();
+    // HandleClosed skips InvokeShutdown when the server crashed, so the crash path needs its own
+    // subscription.
+    internal static void OnCrashed(ServerCrashedEventArgs e) => Stop();
 
     private void StopThread()
     {

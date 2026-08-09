@@ -71,7 +71,7 @@ public static class AccountHandler
     {
         EventSink.AccountLogin += EventSink_AccountLogin;
 
-        EventSink.Shutdown += PasswordWorker.Shutdown;
+        EventSink.Shutdown += PasswordWorker.Stop;
         EventSink.ServerCrashed += PasswordWorker.OnCrashed;
     }
 
