@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using Server.Accounting;
 using Server.Accounting.Security;
 using Xunit;
@@ -18,6 +19,42 @@ public class PasswordWorkerTests : IDisposable
 
     private static Account CreateAccount(string username) =>
         Accounts.GetAccount(username) as Account ?? new Account(username, Password);
+
+    /// <summary>
+    /// Enqueues work, then pumps the loop context until <paramref name="complete"/> or the deadline.
+    ///
+    /// The context pins itself to the thread that constructed it and refuses <c>ExecuteTasks</c>
+    /// from any other. The fixture's belongs to whichever thread built the fixture, and xUnit gives
+    /// no guarantee that a test method runs on that thread even inside a sequential collection --
+    /// so this owns one for the duration and puts the original back. Pumping the fixture's context
+    /// passed locally and failed on CI.
+    /// </summary>
+    private static void PumpUntil(Action enqueue, Func<bool> complete, int timeoutSeconds = 20)
+    {
+        var original = Core.LoopContext;
+        var owned = new EventLoopContext();
+        Core.LoopContext = owned;
+
+        try
+        {
+            enqueue();
+
+            var deadline = DateTime.UtcNow.AddSeconds(timeoutSeconds);
+
+            while (!complete() && DateTime.UtcNow < deadline)
+            {
+                owned.ExecuteTasks();
+                Thread.Sleep(5);
+            }
+
+            // Anything that landed between the last pump and the final check.
+            owned.ExecuteTasks();
+        }
+        finally
+        {
+            Core.LoopContext = original;
+        }
+    }
 
     private static PasswordJob JobFor(Account account, string submitted) =>
         new()
@@ -49,15 +86,7 @@ public class PasswordWorkerTests : IDisposable
             OnComplete = (_, outcome) => applied = outcome.Hash != null
         };
 
-        Assert.True(PasswordWorker.TryEnqueue(job));
-
-        // The worker posts its result to the loop context, which no loop is pumping here.
-        var deadline = DateTime.UtcNow.AddSeconds(10);
-        while (!applied && DateTime.UtcNow < deadline)
-        {
-            Core.LoopContext.ExecuteTasks();
-            System.Threading.Thread.Sleep(5);
-        }
+        PumpUntil(() => Assert.True(PasswordWorker.TryEnqueue(job)), () => applied);
 
         Assert.True(applied);
         Assert.True(account.CheckPassword("a-queued-password"));
@@ -146,27 +175,27 @@ public class PasswordWorkerTests : IDisposable
         var account = CreateAccount("offloop-two-writes-user");
         var done = 0;
 
-        for (var i = 1; i <= 2; i++)
-        {
-            Assert.True(
-                PasswordWorker.TryEnqueue(
-                    new PasswordJob
-                    {
-                        Account = account,
-                        HashPhrase = account.GetRehashPhrase($"password-{i}"),
-                        TargetAlgorithm = AccountSecurity.CurrentAlgorithm,
-                        OnComplete = (_, _) => done++
-                    }
-                )
-            );
-        }
-
-        var deadline = DateTime.UtcNow.AddSeconds(20);
-        while (done < 2 && DateTime.UtcNow < deadline)
-        {
-            Core.LoopContext.ExecuteTasks();
-            System.Threading.Thread.Sleep(5);
-        }
+        PumpUntil(
+            () =>
+            {
+                for (var i = 1; i <= 2; i++)
+                {
+                    Assert.True(
+                        PasswordWorker.TryEnqueue(
+                            new PasswordJob
+                            {
+                                Account = account,
+                                HashPhrase = account.GetRehashPhrase($"password-{i}"),
+                                StoredAlgorithm = account.PasswordAlgorithm,
+                                TargetAlgorithm = AccountSecurity.CurrentAlgorithm,
+                                OnComplete = (_, _) => done++
+                            }
+                        )
+                    );
+                }
+            },
+            () => done >= 2
+        );
 
         Assert.Equal(2, done);
         Assert.True(account.CheckPassword("password-2"));
