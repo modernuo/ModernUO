@@ -9,10 +9,11 @@ using Server.Network;
 
 namespace Server.Items;
 
-[SerializationGenerator(2, false)]
+[SerializationGenerator(3, false)]
 public partial class TreasureMapChest : LockableContainer
 {
     [Tidy]
+    [CanBeNull]
     [SerializableField(0, setter: "private")]
     private List<Mobile> _guardians;
 
@@ -43,9 +44,13 @@ public partial class TreasureMapChest : LockableContainer
     }
 
     [Tidy]
+    [CanBeNull]
     [SerializableField(5, setter: "private")]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private HashSet<Item> _lifted;
+
+    // False only while the constructor fills the chest; deserialized chests are always filled.
+    private bool _filled;
 
     [Constructible]
     public TreasureMapChest(int level) : this(null, level)
@@ -58,10 +63,10 @@ public partial class TreasureMapChest : LockableContainer
         _level = level;
 
         _temporary = temporary;
-        _guardians = [];
 
         _expireTimer = Timer.DelayCall(TimeSpan.FromHours(3.0), Delete);
         Fill(this, level);
+        _filled = true;
     }
 
     public override int LabelNumber => 3000541;
@@ -182,7 +187,6 @@ public partial class TreasureMapChest : LockableContainer
                 2 => 76,
                 3 => 84,
                 4 => 92,
-                5 => 100,
                 _ => 100
             };
 
@@ -300,14 +304,17 @@ public partial class TreasureMapChest : LockableContainer
 
         if (_level == 0 && from.AccessLevel < AccessLevel.GameMaster)
         {
-            for (var i = 0; i < _guardians.Count; i++)
+            if (_guardians.Count > 0)
             {
-                var m = _guardians[i];
-                if (m.Alive)
+                for (var i = 0; i < _guardians.Count; i++)
                 {
-                    // You must first kill the guardians before you may open this chest.
-                    from.SendLocalizedMessage(1046448);
-                    return true;
+                    var m = _guardians[i];
+                    if (m.Alive)
+                    {
+                        // You must first kill the guardians before you may open this chest.
+                        from.SendLocalizedMessage(1046448);
+                        return true;
+                    }
                 }
             }
 
@@ -361,6 +368,17 @@ public partial class TreasureMapChest : LockableContainer
     public override bool CheckLift(Mobile from, Item item, ref LRReason reject) =>
         CheckLoot(from, true) && base.CheckLift(from, item, ref reject);
 
+    public override void OnItemAdded(Item item)
+    {
+        base.OnItemAdded(item);
+
+        if (_filled)
+        {
+            _lifted ??= [];
+            _lifted.Add(item);
+        }
+    }
+
     public override void OnItemLifted(Mobile from, Item item)
     {
         var notYetLifted = _lifted?.Contains(item) != true;
@@ -393,8 +411,6 @@ public partial class TreasureMapChest : LockableContainer
 
     private void Deserialize(IGenericReader reader, int version)
     {
-        _guardians = [];
-
         _owner = reader.ReadEntity<Mobile>();
         _level = reader.ReadInt();
         var expireTimerNext = reader.ReadDeltaTime();
@@ -402,12 +418,34 @@ public partial class TreasureMapChest : LockableContainer
         _lifted = reader.ReadEntitySet<Item>();
     }
 
-    [AfterDeserialization(false)]
+    private void MigrateFrom(V2Content content)
+    {
+        _guardians = content.Guardians;
+        if (_guardians.Count == 0)
+        {
+            _guardians = null;
+        }
+        _temporary = content.Temporary;
+        _owner = content.Owner;
+        _level = content.Level;
+        _lifted = content.Lifted;
+        if (_lifted.Count == 0)
+        {
+            _lifted = null;
+        }
+
+        var expireTimerDelay = content.ExpireTimerDelay;
+        DeserializeExpireTimer(expireTimerDelay);
+    }
+
+    [AfterDeserialization]
     private void AfterDeserialization()
     {
+        _filled = true;
+
         if (_expireTimer == null)
         {
-            Delete();
+            Timer.DelayCall(Delete);
         }
     }
 
