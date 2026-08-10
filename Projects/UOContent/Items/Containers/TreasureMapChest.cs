@@ -438,14 +438,14 @@ public partial class TreasureMapChest : LockableContainer
         DeserializeExpireTimer(expireTimerDelay);
     }
 
-    [AfterDeserialization(false)]
+    [AfterDeserialization]
     private void AfterDeserialization()
     {
         _filled = true;
 
         if (_expireTimer == null)
         {
-            Delete();
+            Timer.DelayCall(Delete);
         }
     }
 
