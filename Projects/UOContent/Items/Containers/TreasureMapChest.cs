@@ -304,7 +304,7 @@ public partial class TreasureMapChest : LockableContainer
 
         if (_level == 0 && from.AccessLevel < AccessLevel.GameMaster)
         {
-            if (_guardians.Count > 0)
+            if (_guardians != null)
             {
                 for (var i = 0; i < _guardians.Count; i++)
                 {
@@ -381,10 +381,8 @@ public partial class TreasureMapChest : LockableContainer
 
     public override void OnItemLifted(Mobile from, Item item)
     {
-        var notYetLifted = _lifted?.Contains(item) != true;
         from.RevealingAction();
-
-        if (notYetLifted)
+        if (_lifted?.Contains(item) != true)
         {
             _lifted ??= [];
             _lifted.Add(item);
