@@ -227,7 +227,8 @@ namespace Server.Gumps
                     }
                 case AdminGumpPage.Information_Perf:
                     {
-                        var loopStatus = Core.EventLoopIdleWaitMs == 0 ? "Spinning (configured)" :
+                        var loopStatus = Core.IdleSleepUnsupported ? "Spinning - host cannot honor short waits" :
+                            Core.EventLoopIdleWaitMs == 0 ? "Spinning (configured)" :
                             Core.IdleSleepSuspended ? "Sleep suspended - host returning waits late" : "Healthy";
 
                         AddLabel(20, 130, LabelHue, "Event Loop:");

@@ -58,6 +58,12 @@ public static class Core
     public static int EventLoopIdleWaitMs => _eventLoopIdleWaitMs;
 
     /// <summary>
+    /// True when idle sleeping was disabled at startup because the host cannot honor short
+    /// waits, overriding whatever <c>server.eventLoopIdleWaitMs</c> was configured to.
+    /// </summary>
+    public static bool IdleSleepUnsupported { get; private set; }
+
+    /// <summary>
     /// Whether idle sleeping is currently suspended because the host returned waits late.
     /// </summary>
     /// <remarks>
@@ -129,18 +135,13 @@ public static class Core
             return;
         }
 
-        // Already suspended: extend rather than counting a fresh backoff episode.
-        if (_tickCount - _idleSleepSuspendedUntil < 0)
-        {
-            _idleSleepSuspendedUntil = _tickCount + _currentBackoffMs;
-            return;
-        }
-
-        // A long clean streak resets the escalation. Gated on the count rather than a
+        // A long clean streak resets the escalation, re-arming the ceiling Error so a host that
+        // recovers and later degrades again gets re-reported. Gated on the count rather than a
         // "_lastBackoffAt > 0" sentinel because tick counts are not guaranteed positive.
         if (_consecutiveBackoffs > 0 && _tickCount - _lastBackoffAt > BackoffResetAfterCleanMs)
         {
             _consecutiveBackoffs = 0;
+            _loggedBackoffCeiling = false;
         }
 
         _currentBackoffMs = Math.Min(BackoffBaseMs << Math.Min(_consecutiveBackoffs, BackoffMaxShift), BackoffMaxMs);
@@ -553,11 +554,29 @@ public static class Core
         ServerConfiguration.Load();
 
         // 0 disables idle sleeping entirely (full-core spin, zero scheduling overhead).
-        _eventLoopIdleWaitMs = ServerConfiguration.GetSetting("server.eventLoopIdleWaitMs", 2);
+        var idleWaitMs = ServerConfiguration.GetSetting("server.eventLoopIdleWaitMs", 2);
+        if (idleWaitMs < 0)
+        {
+            logger.Warning(
+                "server.eventLoopIdleWaitMs {Value} is negative; using 0 (idle sleeping disabled)",
+                idleWaitMs
+            );
+        }
+
+        _eventLoopIdleWaitMs = Math.Max(0, idleWaitMs);
 
         // 16ms-budget misses per second before idle sleeping backs off. Raise to tolerate a
         // jittery host; set very high to disable the backoff.
-        _lateWakeThreshold = ServerConfiguration.GetSetting("server.lateWakeThreshold", 1);
+        var lateWakeThreshold = ServerConfiguration.GetSetting("server.lateWakeThreshold", 1);
+        if (lateWakeThreshold < 0)
+        {
+            logger.Warning(
+                "server.lateWakeThreshold {Value} is negative; using 0",
+                lateWakeThreshold
+            );
+        }
+
+        _lateWakeThreshold = Math.Max(0, lateWakeThreshold);
 
         var assemblyPath = Path.Join(BaseDirectory, AssembliesConfiguration);
 
@@ -621,6 +640,7 @@ public static class Core
                 "resolution failed). Idle sleeping is disabled. The loop will spin instead, using a full core."
             );
 
+            IdleSleepUnsupported = true;
             _eventLoopIdleWaitMs = 0;
         }
 
@@ -672,8 +692,10 @@ public static class Core
 
                 if (_performSnapshot)
                 {
+                    EventLoopProfiler.PhaseStart(LoopPhase.WorldSnapshot);
                     // Return value is the offset that can be used to fix timers that should drift
                     World.Snapshot(_snapshotPath);
+                    EventLoopProfiler.PhaseEnd(LoopPhase.WorldSnapshot);
                     _performSnapshot = false;
                 }
 

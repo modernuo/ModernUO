@@ -87,7 +87,7 @@ public partial class NetState
     /// </summary>
     internal static bool IsIdle =>
         _throttled.Count == 0 && _throttledPending.Count == 0 &&
-        _flushPending.Count == 0 && _disposed.Count == 0;
+        _flushPending.Count == 0 && _pendingDisconnects.Count == 0 && _disposed.Count == 0;
 
     /// <summary>
     /// Gets the listening addresses that the server is bound to.

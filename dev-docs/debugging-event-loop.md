@@ -8,7 +8,8 @@ funnel in order; most incidents resolve before the last step. Do not start with 
 Every second of the main thread's wall time goes to exactly one of four places:
 
 1. **Work** — the loop's phases: mobile deltas, item deltas, timer callbacks (`Timer.Slice`),
-   network processing (`NetState.Slice`), posted tasks (`LoopContext`).
+   network processing (`NetState.Slice`), posted tasks (`LoopContext`), world snapshots
+   (`WorldSnapshot` — the on-loop portion of a save).
 2. **Sleep** — idle blocking in `NetState.WaitForCompletion`, bounded by the next timer tick and
    `server.eventLoopIdleWaitMs`.
 3. **GC pauses** — land inside whichever phase (or sleep) was running.
@@ -27,7 +28,7 @@ No build changes needed. Three signals exist, all actionable:
 |---|---|---|
 | Startup error: *host cannot honour short waits* | No high-resolution timer and `timeBeginPeriod` failed. Very old or unusual Windows. | Nothing is wrong with the server; it spins and uses a full core. Upgrade the OS or accept the core. |
 | Warning: *host returned a Nms idle wait late* + sleeping suspended | The OS did not reschedule the process promptly after a 1–2ms wait. Shared/burstable vCPU signature. | Move to dedicated CPU, or set `server.eventLoopIdleWaitMs=0` to spin permanently. This is a **host** problem — no amount of server-side change fixes it. |
-| Admin gump → Performance → *Event Loop* | `Healthy` / `Sleep suspended (host)` / `Spinning (configured)` | Same as above. |
+| Admin gump → Performance → *Event Loop* | `Healthy` / `Sleep suspended (host)` / `Spinning (configured)` / `Spinning - host cannot honor short waits` | Same as above; the last verdict is the startup error's state, not a config choice. |
 
 If none of these fired and the shard still feels laggy, the cause is work, GC, or something a
 boot-time signal cannot see. Continue.

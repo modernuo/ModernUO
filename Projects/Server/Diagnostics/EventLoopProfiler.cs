@@ -26,6 +26,7 @@ public enum LoopPhase
     TimerSlice,
     NetworkSlice,
     LoopTasks,
+    WorldSnapshot,
 }
 
 /// <summary>
@@ -42,7 +43,7 @@ public enum LoopPhase
 /// </remarks>
 public static class EventLoopProfiler
 {
-    public const int PhaseCount = 5;
+    public const int PhaseCount = 6;
     private const int RingSize = 900;
     private const long SampleIntervalMs = 1000;
 
