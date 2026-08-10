@@ -47,6 +47,9 @@ public partial class TreasureMapChest : LockableContainer
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private HashSet<Item> _lifted;
 
+    // False only while the constructor fills the chest; deserialized chests are always filled.
+    private bool _filled;
+
     [Constructible]
     public TreasureMapChest(int level) : this(null, level)
     {
@@ -62,6 +65,7 @@ public partial class TreasureMapChest : LockableContainer
 
         _expireTimer = Timer.DelayCall(TimeSpan.FromHours(3.0), Delete);
         Fill(this, level);
+        _filled = true;
     }
 
     public override int LabelNumber => 3000541;
@@ -361,6 +365,21 @@ public partial class TreasureMapChest : LockableContainer
     public override bool CheckLift(Mobile from, Item item, ref LRReason reject) =>
         CheckLoot(from, true) && base.CheckLift(from, item, ref reject);
 
+    public override void OnItemAdded(Item item)
+    {
+        base.OnItemAdded(item);
+
+        // Anything entering the chest after the initial fill was never part of the original
+        // loot: stack-split remainders from partial lifts (re-added engine-side, bypassing
+        // CheckHold) and packed-in items. Mark them lifted so pulling a stack out coin by
+        // coin can't re-roll the guardian spawn per pull.
+        if (_filled)
+        {
+            _lifted ??= [];
+            _lifted.Add(item);
+        }
+    }
+
     public override void OnItemLifted(Mobile from, Item item)
     {
         var notYetLifted = _lifted?.Contains(item) != true;
@@ -405,6 +424,8 @@ public partial class TreasureMapChest : LockableContainer
     [AfterDeserialization(false)]
     private void AfterDeserialization()
     {
+        _filled = true;
+
         if (_expireTimer == null)
         {
             Delete();
