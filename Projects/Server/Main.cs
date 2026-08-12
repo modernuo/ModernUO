@@ -84,6 +84,11 @@ public static class Core
     // Clean streak that clears the escalation.
     private const long BackoffResetAfterCleanMs = 60_000;
 
+    // Backoffs below this are still recoverable and not something an operator can act on, so they
+    // are logged at Debug. Past it the host has stayed bad through several doublings and is worth
+    // a Warning; the ceiling above escalates to Error.
+    private const int WarnAfterConsecutiveBackoffs = 3;
+
     // A sleep is bounded by the time to the next wheel turn, so a correctly honoured sleep can
     // never miss a deadline; the only way sleeping harms the wheel is the wait returning late
     // (the host descheduled the process). That overshoot is measured per sleep, which is why
@@ -91,9 +96,13 @@ public static class Core
     // Loop-thread only, so plain increments are safe.
     private static int _lateWakes;
 
+    // Denominator for the late-wake rate: sleeps actually performed in the current sample window.
+    private static int _sleepAttempts;
+
     private static long _nextHealthSample;
     private static long _idleSleepSuspendedUntil;
     private static int _lateWakeThreshold = 1;
+    private static int _lateWakePercent = 10;
     private static long _idleSleepBackoffs;
     private static int _consecutiveBadSamples;
     private static int _consecutiveBackoffs;
@@ -115,9 +124,42 @@ public static class Core
         _nextHealthSample = _tickCount + HealthSampleIntervalMs;
 
         var late = _lateWakes;
+        var sleeps = _sleepAttempts;
         _lateWakes = 0;
+        _sleepAttempts = 0;
+
+        // A long clean streak resets the escalation, re-arming the ceiling Error so a host that
+        // recovers and later degrades again gets re-reported. Checked on every sample rather than
+        // only on bad ones, so a host that recovers for good still says so instead of waiting to
+        // degrade again. Gated on the count rather than a "_lastBackoffAt > 0" sentinel because
+        // tick counts are not guaranteed positive.
+        if (_consecutiveBackoffs > 0 && _tickCount - _lastBackoffAt > BackoffResetAfterCleanMs)
+        {
+            if (_consecutiveBackoffs >= WarnAfterConsecutiveBackoffs)
+            {
+                logger.Information(
+                    "This host has returned idle waits on time for {Duration}ms; idle sleeping is back to normal",
+                    BackoffResetAfterCleanMs
+                );
+            }
+
+            _consecutiveBackoffs = 0;
+            _loggedBackoffCeiling = false;
+        }
 
         if (late <= _lateWakeThreshold)
+        {
+            _consecutiveBadSamples = 0;
+            return;
+        }
+
+        // Lateness is a rate, not a count. An idle loop performs hundreds of ~2ms sleeps a second,
+        // so a handful of outliers -- a co-tenant burst, a page fault, another process changing the
+        // system timer resolution -- is normal on a perfectly healthy host. A host that genuinely
+        // cannot schedule the process returns *most* of its waits late, which is two orders of
+        // magnitude away. The absolute threshold stays on as a floor for windows with few sleeps,
+        // where a proportion means nothing.
+        if (late * 100 < sleeps * _lateWakePercent)
         {
             _consecutiveBadSamples = 0;
             return;
@@ -133,15 +175,6 @@ public static class Core
         if (_eventLoopIdleWaitMs <= 0)
         {
             return;
-        }
-
-        // A long clean streak resets the escalation, re-arming the ceiling Error so a host that
-        // recovers and later degrades again gets re-reported. Gated on the count rather than a
-        // "_lastBackoffAt > 0" sentinel because tick counts are not guaranteed positive.
-        if (_consecutiveBackoffs > 0 && _tickCount - _lastBackoffAt > BackoffResetAfterCleanMs)
-        {
-            _consecutiveBackoffs = 0;
-            _loggedBackoffCeiling = false;
         }
 
         _currentBackoffMs = Math.Min(BackoffBaseMs << Math.Min(_consecutiveBackoffs, BackoffMaxShift), BackoffMaxMs);
@@ -167,12 +200,32 @@ public static class Core
             return;
         }
 
+        // Each backoff doubles the suspension, so every one of these is a distinct escalation step
+        // and needs no further rate limiting. The first couple are recoverable and not actionable,
+        // so they stay at Debug; only a host that survives several doublings earns a Warning.
+        if (_consecutiveBackoffs < WarnAfterConsecutiveBackoffs)
+        {
+            logger.Debug(
+                "This host returned a {Requested}ms idle wait at least {TickRate}ms late {Count} of {Sleeps} time(s) " +
+                "in the last second; idle sleeping suspended for {Duration}ms",
+                _eventLoopIdleWaitMs,
+                Timer.TickRate,
+                late,
+                sleeps,
+                _currentBackoffMs
+            );
+
+            return;
+        }
+
         logger.Warning(
-            "This host returned a {Requested}ms idle wait at least {TickRate}ms late {Count} time(s) in the last " +
-            "second; idle sleeping suspended for {Duration}ms",
+            "This host returned a {Requested}ms idle wait at least {TickRate}ms late {Count} of {Sleeps} time(s) in " +
+            "the last second, for the {Backoffs}th time running; idle sleeping suspended for {Duration}ms",
             _eventLoopIdleWaitMs,
             Timer.TickRate,
             late,
+            sleeps,
+            _consecutiveBackoffs,
             _currentBackoffMs
         );
     }
@@ -565,8 +618,9 @@ public static class Core
 
         _eventLoopIdleWaitMs = Math.Max(0, idleWaitMs);
 
-        // 16ms-budget misses per second before idle sleeping backs off. Raise to tolerate a
-        // jittery host; set very high to disable the backoff.
+        // Floor for the late-wake backoff: idle waits per second the host may return a full tick
+        // (8ms) late before the rate test below even applies. Raise to tolerate a jittery host; set
+        // very high to disable the backoff.
         var lateWakeThreshold = ServerConfiguration.GetSetting("server.lateWakeThreshold", 1);
         if (lateWakeThreshold < 0)
         {
@@ -577,6 +631,22 @@ public static class Core
         }
 
         _lateWakeThreshold = Math.Max(0, lateWakeThreshold);
+
+        // Share of a second's idle waits that must come back late before the backoff trips. A bare
+        // count cannot separate a few tail outliers from a host that never schedules us -- an idle
+        // loop sleeps hundreds of times a second -- but the proportion can. 0 leaves the absolute
+        // threshold in sole charge.
+        var lateWakePercent = ServerConfiguration.GetSetting("server.lateWakePercent", 10);
+        if (lateWakePercent is < 0 or > 100)
+        {
+            logger.Warning(
+                "server.lateWakePercent {Value} is outside 0-100; using {Clamped}",
+                lateWakePercent,
+                Math.Clamp(lateWakePercent, 0, 100)
+            );
+        }
+
+        _lateWakePercent = Math.Clamp(lateWakePercent, 0, 100);
 
         var assemblyPath = Path.Join(BaseDirectory, AssembliesConfiguration);
 
@@ -716,14 +786,24 @@ public static class Core
                     if (due > 0)
                     {
                         var requested = (int)Math.Min(due, _eventLoopIdleWaitMs);
+
+                        // The GC deliberately collects during idle sleeps -- that is the natural
+                        // pause point it looks for -- so its pauses land here by design and must
+                        // not be charged to the host. Gen1 and above are the only ones whose pause
+                        // approaches a tick; CollectionCount(1) counts those and gen2 with it.
+                        var collections = GC.CollectionCount(1);
+
                         NetState.WaitForCompletion(requested);
 
                         var elapsed = GetTimestamp() - start;
                         EventLoopProfiler.SleepEnd(requested, elapsed);
+                        _sleepAttempts++;
 
                         // A sleep is bounded by the next wheel turn, so only a wait the host
-                        // returned late can cost the wheel a deadline.
-                        if (elapsed - requested >= Timer.TickRate)
+                        // returned late can cost the wheel a deadline. The second collection read
+                        // is short-circuited behind the overshoot test, so the common path pays for
+                        // one counter read, not two.
+                        if (elapsed - requested >= Timer.TickRate && GC.CollectionCount(1) == collections)
                         {
                             _lateWakes++;
                         }

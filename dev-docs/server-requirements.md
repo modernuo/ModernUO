@@ -105,7 +105,8 @@ See the README for the full supported list. Two things are worth calling out:
 | Setting | Default | Why change it |
 |---|---|---|
 | `server.eventLoopIdleWaitMs` | `2` | `0` never sleeps: ~98% of one core, but zero skipped timer slots and zero lag. The choice for a large shard on dedicated CPU that would rather spend a core than risk a late wake. Above `2` the wheel starts losing slots. |
-| `server.lateWakeThreshold` | `1` | Idle waits the host may return a full tick late, per second, before idle sleeping backs off. Raise on a jittery host; set very high to disable the backoff. |
+| `server.lateWakeThreshold` | `1` | Floor for the backoff: idle waits the host may return a full tick late, per second, before the rate test below applies at all. Raise on a jittery host; set very high to disable the backoff. |
+| `server.lateWakePercent` | `10` | Share of a second's idle waits that must come back late before idle sleeping backs off. An idle loop sleeps hundreds of times a second, so a bare count cannot tell a few tail outliers from a host that never schedules the process — a genuinely bad host misses *most* of its waits. `0` leaves `lateWakeThreshold` in sole charge. |
 | `world.useMultithreadedSaves` | `true` | Set `false` on 2-core hosts so saves do not contend with the game loop. |
 | `pathfinding.prebakeMaps` | varies | Leave off on memory-constrained hosts; it peaks above 1 GB while baking. |
 | `network.sendBufferSize` | 256 KB | Lower it if you are memory-bound with many connections. |
