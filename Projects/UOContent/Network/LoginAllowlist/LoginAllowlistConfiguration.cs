@@ -82,11 +82,12 @@ public record LoginAllowlistSettings
     public TimeSpan Ttl { get; set; } = TimeSpan.FromDays(90);
 
     /// <summary>
-    /// How often a changed list is written out. A crash loses at most this much, and an entry is re-earned by
-    /// the next login.
+    /// How often a changed list is written out. A clean shutdown always writes, so this only bounds what a
+    /// crash loses — and an entry is re-earned by the next login. Hourly against a 90-day TTL, because each
+    /// flush walks the whole list on the game loop.
     /// </summary>
     [JsonPropertyName("flushInterval")]
-    public TimeSpan FlushInterval { get; set; } = TimeSpan.FromMinutes(1);
+    public TimeSpan FlushInterval { get; set; } = TimeSpan.FromHours(1);
 
     /// <summary>
     /// How many suppressed contributions inside <see cref="StrikeWindow"/> revoke an address's entry. Past

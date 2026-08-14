@@ -52,12 +52,21 @@ public static class LoginAllowlist
     // _allowed and cannot be grown by an attacker.
     private static readonly Dictionary<UInt128, Strike> _strikes = [];
 
+    // Reused across flushes: past ~5,300 entries a fresh UInt128[] is an LOH allocation, and this ran every
+    // flush. Grown geometrically, never shrunk, so a steady shard stops allocating here entirely.
+    private static UInt128[] _addressBuffer = [];
+    private static long[] _stampBuffer = [];
+
     private static bool _enabled;
     private static string _path;
     private static long _ttlSeconds;
     private static int _escalateAfterStrikes;
     private static long _strikeWindowSeconds;
     private static bool _dirty;
+
+    // Loop-only. The writer owns the buffers until it posts completion back, so a flush that lands while
+    // one is in flight has to wait rather than overwrite them mid-write.
+    private static bool _writing;
 
     public static int Count => _allowed.Count;
 
@@ -97,10 +106,15 @@ public static class LoginAllowlist
         var interval = LoginAllowlistConfiguration.Settings.FlushInterval;
         if (interval <= TimeSpan.Zero)
         {
-            interval = TimeSpan.FromMinutes(1);
+            interval = TimeSpan.FromHours(1);
         }
 
         Timer.DelayCall(interval, interval, Flush);
+
+        // A clean stop writes whatever it was holding, so the interval only bounds what a crash loses.
+        // HandleClosed skips InvokeShutdown when the server crashed, so the crash path needs its own.
+        EventSink.Shutdown += OnShutdown;
+        EventSink.ServerCrashed += OnCrashed;
     }
 
     /// <summary>
@@ -197,6 +211,8 @@ public static class LoginAllowlist
     {
         _allowed.Clear();
         _strikes.Clear();
+        _writing = false;
+        _dirty = false;
         _enabled = enabled;
         _ttlSeconds = ttlSeconds;
         _escalateAfterStrikes = escalateAfterStrikes;
@@ -208,28 +224,95 @@ public static class LoginAllowlist
 
     private static void Flush()
     {
-        if (!_enabled || !_dirty)
+        // _dirty stays set whenever this bails, so skipping never loses an entry. A save owns the disk and
+        // nothing here is urgent. See the threading policy in CLAUDE.md (rules #3 and #10).
+        if (!_enabled || !_dirty || _writing || World.Saving || World.WorldState == WorldState.PendingSave)
         {
             return;
         }
 
-        // A save owns the disk and nothing here is urgent. _dirty stays set, so skipping loses nothing.
-        // See the threading policy in CLAUDE.md (rules #3 and #10).
-        if (World.Saving || World.WorldState == WorldState.PendingSave)
+        var count = Snapshot(out var dropped);
+        var addresses = _addressBuffer;
+        var stamps = _stampBuffer;
+        var path = _path;
+
+        _dirty = false;
+        _writing = true;
+
+        _ = Task.Run(
+            () =>
+            {
+                var written = Write(path, addresses, stamps, count, dropped);
+
+                // Back to the loop to release the buffers: _writing and _dirty are loop state, so the
+                // writer must not touch them itself. See CLAUDE.md rule #10.
+                Core.LoopContext.Post(
+                    () =>
+                    {
+                        _writing = false;
+                        if (!written)
+                        {
+                            _dirty = true; // nothing reached disk; the next flush retries
+                        }
+                    }
+                );
+            }
+        );
+    }
+
+    /// <summary>
+    /// A crash is the case the flush interval cannot cover, so write on the way down.
+    /// </summary>
+    /// <remarks>
+    /// The handler runs on whichever thread faulted. That is the loop thread for anything thrown out of
+    /// <c>RunEventLoop</c>, but a background thread can get here too, and the dictionaries are loop state
+    /// that the loop may still be mutating. Off-loop, the last hour is not worth the race.
+    /// </remarks>
+    private static void OnCrashed(ServerCrashedEventArgs e)
+    {
+        if (System.Threading.Thread.CurrentThread == Core.Thread)
+        {
+            OnShutdown();
+        }
+    }
+
+    /// <summary>
+    /// Called on a clean shutdown, where there is no loop left to hand a write off to. Synchronous on
+    /// purpose: nothing schedules after this, so a handed-off write would reach no disk.
+    /// </summary>
+    private static void OnShutdown()
+    {
+        // A write already in flight holds the buffers and has all but the last moments of the list.
+        if (!_enabled || !_dirty || _writing)
         {
             return;
         }
 
+        var count = Snapshot(out var dropped);
+        _dirty = false;
+
+        Write(_path, _addressBuffer, _stampBuffer, count, dropped);
+    }
+
+    /// <summary>
+    /// Prunes expired entries and copies what survives into the shared buffers, on the loop. Returns the
+    /// live count; the buffers are longer than that and everything past it is stale.
+    /// </summary>
+    private static int Snapshot(out int dropped)
+    {
         var nowUnix = ToUnixSeconds(Core.Now);
         var cutoff = nowUnix - _ttlSeconds;
 
-        // Prune and snapshot in one loop-side pass; the writer only sees private copies. Not pooled:
-        // STArrayPool is single-threaded and these escape to another thread.
-        var addresses = new UInt128[_allowed.Count];
-        var stamps = new long[_allowed.Count];
-        var count = 0;
+        if (_addressBuffer.Length < _allowed.Count)
+        {
+            // Geometric so a shard adding addresses one at a time does not reallocate every flush.
+            var size = Math.Max(_allowed.Count, Math.Max(64, _addressBuffer.Length * 2));
+            _addressBuffer = new UInt128[size];
+            _stampBuffer = new long[size];
+        }
 
-        var dropped = 0;
+        var count = 0;
+        dropped = 0;
 
         foreach (var (address, stamp) in _allowed)
         {
@@ -241,19 +324,13 @@ public static class LoginAllowlist
                 continue;
             }
 
-            addresses[count] = address;
-            stamps[count] = stamp;
+            _addressBuffer[count] = address;
+            _stampBuffer[count] = stamp;
             count++;
         }
 
         PruneStaleStrikes(nowUnix);
-
-        _dirty = false;
-
-        var path = _path;
-        var total = count;
-
-        _ = Task.Run(() => Write(path, addresses, stamps, total, dropped));
+        return count;
     }
 
     /// <summary>Drops tallies whose window has closed.</summary>
@@ -273,7 +350,8 @@ public static class LoginAllowlist
         }
     }
 
-    private static void Write(string path, UInt128[] addresses, long[] stamps, int count, int dropped)
+    /// <summary>Writes the list out. Returns false when nothing reached disk, so the caller can retry.</summary>
+    private static bool Write(string path, UInt128[] addresses, long[] stamps, int count, int dropped)
     {
         try
         {
@@ -309,11 +387,14 @@ public static class LoginAllowlist
             {
                 logger.Information("Login allowlist wrote {Count} entr(ies), dropped {Dropped} past TTL", count, dropped);
             }
+
+            return true;
         }
         catch (Exception e)
         {
             // Recoverable: entries are still in memory and the next flush retries.
             logger.Warning(e, "Could not write the login allowlist to \"{Path}\"", path);
+            return false;
         }
     }
 
