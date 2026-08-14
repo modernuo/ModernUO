@@ -1,3 +1,4 @@
+using System;
 using AMA = Server.Items.ArmorMeditationAllowance;
 
 namespace Server.Items;
@@ -191,5 +192,38 @@ public partial class BaseArmor
         }
 
         PlayerConstructed = GetSaveFlag(flags, OldSaveFlag.PlayerConstructed);
+    }
+
+    private static bool GetSaveFlag(OldSaveFlag flags, OldSaveFlag toGet) => (flags & toGet) != 0;
+
+    [Flags]
+    private enum OldSaveFlag
+    {
+        None = 0x00000000,
+        Attributes = 0x00000001,
+        ArmorAttributes = 0x00000002,
+        PhysicalBonus = 0x00000004,
+        FireBonus = 0x00000008,
+        ColdBonus = 0x00000010,
+        PoisonBonus = 0x00000020,
+        EnergyBonus = 0x00000040,
+        Identified = 0x00000080,
+        MaxHitPoints = 0x00000100,
+        HitPoints = 0x00000200,
+        Crafter = 0x00000400,
+        Quality = 0x00000800,
+        Durability = 0x00001000,
+        Protection = 0x00002000,
+        Resource = 0x00004000,
+        BaseArmor = 0x00008000,
+        StrBonus = 0x00010000,
+        DexBonus = 0x00020000,
+        IntBonus = 0x00040000,
+        StrReq = 0x00080000,
+        DexReq = 0x00100000,
+        IntReq = 0x00200000,
+        MedAllowance = 0x00400000,
+        SkillBonuses = 0x00800000,
+        PlayerConstructed = 0x01000000
     }
 }

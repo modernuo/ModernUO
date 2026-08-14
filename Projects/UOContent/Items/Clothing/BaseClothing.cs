@@ -880,8 +880,6 @@ namespace Server.Items
             InvalidateProperties();
         }
 
-        private static bool GetSaveFlag(OldSaveFlag flags, OldSaveFlag toGet) => (flags & toGet) != 0;
-
         [AfterDeserialization]
         private void AfterDeserialization()
         {
@@ -902,21 +900,5 @@ namespace Server.Items
             }
         }
 
-        [Flags]
-        private enum OldSaveFlag
-        {
-            None = 0x00000000,
-            Resource = 0x00000001,
-            Attributes = 0x00000002,
-            ClothingAttributes = 0x00000004,
-            SkillBonuses = 0x00000008,
-            Resistances = 0x00000010,
-            MaxHitPoints = 0x00000020,
-            HitPoints = 0x00000040,
-            PlayerConstructed = 0x00000080,
-            Crafter = 0x00000100,
-            Quality = 0x00000200,
-            StrReq = 0x00000400
-        }
     }
 }
