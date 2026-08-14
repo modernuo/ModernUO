@@ -30,16 +30,11 @@ namespace Server.Network;
 /// blocked and a flaky connection cannot get one globally banned.
 /// </summary>
 /// <remarks>
-/// <para>
-/// Consulted only after the blocklist has already matched, and again before a ban is contributed, so a
-/// normal accept pays nothing for it. An entry is evidence rather than a licence: enough strikes inside the
-/// window revokes it. It cannot bootstrap, so it hedges stable addresses and does not replace
-/// <see cref="FileAllowlist"/>. See <c>dev-docs/ip-bans-and-allowlists.md</c>.
-/// </para>
-/// <para>
-/// Both dictionaries are game-loop state. Only the file write runs off-loop, over a snapshot taken on the
-/// loop.
-/// </para>
+/// Consulted only after the blocklist has already matched, so a normal accept pays nothing for it. An entry
+/// is evidence rather than a licence: enough strikes inside the window revokes it. It cannot bootstrap, so
+/// it does not replace <see cref="FileAllowlist"/>. Both dictionaries are game-loop state; only the file
+/// write runs off-loop, over a snapshot taken on the loop.
+/// See <c>dev-docs/ip-bans-and-allowlists.md</c>.
 /// </remarks>
 public static class LoginAllowlist
 {
@@ -52,8 +47,8 @@ public static class LoginAllowlist
     // _allowed and cannot be grown by an attacker.
     private static readonly Dictionary<UInt128, Strike> _strikes = [];
 
-    // Reused across flushes: past ~5,300 entries a fresh UInt128[] is an LOH allocation, and this ran every
-    // flush. Grown geometrically, never shrunk, so a steady shard stops allocating here entirely.
+    // Reused: past ~5,300 entries a fresh UInt128[] is an LOH allocation, once per flush. Grown
+    // geometrically, never shrunk.
     private static UInt128[] _addressBuffer = [];
     private static long[] _stampBuffer = [];
 
@@ -64,8 +59,8 @@ public static class LoginAllowlist
     private static long _strikeWindowSeconds;
     private static bool _dirty;
 
-    // Loop-only. The writer owns the buffers until it posts completion back, so a flush that lands while
-    // one is in flight has to wait rather than overwrite them mid-write.
+    // Loop-only. The writer owns the buffers until it posts completion back, so a flush landing mid-write
+    // waits rather than overwriting them.
     private static bool _writing;
 
     public static int Count => _allowed.Count;
@@ -111,7 +106,6 @@ public static class LoginAllowlist
 
         Timer.DelayCall(interval, interval, Flush);
 
-        // A clean stop writes whatever it was holding, so the interval only bounds what a crash loses.
         // HandleClosed skips InvokeShutdown when the server crashed, so the crash path needs its own.
         EventSink.Shutdown += OnShutdown;
         EventSink.ServerCrashed += OnCrashed;
@@ -224,8 +218,8 @@ public static class LoginAllowlist
 
     private static void Flush()
     {
-        // _dirty stays set whenever this bails, so skipping never loses an entry. A save owns the disk and
-        // nothing here is urgent. See the threading policy in CLAUDE.md (rules #3 and #10).
+        // A save owns the disk and nothing here is urgent. _dirty stays set, so skipping loses nothing.
+        // See the threading policy in CLAUDE.md (rules #3 and #10).
         if (!_enabled || !_dirty || _writing || World.Saving || World.WorldState == WorldState.PendingSave)
         {
             return;
@@ -244,8 +238,7 @@ public static class LoginAllowlist
             {
                 var written = Write(path, addresses, stamps, count, dropped);
 
-                // Back to the loop to release the buffers: _writing and _dirty are loop state, so the
-                // writer must not touch them itself. See CLAUDE.md rule #10.
+                // _writing and _dirty are loop state, so the writer hands the release back. Rule #10.
                 Core.LoopContext.Post(
                     () =>
                     {
@@ -261,13 +254,9 @@ public static class LoginAllowlist
     }
 
     /// <summary>
-    /// A crash is the case the flush interval cannot cover, so write on the way down.
+    /// A crash is the case the flush interval cannot cover, so write on the way down. Runs on whichever
+    /// thread faulted, and the dictionaries are loop state, so it only writes when that is the loop.
     /// </summary>
-    /// <remarks>
-    /// The handler runs on whichever thread faulted. That is the loop thread for anything thrown out of
-    /// <c>RunEventLoop</c>, but a background thread can get here too, and the dictionaries are loop state
-    /// that the loop may still be mutating. Off-loop, the last hour is not worth the race.
-    /// </remarks>
     private static void OnCrashed(ServerCrashedEventArgs e)
     {
         if (System.Threading.Thread.CurrentThread == Core.Thread)
@@ -276,10 +265,7 @@ public static class LoginAllowlist
         }
     }
 
-    /// <summary>
-    /// Called on a clean shutdown, where there is no loop left to hand a write off to. Synchronous on
-    /// purpose: nothing schedules after this, so a handed-off write would reach no disk.
-    /// </summary>
+    /// <summary>Synchronous: nothing schedules after this, so a handed-off write would reach no disk.</summary>
     private static void OnShutdown()
     {
         // A write already in flight holds the buffers and has all but the last moments of the list.
@@ -295,8 +281,8 @@ public static class LoginAllowlist
     }
 
     /// <summary>
-    /// Prunes expired entries and copies what survives into the shared buffers, on the loop. Returns the
-    /// live count; the buffers are longer than that and everything past it is stale.
+    /// Prunes expired entries and copies what survives into the shared buffers. Returns the live count; the
+    /// buffers run longer and everything past it is stale.
     /// </summary>
     private static int Snapshot(out int dropped)
     {

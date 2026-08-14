@@ -38,8 +38,8 @@ public sealed class BlocklistFilter : IConnectionFilter
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(BlocklistFilter));
 
-    // Written by the reload poll (off-loop), read by the accept path (game loop): a single volatile
-    // reference swap is the whole synchronization story — readers see the old or the new snapshot, whole.
+    // Written by the reload poll (off-loop), read by the accept path (game loop). One volatile reference
+    // swap is the whole synchronization story: readers see the old or the new snapshot, whole.
     private volatile BlocklistSnapshot _snapshot = BlocklistSnapshot.Empty;
 
     private readonly PromotedGuard _guard = new();
@@ -100,8 +100,8 @@ public sealed class BlocklistFilter : IConnectionFilter
             return;
         }
 
-        // The allowlist is the operator's override on this gate, and it is opted into separately. Only the
-        // generator's subtraction is covering them here, which does not cover ban contributions.
+        // The operator's override on this gate, opted into separately. Without it only the generator's
+        // subtraction covers carve-outs, and that does not cover ban contributions.
         if (!FileAllowlist.Enabled)
         {
             logger.Warning(
@@ -141,8 +141,8 @@ public sealed class BlocklistFilter : IConnectionFilter
         }
         else if (File.Exists(_path))
         {
-            // A shard upgrading from before the flag has a list on disk but no "enabled" key, so say so
-            // rather than silently dropping a gate it was relying on.
+            // An upgraded shard has a list on disk but no "enabled" key, so say so rather than silently
+            // dropping a gate it was relying on.
             logger.Warning(
                 "Blocklist is off (\"enabled\" false in blocklist.json) but a list is present at \"{Path}\"; " +
                 "no addresses will be denied",
@@ -161,7 +161,7 @@ public sealed class BlocklistFilter : IConnectionFilter
         _cts?.Dispose();
         _cts = null;
 
-        // Recurring and tokenless before: a Stop/Start cycle left the old sweep running and added another.
+        // Recurring, so an uncancelled sweep survives Stop and the next Start adds a second one.
         _sweepTimer?.Stop();
         _sweepTimer = null;
     }
@@ -196,8 +196,8 @@ public sealed class BlocklistFilter : IConnectionFilter
         }
 
         // Both are asked only once the list has matched, so they cost the common accept nothing. The file
-        // list is usually redundant because the generator subtracts it — except right after an operator adds
-        // an entry without regenerating, which is exactly when someone is waiting to get back in.
+        // list is usually redundant because the generator subtracts it — except right after an operator
+        // adds an entry without regenerating, which is when someone is waiting to get back in.
         if (FileAllowlist.Contains(address))
         {
             return false;
@@ -291,9 +291,8 @@ public sealed class BlocklistFilter : IConnectionFilter
 
     private void Reload()
     {
-        // Capture the mtime/header BEFORE Load() so the markers describe the version being parsed, not
-        // one the producer swapped in mid-parse. Stale markers only cost an extra reload next poll;
-        // capturing after could skip a version entirely.
+        // Capture the mtime/header BEFORE Load() so they describe the version being parsed. Capturing
+        // after could skip a version the producer swapped in mid-parse; stale markers only cost a reload.
         var writeUtc = default(DateTime);
         try
         {

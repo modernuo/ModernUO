@@ -46,8 +46,7 @@ public sealed class BlocklistSnapshot
     /// Parses a blocklist directly from its UTF-8/ASCII file bytes — one line at a time, splitting on
     /// <c>'\n'</c> with no per-line string allocation. IPv4 singles and CIDRs are parsed straight from the
     /// byte span; IPv6 (the rare path) decodes the single address token and defers to the framework parser.
-    /// Malformed lines increment <paramref name="skipped"/> and never throw. Build-time intermediates use
-    /// the multithreaded pool because this runs off the game loop on the reload/bootstrap thread.
+    /// Malformed lines increment <paramref name="skipped"/> and never throw.
     /// </summary>
     public static BlocklistSnapshot Build(ReadOnlySpan<byte> data, out int parsed, out int skipped)
     {

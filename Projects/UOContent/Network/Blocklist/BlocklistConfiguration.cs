@@ -21,9 +21,8 @@ using Server.Json;
 namespace Server.Network.Bans;
 
 /// <summary>
-/// Loads the <see cref="BlocklistSettings"/> from <c>Configuration/blocklist.json</c> (matching the
-/// per-feature JSON config pattern used by <c>AssistantConfiguration</c>). Loaded once; a missing file
-/// writes a template so operators have something to edit.
+/// Loads the <see cref="BlocklistSettings"/> from <c>Configuration/blocklist.json</c>. Loaded once; a
+/// missing file writes a template so operators have something to edit.
 /// </summary>
 public static class BlocklistConfiguration
 {
@@ -54,8 +53,8 @@ public static class BlocklistConfiguration
 
 /// <summary>
 /// Bound configuration for <see cref="BlocklistFilter"/>. The filter is inert unless <see cref="Enabled"/>
-/// is set and <see cref="File"/> points at a list that actually exists, so the shipped defaults cost a
-/// shard that never runs the generator nothing at all.
+/// is set and <see cref="File"/> points at a list that exists, so a shard that never runs the generator
+/// pays nothing for the defaults.
 /// </summary>
 public record BlocklistSettings
 {

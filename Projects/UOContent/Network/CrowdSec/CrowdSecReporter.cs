@@ -304,12 +304,10 @@ public sealed class CrowdSecReporter : IBanReporter
     }
 
     /// <summary>
-    /// Sends with up to 3 attempts total (1 initial + 2 retries), backing off 1s then 2s between
-    /// attempts, for transient LAPI failures (network blips, 5xx). Backoff uses <see cref="Task.Delay"/>
-    /// so it never blocks the thread; a cancellation during backoff propagates as
-    /// <see cref="OperationCanceledException"/> so the drain loop exits cleanly. Returns false (never
-    /// throws for a send failure) once attempts are exhausted, so the caller can count the drop and keep
-    /// draining instead of losing the rest of the batch/queue.
+    /// Up to 3 attempts (1 initial + 2 retries) backing off 1s then 2s, for transient LAPI failures
+    /// (network blips, 5xx). Backoff uses <see cref="Task.Delay"/> so it never blocks the thread, and a
+    /// cancellation during it propagates so the drain loop exits cleanly. Returns false rather than
+    /// throwing once attempts are exhausted, so the caller counts the drop and keeps draining.
     /// </summary>
     private static async ValueTask<bool> SendWithBoundedRetryAsync(Func<ValueTask> send, CancellationToken token)
     {

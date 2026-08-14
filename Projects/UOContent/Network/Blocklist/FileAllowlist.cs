@@ -32,15 +32,15 @@ namespace Server.Network.Bans;
 /// Behavioural detections never consult the blocklist, so without reading the files here a carve-out is
 /// quietly routed around: one scanner behind a shared CGNAT address is enough to get the whole address
 /// contributed and firewalled. Reading them also means an entry applies on the next reload rather than the
-/// next regeneration. Opt-in via <c>blocklist.json</c>'s <c>allowlistEnabled</c>, since the poll runs for
-/// the whole uptime; no shield against a manual ban either — see <see cref="BanExemptions"/>.
+/// next regeneration. Opt-in via <c>ip-allowlist.json</c>'s <c>enabled</c>, since the poll runs for the
+/// whole uptime; no shield against a manual ban either — see <see cref="BanExemptions"/>.
 /// </remarks>
 public static class FileAllowlist
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(FileAllowlist));
 
-    // Written by the reload poll (off-loop), read by the accept path (game loop): a single volatile
-    // reference swap is the whole synchronization story — readers see the old or the new snapshot, whole.
+    // Written by the reload poll (off-loop), read by the accept path (game loop). One volatile reference
+    // swap is the whole synchronization story: readers see the old or the new snapshot, whole.
     private static volatile BlocklistSnapshot _snapshot = BlocklistSnapshot.Empty;
 
     private static string[] _patterns = [];
@@ -115,8 +115,8 @@ public static class FileAllowlist
     }
 
     /// <summary>
-    /// The setting moved out of <c>blocklist.json</c>. Deliberately not honoured from there — that would
-    /// keep the coupling alive — but an operator who set it is told rather than losing it silently.
+    /// Deliberately not honoured from <c>blocklist.json</c> — that would keep the coupling alive — but an
+    /// operator who set it there is told rather than losing it silently.
     /// </summary>
     private static void WarnOnDeprecatedKey()
     {

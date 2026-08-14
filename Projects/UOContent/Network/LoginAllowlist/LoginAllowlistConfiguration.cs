@@ -21,9 +21,8 @@ using Server.Json;
 namespace Server.Network;
 
 /// <summary>
-/// Loads the <see cref="LoginAllowlistSettings"/> from <c>Configuration/login-allowlist.json</c> (matching
-/// the per-feature JSON config pattern used by <c>BlocklistConfiguration</c>). Loaded once; a missing file
-/// writes a template so operators have something to edit.
+/// Loads the <see cref="LoginAllowlistSettings"/> from <c>Configuration/login-allowlist.json</c>. Loaded
+/// once; a missing file writes a template so operators have something to edit.
 /// </summary>
 public static class LoginAllowlistConfiguration
 {

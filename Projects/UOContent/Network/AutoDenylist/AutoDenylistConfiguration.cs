@@ -21,9 +21,8 @@ using Server.Json;
 namespace Server.Network;
 
 /// <summary>
-/// Loads the <see cref="AutoDenylistSettings"/> from <c>Configuration/auto-denylist.json</c> (matching the
-/// per-feature JSON config pattern used by <c>BlocklistConfiguration</c>). Loaded once; a missing file writes
-/// a template so operators have something to edit.
+/// Loads the <see cref="AutoDenylistSettings"/> from <c>Configuration/auto-denylist.json</c>. Loaded once;
+/// a missing file writes a template so operators have something to edit.
 /// </summary>
 public static class AutoDenylistConfiguration
 {
