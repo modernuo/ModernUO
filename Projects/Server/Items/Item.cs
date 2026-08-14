@@ -2344,12 +2344,16 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
         UpdateDecayRegistration();
     }
 
+    // PlayerConstructed is part of stack identity. A merge keeps the receiving stack's value, so
+    // without this term the outcome depends on which side was dropped onto which: one order
+    // launders the flag onto items that never earned it, the other erases it from items that did.
     public virtual bool CanStackWith(Item dropped) =>
         dropped.Stackable && Stackable &&
         dropped.GetType() == GetType() &&
         dropped.ItemID == ItemID &&
         dropped.Hue == Hue &&
         dropped.Name == Name &&
+        dropped.PlayerConstructed == PlayerConstructed &&
         dropped.Amount + Amount <= 60000 &&
         dropped != this;
 
