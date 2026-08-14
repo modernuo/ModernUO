@@ -749,6 +749,12 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
 
     public static bool ScissorCopyLootType { get; set; }
 
+    /// <summary>
+    ///     True when the item was produced by the crafting system rather than bought or looted.
+    /// </summary>
+    [CommandProperty(AccessLevel.GameMaster)]
+    public bool PlayerConstructed { get; set; }
+
     [CommandProperty(AccessLevel.GameMaster)]
     public bool QuestItem
     {
@@ -977,6 +983,11 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
         if (implFlags != (ImplFlag.Visible | ImplFlag.Movable))
         {
             flags |= SaveFlag.ImplFlags;
+        }
+
+        if (PlayerConstructed)
+        {
+            flags |= SaveFlag.PlayerConstructed;
         }
 
         writer.Write((int)flags);
@@ -2854,6 +2865,8 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
                         AcquireCompactInfo().m_SavedFlags = reader.ReadEncodedInt();
                     }
 
+                    PlayerConstructed = GetSaveFlag(flags, SaveFlag.PlayerConstructed);
+
                     if (m_Map != null && m_Parent == null)
                     {
                         m_Map.OnEnter(this);
@@ -4380,6 +4393,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
         HeldBy = 0x00800000,
         IntWeight = 0x01000000,
         SavedFlags = 0x02000000,
-        NullWeight = 0x04000000
+        NullWeight = 0x04000000,
+        PlayerConstructed = 0x08000000
     }
 }

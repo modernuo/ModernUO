@@ -136,10 +136,8 @@ public abstract partial class SmallBOD : BaseBOD
         else
         {
             var material = GetMaterial(armor?.Resource ?? clothing?.Resource ?? CraftResource.None);
-            var playerConstructed = armor?.PlayerConstructed ?? clothing?.PlayerConstructed ??
-                weapon?.PlayerConstructed ?? false;
 
-            if (!playerConstructed)
+            if (!item.PlayerConstructed)
             {
                 from.SendLocalizedMessage(1045169); // The item is not in the request.
             }

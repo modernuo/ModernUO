@@ -27,7 +27,7 @@ public interface ISlayer
     SlayerName Slayer2 { get; set; }
 }
 
-[SerializationGenerator(10, false)]
+[SerializationGenerator(11, false)]
 public abstract partial class BaseWeapon
     : Item, IWeapon, IFactionItem, ICraftable, ISlayer, IDurability, IAosItem, IIdentifiable
 {
@@ -141,53 +141,45 @@ public abstract partial class BaseWeapon
     [SerializableFieldDefault(25)]
     private AosWeaponAttributes WeaponAttributesDefaultValue() => new(this);
 
-    [SerializableField(26)]
-    [SerializedCommandProperty(AccessLevel.GameMaster)]
-    private bool _playerConstructed;
-
-    [SerializableFieldSaveFlag(26)]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private bool ShouldSerializePlayerConstructed() => _playerConstructed;
-
     [SerializedIgnoreDupe]
-    [SerializableField(27, setter: "private")]
+    [SerializableField(26, setter: "private")]
     [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
     private AosSkillBonuses _skillBonuses;
 
-    [SerializableFieldSaveFlag(27)]
+    [SerializableFieldSaveFlag(26)]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool ShouldSerializeSkillBonuses() => !_skillBonuses.IsEmpty;
 
-    [SerializableFieldDefault(27)]
+    [SerializableFieldDefault(26)]
     private AosSkillBonuses SkillBonusesDefaultValue() => new(this);
 
     [InvalidateProperties]
-    [SerializableField(28)]
+    [SerializableField(27)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private SlayerName _slayer2;
 
-    [SerializableFieldSaveFlag(28)]
+    [SerializableFieldSaveFlag(27)]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool ShouldSerializeSlayer2() => _slayer2 != SlayerName.None;
 
     [SerializedIgnoreDupe]
-    [SerializableField(29, setter: "private")]
+    [SerializableField(28, setter: "private")]
     [SerializedCommandProperty(AccessLevel.GameMaster, canModify: true)]
     private AosElementAttributes _aosElementDamages;
 
-    [SerializableFieldSaveFlag(29)]
+    [SerializableFieldSaveFlag(28)]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool ShouldSerializeElementAttributes() => !_aosElementDamages.IsEmpty;
 
-    [SerializableFieldDefault(29)]
+    [SerializableFieldDefault(28)]
     private AosElementAttributes AosElementAttributesDefaultValue() => new(this);
 
     [InvalidateProperties]
-    [SerializableField(30)]
+    [SerializableField(29)]
     [SerializedCommandProperty(AccessLevel.GameMaster)]
     private string _engravedText;
 
-    [SerializableFieldSaveFlag(30)]
+    [SerializableFieldSaveFlag(29)]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool ShouldSerializeEngravedText() => !string.IsNullOrEmpty(_engravedText);
 
@@ -674,7 +666,6 @@ public abstract partial class BaseWeapon
             Crafter = from.RawName;
         }
 
-        PlayerConstructed = true;
         Identified = true;
 
         var resourceType = typeRes ?? craftItem.Resources[0].ItemType;
