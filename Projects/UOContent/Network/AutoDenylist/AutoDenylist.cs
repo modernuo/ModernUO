@@ -96,11 +96,13 @@ public static class AutoDenylist
 
         Drain(nowTicks);
 
+        var key = address.ToUInt128();
+
         // Deliberately not refreshed: the first detection sets the expiry and later ones leave it alone.
-        // That is what keeps insertion order equal to expiry order, which is the whole reason the drain
-        // can stop at the first live record. A flooder whose hold lapses trips the rate limiter on its
-        // next attempt -- which runs before the connection filters -- and is held again immediately.
-        if (!_held.Add(address.ToUInt128()))
+        // That keeps insertion order equal to expiry order, which is why the drain can stop at the first
+        // live record. A flooder whose hold lapses trips the rate limiter on its next attempt -- which
+        // runs ahead of the connection filters -- and is held again.
+        if (!_held.Add(key))
         {
             return true;
         }
@@ -108,7 +110,7 @@ public static class AutoDenylist
         // Drain already reclaimed everything reclaimable, so being over now means genuinely full.
         if (_held.Count > _maxEntries)
         {
-            _held.Remove(address.ToUInt128());
+            _held.Remove(key);
 
             if (!_warnedFull)
             {
@@ -122,7 +124,7 @@ public static class AutoDenylist
             return false;
         }
 
-        Push(address.ToUInt128(), nowTicks + _durationMs);
+        Push(key, nowTicks + _durationMs);
         return true;
     }
 
@@ -130,8 +132,8 @@ public static class AutoDenylist
 
     /// <summary>
     /// The accept-path decision, split out so the policy can be tested without a clock. Drains first: the
-    /// expiry is not stored beside the membership, so there is nothing to expire on read and a lapsed hold
-    /// must be retired here rather than left to deny. Costs one array read when nothing has lapsed.
+    /// expiry lives in the ring, not beside the membership, so a lapsed hold has to be retired here rather
+    /// than expired on read. One array read when nothing has lapsed.
     /// </summary>
     internal static bool IsDenied(IPAddress address, long nowTicks)
     {
@@ -168,12 +170,18 @@ public static class AutoDenylist
     /// </summary>
     internal static void Drain(long nowTicks)
     {
+        var before = _ringCount;
+
         // Subtraction, never a direct compare: tick counts wrap. See dev-docs/tick-counts.md.
         while (_ringCount > 0 && _ringExpiry[_ringHead] - nowTicks <= 0)
         {
             _held.Remove(_ringKeys[_ringHead]);
             _ringHead = _ringHead + 1 == _ringKeys.Length ? 0 : _ringHead + 1;
             _ringCount--;
+        }
+
+        if (_ringCount != before)
+        {
             _warnedFull = false;
         }
     }
@@ -198,7 +206,9 @@ public static class AutoDenylist
 
     private static void Grow()
     {
-        var size = Math.Max(64, _ringKeys.Length * 2);
+        // Capped at the entry cap: Push only runs below it, so the ring never needs more, and doubling
+        // past it would reserve roughly twice the slots it can ever use.
+        var size = Math.Min(Math.Max(64, _ringKeys.Length * 2), _maxEntries);
         var keys = new UInt128[size];
         var expiry = new long[size];
 

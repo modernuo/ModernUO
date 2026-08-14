@@ -201,7 +201,7 @@ firewalled off. Shortening the 5s handshake window has been tried and broke real
 | `blocklist.json` | `enabled` (default `false`), `file`, `reloadInterval`, `reportHits`, `banDuration`, `promoteSuppression` |
 | `ip-allowlist.json` | `enabled` (default `false`), `files` (wildcards allowed), `reloadInterval` |
 | `login-allowlist.json` | `enabled`, `file`, `ttl`, `flushInterval`, `escalateAfterStrikes`, `strikeWindow` |
-| `auto-denylist.json` | `enabled`, `duration`, `maxEntries` |
+| `auto-denylist.json` | `enabled`, `duration`, `maxEntries` (default `324,449` — sized for the floods seen in practice; see the remark on the setting before raising it) |
 | `crowdsec.json` | `lapiUrl`, `machineId`, `password`, `origin`, `manualBanDuration`, `flushInterval`, `maxQueue` |
 | `firewall.json` | Admin-curated entries |
 

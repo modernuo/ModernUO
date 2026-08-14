@@ -103,6 +103,27 @@ public class AutoDenylistTests
         Assert.Equal(0, AutoDenylist.RingCount);
     }
 
+    // The ring grows in doublings but is capped at maxEntries, which is not a power of two. Filling exactly
+    // to it must land on the last slot rather than off the end.
+    [Fact]
+    public void Ring_fills_exactly_to_a_non_power_of_two_cap()
+    {
+        Reset(maxEntries: 100);
+
+        for (var i = 0; i < 120; i++)
+        {
+            AutoDenylist.Hold(IPAddress.Parse($"198.51.100.{i}"), BanReasons.InvalidSeed, Now);
+        }
+
+        Assert.Equal(100, AutoDenylist.Count);
+        Assert.Equal(100, AutoDenylist.RingCount);
+
+        // And the whole ring still drains, so no slot was stranded by a wrapped write.
+        AutoDenylist.Drain(Now + DurationMs + 1);
+        Assert.Equal(0, AutoDenylist.Count);
+        Assert.Equal(0, AutoDenylist.RingCount);
+    }
+
     // Releasing leaves no ring record behind, so a re-detection is not retired by the old one.
     [Fact]
     public void Release_then_re_hold_is_not_retired_by_the_stale_record()
