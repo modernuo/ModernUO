@@ -12,7 +12,7 @@ using AMT = Server.Items.ArmorMaterialType;
 
 namespace Server.Items
 {
-    [SerializationGenerator(9, false)]
+    [SerializationGenerator(10, false)]
     public abstract partial class BaseArmor
         : Item, IScissorable, IFactionItem, ICraftable, IWearableDurability, IAosItem, IIdentifiable
     {
@@ -143,13 +143,6 @@ namespace Server.Items
 
         [SerializableFieldDefault(23)]
         private AosSkillBonuses SkillBonusesDefaultValue() => new(this);
-
-        [SerializableField(24)]
-        [SerializedCommandProperty(AccessLevel.GameMaster)]
-        public bool _playerConstructed;
-
-        [SerializableFieldSaveFlag(24)]
-        private bool ShouldSerializePlayerConstructed() => _playerConstructed;
 
         private FactionItem m_FactionState;
 
@@ -570,7 +563,6 @@ namespace Server.Items
             var resourceType = typeRes ?? craftItem.Resources[0].ItemType;
 
             Resource = CraftResources.GetFromType(resourceType);
-            PlayerConstructed = true;
             Identified = true;
 
             var context = craftSystem.GetContext(from);

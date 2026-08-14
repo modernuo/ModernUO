@@ -2,6 +2,22 @@ namespace Server.Items;
 
 public partial class BaseClothing
 {
+    // PlayerConstructed moved onto Item
+    private void MigrateFrom(V7Content content)
+    {
+        _resource = content.Resource ?? DefaultResource;
+        _attributes = content.Attributes ?? AttributesDefaultValue();
+        _clothingAttributes = content.ClothingAttributes ?? ClothingAttributesDefaultValue();
+        _skillBonuses = content.SkillBonuses ?? SkillBonusesDefaultValue();
+        _resistances = content.Resistances ?? ResistancesDefaultValue();
+        _maxHitPoints = content.MaxHitPoints ?? 0;
+        _hitPoints = content.HitPoints ?? 0;
+        PlayerConstructed = content.PlayerConstructed;
+        _crafter = content.Crafter;
+        _quality = content.Quality ?? ClothingQuality.Regular;
+        _strReq = content.StrRequirement ?? -1;
+    }
+
     private void MigrateFrom(V6Content content)
     {
         _resource = content.RawResource ?? DefaultResource;
@@ -10,7 +26,7 @@ public partial class BaseClothing
         _skillBonuses = content.SkillBonuses ?? SkillBonusesDefaultValue();
         _resistances = content.Resistances ?? ResistancesDefaultValue();
         _maxHitPoints = content.MaxHitPoints ?? 0;
-        _playerConstructed = content.PlayerConstructed;
+        PlayerConstructed = content.PlayerConstructed;
         Timer.DelayCall((item, crafter) => item._crafter = crafter?.RawName, this, content.Crafter);
         _quality = content.Quality ?? ClothingQuality.Regular;
         _strReq = content.StrRequirement ?? -1;
