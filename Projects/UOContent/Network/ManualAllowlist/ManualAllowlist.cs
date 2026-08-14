@@ -65,9 +65,6 @@ public static class ManualAllowlist
             return;
         }
 
-        // Ran after the Configure sweep, so blocklist.json is loaded and the deprecated key is readable.
-        WarnOnDeprecatedKey();
-
         _patterns = ResolvePaths(settings.Files);
         _interval = settings.ReloadInterval <= TimeSpan.Zero ? TimeSpan.FromSeconds(60) : settings.ReloadInterval;
 
@@ -112,21 +109,6 @@ public static class ManualAllowlist
         _cts?.Cancel();
         _cts?.Dispose();
         _cts = null;
-    }
-
-    /// <summary>
-    /// Deliberately not honoured from <c>blocklist.json</c> — that would keep the coupling alive — but an
-    /// operator who set it there is told rather than losing it silently.
-    /// </summary>
-    private static void WarnOnDeprecatedKey()
-    {
-        if (BlocklistConfiguration.Settings?.AllowlistFiles is { Length: > 0 })
-        {
-            logger.Warning(
-                "\"allowlistFiles\" in blocklist.json is ignored; it moved to \"files\" in ip-allowlist.json. " +
-                "Copy it there and delete it from blocklist.json"
-            );
-        }
     }
 
     private static string[] ResolvePaths(string[] configured)

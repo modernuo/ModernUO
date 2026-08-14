@@ -73,14 +73,6 @@ public record BlocklistSettings
     [JsonPropertyName("file")]
     public string File { get; set; } = "Configuration/ip-blocklist.txt";
 
-    /// <summary>
-    /// Deprecated: moved to <c>files</c> in <c>ip-allowlist.json</c>, because the blocklist is only one of
-    /// two consumers. Still bound so <see cref="ManualAllowlist"/> can warn an operator who set it here
-    /// instead of dropping the carve-out silently. Null when absent, which is the normal case.
-    /// </summary>
-    [JsonPropertyName("allowlistFiles")]
-    public string[] AllowlistFiles { get; set; }
-
     /// <summary>How often the file is checked for changes. Reloads only happen when it actually changed.</summary>
     [JsonPropertyName("reloadInterval")]
     public TimeSpan ReloadInterval { get; set; } = TimeSpan.FromSeconds(60);

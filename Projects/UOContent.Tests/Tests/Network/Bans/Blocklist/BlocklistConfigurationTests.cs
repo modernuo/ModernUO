@@ -65,14 +65,6 @@ public class BlocklistConfigurationTests
         Assert.False(new BlocklistSettings().Enabled);
     }
 
-    // Null, not the old default array. ManualAllowlist warns on a non-empty value, so a default would
-    // fire that warning on every shard that never set it.
-    [Fact]
-    public void Deprecated_allowlist_files_defaults_to_null()
-    {
-        Assert.Null(new BlocklistSettings().AllowlistFiles);
-    }
-
     // The generator (tools/Export-IpBlocklist.ps1) writes to this path by default; if one side moves
     // without the other, a shard silently enforces nothing.
     [Fact]
