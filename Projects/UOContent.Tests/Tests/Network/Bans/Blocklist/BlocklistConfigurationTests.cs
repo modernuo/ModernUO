@@ -65,7 +65,7 @@ public class BlocklistConfigurationTests
         Assert.False(new BlocklistSettings().Enabled);
     }
 
-    // Null, not the old default array. FileAllowlist warns on a non-empty value, so a default would
+    // Null, not the old default array. ManualAllowlist warns on a non-empty value, so a default would
     // fire that warning on every shard that never set it.
     [Fact]
     public void Deprecated_allowlist_files_defaults_to_null()

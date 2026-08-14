@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: FileAllowlistConfiguration.cs                                   *
+ * File: ManualAllowlistConfiguration.cs                                   *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -21,14 +21,14 @@ using Server.Json;
 namespace Server.Network.Bans;
 
 /// <summary>
-/// Loads the <see cref="FileAllowlistSettings"/> from <c>Configuration/ip-allowlist.json</c>. Loaded once;
+/// Loads the <see cref="ManualAllowlistSettings"/> from <c>Configuration/ip-allowlist.json</c>. Loaded once;
 /// a missing file writes a template so operators have something to edit.
 /// </summary>
-public static class FileAllowlistConfiguration
+public static class ManualAllowlistConfiguration
 {
     private const string _path = "Configuration/ip-allowlist.json";
 
-    public static FileAllowlistSettings Settings { get; private set; }
+    public static ManualAllowlistSettings Settings { get; private set; }
 
     public static void Load()
     {
@@ -36,11 +36,11 @@ public static class FileAllowlistConfiguration
 
         if (File.Exists(path))
         {
-            Settings = JsonConfig.Deserialize<FileAllowlistSettings>(path);
+            Settings = JsonConfig.Deserialize<ManualAllowlistSettings>(path);
         }
         else
         {
-            Settings = new FileAllowlistSettings();
+            Settings = new ManualAllowlistSettings();
             Save();
         }
     }
@@ -52,11 +52,11 @@ public static class FileAllowlistConfiguration
 }
 
 /// <summary>
-/// Bound configuration for <see cref="FileAllowlist"/>. Its own file rather than a corner of
+/// Bound configuration for <see cref="ManualAllowlist"/>. Its own file rather than a corner of
 /// <c>blocklist.json</c>: the blocklist is only one of two consumers, and the other
 /// (<see cref="BanExemptions"/>) works on a shard that runs no blocklist at all.
 /// </summary>
-public record FileAllowlistSettings
+public record ManualAllowlistSettings
 {
     /// <summary>
     /// Whether the shard reads <see cref="Files"/> at all. Off by default: reading them costs a poll for

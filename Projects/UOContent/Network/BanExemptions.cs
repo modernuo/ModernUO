@@ -20,7 +20,7 @@ using Server.Network.Bans;
 namespace Server.Network;
 
 /// <summary>
-/// Combines <see cref="FileAllowlist"/> and <see cref="LoginAllowlist"/> into the one answer
+/// Combines <see cref="ManualAllowlist"/> and <see cref="LoginAllowlist"/> into the one answer
 /// <see cref="BanChannel.IsExempt"/> asks for, so neither source has to know about the other.
 /// </summary>
 public static class BanExemptions
@@ -51,7 +51,7 @@ public static class BanExemptions
         }
 
         // Deliberate and unconditional, so it wins and must not spend the earned list's strikes.
-        if (FileAllowlist.Contains(address))
+        if (ManualAllowlist.Contains(address))
         {
             return true;
         }

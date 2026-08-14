@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: FileAllowlist.cs                                                *
+ * File: ManualAllowlist.cs                                                *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -35,9 +35,9 @@ namespace Server.Network.Bans;
 /// next regeneration. Opt-in via <c>ip-allowlist.json</c>'s <c>enabled</c>, since the poll runs for the
 /// whole uptime; no shield against a manual ban either — see <see cref="BanExemptions"/>.
 /// </remarks>
-public static class FileAllowlist
+public static class ManualAllowlist
 {
-    private static readonly ILogger logger = LogFactory.GetLogger(typeof(FileAllowlist));
+    private static readonly ILogger logger = LogFactory.GetLogger(typeof(ManualAllowlist));
 
     // Written by the reload poll (off-loop), read by the accept path (game loop). One volatile reference
     // swap is the whole synchronization story: readers see the old or the new snapshot, whole.
@@ -58,8 +58,8 @@ public static class FileAllowlist
 
     public static void Initialize()
     {
-        FileAllowlistConfiguration.Load();
-        var settings = FileAllowlistConfiguration.Settings;
+        ManualAllowlistConfiguration.Load();
+        var settings = ManualAllowlistConfiguration.Settings;
         if (settings == null)
         {
             return;
@@ -81,14 +81,14 @@ public static class FileAllowlist
             if (present > 0)
             {
                 logger.Warning(
-                    "File allowlist is off (\"enabled\" false in ip-allowlist.json) but {Count} allowlist file(s) " +
+                    "Manual allowlist is off (\"enabled\" false in ip-allowlist.json) but {Count} allowlist file(s) " +
                     "are present; those carve-outs will not suppress ban contributions",
                     present
                 );
             }
             else
             {
-                logger.Information("File allowlist disabled (\"enabled\" false in ip-allowlist.json)");
+                logger.Information("Manual allowlist disabled (\"enabled\" false in ip-allowlist.json)");
             }
 
             return;
@@ -96,7 +96,7 @@ public static class FileAllowlist
 
         if (_patterns.Length == 0)
         {
-            logger.Information("File allowlist disabled (\"files\" empty in ip-allowlist.json)");
+            logger.Information("Manual allowlist disabled (\"files\" empty in ip-allowlist.json)");
             return;
         }
 
@@ -242,7 +242,7 @@ public static class FileAllowlist
             }
             catch (Exception e)
             {
-                logger.Warning(e, "File allowlist reload check failed; keeping last snapshot ({Count})", Count);
+                logger.Warning(e, "Manual allowlist reload check failed; keeping last snapshot ({Count})", Count);
             }
         }
     }
@@ -291,7 +291,7 @@ public static class FileAllowlist
         _lastStamp = stamp;
 
         logger.Information(
-            "File allowlist loaded {Count} range(s) from {Files} file(s)",
+            "Manual allowlist loaded {Count} range(s) from {Files} file(s)",
             next.Count,
             files
         );

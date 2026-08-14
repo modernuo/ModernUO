@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: FileAllowlistConfigurationTests.cs                              *
+ * File: ManualAllowlistConfigurationTests.cs                              *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -19,16 +19,16 @@ using Server.Json;
 using Server.Network.Bans;
 using Xunit;
 
-namespace Server.Tests.Network.Bans.Blocklist;
+namespace Server.Tests.Network.ManualAllowlists;
 
-public class FileAllowlistConfigurationTests
+public class ManualAllowlistConfigurationTests
 {
     // Locks the JsonConfig casing contract: JsonConfig's options are case-SENSITIVE, so every settings
     // member must carry an explicit [JsonPropertyName("camelCase")] or it silently binds nothing.
     [Fact]
-    public void FileAllowlistSettings_RoundTripsThroughJsonConfig()
+    public void ManualAllowlistSettings_RoundTripsThroughJsonConfig()
     {
-        var original = new FileAllowlistSettings
+        var original = new ManualAllowlistSettings
         {
             Enabled = true,
             Files = ["D:/shared/ip-allowlist*.txt"],
@@ -41,7 +41,7 @@ public class FileAllowlistConfigurationTests
         Assert.Contains("\"files\"", json);
         Assert.Contains("\"reloadInterval\"", json);
 
-        var restored = JsonSerializer.Deserialize<FileAllowlistSettings>(json, JsonConfig.DefaultOptions);
+        var restored = JsonSerializer.Deserialize<ManualAllowlistSettings>(json, JsonConfig.DefaultOptions);
 
         Assert.NotNull(restored);
         Assert.Equal(original.Enabled, restored.Enabled);
@@ -51,9 +51,9 @@ public class FileAllowlistConfigurationTests
 
     // The point of the flag: a shard that never opts in must not start the reload poll.
     [Fact]
-    public void File_allowlist_is_off_by_default()
+    public void Manual_allowlist_is_off_by_default()
     {
-        Assert.False(new FileAllowlistSettings().Enabled);
+        Assert.False(new ManualAllowlistSettings().Enabled);
     }
 
     // The generator creates ip-allowlist.txt beside the blocklist; the wildcard is what picks up a
@@ -61,6 +61,6 @@ public class FileAllowlistConfigurationTests
     [Fact]
     public void Default_pattern_matches_the_generator_output_path()
     {
-        Assert.Equal(["Configuration/ip-allowlist*.txt"], new FileAllowlistSettings().Files);
+        Assert.Equal(["Configuration/ip-allowlist*.txt"], new ManualAllowlistSettings().Files);
     }
 }

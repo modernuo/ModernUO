@@ -32,7 +32,7 @@ namespace Server.Network;
 /// <remarks>
 /// Consulted only after the blocklist has already matched, so a normal accept pays nothing for it. An entry
 /// is evidence rather than a licence: enough strikes inside the window revokes it. It cannot bootstrap, so
-/// it does not replace <see cref="FileAllowlist"/>. Both dictionaries are game-loop state; only the file
+/// it does not replace <see cref="ManualAllowlist"/>. Both dictionaries are game-loop state; only the file
 /// write runs off-loop, over a snapshot taken on the loop.
 /// See <c>dev-docs/ip-bans-and-allowlists.md</c>.
 /// </remarks>

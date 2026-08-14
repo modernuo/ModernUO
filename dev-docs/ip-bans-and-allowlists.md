@@ -38,7 +38,7 @@ Two, with different authority:
 
 | List | Source | Revocable? | Covers |
 |---|---|---|---|
-| `FileAllowlist` | every `ip-allowlist*.txt` (opt-in) | No — an operator said so | Blocking **and** escalation |
+| `ManualAllowlist` | every `ip-allowlist*.txt` (opt-in) | No — an operator said so | Blocking **and** escalation |
 | `LoginAllowlist` | Earned by authenticating, 90-day TTL | Yes — 10 strikes/hour | Blocking **and** escalation |
 
 Both are consulted **only after the blocklist has already matched**, so a normal accept — the one an
@@ -185,7 +185,7 @@ firewalled off. Shortening the 5s handshake window has been tried and broke real
 
 - **An allowlist cannot bootstrap.** A `LoginAllowlist` entry is only earned by getting in, so it can never
   repair an existing false positive, and it is weakest on rotating CGNAT — a player whose lease moved is a
-  stranger again. `FileAllowlist` is the fix for that, which is why it is manual — and opt-in, via
+  stranger again. `ManualAllowlist` is the fix for that, which is why it is manual — and opt-in, via
   `ip-allowlist.json`.
 - **A never-logged-in player on a shared address can still be caught**, for up to `badConnectDuration`, if a
   co-tenant misbehaves. Accepted: it is 4h and self-healing. The cheapest lever is `badConnectDuration`.
@@ -218,7 +218,7 @@ A shard fronted by an upstream proxy can disable all of it and register nothing.
 | `Projects/Server/Network/Bans/BanReasons.cs` | Reason slugs + the behavioural opt-in set |
 | `Projects/UOContent/Network/BanExemptions.cs` | Combines both allowlists into one answer |
 | `Projects/UOContent/Network/Blocklist/BlocklistFilter.cs` | File-sourced blocklist filter |
-| `Projects/UOContent/Network/Blocklist/FileAllowlist.cs` | Operator carve-outs, read from the allowlist files |
+| `Projects/UOContent/Network/Blocklist/ManualAllowlist.cs` | Operator carve-outs, read from the allowlist files |
 | `Projects/UOContent/Network/LoginAllowlist/LoginAllowlist.cs` | Allowlist earned by authenticating |
 | `Projects/UOContent/Network/AutoDenylist/AutoDenylist.cs` | Short-lived local hold |
 | `Projects/UOContent/Network/CrowdSec/CrowdSecReporter.cs` | LAPI contribution sink |

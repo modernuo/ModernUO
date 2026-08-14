@@ -102,10 +102,10 @@ public sealed class BlocklistFilter : IConnectionFilter
 
         // The operator's override on this gate, opted into separately. Without it only the generator's
         // subtraction covers carve-outs, and that does not cover ban contributions.
-        if (!FileAllowlist.Enabled)
+        if (!ManualAllowlist.Enabled)
         {
             logger.Warning(
-                "Blocklist is on but the file allowlist is not; set \"enabled\" in ip-allowlist.json so a " +
+                "Blocklist is on but the manual allowlist is not; set \"enabled\" in ip-allowlist.json so a " +
                 "carve-out also suppresses ban contributions"
             );
         }
@@ -198,7 +198,7 @@ public sealed class BlocklistFilter : IConnectionFilter
         // Both are asked only once the list has matched, so they cost the common accept nothing. The file
         // list is usually redundant because the generator subtracts it — except right after an operator
         // adds an entry without regenerating, which is when someone is waiting to get back in.
-        if (FileAllowlist.Contains(address))
+        if (ManualAllowlist.Contains(address))
         {
             return false;
         }

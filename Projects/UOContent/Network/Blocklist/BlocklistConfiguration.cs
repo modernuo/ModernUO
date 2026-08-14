@@ -75,7 +75,7 @@ public record BlocklistSettings
 
     /// <summary>
     /// Deprecated: moved to <c>files</c> in <c>ip-allowlist.json</c>, because the blocklist is only one of
-    /// two consumers. Still bound so <see cref="FileAllowlist"/> can warn an operator who set it here
+    /// two consumers. Still bound so <see cref="ManualAllowlist"/> can warn an operator who set it here
     /// instead of dropping the carve-out silently. Null when absent, which is the normal case.
     /// </summary>
     [JsonPropertyName("allowlistFiles")]

@@ -28,15 +28,15 @@ public class BanExemptionsTests
     private static readonly IPAddress _listed = IPAddress.Parse("192.0.2.10");
     private static readonly IPAddress _unlisted = IPAddress.Parse("192.0.2.11");
 
-    private static void WithFileAllowlist(string contents) =>
-        FileAllowlist.LoadForTesting(BlocklistSnapshot.Build(Encoding.ASCII.GetBytes(contents), out _, out _));
+    private static void WithManualAllowlist(string contents) =>
+        ManualAllowlist.LoadForTesting(BlocklistSnapshot.Build(Encoding.ASCII.GetBytes(contents), out _, out _));
 
-    private static void WithEmptyFileAllowlist() => FileAllowlist.LoadForTesting(BlocklistSnapshot.Empty);
+    private static void WithEmptyManualAllowlist() => ManualAllowlist.LoadForTesting(BlocklistSnapshot.Empty);
 
     [Fact]
-    public void File_allowlist_exempts_behavioral_contributions()
+    public void Manual_allowlist_exempts_behavioral_contributions()
     {
-        WithFileAllowlist("192.0.2.10");
+        WithManualAllowlist("192.0.2.10");
 
         // Subtracting from the blocklist does nothing for behavioural detections, which never consult it.
         Assert.True(BanExemptions.IsExempt(_listed, BanReasons.ForeignProtocol, NeverCalled));
@@ -46,10 +46,10 @@ public class BanExemptionsTests
     }
 
     [Fact]
-    public void File_allowlist_covers_cidr_entries()
+    public void Manual_allowlist_covers_cidr_entries()
     {
         // Carve-outs are CIDRs, so a shared-CGNAT player is only covered if ranges work here.
-        WithFileAllowlist("192.0.2.0/24");
+        WithManualAllowlist("192.0.2.0/24");
 
         Assert.True(BanExemptions.IsExempt(_listed, BanReasons.RateLimit, NeverCalled));
         Assert.True(BanExemptions.IsExempt(IPAddress.Parse("192.0.2.254"), BanReasons.RateLimit, NeverCalled));
@@ -57,9 +57,9 @@ public class BanExemptionsTests
     }
 
     [Fact]
-    public void Manual_bans_are_never_exempt_even_when_file_allowlisted()
+    public void Manual_bans_are_never_exempt_even_when_allowlisted()
     {
-        WithFileAllowlist("192.0.2.10");
+        WithManualAllowlist("192.0.2.10");
 
         // An explicit decision outranks the operator's own carve-out, and must not cost a strike.
         Assert.False(BanExemptions.IsExempt(_listed, BanReasons.Manual, NeverCalled));
@@ -68,16 +68,16 @@ public class BanExemptionsTests
     [Fact]
     public void Unopted_reasons_are_never_exempt()
     {
-        WithFileAllowlist("192.0.2.10");
+        WithManualAllowlist("192.0.2.10");
 
         Assert.False(BanExemptions.IsExempt(_listed, BanReasons.Blocklist, NeverCalled));
         Assert.False(BanExemptions.IsExempt(_listed, "some-future-reason", NeverCalled));
     }
 
     [Fact]
-    public void File_allowlist_does_not_spend_the_earned_lists_strikes()
+    public void Manual_allowlist_does_not_spend_the_earned_lists_strikes()
     {
-        WithFileAllowlist("192.0.2.10");
+        WithManualAllowlist("192.0.2.10");
 
         // Unconditional, so the revocable list must not be consulted -- that would burn a strike.
         Assert.True(BanExemptions.IsExempt(_listed, BanReasons.RateLimit, NeverCalled));
@@ -86,7 +86,7 @@ public class BanExemptionsTests
     [Fact]
     public void Falls_through_to_the_login_allowlist_when_not_file_listed()
     {
-        WithEmptyFileAllowlist();
+        WithEmptyManualAllowlist();
 
         var consulted = 0;
 
@@ -107,7 +107,7 @@ public class BanExemptionsTests
     [Fact]
     public void Null_address_is_never_exempt()
     {
-        WithEmptyFileAllowlist();
+        WithEmptyManualAllowlist();
 
         Assert.False(BanExemptions.IsExempt(null, BanReasons.RateLimit, NeverCalled));
     }
