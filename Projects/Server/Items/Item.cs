@@ -2350,6 +2350,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
         dropped.ItemID == ItemID &&
         dropped.Hue == Hue &&
         dropped.Name == Name &&
+        dropped.PlayerConstructed == PlayerConstructed &&
         dropped.Amount + Amount <= 60000 &&
         dropped != this;
 

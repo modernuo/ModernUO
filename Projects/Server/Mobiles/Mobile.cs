@@ -5248,6 +5248,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         item.Name = oldItem.Name;
         item.Weight = oldItem.Weight;
 
+        item.PlayerConstructed = oldItem.PlayerConstructed;
         item.Amount = oldAmount - amount;
         item.Map = oldItem.Map;
 
