@@ -27,8 +27,15 @@ No build changes needed. Three signals exist, all actionable:
 | Signal | Meaning | Action |
 |---|---|---|
 | Startup error: *host cannot honour short waits* | No high-resolution timer and `timeBeginPeriod` failed. Very old or unusual Windows. | Nothing is wrong with the server; it spins and uses a full core. Upgrade the OS or accept the core. |
-| Warning: *host returned a Nms idle wait late* + sleeping suspended | The OS did not reschedule the process promptly after a 1–2ms wait. Shared/burstable vCPU signature. | Move to dedicated CPU, or set `server.eventLoopIdleWaitMs=0` to spin permanently. This is a **host** problem — no amount of server-side change fixes it. |
+| Warning: *host returned a Nms idle wait late … for the Nth time running* | The OS did not reschedule the process promptly after a 1–2ms wait, through several escalating backoffs. Shared/burstable vCPU signature. | Move to dedicated CPU, or set `server.eventLoopIdleWaitMs=0` to spin permanently. This is a **host** problem — no amount of server-side change fixes it. |
+| Error: *keeps returning idle waits late and sleeping has backed off N times* | The escalation hit its 120s ceiling. The host is not going to recover. | As above, but stop waiting for it to settle. Logged once per degradation, re-armed after a clean minute. |
 | Admin gump → Performance → *Event Loop* | `Healthy` / `Sleep suspended (host)` / `Spinning (configured)` / `Spinning - host cannot honor short waits` | Same as above; the last verdict is the startup error's state, not a config choice. |
+
+The first two backoffs of any episode log at **Debug**, not Warning: a single suspension is
+recoverable and not something an operator can act on. Raise the log level if you are chasing a
+marginal host and want to see them. Late wakes that coincide with a gen1-or-higher GC are not
+counted at all — the GC deliberately collects during idle sleeps, so its pauses land there by
+design and are not the host's fault.
 
 If none of these fired and the shard still feels laggy, the cause is work, GC, or something a
 boot-time signal cannot see. Continue.
