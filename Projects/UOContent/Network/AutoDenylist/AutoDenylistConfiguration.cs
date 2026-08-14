@@ -76,11 +76,12 @@ public record AutoDenylistSettings
     /// disconnected by whichever gate detected them.
     /// </summary>
     /// <remarks>
-    /// A <c>Dictionary</c> capacity, not a round number. Grown from empty it steps 36,353 → 75,431 →
-    /// 156,437 → 324,449, so this fills one exactly instead of stranding slots: 65,536 sat just past a
-    /// resize and left 9,895 of them (52 bytes each) unusable. Sized to cover the 50k–250k distinct-source
-    /// floods seen in practice, for ~17 MB. Raising it is paid on the loop, where a full sweep runs ~6 ms
-    /// here and ~26 ms at 968,897.
+    /// A <c>HashSet</c> capacity, not a round number. Grown from empty it steps 36,353 → 75,431 → 156,437
+    /// → 324,449, so this fills one exactly instead of stranding slots: 65,536 sat just past a resize and
+    /// left 9,895 of them unusable. Sized to cover the 50k–250k distinct-source floods seen in practice,
+    /// for ~19 MB — 36 bytes a set slot plus 24 for the ring record. Raising it is bounded by memory
+    /// rather than by a scan, since holds are retired from the ring in expiry order; a flood past it wants
+    /// upstream scrubbing rather than a larger cap.
     /// </remarks>
     [JsonPropertyName("maxEntries")]
     public int MaxEntries { get; set; } = 324_449;
