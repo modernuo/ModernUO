@@ -163,6 +163,12 @@ Escalation is **immediate**, on the first detection: a 15-minute local hold plus
 (4h) contribution. There is no N-connection threshold; the strike counter governs only revoking a
 `LoginAllowlist` entry.
 
+The local hold runs 15 minutes from the **first** detection and is never extended by later ones, so an
+address that keeps trying is released on schedule rather than held indefinitely. It does not get a free
+run: the rate limiter sits *ahead* of the connection filters, so a flooder is re-reported and re-held on
+its next attempt. Not refreshing is what keeps the holds in expiry order, which is what makes retiring
+lapsed ones cost the number expiring rather than the number held.
+
 ### What is deliberately NOT detected
 
 **Do not add rules based on arrival framing.** TCP has no message boundaries, so the network, the OS or a
@@ -192,6 +198,10 @@ firewalled off. Shortening the 5s handshake window has been tried and broke real
 - **`MaxConnections` (4096) is a hard ceiling.** The accept gate runs *after* the kernel completed the TCP
   handshake, so a blocklist match saves the socket setup and the `NetState` slot but never the connection
   itself. Only an upstream L4 proxy or edge scrubbing moves that cost off the shard.
+- **The `auto-denylist` stops tracking at `maxEntries`.** Past it a detection still disconnects the
+  connection, but the address is not held, so it pays full detection cost on every reconnect instead of a
+  cheap accept-gate deny. The default is sized for the 50k–250k distinct-source floods seen in practice; a
+  flood past it wants upstream scrubbing rather than a larger cap, which only buys a longer on-loop scan.
 
 ## Configuration
 

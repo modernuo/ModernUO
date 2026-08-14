@@ -511,9 +511,9 @@ Rules:
 
 Core owns the question; **every implementation lives in UOContent**. The three that ship are `firewall`
 (admin-curated, mutable at runtime, persisted to `Configuration/firewall.json`), `blocklist` (file-sourced,
-millions of entries, demand-pages hits to CrowdSec) and `auto-denylist` (in-memory, short-lived, fed by the
-shard's own behavioural detections). A shard that fronts its server with an upstream proxy or edge scrubbing
-can drop all of them and register nothing.
+millions of entries, demand-pages hits to CrowdSec, **opt-in**) and `auto-denylist` (in-memory,
+short-lived, fed by the shard's own behavioural detections). A shard that fronts its server with an
+upstream proxy or edge scrubbing can drop all of them and register nothing.
 
 The allowlists, ban contribution, behavioural detection and the operator process for exempting a
 false-positive address are covered separately in
