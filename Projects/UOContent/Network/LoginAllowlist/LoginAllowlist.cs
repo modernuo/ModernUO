@@ -19,6 +19,7 @@ using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Server.Logging;
 using Server.Network.Bans;
@@ -259,7 +260,7 @@ public static class LoginAllowlist
     /// </summary>
     private static void OnCrashed(ServerCrashedEventArgs e)
     {
-        if (System.Threading.Thread.CurrentThread == Core.Thread)
+        if (Thread.CurrentThread == Core.Thread)
         {
             OnShutdown();
         }

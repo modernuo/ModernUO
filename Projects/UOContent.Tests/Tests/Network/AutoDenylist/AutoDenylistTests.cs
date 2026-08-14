@@ -20,8 +20,8 @@ using Xunit;
 
 namespace Server.Tests.Network.AutoDenylists;
 
-// Static store, so every test resets it first. Addresses come from TEST-NET-2 (198.51.100.0/24).
-// Sequential: the cap tests reach Sweep, which rents from STArrayPool, which is not thread-safe.
+// Static store, so every test resets it first and none may run alongside another.
+// Addresses come from TEST-NET-2 (198.51.100.0/24).
 [Collection("Sequential UOContent Tests")]
 public class AutoDenylistTests
 {
@@ -102,6 +102,30 @@ public class AutoDenylistTests
         // The first four are still held; the rest were disconnected by their gate but not tracked.
         Assert.True(AutoDenylist.IsDenied(IPAddress.Parse("198.51.100.100"), Now));
         Assert.False(AutoDenylist.IsDenied(IPAddress.Parse("198.51.100.109"), Now));
+    }
+
+    // A sweep is O(maxEntries). Without the throttle a distinct-source flood re-scans the whole
+    // dictionary for every address it rejects, which is the case the cap exists to make cheap.
+    [Fact]
+    public void Cap_does_not_re_sweep_for_every_rejected_address()
+    {
+        Reset(maxEntries: 2);
+
+        AutoDenylist.Hold(IPAddress.Parse("198.51.100.40"), BanReasons.InvalidSeed, Now);
+        AutoDenylist.Hold(IPAddress.Parse("198.51.100.41"), BanReasons.InvalidSeed, Now);
+        Assert.Equal(0, AutoDenylist.SweepCount);
+
+        // At the cap with nothing lapsed: the first rejection sweeps, the rest in the window do not.
+        for (var i = 0; i < 5; i++)
+        {
+            Assert.False(AutoDenylist.Hold(IPAddress.Parse($"198.51.100.{50 + i}"), BanReasons.InvalidSeed, Now));
+        }
+
+        Assert.Equal(1, AutoDenylist.SweepCount);
+
+        // Past the window it may try again, since entries can have lapsed by then.
+        Assert.False(AutoDenylist.Hold(IPAddress.Parse("198.51.100.60"), BanReasons.InvalidSeed, Now + 1000));
+        Assert.Equal(2, AutoDenylist.SweepCount);
     }
 
     [Fact]

@@ -39,12 +39,21 @@ public static class AutoDenylist
     // Address (normalized v6 bits) -> Core.TickCount at which the hold lapses. Loop-only.
     private static readonly Dictionary<UInt128, long> _held = [];
 
+    // Shortest gap between cap-triggered sweeps. A sweep is O(_maxEntries) and one that just ran cannot
+    // have freed more, so without this every rejected address re-scans the whole dictionary -- turning the
+    // bound into a cost multiplier under exactly the flood it exists to bound.
+    private const long SweepThrottleMs = 1000;
+
     private static bool _enabled;
     private static long _durationMs;
     private static int _maxEntries;
     private static bool _warnedFull;
+    private static long _lastSweepAt;
 
     public static int Count => _held.Count;
+
+    // Test seam: lets the throttle be asserted rather than inferred.
+    internal static int SweepCount { get; private set; }
 
     public static void Configure()
     {
@@ -59,6 +68,9 @@ public static class AutoDenylist
 
         _durationMs = (long)s.Duration.TotalMilliseconds;
         _maxEntries = s.MaxEntries;
+
+        // Seeded from a real tick: tick counts need not start near zero. See dev-docs/tick-counts.md.
+        _lastSweepAt = Core.TickCount;
 
         ConnectionFilters.Register(new AutoDenylistFilter());
         BanChannel.Register(new AutoDenylistReporter());
@@ -82,7 +94,10 @@ public static class AutoDenylist
         // An address already held is just extended, so no cap check is needed.
         if (!_held.ContainsKey(key) && _held.Count >= _maxEntries)
         {
-            Sweep(nowTicks);
+            if (nowTicks - _lastSweepAt >= SweepThrottleMs)
+            {
+                Sweep(nowTicks);
+            }
 
             if (_held.Count >= _maxEntries)
             {
@@ -128,6 +143,10 @@ public static class AutoDenylist
 
     internal static void Sweep(long nowTicks)
     {
+        // Stamped even when there is nothing to do, so the cap path throttles off the last attempt.
+        _lastSweepAt = nowTicks;
+        SweepCount++;
+
         if (_held.Count == 0)
         {
             return;
@@ -157,12 +176,16 @@ public static class AutoDenylist
         _durationMs = durationMs;
         _maxEntries = maxEntries;
         _warnedFull = false;
+        _lastSweepAt = 0;
+        SweepCount = 0;
     }
 }
 
 /// <summary>Accept-path gate for <see cref="AutoDenylist"/>.</summary>
 public sealed class AutoDenylistFilter : IConnectionFilter
 {
+    private Timer _sweepTimer;
+
     public string Name => "auto-denylist";
 
     public void Register()
@@ -171,12 +194,19 @@ public sealed class AutoDenylistFilter : IConnectionFilter
 
     public void Start(CancellationToken token)
     {
-        // Only an optimisation: IsDenied expires on read.
-        Timer.DelayCall(TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(1), () => AutoDenylist.Sweep(Core.TickCount));
+        // Only an optimization: IsDenied expires on read.
+        _sweepTimer = Timer.DelayCall(
+            TimeSpan.FromMinutes(1),
+            TimeSpan.FromMinutes(1),
+            () => AutoDenylist.Sweep(Core.TickCount)
+        );
     }
 
     public void Stop()
     {
+        // Recurring, so an uncancelled sweep survives Stop and the next Start adds a second one.
+        _sweepTimer?.Stop();
+        _sweepTimer = null;
     }
 
     public bool ShouldDeny(IPAddress address) => AutoDenylist.IsDenied(address);
