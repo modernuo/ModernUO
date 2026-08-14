@@ -76,11 +76,12 @@ public record AutoDenylistSettings
     /// disconnected by whichever gate detected them.
     /// </summary>
     /// <remarks>
-    /// A <c>Dictionary</c> capacity, not a round number. Growing from empty it steps 36,353 → 75,431 →
-    /// 156,437, so this fills one exactly instead of stranding slots: 65,536 sat just past a resize and left
-    /// 9,895 of them (52 bytes each) unusable. Costs ~8 MB. Raising it is paid on the loop, where a full
-    /// sweep runs ~2 ms here, ~6 ms at 324,449 and ~26 ms at 968,897.
+    /// A <c>Dictionary</c> capacity, not a round number. Grown from empty it steps 36,353 → 75,431 →
+    /// 156,437 → 324,449, so this fills one exactly instead of stranding slots: 65,536 sat just past a
+    /// resize and left 9,895 of them (52 bytes each) unusable. Sized to cover the 50k–250k distinct-source
+    /// floods seen in practice, for ~17 MB. Raising it is paid on the loop, where a full sweep runs ~6 ms
+    /// here and ~26 ms at 968,897.
     /// </remarks>
     [JsonPropertyName("maxEntries")]
-    public int MaxEntries { get; set; } = 156_437;
+    public int MaxEntries { get; set; } = 324_449;
 }
