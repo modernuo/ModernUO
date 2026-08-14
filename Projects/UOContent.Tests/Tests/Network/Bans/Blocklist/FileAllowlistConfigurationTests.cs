@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: BlocklistConfigurationTests.cs                                  *
+ * File: FileAllowlistConfigurationTests.cs                              *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -21,63 +21,46 @@ using Xunit;
 
 namespace Server.Tests.Network.Bans.Blocklist;
 
-public class BlocklistConfigurationTests
+public class FileAllowlistConfigurationTests
 {
     // Locks the JsonConfig casing contract: JsonConfig's options are case-SENSITIVE, so every settings
     // member must carry an explicit [JsonPropertyName("camelCase")] or it silently binds nothing.
     [Fact]
-    public void BlocklistSettings_RoundTripsThroughJsonConfig()
+    public void FileAllowlistSettings_RoundTripsThroughJsonConfig()
     {
-        var original = new BlocklistSettings
+        var original = new FileAllowlistSettings
         {
             Enabled = true,
-            File = "D:/shared/ip-blocklist.txt",
-            ReloadInterval = TimeSpan.FromMinutes(5),
-            ReportHits = false,
-            BanDuration = TimeSpan.FromHours(2),
-            PromoteSuppression = TimeSpan.FromSeconds(30)
+            Files = ["D:/shared/ip-allowlist*.txt"],
+            ReloadInterval = TimeSpan.FromMinutes(5)
         };
 
         var json = JsonConfig.Serialize(original);
 
         Assert.Contains("\"enabled\"", json);
-        Assert.Contains("\"file\"", json);
+        Assert.Contains("\"files\"", json);
         Assert.Contains("\"reloadInterval\"", json);
-        Assert.Contains("\"reportHits\"", json);
-        Assert.Contains("\"banDuration\"", json);
-        Assert.Contains("\"promoteSuppression\"", json);
 
-        var restored = JsonSerializer.Deserialize<BlocklistSettings>(json, JsonConfig.DefaultOptions);
+        var restored = JsonSerializer.Deserialize<FileAllowlistSettings>(json, JsonConfig.DefaultOptions);
 
         Assert.NotNull(restored);
         Assert.Equal(original.Enabled, restored.Enabled);
-        Assert.Equal(original.File, restored.File);
+        Assert.Equal(original.Files, restored.Files);
         Assert.Equal(original.ReloadInterval, restored.ReloadInterval);
-        Assert.Equal(original.ReportHits, restored.ReportHits);
-        Assert.Equal(original.BanDuration, restored.BanDuration);
-        Assert.Equal(original.PromoteSuppression, restored.PromoteSuppression);
     }
 
     // The point of the flag: a shard that never opts in must not start the reload poll.
     [Fact]
-    public void Blocklist_is_off_by_default()
+    public void File_allowlist_is_off_by_default()
     {
-        Assert.False(new BlocklistSettings().Enabled);
+        Assert.False(new FileAllowlistSettings().Enabled);
     }
 
-    // Null, not the old default array. FileAllowlist warns on a non-empty value, so a default would
-    // fire that warning on every shard that never set it.
+    // The generator creates ip-allowlist.txt beside the blocklist; the wildcard is what picks up a
+    // carve-out file (-RefreshCarveouts writes ip-allowlist-starlink.txt) with no config edit.
     [Fact]
-    public void Deprecated_allowlist_files_defaults_to_null()
+    public void Default_pattern_matches_the_generator_output_path()
     {
-        Assert.Null(new BlocklistSettings().AllowlistFiles);
-    }
-
-    // The generator (tools/Export-IpBlocklist.ps1) writes to this path by default; if one side moves
-    // without the other, a shard silently enforces nothing.
-    [Fact]
-    public void Default_file_matches_the_generator_output_path()
-    {
-        Assert.Equal("Configuration/ip-blocklist.txt", new BlocklistSettings().File);
+        Assert.Equal(["Configuration/ip-allowlist*.txt"], new FileAllowlistSettings().Files);
     }
 }

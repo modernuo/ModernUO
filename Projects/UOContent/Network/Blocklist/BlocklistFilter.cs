@@ -25,8 +25,8 @@ namespace Server.Network.Bans;
 /// <summary>
 /// Accept-path gate for a large, file-sourced IP blocklist, hydrated from the file a generator
 /// (<c>tools/Export-IpBlocklist.ps1</c>) writes on a schedule. Holds an immutable snapshot swapped
-/// atomically by an off-loop reload poll, so accept-path reads are lock-free. Inert when no file is
-/// configured or present.
+/// atomically by an off-loop reload poll, so accept-path reads are lock-free. Opt-in via
+/// <c>blocklist.json</c>'s <c>enabled</c>; inert when off, or when no file is configured or present.
 /// </summary>
 /// <remarks>
 /// This is the demand-paging half of the design: an OS firewall cannot hold millions of entries on
@@ -44,6 +44,7 @@ public sealed class BlocklistFilter : IConnectionFilter
 
     private readonly PromotedGuard _guard = new();
 
+    private bool _enabled;
     private string _path;
     private TimeSpan _interval;
     private bool _reportHits;
@@ -52,6 +53,7 @@ public sealed class BlocklistFilter : IConnectionFilter
     private string _lastGenerated;
     private DateTime _lastWriteUtc;
     private CancellationTokenSource _cts;
+    private Timer _sweepTimer;
 
     public string Name => "blocklist";
 
@@ -68,6 +70,7 @@ public sealed class BlocklistFilter : IConnectionFilter
         var s = BlocklistConfiguration.Settings;
 
         _path = ResolvePath(s.File);
+        _enabled = s.Enabled && _path != null;
         _interval = s.ReloadInterval <= TimeSpan.Zero ? TimeSpan.FromSeconds(60) : s.ReloadInterval;
         _reportHits = s.ReportHits;
         _banDuration = s.BanDuration;
@@ -91,16 +94,26 @@ public sealed class BlocklistFilter : IConnectionFilter
 
     public void Start(CancellationToken token)
     {
-        if (_path == null)
+        if (!_enabled)
         {
-            logger.Information("Blocklist disabled (\"file\" empty in blocklist.json)");
+            LogWhyDisabled();
             return;
+        }
+
+        // The allowlist is the operator's override on this gate, and it is opted into separately. Only the
+        // generator's subtraction is covering them here, which does not cover ban contributions.
+        if (!FileAllowlist.Enabled)
+        {
+            logger.Warning(
+                "Blocklist is on but the file allowlist is not; set \"enabled\" in ip-allowlist.json so a " +
+                "carve-out also suppresses ban contributions"
+            );
         }
 
         _cts = CancellationTokenSource.CreateLinkedTokenSource(token);
 
-        // A missing file is the shipped default, not an error: the gate stays inert until the poll picks
-        // up whatever the generator first writes. No restart needed.
+        // A missing file is not an error: the gate stays inert until the poll picks up whatever the
+        // generator first writes. No restart needed.
         if (File.Exists(_path))
         {
             Reload(); // synchronous prime; empty on failure (fail-open)
@@ -110,10 +123,36 @@ public sealed class BlocklistFilter : IConnectionFilter
             logger.Information("Blocklist inert: no list at \"{Path}\"; polling every {Interval}", _path, _interval);
         }
 
-        // Sweep the promote-guard so a distinct-IP flood cannot grow it unbounded.
-        Timer.DelayCall(TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(1), SweepGuard);
+        // Sweep the promote-guard so a distinct-IP flood cannot grow it unbounded. Only marked when hits
+        // are reported, so there is nothing to sweep otherwise.
+        if (_reportHits)
+        {
+            _sweepTimer = Timer.DelayCall(TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(1), SweepGuard);
+        }
 
         _ = Task.Run(() => PollLoop(_cts.Token), _cts.Token);
+    }
+
+    private void LogWhyDisabled()
+    {
+        if (_path == null)
+        {
+            logger.Information("Blocklist disabled (\"file\" empty in blocklist.json)");
+        }
+        else if (File.Exists(_path))
+        {
+            // A shard upgrading from before the flag has a list on disk but no "enabled" key, so say so
+            // rather than silently dropping a gate it was relying on.
+            logger.Warning(
+                "Blocklist is off (\"enabled\" false in blocklist.json) but a list is present at \"{Path}\"; " +
+                "no addresses will be denied",
+                _path
+            );
+        }
+        else
+        {
+            logger.Information("Blocklist disabled (\"enabled\" false in blocklist.json)");
+        }
     }
 
     public void Stop()
@@ -121,6 +160,10 @@ public sealed class BlocklistFilter : IConnectionFilter
         _cts?.Cancel();
         _cts?.Dispose();
         _cts = null;
+
+        // Recurring and tokenless before: a Stop/Start cycle left the old sweep running and added another.
+        _sweepTimer?.Stop();
+        _sweepTimer = null;
     }
 
     public bool ShouldDeny(IPAddress address)

@@ -24,7 +24,7 @@ Filters are consulted in registration order, first denial wins:
 | Filter | Source | Scope |
 |---|---|---|
 | `firewall` | `Configuration/firewall.json`, mutable in-game | Admin-curated, permanent |
-| `blocklist` | `Configuration/ip-blocklist.txt` (millions of entries) | Reputation feeds |
+| `blocklist` | `Configuration/ip-blocklist.txt` (millions of entries, opt-in) | Reputation feeds |
 | `auto-denylist` | In-memory, 15 min | What this shard just caught misbehaving |
 
 ### Contributing a ban
@@ -38,7 +38,7 @@ Two, with different authority:
 
 | List | Source | Revocable? | Covers |
 |---|---|---|---|
-| `FileAllowlist` | every `ip-allowlist*.txt` | No — an operator said so | Blocking **and** escalation |
+| `FileAllowlist` | every `ip-allowlist*.txt` (opt-in) | No — an operator said so | Blocking **and** escalation |
 | `LoginAllowlist` | Earned by authenticating, 90-day TTL | Yes — 10 strikes/hour | Blocking **and** escalation |
 
 Both are consulted **only after the blocklist has already matched**, so a normal accept — the one an
@@ -66,16 +66,22 @@ If none of those match, they may be inside a **CIDR** in the blocklist, or held 
 
 ### 2. Add them to the allowlist
 
-One entry per line in `Distribution/Configuration/ip-allowlist.txt` — a bare address or a CIDR. This file
-is yours; the generator creates it once and never rewrites it.
+Set `"enabled": true` in `Configuration/ip-allowlist.json` first — it is off by default, so a shard that
+has never written a carve-out does not poll for one. The shard logs a warning at startup if allowlist files
+are present while the flag is off.
+
+Then one entry per line in `Distribution/Configuration/ip-allowlist.txt` — a bare address or a CIDR. This
+file is yours; the generator creates it once and never rewrites it.
 
 ```
 203.0.113.42        # shard owner, listed via a shared upstream address
 198.51.100.0/24     # a whole range if the ISP rotates within it
 ```
 
-The shard reloads within `reloadInterval` (60s default). **No restart, and no need to re-run the
-generator.** From that point the address is neither blocked nor contributed.
+With the flag on, the shard reloads within `reloadInterval` (60s default). **No restart, and no need to
+re-run the generator.** From that point the address is neither blocked nor contributed. With the flag off
+the generator still subtracts the file at generation time, so the address stops being *blocked* — but a
+behavioural detection can still contribute it, which is the case the flag exists to cover.
 
 ### 3. Clear any ban that already exists
 
@@ -123,8 +129,10 @@ where your players actually are, and a carve-out names a real network, so you bu
 ```
 
 That writes `ip-allowlist-starlink.txt` beside the blocklist, and every `ip-allowlist*.txt` there is
-subtracted — both by the generator and by the shard, with no config edit. Starlink costs about 0.1% of the
-list. Blank a file (keep the file) to reputation-block that network again; delete it to drop the carve-out.
+subtracted by the generator with no config edit. For the shard to read them too — which is what also stops
+a carve-out address being *contributed* by a behavioural detection — set `enabled` in `ip-allowlist.json`;
+it is off by default so no shard polls for files it never wrote. Starlink costs about 0.1% of the list.
+Blank a file (keep the file) to reputation-block that network again; delete it to drop the carve-out.
 
 Carve-out files carry an `asn=` marker in their header, which is how `-RefreshCarveouts` finds them. A
 hand-written allowlist has no marker and is never rewritten.
@@ -177,7 +185,8 @@ firewalled off. Shortening the 5s handshake window has been tried and broke real
 
 - **An allowlist cannot bootstrap.** A `LoginAllowlist` entry is only earned by getting in, so it can never
   repair an existing false positive, and it is weakest on rotating CGNAT — a player whose lease moved is a
-  stranger again. `FileAllowlist` is the fix for that, which is why it is manual.
+  stranger again. `FileAllowlist` is the fix for that, which is why it is manual — and opt-in, via
+  `ip-allowlist.json`.
 - **A never-logged-in player on a shared address can still be caught**, for up to `badConnectDuration`, if a
   co-tenant misbehaves. Accepted: it is 4h and self-healing. The cheapest lever is `badConnectDuration`.
 - **`MaxConnections` (4096) is a hard ceiling.** The accept gate runs *after* the kernel completed the TCP
@@ -189,7 +198,8 @@ firewalled off. Shortening the 5s handshake window has been tried and broke real
 | File | Controls |
 |---|---|
 | `bans.json` | `reportRateLimitTrips`, `autoBanDuration`, `reportBadConnects`, `badConnectDuration` |
-| `blocklist.json` | `file`, `allowlistFiles` (wildcards allowed), `reloadInterval`, `reportHits`, `banDuration`, `promoteSuppression` |
+| `blocklist.json` | `enabled` (default `false`), `file`, `reloadInterval`, `reportHits`, `banDuration`, `promoteSuppression` |
+| `ip-allowlist.json` | `enabled` (default `false`), `files` (wildcards allowed), `reloadInterval` |
 | `login-allowlist.json` | `enabled`, `file`, `ttl`, `flushInterval`, `escalateAfterStrikes`, `strikeWindow` |
 | `auto-denylist.json` | `enabled`, `duration`, `maxEntries` |
 | `crowdsec.json` | `lapiUrl`, `machineId`, `password`, `origin`, `manualBanDuration`, `flushInterval`, `maxQueue` |

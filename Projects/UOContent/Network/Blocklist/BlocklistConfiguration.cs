@@ -53,12 +53,19 @@ public static class BlocklistConfiguration
 }
 
 /// <summary>
-/// Bound configuration for <see cref="BlocklistFilter"/>. The filter is inert unless <see cref="File"/>
-/// points at a list that actually exists, so the shipped defaults are safe on a shard that never runs
-/// the generator.
+/// Bound configuration for <see cref="BlocklistFilter"/>. The filter is inert unless <see cref="Enabled"/>
+/// is set and <see cref="File"/> points at a list that actually exists, so the shipped defaults cost a
+/// shard that never runs the generator nothing at all.
 /// </summary>
 public record BlocklistSettings
 {
+    /// <summary>
+    /// Whether the accept-path gate runs at all. Off by default: the reload poll runs for the whole
+    /// uptime, which no shard should pay before an operator has chosen to run a blocklist.
+    /// </summary>
+    [JsonPropertyName("enabled")]
+    public bool Enabled { get; set; }
+
     /// <summary>
     /// Path to the blocklist. A relative path resolves against <see cref="Core.BaseDirectory"/>; an
     /// absolute path is used as-is (handy when several shards share one generated list). Set to
@@ -68,17 +75,12 @@ public record BlocklistSettings
     public string File { get; set; } = "Configuration/ip-blocklist.txt";
 
     /// <summary>
-    /// Addresses that must never be blocked and never escalated, in the blocklist's own format. The same
-    /// files <c>tools/Export-IpBlocklist.ps1</c> subtracts at generation time; the shard reads them so an
-    /// entry also suppresses ban contributions, which the generator alone cannot do. See
-    /// <see cref="FileAllowlist"/>.
+    /// Deprecated: moved to <c>files</c> in <c>ip-allowlist.json</c>, because the blocklist is only one of
+    /// two consumers. Still bound so <see cref="FileAllowlist"/> can warn an operator who set it here
+    /// instead of dropping the carve-out silently. Null when absent, which is the normal case.
     /// </summary>
-    /// <remarks>
-    /// The filename may contain wildcards, which is how the default picks up a carve-out an admin adds
-    /// without anyone editing this file.
-    /// </remarks>
     [JsonPropertyName("allowlistFiles")]
-    public string[] AllowlistFiles { get; set; } = ["Configuration/ip-allowlist*.txt"];
+    public string[] AllowlistFiles { get; set; }
 
     /// <summary>How often the file is checked for changes. Reloads only happen when it actually changed.</summary>
     [JsonPropertyName("reloadInterval")]

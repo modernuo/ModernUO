@@ -32,8 +32,8 @@ namespace Server.Network.Bans;
 /// Behavioural detections never consult the blocklist, so without reading the files here a carve-out is
 /// quietly routed around: one scanner behind a shared CGNAT address is enough to get the whole address
 /// contributed and firewalled. Reading them also means an entry applies on the next reload rather than the
-/// next regeneration. Unconditional, unlike <see cref="LoginAllowlist"/>, but still no shield against a
-/// manual ban — see <see cref="BanExemptions"/>.
+/// next regeneration. Opt-in via <c>blocklist.json</c>'s <c>allowlistEnabled</c>, since the poll runs for
+/// the whole uptime; no shield against a manual ban either — see <see cref="BanExemptions"/>.
 /// </remarks>
 public static class FileAllowlist
 {
@@ -53,24 +53,54 @@ public static class FileAllowlist
     /// <summary>True when an operator listed this address. Safe before <see cref="Initialize"/>.</summary>
     public static bool Contains(IPAddress address) => address != null && _snapshot.Contains(address);
 
+    /// <summary>True when the shard is reading allowlist files. Safe before <see cref="Initialize"/>.</summary>
+    public static bool Enabled { get; private set; }
+
     public static void Initialize()
     {
-        // BlocklistFilter.Register ran during the Configure sweep, so the settings are populated.
-        var settings = BlocklistConfiguration.Settings;
+        FileAllowlistConfiguration.Load();
+        var settings = FileAllowlistConfiguration.Settings;
         if (settings == null)
         {
             return;
         }
 
-        _patterns = ResolvePaths(settings.AllowlistFiles);
+        // Ran after the Configure sweep, so blocklist.json is loaded and the deprecated key is readable.
+        WarnOnDeprecatedKey();
+
+        _patterns = ResolvePaths(settings.Files);
         _interval = settings.ReloadInterval <= TimeSpan.Zero ? TimeSpan.FromSeconds(60) : settings.ReloadInterval;
 
-        if (_patterns.Length == 0)
+        if (!settings.Enabled)
         {
-            logger.Information("File allowlist disabled (\"allowlistFiles\" empty in blocklist.json)");
+            // The generator still subtracts these files, so a carve-out an operator already wrote looks
+            // like it works right up until a behavioural detection contributes the address anyway.
+            var present = ExpandPaths().Length;
+            _patterns = [];
+
+            if (present > 0)
+            {
+                logger.Warning(
+                    "File allowlist is off (\"enabled\" false in ip-allowlist.json) but {Count} allowlist file(s) " +
+                    "are present; those carve-outs will not suppress ban contributions",
+                    present
+                );
+            }
+            else
+            {
+                logger.Information("File allowlist disabled (\"enabled\" false in ip-allowlist.json)");
+            }
+
             return;
         }
 
+        if (_patterns.Length == 0)
+        {
+            logger.Information("File allowlist disabled (\"files\" empty in ip-allowlist.json)");
+            return;
+        }
+
+        Enabled = true;
         Reload();
 
         _cts = CancellationTokenSource.CreateLinkedTokenSource(Core.ClosingTokenSource.Token);
@@ -82,6 +112,21 @@ public static class FileAllowlist
         _cts?.Cancel();
         _cts?.Dispose();
         _cts = null;
+    }
+
+    /// <summary>
+    /// The setting moved out of <c>blocklist.json</c>. Deliberately not honoured from there — that would
+    /// keep the coupling alive — but an operator who set it is told rather than losing it silently.
+    /// </summary>
+    private static void WarnOnDeprecatedKey()
+    {
+        if (BlocklistConfiguration.Settings?.AllowlistFiles is { Length: > 0 })
+        {
+            logger.Warning(
+                "\"allowlistFiles\" in blocklist.json is ignored; it moved to \"files\" in ip-allowlist.json. " +
+                "Copy it there and delete it from blocklist.json"
+            );
+        }
     }
 
     private static string[] ResolvePaths(string[] configured)
