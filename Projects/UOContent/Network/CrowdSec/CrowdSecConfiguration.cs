@@ -21,9 +21,8 @@ using Server.Json;
 namespace Server.Network.Bans.CrowdSec;
 
 /// <summary>
-/// Loads the <see cref="CrowdSecSettings"/> from <c>Configuration/crowdsec.json</c> (matching the
-/// per-feature JSON config pattern used by <c>AssistantConfiguration</c>). Loaded once; a missing file
-/// writes a disabled-by-default template so operators have something to edit.
+/// Loads the <see cref="CrowdSecSettings"/> from <c>Configuration/crowdsec.json</c>. Loaded once; a
+/// missing file writes a disabled-by-default template so operators have something to edit.
 /// </summary>
 public static class CrowdSecConfiguration
 {

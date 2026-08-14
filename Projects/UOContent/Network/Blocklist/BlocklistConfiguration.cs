@@ -21,9 +21,8 @@ using Server.Json;
 namespace Server.Network.Bans;
 
 /// <summary>
-/// Loads the <see cref="BlocklistSettings"/> from <c>Configuration/blocklist.json</c> (matching the
-/// per-feature JSON config pattern used by <c>AssistantConfiguration</c>). Loaded once; a missing file
-/// writes a template so operators have something to edit.
+/// Loads the <see cref="BlocklistSettings"/> from <c>Configuration/blocklist.json</c>. Loaded once; a
+/// missing file writes a template so operators have something to edit.
 /// </summary>
 public static class BlocklistConfiguration
 {
@@ -53,12 +52,19 @@ public static class BlocklistConfiguration
 }
 
 /// <summary>
-/// Bound configuration for <see cref="BlocklistFilter"/>. The filter is inert unless <see cref="File"/>
-/// points at a list that actually exists, so the shipped defaults are safe on a shard that never runs
-/// the generator.
+/// Bound configuration for <see cref="BlocklistFilter"/>. The filter is inert unless <see cref="Enabled"/>
+/// is set and <see cref="File"/> points at a list that exists, so a shard that never runs the generator
+/// pays nothing for the defaults.
 /// </summary>
 public record BlocklistSettings
 {
+    /// <summary>
+    /// Whether the accept-path gate runs at all. Off by default: the reload poll runs for the whole
+    /// uptime, which no shard should pay before an operator has chosen to run a blocklist.
+    /// </summary>
+    [JsonPropertyName("enabled")]
+    public bool Enabled { get; set; }
+
     /// <summary>
     /// Path to the blocklist. A relative path resolves against <see cref="Core.BaseDirectory"/>; an
     /// absolute path is used as-is (handy when several shards share one generated list). Set to
@@ -66,19 +72,6 @@ public record BlocklistSettings
     /// </summary>
     [JsonPropertyName("file")]
     public string File { get; set; } = "Configuration/ip-blocklist.txt";
-
-    /// <summary>
-    /// Addresses that must never be blocked and never escalated, in the blocklist's own format. The same
-    /// files <c>tools/Export-IpBlocklist.ps1</c> subtracts at generation time; the shard reads them so an
-    /// entry also suppresses ban contributions, which the generator alone cannot do. See
-    /// <see cref="FileAllowlist"/>.
-    /// </summary>
-    /// <remarks>
-    /// The filename may contain wildcards, which is how the default picks up a carve-out an admin adds
-    /// without anyone editing this file.
-    /// </remarks>
-    [JsonPropertyName("allowlistFiles")]
-    public string[] AllowlistFiles { get; set; } = ["Configuration/ip-allowlist*.txt"];
 
     /// <summary>How often the file is checked for changes. Reloads only happen when it actually changed.</summary>
     [JsonPropertyName("reloadInterval")]

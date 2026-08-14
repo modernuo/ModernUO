@@ -19,6 +19,7 @@ using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Server.Logging;
 using Server.Network.Bans;
@@ -30,16 +31,11 @@ namespace Server.Network;
 /// blocked and a flaky connection cannot get one globally banned.
 /// </summary>
 /// <remarks>
-/// <para>
-/// Consulted only after the blocklist has already matched, and again before a ban is contributed, so a
-/// normal accept pays nothing for it. An entry is evidence rather than a licence: enough strikes inside the
-/// window revokes it. It cannot bootstrap, so it hedges stable addresses and does not replace
-/// <see cref="FileAllowlist"/>. See <c>dev-docs/ip-bans-and-allowlists.md</c>.
-/// </para>
-/// <para>
-/// Both dictionaries are game-loop state. Only the file write runs off-loop, over a snapshot taken on the
-/// loop.
-/// </para>
+/// Consulted only after the blocklist has already matched, so a normal accept pays nothing for it. An entry
+/// is evidence rather than a licence: enough strikes inside the window revokes it. It cannot bootstrap, so
+/// it does not replace <see cref="ManualAllowlist"/>. Both dictionaries are game-loop state; only the file
+/// write runs off-loop, over a snapshot taken on the loop.
+/// See <c>dev-docs/ip-bans-and-allowlists.md</c>.
 /// </remarks>
 public static class LoginAllowlist
 {
@@ -52,12 +48,21 @@ public static class LoginAllowlist
     // _allowed and cannot be grown by an attacker.
     private static readonly Dictionary<UInt128, Strike> _strikes = [];
 
+    // Reused: past ~5,300 entries a fresh UInt128[] is an LOH allocation, once per flush. Grown
+    // geometrically, never shrunk.
+    private static UInt128[] _addressBuffer = [];
+    private static long[] _stampBuffer = [];
+
     private static bool _enabled;
     private static string _path;
     private static long _ttlSeconds;
     private static int _escalateAfterStrikes;
     private static long _strikeWindowSeconds;
     private static bool _dirty;
+
+    // Loop-only. The writer owns the buffers until it posts completion back, so a flush landing mid-write
+    // waits rather than overwriting them.
+    private static bool _writing;
 
     public static int Count => _allowed.Count;
 
@@ -97,10 +102,14 @@ public static class LoginAllowlist
         var interval = LoginAllowlistConfiguration.Settings.FlushInterval;
         if (interval <= TimeSpan.Zero)
         {
-            interval = TimeSpan.FromMinutes(1);
+            interval = TimeSpan.FromHours(1);
         }
 
         Timer.DelayCall(interval, interval, Flush);
+
+        // HandleClosed skips InvokeShutdown when the server crashed, so the crash path needs its own.
+        EventSink.Shutdown += OnShutdown;
+        EventSink.ServerCrashed += OnCrashed;
     }
 
     /// <summary>
@@ -197,6 +206,8 @@ public static class LoginAllowlist
     {
         _allowed.Clear();
         _strikes.Clear();
+        _writing = false;
+        _dirty = false;
         _enabled = enabled;
         _ttlSeconds = ttlSeconds;
         _escalateAfterStrikes = escalateAfterStrikes;
@@ -208,28 +219,87 @@ public static class LoginAllowlist
 
     private static void Flush()
     {
-        if (!_enabled || !_dirty)
-        {
-            return;
-        }
-
         // A save owns the disk and nothing here is urgent. _dirty stays set, so skipping loses nothing.
         // See the threading policy in CLAUDE.md (rules #3 and #10).
-        if (World.Saving || World.WorldState == WorldState.PendingSave)
+        if (!_enabled || !_dirty || _writing || World.Saving || World.WorldState == WorldState.PendingSave)
         {
             return;
         }
 
+        var count = Snapshot(out var dropped);
+        var addresses = _addressBuffer;
+        var stamps = _stampBuffer;
+        var path = _path;
+
+        _dirty = false;
+        _writing = true;
+
+        _ = Task.Run(
+            () =>
+            {
+                var written = Write(path, addresses, stamps, count, dropped);
+
+                // _writing and _dirty are loop state, so the writer hands the release back. Rule #10.
+                Core.LoopContext.Post(
+                    () =>
+                    {
+                        _writing = false;
+                        if (!written)
+                        {
+                            _dirty = true; // nothing reached disk; the next flush retries
+                        }
+                    }
+                );
+            }
+        );
+    }
+
+    /// <summary>
+    /// A crash is the case the flush interval cannot cover, so write on the way down. Runs on whichever
+    /// thread faulted, and the dictionaries are loop state, so it only writes when that is the loop.
+    /// </summary>
+    private static void OnCrashed(ServerCrashedEventArgs e)
+    {
+        if (Thread.CurrentThread == Core.Thread)
+        {
+            OnShutdown();
+        }
+    }
+
+    /// <summary>Synchronous: nothing schedules after this, so a handed-off write would reach no disk.</summary>
+    private static void OnShutdown()
+    {
+        // A write already in flight holds the buffers and has all but the last moments of the list.
+        if (!_enabled || !_dirty || _writing)
+        {
+            return;
+        }
+
+        var count = Snapshot(out var dropped);
+        _dirty = false;
+
+        Write(_path, _addressBuffer, _stampBuffer, count, dropped);
+    }
+
+    /// <summary>
+    /// Prunes expired entries and copies what survives into the shared buffers. Returns the live count; the
+    /// buffers run longer and everything past it is stale.
+    /// </summary>
+    private static int Snapshot(out int dropped)
+    {
         var nowUnix = ToUnixSeconds(Core.Now);
         var cutoff = nowUnix - _ttlSeconds;
 
-        // Prune and snapshot in one loop-side pass; the writer only sees private copies. Not pooled:
-        // STArrayPool is single-threaded and these escape to another thread.
-        var addresses = new UInt128[_allowed.Count];
-        var stamps = new long[_allowed.Count];
-        var count = 0;
+        if (_addressBuffer.Length < _allowed.Count)
+        {
+            // Geometric so a shard adding addresses one at a time does not reallocate every flush.
+            var size = Math.Max(_allowed.Count, Math.Max(64, _addressBuffer.Length * 2));
+            _addressBuffer = new UInt128[size];
+            _stampBuffer = new long[size];
+        }
 
-        var dropped = 0;
+        var count = 0;
+        dropped = 0;
 
         foreach (var (address, stamp) in _allowed)
         {
@@ -241,19 +311,13 @@ public static class LoginAllowlist
                 continue;
             }
 
-            addresses[count] = address;
-            stamps[count] = stamp;
+            _addressBuffer[count] = address;
+            _stampBuffer[count] = stamp;
             count++;
         }
 
         PruneStaleStrikes(nowUnix);
-
-        _dirty = false;
-
-        var path = _path;
-        var total = count;
-
-        _ = Task.Run(() => Write(path, addresses, stamps, total, dropped));
+        return count;
     }
 
     /// <summary>Drops tallies whose window has closed.</summary>
@@ -273,7 +337,8 @@ public static class LoginAllowlist
         }
     }
 
-    private static void Write(string path, UInt128[] addresses, long[] stamps, int count, int dropped)
+    /// <summary>Writes the list out. Returns false when nothing reached disk, so the caller can retry.</summary>
+    private static bool Write(string path, UInt128[] addresses, long[] stamps, int count, int dropped)
     {
         try
         {
@@ -309,11 +374,14 @@ public static class LoginAllowlist
             {
                 logger.Information("Login allowlist wrote {Count} entr(ies), dropped {Dropped} past TTL", count, dropped);
             }
+
+            return true;
         }
         catch (Exception e)
         {
             // Recoverable: entries are still in memory and the next flush retries.
             logger.Warning(e, "Could not write the login allowlist to \"{Path}\"", path);
+            return false;
         }
     }
 

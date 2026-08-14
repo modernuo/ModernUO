@@ -21,9 +21,8 @@ using Server.Json;
 namespace Server.Network;
 
 /// <summary>
-/// Loads the <see cref="AutoDenylistSettings"/> from <c>Configuration/auto-denylist.json</c> (matching the
-/// per-feature JSON config pattern used by <c>BlocklistConfiguration</c>). Loaded once; a missing file writes
-/// a template so operators have something to edit.
+/// Loads the <see cref="AutoDenylistSettings"/> from <c>Configuration/auto-denylist.json</c>. Loaded once;
+/// a missing file writes a template so operators have something to edit.
 /// </summary>
 public static class AutoDenylistConfiguration
 {
@@ -76,6 +75,14 @@ public record AutoDenylistSettings
     /// stops it becoming the exhaustion it prevents. At the cap new addresses are not tracked, but are still
     /// disconnected by whichever gate detected them.
     /// </summary>
+    /// <remarks>
+    /// A <c>HashSet</c> capacity, not a round number. Grown from empty it steps 36,353 → 75,431 → 156,437
+    /// → 324,449, so this fills one exactly instead of stranding slots: 65,536 sat just past a resize and
+    /// left 9,895 of them unusable. Sized to cover the 50k–250k distinct-source floods seen in practice,
+    /// for ~19 MB — 36 bytes a set slot plus 24 for the ring record. Raising it is bounded by memory
+    /// rather than by a scan, since holds are retired from the ring in expiry order; a flood past it wants
+    /// upstream scrubbing rather than a larger cap.
+    /// </remarks>
     [JsonPropertyName("maxEntries")]
-    public int MaxEntries { get; set; } = 65536;
+    public int MaxEntries { get; set; } = 324_449;
 }

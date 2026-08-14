@@ -20,8 +20,8 @@ using Xunit;
 
 namespace Server.Tests.Network.AutoDenylists;
 
-// Static store, so every test resets it first. Addresses come from TEST-NET-2 (198.51.100.0/24).
-// Sequential: the cap tests reach Sweep, which rents from STArrayPool, which is not thread-safe.
+// Static store, so every test resets it first and none may run alongside another.
+// Addresses come from TEST-NET-2 (198.51.100.0/24).
 [Collection("Sequential UOContent Tests")]
 public class AutoDenylistTests
 {
@@ -62,8 +62,11 @@ public class AutoDenylistTests
         Assert.Equal(0, AutoDenylist.Count);
     }
 
+    // Not refreshed on purpose: it is what keeps insertion order equal to expiry order, so retiring lapsed
+    // entries costs the number expiring instead of the number held. A flooder whose hold lapses trips the
+    // rate limiter on its next attempt -- which runs ahead of the connection filters -- and is held again.
     [Fact]
-    public void Repeat_detection_extends_the_hold()
+    public void Repeat_detection_does_not_extend_the_hold()
     {
         Reset();
         var ip = IPAddress.Parse("198.51.100.13");
@@ -71,8 +74,72 @@ public class AutoDenylistTests
         AutoDenylist.Hold(ip, BanReasons.SilentConnect, Now);
         AutoDenylist.Hold(ip, BanReasons.SilentConnect, Now + DurationMs - 1);
 
-        Assert.True(AutoDenylist.IsDenied(ip, Now + DurationMs + 1)); // would have lapsed without the second
-        Assert.Equal(1, AutoDenylist.Count);                          // and did not add a duplicate
+        Assert.Equal(1, AutoDenylist.Count); // no duplicate
+        Assert.True(AutoDenylist.IsDenied(ip, Now + DurationMs - 1));
+        Assert.False(AutoDenylist.IsDenied(ip, Now + DurationMs + 1)); // lapses from the FIRST detection
+    }
+
+    // The ring carries the expiry and the set carries membership; if they ever disagree, an address is
+    // either denied forever or retired early.
+    [Fact]
+    public void Ring_and_set_stay_in_step()
+    {
+        Reset(maxEntries: 4);
+
+        for (var i = 0; i < 8; i++)
+        {
+            AutoDenylist.Hold(IPAddress.Parse($"198.51.100.{70 + i}"), BanReasons.InvalidSeed, Now);
+        }
+
+        Assert.Equal(4, AutoDenylist.Count);
+        Assert.Equal(AutoDenylist.Count, AutoDenylist.RingCount);
+
+        AutoDenylist.Release(IPAddress.Parse("198.51.100.71"));
+        Assert.Equal(3, AutoDenylist.Count);
+        Assert.Equal(AutoDenylist.Count, AutoDenylist.RingCount);
+
+        AutoDenylist.Drain(Now + DurationMs + 1);
+        Assert.Equal(0, AutoDenylist.Count);
+        Assert.Equal(0, AutoDenylist.RingCount);
+    }
+
+    // The ring grows in doublings but is capped at maxEntries, which is not a power of two. Filling exactly
+    // to it must land on the last slot rather than off the end.
+    [Fact]
+    public void Ring_fills_exactly_to_a_non_power_of_two_cap()
+    {
+        Reset(maxEntries: 100);
+
+        for (var i = 0; i < 120; i++)
+        {
+            AutoDenylist.Hold(IPAddress.Parse($"198.51.100.{i}"), BanReasons.InvalidSeed, Now);
+        }
+
+        Assert.Equal(100, AutoDenylist.Count);
+        Assert.Equal(100, AutoDenylist.RingCount);
+
+        // And the whole ring still drains, so no slot was stranded by a wrapped write.
+        AutoDenylist.Drain(Now + DurationMs + 1);
+        Assert.Equal(0, AutoDenylist.Count);
+        Assert.Equal(0, AutoDenylist.RingCount);
+    }
+
+    // Releasing leaves no ring record behind, so a re-detection is not retired by the old one.
+    [Fact]
+    public void Release_then_re_hold_is_not_retired_by_the_stale_record()
+    {
+        Reset();
+        var ip = IPAddress.Parse("198.51.100.15");
+
+        AutoDenylist.Hold(ip, BanReasons.RateLimit, Now);
+        AutoDenylist.Release(ip);
+
+        var later = Now + DurationMs - 1;
+        AutoDenylist.Hold(ip, BanReasons.RateLimit, later);
+
+        // The first hold's expiry has passed; the second must survive it.
+        Assert.True(AutoDenylist.IsDenied(ip, Now + DurationMs + 1));
+        Assert.Equal(1, AutoDenylist.RingCount);
     }
 
     [Fact]

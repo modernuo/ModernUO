@@ -2,7 +2,7 @@
  * ModernUO                                                              *
  * Copyright 2019-2026 - ModernUO Development Team                       *
  * Email: hi@modernuo.com                                                *
- * File: FileAllowlist.cs                                                *
+ * File: ManualAllowlist.cs                                                *
  *                                                                       *
  * This program is free software: you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -32,15 +32,15 @@ namespace Server.Network.Bans;
 /// Behavioural detections never consult the blocklist, so without reading the files here a carve-out is
 /// quietly routed around: one scanner behind a shared CGNAT address is enough to get the whole address
 /// contributed and firewalled. Reading them also means an entry applies on the next reload rather than the
-/// next regeneration. Unconditional, unlike <see cref="LoginAllowlist"/>, but still no shield against a
-/// manual ban — see <see cref="BanExemptions"/>.
+/// next regeneration. Opt-in via <c>ip-allowlist.json</c>'s <c>enabled</c>, since the poll runs for the
+/// whole uptime; no shield against a manual ban either — see <see cref="BanExemptions"/>.
 /// </remarks>
-public static class FileAllowlist
+public static class ManualAllowlist
 {
-    private static readonly ILogger logger = LogFactory.GetLogger(typeof(FileAllowlist));
+    private static readonly ILogger logger = LogFactory.GetLogger(typeof(ManualAllowlist));
 
-    // Written by the reload poll (off-loop), read by the accept path (game loop): a single volatile
-    // reference swap is the whole synchronization story — readers see the old or the new snapshot, whole.
+    // Written by the reload poll (off-loop), read by the accept path (game loop). One volatile reference
+    // swap is the whole synchronization story: readers see the old or the new snapshot, whole.
     private static volatile BlocklistSnapshot _snapshot = BlocklistSnapshot.Empty;
 
     private static string[] _patterns = [];
@@ -53,24 +53,51 @@ public static class FileAllowlist
     /// <summary>True when an operator listed this address. Safe before <see cref="Initialize"/>.</summary>
     public static bool Contains(IPAddress address) => address != null && _snapshot.Contains(address);
 
+    /// <summary>True when the shard is reading allowlist files. Safe before <see cref="Initialize"/>.</summary>
+    public static bool Enabled { get; private set; }
+
     public static void Initialize()
     {
-        // BlocklistFilter.Register ran during the Configure sweep, so the settings are populated.
-        var settings = BlocklistConfiguration.Settings;
+        ManualAllowlistConfiguration.Load();
+        var settings = ManualAllowlistConfiguration.Settings;
         if (settings == null)
         {
             return;
         }
 
-        _patterns = ResolvePaths(settings.AllowlistFiles);
+        _patterns = ResolvePaths(settings.Files);
         _interval = settings.ReloadInterval <= TimeSpan.Zero ? TimeSpan.FromSeconds(60) : settings.ReloadInterval;
 
-        if (_patterns.Length == 0)
+        if (!settings.Enabled)
         {
-            logger.Information("File allowlist disabled (\"allowlistFiles\" empty in blocklist.json)");
+            // The generator still subtracts these files, so a carve-out an operator already wrote looks
+            // like it works right up until a behavioural detection contributes the address anyway.
+            var present = ExpandPaths().Length;
+            _patterns = [];
+
+            if (present > 0)
+            {
+                logger.Warning(
+                    "Manual allowlist is off (\"enabled\" false in ip-allowlist.json) but {Count} allowlist file(s) " +
+                    "are present; those carve-outs will not suppress ban contributions",
+                    present
+                );
+            }
+            else
+            {
+                logger.Information("Manual allowlist disabled (\"enabled\" false in ip-allowlist.json)");
+            }
+
             return;
         }
 
+        if (_patterns.Length == 0)
+        {
+            logger.Information("Manual allowlist disabled (\"files\" empty in ip-allowlist.json)");
+            return;
+        }
+
+        Enabled = true;
         Reload();
 
         _cts = CancellationTokenSource.CreateLinkedTokenSource(Core.ClosingTokenSource.Token);
@@ -197,7 +224,7 @@ public static class FileAllowlist
             }
             catch (Exception e)
             {
-                logger.Warning(e, "File allowlist reload check failed; keeping last snapshot ({Count})", Count);
+                logger.Warning(e, "Manual allowlist reload check failed; keeping last snapshot ({Count})", Count);
             }
         }
     }
@@ -246,7 +273,7 @@ public static class FileAllowlist
         _lastStamp = stamp;
 
         logger.Information(
-            "File allowlist loaded {Count} range(s) from {Files} file(s)",
+            "Manual allowlist loaded {Count} range(s) from {Files} file(s)",
             next.Count,
             files
         );

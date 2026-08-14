@@ -28,10 +28,10 @@ namespace Server.Network;
 public static class Firewall
 {
     // Single-threaded: the accept path, admin gump/command, TTL expiry timer, and boot load all run on
-    // the main game loop. No locks, caches, or version counters are needed. See the ban-channel design doc.
-    // _entries is the authoritative store (gump/persistence/TTL/command all work against it); _index is a
-    // derived, rebuild-on-demand SortedRangeIndex used only for the accept-path IsBlocked lookup, shared
-    // with the same sorted-range binary-search primitive the blocklist uses (see BlocklistSnapshot).
+    // the main game loop, so no locks, caches, or version counters are needed. _entries is the
+    // authoritative store; _index is a derived, rebuild-on-demand SortedRangeIndex used only for the
+    // accept-path IsBlocked lookup, over the same primitive the blocklist uses (see BlocklistSnapshot).
+    // See dev-docs/ip-bans-and-allowlists.md.
     private static readonly List<IFirewallEntry> _entries = [];
 
     // Entries with a TTL: entry -> absolute expiry tick (Core.TickCount). Permanent entries are absent.
@@ -152,7 +152,7 @@ public static class Firewall
     }
 
     /// <summary>
-    /// Removes every entry whose TTL has elapsed. Called from the main-thread maintenance timer (Task 2).
+    /// Removes every entry whose TTL has elapsed. Called from the main-thread maintenance timer.
     /// </summary>
     internal static void ExpireEntries(long nowTicks)
     {
