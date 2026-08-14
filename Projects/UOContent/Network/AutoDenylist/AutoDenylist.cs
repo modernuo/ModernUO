@@ -32,28 +32,36 @@ namespace Server.Network;
 /// no bouncer, which is the default. Not persisted, by design: a holding pen that survives restarts is a ban
 /// without a ban's review. Only <see cref="BanReasons.IsBehavioral"/> verdicts are held.
 /// </remarks>
+/// <remarks>
+/// A hold is never refreshed, so every expiry is <c>insertion + duration</c> and the ring is sorted by
+/// construction. Retiring lapsed entries is therefore the number expiring rather than the number held, which
+/// is what lets the cap be sized for the flood instead of for a scan.
+/// </remarks>
 public static class AutoDenylist
 {
     private static readonly ILogger logger = LogFactory.GetLogger(typeof(AutoDenylist));
 
-    // Address (normalized v6 bits) -> Core.TickCount at which the hold lapses. Loop-only.
-    private static readonly Dictionary<UInt128, long> _held = [];
+    // Membership only (normalized v6 bits). Loop-only. The expiry lives beside the key in the ring, so
+    // there is exactly one copy of it and the two cannot disagree.
+    private static readonly HashSet<UInt128> _held = [];
 
-    // Shortest gap between cap-triggered sweeps. A sweep is O(_maxEntries) and one that just ran cannot
-    // have freed more, so without this every rejected address re-scans the whole dictionary -- turning the
-    // bound into a cost multiplier under exactly the flood it exists to bound.
-    private const long SweepThrottleMs = 1000;
+    // The same keys in expiry order. Parallel arrays rather than an array of structs: UInt128 forces
+    // 16-byte alignment, so a packed (key, expiry) struct costs 32 bytes where these cost 24 -- and the
+    // drain reads only the long[], 8 sequential bytes per entry.
+    private static UInt128[] _ringKeys = [];
+    private static long[] _ringExpiry = [];
+    private static int _ringHead;
+    private static int _ringCount;
 
     private static bool _enabled;
     private static long _durationMs;
     private static int _maxEntries;
     private static bool _warnedFull;
-    private static long _lastSweepAt;
 
     public static int Count => _held.Count;
 
-    // Test seam: lets the throttle be asserted rather than inferred.
-    internal static int SweepCount { get; private set; }
+    // Test seam: the ring and the set hold the same entries, and nothing else may assume it.
+    internal static int RingCount => _ringCount;
 
     public static void Configure()
     {
@@ -68,9 +76,6 @@ public static class AutoDenylist
 
         _durationMs = (long)s.Duration.TotalMilliseconds;
         _maxEntries = s.MaxEntries;
-
-        // Seeded from a real tick: tick counts need not start near zero. See dev-docs/tick-counts.md.
-        _lastSweepAt = Core.TickCount;
 
         ConnectionFilters.Register(new AutoDenylistFilter());
         BanChannel.Register(new AutoDenylistReporter());
@@ -89,38 +94,45 @@ public static class AutoDenylist
             return false;
         }
 
-        var key = address.ToUInt128();
+        Drain(nowTicks);
 
-        // An address already held is just extended, so no cap check is needed.
-        if (!_held.ContainsKey(key) && _held.Count >= _maxEntries)
+        // Deliberately not refreshed: the first detection sets the expiry and later ones leave it alone.
+        // That is what keeps insertion order equal to expiry order, which is the whole reason the drain
+        // can stop at the first live record. A flooder whose hold lapses trips the rate limiter on its
+        // next attempt -- which runs before the connection filters -- and is held again immediately.
+        if (!_held.Add(address.ToUInt128()))
         {
-            if (nowTicks - _lastSweepAt >= SweepThrottleMs)
-            {
-                Sweep(nowTicks);
-            }
-
-            if (_held.Count >= _maxEntries)
-            {
-                if (!_warnedFull)
-                {
-                    _warnedFull = true;
-                    logger.Warning(
-                        "Auto-denylist is full at {Max} addresses; further detections are disconnected but not held",
-                        _maxEntries
-                    );
-                }
-
-                return false;
-            }
+            return true;
         }
 
-        _held[key] = nowTicks + _durationMs;
+        // Drain already reclaimed everything reclaimable, so being over now means genuinely full.
+        if (_held.Count > _maxEntries)
+        {
+            _held.Remove(address.ToUInt128());
+
+            if (!_warnedFull)
+            {
+                _warnedFull = true;
+                logger.Warning(
+                    "Auto-denylist is full at {Max} addresses; further detections are disconnected but not held",
+                    _maxEntries
+                );
+            }
+
+            return false;
+        }
+
+        Push(address.ToUInt128(), nowTicks + _durationMs);
         return true;
     }
 
     public static bool IsDenied(IPAddress address) => IsDenied(address, Core.TickCount);
 
-    /// <summary>The pure decision, split out so the accept-path policy can be tested without a clock.</summary>
+    /// <summary>
+    /// The accept-path decision, split out so the policy can be tested without a clock. Drains first: the
+    /// expiry is not stored beside the membership, so there is nothing to expire on read and a lapsed hold
+    /// must be retired here rather than left to deny. Costs one array read when nothing has lapsed.
+    /// </summary>
     internal static bool IsDenied(IPAddress address, long nowTicks)
     {
         if (!_enabled || address == null)
@@ -128,56 +140,132 @@ public static class AutoDenylist
             return false;
         }
 
-        // Decided on read, so a lapsed hold cannot deny even before the sweep. Subtraction: TickCount wraps.
-        return _held.TryGetValue(address.ToUInt128(), out var expires) && expires - nowTicks > 0;
+        Drain(nowTicks);
+        return _held.Contains(address.ToUInt128());
     }
 
     /// <summary>Releases an address early, e.g. when an operator retracts a ban.</summary>
     public static void Release(IPAddress address)
     {
-        if (_enabled && address != null)
-        {
-            _held.Remove(address.ToUInt128());
-        }
-    }
-
-    internal static void Sweep(long nowTicks)
-    {
-        // Stamped even when there is nothing to do, so the cap path throttles off the last attempt.
-        _lastSweepAt = nowTicks;
-        SweepCount++;
-
-        if (_held.Count == 0)
+        if (!_enabled || address == null)
         {
             return;
         }
 
-        var lapsed = 0;
-
-        foreach (var (address, expires) in _held)
+        var key = address.ToUInt128();
+        if (_held.Remove(key))
         {
-            if (expires - nowTicks <= 0)
-            {
-                _held.Remove(address);
-                lapsed++;
-            }
+            // The ring record has to go too. Nothing records that this key was released, so if it were
+            // detected again before the old record lapsed, that record would retire the new hold early.
+            // O(n), but this is an operator retraction, not the accept path.
+            PurgeRing(key);
+        }
+    }
+
+    /// <summary>
+    /// Retires everything that has lapsed. Expiries only ever increase along the ring, so the first live
+    /// record ends the scan and the cost is the number actually expiring, not the number held.
+    /// </summary>
+    internal static void Drain(long nowTicks)
+    {
+        // Subtraction, never a direct compare: tick counts wrap. See dev-docs/tick-counts.md.
+        while (_ringCount > 0 && _ringExpiry[_ringHead] - nowTicks <= 0)
+        {
+            _held.Remove(_ringKeys[_ringHead]);
+            _ringHead = _ringHead + 1 == _ringKeys.Length ? 0 : _ringHead + 1;
+            _ringCount--;
+            _warnedFull = false;
+        }
+    }
+
+    private static void Push(UInt128 key, long expiry)
+    {
+        if (_ringCount == _ringKeys.Length)
+        {
+            Grow();
         }
 
-        if (lapsed > 0)
+        var tail = _ringHead + _ringCount;
+        if (tail >= _ringKeys.Length)
         {
-            _warnedFull = false;
+            tail -= _ringKeys.Length;
+        }
+
+        _ringKeys[tail] = key;
+        _ringExpiry[tail] = expiry;
+        _ringCount++;
+    }
+
+    private static void Grow()
+    {
+        var size = Math.Max(64, _ringKeys.Length * 2);
+        var keys = new UInt128[size];
+        var expiry = new long[size];
+
+        for (var i = 0; i < _ringCount; i++)
+        {
+            var from = _ringHead + i;
+            if (from >= _ringKeys.Length)
+            {
+                from -= _ringKeys.Length;
+            }
+
+            keys[i] = _ringKeys[from];
+            expiry[i] = _ringExpiry[from];
+        }
+
+        _ringKeys = keys;
+        _ringExpiry = expiry;
+        _ringHead = 0;
+    }
+
+    private static void PurgeRing(UInt128 key)
+    {
+        var capacity = _ringKeys.Length;
+
+        for (var i = 0; i < _ringCount; i++)
+        {
+            var at = _ringHead + i;
+            if (at >= capacity)
+            {
+                at -= capacity;
+            }
+
+            if (_ringKeys[at] != key)
+            {
+                continue;
+            }
+
+            // Close the gap so the ring stays contiguous and expiry-ordered.
+            for (var j = i; j < _ringCount - 1; j++)
+            {
+                var to = _ringHead + j;
+                if (to >= capacity)
+                {
+                    to -= capacity;
+                }
+
+                var from = to + 1 == capacity ? 0 : to + 1;
+                _ringKeys[to] = _ringKeys[from];
+                _ringExpiry[to] = _ringExpiry[from];
+            }
+
+            _ringCount--;
+            return;
         }
     }
 
     internal static void LoadForTesting(bool enabled, long durationMs, int maxEntries)
     {
         _held.Clear();
+        _ringKeys = [];
+        _ringExpiry = [];
+        _ringHead = 0;
+        _ringCount = 0;
         _enabled = enabled;
         _durationMs = durationMs;
         _maxEntries = maxEntries;
         _warnedFull = false;
-        _lastSweepAt = 0;
-        SweepCount = 0;
     }
 }
 
@@ -194,11 +282,12 @@ public sealed class AutoDenylistFilter : IConnectionFilter
 
     public void Start(CancellationToken token)
     {
-        // Only an optimization: IsDenied expires on read.
+        // Only reclaims memory: Hold and IsDenied both drain, so this matters on a shard that has gone
+        // quiet after a flood and would otherwise hold the ring until someone next connects.
         _sweepTimer = Timer.DelayCall(
             TimeSpan.FromMinutes(1),
             TimeSpan.FromMinutes(1),
-            () => AutoDenylist.Sweep(Core.TickCount)
+            () => AutoDenylist.Drain(Core.TickCount)
         );
     }
 

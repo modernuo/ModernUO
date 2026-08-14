@@ -62,8 +62,11 @@ public class AutoDenylistTests
         Assert.Equal(0, AutoDenylist.Count);
     }
 
+    // Not refreshed on purpose: it is what keeps insertion order equal to expiry order, so retiring lapsed
+    // entries costs the number expiring instead of the number held. A flooder whose hold lapses trips the
+    // rate limiter on its next attempt -- which runs ahead of the connection filters -- and is held again.
     [Fact]
-    public void Repeat_detection_extends_the_hold()
+    public void Repeat_detection_does_not_extend_the_hold()
     {
         Reset();
         var ip = IPAddress.Parse("198.51.100.13");
@@ -71,8 +74,51 @@ public class AutoDenylistTests
         AutoDenylist.Hold(ip, BanReasons.SilentConnect, Now);
         AutoDenylist.Hold(ip, BanReasons.SilentConnect, Now + DurationMs - 1);
 
-        Assert.True(AutoDenylist.IsDenied(ip, Now + DurationMs + 1)); // would have lapsed without the second
-        Assert.Equal(1, AutoDenylist.Count);                          // and did not add a duplicate
+        Assert.Equal(1, AutoDenylist.Count); // no duplicate
+        Assert.True(AutoDenylist.IsDenied(ip, Now + DurationMs - 1));
+        Assert.False(AutoDenylist.IsDenied(ip, Now + DurationMs + 1)); // lapses from the FIRST detection
+    }
+
+    // The ring carries the expiry and the set carries membership; if they ever disagree, an address is
+    // either denied forever or retired early.
+    [Fact]
+    public void Ring_and_set_stay_in_step()
+    {
+        Reset(maxEntries: 4);
+
+        for (var i = 0; i < 8; i++)
+        {
+            AutoDenylist.Hold(IPAddress.Parse($"198.51.100.{70 + i}"), BanReasons.InvalidSeed, Now);
+        }
+
+        Assert.Equal(4, AutoDenylist.Count);
+        Assert.Equal(AutoDenylist.Count, AutoDenylist.RingCount);
+
+        AutoDenylist.Release(IPAddress.Parse("198.51.100.71"));
+        Assert.Equal(3, AutoDenylist.Count);
+        Assert.Equal(AutoDenylist.Count, AutoDenylist.RingCount);
+
+        AutoDenylist.Drain(Now + DurationMs + 1);
+        Assert.Equal(0, AutoDenylist.Count);
+        Assert.Equal(0, AutoDenylist.RingCount);
+    }
+
+    // Releasing leaves no ring record behind, so a re-detection is not retired by the old one.
+    [Fact]
+    public void Release_then_re_hold_is_not_retired_by_the_stale_record()
+    {
+        Reset();
+        var ip = IPAddress.Parse("198.51.100.15");
+
+        AutoDenylist.Hold(ip, BanReasons.RateLimit, Now);
+        AutoDenylist.Release(ip);
+
+        var later = Now + DurationMs - 1;
+        AutoDenylist.Hold(ip, BanReasons.RateLimit, later);
+
+        // The first hold's expiry has passed; the second must survive it.
+        Assert.True(AutoDenylist.IsDenied(ip, Now + DurationMs + 1));
+        Assert.Equal(1, AutoDenylist.RingCount);
     }
 
     [Fact]
@@ -102,30 +148,6 @@ public class AutoDenylistTests
         // The first four are still held; the rest were disconnected by their gate but not tracked.
         Assert.True(AutoDenylist.IsDenied(IPAddress.Parse("198.51.100.100"), Now));
         Assert.False(AutoDenylist.IsDenied(IPAddress.Parse("198.51.100.109"), Now));
-    }
-
-    // A sweep is O(maxEntries). Without the throttle a distinct-source flood re-scans the whole
-    // dictionary for every address it rejects, which is the case the cap exists to make cheap.
-    [Fact]
-    public void Cap_does_not_re_sweep_for_every_rejected_address()
-    {
-        Reset(maxEntries: 2);
-
-        AutoDenylist.Hold(IPAddress.Parse("198.51.100.40"), BanReasons.InvalidSeed, Now);
-        AutoDenylist.Hold(IPAddress.Parse("198.51.100.41"), BanReasons.InvalidSeed, Now);
-        Assert.Equal(0, AutoDenylist.SweepCount);
-
-        // At the cap with nothing lapsed: the first rejection sweeps, the rest in the window do not.
-        for (var i = 0; i < 5; i++)
-        {
-            Assert.False(AutoDenylist.Hold(IPAddress.Parse($"198.51.100.{50 + i}"), BanReasons.InvalidSeed, Now));
-        }
-
-        Assert.Equal(1, AutoDenylist.SweepCount);
-
-        // Past the window it may try again, since entries can have lapsed by then.
-        Assert.False(AutoDenylist.Hold(IPAddress.Parse("198.51.100.60"), BanReasons.InvalidSeed, Now + 1000));
-        Assert.Equal(2, AutoDenylist.SweepCount);
     }
 
     [Fact]
