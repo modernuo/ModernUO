@@ -5248,12 +5248,7 @@ public partial class Mobile : IHued, IComparable<Mobile>, ISpawnable, IObjectPro
         item.Name = oldItem.Name;
         item.Weight = oldItem.Weight;
 
-        // Splitting a stack must not change what either half is. This copies a fixed list of
-        // fields rather than going through Dupe/CopyProperties, so anything omitted here is
-        // silently dropped on the new half -- for PlayerConstructed that would mean dragging
-        // part of a pile off is enough to strip its provenance.
         item.PlayerConstructed = oldItem.PlayerConstructed;
-
         item.Amount = oldAmount - amount;
         item.Map = oldItem.Map;
 
