@@ -2350,7 +2350,6 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
         dropped.ItemID == ItemID &&
         dropped.Hue == Hue &&
         dropped.Name == Name &&
-        dropped.PlayerConstructed == PlayerConstructed &&
         dropped.Amount + Amount <= 60000 &&
         dropped != this;
 
@@ -2369,6 +2368,11 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
         }
 
         Amount += dropped.Amount;
+        if (PlayerConstructed != dropped.PlayerConstructed)
+        {
+            PlayerConstructed = false;
+        }
+
         dropped.Delete();
 
         if (playSound && from != null)
@@ -3451,7 +3455,7 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
         for (var i = 0; i < props.Length; i++)
         {
             var p = props[i];
-            if (p.GetCustomAttribute(typeof(IgnoreDupeAttribute), true) != null || !p.CanRead || !p.CanWrite)
+            if (p.GetCustomAttribute<IgnoreDupeAttribute>(true) != null || !p.CanRead || !p.CanWrite)
             {
                 continue;
             }
