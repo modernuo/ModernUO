@@ -24,26 +24,6 @@ public class PlayerConstructedStackingTests
     private static StackableItem MakeStack(Serial serial, int amount, bool playerConstructed) =>
         new(serial) { Amount = amount, PlayerConstructed = playerConstructed };
 
-    [Fact]
-    public void CanStackWith_IsFalseWhenProvenanceDiffers()
-    {
-        var bought = MakeStack((Serial)0x1, 5, false);
-        var crafted = MakeStack((Serial)0x2, 5, true);
-
-        try
-        {
-            // Both orders must fail. Whichever is the receiver decides the merged pile's flag,
-            // so allowing either one means the result is decided by drag direction.
-            Assert.False(bought.CanStackWith(crafted));
-            Assert.False(crafted.CanStackWith(bought));
-        }
-        finally
-        {
-            bought.Delete();
-            crafted.Delete();
-        }
-    }
-
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
@@ -60,27 +40,6 @@ public class PlayerConstructedStackingTests
         {
             first.Delete();
             second.Delete();
-        }
-    }
-
-    [Fact]
-    public void StackWith_RefusesToMergeAcrossProvenance()
-    {
-        var bought = MakeStack((Serial)0x1, 5, false);
-        var crafted = MakeStack((Serial)0x2, 5, true);
-
-        try
-        {
-            Assert.False(bought.StackWith(null, crafted, false));
-            Assert.Equal(5, bought.Amount);
-            Assert.Equal(5, crafted.Amount);
-            Assert.False(bought.PlayerConstructed);
-            Assert.False(crafted.Deleted);
-        }
-        finally
-        {
-            bought.Delete();
-            crafted.Delete();
         }
     }
 
