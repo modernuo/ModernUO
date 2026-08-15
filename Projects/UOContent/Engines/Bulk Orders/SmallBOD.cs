@@ -137,11 +137,7 @@ public abstract partial class SmallBOD : BaseBOD
         {
             var material = GetMaterial(armor?.Resource ?? clothing?.Resource ?? CraftResource.None);
 
-            if (!item.PlayerConstructed)
-            {
-                from.SendLocalizedMessage(1045169); // The item is not in the request.
-            }
-            else if (Material >= BulkMaterialType.DullCopper && Material <= BulkMaterialType.Valorite && material != Material)
+            if (Material >= BulkMaterialType.DullCopper && Material <= BulkMaterialType.Valorite && material != Material)
             {
                 from.SendLocalizedMessage(1045168); // The item is not made from the requested ore.
             }
