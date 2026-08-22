@@ -1026,8 +1026,8 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
 
         if (GetSaveFlag(flags, SaveFlag.DecayReset))
         {
-            var resetMinutes = new TimeSpan(now - info.m_DecayReset.Ticks).TotalMinutes;
-            writer.WriteEncodedInt((int)Math.Clamp(resetMinutes, 0, int.MaxValue));
+            // Replace with WriteAnchoredTime once the save-time anchor is ported.
+            writer.WriteDeltaTime(info.m_DecayReset);
         }
 
         if (GetSaveFlag(flags, SaveFlag.Direction))
@@ -2778,10 +2778,10 @@ public partial class Item : IHued, IComparable<Item>, ISpawnable, IObjectPropert
 
                     if (version >= 10 && GetSaveFlag(flags, SaveFlag.DecayReset))
                     {
-                        var reset = Core.Now - TimeSpan.FromMinutes(reader.ReadEncodedInt());
+                        var reset = reader.ReadDeltaTime();
 
-                        // Minute rounding can land the stamp on LastMoved; keep it only while it
-                        // extends the deadline.
+                        // LastMoved is stored at whole-minute precision; keep the stamp only
+                        // while it still extends the deadline.
                         if (reset > LastMoved)
                         {
                             DecayResetTime = reset;

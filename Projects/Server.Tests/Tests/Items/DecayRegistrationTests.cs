@@ -325,9 +325,10 @@ public class DecayRegistrationTests
             var copy = new Item(item.Serial);
             copy.Deserialize(new BufferReader(writer.Buffer));
 
-            // LastMoved persists as whole minutes; allow that much slack.
+            // The stamp is stored as a delta, so it ages only by the real time between
+            // write and read - milliseconds here, the downtime in production.
             Assert.True(
-                (copy.ScheduledDecayTime - expected).Duration() <= TimeSpan.FromMinutes(1),
+                (copy.ScheduledDecayTime - expected).Duration() <= TimeSpan.FromSeconds(5),
                 "The restarted decay window must survive a save/load cycle."
             );
 
